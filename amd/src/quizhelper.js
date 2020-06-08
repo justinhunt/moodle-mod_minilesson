@@ -1,4 +1,4 @@
-define(['jquery','core/log','mod_poodlltime/definitions'], function($,log,def) {
+define(['jquery','core/log','mod_poodlltime/definitions','core/templates'], function($,log,def,templates) {
     "use strict"; // jshint ;_;
 
 /*
