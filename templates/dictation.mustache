@@ -1,0 +1,54 @@
+<div id="{{uniqid}}_container" class="container">
+  
+  <audio id="{{uniqid}}_player"></audio>
+  <!-- @@CLOUDPOODLLTOKEN@@ -->
+
+  {{#sentences}}
+  <div class="row dictationrow">
+    <div id="dictationplayer_{{@index}}" class="col-md-1 poodlldictationplayer">
+      <a class="dictationtrigger" data-src="@AUDIO@"><i class="fa fa-play"></i></a>
+    </div>
+    <div id="dictationinput_{{@index}}" class="col-md-10 poodlldictationinput"><input data-index="{{@index}}" type="text"></input>
+    </div>
+    <div class="col-md-1">
+      <div id="dictationstatus_{{@index}}" class="poodlldictationstatus"><i data-index="{{@index}}" class="dictate-feedback fa fa-times"></i></div>
+    </div>
+  </div>
+  {{/sentences}}
+
+</div>
+
+{{#js}}
+
+   
+ require(['jquery'], function($) {
+   
+  var app = {
+
+    sentences: {{{sentences}}},
+    init:function(){
+      console.log(app.sentences);
+      /*   
+      $("#{{uniqid}}_container .poodlldictationinput").on("input",function(e){
+   
+        var index = $(this).data("index");
+        var correct = app.sentences[index];
+        var typed = $(this).val();
+   
+        if(correct.trim().toLowerCase() == typed.trim().toLowerCase()){
+          $(".dictate-feedback [data-index='"+index+"']").removeClass("fa-times").addClass("fa-check");
+        } else {
+          $(".dictate-feedback [data-index='"+index+"']").removeClass("fa-check").addClass("fa-times");
+        }
+   
+      });
+      */
+    }
+
+  }
+
+  app.init();
+
+ });
+
+{{/js}}

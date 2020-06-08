@@ -58,6 +58,10 @@ class rsquestion_renderer extends \plugin_renderer_base {
      $adddictationchatitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
              array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_DICTATIONCHAT));
      $links[] = \html_writer::link($adddictationchatitemurl, get_string('adddictationchatitem', constants::M_COMPONENT));
+   
+   $adddictationitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
+             array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_DICTATION));
+     $links[] = \html_writer::link($adddictationitemurl, get_string('adddictationitem', constants::M_COMPONENT));
 
         return $this->output->box($output.'<p>'.implode('</p><p>', $links).'</p>', 'generalbox firstpageoptions');
     }
@@ -110,7 +114,10 @@ class rsquestion_renderer extends \plugin_renderer_base {
                     $itemtype = get_string('audioresponse', constants::M_COMPONENT);
                     break;
                 case constants::TYPE_DICTATIONCHAT:
-                    $itemtype = get_string('dicationchat', constants::M_COMPONENT);
+                    $itemtype = get_string('dictationchat', constants::M_COMPONENT);
+                    break;
+                case constants::TYPE_DICTATION:
+                    $itemtype = get_string('dictation', constants::M_COMPONENT);
                     break;
                 default:
             }

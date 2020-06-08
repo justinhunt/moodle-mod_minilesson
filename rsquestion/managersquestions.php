@@ -126,6 +126,10 @@ switch($type){
     case constants::TYPE_DICTATIONCHAT:
         $mform = new \mod_poodlltime\rsquestion\dictationchatform();
         break;
+    
+    case constants::TYPE_DICTATION:
+        $mform = new \mod_poodlltime\rsquestion\dictationform();
+        break;
 
 	case constants::NONE:
 	default:
@@ -247,6 +251,7 @@ if ($edit) {
         case constants::TYPE_TEXTPROMPT_SHORT:
         case constants::TYPE_TEXTPROMPT_AUDIO:
         case constants::TYPE_DICTATIONCHAT:
+        case constants::TYPE_DICTATION:
 		default:
 	}
     $mform->set_data($data);

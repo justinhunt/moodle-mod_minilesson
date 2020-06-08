@@ -112,7 +112,7 @@ class comprehensiontest
             $testitem->number =  $currentitem;
             $testitem->text =  $item->{constants::TEXTQUESTION};
             for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
-                $testitem->{'answer' . $anumber} = $item->{constants::TEXTANSWER . $anumber};
+                $testitem->{'customtext' . $anumber} = $item->{constants::TEXTANSWER . $anumber};
             }
             $testitem->correctanswer =  $item->correctanswer;
             $testitem->id = $item->id;
