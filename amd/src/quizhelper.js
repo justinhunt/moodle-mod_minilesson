@@ -42,6 +42,24 @@ This file is to manage the quiz stage
                         dd.controls.quizcontainer.append(audio_answer_template);
                         break;
                     case def.qtype_textpromptlong:
+
+                    case def.qtype_dictationchat:
+                        debugger;
+                        //display the dictation chat from template
+                        // This will call the function to load and render our template.
+                        templates.render('mod_poodlltime/dictationchat', item)
+
+                        // It returns a promise that needs to be resoved.
+                            .then(function(html, js) {
+                                debugger;
+                                // Here eventually I have my compiled template, and any javascript that it generated.
+                                // The templates object has append, prepend and replace functions.
+                                templates.appendNodeContents(dd.controls.quizcontainer, html, js);
+                            }).fail(function(ex) {
+                            // Deal with this exception (I recommend core/notify exception function for this).
+                        });
+
+
                     case def.qtype_textpromptshort:
                     default:
                         dd.controls.quizcontainer.append(text_answer_template.replace('@@DATA@@', item.answer1));
@@ -51,7 +69,11 @@ This file is to manage the quiz stage
                 }
             });
 
+
+
             dd.controls.quizcontainer.append(submitbutton);
+
+
         },
 
         register_events: function() {

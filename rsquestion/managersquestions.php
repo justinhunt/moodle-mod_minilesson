@@ -123,6 +123,10 @@ switch($type){
         $mform = new \mod_poodlltime\rsquestion\textpromptaudioform();
         break;
 
+    case constants::TYPE_DICTATIONCHAT:
+        $mform = new \mod_poodlltime\rsquestion\dictationchatform();
+        break;
+
 	case constants::NONE:
 	default:
 		print_error('No item type specifified');
@@ -242,6 +246,7 @@ if ($edit) {
             break;
         case constants::TYPE_TEXTPROMPT_SHORT:
         case constants::TYPE_TEXTPROMPT_AUDIO:
+        case constants::TYPE_DICTATIONCHAT:
 		default:
 	}
     $mform->set_data($data);

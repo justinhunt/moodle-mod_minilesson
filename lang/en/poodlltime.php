@@ -452,6 +452,9 @@ $string['pushquestions']='Push Questions';
 $string['addtextpromptshortitem']='Add multi choice question (short prompt)';
 $string['addtextpromptlongitem']='Add multi choice question (long promopt)';
 $string['addaudioresponseitem']='Add audio response question';
+$string['adddictationchatitem']='Add dictation chat item';
+$string['dictationchat']='Dication Chat';
+
 
 
 $string['transcriber'] = 'Transcriber';

@@ -183,7 +183,7 @@ abstract class baseform extends \moodleform {
      * @param bool $required
      * @return void
      */
-    protected final function add_textarearesponse($count, $label = null, $required = false) {
+    protected final function add_editorarearesponse($count, $label = null, $required = false) {
         if ($label === null) {
             $label = get_string('response', 'poodlltime');
         }
@@ -194,6 +194,27 @@ abstract class baseform extends \moodleform {
             $this->_form->addRule(constants::TEXTANSWER .$count. '_editor', get_string('required'), 'required', null, 'client');
         }
     }
+
+    /**
+     * Convenience function: Adds an response editor
+     *
+     * @param int $count The count of the element to add
+     * @param string $label, null means default
+     * @param bool $required
+     * @return void
+     */
+    protected final function add_textarearesponse($count, $label = null, $required = false) {
+        if ($label === null) {
+            $label = get_string('response', 'poodlltime');
+        }
+        //edoptions = array('noclean'=>true)
+        $this->_form->addElement('textarea', constants::TEXTANSWER .$count , $label, array('rows'=>'4', 'columns'=>'80'));
+        $this->_form->setDefault(constants::TEXTANSWER .$count, array('text'=>'', 'format'=>FORMAT_MOODLE));
+        if ($required) {
+            $this->_form->addRule(constants::TEXTANSWER .$count. '_editor', get_string('required'), 'required', null, 'client');
+        }
+    }
+
     /**
      * Convenience function: Adds an response editor
      *

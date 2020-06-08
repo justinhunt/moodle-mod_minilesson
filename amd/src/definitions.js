@@ -62,6 +62,7 @@ This file contains class and ID definitions.
         qtype_textpromptlong: '4',
         qtype_textpromptshort: '5',
         qtype_textpromptaudio: '6',
+        qtype_dictationchat: '8',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_poodlltime_grading_maybeselfcorrectedword',

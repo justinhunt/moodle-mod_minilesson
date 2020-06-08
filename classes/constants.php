@@ -54,6 +54,7 @@ const TYPE_TEXTPROMPT_LONG = 4;
 const TYPE_TEXTPROMPT_SHORT = 5;
 const TYPE_TEXTPROMPT_AUDIO = 6;
 const TYPE_INSTRUCTIONS = 7;
+const TYPE_DICTATIONCHAT = 8;
 const TEXTCHOICE = 'textchoice';
 const TEXTBOXCHOICE = 'textboxchoice';
 const AUDIORESPONSE = 'audioresponse';
@@ -71,6 +72,7 @@ const TEXTANSWER_FILEAREA ='answerarea';
 const PASSAGEPICTURE='passagepicture';
 const PASSAGEPICTURE_FILEAREA = 'passagepicture';
 const MAXANSWERS=4;
+const DICTATIONCHAT = 'dictationchat';
 
 //CSS ids/classes
 const M_RECORD_BUTTON='mod_poodlltime_record_button';
