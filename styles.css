@@ -1,0 +1,1115 @@
+/* debugging */
+.mod_poodlltime_debug  .mod_poodlltime_grading_passageword::after,
+.mod_poodlltime_debug_transcriptword::after {
+    content: attr(data-wordnumber);
+    border: 1px solid blue;
+    font-size: 10px;
+    border-radius: 5px;
+    padding: 1px;
+}
+/* debugging */
+span.mod_poodlltime_debugsequence {
+    border: 1px solid black;
+    margin: 1px;
+    display: inline-block;
+}
+
+.mod_poodlltime_center {
+    text-align: center;
+}
+.mod_poodlltime_center > div, .mod_poodlltime_center > table /* insert any other block-level elements here */ {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mod_poodlltime_listbuttons input[type='submit'] {
+    width: 400px;
+}
+
+.mod_poodlltime_actionbuttons {
+    display: flex;
+    float: right;
+}
+
+.mod_poodlltime_recording_cont {
+    display: block;
+    margin: auto;
+    text-align: center;
+    width: 100%;
+    background-image: url([[pix:mod_poodlltime|loader]]);
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.mod_poodlltime_recorder_instr_right,
+.mod_poodlltime_recorder_instr_left {
+    float: left;
+    width: 240px;
+    height: 100px;
+}
+.mod_poodlltime_dummyrecorder {
+    float: left;
+}
+.mod_poodlltime_dummy_recorder_hidden {
+    display: none;
+}
+.mod_poodlltime_dummy_recorder_recording {
+    display: block;
+    float: left;
+    width: 239px;
+    height: 100px;
+    background-size: 90px 90px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: red;
+}
+.mod_poodlltime_dummy_recorder_stopped {
+    display: block;
+    width: 239px;
+    height: 100px;
+    float: left;
+    background-size: 90px 90px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: grey;
+}
+.mod_poodlltime_getpermissionmode {
+    background-color: red;
+    height: 170px;
+}
+
+.mod_poodlltime_start_button_cont,
+.mod_poodlltime_record_button_cont,
+.mod_poodlltime_stop_button_cont {
+    clear: both;
+    padding: 5px;
+    text-align: center;
+    width: 100%;
+}
+.mod_poodlltime_stop_button,
+.mod_poodlltime_start_button,
+.mod_poodlltime_record_button {
+    margin: auto;
+    width: 200px;
+}
+.mod_poodlltime_voicecanvas {
+    width: 239px;
+    height: 100px;
+    z-index: 8;
+}
+.mod_poodlltime_passage_cont {
+    display: none;
+    line-height: 2em;
+    font-size: 1.5em;
+    border-style: double;
+    padding: 3px;
+    border-color: gold;
+    margin-top: 15px;
+}
+
+.mod_poodlltime_grading_passagecont {
+    line-height: 2em;
+    font-size: 1.5em;
+    border-style: double;
+    padding: 3px;
+    border-color: gold;
+    margin-top: 15px;
+}
+
+div.mod_poodlltime_passage_cont.mod_poodlltime_postattempt {
+    display: block;
+    /* background-color: #cccccc; */
+    position: relative;
+    font-size: 20px;
+    line-height: 1.8em;
+    border-style: none;
+}
+
+.mod_poodlltime_postattempt .mod_poodlltime-passage-pic {
+    max-width: 200px;
+    margin: 9px 1em 1em 0;
+    float: left;
+}
+.mod_poodlltime_postattempt .mod_poodlltime-passage-pic img {
+    width: 200px;
+}
+
+.mod_poodlltime_mrseed-standing img {
+    width: 100px;
+    height: auto;
+}
+.mod_poodlltime_mrseed-standing {
+    max-width: 100px;
+}
+
+.mod_poodlltime_printtwocol_cont {
+    padding: 15px;
+    border: 2px solid #CCCCCC;
+    border-radius: 5px;
+    width: 1024px;
+}
+
+.mod_poodlltime_twocol_cont {
+    padding: 15px;
+    border: 2px solid #CCCCCC;
+    border-radius: 5px;
+    width: 1024px;
+}
+
+.mod_poodlltime_twocol_wpm_cont {
+     border: solid 1px;
+     padding-top: 15px;
+     padding-left: 10px;
+     border-radius: 5px;
+     background-color: aliceblue;
+ }
+
+.mod_poodlltime_twocol_quiz_cont {
+    border: solid 1px;
+    padding-top: 15px;
+    padding-left: 10px;
+    border-radius: 5px;
+    background-color: aliceblue;
+    margin-top: 10px;
+}
+
+.mod_poodlltime_twocol_player_cont {
+    color: blue;
+}
+.mod_poodlltime_twocol_player {
+    width: 100%;
+}
+.mod_poodlltime_rightcol .btn {
+    width: 100%;
+    margin-top: 20px;
+}
+
+
+.mod_poodlltime_grading_action_cont {
+    border-style: double;
+    padding: 3px;
+    border-color: gold;
+    margin-top: 15px;
+    align-items: center;
+}
+
+.mod_poodlltime_passage_cont.mod_poodlltime_postattempt .mod_poodlltime_grading_badword {
+    color: black;
+    background-color: lightgrey;
+    border-color: blue;
+}
+
+.mod_poodlltime_grading_badword {
+    color: red;
+    background-color: #ffcaca;
+    padding: 5px;
+    border-radius: 5px 5px 5px;
+    border: 1px solid red;
+    position: relative;
+}
+.mod_poodlltime_grading_endspace {
+    color: blue;
+    background-color: #cacaff;
+    padding: 5px;
+    border-radius: 5px 5px 5px;
+    border: 1px solid blue;
+    position: relative;
+}
+.mod_poodlltime_grading_passagespace {
+    padding: 2px;
+}
+div.mod_poodlltime_postattempt .mod_poodlltime_grading_unreadword {
+    text-decoration: none;
+    background-color: lightgrey;
+    padding-right: 2px;
+}
+div.mod_poodlltime_postattempt .mod_poodlltime_grading_unreadspace {
+    background-color: lightgrey;
+    padding: 0px 2px;
+}
+.mod_poodlltime_grading_unreadword {
+    font-style: italic;
+    text-decoration: line-through;
+}
+.mod_poodlltime_passage_finished {
+    background-color: #cccccc;
+    padding: 2px;
+}
+.mod_poodlltime_feedback_cont {
+    display: none;
+}
+.mod_poodlltime_wheretonext_cont {
+    display: none;
+}
+.mod_poodlltime_quiz_cont {
+    display: none;
+}
+div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
+    display: block;
+}
+.mod_poodlltime_evaluated_message {
+    text-align: center;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.mod_poodlltime_error_cont {
+    display: none;
+}
+.mod_poodlltime_error_cont h3 {
+    color: red;
+}
+.mod_poodlltime_grading_player_cont {
+    color: blue;
+}
+.mod_poodlltime_hidden_player {
+    display: none;
+}
+.mod_poodlltime_hidden_player_button {
+    color: white;
+    border-color: cadetblue;
+    background-color: cadetblue;
+    border-style: solid;
+    border: 1px;
+    padding: 3px;
+    text-align: center;
+}
+.mod_poodlltime_hidden_player_button_active {
+    color: white;
+    border-color: tomato;
+    background-color: tomato;
+}
+.mod_poodlltime_hidden_player_button_paused {
+    color: white;
+}
+.mod_poodlltime_hidden_player_button_playing {
+    color: white;
+}
+
+.mod_poodlltime_backtotop_cont {
+    width: fit-content;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 20px;
+}
+
+.mod_poodlltime_grading_accuracy_cont,
+.mod_poodlltime_grading_wpm_cont,
+.mod_poodlltime_grading_quiz_cont,
+.mod_poodlltime_grading_error_cont,
+.mod_poodlltime_grading_sessionscore_cont,
+.mod_poodlltime_grading_errorrate_cont,
+.mod_poodlltime_grading_scrate_cont {
+    color: blue;
+   /* display: flex; */
+    margin-left: 15px;
+}
+
+.mod_poodlltime_grading_wpm_img {
+    color: blue;
+}
+
+.mod_poodlltime_grading_score {
+    color: blue;
+    line-height: 18px;
+    margin-left: 5px;
+    text-align: center;
+    font-size: 2em;
+    height: 35px;
+    width: 80px;
+}
+.mod_poodlltime_grading_error_img {
+    color: blue;
+}
+.mod_poodlltime_grading_action_cont {
+    color: blue;
+    display: flex;
+}
+.mod_poodlltime_afterattempt_cont,
+.mod_poodlltime_wheretonext_cont,
+.mod_poodlltime_ungraded_cont {
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+#mod_poodlltime_hider {
+    display: none;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 1600px;
+    height: 2000px;
+    margin-top: -1000px; /*set to a negative number 1/2 of your height*/
+    margin-left: 0px; /*set to a negative number 1/2 of your width*/
+    /*
+        z- index must be lower than pop up box
+       */
+    z-index: 99;
+    background-color: Black;
+    opacity: 0.6;
+}
+
+#mod_poodlltime_progress_cont {
+    display: none;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 120px;
+    margin-top: -60px; /*set to a negative number 1/2 of your height*/
+    margin-left: -150px; /*set to a negative number 1/2 of your width*/
+    border: 1px solid #ccc;
+    border: 2px solid black;
+    z-index: 100;
+    background-color: white;
+}
+
+/* spotcheckmode */
+.mod_poodlltime_spotcheckmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_badword {
+    border-color: green;
+    background-color: #d7f9ca;
+}
+.mod_poodlltime_spotcheckmode .mod_poodlltime_grading_passagespace.mod_poodlltime_aiunmatched {
+    background-color: lightgrey;
+}
+
+/* msvmode */
+.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_badword {
+    border-color: red;
+    background-color: #ffcaca;
+    -webkit-print-color-adjust: exact; /* Print background colour */
+}
+.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_selfcorrectedword {
+    color: green;
+    background-color: #d7f9ca;
+    padding: 5px;
+    border-radius: 5px 5px 5px;
+    border: 1px solid green;
+    position: relative;
+}
+.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_maybeselfcorrectedword {
+    text-decoration: underline;
+}
+.mod_poodlltime_spotcheckmode .mod_poodlltime_grading_passagespace.mod_poodlltime_aiunmatched {
+    background-color: lightgrey;
+    -webkit-print-color-adjust: exact; /* Print background colour */
+}
+
+.mod_poodlltime_grading_passageword.mod_poodlltime_aiunmatched {
+    background-color: lightgrey;
+    -webkit-print-color-adjust: exact; /* Print background colour */
+}
+.mod_poodlltime_grading_passagespace.mod_poodlltime_aiunmatched {
+    background-color: lightgrey;
+}
+.mod_poodlltime_grading_passageactions {
+    margin-top: 10px;
+}
+.mod_poodlltime_grading_passageactions > button {
+    margin: 5px;
+}
+
+.btn.mod_poodlltime_quickgrade_ok {
+    background-color: DodgerBlue; /* Blue background */
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    padding: 10px 14px; /* Some padding */
+    font-size: 14px; /* Set a font size */
+    cursor: pointer; /* Mouse pointer on hover */
+    margin: 2px;
+    background-image: none;
+}
+
+/* Darker background on mouse-over */
+.btn.mod_poodlltime_quickgrade_ok:hover {
+    background-color: RoyalBlue;
+}
+
+.btn.mod_poodlltime_quickgrade_ng {
+    background-color: darkgrey; /* Blue background */
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    padding: 10px 14px; /* Some padding */
+    font-size: 14px; /* Set a font size */
+    cursor: pointer; /* Mouse pointer on hover */
+    margin: 2px;
+    background-image: none;
+}
+
+/* Darker background on mouse-over */
+.btn.mod_poodlltime_quickgrade_ng:hover {
+    background-color: grey;
+}
+div.mod_poodlltime_gradesadmin_cont {
+    margin: 8px;
+}
+
+/**
+ * App
+ */
+.mod_poodlltime-app-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+}
+
+.mod_poodlltime-app {
+    box-sizing: border-box;
+    min-width: 1024px;
+    max-width: 1024px;
+    min-height: 768px;
+    max-height: 768px;
+    background: white;
+    padding: 1em;
+    border: #efefef 3px solid;
+    border-radius: 10px;
+    font-size: 18px;
+    display: flex;
+    position: relative;
+}
+
+.mod_poodlltime-flex {
+    display: flex;
+}
+.mod_poodlltime-flex-1 {
+    flex: 1;
+}
+.mod_poodlltime-flex-col {
+    display: flex;
+    flex-direction: column;
+}
+.mod_poodlltime-flex-equal > * {
+    flex: 1;
+}
+.mod_poodlltime-flex-center {
+    justify-content: center;
+}
+.mod_poodlltime-flex-items-center {
+    align-items: center;
+}
+
+.mod_poodlltime-app .mod_poodlltime-passage {
+    line-height: 1.8em;
+    font-size: 20px;
+}
+.mod_poodlltime-app .mod_poodlltime-passage.blurred {
+    color: transparent;
+    text-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+}
+.mod_poodlltime-app .mod_poodlltime-passage-pic {
+    max-width: 200px;
+    margin: 9px 1em 1em 0;
+    float: left;
+}
+.mod_poodlltime-app .mod_poodlltime-passage-pic img {
+    max-width: 100%;
+}
+.mod_poodlltime-app .mod_poodlltime-passage.blurred img {
+    filter: blur(5px);
+}
+
+.mod_poodlltime-texttospeech {
+    position: relative;
+    display: flex;
+}
+.mod_poodlltime-texttospeech > div {
+    display: inline-block;
+}
+.mod_poodlltime-texttospeech a {
+    margin: 0 0 0 0.5em;
+    align-self: flex-start;
+}
+.mod_poodlltime-texttospeech a:focus,
+.mod_poodlltime-texttospeech a:hover {
+    text-decoration: none;
+}
+
+.mod_poodlltime-scrollview-wrapper,
+.mod_poodlltime-scrollview {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+.mod_poodlltime-scrollview {
+    overflow: hidden;
+    padding-top: 50px;
+}
+.mod_poodlltime-scrollview-before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    min-height: 50px;
+    background: linear-gradient(white, transparent 80%);
+    margin-top: -1px;
+}
+.mod_poodlltime-scrollview-actions {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-top: 50px;
+    display: flex;
+    justify-content: center;
+    background: linear-gradient(transparent, white 80%);
+    margin-bottom: -1px;
+}
+
+.mod_poodlltime-question-feedback {
+    text-align: center;
+}
+
+.mod_poodlltime-quiz-tracker {
+    margin-bottom: 1em;
+}
+.mod_poodlltime-quiz-tracker-el {
+    font-size: 14px;
+    padding: 0 4px;
+    margin-right: 3px;
+    display: inline-block;
+    border: 3px solid #ccc;
+}
+.mod_poodlltime-quiz-tracker-el.is-current {
+    border-color: #000;
+}
+.mod_poodlltime-quiz-tracker-el.is-answered {
+    border-color: hsl(348, 100%, 61%);
+}
+.mod_poodlltime-quiz-tracker-el.is-answered.is-correct {
+    border-color: hsl(141, 71%, 48%);
+}
+
+.mod_poodlltime-question-title {
+    line-height: 1.8em;
+    border-left: 3px solid #ccc;
+    padding-left: 20px;
+}
+.mod_poodlltime-answers {
+    margin: 1em;
+}
+.mod_poodlltime-answer {
+    color: #333;
+    display: flex;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: #eee;
+    padding: 13px 23px;
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.mod_poodlltime-answer:hover,
+.mod_poodlltime-answer:focus {
+    color: inherit;
+    text-decoration: none;
+}
+.mod_poodlltime-answer.is-selected.is-incorrect {
+    color: white;
+    background: hsl(348, 100%, 61%);
+    border-color: hsl(348, 100%, 61%);
+    padding-right: 42px;
+}
+.mod_poodlltime-answer.is-correct {
+    color: white;
+    background: hsl(141, 71%, 48%);
+    border-color: hsl(141, 71%, 48%);
+    padding-right: 42px;
+}
+
+.mod_poodlltime-answer::after {
+    content: ' ';
+    position: absolute;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+.mod_poodlltime-answer.is-correct::after {
+    background-image: url([[pix:mod_poodlltime|correct]]);
+}
+.mod_poodlltime-answer.is-selected.is-incorrect::after {
+    background-image: url([[pix:mod_poodlltime|incorrect]]);
+}
+
+.mod_poodlltime-btn,
+.mod_poodlltime-btn:hover,
+.mod_poodlltime-btn:focus,
+.mod_poodlltime-btn:visited,
+.mod_poodlltime-btn:active {
+    border-radius: 5px;
+    background: hsl(204, 86%, 53%);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 20px;
+    text-decoration: none;
+}
+
+.mod_poodlltime-btn.inactive,
+.mod_poodlltime-btn:hover.inactive,
+.mod_poodlltime-btn:focus.inactive,
+.mod_poodlltime-btn:visited.inactive,
+.mod_poodlltime-btn:active.inactive {
+    background: hsl(0, 0%, 96%);
+    color: hsl(0, 0%, 21%);
+}
+
+.mod_poodlltime-btn-recorder-like {
+    border: 2px solid #000;
+    border-radius: 5px;
+    background: #cbf2dc;
+    color: #444;
+    font-size: xx-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 210px;
+    height: 80px;
+}
+
+/**
+ * Source: https://leaverou.github.io/bubbly/
+ */
+.mod_poodlltime-speech-bubble {
+    position: relative;
+    background: #f7f7f7;
+    border-radius: 0.4em;
+}
+.mod_poodlltime-speech-bubble:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-top-color: #f7f7f7;
+    border-bottom: 0;
+    border-left: 0;
+    margin-left: -5px;
+    margin-bottom: -10px;
+}
+
+.mod_poodlltime-speech-bubble-content {
+    text-align: center;
+    font-size: 25px;
+    padding: 25px;
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 35px;
+}
+.mod_poodlltime-speech-bubble.size-medium .mod_poodlltime-speech-bubble-content {
+    font-size: 20px;
+    padding: 10px;
+    min-height: auto;
+    line-height: 25px;
+}
+.mod_poodlltime-speech-bubble.size-large .mod_poodlltime-speech-bubble-content {
+    font-size: 32px;
+    font-weight: bold;
+    padding: 10px;
+    min-height: auto;
+    line-height: 25px;
+}
+
+.mod_poodlltime-bloom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mod_poodlltime-bloom img {
+    position: absolute;
+
+    /* The delay is set according to the blooming animation */
+    animation: poodlltime-bloom;
+    animation-duration: 1200ms;
+}
+
+.mod_poodlltime-mr-seed-wrapper {
+    position: relative;
+}
+
+.mod_poodlltime-mr-seed-wrapper .mod_poodlltime-speech-bubble {
+    position: absolute;
+    right: 0;
+    width: 50%;
+}
+
+@keyframes poodlltime-bloom {
+    0% {
+        opacity: 0;
+    }
+    70% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/*! * * * * * * * * * * * * * * * * * * * *\  
+  CSShake :: shake-rotate
+  v1.5.0
+  CSS classes to move your DOM
+  (c) 2015 @elrumordelaluz
+  http://elrumordelaluz.github.io/csshake/
+  Licensed under MIT
+\* * * * * * * * * * * * * * * * * * * * */
+
+@keyframes shake-rotate {
+    2% {
+        transform: translate(0, 0) rotate(-4.5deg);
+    }
+    4% {
+        transform: translate(0, 0) rotate(-1.5deg);
+    }
+    6% {
+        transform: translate(0, 0) rotate(-6.5deg);
+    }
+    8% {
+        transform: translate(0, 0) rotate(2.5deg);
+    }
+    10% {
+        transform: translate(0, 0) rotate(6.5deg);
+    }
+    12% {
+        transform: translate(0, 0) rotate(-3.5deg);
+    }
+    14% {
+        transform: translate(0, 0) rotate(7.5deg);
+    }
+    16% {
+        transform: translate(0, 0) rotate(2.5deg);
+    }
+    18% {
+        transform: translate(0, 0) rotate(7.5deg);
+    }
+    20% {
+        transform: translate(0, 0) rotate(3.5deg);
+    }
+    22% {
+        transform: translate(0, 0) rotate(1.5deg);
+    }
+    24% {
+        transform: translate(0, 0) rotate(1.5deg);
+    }
+    26% {
+        transform: translate(0, 0) rotate(0.5deg);
+    }
+    28% {
+        transform: translate(0, 0) rotate(6.5deg);
+    }
+    30% {
+        transform: translate(0, 0) rotate(-1.5deg);
+    }
+    32% {
+        transform: translate(0, 0) rotate(-1.5deg);
+    }
+    34% {
+        transform: translate(0, 0) rotate(2.5deg);
+    }
+    36% {
+        transform: translate(0, 0) rotate(-2.5deg);
+    }
+    38% {
+        transform: translate(0, 0) rotate(1.5deg);
+    }
+    40% {
+        transform: translate(0, 0) rotate(7.5deg);
+    }
+    42% {
+        transform: translate(0, 0) rotate(-2.5deg);
+    }
+    44% {
+        transform: translate(0, 0) rotate(-0.5deg);
+    }
+    46% {
+        transform: translate(0, 0) rotate(-6.5deg);
+    }
+    48% {
+        transform: translate(0, 0) rotate(0.5deg);
+    }
+    50% {
+        transform: translate(0, 0) rotate(1.5deg);
+    }
+    52% {
+        transform: translate(0, 0) rotate(1.5deg);
+    }
+    54% {
+        transform: translate(0, 0) rotate(4.5deg);
+    }
+    56% {
+        transform: translate(0, 0) rotate(-4.5deg);
+    }
+    58% {
+        transform: translate(0, 0) rotate(5.5deg);
+    }
+    60% {
+        transform: translate(0, 0) rotate(-3.5deg);
+    }
+    62% {
+        transform: translate(0, 0) rotate(-0.5deg);
+    }
+    64% {
+        transform: translate(0, 0) rotate(7.5deg);
+    }
+    66% {
+        transform: translate(0, 0) rotate(6.5deg);
+    }
+    68% {
+        transform: translate(0, 0) rotate(-6.5deg);
+    }
+    70% {
+        transform: translate(0, 0) rotate(-4.5deg);
+    }
+    72% {
+        transform: translate(0, 0) rotate(3.5deg);
+    }
+    74% {
+        transform: translate(0, 0) rotate(-2.5deg);
+    }
+    76% {
+        transform: translate(0, 0) rotate(-4.5deg);
+    }
+    78% {
+        transform: translate(0, 0) rotate(1.5deg);
+    }
+    80% {
+        transform: translate(0, 0) rotate(1.5deg);
+    }
+    82% {
+        transform: translate(0, 0) rotate(-2.5deg);
+    }
+    84% {
+        transform: translate(0, 0) rotate(-3.5deg);
+    }
+    86% {
+        transform: translate(0, 0) rotate(-6.5deg);
+    }
+    88% {
+        transform: translate(0, 0) rotate(-0.5deg);
+    }
+    90% {
+        transform: translate(0, 0) rotate(5.5deg);
+    }
+    92% {
+        transform: translate(0, 0) rotate(4.5deg);
+    }
+    94% {
+        transform: translate(0, 0) rotate(-1.5deg);
+    }
+    96% {
+        transform: translate(0, 0) rotate(1.5deg);
+    }
+    98% {
+        transform: translate(0, 0) rotate(-3.5deg);
+    }
+    0%,
+    100% {
+        transform: translate(0, 0) rotate(0);
+    }
+}
+
+.mod_poodlltime-shake {
+    animation-name: shake-rotate;
+    animation-duration: 100ms;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 2;
+}
+
+.btn.mod_poodlltime_msvgrade_close {
+    background-color: DodgerBlue; /* Blue background */
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    padding: 10px 14px; /* Some padding */
+    font-size: 14px; /* Set a font size */
+    cursor: pointer; /* Mouse pointer on hover */
+    margin-top: 10px;
+    background-image: none;
+}
+
+.btn.mod_poodlltime_msvgrade_msv {
+    background-color: #CCCCCC; /* Blue background */
+    border: none; /* Remove borders */
+    color: black; /* White text */
+    padding: 10px 14px; /* Some padding */
+    font-size: 14px; /* Set a font size */
+    cursor: pointer; /* Mouse pointer on hover */
+    margin: 2px;
+    background-image: none;
+    border-radius: 50%;
+}
+.btn.mod_poodlltime_msvgrade_msv[data-checked~="1"] {
+    background-color: #559955;
+    color: white;
+}
+
+.btn.mod_poodlltime_msvgrade_msv:focus {
+    outline: none;
+}
+
+.mod_poodlltime_notes {
+    max-width: 800px;
+    width: 100%;
+    resize: both;
+}
+
+.mod_poodlltime_msvcontainer {
+    display: grid;
+}
+
+.mod_poodlltime_msvbuttonsbox {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_badword[data-msvbadge]:after {
+    content: attr(data-msvbadge);
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: .7em;
+    background: orange;
+    color: white;
+    width: 36px;
+    height: 18px;
+    text-align: center;
+    line-height: 18px;
+    border-radius: 15%;
+    box-shadow: 0 0 1px #333;
+}
+
+.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_selfcorrectedword[data-msvbadge]:after {
+    content: attr(data-msvbadge);
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: .7em;
+    background: green;
+    color: white;
+    width: 36px;
+    height: 18px;
+    text-align: center;
+    line-height: 18px;
+    border-radius: 15%;
+    box-shadow: 0 0 1px #333;
+    -webkit-print-color-adjust: exact;
+}
+
+.mod_poodlltime_grading_passageactions {
+    margin-top: 10px;
+    display: flex;
+}
+
+.msvtoggleform btn.btn-secondary.active, .msvtoggleform btn.btn-secondary.active.focus {
+    color: white;
+    background-color: DodgerBlue;
+    border-color: #adadad;
+}
+
+/* print attempt styles */
+.mod_poodlltime_printattempt_cont .mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_badword {
+    border-color: black;
+    border-style: solid;
+}
+.mod_poodlltime_printattempt_cont .mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_selfcorrectedword {
+    border-color: black;
+    border-style: dotted;
+    background-color: inherit;
+}
+.mod_poodlltime_printattempt_cont {
+    font-size: 12px;
+}
+.mod_poodlltime_printattempt_cont .subtitle {
+    font-weight: bold;
+    min-width: 85px;
+    display: inline-block;
+}
+.mod_poodlltime_printattempt_cont {
+    max-width: 900px;
+    margin: auto;
+}
+.mod_poodlltime_printattempt_cont .row {
+    margin: 0;
+}
+.mod_poodlltime_printattempt_cont .title {
+    margin-bottom: 20px;
+    display: inline-block;
+    border-bottom: 3px solid dodgerblue;
+}
+.mod_poodlltime_printattempt_cont {
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    overflow: hidden;
+    background-color: #fff;
+    width: 25cm;
+    min-height: 28cm;
+}
+.mod_poodlltime_printattempt_cont_outer {
+    background-color: #fff;
+    width: 27cm;
+    min-height: 28.5cm;
+}
+.mod_poodlltime_printattempt_cont .flowername{
+    font-size: 0.8em;
+    color: gray;
+    font-family: "Coming soon", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.mod_poodlltime_printattempt_cont .mod_poodlltime_qr_player img {
+    width: 120px;
+    height: 120px;
+}
+.mod_poodlltime_printattempt_cont div.mod_poodlltime_passage_cont {
+    line-height: 2.1em;
+}
+#page-mod-poodlltime-printattempt #page {
+    margin-top: 0;
+}
+
+#page-mod-poodlltime-printattempt #page {
+    width: 30cm;
+    margin: auto;
+}
+#page-mod-poodlltime-printattempt #page.container-fluid {
+    padding: 0;
+}
+#page-mod-poodlltime-printattempt #region-main {
+    background-color: #e6e6e6;
+    border: 0;
+}
+#page-mod-poodlltime-printattempt {
+    background-color: #e6e6e6;
+}
+#page-mod-poodlltime-printattempt .userdetails {
+    font-size: 1.1em;
+}
+#page-mod-poodlltime-printattempt .mod_poodlltime_mrseed-standing img {
+    width: auto;
+    height: 140px;
+}
+#page-mod-poodlltime-printattempt .mod_poodlltime_mrseed-standing {
+    max-width: inherit;
+}
+#page-mod-poodlltime-printattempt .mod_poodlltime_grading_endspace {
+    background-color: black;
+    -webkit-print-color-adjust: exact;
+}

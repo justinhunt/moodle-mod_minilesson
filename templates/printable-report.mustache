@@ -1,0 +1,147 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_poodlltime/printable-report
+    (c) David Watson 2019 www.evolutioncode.uk
+
+}}
+<div id="reportbuttons" class="mb-3 d-print-none">
+        <span class="btn btn-secondary" onclick="window.print()">
+            {{#pix}}print, mod_poodlltime{{/pix}}{{#str}}printattempt, mod_poodlltime{{/str}}
+        </span>
+    <span class="btn btn-secondary d-print-none" onclick="window.close()">
+            {{#pix}}close, mod_poodlltime{{/pix}}{{#str}}close, mod_poodlltime{{/str}}
+        </span>
+</div>
+<div class="mod_poodlltime_printattempt_cont_outer">
+    <div class="mod_poodlltime_printattempt_cont" id="report_container">
+    <div id="reportbody">
+        <div class="row border-bottom mt-5 pb-2">
+            <div class="col-md-10">
+                <div class="pl-1 pr-1 pb-1 pt-1 title">
+                    <h3>{{#str}}poodlltimename, mod_poodlltime{{/str}} - {{#str}}runningrecord, mod_poodlltime{{/str}} - {{student}}</h3>
+                </div>
+                <div class="userdetails mt-2 mb-2">
+                    <div class="row  pt-2 pb-2">
+                        <div class="col-md-6 border-right">
+                            <div>
+                                <span class="subtitle">{{#str}}studentname, mod_poodlltime{{/str}}:</span>
+                                <span class="val">{{student}}</span>
+                            </div>
+                            <div>
+                                <span class="subtitle">{{#str}}teacher, mod_poodlltime{{/str}}:</span>
+                                <span class="val">{{teacher}}</span>
+                            </div>
+                            <div>
+                                <span class="subtitle">{{#str}}date{{/str}}:</span>
+                                <span class="val">{{date}}</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <span class="subtitle">{{#str}}title, mod_poodlltime{{/str}}:</span>
+                                <span class="val">{{title}}</span></div>
+                            <div>
+                                <span class="subtitle">{{#str}}quiz, mod_poodlltime{{/str}}:</span>
+                                <span class="val">{{quiz}}%</span></div>
+                            <div>
+                                {{#level}}
+                                <span class="subtitle">{{#str}}level, mod_poodlltime{{/str}}:</span>
+                                <span class="val">{{level}}</span>
+                                {{/level}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 position-relative" id="flower-outer">
+                <span class="position-absolute fixed-bottom mod_poodlltime_mrseed-standing text-center d-none d-xl-block d-md-block d-print-block" id="flower-inner">
+                    <img src="{{{config.wwwroot}}}/mod/poodlltime/flowers/{{flowerid}}/f_{{flowername}}.png"
+                         alt="{{flowerdisplayname}}">
+                </span>
+                <div class="flowername position-absolute text-center mt-1">{{flowerdisplayname}}</div>
+            </div>
+        </div>
+        <div class="row border-bottom pt-2 pb-2">
+            <div class="col-md-12">
+                <div class="{{passageclasses}}" id="{{passageid}}">
+                    {{{passage}}}
+                </div>
+            </div>
+        </div>
+        <div class="row pt-2 pb-2 pr-3 userdetails mt-2">
+            {{#results}}
+            <div class="col-md-10">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div>
+                            <span class="subtitle">{{#str}}errors, mod_poodlltime{{/str}}:</span>
+                            <span class="val">{{errorcount}}</span></div>
+                        <div>
+                            <span class="subtitle">{{#str}}wpm, mod_poodlltime{{/str}}:</span>
+                            <span class="val">{{wpm}}</span>
+                        </div>
+                        <div>
+                            <span class="subtitle">{{#str}}accuracy, mod_poodlltime{{/str}}:</span>
+                            <span class="val">{{acc}}%</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div>
+                            <span class="subtitle">{{#str}}errorrate, mod_poodlltime{{/str}}:</span>
+                            <span class="val">{{errorcount}}</span>
+                        </div>
+                        <div>
+                            <span class="subtitle">{{#str}}selfcorrectionrate, mod_poodlltime{{/str}}:</span>
+                            <span class="val">{{sc_rate}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="subtitle">{{#str}}notes, mod_poodlltime{{/str}}:</span>
+                        <div>{{notes}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="text-center">{{#str}}audiofile, mod_poodlltime{{/str}} {{#pix}}volume-up, mod_poodlltime{{/pix}}</div>
+                <span id="mod_poodlltime_qr_player" class="mod_poodlltime_qr_player" style="display: none;">{{audiourl}}</span>
+            </div>
+            {{/results}}
+        </div>
+    </div>
+</div>
+</div>
+<style>
+    @page {
+        margin: 0;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function() {
+        setTimeout(function() {
+            var containerHeight = $("#report_container").outerHeight();
+            var maxDesiredHeight = 30 * 37.8; // 30 cm.
+            if (containerHeight && containerHeight > maxDesiredHeight) {
+                $(".mod_poodlltime_passage_cont").css('font-size', '16px');
+            }
+            window.print();
+        }, 1000);
+
+    });
+</script>
