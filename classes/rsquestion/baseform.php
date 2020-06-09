@@ -106,7 +106,7 @@ abstract class baseform extends \moodleform {
 		$this->filemanageroptions = $this->_customdata['filemanageroptions'];
 
 	
-        $mform->addElement('header', 'typeheading', get_string('createaitem', 'poodlltime', get_string($this->typestring, 'poodlltime')));
+        $mform->addElement('header', 'typeheading', get_string('createaitem', 'poodlltime', get_string($this->type, 'poodlltime')));
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -116,7 +116,7 @@ abstract class baseform extends \moodleform {
 
         if ($this->standard === true) {
             $mform->addElement('hidden', 'type');
-            $mform->setType('type', PARAM_INT);
+            $mform->setType('type', PARAM_TEXT);
 			
 			$mform->addElement('hidden', 'itemorder');
             $mform->setType('itemorder', PARAM_INT);
@@ -128,8 +128,6 @@ abstract class baseform extends \moodleform {
             $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', 'poodlltime'), array('wrap'=>'virtual','style'=>'width: 100%;'));
             $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
 
-            //it was decided that this did not need to be a required field JUSTIN 20180312
-            //$mform->addRule(constants::TEXTQUESTION . '_editor', get_string('required'), 'required', null, 'client');
         }
 		//visibility
 		$mform->addElement('selectyesno', 'visible', get_string('visible'));
@@ -196,7 +194,7 @@ abstract class baseform extends \moodleform {
     }
 
     /**
-     * Convenience function: Adds an response editor
+     * Convenience function: Adds a ext area response
      *
      * @param int $count The count of the element to add
      * @param string $label, null means default
@@ -207,11 +205,10 @@ abstract class baseform extends \moodleform {
         if ($label === null) {
             $label = get_string('response', 'poodlltime');
         }
-        //edoptions = array('noclean'=>true)
-        $this->_form->addElement('textarea', constants::TEXTANSWER .$count , $label, array('rows'=>'4', 'columns'=>'80'));
-        $this->_form->setDefault(constants::TEXTANSWER .$count, array('text'=>'', 'format'=>FORMAT_MOODLE));
+
+        $this->_form->addElement('textarea', constants::TEXTANSWER .$count , $label,array('rows'=>'4', 'columns'=>'80'));
         if ($required) {
-            $this->_form->addRule(constants::TEXTANSWER .$count. '_editor', get_string('required'), 'required', null, 'client');
+            $this->_form->addRule(constants::TEXTANSWER .$count, get_string('required'), 'required', null, 'client');
         }
     }
 

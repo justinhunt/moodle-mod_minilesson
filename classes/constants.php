@@ -50,15 +50,13 @@ const MACHINEGRADE_MACHINE=1;
 
 //Constants for RS Questions
 const NONE=0;
-const TYPE_TEXTPROMPT_LONG = 4;
-const TYPE_TEXTPROMPT_SHORT = 5;
-const TYPE_TEXTPROMPT_AUDIO = 6;
-const TYPE_INSTRUCTIONS = 7;
-const TYPE_DICTATIONCHAT = 8;
-const TYPE_DICTATION = 9;  
-const TEXTCHOICE = 'textchoice';
-const TEXTBOXCHOICE = 'textboxchoice';
-const AUDIORESPONSE = 'audioresponse';
+const TYPE_TEXTPROMPT_LONG = 'multichoicelong';
+const TYPE_MULTICHOICE = 'multichoice';
+const TYPE_TEXTPROMPT_AUDIO = 'audioresponse';
+const TYPE_INSTRUCTIONS = 'instructions';
+const TYPE_DICTATIONCHAT = 'dictationchat';
+const TYPE_DICTATION = 'dictation';
+
 const AUDIOFNAME = 'itemaudiofname';
 const AUDIOPROMPT = 'audioitem';
 const AUDIOANSWER = 'audioanswer';
@@ -73,8 +71,7 @@ const TEXTANSWER_FILEAREA ='answerarea';
 const PASSAGEPICTURE='passagepicture';
 const PASSAGEPICTURE_FILEAREA = 'passagepicture';
 const MAXANSWERS=4;
-const DICTATIONCHAT = 'dictationchat';
-const DICTATION = 'dictation';  
+
 
 //CSS ids/classes
 const M_RECORD_BUTTON='mod_poodlltime_record_button';

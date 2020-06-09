@@ -381,9 +381,6 @@ $string['itemsummary'] = 'item Summary: {$a}';
 $string['viewreport'] = 'view report';
 $string['translate'] = 'Translate';
 $string['iscorrectlabel'] = 'Correct/Incorrect';
-$string['textchoice'] = 'Text Area Choice';
-$string['textboxchoice'] = 'Text Box Choice';
-$string['audioresponse'] = 'Audio response';
 $string['correcttranslationtitle'] = 'Correct Translation';
 $string['edit'] = 'Edit';
 $string['gotoactivity'] = 'Start Activity';
@@ -449,13 +446,13 @@ $string['pushalternatives']='Push Alternatives';
 $string['pushquestions_done']='Questions have been pushed';
 $string['pushquestions']='Push Questions';
 
-$string['addtextpromptshortitem']='Add multi choice question (short prompt)';
-$string['addtextpromptlongitem']='Add multi choice question (long promopt)';
-$string['addaudioresponseitem']='Add audio response question';
+$string['addmultichoiceitem']='Add multi choice question';
 $string['adddictationchatitem']='Add dictation chat item';
-$string['dictationchat']='Dictation Chat';
 $string['adddictationitem']='Add dictation item';
+
+$string['multichoice'] = 'Multi Choice';
 $string['dictation']='Dictation';
+$string['dictationchat']='Dictation Chat';
 
 
 $string['transcriber'] = 'Transcriber';

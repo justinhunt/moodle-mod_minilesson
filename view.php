@@ -88,7 +88,6 @@ $config = get_config(constants::M_COMPONENT);
 
 //Get our renderers
 $renderer = $PAGE->get_renderer('mod_poodlltime');
-$gradenowrenderer = $PAGE->get_renderer(constants::M_COMPONENT,'gradenow');
 
 //if we are in review mode, lets review
 $attempts = $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id,'poodlltimeid'=>$moduleinstance->id),'id DESC');
@@ -113,93 +112,6 @@ $latestattempt = !$retake ? ($attempts ? array_shift($attempts) : null) : null;
 // Check if last attempt is finished, at this point we only check if at least an answer was provided.
 $islastattemptfinished = !$latestattempt || !empty($latestattempt->qanswer1);
 
-//display the most recent previous attempt if we have one
-if ($latestattempt && $islastattemptfinished && $retake==0){
-    //if we are teacher we see tabs. If student we just see the quiz
-    if(has_capability('mod/poodlltime:evaluate',$modulecontext)){
-        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_COMPONENT));
-    }else{
-       // $PAGE->set_pagelayout('embedded');
-        echo $renderer->notabsheader();
-    }
-
-    //========================================
-    if(\mod_poodlltime\utils::can_transcribe($moduleinstance)) {
-        $latest_aigrade = new \mod_poodlltime\aigrade($latestattempt->id, $modulecontext->id);
-    }else{
-        $latest_aigrade =false;
-    }
-
-    $readonly=true;
-    $have_humaneval = $latestattempt->sessiontime!=null;
-    $have_aieval = $latest_aigrade && $latest_aigrade->has_transcripts();
-    $gradenow = new \mod_poodlltime\gradenow($latestattempt->id,$modulecontext->id);
-    if( $have_humaneval || $have_aieval){
-        //we useed to distingush between humanpostattempt and machinepostattempt but we simplified it,
-        // /and just use the human value for all
-
-        switch($moduleinstance->humanpostattempt){
-            case constants::POSTATTEMPT_NONE:
-                echo $renderer->show_title_postattempt($moduleinstance,$moduleinstance->name);
-                echo $renderer->show_twocol_summary($moduleinstance,$cm,$gradenow);
-                //echo $renderer->show_passage_postattempt($moduleinstance,$cm);
-                break;
-            case constants::POSTATTEMPT_EVAL:
-                echo $renderer->show_title_postattempt($moduleinstance,$moduleinstance->name);
-                if( $have_humaneval) {
-                    echo $renderer->show_humanevaluated_message();
-                    $force_aidata=false;
-                }else{
-                    echo $renderer->show_machineevaluated_message();
-                    $force_aidata=true;
-                }
-
-                $reviewmode =constants::REVIEWMODE_SCORESONLY;
-                echo $gradenow->prepare_javascript($reviewmode,$force_aidata,$readonly);
-                //echo $gradenowrenderer->render_attempt_scoresheader($gradenow);
-                //echo $renderer->show_passage_postattempt($moduleinstance,$cm);
-                $markeduppassage=$gradenowrenderer->render_markeduppassage($gradenow->attemptdetails('passage'));
-                echo $renderer->show_twocol_summary($moduleinstance,$cm,$gradenow,$markeduppassage);
-                break;
-
-            case constants::POSTATTEMPT_EVALERRORS:
-                echo $renderer->show_title_postattempt($moduleinstance,$moduleinstance->name);
-                if( $have_humaneval) {
-                    echo $renderer->show_humanevaluated_message();
-                    $reviewmode = constants::REVIEWMODE_HUMAN;
-                    $force_aidata=false;
-                }else{
-                    echo $renderer->show_machineevaluated_message();
-                    $reviewmode =constants::REVIEWMODE_MACHINE;
-                    $force_aidata=true;
-                }
-                echo $gradenow->prepare_javascript($reviewmode,$force_aidata,$readonly);
-                echo $gradenowrenderer->render_hiddenaudioplayer();
-
-                $markeduppassage=$gradenowrenderer->render_markeduppassage($gradenow->attemptdetails('passage'));
-                echo $renderer->show_twocol_summary($moduleinstance,$cm,$gradenow,$markeduppassage);
-                //echo $gradenowrenderer->render_userreview($gradenow);
-                break;
-        }
-    }else{
-        echo $renderer->show_title_postattempt($moduleinstance,$moduleinstance->name);
-        echo $renderer->show_ungradedyet();
-        echo $renderer->show_twocol_summary($moduleinstance,$cm,$gradenow);
-        //echo $renderer->show_passage_postattempt($moduleinstance,$cm);
-    }
-
-    //show  button or a label depending on of can retake
-    if($canattempt){
-        echo $renderer->reattemptbutton($moduleinstance);
-    }else{
-        echo $renderer->exceededattempts($moduleinstance);
-    }
-    //backtotop
-    echo $renderer->backtotopbutton($course->id);
-    echo $renderer->footer();
-    return;
-}
-
 
 //From here we actually display the page.
 //if we are teacher we see tabs. If student we just see the quiz
@@ -210,8 +122,7 @@ if(has_capability('mod/poodlltime:evaluate',$modulecontext)){
 }
 
 //the module AMD code
-echo $renderer->show_quiz($moduleinstance);
-echo $renderer->show_recorder($moduleinstance);
+echo $renderer->show_quiz($cm,$moduleinstance);
 echo $renderer->fetch_activity_amd($cm, $moduleinstance);
 
 //echo $renderer->load_app($cm, $moduleinstance, $latestattempt);

@@ -10,6 +10,7 @@ This file contains class and ID definitions.
     return{
         component: 'mod_poodlltime',
         componentpath: 'mod/poodlltime',
+        quizcontainer: 'mod_poodlltime_quiz_cont',
         //player code
         hiddenplayer: 'mod_poodlltime_hidden_player',
         hiddenplayerbutton: 'mod_poodlltime_hidden_player_button',
@@ -57,13 +58,13 @@ This file contains class and ID definitions.
         aiunmatched: 'mod_poodlltime_aiunmatched',
 
         //quiz
-        qtype_pictureprompt: '1',
-        qtype_audioprompt: '2',
-        qtype_textpromptlong: '4',
-        qtype_textpromptshort: '5',
-        qtype_textpromptaudio: '6',
-        qtype_dictationchat: '8',
-        qtype_dictation: '9',
+        qtype_pictureprompt: 'multichoicepicture',
+        qtype_audioprompt: 'multichoiceaudio',
+        qtype_textpromptlong: 'multichoicelong',
+        qtype_textpromptshort: 'multichoice',
+        qtype_textpromptaudio: 'audioresponse',
+        qtype_dictationchat: 'dictationchat',
+        qtype_dictation: 'dictation',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_poodlltime_grading_maybeselfcorrectedword',

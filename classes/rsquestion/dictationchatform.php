@@ -13,8 +13,7 @@ use \mod_poodlltime\constants;
 class dictationchatform extends baseform
 {
 
-    public $type = constants::DICTATIONCHAT;
-    public $typestring = constants::DICTATIONCHAT;
+    public $type = constants::TYPE_DICTATIONCHAT;
 
     public function custom_definition() {
         //nothing here

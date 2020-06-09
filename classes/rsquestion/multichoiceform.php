@@ -10,11 +10,10 @@ namespace mod_poodlltime\rsquestion;
 
 use \mod_poodlltime\constants;
 
-class textpromptshortform extends baseform
+class multichoiceform extends baseform
 {
 
-    public $type = constants::TEXTBOXCHOICE;
-    public $typestring = constants::TEXTBOXCHOICE;
+    public $type = constants::TYPE_MULTICHOICE;
 
     public function custom_definition() {
 

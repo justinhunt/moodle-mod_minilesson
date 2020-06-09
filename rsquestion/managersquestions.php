@@ -35,7 +35,7 @@ global $USER,$DB;
 // first get the nfo passed in to set up the page
 $itemid = optional_param('itemid',0 ,PARAM_INT);
 $id     = required_param('id', PARAM_INT);         // Course Module ID
-$type  = optional_param('type', constants::NONE, PARAM_INT);
+$type  = optional_param('type', constants::NONE, PARAM_TEXT);
 $action = optional_param('action','edit',PARAM_TEXT);
 
 // get the objects we need
@@ -108,19 +108,9 @@ $filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_optio
 //get the mform for our item
 switch($type){
 
-	case constants::TYPE_TEXTPROMPT_LONG:
-		$mform = new \mod_poodlltime\rsquestion\textpromptlongform(null,
-			array('editoroptions'=>$editoroptions,
-			'filemanageroptions'=>$filemanageroptions)
-		);
-		break;
 
-    case constants::TYPE_TEXTPROMPT_SHORT:
-        $mform = new \mod_poodlltime\rsquestion\textpromptshortform();
-        break;
-
-    case constants::TYPE_TEXTPROMPT_AUDIO:
-        $mform = new \mod_poodlltime\rsquestion\textpromptaudioform();
+    case constants::TYPE_MULTICHOICE:
+        $mform = new \mod_poodlltime\rsquestion\multichoiceform();
         break;
 
     case constants::TYPE_DICTATIONCHAT:
@@ -240,23 +230,14 @@ if ($edit) {
 
 	//Set up the item type specific parts of the form data
 	switch($type){
-		case constants::TYPE_TEXTPROMPT_LONG:
-			//prepare answer areas
-            //save text answers
-            for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
-                $data = file_prepare_standard_editor($data, constants::TEXTANSWER . $anumber, $editoroptions, $context,
-                    constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA. $anumber , $data->itemid);
-            }
-            break;
-        case constants::TYPE_TEXTPROMPT_SHORT:
-        case constants::TYPE_TEXTPROMPT_AUDIO:
+        case constants::TYPE_MULTICHOICE:
         case constants::TYPE_DICTATIONCHAT:
         case constants::TYPE_DICTATION:
 		default:
 	}
     $mform->set_data($data);
     $PAGE->navbar->add(get_string('edit'), new moodle_url('/mod/poodlltime/rsquestion/rsquestions.php', array('id'=>$id)));
-    $PAGE->navbar->add(get_string('editingitem', constants::M_COMPONENT, get_string($mform->typestring, constants::M_COMPONENT)));
+    $PAGE->navbar->add(get_string('editingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
 	$renderer = $PAGE->get_renderer('mod_poodlltime');
 	$mode='rsquestions';
 	echo $renderer->header($poodlltime, $cm,$mode, null, get_string('edit', constants::M_COMPONENT));

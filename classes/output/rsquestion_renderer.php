@@ -43,17 +43,11 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $output = $this->output->heading(get_string("whatdonow", "poodlltime"), 3);
         $links = array();
 
-		$addtextchoiceitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
-			array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_TEXTPROMPT_LONG));
-        $links[] = \html_writer::link($addtextchoiceitemurl, get_string('addtextpromptlongitem', constants::M_COMPONENT));
 
-     $addtextboxchoiceitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
-         array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_TEXTPROMPT_SHORT));
-        $links[] = \html_writer::link($addtextboxchoiceitemurl, get_string('addtextpromptshortitem', constants::M_COMPONENT));
+     $addmultichoiceitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
+         array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_MULTICHOICE));
+        $links[] = \html_writer::link($addmultichoiceitemurl, get_string('addmultichoiceitem', constants::M_COMPONENT));
 
-     $addaudioresponseitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
-         array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_TEXTPROMPT_AUDIO));
-     $links[] = \html_writer::link($addaudioresponseitemurl, get_string('addaudioresponseitem', constants::M_COMPONENT));
 
      $adddictationchatitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
              array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_DICTATIONCHAT));
@@ -102,26 +96,8 @@ class rsquestion_renderer extends \plugin_renderer_base {
 
 
             $itemnamecell = new \html_table_cell($item->name);
-            switch ($item->type) {
-
-                case constants::TYPE_TEXTPROMPT_LONG:
-                    $itemtype = get_string('textchoice', constants::M_COMPONENT);
-                    break;
-                case constants::TYPE_TEXTPROMPT_SHORT:
-                    $itemtype = get_string('textboxchoice', constants::M_COMPONENT);
-                    break;
-                case constants::TYPE_TEXTPROMPT_AUDIO:
-                    $itemtype = get_string('audioresponse', constants::M_COMPONENT);
-                    break;
-                case constants::TYPE_DICTATIONCHAT:
-                    $itemtype = get_string('dictationchat', constants::M_COMPONENT);
-                    break;
-                case constants::TYPE_DICTATION:
-                    $itemtype = get_string('dictation', constants::M_COMPONENT);
-                    break;
-                default:
-            }
-            $itemtypecell = new \html_table_cell($itemtype);
+            $itemtypename = get_string($item->type, constants::M_COMPONENT);
+            $itemtypecell = new \html_table_cell($itemtypename);
 
             $actionurl = '/mod/poodlltime/rsquestion/managersquestions.php';
             $editurl = new \moodle_url($actionurl, array('id' => $cm->id, 'itemid' => $item->id));

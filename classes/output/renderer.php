@@ -556,9 +556,18 @@ class renderer extends \plugin_renderer_base {
     /**
      *  Show quiz container
      */
-    public function show_quiz(){
+    public function show_quiz($cm,$moduleinstance){
 
-        $quizdiv = \html_writer::div('THE QUIZ GOES HERE<br>' ,constants::M_QUIZ_CONTAINER,
+        //quiz data
+        $comp_test =  new \mod_poodlltime\comprehensiontest($cm);
+        $quizdata = $comp_test->fetch_test_data_for_js();
+        $itemshtml=[];
+        foreach($quizdata as $item){
+           $itemshtml[] = $this->render_from_template(constants::M_COMPONENT . '/' . $item->type, $item);
+           // $this->page->requires->js_call_amd(constants::M_COMPONENT . '/' . $item->type, 'init', array($item));
+        }
+
+        $quizdiv = \html_writer::div(implode('',$itemshtml) ,constants::M_QUIZ_CONTAINER,
             array('id'=>constants::M_QUIZ_CONTAINER));
         $ret = $quizdiv;
         return $ret;
@@ -702,7 +711,7 @@ class renderer extends \plugin_renderer_base {
 
 
     function fetch_activity_amd($cm, $moduleinstance){
-        global $USER;
+        global $CFG, $USER;
         //any html we want to return to be sent to the page
         $ret_html = '';
 
@@ -727,6 +736,26 @@ class renderer extends \plugin_renderer_base {
         $recopts['errorcontainer'] = constants::M_ERROR_CONTAINER;
         $recopts['allowearlyexit'] =  $moduleinstance->allowearlyexit ? true :false;
         $recopts['picwhenreading']=$moduleinstance->picwhenreading? true :false;
+
+        //first confirm we are authorised before we try to get the token
+        $config = get_config(constants::M_COMPONENT);
+        if(empty($config->apiuser) || empty($config->apisecret)){
+            $errormessage = get_string('nocredentials',constants::M_COMPONENT,
+                    $CFG->wwwroot . constants::M_PLUGINSETTINGS);
+            return $this->show_problembox($errormessage);
+        }else {
+            //fetch token
+            $token = utils::fetch_token($config->apiuser,$config->apisecret);
+
+            //check token authenticated and no errors in it
+            $errormessage = utils::fetch_token_error($token);
+            if(!empty($errormessage)){
+                return $this->show_problembox($errormessage);
+            }
+        }
+        $recopts['token']=$token;
+        $recopts['owner']=hash('md5',$USER->username);
+        $recopts['region']=$moduleinstance->region;
 
 
 

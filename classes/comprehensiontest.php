@@ -86,7 +86,7 @@ class comprehensiontest
                 constants::TEXTQUESTION_FILEAREA, $itemid);
 
             for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
-                $testitem->{'answer' . $anumber} = file_rewrite_pluginfile_urls($item->{constants::TEXTANSWER . $anumber},
+                $testitem->{'customtext' . $anumber} = file_rewrite_pluginfile_urls($item->{constants::TEXTANSWER . $anumber},
                     'pluginfile.php', $this->context->id,constants::M_COMPONENT,
                     constants::TEXTANSWER_FILEAREA . $anumber, $itemid);
             }
@@ -117,6 +117,25 @@ class comprehensiontest
             $testitem->correctanswer =  $item->correctanswer;
             $testitem->id = $item->id;
             $testitem->type=$item->type;
+            $testitem->uniqueid=$item->type . $testitem->number;
+
+            switch($testitem->type){
+                case constants::TYPE_DICTATION:
+                case constants::TYPE_DICTATIONCHAT:
+                   $sentences = explode(PHP_EOL,$testitem->customtext1);
+                   $index=0;
+                $testitem->sentences=[];
+                   foreach($sentences as $sentence){
+                       $s = new \stdClass();
+                       $s->index=$index;
+                       $s->sentence=$sentence;
+                       $index++;
+                       $testitem->sentences[]=$s;
+                   }
+                   break;
+            }
+
+
             $testitems[]=$testitem;
         }
         return $testitems;
