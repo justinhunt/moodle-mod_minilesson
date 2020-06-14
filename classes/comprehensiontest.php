@@ -100,8 +100,29 @@ class comprehensiontest
 
     /* return the test items suitable for js to use */
     public function fetch_test_data_for_js(){
+        global $CFG, $USER;
 
         $items = $this->fetch_items();
+
+        //first confirm we are authorised before we try to get the token
+        $config = get_config(constants::M_COMPONENT);
+        if(empty($config->apiuser) || empty($config->apisecret)){
+            $errormessage = get_string('nocredentials',constants::M_COMPONENT,
+                    $CFG->wwwroot . constants::M_PLUGINSETTINGS);
+            //return error?
+            $token=false;
+        }else {
+            //fetch token
+            $token = utils::fetch_token($config->apiuser,$config->apisecret);
+
+            //check token authenticated and no errors in it
+            $errormessage = utils::fetch_token_error($token);
+            if(!empty($errormessage)){
+                //return error?
+                //return $this->show_problembox($errormessage);
+            }
+        }
+
 
         //prepare data array for test
         $testitems=array();
@@ -126,17 +147,26 @@ class comprehensiontest
                 case constants::TYPE_LISTENREPEAT:
                    $sentences = explode(PHP_EOL,$testitem->customtext1);
                    $index=0;
-                $testitem->sentences=[];
+                    $testitem->sentences=[];
                    foreach($sentences as $sentence){
+                       if(empty(trim($sentence))){continue;}
                        $s = new \stdClass();
                        $s->index=$index;
-                       $s->sentence=$sentence;
+                       $s->sentence=trim($sentence);
                        $index++;
                        $testitem->sentences[]=$s;
                    }
+
+                   //cloudpoodll stuff
+                   $testitem->region =$config->awsregion;
+                   $testitem->cloudpoodlltoken = $token;
+                   $testitem->wwwroot=$CFG->wwwroot;
+                   $testitem->language=$config->ttslanguage;
+                   $testitem->hints='';
+                   $testitem->owner=hash('md5',$USER->username);
+
                    break;
             }
-
 
             $testitems[]=$testitem;
         }

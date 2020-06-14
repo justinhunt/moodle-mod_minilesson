@@ -934,94 +934,86 @@ div.mod_poodlltime_gradesadmin_cont {
     animation-iteration-count: 2;
 }
 
-.btn.mod_poodlltime_msvgrade_close {
-    background-color: DodgerBlue; /* Blue background */
-    border: none; /* Remove borders */
-    color: white; /* White text */
-    padding: 10px 14px; /* Some padding */
-    font-size: 14px; /* Set a font size */
-    cursor: pointer; /* Mouse pointer on hover */
-    margin-top: 10px;
-    background-image: none;
-}
-
-.btn.mod_poodlltime_msvgrade_msv {
-    background-color: #CCCCCC; /* Blue background */
-    border: none; /* Remove borders */
-    color: black; /* White text */
-    padding: 10px 14px; /* Some padding */
-    font-size: 14px; /* Set a font size */
-    cursor: pointer; /* Mouse pointer on hover */
-    margin: 2px;
-    background-image: none;
-    border-radius: 50%;
-}
-.btn.mod_poodlltime_msvgrade_msv[data-checked~="1"] {
-    background-color: #559955;
-    color: white;
-}
-
-.btn.mod_poodlltime_msvgrade_msv:focus {
-    outline: none;
-}
-
-.mod_poodlltime_notes {
-    max-width: 800px;
-    width: 100%;
-    resize: both;
-}
-
-.mod_poodlltime_msvcontainer {
-    display: grid;
-}
-
-.mod_poodlltime_msvbuttonsbox {
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_badword[data-msvbadge]:after {
-    content: attr(data-msvbadge);
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    font-size: .7em;
-    background: orange;
-    color: white;
-    width: 36px;
-    height: 18px;
-    text-align: center;
-    line-height: 18px;
-    border-radius: 15%;
-    box-shadow: 0 0 1px #333;
-}
-
-.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_selfcorrectedword[data-msvbadge]:after {
-    content: attr(data-msvbadge);
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    font-size: .7em;
-    background: green;
-    color: white;
-    width: 36px;
-    height: 18px;
-    text-align: center;
-    line-height: 18px;
-    border-radius: 15%;
-    box-shadow: 0 0 1px #333;
-    -webkit-print-color-adjust: exact;
-}
-
 .mod_poodlltime_grading_passageactions {
     margin-top: 10px;
     display: flex;
 }
 
-.msvtoggleform btn.btn-secondary.active, .msvtoggleform btn.btn-secondary.active.focus {
+.poodlltime_speechcards_container {
+    border: 1px solid darkgray;
+    margin-bottom: 5px;
+    padding: 10px;
+}
+
+.poodlltime_speechcards_pushrecorder {
+    text-align: center;
+    background-image: url([[pix:mod_poodlltime|spinner]]);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.glide__wrapper {
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.glide__slide {
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glide {
+    height: 150px !important;
+}
+
+.poodlltime-poodllspeechcards_box {
+    text-align: center;
+    width: 225px;
+    font-size: 25px;
+    margin: auto;
+    border: 1px solid darkgray;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    background-color: #f5f5f5;
+    box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.75);
+}
+
+.poodlltime-speechcards_toprow {
+    margin: 15px auto;
+    display: flex;
+    justify-content: center;
+}
+
+.poodlltime-speechcards_whatheard {
+    width: 400px;
+    border: dotted 1px;
+    border-color: green;
+    text-align: center;
+    margin: 1px;
+}
+
+.poodlltime-speechcards_gotit {
     color: white;
-    background-color: DodgerBlue;
-    border-color: #adadad;
+    background-color: green;
+}
+
+
+/* PROGRESS DOTS */
+
+.poodlltime_progress_dots {
+    font-size: 40px;
+    text-align: center;
+    letter-spacing: 10px;
+    border: 1px solid darkgray;
+    margin-bottom: 5px;
+}
+
+.poodlltime_star_rating {
+    letter-spacing: 20px;
+    text-align: center;
+    font-size: 30px;
 }

@@ -74,6 +74,9 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
+//load glide
+$PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/css/glide.core.min.css'));
+
 
 //if admin allow around site and to see edit stuff
 //if(has_capability('mod/' . constants::M_MODNAME . ':' . 'canmanageattempts',$modulecontext)) {
