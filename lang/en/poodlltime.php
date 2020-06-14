@@ -435,11 +435,14 @@ $string['pushquestions']='Push Questions';
 $string['addmultichoiceitem']='Add multi choice question';
 $string['adddictationchatitem']='Add dictation chat item';
 $string['adddictationitem']='Add dictation item';
+$string['addlistenrepeatitem']='Add listen and repeat item';
+$string['addspeechcardsitem']='Add Speech Cards item';
 
 $string['multichoice'] = 'Multi Choice';
 $string['dictation']='Dictation';
 $string['dictationchat']='Dictation Chat';
-
+$string['speechcards']='Speech Cards';
+$string['listenrepeat']='Listen and Repeat';
 
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';

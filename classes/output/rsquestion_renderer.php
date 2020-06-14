@@ -57,6 +57,14 @@ class rsquestion_renderer extends \plugin_renderer_base {
              array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_DICTATION));
      $links[] = \html_writer::link($adddictationitemurl, get_string('adddictationitem', constants::M_COMPONENT));
 
+     $addspeechcardsitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
+             array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_SPEECHCARDS));
+     $links[] = \html_writer::link( $addspeechcardsitemurl , get_string('addspeechcardsitem', constants::M_COMPONENT));
+
+     $addlistenrepeatitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
+             array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_LISTENREPEAT));
+     $links[] = \html_writer::link($addlistenrepeatitemurl, get_string('addlistenrepeatitem', constants::M_COMPONENT));
+
         return $this->output->box($output.'<p>'.implode('</p><p>', $links).'</p>', 'generalbox firstpageoptions');
     }
 	

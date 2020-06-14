@@ -68,6 +68,8 @@ This file contains class and ID definitions.
         qtype_multichoice: 'multichoice',
         qtype_dictationchat: 'dictationchat',
         qtype_dictation: 'dictation',
+        qtype_speechcards: 'speechcards',
+        qtype_listenrepeat: 'listenrepeat',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_poodlltime_grading_maybeselfcorrectedword',

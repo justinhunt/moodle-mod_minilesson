@@ -1,5 +1,6 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates','core/ajax', 'mod_poodlltime/pollyhelper','mod_poodlltime/dictation','mod_poodlltime/dictationchat','mod_poodlltime/multichoice'],
-    function($, log, def, templates,Ajax,polly,dictation,dictationchat,multichoice) {
+define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates','core/ajax', 'mod_poodlltime/pollyhelper',
+        'mod_poodlltime/dictation','mod_poodlltime/dictationchat','mod_poodlltime/multichoice','mod_poodlltime/speechcards','mod_poodlltime/listenrepeat'],
+    function($, log, def, templates,Ajax,polly,dictation,dictationchat,multichoice,speechcards,listenrepeat) {
   "use strict"; // jshint ;_;
 
   /*
@@ -43,6 +44,12 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates','co
                     break;
                 case def.qtype_multichoice:
                     multichoice.init(index,item,dd);
+                    break;
+                case def.qtype_speechcards:
+                    speechcards.init(index,item,dd);
+                    break;
+                case def.qtype_listenrepeat:
+                    listenrepeat.init(index,item,dd);
                     break;
             }
 

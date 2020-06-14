@@ -122,6 +122,8 @@ class comprehensiontest
             switch($testitem->type){
                 case constants::TYPE_DICTATION:
                 case constants::TYPE_DICTATIONCHAT:
+                case constants::TYPE_SPEECHCARDS:
+                case constants::TYPE_LISTENREPEAT:
                    $sentences = explode(PHP_EOL,$testitem->customtext1);
                    $index=0;
                 $testitem->sentences=[];

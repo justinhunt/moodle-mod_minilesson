@@ -121,6 +121,14 @@ switch($type){
         $mform = new \mod_poodlltime\rsquestion\dictationform();
         break;
 
+    case constants::TYPE_SPEECHCARDS:
+        $mform = new \mod_poodlltime\rsquestion\speechcardsform();
+        break;
+
+    case constants::TYPE_LISTENREPEAT:
+        $mform = new \mod_poodlltime\rsquestion\listenrepeatform();
+        break;
+
 	case constants::NONE:
 	default:
 		print_error('No item type specifified');
@@ -233,6 +241,8 @@ if ($edit) {
         case constants::TYPE_MULTICHOICE:
         case constants::TYPE_DICTATIONCHAT:
         case constants::TYPE_DICTATION:
+        case constants::TYPE_SPEECHCARDS:
+        case constants::TYPE_LISTENREPEAT:
 		default:
 	}
     $mform->set_data($data);
