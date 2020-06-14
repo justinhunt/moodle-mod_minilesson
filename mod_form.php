@@ -194,23 +194,6 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         $mform->addElement('select', 'expiredays', get_string('expiredays', constants::M_COMPONENT), $expiredaysoptions);
         $mform->setDefault('expiredays',$config->expiredays);
 
-        $mform->addElement('static', 'accadjustdetails', get_string('accadjustmethod', constants::M_COMPONENT),
-            get_string('accadjustmethod_details', constants::M_COMPONENT));
-
-        // Error estimate method field
-        $autoacc_options = \mod_poodlltime\utils::get_accadjust_options();
-        $mform->addElement('select', 'accadjustmethod', get_string('accadjustmethod', constants::M_COMPONENT),
-            $autoacc_options);
-        $mform->setType('accadjustmethod', PARAM_INT);
-        $mform->setDefault('accadjustmethod',$config->accadjustmethod);
-        $mform->addHelpButton('accadjustmethod', 'accadjustmethod', constants::M_COMPONENT);
-
-        // Fixed Error estimate field
-        $mform->addElement('text', 'accadjust', get_string('accadjust', constants::M_COMPONENT), array('size'=>'8'));
-        $mform->setType('accadjust', PARAM_INT);
-        $mform->setDefault('accadjust',$config->accadjust);
-        $mform->disabledIf('accadjust', 'accadjustmethod', 'neq', constants::ACCMETHOD_FIXED);
-        $mform->addHelpButton('accadjust', 'accadjust', constants::M_COMPONENT);
 
         //Submit Raw Audio
         $mform->addElement('advcheckbox', 'submitrawaudio', get_string('submitrawaudio', constants::M_COMPONENT),

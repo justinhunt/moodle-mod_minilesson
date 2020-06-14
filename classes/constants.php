@@ -186,9 +186,6 @@ const TRANSCRIBER_AMAZONTRANSCRIBE = 1;
 const TRANSCRIBER_GOOGLECLOUDSPEECH = 2;
 const TRANSCRIBER_GOOGLECHROME = 3;
 
-const M_PRINTATTEMPT_CONTAINER='mod_poodlltime_printattempt_cont';
-const M_PRINTATTEMPT_RESULTS='mod_poodlltime_printattempt_results';
-const M_PRINTATTEMPT_DETAILS='mod_poodlltime_printattempt_details';
 
 const M_PUSH_NONE =0;
 const M_PUSH_PASSAGE =1;

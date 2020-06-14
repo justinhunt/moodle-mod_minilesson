@@ -50,17 +50,46 @@ class utils{
         return $ret;
     }
 
-    //fetch a flower item for the completed attempt
-    public static function fetch_newflower(){
-        global $CFG, $USER;
-        //TO DO
-        //implement this properly by fetching a new flower for this user
-        $flower= new \stdClass();
-        $flower->id=1;
-        $flower->name='mightyflower';
-        $flower->picurl=$CFG->wwwroot .'/mod/poodlltime/flowers/' . $flower->id . '/mightyflower.png';
-        return $flower;
-    }
+    public static function update_step_grade($cm,$quizresults,$attemptid){
+
+        global $USER, $DB;
+
+        $result=false;
+        $message = '';
+        $returndata=false;
+
+        $attempt = $DB->get_record(constants::M_USERTABLE,array('id'=>$attemptid,'userid'=>$USER->id));
+        if($attempt) {
+            $useresults = json_decode($quizresults);
+            $answers = $useresults->answers;
+            //more data here
+
+            if (isset($answers->{'1'})) { $attempt->qanswer1 = $answers->{'1'}; }
+            if (isset($answers->{'2'})) { $attempt->qanswer2 = $answers->{'2'}; }
+            if (isset($answers->{'3'})) { $attempt->qanswer3 = $answers->{'3'}; }
+            if (isset($answers->{'4'})) { $attempt->qanswer4 = $answers->{'4'}; }
+            if (isset($answers->{'5'})) { $attempt->qanswer5 = $answers->{'5'}; }
+
+            //grade quiz results
+            $comp_test =  new comprehensiontest($cm);
+            $score= $comp_test->grade_test($answers);
+            $attempt->qscore = $score;
+
+
+
+            $result = $DB->update_record(constants::M_USERTABLE, $attempt);
+            if($result) {
+                $returndata= '';
+            }else{
+                $message = 'unable to update attempt record';
+            }
+        }else{
+            $message='no attempt of that id for that user';
+        }
+        return_to_page($result,$message,$returndata);
+}
+
+
 
     //calculate the Error rate
     //see https://www.readinga-z.com/helpful-tools/about-running-records/scoring-a-running-record/
@@ -501,33 +530,10 @@ class utils{
 
     //this is a server side implementation of the same name function in gradenowhelper.js
     //we need this when calculating adjusted grades(reports/machinegrading.php) and on making machine grades(aigrade.php)
-    //the WPM adjustment based on accadjust only applies to machine grades, so it is NOT in gradenowhelper
     public static function processscores($sessiontime,$sessionendword,$errorcount,$activitydata){
 
         ////wpm score
         $wpmerrors = $errorcount;
-        switch($activitydata->accadjustmethod){
-
-            case constants::ACCMETHOD_FIXED:
-                $wpmerrors = $wpmerrors - $activitydata->accadjust;
-                if($wpmerrors < 0){$wpmerrors=0;}
-                break;
-
-            case constants::ACCMETHOD_NOERRORS:
-                $wpmerrors = 0;
-                break;
-
-            case constants::ACCMETHOD_AUTO:
-                $adjust= \mod_poodlltime\utils::estimate_errors($activitydata->id);
-                $wpmerrors = $wpmerrors - $adjust;
-                if($wpmerrors < 0){$wpmerrors=0;}
-                break;
-
-            case constants::ACCMETHOD_NONE:
-            default:
-                $wpmerrors = $errorcount;
-                break;
-        }
         if($sessiontime > 0) {
             $wpmscore = round(($sessionendword - $wpmerrors) * 60 / $sessiontime);
         }else{
@@ -766,16 +772,6 @@ class utils{
         );
     }
 
-    //for error estimate and accuracy adjustment, we can auto estimate errors, never estimate errors, or use a fixed error estimate, or ignore errors
-    public static function get_accadjust_options(){
-        return array(
-            constants::ACCMETHOD_NONE => get_string("accmethod_none",constants::M_COMPONENT),
-            //constants::ACCMETHOD_AUTO  => get_string("accmethod_auto",constants::M_COMPONENT),
-            constants::ACCMETHOD_FIXED  => get_string("accmethod_fixed",constants::M_COMPONENT),
-            constants::ACCMETHOD_NOERRORS  => get_string("accmethod_noerrors",constants::M_COMPONENT),
-        );
-    }
-
   public static function get_region_options(){
       return array(
         "useast1" => get_string("useast1",constants::M_COMPONENT),
@@ -824,6 +820,20 @@ class utils{
           "9999"=>get_string('forever',constants::M_COMPONENT)
       );
   }
+
+    //convert a phrase or word to a series of phonetic characters that we can use to compare text/spoken
+    public static function convert_to_phonetic($phrase,$language){
+
+        switch($language){
+            case 'en':
+                $phonetic = metaphone($phrase);
+                break;
+            case 'ja':
+            default:
+                $phonetic = $phrase;
+        }
+        return $phonetic;
+    }
 
     public static function fetch_options_transcribers() {
         $options = array(constants::TRANSCRIBER_AMAZONTRANSCRIBE => get_string("transcriber_amazontranscribe", constants::M_COMPONENT),

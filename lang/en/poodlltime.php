@@ -87,8 +87,6 @@ $string['viewreports']='View Reports';
 $string['reports']='Reports';
 $string['viewgrading']='View Grading';
 $string['grading']='Grading';
-$string['gradenow']='Grade Now';
-$string['cannotgradenow']=' - ';
 $string['gradenowtitle']='Grading: {$a}';
 $string['showingattempt']='Showing attempt for: {$a}';
 $string['showingmachinegradedattempt']='Machine evaluated attempt for: {$a}';
@@ -163,18 +161,6 @@ $string['targetwpm']='Target WPM';
 $string['targetwpm_details']='The default target WPM. A students grade is calculated for the gradebook using this value as the maximum score. If their WPM score is equal to, or greater than the target WPM, they will score 100%. The target WPM can also be set at the activity instance level. ';
 $string['targetwpm_help']='The target WPM score. A students grade is calculated for the gradebook using this value as the maximum score. If their WPM score is equal to, or greater than the target WPM, they will score 100%.';
 
-$string['accadjust']='Fixed adjustment.';
-$string['accadjust_details']='This is the number of reading errors to compensate WPM scores for. If WPM adjust is set to "Fixed" then this value will be used to compensate WPM acores. This is a method of mitigating for machine transcription mistakes.';
-$string['accadjust_help']='This rate should correspond as closely as possible to the estimated machine transcription mistake average for a passage.';
-
-$string['accadjustmethod']='WPM Adjust(AI)';
-$string['accadjustmethod_details']='Adjust the WPM score by ignoring, or discounting some, reading errors found by AI. The default \'No adjustment\' subtracts all reading errors from final WPM score. ';
-$string['accadjustmethod_help']='For WPM adjustment we can: never adjust, adjust by a fixed amount, or ignore errors when calculating WPM';
-$string['accmethod_none']='No adjustment';
-$string['accmethod_auto']='Auto audjustment';
-$string['accmethod_fixed']='Adjust by fixed amount';
-$string['accmethod_noerrors']='Ignore all errors';
-
 $string['apiuser']='Poodll API User ';
 $string['apiuser_details']='The Poodll account username that authorises Poodll on this site.';
 $string['apisecret']='Poodll API Secret ';
@@ -233,7 +219,7 @@ $string['tr-tr'] = 'Turkish';
 $string['awsregion']='AWS Region';
 $string['region']='AWS Region';
 $string['expiredays']='Days to keep file';
-$string['aigradenow']='AI Grade';
+
 
 $string['machinegrading']='Machine Evaluations';
 $string['viewmachinegrading']='Machine Evaluation';
@@ -473,7 +459,6 @@ $string['level'] = 'Level';
 $string['errors'] = 'Errors';
 $string['studentname'] = 'Student';
 $string['goback'] = 'Go Back';
-$string['printattempt'] = 'Print';
 $string['teacher'] = 'Teacher';
 $string['close'] = 'Close';
 

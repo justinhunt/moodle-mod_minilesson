@@ -20,8 +20,6 @@
         <FIELD NAME="feedbackformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the feedback field (MOODLE, HTML, MARKDOWN...)"/>
 		<FIELD NAME="timelimit" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
 		<FIELD NAME="targetwpm" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="100" SEQUENCE="false" />
-          <FIELD NAME="accadjustmethod" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" />
-          <FIELD NAME="accadjust" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" />
           <FIELD NAME="humanpostattempt" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="2" SEQUENCE="false" />
           <FIELD NAME="machinepostattempt" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" />
 		<FIELD NAME="grade" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -79,7 +77,6 @@
         <FIELD NAME="qscore" TYPE="int" LENGTH="4" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="qtextanswer1" TYPE="text" LENGTH="8192" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="qtextscore1" TYPE="int" LENGTH="4" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
-        <FIELD NAME="flowerid" TYPE="int" LENGTH="4" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
 		<FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
       </FIELDS>

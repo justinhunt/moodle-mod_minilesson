@@ -204,7 +204,7 @@ class machinegrading extends basereport
                 //fetch formatted field
                 //we need to calc the no. of errors and adjust
                 $errorcount = \mod_poodlltime\utils::count_sessionerrors($thedata->sessionerrors);
-                $newerrorcount = $errorcount - $formdata->accadjust;
+                $newerrorcount = $errorcount ;
                 if($newerrorcount < 0){$newerrorcount=0;}
                 //recalculate scores with new errorcount
                 $adjusted_scores = \mod_poodlltime\utils::processscores($thedata->sessiontime,

@@ -30,6 +30,7 @@ define(['jquery','jqueryui', 'core/log','mod_poodlltime/definitions','mod_poodll
             }
 
             dd.cmid = props.cmid;
+            dd.attemptid = 1;
             dd.sorryboxid = props.widgetid + '_sorrybox';
 
             polly.init(dd.activitydata.token,dd.activitydata.region,dd.activitydata.owner);
@@ -61,30 +62,33 @@ define(['jquery','jqueryui', 'core/log','mod_poodlltime/definitions','mod_poodll
 
 
         register_events: function() {
-            var dd = this;
+           //do something
 
         },
 
 
 
         doquizlayout: function(){
-            var m = this;
-            m.controls.instructionscontainer.hide();
+            var dd = this;
+            dd.controls.instructionscontainer.hide();
 
             //set up the quiz
-            quizhelper.onSubmit = function(returndata){m.dofinishedreadinglayout(returndata);};
-            quizhelper.init(m.controls.quizcontainer,this.activitydata.quizdata,this.cmid,this.attemptid, polly);
+            quizhelper.onSubmit = function(returndata){dd.dofinishedreadinglayout(returndata);};
+            quizhelper.init(dd.controls.quizcontainer,
+                this.activitydata.quizdata,
+                this.cmid,
+                this.attemptid,
+                polly);
 
             //show the quiz
-            m.controls.quizcontainer.show();
+            dd.controls.quizcontainer.show();
 
         },
 
 
         doerrorlayout: function(){
-            var m = this;
-            m.controls.errorcontainer.show();
-            m.controls.wheretonextcontainer.show();
+            this.controls.errorcontainer.show();
+            this.controls.wheretonextcontainer.show();
         }
     };//end of returned object
 });//total end

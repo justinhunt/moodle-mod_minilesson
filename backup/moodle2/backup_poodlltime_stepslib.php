@@ -51,7 +51,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
         // root element describing poodlltime instance
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
             'course','name','intro','introformat','timelimit','passage','passageformat','alternatives','welcome','welcomeformat',
-            'feedback','feedbackformat','targetwpm','accadjustmethod','accadjust','humanpostattempt','machinepostattempt','grade','gradeoptions','machgrademethod','maxattempts','mingrade',
+            'feedback','feedbackformat','targetwpm','humanpostattempt','machinepostattempt','grade','gradeoptions','machgrademethod','maxattempts','mingrade',
             'ttslanguage','enableai','allowearlyexit','expiredays','region','activitylink','passagepicture','passagekey','picwhenreading','pagelayout','level','submitrawaudio' ,'timecreated','timemodified'
 			));
         //NB we deliberately do not backup 'passagemaster' field, because clones should leave it unset.
@@ -61,7 +61,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
         $attempt = new backup_nested_element('attempt', array('id'),array(
 			constants::M_MODNAME ."id","courseid","userid","status","filename","wpm","accuracy",
 			"sessionscore","sessiontime","sessionerrors","sessionendword","errorcount",
-            "qanswer1","qanswer2","qanswer3","qanswer4","qanswer5","qscore","qtextanswer1","qtextscore1","flowerid","timecreated","timemodified"
+            "qanswer1","qanswer2","qanswer3","qanswer4","qanswer5","qscore","qtextanswer1","qtextscore1","timecreated","timemodified"
 		));
 
         //ai results

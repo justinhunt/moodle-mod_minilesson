@@ -63,6 +63,9 @@ This file contains class and ID definitions.
         qtype_textpromptlong: 'multichoicelong',
         qtype_textpromptshort: 'multichoice',
         qtype_textpromptaudio: 'audioresponse',
+
+        //question types
+        qtype_multichoice: 'multichoice',
         qtype_dictationchat: 'dictationchat',
         qtype_dictation: 'dictation',
 
@@ -102,10 +105,6 @@ This file contains class and ID definitions.
         msvcontainerclass: 'mod_poodlltime_msvcontainer',
         msvbuttonsbox: 'mod_poodlltime_msvbuttonsbox',
 
-        //print attempt
-        printattemptcontainer: 'mod_poodlltime_printattempt_cont',
-        printattemptresults: 'mod_poodlltime_printattempt_results',
-        printattemptdetails: 'mod_poodlltime_printattempt_details'
 
     };//end of return value
 });

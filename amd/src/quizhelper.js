@@ -1,5 +1,5 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'mod_poodlltime/pollyhelper','mod_poodlltime/dictation','mod_poodlltime/dictationchat','mod_poodlltime/multichoice'],
-    function($, log, def, templates,polly,dictation,dictationchat,multichoice) {
+define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates','core/ajax', 'mod_poodlltime/pollyhelper','mod_poodlltime/dictation','mod_poodlltime/dictationchat','mod_poodlltime/multichoice'],
+    function($, log, def, templates,Ajax,polly,dictation,dictationchat,multichoice) {
   "use strict"; // jshint ;_;
 
   /*
@@ -21,17 +21,12 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'm
       this.prepare_html();
       this.init_questions(quizdata);
       this.register_events();
+      this.start_quiz();
     },
 
     prepare_html: function() {
-      var dd = this;
 
-      var submitbutton = '<button type="button" class="' + this.submitbuttonclass + '">Submit Quiz</button><br>';
-
-
-
-
-      dd.controls.quizcontainer.append(submitbutton);
+     // this.controls.quizcontainer.append(submitbutton);
 
 
     },
@@ -41,13 +36,13 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'm
           $.each(quizdata,function(index,item){
             switch(item.type){
                 case def.qtype_dictation:
-                  dictation.init(item,polly);
+                  dictation.init(index,item,dd,polly);
                   break;
                 case def.qtype_dictationchat:
-                  dictationchat.init(item,polly);
+                  dictationchat.init(index,item,dd,polly);
                     break;
                 case def.qtype_multichoice:
-                    multichoice.init(item);
+                    multichoice.init(index,item,dd);
                     break;
             }
 
@@ -56,54 +51,41 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'm
       },
 
     register_events: function() {
-      var dd = this;
       $('.' + this.submitbuttonclass).on('click', function() {
-        var quizresults = {
-          "qanswer1": "1",
-          "qanswer2": "2",
-          "qanswer3": "3",
-          "qanswer4": "4",
-          "qanswer5": "1",
-          "qtextanswer1": "abc"
-        };
-        dd.send_quizresults(quizresults);
+        //do something
       });
     },
 
-    send_quizresults: function(quizresults) {
-      var params = {};
-      params.action = 'quizresults';
-      params.attemptid = this.attemptid;
-      params.cmid = this.cmid;
-      params.quizresults = JSON.stringify(quizresults);
-      //set up our ajax request
-      var xhr = new XMLHttpRequest();
-      var that = this;
+    do_next(stepdata){
+      this.report_step_grade(stepdata);
+      //hide current question
+      var currentitem = this.quizdata[stepdata.index];
+      $("#" + currentitem.uniqueid + "_container").hide();
 
-      //set up our handler for the response
-      xhr.onreadystatechange = function(e) {
-        if (this.readyState === 4) {
-          if (xhr.status == 200) {
-            log.debug('ok we got an attempt quiz submission response');
-          } else {
-            log.debug('NOT GOOD attempt quiz submission  response');
-          }
-          //let our parent class know about the submission
-          var payload = xhr.responseText;
-          var payloadobject = JSON.parse(payload);
-          if (payloadobject) {
-            that.onSubmit(payloadobject);
-          } else {
-            that.onSubmit(false);
-          }
-        }
-      };
-      //send it off
-      xhr.open("POST", M.cfg.wwwroot + '/mod/poodlltime/ajaxhelper.php', true);
-      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr.setRequestHeader("Cache-Control", "no-cache");
-      xhr.send($.param(params));
+      //show next question or End Screen
+      if(this.quizdata.length > stepdata.index+1){
+        var nextitem  = this.quizdata[stepdata.index + 1];
+          $("#" + nextitem.uniqueid + "_container").show();
+      }else{
+          this.controls.quizcontainer.append("<h2>FINISHED Tada</h2>");
+      }
     },
+
+    report_step_grade: function(stepdata){
+      var dd = this;
+        Ajax.call([{
+            methodname: 'mod_poodlltime_report_step_grade',
+            args: {
+                cmid: dd.cmid,
+                step: stepdata.index,
+                grade: stepdata.grade
+            }
+        }]);
+    },
+
+      start_quiz: function() {
+          $("#" + this.quizdata[0].uniqueid + "_container").show();
+      },
 
     //this function is overridden by the calling class
     onSubmit: function() {

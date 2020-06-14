@@ -11,7 +11,6 @@ namespace mod_poodlltime\output;
 use html_writer;
 use \mod_poodlltime\constants;
 use \mod_poodlltime\utils;
-use \mod_poodlltime\flower;
 use \mod_poodlltime\comprehensiontest;
 
 class renderer extends \plugin_renderer_base {
@@ -795,127 +794,6 @@ class renderer extends \plugin_renderer_base {
         return $ret_html;
     }
 
-    function load_app($cm, $poodlltime, $lastattempt = null) {
-        global $CFG, $USER;
-
-        $config = get_config(constants::M_COMPONENT);
-
-        //first confirm we are authorised before we try to load the react app
-        //if the token or API creds are invalid we report that
-        if(empty($config->apiuser) || empty($config->apisecret)){
-            $errormessage = get_string('nocredentials',constants::M_COMPONENT,
-                    $CFG->wwwroot . constants::M_PLUGINSETTINGS);
-            return $this->show_problembox($errormessage);
-        }else {
-            //fetch token
-            $token = utils::fetch_token($config->apiuser,$config->apisecret);
-
-            //check token authenticated and no errors in it
-            $errormessage = utils::fetch_token_error($token);
-            if(!empty($errormessage)){
-                return $this->show_problembox($errormessage);
-            }
-        }
-
-        //now we have our token and look auth'd, so continue to load app
-        $cantranscribe = utils::can_transcribe($poodlltime);
-        $transcribe = $cantranscribe  ? $poodlltime->transcriber : "0";
-        $comptest =  new comprehensiontest($cm);
-
-        $opts = (object) [];
-        $opts->cmid = $cm->id;
-        $opts->firstname = $USER->firstname;
-        $opts->wwwroot = $CFG->wwwroot;
-        $opts->courseurl = $CFG->wwwroot . '/course/view.php?id=' . $cm->course;
-        $opts->name = $poodlltime->name;
-        $opts->welcome = $poodlltime->welcome;
-        $opts->passage = utils::lines_to_brs($poodlltime->passage);
-        $opts->passagepictureurl = null;
-        $opts->quizdata = $comptest->fetch_test_data_for_js();
-        $opts->attemptid = $lastattempt ? $lastattempt->id : null;  // When we resume an attempt.
-        $opts->flower = $lastattempt ? flower::get_flower($lastattempt->flowerid) : flower::fetch_newflower();
-        $opts->picwhenreading=$poodlltime->picwhenreading ? true :false;
-
-        if ($poodlltime->passagepicture) {
-            $opts->passagepictureurl = $comptest->fetch_media_url(constants::PASSAGEPICTURE_FILEAREA, (object) ['id' => 0]);
-        }
-
-        //prepare our hints that get passed through recorder
-        $ohints = new \stdClass();
-        $ohints->allowearlyexit = $poodlltime->allowearlyexit;
-
-        //perhaps we want to force stereoaudio
-        if ($poodlltime->transcriber == constants::TRANSCRIBER_GOOGLECLOUDSPEECH ||
-                $poodlltime->submitrawaudio) {
-            $ohints->encoder = 'stereoaudio';
-        }
-        $hints = base64_encode(json_encode($ohints));
-        //$hints = base64_encode(json_encode((object) ['allowearlyexit' => $poodlltime->allowearlyexit]));
-
-        $recconfig = (object) [];
-        $recconfig->id = 'therecorder';
-        $recconfig->parent = $CFG->wwwroot;
-        $recconfig->owner = hash('md5',$USER->username);
-        $recconfig->localloading = 'auto';
-        $recconfig->localloader = '/mod/poodlltime/poodllloader.html';
-        $recconfig->media = "audio";
-        $recconfig->appid = constants::M_COMPONENT;
-        $recconfig->type = "poodlltime"; // The recorder type, so until we make a poodlltime one, it's readaloud.
-        $recconfig->width = "240";
-        $recconfig->height = "110";
-        $recconfig->iframeclass = "letsberesponsive";
-        $recconfig->updatecontrol = constants::M_READING_AUDIO_URL;
-        $recconfig->timelimit =  $poodlltime->timelimit;
-        $recconfig->transcode = true;
-        $recconfig->transcribe =  $transcribe;
-        $recconfig->language = $poodlltime->ttslanguage;
-        $recconfig->expiredays = $poodlltime->expiredays;
-        $recconfig->region = $poodlltime->region;
-        $recconfig->fallback = 'warning';
-        $recconfig->hints = $hints;
-        $recconfig->token = $token;
-
-        $appid = html_writer::random_id('poodlltimeapp');
-        $optsid = html_writer::random_id('poodlltimeopts');
-        $recconfigid = html_writer::random_id('poodlltimerecconfig');
-
-        $this->page->requires->js_call_amd("mod_poodlltime/app-loader", 'init', [$appid, $optsid, $recconfigid]);
-        $this->page->requires->strings_for_js([
-            'aisreading',
-            'beginreading',
-            'clickstartwhenready',
-            'congratsyouread',
-            'counttofive',
-            'done',
-            'gofullscreen',
-            'gotnosound',
-            'greatjobnpushnext',
-            'hellopushspeak',
-            'hellonpushstart',
-            'nicereadinga',
-            'pleasewait',
-            'readagainandanswer',
-            'readpassageagainandanswerquestions',
-            'sayyourname',
-            'teacherwillcheck',
-            'goodjoba',
-            'thanksa',
-            'thisisnotcorrect',
-            'tryagain',
-            'thisiscorrect',
-        ], constants::M_COMPONENT);
-
-        $this->page->requires->strings_for_js([
-            'next',
-        ], 'core');
-
-        $html = '';
-        $html .= html_writer::tag('div', '', ['id' => $appid]);
-        $html .= html_writer::tag('script', json_encode($opts), ['id' => $optsid, 'type' => 'application/json']);
-        $html .= html_writer::tag('script', json_encode($recconfig), ['id' => $recconfigid, 'type' => 'application/json']);
-
-        return $html;
-    }
 
     /**
      * Return HTML to display message about problem

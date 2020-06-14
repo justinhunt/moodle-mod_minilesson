@@ -10,17 +10,15 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions','mod_poodlltime/polly
   return {
 
 
-    init: function(itemdata,polly) {
+    init: function(index, itemdata,quizhelper, polly) {
 
       this.prepare_audio(itemdata,polly);
-      this.register_events(itemdata);
+      this.register_events(index, itemdata, quizhelper);
 
     },
 
     prepare_html: function(itemdata) {
       //do something
-
-
     },
 
     prepare_audio: function(itemdata) {
@@ -31,8 +29,9 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions','mod_poodlltime/polly
         });
     },
 
-    register_events: function(itemdata) {
-     var theplayer = $("#" + itemdata.uniqueid + "_player");
+    register_events: function(index,itemdata,quizhelper) {
+
+        var theplayer = $("#" + itemdata.uniqueid + "_player");
 
        //key events in text box
         $("#" + itemdata.uniqueid + "_container .poodlldictationinput input").on("input",function(e){
@@ -54,7 +53,16 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions','mod_poodlltime/polly
             theplayer[0].play();
         });
 
+        //When click next button , report and leave it up to parent to eal with it.
+        $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e){
+            var stepdata = {};
+            var correct = $('#' + itemdata.uniqueid + '_container .dictate-feedback.fa-check').length;
+            var total = $('#' + itemdata.uniqueid + '_container .dictate-feedback').length;
+            var grade = Math.round(correct/total,2) * 100;
+            stepdata.index=index;
+            stepdata.grade= grade;
+            quizhelper.do_next(stepdata);
+        });
     }
-
   }; //end of return value
 });
