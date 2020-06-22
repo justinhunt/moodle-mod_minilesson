@@ -151,7 +151,7 @@ define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_pood
                         var thelist = app.controls.the_list;
                         for(var i=0; i< app.terms.length; i++) {
                             thelist.append(li_template.replace('@thetext@', app.terms[i]));
-                        };
+                        }
 
 
                         app.glider = $("#" + itemdata.uniqueid + "_container .poodlltime_speechcards_glide").glide({

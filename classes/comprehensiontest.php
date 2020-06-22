@@ -153,6 +153,7 @@ class comprehensiontest
                        $s = new \stdClass();
                        $s->index=$index;
                        $s->sentence=trim($sentence);
+                       $s->length = strlen($s->sentence);
                        $index++;
                        $testitem->sentences[]=$s;
                    }

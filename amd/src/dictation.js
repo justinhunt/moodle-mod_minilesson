@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions','mod_poodlltime/pollyhelper'], function($, log, def, polly) {
+define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper'], function($, log, def, polly) {
   "use strict"; // jshint ;_;
 
   /*
@@ -9,10 +9,11 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions','mod_poodlltime/polly
 
   return {
 
+    playing: false,
 
-    init: function(index, itemdata,quizhelper, polly) {
+    init: function(index, itemdata, quizhelper, polly) {
 
-      this.prepare_audio(itemdata,polly);
+      this.prepare_audio(itemdata, polly);
       this.register_events(index, itemdata, quizhelper);
 
     },
@@ -22,47 +23,59 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions','mod_poodlltime/polly
     },
 
     prepare_audio: function(itemdata) {
-        $.each(itemdata.sentences,function(index,sentence) {
-          polly.fetch_polly_url(sentence.sentence,'text','Amy').then(function(audiourl){
-            $("#" + itemdata.uniqueid + "_container .dictationplayer_" + index + " .dictationtrigger").attr("data-src",audiourl);
-          });
+      $.each(itemdata.sentences, function(index, sentence) {
+        polly.fetch_polly_url(sentence.sentence, 'text', 'Amy').then(function(audiourl) {
+          $("#" + itemdata.uniqueid + "_container .dictationplayer_" + index + " .dictationtrigger").attr("data-src", audiourl);
         });
+      });
     },
 
-    register_events: function(index,itemdata,quizhelper) {
+    register_events: function(index, itemdata, quizhelper) {
 
-        var theplayer = $("#" + itemdata.uniqueid + "_player");
+      var self = this;
 
-       //key events in text box
-        $("#" + itemdata.uniqueid + "_container .poodlldictationinput input").on("input",function(e){
+      var theplayer = $("#" + itemdata.uniqueid + "_player");
 
-          var index = $(this).data("index");
-          var correct = itemdata.sentences[index].sentence.trim().toLowerCase();
-          var typed = $(this).val().trim().toLowerCase();
-          if(correct == typed){
-            $(".dictate-feedback[data-index='"+index+"']").removeClass("fa-times").addClass("fa-check");
-          } else {
-            $(".dictate-feedback[data-index='"+index+"']").removeClass("fa-check").addClass("fa-times");
+      //key events in text box
+      $("#" + itemdata.uniqueid + "_container .poodlldictationinput input").on("input", function(e) {
+
+        var index = $(this).data("index");
+        var correct = itemdata.sentences[index].sentence.trim().toLowerCase();
+        var typed = $(this).val().trim().toLowerCase();
+        $("#"+itemdata.uniqueid+"_container .dictationplayer_"+index+"_chars").html(typed.length);
+        if (correct == typed) {
+          $("#"+itemdata.uniqueid+"_container .dictate-feedback[data-index='" + index + "']").removeClass("fa-times").addClass("fa-check");
+        } else {
+          $("#"+itemdata.uniqueid+"_container .dictate-feedback[data-index='" + index + "']").removeClass("fa-check").addClass("fa-times");
+        }
+
+      });
+
+      //audio play requests
+      $("#" + itemdata.uniqueid + "_container .dictationtrigger").on('click', function(e) {
+        if (!self.playing) {
+          var el = this;
+          self.playing = true;
+          theplayer.attr('src', $(this).attr('data-src'));
+          theplayer[0].play();
+          theplayer[0].onended = function() {
+            $(el).find(".fa").removeClass("fa-spin fa-spinner").addClass("fa-play");
+            self.playing = false;
           }
+          $(el).find(".fa").removeClass("fa-play").addClass("fa-spin fa-spinner");
+        }
+      });
 
-        });
-
-        //audio play requests
-        $("#" + itemdata.uniqueid + "_container .dictationtrigger").on('click', function(e){
-            theplayer.attr('src',$(this).attr('data-src'));
-            theplayer[0].play();
-        });
-
-        //When click next button , report and leave it up to parent to eal with it.
-        $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e){
-            var stepdata = {};
-            var correct = $('#' + itemdata.uniqueid + '_container .dictate-feedback.fa-check').length;
-            var total = $('#' + itemdata.uniqueid + '_container .dictate-feedback').length;
-            var grade = Math.round(correct/total,2) * 100;
-            stepdata.index=index;
-            stepdata.grade= grade;
-            quizhelper.do_next(stepdata);
-        });
+      //When click next button , report and leave it up to parent to eal with it.
+      $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
+        var stepdata = {};
+        var correct = $('#' + itemdata.uniqueid + '_container .dictate-feedback.fa-check').length;
+        var total = $('#' + itemdata.uniqueid + '_container .dictate-feedback').length;
+        var grade = Math.round(correct / total, 2) * 100;
+        stepdata.index = index;
+        stepdata.grade = grade;
+        quizhelper.do_next(stepdata);
+      });
     }
   }; //end of return value
 });

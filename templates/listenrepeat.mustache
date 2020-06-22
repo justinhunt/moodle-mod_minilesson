@@ -2,13 +2,13 @@
 
     <audio id="{{uniqueid}}_player"></audio>
     <!-- @@CLOUDPOODLLTOKEN@@ -->
-    <span><b>QUESTION {{number}}: {{text}}</b></span><br>
+    <div class="poodlltime_questionheader"><b>QUESTION {{number}}: {{text}}</b></div><br>
 
     <ul>
     {{#sentences}}
         <li>({{index}}) {{sentence}}</li>
     {{/sentences}}
     </ul>
-    <button type="button" class="poodlltime_nextbutton">Next</button>
+    <button type="button" class="btn btn-secondary poodlltime_nextbutton">Next</button>
 
 </div>

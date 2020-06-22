@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions','mod_poodlltime/pollyhelper'], function($, log, def, polly) {
+define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper'], function($, log, def, polly) {
   "use strict"; // jshint ;_;
 
   /*
@@ -9,24 +9,29 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions','mod_poodlltime/polly
 
   return {
 
-    init: function(index, itemdata,quizhelper) {
-
-      this.register_events(index,itemdata,quizhelper);
+    init: function(index, itemdata, quizhelper) {
+      this.register_events(index, itemdata, quizhelper);
     },
 
     prepare_html: function(itemdata) {
       //do something
     },
 
-    register_events: function(index,itemdata,quizhelper) {
-        //When click next button , report and leave it up to parent to eal with it.
-        $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e){
-            var stepdata = {};
-            var grade = 50;
-            stepdata.index=index;
-            stepdata.grade= grade;
-            quizhelper.do_next(stepdata);
-        });
+    register_events: function(index, itemdata, quizhelper) {
+      //When click next button , report and leave it up to parent to eal with it.
+      $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
+        var stepdata = {};
+        var grade = 50;
+        stepdata.index = index;
+        stepdata.grade = grade;
+        quizhelper.do_next(stepdata);
+      });
+      $("#" + itemdata.uniqueid + "_container ."+itemdata.uniqueid+"_option").on('click', function(e) {
+        $("."+itemdata.uniqueid+"_option").prop("disabled",true);
+        $("."+itemdata.uniqueid+"_fb").html("<i style='color:red;' class='fa fa-times'></i>");
+        $("."+itemdata.uniqueid+"_option"+itemdata.correctanswer+"_fb").html("<i style='color:green;' class='fa fa-check'></i>");
+        console.log(itemdata);
+      });
     }
 
   }; //end of return value

@@ -131,7 +131,7 @@ echo $renderer->fetch_activity_amd($cm, $moduleinstance);
 //echo $renderer->load_app($cm, $moduleinstance, $latestattempt);
 
 //backtotop
-echo $renderer->backtotopbutton($course->id);
+/*echo $renderer->backtotopbutton($course->id);*/
 
 // Finish the page
 echo $renderer->footer();

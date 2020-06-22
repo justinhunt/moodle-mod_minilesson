@@ -2,21 +2,27 @@
   
   <audio id="{{uniqueid}}_player"></audio>
   <!-- @@CLOUDPOODLLTOKEN@@ -->
-   <span><b>QUESTION {{number}}: {{text}}</b></span><br>
+   <div class="poodlltime_questionheader"><b>QUESTION {{number}}: {{text}}</b></div><br>
 
   {{#sentences}}
   <div class="row dictationrow">
     <div class="col-md-1 poodlldictationplayer dictationplayer_{{index}}">
-      <a class="dictationtrigger" data-src="@AUDIO@"><i class="fa fa-play"></i></a>
+      <button class="dictationtrigger btn btn-secondary" data-src="@AUDIO@"><i class="fa fa-play"></i></button>
     </div>
-    <div class="col-md-10 poodlldictationinput dictationinput_{{index}}"><input data-index="{{index}}" type="text"></input>
+    <div class="col-md-10 poodlldictationinput dictationinput_{{index}}">
+      <small class="text-muted"><span class="dictationplayer_{{index}}_chars">0</span>/{{length}}</small>
+      <input maxlength="{{length}}" class="form-control" data-index="{{index}}" type="text"></input>
     </div>
     <div class="col-md-1">
-      <div id="dictationstatus_{{index}}" class="poodlldictationstatus"><i data-index="{{index}}" class="dictate-feedback fa fa-times"></i></div>
+      <div id="dictationstatus_{{index}}" class="poodlldictationstatus">
+        <i data-index="{{index}}" class="dictate-feedback fa fa-times"></i>
+      </div>
     </div>
   </div>
   {{/sentences}}
 
-    <button type="button" class="poodlltime_nextbutton">Next</button>
+<hr>
+
+    <button type="button" class="btn btn-secondary poodlltime_nextbutton">Next</button>
 
 </div>
