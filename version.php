@@ -29,8 +29,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020061200;
+$plugin->version   = 2020061201;
 $plugin->requires  = 2016052300;      // Requires Moodle 3.1
 $plugin->component = 'mod_poodlltime';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0.0 (Build 2020061200)';
+$plugin->release = '1.0.1 (Build 2020061201)';

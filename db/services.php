@@ -25,4 +25,12 @@ $functions = array(
                 'type'        => 'read',
                 'ajax'        => true,
         ),
+        'mod_poodlltime_compare_passage_to_transcript' => array(
+        'classname'   => 'mod_poodlltime_external',
+        'methodname'  => 'compare_passage_to_transcript',
+        'description' => 'compares a spoken phrase to a correct phrase' ,
+        'capabilities'=> 'mod/poodlltime:view',
+        'type'        => 'read',
+        'ajax'        => true,
+        )
 );

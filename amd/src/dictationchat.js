@@ -22,7 +22,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       $("#" + self.itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
         var stepdata = {};
         var grade = 50;
-        stepdata.index = index;
+        stepdata.index = self.index;
         stepdata.grade = grade;
         self.quizhelper.do_next(stepdata);
       });
@@ -80,82 +80,82 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       var voice = 'Amy';
       switch (language) {
         case "English(US)":
-          voice = mf == 'Male' ? 'Joey' : 'Kendra';
+          voice = mf === 'Male' ? 'Joey' : 'Kendra';
           break;
         case "English(GB)":
-          voice = mf == 'Male' ? 'Brian' : 'Amy';
+          voice = mf === 'Male' ? 'Brian' : 'Amy';
           break;
         case "English(AU)":
-          voice = mf == 'Male' ? 'Russell' : 'Nicole';
+          voice = mf === 'Male' ? 'Russell' : 'Nicole';
           break;
         case "English(IN)":
-          voice = mf == 'Male' ? 'Aditi' : 'Raveena';
+          voice = mf === 'Male' ? 'Aditi' : 'Raveena';
           break;
         case "English(Welsh)":
-          voice = mf == 'Male' ? 'Geraint' : 'Geraint';
+          voice = mf === 'Male' ? 'Geraint' : 'Geraint';
           break;
         case "Danish":
-          voice = mf == 'Male' ? 'Mads' : 'Naja';
+          voice = mf === 'Male' ? 'Mads' : 'Naja';
           break;
         case "Dutch":
-          voice = mf == 'Male' ? 'Ruben' : 'Lotte';
+          voice = mf === 'Male' ? 'Ruben' : 'Lotte';
           break;
         case "French(FR)":
-          voice = mf == 'Male' ? 'Mathieu' : 'Celine';
+          voice = mf === 'Male' ? 'Mathieu' : 'Celine';
           break;
         case "French(CA)":
-          voice = mf == 'Male' ? 'Chantal' : 'Chantal';
+          voice = mf === 'Male' ? 'Chantal' : 'Chantal';
           break;
         case "German":
-          voice = mf == 'Male' ? 'Hans' : 'Marlene';
+          voice = mf === 'Male' ? 'Hans' : 'Marlene';
           break;
         case "Icelandic":
-          voice = mf == 'Male' ? 'Karl' : 'Dora';
+          voice = mf === 'Male' ? 'Karl' : 'Dora';
           break;
         case "Italian":
-          voice = mf == 'Male' ? 'Carla' : 'Giorgio';
+          voice = mf === 'Male' ? 'Carla' : 'Giorgio';
           break;
         case "Japanese":
-          voice = mf == 'Male' ? 'Takumi' : 'Mizuki';
+          voice = mf === 'Male' ? 'Takumi' : 'Mizuki';
           break;
         case "Korean":
-          voice = mf == 'Male' ? 'Seoyan' : 'Seoyan';
+          voice = mf === 'Male' ? 'Seoyan' : 'Seoyan';
           break;
         case "Norwegian":
-          voice = mf == 'Male' ? 'Liv' : 'Liv';
+          voice = mf === 'Male' ? 'Liv' : 'Liv';
           break;
         case "Polish":
-          voice = mf == 'Male' ? 'Jacek' : 'Ewa';
+          voice = mf === 'Male' ? 'Jacek' : 'Ewa';
           break;
         case "Portugese(BR)":
-          voice = mf == 'Male' ? 'Ricardo' : 'Vitoria';
+          voice = mf === 'Male' ? 'Ricardo' : 'Vitoria';
           break;
         case "Portugese(PT)":
-          voice = mf == 'Male' ? 'Cristiano' : 'Ines';
+          voice = mf === 'Male' ? 'Cristiano' : 'Ines';
           break;
         case "Romanian":
-          voice = mf == 'Male' ? 'Carmen' : 'Carmen';
+          voice = mf === 'Male' ? 'Carmen' : 'Carmen';
           break;
         case "Russian":
-          voice = mf == 'Male' ? 'Maxim' : 'Tatyana';
+          voice = mf === 'Male' ? 'Maxim' : 'Tatyana';
           break;
         case "Spanish(ES)":
-          voice = mf == 'Male' ? 'Enrique' : 'Conchita';
+          voice = mf === 'Male' ? 'Enrique' : 'Conchita';
           break;
         case "Spanish(US)":
-          voice = mf == 'Male' ? 'Miguel' : 'Penelope';
+          voice = mf === 'Male' ? 'Miguel' : 'Penelope';
           break;
         case "Swedish":
-          voice = mf == 'Male' ? 'Astrid' : 'Astrid';
+          voice = mf === 'Male' ? 'Astrid' : 'Astrid';
           break;
         case "Turkish":
-          voice = mf == 'Male' ? 'Filiz' : 'Filiz';
+          voice = mf === 'Male' ? 'Filiz' : 'Filiz';
           break;
         case "Welsh":
-          voice = mf == 'Male' ? 'Gwyneth' : 'Gwyneth';
+          voice = mf === 'Male' ? 'Gwyneth' : 'Gwyneth';
           break;
         default:
-          voice = mf == 'Male' ? 'Brian' : 'Amy';
+          voice = mf === 'Male' ? 'Brian' : 'Amy';
       }
       self.usevoice = voice;
     },
@@ -289,7 +289,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       $(".dictate_ctrl-btn").prop("disabled", true);
 
       this.ajax.call([{
-        methodname: 'mod_readaloud_compare_passage_to_transcript',
+        methodname: 'mod_poodlltime_compare_passage_to_transcript',
         args: {
           passage: passage,
           transcript: transcript,

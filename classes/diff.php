@@ -46,46 +46,63 @@ class diff{
         return $textbits;
     }
 
- /*
- * Clean word of things that might prevent a match
-  * i) lowercase it
-  * ii) remove html characters
-  * iii) replace any line ends with spaces (so we can "split" later)
-  * iv) remove punctuation
- *
- */
-    public static function cleanText($thetext){
+    /*
+    * Clean word of things that might prevent a match
+     * i) lowercase it
+     * ii) remove html characters
+     * iii) replace any line ends with spaces (so we can "split" later)
+     * iv) remove punctuation
+     *
+     * Raw JP text back from Amazon gets caught on some pregreplace
+     *  unicode thing so we set the unicode flag /u.
+     * Since it will fail quietly if a non unicode char is detected, we need to be careful with this
+     * setting a flag till confident it's ok across the board
+    *
+    */
+    public static function cleanText($thetext,$unicodemb4=true) {
         //lowercaseify
-        $thetext=strtolower($thetext);
+        $thetext = strtolower($thetext);
 
         //remove any html
         $thetext = strip_tags($thetext);
 
         //replace all line ends with spaces
-        $thetext = preg_replace('#\R+#', ' ', $thetext);
+        if($unicodemb4) {
+            $thetext = preg_replace('/#\R+#/u', ' ', $thetext);
+            $thetext = preg_replace('/\r/u', ' ', $thetext);
+            $thetext = preg_replace('/\n/u', ' ', $thetext);
+        }else{
+            $thetext = preg_replace('/#\R+#/', ' ', $thetext);
+        }
 
-        //remove punctuation
+        //remove punctuation. This is where we needed the unicode flag
         //see https://stackoverflow.com/questions/5233734/how-to-strip-punctuation-in-php
-       // $thetext = preg_replace("#[[:punct:]]#", "", $thetext);
+        // $thetext = preg_replace("#[[:punct:]]#", "", $thetext);
         //https://stackoverflow.com/questions/5689918/php-strip-punctuation
-        $thetext = preg_replace("/[[:punct:]]+/", "", $thetext);
+        if($unicodemb4) {
+            $thetext = preg_replace("/[[:punct:]]+/u", "", $thetext);
+        }else{
+            $thetext = preg_replace("/[[:punct:]]+/", "", $thetext);
+        }
 
         //remove bad chars
-        $b_open="“";
-        $b_close="”";
-        $b_sopen='‘';
-        $b_sclose='’';
-        $bads= array($b_open,$b_close,$b_sopen,$b_sclose);
-        foreach($bads as $bad){
-            $thetext=str_replace($bad,'',$thetext);
+        $b_open = "“";
+        $b_close = "”";
+        $b_sopen = '‘';
+        $b_sclose = '’';
+        $bads = array($b_open, $b_close, $b_sopen, $b_sclose);
+        foreach ($bads as $bad) {
+            $thetext = str_replace($bad, '', $thetext);
         }
 
         //remove double spaces
         //split on spaces into words
-        $textbits = explode(' ',$thetext);
+        $textbits = explode(' ', $thetext);
         //remove any empty elements
-        $textbits = array_filter($textbits, function($value) { return $value !== ''; });
-        $thetext = implode(' ',$textbits);
+        $textbits = array_filter($textbits, function($value) {
+            return $value !== '';
+        });
+        $thetext = implode(' ', $textbits);
         return $thetext;
     }
 
@@ -155,13 +172,16 @@ public static function fetchAlternativesArray($thealternates)
 }
 
     //Do some adhoc match judgement based on common language transcription errors by AI
-    public static function generous_match($passageword,$transcriptword,$language){
-        switch($language){
-            case constants::M_LANG_ENUS:
-            case constants::M_LANG_ENGB:
-            case constants::M_LANG_ENAU:
-                if($passageword . 's' == $transcriptword){return true;}
-                if($passageword . 'ed' == $transcriptword){return true;}
+    public static function generous_match($passageword, $transcriptword, $language) {
+        $lang = substr($language,0,2);
+        switch ($lang) {
+            case 'en':
+                if (self::mb_strequals($passageword . 's', $transcriptword)) {
+                    return true;
+                }
+                if (self::mb_strequals($passageword . 'ed', $transcriptword)) {
+                    return true;
+                }
                 break;
             default:
                 return false;
@@ -207,8 +227,8 @@ public static function fetchAlternativesArray($thealternates)
                 $match=false;
 
                 //check for a forward match
-                if($forwardmatch!==false){
-                    $match = ($passageword == $forwardmatch);
+                if ($forwardmatch !== false) {
+                    $match = self::mb_strequals($passageword, $forwardmatch);
                     //we matched a passage word + but did not use the next transcript word, so roll back t_slength
                     if($match) {
                         $t_slength--;
@@ -217,8 +237,8 @@ public static function fetchAlternativesArray($thealternates)
                 $forwardmatch=false;
 
                 //check for a direct match
-                if(!$match) {
-                    $match = $passageword == $transcriptword;
+                if (!$match) {
+                    $match = self::mb_strequals($passageword, $transcriptword);
                 }
                 
                 //if no direct match is there an alternates match
@@ -343,27 +363,29 @@ public static function fetchAlternativesArray($thealternates)
         $ret->matchlength=0;
         $ret->forwardmatch=false;
 
-            //loop through all alternatives
-            //and then through each alternative->wordset
-            foreach($alternatives as $alternateset){
-                $wordset=$alternateset[0];
-                $forwardmatches=$alternateset[1];
-                if($wordset[0]==$passageword){
-                    for($setindex =1;$setindex<count($wordset);$setindex++) {
-                        //we no longer process wildcards while matching (we just reverse errors later)
-                        //if ($wordset[$setindex] == $transcriptword || $wordset[$setindex] == '*') {
-                        if ($wordset[$setindex] == $transcriptword) {
-                            $ret->match = true;
-                            $ret->matchlength = 1;
-                            if(array_key_exists($wordset[$setindex],$forwardmatches)){
-                                $ret->forwardmatch=$forwardmatches[$wordset[$setindex]];
-                            }
-                            break;
+        //loop through all alternatives
+        //and then through each alternative->wordset
+        foreach ($alternatives as $alternateset) {
+            $wordset = $alternateset[0];
+            $forwardmatches = $alternateset[1];
+            if (self::mb_strequals($wordset[0], $passageword)) {
+                for ($setindex = 1; $setindex < count($wordset); $setindex++) {
+                    //we no longer process wildcards while matching (we just reverse errors later)
+                    //if ($wordset[$setindex] == $transcriptword || $wordset[$setindex] == '*') {
+                    if (self::mb_strequals($wordset[$setindex], $transcriptword)) {
+                        $ret->match = true;
+                        $ret->matchlength = 1;
+                        if (array_key_exists($wordset[$setindex], $forwardmatches)) {
+                            $ret->forwardmatch = $forwardmatches[$wordset[$setindex]];
                         }
+                        break;
                     }
-                }//end of if alternatesset[0]
-                if($ret->match){break;}
-            }//end of for each alternatives
+                }
+            }//end of if alternatesset[0]
+            if ($ret->match) {
+                break;
+            }
+        }//end of for each alternatives
         //we return the matchlength
         return $ret;
     }
@@ -389,6 +411,18 @@ public static function fetchAlternativesArray($thealternates)
         }//end of for each alternatives
         //we return the wildczrds
         return $wildcards;
+    }
+
+    public static function mb_strequals($str1, $str2, $encoding = null) {
+        return ($str1 == $str2);
+        /*
+        if (null === $encoding) { $encoding = mb_internal_encoding(); }
+        if (strcmp(mb_strtoupper($str1, $encoding), mb_strtoupper($str2, $encoding))==0) {
+            return true;
+        }else{
+            return false;
+        }
+        */
     }
 
     //for use with PHP usort and arrays of sequences

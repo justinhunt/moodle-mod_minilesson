@@ -467,3 +467,17 @@ $string['close'] = 'Close';
 
 $string['submitrawaudio'] = 'Submit uncompressed audio';
 $string['submitrawaudio_details'] = 'Submitting uncompressed audio may increase transcription accuracy, but at the expense of upload speed and reliability.';
+
+//dictation chat
+$string['dc_results'] = 'Results';
+$string['listenandtype'] = 'Listen and Type';
+$string['listen'] = 'Listen';
+$string['check'] = 'Check';
+$string['skip'] = 'Skip';
+$string['start'] = 'Start';
+$string['next'] = 'Next';
+$string['loading'] = 'Loading...';
+$string['dc_instructions1'] = 'Listen and type the sentences you hear';
+$string['dc_instructions2'] = 'Click \'Start\' to begin!';
+//dictation
+$string['d_question'] = 'Question';

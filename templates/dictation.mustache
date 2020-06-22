@@ -2,7 +2,7 @@
   
   <audio id="{{uniqueid}}_player"></audio>
   <!-- @@CLOUDPOODLLTOKEN@@ -->
-   <div class="poodlltime_questionheader"><b>QUESTION {{number}}: {{text}}</b></div><br>
+   <div class="poodlltime_questionheader"><b>{{#str}}d_question, mod_poodlltime{{/str}} {{number}}: {{text}}</b></div><br>
 
   {{#sentences}}
   <div class="row dictationrow">
@@ -23,6 +23,6 @@
 
 <hr>
 
-    <button type="button" class="btn btn-secondary poodlltime_nextbutton">Next</button>
+    <button type="button" class="btn btn-secondary poodlltime_nextbutton">{{#str}}next, mod_poodlltime{{/str}}</button>
 
 </div>
