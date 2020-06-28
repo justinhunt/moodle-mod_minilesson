@@ -46,8 +46,9 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
             case def.qtype_multichoice:
               multichoice.init(index, item, dd);
               break;
-            case def.qtype_speechcards:
-              speechcards.init(index, item, dd);
+              case def.qtype_speechcards:
+              //speechcards init needs to occur when it is visible. lame.
+              //speechcards.init(index, item, dd);
               break;
             case def.qtype_listenrepeat:
               listenrepeat.init(index, item, dd);
@@ -65,6 +66,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
       },
 
       do_next(stepdata) {
+        var dd = this;
         this.report_step_grade(stepdata);
         //hide current question
         var currentitem = this.quizdata[stepdata.index];
@@ -72,8 +74,22 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
 
         //show next question or End Screen
         if (this.quizdata.length > stepdata.index + 1) {
-          var nextitem = this.quizdata[stepdata.index + 1];
-          $("#" + nextitem.uniqueid + "_container").show();
+          var nextindex = stepdata.index + 1;
+          var nextitem = this.quizdata[nextindex];
+            //show the question
+            $("#" + nextitem.uniqueid + "_container").show();
+          //any per question type init that needs to occur can go here
+          switch (nextitem.type) {
+              case def.qtype_speechcards:
+                  speechcards.init(nextindex, nextitem, dd);
+                  break;
+              case def.qtype_dictation:
+              case def.qtype_dictationchat:
+              case def.qtype_multichoice:
+              case def.qtype_listenrepeat:
+              default:
+          }//end of nextitem switch
+
         } else {
           this.controls.quizcontainer.append("<h2>FINISHED Tada</h2>");
         }

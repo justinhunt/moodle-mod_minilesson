@@ -162,7 +162,7 @@ class comprehensiontest
                    $testitem->region =$config->awsregion;
                    $testitem->cloudpoodlltoken = $token;
                    $testitem->wwwroot=$CFG->wwwroot;
-                   $testitem->language=$config->ttslanguage;
+                   $testitem->language=$this->mod->ttslanguage;
                    $testitem->hints='';
                    $testitem->owner=hash('md5',$USER->username);
 

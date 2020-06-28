@@ -1071,7 +1071,7 @@ div.mod_poodlltime_gradesadmin_cont {
 
 .poodlltime-poodllspeechcards_box {
   text-align: center;
-  width: 225px;
+  width: 60%; /*225px;*/
   font-size: 25px;
   margin: auto;
   border: 1px solid darkgray;
