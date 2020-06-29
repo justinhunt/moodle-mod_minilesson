@@ -39,7 +39,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       $("#" + self.itemdata.uniqueid + "_container .dictate_skip_btn").on("click", function() {
         $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", true);
         $("#" + self.itemdata.uniqueid + "_container .dictate_speech.dictate_teacher_left").text(self.items[self.game.pointer].target + "");
-        setTimeout(function(){
+        setTimeout(function() {
           if (self.game.pointer < self.items.length - 1) {
             self.items[self.game.pointer].answered = true;
             self.items[self.game.pointer].correct = false;
@@ -48,7 +48,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
           } else {
             self.end();
           }
-        },3000);
+        }, 3000);
       });
 
       $("#" + self.itemdata.uniqueid + "_container .dictate_check_btn").on("click", function() {
@@ -57,7 +57,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
         var transcriptArray = [];
 
         $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").each(function() {
-          transcriptArray.push($(this).val().trim()==""?"|":$(this).val().trim());
+          transcriptArray.push($(this).val().trim() == "" ? "|" : $(this).val().trim());
         })
 
         var transcript = transcriptArray.join(" ");
@@ -336,7 +336,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       var self = this;
 
       $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", true);
-      
+
       self.items.forEach(function(item) {
         item.spoken = "";
         item.answered = false;
@@ -358,7 +358,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       var self = this;
 
       var target = self.items[self.game.pointer].target;
-      var code = "<div class='dictate_prompt dictate_prompt_"+self.game.pointer+"' style='display:none;'>";
+      var code = "<div class='dictate_prompt dictate_prompt_" + self.game.pointer + "' style='display:none;'>";
 
       code += "<i class='fa fa-graduation-cap dictate_speech-icon-left'></i>";
       code += "<div style='margin-left:90px;' class='dictate_speech dictate_teacher_left'>";
@@ -392,7 +392,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
     nextReply: function() {
       var self = this;
       var target = self.items[self.game.pointer].target;
-      var code = "<div class='dictate_reply dictate_reply_"+self.game.pointer+"' style='display:none;'>";
+      var code = "<div class='dictate_reply dictate_reply_" + self.game.pointer + "' style='display:none;'>";
       code += "<i class='fa fa-user dictate_speech-icon-right'></i>";
       var dictate_targetWordsCode = "";
       var idx = 1;
@@ -412,19 +412,9 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
         direction: 'right'
       });
       $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", false);
-    },
-    animateCSS: function(element, animationName, callback) {
-      const node = document.querySelector(element)
-      node.classList.add('animated', animationName)
-
-      function handleAnimationEnd() {
-        node.classList.remove('animated', animationName)
-        node.removeEventListener('animationend', handleAnimationEnd)
-
-        if (typeof callback === 'function') callback()
-      }
-
-      node.addEventListener('animationend', handleAnimationEnd)
+      setTimeout(function() {
+        $("#" + self.itemdata.uniqueid + "_container .dictate_listen_btn").trigger('click');
+      }, 1000);
     }
 
   };

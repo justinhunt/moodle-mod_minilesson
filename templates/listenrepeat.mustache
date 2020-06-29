@@ -1,14 +1,43 @@
-<div id="{{uniqueid}}_container" class="poodlltime_questioncontainer" style="display: none">
+<div id="{{uniqueid}}_container" class="landr_container" style="display: none">
+  <div class="landr_player_box">
+    <div style="display:none;" class="landr_results">{{#str}}dc_results, mod_poodlltime{{/str}}</div>
 
-    <audio id="{{uniqueid}}_player"></audio>
-    <!-- @@CLOUDPOODLLTOKEN@@ -->
-    <div class="poodlltime_questionheader"><b>QUESTION {{number}}: {{text}}</b></div><br>
+    <div class="landr_title text-center">{{#str}}listenandrepeat, mod_poodlltime{{/str}}</div>
 
-    <ul>
-    {{#sentences}}
-        <li>({{index}}) {{sentence}}</li>
-    {{/sentences}}
-    </ul>
-    <button type="button" class="btn btn-secondary poodlltime_nextbutton">Next</button>
+    <div class="landr_mainmenu">
+      <div class="landr_loaded" style="display:none;">
+        <p>{{#str}}lr_instructions1, mod_poodlltime{{/str}}</p>
+        <p>{{#str}}lr_instructions2, mod_poodlltime{{/str}}</p>
+      </div>
+      <div class="landr_not_loaded">
+        <p>{{#str}}loading, mod_poodlltime{{/str}}</p>
+      </div>
+    </div>
 
+    <div style="display:none;" class="landr_game"></div>
+
+    <button disabled class='btn btn-block btn-primary landr_start_btn'>
+        <i class='fa fa-play'></i> {{#str}}start, mod_poodlltime{{/str}}
+    </button>
+
+    <div style="display:none;" class="landr_controls">
+
+      <button class="btn btn-secondary landr_ctrl-btn landr_listen_btn">
+        <i class="fa fa-volume-up"></i> {{#str}}listen, mod_poodlltime{{/str}}
+      </button>
+
+      <button class="btn btn-danger landr_ctrl-btn landr_skip_btn">
+        {{#str}}skip, mod_poodlltime{{/str}} <i class="fa fa-arrow-right"></i>
+      </button>
+
+    </div>
+
+    <div class="landr_speakbtncontainer">
+
+      {{> mod_poodlltime/cloudpushrecorder}}
+
+    </div>
+
+  </div>
+  <button type="button" class="btn btn-secondary poodlltime_nextbutton">{{#str}}next, mod_poodlltime{{/str}}</button>
 </div>

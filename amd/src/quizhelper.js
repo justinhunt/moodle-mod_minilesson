@@ -11,6 +11,16 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
     log.debug('Poodll Time Quiz helper: initialising');
 
     return {
+      
+      mobile_user: function() {
+
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+          return true;
+        } else {
+          return false;
+        }
+
+      },
 
       controls: {},
       submitbuttonclass: 'mod_poodlltime_quizsubmitbutton',
@@ -91,6 +101,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
           }//end of nextitem switch
 
         } else {
+          var scores = [{"name":"listenandrepeat","score":0}];
           this.controls.quizcontainer.append("<h2>FINISHED Tada</h2>");
         }
       },

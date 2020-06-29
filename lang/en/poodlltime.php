@@ -481,3 +481,7 @@ $string['dc_instructions1'] = 'Listen and type the sentences you hear';
 $string['dc_instructions2'] = 'Click \'Start\' to begin!';
 //dictation
 $string['d_question'] = 'Question';
+//listen and repeat
+$string['listenandrepeat'] = 'Listen and Repeat';
+$string['lr_instructions1'] = 'Listen and repeat the sentences you hear';
+$string['lr_instructions2'] = 'Click \'Start\' to begin!';

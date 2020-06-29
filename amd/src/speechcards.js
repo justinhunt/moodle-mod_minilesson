@@ -1,5 +1,5 @@
 define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_poodlltime/pollyhelper',
-    'mod_poodlltime/cloudpoodllloader',], function($, log,Ajax, def, polly, cloudpoodll) {
+    'mod_poodlltime/cloudpoodllloader'], function($, log,Ajax, def, polly, cloudpoodll) {
     "use strict"; // jshint ;_;
 
     /*

@@ -1319,3 +1319,173 @@ div.mod_poodlltime_gradesadmin_cont {
   width: 33.33%;
   float: left;
 }
+
+/* LISTEN AND REPEAT */
+
+.landr_player_box {
+  border: 1px solid darkgray;
+  position: relative;
+  height: 550px;
+  overflow: hidden;
+  max-width: 400px;
+  margin: auto;
+}
+
+.landr_prompt {
+  position: relative;
+  margin-top: 10px;
+}
+
+.landr_reply {
+  margin-top: 10px;
+  position: relative;
+}
+
+.landr_error {}
+
+.landr_game {
+  height: 460px;
+  padding: 10px;
+  border-top: 1px solid darkgray;
+  border-bottom: 1px solid darkgray;
+  background-color: rgba(98, 135, 182, 1);
+}
+
+.landr_speech {
+  position: relative;
+  font-family: arial;
+  font-size: 16px;
+  background: #a53d38;
+  color: black;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.landr_container .landr_right {
+  background-color: white;
+}
+
+.landr_container .landr_teacher_left {
+  background-color: rgba(122, 221, 76, 1);
+}
+
+.landr_container .landr_teacher_left:after {
+  content: '';
+  border: 20px solid transparent;
+  border-right-color: rgba(122, 221, 76, 1);
+  border-left: 0;
+  position: absolute;
+  left: -20px;
+  top: 50%;
+  margin-top: -20px;
+}
+
+.landr_container .landr_right:after {
+  content: '';
+  border: 20px solid transparent;
+  border-left-color: white;
+  border-right: 0;
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  margin-top: -20px;
+}
+
+.landr_speech-icon-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  font-size: 50px !important;
+  height: 50px;
+}
+
+.landr_speech-icon-right {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  font-size: 50px !important;
+  height: 50px;
+}
+
+.landr_mainmenu {
+  height: 460px;
+  background-color: #f5f5f5;
+  font-size: 20px;
+  padding: 10px;
+  border-top: 1px solid darkgray;
+  border-bottom: 1px solid darkgray;
+}
+
+.landr_title {
+  border: 2px solid darkgray;
+  height: 53px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.landr_controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 75px;
+  height: 35px;
+  background-color: white;
+}
+
+.landr_speakbtncontainer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 75px;
+  background-color: rgba(98,135,182,1);
+  text-align:center;
+  display:none;
+}
+
+.landr_results {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 75px;
+  background-color: rgba(98, 135, 182, 1);
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+
+.landr_container .landr_correct {
+  background-color: lightgreen;
+}
+
+.landr_container .landr_incorrect {
+  background-color: lightpink;
+}
+
+.landr_targetWord {
+  padding: 3px;
+  border-radius: 5px;
+  margin: 5px;
+}
+
+.landr_container .landr_ctrl-btn {
+  width: 50%;
+  float: left;
+}
+
+.landr_start_btn{
+  position:absolute;
+  bottom:0;
+}
