@@ -481,3 +481,8 @@ $string['dc_instructions1'] = 'Listen and type the sentences you hear';
 $string['dc_instructions2'] = 'Click \'Start\' to begin!';
 //dictation
 $string['d_question'] = 'Question';
+
+$string['choosevoice'] = "Choose the speakers voice";
+$string['showtextprompt'] = 'Show text prompt';
+$string['textprompt_words'] = 'Show text prompt (words)';
+$string['textprompt_dots'] = 'Show dots for letters only';

@@ -100,7 +100,6 @@ $redirecturl = new moodle_url('/mod/poodlltime/rsquestion/rsquestions.php', arra
 
 
 //get filechooser and html editor options
-//get filechooser and html editor options
 $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($course, $context);
 $filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_options($course,1);
 
@@ -110,23 +109,43 @@ switch($type){
 
 
     case constants::TYPE_MULTICHOICE:
-        $mform = new \mod_poodlltime\rsquestion\multichoiceform();
+        $mform = new \mod_poodlltime\rsquestion\multichoiceform(null,
+                array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$poodlltime)
+        );
         break;
 
     case constants::TYPE_DICTATIONCHAT:
-        $mform = new \mod_poodlltime\rsquestion\dictationchatform();
+        $mform = new \mod_poodlltime\rsquestion\dictationchatform(null,
+                array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$poodlltime)
+        );
         break;
     
     case constants::TYPE_DICTATION:
-        $mform = new \mod_poodlltime\rsquestion\dictationform();
+        $mform = new \mod_poodlltime\rsquestion\dictationform(null,
+                array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$poodlltime)
+        );
         break;
 
     case constants::TYPE_SPEECHCARDS:
-        $mform = new \mod_poodlltime\rsquestion\speechcardsform();
+        $mform = new \mod_poodlltime\rsquestion\speechcardsform(null,
+                array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$poodlltime)
+        );
         break;
 
     case constants::TYPE_LISTENREPEAT:
-        $mform = new \mod_poodlltime\rsquestion\listenrepeatform();
+        $mform = new \mod_poodlltime\rsquestion\listenrepeatform(null,
+                array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$poodlltime)
+        );
         break;
 
 	case constants::NONE:
@@ -193,21 +212,39 @@ if ($data = $mform->get_data()) {
         $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER} ;
     }
 
-    //save text answers
-    for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++){
+    //save correct answer if we have one
+    if(property_exists($data,constants::CORRECTANSWER)){
+        $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER} ;
+    }
+
+    //save text answers and other data in custom text
+    //could be editor areas
+    for($anumber=1;$anumber<=constants::MAXCUSTOMTEXT;$anumber++){
         //if its an editor field, do this
-        if(property_exists($data,constants::TEXTANSWER . $anumber . '_editor')) {
-            $data = file_postupdate_standard_editor($data, constants::TEXTANSWER . $anumber, $editoroptions, $context,
-                'mod_poodlltime', constants::TEXTANSWER_FILEAREA . $anumber, $theitem->id);
-            $theitem->{constants::TEXTANSWER . $anumber} = $data->{constants::TEXTANSWER . $anumber};
-            $theitem->{constants::TEXTANSWER . $anumber . 'format'} = $data->{constants::TEXTANSWER . $anumber . 'format'};
+        if(property_exists($data,'customtext' . $anumber . '_editor')) {
+            $data = file_postupdate_standard_editor($data, 'customtext' . $anumber, $editoroptions, $context,
+                'mod_poodlltime', 'customtextfilearea' . $anumber, $theitem->id);
+            $theitem->{'customtext' . $anumber} = $data->{'customtext' . $anumber};
+            $theitem->{'customtext' . $anumber . 'format'} = $data->{'customtext' . $anumber . 'format'};
             //if its a text field, do this
-        }elseif(property_exists($data,constants::TEXTANSWER . $anumber)){
-            $theitem->{constants::TEXTANSWER . $anumber} = $data->{constants::TEXTANSWER. $anumber} ;
+        }elseif(property_exists($data,'customtext' . $anumber)){
+            $theitem->{'customtext' . $anumber} = $data->{'customtext'. $anumber} ;
         }
     }
 
+    //we might have other customdata
+    for($anumber=1;$anumber<=constants::MAXCUSTOMDATA;$anumber++){
+        if(property_exists($data,'customdata' . $anumber)){
+            $theitem->{'customdata' . $anumber} = $data->{'customdata'. $anumber} ;
+        }
+    }
 
+    //we might have custom int
+    for($anumber=1;$anumber<=constants::MAXCUSTOMINT;$anumber++){
+        if(property_exists($data,'customint' . $anumber)){
+            $theitem->{'customint' . $anumber} = $data->{'customint'. $anumber} ;
+        }
+    }
 
 		//now update the db once we have saved files and stuff
 		if (!$DB->update_record(constants::M_QTABLE,$theitem)){

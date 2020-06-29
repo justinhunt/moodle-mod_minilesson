@@ -59,6 +59,17 @@ class mod_poodlltime_external extends external_api {
         return new external_value(PARAM_BOOL);
     }
 
+    public static function compare_passage_to_transcript_parameters(){
+        return new external_function_parameters(
+                array('transcript' => new external_value(PARAM_TEXT, 'The spoken phrase'),
+                        'passage' => new external_value(PARAM_TEXT, 'The correct phrase'),
+                        'language' => new external_value(PARAM_TEXT, 'The language eg en-US'),
+                        'alternatives' => new external_value(PARAM_TEXT, 'list of alternatives',false,'')
+                )
+        );
+
+    }
+
     public static function compare_passage_to_transcript($language,$passage,$transcript, $alternatives) {
         global $DB;
 
@@ -115,16 +126,7 @@ class mod_poodlltime_external extends external_api {
     public static function compare_passage_to_transcript_returns() {
         return new external_value(PARAM_RAW);
     }
-    //---------------------------------------
 
-    public static function submit_streaming_attempt_parameters() {
-        return new external_function_parameters([
-                'cmid' => new external_value(PARAM_INT),
-                'filename' => new external_value(PARAM_TEXT),
-                'rectime' => new external_value(PARAM_INT),
-                'awsresults' => new external_value(PARAM_RAW),
-        ]);
-    }
 
 
 }

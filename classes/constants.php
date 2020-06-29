@@ -69,11 +69,19 @@ const AUDIOPROMPT_FILEAREA = 'audioitem';
 const TEXTPROMPT_FILEAREA = 'textitem';
 const TEXTQUESTION = 'itemtext';
 const TEXTANSWER = 'customtext';
+const POLLYVOICE = 'customtext5';
 const TEXTQUESTION_FILEAREA = 'itemarea';
-const TEXTANSWER_FILEAREA ='answerarea';
+const TEXTANSWER_FILEAREA ='customtextfilearea';
 const PASSAGEPICTURE='passagepicture';
 const PASSAGEPICTURE_FILEAREA = 'passagepicture';
 const MAXANSWERS=4;
+const MAXCUSTOMTEXT=5;
+const MAXCUSTOMDATA=5;
+const MAXCUSTOMINT=5;
+
+const SHOWTEXTPROMPT = 'customint1';
+const TEXTPROMPT_WORDS = 0;
+const TEXTPROMPT_DOTS = 1;
 
 
 //CSS ids/classes
