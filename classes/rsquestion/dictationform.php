@@ -19,6 +19,7 @@ class dictationform extends baseform
         //nothing here
         $this->add_static_text('instructions','','Enter a list of sentences in the text area below');
         $this->add_textarearesponse(1,'sentences');
+        $this->add_voiceselect(constants::POLLYVOICE,get_string('choosevoice',constants::M_COMPONENT));
     }
 
 }

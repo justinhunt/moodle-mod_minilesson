@@ -485,3 +485,8 @@ $string['d_question'] = 'Question';
 $string['listenandrepeat'] = 'Listen and Repeat';
 $string['lr_instructions1'] = 'Listen and repeat the sentences you hear';
 $string['lr_instructions2'] = 'Click \'Start\' to begin!';
+
+$string['choosevoice'] = "Choose the speakers voice";
+$string['showtextprompt'] = 'Show text prompt';
+$string['textprompt_words'] = 'Show text prompt (words)';
+$string['textprompt_dots'] = 'Show dots for letters only';

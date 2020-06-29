@@ -841,6 +841,12 @@ class utils{
         return $options;
     }
 
+    public static function fetch_options_textprompt() {
+        $options = array(constants::TEXTPROMPT_WORDS => get_string("textprompt_words", constants::M_COMPONENT),
+                constants::TEXTPROMPT_DOTS => get_string("textprompt_dots", constants::M_COMPONENT));
+        return $options;
+    }
+
     public static function fetch_pagelayout_options(){
         $options = Array(
                 'frametop'=>'frametop',
@@ -851,6 +857,83 @@ class utils{
                 'popup'=>'popup'
         );
         return $options;
+    }
+
+    public static function fetch_auto_voice($langcode){
+        $voices = self::get_tts_voices($langcode);
+        $autoindex = array_rand($voices);
+        return $voices[$autoindex];
+    }
+
+    public static function get_tts_voices($langcode){
+        $alllang= array(
+                constants::M_LANG_ARAE => ['Zeina'],
+            //constants::M_LANG_ARSA => [],
+                constants::M_LANG_DEDE => ['Hans'=>'Hans','Marlene'=>'Marlene', 'Vicki'=>'Vicki'],
+            //constants::M_LANG_DECH => [],
+                constants::M_LANG_ENUS => ['Joey'=>'Joey','Justin'=>'Justin','Matthew'=>'Matthew','Ivy'=>'Ivy',
+                        'Joanna'=>'Joanna','Kendra'=>'Kendra','Kimberly'=>'Kimberly','Salli'=>'Salli'],
+                constants::M_LANG_ENGB => ['Brian'=>'Brian','Amy'=>'Amy', 'Emma'=>'Emma'],
+                constants::M_LANG_ENAU => ['Russell'=>'Russell','Nicole'=>'Nicole'],
+                constants::M_LANG_ENIN => ['Aditi'=>'Aditi', 'Raveena'=>'Raveena'],
+            // constants::M_LANG_ENIE => [],
+                constants::M_LANG_ENWL => ["Geraint"=>"Geraint"],
+            // constants::M_LANG_ENAB => [],
+                constants::M_LANG_ESUS => ['Miguel'=>'Miguel','Penelope'=>'Penelope'],
+                constants::M_LANG_ESES => [ 'Enrique'=>'Enrique', 'Conchita'=>'Conchita', 'Lucia'=>'Lucia'],
+            //constants::M_LANG_FAIR => [],
+                constants::M_LANG_FRCA => ['Chantal'=>'Chantal'],
+                constants::M_LANG_FRFR => ['Mathieu'=>'Mathieu','Celine'=>'Celine', 'Léa'=>'Léa'],
+                constants::M_LANG_HIIN => ["Aditi"=>"Aditi"],
+            //constants::M_LANG_HEIL => [],
+            //constants::M_LANG_IDID => [],
+                constants::M_LANG_ITIT => ['Carla'=>'Carla',  'Bianca'=>'Bianca', 'Giorgio'=>'Giorgio'],
+                constants::M_LANG_JAJP => ['Takumi'=>'Takumi','Mizuki'=>'Mizuki'],
+                constants::M_LANG_KOKR => ['Seoyan'=>'Seoyan'],
+            //constants::M_LANG_MSMY => [],
+                constants::M_LANG_NLNL => ["Ruben"=>"Ruben","Lotte"=>"Lotte"],
+                constants::M_LANG_PTBR => ['Ricardo'=>'Ricardo', 'Vitoria'=>'Vitoria'],
+                constants::M_LANG_PTPT => ["Ines"=>"Ines",'Cristiano'=>'Cristiano'],
+                constants::M_LANG_RURU => ["Tatyana"=>"Tatyana","Maxim"=>"Maxim"],
+            //constants::M_LANG_TAIN => [],
+            //constants::M_LANG_TEIN => [],
+                constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
+                constants::M_LANG_ZHCN => ['Zhiyu']
+        );
+        if(array_key_exists($langcode,$alllang)) {
+            return $alllang[$langcode];
+        }else{
+            return $alllang[constants::M_LANG_ENUS];
+        }
+        /*
+            To add more voices choose from these
+          {"lang": "English(US)", "voices":  [{name: 'Joey', mf: 'm'},{name: 'Justin', mf: 'm'},{name: 'Matthew', mf: 'm'},{name: 'Ivy', mf: 'f'},{name: 'Joanna', mf: 'f'},{name: 'Kendra', mf: 'f'},{name: 'Kimberly', mf: 'f'},{name: 'Salli', mf: 'f'}]},
+          {"lang": "English(GB)", "voices":  [{name: 'Brian', mf: 'm'},{name: 'Amy', mf: 'f'},{name: 'Emma', mf: 'f'}]},
+          {"lang": "English(AU)", "voices": [{name: 'Russell', mf: 'm'},{name: 'Nicole', mf: 'f'}]},
+          {"lang": "English(IN)", "voices":  [{name: 'Aditi', mf: 'm'},{name: 'Raveena', mf: 'f'}]},
+          {"lang": "English(WELSH)", "voices":  [{name: 'Geraint', mf: 'm'}]},
+          {"lang": "Danish", "voices":  [{name: 'Mads', mf: 'm'},{name: 'Naja', mf: 'f'}]},
+          {"lang": "Dutch", "voices":  [{name: 'Ruben', mf: 'm'},{name: 'Lotte', mf: 'f'}]},
+          {"lang": "French(FR)", "voices":  [{name: 'Mathieu', mf: 'm'},{name: 'Celine', mf: 'f'},{name: 'Léa', mf: 'f'}]},
+          {"lang": "French(CA)", "voices":  [{name: 'Chantal', mf: 'm'}]},
+          {"lang": "German", "voices":  [{name: 'Hans', mf: 'm'},{name: 'Marlene', mf: 'f'},{name: 'Vicki', mf: 'f'}]},
+          {"lang": "Icelandic", "voices":  [{name: 'Karl', mf: 'm'},{name: 'Dora', mf: 'f'}]},
+          {"lang": "Italian", "voices":  [{name: 'Carla', mf: 'f'},{name: 'Bianca', mf: 'f'},{name: 'Giorgio', mf: 'm'}]},
+          {"lang": "Japanese", "voices":  [{name: 'Takumi', mf: 'm'},{name: 'Mizuki', mf: 'f'}]},
+          {"lang": "Korean", "voices":  [{name: 'Seoyan', mf: 'f'}]},
+          {"lang": "Norwegian", "voices":  [{name: 'Liv', mf: 'f'}]},
+          {"lang": "Polish", "voices":  [{name: 'Jacek', mf: 'm'},{name: 'Jan', mf: 'm'},{name: 'Maja', mf: 'f'},{name: 'Ewa', mf: 'f'}]},
+          {"lang": "Portugese(BR)", "voices":  [{name: 'Ricardo', mf: 'm'},{name: 'Vitoria', mf: 'f'}]},
+          {"lang": "Portugese(PT)", "voices":  [{name: 'Cristiano', mf: 'm'},{name: 'Ines', mf: 'f'}]},
+          {"lang": "Romanian", "voices":  [{name: 'Carmen', mf: 'f'}]},
+          {"lang": "Russian", "voices":  [{name: 'Maxim', mf: 'm'},{name: 'Tatyana', mf: 'f'}]},
+          {"lang": "Spanish(ES)", "voices":  [{name: 'Enrique', mf: 'm'},{name: 'Conchita', mf: 'f'},{name: 'Lucia', mf: 'f'}]},
+          {"lang": "Spanish(US)", "voices":  [{name: 'Miguel', mf: 'm'},{name: 'Penelope', mf: 'f'}]},
+          {"lang": "Swedish", "voices":  [{name: 'Astrid', mf: 'f'}]},
+          {"lang": "Turkish", "voices":  [{name: 'Filiz', mf: 'f'}]},
+          {"lang": "Welsh", "voices":  [{name: 'Gwyneth', mf: 'f'}]},
+        */
+
     }
 
 
@@ -889,132 +972,5 @@ class utils{
                constants::M_LANG_TRTR => get_string('tr-tr', constants::M_COMPONENT),
                constants::M_LANG_ZHCN => get_string('zh-cn', constants::M_COMPONENT)
        );
-	/*
-      return array(
-			"none"=>"No TTS",
-			"af"=>"Afrikaans", 
-			"sq"=>"Albanian", 
-			"am"=>"Amharic", 
-			"ar"=>"Arabic", 
-			"hy"=>"Armenian", 
-			"az"=>"Azerbaijani", 
-			"eu"=>"Basque", 
-			"be"=>"Belarusian", 
-			"bn"=>"Bengali", 
-			"bh"=>"Bihari", 
-			"bs"=>"Bosnian", 
-			"br"=>"Breton", 
-			"bg"=>"Bulgarian", 
-			"km"=>"Cambodian", 
-			"ca"=>"Catalan", 
-			"zh-CN"=>"Chinese (Simplified)", 
-			"zh-TW"=>"Chinese (Traditional)", 
-			"co"=>"Corsican", 
-			"hr"=>"Croatian", 
-			"cs"=>"Czech", 
-			"da"=>"Danish", 
-			"nl"=>"Dutch", 
-			"en"=>"English", 
-			"eo"=>"Esperanto", 
-			"et"=>"Estonian", 
-			"fo"=>"Faroese", 
-			"tl"=>"Filipino", 
-			"fi"=>"Finnish", 
-			"fr"=>"French", 
-			"fy"=>"Frisian", 
-			"gl"=>"Galician", 
-			"ka"=>"Georgian", 
-			"de"=>"German", 
-			"el"=>"Greek", 
-			"gn"=>"Guarani", 
-			"gu"=>"Gujarati", 
-			"xx-hacker"=>"Hacker", 
-			"ha"=>"Hausa", 
-			"iw"=>"Hebrew", 
-			"hi"=>"Hindi", 
-			"hu"=>"Hungarian", 
-			"is"=>"Icelandic", 
-			"id"=>"Indonesian", 
-			"ia"=>"Interlingua", 
-			"ga"=>"Irish", 
-			"it"=>"Italian", 
-			"ja"=>"Japanese", 
-			"jw"=>"Javanese", 
-			"kn"=>"Kannada", 
-			"kk"=>"Kazakh", 
-			"rw"=>"Kinyarwanda", 
-			"rn"=>"Kirundi", 
-			"xx-klingon"=>"Klingon", 
-			"ko"=>"Korean", 
-			"ku"=>"Kurdish", 
-			"ky"=>"Kyrgyz", 
-			"lo"=>"Laothian", 
-			"la"=>"Latin", 
-			"lv"=>"Latvian", 
-			"ln"=>"Lingala", 
-			"lt"=>"Lithuanian", 
-			"mk"=>"Macedonian", 
-			"mg"=>"Malagasy", 
-			"ms"=>"Malay", 
-			"ml"=>"Malayalam", 
-			"mt"=>"Maltese", 
-			"mi"=>"Maori", 
-			"mr"=>"Marathi", 
-			"mo"=>"Moldavian", 
-			"mn"=>"Mongolian", 
-			"sr-ME"=>"Montenegrin", 
-			"ne"=>"Nepali", 
-			"no"=>"Norwegian", 
-			"nn"=>"Norwegian(Nynorsk)", 
-			"oc"=>"Occitan", 
-			"or"=>"Oriya", 
-			"om"=>"Oromo", 
-			"ps"=>"Pashto", 
-			"fa"=>"Persian", 
-			"xx-pirate"=>"Pirate", 
-			"pl"=>"Polish", 
-			"pt-BR"=>"Portuguese(Brazil)", 
-			"pt-PT"=>"Portuguese(Portugal)", 
-			"pa"=>"Punjabi", 
-			"qu"=>"Quechua", 
-			"ro"=>"Romanian", 
-			"rm"=>"Romansh", 
-			"ru"=>"Russian", 
-			"gd"=>"Scots Gaelic", 
-			"sr"=>"Serbian", 
-			"sh"=>"Serbo-Croatian", 
-			"st"=>"Sesotho", 
-			"sn"=>"Shona", 
-			"sd"=>"Sindhi", 
-			"si"=>"Sinhalese", 
-			"sk"=>"Slovak", 
-			"sl"=>"Slovenian", 
-			"so"=>"Somali", 
-			"es"=>"Spanish", 
-			"su"=>"Sundanese", 
-			"sw"=>"Swahili", 
-			"sv"=>"Swedish", 
-			"tg"=>"Tajik", 
-			"ta"=>"Tamil", 
-			"tt"=>"Tatar", 
-			"te"=>"Telugu", 
-			"th"=>"Thai", 
-			"ti"=>"Tigrinya", 
-			"to"=>"Tonga", 
-			"tr"=>"Turkish", 
-			"tk"=>"Turkmen", 
-			"tw"=>"Twi", 
-			"ug"=>"Uighur", 
-			"uk"=>"Ukrainian", 
-			"ur"=>"Urdu", 
-			"uz"=>"Uzbek", 
-			"vi"=>"Vietnamese", 
-			"cy"=>"Welsh", 
-			"xh"=>"Xhosa", 
-			"yi"=>"Yiddish", 
-			"yo"=>"Yoruba", 
-			"zu"=>"Zulu"
-		);
-	*/
    }
 }

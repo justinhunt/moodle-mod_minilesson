@@ -35,6 +35,7 @@ namespace mod_poodlltime\rsquestion;
 require_once($CFG->libdir . '/formslib.php');
 
 use \mod_poodlltime\constants;
+use \mod_poodlltime\utils;
 
 /**
  * Abstract class that item type's inherit from.
@@ -71,8 +72,14 @@ abstract class baseform extends \moodleform {
      * @var array
      */
     protected $filemanageroptions = array();
-	
-	
+
+    /**
+     * An array of options used in the filemanager
+     * @var array
+     */
+    protected $moduleinstance = null;
+
+
     /**
      * True if this is a standard item of false if it does something special.
      * items are standard items
@@ -104,6 +111,7 @@ abstract class baseform extends \moodleform {
         $mform = $this->_form;
         $this->editoroptions = $this->_customdata['editoroptions'];
 		$this->filemanageroptions = $this->_customdata['filemanageroptions'];
+        $this->moduleinstance = $this->_customdata['moduleinstance'];
 
 	
         $mform->addElement('header', 'typeheading', get_string('createaitem', 'poodlltime', get_string($this->type, 'poodlltime')));
@@ -249,6 +257,17 @@ abstract class baseform extends \moodleform {
         $this->_form->addElement('select', constants::CORRECTANSWER, $label,$options);
         $this->_form->setDefault(constants::CORRECTANSWER, 1);
         $this->_form->setType(constants::CORRECTANSWER, PARAM_INT);
+    }
+
+    /**
+     * Convenience function: Adds a dropdown list of voices
+     *
+     * @param string $label, null means default
+     * @return void
+     */
+    protected final function add_voiceselect($name, $label = null) {
+        $voiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage);
+        $this->add_dropdown($name, $label,$voiceoptions);
     }
 
     /**
