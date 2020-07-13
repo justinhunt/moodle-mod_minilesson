@@ -131,6 +131,10 @@ class comprehensiontest
             $currentitem++;
             $testitem= new \stdClass();
             $testitem->number =  $currentitem;
+            $testitem->correctanswer =  $item->correctanswer;
+            $testitem->id = $item->id;
+            $testitem->type=$item->type;
+            $testitem->uniqueid=$item->type . $testitem->number;
 
             switch($testitem->type) {
                 case constants::TYPE_DICTATION:
@@ -152,10 +156,7 @@ class comprehensiontest
             for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
                 $testitem->{'customtext' . $anumber} = $item->{constants::TEXTANSWER . $anumber};
             }
-            $testitem->correctanswer =  $item->correctanswer;
-            $testitem->id = $item->id;
-            $testitem->type=$item->type;
-            $testitem->uniqueid=$item->type . $testitem->number;
+
 
             switch($testitem->type){
                 case constants::TYPE_DICTATION:
