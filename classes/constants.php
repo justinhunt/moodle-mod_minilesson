@@ -54,7 +54,7 @@ const TYPE_TEXTPROMPT_LONG = 'multichoicelong';
 const TYPE_MULTICHOICE = 'multichoice';
 const TYPE_TEXTPROMPT_AUDIO = 'audioresponse';
 
-const TYPE_INSTRUCTIONS = 'instructions';
+const TYPE_PAGE = 'page';
 const TYPE_DICTATIONCHAT = 'dictationchat';
 const TYPE_DICTATION = 'dictation';
 const TYPE_SPEECHCARDS = 'speechcards';

@@ -131,7 +131,24 @@ class comprehensiontest
             $currentitem++;
             $testitem= new \stdClass();
             $testitem->number =  $currentitem;
-            $testitem->text =  $item->{constants::TEXTQUESTION};
+
+            switch($testitem->type) {
+                case constants::TYPE_DICTATION:
+                case constants::TYPE_DICTATIONCHAT:
+                case constants::TYPE_SPEECHCARDS:
+                case constants::TYPE_LISTENREPEAT:
+                default:
+                   $testitem->text =  $item->{constants::TEXTQUESTION};
+                    break;
+                case constants::TYPE_MULTICHOICE:
+                case constants::TYPE_PAGE:
+                    $testitem->text =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
+                            'pluginfile.php', $this->context->id,constants::M_COMPONENT,
+                            constants::TEXTQUESTION_FILEAREA, $testitem->id);
+                    break;
+            }
+
+
             for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
                 $testitem->{'customtext' . $anumber} = $item->{constants::TEXTANSWER . $anumber};
             }
@@ -167,6 +184,8 @@ class comprehensiontest
                    $testitem->owner=hash('md5',$USER->username);
 
                    break;
+                case constants::TYPE_MULTICHOICE:
+                case constants::TYPE_PAGE:
             }
 
             $testitems[]=$testitem;

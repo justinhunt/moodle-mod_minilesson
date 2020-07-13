@@ -136,6 +136,11 @@ abstract class baseform extends \moodleform {
             $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', 'poodlltime'), array('wrap'=>'virtual','style'=>'width: 100%;'));
             $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
 
+           // $mform->addElement('editor', constants::TEXTQUESTION . '_editor', get_string('itemcontents', 'poodlltime'), array('wrap'=>'virtual','style'=>'width: 100%;'),$this->editoroptions);
+           // $this->_form->setDefault(constants::TEXTQUESTION . '_editor', array('text'=>'', 'format'=>FORMAT_MOODLE));
+           // $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
+
+
         }
 		//visibility
 		$mform->addElement('selectyesno', 'visible', get_string('visible'));

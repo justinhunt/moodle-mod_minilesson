@@ -65,6 +65,7 @@ This file contains class and ID definitions.
         qtype_textpromptaudio: 'audioresponse',
 
         //question types
+        qtype_page: 'page',
         qtype_multichoice: 'multichoice',
         qtype_dictationchat: 'dictationchat',
         qtype_dictation: 'dictation',

@@ -298,7 +298,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       $(".landr_ctrl-btn").prop("disabled", true);
 
       ajax.call([{
-        methodname: 'mod_readaloud_compare_passage_to_transcript',
+        methodname: 'mod_poodlltime_compare_passage_to_transcript',
         args: {
           passage: passage,
           transcript: transcript,
