@@ -135,9 +135,9 @@ abstract class baseform extends \moodleform {
 
            // $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', 'poodlltime'), array('wrap'=>'virtual','style'=>'width: 100%;'));
            // $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
-
+            $someid= \html_writer::random_id();
             $mform->addElement('editor', constants::TEXTQUESTION . '_editor', get_string('itemcontents', 'poodlltime'),
-                    array('wrap'=>'virtual','style'=>'width: 100%;'),$this->editoroptions);
+                    array('id'=>$someid, 'wrap'=>'virtual','style'=>'width: 100%;'),$this->editoroptions);
             $this->_form->setDefault(constants::TEXTQUESTION . '_editor', array('text'=>'', 'format'=>FORMAT_HTML));
             $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
 

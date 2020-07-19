@@ -692,6 +692,99 @@ function poodlltime_pluginfile($course, $cm, $context, $filearea, array $args, $
         send_stored_file($file, null, 0, $forcedownload, $options);
 }
 
+function poodlltime_output_fragment_mform($args) {
+    global $CFG, $PAGE, $DB;
+
+    $args = (object) $args;
+    $context = $args->context;
+    $formname = $args->formname;
+    $mform= null;
+    $o = '';
+
+
+
+    list($ignored, $course) = get_context_info_array($context->id);
+
+    //get filechooser and html editor options
+    $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($course, $context);
+    $filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_options($course,1);
+
+    // get the objects we need
+    $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
+
+
+    //get the mform for our item
+    switch($formname){
+
+
+        case constants::TYPE_MULTICHOICE:
+            $mform = new \mod_poodlltime\rsquestion\multichoiceform(null,
+                    array('editoroptions'=>$editoroptions,
+                            'filemanageroptions'=>$filemanageroptions,
+                            'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_DICTATIONCHAT:
+            $mform = new \mod_poodlltime\rsquestion\dictationchatform(null,
+                    array('editoroptions'=>$editoroptions,
+                            'filemanageroptions'=>$filemanageroptions,
+                            'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_DICTATION:
+            $mform = new \mod_poodlltime\rsquestion\dictationform(null,
+                    array('editoroptions'=>$editoroptions,
+                            'filemanageroptions'=>$filemanageroptions,
+                            'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_SPEECHCARDS:
+            $mform = new \mod_poodlltime\rsquestion\speechcardsform(null,
+                    array('editoroptions'=>$editoroptions,
+                            'filemanageroptions'=>$filemanageroptions,
+                            'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_LISTENREPEAT:
+            $mform = new \mod_poodlltime\rsquestion\listenrepeatform(null,
+                    array('editoroptions'=>$editoroptions,
+                            'filemanageroptions'=>$filemanageroptions,
+                            'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_PAGE:
+            $mform = new \mod_poodlltime\rsquestion\pageform(null,
+                    array('editoroptions'=>$editoroptions,
+                            'filemanageroptions'=>$filemanageroptions,
+                            'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::NONE:
+        default:
+            print_error('No item type specifified');
+            return 0;
+
+    }
+
+
+    if(!empty($mform)) {
+        ob_start();
+        $mform->display();
+        $o .= ob_get_contents();
+        ob_end_clean();
+    }
+
+    return $o;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Navigation API                                                             //
 ////////////////////////////////////////////////////////////////////////////////

@@ -25,6 +25,7 @@
  **/
 
 use \mod_poodlltime\constants;
+use \mod_poodlltime\utils;
 
 require_once("../../../config.php");
 require_once($CFG->dirroot.'/mod/poodlltime/lib.php');
@@ -171,104 +172,15 @@ if ($mform->is_cancelled()) {
 //if we have data, then our job here is to save it and return to the quiz edit page
 if ($data = $mform->get_data()) {
 		require_sesskey();
-		
-		$theitem = new stdClass;
-        $theitem->poodlltime = $poodlltime->id;
-        $theitem->id = $data->itemid;
-		$theitem->visible = $data->visible;
-		$theitem->itemorder = $data->itemorder;
-		$theitem->type = $data->type;
-		$theitem->name = $data->name;
-		$theitem->modifiedby=$USER->id;
-		$theitem->timemodified=time();
-		
-		//first insert a new item if we need to
-		//that will give us a itemid, we need that for saving files
-		if(!$edit){
-			
-			$theitem->{constants::TEXTQUESTION} = '';
-			$theitem->timecreated=time();			
-			$theitem->createdby=$USER->id;
 
-			//get itemorder
-            $comprehensiontest = new \mod_poodlltime\comprehensiontest($cm);
-            $currentitems = $comprehensiontest->fetch_items();
-            if(count($currentitems)>0){
-                $lastitem = array_pop($currentitems);
-                $itemorder = $lastitem->itemorder +1;
-            } else{
-                $itemorder=1;
-            }
-            $theitem->itemorder=$itemorder;
+		$result = utils::update_insert_question($poodlltime,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
+		if($result->error==true){
+            print_error($result->message);
+            redirect($redirecturl);
 
-			//create a rsquestionkey
-			$theitem->rsquestionkey = \mod_poodlltime\rsquestion\helper::create_rsquestionkey();
-			
-			//try to insert it
-			if (!$theitem->id = $DB->insert_record(constants::M_QTABLE,$theitem)){
-					error("Could not insert poodlltime item!");
-					redirect($redirecturl);
-			}
-		}			
-		
-		//handle all the text questions
-        //if its an editor field, do this
-        if(property_exists($data,constants::TEXTQUESTION . '_editor')) {
-            $data = file_postupdate_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context,
-                    constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, $theitem->id);
-            $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION};
-            $theitem->{constants::TEXTQUESTION_FORMAT} = $data->{constants::TEXTQUESTION_FORMAT};
-            //if its a text field, do this
-        }elseif(property_exists($data,constants::TEXTQUESTION)){
-            $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION} ;
+        }else{
+		    $theitem=$result->item;
         }
-
-
-
-	//save correct answer if we have one
-    if(property_exists($data,constants::CORRECTANSWER)){
-        $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER} ;
-    }
-
-    //save correct answer if we have one
-    if(property_exists($data,constants::CORRECTANSWER)){
-        $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER} ;
-    }
-
-    //save text answers and other data in custom text
-    //could be editor areas
-    for($anumber=1;$anumber<=constants::MAXCUSTOMTEXT;$anumber++){
-        //if its an editor field, do this
-        if(property_exists($data,constants::TEXTANSWER . $anumber . '_editor')) {
-            $data = file_postupdate_standard_editor($data, constants::TEXTANSWER . $anumber, $editoroptions, $context,
-                    constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA . $anumber, $theitem->id);
-            $theitem->{constants::TEXTANSWER . $anumber} = $data->{'customtext' . $anumber};
-            $theitem->{constants::TEXTANSWER . $anumber . 'format'} = $data->{constants::TEXTANSWER . $anumber . 'format'};
-            //if its a text field, do this
-        }elseif(property_exists($data,constants::TEXTANSWER. $anumber)){
-            $theitem->{constants::TEXTANSWER . $anumber} = $data->{constants::TEXTANSWER. $anumber} ;
-        }
-    }
-
-    //we might have other customdata
-    for($anumber=1;$anumber<=constants::MAXCUSTOMDATA;$anumber++){
-        if(property_exists($data,constants::CUSTOMDATA . $anumber)){
-            $theitem->{constants::CUSTOMDATA . $anumber} = $data->{constants::CUSTOMDATA. $anumber} ;
-        }
-    }
-
-    //we might have custom int
-    for($anumber=1;$anumber<=constants::MAXCUSTOMINT;$anumber++){
-        if(property_exists($data,constants::CUSTOMINT . $anumber)){
-            $theitem->{constants::CUSTOMINT . $anumber} = $data->{constants::CUSTOMINT . $anumber} ;
-        }
-    }
-
-		//now update the db once we have saved files and stuff
-		if (!$DB->update_record(constants::M_QTABLE,$theitem)){
-				print_error("Could not update poodlltime item!");
-				redirect($redirecturl);
-		}
 
 		//go back to edit quiz page
 		redirect($redirecturl);

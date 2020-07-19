@@ -130,5 +130,126 @@ class mod_poodlltime_external extends external_api {
     }
 
 
+    public static function submit_mform_parameters() {
+        return new external_function_parameters(
+                array(
+                        'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
+                        'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array'),
+                        'formname' => new external_value(PARAM_TEXT, 'The formname')
+                )
+        );
+    }
+
+    public static function submit_mform($contextid,$jsonformdata, $formname) {
+        global $CFG, $DB, $USER;
+
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::submit_mform_parameters(),
+                ['contextid' => $contextid, 'jsonformdata' => $jsonformdata, 'formname'=>$formname]);
+
+        $context = context::instance_by_id($params['contextid'], MUST_EXIST);
+
+        // We always must call validate_context in a webservice.
+        self::validate_context($context);
+
+        list($ignored, $course) = get_context_info_array($context->id);
+        $serialiseddata = json_decode($params['jsonformdata']);
+
+        $data = array();
+        parse_str($serialiseddata, $data);
+
+        //get filechooser and html editor options
+        $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($course, $context);
+        $filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_options($course,1);
+
+        // get the objects we need
+        $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
+        $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
+        $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
+
+
+        //get the mform for our item
+        switch($formname){
+
+
+            case constants::TYPE_MULTICHOICE:
+                $mform = new \mod_poodlltime\rsquestion\multichoiceform(null,
+                        array('editoroptions'=>$editoroptions,
+                                'filemanageroptions'=>$filemanageroptions,
+                                'moduleinstance'=>$moduleinstance)
+                );
+                break;
+
+            case constants::TYPE_DICTATIONCHAT:
+                $mform = new \mod_poodlltime\rsquestion\dictationchatform(null,
+                        array('editoroptions'=>$editoroptions,
+                                'filemanageroptions'=>$filemanageroptions,
+                                'moduleinstance'=>$moduleinstance)
+                );
+                break;
+
+            case constants::TYPE_DICTATION:
+                $mform = new \mod_poodlltime\rsquestion\dictationform(null,
+                        array('editoroptions'=>$editoroptions,
+                                'filemanageroptions'=>$filemanageroptions,
+                                'moduleinstance'=>$moduleinstance)
+                );
+                break;
+
+            case constants::TYPE_SPEECHCARDS:
+                $mform = new \mod_poodlltime\rsquestion\speechcardsform(null,
+                        array('editoroptions'=>$editoroptions,
+                                'filemanageroptions'=>$filemanageroptions,
+                                'moduleinstance'=>$moduleinstance)
+                );
+                break;
+
+            case constants::TYPE_LISTENREPEAT:
+                $mform = new \mod_poodlltime\rsquestion\listenrepeatform(null,
+                        array('editoroptions'=>$editoroptions,
+                                'filemanageroptions'=>$filemanageroptions,
+                                'moduleinstance'=>$moduleinstance)
+                );
+                break;
+
+            case constants::TYPE_PAGE:
+                $mform = new \mod_poodlltime\rsquestion\pageform(null,
+                        array('editoroptions'=>$editoroptions,
+                                'filemanageroptions'=>$filemanageroptions,
+                                'moduleinstance'=>$moduleinstance)
+                );
+                break;
+
+            case constants::NONE:
+            default:
+                print_error('No item type specifified');
+                return 0;
+
+        }
+
+        $validateddata = $mform->get_data();
+        if ($validateddata) {
+            $edit=$validateddata->id ? true : false;
+            $data->id = $data->itemid;
+            $result = utils::update_insert_question($moduleinstance,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
+            if($result->error==true){
+                print_error($result->message);
+                return 0;
+            }else{
+                $theitem=$result->item;
+                return $theitem->id;
+            }
+        }
+
+    }
+
+
+    public static function submit_mform_returns() {
+        return new external_value(PARAM_RAW);
+        //return new external_value(PARAM_INT, 'group id');
+    }
+
+
 
 }

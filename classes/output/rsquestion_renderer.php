@@ -36,7 +36,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
  * @param lesson $lesson
  * @return string
  */
- public function add_edit_page_links($poodlltime) {
+ public function add_edit_page_links($context) {
 		global $CFG;
         $itemid = 0;
 
@@ -46,28 +46,40 @@ class rsquestion_renderer extends \plugin_renderer_base {
 
      $addmultichoiceitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
          array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_MULTICHOICE));
-        $links[] = \html_writer::link($addmultichoiceitemurl, get_string('addmultichoiceitem', constants::M_COMPONENT));
+        $links[] = \html_writer::link($addmultichoiceitemurl, get_string('addmultichoiceitem', constants::M_COMPONENT),
+                array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_MULTICHOICE));
 
 
      $adddictationchatitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
              array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_DICTATIONCHAT));
-     $links[] = \html_writer::link($adddictationchatitemurl, get_string('adddictationchatitem', constants::M_COMPONENT));
+     $links[] = \html_writer::link($adddictationchatitemurl, get_string('adddictationchatitem', constants::M_COMPONENT),
+             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_DICTATIONCHAT));
    
    $adddictationitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
              array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_DICTATION));
-     $links[] = \html_writer::link($adddictationitemurl, get_string('adddictationitem', constants::M_COMPONENT));
+     $links[] = \html_writer::link($adddictationitemurl, get_string('adddictationitem', constants::M_COMPONENT),
+             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_DICTATION));
 
      $addspeechcardsitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
              array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_SPEECHCARDS));
-     $links[] = \html_writer::link( $addspeechcardsitemurl , get_string('addspeechcardsitem', constants::M_COMPONENT));
+     $links[] = \html_writer::link( $addspeechcardsitemurl , get_string('addspeechcardsitem', constants::M_COMPONENT),
+             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_SPEECHCARDS));
 
      $addlistenrepeatitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
              array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_LISTENREPEAT));
-     $links[] = \html_writer::link($addlistenrepeatitemurl, get_string('addlistenrepeatitem', constants::M_COMPONENT));
+     $links[] = \html_writer::link($addlistenrepeatitemurl, get_string('addlistenrepeatitem', constants::M_COMPONENT),
+             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_LISTENREPEAT));
 
      $addpageitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
              array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_PAGE));
-     $links[] = \html_writer::link($addpageitemurl, get_string('addpageitem', constants::M_COMPONENT));
+     $links[] = \html_writer::link($addpageitemurl, get_string('addpageitem', constants::M_COMPONENT),
+             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_PAGE));
+
+     $usingajax=false;
+     if($usingajax){
+         $props=array('contextid'=>$context->id);
+         $this->page->requires->js_call_amd(constants::M_COMPONENT . '/rsquestionmanager', 'init', array($props));
+     }
 
         return $this->output->box($output.'<p>'.implode('</p><p>', $links).'</p>', 'generalbox firstpageoptions');
     }

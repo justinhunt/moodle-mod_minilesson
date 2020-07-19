@@ -38,6 +38,7 @@ $string['poodlltime:view'] = 'Preview Poodll Time';
 $string['poodlltime:itemview'] = 'View questions';
 $string['poodlltime:itemedit'] = 'Edit questions';
 $string['poodlltime:tts'] = 'Can use Text To Speech(tts)';
+$string['poodlltime:managequestions'] = 'Can manage questions';
 $string['poodlltime:canmanageattempts'] = 'Can manage Poodll Time attempts';
 $string['poodlltime:manage'] = 'Can manage Poodll Time instances';
 $string['poodlltime:canpreview'] = 'Can preview Poodll Time activities';

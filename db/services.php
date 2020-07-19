@@ -32,5 +32,14 @@ $functions = array(
         'capabilities'=> 'mod/poodlltime:view',
         'type'        => 'read',
         'ajax'        => true,
-        )
+        ),
+
+        'mod_poodlltime_submit_mform' => array(
+                'classname'   => 'mod_poodlltime_external',
+                'methodname'  => 'submit_mform',
+                'description' => 'submits mform.',
+                'capabilities'=> 'mod/poodlltime:managequestions',
+                'type'        => 'write',
+                'ajax'        => true,
+        ),
 );

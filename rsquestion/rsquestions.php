@@ -56,7 +56,7 @@ echo $renderer->header($poodlltime, $cm, $mode, null, get_string('rsquestions', 
     
     //if have edit permission, show edit buttons
     if(has_capability('mod/poodlltime:itemview', $context)){
-    	echo $rsquestion_renderer ->add_edit_page_links($poodlltime);
+    	echo $rsquestion_renderer ->add_edit_page_links($context);
     }
 
 //if we have items, show em

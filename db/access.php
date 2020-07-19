@@ -159,5 +159,16 @@ $capabilities = array(
             'student' => CAP_ALLOW
         )
     ),
+
+    'mod/poodlltime:managequestions' => array(
+            'riskbitmask' => RISK_SPAM | RISK_XSS,
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_MODULE,
+            'archetypes' => array(
+                    'editingteacher' => CAP_ALLOW,
+                    'manager' => CAP_ALLOW
+            ),
+            'clonepermissionsfrom' => 'moodle/course:manageactivities'
+    ),
 );
 

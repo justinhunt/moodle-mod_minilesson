@@ -973,4 +973,114 @@ class utils{
                constants::M_LANG_ZHCN => get_string('zh-cn', constants::M_COMPONENT)
        );
    }
+
+   public static function update_insert_question($poodlltime, $data, $edit, $context, $cm ,$editoroptions, $filemanageroptions) {
+       global $DB, $USER;
+
+       $ret = new \stdClass;
+       $ret->error = false;
+       $ret->message = '';
+       $ret->payload = null;
+
+       $theitem = new \stdClass;
+       $theitem->poodlltime = $poodlltime->id;
+       $theitem->id = $data->itemid;
+       $theitem->visible = $data->visible;
+       $theitem->itemorder = $data->itemorder;
+       $theitem->type = $data->type;
+       $theitem->name = $data->name;
+       $theitem->modifiedby = $USER->id;
+       $theitem->timemodified = time();
+
+       //first insert a new item if we need to
+       //that will give us a itemid, we need that for saving files
+       if (!$edit) {
+
+           $theitem->{constants::TEXTQUESTION} = '';
+           $theitem->timecreated = time();
+           $theitem->createdby = $USER->id;
+
+           //get itemorder
+           $comprehensiontest = new \mod_poodlltime\comprehensiontest($cm);
+           $currentitems = $comprehensiontest->fetch_items();
+           if (count($currentitems) > 0) {
+               $lastitem = array_pop($currentitems);
+               $itemorder = $lastitem->itemorder + 1;
+           } else {
+               $itemorder = 1;
+           }
+           $theitem->itemorder = $itemorder;
+
+           //create a rsquestionkey
+           $theitem->rsquestionkey = \mod_poodlltime\rsquestion\helper::create_rsquestionkey();
+
+           //try to insert it
+           if (!$theitem->id = $DB->insert_record(constants::M_QTABLE, $theitem)) {
+               $ret->error = true;
+               $ret->message = "Could not insert poodlltime item!";
+               return $ret;
+           }
+       }//enf of of !edit
+
+           //handle all the text questions
+           //if its an editor field, do this
+           if (property_exists($data, constants::TEXTQUESTION . '_editor')) {
+               $data = file_postupdate_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context,
+                       constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, $theitem->id);
+               $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION};
+               $theitem->{constants::TEXTQUESTION_FORMAT} = $data->{constants::TEXTQUESTION_FORMAT};
+               //if its a text field, do this
+           } else if (property_exists($data, constants::TEXTQUESTION)) {
+               $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION};
+           }
+
+           //save correct answer if we have one
+           if (property_exists($data, constants::CORRECTANSWER)) {
+               $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER};
+           }
+
+           //save correct answer if we have one
+           if (property_exists($data, constants::CORRECTANSWER)) {
+               $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER};
+           }
+
+           //save text answers and other data in custom text
+           //could be editor areas
+           for ($anumber = 1; $anumber <= constants::MAXCUSTOMTEXT; $anumber++) {
+               //if its an editor field, do this
+               if (property_exists($data, constants::TEXTANSWER . $anumber . '_editor')) {
+                   $data = file_postupdate_standard_editor($data, constants::TEXTANSWER . $anumber, $editoroptions, $context,
+                           constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA . $anumber, $theitem->id);
+                   $theitem->{constants::TEXTANSWER . $anumber} = $data->{'customtext' . $anumber};
+                   $theitem->{constants::TEXTANSWER . $anumber . 'format'} = $data->{constants::TEXTANSWER . $anumber . 'format'};
+                   //if its a text field, do this
+               } else if (property_exists($data, constants::TEXTANSWER . $anumber)) {
+                   $theitem->{constants::TEXTANSWER . $anumber} = $data->{constants::TEXTANSWER . $anumber};
+               }
+           }
+
+           //we might have other customdata
+           for ($anumber = 1; $anumber <= constants::MAXCUSTOMDATA; $anumber++) {
+               if (property_exists($data, constants::CUSTOMDATA . $anumber)) {
+                   $theitem->{constants::CUSTOMDATA . $anumber} = $data->{constants::CUSTOMDATA . $anumber};
+               }
+           }
+
+           //we might have custom int
+           for ($anumber = 1; $anumber <= constants::MAXCUSTOMINT; $anumber++) {
+               if (property_exists($data, constants::CUSTOMINT . $anumber)) {
+                   $theitem->{constants::CUSTOMINT . $anumber} = $data->{constants::CUSTOMINT . $anumber};
+               }
+           }
+
+           //now update the db once we have saved files and stuff
+           if (!$DB->update_record(constants::M_QTABLE, $theitem)) {
+               $ret->error = true;
+               $ret->message = "Could not update poodlltime item!";
+               return $ret;
+           }else{
+             $ret->item = $theitem;
+             return $ret;
+           }
+   }//end of edit_insert_question
 }
