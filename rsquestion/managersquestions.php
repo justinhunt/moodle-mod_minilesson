@@ -148,6 +148,14 @@ switch($type){
         );
         break;
 
+    case constants::TYPE_PAGE:
+        $mform = new \mod_poodlltime\rsquestion\pageform(null,
+                array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$poodlltime)
+        );
+        break;
+
 	case constants::NONE:
 	default:
 		print_error('No item type specifified');
@@ -204,7 +212,17 @@ if ($data = $mform->get_data()) {
 		}			
 		
 		//handle all the text questions
-		$theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION} ;
+        //if its an editor field, do this
+        if(property_exists($data,constants::TEXTQUESTION . '_editor')) {
+            $data = file_postupdate_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context,
+                    constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, $theitem->id);
+            $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION};
+            $theitem->{constants::TEXTQUESTION_FORMAT} = $data->{constants::TEXTQUESTION_FORMAT};
+            //if its a text field, do this
+        }elseif(property_exists($data,constants::TEXTQUESTION)){
+            $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION} ;
+        }
+
 
 
 	//save correct answer if we have one
@@ -221,28 +239,28 @@ if ($data = $mform->get_data()) {
     //could be editor areas
     for($anumber=1;$anumber<=constants::MAXCUSTOMTEXT;$anumber++){
         //if its an editor field, do this
-        if(property_exists($data,'customtext' . $anumber . '_editor')) {
-            $data = file_postupdate_standard_editor($data, 'customtext' . $anumber, $editoroptions, $context,
-                'mod_poodlltime', 'customtextfilearea' . $anumber, $theitem->id);
-            $theitem->{'customtext' . $anumber} = $data->{'customtext' . $anumber};
-            $theitem->{'customtext' . $anumber . 'format'} = $data->{'customtext' . $anumber . 'format'};
+        if(property_exists($data,constants::TEXTANSWER . $anumber . '_editor')) {
+            $data = file_postupdate_standard_editor($data, constants::TEXTANSWER . $anumber, $editoroptions, $context,
+                    constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA . $anumber, $theitem->id);
+            $theitem->{constants::TEXTANSWER . $anumber} = $data->{'customtext' . $anumber};
+            $theitem->{constants::TEXTANSWER . $anumber . 'format'} = $data->{constants::TEXTANSWER . $anumber . 'format'};
             //if its a text field, do this
-        }elseif(property_exists($data,'customtext' . $anumber)){
-            $theitem->{'customtext' . $anumber} = $data->{'customtext'. $anumber} ;
+        }elseif(property_exists($data,constants::TEXTANSWER. $anumber)){
+            $theitem->{constants::TEXTANSWER . $anumber} = $data->{constants::TEXTANSWER. $anumber} ;
         }
     }
 
     //we might have other customdata
     for($anumber=1;$anumber<=constants::MAXCUSTOMDATA;$anumber++){
-        if(property_exists($data,'customdata' . $anumber)){
-            $theitem->{'customdata' . $anumber} = $data->{'customdata'. $anumber} ;
+        if(property_exists($data,constants::CUSTOMDATA . $anumber)){
+            $theitem->{constants::CUSTOMDATA . $anumber} = $data->{constants::CUSTOMDATA. $anumber} ;
         }
     }
 
     //we might have custom int
     for($anumber=1;$anumber<=constants::MAXCUSTOMINT;$anumber++){
-        if(property_exists($data,'customint' . $anumber)){
-            $theitem->{'customint' . $anumber} = $data->{'customint'. $anumber} ;
+        if(property_exists($data,constants::CUSTOMINT . $anumber)){
+            $theitem->{constants::CUSTOMINT . $anumber} = $data->{constants::CUSTOMINT . $anumber} ;
         }
     }
 
@@ -262,6 +280,12 @@ if ($data = $mform->get_data()) {
 if ($edit) {
 	$data = $item;		
 	$data->itemid = $item->id;
+
+    //init our item, we move the id fields around a little
+    $data = file_prepare_standard_editor($data, constants::TEXTQUESTION , $editoroptions, $context, constants::M_COMPONENT,
+            constants::TEXTQUESTION_FILEAREA,  $data->itemid);
+
+
 }else{
 	$data=new stdClass;
 	$data->itemid = null;
@@ -280,6 +304,7 @@ if ($edit) {
         case constants::TYPE_DICTATION:
         case constants::TYPE_SPEECHCARDS:
         case constants::TYPE_LISTENREPEAT:
+        case constants::TYPE_PAGE:
 		default:
 	}
     $mform->set_data($data);

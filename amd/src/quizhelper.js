@@ -1,7 +1,7 @@
 define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'core/ajax', 'mod_poodlltime/pollyhelper',
-    'mod_poodlltime/dictation', 'mod_poodlltime/dictationchat', 'mod_poodlltime/multichoice', 'mod_poodlltime/speechcards', 'mod_poodlltime/listenrepeat'
+    'mod_poodlltime/dictation', 'mod_poodlltime/dictationchat', 'mod_poodlltime/multichoice', 'mod_poodlltime/speechcards', 'mod_poodlltime/listenrepeat','mod_poodlltime/page'
   ],
-  function($, log, def, templates, Ajax, polly, dictation, dictationchat, multichoice, speechcards, listenrepeat) {
+  function($, log, def, templates, Ajax, polly, dictation, dictationchat, multichoice, speechcards, listenrepeat, page) {
     "use strict"; // jshint ;_;
 
     /*
@@ -24,6 +24,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
 
       controls: {},
       submitbuttonclass: 'mod_poodlltime_quizsubmitbutton',
+      stepresults: [],
 
       init: function(quizcontainer, quizdata, cmid, attemptid) {
         this.quizdata = quizdata;
@@ -58,11 +59,16 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
               break;
               case def.qtype_speechcards:
               //speechcards init needs to occur when it is visible. lame.
+              // so we do that in do_next function, down below
               //speechcards.init(index, item, dd);
               break;
             case def.qtype_listenrepeat:
               listenrepeat.init(index, item, dd);
               break;
+
+             case def.qtype_page:
+                  page.init(index, item, dd);
+                  break;
           }
 
         });
@@ -101,13 +107,18 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
           }//end of nextitem switch
 
         } else {
-          var scores = [{"name":"listenandrepeat","score":0}];
+
           this.controls.quizcontainer.append("<h2>FINISHED Tada</h2>");
+          this.controls.quizcontainer.append(JSON.stringify(dd.stepresults));
         }
       },
 
       report_step_grade: function(stepdata) {
         var dd = this;
+        //store results locally
+        this.stepresults.push(stepdata);
+
+        //push results to server
         Ajax.call([{
           methodname: 'mod_poodlltime_report_step_grade',
           args: {

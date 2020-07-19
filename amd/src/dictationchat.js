@@ -21,9 +21,11 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
 
       $("#" + self.itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
         var stepdata = {};
-        var grade = 50;
         stepdata.index = self.index;
-        stepdata.grade = grade;
+        stepdata.hasgrade = true;
+        stepdata.totalitems=4;
+        stepdata.correctitems=2;
+        stepdata.grade = 50;
         self.quizhelper.do_next(stepdata);
       });
 

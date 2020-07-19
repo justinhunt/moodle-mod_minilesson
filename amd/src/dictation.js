@@ -73,6 +73,10 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
         var total = $('#' + itemdata.uniqueid + '_container .dictate-feedback').length;
         var grade = Math.round(correct / total, 2) * 100;
         stepdata.index = index;
+        stepdata.hasgrade = true;
+        stepdata.grade = grade;
+        stepdata.totalitems=total;
+        stepdata.correctitems=correct;
         stepdata.grade = grade;
         quizhelper.do_next(stepdata);
       });

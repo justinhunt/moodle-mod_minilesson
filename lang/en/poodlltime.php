@@ -437,12 +437,15 @@ $string['adddictationchatitem']='Add dictation chat item';
 $string['adddictationitem']='Add dictation item';
 $string['addlistenrepeatitem']='Add listen and repeat item';
 $string['addspeechcardsitem']='Add Speech Cards item';
+$string['addpageitem']='Add Page item';
+
 
 $string['multichoice'] = 'Multi Choice';
 $string['dictation']='Dictation';
 $string['dictationchat']='Dictation Chat';
 $string['speechcards']='Speech Cards';
 $string['listenrepeat']='Listen and Repeat';
+$string['page']='Page';
 
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';
@@ -490,3 +493,5 @@ $string['choosevoice'] = "Choose the speakers voice";
 $string['showtextprompt'] = 'Show text prompt';
 $string['textprompt_words'] = 'Show text prompt (words)';
 $string['textprompt_dots'] = 'Show dots for letters only';
+
+$string['gradenow']= 'Grade Now';

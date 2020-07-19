@@ -65,6 +65,10 @@ class rsquestion_renderer extends \plugin_renderer_base {
              array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_LISTENREPEAT));
      $links[] = \html_writer::link($addlistenrepeatitemurl, get_string('addlistenrepeatitem', constants::M_COMPONENT));
 
+     $addpageitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
+             array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_PAGE));
+     $links[] = \html_writer::link($addpageitemurl, get_string('addpageitem', constants::M_COMPONENT));
+
         return $this->output->box($output.'<p>'.implode('</p><p>', $links).'</p>', 'generalbox firstpageoptions');
     }
 	
