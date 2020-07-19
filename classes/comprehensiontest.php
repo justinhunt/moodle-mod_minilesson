@@ -143,12 +143,14 @@ class comprehensiontest
                 case constants::TYPE_LISTENREPEAT:
                 default:
                    $testitem->text =  $item->{constants::TEXTQUESTION};
+                   $testitem->text =format_text($testitem->thetext);
                     break;
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_PAGE:
                     $testitem->text =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
                             'pluginfile.php', $this->context->id,constants::M_COMPONENT,
                             constants::TEXTQUESTION_FILEAREA, $testitem->id);
+                    $testitem->text =format_text($testitem->thetext);
                     break;
             }
 
