@@ -134,6 +134,7 @@ class comprehensiontest
             $testitem->correctanswer =  $item->correctanswer;
             $testitem->id = $item->id;
             $testitem->type=$item->type;
+            $testitem->title=$item->name;
             $testitem->uniqueid=$item->type . $testitem->number;
 
             switch($testitem->type) {
