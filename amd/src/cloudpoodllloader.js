@@ -1,11 +1,10 @@
 /**
  * CloudPoodll Loader module.
  *
- * @package mod_wordcards
+ * @package mod_poodlltime
  * @author  Justin Hunt - Poodll.com
  */
 define(['jquery','core/log','https://cdn.jsdelivr.net/gh/justinhunt/cloudpoodll@latest/amd/build/cloudpoodll.min.js'], function($,log,CloudPoodll){
-//define(['jquery','core/log','http://localhost/moodle/local/cpapi/cloudpoodll/amd/src/cloudpoodll.js'], function($,log,CloudPoodll){
     return {
         callbacks: [],
         init: function (recorderid, thecallback) {
@@ -21,6 +20,9 @@ define(['jquery','core/log','https://cdn.jsdelivr.net/gh/justinhunt/cloudpoodll@
                         }
                     }
                 };
+                $( "iframe" ).on("load",function(){
+                    $(".mod_poodlltime_recording_cont").css('background-image','none');
+                });
             }
         }
     }

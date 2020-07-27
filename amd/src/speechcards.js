@@ -1,5 +1,5 @@
-define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_poodlltime/pollyhelper',
-    'mod_poodlltime/cloudpoodllloader'], function($, log,Ajax, def, polly, cloudpoodll) {
+define(['jquery','jqueryui', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_poodlltime/pollyhelper',
+    'mod_poodlltime/cloudpoodllloader'], function($,jqui, log,Ajax, def, polly, cloudpoodll) {
     "use strict"; // jshint ;_;
 
     /*
@@ -131,7 +131,7 @@ define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_pood
                     };
 
                     //init cloudpoodll push recorder
-                    cloudpoodll.init('poodlltime-poodllrecorder', theCallback);
+                    cloudpoodll.init('poodlltime-recorder-speechcards-' + itemdata.id, theCallback);
 
                     //init progress dots
                     app.progress_dots(app.results,app.terms);
