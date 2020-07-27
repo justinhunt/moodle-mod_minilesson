@@ -566,8 +566,12 @@ class renderer extends \plugin_renderer_base {
            // $this->page->requires->js_call_amd(constants::M_COMPONENT . '/' . $item->type, 'init', array($item));
         }
 
-        $quizdiv = \html_writer::div(implode('',$itemshtml) ,constants::M_QUIZ_CONTAINER,
+        $finisheddiv = \html_writer::div("" ,constants::M_QUIZ_FINISHED,
+            array('id'=>constants::M_QUIZ_FINISHED));
+      
+        $quizdiv = \html_writer::div($finisheddiv.implode('',$itemshtml) ,constants::M_QUIZ_CONTAINER,
             array('id'=>constants::M_QUIZ_CONTAINER));
+      
         $ret = $quizdiv;
         return $ret;
     }

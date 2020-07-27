@@ -206,5 +206,7 @@ const M_PUSH_PASSAGE =1;
 const M_PUSH_ALTERNATIVES =2;
 const M_PUSH_QUESTIONS =3;
 const M_PUSH_LEVEL =4;
+  
+const M_QUIZ_FINISHED = "mod_poodlltime_quiz_finished";
 
 }

@@ -14,7 +14,6 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
             break;
 
           case 'speech':
-            console.log(message);
             self.getComparison(
               self.items[self.game.pointer].target,
               message.capturedspeech,
@@ -72,17 +71,18 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
           }
         }, 3000);
       });
+      
     },
     spliton: new RegExp('([,.!?:;" ])', 'g'),
     game: {
       pointer: 0
     },
-    usevoice: 'Amy',
+    usevoice: '',
     setvoice: function() {
       var self = this;
       var language = "English(US)";
       var mf = "Female";
-      var voice = 'Amy';
+      var voice;
       switch (language) {
         case "English(US)":
           voice = mf === 'Male' ? 'Joey' : 'Kendra';
@@ -185,15 +185,13 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       });
 
       $.each(self.items, function(index, item) {
-        polly.fetch_polly_url(item.target, 'text', 'Amy').then(function(audiourl) {
+        polly.fetch_polly_url(item.target, 'text', self.usevoice).then(function(audiourl) {
           item.audio = new Audio();
           item.audio.src = audiourl;
           if (self.items.filter(function(e) {
               return e.audio == null
             }).length == 0) {
             self.appReady();
-          } else {
-            console.log(self.items);
           }
         });
       });
@@ -207,13 +205,15 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
     },
     gotComparison: function(comparison, typed) {
 
-      console.log(comparison, typed);
-
       var self = this;
 
-      $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").addClass("landr_correct").removeClass("landr_incorrect");
+      $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").removeClass("landr_correct landr_incorrect");
 
-      if (!Object.keys(comparison).length) {
+      var allCorrect = comparison.filter(function(e){return !e.matched;}).length==0;
+      
+      if (allCorrect) {
+        
+        $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").addClass("landr_correct");
         $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].target + "");
 
         self.items[self.game.pointer].answered = true;
@@ -234,14 +234,16 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
 
       } else {
 
-        Object.keys(comparison).forEach(function(idx) {
-          $("#" + self.itemdata.uniqueid + "_container .landr_targetWord[data-idx='" + idx + "']").removeClass("landr_correct").addClass("landr_incorrect");
+        comparison.forEach(function(obj) {
+          if(!obj.matched){
+            $("#" + self.itemdata.uniqueid + "_container .landr_targetWord[data-idx='" + obj.wordnumber + "']").addClass("landr_incorrect");
+          } else {
+            $("#" + self.itemdata.uniqueid + "_container .landr_targetWord[data-idx='" + obj.wordnumber + "']").addClass("landr_correct");
+          }
         });
 
         $("#" + self.itemdata.uniqueid + "_container .landr_reply_" + self.game.pointer).effect("shake", function() {
-
           $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", false);
-
         });
 
       }
@@ -249,7 +251,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       $("#" + self.itemdata.uniqueid + "_container .landr_targetWord.landr_correct").each(function() {
         var realidx = $(this).data("realidx");
         var landr_targetWord = self.items[self.game.pointer].landr_targetWords[realidx];
-        $(this).val(landr_targetWord).prop("disabled", true);
+        $(this).val(landr_targetWord);
       });
 
     },
@@ -270,32 +272,8 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       }
       return words;
     },
-    getSimpleComparison(passage, transcript, callback) {
-      var self = this;
-      var pwords = self.getWords(passage);
-      var twords = self.getWords(transcript);
-      var ret = {};
-      for (var pi = 0; pi < pwords.length && pi < twords.length; pi++) {
-        if (pwords[pi] != twords[pi]) {
-          ret[pi + 1] = {
-            "word": pwords[pi],
-            "number": pi + 1
-          };
-        }
-      }
-      callback(ret);
-    },
     getComparison: function(passage, transcript, callback) {
       var self = this;
-      /*
-      var comparison = "simple";
-      if (comparison == 'simple') {
-        self.getSimpleComparison(passage, transcript, callback);
-        return;
-      }
-      */
-
-      console.log(passage,transcript);
       
       $(".landr_ctrl-btn").prop("disabled", true);
 
@@ -369,7 +347,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
     },
     nextPrompt: function() {
 
-      var showText = true;
+      var showText = false;
       var self = this;
 
       var target = self.items[self.game.pointer].target;

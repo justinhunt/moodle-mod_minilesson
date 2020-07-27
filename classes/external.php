@@ -70,7 +70,7 @@ class mod_poodlltime_external extends external_api {
 
     }
 
-    public static function compare_passage_to_transcript($language,$passage,$transcript, $alternatives) {
+    public static function compare_passage_to_transcript($transcript,$passage,$language,$alternatives) {
         global $DB;
 
         //turn the passage and transcript into an array of words

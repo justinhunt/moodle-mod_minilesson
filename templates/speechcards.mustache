@@ -1,16 +1,11 @@
 <div id="{{uniqueid}}_container" class="poodlltime_questioncontainer" style="display: none">
 
-  {{> mod_poodlltime/progress_dots}}
+  {{> mod_poodlltime/questionheader}} {{> mod_poodlltime/progress_dots}}
 
   <div class="poodlltime_speechcards-container">
 
-    <div class="poodlltime_speechcards_glide glide">
+    <div class="poodlltime_speechcards_target_phrase">
 
-      <div class="glide__wrapper">
-        <ul class="poodlltime_speechcards_thelist glide__track"></ul>
-      </div>
-
-      <div class="glide__arrows poodlltime-speechcards_toprow"></div>
 
     </div>
 
@@ -26,6 +21,6 @@
 
   </div>
 
-  <button type="button" class="btn btn-secondary poodlltime_nextbutton">Next</button>
+  {{> mod_poodlltime/nextbutton}}
 
 </div>

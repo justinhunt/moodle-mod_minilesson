@@ -40,7 +40,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
       prepare_html: function() {
 
         // this.controls.quizcontainer.append(submitbutton);
-
+        this.controls.quizfinished=$("#mod_poodlltime_quiz_finished");
 
       },
 
@@ -108,8 +108,24 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
 
         } else {
 
-          this.controls.quizcontainer.append("<h2>FINISHED Tada</h2>");
-          this.controls.quizcontainer.append(JSON.stringify(dd.stepresults));
+          var results = dd.stepresults.filter(function(e){return e.hasgrade;});
+          var correctitems = 0;
+          var totalitems = 0;
+          results.forEach(function(result,i){
+            result.index=i+1;
+            result.title=dd.quizdata[i].title;
+            correctitems += result.correctitems;
+            totalitems += result.totalitems;
+          })
+          var totalpercent = Math.round((correctitems/totalitems)*100);
+          console.log(results,correctitems,totalitems,totalpercent);
+          templates.render('mod_poodlltime/quizfinished',{results:results,total:totalpercent}).then(
+              function(html,js){
+                  dd.controls.quizfinished.html(html);
+                  dd.controls.quizfinished.show();
+              }
+          );
+
         }
       },
 

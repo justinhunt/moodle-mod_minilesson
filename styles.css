@@ -39,6 +39,11 @@ span.mod_poodlltime_debugsequence {
   float: right;
 }
 
+.mod_poodlltime_quiz_finished {
+  display: none;
+  text-align: center;
+}
+
 .mod_poodlltime_recording_cont {
   display: block;
   margin: auto;
@@ -1071,7 +1076,8 @@ div.mod_poodlltime_gradesadmin_cont {
 
 .poodlltime-poodllspeechcards_box {
   text-align: center;
-  width: 60%; /*225px;*/
+  width: 60%;
+  /*225px;*/
   font-size: 25px;
   margin: auto;
   border: 1px solid darkgray;
@@ -1445,9 +1451,9 @@ div.mod_poodlltime_gradesadmin_cont {
   right: 0;
   bottom: 0;
   height: 75px;
-  background-color: rgba(98,135,182,1);
-  text-align:center;
-  display:none;
+  background-color: rgba(98, 135, 182, 1);
+  text-align: center;
+  display: none;
 }
 
 .landr_results {
@@ -1485,7 +1491,58 @@ div.mod_poodlltime_gradesadmin_cont {
   float: left;
 }
 
-.landr_start_btn{
-  position:absolute;
-  bottom:0;
+.landr_start_btn {
+  position: absolute;
+  bottom: 0;
+}
+
+.mod_poodlltime_result_div {
+  display: inline-block;
+  width: 250px;
+  height: 100px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  vertical-align: top;
+  position: relative;
+  padding-top: 35px;
+}
+
+.mod_poodlltime_result_index {
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  background-color: #f5f5f5;
+  text-align: center;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mod_poodlltime_result_title {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 20px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.mod_poodlltime_result_score {}
+
+.mod_poodlltime_result_grade {}
+
+.poodlltime_speechcards_target_phrase {
+  text-align: center;
+  padding: 10px;
+  border: 1px solid black;
+  font-size: 32px;
 }

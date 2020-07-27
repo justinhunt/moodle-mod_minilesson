@@ -15,15 +15,15 @@ define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_pood
             this.init_app(index,itemdata,quizhelper);
         },
 
-        init_app: function(index, itemdata,quizhelper) {
+        init_app: function(index, itemdata, quizhelper) {
 
-
+            console.log(itemdata);
+          
             var app = {
                 passmark: 75,
                 pointer: 1,
                 jsondata: null,
                 props: null,
-                glider: null,
                 dryRun: false,
                 language: 'en-US',
                 terms: [],
@@ -40,13 +40,11 @@ define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_pood
 
                     this.init_controls();
                     this.initComponents();
-                    this.initCards();
                     this.register_events();
                 },
 
                 init_controls: function () {
                     app.controls= {};
-                    app.controls.the_list = $("#" + itemdata.uniqueid + "_container .poodlltime_speechcards_thelist");
                     app.controls.star_rating = $("#" + itemdata.uniqueid + "_container .poodlltime_star_rating");
                     app.controls.next_button = $("#" + itemdata.uniqueid + "_container .poodlltime-speechcards_nextbutton");
                 }
@@ -112,7 +110,7 @@ define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_pood
                                     app.wordsDoMatch(cleanspeechtext, app.terms[app.pointer - 1]) ) {
                                     log.debug('local match:' + ':' + spoken +':' + correct);
                                     app.showStarRating(100);
-                                    app.flagCorrectAndTransition(app.terms[app.pointer - 1]);
+                                    app.flagCorrectAndTransition();
                                     return;
                                 }
 
@@ -124,7 +122,7 @@ define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_pood
                                         log.debug('PHP similarity: ' + spoken + ':' + correct +':' + similarity);
                                         app.showStarRating(similarity);
                                         if(similarity>=app.passmark) {
-                                            app.flagCorrectAndTransition(similarity, app.terms[app.pointer - 1]);
+                                            app.flagCorrectAndTransition();
                                         }
                                     }//end of if check_by_phonetic result
                                 });//end of check by phonetic
@@ -137,38 +135,15 @@ define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_pood
 
                     //init progress dots
                     app.progress_dots(app.results,app.terms);
+                  
+                    app.writeCurrentTerm();
 
 
                 },
-
-                initCards: function () {
-                    $.getScript('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/glide.min.js').done(function () {
-
-                        function setPointer(newpointer) {
-                            app.pointer = newpointer;
-                        }
-
-                        //add speechcards
-                        var li_template = "<li class='glide__slide'><div class='poodlltime-poodllspeechcards_box'>@thetext@</div></li>";
-                        var thelist = app.controls.the_list;
-                        for(var i=0; i< app.terms.length; i++) {
-                            thelist.append(li_template.replace('@thetext@', app.terms[i]));
-                        }
-
-
-                        app.glider = $("#" + itemdata.uniqueid + "_container .poodlltime_speechcards_glide").glide({
-                            type: "carousel",
-                            autoplay: false,
-                            afterTransition: function (data) {
-                                setPointer(data.index);
-                            },
-                            afterInit: function (data) {
-                                setPointer(data.index);
-                            },
-                        }).data('glide_api');
-                    });
-                }
-                ,
+              
+                writeCurrentTerm:function(){
+                  $(".poodlltime_speechcards_target_phrase").text(app.terms[app.pointer-1]);
+                },
 
                 flagCorrectAndTransition: function () {
 
@@ -294,34 +269,24 @@ define(['jquery', 'core/log', 'core/ajax','mod_poodlltime/definitions','mod_pood
                     } else {
                         points = 0;
                     }
-                   // $(".a4e-distractor").css('pointer-events', 'none');
-                    var result = {
-                        points: points
-                    };
-                    //finally add our result to the results
+                    var result = {points: points};
                     app.results.push(result);
-
                 },
 
                 do_next: function () {
+                    app.pointer++;
                     app.progress_dots(app.results, app.terms);
                     app.clearStarRating();
                     if (!app.is_end()) {
-                        app.glider.go('>');
+                        app.writeCurrentTerm();
                     } else {
                         app.do_end();
                     }
-                }
-                ,
-                do_prev: function () {
-                    app.glider.go('<');
-                }
-                ,
+                },
 
                 clearStarRating: function () {
                     app.controls.star_rating.html('· · ·');
-                }
-                ,
+                },
 
                 do_end: function () {
                     var stepdata = {};
