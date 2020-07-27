@@ -80,14 +80,24 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
           //do something
         });
       },
-
+      render_quiz_progress:function(current,total){
+        var html = "<ol class='ProgressBar'>";
+        for(var i=0;i<total;i++){
+          html+=`
+          <li class="ProgressBar-step">
+            <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
+            <span class="ProgressBar-stepLabel">Cheese</span>
+          </li>`;
+        }
+        html+="</ol>";
+        $(".poodlltime_quiz_progress").find('.ProgressBarWrapper').html(html);
+      },
       do_next(stepdata) {
         var dd = this;
         this.report_step_grade(stepdata);
         //hide current question
         var currentitem = this.quizdata[stepdata.index];
         $("#" + currentitem.uniqueid + "_container").hide();
-
         //show next question or End Screen
         if (this.quizdata.length > stepdata.index + 1) {
           var nextindex = stepdata.index + 1;
@@ -127,6 +137,9 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
           );
 
         }
+        
+        this.render_quiz_progress(stepdata.index+1,this.quizdata.length);
+        
       },
 
       report_step_grade: function(stepdata) {
@@ -147,6 +160,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
 
       start_quiz: function() {
         $("#" + this.quizdata[0].uniqueid + "_container").show();
+        this.render_quiz_progress(0,this.quizdata.length);
       },
 
       //this function is overridden by the calling class
