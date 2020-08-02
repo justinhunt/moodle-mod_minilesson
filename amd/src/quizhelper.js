@@ -60,7 +60,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
               case def.qtype_speechcards:
               //speechcards init needs to occur when it is visible. lame.
               // so we do that in do_next function, down below
-              //speechcards.init(index, item, dd);
+              speechcards.init(index, item, dd);
               break;
             case def.qtype_listenrepeat:
               listenrepeat.init(index, item, dd);
@@ -108,7 +108,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
           //any per question type init that needs to occur can go here
           switch (nextitem.type) {
               case def.qtype_speechcards:
-                  speechcards.init(nextindex, nextitem, dd);
+                  //speechcards.init(nextindex, nextitem, dd);
                   break;
               case def.qtype_dictation:
               case def.qtype_dictationchat:
