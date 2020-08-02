@@ -14,7 +14,8 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
             break;
 
           case 'speech':
-              log.debug("speech at listen_repeat");
+              console.log("speech at listen_repeat");
+              //log.debug("speech at listen_repeat");
             self.getComparison(
               self.items[self.game.pointer].target,
               message.capturedspeech,

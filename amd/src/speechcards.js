@@ -87,7 +87,7 @@ define(['jquery','jqueryui', 'core/log', 'core/ajax','mod_poodlltime/definitions
                     //on incorrect we do not. A subsequent nav button click then doesnt need to post a result
                     var theCallback = function(message) {
                         //console.log("triggered callback");
-                        console.log(message);
+                       // console.log(message);
 
                         switch (message.type) {
                             case 'recording':
@@ -95,7 +95,8 @@ define(['jquery','jqueryui', 'core/log', 'core/ajax','mod_poodlltime/definitions
                                 break;
 
                             case 'speech':
-                                log.debug("speech at speechcards");
+                                console.log("speech at speechcards");
+                               // log.debug("speech at speechcards");
                                 var speechtext = message.capturedspeech;
                                 var cleanspeechtext = app.cleanText(speechtext);
 
