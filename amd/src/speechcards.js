@@ -95,6 +95,7 @@ define(['jquery','jqueryui', 'core/log', 'core/ajax','mod_poodlltime/definitions
                                 break;
 
                             case 'speech':
+                                log.debug("speech at speechcards");
                                 var speechtext = message.capturedspeech;
                                 var cleanspeechtext = app.cleanText(speechtext);
 
