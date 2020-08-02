@@ -299,6 +299,7 @@ define(['jquery','jqueryui', 'core/log', 'core/ajax','mod_poodlltime/definitions
                 },
 
                 is_end: function () {
+                    log.debug("pointer at: " + app.pointer + "/" + app.terms.length );
                     if (app.pointer < app.terms.length) {
                         return false;
                     } else {
