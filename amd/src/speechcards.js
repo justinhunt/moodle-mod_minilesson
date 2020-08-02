@@ -36,6 +36,7 @@ define(['jquery','jqueryui', 'core/log', 'core/ajax','mod_poodlltime/definitions
                     for(var i=0;i<itemdata.sentences.length;i++) {
                         app.terms[i] = itemdata.sentences[i].sentence;
                     }
+                    log.debug("app terms" ,app.terms)
                     app.language = itemdata.language;
 
                     this.init_controls();
@@ -95,8 +96,7 @@ define(['jquery','jqueryui', 'core/log', 'core/ajax','mod_poodlltime/definitions
                                 break;
 
                             case 'speech':
-                                console.log("speech at speechcards");
-                               // log.debug("speech at speechcards");
+                                log.debug("speech at speechcards");
                                 var speechtext = message.capturedspeech;
                                 var cleanspeechtext = app.cleanText(speechtext);
 
