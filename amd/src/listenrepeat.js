@@ -1,13 +1,13 @@
 define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper', 'mod_poodlltime/cloudpoodllloader'], function($, log, ajax, def, polly, cloudpoodll) {
   "use strict"; // jshint ;_;
 
-  log.debug('Poodll Time dictation chat: initialising');
+  log.debug('Poodll Time listen and repeat: initialising');
 
   return {
 
     init: function(index, itemdata, quizhelper) {
       var self = this;
-      cloudpoodll.init('poodlltime-poodllrecorder', function(message) {
+      cloudpoodll.init('poodlltime-recorder-listenrepeat-' + itemdata.id , function(message) {
 
         switch (message.type) {
           case 'recording':

@@ -81,16 +81,17 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
         });
       },
       render_quiz_progress:function(current,total){
-        var html = "<ol class='ProgressBar'>";
+        var array = [];
         for(var i=0;i<total;i++){
-          html+=`
-          <li class="ProgressBar-step">
-            <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold"/></svg>
-            <span class="ProgressBar-stepLabel">Cheese</span>
-          </li>`;
+          array.push(i);
         }
-        html+="</ol>";
-        $(".poodlltime_quiz_progress").find('.ProgressBarWrapper').html(html);
+        var slice = array.slice(current,current+5);
+        var html = "<div class='poodlltime_quiz_progress_line'></div>";
+        slice.forEach(function(i){
+          html+="<div class='poodlltime_quiz_progress_item "+(i==current?'poodlltime_quiz_progress_item_current':'')+" "+(i<current?'poodlltime_quiz_progress_item_completed':'')+"'>"+(i+1)+"</div>";
+        });
+        html+="";
+        $(".poodlltime_quiz_progress").html(html);
       },
       do_next(stepdata) {
         var dd = this;
