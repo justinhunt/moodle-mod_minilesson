@@ -35,18 +35,22 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       self.getItems();
     },
 
+    next_question:function(percent){
+      var self=this;
+      var stepdata = {};
+      stepdata.index = self.index;
+      stepdata.hasgrade = true;
+      stepdata.totalitems=self.items.length;
+      stepdata.correctitems=self.items.filter(function(e) {return e.correct;}).length;
+      stepdata.grade = Math.round((stepdata.totalitems/stepdata.correctitems)*100);
+      self.quizhelper.do_next(stepdata);
+    },
     register_events: function() {
 
       var self = this;
 
       $("#" + self.itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
-        var stepdata = {};
-          stepdata.index = self.index;
-          stepdata.hasgrade = true;
-          stepdata.totalitems=4;
-          stepdata.correctitems=2;
-          stepdata.grade = 50;
-        self.quizhelper.do_next(stepdata);
+        self.next_question();
       });
 
       $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").on("click", function() {
@@ -209,12 +213,14 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       var self = this;
 
       $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").removeClass("landr_correct landr_incorrect");
+      $("#" + self.itemdata.uniqueid + "_container .landr_feedback").removeClass("fa fa-check fa-times");
 
       var allCorrect = comparison.filter(function(e){return !e.matched;}).length==0;
       
       if (allCorrect) {
         
         $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").addClass("landr_correct");
+        $("#" + self.itemdata.uniqueid + "_container .landr_feedback").addClass("fa fa-check");
         $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].target + "");
 
         self.items[self.game.pointer].answered = true;
@@ -238,8 +244,10 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
         comparison.forEach(function(obj) {
           if(!obj.matched){
             $("#" + self.itemdata.uniqueid + "_container .landr_targetWord[data-idx='" + obj.wordnumber + "']").addClass("landr_incorrect");
+            $("#" + self.itemdata.uniqueid + "_container .landr_feedback[data-idx='" + obj.wordnumber + "']").addClass("fa fa-times");
           } else {
             $("#" + self.itemdata.uniqueid + "_container .landr_targetWord[data-idx='" + obj.wordnumber + "']").addClass("landr_correct");
+            $("#" + self.itemdata.uniqueid + "_container .landr_feedback[data-idx='" + obj.wordnumber + "']").addClass("fa fa-check");
           }
         });
 
@@ -310,18 +318,14 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       var totalNum = self.items.length;
 
       $("#" + self.itemdata.uniqueid + "_container .landr_results").html("TOTAL<br/>" + numCorrect + "/" + totalNum).show();
-
+      
+      $(".poodlltime_nextbutton").prop("disabled",true);
       setTimeout(function() {
-        $("#" + self.itemdata.uniqueid + "_container .landr_results").fadeOut(function() {
-          $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").show();
-        });
+        
+        $(".poodlltime_nextbutton").prop("disabled",false);
+        self.next_question();
+        
       }, 2000);
-
-      $("#" + self.itemdata.uniqueid + "_container .landr_game").hide();
-      $("#" + self.itemdata.uniqueid + "_container .landr_mainmenu").show();
-      $("#" + self.itemdata.uniqueid + "_container .landr_controls").hide();
-      $("#" + self.itemdata.uniqueid + "_container .landr_title").html("Listen and Repeat");
-      $("#" + self.itemdata.uniqueid + "_container .landr_speakbtncontainer").hide();
 
     },
     start: function() {
@@ -396,7 +400,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       var idx = 1;
       self.items[self.game.pointer].landr_targetWords.forEach(function(word, realidx) {
         if (!word.match(self.spliton)) {
-          landr_targetWordsCode += "<input disabled type='text' maxlength='" + word.length + "' size='" + (word.length + 1) + "' class='landr_targetWord' data-realidx='" + realidx + "' data-idx='" + idx + "'>";
+          landr_targetWordsCode += "<ruby><input disabled type='text' maxlength='" + word.length + "' size='" + (word.length + 1) + "' class='landr_targetWord' data-realidx='" + realidx + "' data-idx='" + idx + "'><rt><i data-idx='" + idx + "' class='landr_feedback'></i></rt></ruby>";
           idx++;
 
         } else {

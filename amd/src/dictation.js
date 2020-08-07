@@ -44,9 +44,9 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
         var typed = $(this).val().trim().toLowerCase();
         $("#"+itemdata.uniqueid+"_container .dictationplayer_"+index+"_chars").html(typed.length);
         if (correct == typed) {
-          $("#"+itemdata.uniqueid+"_container .dictate-feedback[data-index='" + index + "']").removeClass("fa-times").addClass("fa-check");
+          $("#"+itemdata.uniqueid+"_container .dictate-feedback[data-index='" + index + "']").removeClass("fa-times").addClass("fa-check").css("color","green").show();
         } else {
-          $("#"+itemdata.uniqueid+"_container .dictate-feedback[data-index='" + index + "']").removeClass("fa-check").addClass("fa-times");
+          $("#"+itemdata.uniqueid+"_container .dictate-feedback[data-index='" + index + "']").removeClass("fa-check").addClass("fa-times").css("color","red").show();
         }
 
       });

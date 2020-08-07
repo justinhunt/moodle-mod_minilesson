@@ -1305,6 +1305,7 @@ div.mod_poodlltime_gradesadmin_cont {
   font-weight: bold;
   color: white;
   text-align: center;
+  z-index:999;
 }
 
 .dictate_container .dictate_correct {
@@ -1470,6 +1471,7 @@ div.mod_poodlltime_gradesadmin_cont {
   font-weight: bold;
   color: white;
   text-align: center;
+  z-index:999;
 }
 
 .landr_container .landr_correct {
@@ -1553,7 +1555,7 @@ div.mod_poodlltime_gradesadmin_cont {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  position:relative;
+  position: relative;
 }
 
 .poodlltime_quiz_progress_item {
@@ -1567,25 +1569,30 @@ div.mod_poodlltime_gradesadmin_cont {
   color: white;
   font-size: 20px;
   font-weight: bold;
-  z-index:1;
+  z-index: 1;
 }
 
-.poodlltime_quiz_progress_item_current{
-  background-color:lightgray;
-  color:black
+.poodlltime_quiz_progress_item_current {
+  background-color: lightgray;
+  color: black
 }
 
-.poodlltime_quiz_progress_item_completed{
-  background-color:green;
+.poodlltime_quiz_progress_item_completed {
+  background-color: green;
 }
 
-.poodlltime_quiz_progress_line{
-  background-color:gray;
-  height:10px;
-  position:absolute;
-  margin:auto;
-  top:0;
-  bottom:0;
-  right:0;
-  left:0;
+.poodlltime_quiz_progress_line {
+  background-color: gray;
+  height: 10px;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+.landr_feedback,.dictate_feedback {
+  font-size: 14px !important;
+  padding: 10px;
 }

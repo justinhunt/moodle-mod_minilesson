@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper'], function($, log, def, polly) {
+define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper'], function($, log, ajax, def, polly) {
   "use strict"; // jshint ;_;
 
   log.debug('Poodll Time dictation chat: initialising');
@@ -14,19 +14,22 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       self.setvoice();
       self.getItems();
     },
-
+    next_question:function(){
+      var self=this;
+      var stepdata = {};
+      stepdata.index = self.index;
+      stepdata.hasgrade = true;
+      stepdata.totalitems=self.items.length;
+      stepdata.correctitems=self.items.filter(function(e) {return e.correct;}).length;
+      stepdata.grade = Math.round((stepdata.totalitems/stepdata.correctitems)*100);
+      self.quizhelper.do_next(stepdata);
+    },
     register_events: function() {
 
       var self = this;
 
       $("#" + self.itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
-        var stepdata = {};
-        stepdata.index = self.index;
-        stepdata.hasgrade = true;
-        stepdata.totalitems=4;
-        stepdata.correctitems=2;
-        stepdata.grade = 50;
-        self.quizhelper.do_next(stepdata);
+        self.next_question();
       });
 
       $("#" + self.itemdata.uniqueid + "_container .dictate_start_btn").on("click", function() {
@@ -53,28 +56,38 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
         }, 3000);
       });
 
+      
       $("#" + self.itemdata.uniqueid + "_container .dictate_check_btn").on("click", function() {
-
-        var passage = self.items[self.game.pointer].target;
-        var transcriptArray = [];
-
-        $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").each(function() {
-          transcriptArray.push($(this).val().trim() == "" ? "|" : $(this).val().trim());
-        })
-
-        var transcript = transcriptArray.join(" ");
-
-        self.getComparison(passage, transcript, function(comparison) {
-          self.gotComparison(comparison, transcript);
-        });
-
-      })
+        self.check_answer();
+      });
+      
+      $("body").on("keydown",".dictate_targetWord", function(e) {
+        if(e.which==13){
+          self.check_answer();
+        }
+      });
+      
     },
     spliton: new RegExp('([,.!?:;" ])', 'g'),
     game: {
       pointer: 0
     },
     usevoice: 'Amy',
+    check_answer:function(){
+      var self = this;
+      var passage = self.items[self.game.pointer].target;
+      var transcriptArray = [];
+
+      $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").each(function() {
+        transcriptArray.push($(this).val().trim() == "" ? "|" : $(this).val().trim());
+      })
+
+      var transcript = transcriptArray.join(" ");
+
+      self.getComparison(passage, transcript, function(comparison) {
+        self.gotComparison(comparison, transcript);
+      });
+    },
     setvoice: function() {
       var self = this;
       var language = "English(US)";
@@ -204,11 +217,20 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       $("#" + self.itemdata.uniqueid + "_container .dictate_start_btn").prop("disabled", false);
     },
     gotComparison: function(comparison, typed) {
+
       var self = this;
 
-      $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").addClass("dictate_correct").removeClass("dictate_incorrect");
+      $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").removeClass("dictate_correct dictate_incorrect");
+      $("#" + self.itemdata.uniqueid + "_container .dictate_feedback").removeClass("fa fa-check fa-times");
 
-      if (!Object.keys(comparison).length) {
+      var allCorrect = comparison.filter(function(e) {
+        return !e.matched;
+      }).length == 0;
+
+      if (allCorrect) {
+
+        $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").addClass("dictate_correct").prop("disabled",true);
+        $("#" + self.itemdata.uniqueid + "_container .dictate_feedback").addClass("fa fa-check");
         $("#" + self.itemdata.uniqueid + "_container .dictate_speech.dictate_teacher_left").text(self.items[self.game.pointer].target + "");
 
         self.items[self.game.pointer].answered = true;
@@ -229,14 +251,18 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
 
       } else {
 
-        Object.keys(comparison).forEach(function(idx) {
-          $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord[data-idx='" + idx + "']").removeClass("dictate_correct").addClass("dictate_incorrect");
+        comparison.forEach(function(obj) {
+          if (!obj.matched) {
+            $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord[data-idx='" + obj.wordnumber + "']").addClass("dictate_incorrect");
+            $("#" + self.itemdata.uniqueid + "_container .dictate_feedback[data-idx='" + obj.wordnumber + "']").addClass("fa fa-times");
+          } else {
+            $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord[data-idx='" + obj.wordnumber + "']").addClass("dictate_correct").prop("disabled",true);
+            $("#" + self.itemdata.uniqueid + "_container .dictate_feedback[data-idx='" + obj.wordnumber + "']").addClass("fa fa-check");
+          }
         });
 
         $("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer).effect("shake", function() {
-
           $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", false);
-
         });
 
       }
@@ -244,7 +270,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord.dictate_correct").each(function() {
         var realidx = $(this).data("realidx");
         var dictate_targetWord = self.items[self.game.pointer].dictate_targetWords[realidx];
-        $(this).val(dictate_targetWord).prop("disabled", true);
+        $(this).val(dictate_targetWord);
       });
 
     },
@@ -265,51 +291,23 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       }
       return words;
     },
-    getSimpleComparison(passage, transcript, callback) {
-      var self = this;
-      var pwords = self.getWords(passage);
-      var twords = self.getWords(transcript);
-      var ret = {};
-      for (var pi = 0; pi < pwords.length && pi < twords.length; pi++) {
-        if (pwords[pi] != twords[pi]) {
-          ret[pi + 1] = {
-            "word": pwords[pi],
-            "number": pi + 1
-          };
-        }
-      }
-      callback(ret);
-    },
     getComparison: function(passage, transcript, callback) {
       var self = this;
-      var comparison = "simple";
-      if (comparison == 'simple') {
-        self.getSimpleComparison(passage, transcript, callback);
-        return;
-      }
 
       $(".dictate_ctrl-btn").prop("disabled", true);
-
-      this.ajax.call([{
-        methodname: 'mod_poodlltime_compare_passage_to_transcript',
-        args: {
-          passage: passage,
-          transcript: transcript,
-          alternatives: '',
-          language: 'en-US'
-        },
-        done: function(ajaxresult) {
-          var payloadobject = JSON.parse(ajaxresult);
-          if (payloadobject) {
-            callback(payloadobject);
-          } else {
-            callback(false);
-          }
-        },
-        fail: function(err) {
-          console.log(err);
+      var payload=[];
+      var transcript_words = transcript.split(/ /);
+      var passage_words = passage.split(/ /);
+      var matched;
+      transcript_words.forEach(function(word,i){
+        if(passage_words[i].toLowerCase() == word.toLowerCase()){
+          matched = true;
+        } else{
+          matched = false;
         }
-      }]);
+        payload.push({word:word,matched:matched,wordnumber:i+1});
+      })
+      callback(payload);
 
     },
     end: function() {
@@ -322,16 +320,13 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       var totalNum = self.items.length;
 
       $("#" + self.itemdata.uniqueid + "_container .dictate_results").html("TOTAL<br/>" + numCorrect + "/" + totalNum).show();
-
+      
+      $(".poodlltime_nextbutton").prop("disabled",true);
       setTimeout(function() {
-        $("#" + self.itemdata.uniqueid + "_container .dictate_results").fadeOut();
+        $(".poodlltime_nextbutton").prop("disabled",false);
+        self.next_question();
       }, 2000);
-
-      $("#" + self.itemdata.uniqueid + "_container .dictate_game").hide();
-      $("#" + self.itemdata.uniqueid + "_container .dictate_start_btn").show();
-      $("#" + self.itemdata.uniqueid + "_container .dictate_mainmenu").show();
-      $("#" + self.itemdata.uniqueid + "_container .dictate_controls").hide();
-      $("#" + self.itemdata.uniqueid + "_container .dictate_title").html("Listen and Repeat");
+      
 
     },
     start: function() {
@@ -400,9 +395,8 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       var idx = 1;
       self.items[self.game.pointer].dictate_targetWords.forEach(function(word, realidx) {
         if (!word.match(self.spliton)) {
-          dictate_targetWordsCode += "<input type='text' maxlength='" + word.length + "' size='" + (word.length + 1) + "' class='dictate_targetWord' data-realidx='" + realidx + "' data-idx='" + idx + "'>";
+          dictate_targetWordsCode += "<ruby><input type='text' maxlength='" + word.length + "' size='" + (word.length + 1) + "' class='dictate_targetWord' data-realidx='" + realidx + "' data-idx='" + idx + "'><rt><i data-idx='" + idx + "' class='dictate_feedback'></i></rt></ruby>";
           idx++;
-
         } else {
           dictate_targetWordsCode += word;
         }
@@ -415,8 +409,9 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       });
       $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", false);
       setTimeout(function() {
+        $(".dictate_targetWord").first().focus();
         $("#" + self.itemdata.uniqueid + "_container .dictate_listen_btn").trigger('click');
-      }, 1000);
+      }, 500);
     }
 
   };

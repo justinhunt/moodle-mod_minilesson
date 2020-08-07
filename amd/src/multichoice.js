@@ -8,34 +8,46 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
   log.debug('Poodll Time Multichoice: initialising');
 
   return {
-
     init: function(index, itemdata, quizhelper) {
       this.register_events(index, itemdata, quizhelper);
     },
-
-    prepare_html: function(itemdata) {
-      //do something
+    next_question: function(percent) {
+      var self = this;
+      var stepdata = {};
+      stepdata.index = self.index;
+      stepdata.hasgrade = true;
+      stepdata.totalitems = 1;
+      stepdata.correctitems = percent>0?1:0;
+      stepdata.grade = percent;
+      self.quizhelper.do_next(stepdata);
     },
-
     register_events: function(index, itemdata, quizhelper) {
-      //When click next button , report and leave it up to parent to eal with it.
+      
+      var self = this;
+      self.index = index;
+      self.quizhelper = quizhelper;
+      
       $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
-        var stepdata = {};
-        stepdata.index = index;
-        stepdata.hasgrade = true;
-        stepdata.totalitems=4;
-        stepdata.correctitems=2;
-        stepdata.grade = 50;
-
-        quizhelper.do_next(stepdata);
+        self.next_question(0);
       });
-      $("#" + itemdata.uniqueid + "_container ."+itemdata.uniqueid+"_option").on('click', function(e) {
-        $("."+itemdata.uniqueid+"_option").prop("disabled",true);
-        $("."+itemdata.uniqueid+"_fb").html("<i style='color:red;' class='fa fa-times'></i>");
-        $("."+itemdata.uniqueid+"_option"+itemdata.correctanswer+"_fb").html("<i style='color:green;' class='fa fa-check'></i>");
-        console.log(itemdata);
+      
+      $("#" + itemdata.uniqueid + "_container ." + itemdata.uniqueid + "_option").on('click', function(e) {
+        
+        $("." + itemdata.uniqueid + "_option").prop("disabled", true);
+        $("." + itemdata.uniqueid + "_fb").html("<i style='color:red;' class='fa fa-times'></i>");
+        $("." + itemdata.uniqueid + "_option" + itemdata.correctanswer + "_fb").html("<i style='color:green;' class='fa fa-check'></i>");
+        
+        var checked = $('input[name='+itemdata.uniqueid+'_options]:checked').data('index');
+        var percent = checked == itemdata.correctanswer ? 100 : 0;
+        
+        $(".poodlltime_nextbutton").prop("disabled", true);
+        setTimeout(function() {
+          $(".poodlltime_nextbutton").prop("disabled", false);
+          self.next_question(percent);
+        }, 2000);
+        
       });
+      
     }
-
-  }; //end of return value
+  };
 });
