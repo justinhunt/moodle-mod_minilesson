@@ -11,6 +11,7 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
 
         cmid: null,
         controls: null,
+        rowIds: [],
 
 
         //pass in config
@@ -21,6 +22,8 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
 
             dd.register_events();
             dd.process_html();
+            dd.collate_rowids();
+            dd.hide_useless_arrows();
         },
 
         process_html: function(){
@@ -30,34 +33,79 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
             this.controls.noquestionscontainer = $('#' + def.mod_poodlltime_noitems_cont);
             this.controls.movearrows=$('#' + def.movearrow);
         },
-        moveRow:function(row, direction) {
-            console.log("moved");
-          
-            var index = this.controls.questionstable.row(row).index();
-            
-            console.log(index);
-          
-            var order = -1;
-            if (direction === 'down') {
-              order = 1;
+
+        //we maintain an array of datatable rowids, indexed by itemorder
+        //we need this because moving, adding, deleting requires access to datatable rowid
+        collate_rowids: function(){
+            var dd = this;
+            dd.rowIds=[];
+            $("." + def.itemrow).each(function(item){
+                var rowindex = dd.controls.questionstable.row(item).index();
+                var itemorder = dd.controls.questionstable.cell({row:rowindex, column:0}).data();
+                dd.rowIds[itemorder]=rowindex;
+            });
+
+        },
+
+        //we wont to show move arrows, but hide arrows the final down and first up
+        hide_useless_arrows: function(){
+          //first lets show all the arrows
+          $('.mod_poodlltime_item_move').attr('style','');
+
+          //if no rows just get out of here.
+          var rowcount=this.controls.questionstable.data().length;
+          if(!rowcount || rowcount<1){return;}
+
+          //hide bottom down arrow
+          var bottomrowindex=this.rowIds[rowcount];
+          var bottomtr = this.controls.questionstable.row(bottomrowindex).node();
+          $(bottomtr).find('.mod_poodlltime_item_move[data-direction="down"]').attr('style','visibility: hidden;');
+
+          //hide top up arrow
+          var toprowindex=this.rowIds[0];
+          var toprowindex=this.rowIds[1];
+          var toptr = this.controls.questionstable.row(toprowindex).node();
+          $(toptr).find('.mod_poodlltime_item_move[data-direction="up"]').attr('style','visibility: hidden;');
+        },
+
+        // we need to renumber rows when we remove one, so we start from there and renumber the next ones
+        renumber_rows:function(fromorder) {
+
+            var thetable= this.controls.questionstable;
+            var rowcount = thetable.data().length;
+            for(var itemorder =fromorder; itemorder<rowcount;itemorder++){
+                var rowindex = this.rowIds[itemorder+1];
+                thetable.cell({row:rowindex, column:0}).data(itemorder);
+            }
+        },
+
+        move_row:function(itemid, direction) {
+            var thetable= this.controls.questionstable;
+            var therow = '#' + def.itemrow + '_' + itemid;
+            var currentrow = thetable.row(therow);
+            var currentindex = currentrow.index();
+            var currentorder = parseInt(thetable.cell({row:currentindex, column:0}).data());
+
+
+            var targetorder;
+            if(direction=="up"){
+                targetorder=currentorder-1;
+            } else if(direction=="down"){
+                targetorder=currentorder+1;
             }
 
-            console.log(order);
-          
-            var data1 = this.controls.questionstable.row(index).data();
-            data1.order += order;
-          
-            console.log(data1);
+            //should never arrive here pitching for out of range. But just in case
+            if(targetorder<1){return;}
+            var rowcount = thetable.data().length;
+            if(targetorder>rowcount){return;}
 
-            var data2 = this.controls.questionstable.row(index + order).data();
-            data2.order += -order;
-          
-            console.log(data2);
-
-            this.controls.questionstable.row(index).data(data2);
-            this.controls.questionstable.row(index + order).data(data1);
-
-            this.controls.questionstable.page(0).draw(false);
+            var targetindex = this.rowIds[targetorder];
+            var from = thetable.cell({row:currentindex, column:0}).data();
+            var to = thetable.cell({row:targetindex, column:0}).data();
+            thetable.cell({row:currentindex, column:0}).data(to);
+            thetable.cell({row:targetindex, column:0}).data(from);
+            thetable.draw();
+            this.collate_rowids();
             
         },
         register_events: function() {
@@ -68,26 +116,8 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
                 def.qtype_speechcards,def.qtype_listenrepeat, def.qtype_multichoice];
 
             var after_questionmove= function(itemid, direction) {
-              
-                var therow = '#' + def.itemrow + '_' + itemid;
-                var index = dd.controls.questionstable.row(therow).index();
-              
-                var targetindex;
-              
-                if(direction=="up"){
-                  targetindex=index-1;
-                } else if(direction=="down"){
-                  targetindex=index+1;
-                }
-                
-                var targetrow=$(".mod_poodlltime_item_row").eq(targetindex);
-              
-                var from = dd.controls.questionstable.cell({row:index, column:0}).data();
-                var to = dd.controls.questionstable.cell({row:targetindex, column:0}).data();
-                dd.controls.questionstable.cell({row:index, column:0}).data(to);
-                dd.controls.questionstable.cell({row:targetindex, column:0}).data(from);
-
-                dd.controls.questionstable.draw();
+                dd.move_row(itemid,direction);
+                dd.hide_useless_arrows();
             };
 
             var after_questionedit= function(item, itemid) {
@@ -97,9 +127,14 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
             var after_questionadd= function(item, itemid) {
                 item.id = itemid;
                 item.typelabel = item.type;
+                item.index = dd.controls.questionstable.data().length+1;
+                item.up = {'key': 't/up','component': 'moodle','title': 'up'};
+                item.down = {'key': 't/down','component': 'moodle','title': 'down'};
                 templates.render('mod_poodlltime/itemlistitem',item).then(
                     function(html,js){
                         dd.controls.questionstable.row.add($(html)[0]).draw();
+                        dd.collate_rowids();
+                        dd.hide_useless_arrows();
                     }
                 );
                 dd.controls.noquestionscontainer.hide();
@@ -107,7 +142,12 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
             };
             var after_questiondelete= function(itemid) {
                 log.debug('after question delete');
-                dd.controls.questionstable.row('#' + def.itemrow + '_' + itemid).remove().draw();
+                var therow=dd.controls.questionstable.row('#' + def.itemrow + '_' + itemid);
+                var itemorder=parseInt(therow.data()[0]);
+                dd.renumber_rows(itemorder);
+                therow.remove().draw();
+                dd.collate_rowids();
+                dd.hide_useless_arrows();
                 var itemcount = dd.controls.questionstable.rows().count();
                 if(!itemcount){
                     dd.controls.noquestionscontainer.show();
