@@ -714,6 +714,20 @@ function poodlltime_output_fragment_mform($args) {
     $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
     $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
 
+    if($args->itemid){
+        $item = $DB->get_record(constants::M_QTABLE, array('id'=>$args->itemid,constants::M_MODNAME => $cm->instance),
+                '*', MUST_EXIST);
+        if($item) {
+            $data = $item;
+            $data->itemid = $item->id;
+            $data->id = $cm->id;
+
+            //init our item, we move the id fields around a little
+            $data = file_prepare_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context, constants::M_COMPONENT,
+                    constants::TEXTQUESTION_FILEAREA, $data->itemid);
+        }
+    }
+
 
     //get the mform for our item
     switch($formname){
@@ -774,6 +788,10 @@ function poodlltime_output_fragment_mform($args) {
 
     }
 
+   //if we have item data set it
+    if($item){
+        $mform->set_data($data);
+    }
 
     if(!empty($mform)) {
         ob_start();

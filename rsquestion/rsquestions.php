@@ -26,6 +26,9 @@
 require_once('../../../config.php');
 require_once($CFG->dirroot.'/mod/poodlltime/lib.php');
 
+use \mod_poodlltime\constants;
+
+
 $id = required_param('id', PARAM_INT);
 
 $cm = get_coursemodule_from_id('poodlltime', $id, 0, false, MUST_EXIST);
@@ -47,6 +50,12 @@ $context = context_module::instance($cm->id);
 
 $renderer = $PAGE->get_renderer('mod_poodlltime');
 $rsquestion_renderer = $PAGE->get_renderer('mod_poodlltime','rsquestion');
+
+//if we have items, Data tables will make them pretty
+//Prepare datatable(before header printed)
+$tableid =  constants::M_ITEMS_TABLE;
+$rsquestion_renderer->setup_datatables($tableid);
+
 $PAGE->navbar->add(get_string('rsquestions', 'poodlltime'));
 echo $renderer->header($poodlltime, $cm, $mode, null, get_string('rsquestions', 'poodlltime'));
 
@@ -56,11 +65,12 @@ echo $renderer->header($poodlltime, $cm, $mode, null, get_string('rsquestions', 
     
     //if have edit permission, show edit buttons
     if(has_capability('mod/poodlltime:itemview', $context)){
-    	echo $rsquestion_renderer ->add_edit_page_links($context);
+    	echo $rsquestion_renderer ->add_edit_page_links($context,$tableid);
     }
 
 //if we have items, show em
-if($items){
-	echo $rsquestion_renderer->show_items_list($items,$poodlltime,$cm);
-}
+$itemsvisible = $items && count($items);
+echo $rsquestion_renderer->show_items_list($items,$poodlltime,$cm, $itemsvisible);
+echo $rsquestion_renderer->show_noitems_message($items,$poodlltime,$cm, $itemsvisible);
+
 echo $renderer->footer();

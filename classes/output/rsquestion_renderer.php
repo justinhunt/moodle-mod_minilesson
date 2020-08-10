@@ -36,65 +36,96 @@ class rsquestion_renderer extends \plugin_renderer_base {
  * @param lesson $lesson
  * @return string
  */
- public function add_edit_page_links($context) {
+ public function add_edit_page_links($context, $tableid) {
 		global $CFG;
         $itemid = 0;
 
         $output = $this->output->heading(get_string("whatdonow", "poodlltime"), 3);
         $links = array();
 
+        $qtypes = [constants::TYPE_MULTICHOICE,constants::TYPE_DICTATIONCHAT,constants::TYPE_DICTATION,constants::TYPE_SPEECHCARDS,
+        constants::TYPE_LISTENREPEAT,constants::TYPE_PAGE];
+        foreach($qtypes as $qtype){
+            $url=
+            $data=['wwwroot' => $CFG->wwwroot, 'type'=>$qtype,'itemid'=>$itemid,'cmid'=>$this->page->cm->id,
+                    'label'=>get_string('add' . $qtype . 'item', constants::M_COMPONENT)];
+            $links[]= $this->render_from_template('mod_poodlltime/additemlink', $data);
+        }
 
-     $addmultichoiceitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
-         array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_MULTICHOICE));
-        $links[] = \html_writer::link($addmultichoiceitemurl, get_string('addmultichoiceitem', constants::M_COMPONENT),
-                array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_MULTICHOICE));
-
-
-     $adddictationchatitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
-             array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_DICTATIONCHAT));
-     $links[] = \html_writer::link($adddictationchatitemurl, get_string('adddictationchatitem', constants::M_COMPONENT),
-             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_DICTATIONCHAT));
-   
-   $adddictationitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
-             array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_DICTATION));
-     $links[] = \html_writer::link($adddictationitemurl, get_string('adddictationitem', constants::M_COMPONENT),
-             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_DICTATION));
-
-     $addspeechcardsitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
-             array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_SPEECHCARDS));
-     $links[] = \html_writer::link( $addspeechcardsitemurl , get_string('addspeechcardsitem', constants::M_COMPONENT),
-             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_SPEECHCARDS));
-
-     $addlistenrepeatitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
-             array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_LISTENREPEAT));
-     $links[] = \html_writer::link($addlistenrepeatitemurl, get_string('addlistenrepeatitem', constants::M_COMPONENT),
-             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_LISTENREPEAT));
-
-     $addpageitemurl = new \moodle_url('/mod/poodlltime/rsquestion/managersquestions.php',
-             array('id'=>$this->page->cm->id, 'itemid'=>$itemid, 'type'=>constants::TYPE_PAGE));
-     $links[] = \html_writer::link($addpageitemurl, get_string('addpageitem', constants::M_COMPONENT),
-             array('id'=>constants::M_COMPONENT . '_qedit_' . constants::TYPE_PAGE));
-
-     $usingajax=false;
+     $usingajax=true;
      if($usingajax){
-         $props=array('contextid'=>$context->id);
+         $props=array('contextid'=>$context->id, 'tableid'=>$tableid);
          $this->page->requires->js_call_amd(constants::M_COMPONENT . '/rsquestionmanager', 'init', array($props));
      }
 
-        return $this->output->box($output.'<p>'.implode('</p><p>', $links).'</p>', 'generalbox firstpageoptions');
+     return $this->output->box($output.'<p>'.implode('</p><p>', $links).'</p>', 'generalbox firstpageoptions');
+
     }
-	
+
+    function setup_datatables($tableid){
+        global $USER;
+
+        $tableprops = array();
+        $columns = array();
+        //for cols .. .'itemname', 'itemtype', 'itemtags','timemodified', 'edit','delete'
+        $columns[0]=null;
+        $columns[1]=null;
+        $columns[2]=null;
+        $columns[3]=array('orderable'=>false);
+        $columns[4]=array('orderable'=>false);
+        $tableprops['columns']=$columns;
+
+        //default ordering
+        $order = array();
+        $order[0] =array(2, "desc");
+        $tableprops['order']=$order;
+
+        //here we set up any info we need to pass into javascript
+        $opts =Array();
+        $opts['tableid']=$tableid;
+        $opts['tableprops']=$tableprops;
+        $this->page->requires->js_call_amd(constants::M_COMPONENT . "/datatables", 'init', array($opts));
+        $this->page->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
+    }
+
+
+    function show_noitems_message($itemsvisible){
+        $message = $this->output->heading(get_string('noitems',constants::M_COMPONENT), 3, 'main');
+        $displayvalue = $itemsvisible ? 'none' : 'block';
+        $ret = \html_writer::div($message ,constants::M_NOITEMS_CONT,array('style'=>'display: '.$displayvalue));
+        return $ret;
+    }
+
 	/**
 	 * Return the html table of items
 	 * @param array homework objects
 	 * @param integer $courseid
 	 * @return string html of table
 	 */
-	function show_items_list($items,$poodlltime,$cm){
-	
-		if(!$items){
-			return $this->output->heading(get_string('noitems',constants::M_COMPONENT), 3, 'main');
-		}
+	function show_items_list($items,$poodlltime,$cm, $visible){
+
+		//new code
+        $data = [];
+        $data['tableid']=constants::M_ITEMS_TABLE;
+        $data['display'] = $visible ? 'block' : 'none';
+        $items_array = [];
+        foreach($items as $item){
+            $arrayitem = (Array)$item;
+            $arrayitem['typelabel']=get_string($arrayitem['type'],constants::M_COMPONENT);
+            $items_array[]= $arrayitem;
+        }
+        $data['items']=$items_array;
+
+        $up_pix = new \pix_icon('t/up', get_string('up'));
+        $down_pix = new \pix_icon('t/down', get_string('down'));
+        $data['up'] = $up_pix->export_for_pix();
+        $data['down']=$down_pix->export_for_pix();
+
+
+        return $this->render_from_template('mod_poodlltime/itemlist', $data);
+
+		//old code follows -  for reference only
+        //_______________________________________________________
 	
 		$table = new \html_table();
 		$table->id = 'mod_poodlltime_qpanel';
@@ -131,7 +162,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
             $movecell_content='';
             $spacer = '';
             if ($currentitem > 1) {
-                $upurl = new \moodle_url($actionurl, array('id' => $cm->id, 'itemid' => $item->id, 'action' => 'moveup'));
+                $upurl = new \moodle_url($actionurl, array('id' => $cm->id, 'itemid' => $item->id, 'action' => 'up'));
                // $uplink = \html_writer::link($upurl,  new pix_icon('t/up', get_string('up'), '', array('class' => 'iconsmall')));
                 $uplink = $this->output->action_icon($upurl,new \pix_icon('t/up', get_string('up'), '', array('class' => 'iconsmall')));
                 $movecell_content .= $uplink;
@@ -140,7 +171,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
             }
 
             if ($currentitem < count($items)) {
-                $downurl = new \moodle_url($actionurl, array('id' => $cm->id, 'itemid' => $item->id, 'action' => 'movedown'));
+                $downurl = new \moodle_url($actionurl, array('id' => $cm->id, 'itemid' => $item->id, 'action' => 'down'));
                 //$downlink = \html_writer::link($downurl,  new pix_icon('t/down', get_string('down'), '', array('class' => 'iconsmall')));
                 $downlink = $this->output->action_icon($downurl,new \pix_icon('t/down', get_string('down'), '', array('class' => 'iconsmall')));
                 $movecell_content .= $downlink;

@@ -93,7 +93,8 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
         html+="";
         $(".poodlltime_quiz_progress").html(html);
       },
-      do_next(stepdata) {
+
+      do_next: function(stepdata){
         var dd = this;
         this.report_step_grade(stepdata);
         //hide current question

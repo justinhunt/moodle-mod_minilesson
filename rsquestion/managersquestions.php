@@ -93,7 +93,7 @@ $redirecturl = new moodle_url('/mod/poodlltime/rsquestion/rsquestions.php', arra
     	require_sesskey();
 		$success = \mod_poodlltime\rsquestion\helper::delete_item($poodlltime,$itemid,$context);
         redirect($redirecturl);
-    }elseif($action=="moveup" || $action=="movedown"){
+    }elseif($action=="up" || $action=="down"){
         \mod_poodlltime\rsquestion\helper::move_item($poodlltime,$itemid,$action);
         redirect($redirecturl);
     }
@@ -172,8 +172,8 @@ if ($mform->is_cancelled()) {
 //if we have data, then our job here is to save it and return to the quiz edit page
 if ($data = $mform->get_data()) {
 		require_sesskey();
-
-		$result = utils::update_insert_question($poodlltime,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
+        $data->type=$type;
+		$result = \mod_poodlltime\rsquestion\helper::update_insert_question($poodlltime,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
 		if($result->error==true){
             print_error($result->message);
             redirect($redirecturl);

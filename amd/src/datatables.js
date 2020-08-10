@@ -14,6 +14,10 @@ This file contains class and ID definitions.
             var that=this;
             var thetable=$('#' + props.tableid);
             this.dt=thetable.DataTable(props.tableprops);
+        },
+
+        getDataTable: function(tableid){
+            return $('#' + tableid).DataTable();
         }
 
 

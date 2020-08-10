@@ -25,19 +25,38 @@ $functions = array(
                 'type'        => 'read',
                 'ajax'        => true,
         ),
+
         'mod_poodlltime_compare_passage_to_transcript' => array(
-        'classname'   => 'mod_poodlltime_external',
-        'methodname'  => 'compare_passage_to_transcript',
-        'description' => 'compares a spoken phrase to a correct phrase' ,
-        'capabilities'=> 'mod/poodlltime:view',
-        'type'        => 'read',
-        'ajax'        => true,
+            'classname'   => 'mod_poodlltime_external',
+            'methodname'  => 'compare_passage_to_transcript',
+            'description' => 'compares a spoken phrase to a correct phrase' ,
+            'capabilities'=> 'mod/poodlltime:view',
+            'type'        => 'read',
+            'ajax'        => true,
         ),
 
         'mod_poodlltime_submit_mform' => array(
                 'classname'   => 'mod_poodlltime_external',
                 'methodname'  => 'submit_mform',
                 'description' => 'submits mform.',
+                'capabilities'=> 'mod/poodlltime:managequestions',
+                'type'        => 'write',
+                'ajax'        => true,
+        ),
+
+        'mod_poodlltime_delete_item' => array(
+                'classname'   => 'mod_poodlltime_external',
+                'methodname'  => 'delete_item',
+                'description' => 'delete item.',
+                'capabilities'=> 'mod/poodlltime:managequestions',
+                'type'        => 'write',
+                'ajax'        => true,
+        ),
+
+        'mod_poodlltime_move_item' => array(
+                'classname'   => 'mod_poodlltime_external',
+                'methodname'  => 'move_item',
+                'description' => 'move item.',
                 'capabilities'=> 'mod/poodlltime:managequestions',
                 'type'        => 'write',
                 'ajax'        => true,

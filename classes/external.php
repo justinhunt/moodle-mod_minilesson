@@ -153,6 +153,13 @@ class mod_poodlltime_external extends external_api {
         // We always must call validate_context in a webservice.
         self::validate_context($context);
 
+        //Init return object
+        $ret = new \stdClass();
+        $ret->itemid=0;
+        $ret->error=true;
+        $ret->message="";
+
+
         list($ignored, $course) = get_context_info_array($context->id);
         $serialiseddata = json_decode($params['jsonformdata']);
 
@@ -169,6 +176,12 @@ class mod_poodlltime_external extends external_api {
         $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
 
 
+        //we need to pretend this was posted and these help
+        $method='post';
+        $target='';
+        $attributes=null;
+        $editable=true;
+
         //get the mform for our item
         switch($formname){
 
@@ -177,7 +190,8 @@ class mod_poodlltime_external extends external_api {
                 $mform = new \mod_poodlltime\rsquestion\multichoiceform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance)
+                                'moduleinstance'=>$moduleinstance),
+                        $method, $target,$attributes,$editable,$data
                 );
                 break;
 
@@ -185,7 +199,8 @@ class mod_poodlltime_external extends external_api {
                 $mform = new \mod_poodlltime\rsquestion\dictationchatform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance)
+                                'moduleinstance'=>$moduleinstance),
+                        $method, $target,$attributes,$editable,$data
                 );
                 break;
 
@@ -193,7 +208,8 @@ class mod_poodlltime_external extends external_api {
                 $mform = new \mod_poodlltime\rsquestion\dictationform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance)
+                                'moduleinstance'=>$moduleinstance),
+                        $method, $target,$attributes,$editable,$data
                 );
                 break;
 
@@ -201,7 +217,8 @@ class mod_poodlltime_external extends external_api {
                 $mform = new \mod_poodlltime\rsquestion\speechcardsform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance)
+                                'moduleinstance'=>$moduleinstance),
+                        $method, $target,$attributes,$editable,$data
                 );
                 break;
 
@@ -209,7 +226,8 @@ class mod_poodlltime_external extends external_api {
                 $mform = new \mod_poodlltime\rsquestion\listenrepeatform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance)
+                                'moduleinstance'=>$moduleinstance),
+                        $method, $target,$attributes,$editable,$data
                 );
                 break;
 
@@ -217,7 +235,8 @@ class mod_poodlltime_external extends external_api {
                 $mform = new \mod_poodlltime\rsquestion\pageform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance)
+                                'moduleinstance'=>$moduleinstance),
+                        $method, $target,$attributes,$editable,$data
                 );
                 break;
 
@@ -231,24 +250,105 @@ class mod_poodlltime_external extends external_api {
         $validateddata = $mform->get_data();
         if ($validateddata) {
             $edit=$validateddata->id ? true : false;
-            $data->id = $data->itemid;
-            $result = utils::update_insert_question($moduleinstance,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
+            //currently data is an array, but it should be an object
+            $data = (object)$data;
+            $data->type = $formname;
+            $result = \mod_poodlltime\rsquestion\helper::update_insert_question($moduleinstance,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
             if($result->error==true){
-                print_error($result->message);
-                return 0;
-            }else{
-                $theitem=$result->item;
-                return $theitem->id;
+                    $ret->message = $result->message;
+                }else{
+                    $theitem=$result->item;
+                    $ret->itemid=$theitem->id;
+                    $ret->error=false;
+                }
             }
-        }
-
+            return json_encode($ret);
     }
-
 
     public static function submit_mform_returns() {
         return new external_value(PARAM_RAW);
         //return new external_value(PARAM_INT, 'group id');
     }
+
+    public static function delete_item_parameters() {
+        return new external_function_parameters(
+                array(
+                        'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
+                        'itemid' => new external_value(PARAM_INT, 'The itemid to delete'),
+                        'formname' => new external_value(PARAM_TEXT, 'The formname')
+                )
+        );
+    }
+
+    public static function delete_item($contextid,$itemid, $formname)
+    {
+        global $CFG, $DB, $USER;
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::delete_item_parameters(),
+                ['contextid' => $contextid, 'itemid' => $itemid, 'formname' => $formname]);
+
+        $context = context::instance_by_id($params['contextid'], MUST_EXIST);
+
+        // We always must call validate_context in a webservice.
+        self::validate_context($context);
+
+       //DO DELETE
+        // get the objects we need
+        $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
+        $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
+        $success = \mod_poodlltime\rsquestion\helper::delete_item($moduleinstance,$itemid,$context);
+
+        $ret = new \stdClass();
+        $ret->itemid=$itemid;
+        $ret->error=false;
+        return json_encode($ret);
+    }
+
+    public static function delete_item_returns() {
+        return new external_value(PARAM_RAW);
+        //return new external_value(PARAM_INT, 'group id');
+    }
+
+    public static function move_item_parameters() {
+        return new external_function_parameters(
+                array(
+                        'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
+                        'itemid' => new external_value(PARAM_INT, 'The itemid to move'),
+                        'direction' => new external_value(PARAM_TEXT, 'The move direction')
+                )
+        );
+    }
+
+    public static function move_item($contextid,$itemid, $direction)
+    {
+        global $CFG, $DB, $USER;
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::move_item_parameters(),
+                ['contextid' => $contextid, 'itemid' => $itemid, 'direction' => $direction]);
+
+        $context = context::instance_by_id($params['contextid'], MUST_EXIST);
+
+        // We always must call validate_context in a webservice.
+        self::validate_context($context);
+
+        //DO move
+        // get the objects we need
+        $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
+        $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
+        \mod_poodlltime\rsquestion\helper::move_item($moduleinstance,$itemid,$direction);
+
+        $ret = new \stdClass();
+        $ret->itemid=$itemid;
+        $ret->error=false;
+        return json_encode($ret);
+    }
+
+    public static function move_item_returns() {
+        return new external_value(PARAM_RAW);
+    }
+
 
 
 

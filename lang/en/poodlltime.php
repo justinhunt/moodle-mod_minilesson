@@ -496,3 +496,10 @@ $string['textprompt_words'] = 'Show text prompt (words)';
 $string['textprompt_dots'] = 'Show dots for letters only';
 
 $string['gradenow']= 'Grade Now';
+
+$string['itemtype']= 'Item Type';
+$string['action']= 'Action';
+$string['order']= 'Order';
+$string['deleteitem'] = 'Delete Question';
+$string['deleteitem_message'] = 'Really delete question:&nbsp;';
+$string['deletebuttonlabel'] = 'DELETE';

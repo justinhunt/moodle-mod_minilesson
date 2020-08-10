@@ -1,0 +1,18 @@
+<div id="mod_poodlltime_items_cont" class="mod_poodlltime_items_cont" style="display: {{display}};">
+    <table class="generaltable mod_poodlltime_qpanel" id="{{tableid}}">
+        <thead>
+        <tr>
+            <th class="header c0 firstname" style="" scope="col">{{#str}}itemname, mod_poodlltime{{/str}}</th>
+            <th class="header c1 lastname" style="" scope="col">{{#str}}itemtype, mod_poodlltime{{/str}}</th>
+            <th class="header c2 date" style="" scope="col">{{#str}}order, mod_poodlltime{{/str}}</th>
+            <th class="header c3 edit" style="" scope="col">{{#str}}action, mod_poodlltime{{/str}}</th>
+            <th class="header c4 lastcol delete" style="" scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#items}}
+            {{> mod_poodlltime/itemlistitem}}
+        {{/items}}
+        </tbody>
+    </table>
+</div>

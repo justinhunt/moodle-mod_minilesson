@@ -24,6 +24,14 @@ This file contains class and ID definitions.
         ngbuttonclass: 'mod_poodlltime_quickgrade_ng',
         quickgradecontainerclass: 'mod_poodlltime_quickgrade_cont',
 
+
+        //rsquestions
+        noitemscontainer: 'mod_poodlltime_noitems_cont',
+        itemscontainer: 'mod_poodlltime_items_cont',
+        itemstable: 'mod_poodlltime_qpanel',
+        itemrow: 'mod_poodlltime_item_row',
+        movearrow: 'mod_poodlltime_item_move',
+
         //grade now
         passagecontainer: 'mod_poodlltime_grading_passagecont',
         audioplayerclass: 'mod_poodlltime_grading_player',

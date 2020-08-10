@@ -24,6 +24,11 @@ const M_URL='/mod/poodlltime';
 const M_CLASS='mod_poodlltime';
 const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingpoodlltime';
 
+const M_NOITEMS_CONT= 'mod_poodlltime_noitems_cont';
+const M_ITEMS_CONT= 'mod_poodlltime_items_cont';
+const M_ITEMS_TABLE= 'mod_poodlltime_qpanel';
+
+
 //grading options
 const M_GRADEHIGHEST= 0;
 const M_GRADELOWEST= 1;
