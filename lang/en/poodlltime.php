@@ -337,7 +337,7 @@ $string['moveitemdown']='Down';
 $string['rsquestions'] ='Questions';
 $string['managersquestions'] ='Manage Questions';
 $string['correctanswer'] ='Correct answer';
-$string['whatdonow'] = 'What would you like to do?';
+$string['whatdonow'] = 'Add items to activity:';
 $string['addnewitem'] = 'Add a New question';
 $string['addingitem'] = 'Adding a New question';
 $string['editingitem'] = 'Editing a question';
@@ -433,12 +433,12 @@ $string['pushalternatives']='Push Alternatives';
 $string['pushquestions_done']='Questions have been pushed';
 $string['pushquestions']='Push Questions';
 
-$string['addmultichoiceitem']='Add multi choice question';
-$string['adddictationchatitem']='Add dictation chat item';
-$string['adddictationitem']='Add dictation item';
-$string['addlistenrepeatitem']='Add listen and repeat item';
-$string['addspeechcardsitem']='Add Speech Cards item';
-$string['addpageitem']='Add Page item';
+$string['addmultichoiceitem']='Multi Choice';
+$string['adddictationchatitem']='Dictation Chat';
+$string['adddictationitem']='Dictation';
+$string['addlistenrepeatitem']='Listen and Repeat';
+$string['addspeechcardsitem']='Speech Cards';
+$string['addpageitem']='Content Page';
 
 
 $string['multichoice'] = 'Multi Choice';
@@ -446,7 +446,7 @@ $string['dictation']='Dictation';
 $string['dictationchat']='Dictation Chat';
 $string['speechcards']='Speech Cards';
 $string['listenrepeat']='Listen and Repeat';
-$string['page']='Page';
+$string['page']='Content Page';
 
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';

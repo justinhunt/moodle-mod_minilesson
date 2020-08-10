@@ -65,8 +65,7 @@ define(['jquery', 'core/log','core/str', 'core/ajax'],
                 Ajax.call([{
                     methodname: 'mod_poodlltime_move_item',
                     args: {contextid: dd.contextid, itemid: dd.itemid, direction: dd.direction},
-                    done: dd.callback(dd.itemid,dd.direction),
-                    fail: dd.callback(0,'none'),
+                    done: dd.callback(dd.itemid,dd.direction)
                 }]);
 
 

@@ -163,7 +163,9 @@ const M_HIDDEN_PLAYER_BUTTON_PAUSED='mod_poodlltime_hidden_player_button_paused'
 const M_HIDDEN_PLAYER_BUTTON_PLAYING='mod_poodlltime_hidden_player_button_playing';
 const M_EVALUATED_MESSAGE='mod_poodlltime_evaluated_message';
 const M_QR_PLAYER='mod_poodlltime_qr_player';
-
+const M_LINK_BOX='mod_poodlltime_link_box';
+const M_LINK_BOX_TITLE='mod_poodlltime_link_box_title';
+  
 //languages
 const M_LANG_ENUS = 'en-US';
 const M_LANG_ENGB = 'en-GB';

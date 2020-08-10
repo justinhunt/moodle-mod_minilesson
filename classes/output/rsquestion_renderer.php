@@ -58,7 +58,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
          $this->page->requires->js_call_amd(constants::M_COMPONENT . '/rsquestionmanager', 'init', array($props));
      }
 
-     return $this->output->box($output.'<p>'.implode('</p><p>', $links).'</p>', 'generalbox firstpageoptions');
+     return $this->output->box($output.implode("",$links), 'generalbox firstpageoptions mod_poodlltime_link_box_container');
 
     }
 
@@ -68,16 +68,17 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $tableprops = array();
         $columns = array();
         //for cols .. .'itemname', 'itemtype', 'itemtags','timemodified', 'edit','delete'
-        $columns[0]=null;
-        $columns[1]=null;
-        $columns[2]=null;
+        $columns[0]=array('orderable'=>false);
+        $columns[1]=array('orderable'=>false);
+        $columns[2]=array('orderable'=>false);
         $columns[3]=array('orderable'=>false);
         $columns[4]=array('orderable'=>false);
+        $columns[5]=array('orderable'=>false);
         $tableprops['columns']=$columns;
 
         //default ordering
         $order = array();
-        $order[0] =array(2, "desc");
+        $order[0] =array(0, "asc");
         $tableprops['order']=$order;
 
         //here we set up any info we need to pass into javascript
@@ -109,8 +110,9 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $data['tableid']=constants::M_ITEMS_TABLE;
         $data['display'] = $visible ? 'block' : 'none';
         $items_array = [];
-        foreach($items as $item){
+        foreach(array_values($items) as $i=>$item){
             $arrayitem = (Array)$item;
+            $arrayitem['index']=($i+1);
             $arrayitem['typelabel']=get_string($arrayitem['type'],constants::M_COMPONENT);
             $items_array[]= $arrayitem;
         }

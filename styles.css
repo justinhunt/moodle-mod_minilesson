@@ -1305,7 +1305,7 @@ div.mod_poodlltime_gradesadmin_cont {
   font-weight: bold;
   color: white;
   text-align: center;
-  z-index:999;
+  z-index: 999;
 }
 
 .dictate_container .dictate_correct {
@@ -1471,7 +1471,7 @@ div.mod_poodlltime_gradesadmin_cont {
   font-weight: bold;
   color: white;
   text-align: center;
-  z-index:999;
+  z-index: 999;
 }
 
 .landr_container .landr_correct {
@@ -1592,7 +1592,39 @@ div.mod_poodlltime_gradesadmin_cont {
   left: 0;
 }
 
-.landr_feedback,.dictate_feedback {
+.landr_feedback,
+.dictate_feedback {
   font-size: 14px !important;
   padding: 10px;
+}
+
+.mod_poodlltime_link_box {
+  border: 1px solid black;
+  display: inline-block;
+  width: 150px;
+  height: 120px;
+  vertical-align: top;
+  margin: 10px;
+  position: relative;
+  background-size:50%;
+  background-repeat:no-repeat;
+  background-position:center 10px;
+  cursor:pointer;
+}
+
+.mod_poodlltime_link_box:hover{
+  background-color:#f5f5f5;
+}
+
+.mod_poodlltime_link_box_title {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  text-align: center;
+  margin:5px;
+}
+
+.mod_poodlltime_link_box_container{
+  text-align:center;
 }

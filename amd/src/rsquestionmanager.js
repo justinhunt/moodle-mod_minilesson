@@ -30,24 +30,69 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
             this.controls.noquestionscontainer = $('#' + def.mod_poodlltime_noitems_cont);
             this.controls.movearrows=$('#' + def.movearrow);
         },
+        moveRow:function(row, direction) {
+            console.log("moved");
+          
+            var index = this.controls.questionstable.row(row).index();
+            
+            console.log(index);
+          
+            var order = -1;
+            if (direction === 'down') {
+              order = 1;
+            }
 
+            console.log(order);
+          
+            var data1 = this.controls.questionstable.row(index).data();
+            data1.order += order;
+          
+            console.log(data1);
+
+            var data2 = this.controls.questionstable.row(index + order).data();
+            data2.order += -order;
+          
+            console.log(data2);
+
+            this.controls.questionstable.row(index).data(data2);
+            this.controls.questionstable.row(index + order).data(data1);
+
+            this.controls.questionstable.page(0).draw(false);
+            
+        },
         register_events: function() {
+          
             var dd = this;
+          
             var qtypes =[def.qtype_dictation,def.qtype_dictationchat,def.qtype_page,
                 def.qtype_speechcards,def.qtype_listenrepeat, def.qtype_multichoice];
 
             var after_questionmove= function(itemid, direction) {
+              
                 var therow = '#' + def.itemrow + '_' + itemid;
-                //do the move of rows here
-                //but for now, we reload, to check its going
-                document.location.reload();
+                var index = dd.controls.questionstable.row(therow).index();
+              
+                var targetindex;
+              
+                if(direction=="up"){
+                  targetindex=index-1;
+                } else if(direction=="down"){
+                  targetindex=index+1;
+                }
+                
+                var targetrow=$(".mod_poodlltime_item_row").eq(targetindex);
+              
+                var from = dd.controls.questionstable.cell({row:index, column:0}).data();
+                var to = dd.controls.questionstable.cell({row:targetindex, column:0}).data();
+                dd.controls.questionstable.cell({row:index, column:0}).data(to);
+                dd.controls.questionstable.cell({row:targetindex, column:0}).data(from);
 
+                dd.controls.questionstable.draw();
             };
 
             var after_questionedit= function(item, itemid) {
                 var therow = '#' + def.itemrow + '_' + itemid;
-                dd.controls.questionstable.cell($(therow + ' .c0')).data(item.name);
-
+                dd.controls.questionstable.cell($(therow + ' .c1')).data(item.name);
             };
             var after_questionadd= function(item, itemid) {
                 item.id = itemid;
