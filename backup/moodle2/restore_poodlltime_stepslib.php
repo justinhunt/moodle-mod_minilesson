@@ -62,15 +62,9 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
         // XML interesting paths - user data
         ////////////////////////////////////////////////////////////////////////
 		//attempts
-		 $attempts= new restore_path_element(constants::M_USERTABLE,
+		 $attempts= new restore_path_element(constants::M_ATTEMPTSTABLE,
                                             '/activity/poodlltime/attempts/attempt');
 		$paths[] = $attempts;
-
-		//airesults
-        $airesults = new restore_path_element(constants::M_AITABLE,
-            '/activity/poodlltime/attempts/attempt/airesults/airesult');
-        $paths[] = $airesults;
-		 
 
 
         // Return the paths wrapped into standard activity structure
@@ -118,33 +112,14 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
         $data->userid = $this->get_mappingid('user', $data->userid);
         $data->timecreated = $this->apply_date_offset($data->timecreated);
         $data->{constants::M_MODNAME . 'id'} = $this->get_new_parentid(constants::M_MODNAME);
-        $newitemid = $DB->insert_record(constants::M_USERTABLE, $data);
+        $newitemid = $DB->insert_record(constants::M_ATTEMPTSTABLE, $data);
 		
 		// Mapping without files
 		//here we set the table name as the "key" to the mapping, but its actually arbitrary
 		//'we would need to use the "key" later when calling add_related_files for the itemid in the moodle files area
 		//IF we had files for this set of data. )
-       $this->set_mapping(constants::M_USERTABLE, $oldid, $newitemid, true);
+       $this->set_mapping(constants::M_ATTEMPTSTABLE, $oldid, $newitemid, true);
     }
-
-    protected function process_poodlltime_ai_result($data) {
-        global $DB;
-
-        $data = (object)$data;
-        $oldid = $data->id;
-        $data->courseid = $this->get_courseid();
-        $data->timecreated = $this->apply_date_offset($data->timecreated);
-        $data->{constants::M_MODNAME . 'id'} = $this->get_new_parentid(constants::M_MODNAME);
-        $data->attemptid = $this->get_new_parentid(constants::M_USERTABLE);
-        $newitemid = $DB->insert_record(constants::M_AITABLE, $data);
-
-        // Mapping without files
-        //here we set the table name as the "key" to the mapping, but its actually arbitrary
-        //'we would need to use the "key" later when calling add_related_files for the itemid in the moodle files area
-        //IF we had files for this set of data. )
-        $this->set_mapping(constants::M_AITABLE, $oldid, $newitemid, true);
-    }
-
 
     protected function after_execute() {
         // Add module related files, no need to match by itemname (just internally handled context)
@@ -165,7 +140,7 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
 		
 		 $userinfo = $this->get_setting_value('userinfo'); // are we including userinfo?
 		 if($userinfo){
-			$this->add_related_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, constants::M_USERTABLE);
+			$this->add_related_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, constants::M_ATTEMPTSTABLE);
 
          }
     }

@@ -71,33 +71,14 @@ class provider implements
             'id' => 'privacy:metadata:attemptid',
             'poodlltimeid' => 'privacy:metadata:poodlltimeid',
             'userid' => 'privacy:metadata:userid',
-            'filename' => 'privacy:metadata:filename',
-            'wpm' => 'privacy:metadata:wpm',
-            'accuracy' => 'privacy:metadata:accuracy',
             'sessionscore' => 'privacy:metadata:sessionscore',
             'sessiontime' => 'privacy:metadata:sessiontime',
-            'sessionerrors' => 'privacy:metadata:sessionerrors',
-            'sessionendword' => 'privacy:metadata:sessionendword',
+            'sessiondata' => 'privacy:metadata:sessiondata',
+            'sessionend' => 'privacy:metadata:sessionend',
             'errorcount' => 'privacy:metadata:errorcount',
             'timemodified' => 'privacy:metadata:timemodified'
         ];
-        $collection->add_database_table(constants::M_USERTABLE, $userdetail, 'privacy:metadata:attempttable');
-
-        $aidetail = [
-            'attemptid' => 'privacy:metadata:attemptid',
-            'poodlltimeid' => 'privacy:metadata:poodlltimeid',
-            'wpm' => 'privacy:metadata:wpm',
-            'accuracy' => 'privacy:metadata:accuracy',
-            'sessionscore' => 'privacy:metadata:sessionscore',
-            'sessiontime' => 'privacy:metadata:sessiontime',
-            'sessionerrors' => 'privacy:metadata:sessionerrors',
-            'sessionendword' => 'privacy:metadata:sessionendword',
-            'errorcount' => 'privacy:metadata:errorcount',
-            'transcript' => 'privacy:metadata:transcriptpurpose',
-            'fulltranscript' => 'privacy:metadata:fulltranscriptpurpose',
-            'timemodified' => 'privacy:metadata:timemodified'
-        ];
-        $collection->add_database_table(constants::M_AITABLE, $aidetail, 'privacy:metadata:aitable');
+        $collection->add_database_table(constants::M_ATTEMPTSTABLE, $userdetail, 'privacy:metadata:attempttable');
 
         $collection->add_external_location_link('cloud.poodll.com', [
             'userid' => 'privacy:metadata:cloudpoodllcom:userid'
@@ -119,7 +100,7 @@ class provider implements
             INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
             INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
             INNER JOIN {" . constants::M_TABLE . "} actt ON actt.id = cm.instance
-            INNER JOIN {" . constants::M_USERTABLE . "} usert ON usert.poodlltimeid = actt.id
+            INNER JOIN {" . constants::M_ATTEMPTSTABLE . "} usert ON usert.poodlltimeid = actt.id
                  WHERE usert.userid = :theuserid";
         $params = [
                 'contextlevel' => CONTEXT_MODULE,
@@ -152,7 +133,7 @@ class provider implements
                   JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN  {" . constants::M_TABLE . "} actt ON actt.id = cm.instance
-                  JOIN {" . constants::M_USERTABLE . "} usert ON usert.poodlltimeid = actt.id
+                  JOIN {" . constants::M_ATTEMPTSTABLE . "} usert ON usert.poodlltimeid = actt.id
                  WHERE c.id = :contextid";
 
         $params = [
@@ -185,21 +166,13 @@ class provider implements
         $sql = "SELECT usert.id as attemptid,
                        cm.id AS cmid,
                        usert.userid AS userid,
-                       usert.wpm,
-                       usert.accuracy,
                        usert.sessionscore,
                        usert.sessiontime,
-                       usert.sessionerrors,
-                       usert.sessionendword,
-                       usert.sessionscore,
-                       usert.errorcount,
-                       usert.filename,
-                       ait.transcript,
-                       ait.fulltranscript
+                       usert.sessiondata,
+                       usert.sessionend,
                        usert.timemodified
-                  FROM {" . constants::M_USERTABLE . "} usert
+                  FROM {" . constants::M_ATTEMPTSTABLE . "} usert
                   JOIN {" . constants::M_TABLE . "} actt ON usert.poodlltimeid = actt.id
-                  JOIN {" . constants::M_AITABLE . "} ait ON usert.id = ait.attemptid
                   JOIN {course_modules} cm ON actt.id = cm.instance
                   JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
                   JOIN {context} c ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
@@ -260,13 +233,11 @@ class provider implements
 
         $instanceid = $cm->instance;
 
-        $attempts = $DB->get_records(constants::M_USERTABLE, ['poodlltimeid' => $instanceid], '', 'id');
+        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['poodlltimeid' => $instanceid], '', 'id');
 
-        // Delete AI data
-        $DB->delete_records_list(constants::M_AITABLE, 'attemptid', array_keys($attempts));
 
         // Now delete all attempts
-        $DB->delete_records(constants::M_USERTABLE, ['poodlltimeid' => $instanceid]);
+        $DB->delete_records(constants::M_ATTEMPTSTABLE, ['poodlltimeid' => $instanceid]);
     }
 
     /**
@@ -287,7 +258,7 @@ class provider implements
 
                 $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
 
-                $entries = $DB->get_records(constants::M_USERTABLE, ['poodlltimeid' => $instanceid, 'userid' => $userid],
+                $entries = $DB->get_records(constants::M_ATTEMPTSTABLE, ['poodlltimeid' => $instanceid, 'userid' => $userid],
                     '', 'id');
 
                 if (!$entries) {
@@ -295,11 +266,9 @@ class provider implements
                 }
 
                 list($insql, $inparams) = $DB->get_in_or_equal(array_keys($entries), SQL_PARAMS_NAMED);
-                // Delete related entry aliases.
-                $DB->delete_records_list(constants::M_AITABLE, 'attemptid', array_keys($entries));
 
                 // Now delete all user related entries.
-                $DB->delete_records(constants::M_USERTABLE, ['poodlltimeid' => $instanceid, 'userid' => $userid]);
+                $DB->delete_records(constants::M_ATTEMPTSTABLE, ['poodlltimeid' => $instanceid, 'userid' => $userid]);
             }
         }
     }
@@ -320,7 +289,7 @@ class provider implements
         $attemptswhere = "poodlltimeid = :instanceid AND userid {$userinsql}";
         $userinstanceparams = $userinparams + ['instanceid' => $instanceid];
 
-        $attemptsset = $DB->get_recordset_select(constants::M_USERTABLE, $attemptswhere, $userinstanceparams, 'id', 'id');
+        $attemptsset = $DB->get_recordset_select(constants::M_ATTEMPTSTABLE, $attemptswhere, $userinstanceparams, 'id', 'id');
         $attempts = [];
 
         foreach ($attemptsset as $attempt) {
@@ -333,12 +302,9 @@ class provider implements
             return;
         }
 
-        // Delete related entry aliases.
-        $DB->delete_records_list(constants::M_AITABLE, 'attemptid', $attempts);
-
 
         // Now delete all AI attempt evals.
         $deletewhere = "poodlltimeid = :instanceid AND userid {$userinsql}";
-        $DB->delete_records_select(constants::M_USERTABLE, $deletewhere, $userinstanceparams);
+        $DB->delete_records_select(constants::M_ATTEMPTSTABLE, $deletewhere, $userinstanceparams);
     }
 }

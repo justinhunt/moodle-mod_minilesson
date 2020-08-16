@@ -74,7 +74,7 @@ $redirecturl = new moodle_url('/mod/poodlltime/rsquestion/rsquestions.php', arra
 	//handle delete actions
     if($action == 'confirmdelete'){
         //TODO more intelligent detection of question usage
-    	$usecount = $DB->count_records(constants::M_USERTABLE,array(constants::M_MODNAME .'id'=>$cm->instance));
+    	$usecount = $DB->count_records(constants::M_ATTEMPTSTABLE,array(constants::M_MODNAME .'id'=>$cm->instance));
     	if($usecount>0){
     		redirect($redirecturl,get_string('iteminuse',constants::M_COMPONENT),10);
     	}

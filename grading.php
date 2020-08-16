@@ -106,7 +106,6 @@ $PAGE->requires->jquery();
 //This puts all our display logic into the renderer.php files in this plugin
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 $reportrenderer = $PAGE->get_renderer(constants::M_COMPONENT,'report');
-$gradenowrenderer = $PAGE->get_renderer(constants::M_COMPONENT,'gradenow');
 
 //From here we actually display the page.
 $mode = "grading";
@@ -146,13 +145,6 @@ switch ($action){
 		return;
 }
 
-//if we got to here we are loading the report on screen
-//so we need our audio player loaded
-//here we set up any info we need to pass into javascript
-$aph_opts =Array();
-
-//this inits the js for the audio players on the list of submissions
-$PAGE->requires->js_call_amd("mod_poodlltime/hiddenplayerhelper", 'init', array($aph_opts));
 
 
 /*
@@ -179,7 +171,6 @@ switch($format){
 
 
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_COMPONENT));
-		echo $gradenowrenderer->render_hiddenaudioplayer();
 		echo $extraheader;
 		echo $pagingbar;
 		echo $perpage_selector;

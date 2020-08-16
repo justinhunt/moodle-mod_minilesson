@@ -93,14 +93,13 @@ $config = get_config(constants::M_COMPONENT);
 $renderer = $PAGE->get_renderer('mod_poodlltime');
 
 //if we are in review mode, lets review
-$attempts = $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id,'poodlltimeid'=>$moduleinstance->id),'id DESC');
-$ai_evals = \mod_poodlltime\utils::get_aieval_byuser($moduleinstance->id,$USER->id);
+$attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('userid'=>$USER->id,'poodlltimeid'=>$moduleinstance->id),'id DESC');
 
 //can attempt ?
 $canattempt = true;
 $canpreview = has_capability('mod/poodlltime:canpreview',$modulecontext);
 if(!$canpreview && $moduleinstance->maxattempts > 0){
-	$attempts =  $DB->get_records(constants::M_USERTABLE,array('userid'=>$USER->id, constants::M_MODNAME.'id'=>$moduleinstance->id),'timecreated DESC');
+	$attempts =  $DB->get_records(constants::M_ATTEMPTSTABLE,array('userid'=>$USER->id, constants::M_MODNAME.'id'=>$moduleinstance->id),'timecreated DESC');
 	if($attempts && count($attempts)>=$moduleinstance->maxattempts){
 		$canattempt=false;
 	}

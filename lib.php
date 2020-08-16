@@ -54,6 +54,8 @@ function poodlltime_supports($feature) {
         case FEATURE_GRADE_HAS_GRADE:         return true;
         case FEATURE_GRADE_OUTCOMES:          return true;
         case FEATURE_BACKUP_MOODLE2:          return true;
+        case FEATURE_GROUPINGS: return false;
+        case FEATURE_GROUPS: return true;
         default:                        return null;
     }
 }
@@ -135,9 +137,8 @@ function poodlltime_reset_userdata($data) {
                         WHERE l.course=:course";
 
         $params = array ("course" => $data->courseid);
-        $DB->delete_records_select(constants::M_USERTABLE, constants::M_MODNAME . "id IN ($sql)", $params);
-        //delete AI grades
-        $DB->delete_records_select(constants::M_AITABLE, constants::M_MODNAME . "id IN ($sql)", $params);
+        $DB->delete_records_select(constants::M_ATTEMPTSTABLE, constants::M_MODNAME . "id IN ($sql)", $params);
+
 
         // remove all grades from gradebook
         if (empty($data->reset_gradebook_grades)) {
@@ -155,8 +156,6 @@ function poodlltime_reset_userdata($data) {
 
     return $status;
 }
-
-
 
 
 /**
@@ -181,14 +180,9 @@ function poodlltime_grade_item_update($moduleinstance, $grades=null) {
         $params = array('itemname'=>$moduleinstance->name);
     }
 
-    //if we are machine grading we need to fetch the error estimate
-    //hard coded to no error estimate since we turned off the feature
-    if(false && $moduleinstance->machgrademethod=constants::MACHINEGRADE_MACHINE &&
-        utils::can_transcribe($moduleinstance)) {
-        $errorestimate = \mod_poodlltime\utils::estimate_errors($moduleinstance->id);
-    }else{
-        $errorestimate =0;
-    }
+   //TODO: PROBABLY DO NOT NEED THIS ANYMORE
+     $errorestimate =0;
+
 
     if ($moduleinstance->grade > 0) {
         $params['gradetype']  = GRADE_TYPE_VALUE;
@@ -297,41 +291,16 @@ function poodlltime_get_user_grades($moduleinstance, $userid=0) {
 
     }
 
-    //aigrades sql
-    $ai_sql = "SELECT u.id, u.id AS userid, ai.sessionscore AS rawgrade
-                  FROM {user} u, {". constants::M_AITABLE ."} ai INNER JOIN {". constants::M_USERTABLE ."} attempt ON ai.attemptid = attempt.id
-                 WHERE attempt.id= (SELECT max(id) FROM {". constants::M_USERTABLE ."} iattempt WHERE iattempt.userid=u.id AND iattempt.poodlltimeid = ai.poodlltimeid)  AND u.id = attempt.userid AND ai.poodlltimeid = :moduleid
-                       $user
-              GROUP BY u.id, ai.sessionscore";
-
     //human_sql
     $human_sql = "SELECT u.id, u.id AS userid, a.sessionscore AS rawgrade
-                      FROM {user} u, {". constants::M_USERTABLE ."} a
-                     WHERE a.id= (SELECT max(id) FROM {". constants::M_USERTABLE ."} ia WHERE ia.userid=u.id AND ia.poodlltimeid = a.poodlltimeid)  AND u.id = a.userid AND a.poodlltimeid = :moduleid
+                      FROM {user} u, {". constants::M_ATTEMPTSTABLE ."} a
+                     WHERE a.id= (SELECT max(id) FROM {". constants::M_ATTEMPTSTABLE ."} ia WHERE ia.userid=u.id AND ia.poodlltimeid = a.poodlltimeid)  AND u.id = a.userid AND a.poodlltimeid = :moduleid
                            $user
                   GROUP BY u.id";
 
-    //hybrid sql
-    $hybrid_sql = "SELECT u.id, attempt.sessiontime as sessiontime, attempt.sessionscore as humangrade, u.id AS userid, ai.sessionscore AS aigrade
-                  FROM {user} u, {". constants::M_AITABLE ."} ai INNER JOIN {". constants::M_USERTABLE ."} attempt ON ai.attemptid = attempt.id
-                 WHERE attempt.id= (SELECT max(id) FROM {". constants::M_USERTABLE ."} iattempt WHERE iattempt.userid=u.id AND iattempt.poodlltimeid = ai.poodlltimeid)  AND u.id = attempt.userid AND ai.poodlltimeid = :moduleid
-                       $user
-              GROUP BY u.id";
 
-    //from which table do we get these grades..
-    if($moduleinstance->machgrademethod == constants::MACHINEGRADE_MACHINE && $cantranscribe) {
-        $results = $DB->get_records_sql($hybrid_sql, $params);
-        //sessiontime is our indicator that a human grade has been saved.
-        foreach ($results as $result) {
-            if ($result->sessiontime > 0) {
-                $result->rawgrade = $result->humangrade;
-            } else {
-                $result->rawgrade = $result->aigrade;
-            }
-        }
-    }else{
-        $results = $DB->get_records_sql($human_sql, $params);
-    }
+     $results = $DB->get_records_sql($human_sql, $params);
+
     //return results
     return $results;
 }
@@ -355,7 +324,7 @@ function poodlltime_is_complete($course,$cm,$userid,$type) {
 	$idfield = 'a.' . constants::M_MODNAME . 'id';
 	$params = array('moduleid'=>$moduleinstance->id, 'userid'=>$userid);
 	$sql = "SELECT  MAX( sessionscore  ) AS grade
-                      FROM {". constants::M_USERTABLE ."}
+                      FROM {". constants::M_ATTEMPTSTABLE ."}
                      WHERE userid = :userid AND " . constants::M_MODNAME . "id = :moduleid";
 	$result = $DB->get_field_sql($sql, $params);
 	if($result===false){return false;}
@@ -384,7 +353,8 @@ function poodlltime_dotask(progress_trace $trace) {
 }
 
 function poodlltime_get_editornames(){
-	return array('passage','welcome','feedback');
+	//return array('welcome');
+    return array();
 }
 
 /**

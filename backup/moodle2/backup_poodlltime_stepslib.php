@@ -50,26 +50,22 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
 
         // root element describing poodlltime instance
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
-            'course','name','intro','introformat','timelimit','passage','passageformat','alternatives','welcome','welcomeformat',
-            'feedback','feedbackformat','targetwpm','humanpostattempt','machinepostattempt','grade','gradeoptions','machgrademethod','maxattempts','mingrade',
-            'ttslanguage','enableai','allowearlyexit','expiredays','region','activitylink','passagepicture','passagekey','picwhenreading','pagelayout','level','submitrawaudio' ,'timecreated','timemodified'
+            'course','name','intro','introformat','timelimit',
+                //'welcome','welcomeformat',
+            'grade','gradeoptions','maxattempts','mingrade',
+            'ttslanguage','transcriber','region','activitylink','pagelayout','timecreated','timemodified'
 			));
         //NB we deliberately do not backup 'passagemaster' field, because clones should leave it unset.
 		
 		//attempts
         $attempts = new backup_nested_element('attempts');
         $attempt = new backup_nested_element('attempt', array('id'),array(
-			constants::M_MODNAME ."id","courseid","userid","status","filename","wpm","accuracy",
-			"sessionscore","sessiontime","sessionerrors","sessionendword","errorcount",
-            "qanswer1","qanswer2","qanswer3","qanswer4","qanswer5","qscore","qtextanswer1","qtextscore1","timecreated","timemodified"
+			constants::M_MODNAME ."id","courseid","userid","status",
+			"sessionscore","sessiontime","sessiondata","sessionend","errorcount",
+            "notes","qtextanswer1","qtextscore1","timecreated","timemodified"
 		));
 
-        //ai results
-        $airesults = new backup_nested_element('airesults');
-        $airesult = new backup_nested_element('airesult', array('id'),array(
-            constants::M_MODNAME ."id","courseid","attemptid","transcript","fulltranscript","wpm","accuracy",
-            "sessionscore","sessiontime","sessionerrors","sessionmatches","sessionendword","errorcount","timecreated","timemodified"
-        ));
+
 
         // rsquestion
         $rsquestions = new backup_nested_element('rsquestions');
@@ -85,8 +81,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
 		// Build the tree.
         $oneactivity->add_child($attempts);
         $attempts->add_child($attempt);
-        $attempt->add_child($airesults);
-        $airesults->add_child($airesult);
+
         //questions
         $oneactivity->add_child($rsquestions);
         $rsquestions->add_child($rsquestion);
@@ -99,11 +94,9 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
 
         //sources if including user info
         if ($userinfo) {
-			$attempt->set_source_table(constants::M_USERTABLE,
+			$attempt->set_source_table(constants::M_ATTEMPTSTABLE,
 											array(constants::M_MODNAME . 'id' => backup::VAR_PARENTID));
-            $airesult->set_source_table(constants::M_AITABLE,
-                array(constants::M_MODNAME . 'id' => backup::VAR_ACTIVITYID,
-                    'attemptid'=>backup::VAR_PARENTID));
+
         }
 
         // Define id annotations.
@@ -113,10 +106,8 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
         // Define file annotations.
         // intro file area has 0 itemid.
         $oneactivity->annotate_files(constants::M_COMPONENT, 'intro', null);
-		$oneactivity->annotate_files(constants::M_COMPONENT, 'welcome', null);
-		$oneactivity->annotate_files(constants::M_COMPONENT, 'passage', null);
-		$oneactivity->annotate_files(constants::M_COMPONENT, 'feedback', null);
-        $oneactivity->annotate_files(constants::M_COMPONENT, constants::PASSAGEPICTURE_FILEAREA, null);
+		//$oneactivity->annotate_files(constants::M_COMPONENT, 'welcome', null);
+
 		//question stuff
         $oneactivity->annotate_files(constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, 'id');
         $oneactivity->annotate_files(constants::M_COMPONENT, constants::AUDIOPROMPT_FILEAREA, 'id');

@@ -15,7 +15,7 @@ class gradereport extends basereport
 {
 
     protected $report="gradereport";
-    protected $fields = array('id','username','audiofile','wpm','accuracy_p','quiz_p','grader','timecreated','deletenow');
+    protected $fields = array('id','username','accuracy_p','grade_p','timecreated','deletenow');
     protected $headingdata = null;
     protected $qcache=array();
     protected $ucache=array();
@@ -34,47 +34,10 @@ class gradereport extends basereport
                 $ret = fullname($user);
                 break;
 
-            case 'audiofile':
-                if ($withlinks) {
-                    /*
-                    $ret = html_writer::tag('audio','',
-                            array('controls'=>'','src'=>$record->audiourl));
-                        */
-                    $ret = \html_writer::div('<i class="fa fa-play-circle"></i>',
-                        constants::M_HIDDEN_PLAYER_BUTTON, array('data-audiosource' => $record->audiourl));
-
-                } else {
-                    $ret = get_string('submitted', constants::M_COMPONENT);
-                }
-                break;
-                break;
-
-            case 'wpm':
-                $ret = $record->wpm;
-                break;
-
-
-            case 'accuracy_p':
-                $ret = $record->accuracy;
-                break;
-
             case 'grade_p':
                 $ret = $record->sessionscore;
                 break;
 
-            case 'quiz_p':
-                $ret = $record->qscore;
-                break;
-
-            case 'grader':
-                if($record->sessiontime ==0 && $record->wpm){
-                    $ret = get_string('grader_ai',constants::M_COMPONENT);
-                }else if($record->sessiontime){
-                    $ret = get_string('grader_human',constants::M_COMPONENT);
-                }else{
-                    $ret =get_string('grader_ungraded',constants::M_COMPONENT);
-                }
-                break;
 
             case 'timecreated':
                 $ret = date("Y-m-d H:i:s", $record->timecreated);
@@ -121,35 +84,16 @@ class gradereport extends basereport
         $user_attempt_totals = array();
 
         //if we are not machine grading the SQL is simpler
-        $human_sql = "SELECT tu.*  FROM {" . constants::M_USERTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id WHERE tu.poodlltimeid=?" .
+        $human_sql = "SELECT tu.*  FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id WHERE tu.poodlltimeid=?" .
             " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
 
-        //if we are machine grading we need to fetch human and machine so we can get WPM etc from either
-        $hybrid_sql="SELECT tu.*,tai.accuracy as aiaccuracy,tai.wpm as aiwpm, tai.sessionscore as aisessionscore  FROM {" . constants::M_USERTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id " .
-            "INNER JOIN {". constants::M_AITABLE ."} tai ON tai.attemptid=tu.id " .
-            "WHERE tu.poodlltimeid=?" .
-            " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
+
 
         //we need a module instance to know which scoring method we are using.
         $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->poodlltimeid));
         $cantranscribe = utils::can_transcribe($moduleinstance);
+        $alldata =$DB->get_records_sql($human_sql, array($formdata->poodlltimeid));
 
-        //run the sql and match up WPM/ accuracy and sessionscore if we need to
-        if($moduleinstance->machgrademethod==constants::MACHINEGRADE_MACHINE && $cantranscribe) {
-            $alldata = $DB->get_records_sql($hybrid_sql, array($formdata->poodlltimeid));
-            if ($alldata) {
-                //sessiontime is our indicator that a human grade has been saved.
-                foreach ($alldata as $result) {
-                    if (!$result->sessiontime) {
-                        $result->wpm = $result->aiwpm;
-                        $result->accuracy = $result->aiaccuracy;
-                        $result->sessionscore = $result->aisessionscore;
-                    }
-                }
-            }
-        }else{
-            $alldata =$DB->get_records_sql($human_sql, array($formdata->poodlltimeid));
-        }
 
 
         //loop through data getting most recent attempt

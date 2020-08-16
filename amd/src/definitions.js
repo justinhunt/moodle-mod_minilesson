@@ -42,28 +42,13 @@ This file contains class and ID definitions.
         endspaceclass: 'mod_poodlltime_grading_endspace',
         unreadwordclass:  'mod_poodlltime_grading_unreadword',
         unreadspaceclass: 'mod_poodlltime_grading_unreadspace',
-        wpmscoreid: 'mod_poodlltime_grading_wpm_score',
-        accuracyscoreid: 'mod_poodlltime_grading_accuracy_score',
-        sessionscoreid: 'mod_poodlltime_grading_session_score',
-        errorscoreid: 'mod_poodlltime_grading_error_score',
-        errorrateid: 'mod_poodlltime_grading_errorrate_score',
-        scrateid: 'mod_poodlltime_grading_scrate_score',
-        formelementwpmscore: 'mod_poodlltime_grading_form_wpm',
-        formelementaccuracy: 'mod_poodlltime_grading_form_accuracy',
-        formelementsessionscore: 'mod_poodlltime_grading_form_sessionscore',
-        formelementendword: 'mod_poodlltime_grading_form_sessionendword',
-        formelementtime: 'mod_poodlltime_grading_form_sessiontime',
-        formelementerrors: 'mod_poodlltime_grading_form_sessionerrors',
         modebutton: 'mod_poodlltime_modebutton',
 
         //activity
-        passagefinished: 'mod_poodlltime_passage_finished',
-        spotcheckmodebutton: 'mod_poodlltime_spotcheckbutton',
-        transcriptmodebutton: 'mod_poodlltime_transcriptcheckbutton',
+
         gradingmodebutton: 'mod_poodlltime_gradingbutton',
         clearbutton: 'mod_poodlltime_clearbutton',
-        spotcheckmode: 'mod_poodlltime_spotcheckmode',
-        aiunmatched: 'mod_poodlltime_aiunmatched',
+
 
         //quiz
         qtype_pictureprompt: 'multichoicepicture',

@@ -58,7 +58,7 @@ class comprehensiontest
     public function fetch_latest_attempt($userid){
         global $DB;
 
-        $attempts = $DB->get_records(constants::M_USERTABLE,array('poodlltimeid' => $this->mod->id,'userid'=>$userid),'id DESC');
+        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('poodlltimeid' => $this->mod->id,'userid'=>$userid),'id DESC');
         if($attempts){
             $attempt = array_shift($attempts);
             return $attempt;

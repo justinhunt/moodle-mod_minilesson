@@ -16,22 +16,28 @@ class report_renderer extends \plugin_renderer_base
     public function render_reportmenu($moduleinstance, $cm)
     {
 
-        $basic = new \single_button(
+        $reports =[];
+        //basic report
+        $basicreport = new \single_button(
             new \moodle_url(constants::M_URL . '/reports.php', array('report' => 'basic', 'id' => $cm->id, 'n' => $moduleinstance->id)),
             get_string('basicreport', constants::M_COMPONENT), 'get');
+        $reports[] = $this->render($basicreport) ;
 
-        $gradereport = new \single_button(
+        //grades report
+        $gradesreport = new \single_button(
             new \moodle_url(constants::M_URL . '/reports.php', array('report' => 'gradereport', 'id' => $cm->id, 'n' => $moduleinstance->id)),
             get_string('gradereport', constants::M_COMPONENT), 'get');
+        $reports[] = $this->render($gradesreport) ;
+
+        //attempts report
+        $attemptsreport= new \single_button(
+                new \moodle_url(constants::M_URL . '/reports.php', array('report' => 'attemptsreport', 'id' => $cm->id, 'n' => $moduleinstance->id)),
+                get_string('attemptsreport', constants::M_COMPONENT), 'get');
+        $reports[] = $this->render($attemptsreport) ;
 
 
-        $runningrecordsreport = new \single_button(
-            new \moodle_url(constants::M_URL . '/reports.php', array('report' => 'runningrecords', 'id' => $cm->id, 'n' => $moduleinstance->id)),
-            get_string('runningrecordsreport', constants::M_COMPONENT), 'get');
 
-
-        $ret = \html_writer::div($this->render($gradereport) . '<br />'
-            . '<br />'. $this->render($runningrecordsreport) . '<br />', constants::M_CLASS . '_listbuttons');
+        $ret = \html_writer::div(implode('<br />', $reports), constants::M_CLASS . '_listbuttons');
 
         return $ret;
     }
@@ -193,9 +199,7 @@ class report_renderer extends \plugin_renderer_base
 
     function show_grading_footer($moduleinstance, $cm,$mode)
     {
-        if($mode=="machinegrading"){
-           return $this->show_machinegrading_footer($moduleinstance,$cm);
-        }
+
         // takes you back to home
         $link = new \moodle_url(constants::M_URL . '/grading.php', array('id' => $cm->id, 'n' => $moduleinstance->id));
         $ret = \html_writer::link($link, get_string('returntogradinghome', constants::M_COMPONENT));
@@ -205,18 +209,12 @@ class report_renderer extends \plugin_renderer_base
     function show_export_buttons($cm,$formdata,$showreport){
         switch($showreport) {
             case 'grading':
-            case 'machinegrading':
                 return $this->render_grading_exportbuttons_html($cm, $formdata, $showreport);
             default:
                 return $this->render_exportbuttons_html($cm, $formdata, $showreport);
         }
     }
 
-    function show_machinegrading_footer($moduleinstance,$cm){
-        // takes you back to home
-        $link = new \moodle_url(constants::M_URL . '/grading.php',array('id'=>$cm->id,'n'=>$moduleinstance->id,'action'=>'machinegrading'));
-        $ret =  \html_writer::link($link, get_string('returntomachinegradinghome',constants::M_COMPONENT));
-        return $ret;
-    }
+
 
 }

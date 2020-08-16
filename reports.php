@@ -98,17 +98,10 @@ if(has_capability('mod/' . constants::M_MODNAME . ':' . 'manage',$modulecontext)
 }
 $PAGE->requires->jquery();
 
-	
-
-$aph_opts =Array();
-
-//this inits the grading helper JS
-$PAGE->requires->js_call_amd("mod_poodlltime/hiddenplayerhelper", 'init', array($aph_opts));
 
 //This puts all our display logic into the renderer.php files in this plugin
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 $reportrenderer = $PAGE->get_renderer(constants::M_COMPONENT,'report');
-$gradenowrenderer = $PAGE->get_renderer(constants::M_COMPONENT,'gradenow');
 
 //From here we actually display the page.
 //this is core renderer stuff
@@ -134,6 +127,23 @@ switch ($showreport){
 		break;
 
     //list view of attempts and grades and action links
+    case 'attempts':
+        $report = new \mod_poodlltime\report\attempts();
+        $formdata = new stdClass();
+        $formdata->poodlltimeid = $moduleinstance->id;
+        $formdata->modulecontextid = $modulecontext->id;
+        break;
+
+    //list view of attempts and grades and action links
+    case 'userattempts':
+        $report = new \mod_poodlltime\report\attempts();
+        $formdata = new stdClass();
+        $formdata->poodlltimeid = $moduleinstance->id;
+        $formdata->modulecontextid = $modulecontext->id;
+        break;
+
+
+    //list view of attempts and grades and action links
     //same as "grading" mainly. Just for report not action purposes
 	case 'gradereport':
 		$report = new \mod_poodlltime\report\gradereport();
@@ -152,12 +162,7 @@ switch ($showreport){
         $formdata->modulecontextid = $modulecontext->id;
         break;
 
-    case 'runningrecords':
-        $report = new \mod_poodlltime\report\runningrecords();
-        $formdata = new stdClass();
-        $formdata->poodlltimeid = $moduleinstance->id;
-        $formdata->modulecontextid = $modulecontext->id;
-        break;
+
 		
 	default:
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
@@ -197,6 +202,5 @@ switch($format){
 		echo $reportrenderer->show_reports_footer($moduleinstance,$cm,$formdata,$showreport);
         //backtotop
         echo $renderer->backtotopbutton($course->id);
-        echo $gradenowrenderer->render_hiddenaudioplayer();
 		echo $renderer->footer();
 }

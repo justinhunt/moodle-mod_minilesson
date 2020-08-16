@@ -48,7 +48,7 @@ function xmldb_poodlltime_upgrade($oldversion) {
     // Add passage picture to poodlltime table
     if ($oldversion < 2018122000) {
         $activitytable = new xmldb_table(constants::M_TABLE);
-        $attempttable = new xmldb_table(constants::M_USERTABLE);
+        $attempttable = new xmldb_table(constants::M_ATTEMPTSTABLE);
 
         // Define field expiredays to be added to poodlltime
         $field_picture = new xmldb_field('passagepicture', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null);

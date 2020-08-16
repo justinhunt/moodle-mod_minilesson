@@ -15,7 +15,7 @@ class grading extends basereport
 {
 
     protected $report = "grading";
-    protected $fields = array('id', 'username', 'audiofile', 'totalattempts', 'wpm', 'accuracy_p', 'quiz_p','quizanswers','grader', 'gradenow', 'timecreated', 'deletenow');
+    protected $fields = array('id', 'username', 'totalattempts',  'grade_p','timecreated', 'deletenow');
     protected $headingdata = null;
     protected $qcache = array();
     protected $ucache = array();
@@ -51,97 +51,10 @@ class grading extends basereport
                 }
                 break;
 
-            case 'audiofile':
-                if ($withlinks) {
-                    /*
-                    $ret = html_writer::tag('audio','',
-                            array('controls'=>'','src'=>$record->audiourl));
-                        */
-                    $ret = \html_writer::div('<i class="fa fa-play-circle"></i>', constants::M_HIDDEN_PLAYER_BUTTON, array('data-audiosource' => $record->audiourl));
-
-                } else {
-                    $ret = get_string('submitted', constants::M_COMPONENT);
-                }
-                break;
-
-             //WPM could hold either human or AI data
-            case 'wpm':
-                //if not human or ai graded
-                if($record->sessiontime ==0 && !$has_ai_grade){
-                    $ret = '';
-                }else {
-                    $ret = $record->wpm;
-                }
-                break;
-
-            //accuracy could hold either human or ai data
-            case 'accuracy_p':
-                //if not human or ai graded
-                if($record->sessiontime ==0 && !$has_ai_grade){
-                    $ret = '';
-                }else {
-                    $ret = $record->accuracy;
-                }
-                break;
 
              //grade could hold either human or ai data
             case 'grade_p':
-                //if not human or ai graded
-                if($record->sessiontime ==0 && !$has_ai_grade){
-                    $ret = '';
-                }else {
-                    $ret = $record->sessionscore;
-                }
-                break;
-
-            case 'quiz_p':
-                //if not human or ai graded
-                if($record->sessiontime ==0 && !$record->qscore){
-                    $ret = '';
-                }else {
-                    $ret = $record->qscore;
-                }
-                break;
-
-            case 'quizanswers':
-                $ret = $record->qanswer1 . '|' . $record->qanswer2 . '|' . $record->qanswer3 . '|' . $record->qanswer4 . '|' . $record->qanswer5;
-                break;
-
-            case 'grader':
-                if($record->sessiontime ==0 && $has_ai_grade){
-                    $ret = get_string('grader_ai',constants::M_COMPONENT);
-                }else if($record->sessiontime){
-                    $ret = get_string('grader_human',constants::M_COMPONENT);
-                }else{
-                    $ret =get_string('grader_ungraded',constants::M_COMPONENT);
-                }
-                break;
-
-            case 'gradenow':
-                if ($withlinks) {
-
-                    if($record->sessiontime ==0) {
-                        $buttonclasses= 'btn btn-secondary';
-                        $buttonlabel = get_string('gradenow', constants::M_COMPONENT);
-                    }else{
-                        $buttonclasses= '';
-                        $buttonlabel= get_string('regrade', constants::M_COMPONENT);
-                    }
-                    $link = new \moodle_url(constants::M_URL . '/grading.php', array('action' => 'gradenow', 'n' => $record->poodlltimeid, 'attemptid' => $record->id));
-                    $ret = \html_writer::link($link, $buttonlabel,array('class'=>$buttonclasses));
-                } else {
-                    $ret = get_string('cannotgradenow', constants::M_COMPONENT);
-                }
-                break;
-
-                //this will load AI data and start from there, currently hidden from menu to keep it simple.
-            case 'aigradenow':
-                if ($withlinks) {
-                    $link = new \moodle_url(constants::M_URL . '/grading.php', array('action' => 'aigradenow', 'n' => $record->poodlltimeid, 'attemptid' => $record->id));
-                    $ret = \html_writer::link($link, get_string('aigradenow', constants::M_COMPONENT));
-                } else {
-                    $ret = get_string('cannotgradenow', constants::M_COMPONENT);
-                }
+                $ret = $record->sessionscore;
                 break;
 
 
@@ -196,35 +109,14 @@ class grading extends basereport
         $user_attempt_totals = array();
 
         //if we are not machine grading the SQL is simpler
-        $human_sql = "SELECT tu.*, false as fulltranscript  FROM {" . constants::M_USERTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id WHERE tu.poodlltimeid=?" .
-            " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
-
-        //if we are machine grading we need to fetch human and machine so we can get WPM etc from either
-        $hybrid_sql="SELECT tu.*,tai.accuracy as aiaccuracy,tai.wpm as aiwpm, tai.sessionscore as aisessionscore,tai.fulltranscript as fulltranscript   FROM {" . constants::M_USERTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id " .
-            "INNER JOIN {". constants::M_AITABLE ."} tai ON tai.attemptid=tu.id " .
-            "WHERE tu.poodlltimeid=?" .
+        $human_sql = "SELECT tu.*, false as fulltranscript  FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id WHERE tu.poodlltimeid=?" .
             " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
 
         //we need a module instance to know which scoring method we are using.
         $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->poodlltimeid));
         $cantranscribe = utils::can_transcribe($moduleinstance);
+        $alldata =$DB->get_records_sql($human_sql, array($formdata->poodlltimeid));
 
-        //run the sql and match up WPM/ accuracy and sessionscore if we need to
-        if($moduleinstance->machgrademethod==constants::MACHINEGRADE_MACHINE && $cantranscribe) {
-                $alldata = $DB->get_records_sql($hybrid_sql, array($formdata->poodlltimeid));
-                if ($alldata) {
-                    //sessiontime is our indicator that a human grade has been saved.
-                    foreach ($alldata as $result) {
-                        if (!$result->sessiontime) {
-                            $result->wpm = $result->aiwpm;
-                            $result->accuracy = $result->aiaccuracy;
-                            $result->sessionscore = $result->aisessionscore;
-                        }
-                    }
-                }
-        }else{
-                $alldata =$DB->get_records_sql($human_sql, array($formdata->poodlltimeid));
-        }
 
 
         //loop through data getting most recent attempt
