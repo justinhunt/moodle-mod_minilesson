@@ -52,12 +52,13 @@ class mod_poodlltime_external extends external_api {
     }
 
     public static function report_step_grade($cmid,$grade,$step){
-       // $ret= utils::update_step_grade($modid, $correct);
+        $ret= utils::update_step_grade($cmid,$grade, $step);
         return true;
     }
     public static function report_step_grade_returns() {
         return new external_value(PARAM_BOOL);
     }
+
 
     public static function compare_passage_to_transcript_parameters(){
         return new external_function_parameters(

@@ -44,14 +44,7 @@ const ACCMETHOD_NOERRORS =3;
 const POSTATTEMPT_NONE=0;
 const POSTATTEMPT_EVAL=1;
 const POSTATTEMPT_EVALERRORS=2;
-//more review mode options
-const REVIEWMODE_NONE=0;
-const REVIEWMODE_MACHINE=1;
-const REVIEWMODE_HUMAN=2;
-const REVIEWMODE_SCORESONLY=3;
-//to use or not use machine grades
-const MACHINEGRADE_NONE=0;
-const MACHINEGRADE_MACHINE=1;
+
 
 //Constants for RS Questions
 const NONE=0;
@@ -158,8 +151,10 @@ const M_EVALUATED_MESSAGE='mod_poodlltime_evaluated_message';
 const M_QR_PLAYER='mod_poodlltime_qr_player';
 const M_LINK_BOX='mod_poodlltime_link_box';
 const M_LINK_BOX_TITLE='mod_poodlltime_link_box_title';
-  
-//languages
+const M_NOITEMS_MSG='mod_poodlltime_noitems_msg';
+
+
+    //languages
 const M_LANG_ENUS = 'en-US';
 const M_LANG_ENGB = 'en-GB';
 const M_LANG_ENAU = 'en-AU';

@@ -17,7 +17,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['modulename'] = 'Poodll Time';
 $string['modulenameplural'] = 'Poodll Times';
-$string['modulename_help'] = 'Poodll Time is an activity designed to assist teachers in evaluating their students reading fluency. Students read a passage, set by the teacher, into a microphone. Later the teacher can mark words as incorrect and get the student WCPM(Words Correct Per Minute) scores.';
+$string['modulename_help'] = 'Poodll Time is a simple quiz activity with question types suited towards language learners.';
 $string['poodlltimefieldset'] = 'Custom example fieldset';
 $string['poodlltimename'] = 'Poodll Time';
 $string['poodlltimename_help'] = 'This is the content of the help tooltip associated with the poodlltimename field. Markdown syntax is supported.';
@@ -59,7 +59,6 @@ $string['hellopushspeak'] = 'Hello! Push the "Speak" button and say your name!';
 $string['nicereadinga'] = 'Nice reading, Jenny';
 $string['pleasewait'] = 'Please wait...';
 $string['readagainandanswer'] = 'Read again and answer the questions';
-$string['readpassageagainandanswerquestions'] = 'Please read the passage again, and answer some questions.';
 $string['sayyourname'] = 'Say your name!';
 $string['teacherwillcheck'] = 'Your teacher will check your reading.';
 $string['thanksa'] = 'Thanks {$a}';
@@ -110,7 +109,6 @@ $string['gradeaverage'] ='average score of all attempts';
 $string['defaultsettings'] ='Default Settings';
 $string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
 $string['poodlltimetask'] ='Poodll Time Task';
-$string['passagelabel'] ='Reading Passage';
 $string['welcomelabel'] ='Default Welcome';
 $string['welcomelabel_details'] ='The default text to show in the welcome field when creating a new Poodll Time activity.';
 $string['feedbacklabel'] ='Default Feedback';
@@ -142,7 +140,7 @@ $string['notgradedyet'] = 'Your submission has been received, but has not been g
 $string['enabletts'] = 'Enable TTS(experimental)';
 $string['enabletts_details'] = 'TTS is currently not implemented';
 //we hijacked this setting for both TTS STT .... bad ... but they are always the same aren't they?
-$string['ttslanguage'] = 'Passage Language';
+$string['ttslanguage'] = 'TTS Voice Language';
 $string['deleteattemptconfirm'] = "Are you sure that you want to delete this attempt?";
 $string['deletenow']='';
 $string['itemsperpage']='Items per page';
@@ -157,8 +155,7 @@ $string['apiuser']='Poodll API User ';
 $string['apiuser_details']='The Poodll account username that authorises Poodll on this site.';
 $string['apisecret']='Poodll API Secret ';
 $string['apisecret_details']='The Poodll API secret. See <a href= "https://support.poodll.com/support/solutions/articles/19000083076-cloud-poodll-api-secret">here</a> for more details';
-$string['enableai']='Enable AI';
-$string['enableai_details']='Poodll Time can evaluate results from a student attempt using AI. Check to enable.';
+
 
 
 $string['useast1'] = 'US East';
@@ -356,56 +353,12 @@ $string['avgcorrect'] = 'Av. Correct';
 $string['avgtotaltime'] = 'Av. Duration';
 $string['nodataavailable'] = 'No data available';
 $string['quiz'] = 'Quiz';
-$string['passagepicture']='Passage picture';
 
-$string['mistranscriptions_summary']='Summary of mistranscriptions.';
-$string['nomistranscriptions']='No mistranscriptions.';
-$string['passageindex']='Passage Index';
-$string['passageword']='Passage Word';
-$string['mistranscriptions']='Mistranscriptions';
-$string['mistrans_count']='Count';
-$string['total_mistranscriptions']='Total mistranscriptions: {$a}';
 
 //MSV stuff
-$string['msvbutton']="Power Grade";
-$string['msv']="Power Grade";
-$string['domsv']="Power Grade";
-$string['m_label']="M";
-$string['s_label']="S";
-$string['v_label']="V";
-$string['msvcloselabel']="Close";
-$string['selfcorrect']="SC";
 $string['error']="Error";
-$string['notesplaceholder']="Enter notes here.";
-$string['runningrecordsreport']="Running Records";
-$string['runningrecordsheading']="Running Records";
-$string['runningrecords']="Running Records";
-$string['runningrecord']="Running Record";
-$string['errorrate']="Error Rate";
-$string['selfcorrectionrate']="S-C Rate";
 $string['notes']="Notes";
 
-$string['level'] = 'Difficulty Level has been pushed.';
-$string['pushlevel_done'] = 'Difficulty Level';
-$string['pushlevel'] = 'Push Difficulty Level';
-
-$string['passagekey']='Passage Key';
-$string['passagekey_details']='A unique key that links this activity instance to clones/master of it elsewhere on the site.';
-$string['passagemaster']='Passage Master';
-$string['passagemaster_details']='Check this, if this is the original passage from which changes will be pushed to clones of it.';
-
-$string['picwhenreading']='Show picture when reading';
-$string['picwhenreading_details']='Passages for some learners may be better with picture on screen when reading ';
-
-$string['notpassagemaster']='You can not push passage or alternatives if the Poodll Time Activity unless passagemaster is checked in activity settings.';
-$string['push']='Push';
-$string['pushpage']='Show picture when reading';
-$string['pushalternatives_done']='Alternatives have been pushed';
-$string['pushpassage_done']='Passage has been pushed';
-$string['pushpassage']='Push Passage';
-$string['pushalternatives']='Push Alternatives';
-$string['pushquestions_done']='Questions have been pushed';
-$string['pushquestions']='Push Questions';
 
 $string['addmultichoiceitem']='Multi Choice';
 $string['adddictationchatitem']='Dictation Chat';
@@ -477,3 +430,7 @@ $string['order']= 'Order';
 $string['deleteitem'] = 'Delete Question';
 $string['deleteitem_message'] = 'Really delete question:&nbsp;';
 $string['deletebuttonlabel'] = 'DELETE';
+
+$string['noitems'] ='There are no questions yet in this activity';
+$string['letsadditems'] ='Lets add some questions!';
+$string['additems'] ='Add Questions';

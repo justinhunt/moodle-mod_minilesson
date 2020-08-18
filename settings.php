@@ -38,29 +38,25 @@ if ($ADMIN->fulltree) {
 	*/
 
     $settings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/apiuser',
-        get_string('apiuser', constants::M_COMPONENT), get_string('apiuser_details', constants::M_COMPONENT), '', PARAM_TEXT));
+        get_string('apiuser', constants::M_COMPONENT),
+            get_string('apiuser_details', constants::M_COMPONENT), '', PARAM_TEXT));
 
-    $tokeninfo =   utils::fetch_token_for_display(get_config(constants::M_COMPONENT,'apiuser'),get_config(constants::M_COMPONENT,'apisecret'));
+    $tokeninfo =   utils::fetch_token_for_display(get_config(constants::M_COMPONENT,'apiuser'),
+            get_config(constants::M_COMPONENT,'apisecret'));
     //get_string('apisecret_details', constants::M_COMPONENT)
     $settings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/apisecret',
         get_string('apisecret', constants::M_COMPONENT),$tokeninfo , '', PARAM_TEXT));
 
 
     $regions = \mod_poodlltime\utils::get_region_options();
-    $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/awsregion', get_string('awsregion', constants::M_COMPONENT), '', 'useast1', $regions));
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/awsregion',
+            get_string('awsregion', constants::M_COMPONENT), '', 'useast1', $regions));
 
 
 	 $langoptions = \mod_poodlltime\utils::get_lang_options();
-	 $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/ttslanguage', get_string('ttslanguage', constants::M_COMPONENT), '', 'en', $langoptions));
+	 $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/ttslanguage',
+             get_string('ttslanguage', constants::M_COMPONENT), '', 'en-US', $langoptions));
 
-    // Transcriber options
-    $name = 'transcriber';
-    $label = get_string($name, constants::M_COMPONENT);
-    $details = get_string($name . '_details', constants::M_COMPONENT);
-    $default = constants::TRANSCRIBER_AMAZONTRANSCRIBE;
-    $options = utils::fetch_options_transcribers();
-    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, $options));
 
     $settings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/itemsperpage',
         get_string('itemsperpage', constants::M_COMPONENT), get_string('itemsperpage_details', constants::M_COMPONENT), 10, PARAM_INT));

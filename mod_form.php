@@ -71,7 +71,7 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         //page layout options
         $layout_options = \mod_poodlltime\utils::fetch_pagelayout_options();
         $mform->addElement('select', 'pagelayout', get_string('pagelayout', constants::M_COMPONENT),$layout_options);
-        $mform->setDefault('pagelayout','embedded');
+        $mform->setDefault('pagelayout','standard');
 
         //time target
         $timelimit_options = \mod_poodlltime\utils::get_timelimit_options();
@@ -114,14 +114,6 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         $langoptions = \mod_poodlltime\utils::get_lang_options();
         $mform->addElement('select', 'ttslanguage', get_string('ttslanguage', constants::M_COMPONENT), $langoptions);
         $mform->setDefault('ttslanguage',$config->ttslanguage);
-
-        //transcriber options
-        $name = 'transcriber';
-        $label = get_string($name, constants::M_COMPONENT);
-        $options = \mod_poodlltime\utils::fetch_options_transcribers();
-        $mform->addElement('select', $name, $label, $options);
-        $mform->setDefault($name, $config->transcriber);
-
 
         //region
         $regionoptions = \mod_poodlltime\utils::get_region_options();

@@ -183,7 +183,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show the introduction text is as set in the activity description
      */
-    public function show_intro($poodlltime,$cm){
+    public function show_intro($poodlltime,$cm) {
         $ret = "";
         if (trim(strip_tags($poodlltime->intro))) {
             $ret .= $this->output->box_start('mod_introbox');
@@ -193,19 +193,29 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
-
-
-
-
+    /**
+     * Show error (but when?)
+     */
+    public function show_no_items($cm,$showadditemlinks) {
+        $displaytext = $this->output->box_start();
+        $displaytext .= $this->output->heading(get_string('noitems', constants::M_COMPONENT), 3, 'main');
+        if ($showadditemlinks) {
+            $displaytext .= \html_writer::div(get_string('letsadditems', constants::M_COMPONENT), '', array());
+            $displaytext .= $this->output->single_button(new \moodle_url(constants::M_URL . '/rsquestion/rsquestions.php',
+                array('id' => $cm->id)), get_string('additems', constants::M_COMPONENT));
+        }
+        $displaytext .= $this->output->box_end();
+        $ret= \html_writer::div($displaytext,constants::M_NOITEMS_MSG,array('id'=>constants::M_NOITEMS_MSG));
+        return $ret;
+    }
 
 
     /**
      *  Show quiz container
      */
-    public function show_quiz($cm,$moduleinstance){
+    public function show_quiz($comp_test){
 
         //quiz data
-        $comp_test =  new \mod_poodlltime\comprehensiontest($cm);
         $quizdata = $comp_test->fetch_test_data_for_js();
         $itemshtml=[];
         foreach($quizdata as $item){
@@ -271,82 +281,6 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
-    /**
-     * The html part of the recorder (js is in the fetch_activity_amd)
-     */
-    public function show_recorder($moduleinstance){
-        global $CFG, $USER;
-
-        //first confirm we are authorised before we try to get the token
-        $config = get_config(constants::M_COMPONENT);
-        if(empty($config->apiuser) || empty($config->apisecret)){
-            $errormessage = get_string('nocredentials',constants::M_COMPONENT,
-                    $CFG->wwwroot . constants::M_PLUGINSETTINGS);
-            return $this->show_problembox($errormessage);
-        }else {
-            //fetch token
-            $token = utils::fetch_token($config->apiuser,$config->apisecret);
-
-            //check token authenticated and no errors in it
-            $errormessage = utils::fetch_token_error($token);
-            if(!empty($errormessage)){
-                return $this->show_problembox($errormessage);
-            }
-        }
-
-        //recorder
-        //=======================================
-        $hints = new \stdClass();
-        $hints->allowearlyexit = $moduleinstance->allowearlyexit;
-
-        //perhaps we want to force stereoaudio
-        if ($moduleinstance->transcriber == constants::TRANSCRIBER_GOOGLECLOUDSPEECH ||
-                $moduleinstance->submitrawaudio) {
-            $hints->encoder = 'stereoaudio';
-        }
-        $string_hints = base64_encode (json_encode($hints));
-        $can_transcribe = \mod_poodlltime\utils::can_transcribe($moduleinstance);
-        $transcribe = $can_transcribe  ? $moduleinstance->transcriber : "0";
-        $recorderdiv= \html_writer::div('', constants::M_CLASS  . '_center',
-            array('id'=>constants::M_RECORDERID,
-                'data-id'=>'therecorder',
-                'data-parent'=>$CFG->wwwroot,
-                 'data-owner'=>hash('md5',$USER->username),
-                'data-localloading'=>'auto',
-                'data-localloader'=>'/mod/poodlltime/poodllloader.html',
-                'data-media'=>"audio",
-                'data-appid'=>constants::M_COMPONENT,
-                'data-type'=>"poodlltime",
-                'data-width'=>"240",
-                'data-height'=>"110",
-                //'data-iframeclass'=>"letsberesponsive",
-                'data-updatecontrol'=>constants::M_READING_AUDIO_URL,
-                'data-timelimit'=> $moduleinstance->timelimit,
-                'data-transcode'=>"1",
-                'data-transcribe'=>$transcribe,
-                'data-language'=>$moduleinstance->ttslanguage,
-                'data-expiredays'=>$moduleinstance->expiredays,
-                'data-region'=>$moduleinstance->region,
-                'data-fallback'=>'warning',
-                'data-hints'=>$string_hints,
-                'data-token'=>$token //localhost
-                //'data-token'=>"643eba92a1447ac0c6a882c85051461a" //cloudpoodll
-            )
-        );
-        $containerdiv= \html_writer::div($recorderdiv,constants::M_RECORDER_CONTAINER . " " . constants::M_CLASS  . '_center',
-            array('id'=>constants::M_RECORDER_CONTAINER));
-        //=======================================
-
-
-        $recordingdiv = \html_writer::div($containerdiv ,constants::M_RECORDING_CONTAINER);
-
-        //prepare output
-        $ret = "";
-        $ret .=$recordingdiv;
-        //return it
-        return $ret;
-    }
-
 
     function fetch_activity_amd($cm, $moduleinstance){
         global $CFG, $USER;
@@ -372,8 +306,6 @@ class renderer extends \plugin_renderer_base {
         $recopts['wheretonextcontainer'] = constants::M_WHERETONEXT_CONTAINER;
         $recopts['quizcontainer'] = constants::M_QUIZ_CONTAINER;
         $recopts['errorcontainer'] = constants::M_ERROR_CONTAINER;
-        $recopts['allowearlyexit'] =  $moduleinstance->allowearlyexit ? true :false;
-        $recopts['picwhenreading']=$moduleinstance->picwhenreading? true :false;
 
         //first confirm we are authorised before we try to get the token
         $config = get_config(constants::M_COMPONENT);
@@ -401,14 +333,6 @@ class renderer extends \plugin_renderer_base {
         $comp_test =  new comprehensiontest($cm);
         $recopts['quizdata']= $comp_test->fetch_test_data_for_js();
 
-        //passage picture
-        if($moduleinstance->passagepicture) {
-            $zeroitem = new \stdClass();
-            $zeroitem->id = 0;
-            $recopts['passagepictureurl'] = $comp_test->fetch_media_url(constants::PASSAGEPICTURE_FILEAREA, $zeroitem);
-        }else{
-            $recopts['passagepictureurl'] ='';
-        }
 
         //we need a control tp hold the recorded audio URL for the reading
         $ret_html = $ret_html . \html_writer::tag('input', '', array('id' => constants::M_READING_AUDIO_URL, 'type' => 'hidden'));

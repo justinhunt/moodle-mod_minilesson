@@ -123,9 +123,15 @@ if(has_capability('mod/poodlltime:evaluate',$modulecontext)){
 	echo $renderer->notabsheader();
 }
 
-//the module AMD code
-echo $renderer->show_quiz($cm,$moduleinstance);
-echo $renderer->fetch_activity_amd($cm, $moduleinstance);
+$comp_test =  new \mod_poodlltime\comprehensiontest($cm);
+$itemcount = $comp_test->fetch_item_count();
+if($itemcount > 0) {
+    echo $renderer->show_quiz($comp_test);
+    echo $renderer->fetch_activity_amd($cm, $moduleinstance);
+}else{
+    $showadditemlinks = has_capability('mod/poodlltime:evaluate',$modulecontext);
+    echo $renderer->show_no_items($cm,$showadditemlinks);
+}
 
 //echo $renderer->load_app($cm, $moduleinstance, $latestattempt);
 

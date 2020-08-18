@@ -23,6 +23,19 @@ class comprehensiontest
         $this->context = \context_module::instance($cm->id);
     }
 
+    public function fetch_item_count()
+    {
+        global $DB;
+        if (!$this->items) {
+            $this->items = $DB->get_records(constants::M_QTABLE, ['poodlltime' => $this->mod->id],'itemorder ASC');
+        }
+        if($this->items){
+            return count($this->items);
+        }else{
+            return 0;
+        }
+    }
+
     public function fetch_media_url($filearea,$item){
         //get question audio div (not so easy)
         $fs = get_file_storage();

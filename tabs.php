@@ -55,12 +55,7 @@ if (has_capability('mod/poodlltime:evaluate', $context)) {
 }
 if (has_capability('mod/poodlltime:manage', $context)) {
     $row[] = new tabobject('rsquestions', "$CFG->wwwroot/mod/poodlltime/rsquestion/rsquestions.php?id=$cm->id", get_string('rsquestions', constants::M_COMPONENT), get_string('managersquestions', constants::M_COMPONENT));
-    if($moduleinstance->passagemaster) {
-        $row[] = new tabobject('pushpage', "$CFG->wwwroot/mod/poodlltime/push.php?id=$cm->id", get_string('push', constants::M_COMPONENT), get_string('pushpage', constants::M_COMPONENT));
-    }
 }
-//$row[] = new tabobject('machinegrading', "$CFG->wwwroot/mod/poodlltime/grading.php?id=$cm->id&action=machinegrading", get_string('machinegrading', constants::M_COMPONENT), get_string('viewmachinegrading', constants::M_COMPONENT));
-//$row[] = new tabobject('reports', "$CFG->wwwroot/mod/poodlltime/reports.php?id=$cm->id", get_string('reports', constants::M_COMPONENT), get_string('viewreports', constants::M_COMPONENT));
 $tabs[] = $row;
 
 print_tabs($tabs, $currenttab, $inactive, $activated);

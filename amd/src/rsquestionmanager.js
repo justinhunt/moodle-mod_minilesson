@@ -29,8 +29,8 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
         process_html: function(){
             this.controls = [];
             this.controls.questionstable = datatables.getDataTable(this.tableid);
-            this.controls.questionscontainer = $('#' + def.mod_poodlltime_items_cont);
-            this.controls.noquestionscontainer = $('#' + def.mod_poodlltime_noitems_cont);
+            this.controls.questionscontainer = $('#' + def.itemscontainer);
+            this.controls.noquestionscontainer = $('#' + def.noitemscontainer);
             this.controls.movearrows=$('#' + def.movearrow);
         },
 

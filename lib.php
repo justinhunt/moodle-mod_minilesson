@@ -389,9 +389,6 @@ function poodlltime_process_files(stdClass $poodlltime, mod_poodlltime_mod_form 
 	foreach($editors as $editor){
 		$poodlltime = file_postupdate_standard_editor( $poodlltime, $editor, $edoptions,$context,constants::M_COMPONENT,$editor,$itemid);
 	}
-	//do the passage picture field
-    $ppoptions=poodlltime_picturefile_options($context);
-    file_save_draft_area_files($poodlltime->{constants::PASSAGEPICTURE}, $context->id, constants::M_COMPONENT, constants::PASSAGEPICTURE_FILEAREA, 0, $ppoptions);
 
 	return $poodlltime;
 }

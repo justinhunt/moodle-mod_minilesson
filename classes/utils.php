@@ -78,7 +78,8 @@ class utils{
         }else{
             $message='no attempt of that id for that user';
         }
-        return_to_page($result,$message,$returndata);
+        //return_to_page($result,$message,$returndata);
+        return [$result,$message,$returndata];
 }
 
 
@@ -97,10 +98,6 @@ class utils{
                 $ret = true;
         }
 
-        //if user disables ai, we do not transcribe
-        if (!$instance->enableai) {
-            $ret = false;
-        }
 
         return $ret;
     }
@@ -381,12 +378,7 @@ class utils{
       );
   }
 
-    public static function get_machinegrade_options(){
-        return array(
-            constants::MACHINEGRADE_NONE => get_string("machinegradenone",constants::M_COMPONENT),
-            constants::MACHINEGRADE_MACHINE => get_string("machinegrademachine",constants::M_COMPONENT)
-        );
-    }
+
 
     public static function get_timelimit_options(){
         return array(
@@ -401,19 +393,6 @@ class utils{
         );
     }
 
-  public static function get_expiredays_options(){
-      return array(
-          "1"=>"1",
-          "3"=>"3",
-          "7"=>"7",
-          "30"=>"30",
-          "90"=>"90",
-          "180"=>"180",
-          "365"=>"365",
-          "730"=>"730",
-          "9999"=>get_string('forever',constants::M_COMPONENT)
-      );
-  }
 
     //convert a phrase or word to a series of phonetic characters that we can use to compare text/spoken
     public static function convert_to_phonetic($phrase,$language){

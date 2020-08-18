@@ -93,7 +93,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
     function show_noitems_message($itemsvisible){
         $message = $this->output->heading(get_string('noitems',constants::M_COMPONENT), 3, 'main');
         $displayvalue = $itemsvisible ? 'none' : 'block';
-        $ret = \html_writer::div($message ,constants::M_NOITEMS_CONT,array('style'=>'display: '.$displayvalue));
+        $ret = \html_writer::div($message ,constants::M_NOITEMS_CONT,array('id'=>constants::M_NOITEMS_CONT,'style'=>'display: '.$displayvalue));
         return $ret;
     }
 
