@@ -122,11 +122,11 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
 
             var after_questionedit= function(item, itemid) {
                 var therow = '#' + def.itemrow + '_' + itemid;
-                dd.controls.questionstable.cell($(therow + ' .c1')).data(item.name);
+                dd.controls.questionstable.cell($(therow + ' .c1')).data(decodeURIComponent(item.name));
             };
             var after_questionadd= function(item, itemid) {
                 item.id = itemid;
-                item.typelabel = item.type;
+                item.name = decodeURIComponent(item.name);
                 item.index = dd.controls.questionstable.data().length+1;
                 item.up = {'key': 't/up','component': 'moodle','title': 'up'};
                 item.down = {'key': 't/down','component': 'moodle','title': 'down'};
