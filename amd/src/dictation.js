@@ -11,7 +11,13 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
 
     playing: false,
 
-    init: function(index, itemdata, quizhelper, polly) {
+      //for making multiple instances
+      clone: function () {
+          return $.extend(true, {}, this);
+      },
+
+
+      init: function(index, itemdata, quizhelper, polly) {
 
       this.prepare_audio(itemdata, polly);
       this.register_events(index, itemdata, quizhelper);

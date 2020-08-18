@@ -11,7 +11,13 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
 
   return {
 
-    init: function(index, itemdata, quizhelper) {
+      //for making multiple instances
+      clone: function () {
+          return $.extend(true, {}, this);
+      },
+
+
+      init: function(index, itemdata, quizhelper) {
 
       this.init_app(index, itemdata, quizhelper);
     },

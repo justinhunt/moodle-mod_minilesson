@@ -49,25 +49,25 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
         $.each(quizdata, function(index, item) {
           switch (item.type) {
             case def.qtype_dictation:
-              dictation.init(index, item, dd, polly);
+              dictation.clone().init(index, item, dd, polly);
               break;
             case def.qtype_dictationchat:
-              dictationchat.init(index, item, dd, polly);
+              dictationchat.clone().init(index, item, dd, polly);
               break;
             case def.qtype_multichoice:
-              multichoice.init(index, item, dd);
+              multichoice.clone().init(index, item, dd);
               break;
               case def.qtype_speechcards:
               //speechcards init needs to occur when it is visible. lame.
               // so we do that in do_next function, down below
-              speechcards.init(index, item, dd);
+              speechcards.clone().init(index, item, dd);
               break;
             case def.qtype_listenrepeat:
-              listenrepeat.init(index, item, dd);
+              listenrepeat.clone().init(index, item, dd);
               break;
 
              case def.qtype_page:
-                  page.init(index, item, dd);
+                  page.clone().init(index, item, dd);
                   break;
           }
 
@@ -96,13 +96,14 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
 
       do_next: function(stepdata){
         var dd = this;
-        this.report_step_grade(stepdata);
+        dd.report_step_grade(stepdata);
         //hide current question
-        var currentitem = this.quizdata[stepdata.index];
+        var currentquizdataindex =   stepdata.index;
+        var currentitem = this.quizdata[currentquizdataindex];
         $("#" + currentitem.uniqueid + "_container").hide();
         //show next question or End Screen
-        if (this.quizdata.length > stepdata.index + 1) {
-          var nextindex = stepdata.index + 1;
+        if (dd.quizdata.length > currentquizdataindex+1) {
+          var nextindex = currentquizdataindex+ 1;
           var nextitem = this.quizdata[nextindex];
             //show the question
             $("#" + nextitem.uniqueid + "_container").show();

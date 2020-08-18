@@ -20,8 +20,8 @@ class multichoiceform extends baseform
         $this->add_correctanswer();
         $this->add_textboxresponse(1,'answer1',true);
         $this->add_textboxresponse(2,'answer2',true);
-        $this->add_textboxresponse(3,'answer3',true);
-        $this->add_textboxresponse(4,'answer4',true);
+        $this->add_textboxresponse(3,'answer3',false);
+        $this->add_textboxresponse(4,'answer4',false);
     }
 
 }

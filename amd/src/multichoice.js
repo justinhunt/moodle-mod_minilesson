@@ -8,6 +8,12 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
   log.debug('Poodll Time Multichoice: initialising');
 
   return {
+
+    //for making multiple instances
+      clone: function () {
+          return $.extend(true, {}, this);
+     },
+
     init: function(index, itemdata, quizhelper) {
       this.register_events(index, itemdata, quizhelper);
     },

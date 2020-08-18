@@ -9,7 +9,13 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions'], function($, log, de
 
   return {
 
-    init: function(index, itemdata, quizhelper) {
+      //for making multiple instances
+      clone: function () {
+          return $.extend(true, {}, this);
+      },
+
+
+      init: function(index, itemdata, quizhelper) {
       this.register_events(index, itemdata, quizhelper);
     },
 

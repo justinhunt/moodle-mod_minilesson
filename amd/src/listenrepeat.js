@@ -5,7 +5,12 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
 
   return {
 
-    init: function(index, itemdata, quizhelper) {
+      //for making multiple instances
+      clone: function () {
+          return $.extend(true, {}, this);
+      },
+
+      init: function(index, itemdata, quizhelper) {
       var self = this;
       cloudpoodll.init('poodlltime-recorder-listenrepeat-' + itemdata.id , function(message) {
 
