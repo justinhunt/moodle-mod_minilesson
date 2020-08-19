@@ -112,7 +112,7 @@ class helper
     {
         $maxfiles = 99;
         $maxbytes = $course->maxbytes;
-        return array('trusttext' => true, 'subdirs' => true, 'maxfiles' => $maxfiles,
+        return array('trusttext' => 0,'noclean'=>1, 'subdirs' => true, 'maxfiles' => $maxfiles,
             'maxbytes' => $maxbytes, 'context' => $modulecontext);
     }
 

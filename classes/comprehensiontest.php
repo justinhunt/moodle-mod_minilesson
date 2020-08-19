@@ -21,6 +21,7 @@ class comprehensiontest
         $this->cm = $cm;
         $this->mod = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
         $this->context = \context_module::instance($cm->id);
+        $this->course =$DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     }
 
     public function fetch_item_count()
@@ -136,6 +137,8 @@ class comprehensiontest
             }
         }
 
+        //editor options
+        $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($this->course, $this->context);
 
         //prepare data array for test
         $testitems=array();
@@ -157,10 +160,11 @@ class comprehensiontest
                 case constants::TYPE_LISTENREPEAT:
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_PAGE:
+
                     $testitem->text =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
                             'pluginfile.php', $this->context->id,constants::M_COMPONENT,
                             constants::TEXTQUESTION_FILEAREA, $testitem->id);
-                    $testitem->text =format_text($testitem->text);
+                    $testitem->text =format_text($testitem->text,FORMAT_MOODLE ,$editoroptions);
                     break;
                 default:
                     $testitem->text =  $item->{constants::TEXTQUESTION};
@@ -170,7 +174,9 @@ class comprehensiontest
 
 
             for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
-                $testitem->{'customtext' . $anumber} = $item->{constants::TEXTANSWER . $anumber};
+                if(!empty(trim($item->{constants::TEXTANSWER . $anumber}))) {
+                    $testitem->{'customtext' . $anumber} = $item->{constants::TEXTANSWER . $anumber};
+                }
             }
 
 
