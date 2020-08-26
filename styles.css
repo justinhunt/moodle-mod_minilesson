@@ -521,7 +521,6 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   background-color: grey;
 }
 
-
 /**
  * App
  */
@@ -1544,6 +1543,12 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   padding: 10px;
   border: 1px solid black;
   font-size: 32px;
+  width: 75%;
+  margin: auto;
+  border-radius: 10px;
+  box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.75);
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .poodlltime_quiz_progress {
@@ -1603,14 +1608,14 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   vertical-align: top;
   margin: 10px;
   position: relative;
-  background-size:50%;
-  background-repeat:no-repeat;
-  background-position:center 10px;
-  cursor:pointer;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center 10px;
+  cursor: pointer;
 }
 
-.mod_poodlltime_link_box:hover{
-  background-color:#f5f5f5;
+.mod_poodlltime_link_box:hover {
+  background-color: #f5f5f5;
 }
 
 .mod_poodlltime_link_box_title {
@@ -1619,9 +1624,9 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   right: 0;
   left: 0;
   text-align: center;
-  margin:5px;
+  margin: 5px;
 }
 
-.mod_poodlltime_link_box_container{
-  text-align:center;
+.mod_poodlltime_link_box_container {
+  text-align: center;
 }
