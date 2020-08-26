@@ -55,7 +55,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
             'grade','gradeoptions','maxattempts','mingrade',
             'ttslanguage','transcriber','region','activitylink','pagelayout','timecreated','timemodified'
 			));
-        //NB we deliberately do not backup 'passagemaster' field, because clones should leave it unset.
+
 		
 		//attempts
         $attempts = new backup_nested_element('attempts');
@@ -110,7 +110,6 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
 
 		//question stuff
         $oneactivity->annotate_files(constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, 'id');
-        $oneactivity->annotate_files(constants::M_COMPONENT, constants::AUDIOPROMPT_FILEAREA, 'id');
 
         for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
             $oneactivity->annotate_files(constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA . $anumber, 'id');
@@ -118,7 +117,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
 		
 		//file annotation if including user info
         if ($userinfo) {
-			$attempt->annotate_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, 'id');
+			//$attempt->annotate_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, 'id');
         }
 		
         // Return the root element, wrapped into standard activity structure.

@@ -57,12 +57,9 @@ class restore_poodlltime_activity_task extends restore_activity_task {
 
         $contents[] = new restore_decode_content(constants::M_MODNAME,
                           array('intro'), constants::M_MODNAME);
-		$contents[] = new restore_decode_content(constants::M_MODNAME,
-                          array('welcome'), constants::M_MODNAME);
-		$contents[] = new restore_decode_content(constants::M_MODNAME,
-                          array('passage'), constants::M_MODNAME);
-		$contents[] = new restore_decode_content(constants::M_MODNAME,
-                          array('feedback'), constants::M_MODNAME);
+		/*$contents[] = new restore_decode_content(constants::M_MODNAME,
+                          array('welcome'), constants::M_MODNAME);*/
+
         $contents[] = new restore_decode_content(constants::M_QTABLE,
             array('itemtext','customtext1','customtext2','customtext3','customtext4','customtext5'), constants::M_MODNAME);
 

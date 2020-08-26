@@ -124,14 +124,11 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
     protected function after_execute() {
         // Add module related files, no need to match by itemname (just internally handled context)
         $this->add_related_files(constants::M_COMPONENT, 'intro', null);
-		$this->add_related_files(constants::M_COMPONENT, 'welcome', null);
-		$this->add_related_files(constants::M_COMPONENT, 'passage', null);
-		$this->add_related_files(constants::M_COMPONENT, 'feedback', null);
-        $this->add_related_files(constants::M_COMPONENT, constants::PASSAGEPICTURE_FILEAREA, null);
+/*		$this->add_related_files(constants::M_COMPONENT, 'welcome', null); */
+
 		//question stuff
         //do question areas
         $this->add_related_files(constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, constants::M_QTABLE);
-        $this->add_related_files(constants::M_COMPONENT, constants::AUDIOPROMPT_FILEAREA, constants::M_QTABLE);
 
         //do answer areas
         for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
@@ -140,7 +137,7 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
 		
 		 $userinfo = $this->get_setting_value('userinfo'); // are we including userinfo?
 		 if($userinfo){
-			$this->add_related_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, constants::M_ATTEMPTSTABLE);
+			//$this->add_related_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, constants::M_ATTEMPTSTABLE);
 
          }
     }
