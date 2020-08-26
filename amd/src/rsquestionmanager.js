@@ -39,12 +39,11 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
         collate_rowids: function(){
             var dd = this;
             dd.rowIds=[];
-            $("." + def.itemrow).each(function(item){
-                var rowindex = dd.controls.questionstable.row(item).index();
+
+            dd.controls.questionstable.rows().every( function ( rowindex, tableLoop, rowLoop ) {
                 var itemorder = dd.controls.questionstable.cell({row:rowindex, column:0}).data();
                 dd.rowIds[itemorder]=rowindex;
-            });
-
+            } );
         },
 
         //we wont to show move arrows, but hide arrows the final down and first up
@@ -62,7 +61,6 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
           $(bottomtr).find('.mod_poodlltime_item_move[data-direction="down"]').attr('style','visibility: hidden;');
 
           //hide top up arrow
-          var toprowindex=this.rowIds[0];
           var toprowindex=this.rowIds[1];
           var toptr = this.controls.questionstable.row(toprowindex).node();
           $(toptr).find('.mod_poodlltime_item_move[data-direction="up"]').attr('style','visibility: hidden;');
@@ -104,7 +102,7 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
             var to = thetable.cell({row:targetindex, column:0}).data();
             thetable.cell({row:currentindex, column:0}).data(to);
             thetable.cell({row:targetindex, column:0}).data(from);
-            thetable.draw();
+            thetable.draw(false);
             this.collate_rowids();
             
         },
@@ -132,7 +130,7 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
                 item.down = {'key': 't/down','component': 'moodle','title': 'down'};
                 templates.render('mod_poodlltime/itemlistitem',item).then(
                     function(html,js){
-                        dd.controls.questionstable.row.add($(html)[0]).draw();
+                        dd.controls.questionstable.row.add($(html)[0]).draw(false);
                         dd.collate_rowids();
                         dd.hide_useless_arrows();
                     }
@@ -145,7 +143,7 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
                 var therow=dd.controls.questionstable.row('#' + def.itemrow + '_' + itemid);
                 var itemorder=parseInt(therow.data()[0]);
                 dd.renumber_rows(itemorder);
-                therow.remove().draw();
+                therow.remove().draw(false);
                 dd.collate_rowids();
                 dd.hide_useless_arrows();
                 var itemcount = dd.controls.questionstable.rows().count();
