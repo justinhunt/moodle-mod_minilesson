@@ -109,10 +109,10 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
 		//$oneactivity->annotate_files(constants::M_COMPONENT, 'welcome', null);
 
 		//question stuff
-        $oneactivity->annotate_files(constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, 'id');
+        $rsquestion->annotate_files(constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, 'id');
 
         for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
-            $oneactivity->annotate_files(constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA . $anumber, 'id');
+            $rsquestion->annotate_files(constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA . $anumber, 'id');
         }
 		
 		//file annotation if including user info
