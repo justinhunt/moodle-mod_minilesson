@@ -10,6 +10,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
           return $.extend(true, {}, this);
       },
 
+      usevoice: 'Amy',
 
 
       init: function(index, itemdata, quizhelper) {
@@ -31,6 +32,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       stepdata.grade = Math.round((stepdata.totalitems/stepdata.correctitems)*100);
       self.quizhelper.do_next(stepdata);
     },
+
     register_events: function() {
 
       var self = this;
@@ -79,15 +81,15 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
     game: {
       pointer: 0
     },
-    usevoice: 'Amy',
-    check_answer:function(){
+
+    check_answer: function(){
       var self = this;
       var passage = self.items[self.game.pointer].target;
       var transcriptArray = [];
 
       $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").each(function() {
         transcriptArray.push($(this).val().trim() == "" ? "|" : $(this).val().trim());
-      })
+      });
 
       var transcript = transcriptArray.join(" ");
 
@@ -96,90 +98,95 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       });
     },
     setvoice: function() {
+      debugger;
       var self = this;
-      var language = "English(US)";
-      var mf = "Female";
-      var voice = 'Amy';
-      switch (language) {
-        case "English(US)":
-          voice = mf === 'Male' ? 'Joey' : 'Kendra';
+
+      //f we have a specified voice, we use it.
+      if((self.itemdata.usevoice) && self.itemdata.usevoice!=='Auto'){
+        self.usevoice = self.itemdata.usevoice;
+        return;
+      }
+
+    //otherwise we get a random one
+      var voices = [];
+      switch (self.itemdata.language) {
+        case "en-US":
+          voices = ['Joey','Justin','Matthew','Ivy', 'Joanna','Kendra','Kimberly','Salli'];
           break;
-        case "English(GB)":
-          voice = mf === 'Male' ? 'Brian' : 'Amy';
+        case "en-GB":
+          voices = ['Brian','Amy', 'Emma'];
           break;
-        case "English(AU)":
-          voice = mf === 'Male' ? 'Russell' : 'Nicole';
+        case "en-AU":
+          voice = ['Russell','Nicole'];
           break;
-        case "English(IN)":
-          voice = mf === 'Male' ? 'Aditi' : 'Raveena';
+        case "en-IN":
+          voices = ['Aditi','Raveena'];
           break;
-        case "English(Welsh)":
-          voice = mf === 'Male' ? 'Geraint' : 'Geraint';
+        case "en-WL":
+          voices = ['Geraint','Gwyneth'];
           break;
-        case "Danish":
-          voice = mf === 'Male' ? 'Mads' : 'Naja';
+        case "da-DK":
+          voices =['Mads','Naja'];
           break;
-        case "Dutch":
-          voice = mf === 'Male' ? 'Ruben' : 'Lotte';
+        case "nl-NL":
+          voice = ['Ruben' , 'Lotte'];
           break;
-        case "French(FR)":
-          voice = mf === 'Male' ? 'Mathieu' : 'Celine';
+        case "fr-FA":
+          voices= ['Mathieu','Celine'];
           break;
-        case "French(CA)":
-          voice = mf === 'Male' ? 'Chantal' : 'Chantal';
+        case "fr-CA":
+          voices =['Chantal'];
           break;
-        case "German":
-          voice = mf === 'Male' ? 'Hans' : 'Marlene';
+        case "de-DE":
+          voices = ['Hans','Marlene'];
           break;
-        case "Icelandic":
-          voice = mf === 'Male' ? 'Karl' : 'Dora';
+        case "id-ID":
+          voices =['Karl','Dora'];
           break;
-        case "Italian":
-          voice = mf === 'Male' ? 'Carla' : 'Giorgio';
+        case "it-IT":
+          voices =['Carla','Giorgio'];
           break;
-        case "Japanese":
-          voice = mf === 'Male' ? 'Takumi' : 'Mizuki';
+        case "ja-JP":
+          voices = ['Takumi','Mizuki'];
           break;
-        case "Korean":
-          voice = mf === 'Male' ? 'Seoyan' : 'Seoyan';
+        case "ko-KR":
+          voices =['Seoyan'];
           break;
         case "Norwegian":
-          voice = mf === 'Male' ? 'Liv' : 'Liv';
+          voices = ['Liv'];
           break;
         case "Polish":
-          voice = mf === 'Male' ? 'Jacek' : 'Ewa';
+          voices = ['Jacek', 'Ewa'];
           break;
-        case "Portugese(BR)":
-          voice = mf === 'Male' ? 'Ricardo' : 'Vitoria';
+        case "pr-BR":
+          voices =['Ricardo','Vitoria'];
           break;
-        case "Portugese(PT)":
-          voice = mf === 'Male' ? 'Cristiano' : 'Ines';
+        case "pr-PT":
+          voices = ['Cristiano','Ines'];
           break;
         case "Romanian":
-          voice = mf === 'Male' ? 'Carmen' : 'Carmen';
+          voices = ['Carmen','Carmen'];
           break;
-        case "Russian":
-          voice = mf === 'Male' ? 'Maxim' : 'Tatyana';
+        case "ru-RU":
+          voices = ['Maxim','Tatyana'];
           break;
-        case "Spanish(ES)":
-          voice = mf === 'Male' ? 'Enrique' : 'Conchita';
+        case "es-ES":
+          voices =['Enrique','Conchita'];
           break;
-        case "Spanish(US)":
-          voice = mf === 'Male' ? 'Miguel' : 'Penelope';
+        case "es-US":
+          voices = ['Miguel','Penelope'];
           break;
         case "Swedish":
-          voice = mf === 'Male' ? 'Astrid' : 'Astrid';
+          voices = ['Astrid', 'Astrid'];
           break;
-        case "Turkish":
-          voice = mf === 'Male' ? 'Filiz' : 'Filiz';
-          break;
-        case "Welsh":
-          voice = mf === 'Male' ? 'Gwyneth' : 'Gwyneth';
+        case "tr-TR":
+          voices =['Filiz','Filiz'];
+
           break;
         default:
-          voice = mf === 'Male' ? 'Brian' : 'Amy';
+          voices = ['Brian','Amy'];
       }
-      self.usevoice = voice;
+      self.usevoice = voices[Math.floor(Math.random() * voices.length)];
     },
     getItems: function() {
       var self = this;
@@ -202,7 +209,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       });
 
       $.each(self.items, function(index, item) {
-        polly.fetch_polly_url(item.target, 'text', 'Amy').then(function(audiourl) {
+        polly.fetch_polly_url(item.target, 'text', self.usevoice).then(function(audiourl) {
           item.audio = new Audio();
           item.audio.src = audiourl;
           if (self.items.filter(function(e) {
@@ -299,24 +306,33 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       return words;
     },
     getComparison: function(passage, transcript, callback) {
-      var self = this;
+        var self = this;
 
-      $(".dictate_ctrl-btn").prop("disabled", true);
-      var payload=[];
-      var transcript_words = transcript.split(/ /);
-      var passage_words = passage.split(/ /);
-      var matched;
-      transcript_words.forEach(function(word,i){
-        if(passage_words[i].toLowerCase() == word.toLowerCase()){
-          matched = true;
-        } else{
-          matched = false;
-        }
-        payload.push({word:word,matched:matched,wordnumber:i+1});
-      })
-      callback(payload);
+        $(".dictate_ctrl-btn").prop("disabled", true);
+
+        ajax.call([{
+            methodname: 'mod_poodlltime_compare_passage_to_transcript',
+            args: {
+                passage: passage,
+                transcript: transcript,
+                alternatives: '',
+                language: self.itemdata.language
+            },
+            done: function(ajaxresult) {
+                var payloadobject = JSON.parse(ajaxresult);
+                if (payloadobject) {
+                    callback(payloadobject);
+                } else {
+                    callback(false);
+                }
+            },
+            fail: function(err) {
+                console.log(err);
+            }
+        }]);
 
     },
+
     end: function() {
       var self = this;
 

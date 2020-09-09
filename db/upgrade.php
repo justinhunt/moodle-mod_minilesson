@@ -65,6 +65,22 @@ function xmldb_poodlltime_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2018122000, 'poodlltime');
     }
 
+    // Add passage picture to poodlltime table
+    if ($oldversion < 2020090700) {
+        $activitytable = new xmldb_table(constants::M_TABLE);
+
+
+        // Define field showqtitles to be added to poodlltime\
+        $showqtitles= new xmldb_field('showqtitles', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '1');
+
+        // add showqtitles field to poodlltime table
+        if (!$dbman->field_exists($activitytable, $showqtitles)) {
+            $dbman->add_field($activitytable, $showqtitles);
+        }
+        upgrade_mod_savepoint(true, 2020090700, 'poodlltime');
+    }
+
+
 
 
     // Final return of upgrade result (true, all went good) to Moodle.

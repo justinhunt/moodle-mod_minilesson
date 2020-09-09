@@ -434,3 +434,4 @@ $string['deletebuttonlabel'] = 'DELETE';
 $string['noitems'] ='There are no questions yet in this activity';
 $string['letsadditems'] ='Lets add some questions!';
 $string['additems'] ='Add Questions';
+$string['showqtitles'] ='Show question titles in quiz';

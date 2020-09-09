@@ -97,6 +97,11 @@ class mod_poodlltime_mod_form extends moodleform_mod {
 		$mform->setType('welcome_editor',PARAM_RAW);
         */
 
+        //showq titles
+        $yesnooptions = array(1 => get_string('yes'), 0 => get_string('no'));
+        $mform->addElement('select', 'showqtitles', get_string('showqtitles', constants::M_COMPONENT), $yesnooptions);
+        $mform->setDefault('showqtitles',0);
+
 		//Attempts
         $attemptoptions = array(0 => get_string('unlimited', constants::M_COMPONENT),
                             1 => '1',2 => '2',3 => '3',4 => '4',5 => '5',);

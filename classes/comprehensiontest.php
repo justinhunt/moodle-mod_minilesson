@@ -150,7 +150,7 @@ class comprehensiontest
             $testitem->correctanswer =  $item->correctanswer;
             $testitem->id = $item->id;
             $testitem->type=$item->type;
-            $testitem->title=$item->name;
+            if($this->mod->showqtitles){$testitem->title=$item->name;}
             $testitem->uniqueid=$item->type . $testitem->number;
 
             switch($testitem->type) {
@@ -205,6 +205,7 @@ class comprehensiontest
                    $testitem->language=$this->mod->ttslanguage;
                    $testitem->hints='';
                    $testitem->owner=hash('md5',$USER->username);
+                   $testitem->usevoice=$item->{constants::POLLYVOICE};
 
                    break;
                 case constants::TYPE_MULTICHOICE:

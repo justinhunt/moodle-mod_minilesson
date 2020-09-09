@@ -53,7 +53,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
             'course','name','intro','introformat','timelimit',
                 //'welcome','welcomeformat',
             'grade','gradeoptions','maxattempts','mingrade',
-            'ttslanguage','transcriber','region','activitylink','pagelayout','timecreated','timemodified'
+            'ttslanguage','transcriber','region','activitylink','pagelayout','showqtitles','timecreated','timemodified'
 			));
 
 		
