@@ -1,10 +1,20 @@
-{{#results}}
-  <div class="mod_poodlltime_result_div">
-    <div class="mod_poodlltime_result_index">{{index}}</div>
-    <div class="mod_poodlltime_result_title">{{title}}</div>
-    <div class="mod_poodlltime_result_score">Score: {{correctitems}}/{{totalitems}}</div>
-    <div class="mod_poodlltime_result_grade">Grade: {{grade}}%</div>
-  </div>
-{{/results}}
-<hr>
+
+
 <h1 class="text-center">Total Score: {{total}}%</h1>
+<hr>
+<p>
+    <a class="btn btn-primary itemscoresbutton" data-toggle="collapse" href="#itemscores" role="button" aria-expanded="false" aria-controls="itemscores">
+        {{#str}}showitemscores, mod_poodlltime{{/str}}
+    </a>
+
+</p>
+<div class="collapse" id="itemscores">
+{{#results}}
+    <div class="mod_poodlltime_result_div">
+        <div class="mod_poodlltime_result_index">{{index}}</div>
+        <div class="mod_poodlltime_result_title">{{title}}</div>
+        <div class="mod_poodlltime_result_score">Score: {{correctitems}}/{{totalitems}}</div>
+        <div class="mod_poodlltime_result_grade">Grade: {{grade}}%</div>
+    </div>
+{{/results}}
+</div>

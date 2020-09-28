@@ -436,3 +436,4 @@ $string['letsadditems'] ='Lets add some questions!';
 $string['additems'] ='Add Questions';
 $string['showqtitles'] ='Show question titles in quiz';
 $string['previewitem'] ='Preview Item';
+$string['showitemscores'] ='All Results';
