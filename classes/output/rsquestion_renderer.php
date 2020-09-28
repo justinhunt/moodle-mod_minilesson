@@ -67,13 +67,12 @@ class rsquestion_renderer extends \plugin_renderer_base {
 
         $tableprops = array();
         $columns = array();
-        //for cols .. .'itemname', 'itemtype', 'itemtags','timemodified', 'edit','delete'
+        //for cols .. .'itemname', 'itemtype', 'itemtags','timemodified', 'action'
         $columns[0]=array('orderable'=>false);
         $columns[1]=array('orderable'=>false);
         $columns[2]=array('orderable'=>false);
         $columns[3]=array('orderable'=>false);
         $columns[4]=array('orderable'=>false);
-        $columns[5]=array('orderable'=>false);
         $tableprops['columns']=$columns;
 
         //default ordering

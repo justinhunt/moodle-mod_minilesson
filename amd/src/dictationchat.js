@@ -98,7 +98,6 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       });
     },
     setvoice: function() {
-      debugger;
       var self = this;
 
       //f we have a specified voice, we use it.

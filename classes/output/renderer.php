@@ -234,6 +234,27 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
+     *  Show quiz container
+     */
+    public function show_quiz_preview($comp_test, $qid){
+
+        //quiz data
+        $quizdata = $comp_test->fetch_test_data_for_js();
+        $itemshtml=[];
+        foreach($quizdata as $item) {
+            if ($item->id == $qid) {
+                $itemshtml[] = $this->render_from_template(constants::M_COMPONENT . '/' . $item->type, $item);
+            }
+        }
+
+        $quizdiv = \html_writer::div(implode('',$itemshtml) ,constants::M_QUIZ_CONTAINER,
+                array('id'=>constants::M_QUIZ_CONTAINER));
+
+        $ret = $quizdiv;
+        return $ret;
+    }
+
+    /**
      *  Show a progress circle overlay while uploading
      */
     public function show_progress($poodlltime,$cm){
@@ -282,7 +303,7 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    function fetch_activity_amd($cm, $moduleinstance){
+    function fetch_activity_amd($cm, $moduleinstance,$previewquestionid=0){
         global $CFG, $USER;
         //any html we want to return to be sent to the page
         $ret_html = '';
@@ -331,7 +352,18 @@ class renderer extends \plugin_renderer_base {
 
         //quiz data
         $comp_test =  new comprehensiontest($cm);
-        $recopts['quizdata']= $comp_test->fetch_test_data_for_js();
+        $quizdata =$comp_test->fetch_test_data_for_js();
+        if($previewquestionid){
+           foreach($quizdata as $item){
+               if($item->id==$previewquestionid){
+                   $item->preview=true;
+                   $recopts['quizdata'] = [$item];
+                   break;
+               }
+           }
+        }else {
+            $recopts['quizdata'] = $quizdata;
+        }
 
 
         //we need a control tp hold the recorded audio URL for the reading

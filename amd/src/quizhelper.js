@@ -96,10 +96,16 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
 
       do_next: function(stepdata){
         var dd = this;
-        dd.report_step_grade(stepdata);
-        //hide current question
+        //get current question
         var currentquizdataindex =   stepdata.index;
         var currentitem = this.quizdata[currentquizdataindex];
+
+        //in preview mode do no do_next
+        if(currentitem.preview===true){return;}
+
+        //post grade
+        dd.report_step_grade(stepdata);
+        //hide current question
         $("#" + currentitem.uniqueid + "_container").hide();
         //show next question or End Screen
         if (dd.quizdata.length > currentquizdataindex+1) {

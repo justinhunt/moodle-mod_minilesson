@@ -659,6 +659,22 @@ function poodlltime_pluginfile($course, $cm, $context, $filearea, array $args, $
         send_stored_file($file, null, 0, $forcedownload, $options);
 }
 
+function poodlltime_output_fragment_preview($args){
+    global $DB,$PAGE;
+    $args = (object) $args;
+    $context = $args->context;
+
+    $cm         = get_coursemodule_from_id('poodlltime', $context->instanceid, 0, false, MUST_EXIST);
+    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $moduleinstance  = $DB->get_record('poodlltime', array('id' => $cm->instance), '*', MUST_EXIST);
+
+    $renderer = $PAGE->get_renderer('mod_poodlltime');
+    $comp_test =  new \mod_poodlltime\comprehensiontest($cm);
+    $ret = $renderer->show_quiz_preview($comp_test, $args->itemid);
+    $ret .= $renderer->fetch_activity_amd($cm, $moduleinstance,$args->itemid);
+    return $ret;
+}
+
 function poodlltime_output_fragment_mform($args) {
     global $CFG, $PAGE, $DB;
 

@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definitions','mod_poodlltime/modalformhelper',
-        'mod_poodlltime/modaldeletehelper','mod_poodlltime/moveitemhelper','mod_poodlltime/datatables'],
-    function($, jqui, log, templates, def, mfh, mdh, mih, datatables) {
+        'mod_poodlltime/modaldeletehelper','mod_poodlltime/moveitemhelper','mod_poodlltime/modalpreviewhelper','mod_poodlltime/datatables'],
+    function($, jqui, log, templates, def, mfh, mdh, mih, mph, datatables) {
 
     "use strict"; // jshint ;_;
 
@@ -130,7 +130,8 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
                 item.down = {'key': 't/down','component': 'moodle','title': 'down'};
                 templates.render('mod_poodlltime/itemlistitem',item).then(
                     function(html,js){
-                        dd.controls.questionstable.row.add($(html)[0]).draw(false);
+                        //add row move to the last page so we can see the new row if its off page
+                        dd.controls.questionstable.row.add($(html)[0]).page('last').draw(false);
                         dd.collate_rowids();
                         dd.hide_useless_arrows();
                     }
@@ -152,6 +153,11 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
                     dd.controls.questionscontainer.hide();
                 }
             };
+            var after_questionpreview= function(itemid) {
+                log.debug('after preview');
+                //we want to remove the question from DOM ... its still there and on subsequent shows, id will match on 2 elements and question will fail to unhide
+                $('#mod_poodlltime_quiz_cont').remove();
+            };
 
             //register ajax modal handler
             var editcallback=function(item, itemid){console.log(item);};
@@ -164,6 +170,8 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
             mdh.init('.' + def.itemrow + '_deletelink', dd.contextid, 'deleteitem',after_questiondelete);
             //move helper
             mih.init('.' + def.movearrow , dd.contextid, after_questionmove);
+            //preview helper
+            mph.init('.' + def.itemrow + '_previewlink', dd.contextid, after_questionpreview);
         }
 
     };//end of returned object
