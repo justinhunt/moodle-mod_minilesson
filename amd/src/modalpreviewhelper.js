@@ -83,7 +83,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
 
 
                     // We want to call our callback to do any housekeeping after the form is closed
-                    dd.modal.getRoot().on(ModalEvents.close, function() {
+                    dd.modal.getRoot().on(ModalEvents.hidden, function() {
                         dd.callback();
                     }.bind(dd));
 
