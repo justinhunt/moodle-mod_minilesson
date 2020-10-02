@@ -55,6 +55,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
           app.controls = {};
           app.controls.star_rating = $("#" + itemdata.uniqueid + "_container .poodlltime_star_rating");
           app.controls.next_button = $("#" + itemdata.uniqueid + "_container .poodlltime-speechcards_nextbutton");
+          app.controls.slider = $("#" + itemdata.uniqueid + "_container .poodlltime_speechcards_target_phrase");
         },
         next_question: function() {
           var stepdata = {};
@@ -148,15 +149,20 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
           //init progress dots
           app.progress_dots(app.results, app.terms);
 
-          app.writeCurrentTerm();
+          app.initSlider();
 
 
         },
 
+        initSlider: function() {
+          app.controls.slider.text(app.terms[app.pointer - 1]);
+          app.controls.slider.show();
+        },
+
         writeCurrentTerm: function() {
-          $(".poodlltime_speechcards_target_phrase").toggle("slide",{direction:"left"})
-          $(".poodlltime_speechcards_target_phrase").text(app.terms[app.pointer - 1]);
-          $(".poodlltime_speechcards_target_phrase").toggle("slide",{direction:"right"})
+            app.controls.slider.toggle("slide",{direction:"left"});
+            app.controls.slider.text(app.terms[app.pointer - 1]);
+            app.controls.slider.toggle("slide",{direction:"right"})
         },
 
         flagCorrectAndTransition: function() {
