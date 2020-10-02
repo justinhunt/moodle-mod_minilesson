@@ -207,6 +207,21 @@ class comprehensiontest
                    $testitem->owner=hash('md5',$USER->username);
                    $testitem->usevoice=$item->{constants::POLLYVOICE};
 
+                   //TT Recorder stuff
+                   $testitem->waveheight = 75;
+                   //passagehash for several reasons could rightly be empty
+                   //if its full it will be region|hash eg tokyo|2353531453415134545
+                   //we just want the hash here
+                   $testitem->passagehash="";
+                   if(!empty($item->passagehash)){
+                        $hashbits = explode('|',$item->passagehash);
+                        if(count($hashbits)==2){
+                            $testitem->passagehash  = $hashbits[1];
+                        }
+                    }
+                   $testitem->asrurl = 'https://dsuseast.poodll.com:3000/transcribe'; //https://dstokyo.poodll.com:3000/transcribe',
+                   $testitem->maxtime = 15000;
+
                    break;
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_PAGE:

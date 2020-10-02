@@ -173,6 +173,16 @@ if ($mform->is_cancelled()) {
 if ($data = $mform->get_data()) {
 		require_sesskey();
         $data->type=$type;
+
+        //lets update the passage hash here before we save the item in db
+        if($edit){
+            $olditem=$item;
+        }else{
+            $olditem=false;
+        }
+        $data->passagehash = \mod_poodlltime\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
+
+
 		$result = \mod_poodlltime\rsquestion\helper::update_insert_question($poodlltime,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
 		if($result->error==true){
             print_error($result->message);

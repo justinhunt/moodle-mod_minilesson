@@ -254,6 +254,16 @@ class mod_poodlltime_external extends external_api {
             //currently data is an array, but it should be an object
             $data = (object)$data;
             $data->type = $formname;
+
+
+            //lets update the passage hash here before we save the item in db
+            if($edit){
+                $olditem=$DB->get_record(constants::M_QTABLE, array('id'=>$data->itemid,constants::M_MODNAME => $cm->instance));
+            }else{
+                $olditem=false;
+            }
+            $data->passagehash = \mod_poodlltime\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
+
             $result = \mod_poodlltime\rsquestion\helper::update_insert_question($moduleinstance,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
             if($result->error==true){
                     $ret->message = $result->message;

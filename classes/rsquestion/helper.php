@@ -31,6 +31,7 @@ namespace mod_poodlltime\rsquestion;
 defined('MOODLE_INTERNAL') || die();
 
 use \mod_poodlltime\constants;
+use \mod_poodlltime\utils;
 
 class helper
 {
@@ -137,6 +138,7 @@ class helper
         $theitem->itemorder = $data->itemorder;
         $theitem->type = $data->type;
         $theitem->name = $data->name;
+        $theitem->passagehash = $data->passagehash;
         $theitem->modifiedby = $USER->id;
         $theitem->timemodified = time();
 
@@ -221,6 +223,7 @@ class helper
             }
         }
 
+
         //now update the db once we have saved files and stuff
         if (!$DB->update_record(constants::M_QTABLE, $theitem)) {
             $ret->error = true;
@@ -231,5 +234,34 @@ class helper
             return $ret;
         }
     }//end of edit_insert_question
+
+    public static function update_create_langmodel($moduleinstance, $olditem, $newitem){
+        //if we need to generate a DeepSpeech model for this, then lets do that now:
+        //we want to process the hashcode and lang model if it makes sense
+        $thepassagehash ='';
+        switch($newitem->type) {
+            case constants::TYPE_DICTATION:
+            case constants::TYPE_DICTATIONCHAT:
+            case constants::TYPE_SPEECHCARDS:
+            case constants::TYPE_LISTENREPEAT:
+                $passage = $newitem->customtext1;
+                if (utils::needs_lang_model($moduleinstance,$passage)) {
+                    $newpassagehash = utils::fetch_passagehash($passage);
+                    if ($newpassagehash) {
+                        //check if it has changed, if its a brand new one, if so register a langmodel
+                        if (!$olditem || $olditem->passagehash != ($moduleinstance->region . '|' . $newpassagehash)) {
+                            //build a lang model
+                            $ret = utils::fetch_lang_model($passage, $moduleinstance->ttslanguage, $moduleinstance->region);
+                            if ($ret && isset($ret->success) && $ret->success) {
+                                $thepassagehash = $moduleinstance->region . '|' . $newpassagehash;
+                            }
+                        }elseif($olditem){
+                            $thepassagehash = $olditem->passagehash;
+                        }
+                    }
+                }
+        }
+        return $thepassagehash;
+    }
 
 }

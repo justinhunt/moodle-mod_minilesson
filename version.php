@@ -19,8 +19,6 @@
 /**
  * Defines the version of poodlltime
  *
- * This code fragment is called by moodle_needs_upgrading() and
- * /admin/index.php
  *
  * @package    mod_poodlltime
  * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
@@ -29,8 +27,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2020090700;
+$plugin->version   = 2020100200;
 $plugin->requires  = 2016052300;      // Requires Moodle 3.1
 $plugin->component = 'mod_poodlltime';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.0.4 (Build 2020090700)';
+$plugin->release = '1.0.5 (Build 2020100200)';

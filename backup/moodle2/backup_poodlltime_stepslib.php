@@ -75,7 +75,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
             'customtext3format','customtext4', 'customtext4format','customtext5', 'customtext5format',
                 'customdata1','customdata2', 'customdata3','customdata4', 'customdata5',
                 'customint1','customint2', 'customint3','customint4', 'customint5','correctanswer',
-            'timemodified','rsquestionkey','createdby','modifiedby'));
+            'timemodified','rsquestionkey','passagehash','createdby','modifiedby'));
 
 		
 		// Build the tree.

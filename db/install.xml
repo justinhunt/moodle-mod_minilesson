@@ -87,6 +87,7 @@
             <FIELD NAME="customint5" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
             <FIELD NAME="correctanswer" TYPE="int" LENGTH="4" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
             <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+            <FIELD NAME="passagehash" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="hash for DS lang model" />
             <FIELD NAME="rsquestionkey" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="" />
             <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="modifiedby" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>

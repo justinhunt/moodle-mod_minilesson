@@ -45,27 +45,9 @@ function xmldb_poodlltime_upgrade($oldversion) {
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
 
-    // Add passage picture to poodlltime table
-    if ($oldversion < 2018122000) {
-        $activitytable = new xmldb_table(constants::M_TABLE);
-        $attempttable = new xmldb_table(constants::M_ATTEMPTSTABLE);
 
-        // Define field expiredays to be added to poodlltime
-        $field_picture = new xmldb_field('passagepicture', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null);
-        $field_flower= new xmldb_field('flowerid', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0');
 
-        // add picture field to poodlltime table
-        if (!$dbman->field_exists($activitytable, $field_picture)) {
-            $dbman->add_field($activitytable, $field_picture);
-        }
-        // add flower id field to poodlltime table
-        if (!$dbman->field_exists($attempttable, $field_flower)) {
-            $dbman->add_field($attempttable, $field_flower);
-        }
-        upgrade_mod_savepoint(true, 2018122000, 'poodlltime');
-    }
-
-    // Add passage picture to poodlltime table
+    // Add question titles to poodlltime table
     if ($oldversion < 2020090700) {
         $activitytable = new xmldb_table(constants::M_TABLE);
 
@@ -79,6 +61,22 @@ function xmldb_poodlltime_upgrade($oldversion) {
         }
         upgrade_mod_savepoint(true, 2020090700, 'poodlltime');
     }
+
+    // Add passagehash to questions table
+    if ($oldversion < 2020100200) {
+        $qtable = new xmldb_table(constants::M_QTABLE);
+
+
+        // Define field showqtitles to be added to poodlltime\
+        $field = new xmldb_field('passagehash', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null);
+
+        // add showqtitles field to poodlltime table
+        if (!$dbman->field_exists($qtable, $field)) {
+            $dbman->add_field($qtable, $field);
+        }
+        upgrade_mod_savepoint(true, 2020100200, 'poodlltime');
+    }
+
 
 
 

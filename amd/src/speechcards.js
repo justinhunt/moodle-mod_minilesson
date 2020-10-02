@@ -1,6 +1,6 @@
 define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper',
-  'mod_poodlltime/cloudpoodllloader'
-], function($, jqui, log, Ajax, def, polly, cloudpoodll) {
+  'mod_poodlltime/cloudpoodllloader','mod_poodlltime/ttrecorder'
+], function($, jqui, log, Ajax, def, polly, cloudpoodll, ttrecorder) {
   "use strict"; // jshint ;_;
 
   /*
@@ -43,7 +43,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
           for (var i = 0; i < itemdata.sentences.length; i++) {
             app.terms[i] = itemdata.sentences[i].sentence;
           }
-          log.debug("app terms", app.terms)
+          log.debug("app terms", app.terms);
           app.language = itemdata.language;
 
           this.init_controls();
@@ -136,7 +136,14 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
           };
 
           //init cloudpoodll push recorder
-          cloudpoodll.init('poodlltime-recorder-speechcards-' + itemdata.id, theCallback);
+         // cloudpoodll.init('poodlltime-recorder-speechcards-' + itemdata.id, theCallback);
+
+         //tt recorder
+            var opts = {};
+            opts.uniqueid=itemdata.uniqueid;
+            opts.callback=theCallback;
+            ttrecorder.init(opts);
+
 
           //init progress dots
           app.progress_dots(app.results, app.terms);
