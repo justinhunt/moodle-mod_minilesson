@@ -1,4 +1,5 @@
-define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper', 'mod_poodlltime/cloudpoodllloader'], function($, log, ajax, def, polly, cloudpoodll) {
+define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper', 'mod_poodlltime/cloudpoodllloader','mod_poodlltime/ttrecorder'],
+    function($, log, ajax, def, polly, cloudpoodll, ttrecorder) {
   "use strict"; // jshint ;_;
 
   log.debug('Poodll Time listen and repeat: initialising');
@@ -11,33 +12,44 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       },
 
       init: function(index, itemdata, quizhelper) {
-      var self = this;
-      cloudpoodll.init('poodlltime-recorder-listenrepeat-' + itemdata.id , function(message) {
+        var self = this;
+        var theCallback = function(message) {
 
-        switch (message.type) {
-          case 'recording':
-            break;
+            switch (message.type) {
+                case 'recording':
+                    break;
 
-          case 'speech':
-            log.debug("speech at listen_repeat");
-            self.getComparison(
-              self.items[self.game.pointer].target,
-              message.capturedspeech,
-              function(comparison) {
-                self.gotComparison(comparison, message);
-              }
-            );
-            break;
+                case 'speech':
+                    log.debug("speech at listen_repeat");
+                    self.getComparison(
+                        self.items[self.game.pointer].target,
+                        message.capturedspeech,
+                        function(comparison) {
+                            self.gotComparison(comparison, message);
+                        }
+                    );
+                    break;
 
+            }
+
+        };
+
+        if(quizhelper.use_ttrecorder()) {
+            var opts = {};
+            opts.uniqueid = itemdata.uniqueid;
+            opts.callback = theCallback;
+            ttrecorder.clone().init(opts);
+        }else{
+            //init cloudpoodll push recorder
+            cloudpoodll.init('poodlltime-recorder-listenrepeat-' + itemdata.id, theCallback);
         }
 
-      });
-      self.itemdata = itemdata;
-      self.quizhelper = quizhelper;
-      self.index = index;
-      self.register_events();
-      self.setvoice();
-      self.getItems();
+        self.itemdata = itemdata;
+        self.quizhelper = quizhelper;
+        self.index = index;
+        self.register_events();
+        self.setvoice();
+        self.getItems();
     },
 
     next_question:function(percent){

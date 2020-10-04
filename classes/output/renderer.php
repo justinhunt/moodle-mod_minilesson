@@ -347,6 +347,10 @@ class renderer extends \plugin_renderer_base {
         $recopts['token']=$token;
         $recopts['owner']=hash('md5',$USER->username);
         $recopts['region']=$moduleinstance->region;
+        $recopts['ttslanguage']=$moduleinstance->ttslanguage;
+
+
+        $recopts['courseurl']=$CFG->wwwroot . '/course/view.php?id=' . $moduleinstance->course ;
 
 
 
@@ -366,10 +370,6 @@ class renderer extends \plugin_renderer_base {
         }
 
 
-        //we need a control tp hold the recorded audio URL for the reading
-        $ret_html = $ret_html . \html_writer::tag('input', '', array('id' => constants::M_READING_AUDIO_URL, 'type' => 'hidden'));
-
-
 
         //this inits the M.mod_poodlltime thingy, after the page has loaded.
         //we put the opts in html on the page because moodle/AMD doesn't like lots of opts in js
@@ -383,7 +383,7 @@ class renderer extends \plugin_renderer_base {
 
         $opts=array('cmid'=>$cm->id,'widgetid'=>$widgetid);
         $this->page->requires->js_call_amd("mod_poodlltime/activitycontroller", 'init', array($opts));
-        $this->page->requires->strings_for_js(array('gotnosound','done','beginreading'),constants::M_COMPONENT);
+
 
         //these need to be returned and echo'ed to the page
         return $ret_html;

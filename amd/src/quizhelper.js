@@ -12,27 +12,21 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
 
     return {
       
-      mobile_user: function() {
-
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-          return true;
-        } else {
-          return false;
-        }
-
-      },
 
       controls: {},
       submitbuttonclass: 'mod_poodlltime_quizsubmitbutton',
       stepresults: [],
 
-      init: function(quizcontainer, quizdata, cmid, attemptid) {
-        this.quizdata = quizdata;
+      init: function(quizcontainer, activitydata, cmid, attemptid) {
+        this.quizdata = activitydata.quizdata;
+        this.region = activitydata.region;
+        this.ttslanguage = activitydata.ttslanguage;
         this.controls.quizcontainer = quizcontainer;
         this.attemptid = attemptid;
+        this.courseurl = activitydata.courseurl;
         this.cmid = cmid;
         this.prepare_html();
-        this.init_questions(quizdata);
+        this.init_questions(this.quizdata);
         this.register_events();
         this.start_quiz();
       },
@@ -138,7 +132,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
           })
           var totalpercent = Math.round((correctitems/totalitems)*100);
           console.log(results,correctitems,totalitems,totalpercent);
-          templates.render('mod_poodlltime/quizfinished',{results:results,total:totalpercent}).then(
+          templates.render('mod_poodlltime/quizfinished',{results:results,total:totalpercent, courseurl: this.courseurl}).then(
               function(html,js){
                   dd.controls.quizfinished.html(html);
                   dd.controls.quizfinished.show();
@@ -176,6 +170,44 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
       onSubmit: function() {
         alert('quiz submitted. Override this');
       },
+
+        mobile_user: function() {
+
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        chrome_user: function(){
+            if(/Chrome/i.test(navigator.userAgent)) {
+                return true;
+            }else{
+                return false;
+            }
+        },
+
+        use_ttrecorder: function(){
+            var ret =false;
+            if(this.mobile_user()){
+                ret = true;
+            }else if(this.chrome_user()){
+                ret = false;
+            }else{
+                ret = true;
+            }
+            if(ret===false){return false;}
+
+            //check if language and region are ok
+            if((this.region==='tokyo' || this.region==='useast1') && this.ttslanguage.substr(0,2)==='en'){
+                ret = true;
+            }else{
+                ret = false;
+            }
+            return ret;
+        },
+
 
     }; //end of return value
   });

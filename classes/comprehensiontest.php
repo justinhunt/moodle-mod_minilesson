@@ -219,10 +219,17 @@ class comprehensiontest
                             $testitem->passagehash  = $hashbits[1];
                         }
                     }
-                   $testitem->asrurl = 'https://dsuseast.poodll.com:3000/transcribe'; //https://dstokyo.poodll.com:3000/transcribe',
+                   switch($this->mod->region) {
+                       case 'tokyo':
+                           $testitem->asrurl = 'https://dstokyo.poodll.com:3000/transcribe';
+                           break;
+                       case 'useast1':
+                       default:
+                           $testitem->asrurl = 'https://dsuseast.poodll.com:3000/transcribe';
+                   }
                    $testitem->maxtime = 15000;
+                    break;
 
-                   break;
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_PAGE:
             }

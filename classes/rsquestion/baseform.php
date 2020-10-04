@@ -144,6 +144,7 @@ abstract class baseform extends \moodleform {
         }
 		//visibility
 		$mform->addElement('selectyesno', 'visible', get_string('visible'));
+        $mform->setDefault('visible', 1);
 
         $this->custom_definition();
 		
@@ -219,7 +220,7 @@ abstract class baseform extends \moodleform {
             $label = get_string('response', 'poodlltime');
         }
 
-        $this->_form->addElement('textarea', constants::TEXTANSWER .$count , $label,array('rows'=>'4', 'columns'=>'80'));
+        $this->_form->addElement('textarea', constants::TEXTANSWER .$count , $label,array('rows'=>'4', 'columns'=>'140', 'style'=>'width: 600px'));
         if ($required) {
             $this->_form->addRule(constants::TEXTANSWER .$count, get_string('required'), 'required', null, 'client');
         }

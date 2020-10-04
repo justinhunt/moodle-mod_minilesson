@@ -240,8 +240,6 @@ class helper
         //we want to process the hashcode and lang model if it makes sense
         $thepassagehash ='';
         switch($newitem->type) {
-            case constants::TYPE_DICTATION:
-            case constants::TYPE_DICTATIONCHAT:
             case constants::TYPE_SPEECHCARDS:
             case constants::TYPE_LISTENREPEAT:
                 $passage = $newitem->customtext1;
@@ -250,8 +248,14 @@ class helper
                     if ($newpassagehash) {
                         //check if it has changed, if its a brand new one, if so register a langmodel
                         if (!$olditem || $olditem->passagehash != ($moduleinstance->region . '|' . $newpassagehash)) {
+
                             //build a lang model
                             $ret = utils::fetch_lang_model($passage, $moduleinstance->ttslanguage, $moduleinstance->region);
+
+                            //for doing a dry run
+                            //$ret=new \stdClass();
+                            //$ret->success=true;
+
                             if ($ret && isset($ret->success) && $ret->success) {
                                 $thepassagehash = $moduleinstance->region . '|' . $newpassagehash;
                             }

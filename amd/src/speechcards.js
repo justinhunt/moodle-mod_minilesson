@@ -136,14 +136,18 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
             } //end of switch message type
           };
 
-          //init cloudpoodll push recorder
-         // cloudpoodll.init('poodlltime-recorder-speechcards-' + itemdata.id, theCallback);
 
-         //tt recorder
-            var opts = {};
-            opts.uniqueid=itemdata.uniqueid;
-            opts.callback=theCallback;
-            ttrecorder.init(opts);
+
+         if(quizhelper.use_ttrecorder()) {
+             //init tt recorder
+             var opts = {};
+             opts.uniqueid = itemdata.uniqueid;
+             opts.callback = theCallback;
+             ttrecorder.clone().init(opts);
+         }else{
+             //init cloudpoodll push recorder
+             cloudpoodll.init('poodlltime-recorder-speechcards-' + itemdata.id, theCallback);
+         }
 
 
           //init progress dots

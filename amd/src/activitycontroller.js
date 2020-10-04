@@ -12,7 +12,6 @@ define(['jquery','jqueryui', 'core/log','mod_poodlltime/definitions','mod_poodll
         sorryboxid: null,
         controls: null,
 
-
         //pass in config, the jquery video/audio object, and a function to be called when conversion has finshed
         init: function(props){
             var dd = this;
@@ -41,8 +40,6 @@ define(['jquery','jqueryui', 'core/log','mod_poodlltime/definitions','mod_poodll
             dd.doquizlayout();
         },
 
-
-
         process_html: function(){
             var opts = this.activitydata;
             //these css classes/ids are all passed in from php in
@@ -58,24 +55,19 @@ define(['jquery','jqueryui', 'core/log','mod_poodlltime/definitions','mod_poodll
             this.controls = controls;
         },
 
-
-
-
         register_events: function() {
            //do something
 
         },
-
-
 
         doquizlayout: function(){
             var dd = this;
             dd.controls.instructionscontainer.hide();
 
             //set up the quiz
-            quizhelper.onSubmit = function(returndata){dd.dofinishedreadinglayout(returndata);};
+           // quizhelper.onSubmit = function(returndata){dd.dofinishedreadinglayout(returndata);};
             quizhelper.init(dd.controls.quizcontainer,
-                this.activitydata.quizdata,
+                this.activitydata,
                 this.cmid,
                 this.attemptid,
                 polly);
@@ -84,7 +76,6 @@ define(['jquery','jqueryui', 'core/log','mod_poodlltime/definitions','mod_poodll
             dd.controls.quizcontainer.show();
 
         },
-
 
         doerrorlayout: function(){
             this.controls.errorcontainer.show();

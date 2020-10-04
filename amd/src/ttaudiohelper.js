@@ -6,7 +6,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/ttwavencoder'], function ($, log, 
 
     log.debug('TT Audio Helper initialising');
 
-    var aR =  {
+    return {
         encoder: null,
         microphone: null,
         isRecording: false,
@@ -20,11 +20,17 @@ define(['jquery', 'core/log', 'mod_poodlltime/ttwavencoder'], function ($, log, 
             mimeType: 'audio/wav'
         },
 
+        //for making multiple instances
+        clone: function () {
+            return $.extend(true, {}, this);
+        },
+
+
         init: function(waveHeight, uniqueid, therecorder) {
 
-            aR.waveHeight = waveHeight;
-            aR.uniqueid=uniqueid;
-            aR.therecorder= therecorder;
+            this.waveHeight = waveHeight;
+            this.uniqueid=uniqueid;
+            this.therecorder= therecorder;
             this.prepare_html();
 
 
@@ -38,39 +44,80 @@ define(['jquery', 'core/log', 'mod_poodlltime/ttwavencoder'], function ($, log, 
 
 
         prepare_html: function(){
-            aR.canvas =$('#' + aR.uniqueid + "_waveform");
-            aR.canvasCtx = aR.canvas[0].getContext("2d");
+            this.canvas =$('#' + this.uniqueid + "_waveform");
+            this.canvasCtx = this.canvas[0].getContext("2d");
         },
 
         start: function() {
+
+            var that =this;
+
             // Audio context
-            aR.audioContext = new AudioContext();
-            if (aR.audioContext.createJavaScriptNode) {
-                aR.processor = aR.audioContext.createJavaScriptNode(aR.config.bufferLen, aR.config.numChannels, aR.config.numChannels);
-            } else if (aR.audioContext.createScriptProcessor) {
-                aR.processor = aR.audioContext.createScriptProcessor(aR.config.bufferLen, aR.config.numChannels, aR.config.numChannels);
+            this.audioContext = new AudioContext();
+            if (this.audioContext.createJavaScriptNode) {
+                this.processor = this.audioContext.createJavaScriptNode(this.config.bufferLen, this.config.numChannels, this.config.numChannels);
+            } else if (this.audioContext.createScriptProcessor) {
+                this.processor = this.audioContext.createScriptProcessor(this.config.bufferLen, this.config.numChannels, this.config.numChannels);
             } else {
                 log.debug('WebAudio API has no support on this browser.');
             }
-            aR.processor.connect(aR.audioContext.destination);
+            this.processor.connect(this.audioContext.destination);
+
+
+            var gotStreamMethod= function(stream) {
+                that.onStream(stream);
+                that.isRecording = true;
+                that.therecorder.update_audio('isRecording',true);
+                that.tracks = stream.getTracks();
+
+                // Create a MediaStreamAudioSourceNode for the microphone
+
+                that.microphone = that.audioContext.createMediaStreamSource(stream);
+
+                // Connect the AudioBufferSourceNode to the gainNode
+
+                that.microphone.connect(that.processor);
+                that.encoder = wavencoder.clone();
+                that.encoder.init(that.audioContext.sampleRate, 2);
+
+                // Give the node a function to process audio events
+                that.processor.onaudioprocess = function(event) {
+                    that.encoder.encode(that.getBuffers(event));
+                };
+
+                that.listener = that.audioContext.createAnalyser();
+                that.microphone.connect(that.listener);
+                that.listener.fftSize = 2048; // 256
+
+                that.bufferLength = that.listener.frequencyBinCount;
+                that.analyserData = new Uint8Array(that.bufferLength);
+
+                that.canvasCtx.clearRect(0, 0, that.canvas.width()*2, that.waveHeight*2);
+
+                that.interval = setInterval(function() {
+                    that.drawWave();
+                }, 100);
+
+            };
+
+
 
             // Mic permission
             navigator.mediaDevices.getUserMedia({
                 audio: true,
                 video: false
-            }).then(aR.gotStreamMethod).catch(aR.onError);
+            }).then(gotStreamMethod).catch(this.onError);
         },
 
         stop: function() {
-            clearInterval(aR.interval);
-            aR.canvasCtx.clearRect(0, 0, aR.canvas.width()*2, this.waveHeight * 2);
-            aR.isRecording = false;
-            aR.therecorder.update_audio('isRecording',false);
-            aR.audioContext.close();
-            aR.processor.disconnect();
-            aR.tracks.forEach(track => track.stop());
-            aR.onStop(aR.encoder.finish());
-
+            clearInterval(this.interval);
+            this.canvasCtx.clearRect(0, 0, this.canvas.width()*2, this.waveHeight * 2);
+            this.isRecording = false;
+            this.therecorder.update_audio('isRecording',false);
+            this.audioContext.close();
+            this.processor.disconnect();
+            this.tracks.forEach(track => track.stop());
+            this.onStop(this.encoder.finish());
         },
 
         getBuffers: function(event) {
@@ -80,76 +127,42 @@ define(['jquery', 'core/log', 'mod_poodlltime/ttwavencoder'], function ($, log, 
             return buffers;
         },
 
-        gotStreamMethod: function(stream) {
-            aR.onStream(stream);
-            aR.isRecording = true;
-            aR.therecorder.update_audio('isRecording',true);
-            aR.tracks = stream.getTracks();
 
-            // Create a MediaStreamAudioSourceNode for the microphone
-
-            aR.microphone = aR.audioContext.createMediaStreamSource(stream);
-
-            // Connect the AudioBufferSourceNode to the gainNode
-
-            aR.microphone.connect(aR.processor);
-            aR.encoder = wavencoder;
-            aR.encoder.init(aR.audioContext.sampleRate, 2);
-
-            // Give the node a function to process audio events
-            aR.processor.onaudioprocess = function(event) {
-                aR.encoder.encode(aR.getBuffers(event));
-            };
-
-            aR.listener = aR.audioContext.createAnalyser();
-            aR.microphone.connect(aR.listener);
-            aR.listener.fftSize = 2048; // 256
-
-            aR.bufferLength = aR.listener.frequencyBinCount;
-            aR.analyserData = new Uint8Array(aR.bufferLength);
-
-            aR.canvasCtx.clearRect(0, 0, aR.canvas.width()*2, aR.waveHeight*2);
-
-            aR.interval = setInterval(function() {
-                aR.drawWave();
-            }, 100);
-
-        },
 
         drawWave: function() {
 
-            var width = aR.canvas.width() * 2;
-            aR.listener.getByteTimeDomainData(aR.analyserData);
+            var width = this.canvas.width() * 2;
+            this.listener.getByteTimeDomainData(this.analyserData);
 
-            aR.canvasCtx.fillStyle = 'white';
-            aR.canvasCtx.fillRect(0, 0, width, aR.waveHeight*2);
+            this.canvasCtx.fillStyle = 'white';
+            this.canvasCtx.fillRect(0, 0, width, this.waveHeight*2);
 
-            aR.canvasCtx.lineWidth = 5;
-            aR.canvasCtx.strokeStyle = 'gray';
-            aR.canvasCtx.beginPath();
+            this.canvasCtx.lineWidth = 5;
+            this.canvasCtx.strokeStyle = 'gray';
+            this.canvasCtx.beginPath();
 
-            var slicewaveWidth = width / aR.bufferLength;
+            var slicewaveWidth = width / this.bufferLength;
             var x = 0;
 
-            for (var i = 0; i < aR.bufferLength; i++) {
+            for (var i = 0; i < this.bufferLength; i++) {
 
-                var v = aR.analyserData[i] / 128.0;
-                var y = v * aR.waveHeight;
+                var v = this.analyserData[i] / 128.0;
+                var y = v * this.waveHeight;
 
                 if (i === 0) {
-                    // aR.canvasCtx.moveTo(x, y);
+                    // this.canvasCtx.moveTo(x, y);
                 } else {
-                    aR.canvasCtx.lineTo(x, y);
+                    this.canvasCtx.lineTo(x, y);
                 }
 
                 x += slicewaveWidth;
             }
 
-            aR.canvasCtx.lineTo(width, aR.waveHeight);
-            aR.canvasCtx.stroke();
+            this.canvasCtx.lineTo(width, this.waveHeight);
+            this.canvasCtx.stroke();
 
         }
-    }; //end of aR declaration
-    return aR;
+    }; //end of this declaration
+
 
 });

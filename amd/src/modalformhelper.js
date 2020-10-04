@@ -152,8 +152,9 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
                         //we could just reload here. But we wont
                         //document.location.reload();
                         //process formData
-                        var dataobject = JSON.parse('{"' + decodeURI(formData).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g,'":"') + '"}');
-                         dataobject.typelabel=this.formtitle;
+                        var dataobject ={};
+                        dataobject.name = new URLSearchParams(formData).get('name');
+                        dataobject.typelabel=this.formtitle;
                         dataobject.type=this.formname;
                         this.callback(dataobject,payloadobject.itemid);
                         break;

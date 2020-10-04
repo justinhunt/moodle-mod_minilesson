@@ -106,14 +106,6 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         $attemptoptions = array(0 => get_string('unlimited', constants::M_COMPONENT),
                             1 => '1',2 => '2',3 => '3',4 => '4',5 => '5',);
         $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_COMPONENT), $attemptoptions);
-		
-		 // Grade.
-        $this->standard_grading_coursemodule_elements();
-        
-        //grade options
-        //for now we hard code this to latest attempt
-        $mform->addElement('hidden', 'gradeoptions',constants::M_GRADELATEST);
-        $mform->setType('gradeoptions', PARAM_INT);
 
         //tts options
         $langoptions = \mod_poodlltime\utils::get_lang_options();
@@ -125,6 +117,14 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         $mform->addElement('select', 'region', get_string('region', constants::M_COMPONENT), $regionoptions);
         $mform->setDefault('region',$config->awsregion);
 
+
+        // Grade.
+        $this->standard_grading_coursemodule_elements();
+        
+        //grade options
+        //for now we hard code this to latest attempt
+        $mform->addElement('hidden', 'gradeoptions',constants::M_GRADELATEST);
+        $mform->setType('gradeoptions', PARAM_INT);
 
 
         // Post attempt
