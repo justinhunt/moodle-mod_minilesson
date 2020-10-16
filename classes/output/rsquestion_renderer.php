@@ -45,8 +45,8 @@ class rsquestion_renderer extends \plugin_renderer_base {
 
         $qtypes = [constants::TYPE_MULTICHOICE,constants::TYPE_DICTATIONCHAT,constants::TYPE_DICTATION,constants::TYPE_SPEECHCARDS,
         constants::TYPE_LISTENREPEAT,constants::TYPE_PAGE];
-        $qtypes[]=constants::TYPE_TEACHERTOOLS;
-        $qtypes[]=constants::TYPE_SHORTANSWER;
+       // $qtypes[]=constants::TYPE_TEACHERTOOLS;
+       // $qtypes[]=constants::TYPE_SHORTANSWER;
         foreach($qtypes as $qtype){
             $url=
             $data=['wwwroot' => $CFG->wwwroot, 'type'=>$qtype,'itemid'=>$itemid,'cmid'=>$this->page->cm->id,
