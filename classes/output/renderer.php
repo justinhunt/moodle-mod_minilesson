@@ -223,16 +223,18 @@ class renderer extends \plugin_renderer_base {
 
         //prepare results fopr display
         $results = array_filter($steps, function($step){return $step->hasgrade;});
+        $useresults=[];
         foreach($results as $result){
             $result->title=$quizdata[$result->index]->title;
             $result->index++;
+            $useresults[]=$result;
         }
 
         //output results and back to course button
         $tdata=new \stdClass();
         $tdata->total = $latestattempt->sessionscore;
         $tdata->courseurl = $CFG->wwwroot . '/course/view.php?id=' . $latestattempt->courseid;
-        $tdata->results=$results;
+        $tdata->results=$useresults;
         $finishedcontents = $this->render_from_template(constants::M_COMPONENT . '/quizfinished', $tdata);
 
         //output reattempt button

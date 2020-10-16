@@ -448,3 +448,4 @@ $string['attemptresultsheading']='{$a->username}: Attempt({$a->attemptid}): Scor
 $string['result'] ='Result';
 $string['qnumber'] ='No.';
 $string['title'] ='Title';
+$string['type'] ='Type';

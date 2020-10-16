@@ -15,7 +15,7 @@ class attemptresults extends basereport
 {
 
     protected $report="attemptresults";
-    protected $fields = array('qnumber','title','result','grade_p');
+    protected $fields = array('qnumber','type','title','result','grade_p');
     protected $headingdata = null;
     protected $qcache=array();
     protected $ucache=array();
@@ -43,6 +43,10 @@ class attemptresults extends basereport
         switch ($field) {
             case 'qnumber':
                 $ret = $record->index;
+                break;
+
+            case 'type':
+                $ret = $record->type;
                 break;
 
             case 'title':
@@ -83,7 +87,8 @@ class attemptresults extends basereport
         $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
         $comp_test =  new \mod_poodlltime\comprehensiontest($cm);
-        $quizdata = $comp_test->fetch_test_data_for_js();
+        $forcetitles=true;
+        $quizdata = $comp_test->fetch_test_data_for_js($forcetitles);
 
         $emptydata = array();
 
@@ -101,6 +106,7 @@ class attemptresults extends basereport
                 $results = array_filter($steps, function($step){return $step->hasgrade;});
                 foreach($results as $result){
                     $result->title=$quizdata[$result->index]->title;
+                    $result->type=get_string($quizdata[$result->index]->type,constants::M_COMPONENT);
                     $result->index++;
                 }
                 $this->rawdata = $results;

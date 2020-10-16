@@ -113,7 +113,7 @@ class comprehensiontest
     }
 
     /* return the test items suitable for js to use */
-    public function fetch_test_data_for_js(){
+    public function fetch_test_data_for_js($forcetitles=false){
         global $CFG, $USER;
 
         $items = $this->fetch_items();
@@ -150,7 +150,7 @@ class comprehensiontest
             $testitem->correctanswer =  $item->correctanswer;
             $testitem->id = $item->id;
             $testitem->type=$item->type;
-            if($this->mod->showqtitles){$testitem->title=$item->name;}
+            if($this->mod->showqtitles||$forcetitles){$testitem->title=$item->name;}
             $testitem->uniqueid=$item->type . $testitem->number;
 
             switch($testitem->type) {
