@@ -114,7 +114,8 @@ class grading extends basereport
         $user_attempt_totals = array();
 
         //if we are not machine grading the SQL is simpler
-        $human_sql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id WHERE tu.poodlltimeid=?" .
+        $human_sql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id " .
+                " WHERE tu.poodlltimeid=? AND tu.status=" . constants::M_STATE_COMPLETE .
             " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
 
         $alldata =$DB->get_records_sql($human_sql, array($formdata->moduleid));

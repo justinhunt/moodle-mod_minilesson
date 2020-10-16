@@ -96,9 +96,9 @@ class gradingbyuser extends basereport
 
         //if we are not machine grading the SQL is simpler
         $human_sql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu " .
-            "WHERE tu.poodlltimeid=? " .
-            "AND tu.userid=? " .
-            "ORDER BY tu.id DESC";
+            " WHERE tu.poodlltimeid=? AND tu.status=" . constants::M_STATE_COMPLETE .
+            " AND tu.userid=? " .
+            " ORDER BY tu.id DESC";
 
         $alldata =$DB->get_records_sql($human_sql, array($formdata->moduleid, $formdata->userid));
 

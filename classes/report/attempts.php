@@ -97,7 +97,8 @@ class attempts extends basereport {
 
         //if no groups or can see all groups, simple SQL
         if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
-            $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE, array('poodlltimeid' => $formdata->moduleid), 'timecreated DESC');
+            $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE,
+                    array('poodlltimeid' => $formdata->moduleid, 'status' => constants::M_STATE_COMPLETE), 'timecreated DESC');
 
         //if need to partition to groups, SQL for groups
         }else{
