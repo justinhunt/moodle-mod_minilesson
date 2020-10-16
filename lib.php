@@ -180,9 +180,6 @@ function poodlltime_grade_item_update($moduleinstance, $grades=null) {
         $params = array('itemname'=>$moduleinstance->name);
     }
 
-   //TODO: PROBABLY DO NOT NEED THIS ANYMORE
-     $errorestimate =0;
-
 
     if ($moduleinstance->grade > 0) {
         $params['gradetype']  = GRADE_TYPE_VALUE;
@@ -227,7 +224,7 @@ function poodlltime_grade_item_update($moduleinstance, $grades=null) {
             }
             //check raw grade isnt null otherwise we insert a grade of 0
             if ($grade['rawgrade'] !== null) {
-                $grades[$key]['rawgrade'] = (($grade['rawgrade'] + $errorestimate) * $params['grademax'] / 100);
+                $grades[$key]['rawgrade'] = ($grade['rawgrade'] * $params['grademax'] / 100);
             } else {
                 //setting rawgrade to null just in case user is deleting a grade
                 $grades[$key]['rawgrade'] = null;
@@ -374,8 +371,15 @@ function poodlltime_add_instance(stdClass $poodlltime, mod_poodlltime_mod_form $
 
     $poodlltime->timecreated = time();
 	$poodlltime = poodlltime_process_files($poodlltime,$mform);
-    $instanceid = $DB->insert_record(constants::M_TABLE, $poodlltime);
-	return $instanceid;
+    $poodlltime->id = $DB->insert_record(constants::M_TABLE, $poodlltime);
+
+    if(!isset($poodlltime->cmidnumber)){
+        $poodlltime->cmidnumber=null;
+    }
+    poodlltime_grade_item_update($poodlltime);
+
+    return  $poodlltime->id;
+
 }
 
 
@@ -405,13 +409,28 @@ function poodlltime_process_files(stdClass $poodlltime, mod_poodlltime_mod_form 
  * @return boolean Success/Fail
  */
 function poodlltime_update_instance(stdClass $poodlltime, mod_poodlltime_mod_form $mform = null) {
+
     global $DB;
 
     $poodlltime->timemodified = time();
     $poodlltime->id = $poodlltime->instance;
-	$poodlltime = poodlltime_process_files($poodlltime,$mform);
-	$success = $DB->update_record(constants::M_TABLE, $poodlltime);
-	return $success;
+    $poodlltime = poodlltime_process_files($poodlltime,$mform);
+    $params = array('id' => $poodlltime->instance);
+    $oldgradefield = $DB->get_field(constants::M_TABLE, 'grade', $params);
+
+
+    $success = $DB->update_record(constants::M_TABLE, $poodlltime);
+
+    if(!isset($poodlltime->cmidnumber)){
+        $poodlltime->cmidnumber=null;
+    }
+    poodlltime_grade_item_update($poodlltime);
+    $update_grades = ($poodlltime->grade === $oldgradefield ? false : true);
+    if ($update_grades) {
+        poodlltime_update_grades($poodlltime, 0, false);
+    }
+
+    return $success;
 }
 
 /**
@@ -758,6 +777,22 @@ function poodlltime_output_fragment_mform($args) {
 
         case constants::TYPE_PAGE:
             $mform = new \mod_poodlltime\rsquestion\pageform(null,
+                    array('editoroptions'=>$editoroptions,
+                            'filemanageroptions'=>$filemanageroptions,
+                            'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_TEACHERTOOLS:
+            $mform = new \mod_poodlltime\rsquestion\teachertoolsform(null,
+                    array('editoroptions'=>$editoroptions,
+                            'filemanageroptions'=>$filemanageroptions,
+                            'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_SHORTANSWER:
+            $mform = new \mod_poodlltime\rsquestion\shortanswerform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)

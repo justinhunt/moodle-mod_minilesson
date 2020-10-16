@@ -21,8 +21,11 @@ const M_AITABLE='poodlltime_ai_result';
 const M_QTABLE='poodlltime_rsquestions';
 const M_MODNAME='poodlltime';
 const M_URL='/mod/poodlltime';
+const M_PATH='/mod/poodlltime';
 const M_CLASS='mod_poodlltime';
 const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingpoodlltime';
+const M_STATE_COMPLETE=1;
+const M_STATE_INCOMPLETE=0;
 
 const M_NOITEMS_CONT= 'mod_poodlltime_noitems_cont';
 const M_ITEMS_CONT= 'mod_poodlltime_items_cont';
@@ -57,6 +60,8 @@ const TYPE_DICTATIONCHAT = 'dictationchat';
 const TYPE_DICTATION = 'dictation';
 const TYPE_SPEECHCARDS = 'speechcards';
 const TYPE_LISTENREPEAT = 'listenrepeat';
+const TYPE_TEACHERTOOLS = 'teachertools';
+const TYPE_SHORTANSWER = 'shortanswer';
 
 const AUDIOFNAME = 'itemaudiofname';
 const AUDIOPROMPT = 'audioitem';
@@ -203,5 +208,6 @@ const M_PUSH_QUESTIONS =3;
 const M_PUSH_LEVEL =4;
   
 const M_QUIZ_FINISHED = "mod_poodlltime_quiz_finished";
+const M_QUIZ_REATTEMPT = "mod_poodlltime_quiz_reattempt";
 
 }

@@ -130,15 +130,17 @@ switch ($showreport){
     case 'attempts':
         $report = new \mod_poodlltime\report\attempts();
         $formdata = new stdClass();
-        $formdata->poodlltimeid = $moduleinstance->id;
+        $formdata->moduleid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
         break;
 
+
     //list view of attempts and grades and action links
-    case 'userattempts':
-        $report = new \mod_poodlltime\report\attempts();
+    case 'attemptresults':
+        $report = new \mod_poodlltime\report\attemptresults();
         $formdata = new stdClass();
-        $formdata->poodlltimeid = $moduleinstance->id;
+        $formdata->moduleid = $moduleinstance->id;
+        $formdata->attemptid = $attemptid;
         $formdata->modulecontextid = $modulecontext->id;
         break;
 

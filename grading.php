@@ -119,7 +119,7 @@ switch ($action){
 		//formdata should only have simple values, not objects
 		//later it gets turned into urls for the export buttons
 		$formdata = new stdClass();
-		$formdata->poodlltimeid = $moduleinstance->id;
+		$formdata->moduleid = $moduleinstance->id;
 		$formdata->modulecontextid = $modulecontext->id;
 		break;
 
@@ -129,7 +129,7 @@ switch ($action){
 		//formdata should only have simple values, not objects
 		//later it gets turned into urls for the export buttons
 		$formdata = new stdClass();
-		$formdata->poodlltimeid = $moduleinstance->id;
+		$formdata->moduleid = $moduleinstance->id;
 		$formdata->userid = $userid;
 		$formdata->modulecontextid = $modulecontext->id;
 		break;

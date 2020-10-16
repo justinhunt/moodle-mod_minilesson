@@ -27,6 +27,7 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 use \mod_poodlltime\constants;
+use \mod_poodlltime\utils;
 
 
 
@@ -92,27 +93,25 @@ $config = get_config(constants::M_COMPONENT);
 //Get our renderers
 $renderer = $PAGE->get_renderer('mod_poodlltime');
 
-//if we are in review mode, lets review
-$attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('userid'=>$USER->id,'poodlltimeid'=>$moduleinstance->id),'id DESC');
+//get attempts
+$attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('poodlltimeid'=>$moduleinstance->id,'userid'=>$USER->id),'timecreated DESC');
 
-//can attempt ?
+
+//can make a new attempt ?
 $canattempt = true;
 $canpreview = has_capability('mod/poodlltime:canpreview',$modulecontext);
 if(!$canpreview && $moduleinstance->maxattempts > 0){
-	$attempts =  $DB->get_records(constants::M_ATTEMPTSTABLE,array('userid'=>$USER->id, constants::M_MODNAME.'id'=>$moduleinstance->id),'timecreated DESC');
 	if($attempts && count($attempts)>=$moduleinstance->maxattempts){
 		$canattempt=false;
 	}
 }
 
-//reset our retake flag if we cant reatempt
-if(!$canattempt){$retake=0;}
-
-// Get the last attempt if there is one, and we're not re-attempting the quiz.
-$latestattempt = !$retake ? ($attempts ? array_shift($attempts) : null) : null;
-
-// Check if last attempt is finished, at this point we only check if at least an answer was provided.
-$islastattemptfinished = !$latestattempt || !empty($latestattempt->qanswer1);
+//create a new attempt or just fall through to no-items or finished modes
+if(!$attempts || ($canattempt && $retake==1)){
+    $latestattempt = utils::create_new_attempt($moduleinstance->course, $moduleinstance->id);
+}else{
+    $latestattempt = reset($attempts);
+}
 
 
 //From here we actually display the page.
@@ -125,7 +124,10 @@ if(has_capability('mod/poodlltime:evaluate',$modulecontext)){
 
 $comp_test =  new \mod_poodlltime\comprehensiontest($cm);
 $itemcount = $comp_test->fetch_item_count();
-if($itemcount > 0) {
+
+if($latestattempt->status==constants::M_STATE_COMPLETE){
+    echo $renderer->show_finished_results($comp_test,$latestattempt, $canattempt);
+}else if($itemcount > 0) {
     echo $renderer->show_quiz($comp_test);
     echo $renderer->fetch_activity_amd($cm, $moduleinstance);
 }else{

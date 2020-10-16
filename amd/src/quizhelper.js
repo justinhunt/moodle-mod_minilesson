@@ -1,7 +1,7 @@
 define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'core/ajax', 'mod_poodlltime/pollyhelper',
-    'mod_poodlltime/dictation', 'mod_poodlltime/dictationchat', 'mod_poodlltime/multichoice', 'mod_poodlltime/speechcards', 'mod_poodlltime/listenrepeat','mod_poodlltime/page'
-  ],
-  function($, log, def, templates, Ajax, polly, dictation, dictationchat, multichoice, speechcards, listenrepeat, page) {
+    'mod_poodlltime/dictation', 'mod_poodlltime/dictationchat', 'mod_poodlltime/multichoice', 'mod_poodlltime/speechcards', 'mod_poodlltime/listenrepeat',
+        'mod_poodlltime/page','mod_poodlltime/teachertools','mod_poodlltime/shortanswer'],
+  function($, log, def, templates, Ajax, polly, dictation, dictationchat, multichoice, speechcards, listenrepeat, page, teachertools, shortanswer) {
     "use strict"; // jshint ;_;
 
     /*
@@ -63,6 +63,14 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
              case def.qtype_page:
                   page.clone().init(index, item, dd);
                   break;
+
+              case def.qtype_teachertools:
+                  teachertools.clone().init(index, item, dd);
+                  break;
+
+              case def.qtype_shortanswer:
+                  shortanswer.clone().init(index, item, dd);
+                  break;
           }
 
         });
@@ -116,6 +124,8 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
               case def.qtype_dictationchat:
               case def.qtype_multichoice:
               case def.qtype_listenrepeat:
+              case def.qtype_teachertools:
+              case def.qtype_shortanswer:
               default:
           }//end of nextitem switch
 
@@ -129,7 +139,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
             result.title=dd.quizdata[i].title;
             correctitems += result.correctitems;
             totalitems += result.totalitems;
-          })
+          });
           var totalpercent = Math.round((correctitems/totalitems)*100);
           console.log(results,correctitems,totalitems,totalpercent);
           templates.render('mod_poodlltime/quizfinished',{results:results,total:totalpercent, courseurl: this.courseurl}).then(
@@ -147,6 +157,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
 
       report_step_grade: function(stepdata) {
         var dd = this;
+
         //store results locally
         this.stepresults.push(stepdata);
 
@@ -155,11 +166,12 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
           methodname: 'mod_poodlltime_report_step_grade',
           args: {
             cmid: dd.cmid,
-            step: stepdata.index,
-            grade: stepdata.grade
+            step: JSON.stringify(stepdata),
           }
         }]);
       },
+
+
 
       start_quiz: function() {
         $("#" + this.quizdata[0].uniqueid + "_container").show();

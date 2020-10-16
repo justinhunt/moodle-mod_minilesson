@@ -209,6 +209,51 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
+    /**
+     *  Finished View
+     */
+    public function show_finished_results($comp_test, $latestattempt, $canattempt){
+        global $CFG;
+
+        //quiz data
+        $quizdata = $comp_test->fetch_test_data_for_js();
+
+        //steps data
+        $steps = json_decode($latestattempt->sessiondata)->steps;
+
+        //prepare results fopr display
+        $results = array_filter($steps, function($step){return $step->hasgrade;});
+        foreach($results as $result){
+            $result->title=$quizdata[$result->index]->title;
+            $result->index++;
+        }
+
+        //output results and back to course button
+        $tdata=new \stdClass();
+        $tdata->total = $latestattempt->sessionscore;
+        $tdata->courseurl = $CFG->wwwroot . '/course/view.php?id=' . $latestattempt->courseid;
+        $tdata->results=$results;
+        $finishedcontents = $this->render_from_template(constants::M_COMPONENT . '/quizfinished', $tdata);
+
+        //output reattempt button
+        if($canattempt){
+            $reattemptbutton =  $this->output->single_button(new \moodle_url( constants::M_URL . '/view.php',
+                    array('n'=>$latestattempt->poodlltimeid, 'retake'=>1)),get_string('reattempt',constants::M_COMPONENT));
+
+            $reattemptdiv = \html_writer::div($reattemptbutton ,constants::M_QUIZ_REATTEMPT,
+                    array('id'=>constants::M_QUIZ_REATTEMPT,''));
+
+            $finishedcontents  .= $reattemptdiv;
+        }
+
+
+        //put it all in a div and return it
+        $finisheddiv = \html_writer::div($finishedcontents ,constants::M_QUIZ_FINISHED,
+                array('id'=>constants::M_QUIZ_FINISHED,'style'=>'display: block'));
+
+
+        return  $finisheddiv;
+    }
 
     /**
      *  Show quiz container

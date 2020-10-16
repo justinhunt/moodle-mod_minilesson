@@ -35,7 +35,6 @@ class gradingbyuser extends basereport
     {
         global $DB, $CFG, $OUTPUT;
 
-        $has_ai_grade = $record->fulltranscript;
 
         switch ($field) {
             case 'id':
@@ -45,8 +44,12 @@ class gradingbyuser extends basereport
 
             //grade could hold either human or ai data
             case 'grade_p':
-                //if not human or ai graded
                 $ret = $record->sessionscore;
+                if ($withlinks) {
+                    $link = new \moodle_url(constants::M_URL . '/reports.php',
+                            array('report' => 'attemptresults', 'n' => $record->poodlltimeid, 'attemptid' => $record->id));
+                    $ret = \html_writer::link($link, $ret);
+                }
                 break;
 
 
@@ -92,22 +95,16 @@ class gradingbyuser extends basereport
         $emptydata = array();
 
         //if we are not machine grading the SQL is simpler
-        $human_sql = "SELECT tu.*, false as fulltranscript   FROM {" . constants::M_ATTEMPTSTABLE . "} tu " .
+        $human_sql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu " .
             "WHERE tu.poodlltimeid=? " .
             "AND tu.userid=? " .
             "ORDER BY tu.id DESC";
 
-
-        //we need a module instance to know which scoring method we are using.
-        $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->poodlltimeid));
-        $cantranscribe = utils::can_transcribe($moduleinstance);
-        $alldata =$DB->get_records_sql($human_sql, array($formdata->poodlltimeid, $formdata->userid));
+        $alldata =$DB->get_records_sql($human_sql, array($formdata->moduleid, $formdata->userid));
 
 
         if ($alldata) {
             foreach ($alldata as $thedata) {
-                $thedata->audiourl = \mod_poodlltime\utils::make_audio_URL($thedata->filename, $formdata->modulecontextid, constants::M_COMPONENT,
-                    constants::M_FILEAREA_SUBMISSIONS, $thedata->id);
                 $this->rawdata[] = $thedata;
             }
 

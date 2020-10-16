@@ -33,8 +33,13 @@ class attempts extends basereport {
                 $ret = fullname($user);
                 break;
 
-            case 'qscore':
-                $ret = $record->totalgrade;
+            case 'grade_p':
+                $ret = $record->sessionscore;
+                if ($withlinks) {
+                    $link = new \moodle_url(constants::M_URL . '/reports.php',
+                            array('report' => 'attemptresults', 'n' => $record->poodlltimeid, 'attemptid' => $record->id));
+                    $ret = \html_writer::link($link, $ret);
+                }
                 break;
 
             case 'timecreated':
@@ -44,7 +49,7 @@ class attempts extends basereport {
             case 'deletenow':
                 if ($withlinks) {
                     $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                            array('action' => 'delete', 'n' => $record->modid, 'attemptid' => $record->id,
+                            array('action' => 'delete', 'n' => $record->poodlltimeid, 'attemptid' => $record->id,
                                     'source' => $this->report));
                     $btn = new \single_button($url, get_string('delete'), 'post');
                     $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_COMPONENT));
@@ -82,7 +87,7 @@ class attempts extends basereport {
         $emptydata = array();
 
         //groupsmode
-        $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $formdata->modid), '*', MUST_EXIST);
+        $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $formdata->moduleid), '*', MUST_EXIST);
         $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
 
@@ -92,7 +97,7 @@ class attempts extends basereport {
 
         //if no groups or can see all groups, simple SQL
         if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
-            $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE, array('modid' => $formdata->modid), 'timecreated DESC');
+            $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE, array('poodlltimeid' => $formdata->moduleid), 'timecreated DESC');
 
         //if need to partition to groups, SQL for groups
         }else{
@@ -104,9 +109,9 @@ class attempts extends basereport {
 
             $allsql ="SELECT att.* FROM {".constants::M_ATTEMPTSTABLE ."} att " .
                     "INNER JOIN {groups_members} gm ON att.userid=gm.userid " .
-                    "WHERE gm.groupid $groupswhere AND att.modid = ? " .
+                    "WHERE gm.groupid $groupswhere AND att.poodlltimeid = ? " .
                     "ORDER BY timecreated DESC";
-            $allparams[]=$formdata->modid;
+            $allparams[]=$formdata->moduleid;
             $alldata = $DB->get_records_sql($allsql, $allparams);
         }
 

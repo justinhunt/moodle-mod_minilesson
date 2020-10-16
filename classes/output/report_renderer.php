@@ -31,7 +31,7 @@ class report_renderer extends \plugin_renderer_base
 
         //attempts report
         $attemptsreport= new \single_button(
-                new \moodle_url(constants::M_URL . '/reports.php', array('report' => 'attemptsreport', 'id' => $cm->id, 'n' => $moduleinstance->id)),
+                new \moodle_url(constants::M_URL . '/reports.php', array('report' => 'attempts', 'id' => $cm->id, 'n' => $moduleinstance->id)),
                 get_string('attemptsreport', constants::M_COMPONENT), 'get');
         $reports[] = $this->render($attemptsreport) ;
 

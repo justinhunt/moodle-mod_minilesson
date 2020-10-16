@@ -50,13 +50,6 @@ require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/poodlltime:canmanageattempts', $context);
 
-//set up the page object
-/*
-$PAGE->set_title(format_string($moduleinstance->name));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($context);
-$PAGE->set_pagelayout('course');
-*/
 
 //is the attempt if OK?
 if ($action=='delete' && $attemptid > 0) {
@@ -85,24 +78,47 @@ switch($action){
 
 /////// Delete attempt NOW////////
 	case 'delete':
-		require_sesskey();
-		if (!$DB->delete_records(constants::M_ATTEMPTSTABLE, array('id'=>$attemptid))){
-			print_error("Could not delete attempt");
-		}
 
-		redirect($redirecturl);
-		return;
+        require_sesskey();
+
+        // Check user has group access.
+        $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE, array('id' => $attemptid, 'poodlltimeid' => $cm->instance), '*', MUST_EXIST);
+        if (!groups_user_groups_visible($course, $attempt->userid, $cm)) {
+            print_error("You do not have permssion to delete this user");
+        } else if ($DB->delete_records(constants::M_ATTEMPTSTABLE, array('id' => $attemptid))) {
+            if($attempt){
+                poodlltime_update_grades($moduleinstance, $attempt->userid, true);
+            }
+        }else{
+            print_error("Could not delete attempt");
+        }
+
+        redirect($redirecturl);
+        return;
 
 	
 	/////// Delete ALL attempts ////////
 	case 'deleteall':
-		require_sesskey();
-		if (!$DB->delete_records(constants::M_ATTEMPTSTABLE, array('poodlltimeid'=>$moduleinstance->id))){
-			print_error("Could not delete attempts (all)");
-		}
 
-		redirect($redirecturl);
-		return;
+        require_sesskey();
+
+        $groupsmode = groups_get_activity_groupmode($cm,$course);
+        $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
+        $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
+        $result = false;
+
+        //if no groups, or can see all groups then the SQL is simple
+        if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
+            $result = $DB->delete_records(constants::M_ATTEMPTSTABLE, array('poodlltimeid' => $moduleinstance->id));
+        }
+
+        if ($result) {
+            poodlltime_update_grades($moduleinstance, 0, true);
+        }else{
+            print_error("Could not delete attempts (all)");
+        }
+        redirect($redirecturl);
+        return;
 
 }
 

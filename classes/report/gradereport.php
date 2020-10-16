@@ -15,7 +15,7 @@ class gradereport extends basereport
 {
 
     protected $report="gradereport";
-    protected $fields = array('id','username','accuracy_p','grade_p','timecreated','deletenow');
+    protected $fields = array('id','username','grade_p','timecreated','deletenow');
     protected $headingdata = null;
     protected $qcache=array();
     protected $ucache=array();
@@ -36,6 +36,11 @@ class gradereport extends basereport
 
             case 'grade_p':
                 $ret = $record->sessionscore;
+                if ($withlinks) {
+                    $link = new \moodle_url(constants::M_URL . '/reports.php',
+                            array('report' => 'attemptresults', 'n' => $record->poodlltimeid, 'attemptid' => $record->id));
+                    $ret = \html_writer::link($link, $ret);
+                }
                 break;
 
 
@@ -69,7 +74,6 @@ class gradereport extends basereport
         $record = $this->headingdata;
         $ret='';
         if(!$record){return $ret;}
-        //$ec = $this->fetch_cache(constants::M_TABLE,$record->englishcentralid);
         return get_string('gradereportheading',constants::M_COMPONENT);
 
     }
@@ -91,7 +95,6 @@ class gradereport extends basereport
 
         //we need a module instance to know which scoring method we are using.
         $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->poodlltimeid));
-        $cantranscribe = utils::can_transcribe($moduleinstance);
         $alldata =$DB->get_records_sql($human_sql, array($formdata->poodlltimeid));
 
 
@@ -108,8 +111,6 @@ class gradereport extends basereport
                 }
                 $user_attempt_totals[$thedata->userid] = 1;
 
-                $thedata->audiourl = \mod_poodlltime\utils::make_audio_URL($thedata->filename, $formdata->modulecontextid, constants::M_COMPONENT,
-                    constants::M_FILEAREA_SUBMISSIONS, $thedata->id);
                 $this->rawdata[] = $thedata;
             }
             foreach ($this->rawdata as $thedata) {

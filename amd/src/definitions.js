@@ -64,6 +64,8 @@ This file contains class and ID definitions.
         qtype_dictation: 'dictation',
         qtype_speechcards: 'speechcards',
         qtype_listenrepeat: 'listenrepeat',
+        qtype_teachertools: 'teachertools',
+        qtype_shortanswer: 'shortanswer',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_poodlltime_grading_maybeselfcorrectedword',

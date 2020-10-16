@@ -366,6 +366,9 @@ $string['adddictationitem']='Dictation';
 $string['addlistenrepeatitem']='Listen and Repeat';
 $string['addspeechcardsitem']='Speech Cards';
 $string['addpageitem']='Content Page';
+$string['addteachertoolsitem']='TeacherTools';
+$string['addshortansweritem']='Short Answer';
+
 
 
 $string['multichoice'] = 'Multi Choice';
@@ -374,6 +377,8 @@ $string['dictationchat']='Dictation Chat';
 $string['speechcards']='Speech Cards';
 $string['listenrepeat']='Listen and Repeat';
 $string['page']='Content Page';
+$string['teachertools']='TeacherTools';
+$string['shortanswer']='Short Answer';
 
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';
@@ -437,3 +442,9 @@ $string['additems'] ='Add Questions';
 $string['showqtitles'] ='Show question titles in quiz';
 $string['previewitem'] ='Preview Item';
 $string['showitemscores'] ='See All Results';
+$string['ttshorturl'] = 'TeacherTools Activity Short URL:';
+$string['reattempt'] ='Try Again';
+$string['attemptresultsheading']='{$a->username}: Attempt({$a->attemptid}): Score: {$a->sessionscore}% : - {$a->date} ';
+$string['result'] ='Result';
+$string['qnumber'] ='No.';
+$string['title'] ='Title';

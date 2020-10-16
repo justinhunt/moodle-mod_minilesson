@@ -160,6 +160,8 @@ class comprehensiontest
                 case constants::TYPE_LISTENREPEAT:
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_PAGE:
+                case constants::TYPE_TEACHERTOOLS:
+                case constants::TYPE_SHORTANSWER:
 
                     $testitem->text =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
                             'pluginfile.php', $this->context->id,constants::M_COMPONENT,
@@ -232,6 +234,8 @@ class comprehensiontest
 
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_PAGE:
+                case constants::TYPE_TEACHERTOOLS:
+                case constants::TYPE_SHORTANSWER:
             }
 
             $testitems[]=$testitem;

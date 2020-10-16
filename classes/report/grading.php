@@ -25,8 +25,6 @@ class grading extends basereport
     {
         global $DB, $CFG, $OUTPUT;
 
-        $has_ai_grade = $record->fulltranscript;
-
         switch ($field) {
             case 'id':
                 $ret = $record->id;
@@ -54,7 +52,14 @@ class grading extends basereport
 
              //grade could hold either human or ai data
             case 'grade_p':
+
                 $ret = $record->sessionscore;
+                if ($withlinks) {
+                    $link = new \moodle_url(constants::M_URL . '/reports.php',
+                            array('report' => 'attemptresults', 'n' => $record->poodlltimeid, 'attemptid' => $record->id));
+                    $ret = \html_writer::link($link, $ret);
+                }
+
                 break;
 
 
@@ -109,13 +114,10 @@ class grading extends basereport
         $user_attempt_totals = array();
 
         //if we are not machine grading the SQL is simpler
-        $human_sql = "SELECT tu.*, false as fulltranscript  FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id WHERE tu.poodlltimeid=?" .
+        $human_sql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id WHERE tu.poodlltimeid=?" .
             " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
 
-        //we need a module instance to know which scoring method we are using.
-        $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->poodlltimeid));
-        $cantranscribe = utils::can_transcribe($moduleinstance);
-        $alldata =$DB->get_records_sql($human_sql, array($formdata->poodlltimeid));
+        $alldata =$DB->get_records_sql($human_sql, array($formdata->moduleid));
 
 
 
@@ -131,8 +133,6 @@ class grading extends basereport
                 }
                 $user_attempt_totals[$thedata->userid] = 1;
 
-                $thedata->audiourl = \mod_poodlltime\utils::make_audio_URL($thedata->filename, $formdata->modulecontextid, constants::M_COMPONENT,
-                    constants::M_FILEAREA_SUBMISSIONS, $thedata->id);
                 $this->rawdata[] = $thedata;
             }
             foreach ($this->rawdata as $thedata) {

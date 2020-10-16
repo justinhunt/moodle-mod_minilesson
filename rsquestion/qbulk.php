@@ -27,7 +27,14 @@ require_once('../../../config.php');
 require_once($CFG->dirroot.'/mod/poodlltime/lib.php');
 
 use \mod_poodlltime\constants;
-
+/*
+ * READ ME
+ * When this page runs it will seek to update all the lang models
+ *
+ * Use this only if change region or someone has none for some reason
+ * It waits for 7s after each check ...if update or not, so takes ages to complete
+ *
+ */
 
 $id = required_param('id', PARAM_INT);
 

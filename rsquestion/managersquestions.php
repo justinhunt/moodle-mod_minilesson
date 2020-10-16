@@ -157,7 +157,22 @@ switch($type){
         );
         break;
 
-	case constants::NONE:
+    case constants::TYPE_TEACHERTOOLS:
+        $mform = new \mod_poodlltime\rsquestion\teachertoolsform(null,
+                array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$poodlltime)
+        );
+        break;
+    case constants::TYPE_SHORTANSWER:
+        $mform = new \mod_poodlltime\rsquestion\shortanswerform(null,
+                array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$poodlltime)
+        );
+        break;
+
+    case constants::NONE:
 	default:
 		print_error('No item type specifified');
 
@@ -227,6 +242,8 @@ if ($edit) {
         case constants::TYPE_SPEECHCARDS:
         case constants::TYPE_LISTENREPEAT:
         case constants::TYPE_PAGE:
+        case constants::TYPE_TEACHERTOOLS:
+        case constants::TYPE_SHORTANSWER:
 		default:
 	}
     $mform->set_data($data);

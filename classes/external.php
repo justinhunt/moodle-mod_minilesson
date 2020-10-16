@@ -46,13 +46,13 @@ class mod_poodlltime_external extends external_api {
     public static function report_step_grade_parameters() {
         return new external_function_parameters([
                 'cmid' => new external_value(PARAM_INT),
-                'grade' => new external_value(PARAM_INT),
-                'step' => new external_value(PARAM_INT)
+                'step' => new external_value(PARAM_TEXT)
         ]);
     }
 
-    public static function report_step_grade($cmid,$grade,$step){
-        $ret= utils::update_step_grade($cmid,$grade, $step);
+    public static function report_step_grade($cmid,$step){
+        $stepdata = json_decode($step);
+        $ret= utils::update_step_grade($cmid,$stepdata);
         return true;
     }
     public static function report_step_grade_returns() {
@@ -234,6 +234,24 @@ class mod_poodlltime_external extends external_api {
 
             case constants::TYPE_PAGE:
                 $mform = new \mod_poodlltime\rsquestion\pageform(null,
+                        array('editoroptions'=>$editoroptions,
+                                'filemanageroptions'=>$filemanageroptions,
+                                'moduleinstance'=>$moduleinstance),
+                        $method, $target,$attributes,$editable,$data
+                );
+                break;
+
+            case constants::TYPE_TEACHERTOOLS:
+                $mform = new \mod_poodlltime\rsquestion\teachertoolsform(null,
+                        array('editoroptions'=>$editoroptions,
+                                'filemanageroptions'=>$filemanageroptions,
+                                'moduleinstance'=>$moduleinstance),
+                        $method, $target,$attributes,$editable,$data
+                );
+                break;
+
+            case constants::TYPE_SHORTANSWER:
+                $mform = new \mod_poodlltime\rsquestion\shortanswerform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),

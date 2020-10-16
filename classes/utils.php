@@ -119,8 +119,7 @@ class utils{
         }
     }
 
-
-    public static function update_step_grade($cm,$quizresults,$attemptid){
+    public static function XXX_update_final_grade($cmid,$stepresults,$attemptid){
 
         global $USER, $DB;
 
@@ -128,20 +127,36 @@ class utils{
         $message = '';
         $returndata=false;
 
+        $cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
+        $moduleinstance  = $DB->get_record(constants::M_MODNAME, array('id' => $cm->instance), '*', MUST_EXIST);
         $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE,array('id'=>$attemptid,'userid'=>$USER->id));
+
+
+        $correctitems = 0;
+        $totalitems = 0;
+        foreach($stepresults as $result){
+            if($result->hasgrade) {
+                $correctitems += $result->correctitems;
+                $totalitems += $result->totalitems;
+            }
+        }
+        $totalpercent = round($correctitems/$totalitems,2)*100;
+
         if($attempt) {
-            $useresults = json_decode($quizresults);
-            $answers = $useresults->answers;
+
 
             //grade quiz results
-            $comp_test =  new comprehensiontest($cm);
-            $score= $comp_test->grade_test($answers);
-            $attempt->sessionscore = $score;
-            $attempt->sessiondata = $quizresults;
+            //$useresults = json_decode($stepresults);
+            //$answers = $useresults->answers;
+            //$comp_test =  new comprehensiontest($cm);
+            //$score= $comp_test->grade_test($answers);
+            $attempt->sessionscore = $totalpercent;
+            $attempt->sessiondata = json_encode($stepresults);
 
             $result = $DB->update_record(constants::M_ATTEMPTSTABLE, $attempt);
             if($result) {
                 $returndata= '';
+                poodlltime_update_grades($moduleinstance, $USER->id, false);
             }else{
                 $message = 'unable to update attempt record';
             }
@@ -150,8 +165,89 @@ class utils{
         }
         //return_to_page($result,$message,$returndata);
         return [$result,$message,$returndata];
-}
+    }
 
+    public static function update_step_grade($cmid,$stepdata){
+
+        global $CFG, $USER, $DB;
+
+        $message = '';
+        $returndata=false;
+
+        $cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
+        $moduleinstance  = $DB->get_record(constants::M_MODNAME, array('id' => $cm->instance), '*', MUST_EXIST);
+        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('poodlltimeid'=>$moduleinstance->id,'userid'=>$USER->id),'id DESC');
+
+        if(!$attempts){
+            $latestattempt = self::create_new_attempt($moduleinstance->course, $moduleinstance->id);
+        }else{
+            $latestattempt = reset($attempts);
+        }
+
+
+        if(empty($latestattempt->sessiondata)){
+            $sessiondata = new \stdClass();
+            $sessiondata->steps = [];
+        }else{
+            $sessiondata = json_decode($latestattempt->sessiondata);
+        }
+        $sessiondata->steps[$stepdata->index]=$stepdata;
+
+        //grade quiz results
+        $comp_test =  new comprehensiontest($cm);
+        if($comp_test->fetch_item_count() == count($sessiondata->steps)) {
+            $newgrade=true;
+            $latestattempt->sessionscore = self::calculate_session_score($sessiondata->steps);
+            $latestattempt->status =constants::M_STATE_COMPLETE;
+        }else{
+            $newgrade=false;
+        }
+
+        //update the record
+        $latestattempt->sessiondata = json_encode($sessiondata);
+        $result = $DB->update_record(constants::M_ATTEMPTSTABLE, $latestattempt);
+        if($result) {
+            $returndata= '';
+            if($newgrade) {
+                require_once($CFG->dirroot . constants::M_PATH . '/lib.php');
+                poodlltime_update_grades($moduleinstance, $USER->id, false);
+            }
+        }else{
+            $message = 'unable to update attempt record';
+        }
+
+        //return_to_page($result,$message,$returndata);
+        return [$result,$message,$returndata];
+    }
+
+    public static function calculate_session_score($steps){
+        $results = array_filter($steps, function($step){return $step->hasgrade;});
+        $correctitems = 0;
+        $totalitems = 0;
+        foreach($results as $result){
+            $correctitems += $result->correctitems;
+            $totalitems += $result->totalitems;
+        }
+        $totalpercent = round(($correctitems/$totalitems)*100,0);
+        return $totalpercent;
+    }
+
+
+    public static function create_new_attempt($courseid, $poodlltimeid){
+        global $DB,$USER;
+
+        $newattempt = new \stdClass();
+        $newattempt->courseid = $courseid;
+        $newattempt->poodlltimeid = $poodlltimeid;
+        $newattempt->status = constants::M_STATE_INCOMPLETE;
+        $newattempt->userid = $USER->id;
+        $newattempt->timecreated = time();
+        $newattempt->timemodified = time();
+
+        $newattempt->id = $DB->insert_record(constants::M_ATTEMPTSTABLE,$newattempt);
+        return $newattempt;
+
+    }
 
 
 
@@ -616,4 +712,5 @@ class utils{
                constants::M_LANG_ZHCN => get_string('zh-cn', constants::M_COMPONENT)
        );
    }
+
 }
