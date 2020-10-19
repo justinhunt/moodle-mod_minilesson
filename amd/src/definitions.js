@@ -11,6 +11,9 @@ This file contains class and ID definitions.
         component: 'mod_poodlltime',
         componentpath: 'mod/poodlltime',
         quizcontainer: 'mod_poodlltime_quiz_cont',
+        cloudpoodllurl: 'https://cloud.poodll.com',
+        //cloudpoodllurl: 'http://localhost/moodle',
+
         //player code
         hiddenplayer: 'mod_poodlltime_hidden_player',
         hiddenplayerbutton: 'mod_poodlltime_hidden_player_button',

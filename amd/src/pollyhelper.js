@@ -1,4 +1,4 @@
-define(['jquery', 'core/log'], function ($, log) {
+define(['jquery', 'core/log', 'mod_poodlltime/definitions'], function ($, log, def) {
     "use strict"; // jshint ;_;
     /*
     This file helps you get Polly URLs at runtime
@@ -73,7 +73,7 @@ define(['jquery', 'core/log'], function ($, log) {
                 + '&owner=' + that.owner
                 + '&region=' + that.region;
 
-                var serverurl = 'https://cloud.poodll.com' + "/webservice/rest/server.php";
+                var serverurl = def.cloudpoodllurl + "/webservice/rest/server.php";
                 xhr.open("POST", serverurl, true);
                 xhr.setRequestHeader("Cache-Control", "no-cache");
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
