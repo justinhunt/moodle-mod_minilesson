@@ -321,6 +321,12 @@ function poodlltime_is_complete($course,$cm,$userid,$type) {
     if(!($moduleinstance=$DB->get_record(constants::M_TABLE,array('id'=>$cm->instance)))) {
         throw new Exception("Can't find module with cmid: {$cm->instance}");
     }
+
+    //check if the min grade condition is enabled
+    if($moduleinstance->mingrade==0){
+        return $type;
+    }
+
 	$idfield = 'a.' . constants::M_MODNAME . 'id';
 	$params = array('moduleid'=>$moduleinstance->id, 'userid'=>$userid);
 	$sql = "SELECT  MAX( sessionscore  ) AS grade
