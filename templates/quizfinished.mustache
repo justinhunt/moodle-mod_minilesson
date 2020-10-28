@@ -12,7 +12,12 @@
 {{#results}}
     <div class="mod_poodlltime_result_div">
         <div class="mod_poodlltime_result_index">{{index}}</div>
+        {{#title}}
         <div class="mod_poodlltime_result_title">{{title}}</div>
+        {{/title}}
+        {{^title}}
+            <div class="mod_poodlltime_result_title">{{#str}}{{type}}, mod_poodlltime{{/str}}</div>
+        {{/title}}
         <div class="mod_poodlltime_result_score">Score: {{correctitems}}/{{totalitems}}</div>
         <div class="mod_poodlltime_result_grade">Grade: {{grade}}%</div>
     </div>
