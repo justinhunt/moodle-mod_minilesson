@@ -227,6 +227,8 @@ class renderer extends \plugin_renderer_base {
         foreach($results as $result){
             if(isset($quizdata[$result->index]->title)) {
                 $result->title = $quizdata[$result->index]->title;
+            }else{
+                $result->title = get_string($quizdata[$result->index]->type,constants::M_COMPONENT);
             }
             $result->index++;
             $useresults[]=$result;
