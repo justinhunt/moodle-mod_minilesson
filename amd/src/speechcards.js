@@ -63,7 +63,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
           stepdata.hasgrade = true;
           stepdata.totalitems = app.terms.length;
           stepdata.correctitems = app.results.filter(function(e){return e.points>0;}).length;
-          stepdata.grade = Math.round((stepdata.totalitems/stepdata.correctitems)*100);
+          stepdata.grade = Math.round((stepdata.correctitems/stepdata.totalitems)*100);
           quizhelper.do_next(stepdata);
         },
         register_events: function() {
