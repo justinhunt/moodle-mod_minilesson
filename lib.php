@@ -296,7 +296,7 @@ function poodlltime_get_user_grades($moduleinstance, $userid=0) {
                      WHERE a.id= (SELECT max(id) FROM {". constants::M_ATTEMPTSTABLE ."} ia WHERE ia.userid=u.id AND ia.poodlltimeid = a.poodlltimeid AND ia.status = ." . constants::M_STATE_COMPLETE . ") ".
                      " AND u.id = a.userid AND a.poodlltimeid = :moduleid 
                            $user
-                  GROUP BY u.id";
+                  GROUP BY u.id, a.sessionscore";
 
 
      $results = $DB->get_records_sql($human_sql, $params);
