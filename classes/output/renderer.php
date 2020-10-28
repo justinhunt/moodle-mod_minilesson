@@ -225,7 +225,7 @@ class renderer extends \plugin_renderer_base {
         $results = array_filter($steps, function($step){return $step->hasgrade;});
         $useresults=[];
         foreach($results as $result){
-            $result->title=$quizdata[$result->index]->title;
+            $result->title=$quizdata[$result->index]->name;
             $result->index++;
             $useresults[]=$result;
         }
