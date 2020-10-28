@@ -293,7 +293,7 @@ function poodlltime_get_user_grades($moduleinstance, $userid=0) {
     //human_sql
     $human_sql = "SELECT u.id, u.id AS userid, a.sessionscore AS rawgrade
                       FROM {user} u, {". constants::M_ATTEMPTSTABLE ."} a
-                     WHERE a.id= (SELECT max(id) FROM {". constants::M_ATTEMPTSTABLE ."} ia WHERE ia.userid=u.id AND ia.poodlltimeid = a.poodlltimeid AND ia.status = ." . constants::M_STATE_COMPLETE . ") ".
+                     WHERE a.id= (SELECT max(id) FROM {". constants::M_ATTEMPTSTABLE ."} ia WHERE ia.userid=u.id AND ia.poodlltimeid = a.poodlltimeid AND ia.status = " . constants::M_STATE_COMPLETE . ") ".
                      " AND u.id = a.userid AND a.poodlltimeid = :moduleid 
                            $user
                   GROUP BY u.id, a.sessionscore";
