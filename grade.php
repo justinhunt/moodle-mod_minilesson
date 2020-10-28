@@ -36,7 +36,7 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 $module = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
 require_login($course, false, $cm);
 
-if(has_capability('mod/poodlltime:manageattempts',context_module::instance($cm->id))){
+if(has_capability('mod/poodlltime:canmanageattempts',context_module::instance($cm->id))){
     redirect('grading.php?id='.$id);
 }else{
     redirect('view.php?id='.$id);
