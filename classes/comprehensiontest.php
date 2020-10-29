@@ -115,8 +115,12 @@ class comprehensiontest
     /* return the test items suitable for js to use */
     public function fetch_test_data_for_js($forcetitles=false){
         global $CFG, $USER;
+        $timing=[];
+        $timing['FR-A']=time();
 
         $items = $this->fetch_items();
+
+        $timing['FR-B']=time();
 
         //first confirm we are authorised before we try to get the token
         $config = get_config(constants::M_COMPONENT);
@@ -137,8 +141,12 @@ class comprehensiontest
             }
         }
 
+        $timing['FR-C']=time();
+
         //editor options
         $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($this->course, $this->context);
+
+        $timing['FR-D']=time();
 
         //prepare data array for test
         $testitems=array();
@@ -240,6 +248,14 @@ class comprehensiontest
 
             $testitems[]=$testitem;
         }
+        $timing['FR-E']=time();
+
+        $log ='';
+        foreach($timing as $k=>$v){
+            $log .= "<br>$k : $v";
+        }
+        echo $log;
+
         return $testitems;
     }
 

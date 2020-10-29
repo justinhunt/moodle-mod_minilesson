@@ -214,18 +214,15 @@ class renderer extends \plugin_renderer_base {
      */
     public function show_finished_results($comp_test, $latestattempt, $canattempt){
         global $CFG;
-        $timing=[];
-        $timing['FR-A']=time();
+
         //quiz data
         $quizdata = $comp_test->fetch_test_data_for_js();
-        $timing['FR-B']=time();
 
         //steps data
         $steps = json_decode($latestattempt->sessiondata)->steps;
 
         //prepare results fopr display
         $results = array_filter($steps, function($step){return $step->hasgrade;});
-        $timing['FR-C']=time();
         $useresults=[];
         foreach($results as $result){
             if(isset($quizdata[$result->index]->title)) {
@@ -236,7 +233,6 @@ class renderer extends \plugin_renderer_base {
             $result->index++;
             $useresults[]=$result;
         }
-        $timing['FR-D']=time();
 
         //output results and back to course button
         $tdata=new \stdClass();
@@ -244,7 +240,6 @@ class renderer extends \plugin_renderer_base {
         $tdata->courseurl = $CFG->wwwroot . '/course/view.php?id=' . $latestattempt->courseid;
         $tdata->results=$useresults;
         $finishedcontents = $this->render_from_template(constants::M_COMPONENT . '/quizfinished', $tdata);
-        $timing['FR-E']=time();
 
         //output reattempt button
         if($canattempt){
@@ -256,18 +251,11 @@ class renderer extends \plugin_renderer_base {
 
             $finishedcontents  .= $reattemptdiv;
         }
-        $timing['FR-F']=time();
 
 
         //put it all in a div and return it
         $finisheddiv = \html_writer::div($finishedcontents ,constants::M_QUIZ_FINISHED,
                 array('id'=>constants::M_QUIZ_FINISHED,'style'=>'display: block'));
-
-        $log ='';
-        foreach($timing as $k=>$v){
-            $log .= "<br>$k : $v";
-        }
-        return  $finisheddiv . $log;
 
         return  $finisheddiv;
     }
