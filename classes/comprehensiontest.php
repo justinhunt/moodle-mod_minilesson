@@ -116,9 +116,6 @@ class comprehensiontest
     public function fetch_test_data_for_js($forcetitles=false){
         global $CFG, $USER;
 
-        $timing=[];
-        $timing['FR-A']=time();
-
         $items = $this->fetch_items();
 
         //first confirm we are authorised before we try to get the token
@@ -155,7 +152,6 @@ class comprehensiontest
             $testitem->type=$item->type;
             if($this->mod->showqtitles||$forcetitles){$testitem->title=$item->name;}
             $testitem->uniqueid=$item->type . $testitem->number;
-            $timing['FR-C-' . $currentitem ]=time();
             switch($testitem->type) {
                 case constants::TYPE_DICTATION:
                 case constants::TYPE_DICTATIONCHAT:
@@ -169,9 +165,7 @@ class comprehensiontest
                     $testitem->text =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
                             'pluginfile.php', $this->context->id,constants::M_COMPONENT,
                             constants::TEXTQUESTION_FILEAREA, $testitem->id);
-                    $timing['FR-D-' . $currentitem ]=time();
                     $testitem->text =format_text($testitem->text,FORMAT_MOODLE ,$editoroptions);
-                    $timing['FR-E-' . $currentitem ]=time();
                     break;
                 default:
                     $testitem->text =  $item->{constants::TEXTQUESTION};
@@ -245,12 +239,6 @@ class comprehensiontest
 
             $testitems[]=$testitem;
         }
-
-        $log ='';
-        foreach($timing as $k=>$v){
-            $log .= "<br>$k : $v";
-        }
-      //  echo $log;
 
         return $testitems;
     }
