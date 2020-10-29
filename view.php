@@ -47,11 +47,12 @@ if ($id) {
 } else {
     print_error('You must specify a course_module ID or an instance ID');
 }
-
+$timing=[];
+$timing['A']=time();
 $PAGE->set_url('/mod/poodlltime/view.php', array('id' => $cm->id));
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
-
+$timing['B']=time();
 // Trigger module viewed event.
 $event = \mod_poodlltime\event\course_module_viewed::create(array(
    'objectid' => $moduleinstance->id,
@@ -61,7 +62,7 @@ $event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('poodlltime', $moduleinstance);
 $event->trigger();
-
+$timing['C']=time();
 
 //if we got this far, we can consider the activity "viewed"
 $completion = new completion_info($course);
@@ -74,10 +75,10 @@ $mode= "view";
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
-
+$timing['D']=time();
 //load glide
 $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/css/glide.core.min.css'));
-
+$timing['E']=time();
 
 //if admin allow around site and to see edit stuff
 //if(has_capability('mod/' . constants::M_MODNAME . ':' . 'canmanageattempts',$modulecontext)) {
@@ -86,7 +87,7 @@ if(has_capability('mod/' . constants::M_MODNAME . ':' . 'manage',$modulecontext)
 }else{
     $PAGE->set_pagelayout($moduleinstance->pagelayout);
 }
-
+$timing['F']=time();
 //Get an admin settings 
 $config = get_config(constants::M_COMPONENT);
 
@@ -95,7 +96,7 @@ $renderer = $PAGE->get_renderer('mod_poodlltime');
 
 //get attempts
 $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('poodlltimeid'=>$moduleinstance->id,'userid'=>$USER->id),'timecreated DESC');
-
+$timing['G']=time();
 
 //can make a new attempt ?
 $canattempt = true;
@@ -105,14 +106,14 @@ if(!$canpreview && $moduleinstance->maxattempts > 0){
 		$canattempt=false;
 	}
 }
-
+$timing['H']=time();
 //create a new attempt or just fall through to no-items or finished modes
 if(!$attempts || ($canattempt && $retake==1)){
     $latestattempt = utils::create_new_attempt($moduleinstance->course, $moduleinstance->id);
 }else{
     $latestattempt = reset($attempts);
 }
-
+$timing['I']=time();
 
 //From here we actually display the page.
 //if we are teacher we see tabs. If student we just see the quiz
@@ -121,15 +122,19 @@ if(has_capability('mod/poodlltime:evaluate',$modulecontext)){
 }else{
 	echo $renderer->notabsheader();
 }
-
+$timing['J']=time();
 $comp_test =  new \mod_poodlltime\comprehensiontest($cm);
+$timing['K']=time();
 $itemcount = $comp_test->fetch_item_count();
-
+$timing['L']=time();
 if($latestattempt->status==constants::M_STATE_COMPLETE){
     echo $renderer->show_finished_results($comp_test,$latestattempt, $canattempt);
+    $timing['M']=time();
 }else if($itemcount > 0) {
     echo $renderer->show_quiz($comp_test);
+    $timing['M1']=time();
     echo $renderer->fetch_activity_amd($cm, $moduleinstance);
+    $timing['M2']=time();
 }else{
     $showadditemlinks = has_capability('mod/poodlltime:evaluate',$modulecontext);
     echo $renderer->show_no_items($cm,$showadditemlinks);
@@ -139,6 +144,8 @@ if($latestattempt->status==constants::M_STATE_COMPLETE){
 
 //backtotop
 /*echo $renderer->backtotopbutton($course->id);*/
-
+foreach($timing as $k=>$v){
+    echo "<br>$k : $v";
+}
 // Finish the page
 echo $renderer->footer();
