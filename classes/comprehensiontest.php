@@ -250,7 +250,7 @@ class comprehensiontest
         foreach($timing as $k=>$v){
             $log .= "<br>$k : $v";
         }
-        echo $log;
+      //  echo $log;
 
         return $testitems;
     }
