@@ -115,12 +115,11 @@ class comprehensiontest
     /* return the test items suitable for js to use */
     public function fetch_test_data_for_js($forcetitles=false){
         global $CFG, $USER;
+
         $timing=[];
         $timing['FR-A']=time();
 
         $items = $this->fetch_items();
-
-        $timing['FR-B']=time();
 
         //first confirm we are authorised before we try to get the token
         $config = get_config(constants::M_COMPONENT);
@@ -141,12 +140,10 @@ class comprehensiontest
             }
         }
 
-        $timing['FR-C']=time();
-
         //editor options
         $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($this->course, $this->context);
 
-        $timing['FR-D']=time();
+        $timing['FR-B']=time();
 
         //prepare data array for test
         $testitems=array();
@@ -160,7 +157,7 @@ class comprehensiontest
             $testitem->type=$item->type;
             if($this->mod->showqtitles||$forcetitles){$testitem->title=$item->name;}
             $testitem->uniqueid=$item->type . $testitem->number;
-
+            $timing['FR-C-' . $currentitem ]=time();
             switch($testitem->type) {
                 case constants::TYPE_DICTATION:
                 case constants::TYPE_DICTATIONCHAT:
@@ -175,10 +172,12 @@ class comprehensiontest
                             'pluginfile.php', $this->context->id,constants::M_COMPONENT,
                             constants::TEXTQUESTION_FILEAREA, $testitem->id);
                     $testitem->text =format_text($testitem->text,FORMAT_MOODLE ,$editoroptions);
+                    $timing['FR-D-' . $currentitem ]=time();
                     break;
                 default:
                     $testitem->text =  $item->{constants::TEXTQUESTION};
                     $testitem->text =format_text($testitem->text);
+                    $timing['FR-DD-' . $currentitem ]=time();
                     break;
             }
 
@@ -188,6 +187,7 @@ class comprehensiontest
                     $testitem->{'customtext' . $anumber} = $item->{constants::TEXTANSWER . $anumber};
                 }
             }
+            $timing['FR-E-' . $currentitem ]=time();
 
 
             switch($testitem->type){
@@ -207,6 +207,7 @@ class comprehensiontest
                        $index++;
                        $testitem->sentences[]=$s;
                    }
+                $timing['FR-F-' . $currentitem ]=time();
 
                    //cloudpoodll stuff
                    $testitem->region =$config->awsregion;
@@ -244,11 +245,11 @@ class comprehensiontest
                 case constants::TYPE_PAGE:
                 case constants::TYPE_TEACHERTOOLS:
                 case constants::TYPE_SHORTANSWER:
+                $timing['FR-FF-' . $currentitem ]=time();
             }
 
             $testitems[]=$testitem;
         }
-        $timing['FR-E']=time();
 
         $log ='';
         foreach($timing as $k=>$v){
