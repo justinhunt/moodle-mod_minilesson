@@ -212,10 +212,15 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
             if(ret===false){return false;}
 
             //check if language and region are ok
-            if((this.region==='tokyo' || this.region==='useast1') && this.ttslanguage.substr(0,2)==='en'){
-                ret = true;
-            }else{
-                ret = false;
+            switch(this.region){
+                case 'tokyo':
+                case 'useast1':
+                case 'dublin':
+                case 'sydney':
+                    ret = this.language.substr(0,2)==='en';
+                    break;
+                default:
+                    ret = false;
             }
             return ret;
         },
