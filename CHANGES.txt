@@ -1,3 +1,6 @@
+Version 1.0.7 (Build 202011xxxx)
+-Added an ajax fragmentable form constructor
+
 Version 1.0.6 (Build 2020111700)
 -Updated speech servers
 
