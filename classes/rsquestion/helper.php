@@ -120,7 +120,7 @@ class helper
     public static function fetch_filemanager_options($course, $maxfiles = 1)
     {
         $maxbytes = $course->maxbytes;
-        return array('subdirs' => true, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'accepted_types' => array('audio', 'image'));
+        return array('subdirs' => true, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'accepted_types' => array('audio', 'video','image'));
     }
 
     public static function update_insert_question($poodlltime, $data, $edit, $context, $cm ,$editoroptions, $filemanageroptions) {
@@ -179,10 +179,19 @@ class helper
                     constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, $theitem->id);
             $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION};
             $theitem->{constants::TEXTQUESTION_FORMAT} = $data->{constants::TEXTQUESTION_FORMAT};
-            //if its a text field, do this
+            //if its a text area field, do this
         } else if (property_exists($data, constants::TEXTQUESTION)) {
             $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION};
         }
+
+        //Item media
+        if (property_exists($data, constants::MEDIAQUESTION)) {
+            file_save_draft_area_files($data->{constants::MEDIAQUESTION},
+                    $context->id, constants::M_COMPONENT,
+                    constants::MEDIAQUESTION, $theitem->id,
+                    $filemanageroptions);
+        }
+
 
         //save correct answer if we have one
         if (property_exists($data, constants::CORRECTANSWER)) {

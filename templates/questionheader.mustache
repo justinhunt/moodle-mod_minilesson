@@ -1,1 +1,8 @@
-<div class="poodlltime_questionheader"><b>{{#str}}d_question, mod_poodlltime{{/str}} {{number}}{{#title}}: {{{title}}}{{/title}}</b></div><br> {{{text}}}
+<div class="poodlltime_questionheader"><b>{{#str}}d_question, mod_poodlltime{{/str}} {{number}}{{#title}}: {{{title}}}{{/title}}</b></div>
+<div class="poodlltime_questionheader_contents">
+    <div class="mod_poodlltime_itemtext">{{{text}}}</div>
+    {{#itemimage}}<div class="mod_poodlltime_itemimage_cont"><img src="{{{itemimage}}}" class="mod_poodlltime_itemimage"/></div>{{/itemimage}}
+    {{#itemaudio}}<div class="mod_poodlltime_itemaudio_cont"><audio controls src="{{{itemaudio}}}" class="mod_poodlltime_itemaudio"></audio></div>{{/itemaudio}}
+    {{#itemvideo}}<div class="mod_poodlltime_itemvideo_cont"><video controls src="{{{itemvideo}}}" class="mod_poodlltime_itemvideo"></video></div>{{/itemvideo}}
+    {{#itemiframe}}<div class="mod_poodlltime_itemiframe_cont"><div class="mod_poodlltime_iframe_responsive">{{{itemiframe}}}</div></div>{{/itemiframe}}
+</div>

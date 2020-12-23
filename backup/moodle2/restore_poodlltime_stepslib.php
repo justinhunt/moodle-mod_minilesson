@@ -129,6 +129,8 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
 		//question stuff
         //do question areas
         $this->add_related_files(constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, constants::M_QTABLE);
+        $this->add_related_files(constants::M_COMPONENT, constants::MEDIAQUESTION, constants::M_QTABLE);
+
 
         //do answer areas
         for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {

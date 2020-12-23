@@ -169,7 +169,7 @@ class mod_poodlltime_external extends external_api {
 
         //get filechooser and html editor options
         $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($course, $context);
-        $filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_options($course,1);
+        $filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_options($course,3);
 
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);

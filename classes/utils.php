@@ -716,4 +716,14 @@ class utils{
        );
    }
 
+    public static function get_prompttype_options(){
+        return array(
+                constants::M_PROMPT_SEPARATE => get_string('prompt-separate', constants::M_COMPONENT),
+                constants::M_PROMPT_RICHTEXT => get_string('prompt-richtext', constants::M_COMPONENT)
+        );
+    }
+
+
+
+
 }

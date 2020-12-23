@@ -102,12 +102,17 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         $mform->setDefault('pagelayout','standard');
 
         //time target
+        $mform->addElement('hidden', 'timelimit',0);
+        $mform->setType('timelimit', PARAM_INT);
+
+/*
+ * Later can add a proper time limit
         $timelimit_options = \mod_poodlltime\utils::get_timelimit_options();
         $mform->addElement('select', 'timelimit', get_string('timelimit', constants::M_COMPONENT),
             $timelimit_options);
-		//$mform->addElement('duration', 'timelimit', get_string('timelimit',constants::M_COMPONENT)));
 		$mform->setDefault('timelimit',60);
-		
+*/
+
 		//add other editors
 		//could add files but need the context/mod info. So for now just rich text
 		$config = get_config(constants::M_COMPONENT);
@@ -145,6 +150,12 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         $mform->addElement('select', 'region', get_string('region', constants::M_COMPONENT), $regionoptions);
         $mform->setDefault('region',$config->awsregion);
 
+        //prompt types
+        $prompttypes = \mod_poodlltime\utils::get_prompttype_options();
+        $mform->addElement('select', 'richtextprompt', get_string('prompttype', constants::M_COMPONENT), $prompttypes);
+        $mform->addHelpButton('richtextprompt', 'prompttype', constants::M_COMPONENT);
+        $mform->setDefault('richtextprompt', $config->prompttype);
+
 
         // Grade.
         $this->standard_grading_coursemodule_elements();
@@ -153,7 +164,6 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         //for now we hard code this to latest attempt
         $mform->addElement('hidden', 'gradeoptions',constants::M_GRADELATEST);
         $mform->setType('gradeoptions', PARAM_INT);
-
 
         // Post attempt
         $mform->addElement('header', 'postattemptheader', get_string('postattemptheader',constants::M_COMPONENT));

@@ -17,7 +17,7 @@ class dictationchatform extends baseform
 
     public function custom_definition() {
         //nothing here
-        $this->add_static_text('instructions','','Enter a list of sentences in the text area below');
+        $this->add_static_text('instructions','',get_string('entersentences',constants::M_COMPONENT));
         $this->add_textarearesponse(1,'sentences');
         $this->add_voiceselect(constants::POLLYVOICE,get_string('choosevoice',constants::M_COMPONENT));
     }

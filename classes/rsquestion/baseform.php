@@ -114,7 +114,7 @@ abstract class baseform extends \moodleform {
         $this->moduleinstance = $this->_customdata['moduleinstance'];
 
 	
-        $mform->addElement('header', 'typeheading', get_string('createaitem', 'poodlltime', get_string($this->type, 'poodlltime')));
+        $mform->addElement('header', 'typeheading', get_string('createaitem', constants::M_COMPONENT, get_string($this->type, constants::M_COMPONENT)));
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -129,29 +129,44 @@ abstract class baseform extends \moodleform {
 			$mform->addElement('hidden', 'itemorder');
             $mform->setType('itemorder', PARAM_INT);
 
-            $mform->addElement('text', 'name', get_string('itemtitle', 'poodlltime'), array('size'=>70));
+            $mform->addElement('text', 'name', get_string('itemtitle', constants::M_COMPONENT), array('size'=>70));
             $mform->setType('name', PARAM_TEXT);
             $mform->addRule('name', get_string('required'), 'required', null, 'client');
 
-           // $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', 'poodlltime'), array('wrap'=>'virtual','style'=>'width: 100%;'));
-           // $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
-            $someid= \html_writer::random_id();
-            $mform->addElement('editor', constants::TEXTQUESTION . '_editor', get_string('itemcontents', 'poodlltime'),
-                    array('id'=>$someid, 'wrap'=>'virtual','style'=>'width: 100%;'),$this->editoroptions);
-            $this->_form->setDefault(constants::TEXTQUESTION . '_editor', array('text'=>'', 'format'=>FORMAT_HTML));
-            $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
+
+            if($this->moduleinstance->richtextprompt==constants::M_PROMPT_RICHTEXT) {
+                $someid = \html_writer::random_id();
+                $mform->addElement('editor', constants::TEXTQUESTION . '_editor',
+                        get_string('itemcontents', constants::M_COMPONENT),
+                        array('id' => $someid, 'wrap' => 'virtual', 'style' => 'width: 100%;', 'rows' => '5'),
+                        $this->editoroptions);
+                $this->_form->setDefault(constants::TEXTQUESTION . '_editor', array('text' => '', 'format' => FORMAT_HTML));
+                $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
+            }else{
+                //Question text
+                $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
+                $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
+                //Question media upload
+                $this->add_media_upload(constants::MEDIAQUESTION,-1,get_string('itemmedia',constants::M_COMPONENT));
+                //Question media iframe
+                $mform->addElement('text', constants::MEDIAIFRAME, get_string('itemiframe', constants::M_COMPONENT), array('size'=>100));
+                $mform->setType(constants::MEDIAIFRAME, PARAM_RAW);
+
+
+            }
 
         }
 		//visibility
-		$mform->addElement('selectyesno', 'visible', get_string('visible'));
-        $mform->setDefault('visible', 1);
+		//$mform->addElement('selectyesno', 'visible', get_string('visible'));
+        $mform->addElement('hidden', 'visible',1);
+        $mform->setType('visible', PARAM_INT);
 
         $this->custom_definition();
 		
 		
 
 		//add the action buttons
-        $this->add_action_buttons(get_string('cancel'), get_string('saveitem', 'poodlltime'));
+        $this->add_action_buttons(get_string('cancel'), get_string('saveitem', constants::M_COMPONENT));
 
     }
 
@@ -162,13 +177,44 @@ abstract class baseform extends \moodleform {
 
     }
 
+    protected final function add_repeating_textboxes($name, $repeatno=5){
+        global $DB;
+
+        $additionalfields=1;
+        $repeatarray = array();
+        $repeatarray[] = $this->_form->createElement('text', $name, get_string($name. 'no', constants::M_COMPONENT));
+        //$repeatarray[] = $this->_form->createElement('text', 'limit', get_string('limitno', constants::M_COMPONENT));
+        //$repeatarray[] = $this->_form->createElement('hidden', $name . 'id', 0);
+/*
+        if ($this->_instance){
+            $repeatno = $DB->count_records('choice_options', array('choiceid'=>$this->_instance));
+            $repeatno += $additionalfields;
+        }
+*/
+
+        $repeateloptions = array();
+        $repeateloptions[$name]['default'] = '';
+        //$repeateloptions[$name]['disabledif'] = array('limitanswers', 'eq', 0);
+        //$repeateloptions[$name]['rule'] = 'numeric';
+        $repeateloptions[$name]['type'] = PARAM_TEXT;
+
+        $repeateloptions[$name]['helpbutton'] = array($name . '_help', constants::M_COMPONENT);
+        $this->_form->setType($name, PARAM_CLEANHTML);
+
+       // $this->_form->setType($name .'id', PARAM_INT);
+
+        $this->repeat_elements($repeatarray, $repeatno,
+                $repeateloptions, $name .'_repeats', $name . '_add_fields',
+                $additionalfields, "add", true);
+    }
+
     protected final function add_dropdown($name, $label = null,$options) {
 
         $this->_form->addElement('select', $name, $label, $options);
 
     }
 
-    protected final function add_audio_upload($name, $count=-1, $label = null, $required = false) {
+    protected final function add_media_upload($name, $count=-1, $label = null, $required = false) {
 		if($count>-1){
 			$name = $name . $count ;
 		}
@@ -182,8 +228,8 @@ abstract class baseform extends \moodleform {
 		
 	}
 
-	protected final function add_audio_prompt_upload($label = null, $required = false) {
-		return $this->add_audio_upload(constants::AUDIOPROMPT,-1,$label,$required);
+	protected final function add_media_prompt_upload($label = null, $required = false) {
+		return $this->add_media_upload(constants::AUDIOPROMPT,-1,$label,$required);
 	}
 
 
@@ -197,7 +243,7 @@ abstract class baseform extends \moodleform {
      */
     protected final function add_editorarearesponse($count, $label = null, $required = false) {
         if ($label === null) {
-            $label = get_string('response', 'poodlltime');
+            $label = get_string('response', constants::M_COMPONENT);
         }
         //edoptions = array('noclean'=>true)
         $this->_form->addElement('editor', constants::TEXTANSWER .$count. '_editor', $label, array('rows'=>'4', 'columns'=>'80'), $this->editoroptions);
@@ -217,7 +263,7 @@ abstract class baseform extends \moodleform {
      */
     protected final function add_textarearesponse($count, $label = null, $required = false) {
         if ($label === null) {
-            $label = get_string('response', 'poodlltime');
+            $label = get_string('response', constants::M_COMPONENT);
         }
 
         $this->_form->addElement('textarea', constants::TEXTANSWER .$count , $label,array('rows'=>'4', 'columns'=>'140', 'style'=>'width: 600px'));
@@ -236,7 +282,7 @@ abstract class baseform extends \moodleform {
      */
     protected final function add_textboxresponse($count, $label = null, $required = false) {
         if ($label === null) {
-            $label = get_string('response', 'poodlltime');
+            $label = get_string('response', constants::M_COMPONENT);
         }
         $this->_form->addElement('text', constants::TEXTANSWER .$count, $label, array('size'=>'60'));
         $this->_form->setType(constants::TEXTANSWER .$count, PARAM_TEXT);

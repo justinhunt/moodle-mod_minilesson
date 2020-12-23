@@ -72,6 +72,8 @@ const AUDIOPROMPT_FILEAREA = 'audioitem';
 const TEXTPROMPT_FILEAREA = 'textitem';
 const TEXTQUESTION = 'itemtext';
 const TEXTQUESTION_FORMAT = 'itemtextformat';
+const MEDIAQUESTION = 'itemmedia';
+const MEDIAIFRAME = 'customdata5';
 const TEXTANSWER = 'customtext';
 const CUSTOMDATA = 'customdata';
 const CUSTOMINT = 'customint';
@@ -194,6 +196,9 @@ const M_LANG_RURU ='ru-RU';
 const M_LANG_TAIN ='ta-IN';
 const M_LANG_TEIN ='te-IN';
 const M_LANG_TRTR ='tr-TR';
+
+const M_PROMPT_SEPARATE=0;
+const M_PROMPT_RICHTEXT=1;
 
 const TRANSCRIBER_NONE = 0;
 const TRANSCRIBER_AMAZONTRANSCRIBE = 1;

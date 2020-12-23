@@ -22,6 +22,8 @@ class multichoiceform extends baseform
         $this->add_textboxresponse(2,'answer2',true);
         $this->add_textboxresponse(3,'answer3',false);
         $this->add_textboxresponse(4,'answer4',false);
+
+       // $this->add_repeating_textboxes('sentence',5);
     }
 
 }

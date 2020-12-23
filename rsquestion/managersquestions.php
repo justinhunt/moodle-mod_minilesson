@@ -102,7 +102,7 @@ $redirecturl = new moodle_url('/mod/poodlltime/rsquestion/rsquestions.php', arra
 
 //get filechooser and html editor options
 $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($course, $context);
-$filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_options($course,1);
+$filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_options($course,3);
 
 
 //get the mform for our item
@@ -218,9 +218,20 @@ if ($edit) {
 	$data = $item;		
 	$data->itemid = $item->id;
 
-    //init our item, we move the id fields around a little
-    $data = file_prepare_standard_editor($data, constants::TEXTQUESTION , $editoroptions, $context, constants::M_COMPONENT,
-            constants::TEXTQUESTION_FILEAREA,  $data->itemid);
+    //If rich text, use editor otherwise use filepicker
+    if($poodlltime->richtextprompt==constants::M_PROMPT_RICHTEXT) {
+        //init our editor
+        $data = file_prepare_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context, constants::M_COMPONENT,
+                constants::TEXTQUESTION_FILEAREA, $data->itemid);
+
+    }else {
+        //init our itemmedia field
+        $draftitemid = file_get_submitted_draft_itemid(constants::MEDIAQUESTION);
+        file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,
+                constants::MEDIAQUESTION, $data->itemid,
+                $filemanageroptions);
+        $data->{constants::MEDIAQUESTION} = $draftitemid;
+    }
 
 
 }else{

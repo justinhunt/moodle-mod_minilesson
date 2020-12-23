@@ -1,4 +1,7 @@
-Version 1.0.7 (Build 202011xxxx)
+Version 1.0.7 (Build 2020122300)
+-Added better media select and display
+-Improved progress header
+-Tidied up settings
 -Added an ajax fragmentable form constructor
 
 Version 1.0.6 (Build 2020111700)

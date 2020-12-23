@@ -87,13 +87,25 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
         for(var i=0;i<total;i++){
           array.push(i);
         }
-        var slice = array.slice(current,current+5);
-        var html = "<div class='poodlltime_quiz_progress_line'></div>";
-        slice.forEach(function(i){
-          html+="<div class='poodlltime_quiz_progress_item "+(i==current?'poodlltime_quiz_progress_item_current':'')+" "+(i<current?'poodlltime_quiz_progress_item_completed':'')+"'>"+(i+1)+"</div>";
-        });
+        if(total<6 || current > total -6 ) {
+            var slice = array.slice(current, current + 5);
+            var html = "<div class='poodlltime_quiz_progress_line'></div>";
+            slice.forEach(function (i) {
+                html += "<div class='poodlltime_quiz_progress_item " + (i == current ? 'poodlltime_quiz_progress_item_current' : '') + " " + (i < current ? 'poodlltime_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
+            });
+        }else {
+              var slice = array.slice(current, current + 4);
+              var html = "<div class='poodlltime_quiz_progress_line'></div>";
+              slice.forEach(function (i) {
+                  html += "<div class='poodlltime_quiz_progress_item " + (i == current ? 'poodlltime_quiz_progress_item_current' : '') + " " + (i < current ? 'poodlltime_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
+              });
+              //end marker
+            html += "<div class='poodlltime_quiz_progress_finalitem'>" + (total) + "</div>";
+          }
+
         html+="";
         $(".poodlltime_quiz_progress").html(html);
+
       },
 
       do_next: function(stepdata){

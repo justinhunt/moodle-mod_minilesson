@@ -52,7 +52,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
             'course','name','intro','introformat','timelimit',
                 //'welcome','welcomeformat',
-            'grade','gradeoptions','maxattempts','mingrade',
+            'grade','gradeoptions','maxattempts','mingrade','richtextprompt',
             'ttslanguage','transcriber','region','activitylink','pagelayout','showqtitles','timecreated','timemodified'
 			));
 
@@ -110,6 +110,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
 
 		//question stuff
         $rsquestion->annotate_files(constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, 'id');
+        $rsquestion->annotate_files(constants::M_COMPONENT, constants::MEDIAQUESTION, 'id');
 
         for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
             $rsquestion->annotate_files(constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA . $anumber, 'id');

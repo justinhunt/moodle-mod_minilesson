@@ -8,6 +8,7 @@
 
 namespace mod_poodlltime\rsquestion;
 
+use function Aws\constantly;
 use \mod_poodlltime\constants;
 
 class speechcardsform extends baseform
@@ -17,8 +18,8 @@ class speechcardsform extends baseform
 
     public function custom_definition() {
         //nothing here
-        $this->add_static_text('instructions','','Enter a list of sentences in the text area below');
-        $this->add_textarearesponse(1,'sentences');
+        $this->add_static_text('instructions','',get_string('speechcardsphrases',constants::M_COMPONENT));
+        $this->add_textarearesponse(1,get_string('phrases',constants::M_COMPONENT));
     }
 
 }

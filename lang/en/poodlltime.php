@@ -449,3 +449,20 @@ $string['result'] ='Result';
 $string['qnumber'] ='No.';
 $string['title'] ='Title';
 $string['type'] ='Type';
+$string['sentences'] ='Sentences';
+$string['entersentences'] ='Enter a list of sentences in the text area below. Place each sentence on a new line.';
+$string['speechcardsphrases'] ='Enter a list of speaking prompts in the text area below. Place each prompt on a new line. If the prompt and the spoken response are different, seperate them with a pipe "|" character. <br>e.g How are you?|I am fine.';
+$string['phrases'] ='Phrases';
+
+$string['itemmedia'] ='Image, audio or video to show';
+$string['itemiframe'] ='iFrame embed code';
+$string['prompt-separate'] ='Text and media separate (recommended)';
+$string['prompt-richtext'] ='Rich Text';
+$string['prompttype'] ='Text and Media';
+$string['prompttype_help'] ='Use plain text and separate selectors for adding media files, or a rich text editor';
+
+//repeatable
+$string['sentence'] ='Sentence';
+$string['sentence_help'] ='Sentence_help';
+$string['sentenceno'] ='Sentence No.';
+$string['sentence_add_fields'] ='Add another sentence';

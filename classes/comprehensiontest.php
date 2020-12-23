@@ -37,10 +37,11 @@ class comprehensiontest
         }
     }
 
-    public function fetch_media_url($filearea,$item){
+    public function fetch_media_urls($filearea,$item){
         //get question audio div (not so easy)
         $fs = get_file_storage();
         $files = $fs->get_area_files($this->context->id,  constants::M_COMPONENT,$filearea,$item->id);
+        $urls=[];
         foreach ($files as $file) {
             $filename = $file->get_filename();
             if($filename=='.'){continue;}
@@ -48,11 +49,10 @@ class comprehensiontest
             $mediaurl = \moodle_url::make_pluginfile_url($this->context->id, constants::M_COMPONENT,
                 $filearea, $item->id,
                 $filepath, $filename);
-            return $mediaurl->__toString();
+            $urls[]= $mediaurl->__toString();
 
         }
-        //We always take the first file and if we have none, thats not good.
-        return "";
+        return $urls;
        // return "$this->context->id pp $filearea pp $item->id";
     }
 
@@ -95,9 +95,49 @@ class comprehensiontest
             $currentitem++;
             $testitem= new \stdClass();
             $testitem->number =  $currentitem;
+            //text area
             $testitem->text =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
                 'pluginfile.php', $this->context->id,constants::M_COMPONENT,
                 constants::TEXTQUESTION_FILEAREA, $itemid);
+
+            //Question media embed
+            if(!empty(trim($item->{constants::MEDIAIFRAME}))){
+                $testitem->itemiframe=$item->{constants::MEDIAIFRAME};
+            }
+
+            //media items
+            $mediaurls =$this->fetch_media_urls(constants::MEDIAQUESTION,$item);
+            if($mediaurls && count($mediaurls)>0){
+                foreach($mediaurls as $mediaurl){
+                    $file_parts = pathinfo(strtolower($mediaurl));
+                    switch($file_parts['extension'])
+                    {
+                        case "jpg":
+                        case "png":
+                        case "gif":
+                        case "bmp":
+                        case "svg":
+                            $testitem->itemimage = $mediaurl;
+                            break;
+
+                        case "mp4":
+                        case "mov":
+                        case "webm":
+                        case "ogv":
+                            $testitem->itemvideo = $mediaurl;
+                            break;
+
+                        case "mp3":
+                        case "ogg":
+                        case "wav":
+                            $testitem->itemaudio = $mediaurl;
+                            break;
+
+                        default:
+                            //do nothing
+                    }//end of extension switch
+                }//end of for each
+            }//end of if mediaurls
 
             for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
                 $testitem->{'customtext' . $anumber} = file_rewrite_pluginfile_urls($item->{constants::TEXTANSWER . $anumber},
@@ -162,10 +202,51 @@ class comprehensiontest
                 case constants::TYPE_TEACHERTOOLS:
                 case constants::TYPE_SHORTANSWER:
 
+                    //Question Text
                     $testitem->text =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
                             'pluginfile.php', $this->context->id,constants::M_COMPONENT,
                             constants::TEXTQUESTION_FILEAREA, $testitem->id);
                     $testitem->text =format_text($testitem->text,FORMAT_MOODLE ,$editoroptions);
+
+                    //Question media embed
+                    if(!empty(trim($item->{constants::MEDIAIFRAME}))){
+                        $testitem->itemiframe=$item->{constants::MEDIAIFRAME};
+                    }
+
+                    //Question media items (upload)
+                    $mediaurls =$this->fetch_media_urls(constants::MEDIAQUESTION,$item);
+                    if($mediaurls && count($mediaurls)>0){
+                        foreach($mediaurls as $mediaurl){
+                            $file_parts = pathinfo(strtolower($mediaurl));
+                            switch($file_parts['extension'])
+                            {
+                                case "jpg":
+                                case "png":
+                                case "gif":
+                                case "bmp":
+                                case "svg":
+                                    $testitem->itemimage = $mediaurl;
+                                    break;
+
+                                case "mp4":
+                                case "mov":
+                                case "webm":
+                                case "ogv":
+                                    $testitem->itemvideo = $mediaurl;
+                                    break;
+
+                                case "mp3":
+                                case "ogg":
+                                case "wav":
+                                    $testitem->itemaudio = $mediaurl;
+                                    break;
+
+                                default:
+                                    //do nothing
+                            }//end of extension switch
+                        }//end of for each
+                    }//end of if mediaurls
+
                     break;
                 default:
                     $testitem->text =  $item->{constants::TEXTQUESTION};

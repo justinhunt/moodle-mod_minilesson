@@ -77,6 +77,21 @@ function xmldb_poodlltime_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020100200, 'poodlltime');
     }
 
+    // Add rich text prompt flag to poodlltime table
+    if ($oldversion < 2020122300) {
+        $activitytable = new xmldb_table(constants::M_TABLE);
+
+
+        // Define field richtextprompt to be added to poodlltime
+        $richtextprompt= new xmldb_field('richtextprompt', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_PROMPT_RICHTEXT);
+
+        // add richtextprompt field to poodlltime table
+        if (!$dbman->field_exists($activitytable, $richtextprompt)) {
+            $dbman->add_field($activitytable, $richtextprompt);
+        }
+        upgrade_mod_savepoint(true, 2020122300, 'poodlltime');
+    }
+
 
 
 
