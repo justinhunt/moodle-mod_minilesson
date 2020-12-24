@@ -1576,8 +1576,8 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
 }
 
 .poodlltime_quiz_progress_item_current {
-  background-color: lightgray;
-  color: black
+  background-color: green;
+  color: white;
 }
 
 .poodlltime_quiz_progress_finalitem {
@@ -1595,14 +1595,15 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
 }
 
 .poodlltime_quiz_progress_item_completed {
-  background-color: green;
+  background-color: darkgrey;
 }
 
 .poodlltime_quiz_progress_line {
   background-color: gray;
   height: 10px;
   position: absolute;
-  margin: auto;
+  margin-top: auto;
+  margin-bottom: auto;
   top: 0;
   bottom: 0;
   right: 0;

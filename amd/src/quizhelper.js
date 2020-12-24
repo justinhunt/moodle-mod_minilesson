@@ -87,15 +87,29 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
         for(var i=0;i<total;i++){
           array.push(i);
         }
-        if(total<6 || current > total -6 ) {
-            var slice = array.slice(current, current + 5);
-            var html = "<div class='poodlltime_quiz_progress_line'></div>";
+
+        if(total<6) {
+            var slice = array.slice(0, 5);
+            var linestyles = "width: " + (100 - 100 / slice.length) + "%; margin-left: auto; margin-right: auto";
+            var html = "<div class='poodlltime_quiz_progress_line' style='" + linestyles + "'></div>";
+
             slice.forEach(function (i) {
                 html += "<div class='poodlltime_quiz_progress_item " + (i == current ? 'poodlltime_quiz_progress_item_current' : '') + " " + (i < current ? 'poodlltime_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
             });
         }else {
-              var slice = array.slice(current, current + 4);
-              var html = "<div class='poodlltime_quiz_progress_line'></div>";
+             if(current > total-6){
+                 var slice = array.slice(total-5, 5);
+             }else{
+                 var slice = array.slice(current, current + 4);
+             }
+
+              //if first item is visible then no line trailing left of item 1
+              if(current==0){
+                  var linestyles = "width: 80%; margin-left: auto; margin-right: auto";
+              }else {
+                  var linestyles = "width: " + (100 - 100 / (2 *slice.length)) + "%; margin-left: 0";
+              }
+            var html = "<div class='poodlltime_quiz_progress_line' style='" + linestyles + "'></div>";
               slice.forEach(function (i) {
                   html += "<div class='poodlltime_quiz_progress_item " + (i == current ? 'poodlltime_quiz_progress_item_current' : '') + " " + (i < current ? 'poodlltime_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
               });
