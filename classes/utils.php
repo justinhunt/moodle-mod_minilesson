@@ -386,7 +386,7 @@ class utils{
                 $token = $resp_object->token;
                 //store the expiry timestamp and adjust it for diffs between our server times
                 if($resp_object->validuntil) {
-                    $validuntil = $resp_object->validuntil - ($resp_object->minilesson - $now);
+                    $validuntil = $resp_object->validuntil - ($resp_object->poodlltime - $now);
                     //we refresh one hour out, to prevent any overlap
                     $validuntil = $validuntil - (1 * HOURSECS);
                 }else{
@@ -538,12 +538,12 @@ class utils{
           "tokyo" => get_string("tokyo",constants::M_COMPONENT),
           "sydney" => get_string("sydney",constants::M_COMPONENT),
           "dublin" => get_string("dublin",constants::M_COMPONENT),
-          "ottawa" => get_string("ottawa",constants::M_COMPONENT),
-          "frankfurt" => get_string("frankfurt",constants::M_COMPONENT),
-          "london" => get_string("london",constants::M_COMPONENT),
-          "saopaulo" => get_string("saopaulo",constants::M_COMPONENT),
-          "singapore" => get_string("singapore",constants::M_COMPONENT),
-          "mumbai" => get_string("mumbai",constants::M_COMPONENT)
+         // "ottawa" => get_string("ottawa",constants::M_COMPONENT),
+         // "frankfurt" => get_string("frankfurt",constants::M_COMPONENT),
+         // "london" => get_string("london",constants::M_COMPONENT),
+         // "saopaulo" => get_string("saopaulo",constants::M_COMPONENT),
+         // "singapore" => get_string("singapore",constants::M_COMPONENT),
+         // "mumbai" => get_string("mumbai",constants::M_COMPONENT)
       );
   }
 

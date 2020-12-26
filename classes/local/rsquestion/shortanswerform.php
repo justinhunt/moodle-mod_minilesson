@@ -6,14 +6,14 @@
  * Time: 19:31
  */
 
-namespace mod_minilesson\rsquestion;
+namespace mod_minilesson\local\rsquestion;
 
 use \mod_minilesson\constants;
 
-class multichoiceform extends baseform
+class shortanswerform extends baseform
 {
 
-    public $type = constants::TYPE_MULTICHOICE;
+    public $type = constants::TYPE_SHORTANSWER;
 
     public function custom_definition() {
 
@@ -22,8 +22,6 @@ class multichoiceform extends baseform
         $this->add_textboxresponse(2,'answer2',true);
         $this->add_textboxresponse(3,'answer3',false);
         $this->add_textboxresponse(4,'answer4',false);
-
-       // $this->add_repeating_textboxes('sentence',5);
     }
 
 }

@@ -178,7 +178,7 @@ class comprehensiontest
         }
 
         //editor options
-        $editoroptions = \mod_minilesson\rsquestion\helper::fetch_editor_options($this->course, $this->context);
+        $editoroptions = \mod_minilesson\local\rsquestion\helper::fetch_editor_options($this->course, $this->context);
 
         //prepare data array for test
         $testitems=array();

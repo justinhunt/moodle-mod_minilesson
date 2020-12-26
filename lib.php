@@ -718,8 +718,8 @@ function minilesson_output_fragment_mform($args) {
     list($ignored, $course) = get_context_info_array($context->id);
 
     //get filechooser and html editor options
-    $editoroptions = \mod_minilesson\rsquestion\helper::fetch_editor_options($course, $context);
-    $filemanageroptions = \mod_minilesson\rsquestion\helper::fetch_filemanager_options($course,3);
+    $editoroptions = \mod_minilesson\local\rsquestion\helper::fetch_editor_options($course, $context);
+    $filemanageroptions = \mod_minilesson\local\rsquestion\helper::fetch_filemanager_options($course,3);
 
     // get the objects we need
     $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
@@ -758,7 +758,7 @@ function minilesson_output_fragment_mform($args) {
 
 
         case constants::TYPE_MULTICHOICE:
-            $mform = new \mod_minilesson\rsquestion\multichoiceform(null,
+            $mform = new \mod_minilesson\local\rsquestion\multichoiceform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)
@@ -766,7 +766,7 @@ function minilesson_output_fragment_mform($args) {
             break;
 
         case constants::TYPE_DICTATIONCHAT:
-            $mform = new \mod_minilesson\rsquestion\dictationchatform(null,
+            $mform = new \mod_minilesson\local\rsquestion\dictationchatform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)
@@ -774,7 +774,7 @@ function minilesson_output_fragment_mform($args) {
             break;
 
         case constants::TYPE_DICTATION:
-            $mform = new \mod_minilesson\rsquestion\dictationform(null,
+            $mform = new \mod_minilesson\local\rsquestion\dictationform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)
@@ -782,7 +782,7 @@ function minilesson_output_fragment_mform($args) {
             break;
 
         case constants::TYPE_SPEECHCARDS:
-            $mform = new \mod_minilesson\rsquestion\speechcardsform(null,
+            $mform = new \mod_minilesson\local\rsquestion\speechcardsform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)
@@ -790,7 +790,7 @@ function minilesson_output_fragment_mform($args) {
             break;
 
         case constants::TYPE_LISTENREPEAT:
-            $mform = new \mod_minilesson\rsquestion\listenrepeatform(null,
+            $mform = new \mod_minilesson\local\rsquestion\listenrepeatform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)
@@ -798,7 +798,7 @@ function minilesson_output_fragment_mform($args) {
             break;
 
         case constants::TYPE_PAGE:
-            $mform = new \mod_minilesson\rsquestion\pageform(null,
+            $mform = new \mod_minilesson\local\rsquestion\pageform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)
@@ -806,7 +806,7 @@ function minilesson_output_fragment_mform($args) {
             break;
 
         case constants::TYPE_TEACHERTOOLS:
-            $mform = new \mod_minilesson\rsquestion\teachertoolsform(null,
+            $mform = new \mod_minilesson\local\rsquestion\teachertoolsform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)
@@ -814,7 +814,7 @@ function minilesson_output_fragment_mform($args) {
             break;
 
         case constants::TYPE_SHORTANSWER:
-            $mform = new \mod_minilesson\rsquestion\shortanswerform(null,
+            $mform = new \mod_minilesson\local\rsquestion\shortanswerform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)

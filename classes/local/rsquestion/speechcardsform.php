@@ -6,7 +6,7 @@
  * Time: 19:31
  */
 
-namespace mod_minilesson\rsquestion;
+namespace mod_minilesson\local\rsquestion;
 
 use function Aws\constantly;
 use \mod_minilesson\constants;

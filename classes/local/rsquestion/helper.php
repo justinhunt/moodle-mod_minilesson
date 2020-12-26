@@ -1,6 +1,6 @@
 <?php
 
-namespace mod_minilesson\rsquestion;
+namespace mod_minilesson\local\rsquestion;
 
 // This file is part of Moodle - http://moodle.org/
 //
@@ -162,7 +162,7 @@ class helper
             $theitem->itemorder = $itemorder;
 
             //create a rsquestionkey
-            $theitem->rsquestionkey = \mod_minilesson\rsquestion\helper::create_rsquestionkey();
+            $theitem->rsquestionkey = \mod_minilesson\local\rsquestion\helper::create_rsquestionkey();
 
             //try to insert it
             if (!$theitem->id = $DB->insert_record(constants::M_QTABLE, $theitem)) {

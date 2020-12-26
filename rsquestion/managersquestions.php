@@ -91,18 +91,18 @@ $redirecturl = new moodle_url('/mod/minilesson/rsquestion/rsquestions.php', arra
 	/////// Delete item NOW////////
     }elseif ($action == 'delete'){
     	require_sesskey();
-		$success = \mod_minilesson\rsquestion\helper::delete_item($minilesson,$itemid,$context);
+		$success = \mod_minilesson\local\rsquestion\helper::delete_item($minilesson,$itemid,$context);
         redirect($redirecturl);
     }elseif($action=="up" || $action=="down"){
-        \mod_minilesson\rsquestion\helper::move_item($minilesson,$itemid,$action);
+        \mod_minilesson\local\rsquestion\helper::move_item($minilesson,$itemid,$action);
         redirect($redirecturl);
     }
 
 
 
 //get filechooser and html editor options
-$editoroptions = \mod_minilesson\rsquestion\helper::fetch_editor_options($course, $context);
-$filemanageroptions = \mod_minilesson\rsquestion\helper::fetch_filemanager_options($course,3);
+$editoroptions = \mod_minilesson\local\rsquestion\helper::fetch_editor_options($course, $context);
+$filemanageroptions = \mod_minilesson\local\rsquestion\helper::fetch_filemanager_options($course,3);
 
 
 //get the mform for our item
@@ -110,7 +110,7 @@ switch($type){
 
 
     case constants::TYPE_MULTICHOICE:
-        $mform = new \mod_minilesson\rsquestion\multichoiceform(null,
+        $mform = new \mod_minilesson\local\rsquestion\multichoiceform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
                         'moduleinstance'=>$minilesson)
@@ -118,7 +118,7 @@ switch($type){
         break;
 
     case constants::TYPE_DICTATIONCHAT:
-        $mform = new \mod_minilesson\rsquestion\dictationchatform(null,
+        $mform = new \mod_minilesson\local\rsquestion\dictationchatform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
                         'moduleinstance'=>$minilesson)
@@ -126,7 +126,7 @@ switch($type){
         break;
     
     case constants::TYPE_DICTATION:
-        $mform = new \mod_minilesson\rsquestion\dictationform(null,
+        $mform = new \mod_minilesson\local\rsquestion\dictationform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
                         'moduleinstance'=>$minilesson)
@@ -134,7 +134,7 @@ switch($type){
         break;
 
     case constants::TYPE_SPEECHCARDS:
-        $mform = new \mod_minilesson\rsquestion\speechcardsform(null,
+        $mform = new \mod_minilesson\local\rsquestion\speechcardsform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
                         'moduleinstance'=>$minilesson)
@@ -142,7 +142,7 @@ switch($type){
         break;
 
     case constants::TYPE_LISTENREPEAT:
-        $mform = new \mod_minilesson\rsquestion\listenrepeatform(null,
+        $mform = new \mod_minilesson\local\rsquestion\listenrepeatform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
                         'moduleinstance'=>$minilesson)
@@ -150,7 +150,7 @@ switch($type){
         break;
 
     case constants::TYPE_PAGE:
-        $mform = new \mod_minilesson\rsquestion\pageform(null,
+        $mform = new \mod_minilesson\local\rsquestion\pageform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
                         'moduleinstance'=>$minilesson)
@@ -158,14 +158,14 @@ switch($type){
         break;
 
     case constants::TYPE_TEACHERTOOLS:
-        $mform = new \mod_minilesson\rsquestion\teachertoolsform(null,
+        $mform = new \mod_minilesson\local\rsquestion\teachertoolsform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
                         'moduleinstance'=>$minilesson)
         );
         break;
     case constants::TYPE_SHORTANSWER:
-        $mform = new \mod_minilesson\rsquestion\shortanswerform(null,
+        $mform = new \mod_minilesson\local\rsquestion\shortanswerform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
                         'moduleinstance'=>$minilesson)
@@ -195,10 +195,10 @@ if ($data = $mform->get_data()) {
         }else{
             $olditem=false;
         }
-        $data->passagehash = \mod_minilesson\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
+        $data->passagehash = \mod_minilesson\local\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
 
 
-		$result = \mod_minilesson\rsquestion\helper::update_insert_question($minilesson,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
+		$result = \mod_minilesson\local\rsquestion\helper::update_insert_question($minilesson,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
 		if($result->error==true){
             print_error($result->message);
             redirect($redirecturl);

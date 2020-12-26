@@ -61,7 +61,7 @@ foreach($mis as $moduleinstance){
         //most of the sentences for speech recognition are in customtext1, so we use that to generate lang model
         $newitem->customtext1 = $olditem->customtext1;
         $newitem->type = $olditem->type;
-        $passagehash = \mod_minilesson\rsquestion\helper::update_create_langmodel($moduleinstance, $olditem, $newitem);
+        $passagehash = \mod_minilesson\local\rsquestion\helper::update_create_langmodel($moduleinstance, $olditem, $newitem);
         if(!empty($passagehash)){
             $DB->update_record(constants::M_QTABLE,array('id'=>$olditem->id,'passagehash'=>$passagehash));
             $updates++;
