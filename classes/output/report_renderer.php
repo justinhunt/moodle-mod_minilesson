@@ -6,9 +6,9 @@
  * Time: 13:16
  */
 
-namespace mod_poodlltime\output;
+namespace mod_minilesson\output;
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 class report_renderer extends \plugin_renderer_base
 {

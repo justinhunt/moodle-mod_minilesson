@@ -6,10 +6,10 @@
  * Time: 19:31
  */
 
-namespace mod_poodlltime\rsquestion;
+namespace mod_minilesson\rsquestion;
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 class listenrepeatform extends baseform
 {

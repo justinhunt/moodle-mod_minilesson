@@ -20,9 +20,9 @@
  *
  * NOTE: this is an example how to insert log event during installation/update.
  * It is not really essential to know about it, but these logs were created as example
- * in the previous 1.9 poodlltime.
+ * in the previous 1.9 minilesson.
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com) <your@email.adress>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -32,8 +32,8 @@ defined('MOODLE_INTERNAL') || die();
 global $DB;
 
 $logs = array(
-    array('module'=>'poodlltime', 'action'=>'add', 'mtable'=>'poodlltime', 'field'=>'name'),
-    array('module'=>'poodlltime', 'action'=>'update', 'mtable'=>'poodlltime', 'field'=>'name'),
-    array('module'=>'poodlltime', 'action'=>'view', 'mtable'=>'poodlltime', 'field'=>'name'),
-    array('module'=>'poodlltime', 'action'=>'view all', 'mtable'=>'poodlltime', 'field'=>'name')
+    array('module'=>'minilesson', 'action'=>'add', 'mtable'=>'minilesson', 'field'=>'name'),
+    array('module'=>'minilesson', 'action'=>'update', 'mtable'=>'minilesson', 'field'=>'name'),
+    array('module'=>'minilesson', 'action'=>'view', 'mtable'=>'minilesson', 'field'=>'name'),
+    array('module'=>'minilesson', 'action'=>'view all', 'mtable'=>'minilesson', 'field'=>'name')
 );

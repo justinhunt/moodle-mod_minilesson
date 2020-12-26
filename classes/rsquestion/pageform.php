@@ -6,9 +6,9 @@
  * Time: 19:31
  */
 
-namespace mod_poodlltime\rsquestion;
+namespace mod_minilesson\rsquestion;
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 class pageform extends baseform
 {

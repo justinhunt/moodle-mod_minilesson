@@ -1,0 +1,14 @@
+we only grade completed attempts
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Your branch is up to date with 'origin/master'.
+#
+# Changes to be committed:
+#	modified:   classes/report/attempts.php
+#	modified:   classes/report/gradereport.php
+#	modified:   classes/report/grading.php
+#	modified:   classes/report/gradingbyuser.php
+#	modified:   lib.php
+#

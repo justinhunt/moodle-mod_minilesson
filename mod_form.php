@@ -16,12 +16,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * The main poodlltime configuration form
+ * The main minilesson configuration form
  *
  * It uses the standard core Moodle formslib. For more info about them, please
  * visit: http://docs.moodle.org/en/Development:lib/formslib.php
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,13 +30,13 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 
 /**
  * Module instance settings form
  */
-class mod_poodlltime_mod_form extends moodleform_mod {
+class mod_minilesson_mod_form extends moodleform_mod {
 
     public function __construct($current, $section, $cm, $course, $ajaxformdata=null) {
         global $CFG;
@@ -79,7 +79,7 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('poodlltimename', constants::M_COMPONENT), array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('minilessonname', constants::M_COMPONENT), array('size'=>'64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -87,7 +87,7 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         }
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'poodlltimename', constants::M_COMPONENT);
+        $mform->addHelpButton('name', 'minilessonname', constants::M_COMPONENT);
 
          // Adding the standard "intro" and "introformat" fields
         if($CFG->version < 2015051100){
@@ -97,7 +97,7 @@ class mod_poodlltime_mod_form extends moodleform_mod {
 		}
 
         //page layout options
-        $layout_options = \mod_poodlltime\utils::fetch_pagelayout_options();
+        $layout_options = \mod_minilesson\utils::fetch_pagelayout_options();
         $mform->addElement('select', 'pagelayout', get_string('pagelayout', constants::M_COMPONENT),$layout_options);
         $mform->setDefault('pagelayout','standard');
 
@@ -107,7 +107,7 @@ class mod_poodlltime_mod_form extends moodleform_mod {
 
 /*
  * Later can add a proper time limit
-        $timelimit_options = \mod_poodlltime\utils::get_timelimit_options();
+        $timelimit_options = \mod_minilesson\utils::get_timelimit_options();
         $mform->addElement('select', 'timelimit', get_string('timelimit', constants::M_COMPONENT),
             $timelimit_options);
 		$mform->setDefault('timelimit',60);
@@ -118,8 +118,8 @@ class mod_poodlltime_mod_form extends moodleform_mod {
 		$config = get_config(constants::M_COMPONENT);
 		
 		//The passage
-		//$edfileoptions = poodlltime_editor_with_files_options($this->context);
-		$ednofileoptions = poodlltime_editor_no_files_options($this->context);
+		//$edfileoptions = minilesson_editor_with_files_options($this->context);
+		$ednofileoptions = minilesson_editor_no_files_options($this->context);
 		$opts = array('rows'=>'15', 'columns'=>'80');
 
 		//welcome message [just kept cos its a pain in the butt to do this again from scratch if we ever do]
@@ -141,17 +141,17 @@ class mod_poodlltime_mod_form extends moodleform_mod {
         $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_COMPONENT), $attemptoptions);
 
         //tts options
-        $langoptions = \mod_poodlltime\utils::get_lang_options();
+        $langoptions = \mod_minilesson\utils::get_lang_options();
         $mform->addElement('select', 'ttslanguage', get_string('ttslanguage', constants::M_COMPONENT), $langoptions);
         $mform->setDefault('ttslanguage',$config->ttslanguage);
 
         //region
-        $regionoptions = \mod_poodlltime\utils::get_region_options();
+        $regionoptions = \mod_minilesson\utils::get_region_options();
         $mform->addElement('select', 'region', get_string('region', constants::M_COMPONENT), $regionoptions);
         $mform->setDefault('region',$config->awsregion);
 
         //prompt types
-        $prompttypes = \mod_poodlltime\utils::get_prompttype_options();
+        $prompttypes = \mod_minilesson\utils::get_prompttype_options();
         $mform->addElement('select', 'richtextprompt', get_string('prompttype', constants::M_COMPONENT), $prompttypes);
         $mform->addHelpButton('richtextprompt', 'prompttype', constants::M_COMPONENT);
         $mform->setDefault('richtextprompt', $config->prompttype);
@@ -201,7 +201,7 @@ class mod_poodlltime_mod_form extends moodleform_mod {
     /**
      * This adds completion rules
 	 * The values here are just dummies. They don't work in this project until you implement some sort of grading
-	 * See lib.php poodlltime_get_completion_state()
+	 * See lib.php minilesson_get_completion_state()
      */
 	 function add_completion_rules() {
 		$mform =& $this->_form;  
@@ -221,8 +221,8 @@ class mod_poodlltime_mod_form extends moodleform_mod {
 	}
 	
 	public function data_preprocessing(&$form_data) {
-		$ednofileoptions = poodlltime_editor_no_files_options($this->context);
-		$editors  = poodlltime_get_editornames();
+		$ednofileoptions = minilesson_editor_no_files_options($this->context);
+		$editors  = minilesson_get_editornames();
 		 if ($this->current->instance) {
 			$itemid = 0;
 			foreach($editors as $editor){

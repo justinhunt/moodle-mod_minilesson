@@ -19,7 +19,7 @@
  * This file replaces the legacy STATEMENTS section in db/install.xml,
  * lib.php/modulename_install() post installation hook and partially defaults.php
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com) <your@email.adress>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +29,7 @@
  *
  * @see upgrade_plugins_modules()
  */
-function xmldb_poodlltime_install() {
+function xmldb_minilesson_install() {
 }
 
 /**
@@ -37,5 +37,5 @@ function xmldb_poodlltime_install() {
  *
  * @see upgrade_plugins_modules()
  */
-function xmldb_poodlltime_install_recovery() {
+function xmldb_minilesson_install_recovery() {
 }

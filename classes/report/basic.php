@@ -6,9 +6,9 @@
  * Time: 20:52
  */
 
-namespace mod_poodlltime\report;
+namespace mod_minilesson\report;
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 class basic extends basereport
 {

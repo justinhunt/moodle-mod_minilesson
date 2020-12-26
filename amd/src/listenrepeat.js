@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper', 'mod_poodlltime/cloudpoodllloader','mod_poodlltime/ttrecorder'],
+define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper', 'mod_minilesson/cloudpoodllloader','mod_minilesson/ttrecorder'],
     function($, log, ajax, def, polly, cloudpoodll, ttrecorder) {
   "use strict"; // jshint ;_;
 
@@ -41,7 +41,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
             ttrecorder.clone().init(opts);
         }else{
             //init cloudpoodll push recorder
-            cloudpoodll.init('poodlltime-recorder-listenrepeat-' + itemdata.id, theCallback);
+            cloudpoodll.init('minilesson-recorder-listenrepeat-' + itemdata.id, theCallback);
         }
 
         self.itemdata = itemdata;
@@ -66,7 +66,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
 
       var self = this;
 
-      $("#" + self.itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
+      $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
         self.next_question();
       });
 
@@ -304,7 +304,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
       $(".landr_ctrl-btn").prop("disabled", true);
 
       ajax.call([{
-        methodname: 'mod_poodlltime_compare_passage_to_transcript',
+        methodname: 'mod_minilesson_compare_passage_to_transcript',
         args: {
           passage: passage,
           transcript: transcript,
@@ -336,10 +336,10 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
 
       $("#" + self.itemdata.uniqueid + "_container .landr_results").html("TOTAL<br/>" + numCorrect + "/" + totalNum).show();
       
-      $(".poodlltime_nextbutton").prop("disabled",true);
+      $(".minilesson_nextbutton").prop("disabled",true);
       setTimeout(function() {
         
-        $(".poodlltime_nextbutton").prop("disabled",false);
+        $(".minilesson_nextbutton").prop("disabled",false);
         self.next_question();
         
       }, 2000);

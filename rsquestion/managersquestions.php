@@ -17,18 +17,18 @@
 
 /**
  * Action for adding/editing a rsquestion.
- * replace i) MOD_poodlltime eg MOD_CST, then ii) poodlltime eg cst, then iii) rsquestion eg rsquestion
+ * replace i) MOD_minilesson eg MOD_CST, then ii) minilesson eg cst, then iii) rsquestion eg rsquestion
  *
- * @package mod_poodlltime
+ * @package mod_minilesson
  * @copyright  2014 Justin Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 require_once("../../../config.php");
-require_once($CFG->dirroot.'/mod/poodlltime/lib.php');
+require_once($CFG->dirroot.'/mod/minilesson/lib.php');
 
 
 global $USER,$DB;
@@ -40,18 +40,18 @@ $type  = optional_param('type', constants::NONE, PARAM_TEXT);
 $action = optional_param('action','edit',PARAM_TEXT);
 
 // get the objects we need
-$cm = get_coursemodule_from_id('poodlltime', $id, 0, false, MUST_EXIST);
+$cm = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-$poodlltime = $DB->get_record('poodlltime', array('id' => $cm->instance), '*', MUST_EXIST);
+$minilesson = $DB->get_record('minilesson', array('id' => $cm->instance), '*', MUST_EXIST);
 
 //make sure we are logged in and can see this form
 require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
-require_capability('mod/poodlltime:itemedit', $context);
+require_capability('mod/minilesson:itemedit', $context);
 
 //set up the page object
-$PAGE->set_url('/mod/poodlltime/rsquestion/managersquestions.php', array('itemid'=>$itemid, 'id'=>$id, 'type'=>$type));
-$PAGE->set_title(format_string($poodlltime->name));
+$PAGE->set_url('/mod/minilesson/rsquestion/managersquestions.php', array('itemid'=>$itemid, 'id'=>$id, 'type'=>$type));
+$PAGE->set_title(format_string($minilesson->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('course');
@@ -68,8 +68,8 @@ if ($itemid) {
     $edit = false;
 }
 
-//we always head back to the poodlltime items page
-$redirecturl = new moodle_url('/mod/poodlltime/rsquestion/rsquestions.php', array('id'=>$cm->id));
+//we always head back to the minilesson items page
+$redirecturl = new moodle_url('/mod/minilesson/rsquestion/rsquestions.php', array('id'=>$cm->id));
 
 	//handle delete actions
     if($action == 'confirmdelete'){
@@ -81,9 +81,9 @@ $redirecturl = new moodle_url('/mod/poodlltime/rsquestion/rsquestions.php', arra
 
 		$renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 		$rsquestion_renderer = $PAGE->get_renderer(constants::M_COMPONENT,'rsquestion');
-		echo $renderer->header($poodlltime, $cm, 'rsquestions', null, get_string('confirmitemdeletetitle', constants::M_COMPONENT));
+		echo $renderer->header($minilesson, $cm, 'rsquestions', null, get_string('confirmitemdeletetitle', constants::M_COMPONENT));
 		echo $rsquestion_renderer->confirm(get_string("confirmitemdelete",constants::M_COMPONENT,$item->name),
-			new moodle_url('/mod/poodlltime/rsquestion/managersquestions.php', array('action'=>'delete','id'=>$cm->id,'itemid'=>$itemid)),
+			new moodle_url('/mod/minilesson/rsquestion/managersquestions.php', array('action'=>'delete','id'=>$cm->id,'itemid'=>$itemid)),
 			$redirecturl);
 		echo $renderer->footer();
 		return;
@@ -91,18 +91,18 @@ $redirecturl = new moodle_url('/mod/poodlltime/rsquestion/rsquestions.php', arra
 	/////// Delete item NOW////////
     }elseif ($action == 'delete'){
     	require_sesskey();
-		$success = \mod_poodlltime\rsquestion\helper::delete_item($poodlltime,$itemid,$context);
+		$success = \mod_minilesson\rsquestion\helper::delete_item($minilesson,$itemid,$context);
         redirect($redirecturl);
     }elseif($action=="up" || $action=="down"){
-        \mod_poodlltime\rsquestion\helper::move_item($poodlltime,$itemid,$action);
+        \mod_minilesson\rsquestion\helper::move_item($minilesson,$itemid,$action);
         redirect($redirecturl);
     }
 
 
 
 //get filechooser and html editor options
-$editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($course, $context);
-$filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_options($course,3);
+$editoroptions = \mod_minilesson\rsquestion\helper::fetch_editor_options($course, $context);
+$filemanageroptions = \mod_minilesson\rsquestion\helper::fetch_filemanager_options($course,3);
 
 
 //get the mform for our item
@@ -110,65 +110,65 @@ switch($type){
 
 
     case constants::TYPE_MULTICHOICE:
-        $mform = new \mod_poodlltime\rsquestion\multichoiceform(null,
+        $mform = new \mod_minilesson\rsquestion\multichoiceform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$poodlltime)
+                        'moduleinstance'=>$minilesson)
         );
         break;
 
     case constants::TYPE_DICTATIONCHAT:
-        $mform = new \mod_poodlltime\rsquestion\dictationchatform(null,
+        $mform = new \mod_minilesson\rsquestion\dictationchatform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$poodlltime)
+                        'moduleinstance'=>$minilesson)
         );
         break;
     
     case constants::TYPE_DICTATION:
-        $mform = new \mod_poodlltime\rsquestion\dictationform(null,
+        $mform = new \mod_minilesson\rsquestion\dictationform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$poodlltime)
+                        'moduleinstance'=>$minilesson)
         );
         break;
 
     case constants::TYPE_SPEECHCARDS:
-        $mform = new \mod_poodlltime\rsquestion\speechcardsform(null,
+        $mform = new \mod_minilesson\rsquestion\speechcardsform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$poodlltime)
+                        'moduleinstance'=>$minilesson)
         );
         break;
 
     case constants::TYPE_LISTENREPEAT:
-        $mform = new \mod_poodlltime\rsquestion\listenrepeatform(null,
+        $mform = new \mod_minilesson\rsquestion\listenrepeatform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$poodlltime)
+                        'moduleinstance'=>$minilesson)
         );
         break;
 
     case constants::TYPE_PAGE:
-        $mform = new \mod_poodlltime\rsquestion\pageform(null,
+        $mform = new \mod_minilesson\rsquestion\pageform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$poodlltime)
+                        'moduleinstance'=>$minilesson)
         );
         break;
 
     case constants::TYPE_TEACHERTOOLS:
-        $mform = new \mod_poodlltime\rsquestion\teachertoolsform(null,
+        $mform = new \mod_minilesson\rsquestion\teachertoolsform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$poodlltime)
+                        'moduleinstance'=>$minilesson)
         );
         break;
     case constants::TYPE_SHORTANSWER:
-        $mform = new \mod_poodlltime\rsquestion\shortanswerform(null,
+        $mform = new \mod_minilesson\rsquestion\shortanswerform(null,
                 array('editoroptions'=>$editoroptions,
                         'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$poodlltime)
+                        'moduleinstance'=>$minilesson)
         );
         break;
 
@@ -195,10 +195,10 @@ if ($data = $mform->get_data()) {
         }else{
             $olditem=false;
         }
-        $data->passagehash = \mod_poodlltime\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
+        $data->passagehash = \mod_minilesson\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
 
 
-		$result = \mod_poodlltime\rsquestion\helper::update_insert_question($poodlltime,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
+		$result = \mod_minilesson\rsquestion\helper::update_insert_question($minilesson,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
 		if($result->error==true){
             print_error($result->message);
             redirect($redirecturl);
@@ -219,7 +219,7 @@ if ($edit) {
 	$data->itemid = $item->id;
 
     //If rich text, use editor otherwise use filepicker
-    if($poodlltime->richtextprompt==constants::M_PROMPT_RICHTEXT) {
+    if($minilesson->richtextprompt==constants::M_PROMPT_RICHTEXT) {
         //init our editor
         $data = file_prepare_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context, constants::M_COMPONENT,
                 constants::TEXTQUESTION_FILEAREA, $data->itemid);
@@ -258,10 +258,10 @@ if ($edit) {
 		default:
 	}
     $mform->set_data($data);
-    $PAGE->navbar->add(get_string('edit'), new moodle_url('/mod/poodlltime/rsquestion/rsquestions.php', array('id'=>$id)));
+    $PAGE->navbar->add(get_string('edit'), new moodle_url('/mod/minilesson/rsquestion/rsquestions.php', array('id'=>$id)));
     $PAGE->navbar->add(get_string('editingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
-	$renderer = $PAGE->get_renderer('mod_poodlltime');
+	$renderer = $PAGE->get_renderer('mod_minilesson');
 	$mode='rsquestions';
-	echo $renderer->header($poodlltime, $cm,$mode, null, get_string('edit', constants::M_COMPONENT));
+	echo $renderer->header($minilesson, $cm,$mode, null, get_string('edit', constants::M_COMPONENT));
 	$mform->display();
 	echo $renderer->footer();

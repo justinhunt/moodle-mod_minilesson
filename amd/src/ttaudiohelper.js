@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/ttwavencoder'], function ($, log, wavencoder) {
+define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, wavencoder) {
     "use strict"; // jshint ;_;
     /*
     This file is the engine that drives audio rec and canvas drawing. TT Recorder is the just the glory kid

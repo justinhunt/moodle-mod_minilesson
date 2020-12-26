@@ -1,4 +1,4 @@
-define(['jquery','core/log','mod_poodlltime/definitions','https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.3.1/qrcode.min.js'], function($,log, def, qrcode) {
+define(['jquery','core/log','mod_minilesson/definitions','https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.3.1/qrcode.min.js'], function($,log, def, qrcode) {
     "use strict"; // jshint ;_;
 
 /*

@@ -1,4 +1,4 @@
-define(['jquery','core/log','mod_poodlltime/definitions'], function($,log,def) {
+define(['jquery','core/log','mod_minilesson/definitions'], function($,log,def) {
     "use strict"; // jshint ;_;
 
     log.debug('Poodll Time hidden player helper: initialising');

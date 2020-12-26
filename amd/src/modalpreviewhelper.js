@@ -1,9 +1,9 @@
 /**
  * Add a modal to manage question adding and editing to the page.
  *
- * @module     mod_poodlltime/modalpreviewhelper
+ * @module     mod_minilesson/modalpreviewhelper
  * @class      modalpreviewhelper
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -75,7 +75,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
                 }).then(function (modal) {
                     // Keep a reference to the modal.
                     dd.modal = modal;
-                    //Str.get_string(dd.formname , 'mod_poodlltime').then(function(title){dd.formtitle=title;dd.modal.setTitle(dd.formtitle);});
+                    //Str.get_string(dd.formname , 'mod_minilesson').then(function(title){dd.formtitle=title;dd.modal.setTitle(dd.formtitle);});
 
 
                     //questions are big, we want a big modal.
@@ -90,8 +90,8 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
                     // We want to hide the next button every time it is opened.
                     dd.modal.getRoot().on(ModalEvents.shown, function () {
                         //hide next button and progress bar
-                        dd.modal.getRoot().append('<style>.poodlltime_nextbutton { display: none ! important; }</style>');
-                        dd.modal.getRoot().append('<style>.poodlltime_quiz_progress { display: none ! important; }</style>');
+                        dd.modal.getRoot().append('<style>.minilesson_nextbutton { display: none ! important; }</style>');
+                        dd.modal.getRoot().append('<style>.minilesson_quiz_progress { display: none ! important; }</style>');
                     });
 
 
@@ -113,7 +113,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
 
             // Get the content of the modal.
             var params = {itemid: this.itemid};
-            return Fragment.loadFragment('mod_poodlltime', 'preview', this.contextid, params);
+            return Fragment.loadFragment('mod_minilesson', 'preview', this.contextid, params);
 
         };
 
@@ -121,7 +121,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
 
 
 
-        return /** @alias module:mod_poodlltime/modalpreviewhelper */ {
+        return /** @alias module:mod_minilesson/modalpreviewhelper */ {
             // Public variables and functions.
             /**
              * Attach event listeners to initialise this module.

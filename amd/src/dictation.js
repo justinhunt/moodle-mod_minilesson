@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper'], function($, log, def, polly) {
+define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper'], function($, log, def, polly) {
   "use strict"; // jshint ;_;
 
   /*
@@ -73,7 +73,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       });
 
       //When click next button , report and leave it up to parent to eal with it.
-      $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
+      $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
         var stepdata = {};
         var correct = $('#' + itemdata.uniqueid + '_container .dictate-feedback.fa-check').length;
         var total = $('#' + itemdata.uniqueid + '_container .dictate-feedback').length;

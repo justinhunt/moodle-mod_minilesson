@@ -6,10 +6,10 @@
  * Time: 19:31
  */
 
-namespace mod_poodlltime\rsquestion;
+namespace mod_minilesson\rsquestion;
 
 use function Aws\constantly;
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 class speechcardsform extends baseform
 {

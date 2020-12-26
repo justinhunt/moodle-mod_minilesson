@@ -6,30 +6,30 @@
  * Time: 19:31
  */
 
-namespace mod_poodlltime;
+namespace mod_minilesson;
 
 defined('MOODLE_INTERNAL') || die();
 
 class constants
 {
 //component name, db tables, things that define app
-const M_COMPONENT='mod_poodlltime';
+const M_COMPONENT='mod_minilesson';
 const M_FILEAREA_SUBMISSIONS='submission';
-const M_TABLE='poodlltime';
-const M_ATTEMPTSTABLE='poodlltime_attempt';
-const M_AITABLE='poodlltime_ai_result';
-const M_QTABLE='poodlltime_rsquestions';
-const M_MODNAME='poodlltime';
-const M_URL='/mod/poodlltime';
-const M_PATH='/mod/poodlltime';
-const M_CLASS='mod_poodlltime';
-const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingpoodlltime';
+const M_TABLE='minilesson';
+const M_ATTEMPTSTABLE='minilesson_attempt';
+const M_AITABLE='minilesson_ai_result';
+const M_QTABLE='minilesson_rsquestions';
+const M_MODNAME='minilesson';
+const M_URL='/mod/minilesson';
+const M_PATH='/mod/minilesson';
+const M_CLASS='mod_minilesson';
+const M_PLUGINSETTINGS ='/admin/settings.php?section=modsettingminilesson';
 const M_STATE_COMPLETE=1;
 const M_STATE_INCOMPLETE=0;
 
-const M_NOITEMS_CONT= 'mod_poodlltime_noitems_cont';
-const M_ITEMS_CONT= 'mod_poodlltime_items_cont';
-const M_ITEMS_TABLE= 'mod_poodlltime_qpanel';
+const M_NOITEMS_CONT= 'mod_minilesson_noitems_cont';
+const M_ITEMS_CONT= 'mod_minilesson_items_cont';
+const M_ITEMS_TABLE= 'mod_minilesson_qpanel';
 
 
 //grading options
@@ -93,72 +93,72 @@ const TEXTPROMPT_DOTS = 1;
 
 
 //CSS ids/classes
-const M_RECORD_BUTTON='mod_poodlltime_record_button';
-const M_START_BUTTON='mod_poodlltime_start_button';
-const M_READING_AUDIO_URL='mod_poodlltime_readingaudiourl';
-const M_DRAFT_CONTROL='mod_poodlltime_draft_control';
-const M_PROGRESS_CONTAINER='mod_poodlltime_progress_cont';
-const M_HIDER='mod_poodlltime_hider';
-const M_STOP_BUTTON='mod_poodlltime_stop_button';
-const M_WHERETONEXT_CONTAINER='mod_poodlltime_wheretonext_cont';
-const M_RECORD_BUTTON_CONTAINER='mod_poodlltime_record_button_cont';
-const M_START_BUTTON_CONTAINER='mod_poodlltime_start_button_cont';
-const M_STOP_BUTTON_CONTAINER='mod_poodlltime_stop_button_cont';
+const M_RECORD_BUTTON='mod_minilesson_record_button';
+const M_START_BUTTON='mod_minilesson_start_button';
+const M_READING_AUDIO_URL='mod_minilesson_readingaudiourl';
+const M_DRAFT_CONTROL='mod_minilesson_draft_control';
+const M_PROGRESS_CONTAINER='mod_minilesson_progress_cont';
+const M_HIDER='mod_minilesson_hider';
+const M_STOP_BUTTON='mod_minilesson_stop_button';
+const M_WHERETONEXT_CONTAINER='mod_minilesson_wheretonext_cont';
+const M_RECORD_BUTTON_CONTAINER='mod_minilesson_record_button_cont';
+const M_START_BUTTON_CONTAINER='mod_minilesson_start_button_cont';
+const M_STOP_BUTTON_CONTAINER='mod_minilesson_stop_button_cont';
 const M_RECORDERID='therecorderid';
-const M_RECORDING_CONTAINER='mod_poodlltime_recording_cont';
-const M_RECORDER_CONTAINER='mod_poodlltime_recorder_cont';
-const M_DUMMY_RECORDER='mod_poodlltime_dummy_recorder';
-const M_RECORDER_INSTRUCTIONS_RIGHT='mod_poodlltime_recorder_instr_right';
-const M_RECORDER_INSTRUCTIONS_LEFT='mod_poodlltime_recorder_instr_left';
-const M_INSTRUCTIONS_CONTAINER='mod_poodlltime_instructions_cont';
-const M_PASSAGE_CONTAINER='mod_poodlltime_passage_cont';
-const M_MSV_MODE = 'mod_poodlltime_msvmode';
-const M_QUICK_MODE = 'mod_poodlltime_spotcheckmode';
-const M_GRADING_MODE = 'mod_poodlltime_gradingmode';
-const M_QUIZ_CONTAINER='mod_poodlltime_quiz_cont';
-const M_POSTATTEMPT= 'mod_poodlltime_postattempt';
-const M_FEEDBACK_CONTAINER='mod_poodlltime_feedback_cont';
-const M_ERROR_CONTAINER='mod_poodlltime_error_cont';
-const M_GRADING_ERROR_CONTAINER='mod_poodlltime_grading_error_cont';
-const M_GRADING_ERROR_IMG='mod_poodlltime_grading_error_img';
-const M_GRADING_ERROR_SCORE='mod_poodlltime_grading_error_score';
+const M_RECORDING_CONTAINER='mod_minilesson_recording_cont';
+const M_RECORDER_CONTAINER='mod_minilesson_recorder_cont';
+const M_DUMMY_RECORDER='mod_minilesson_dummy_recorder';
+const M_RECORDER_INSTRUCTIONS_RIGHT='mod_minilesson_recorder_instr_right';
+const M_RECORDER_INSTRUCTIONS_LEFT='mod_minilesson_recorder_instr_left';
+const M_INSTRUCTIONS_CONTAINER='mod_minilesson_instructions_cont';
+const M_PASSAGE_CONTAINER='mod_minilesson_passage_cont';
+const M_MSV_MODE = 'mod_minilesson_msvmode';
+const M_QUICK_MODE = 'mod_minilesson_spotcheckmode';
+const M_GRADING_MODE = 'mod_minilesson_gradingmode';
+const M_QUIZ_CONTAINER='mod_minilesson_quiz_cont';
+const M_POSTATTEMPT= 'mod_minilesson_postattempt';
+const M_FEEDBACK_CONTAINER='mod_minilesson_feedback_cont';
+const M_ERROR_CONTAINER='mod_minilesson_error_cont';
+const M_GRADING_ERROR_CONTAINER='mod_minilesson_grading_error_cont';
+const M_GRADING_ERROR_IMG='mod_minilesson_grading_error_img';
+const M_GRADING_ERROR_SCORE='mod_minilesson_grading_error_score';
 
-const M_GRADING_QUIZ_CONTAINER='mod_poodlltime_grading_quiz_cont';
-const M_TWOCOL_CONTAINER='mod_poodlltime_twocol_cont';
-const M_TWOCOL_QUIZ_CONTAINER='mod_poodlltime_twocol_quiz_cont';
-const M_TWOCOL_PLAYER_CONTAINER='mod_poodlltime_twocol_player_cont';
-const M_TWOCOL_PLAYER='mod_poodlltime_twocol_player';
-const M_TWOCOL_LEFTCOL='mod_poodlltime_leftcol';
-const M_TWOCOL_RIGHTCOL='mod_poodlltime_rightcol';
-const M_GRADING_QUIZ_SCORE='mod_poodlltime_grading_quiz_score';
-const M_GRADING_ACCURACY_CONTAINER='mod_poodlltime_grading_accuracy_cont';
-const M_GRADING_ACCURACY_IMG='mod_poodlltime_grading_accuracy_img';
-const M_GRADING_ACCURACY_SCORE='mod_poodlltime_grading_accuracy_score';
-const M_GRADING_SESSION_SCORE='mod_poodlltime_grading_session_score';
-const M_GRADING_SESSIONSCORE_CONTAINER='mod_poodlltime_grading_sessionscore_cont';
-const M_GRADING_ERRORRATE_SCORE='mod_poodlltime_grading_errorrate_score';
-const M_GRADING_ERRORRATE_CONTAINER='mod_poodlltime_grading_errorrate_cont';
-const M_GRADING_SCRATE_SCORE='mod_poodlltime_grading_scrate_score';
-const M_GRADING_SCRATE_CONTAINER='mod_poodlltime_grading_scrate_cont';
-const M_GRADING_SCORE='mod_poodlltime_grading_score';
-const M_GRADING_PLAYER_CONTAINER='mod_poodlltime_grading_player_cont';
-const M_GRADING_PLAYER='mod_poodlltime_grading_player';
-const M_GRADING_ACTION_CONTAINER='mod_poodlltime_grading_action_cont';
-const M_GRADING_FORM_SESSIONTIME='mod_poodlltime_grading_form_sessiontime';
-const M_GRADING_FORM_SESSIONSCORE='mod_poodlltime_grading_form_sessionscore';
-const M_GRADING_FORM_SESSIONENDWORD='mod_poodlltime_grading_form_sessionendword';
-const M_GRADING_FORM_SESSIONERRORS='mod_poodlltime_grading_form_sessionerrors';
-const M_GRADING_FORM_NOTES='mod_poodlltime_grading_form_notes';
-const M_HIDDEN_PLAYER='mod_poodlltime_hidden_player';
-const M_HIDDEN_PLAYER_BUTTON='mod_poodlltime_hidden_player_button';
-const M_HIDDEN_PLAYER_BUTTON_ACTIVE='mod_poodlltime_hidden_player_button_active';
-const M_HIDDEN_PLAYER_BUTTON_PAUSED='mod_poodlltime_hidden_player_button_paused';
-const M_HIDDEN_PLAYER_BUTTON_PLAYING='mod_poodlltime_hidden_player_button_playing';
-const M_EVALUATED_MESSAGE='mod_poodlltime_evaluated_message';
-const M_QR_PLAYER='mod_poodlltime_qr_player';
-const M_LINK_BOX='mod_poodlltime_link_box';
-const M_LINK_BOX_TITLE='mod_poodlltime_link_box_title';
-const M_NOITEMS_MSG='mod_poodlltime_noitems_msg';
+const M_GRADING_QUIZ_CONTAINER='mod_minilesson_grading_quiz_cont';
+const M_TWOCOL_CONTAINER='mod_minilesson_twocol_cont';
+const M_TWOCOL_QUIZ_CONTAINER='mod_minilesson_twocol_quiz_cont';
+const M_TWOCOL_PLAYER_CONTAINER='mod_minilesson_twocol_player_cont';
+const M_TWOCOL_PLAYER='mod_minilesson_twocol_player';
+const M_TWOCOL_LEFTCOL='mod_minilesson_leftcol';
+const M_TWOCOL_RIGHTCOL='mod_minilesson_rightcol';
+const M_GRADING_QUIZ_SCORE='mod_minilesson_grading_quiz_score';
+const M_GRADING_ACCURACY_CONTAINER='mod_minilesson_grading_accuracy_cont';
+const M_GRADING_ACCURACY_IMG='mod_minilesson_grading_accuracy_img';
+const M_GRADING_ACCURACY_SCORE='mod_minilesson_grading_accuracy_score';
+const M_GRADING_SESSION_SCORE='mod_minilesson_grading_session_score';
+const M_GRADING_SESSIONSCORE_CONTAINER='mod_minilesson_grading_sessionscore_cont';
+const M_GRADING_ERRORRATE_SCORE='mod_minilesson_grading_errorrate_score';
+const M_GRADING_ERRORRATE_CONTAINER='mod_minilesson_grading_errorrate_cont';
+const M_GRADING_SCRATE_SCORE='mod_minilesson_grading_scrate_score';
+const M_GRADING_SCRATE_CONTAINER='mod_minilesson_grading_scrate_cont';
+const M_GRADING_SCORE='mod_minilesson_grading_score';
+const M_GRADING_PLAYER_CONTAINER='mod_minilesson_grading_player_cont';
+const M_GRADING_PLAYER='mod_minilesson_grading_player';
+const M_GRADING_ACTION_CONTAINER='mod_minilesson_grading_action_cont';
+const M_GRADING_FORM_SESSIONTIME='mod_minilesson_grading_form_sessiontime';
+const M_GRADING_FORM_SESSIONSCORE='mod_minilesson_grading_form_sessionscore';
+const M_GRADING_FORM_SESSIONENDWORD='mod_minilesson_grading_form_sessionendword';
+const M_GRADING_FORM_SESSIONERRORS='mod_minilesson_grading_form_sessionerrors';
+const M_GRADING_FORM_NOTES='mod_minilesson_grading_form_notes';
+const M_HIDDEN_PLAYER='mod_minilesson_hidden_player';
+const M_HIDDEN_PLAYER_BUTTON='mod_minilesson_hidden_player_button';
+const M_HIDDEN_PLAYER_BUTTON_ACTIVE='mod_minilesson_hidden_player_button_active';
+const M_HIDDEN_PLAYER_BUTTON_PAUSED='mod_minilesson_hidden_player_button_paused';
+const M_HIDDEN_PLAYER_BUTTON_PLAYING='mod_minilesson_hidden_player_button_playing';
+const M_EVALUATED_MESSAGE='mod_minilesson_evaluated_message';
+const M_QR_PLAYER='mod_minilesson_qr_player';
+const M_LINK_BOX='mod_minilesson_link_box';
+const M_LINK_BOX_TITLE='mod_minilesson_link_box_title';
+const M_NOITEMS_MSG='mod_minilesson_noitems_msg';
 
 
     //languages
@@ -212,7 +212,7 @@ const M_PUSH_ALTERNATIVES =2;
 const M_PUSH_QUESTIONS =3;
 const M_PUSH_LEVEL =4;
   
-const M_QUIZ_FINISHED = "mod_poodlltime_quiz_finished";
-const M_QUIZ_REATTEMPT = "mod_poodlltime_quiz_reattempt";
+const M_QUIZ_FINISHED = "mod_minilesson_quiz_finished";
+const M_QUIZ_REATTEMPT = "mod_minilesson_quiz_reattempt";
 
 }

@@ -4,18 +4,18 @@
 <hr>
 <p>
     <a class="btn btn-primary itemscoresbutton" data-toggle="collapse" href="#itemscores" role="button" aria-expanded="false" aria-controls="itemscores">
-        {{#str}}showitemscores, mod_poodlltime{{/str}}
+        {{#str}}showitemscores, mod_minilesson{{/str}}
     </a>
 
 </p>
 <div class="collapse" id="itemscores">
 {{#results}}
-    <div class="mod_poodlltime_result_div">
-        <div class="mod_poodlltime_result_index">{{index}}</div>
-        <div class="mod_poodlltime_result_title">{{title}}</div>
-        <div class="mod_poodlltime_result_score">Score: {{correctitems}}/{{totalitems}}</div>
-        <div class="mod_poodlltime_result_grade">Grade: {{grade}}%</div>
+    <div class="mod_minilesson_result_div">
+        <div class="mod_minilesson_result_index">{{index}}</div>
+        <div class="mod_minilesson_result_title">{{title}}</div>
+        <div class="mod_minilesson_result_score">Score: {{correctitems}}/{{totalitems}}</div>
+        <div class="mod_minilesson_result_grade">Grade: {{grade}}%</div>
     </div>
 {{/results}}
 </div>
-<a class="btn btn-secondary backtocourse center" href="{{{courseurl}}}">{{#str}}backtotop, mod_poodlltime{{/str}}</a>
+<a class="btn btn-secondary backtocourse center" href="{{{courseurl}}}">{{#str}}backtotop, mod_minilesson{{/str}}</a>

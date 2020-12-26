@@ -1,6 +1,6 @@
 <?php
 
-namespace mod_poodlltime\output;
+namespace mod_minilesson\output;
 
 // This file is part of Moodle - http://moodle.org/
 //
@@ -20,12 +20,12 @@ namespace mod_poodlltime\output;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 /**
  * A custom renderer class that extends the plugin_renderer_base.
  *
- * @package mod_poodlltime
+ * @package mod_minilesson
  * @copyright COPYRIGHTNOTICE
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -40,7 +40,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
 		global $CFG;
         $itemid = 0;
 
-        $output = $this->output->heading(get_string("whatdonow", "poodlltime"), 3);
+        $output = $this->output->heading(get_string("whatdonow", "minilesson"), 3);
         $links = array();
 
         $qtypes = [constants::TYPE_MULTICHOICE,constants::TYPE_DICTATIONCHAT,constants::TYPE_DICTATION,constants::TYPE_SPEECHCARDS,
@@ -51,7 +51,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
             $url=
             $data=['wwwroot' => $CFG->wwwroot, 'type'=>$qtype,'itemid'=>$itemid,'cmid'=>$this->page->cm->id,
                     'label'=>get_string('add' . $qtype . 'item', constants::M_COMPONENT)];
-            $links[]= $this->render_from_template('mod_poodlltime/additemlink', $data);
+            $links[]= $this->render_from_template('mod_minilesson/additemlink', $data);
         }
 
      $usingajax=true;
@@ -60,7 +60,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
          $this->page->requires->js_call_amd(constants::M_COMPONENT . '/rsquestionmanager', 'init', array($props));
      }
 
-     return $this->output->box($output.implode("",$links), 'generalbox firstpageoptions mod_poodlltime_link_box_container');
+     return $this->output->box($output.implode("",$links), 'generalbox firstpageoptions mod_minilesson_link_box_container');
 
     }
 
@@ -104,7 +104,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
 	 * @param integer $courseid
 	 * @return string html of table
 	 */
-	function show_items_list($items,$poodlltime,$cm, $visible){
+	function show_items_list($items,$minilesson,$cm, $visible){
 
 		//new code
         $data = [];
@@ -125,13 +125,13 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $data['down']=$down_pix->export_for_pix();
 
 
-        return $this->render_from_template('mod_poodlltime/itemlist', $data);
+        return $this->render_from_template('mod_minilesson/itemlist', $data);
 
 		//old code follows -  for reference only
         //_______________________________________________________
 	
 		$table = new \html_table();
-		$table->id = 'mod_poodlltime_qpanel';
+		$table->id = 'mod_minilesson_qpanel';
 		$table->head = array(
 			get_string('itemname', constants::M_COMPONENT),
 			get_string('itemtype', constants::M_COMPONENT),
@@ -157,7 +157,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
             $itemtypename = get_string($item->type, constants::M_COMPONENT);
             $itemtypecell = new \html_table_cell($itemtypename);
 
-            $actionurl = '/mod/poodlltime/rsquestion/managersquestions.php';
+            $actionurl = '/mod/minilesson/rsquestion/managersquestions.php';
             $editurl = new \moodle_url($actionurl, array('id' => $cm->id, 'itemid' => $item->id));
             $editlink = \html_writer::link($editurl, get_string('edititem', constants::M_COMPONENT));
             $editcell = new \html_table_cell($editlink);

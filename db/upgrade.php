@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file keeps track of upgrades to the poodlltime module
+ * This file keeps track of upgrades to the minilesson module
  *
  * Sometimes, changes between versions involve alterations to database
  * structures and other major things that may break installations. The upgrade
@@ -25,41 +25,41 @@
  * it cannot do itself, it will tell you what you need to do.  The commands in
  * here will all be database-neutral, using the functions defined in DLL libraries.
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 /**
- * Execute poodlltime upgrade from the given old version
+ * Execute minilesson upgrade from the given old version
  *
  * @param int $oldversion
  * @return bool
  */
-function xmldb_poodlltime_upgrade($oldversion) {
+function xmldb_minilesson_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
 
 
 
-    // Add question titles to poodlltime table
+    // Add question titles to minilesson table
     if ($oldversion < 2020090700) {
         $activitytable = new xmldb_table(constants::M_TABLE);
 
 
-        // Define field showqtitles to be added to poodlltime\
+        // Define field showqtitles to be added to minilesson\
         $showqtitles= new xmldb_field('showqtitles', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '1');
 
-        // add showqtitles field to poodlltime table
+        // add showqtitles field to minilesson table
         if (!$dbman->field_exists($activitytable, $showqtitles)) {
             $dbman->add_field($activitytable, $showqtitles);
         }
-        upgrade_mod_savepoint(true, 2020090700, 'poodlltime');
+        upgrade_mod_savepoint(true, 2020090700, 'minilesson');
     }
 
     // Add passagehash to questions table
@@ -67,29 +67,29 @@ function xmldb_poodlltime_upgrade($oldversion) {
         $qtable = new xmldb_table(constants::M_QTABLE);
 
 
-        // Define field showqtitles to be added to poodlltime\
+        // Define field showqtitles to be added to minilesson\
         $field = new xmldb_field('passagehash', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null);
 
-        // add showqtitles field to poodlltime table
+        // add showqtitles field to minilesson table
         if (!$dbman->field_exists($qtable, $field)) {
             $dbman->add_field($qtable, $field);
         }
-        upgrade_mod_savepoint(true, 2020100200, 'poodlltime');
+        upgrade_mod_savepoint(true, 2020100200, 'minilesson');
     }
 
-    // Add rich text prompt flag to poodlltime table
+    // Add rich text prompt flag to minilesson table
     if ($oldversion < 2020122300) {
         $activitytable = new xmldb_table(constants::M_TABLE);
 
 
-        // Define field richtextprompt to be added to poodlltime
+        // Define field richtextprompt to be added to minilesson
         $richtextprompt= new xmldb_field('richtextprompt', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_PROMPT_RICHTEXT);
 
-        // add richtextprompt field to poodlltime table
+        // add richtextprompt field to minilesson table
         if (!$dbman->field_exists($activitytable, $richtextprompt)) {
             $dbman->add_field($activitytable, $richtextprompt);
         }
-        upgrade_mod_savepoint(true, 2020122300, 'poodlltime');
+        upgrade_mod_savepoint(true, 2020122300, 'minilesson');
     }
 
 

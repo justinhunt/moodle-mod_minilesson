@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper'], function($, log, def, polly) {
+define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper'], function($, log, def, polly) {
   "use strict"; // jshint ;_;
 
   /*
@@ -33,7 +33,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
       self.index = index;
       self.quizhelper = quizhelper;
       
-      $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
+      $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
         self.next_question(0);
       });
       
@@ -46,9 +46,9 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'mod_poodlltime/poll
         var checked = $('input[name='+itemdata.uniqueid+'_options]:checked').data('index');
         var percent = checked == itemdata.correctanswer ? 100 : 0;
         
-        $(".poodlltime_nextbutton").prop("disabled", true);
+        $(".minilesson_nextbutton").prop("disabled", true);
         setTimeout(function() {
-          $(".poodlltime_nextbutton").prop("disabled", false);
+          $(".minilesson_nextbutton").prop("disabled", false);
           self.next_question(percent);
         }, 2000);
         

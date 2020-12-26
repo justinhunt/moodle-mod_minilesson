@@ -16,21 +16,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package   mod_poodlltime
+ * @package   mod_minilesson
  * @copyright 2014 Justin Hunt poodllsupport@gmail.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 /**
- * Define all the restore steps that will be used by the restore_poodlltime_activity_task
+ * Define all the restore steps that will be used by the restore_minilesson_activity_task
  */
 
 /**
- * Structure step to restore one poodlltime activity
+ * Structure step to restore one minilesson activity
  */
-class restore_poodlltime_activity_structure_step extends restore_activity_structure_step {
+class restore_minilesson_activity_structure_step extends restore_activity_structure_step {
 
     protected function define_structure() {
 
@@ -42,13 +42,13 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
         // XML interesting paths - non-user data
         ////////////////////////////////////////////////////////////////////////
 
-        // root element describing poodlltime instance
-        $oneactivity = new restore_path_element(constants::M_MODNAME, '/activity/poodlltime');
+        // root element describing minilesson instance
+        $oneactivity = new restore_path_element(constants::M_MODNAME, '/activity/minilesson');
         $paths[] = $oneactivity;
 
         //rsquestions
         $rsquestions = new restore_path_element(constants::M_QTABLE,
-            '/activity/poodlltime/rsquestions/rsquestion');
+            '/activity/minilesson/rsquestions/rsquestion');
         $paths[] = $rsquestions;
 
 		
@@ -63,7 +63,7 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
         ////////////////////////////////////////////////////////////////////////
 		//attempts
 		 $attempts= new restore_path_element(constants::M_ATTEMPTSTABLE,
-                                            '/activity/poodlltime/attempts/attempt');
+                                            '/activity/minilesson/attempts/attempt');
 		$paths[] = $attempts;
 
 
@@ -71,7 +71,7 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function process_poodlltime($data) {
+    protected function process_minilesson($data) {
         global $DB;
 
         $data = (object)$data;
@@ -87,7 +87,7 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
         $this->apply_activity_instance($newitemid);
     }
 
-    protected function process_poodlltime_rsquestions($data) {
+    protected function process_minilesson_rsquestions($data) {
         global $DB;
 
         $data = (object)$data;
@@ -102,7 +102,7 @@ class restore_poodlltime_activity_structure_step extends restore_activity_struct
     }
 
 	
-	protected function process_poodlltime_attempt($data) {
+	protected function process_minilesson_attempt($data) {
         global $DB;
 
         $data = (object)$data;

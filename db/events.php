@@ -17,7 +17,7 @@
 /**
  * event handler definition.
  *
- * @package mod_poodlltime
+ * @package mod_minilesson
  * @category event
  * @copyright 2015 Justin Hunt (poodllsupport@gmail.com)
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -30,6 +30,6 @@ $observers = array(
 
     array(
         'eventname'   => '\core\event\course_deleted',
-        'callback'    => '\mod_poodlltime\event_observer::course_deleted',
+        'callback'    => '\mod_minilesson\event_observer::course_deleted',
     )
 );

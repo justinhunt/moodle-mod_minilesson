@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions'], function ($, log, def) {
+define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, def) {
     "use strict"; // jshint ;_;
     /*
     This file helps you get Polly URLs at runtime
@@ -69,7 +69,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions'], function ($, log, d
                 + "&text=" + encodeURIComponent(speaktext)
                 + '&texttype=' + texttype
                 + '&voice=' + voice
-                + '&appid=' + 'mod_poodlltime'
+                + '&appid=' + 'mod_minilesson'
                 + '&owner=' + that.owner
                 + '&region=' + that.region;
 

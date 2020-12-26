@@ -1,9 +1,9 @@
 /**
  * Add a modal to manage question adding and editing to the page.
  *
- * @module     mod_poodlltime/modalformhelper
+ * @module     mod_minilesson/modalformhelper
  * @class      modalformhelper
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -63,7 +63,7 @@ define(['jquery', 'core/log','core/str', 'core/ajax'],
 
                 // Now we can continue...
                 Ajax.call([{
-                    methodname: 'mod_poodlltime_move_item',
+                    methodname: 'mod_minilesson_move_item',
                     args: {contextid: dd.contextid, itemid: dd.itemid, direction: dd.direction},
                     done: dd.callback(dd.itemid,dd.direction)
                 }]);
@@ -73,7 +73,7 @@ define(['jquery', 'core/log','core/str', 'core/ajax'],
 
         };
 
-        return /** @alias module:mod_poodlltime/modalformhelper */ {
+        return /** @alias module:mod_minilesson/modalformhelper */ {
             // Public variables and functions.
             /**
              * Attach event listeners to initialise this module.

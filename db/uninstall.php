@@ -18,7 +18,7 @@
 /**
  * @see uninstall_plugin()
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com) <your@email.adress>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -26,6 +26,6 @@
 /**
  * Custom uninstallation procedure
  */
-function xmldb_poodlltime_uninstall() {
+function xmldb_minilesson_uninstall() {
     return true;
 }

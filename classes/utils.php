@@ -15,22 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Utils for poodlltime plugin
+ * Utils for minilesson plugin
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- namespace mod_poodlltime;
+ namespace mod_minilesson;
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 
 /**
  * Functions used generally across this mod
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -159,7 +159,7 @@ class utils{
             $result = $DB->update_record(constants::M_ATTEMPTSTABLE, $attempt);
             if($result) {
                 $returndata= '';
-                poodlltime_update_grades($moduleinstance, $USER->id, false);
+                minilesson_update_grades($moduleinstance, $USER->id, false);
             }else{
                 $message = 'unable to update attempt record';
             }
@@ -179,7 +179,7 @@ class utils{
 
         $cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
         $moduleinstance  = $DB->get_record(constants::M_MODNAME, array('id' => $cm->instance), '*', MUST_EXIST);
-        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('poodlltimeid'=>$moduleinstance->id,'userid'=>$USER->id),'id DESC');
+        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('moduleid'=>$moduleinstance->id,'userid'=>$USER->id),'id DESC');
 
         if(!$attempts){
             $latestattempt = self::create_new_attempt($moduleinstance->course, $moduleinstance->id);
@@ -213,7 +213,7 @@ class utils{
             $returndata= '';
             if($newgrade) {
                 require_once($CFG->dirroot . constants::M_PATH . '/lib.php');
-                poodlltime_update_grades($moduleinstance, $USER->id, false);
+                minilesson_update_grades($moduleinstance, $USER->id, false);
             }
         }else{
             $message = 'unable to update attempt record';
@@ -236,12 +236,12 @@ class utils{
     }
 
 
-    public static function create_new_attempt($courseid, $poodlltimeid){
+    public static function create_new_attempt($courseid, $moduleid){
         global $DB,$USER;
 
         $newattempt = new \stdClass();
         $newattempt->courseid = $courseid;
-        $newattempt->poodlltimeid = $poodlltimeid;
+        $newattempt->moduleid = $moduleid;
         $newattempt->status = constants::M_STATE_INCOMPLETE;
         $newattempt->userid = $USER->id;
         $newattempt->timecreated = time();
@@ -300,7 +300,7 @@ class utils{
 
        //First check that we have an API id and secret
         //refresh token
-        $refresh = \html_writer::link($CFG->wwwroot . '/mod/poodlltime/refreshtoken.php',
+        $refresh = \html_writer::link($CFG->wwwroot . '/mod/minilesson/refreshtoken.php',
                 get_string('refreshtoken',constants::M_COMPONENT)) . '<br>';
 
 
@@ -386,7 +386,7 @@ class utils{
                 $token = $resp_object->token;
                 //store the expiry timestamp and adjust it for diffs between our server times
                 if($resp_object->validuntil) {
-                    $validuntil = $resp_object->validuntil - ($resp_object->poodlltime - $now);
+                    $validuntil = $resp_object->validuntil - ($resp_object->minilesson - $now);
                     //we refresh one hour out, to prevent any overlap
                     $validuntil = $validuntil - (1 * HOURSECS);
                 }else{

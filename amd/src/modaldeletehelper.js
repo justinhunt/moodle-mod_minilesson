@@ -1,9 +1,9 @@
 /**
  * Add a create new group modal to the page.
  *
- * @module     mod_poodlltime/modalformhelper
+ * @module     mod_minilesson/modalformhelper
  * @class      modalformhelper
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -75,9 +75,9 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
         TheForm.prototype.preinit = function(selector) {
             var triggers = $(selector);
             var dd=this;
-            Str.get_string(this.formname , 'mod_poodlltime').then(function(title){dd.formtitle=title;});
-            Str.get_string(this.formname + '_message' , 'mod_poodlltime').then(function(message){dd.formmessage=message;});
-            Str.get_string('deletebuttonlabel' , 'mod_poodlltime').then(function(deletebuttonlabel){dd.deletebuttonlabel=deletebuttonlabel;});
+            Str.get_string(this.formname , 'mod_minilesson').then(function(title){dd.formtitle=title;});
+            Str.get_string(this.formname + '_message' , 'mod_minilesson').then(function(message){dd.formmessage=message;});
+            Str.get_string('deletebuttonlabel' , 'mod_minilesson').then(function(deletebuttonlabel){dd.deletebuttonlabel=deletebuttonlabel;});
             $('body').on('click',selector,function(e) {
                 //prevent it doing a real click (which will do the non ajax version of a click)
                 e.preventDefault();
@@ -116,7 +116,7 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
             var dd = this;
             log.debug('deleting:' + dd.formname );
             Ajax.call([{
-                methodname: 'mod_poodlltime_delete_item',
+                methodname: 'mod_minilesson_delete_item',
                 args: {
                     itemid: dd.itemid,
                     contextid: dd.contextid,
@@ -148,7 +148,7 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
 
 
 
-        return /** @alias module:mod_poodlltime/modaldeletehelper */ {
+        return /** @alias module:mod_minilesson/modaldeletehelper */ {
             // Public variables and functions.
             /**
              * Attach event listeners to initialise this module.

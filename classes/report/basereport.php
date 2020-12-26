@@ -1,5 +1,5 @@
 <?php
-namespace mod_poodlltime\report;
+namespace mod_minilesson\report;
 
 
 // This file is part of Moodle - http://moodle.org/
@@ -20,14 +20,14 @@ namespace mod_poodlltime\report;
 /**
  *  Report Classes.
  *
- * @package    mod_poodlltime
- * @copyright  poodlltime
+ * @package    mod_minilesson
+ * @copyright  minilesson
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 
 /**
@@ -38,8 +38,8 @@ use \mod_poodlltime\constants;
  * fetch_formatted_fields: uses data prepared in process_raw_data to make each field in fields full of formatted data
  * The allusers report is the simplest example 
  *
- * @package    mod_poodlltime
- * @copyright  poodlltime
+ * @package    mod_minilesson
+ * @copyright  minilesson
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class basereport {

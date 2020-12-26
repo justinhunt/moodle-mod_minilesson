@@ -15,14 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy Subsystem implementation for mod_poodlltime.
+ * Privacy Subsystem implementation for mod_minilesson.
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2018 Justin Hunt https://poodll.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_poodlltime\privacy;
+namespace mod_minilesson\privacy;
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
@@ -32,7 +32,7 @@ use core_privacy\local\request\deletion_criteria;
 use core_privacy\local\request\helper;
 use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
-use mod_poodlltime\constants;
+use mod_minilesson\constants;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -44,7 +44,7 @@ if (interface_exists('\core_privacy\local\request\core_userlist_provider')) {
 }
 
 /**
- * Privacy Subsystem for mod_poodlltime
+ * Privacy Subsystem for mod_minilesson
  *
  * @copyright  2018 Justin Hunt https://poodll.com
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -69,7 +69,7 @@ class provider implements
 
         $userdetail = [
             'id' => 'privacy:metadata:attemptid',
-            'poodlltimeid' => 'privacy:metadata:poodlltimeid',
+            'moduleid' => 'privacy:metadata:moduleid',
             'userid' => 'privacy:metadata:userid',
             'sessionscore' => 'privacy:metadata:sessionscore',
             'sessiontime' => 'privacy:metadata:sessiontime',
@@ -100,7 +100,7 @@ class provider implements
             INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
             INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
             INNER JOIN {" . constants::M_TABLE . "} actt ON actt.id = cm.instance
-            INNER JOIN {" . constants::M_ATTEMPTSTABLE . "} usert ON usert.poodlltimeid = actt.id
+            INNER JOIN {" . constants::M_ATTEMPTSTABLE . "} usert ON usert.moduleid = actt.id
                  WHERE usert.userid = :theuserid";
         $params = [
                 'contextlevel' => CONTEXT_MODULE,
@@ -133,7 +133,7 @@ class provider implements
                   JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
                   JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                   JOIN  {" . constants::M_TABLE . "} actt ON actt.id = cm.instance
-                  JOIN {" . constants::M_ATTEMPTSTABLE . "} usert ON usert.poodlltimeid = actt.id
+                  JOIN {" . constants::M_ATTEMPTSTABLE . "} usert ON usert.moduleid = actt.id
                  WHERE c.id = :contextid";
 
         $params = [
@@ -172,7 +172,7 @@ class provider implements
                        usert.sessionend,
                        usert.timemodified
                   FROM {" . constants::M_ATTEMPTSTABLE . "} usert
-                  JOIN {" . constants::M_TABLE . "} actt ON usert.poodlltimeid = actt.id
+                  JOIN {" . constants::M_TABLE . "} actt ON usert.moduleid = actt.id
                   JOIN {course_modules} cm ON actt.id = cm.instance
                   JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
                   JOIN {context} c ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
@@ -197,10 +197,10 @@ class provider implements
     }
 
     /**
-     * Export the supplied personal data for a single poodlltime attempt along with any generic data or area files.
+     * Export the supplied personal data for a single minilesson attempt along with any generic data or area files.
      *
      * @param array $attemptdata the personal data to export
-     * @param \context_module $context the context of the poodlltime.
+     * @param \context_module $context the context of the minilesson.
      * @param \stdClass $user the user record
      */
     protected static function export_attempt_data_for_user(array $attemptdata, \context_module $context, \stdClass $user) {
@@ -233,11 +233,11 @@ class provider implements
 
         $instanceid = $cm->instance;
 
-        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['poodlltimeid' => $instanceid], '', 'id');
+        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $instanceid], '', 'id');
 
 
         // Now delete all attempts
-        $DB->delete_records(constants::M_ATTEMPTSTABLE, ['poodlltimeid' => $instanceid]);
+        $DB->delete_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $instanceid]);
     }
 
     /**
@@ -258,7 +258,7 @@ class provider implements
 
                 $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
 
-                $entries = $DB->get_records(constants::M_ATTEMPTSTABLE, ['poodlltimeid' => $instanceid, 'userid' => $userid],
+                $entries = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $instanceid, 'userid' => $userid],
                     '', 'id');
 
                 if (!$entries) {
@@ -268,7 +268,7 @@ class provider implements
                 list($insql, $inparams) = $DB->get_in_or_equal(array_keys($entries), SQL_PARAMS_NAMED);
 
                 // Now delete all user related entries.
-                $DB->delete_records(constants::M_ATTEMPTSTABLE, ['poodlltimeid' => $instanceid, 'userid' => $userid]);
+                $DB->delete_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $instanceid, 'userid' => $userid]);
             }
         }
     }
@@ -286,7 +286,7 @@ class provider implements
         $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
         list($userinsql, $userinparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
 
-        $attemptswhere = "poodlltimeid = :instanceid AND userid {$userinsql}";
+        $attemptswhere = "moduleid = :instanceid AND userid {$userinsql}";
         $userinstanceparams = $userinparams + ['instanceid' => $instanceid];
 
         $attemptsset = $DB->get_recordset_select(constants::M_ATTEMPTSTABLE, $attemptswhere, $userinstanceparams, 'id', 'id');
@@ -304,7 +304,7 @@ class provider implements
 
 
         // Now delete all AI attempt evals.
-        $deletewhere = "poodlltimeid = :instanceid AND userid {$userinsql}";
+        $deletewhere = "moduleid = :instanceid AND userid {$userinsql}";
         $DB->delete_records_select(constants::M_ATTEMPTSTABLE, $deletewhere, $userinstanceparams);
     }
 }

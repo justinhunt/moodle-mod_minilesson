@@ -16,10 +16,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Reports for poodlltime
+ * Reports for minilesson
  *
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,10 +27,10 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // poodlltime instance ID
+$n  = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
 $format = optional_param('format', 'html', PARAM_TEXT); //export format csv or html
 $action = optional_param('action', 'grading', PARAM_TEXT); // report type
 $userid = optional_param('userid', 0, PARAM_INT); // user id
@@ -61,7 +61,7 @@ if ($id) {
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
-require_capability('mod/poodlltime:evaluate', $modulecontext);
+require_capability('mod/minilesson:evaluate', $modulecontext);
 
 //Get an admin settings 
 $config = get_config(constants::M_COMPONENT);
@@ -72,7 +72,7 @@ if($paging->perpage==-1){
 }
 
 // Trigger module viewed event.
-$event = \mod_poodlltime\event\course_module_viewed::create(array(
+$event = \mod_minilesson\event\course_module_viewed::create(array(
    'objectid' => $moduleinstance->id,
    'context' => $modulecontext
 ));
@@ -115,7 +115,7 @@ switch ($action){
 
     //list view of attempts and grades and action links
 	case 'grading':
-		$report = new \mod_poodlltime\report\grading();
+		$report = new \mod_minilesson\report\grading();
 		//formdata should only have simple values, not objects
 		//later it gets turned into urls for the export buttons
 		$formdata = new stdClass();
@@ -125,7 +125,7 @@ switch ($action){
 
     //list view of attempts and grades and action links for a particular user
 	case 'gradingbyuser':
-		$report = new \mod_poodlltime\report\gradingbyuser();
+		$report = new \mod_minilesson\report\gradingbyuser();
 		//formdata should only have simple values, not objects
 		//later it gets turned into urls for the export buttons
 		$formdata = new stdClass();

@@ -2,22 +2,22 @@
 /**
  * External.
  *
- * @package mod_poodlltime
+ * @package mod_minilesson
  * @author  Justin Hunt - poodll.com
  */
 
 
-use mod_poodlltime\utils;
-use mod_poodlltime\constants;
-use mod_poodlltime\diff;
+use mod_minilesson\utils;
+use mod_minilesson\constants;
+use mod_minilesson\diff;
 
 /**
  * External class.
  *
- * @package mod_poodlltime
+ * @package mod_minilesson
  * @author  Justin Hunt - poodll.com
  */
-class mod_poodlltime_external extends external_api {
+class mod_minilesson_external extends external_api {
 
     public static function check_by_phonetic_parameters(){
         return new external_function_parameters(
@@ -168,8 +168,8 @@ class mod_poodlltime_external extends external_api {
         parse_str($serialiseddata, $data);
 
         //get filechooser and html editor options
-        $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($course, $context);
-        $filemanageroptions = \mod_poodlltime\rsquestion\helper::fetch_filemanager_options($course,3);
+        $editoroptions = \mod_minilesson\rsquestion\helper::fetch_editor_options($course, $context);
+        $filemanageroptions = \mod_minilesson\rsquestion\helper::fetch_filemanager_options($course,3);
 
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
@@ -188,7 +188,7 @@ class mod_poodlltime_external extends external_api {
 
 
             case constants::TYPE_MULTICHOICE:
-                $mform = new \mod_poodlltime\rsquestion\multichoiceform(null,
+                $mform = new \mod_minilesson\rsquestion\multichoiceform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),
@@ -197,7 +197,7 @@ class mod_poodlltime_external extends external_api {
                 break;
 
             case constants::TYPE_DICTATIONCHAT:
-                $mform = new \mod_poodlltime\rsquestion\dictationchatform(null,
+                $mform = new \mod_minilesson\rsquestion\dictationchatform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),
@@ -206,7 +206,7 @@ class mod_poodlltime_external extends external_api {
                 break;
 
             case constants::TYPE_DICTATION:
-                $mform = new \mod_poodlltime\rsquestion\dictationform(null,
+                $mform = new \mod_minilesson\rsquestion\dictationform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),
@@ -215,7 +215,7 @@ class mod_poodlltime_external extends external_api {
                 break;
 
             case constants::TYPE_SPEECHCARDS:
-                $mform = new \mod_poodlltime\rsquestion\speechcardsform(null,
+                $mform = new \mod_minilesson\rsquestion\speechcardsform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),
@@ -224,7 +224,7 @@ class mod_poodlltime_external extends external_api {
                 break;
 
             case constants::TYPE_LISTENREPEAT:
-                $mform = new \mod_poodlltime\rsquestion\listenrepeatform(null,
+                $mform = new \mod_minilesson\rsquestion\listenrepeatform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),
@@ -233,7 +233,7 @@ class mod_poodlltime_external extends external_api {
                 break;
 
             case constants::TYPE_PAGE:
-                $mform = new \mod_poodlltime\rsquestion\pageform(null,
+                $mform = new \mod_minilesson\rsquestion\pageform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),
@@ -242,7 +242,7 @@ class mod_poodlltime_external extends external_api {
                 break;
 
             case constants::TYPE_TEACHERTOOLS:
-                $mform = new \mod_poodlltime\rsquestion\teachertoolsform(null,
+                $mform = new \mod_minilesson\rsquestion\teachertoolsform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),
@@ -251,7 +251,7 @@ class mod_poodlltime_external extends external_api {
                 break;
 
             case constants::TYPE_SHORTANSWER:
-                $mform = new \mod_poodlltime\rsquestion\shortanswerform(null,
+                $mform = new \mod_minilesson\rsquestion\shortanswerform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),
@@ -280,9 +280,9 @@ class mod_poodlltime_external extends external_api {
             }else{
                 $olditem=false;
             }
-            $data->passagehash = \mod_poodlltime\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
+            $data->passagehash = \mod_minilesson\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
 
-            $result = \mod_poodlltime\rsquestion\helper::update_insert_question($moduleinstance,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
+            $result = \mod_minilesson\rsquestion\helper::update_insert_question($moduleinstance,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
             if($result->error==true){
                     $ret->message = $result->message;
                 }else{
@@ -326,7 +326,7 @@ class mod_poodlltime_external extends external_api {
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-        $success = \mod_poodlltime\rsquestion\helper::delete_item($moduleinstance,$itemid,$context);
+        $success = \mod_minilesson\rsquestion\helper::delete_item($moduleinstance,$itemid,$context);
 
         $ret = new \stdClass();
         $ret->itemid=$itemid;
@@ -366,7 +366,7 @@ class mod_poodlltime_external extends external_api {
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-        \mod_poodlltime\rsquestion\helper::move_item($moduleinstance,$itemid,$direction);
+        \mod_minilesson\rsquestion\helper::move_item($moduleinstance,$itemid,$direction);
 
         $ret = new \stdClass();
         $ret->itemid=$itemid;

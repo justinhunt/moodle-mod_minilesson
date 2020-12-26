@@ -1,6 +1,6 @@
 /* jshint ignore:start */
-define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definitions','mod_poodlltime/modalformhelper',
-        'mod_poodlltime/modaldeletehelper','mod_poodlltime/moveitemhelper','mod_poodlltime/modalpreviewhelper','mod_poodlltime/datatables'],
+define(['jquery','jqueryui', 'core/log','core/templates','mod_minilesson/definitions','mod_minilesson/modalformhelper',
+        'mod_minilesson/modaldeletehelper','mod_minilesson/moveitemhelper','mod_minilesson/modalpreviewhelper','mod_minilesson/datatables'],
     function($, jqui, log, templates, def, mfh, mdh, mih, mph, datatables) {
 
     "use strict"; // jshint ;_;
@@ -49,7 +49,7 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
         //we wont to show move arrows, but hide arrows the final down and first up
         hide_useless_arrows: function(){
           //first lets show all the arrows
-          $('.mod_poodlltime_item_move').attr('style','');
+          $('.mod_minilesson_item_move').attr('style','');
 
           //if no rows just get out of here.
           var rowcount=this.controls.questionstable.data().length;
@@ -58,12 +58,12 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
           //hide bottom down arrow
           var bottomrowindex=this.rowIds[rowcount];
           var bottomtr = this.controls.questionstable.row(bottomrowindex).node();
-          $(bottomtr).find('.mod_poodlltime_item_move[data-direction="down"]').attr('style','visibility: hidden;');
+          $(bottomtr).find('.mod_minilesson_item_move[data-direction="down"]').attr('style','visibility: hidden;');
 
           //hide top up arrow
           var toprowindex=this.rowIds[1];
           var toptr = this.controls.questionstable.row(toprowindex).node();
-          $(toptr).find('.mod_poodlltime_item_move[data-direction="up"]').attr('style','visibility: hidden;');
+          $(toptr).find('.mod_minilesson_item_move[data-direction="up"]').attr('style','visibility: hidden;');
         },
 
         // we need to renumber rows when we remove one, so we start from there and renumber the next ones
@@ -128,7 +128,7 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
                 item.index = dd.controls.questionstable.data().length+1;
                 item.up = {'key': 't/up','component': 'moodle','title': 'up'};
                 item.down = {'key': 't/down','component': 'moodle','title': 'down'};
-                templates.render('mod_poodlltime/itemlistitem',item).then(
+                templates.render('mod_minilesson/itemlistitem',item).then(
                     function(html,js){
                         //add row move to the last page so we can see the new row if its off page
                         dd.controls.questionstable.row.add($(html)[0]).page('last').draw(false);
@@ -156,7 +156,7 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_poodlltime/definit
             var after_questionpreview= function(itemid) {
                 log.debug('after preview');
                 //we want to remove the question from DOM ... its still there and on subsequent shows, id will match on 2 elements and question will fail to unhide
-                $('#mod_poodlltime_quiz_cont').remove();
+                $('#mod_minilesson_quiz_cont').remove();
             };
 
             //register ajax modal handler

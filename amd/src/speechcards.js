@@ -1,5 +1,5 @@
-define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper',
-  'mod_poodlltime/cloudpoodllloader','mod_poodlltime/ttrecorder'
+define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper',
+  'mod_minilesson/cloudpoodllloader','mod_minilesson/ttrecorder'
 ], function($, jqui, log, Ajax, def, polly, cloudpoodll, ttrecorder) {
   "use strict"; // jshint ;_;
 
@@ -53,9 +53,9 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
 
         init_controls: function() {
           app.controls = {};
-          app.controls.star_rating = $("#" + itemdata.uniqueid + "_container .poodlltime_star_rating");
-          app.controls.next_button = $("#" + itemdata.uniqueid + "_container .poodlltime-speechcards_nextbutton");
-          app.controls.slider = $("#" + itemdata.uniqueid + "_container .poodlltime_speechcards_target_phrase");
+          app.controls.star_rating = $("#" + itemdata.uniqueid + "_container .minilesson_star_rating");
+          app.controls.next_button = $("#" + itemdata.uniqueid + "_container .minilesson-speechcards_nextbutton");
+          app.controls.slider = $("#" + itemdata.uniqueid + "_container .minilesson_speechcards_target_phrase");
         },
         next_question: function() {
           var stepdata = {};
@@ -68,7 +68,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
         },
         register_events: function() {
 
-          $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
+          $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
             app.next_question();
           });
 
@@ -146,7 +146,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
              ttrecorder.clone().init(opts);
          }else{
              //init cloudpoodll push recorder
-             cloudpoodll.init('poodlltime-recorder-speechcards-' + itemdata.id, theCallback);
+             cloudpoodll.init('minilesson-recorder-speechcards-' + itemdata.id, theCallback);
          }
 
 
@@ -245,7 +245,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
         checkByPhonetic: function(spoken, correct) {
 
           return Ajax.call([{
-            'methodname': 'mod_poodlltime_check_by_phonetic',
+            'methodname': 'mod_minilesson_check_by_phonetic',
             'args': {
               'spoken': spoken,
               'correct': correct,
@@ -338,7 +338,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_poodlltime/definitio
             code += '<i style="color:' + color + ';" class="fa fa-circle"></i>';
           });
 
-          $("#" + itemdata.uniqueid + "_container .poodlltime_progress_dots").html(code);
+          $("#" + itemdata.uniqueid + "_container .minilesson_progress_dots").html(code);
 
         },
       }; //end of app definition

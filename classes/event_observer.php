@@ -15,23 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Event observer for poodlltime plugin
+ * Event observer for minilesson plugin
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- namespace mod_poodlltime;
+ namespace mod_minilesson;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 
 /**
- * Event observer for mod_poodlltime
+ * Event observer for mod_minilesson
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -47,7 +47,7 @@ class event_observer{
        global $DB;
 		//constants::M_TABLE should be deleted elsewhere
         $ret = $DB->delete_records(constants::M_ATTEMPTSTABLE,array('courseid'=>$event->objectid));
-        $ret = $DB->delete_records_select(constants::M_QTABLE, "poodlltime IN (SELECT id from {" . constants::M_TABLE . "} WHERE course = :course)",
+        $ret = $DB->delete_records_select(constants::M_QTABLE, "minilesson IN (SELECT id from {" . constants::M_TABLE . "} WHERE course = :course)",
                 array('course'=>$event->objectid));
 		return $ret;
 	}

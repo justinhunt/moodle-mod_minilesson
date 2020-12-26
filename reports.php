@@ -16,10 +16,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Reports for poodlltime
+ * Reports for minilesson
  *
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,11 +27,11 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // poodlltime instance ID
+$n  = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
 $format = optional_param('format', 'html', PARAM_TEXT); //export format csv or html
 $showreport = optional_param('report', 'menu', PARAM_TEXT); // report type
 $userid = optional_param('userid', 0, PARAM_INT); // report type
@@ -61,7 +61,7 @@ $PAGE->set_url(constants::M_URL . '/reports.php',
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
-require_capability('mod/poodlltime:evaluate', $modulecontext);
+require_capability('mod/minilesson:evaluate', $modulecontext);
 
 //Get an admin settings 
 $config = get_config(constants::M_COMPONENT);
@@ -74,7 +74,7 @@ if($paging->perpage==-1){
 
 
 // Trigger module viewed event.
-$event = \mod_poodlltime\event\course_module_viewed::create(array(
+$event = \mod_minilesson\event\course_module_viewed::create(array(
    'objectid' => $moduleinstance->id,
    'context' => $modulecontext
 ));
@@ -120,7 +120,7 @@ switch ($showreport){
 		return;
 
 	case 'basic':
-		$report = new \mod_poodlltime\report\basic();
+		$report = new \mod_minilesson\report\basic();
 		//formdata should only have simple values, not objects
 		//later it gets turned into urls for the export buttons
 		$formdata = new stdClass();
@@ -128,7 +128,7 @@ switch ($showreport){
 
     //list view of attempts and grades and action links
     case 'attempts':
-        $report = new \mod_poodlltime\report\attempts();
+        $report = new \mod_minilesson\report\attempts();
         $formdata = new stdClass();
         $formdata->moduleid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
@@ -137,7 +137,7 @@ switch ($showreport){
 
     //list view of attempts and grades and action links
     case 'attemptresults':
-        $report = new \mod_poodlltime\report\attemptresults();
+        $report = new \mod_minilesson\report\attemptresults();
         $formdata = new stdClass();
         $formdata->moduleid = $moduleinstance->id;
         $formdata->attemptid = $attemptid;
@@ -148,19 +148,19 @@ switch ($showreport){
     //list view of attempts and grades and action links
     //same as "grading" mainly. Just for report not action purposes
 	case 'gradereport':
-		$report = new \mod_poodlltime\report\gradereport();
+		$report = new \mod_minilesson\report\gradereport();
 		$formdata = new stdClass();
-		$formdata->poodlltimeid = $moduleinstance->id;
+		$formdata->moduleid = $moduleinstance->id;
 		$formdata->modulecontextid = $modulecontext->id;
 		break;
 
     //list view of attempts and grades and action links
     case 'grading':
-        $report = new \mod_poodlltime\report\grading();
+        $report = new \mod_minilesson\report\grading();
         //formdata should only have simple values, not objects
         //later it gets turned into urls for the export buttons
         $formdata = new stdClass();
-        $formdata->poodlltimeid = $moduleinstance->id;
+        $formdata->moduleid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
         break;
 

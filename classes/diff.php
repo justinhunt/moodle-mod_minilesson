@@ -6,12 +6,12 @@
  * A class containing functions for computing diffs between reading passage and audio transcript
  * This mght be hard to follow, but its documented as well as I could
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2018 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_poodlltime;
+namespace mod_minilesson;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -459,7 +459,7 @@ public static function fetchAlternativesArray($thealternates)
 
         //ii) sort sequences by length, transcript posn
         //long sequences sort higher, and are placed in the diff array first
-        usort($sequences, array('\mod_poodlltime\diff','cmp'));
+        usort($sequences, array('\mod_minilesson\diff','cmp'));
 
         //record prior sequences for iii)
         $priorsequences=array();

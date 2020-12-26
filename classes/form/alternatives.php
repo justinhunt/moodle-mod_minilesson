@@ -1,6 +1,6 @@
 <?php
 
-namespace mod_poodlltime\form;
+namespace mod_minilesson\form;
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -25,7 +25,7 @@ namespace mod_poodlltime\form;
 /**
  * Form for Alternatives
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @author     Justin Hunt <poodllsupport@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
  * @copyright  (C) 1999 onwards Justin Hunt  http://poodll.com
@@ -34,7 +34,7 @@ namespace mod_poodlltime\form;
 //why do we need to include this?
 require_once($CFG->libdir . '/formslib.php');
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 /**
  * Abstract class that item type's inherit from.

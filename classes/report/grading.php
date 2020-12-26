@@ -6,10 +6,10 @@
  * Time: 20:52
  */
 
-namespace mod_poodlltime\report;
+namespace mod_minilesson\report;
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 class grading extends basereport
 {
@@ -35,7 +35,7 @@ class grading extends basereport
                 $ret = fullname($user);
                 if ($withlinks) {
                     $link = new \moodle_url(constants::M_URL . '/grading.php',
-                        array('action' => 'gradingbyuser', 'n' => $record->poodlltimeid, 'userid' => $record->userid));
+                        array('action' => 'gradingbyuser', 'n' => $record->moduleid, 'userid' => $record->userid));
                     $ret = \html_writer::link($link, $ret);
                 }
                 break;
@@ -44,7 +44,7 @@ class grading extends basereport
                 $ret = $record->totalattempts;
                 if ($withlinks) {
                     $link = new \moodle_url(constants::M_URL . '/grading.php',
-                        array('action' => 'gradingbyuser', 'n' => $record->poodlltimeid, 'userid' => $record->userid));
+                        array('action' => 'gradingbyuser', 'n' => $record->moduleid, 'userid' => $record->userid));
                     $ret = \html_writer::link($link, $ret);
                 }
                 break;
@@ -56,7 +56,7 @@ class grading extends basereport
                 $ret = $record->sessionscore;
                 if ($withlinks) {
                     $link = new \moodle_url(constants::M_URL . '/reports.php',
-                            array('report' => 'attemptresults', 'n' => $record->poodlltimeid, 'attemptid' => $record->id));
+                            array('report' => 'attemptresults', 'n' => $record->moduleid, 'attemptid' => $record->id));
                     $ret = \html_writer::link($link, $ret);
                 }
 
@@ -70,7 +70,7 @@ class grading extends basereport
             case 'deletenow':
                 if ($withlinks) {
                     $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                        array('action' => 'delete', 'n' => $record->poodlltimeid, 'attemptid' => $record->id, 'source' => $this->report));
+                        array('action' => 'delete', 'n' => $record->moduleid, 'attemptid' => $record->id, 'source' => $this->report));
                     $btn = new \single_button($url, get_string('delete'), 'post');
                     $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_COMPONENT));
                     $ret = $OUTPUT->render($btn);
@@ -115,7 +115,7 @@ class grading extends basereport
 
         //if we are not machine grading the SQL is simpler
         $human_sql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id " .
-                " WHERE tu.poodlltimeid=? AND tu.status=" . constants::M_STATE_COMPLETE .
+                " WHERE tu.moduleid=? AND tu.status=" . constants::M_STATE_COMPLETE .
             " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
 
         $alldata =$DB->get_records_sql($human_sql, array($formdata->moduleid));

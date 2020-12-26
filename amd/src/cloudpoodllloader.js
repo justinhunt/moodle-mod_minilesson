@@ -1,7 +1,7 @@
 /**
  * CloudPoodll Loader module.
  *
- * @package mod_poodlltime
+ * @package mod_minilesson
  * @author  Justin Hunt - Poodll.com
  */
 define(['jquery','core/log','https://cdn.jsdelivr.net/gh/justinhunt/cloudpoodll@latest/amd/build/cloudpoodll.min.js'], function($,log,CloudPoodll){
@@ -21,7 +21,7 @@ define(['jquery','core/log','https://cdn.jsdelivr.net/gh/justinhunt/cloudpoodll@
                     }
                 };
                 $( "iframe" ).on("load",function(){
-                    $(".mod_poodlltime_recording_cont").css('background-image','none');
+                    $(".mod_minilesson_recording_cont").css('background-image','none');
                 });
             }
         }

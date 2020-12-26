@@ -21,12 +21,12 @@
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/// Replace poodlltime with the name of your module and remove this line
+/// Replace minilesson with the name of your module and remove this line
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
@@ -37,19 +37,19 @@ $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 
 require_course_login($course);
 
-add_to_log($course->id, 'poodlltime', 'view all', 'index.php?id='.$course->id, '');
+add_to_log($course->id, 'minilesson', 'view all', 'index.php?id='.$course->id, '');
 
 $coursecontext = context_course::instance($course->id);
 
-$PAGE->set_url('/mod/poodlltime/index.php', array('id' => $id));
+$PAGE->set_url('/mod/minilesson/index.php', array('id' => $id));
 $PAGE->set_title(format_string($course->fullname));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($coursecontext);
 
 echo $OUTPUT->header();
 
-if (! $poodlltimes = get_all_instances_in_course('poodlltime', $course)) {
-    notice(get_string('nopoodlltimes', 'poodlltime'), new moodle_url('/course/view.php', array('id' => $course->id)));
+if (! $minilessons = get_all_instances_in_course('minilesson', $course)) {
+    notice(get_string('nominilessons', 'minilesson'), new moodle_url('/course/view.php', array('id' => $course->id)));
 }
 
 $table = new html_table();
@@ -64,25 +64,25 @@ if ($course->format == 'weeks') {
     $table->align = array('left', 'left', 'left');
 }
 
-foreach ($poodlltimes as $poodlltime) {
-    if (!$poodlltime->visible) {
+foreach ($minilessons as $minilesson) {
+    if (!$minilesson->visible) {
         $link = html_writer::link(
-            new moodle_url('/mod/poodlltime/view.php', array('id' => $poodlltime->coursemodule)),
-            format_string($poodlltime->name, true),
+            new moodle_url('/mod/minilesson/view.php', array('id' => $minilesson->coursemodule)),
+            format_string($minilesson->name, true),
             array('class' => 'dimmed'));
     } else {
         $link = html_writer::link(
-            new moodle_url('/mod/poodlltime/view.php', array('id' => $poodlltime->coursemodule)),
-            format_string($poodlltime->name, true));
+            new moodle_url('/mod/minilesson/view.php', array('id' => $minilesson->coursemodule)),
+            format_string($minilesson->name, true));
     }
 
     if ($course->format == 'weeks' or $course->format == 'topics') {
-        $table->data[] = array($poodlltime->section, $link);
+        $table->data[] = array($minilesson->section, $link);
     } else {
         $table->data[] = array($link);
     }
 }
 
-echo $OUTPUT->heading(get_string('modulenameplural', 'poodlltime'), 2);
+echo $OUTPUT->heading(get_string('modulenameplural', 'minilesson'), 2);
 echo html_writer::table($table);
 echo $OUTPUT->footer();

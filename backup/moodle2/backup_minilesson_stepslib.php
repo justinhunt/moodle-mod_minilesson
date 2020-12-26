@@ -16,9 +16,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines all the backup steps that will be used by {@link backup_poodlltime_activity_task}
+ * Defines all the backup steps that will be used by {@link backup_minilesson_activity_task}
  *
- * @package     mod_poodlltime
+ * @package     mod_minilesson
  * @category    backup
  * @copyright   2015 Justin Hunt (poodllsupport@gmail.com)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -26,16 +26,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 /**
  * Defines the complete webquest structure for backup, with file and id annotations
  *
  */
-class backup_poodlltime_activity_structure_step extends backup_activity_structure_step {
+class backup_minilesson_activity_structure_step extends backup_activity_structure_step {
 
     /**
-     * Defines the structure of the poodlltime element inside the webquest.xml file
+     * Defines the structure of the minilesson element inside the webquest.xml file
      *
      * @return backup_nested_element
      */
@@ -48,7 +48,7 @@ class backup_poodlltime_activity_structure_step extends backup_activity_structur
         // XML nodes declaration - non-user data
         ////////////////////////////////////////////////////////////////////////
 
-        // root element describing poodlltime instance
+        // root element describing minilesson instance
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
             'course','name','intro','introformat','timelimit',
                 //'welcome','welcomeformat',

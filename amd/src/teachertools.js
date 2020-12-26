@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions'], function($, log, def) {
+define(['jquery', 'core/log', 'mod_minilesson/definitions'], function($, log, def) {
   "use strict"; // jshint ;_;
 
   /*
@@ -33,7 +33,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions'], function($, log, de
       self.index = index;
       self.quizhelper = quizhelper;
       
-      $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
+      $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
         self.next_question(0);
       });
       

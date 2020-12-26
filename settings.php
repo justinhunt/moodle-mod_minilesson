@@ -16,19 +16,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * poodlltime module admin settings and defaults
+ * minilesson module admin settings and defaults
  *
  * @package    mod
- * @subpackage poodlltime
+ * @subpackage minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot.'/mod/poodlltime/lib.php');
+require_once($CFG->dirroot.'/mod/minilesson/lib.php');
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 if ($ADMIN->fulltree) {
 
@@ -48,12 +48,12 @@ if ($ADMIN->fulltree) {
         get_string('apisecret', constants::M_COMPONENT),$tokeninfo , '', PARAM_TEXT));
 
 
-    $regions = \mod_poodlltime\utils::get_region_options();
+    $regions = \mod_minilesson\utils::get_region_options();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/awsregion',
             get_string('awsregion', constants::M_COMPONENT), '', 'useast1', $regions));
 
 
-	 $langoptions = \mod_poodlltime\utils::get_lang_options();
+	 $langoptions = \mod_minilesson\utils::get_lang_options();
 	 $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/ttslanguage',
              get_string('ttslanguage', constants::M_COMPONENT), '', 'en-US', $langoptions));
 
@@ -62,7 +62,7 @@ if ($ADMIN->fulltree) {
         get_string('itemsperpage', constants::M_COMPONENT), get_string('itemsperpage_details', constants::M_COMPONENT), 10, PARAM_INT));
 
 
-    $promptstyle = \mod_poodlltime\utils::get_prompttype_options();
+    $promptstyle = \mod_minilesson\utils::get_prompttype_options();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/prompttype',
             get_string('prompttype', constants::M_COMPONENT), '', constants::M_PROMPT_SEPARATE, $promptstyle));
 

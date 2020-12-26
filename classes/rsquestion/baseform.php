@@ -1,6 +1,6 @@
 <?php
 
-namespace mod_poodlltime\rsquestion;
+namespace mod_minilesson\rsquestion;
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //
@@ -23,9 +23,9 @@ namespace mod_poodlltime\rsquestion;
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- * Forms for poodlltime Activity
+ * Forms for minilesson Activity
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @author     Justin Hunt <poodllsupport@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL
  * @copyright  (C) 1999 onwards Justin Hunt  http://poodll.com
@@ -34,8 +34,8 @@ namespace mod_poodlltime\rsquestion;
 //why do we need to include this?
 require_once($CFG->libdir . '/formslib.php');
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 /**
  * Abstract class that item type's inherit from.
@@ -330,7 +330,7 @@ abstract class baseform extends \moodleform {
      *
      * @return bool
      */
-    public function construction_override($itemid,  $poodlltime) {
+    public function construction_override($itemid,  $minilesson) {
         return true;
     }
 }

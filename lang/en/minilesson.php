@@ -3,48 +3,48 @@
 
 
 /**
- * English strings for Pico Lesson
+ * English strings for Mini Lesson
  *
  * You can have a rather longer description of the file as well,
  * if you like, and it can span multiple lines.
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'Pico Lesson';
-$string['modulenameplural'] = 'Pico Lessons';
-$string['modulename_help'] = 'Pico Lesson is a simple quiz activity with question types suited towards language learners.';
-$string['poodlltimefieldset'] = 'Custom example fieldset';
-$string['poodlltimename'] = 'Pico Lesson';
-$string['poodlltimename_help'] = 'This is the content of the help tooltip associated with the Pico Lesson name field. Markdown syntax is supported.';
-$string['poodlltime'] = 'Pico Lesson';
+$string['modulename'] = 'Mini Lesson';
+$string['modulenameplural'] = 'Mini Lessons';
+$string['modulename_help'] = 'Mini Lesson is a simple quiz activity with question types suited towards language learners.';
+$string['minilessonfieldset'] = 'Custom example fieldset';
+$string['minilessonname'] = 'Mini Lesson';
+$string['minilessonname_help'] = 'This is the content of the help tooltip associated with the Mini Lesson name field. Markdown syntax is supported.';
+$string['minilesson'] = 'Mini Lesson';
 $string['activitylink'] = 'Link to next activity';
 $string['activitylink_help'] = 'To provide a link after the attempt to another activity in the course, select the activity from the dropdown list.';
 $string['activitylinkname'] = 'Continue to next activity: {$a}';
-$string['pluginadministration'] = 'Pico Lesson Administration';
-$string['pluginname'] = 'Pico Lesson Activity';
+$string['pluginadministration'] = 'Mini Lesson Administration';
+$string['pluginname'] = 'Mini Lesson Activity';
 $string['someadminsetting'] = 'Some Admin Setting';
 $string['someadminsetting_details'] = 'More info about Some Admin Setting';
 $string['someinstancesetting'] = 'Some Instance Setting';
 $string['someinstancesetting_details'] = 'More infor about Some Instance Setting';
-$string['poodlltimesettings'] = 'Pico Lesson settings';
-$string['poodlltime:addinstance'] = 'Add a new Pico Lesson';
-$string['poodlltime:view'] = 'View Pico Lesson';
-$string['poodlltime:view'] = 'Preview Pico Lesson';
-$string['poodlltime:itemview'] = 'View questions';
-$string['poodlltime:itemedit'] = 'Edit questions';
-$string['poodlltime:tts'] = 'Can use Text To Speech(tts)';
-$string['poodlltime:managequestions'] = 'Can manage questions';
-$string['poodlltime:canmanageattempts'] = 'Can manage Pico Lesson attempts';
-$string['poodlltime:manage'] = 'Can manage Pico Lesson instances';
-$string['poodlltime:canpreview'] = 'Can preview Pico Lesson activities';
-$string['poodlltime:evaluate'] = 'Can evaluate student Pico Lesson attempts';
-$string['poodlltime:submit'] = 'Can submit Pico Lesson attempts';
-$string['privacy:metadata'] = 'The Poodll Pico Lesson plugin does store personal data.';
+$string['minilessonsettings'] = 'Mini Lesson settings';
+$string['minilesson:addinstance'] = 'Add a new Mini Lesson';
+$string['minilesson:view'] = 'View Mini Lesson';
+$string['minilesson:view'] = 'Preview Mini Lesson';
+$string['minilesson:itemview'] = 'View questions';
+$string['minilesson:itemedit'] = 'Edit questions';
+$string['minilesson:tts'] = 'Can use Text To Speech(tts)';
+$string['minilesson:managequestions'] = 'Can manage questions';
+$string['minilesson:canmanageattempts'] = 'Can manage Mini Lesson attempts';
+$string['minilesson:manage'] = 'Can manage Mini Lesson instances';
+$string['minilesson:canpreview'] = 'Can preview Mini Lesson activities';
+$string['minilesson:evaluate'] = 'Can evaluate student Mini Lesson attempts';
+$string['minilesson:submit'] = 'Can submit Mini Lesson attempts';
+$string['privacy:metadata'] = 'The Poodll Mini Lesson plugin does store personal data.';
 
 // App.
 $string['aisreading'] = '{$a} is reading...';
@@ -108,11 +108,11 @@ $string['gradelatest'] ='score of latest attempt';
 $string['gradeaverage'] ='average score of all attempts';
 $string['defaultsettings'] ='Default Settings';
 $string['exceededattempts'] ='You have completed the maximum {$a} attempts.';
-$string['poodlltimetask'] ='Pico Lesson Task';
+$string['minilessontask'] ='Mini Lesson Task';
 $string['welcomelabel'] ='Default Welcome';
-$string['welcomelabel_details'] ='The default text to show in the welcome field when creating a new Pico Lesson activity.';
+$string['welcomelabel_details'] ='The default text to show in the welcome field when creating a new Mini Lesson activity.';
 $string['feedbacklabel'] ='Default Feedback';
-$string['feedbacklabel_details'] ='The default text to show in the feedback field when creating a new Pico Lesson activity.';
+$string['feedbacklabel_details'] ='The default text to show in the feedback field when creating a new Mini Lesson activity.';
 $string['welcomelabel'] = 'Welcome Message';
 $string['feedbacklabel'] = 'Feedback Message';
 $string['alternatives']='Alternatives';
@@ -270,11 +270,11 @@ $string['grader_human']='Human';
 $string['grader_ungraded']='Ungraded';
 
 $string['displaysubs'] = '{$a->subscriptionname} : expires {$a->expiredate}';
-$string['noapiuser'] = "No API user entered. Pico Lesson will not work correctly.";
-$string['noapisecret'] = "No API secret entered. Pico Lesson will not work correctly.";
+$string['noapiuser'] = "No API user entered. Mini Lesson will not work correctly.";
+$string['noapisecret'] = "No API secret entered. Mini Lesson will not work correctly.";
 $string['credentialsinvalid'] = "The API user and secret entered could not be used to get access. Please check them.";
-$string['appauthorised']= "Poodll Pico Lesson is authorised for this site.";
-$string['appnotauthorised']= "Poodll Pico Lesson is NOT authorised for this site.";
+$string['appauthorised']= "Poodll Mini Lesson is authorised for this site.";
+$string['appnotauthorised']= "Poodll Mini Lesson is NOT authorised for this site.";
 $string['refreshtoken']= "Refresh license information";
 $string['notokenincache']= "Refresh to see license information. Contact Poodll support if there is a problem.";
 //these errors are displayed on activity page
@@ -282,19 +282,19 @@ $string['nocredentials'] = 'API user and secret not entered. Please enter them o
 $string['novalidcredentials'] = 'API user and secret were rejected and could not gain access. Please check them on <a href="{$a}">the settings page.</a> You can get them from <a href="https://poodll.com/member">Poodll.com.</a>';
 $string['nosubscriptions'] = "There is no current subscription for this site/plugin.";
 
-$string['privacy:metadata:attemptid']='The unique identifier of a users Pico Lesson attempt.';
-$string['privacy:metadata:poodlltimeid']='The unique identifier of a Pico Lesson activity instance.';
-$string['privacy:metadata:userid']='The user id for the Pico Lesson attempt';
+$string['privacy:metadata:attemptid']='The unique identifier of a users Mini Lesson attempt.';
+$string['privacy:metadata:minilessonid']='The unique identifier of a Mini Lesson activity instance.';
+$string['privacy:metadata:userid']='The user id for the Mini Lesson attempt';
 $string['privacy:metadata:sessionscore']='The session score for the attempt';
 $string['privacy:metadata:sessiontime']='The session time(recording time) for the attempt';
 $string['privacy:metadata:sessiondata']='The session data for the attempt';
 $string['privacy:metadata:sessionend']='The sessionend for the attempt';
 $string['privacy:metadata:timemodified']='The last time attempt was modified for the attempt';
-$string['privacy:metadata:attempttable']='Stores the scores and other user data associated with a Pico Lesson attempt.';
+$string['privacy:metadata:attempttable']='Stores the scores and other user data associated with a Mini Lesson attempt.';
 $string['privacy:metadata:transcriptpurpose']='The recording short transcripts.';
 $string['privacy:metadata:fulltranscriptpurpose']='The full transcripts of recordings.';
-$string['privacy:metadata:cloudpoodllcom:userid']='The Pico Lesson plugin includes the moodle userid in the urls of recordings and transcripts';
-$string['privacy:metadata:cloudpoodllcom']='The Pico Lesson plugin stores recordings in AWS S3 buckets via cloud.poodll.com.';
+$string['privacy:metadata:cloudpoodllcom:userid']='The Mini Lesson plugin includes the moodle userid in the urls of recordings and transcripts';
+$string['privacy:metadata:cloudpoodllcom']='The Mini Lesson plugin stores recordings in AWS S3 buckets via cloud.poodll.com.';
 
 //rsquestions
 $string['durationgradesettings'] = 'Grade Settings ';
@@ -345,8 +345,8 @@ $string['gotoactivity'] = 'Start Activity';
 $string['tryactivityagain'] = 'Try Again';
 $string['shuffleanswers'] = 'Shuffle Answers';
 $string['shufflequestions'] = 'Shuffle Questions';
-$string['poodlltime:itemview'] = 'View items';
-$string['poodlltime:itemedit'] = 'Edit items';
+$string['minilesson:itemview'] = 'View items';
+$string['minilesson:itemedit'] = 'Edit items';
 $string['fbquestionname'] = 'Item';
 $string['correct'] = 'Correct';
 $string['avgcorrect'] = 'Av. Correct';

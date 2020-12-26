@@ -1,6 +1,6 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'core/ajax', 'mod_poodlltime/pollyhelper',
-    'mod_poodlltime/dictation', 'mod_poodlltime/dictationchat', 'mod_poodlltime/multichoice', 'mod_poodlltime/speechcards', 'mod_poodlltime/listenrepeat',
-        'mod_poodlltime/page','mod_poodlltime/teachertools','mod_poodlltime/shortanswer'],
+define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'core/ajax', 'mod_minilesson/pollyhelper',
+    'mod_minilesson/dictation', 'mod_minilesson/dictationchat', 'mod_minilesson/multichoice', 'mod_minilesson/speechcards', 'mod_minilesson/listenrepeat',
+        'mod_minilesson/page','mod_minilesson/teachertools','mod_minilesson/shortanswer'],
   function($, log, def, templates, Ajax, polly, dictation, dictationchat, multichoice, speechcards, listenrepeat, page, teachertools, shortanswer) {
     "use strict"; // jshint ;_;
 
@@ -14,7 +14,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
       
 
       controls: {},
-      submitbuttonclass: 'mod_poodlltime_quizsubmitbutton',
+      submitbuttonclass: 'mod_minilesson_quizsubmitbutton',
       stepresults: [],
 
       init: function(quizcontainer, activitydata, cmid, attemptid) {
@@ -34,7 +34,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
       prepare_html: function() {
 
         // this.controls.quizcontainer.append(submitbutton);
-        this.controls.quizfinished=$("#mod_poodlltime_quiz_finished");
+        this.controls.quizfinished=$("#mod_minilesson_quiz_finished");
 
       },
 
@@ -91,10 +91,10 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
         if(total<6) {
             var slice = array.slice(0, 5);
             var linestyles = "width: " + (100 - 100 / slice.length) + "%; margin-left: auto; margin-right: auto";
-            var html = "<div class='poodlltime_quiz_progress_line' style='" + linestyles + "'></div>";
+            var html = "<div class='minilesson_quiz_progress_line' style='" + linestyles + "'></div>";
 
             slice.forEach(function (i) {
-                html += "<div class='poodlltime_quiz_progress_item " + (i == current ? 'poodlltime_quiz_progress_item_current' : '') + " " + (i < current ? 'poodlltime_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
+                html += "<div class='minilesson_quiz_progress_item " + (i == current ? 'minilesson_quiz_progress_item_current' : '') + " " + (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
             });
         }else {
              if(current > total-6){
@@ -109,16 +109,16 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
               }else {
                   var linestyles = "width: " + (100 - 100 / (2 *slice.length)) + "%; margin-left: 0";
               }
-            var html = "<div class='poodlltime_quiz_progress_line' style='" + linestyles + "'></div>";
+            var html = "<div class='minilesson_quiz_progress_line' style='" + linestyles + "'></div>";
               slice.forEach(function (i) {
-                  html += "<div class='poodlltime_quiz_progress_item " + (i == current ? 'poodlltime_quiz_progress_item_current' : '') + " " + (i < current ? 'poodlltime_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
+                  html += "<div class='minilesson_quiz_progress_item " + (i == current ? 'minilesson_quiz_progress_item_current' : '') + " " + (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
               });
               //end marker
-            html += "<div class='poodlltime_quiz_progress_finalitem'>" + (total) + "</div>";
+            html += "<div class='minilesson_quiz_progress_finalitem'>" + (total) + "</div>";
           }
 
         html+="";
-        $(".poodlltime_quiz_progress").html(html);
+        $(".minilesson_quiz_progress").html(html);
 
       },
 
@@ -168,7 +168,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
           });
           var totalpercent = Math.round((correctitems/totalitems)*100);
           console.log(results,correctitems,totalitems,totalpercent);
-          templates.render('mod_poodlltime/quizfinished',{results:results,total:totalpercent, courseurl: this.courseurl}).then(
+          templates.render('mod_minilesson/quizfinished',{results:results,total:totalpercent, courseurl: this.courseurl}).then(
               function(html,js){
                   dd.controls.quizfinished.html(html);
                   dd.controls.quizfinished.show();
@@ -189,7 +189,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions', 'core/templates', 'c
 
         //push results to server
         Ajax.call([{
-          methodname: 'mod_poodlltime_report_step_grade',
+          methodname: 'mod_minilesson_report_step_grade',
           args: {
             cmid: dd.cmid,
             step: JSON.stringify(stepdata),

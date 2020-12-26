@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/ttaudiohelper', 'core/notification'], function ($, log, audioHelper, notification) {
+define(['jquery', 'core/log', 'mod_minilesson/ttaudiohelper', 'core/notification'], function ($, log, audioHelper, notification) {
     "use strict"; // jshint ;_;
     /*
     *  The TT recorder

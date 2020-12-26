@@ -18,59 +18,59 @@
 /**
  * Provides the interface for overall managing of items
  *
- * @package mod_poodlltime
+ * @package mod_minilesson
  * @copyright  2014 Justin Hunt  {@link http://poodll.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
 require_once('../../../config.php');
-require_once($CFG->dirroot.'/mod/poodlltime/lib.php');
+require_once($CFG->dirroot.'/mod/minilesson/lib.php');
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 
 $id = required_param('id', PARAM_INT);
 
-$cm = get_coursemodule_from_id('poodlltime', $id, 0, false, MUST_EXIST);
+$cm = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-//$poodlltime = new poodlltime($DB->get_record('poodlltime', array('id' => $cm->instance), '*', MUST_EXIST));
-$poodlltime = $DB->get_record('poodlltime', array('id' => $cm->instance), '*', MUST_EXIST);
+//$minilesson = new minilesson($DB->get_record('minilesson', array('id' => $cm->instance), '*', MUST_EXIST));
+$minilesson = $DB->get_record('minilesson', array('id' => $cm->instance), '*', MUST_EXIST);
 
-$comprehensiontest = new \mod_poodlltime\comprehensiontest($cm);
+$comprehensiontest = new \mod_minilesson\comprehensiontest($cm);
 $items = $comprehensiontest->fetch_items();
 
 //mode is necessary for tabs
 $mode='rsquestions';
 //Set page url before require login, so post login will return here
-$PAGE->set_url('/mod/poodlltime/rsquestion/rsquestions.php', array('id'=>$cm->id,'mode'=>$mode));
+$PAGE->set_url('/mod/minilesson/rsquestion/rsquestions.php', array('id'=>$cm->id,'mode'=>$mode));
 
 //require login for this page
 require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 
-$renderer = $PAGE->get_renderer('mod_poodlltime');
-$rsquestion_renderer = $PAGE->get_renderer('mod_poodlltime','rsquestion');
+$renderer = $PAGE->get_renderer('mod_minilesson');
+$rsquestion_renderer = $PAGE->get_renderer('mod_minilesson','rsquestion');
 
 //if we have items, Data tables will make them pretty
 //Prepare datatable(before header printed)
 $tableid =  constants::M_ITEMS_TABLE;
 $rsquestion_renderer->setup_datatables($tableid);
 
-$PAGE->navbar->add(get_string('rsquestions', 'poodlltime'));
-echo $renderer->header($poodlltime, $cm, $mode, null, get_string('rsquestions', 'poodlltime'));
+$PAGE->navbar->add(get_string('rsquestions', 'minilesson'));
+echo $renderer->header($minilesson, $cm, $mode, null, get_string('rsquestions', 'minilesson'));
 
 
     // We need view permission to be here
-    require_capability('mod/poodlltime:itemview', $context);
+    require_capability('mod/minilesson:itemview', $context);
     
     //if have edit permission, show edit buttons
-    if(has_capability('mod/poodlltime:itemview', $context)){
+    if(has_capability('mod/minilesson:itemview', $context)){
     	echo $rsquestion_renderer ->add_edit_page_links($context,$tableid);
     }
 
 //if we have items, show em
 $itemsvisible = $items && count($items);
-echo $rsquestion_renderer->show_items_list($items,$poodlltime,$cm, $itemsvisible);
-echo $rsquestion_renderer->show_noitems_message($items,$poodlltime,$cm, $itemsvisible);
+echo $rsquestion_renderer->show_items_list($items,$minilesson,$cm, $itemsvisible);
+echo $rsquestion_renderer->show_noitems_message($items,$minilesson,$cm, $itemsvisible);
 
 echo $renderer->footer();

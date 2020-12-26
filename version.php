@@ -17,10 +17,10 @@
 
 
 /**
- * Defines the version of poodlltime
+ * Defines the version of minilesson
  *
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,6 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2020122300;
 $plugin->requires  = 2016052300;      // Requires Moodle 3.1
-$plugin->component = 'mod_poodlltime';
+$plugin->component = 'mod_minilesson';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = '1.0.6 (Build 2020122300)';

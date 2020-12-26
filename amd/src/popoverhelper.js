@@ -1,4 +1,4 @@
-define(['jquery','core/log','mod_poodlltime/definitions','mod_poodlltime/dependencyloader','theme_boost/popover'], function($,log,def) {
+define(['jquery','core/log','mod_minilesson/definitions','mod_minilesson/dependencyloader','theme_boost/popover'], function($,log,def) {
     "use strict"; // jshint ;_;
 
 /*

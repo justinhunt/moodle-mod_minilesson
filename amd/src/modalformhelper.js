@@ -1,9 +1,9 @@
 /**
  * Add a modal to manage question adding and editing to the page.
  *
- * @module     mod_poodlltime/modalformhelper
+ * @module     mod_minilesson/modalformhelper
  * @class      modalformhelper
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -81,7 +81,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
                 }).then(function (modal) {
                     // Keep a reference to the modal.
                     dd.modal = modal;
-                    Str.get_string(dd.formname , 'mod_poodlltime').then(function(title){dd.formtitle=title;dd.modal.setTitle(dd.formtitle);});
+                    Str.get_string(dd.formname , 'mod_minilesson').then(function(title){dd.formtitle=title;dd.modal.setTitle(dd.formtitle);});
 
 
                     // Forms are big, we want a big modal.
@@ -123,7 +123,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
             }
             // Get the content of the modal.
             var params = {jsonformdata: JSON.stringify(formdata), formname: this.formname, itemid: this.itemid};
-            return Fragment.loadFragment('mod_poodlltime', 'mform', this.contextid, params);
+            return Fragment.loadFragment('mod_minilesson', 'mform', this.contextid, params);
 
         };
 
@@ -217,7 +217,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
 
             // Now we can continue...
             Ajax.call([{
-                methodname: 'mod_poodlltime_submit_mform',
+                methodname: 'mod_minilesson_submit_mform',
                 args: {contextid: this.contextid, jsonformdata: JSON.stringify(formData), formname: this.formname},
                 done: this.handleFormSubmissionResponse.bind(this, formData),
                 fail: this.handleFormSubmissionFailure.bind(this, formData)
@@ -236,7 +236,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
             this.modal.getRoot().find('form').submit();
         };
 
-        return /** @alias module:mod_poodlltime/modalformhelper */ {
+        return /** @alias module:mod_minilesson/modalformhelper */ {
             // Public variables and functions.
             /**
              * Attach event listeners to initialise this module.

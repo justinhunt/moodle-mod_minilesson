@@ -1,6 +1,6 @@
 <?php
 
-namespace mod_poodlltime\rsquestion;
+namespace mod_minilesson\rsquestion;
 
 // This file is part of Moodle - http://moodle.org/
 //
@@ -18,20 +18,20 @@ namespace mod_poodlltime\rsquestion;
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Internal library of functions for module poodlltime
+ * Internal library of functions for module minilesson
  *
- * All the poodlltime specific functions, needed to implement the module
+ * All the minilesson specific functions, needed to implement the module
  * logic, should go here. Never include this file from your lib.php!
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  COPYRIGHTNOTICE
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 class helper
 {
@@ -45,7 +45,7 @@ class helper
     }
 
 
-    public static function move_item($poodlltime, $moveitemid, $direction)
+    public static function move_item($minilesson, $moveitemid, $direction)
     {
         global $DB;
 
@@ -61,7 +61,7 @@ class helper
                 return;
         }
 
-        if (!$items = $DB->get_records(constants::M_QTABLE, array('poodlltime' => $poodlltime->id), $sort)) {
+        if (!$items = $DB->get_records(constants::M_QTABLE, array('minilesson' => $minilesson->id), $sort)) {
             print_error("Could not fetch items for ordering");
             return;
         }
@@ -83,7 +83,7 @@ class helper
     }//end of move item function
 
 
-    public static function delete_item($poodlltime, $itemid, $context)
+    public static function delete_item($minilesson, $itemid, $context)
     {
         global $DB;
         $ret = false;
@@ -102,7 +102,7 @@ class helper
             constants::TEXTPROMPT_FILEAREA . '4');
 
         foreach ($fileareas as $filearea) {
-            $fs->delete_area_files($context->id, 'mod_poodlltime', $filearea, $itemid);
+            $fs->delete_area_files($context->id, 'mod_minilesson', $filearea, $itemid);
         }
         $ret = true;
         return $ret;
@@ -123,7 +123,7 @@ class helper
         return array('subdirs' => true, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'accepted_types' => array('audio', 'video','image'));
     }
 
-    public static function update_insert_question($poodlltime, $data, $edit, $context, $cm ,$editoroptions, $filemanageroptions) {
+    public static function update_insert_question($minilesson, $data, $edit, $context, $cm ,$editoroptions, $filemanageroptions) {
         global $DB, $USER;
 
         $ret = new \stdClass;
@@ -132,7 +132,7 @@ class helper
         $ret->payload = null;
 
         $theitem = new \stdClass;
-        $theitem->poodlltime = $poodlltime->id;
+        $theitem->minilesson = $minilesson->id;
         $theitem->id = $data->itemid;
         $theitem->visible = $data->visible;
         $theitem->itemorder = $data->itemorder;
@@ -151,7 +151,7 @@ class helper
             $theitem->createdby = $USER->id;
 
             //get itemorder
-            $comprehensiontest = new \mod_poodlltime\comprehensiontest($cm);
+            $comprehensiontest = new \mod_minilesson\comprehensiontest($cm);
             $currentitems = $comprehensiontest->fetch_items();
             if (count($currentitems) > 0) {
                 $lastitem = array_pop($currentitems);
@@ -162,12 +162,12 @@ class helper
             $theitem->itemorder = $itemorder;
 
             //create a rsquestionkey
-            $theitem->rsquestionkey = \mod_poodlltime\rsquestion\helper::create_rsquestionkey();
+            $theitem->rsquestionkey = \mod_minilesson\rsquestion\helper::create_rsquestionkey();
 
             //try to insert it
             if (!$theitem->id = $DB->insert_record(constants::M_QTABLE, $theitem)) {
                 $ret->error = true;
-                $ret->message = "Could not insert poodlltime item!";
+                $ret->message = "Could not insert minilesson item!";
                 return $ret;
             }
         }//enf of of !edit
@@ -236,7 +236,7 @@ class helper
         //now update the db once we have saved files and stuff
         if (!$DB->update_record(constants::M_QTABLE, $theitem)) {
             $ret->error = true;
-            $ret->message = "Could not update poodlltime item!";
+            $ret->message = "Could not update minilesson item!";
             return $ret;
         }else{
             $ret->item = $theitem;

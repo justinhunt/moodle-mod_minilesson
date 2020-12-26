@@ -1,7 +1,7 @@
 /* debugging */
 
-.mod_poodlltime_debug .mod_poodlltime_grading_passageword::after,
-.mod_poodlltime_debug_transcriptword::after {
+.mod_minilesson_debug .mod_minilesson_grading_passageword::after,
+.mod_minilesson_debug_transcriptword::after {
   content: attr(data-wordnumber);
   border: 1px solid blue;
   font-size: 10px;
@@ -11,18 +11,18 @@
 
 /* debugging */
 
-span.mod_poodlltime_debugsequence {
+span.mod_minilesson_debugsequence {
   border: 1px solid black;
   margin: 1px;
   display: inline-block;
 }
 
-.mod_poodlltime_center {
+.mod_minilesson_center {
   text-align: center;
 }
 
-.mod_poodlltime_center>div,
-.mod_poodlltime_center>table
+.mod_minilesson_center>div,
+.mod_minilesson_center>table
 /* insert any other block-level elements here */
 
   {
@@ -30,46 +30,46 @@ span.mod_poodlltime_debugsequence {
   margin-right: auto;
 }
 
-.mod_poodlltime_listbuttons input[type='submit'] {
+.mod_minilesson_listbuttons input[type='submit'] {
   width: 400px;
 }
 
-.mod_poodlltime_actionbuttons {
+.mod_minilesson_actionbuttons {
   display: flex;
   float: right;
 }
 
-.mod_poodlltime_quiz_finished {
+.mod_minilesson_quiz_finished {
   display: none;
   text-align: center;
 }
 
-.mod_poodlltime_recording_cont {
+.mod_minilesson_recording_cont {
   display: block;
   margin: auto;
   text-align: center;
   width: 100%;
-  background-image: url([[pix:mod_poodlltime|loader]]);
+  background-image: url([[pix:mod_minilesson|loader]]);
   background-repeat: no-repeat;
   background-position: center center;
 }
 
-.mod_poodlltime_recorder_instr_right,
-.mod_poodlltime_recorder_instr_left {
+.mod_minilesson_recorder_instr_right,
+.mod_minilesson_recorder_instr_left {
   float: left;
   width: 240px;
   height: 100px;
 }
 
-.mod_poodlltime_dummyrecorder {
+.mod_minilesson_dummyrecorder {
   float: left;
 }
 
-.mod_poodlltime_dummy_recorder_hidden {
+.mod_minilesson_dummy_recorder_hidden {
   display: none;
 }
 
-.mod_poodlltime_dummy_recorder_recording {
+.mod_minilesson_dummy_recorder_recording {
   display: block;
   float: left;
   width: 239px;
@@ -80,7 +80,7 @@ span.mod_poodlltime_debugsequence {
   background-color: red;
 }
 
-.mod_poodlltime_dummy_recorder_stopped {
+.mod_minilesson_dummy_recorder_stopped {
   display: block;
   width: 239px;
   height: 100px;
@@ -91,34 +91,34 @@ span.mod_poodlltime_debugsequence {
   background-color: grey;
 }
 
-.mod_poodlltime_getpermissionmode {
+.mod_minilesson_getpermissionmode {
   background-color: red;
   height: 170px;
 }
 
-.mod_poodlltime_start_button_cont,
-.mod_poodlltime_record_button_cont,
-.mod_poodlltime_stop_button_cont {
+.mod_minilesson_start_button_cont,
+.mod_minilesson_record_button_cont,
+.mod_minilesson_stop_button_cont {
   clear: both;
   padding: 5px;
   text-align: center;
   width: 100%;
 }
 
-.mod_poodlltime_stop_button,
-.mod_poodlltime_start_button,
-.mod_poodlltime_record_button {
+.mod_minilesson_stop_button,
+.mod_minilesson_start_button,
+.mod_minilesson_record_button {
   margin: auto;
   width: 200px;
 }
 
-.mod_poodlltime_voicecanvas {
+.mod_minilesson_voicecanvas {
   width: 239px;
   height: 100px;
   z-index: 8;
 }
 
-.mod_poodlltime_passage_cont {
+.mod_minilesson_passage_cont {
   display: none;
   line-height: 2em;
   font-size: 1.5em;
@@ -128,7 +128,7 @@ span.mod_poodlltime_debugsequence {
   margin-top: 15px;
 }
 
-.mod_poodlltime_grading_passagecont {
+.mod_minilesson_grading_passagecont {
   line-height: 2em;
   font-size: 1.5em;
   border-style: double;
@@ -137,7 +137,7 @@ span.mod_poodlltime_debugsequence {
   margin-top: 15px;
 }
 
-div.mod_poodlltime_passage_cont.mod_poodlltime_postattempt {
+div.mod_minilesson_passage_cont.mod_minilesson_postattempt {
   display: block;
   /* background-color: #cccccc; */
   position: relative;
@@ -146,40 +146,40 @@ div.mod_poodlltime_passage_cont.mod_poodlltime_postattempt {
   border-style: none;
 }
 
-.mod_poodlltime_postattempt .mod_poodlltime-passage-pic {
+.mod_minilesson_postattempt .mod_minilesson-passage-pic {
   max-width: 200px;
   margin: 9px 1em 1em 0;
   float: left;
 }
 
-.mod_poodlltime_postattempt .mod_poodlltime-passage-pic img {
+.mod_minilesson_postattempt .mod_minilesson-passage-pic img {
   width: 200px;
 }
 
-.mod_poodlltime_mrseed-standing img {
+.mod_minilesson_mrseed-standing img {
   width: 100px;
   height: auto;
 }
 
-.mod_poodlltime_mrseed-standing {
+.mod_minilesson_mrseed-standing {
   max-width: 100px;
 }
 
-.mod_poodlltime_printtwocol_cont {
+.mod_minilesson_printtwocol_cont {
   padding: 15px;
   border: 2px solid #CCCCCC;
   border-radius: 5px;
   width: 1024px;
 }
 
-.mod_poodlltime_twocol_cont {
+.mod_minilesson_twocol_cont {
   padding: 15px;
   border: 2px solid #CCCCCC;
   border-radius: 5px;
   width: 1024px;
 }
 
-.mod_poodlltime_twocol_wpm_cont {
+.mod_minilesson_twocol_wpm_cont {
   border: solid 1px;
   padding-top: 15px;
   padding-left: 10px;
@@ -187,7 +187,7 @@ div.mod_poodlltime_passage_cont.mod_poodlltime_postattempt {
   background-color: aliceblue;
 }
 
-.mod_poodlltime_twocol_quiz_cont {
+.mod_minilesson_twocol_quiz_cont {
   border: solid 1px;
   padding-top: 15px;
   padding-left: 10px;
@@ -196,20 +196,20 @@ div.mod_poodlltime_passage_cont.mod_poodlltime_postattempt {
   margin-top: 10px;
 }
 
-.mod_poodlltime_twocol_player_cont {
+.mod_minilesson_twocol_player_cont {
   color: blue;
 }
 
-.mod_poodlltime_twocol_player {
+.mod_minilesson_twocol_player {
   width: 100%;
 }
 
-.mod_poodlltime_rightcol .btn {
+.mod_minilesson_rightcol .btn {
   width: 100%;
   margin-top: 20px;
 }
 
-.mod_poodlltime_grading_action_cont {
+.mod_minilesson_grading_action_cont {
   border-style: double;
   padding: 3px;
   border-color: gold;
@@ -217,13 +217,13 @@ div.mod_poodlltime_passage_cont.mod_poodlltime_postattempt {
   align-items: center;
 }
 
-.mod_poodlltime_passage_cont.mod_poodlltime_postattempt .mod_poodlltime_grading_badword {
+.mod_minilesson_passage_cont.mod_minilesson_postattempt .mod_minilesson_grading_badword {
   color: black;
   background-color: lightgrey;
   border-color: blue;
 }
 
-.mod_poodlltime_grading_badword {
+.mod_minilesson_grading_badword {
   color: red;
   background-color: #ffcaca;
   padding: 5px;
@@ -232,7 +232,7 @@ div.mod_poodlltime_passage_cont.mod_poodlltime_postattempt {
   position: relative;
 }
 
-.mod_poodlltime_grading_endspace {
+.mod_minilesson_grading_endspace {
   color: blue;
   background-color: #cacaff;
   padding: 5px;
@@ -241,71 +241,71 @@ div.mod_poodlltime_passage_cont.mod_poodlltime_postattempt {
   position: relative;
 }
 
-.mod_poodlltime_grading_passagespace {
+.mod_minilesson_grading_passagespace {
   padding: 2px;
 }
 
-div.mod_poodlltime_postattempt .mod_poodlltime_grading_unreadword {
+div.mod_minilesson_postattempt .mod_minilesson_grading_unreadword {
   text-decoration: none;
   background-color: lightgrey;
   padding-right: 2px;
 }
 
-div.mod_poodlltime_postattempt .mod_poodlltime_grading_unreadspace {
+div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
   background-color: lightgrey;
   padding: 0px 2px;
 }
 
-.mod_poodlltime_grading_unreadword {
+.mod_minilesson_grading_unreadword {
   font-style: italic;
   text-decoration: line-through;
 }
 
-.mod_poodlltime_passage_finished {
+.mod_minilesson_passage_finished {
   background-color: #cccccc;
   padding: 2px;
 }
 
-.mod_poodlltime_feedback_cont {
+.mod_minilesson_feedback_cont {
   display: none;
 }
 
-.mod_poodlltime_wheretonext_cont {
+.mod_minilesson_wheretonext_cont {
   display: none;
 }
 
-.mod_poodlltime_quiz_cont {
+.mod_minilesson_quiz_cont {
   display: none;
   max-width: 750px;
 }
 
-div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
+div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   display: block;
 }
 
-.mod_poodlltime_evaluated_message {
+.mod_minilesson_evaluated_message {
   text-align: center;
   display: block;
   margin-bottom: 15px;
 }
 
-.mod_poodlltime_error_cont {
+.mod_minilesson_error_cont {
   display: none;
 }
 
-.mod_poodlltime_error_cont h3 {
+.mod_minilesson_error_cont h3 {
   color: red;
 }
 
-.mod_poodlltime_grading_player_cont {
+.mod_minilesson_grading_player_cont {
   color: blue;
 }
 
-.mod_poodlltime_hidden_player {
+.mod_minilesson_hidden_player {
   display: none;
 }
 
-.mod_poodlltime_hidden_player_button {
+.mod_minilesson_hidden_player_button {
   color: white;
   border-color: cadetblue;
   background-color: cadetblue;
@@ -315,44 +315,44 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   text-align: center;
 }
 
-.mod_poodlltime_hidden_player_button_active {
+.mod_minilesson_hidden_player_button_active {
   color: white;
   border-color: tomato;
   background-color: tomato;
 }
 
-.mod_poodlltime_hidden_player_button_paused {
+.mod_minilesson_hidden_player_button_paused {
   color: white;
 }
 
-.mod_poodlltime_hidden_player_button_playing {
+.mod_minilesson_hidden_player_button_playing {
   color: white;
 }
 
-.mod_poodlltime_backtotop_cont {
+.mod_minilesson_backtotop_cont {
   width: fit-content;
   margin-right: auto;
   margin-left: auto;
   margin-top: 20px;
 }
 
-.mod_poodlltime_grading_accuracy_cont,
-.mod_poodlltime_grading_wpm_cont,
-.mod_poodlltime_grading_quiz_cont,
-.mod_poodlltime_grading_error_cont,
-.mod_poodlltime_grading_sessionscore_cont,
-.mod_poodlltime_grading_errorrate_cont,
-.mod_poodlltime_grading_scrate_cont {
+.mod_minilesson_grading_accuracy_cont,
+.mod_minilesson_grading_wpm_cont,
+.mod_minilesson_grading_quiz_cont,
+.mod_minilesson_grading_error_cont,
+.mod_minilesson_grading_sessionscore_cont,
+.mod_minilesson_grading_errorrate_cont,
+.mod_minilesson_grading_scrate_cont {
   color: blue;
   /* display: flex; */
   margin-left: 15px;
 }
 
-.mod_poodlltime_grading_wpm_img {
+.mod_minilesson_grading_wpm_img {
   color: blue;
 }
 
-.mod_poodlltime_grading_score {
+.mod_minilesson_grading_score {
   color: blue;
   line-height: 18px;
   margin-left: 5px;
@@ -362,18 +362,18 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   width: 80px;
 }
 
-.mod_poodlltime_grading_error_img {
+.mod_minilesson_grading_error_img {
   color: blue;
 }
 
-.mod_poodlltime_grading_action_cont {
+.mod_minilesson_grading_action_cont {
   color: blue;
   display: flex;
 }
 
-.mod_poodlltime_afterattempt_cont,
-.mod_poodlltime_wheretonext_cont,
-.mod_poodlltime_ungraded_cont {
+.mod_minilesson_afterattempt_cont,
+.mod_minilesson_wheretonext_cont,
+.mod_minilesson_ungraded_cont {
   margin-left: auto;
   margin-right: auto;
   width: 40%;
@@ -382,7 +382,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   margin-bottom: 15px;
 }
 
-#mod_poodlltime_hider {
+#mod_minilesson_hider {
   display: none;
   position: absolute;
   top: 0%;
@@ -401,7 +401,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   opacity: 0.6;
 }
 
-#mod_poodlltime_progress_cont {
+#mod_minilesson_progress_cont {
   display: none;
   position: absolute;
   text-align: center;
@@ -421,25 +421,25 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
 
 /* spotcheckmode */
 
-.mod_poodlltime_spotcheckmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_badword {
+.mod_minilesson_spotcheckmode .mod_minilesson_grading_passageword.mod_minilesson_grading_badword {
   border-color: green;
   background-color: #d7f9ca;
 }
 
-.mod_poodlltime_spotcheckmode .mod_poodlltime_grading_passagespace.mod_poodlltime_aiunmatched {
+.mod_minilesson_spotcheckmode .mod_minilesson_grading_passagespace.mod_minilesson_aiunmatched {
   background-color: lightgrey;
 }
 
 /* msvmode */
 
-.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_badword {
+.mod_minilesson_msvmode .mod_minilesson_grading_passageword.mod_minilesson_grading_badword {
   border-color: red;
   background-color: #ffcaca;
   -webkit-print-color-adjust: exact;
   /* Print background colour */
 }
 
-.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_selfcorrectedword {
+.mod_minilesson_msvmode .mod_minilesson_grading_passageword.mod_minilesson_grading_selfcorrectedword {
   color: green;
   background-color: #d7f9ca;
   padding: 5px;
@@ -448,35 +448,35 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   position: relative;
 }
 
-.mod_poodlltime_msvmode .mod_poodlltime_grading_passageword.mod_poodlltime_grading_maybeselfcorrectedword {
+.mod_minilesson_msvmode .mod_minilesson_grading_passageword.mod_minilesson_grading_maybeselfcorrectedword {
   text-decoration: underline;
 }
 
-.mod_poodlltime_spotcheckmode .mod_poodlltime_grading_passagespace.mod_poodlltime_aiunmatched {
+.mod_minilesson_spotcheckmode .mod_minilesson_grading_passagespace.mod_minilesson_aiunmatched {
   background-color: lightgrey;
   -webkit-print-color-adjust: exact;
   /* Print background colour */
 }
 
-.mod_poodlltime_grading_passageword.mod_poodlltime_aiunmatched {
+.mod_minilesson_grading_passageword.mod_minilesson_aiunmatched {
   background-color: lightgrey;
   -webkit-print-color-adjust: exact;
   /* Print background colour */
 }
 
-.mod_poodlltime_grading_passagespace.mod_poodlltime_aiunmatched {
+.mod_minilesson_grading_passagespace.mod_minilesson_aiunmatched {
   background-color: lightgrey;
 }
 
-.mod_poodlltime_grading_passageactions {
+.mod_minilesson_grading_passageactions {
   margin-top: 10px;
 }
 
-.mod_poodlltime_grading_passageactions>button {
+.mod_minilesson_grading_passageactions>button {
   margin: 5px;
 }
 
-.btn.mod_poodlltime_quickgrade_ok {
+.btn.mod_minilesson_quickgrade_ok {
   background-color: DodgerBlue;
   /* Blue background */
   border: none;
@@ -495,11 +495,11 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
 
 /* Darker background on mouse-over */
 
-.btn.mod_poodlltime_quickgrade_ok:hover {
+.btn.mod_minilesson_quickgrade_ok:hover {
   background-color: RoyalBlue;
 }
 
-.btn.mod_poodlltime_quickgrade_ng {
+.btn.mod_minilesson_quickgrade_ng {
   background-color: darkgrey;
   /* Blue background */
   border: none;
@@ -518,7 +518,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
 
 /* Darker background on mouse-over */
 
-.btn.mod_poodlltime_quickgrade_ng:hover {
+.btn.mod_minilesson_quickgrade_ng:hover {
   background-color: grey;
 }
 
@@ -526,14 +526,14 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
  * App
  */
 
-.mod_poodlltime-app-wrapper {
+.mod_minilesson-app-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #fff;
 }
 
-.mod_poodlltime-app {
+.mod_minilesson-app {
   box-sizing: border-box;
   min-width: 1024px;
   max-width: 1024px;
@@ -548,76 +548,76 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   position: relative;
 }
 
-.mod_poodlltime-flex {
+.mod_minilesson-flex {
   display: flex;
 }
 
-.mod_poodlltime-flex-1 {
+.mod_minilesson-flex-1 {
   flex: 1;
 }
 
-.mod_poodlltime-flex-col {
+.mod_minilesson-flex-col {
   display: flex;
   flex-direction: column;
 }
 
-.mod_poodlltime-flex-equal>* {
+.mod_minilesson-flex-equal>* {
   flex: 1;
 }
 
-.mod_poodlltime-flex-center {
+.mod_minilesson-flex-center {
   justify-content: center;
 }
 
-.mod_poodlltime-flex-items-center {
+.mod_minilesson-flex-items-center {
   align-items: center;
 }
 
-.mod_poodlltime-app .mod_poodlltime-passage {
+.mod_minilesson-app .mod_minilesson-passage {
   line-height: 1.8em;
   font-size: 20px;
 }
 
-.mod_poodlltime-app .mod_poodlltime-passage.blurred {
+.mod_minilesson-app .mod_minilesson-passage.blurred {
   color: transparent;
   text-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
 }
 
-.mod_poodlltime-app .mod_poodlltime-passage-pic {
+.mod_minilesson-app .mod_minilesson-passage-pic {
   max-width: 200px;
   margin: 9px 1em 1em 0;
   float: left;
 }
 
-.mod_poodlltime-app .mod_poodlltime-passage-pic img {
+.mod_minilesson-app .mod_minilesson-passage-pic img {
   max-width: 100%;
 }
 
-.mod_poodlltime-app .mod_poodlltime-passage.blurred img {
+.mod_minilesson-app .mod_minilesson-passage.blurred img {
   filter: blur(5px);
 }
 
-.mod_poodlltime-texttospeech {
+.mod_minilesson-texttospeech {
   position: relative;
   display: flex;
 }
 
-.mod_poodlltime-texttospeech>div {
+.mod_minilesson-texttospeech>div {
   display: inline-block;
 }
 
-.mod_poodlltime-texttospeech a {
+.mod_minilesson-texttospeech a {
   margin: 0 0 0 0.5em;
   align-self: flex-start;
 }
 
-.mod_poodlltime-texttospeech a:focus,
-.mod_poodlltime-texttospeech a:hover {
+.mod_minilesson-texttospeech a:focus,
+.mod_minilesson-texttospeech a:hover {
   text-decoration: none;
 }
 
-.mod_poodlltime-scrollview-wrapper,
-.mod_poodlltime-scrollview {
+.mod_minilesson-scrollview-wrapper,
+.mod_minilesson-scrollview {
   position: absolute;
   left: 0;
   top: 0;
@@ -625,12 +625,12 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   bottom: 0;
 }
 
-.mod_poodlltime-scrollview {
+.mod_minilesson-scrollview {
   overflow: hidden;
   padding-top: 50px;
 }
 
-.mod_poodlltime-scrollview-before {
+.mod_minilesson-scrollview-before {
   position: absolute;
   top: 0;
   left: 0;
@@ -641,7 +641,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   margin-top: -1px;
 }
 
-.mod_poodlltime-scrollview-actions {
+.mod_minilesson-scrollview-actions {
   position: absolute;
   left: 0;
   right: 0;
@@ -653,15 +653,15 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   margin-bottom: -1px;
 }
 
-.mod_poodlltime-question-feedback {
+.mod_minilesson-question-feedback {
   text-align: center;
 }
 
-.mod_poodlltime-quiz-tracker {
+.mod_minilesson-quiz-tracker {
   margin-bottom: 1em;
 }
 
-.mod_poodlltime-quiz-tracker-el {
+.mod_minilesson-quiz-tracker-el {
   font-size: 14px;
   padding: 0 4px;
   margin-right: 3px;
@@ -669,29 +669,29 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   border: 3px solid #ccc;
 }
 
-.mod_poodlltime-quiz-tracker-el.is-current {
+.mod_minilesson-quiz-tracker-el.is-current {
   border-color: #000;
 }
 
-.mod_poodlltime-quiz-tracker-el.is-answered {
+.mod_minilesson-quiz-tracker-el.is-answered {
   border-color: hsl(348, 100%, 61%);
 }
 
-.mod_poodlltime-quiz-tracker-el.is-answered.is-correct {
+.mod_minilesson-quiz-tracker-el.is-answered.is-correct {
   border-color: hsl(141, 71%, 48%);
 }
 
-.mod_poodlltime-question-title {
+.mod_minilesson-question-title {
   line-height: 1.8em;
   border-left: 3px solid #ccc;
   padding-left: 20px;
 }
 
-.mod_poodlltime-answers {
+.mod_minilesson-answers {
   margin: 1em;
 }
 
-.mod_poodlltime-answer {
+.mod_minilesson-answer {
   color: #333;
   display: flex;
   margin: 5px;
@@ -706,27 +706,27 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   align-items: center;
 }
 
-.mod_poodlltime-answer:hover,
-.mod_poodlltime-answer:focus {
+.mod_minilesson-answer:hover,
+.mod_minilesson-answer:focus {
   color: inherit;
   text-decoration: none;
 }
 
-.mod_poodlltime-answer.is-selected.is-incorrect {
+.mod_minilesson-answer.is-selected.is-incorrect {
   color: white;
   background: hsl(348, 100%, 61%);
   border-color: hsl(348, 100%, 61%);
   padding-right: 42px;
 }
 
-.mod_poodlltime-answer.is-correct {
+.mod_minilesson-answer.is-correct {
   color: white;
   background: hsl(141, 71%, 48%);
   border-color: hsl(141, 71%, 48%);
   padding-right: 42px;
 }
 
-.mod_poodlltime-answer::after {
+.mod_minilesson-answer::after {
   content: ' ';
   position: absolute;
   right: 10px;
@@ -736,19 +736,19 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   background-repeat: no-repeat;
 }
 
-.mod_poodlltime-answer.is-correct::after {
-  background-image: url([[pix:mod_poodlltime|correct]]);
+.mod_minilesson-answer.is-correct::after {
+  background-image: url([[pix:mod_minilesson|correct]]);
 }
 
-.mod_poodlltime-answer.is-selected.is-incorrect::after {
-  background-image: url([[pix:mod_poodlltime|incorrect]]);
+.mod_minilesson-answer.is-selected.is-incorrect::after {
+  background-image: url([[pix:mod_minilesson|incorrect]]);
 }
 
-.mod_poodlltime-btn,
-.mod_poodlltime-btn:hover,
-.mod_poodlltime-btn:focus,
-.mod_poodlltime-btn:visited,
-.mod_poodlltime-btn:active {
+.mod_minilesson-btn,
+.mod_minilesson-btn:hover,
+.mod_minilesson-btn:focus,
+.mod_minilesson-btn:visited,
+.mod_minilesson-btn:active {
   border-radius: 5px;
   background: hsl(204, 86%, 53%);
   color: #fff;
@@ -759,16 +759,16 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   text-decoration: none;
 }
 
-.mod_poodlltime-btn.inactive,
-.mod_poodlltime-btn:hover.inactive,
-.mod_poodlltime-btn:focus.inactive,
-.mod_poodlltime-btn:visited.inactive,
-.mod_poodlltime-btn:active.inactive {
+.mod_minilesson-btn.inactive,
+.mod_minilesson-btn:hover.inactive,
+.mod_minilesson-btn:focus.inactive,
+.mod_minilesson-btn:visited.inactive,
+.mod_minilesson-btn:active.inactive {
   background: hsl(0, 0%, 96%);
   color: hsl(0, 0%, 21%);
 }
 
-.mod_poodlltime-btn-recorder-like {
+.mod_minilesson-btn-recorder-like {
   border: 2px solid #000;
   border-radius: 5px;
   background: #cbf2dc;
@@ -785,13 +785,13 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
  * Source: https://leaverou.github.io/bubbly/
  */
 
-.mod_poodlltime-speech-bubble {
+.mod_minilesson-speech-bubble {
   position: relative;
   background: #f7f7f7;
   border-radius: 0.4em;
 }
 
-.mod_poodlltime-speech-bubble:after {
+.mod_minilesson-speech-bubble:after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -806,7 +806,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   margin-bottom: -10px;
 }
 
-.mod_poodlltime-speech-bubble-content {
+.mod_minilesson-speech-bubble-content {
   text-align: center;
   font-size: 25px;
   padding: 25px;
@@ -817,14 +817,14 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   line-height: 35px;
 }
 
-.mod_poodlltime-speech-bubble.size-medium .mod_poodlltime-speech-bubble-content {
+.mod_minilesson-speech-bubble.size-medium .mod_minilesson-speech-bubble-content {
   font-size: 20px;
   padding: 10px;
   min-height: auto;
   line-height: 25px;
 }
 
-.mod_poodlltime-speech-bubble.size-large .mod_poodlltime-speech-bubble-content {
+.mod_minilesson-speech-bubble.size-large .mod_minilesson-speech-bubble-content {
   font-size: 32px;
   font-weight: bold;
   padding: 10px;
@@ -832,30 +832,30 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   line-height: 25px;
 }
 
-.mod_poodlltime-bloom {
+.mod_minilesson-bloom {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.mod_poodlltime-bloom img {
+.mod_minilesson-bloom img {
   position: absolute;
   /* The delay is set according to the blooming animation */
-  animation: poodlltime-bloom;
+  animation: minilesson-bloom;
   animation-duration: 1200ms;
 }
 
-.mod_poodlltime-mr-seed-wrapper {
+.mod_minilesson-mr-seed-wrapper {
   position: relative;
 }
 
-.mod_poodlltime-mr-seed-wrapper .mod_poodlltime-speech-bubble {
+.mod_minilesson-mr-seed-wrapper .mod_minilesson-speech-bubble {
   position: absolute;
   right: 0;
   width: 50%;
 }
 
-@keyframes poodlltime-bloom {
+@keyframes minilesson-bloom {
   0% {
     opacity: 0;
   }
@@ -1030,27 +1030,27 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   }
 }
 
-.mod_poodlltime-shake {
+.mod_minilesson-shake {
   animation-name: shake-rotate;
   animation-duration: 100ms;
   animation-timing-function: ease-in-out;
   animation-iteration-count: 2;
 }
 
-.mod_poodlltime_grading_passageactions {
+.mod_minilesson_grading_passageactions {
   margin-top: 10px;
   display: flex;
 }
 
-.poodlltime_speechcards_container {
+.minilesson_speechcards_container {
   border: 1px solid darkgray;
   margin-bottom: 5px;
   padding: 10px;
 }
 
-.poodlltime_speechcards_pushrecorder {
+.minilesson_speechcards_pushrecorder {
   text-align: center;
-  background-image: url([[pix:mod_poodlltime|spinner]]);
+  background-image: url([[pix:mod_minilesson|spinner]]);
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -1071,7 +1071,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   height: 150px !important;
 }
 
-.poodlltime-poodllspeechcards_box {
+.minilesson-poodllspeechcards_box {
   text-align: center;
   width: 60%;
   /*225px;*/
@@ -1086,13 +1086,13 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.75);
 }
 
-.poodlltime-speechcards_toprow {
+.minilesson-speechcards_toprow {
   margin: 15px auto;
   display: flex;
   justify-content: center;
 }
 
-.poodlltime-speechcards_whatheard {
+.minilesson-speechcards_whatheard {
   width: 400px;
   border: dotted 1px;
   border-color: green;
@@ -1100,14 +1100,14 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   margin: 1px;
 }
 
-.poodlltime-speechcards_gotit {
+.minilesson-speechcards_gotit {
   color: white;
   background-color: green;
 }
 
 /* PROGRESS DOTS */
 
-.poodlltime_progress_dots {
+.minilesson_progress_dots {
   font-size: 40px;
   text-align: center;
   letter-spacing: 10px;
@@ -1115,17 +1115,17 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   margin-bottom: 5px;
 }
 
-.poodlltime_star_rating {
+.minilesson_star_rating {
   letter-spacing: 20px;
   text-align: center;
   font-size: 30px;
 }
 
-.poodlltime_nextbutton {
+.minilesson_nextbutton {
   float: right;
 }
 
-.poodlltime_questionheader {
+.minilesson_questionheader {
   padding: 10px;
   text-align: center;
   margin-bottom: 5px;
@@ -1495,7 +1495,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   bottom: 0;
 }
 
-.mod_poodlltime_result_div {
+.mod_minilesson_result_div {
   display: inline-block;
   width: 250px;
   height: 100px;
@@ -1507,7 +1507,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   padding-top: 35px;
 }
 
-.mod_poodlltime_result_index {
+.mod_minilesson_result_index {
   font-weight: bold;
   position: absolute;
   left: 0;
@@ -1523,7 +1523,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   justify-content: center;
 }
 
-.mod_poodlltime_result_title {
+.mod_minilesson_result_title {
   position: absolute;
   top: 0;
   right: 0;
@@ -1535,11 +1535,11 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   font-weight: bold;
 }
 
-.mod_poodlltime_result_score {}
+.mod_minilesson_result_score {}
 
-.mod_poodlltime_result_grade {}
+.mod_minilesson_result_grade {}
 
-.poodlltime_speechcards_target_phrase {
+.minilesson_speechcards_target_phrase {
   text-align: center;
   padding: 10px;
   border: 1px solid black;
@@ -1552,7 +1552,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   margin-bottom: 10px;
 }
 
-.poodlltime_quiz_progress {
+.minilesson_quiz_progress {
   border: 1px solid #000;
   height: 50px;
   display: flex;
@@ -1561,7 +1561,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   position: relative;
 }
 
-.poodlltime_quiz_progress_item {
+.minilesson_quiz_progress_item {
   border-radius: 50%;
   width: 30px;
   height: 30px;
@@ -1575,12 +1575,12 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   z-index: 1;
 }
 
-.poodlltime_quiz_progress_item_current {
+.minilesson_quiz_progress_item_current {
   background-color: green;
   color: white;
 }
 
-.poodlltime_quiz_progress_finalitem {
+.minilesson_quiz_progress_finalitem {
   border-radius: 15%;
   width: 30px;
   height: 30px;
@@ -1594,11 +1594,11 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   z-index: 1;
 }
 
-.poodlltime_quiz_progress_item_completed {
+.minilesson_quiz_progress_item_completed {
   background-color: darkgrey;
 }
 
-.poodlltime_quiz_progress_line {
+.minilesson_quiz_progress_line {
   background-color: gray;
   height: 10px;
   position: absolute;
@@ -1616,7 +1616,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   padding: 10px;
 }
 
-.mod_poodlltime_link_box {
+.mod_minilesson_link_box {
   border: 1px solid black;
   display: inline-block;
   width: 150px;
@@ -1630,11 +1630,11 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   cursor: pointer;
 }
 
-.mod_poodlltime_link_box:hover {
+.mod_minilesson_link_box:hover {
   background-color: #f5f5f5;
 }
 
-.mod_poodlltime_link_box_title {
+.mod_minilesson_link_box_title {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -1643,7 +1643,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   margin: 5px;
 }
 
-.mod_poodlltime_link_box_container {
+.mod_minilesson_link_box_container {
   text-align: center;
 }
 
@@ -1652,7 +1652,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
 }
 
 /*TT Recorder Styles */
-.mod_poodlltime_ttrec_waveButtonContainer {
+.mod_minilesson_ttrec_waveButtonContainer {
   position: relative;
   margin: auto;
   border: 2px solid darkgray;
@@ -1660,7 +1660,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   width: 200px;
 }
 
-.mod_poodlltime_ttrec_waveForm {
+.mod_minilesson_ttrec_waveForm {
   position: absolute;
   left: 0;
   right: 0;
@@ -1670,7 +1670,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   border-radius: 10px;
 }
 
-.mod_poodlltime_ttrec_waveButton {
+.mod_minilesson_ttrec_waveButton {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -1696,45 +1696,45 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   background-color: red;
 }
 
-.mod_poodlltime_quiz_reattempt {
+.mod_minilesson_quiz_reattempt {
   margin: 10px;
 }
 
-.mod_poodlltime_itemtext {
+.mod_minilesson_itemtext {
   width: 100%;
   max-width: 400px;
   margin: auto;
   text-align: center;
 }
-.mod_poodlltime_itemaudio {
+.mod_minilesson_itemaudio {
   width: 100%;
   max-width: 400px;
   margin: auto;
 }
-.mod_poodlltime_itemvideo {
+.mod_minilesson_itemvideo {
   width: 100%;
   max-width: 400px;
   margin: auto;
 }
-.mod_poodlltime_itemimage {
+.mod_minilesson_itemimage {
   width: 100%;
   max-width: 400px;
   margin: auto;
 }
-.poodlltime_questionheader_contents {
+.minilesson_questionheader_contents {
   text-align: center;
   margin-bottom: 10px;
 }
-.mod_poodlltime_itemimage_cont,
-.mod_poodlltime_itemvideo_cont,
-.mod_poodlltime_itemaudio_cont,
-.mod_poodlltime_itemiframe_cont {
+.mod_minilesson_itemimage_cont,
+.mod_minilesson_itemvideo_cont,
+.mod_minilesson_itemaudio_cont,
+.mod_minilesson_itemiframe_cont {
   width: 100%;
   margin-top: 10px;
   text-align: center;
 }
 
-.mod_poodlltime_iframe_responsive {
+.mod_minilesson_iframe_responsive {
   overflow:hidden;
   padding-bottom:56.25%;
   position:relative;
@@ -1742,7 +1742,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   margin: auto;
 }
 
-.mod_poodlltime_itemiframe_cont {
+.mod_minilesson_itemiframe_cont {
   margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
@@ -1753,7 +1753,7 @@ div.mod_poodlltime_feedback_cont.mod_poodlltime_postattempt {
   max-height: 225px;
 }
 
-.mod_poodlltime_iframe_responsive iframe {
+.mod_minilesson_iframe_responsive iframe {
   left:0;
   top:0;
   height:100%;

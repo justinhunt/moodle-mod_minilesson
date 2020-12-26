@@ -6,12 +6,12 @@
  * Time: 13:16
  */
 
-namespace mod_poodlltime\output;
+namespace mod_minilesson\output;
 
 use html_writer;
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
-use \mod_poodlltime\comprehensiontest;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
+use \mod_minilesson\comprehensiontest;
 
 class renderer extends \plugin_renderer_base {
 
@@ -43,12 +43,12 @@ class renderer extends \plugin_renderer_base {
         $output = $this->output->header();
 
         $output .= $this->output->heading($activityname);
-        if (has_capability('mod/poodlltime:evaluate', $context)) {
+        if (has_capability('mod/minilesson:evaluate', $context)) {
             //   $output .= $this->output->heading_with_help($activityname, 'overview', constants::M_COMPONENT);
 
             if (!empty($currenttab)) {
                 ob_start();
-                include($CFG->dirroot.'/mod/poodlltime/tabs.php');
+                include($CFG->dirroot.'/mod/minilesson/tabs.php');
                 $output .= ob_get_contents();
                 ob_end_clean();
             }
@@ -183,11 +183,11 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show the introduction text is as set in the activity description
      */
-    public function show_intro($poodlltime,$cm) {
+    public function show_intro($minilesson,$cm) {
         $ret = "";
-        if (trim(strip_tags($poodlltime->intro))) {
+        if (trim(strip_tags($minilesson->intro))) {
             $ret .= $this->output->box_start('mod_introbox');
-            $ret .= format_module_intro('poodlltime', $poodlltime, $cm->id);
+            $ret .= format_module_intro('minilesson', $minilesson, $cm->id);
             $ret .= $this->output->box_end();
         }
         return $ret;
@@ -244,7 +244,7 @@ class renderer extends \plugin_renderer_base {
         //output reattempt button
         if($canattempt){
             $reattemptbutton =  $this->output->single_button(new \moodle_url( constants::M_URL . '/view.php',
-                    array('n'=>$latestattempt->poodlltimeid, 'retake'=>1)),get_string('reattempt',constants::M_COMPONENT));
+                    array('n'=>$latestattempt->moduleid, 'retake'=>1)),get_string('reattempt',constants::M_COMPONENT));
 
             $reattemptdiv = \html_writer::div($reattemptbutton ,constants::M_QUIZ_REATTEMPT,
                     array('id'=>constants::M_QUIZ_REATTEMPT,''));
@@ -307,7 +307,7 @@ class renderer extends \plugin_renderer_base {
     /**
      *  Show a progress circle overlay while uploading
      */
-    public function show_progress($poodlltime,$cm){
+    public function show_progress($minilesson,$cm){
         $hider =  \html_writer::div('',constants::M_HIDER,array('id'=>constants::M_HIDER));
         $message =  \html_writer::tag('h4',get_string('processing',constants::M_COMPONENT),array());
         $spinner =  \html_writer::tag('i','',array('class'=>'fa fa-spinner fa-5x fa-spin'));
@@ -320,11 +320,11 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show the feedback set in the activity settings
      */
-    public function show_feedback($poodlltime,$showtitle){
+    public function show_feedback($minilesson,$showtitle){
         $thetitle =  $this->output->heading($showtitle, 3, 'main');
         $displaytext =  \html_writer::div($thetitle ,constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_start();
-        $displaytext .=  \html_writer::div($poodlltime->feedback,constants::M_CLASS  . '_center');
+        $displaytext .=  \html_writer::div($minilesson->feedback,constants::M_CLASS  . '_center');
         $displaytext .= $this->output->box_end();
         $ret= \html_writer::div($displaytext,constants::M_FEEDBACK_CONTAINER,array('id'=>constants::M_FEEDBACK_CONTAINER));
         return $ret;
@@ -333,7 +333,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show the feedback set in the activity settings
      */
-    public function show_title_postattempt($poodlltime,$showtitle){
+    public function show_title_postattempt($minilesson,$showtitle){
         $thetitle =  $this->output->heading($showtitle, 3, 'main');
         $displaytext =  \html_writer::div($thetitle ,constants::M_CLASS  . '_center');
         $ret= \html_writer::div($displaytext,constants::M_FEEDBACK_CONTAINER . ' ' . constants::M_POSTATTEMPT,array('id'=>constants::M_FEEDBACK_CONTAINER));
@@ -343,7 +343,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Show error (but when?)
      */
-    public function show_error($poodlltime,$cm){
+    public function show_error($minilesson,$cm){
         $displaytext = $this->output->box_start();
         $displaytext .= $this->output->heading(get_string('errorheader',constants::M_COMPONENT), 3, 'main');
         $displaytext .=  \html_writer::div(get_string('uploadconverterror',constants::M_COMPONENT),'',array());
@@ -421,7 +421,7 @@ class renderer extends \plugin_renderer_base {
 
 
 
-        //this inits the M.mod_poodlltime thingy, after the page has loaded.
+        //this inits the M.mod_minilesson thingy, after the page has loaded.
         //we put the opts in html on the page because moodle/AMD doesn't like lots of opts in js
         //convert opts to json
         $jsonstring = json_encode($recopts);
@@ -432,7 +432,7 @@ class renderer extends \plugin_renderer_base {
         $ret_html = $ret_html . $opts_html;
 
         $opts=array('cmid'=>$cm->id,'widgetid'=>$widgetid);
-        $this->page->requires->js_call_amd("mod_poodlltime/activitycontroller", 'init', array($opts));
+        $this->page->requires->js_call_amd("mod_minilesson/activitycontroller", 'init', array($opts));
 
 
         //these need to be returned and echo'ed to the page

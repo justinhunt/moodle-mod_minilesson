@@ -20,14 +20,14 @@
 *
 * This file was adapted from the mod/lesson/tabs.php
 *
- * @package mod_poodlltime
+ * @package mod_minilesson
  * @copyright  2014 Justin Hunt  {@link http://poodll.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
 */
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
 /// This file to be included so we can assume config.php has already been included.
 global $DB;
@@ -48,13 +48,13 @@ if (!isset($course)) {
 $tabs = $row = $inactive = $activated = array();
 
 
-$row[] = new tabobject('view', "$CFG->wwwroot/mod/poodlltime/view.php?id=$cm->id", get_string('view', constants::M_COMPONENT), get_string('preview', constants::M_COMPONENT, format_string($moduleinstance->name)));
-if (has_capability('mod/poodlltime:evaluate', $context)) {
-    $row[] = new tabobject('grading', "$CFG->wwwroot/mod/poodlltime/grading.php?id=$cm->id", get_string('grading', constants::M_COMPONENT), get_string('viewgrading', constants::M_COMPONENT));
-    $row[] = new tabobject('reports', "$CFG->wwwroot/mod/poodlltime/reports.php?id=$cm->id", get_string('reports', constants::M_COMPONENT), get_string('viewreports', constants::M_COMPONENT));
+$row[] = new tabobject('view', "$CFG->wwwroot/mod/minilesson/view.php?id=$cm->id", get_string('view', constants::M_COMPONENT), get_string('preview', constants::M_COMPONENT, format_string($moduleinstance->name)));
+if (has_capability('mod/minilesson:evaluate', $context)) {
+    $row[] = new tabobject('grading', "$CFG->wwwroot/mod/minilesson/grading.php?id=$cm->id", get_string('grading', constants::M_COMPONENT), get_string('viewgrading', constants::M_COMPONENT));
+    $row[] = new tabobject('reports', "$CFG->wwwroot/mod/minilesson/reports.php?id=$cm->id", get_string('reports', constants::M_COMPONENT), get_string('viewreports', constants::M_COMPONENT));
 }
-if (has_capability('mod/poodlltime:manage', $context)) {
-    $row[] = new tabobject('rsquestions', "$CFG->wwwroot/mod/poodlltime/rsquestion/rsquestions.php?id=$cm->id", get_string('rsquestions', constants::M_COMPONENT), get_string('managersquestions', constants::M_COMPONENT));
+if (has_capability('mod/minilesson:manage', $context)) {
+    $row[] = new tabobject('rsquestions', "$CFG->wwwroot/mod/minilesson/rsquestion/rsquestions.php?id=$cm->id", get_string('rsquestions', constants::M_COMPONENT), get_string('managersquestions', constants::M_COMPONENT));
 }
 $tabs[] = $row;
 

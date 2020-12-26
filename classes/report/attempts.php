@@ -1,6 +1,6 @@
 <?php
 
-namespace mod_poodlltime\report;
+namespace mod_minilesson\report;
 
 /**
  * Created by PhpStorm.
@@ -10,8 +10,8 @@ namespace mod_poodlltime\report;
  */
 
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 class attempts extends basereport {
 
@@ -37,7 +37,7 @@ class attempts extends basereport {
                 $ret = $record->sessionscore;
                 if ($withlinks) {
                     $link = new \moodle_url(constants::M_URL . '/reports.php',
-                            array('report' => 'attemptresults', 'n' => $record->poodlltimeid, 'attemptid' => $record->id));
+                            array('report' => 'attemptresults', 'n' => $record->moduleid, 'attemptid' => $record->id));
                     $ret = \html_writer::link($link, $ret);
                 }
                 break;
@@ -49,7 +49,7 @@ class attempts extends basereport {
             case 'deletenow':
                 if ($withlinks) {
                     $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                            array('action' => 'delete', 'n' => $record->poodlltimeid, 'attemptid' => $record->id,
+                            array('action' => 'delete', 'n' => $record->moduleid, 'attemptid' => $record->id,
                                     'source' => $this->report));
                     $btn = new \single_button($url, get_string('delete'), 'post');
                     $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_COMPONENT));
@@ -98,7 +98,7 @@ class attempts extends basereport {
         //if no groups or can see all groups, simple SQL
         if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
             $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE,
-                    array('poodlltimeid' => $formdata->moduleid, 'status' => constants::M_STATE_COMPLETE), 'timecreated DESC');
+                    array('moduleid' => $formdata->moduleid, 'status' => constants::M_STATE_COMPLETE), 'timecreated DESC');
 
         //if need to partition to groups, SQL for groups
         }else{
@@ -110,7 +110,7 @@ class attempts extends basereport {
 
             $allsql ="SELECT att.* FROM {".constants::M_ATTEMPTSTABLE ."} att " .
                     "INNER JOIN {groups_members} gm ON att.userid=gm.userid " .
-                    "WHERE gm.groupid $groupswhere AND att.poodlltimeid = ? " .
+                    "WHERE gm.groupid $groupswhere AND att.moduleid = ? " .
                     "ORDER BY timecreated DESC";
             $allparams[]=$formdata->moduleid;
             $alldata = $DB->get_records_sql($allsql, $allparams);

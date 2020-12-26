@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_poodlltime/pollyhelper'], function($, log, ajax, def, polly) {
+define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper'], function($, log, ajax, def, polly) {
   "use strict"; // jshint ;_;
 
   log.debug('Poodll Time dictation chat: initialising');
@@ -37,7 +37,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
 
       var self = this;
 
-      $("#" + self.itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
+      $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
         self.next_question();
       });
 
@@ -310,7 +310,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
         $(".dictate_ctrl-btn").prop("disabled", true);
 
         ajax.call([{
-            methodname: 'mod_poodlltime_compare_passage_to_transcript',
+            methodname: 'mod_minilesson_compare_passage_to_transcript',
             args: {
                 passage: passage,
                 transcript: transcript,
@@ -343,9 +343,9 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_poodlltime/definitions', 'mod_po
 
       $("#" + self.itemdata.uniqueid + "_container .dictate_results").html("TOTAL<br/>" + numCorrect + "/" + totalNum).show();
       
-      $(".poodlltime_nextbutton").prop("disabled",true);
+      $(".minilesson_nextbutton").prop("disabled",true);
       setTimeout(function() {
-        $(".poodlltime_nextbutton").prop("disabled",false);
+        $(".minilesson_nextbutton").prop("disabled",false);
         self.next_question();
       }, 2000);
       

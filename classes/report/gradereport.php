@@ -6,10 +6,10 @@
  * Time: 20:52
  */
 
-namespace mod_poodlltime\report;
+namespace mod_minilesson\report;
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 class gradereport extends basereport
 {
@@ -38,7 +38,7 @@ class gradereport extends basereport
                 $ret = $record->sessionscore;
                 if ($withlinks) {
                     $link = new \moodle_url(constants::M_URL . '/reports.php',
-                            array('report' => 'attemptresults', 'n' => $record->poodlltimeid, 'attemptid' => $record->id));
+                            array('report' => 'attemptresults', 'n' => $record->moduleid, 'attemptid' => $record->id));
                     $ret = \html_writer::link($link, $ret);
                 }
                 break;
@@ -51,7 +51,7 @@ class gradereport extends basereport
             case 'deletenow':
                 if ($withlinks) {
                     $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                        array('action' => 'delete', 'n' => $record->poodlltimeid, 'attemptid' => $record->id, 'source' => $this->report));
+                        array('action' => 'delete', 'n' => $record->moduleid, 'attemptid' => $record->id, 'source' => $this->report));
                     $btn = new \single_button($url, get_string('delete'), 'post');
                     $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_COMPONENT));
                     $ret = $OUTPUT->render($btn);
@@ -89,14 +89,14 @@ class gradereport extends basereport
 
         //if we are not machine grading the SQL is simpler
         $human_sql = "SELECT tu.*  FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id ".
-                " WHERE tu.poodlltimeid=? AND tu.status=" . constants::M_STATE_COMPLETE .
+                " WHERE tu.moduleid=? AND tu.status=" . constants::M_STATE_COMPLETE .
             " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
 
 
 
         //we need a module instance to know which scoring method we are using.
-        $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->poodlltimeid));
-        $alldata =$DB->get_records_sql($human_sql, array($formdata->poodlltimeid));
+        $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->moduleid));
+        $alldata =$DB->get_records_sql($human_sql, array($formdata->moduleid));
 
 
 

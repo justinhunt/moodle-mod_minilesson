@@ -1,4 +1,4 @@
-define(['jquery', 'core/log', 'mod_poodlltime/definitions'], function($, log, def) {
+define(['jquery', 'core/log', 'mod_minilesson/definitions'], function($, log, def) {
   "use strict"; // jshint ;_;
 
   /*
@@ -25,7 +25,7 @@ define(['jquery', 'core/log', 'mod_poodlltime/definitions'], function($, log, de
 
     register_events: function(index, itemdata, quizhelper) {
       //When click next button , report and leave it up to parent to eal with it.
-      $("#" + itemdata.uniqueid + "_container .poodlltime_nextbutton").on('click', function(e) {
+      $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
         var stepdata = {};
           stepdata.index = index;
           stepdata.hasgrade = false;

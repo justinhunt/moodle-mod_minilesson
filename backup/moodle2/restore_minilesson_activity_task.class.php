@@ -16,22 +16,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package   mod_poodlltime
+ * @package   mod_minilesson
  * @copyright 2014 Justin Hunt poodllsupport@gmail.com
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_poodlltime\constants;
+use \mod_minilesson\constants;
 
-require_once($CFG->dirroot . '/mod/poodlltime/backup/moodle2/restore_poodlltime_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot . '/mod/minilesson/backup/moodle2/restore_minilesson_stepslib.php'); // Because it exists (must)
 
 /**
- * poodlltime restore task that provides all the settings and steps to perform one
+ * minilesson restore task that provides all the settings and steps to perform one
  * complete restore of the activity
  */
-class restore_poodlltime_activity_task extends restore_activity_task {
+class restore_minilesson_activity_task extends restore_activity_task {
 
     /**
      * Define (add) particular settings this activity can have
@@ -45,7 +45,7 @@ class restore_poodlltime_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // Choice only has one structure step
-        $this->add_step(new restore_poodlltime_activity_structure_step('poodlltime_structure', 'poodlltime.xml'));
+        $this->add_step(new restore_minilesson_activity_structure_step('minilesson_structure', 'minilesson.xml'));
     }
 
     /**
@@ -73,8 +73,8 @@ class restore_poodlltime_activity_task extends restore_activity_task {
     static public function define_decode_rules() {
         $rules = array();
 
-        $rules[] = new restore_decode_rule('POODLLTIMEVIEWBYID', '/mod/poodlltime/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('POODLLTIMEINDEX', '/mod/poodlltime/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('MINILESSONVIEWBYID', '/mod/minilesson/view.php?id=$1', 'course_module');
+        $rules[] = new restore_decode_rule('MINILESSONINDEX', '/mod/minilesson/index.php?id=$1', 'course');
 
         return $rules;
 
@@ -115,28 +115,28 @@ class restore_poodlltime_activity_task extends restore_activity_task {
     /**
      * Re-map the  activitylink information
      * If activitylink has no mapping in the backup data then it could either be a duplication of a
-     * poodlltime, or a backup/restore of a single one. We have no way to determine which and whether this is the
+     * minilesson, or a backup/restore of a single one. We have no way to determine which and whether this is the
      * same site and/or course. Therefore we try and retrieve a mapping, but fallback to the original value if one
      * was not found. We then test to see whether the value found is valid for the course being restored into.
      */
     public function after_restore() {
         global $DB;
 
-        $poodlltime = $DB->get_record(constants::M_TABLE, array('id' => $this->get_activityid()), 'id, course, activitylink');
+        $minilesson = $DB->get_record(constants::M_TABLE, array('id' => $this->get_activityid()), 'id, course, activitylink');
         $updaterequired = false;
 
-        if (!empty($poodlltime->activitylink)) {
+        if (!empty($minilesson->activitylink)) {
             $updaterequired = true;
-            if ($newitem = restore_dbops::get_backup_ids_record($this->get_restoreid(), 'course_module', $poodlltime->activitylink)) {
-                $poodlltime->activitylink = $newitem->newitemid;
+            if ($newitem = restore_dbops::get_backup_ids_record($this->get_restoreid(), 'course_module', $minilesson->activitylink)) {
+                $minilesson->activitylink = $newitem->newitemid;
             }
-            if (!$DB->record_exists('course_modules', array('id' => $poodlltime->activitylink, 'course' => $poodlltime->course))) {
-                $poodlltime->activitylink = 0;
+            if (!$DB->record_exists('course_modules', array('id' => $minilesson->activitylink, 'course' => $minilesson->course))) {
+                $minilesson->activitylink = 0;
             }
         }
 
         if ($updaterequired) {
-            $DB->update_record('poodlltime', $poodlltime);
+            $DB->update_record('minilesson', $minilesson);
         }
     }
 }

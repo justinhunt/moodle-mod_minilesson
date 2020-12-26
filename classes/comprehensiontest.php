@@ -6,7 +6,7 @@
  * Time: 16:12
  */
 
-namespace mod_poodlltime;
+namespace mod_minilesson;
 
 
 class comprehensiontest
@@ -28,7 +28,7 @@ class comprehensiontest
     {
         global $DB;
         if (!$this->items) {
-            $this->items = $DB->get_records(constants::M_QTABLE, ['poodlltime' => $this->mod->id],'itemorder ASC');
+            $this->items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->mod->id],'itemorder ASC');
         }
         if($this->items){
             return count($this->items);
@@ -60,7 +60,7 @@ class comprehensiontest
     {
         global $DB;
         if (!$this->items) {
-            $this->items = $DB->get_records(constants::M_QTABLE, ['poodlltime' => $this->mod->id],'itemorder ASC');
+            $this->items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->mod->id],'itemorder ASC');
         }
         if($this->items){
             return $this->items;
@@ -72,7 +72,7 @@ class comprehensiontest
     public function fetch_latest_attempt($userid){
         global $DB;
 
-        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('poodlltimeid' => $this->mod->id,'userid'=>$userid),'id DESC');
+        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('moduleid' => $this->mod->id,'userid'=>$userid),'id DESC');
         if($attempts){
             $attempt = array_shift($attempts);
             return $attempt;
@@ -178,7 +178,7 @@ class comprehensiontest
         }
 
         //editor options
-        $editoroptions = \mod_poodlltime\rsquestion\helper::fetch_editor_options($this->course, $this->context);
+        $editoroptions = \mod_minilesson\rsquestion\helper::fetch_editor_options($this->course, $this->context);
 
         //prepare data array for test
         $testitems=array();

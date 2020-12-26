@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/poodlltime/db" VERSION="20101203" COMMENT="XMLDB file for Moodle mod/poodlltime"
+<XMLDB PATH="mod/minilesson/db" VERSION="20101203" COMMENT="XMLDB file for Moodle mod/minilesson"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="poodlltime" COMMENT="Default comment for poodlltime, please edit me">
+    <TABLE NAME="minilesson" COMMENT="Default comment for minilesson, please edit me">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
-        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course poodlltime activity belongs to" />
+        <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course minilesson activity belongs to" />
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" />
-        <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the poodlltime activity" />
+        <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the minilesson activity" />
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)"/>
 		<FIELD NAME="timelimit" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
  		<FIELD NAME="grade" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
@@ -33,12 +33,12 @@
         <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
       </INDEXES>
     </TABLE>
-	 <TABLE NAME="poodlltime_attempt" COMMENT="user attempt data for poodlltime">
+	 <TABLE NAME="minilesson_attempt" COMMENT="user attempt data for minilesson">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" />
-        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course poodlltime activity belongs to" />
-		<FIELD NAME="poodlltimeid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="poodlltime activity this data belongs to" />
-		<FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course poodlltime activity belongs to" />
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course minilesson activity belongs to" />
+		<FIELD NAME="moduleid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="minilesson activity this data belongs to" />
+		<FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" COMMENT="Course minilesson activity belongs to" />
         <FIELD NAME="status" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="status " />
         <FIELD NAME="sessiontime" TYPE="int" LENGTH="10" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" />
         <FIELD NAME="sessiondata" TYPE="text" LENGTH="8192" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="json string of errors"/>
@@ -55,10 +55,10 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="poodlltime_rsquestions" COMMENT="poodlltime_items table retrofitted from MySQL">
+    <TABLE NAME="minilesson_rsquestions" COMMENT="minilesson_items table retrofitted from MySQL">
         <FIELDS>
             <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-            <FIELD NAME="poodlltime" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+            <FIELD NAME="minilesson" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="itemorder" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
             <FIELD NAME="type" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>

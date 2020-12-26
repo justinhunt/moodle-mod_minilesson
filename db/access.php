@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for the poodlltime module
+ * Capability definitions for the minilesson module
  *
  * The capabilities are loaded into the database table when the module is
  * installed or updated. Whenever the capability definitions are updated,
@@ -40,7 +40,7 @@
  *
  * The variable name for the capability definitions array is $capabilities
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -49,7 +49,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-	'mod/poodlltime:addinstance' => array(
+	'mod/minilesson:addinstance' => array(
 			'riskbitmask' => RISK_XSS,
 			'captype' => 'write',
 			'contextlevel' => CONTEXT_COURSE,
@@ -59,7 +59,7 @@ $capabilities = array(
 			),
 			'clonepermissionsfrom' => 'moodle/course:manageactivities'
 	),
-    'mod/poodlltime:evaluate' => array(
+    'mod/minilesson:evaluate' => array(
         'riskbitmask' => RISK_SPAM | RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -72,7 +72,7 @@ $capabilities = array(
     ),
 
 
-    'mod/poodlltime:canpreview' => array(
+    'mod/minilesson:canpreview' => array(
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
@@ -83,7 +83,7 @@ $capabilities = array(
         'clonepermissionsfrom' => 'moodle/course:markcomplete'
     ),
 
-    'mod/poodlltime:canmanageattempts' => array(
+    'mod/minilesson:canmanageattempts' => array(
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
@@ -95,7 +95,7 @@ $capabilities = array(
         'clonepermissionsfrom' => 'moodle/course:markcomplete'
     ),
 
-    'mod/poodlltime:manage' => array(
+    'mod/minilesson:manage' => array(
 			'riskbitmask' => RISK_XSS,
 			'captype' => 'write',
 			'contextlevel' => CONTEXT_COURSE,
@@ -106,7 +106,7 @@ $capabilities = array(
 			'clonepermissionsfrom' => 'moodle/course:manageactivities'
 	),
 	
-	'mod/poodlltime:itemedit' => array(
+	'mod/minilesson:itemedit' => array(
 			'riskbitmask' => RISK_XSS,
 			'captype' => 'write',
 			'contextlevel' => CONTEXT_COURSE,
@@ -117,7 +117,7 @@ $capabilities = array(
 			'clonepermissionsfrom' => 'moodle/course:manageactivities'
 	),
 	
-	'mod/poodlltime:itemview' => array(
+	'mod/minilesson:itemview' => array(
 			'riskbitmask' => RISK_XSS,
 			'captype' => 'write',
 			'contextlevel' => CONTEXT_COURSE,
@@ -129,7 +129,7 @@ $capabilities = array(
 			'clonepermissionsfrom' => 'moodle/course:manageactivities'
 	),
 
-	'mod/poodlltime:tts' => array(
+	'mod/minilesson:tts' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
@@ -139,7 +139,7 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         )
     ),
-    'mod/poodlltime:view' => array(
+    'mod/minilesson:view' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => array(
@@ -151,7 +151,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/poodlltime:submit' => array(
+    'mod/minilesson:submit' => array(
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
@@ -160,7 +160,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/poodlltime:managequestions' => array(
+    'mod/minilesson:managequestions' => array(
             'riskbitmask' => RISK_SPAM | RISK_XSS,
             'captype' => 'write',
             'contextlevel' => CONTEXT_MODULE,

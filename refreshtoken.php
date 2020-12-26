@@ -19,7 +19,7 @@
  * A token refreshing helper for Poodll Time
  *
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  Justin Hunt (justin@poodll.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -27,8 +27,8 @@
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
-use \mod_poodlltime\utils;
-use \mod_poodlltime\constants;
+use \mod_minilesson\utils;
+use \mod_minilesson\constants;
 
 require_login(0, false);
 $systemcontext = context_system::instance();
@@ -41,4 +41,4 @@ if(has_capability('moodle/site:config',$systemcontext)){
         utils::fetch_token($apiuser, $apisecret, $force);
     }
 }
-redirect($CFG->wwwroot . '/admin/settings.php?section=modsettingpoodlltime');
+redirect($CFG->wwwroot . '/admin/settings.php?section=modsettingminilesson');

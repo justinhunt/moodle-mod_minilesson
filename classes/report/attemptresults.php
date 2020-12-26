@@ -6,10 +6,10 @@
  * Time: 20:52
  */
 
-namespace mod_poodlltime\report;
+namespace mod_minilesson\report;
 
-use \mod_poodlltime\constants;
-use \mod_poodlltime\utils;
+use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 class attemptresults extends basereport
 {
@@ -86,7 +86,7 @@ class attemptresults extends basereport
         $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $formdata->moduleid), '*', MUST_EXIST);
         $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
-        $comp_test =  new \mod_poodlltime\comprehensiontest($cm);
+        $comp_test =  new \mod_minilesson\comprehensiontest($cm);
         $forcetitles=true;
         $quizdata = $comp_test->fetch_test_data_for_js($forcetitles);
 
@@ -95,7 +95,7 @@ class attemptresults extends basereport
 
         //we jsut need the  individual recoen
         $record =$DB->get_record(constants::M_ATTEMPTSTABLE,
-                array('id'=>$formdata->attemptid,'poodlltimeid'=>$formdata->moduleid));
+                array('id'=>$formdata->attemptid,'moduleid'=>$formdata->moduleid));
 
 
         if ($record) {

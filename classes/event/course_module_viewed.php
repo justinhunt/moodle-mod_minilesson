@@ -17,18 +17,18 @@
 /**
  * The mod_page course module viewed event.
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_poodlltime\event;
+namespace mod_minilesson\event;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * The mod_poodlltime course module viewed event class.
+ * The mod_minilesson course module viewed event class.
  *
- * @package    mod_poodlltime
+ * @package    mod_minilesson
  * @since      Moodle 2.7
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -41,7 +41,7 @@ class course_module_viewed extends \core\event\course_module_viewed {
     protected function init() {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
-        $this->data['objecttable'] = 'poodlltime';
+        $this->data['objecttable'] = 'minilesson';
     }
 }
 
