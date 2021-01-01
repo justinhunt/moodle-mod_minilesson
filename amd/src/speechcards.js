@@ -34,6 +34,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
         dryRun: false,
         language: 'en-US',
         terms: [],
+        displayterms: [],
         results: [],
         controls: {},
 
@@ -42,6 +43,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
           //init terms
           for (var i = 0; i < itemdata.sentences.length; i++) {
             app.terms[i] = itemdata.sentences[i].sentence;
+            app.displayterms[i] = itemdata.sentences[i].displaysentence;
           }
           log.debug("app terms", app.terms);
           app.language = itemdata.language;
@@ -159,13 +161,13 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
         },
 
         initSlider: function() {
-          app.controls.slider.text(app.terms[app.pointer - 1]);
+          app.controls.slider.text(app.displayterms[app.pointer - 1]);
           app.controls.slider.show();
         },
 
         writeCurrentTerm: function() {
             app.controls.slider.toggle("slide",{direction:"left"});
-            app.controls.slider.text(app.terms[app.pointer - 1]);
+            app.controls.slider.text(app.displayterms[app.pointer - 1]);
             app.controls.slider.toggle("slide",{direction:"right"})
         },
 

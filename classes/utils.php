@@ -76,7 +76,20 @@ class utils{
      *
      */
     public static function fetch_passagehash($passage) {
-        $cleantext = diff::cleanText($passage);
+        $sentences = explode(PHP_EOL,$passage);
+        $usesentences = [];
+        //look out for display text sep. by pipe chars in string
+        foreach($sentences as $sentence){
+            $sentencebits = explode('|',$sentence);
+            if(count($sentencebits)>1){
+                $usesentences[] = trim($sentencebits[0]);
+            }else{
+                $usesentences[] = $sentence;
+            }
+        }
+        $usepassage = implode(PHP_EOL, $usesentences);
+
+        $cleantext = diff::cleanText($usepassage);
         if(!empty($cleantext)) {
             return sha1($cleantext);
         }else{
@@ -607,7 +620,7 @@ class utils{
         return $voices[$autoindex];
     }
 
-    public static function get_tts_voices($langcode){
+    public static function get_tts_voices($langcode,$showall){
         $alllang= array(
                 constants::M_LANG_ARAE => ['Zeina'],
             //constants::M_LANG_ARSA => [],
@@ -642,10 +655,25 @@ class utils{
                 constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
                 constants::M_LANG_ZHCN => ['Zhiyu']
         );
-        if(array_key_exists($langcode,$alllang)) {
+        if(array_key_exists($langcode,$alllang) && !$showall) {
             return $alllang[$langcode];
+        }elseif($showall) {
+            $usearray =[];
+
+            //add current language first
+            foreach($alllang[$langcode] as $v=>$thevoice){
+                $usearray[$thevoice] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice;
+            }
+            //then all the rest
+            foreach($alllang as $lang=>$voices){
+                if($lang==$langcode){continue;}
+                foreach($voices as $v=>$thevoice){
+                    $usearray[$thevoice] = get_string(strtolower($lang), constants::M_COMPONENT) . ': ' . $thevoice;
+                }
+            }
+            return $usearray;
         }else{
-            return $alllang[constants::M_LANG_ENUS];
+                return $alllang[constants::M_LANG_ENUS];
         }
         /*
             To add more voices choose from these

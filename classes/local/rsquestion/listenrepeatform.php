@@ -18,11 +18,12 @@ class listenrepeatform extends baseform
 
     public function custom_definition() {
         //nothing here
-        $this->add_static_text('instructions','','Enter a list of sentences in the text area below');
-        $this->add_textarearesponse(1,'sentences');
+
         $this->add_voiceselect(constants::POLLYVOICE,get_string('choosevoice',constants::M_COMPONENT));
-        $textpromptoptions=utils::fetch_options_textprompt();
-        $this->add_dropdown(constants::SHOWTEXTPROMPT,get_string('showtextprompt',constants::M_COMPONENT),$textpromptoptions);
+        //$textpromptoptions=utils::fetch_options_textprompt();
+        //$this->add_dropdown(constants::SHOWTEXTPROMPT,get_string('showtextprompt',constants::M_COMPONENT),$textpromptoptions);
+        $this->add_static_text('instructions','',get_string('phraseresponses',constants::M_COMPONENT));
+        $this->add_textarearesponse(1,get_string('sentenceprompts',constants::M_COMPONENT),true);
     }
 
 }

@@ -318,8 +318,20 @@ abstract class baseform extends \moodleform {
      * @return void
      */
     protected final function add_voiceselect($name, $label = null) {
-        $voiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage);
+        $showall =true;
+        $voiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage,$showall);
         $this->add_dropdown($name, $label,$voiceoptions);
+    }
+
+    /**
+     * Convenience function: Adds a dropdown list of tts language
+     *
+     * @param string $label, null means default
+     * @return void
+     */
+    protected final function add_ttslanguage($name, $label = null) {
+        $langoptions = utils::get_lang_options();
+        $this->add_dropdown($name, $label,$langoptions);
     }
 
     /**

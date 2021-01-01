@@ -98,106 +98,21 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       });
     },
     setvoice: function() {
-      var self = this;
-
-      //f we have a specified voice, we use it.
-      if((self.itemdata.usevoice) && self.itemdata.usevoice!=='Auto'){
+        var self = this;
         self.usevoice = self.itemdata.usevoice;
         return;
-      }
-
-    //otherwise we get a random one
-      var voices = [];
-      switch (self.itemdata.language) {
-        case "en-US":
-          voices = ['Joey','Justin','Matthew','Ivy', 'Joanna','Kendra','Kimberly','Salli'];
-          break;
-        case "en-GB":
-          voices = ['Brian','Amy', 'Emma'];
-          break;
-        case "en-AU":
-          voice = ['Russell','Nicole'];
-          break;
-        case "en-IN":
-          voices = ['Aditi','Raveena'];
-          break;
-        case "en-WL":
-          voices = ['Geraint','Gwyneth'];
-          break;
-        case "da-DK":
-          voices =['Mads','Naja'];
-          break;
-        case "nl-NL":
-          voice = ['Ruben' , 'Lotte'];
-          break;
-        case "fr-FA":
-          voices= ['Mathieu','Celine'];
-          break;
-        case "fr-CA":
-          voices =['Chantal'];
-          break;
-        case "de-DE":
-          voices = ['Hans','Marlene'];
-          break;
-        case "id-ID":
-          voices =['Karl','Dora'];
-          break;
-        case "it-IT":
-          voices =['Carla','Giorgio'];
-          break;
-        case "ja-JP":
-          voices = ['Takumi','Mizuki'];
-          break;
-        case "ko-KR":
-          voices =['Seoyan'];
-          break;
-        case "Norwegian":
-          voices = ['Liv'];
-          break;
-        case "Polish":
-          voices = ['Jacek', 'Ewa'];
-          break;
-        case "pr-BR":
-          voices =['Ricardo','Vitoria'];
-          break;
-        case "pr-PT":
-          voices = ['Cristiano','Ines'];
-          break;
-        case "Romanian":
-          voices = ['Carmen','Carmen'];
-          break;
-        case "ru-RU":
-          voices = ['Maxim','Tatyana'];
-          break;
-        case "es-ES":
-          voices =['Enrique','Conchita'];
-          break;
-        case "es-US":
-          voices = ['Miguel','Penelope'];
-          break;
-        case "Swedish":
-          voices = ['Astrid', 'Astrid'];
-          break;
-        case "tr-TR":
-          voices =['Filiz','Filiz'];
-
-          break;
-        default:
-          voices = ['Brian','Amy'];
-      }
-      self.usevoice = voices[Math.floor(Math.random() * voices.length)];
     },
     getItems: function() {
       var self = this;
-
-      var text_items = self.itemdata.customtext1.split("\n");
+      var text_items = self.itemdata.sentences;
 
       self.items = text_items.map(function(target) {
         return {
-          dictate_targetWords: target.trim().split(self.spliton).filter(function(e) {
+          dictate_targetWords: target.sentence.trim().split(self.spliton).filter(function(e) {
             return e !== "";
           }),
-          target: target,
+          target: target.sentence,
+          prompt: target.displaysentence,
           typed: "",
           answered: false,
           correct: false,
@@ -208,7 +123,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       });
 
       $.each(self.items, function(index, item) {
-        polly.fetch_polly_url(item.target, 'text', self.usevoice).then(function(audiourl) {
+        polly.fetch_polly_url(item.prompt, 'text', self.usevoice).then(function(audiourl) {
           item.audio = new Audio();
           item.audio.src = audiourl;
           if (self.items.filter(function(e) {

@@ -101,102 +101,21 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
     },
     usevoice: '',
     setvoice: function() {
-      var self = this;
-      var language = "English(US)";
-      var mf = "Female";
-      var voice;
-      switch (language) {
-        case "English(US)":
-          voice = mf === 'Male' ? 'Joey' : 'Kendra';
-          break;
-        case "English(GB)":
-          voice = mf === 'Male' ? 'Brian' : 'Amy';
-          break;
-        case "English(AU)":
-          voice = mf === 'Male' ? 'Russell' : 'Nicole';
-          break;
-        case "English(IN)":
-          voice = mf === 'Male' ? 'Aditi' : 'Raveena';
-          break;
-        case "English(Welsh)":
-          voice = mf === 'Male' ? 'Geraint' : 'Geraint';
-          break;
-        case "Danish":
-          voice = mf === 'Male' ? 'Mads' : 'Naja';
-          break;
-        case "Dutch":
-          voice = mf === 'Male' ? 'Ruben' : 'Lotte';
-          break;
-        case "French(FR)":
-          voice = mf === 'Male' ? 'Mathieu' : 'Celine';
-          break;
-        case "French(CA)":
-          voice = mf === 'Male' ? 'Chantal' : 'Chantal';
-          break;
-        case "German":
-          voice = mf === 'Male' ? 'Hans' : 'Marlene';
-          break;
-        case "Icelandic":
-          voice = mf === 'Male' ? 'Karl' : 'Dora';
-          break;
-        case "Italian":
-          voice = mf === 'Male' ? 'Carla' : 'Giorgio';
-          break;
-        case "Japanese":
-          voice = mf === 'Male' ? 'Takumi' : 'Mizuki';
-          break;
-        case "Korean":
-          voice = mf === 'Male' ? 'Seoyan' : 'Seoyan';
-          break;
-        case "Norwegian":
-          voice = mf === 'Male' ? 'Liv' : 'Liv';
-          break;
-        case "Polish":
-          voice = mf === 'Male' ? 'Jacek' : 'Ewa';
-          break;
-        case "Portugese(BR)":
-          voice = mf === 'Male' ? 'Ricardo' : 'Vitoria';
-          break;
-        case "Portugese(PT)":
-          voice = mf === 'Male' ? 'Cristiano' : 'Ines';
-          break;
-        case "Romanian":
-          voice = mf === 'Male' ? 'Carmen' : 'Carmen';
-          break;
-        case "Russian":
-          voice = mf === 'Male' ? 'Maxim' : 'Tatyana';
-          break;
-        case "Spanish(ES)":
-          voice = mf === 'Male' ? 'Enrique' : 'Conchita';
-          break;
-        case "Spanish(US)":
-          voice = mf === 'Male' ? 'Miguel' : 'Penelope';
-          break;
-        case "Swedish":
-          voice = mf === 'Male' ? 'Astrid' : 'Astrid';
-          break;
-        case "Turkish":
-          voice = mf === 'Male' ? 'Filiz' : 'Filiz';
-          break;
-        case "Welsh":
-          voice = mf === 'Male' ? 'Gwyneth' : 'Gwyneth';
-          break;
-        default:
-          voice = mf === 'Male' ? 'Brian' : 'Amy';
-      }
-      self.usevoice = voice;
+            var self = this;
+            self.usevoice = self.itemdata.usevoice;
+            return;
     },
     getItems: function() {
       var self = this;
-
-      var text_items = self.itemdata.customtext1.split("\n");
+      var text_items = self.itemdata.sentences;
 
       self.items = text_items.map(function(target) {
         return {
-          landr_targetWords: target.trim().split(self.spliton).filter(function(e) {
+          landr_targetWords: target.sentence.trim().split(self.spliton).filter(function(e) {
             return e !== "";
           }),
-          target: target,
+          target: target.sentence,
+          prompt: target.displaysentence,
           typed: "",
           answered: false,
           correct: false,
@@ -207,7 +126,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       });
 
       $.each(self.items, function(index, item) {
-        polly.fetch_polly_url(item.target, 'text', self.usevoice).then(function(audiourl) {
+        polly.fetch_polly_url(item.prompt, 'text', self.usevoice).then(function(audiourl) {
           item.audio = new Audio();
           item.audio.src = audiourl;
           if (self.items.filter(function(e) {

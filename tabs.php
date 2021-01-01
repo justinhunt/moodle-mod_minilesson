@@ -49,13 +49,14 @@ $tabs = $row = $inactive = $activated = array();
 
 
 $row[] = new tabobject('view', "$CFG->wwwroot/mod/minilesson/view.php?id=$cm->id", get_string('view', constants::M_COMPONENT), get_string('preview', constants::M_COMPONENT, format_string($moduleinstance->name)));
+if (has_capability('mod/minilesson:manage', $context)) {
+    $row[] = new tabobject('rsquestions', "$CFG->wwwroot/mod/minilesson/rsquestion/rsquestions.php?id=$cm->id", get_string('rsquestions', constants::M_COMPONENT), get_string('managersquestions', constants::M_COMPONENT));
+}
 if (has_capability('mod/minilesson:evaluate', $context)) {
     $row[] = new tabobject('grading', "$CFG->wwwroot/mod/minilesson/grading.php?id=$cm->id", get_string('grading', constants::M_COMPONENT), get_string('viewgrading', constants::M_COMPONENT));
     $row[] = new tabobject('reports', "$CFG->wwwroot/mod/minilesson/reports.php?id=$cm->id", get_string('reports', constants::M_COMPONENT), get_string('viewreports', constants::M_COMPONENT));
 }
-if (has_capability('mod/minilesson:manage', $context)) {
-    $row[] = new tabobject('rsquestions', "$CFG->wwwroot/mod/minilesson/rsquestion/rsquestions.php?id=$cm->id", get_string('rsquestions', constants::M_COMPONENT), get_string('managersquestions', constants::M_COMPONENT));
-}
+
 $tabs[] = $row;
 
 print_tabs($tabs, $currenttab, $inactive, $activated);

@@ -18,8 +18,8 @@ class speechcardsform extends baseform
 
     public function custom_definition() {
         //nothing here
-        $this->add_static_text('instructions','',get_string('speechcardsphrases',constants::M_COMPONENT));
-        $this->add_textarearesponse(1,get_string('phrases',constants::M_COMPONENT));
+        $this->add_static_text('instructions','',get_string('phraseresponses',constants::M_COMPONENT));
+        $this->add_textarearesponse(1,get_string('sentenceprompts',constants::M_COMPONENT),true);
     }
 
 }

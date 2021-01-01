@@ -106,6 +106,29 @@ This file contains class and ID definitions.
         msvcontainerclass: 'mod_minilesson_msvcontainer',
         msvbuttonsbox: 'mod_minilesson_msvbuttonsbox',
 
+        //VOICES
+        voices: {'ar-AR': ['Zeina'],
+            'de-DE': ['Hans','Marlene','Vicki'],
+            'en-US': ['Joey','Justin','Matthew','Ivy','Joanna','Kendra','Kimberly','Salli'],
+            'en-GB': ['Brian','Amy', 'Emma'],
+            'en-AU': ['Russell','Nicole'],
+            'en-IN': ['Aditi','Raveena'],
+            'en-WL': ["Geraint"],
+            'es-US': ['Miguel','Penelope'],
+            'es-ES': [ 'Enrique','Conchita','Lucia'],
+            'fr-CA': ['Chantal'],
+            'fr-FR': ['Mathieu','Celine','Léa'],
+            'hi-IN': ["Aditi"],
+            'it-IT': ['Carla','Bianca','Giorgio'],
+            'ja-JP': ['Takumi','Mizuki','Mizuki'],
+            'ko-KR': ['Seoyan'],
+            'nl-NL': ["Ruben","Lotte"],
+            'pt-BR': ['Ricardo','Vitoria'],
+            'pt-PT': ["Ines",'Cristiano'],
+            'ru-RU': ["Tatyana","Maxim"],
+            'tr-TR': ['Filiz'],
+            'zh-CN': ['Zhiyu']
+        },
 
     };//end of return value
 });

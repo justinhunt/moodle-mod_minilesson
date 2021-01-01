@@ -271,10 +271,21 @@ class comprehensiontest
                    $index=0;
                     $testitem->sentences=[];
                    foreach($sentences as $sentence){
-                       if(empty(trim($sentence))){continue;}
+                       $sentence = trim($sentence);
+                       if(empty($sentence)){continue;}
+                       //if we have a pipe we are listening for array[0] and displaying array[1]
+                       $sentencebits = explode('|',$sentence);
+                       if(count($sentencebits)>1){
+                           $sentence = trim($sentencebits[0]);
+                           $displaysentence = trim($sentencebits[1]);
+                       }else{
+                           $displaysentence = $sentence;
+                       }
+
                        $s = new \stdClass();
                        $s->index=$index;
-                       $s->sentence=trim($sentence);
+                       $s->sentence=$sentence;
+                       $s->displaysentence=$displaysentence;
                        $s->length = strlen($s->sentence);
                        $index++;
                        $testitem->sentences[]=$s;
@@ -296,7 +307,7 @@ class comprehensiontest
                    //we just want the hash here
                    $testitem->passagehash="";
                    if(!empty($item->passagehash)){
-                        $hashbits = explode('|',$item->passagehash);
+                        $hashbits = explode('|',$item->passagehash,2);
                         if(count($hashbits)==2){
                             $testitem->passagehash  = $hashbits[1];
                         }
