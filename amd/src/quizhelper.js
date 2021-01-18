@@ -25,6 +25,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         this.attemptid = attemptid;
         this.courseurl = activitydata.courseurl;
         this.cmid = cmid;
+        this.reattempturl = activitydata.reattempturl;
         this.prepare_html();
         this.init_questions(this.quizdata);
         this.register_events();
@@ -98,7 +99,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             });
         }else {
              if(current > total-6){
-                 var slice = array.slice(total-5, 5);
+                 var slice = array.slice(total-5, total-1);
              }else{
                  var slice = array.slice(current, current + 4);
              }
@@ -168,10 +169,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
           });
           var totalpercent = Math.round((correctitems/totalitems)*100);
           console.log(results,correctitems,totalitems,totalpercent);
-          templates.render('mod_minilesson/quizfinished',{results:results,total:totalpercent, courseurl: this.courseurl}).then(
+          var finishedparams ={results:results,total:totalpercent, courseurl: this.courseurl};
+          if(this.reattempturl!=''){finishedparams.reattempturl = this.reattempturl;}
+          templates.render('mod_minilesson/quizfinished',finishedparams).then(
               function(html,js){
                   dd.controls.quizfinished.html(html);
                   dd.controls.quizfinished.show();
+                  templates.runTemplateJS(js);
               }
           );
 

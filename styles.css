@@ -1762,3 +1762,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   max-width: 400px;
   max-height: 225px;
 }
+
+.minilesson_actionbutton {
+  margin: 5px;
+  padding: 5px;
+}

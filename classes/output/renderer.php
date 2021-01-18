@@ -239,23 +239,19 @@ class renderer extends \plugin_renderer_base {
         $tdata->total = $latestattempt->sessionscore;
         $tdata->courseurl = $CFG->wwwroot . '/course/view.php?id=' . $latestattempt->courseid;
         $tdata->results=$useresults;
-        $finishedcontents = $this->render_from_template(constants::M_COMPONENT . '/quizfinished', $tdata);
-
         //output reattempt button
         if($canattempt){
-            $reattemptbutton =  $this->output->single_button(new \moodle_url( constants::M_URL . '/view.php',
-                    array('n'=>$latestattempt->moduleid, 'retake'=>1)),get_string('reattempt',constants::M_COMPONENT));
-
-            $reattemptdiv = \html_writer::div($reattemptbutton ,constants::M_QUIZ_REATTEMPT,
-                    array('id'=>constants::M_QUIZ_REATTEMPT,''));
-
-            $finishedcontents  .= $reattemptdiv;
+            $reattempturl = new \moodle_url( constants::M_URL . '/view.php',
+                    array('n'=>$latestattempt->moduleid, 'retake'=>1));
+            $tdata->reattempturl = $reattempturl->out();
         }
 
+        $finishedcontents = $this->render_from_template(constants::M_COMPONENT . '/quizfinished', $tdata);
 
         //put it all in a div and return it
         $finisheddiv = \html_writer::div($finishedcontents ,constants::M_QUIZ_FINISHED,
                 array('id'=>constants::M_QUIZ_FINISHED,'style'=>'display: block'));
+
 
         return  $finisheddiv;
     }
@@ -353,7 +349,7 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    function fetch_activity_amd($cm, $moduleinstance,$previewquestionid=0){
+    function fetch_activity_amd($cm, $moduleinstance,$previewquestionid=0,$canreattempt=false){
         global $CFG, $USER;
         //any html we want to return to be sent to the page
         $ret_html = '';
@@ -401,6 +397,12 @@ class renderer extends \plugin_renderer_base {
 
 
         $recopts['courseurl']=$CFG->wwwroot . '/course/view.php?id=' . $moduleinstance->course ;
+        $recopts['reattempturl']='';
+        if($canreattempt) {
+            $reattempturl = new \moodle_url(constants::M_URL . '/view.php',
+                    array('n' => $moduleinstance->id, 'retake' => 1));
+            $recopts['reattempturl']=$reattempturl->out();
+        }
 
 
 

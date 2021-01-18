@@ -448,3 +448,8 @@ $string['sentence'] ='Sentence';
 $string['sentence_help'] ='Sentence_help';
 $string['sentenceno'] ='Sentence No.';
 $string['sentence_add_fields'] ='Add another sentence';
+
+//reattempt
+$string['reattempt'] = 'Try Again';
+$string['reattempttitle'] = 'Really Try Again?';
+$string['reattemptbody'] = 'If you continue your previous attempt will be replaced with this one. OK?';

@@ -129,7 +129,8 @@ if($latestattempt->status==constants::M_STATE_COMPLETE){
     echo $renderer->show_finished_results($comp_test,$latestattempt, $canattempt);
 }else if($itemcount > 0) {
     echo $renderer->show_quiz($comp_test);
-    echo $renderer->fetch_activity_amd($cm, $moduleinstance);
+    $previewid=0;
+    echo $renderer->fetch_activity_amd($cm, $moduleinstance,$previewid,$canattempt);
 }else{
     $showadditemlinks = has_capability('mod/minilesson:evaluate',$modulecontext);
     echo $renderer->show_no_items($cm,$showadditemlinks);
