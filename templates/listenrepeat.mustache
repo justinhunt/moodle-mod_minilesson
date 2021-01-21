@@ -10,6 +10,9 @@
       <div class="landr_loaded" style="display:none;">
         <p>{{#str}}lr_instructions1, mod_minilesson{{/str}}</p>
         <p>{{#str}}lr_instructions2, mod_minilesson{{/str}}</p>
+          <button disabled class='btn btn-block btn-primary landr_start_btn'>
+              <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
+          </button>
       </div>
       <div class="landr_not_loaded">
         <p>{{#str}}loading, mod_minilesson{{/str}}</p>
@@ -17,10 +20,6 @@
     </div>
 
     <div style="display:none;" class="landr_game"></div>
-
-    <button disabled class='btn btn-block btn-primary landr_start_btn'>
-        <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
-    </button>
 
     <div style="display:none;" class="landr_controls">
 

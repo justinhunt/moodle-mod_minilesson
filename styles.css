@@ -1165,10 +1165,6 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   font-size: 30px !important;
 }
 
-.custom-control-label {
-  cursor: pointer;
-}
-
 /* DICTATION CHAT */
 
 .dictate_player_box {
@@ -1490,10 +1486,6 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   float: left;
 }
 
-.landr_start_btn {
-  position: absolute;
-  bottom: 0;
-}
 
 .mod_minilesson_result_div {
   display: inline-block;
@@ -1767,3 +1759,50 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   margin: 5px;
   padding: 5px;
 }
+
+.dictate_loaded,
+.landr_loaded {
+  text-align: center;
+}
+
+.landr_start_btn,
+.dictate_start_btn {
+  /* position: absolute; */
+  /* bottom: 0; */
+  margin-left: auto;
+  height: 50px;
+  width: 60%;
+  margin-right: auto;
+  margin-top: 80px;
+}
+
+.minilesson_mc_response {
+  padding: 10px;
+  border: 1px solid black;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 1.33em;
+}
+
+.minilesson_mc_selected {
+  background-color: lightblue;
+}
+.minilesson_mc_disabled {
+  pointer-events: none;
+}
+
+.minilesson_mc_disabled {
+  pointer-events: none;
+}
+.minilesson_mc_right {
+  color: green;
+  float: right;
+}
+.minilesson_mc_wrong {
+  color: red;
+  float: right;
+}
+
+

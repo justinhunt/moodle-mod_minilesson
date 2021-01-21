@@ -37,13 +37,27 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
         self.next_question(0);
       });
       
-      $("#" + itemdata.uniqueid + "_container ." + itemdata.uniqueid + "_option").on('click', function(e) {
+      $("#" + itemdata.uniqueid + "_container .minilesson_mc_response").on('click', function(e) {
+        //if disabled =>just return (already answered)
+          if($("#" + itemdata.uniqueid + "_container .minilesson_mc_response").hasClass('minilesson_mc_disabled')){
+            return;
+          }
+
+          //get selected item index
+          var checked = $(this).data('index');
+
+          //disable the answers, cos its answered
+          $("#" + itemdata.uniqueid + "_container .minilesson_mc_response").addClass('minilesson_mc_disabled');
+
+        //reveal answers
+        $("#" + itemdata.uniqueid + "_container .minilesson_mc_wrong").show();
+        $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_wrong").hide();
+        $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_right").show();
         
-        $("." + itemdata.uniqueid + "_option").prop("disabled", true);
-        $("." + itemdata.uniqueid + "_fb").html("<i style='color:red;' class='fa fa-times'></i>");
-        $("." + itemdata.uniqueid + "_option" + itemdata.correctanswer + "_fb").html("<i style='color:green;' class='fa fa-check'></i>");
-        
-        var checked = $('input[name='+itemdata.uniqueid+'_options]:checked').data('index');
+        //highlight selected answers
+        $("#" + itemdata.uniqueid + "_option" + checked).addClass('minilesson_mc_selected');
+
+
         var percent = checked == itemdata.correctanswer ? 100 : 0;
         
         $(".minilesson_nextbutton").prop("disabled", true);

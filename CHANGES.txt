@@ -1,3 +1,6 @@
+Version 1.0.9 (Build 2021012100)
+-improved multichoice display
+
 Version 1.0.8 (Build 2021011800)
 -fixed navigation when more than 6 items
 

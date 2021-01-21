@@ -10,6 +10,10 @@
       <div class="dictate_loaded" style="display:none;">
         <p>{{#str}}dc_instructions1, mod_minilesson{{/str}}</p>
         <p>{{#str}}dc_instructions2, mod_minilesson{{/str}}</p>
+        <button disabled class='btn btn-block btn-primary dictate_start_btn'>
+              <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
+        </button>
+
       </div>
       <div class="dictate_not_loaded">
         <p>{{#str}}loading, mod_minilesson{{/str}}</p>
@@ -17,10 +21,6 @@
     </div>
 
     <div style="display:none;" class="dictate_game"></div>
-
-    <button disabled class='btn btn-block btn-primary dictate_start_btn'>
-        <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
-    </button>
 
     <div style="display:none;" class="dictate_controls">
 
