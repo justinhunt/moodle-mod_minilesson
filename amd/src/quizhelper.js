@@ -247,7 +247,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
                 case 'useast1':
                 case 'dublin':
                 case 'sydney':
-                    ret = this.ttslanguage.substr(0,2)==='en';
+                    ret =true;
+                    //ret = this.ttslanguage.substr(0,2)==='en';
                     break;
                 default:
                     ret = false;

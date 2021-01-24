@@ -76,6 +76,20 @@ class utils{
      *
      */
     public static function fetch_passagehash($passage) {
+
+        $cleanpassage = self::fetch_clean_passage($passage);
+        if(!empty($cleanpassage)) {
+            return sha1($cleanpassage);
+        }else{
+            return false;
+        }
+    }
+
+    /*
+     * Hash the passage and compare
+     *
+     */
+    public static function fetch_clean_passage($passage) {
         $sentences = explode(PHP_EOL,$passage);
         $usesentences = [];
         //look out for display text sep. by pipe chars in string
@@ -91,7 +105,7 @@ class utils{
 
         $cleantext = diff::cleanText($usepassage);
         if(!empty($cleantext)) {
-            return sha1($cleantext);
+            return $cleantext;
         }else{
             return false;
         }
@@ -103,6 +117,9 @@ class utils{
      *
      */
     public static function fetch_lang_model($passage, $language, $region){
+        $usepassage = self::fetch_clean_passage($passage);
+        if($usepassage===false ){return false;}
+
         $conf= get_config(constants::M_COMPONENT);
         if (!empty($conf->apiuser) && !empty($conf->apisecret)) {;
             $token = self::fetch_token($conf->apiuser, $conf->apisecret);
@@ -115,7 +132,7 @@ class utils{
             $params["wstoken"]=$token;
             $params["wsfunction"]='local_cpapi_generate_lang_model';
             $params["moodlewsrestformat"]='json';
-            $params["passage"]=diff::cleanText($passage);
+            $params["passage"]=$usepassage;
             $params["language"]=$language;
             $params["region"]=$region;
 
