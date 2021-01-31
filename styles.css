@@ -1188,7 +1188,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .dictate_error {}
 
 .minilesson_dictate_player_box .dictate_game {
-  min-height: 460px;
+  min-height: 400px;
   padding: 10px;
   border-top: 1px solid darkgray;
   border-bottom: 1px solid darkgray;
@@ -1256,6 +1256,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .minilesson_dictate_player_box .dictate_mainmenu {
+  min-height: 400px;
   background-color: #f5f5f5;
   font-size: 20px;
   padding: 10px;
@@ -1411,7 +1412,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .minilesson_landr_player_box .landr_mainmenu {
-  height: 460px;
+  height: 400px;
   background-color: #f5f5f5;
   font-size: 20px;
   padding: 10px;

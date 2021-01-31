@@ -127,8 +127,6 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             return buffers;
         },
 
-
-
         drawWave: function() {
 
             var width = this.canvas.width() * 2;
