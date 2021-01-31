@@ -61,7 +61,7 @@ class diff{
     */
     public static function cleanText($thetext,$unicodemb4=true) {
         //lowercaseify
-        $thetext = strtolower($thetext);
+        $thetext = \core_text::strtolower($thetext);
 
         //remove any html
         $thetext = strip_tags($thetext);
@@ -428,13 +428,17 @@ public static function fetchAlternativesArray($thealternates)
     //for use with PHP usort and arrays of sequences
     //sort array so that long sequences come first.
     //if sequences are of equal length, the one whose transcript index is earlier comes first
-    public static function cmp($a, $b)
-    {
+    public static function cmp($a, $b) {
         if ($a->length == $b->length) {
-            if($a->tposition == $b->tposition){
-            	return 0;
-            }else{
-                return ($a->tposition< $b->tposition) ? -1 : 1;
+            if ($a->tposition == $b->tposition) {
+                if($a->pposition == $b->pposition){
+                    return 0;
+                }else{
+                    return ($a->pposition < $b->pposition) ? -1 : 1;
+                }
+
+            } else {
+                return ($a->tposition < $b->tposition) ? -1 : 1;
             }
         }
         return ($a->length < $b->length) ? 1 : -1;
@@ -520,10 +524,15 @@ public static function fetchAlternativesArray($thealternates)
 
                 //common is short matches after speaking ends
                 //particularly dangerous are wildcards and alternates
-                if(($altratio >= 0.5) && $enddistance > 0){
-                    $bust=true;
-                }elseif($sequence->length < $enddistance){
-                    $bust=true;
+                //The gist of this is that if the passage match leaps far ahead of the transcript position it looks like a bogus match
+                // on a "the" or "a" which are truncated "there" or "about." As the distance from pposition from transcript length increases
+                // the "leap" distance increases, so the chance of a false far match increases.
+                // However skipped sentences are possible, so we arbitrarily set a 2 word false match limit
+                //[alternatively we might see if the sequence is up until the last transcribed word (which is where it occurs most often]
+                if (($altratio >= 0.5) && $enddistance > 0) {
+                    $bust = true;
+                } else if ($sequence->length < $enddistance && $sequence->length<3) {
+                    $bust = true;
                 }
             }
 

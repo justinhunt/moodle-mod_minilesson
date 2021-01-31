@@ -145,7 +145,6 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").prop("disabled", false);
     },
     gotComparison: function(comparison, typed) {
-
       var self = this;
 
       $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").removeClass("landr_correct landr_incorrect");
@@ -153,7 +152,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
 
       var allCorrect = comparison.filter(function(e){return !e.matched;}).length==0;
       
-      if (allCorrect) {
+      if (allCorrect && comparison && comparison.length>0) {
         
         $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").addClass("landr_correct");
         $("#" + self.itemdata.uniqueid + "_container .landr_feedback").addClass("fa fa-check");
@@ -221,7 +220,6 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       var self = this;
       
       $(".landr_ctrl-btn").prop("disabled", true);
-
       ajax.call([{
         methodname: 'mod_minilesson_compare_passage_to_transcript',
         args: {
@@ -297,7 +295,9 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       code += "<i class='fa fa-graduation-cap landr_speech-icon-left'></i>";
       code += "<div style='margin-left:90px;' class='landr_speech landr_teacher_left'>";
       if(!showText){
-        code += target.replace(/[^a-zA-Z0-9 ]/g, '').replace(/[a-zA-Z0-9]/g, '•');
+        var nopunc = target.replace(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g,"");
+        var dots = nopunc.replace(/[^ ]/g, '•');
+        code += dots;
       } else{
         code += target;
       }

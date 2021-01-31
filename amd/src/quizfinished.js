@@ -17,7 +17,6 @@ define(['jquery', 'core/log','core/modal_factory','core/str','core/modal_events'
      },
 
     init: function() {
-        debugger;
         this.init_strings();
         this.register_events();
 

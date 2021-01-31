@@ -108,7 +108,9 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
 
                 var spoken = cleanspeechtext;
                 var correct = app.terms[app.pointer - 1];
-
+log.debug('speechtext:',speechtext);
+log.debug('spoken:',spoken);
+log.debug('correct:',correct);
                 //Similarity check by character matching
                 var similarity = app.similarity(spoken, correct);
                 log.debug('JS similarity: ' + spoken + ':' + correct + ':' + similarity);
@@ -240,12 +242,14 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
         },
 
         cleanText: function(text) {
-          return text.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").trim();
+            var lowertext = text.toLowerCase();
+            var punctuationless = lowertext.replace(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g,"");
+            var ret = punctuationless.replace(/\s+/g, " ").trim();
+          return ret;
         },
 
         //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match
         checkByPhonetic: function(spoken, correct) {
-
           return Ajax.call([{
             'methodname': 'mod_minilesson_check_by_phonetic',
             'args': {

@@ -1167,12 +1167,12 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 
 /* DICTATION CHAT */
 
-.dictate_player_box {
+.minilesson_dictate_player_box {
   border: 1px solid darkgray;
   position: relative;
-  height: 550px;
+  height: 350px;
   overflow: hidden;
-  max-width: 400px;
+  /*max-width: 400px;*/
   margin: auto;
 }
 
@@ -1322,12 +1322,12 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 
 /* LISTEN AND REPEAT */
 
-.landr_player_box {
+.minilesson_landr_player_box {
   border: 1px solid darkgray;
   position: relative;
-  height: 550px;
+  height: 400px;
   overflow: hidden;
-  max-width: 400px;
+  /*max-width: 400px;*/
   margin: auto;
 }
 
@@ -1697,6 +1697,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   max-width: 400px;
   margin: auto;
   text-align: center;
+  font-size: 1.3em;
 }
 .mod_minilesson_itemaudio {
   width: 100%;
@@ -1716,6 +1717,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .minilesson_questionheader_contents {
   text-align: center;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 .mod_minilesson_itemimage_cont,
 .mod_minilesson_itemvideo_cont,
