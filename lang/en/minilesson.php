@@ -434,6 +434,8 @@ $string['phraseresponses'] ='Enter a list of speaking prompts in the text area b
 $string['phrases'] ='Phrases';
 
 $string['itemmedia'] ='Image, audio or video to show';
+$string['itemttsquestion'] ='Text to be read';
+$string['itemttsquestionvoice'] ='Speaker\'s voice';
 $string['itemiframe'] ='iFrame embed code';
 $string['prompt-separate'] ='Text and media separate (recommended)';
 $string['prompt-richtext'] ='Rich Text';
@@ -450,3 +452,8 @@ $string['sentence_add_fields'] ='Add another sentence';
 $string['reattempt'] = 'Try Again';
 $string['reattempttitle'] = 'Really Try Again?';
 $string['reattemptbody'] = 'If you continue your previous attempt will be replaced with this one. OK?';
+
+//media toggles
+$string['addmedia'] = 'Add Media';
+$string['addiframe'] = 'Add iFrame';
+$string['addttsaudio'] = 'Add TTS Audio';

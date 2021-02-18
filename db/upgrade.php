@@ -92,9 +92,23 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2020122300, 'minilesson');
     }
 
+    // Add TTS item  to minilesson table
+    if ($oldversion < 2021021800) {
+        $table = new xmldb_table(constants::M_QTABLE);
 
+        // Define fields itemtts and itemtts voice to be added to minilesson
+        $fields=[];
+        $fields[] = new xmldb_field('itemttsvoice', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED);
+        $fields[] = new xmldb_field('itemtts', XMLDB_TYPE_TEXT, null, null, null, null);
 
-
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2021021800, 'minilesson');
+    }
 
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;

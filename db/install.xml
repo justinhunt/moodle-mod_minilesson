@@ -65,6 +65,8 @@
             <FIELD NAME="visible" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="1" SEQUENCE="false"/>
             <FIELD NAME="itemtext" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="itemtextformat" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+            <FIELD NAME="itemtts" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+            <FIELD NAME="itemttsvoice" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="itemaudiofname" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="customtext1" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="customtext1format" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false"/>

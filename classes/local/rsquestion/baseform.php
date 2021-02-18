@@ -108,6 +108,9 @@ abstract class baseform extends \moodleform {
      * and then calls custom_definition();
      */
     public final function definition() {
+        global $CFG;
+
+        $m35 = $CFG->version >= 2018051700;
         $mform = $this->_form;
         $this->editoroptions = $this->_customdata['editoroptions'];
 		$this->filemanageroptions = $this->_customdata['filemanageroptions'];
@@ -146,11 +149,44 @@ abstract class baseform extends \moodleform {
                 //Question text
                 $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
                 $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
+
+                $togglearray=array();
+                $togglearray[] =& $mform->createElement('advcheckbox','addmedia',get_string('addmedia',constants::M_COMPONENT),'');
+                $togglearray[] =& $mform->createElement('advcheckbox','addiframe',get_string('addiframe',constants::M_COMPONENT),'');
+                $togglearray[] =& $mform->createElement('advcheckbox','addttsaudio',get_string('addttsaudio',constants::M_COMPONENT),'');
+                $mform->addGroup($togglearray, 'togglearray', '', array(' '), false);
+                $mform->setDefault('addmedia', 1);
+
                 //Question media upload
                 $this->add_media_upload(constants::MEDIAQUESTION,-1,get_string('itemmedia',constants::M_COMPONENT));
+                if($m35){
+                    $mform->hideIf(constants::MEDIAQUESTION, 'addmedia', 'neq', 1);
+                }else {
+                    $mform->disabledIf(constants::MEDIAQUESTION, 'addmedia', 'neq', 1);
+                }
+
+
                 //Question media iframe
                 $mform->addElement('text', constants::MEDIAIFRAME, get_string('itemiframe', constants::M_COMPONENT), array('size'=>100));
                 $mform->setType(constants::MEDIAIFRAME, PARAM_RAW);
+                if($m35){
+                    $mform->hideIf( constants::MEDIAIFRAME,'addiframe','neq', 1);
+                }else {
+                    $mform->disabledIf( constants::MEDIAIFRAME,'addiframe','neq', 1);
+                }
+
+
+                //Question text to speech
+                $mform->addElement('textarea', constants::TTSQUESTION, get_string('itemttsquestion', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
+                $mform->setType(constants::TTSQUESTION, PARAM_RAW);
+                $this->add_voiceselect(constants::TTSQUESTIONVOICE,get_string('itemttsquestionvoice',constants::M_COMPONENT));
+                if($m35){
+                    $mform->hideIf(constants::TTSQUESTION, 'addttsaudio', 'neq', 1);
+                    $mform->hideIf(constants::TTSQUESTIONVOICE, 'addttsaudio', 'neq', 1);
+                }else {
+                    $mform->disabledIf(constants::TTSQUESTION, 'addttsaudio', 'neq', 1);
+                    $mform->disabledIf(constants::TTSQUESTIONVOICE, 'addttsaudio', 'neq', 1);
+                }
 
 
             }

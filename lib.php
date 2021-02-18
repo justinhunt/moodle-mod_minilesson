@@ -741,6 +741,27 @@ function minilesson_output_fragment_mform($args) {
                         constants::M_COMPONENT,
                         constants::TEXTQUESTION_FILEAREA, $data->itemid);
             }else{
+
+                //make sure the media upload fields are in the correct state
+                $fs = get_file_storage();
+                $files = $fs->get_area_files( $context->id,  constants::M_COMPONENT,constants::MEDIAQUESTION,$data->itemid);
+                if($files){
+                    $data->addmedia = 1;
+                }else{
+                    $data->addmedia = 0;
+                }
+                if(!empty($data->{constants::TTSQUESTION})){
+                    $data->addttsaudio = 1;
+                }else{
+                    $data->addttsaudio = 0;
+                }
+                if(!empty($data->{constants::MEDIAIFRAME})){
+                    $data->addiframe = 1;
+                }else{
+                    $data->addiframe = 0;
+                }
+
+
                 //init our itemmedia field
                 $draftitemid = file_get_submitted_draft_itemid(constants::MEDIAQUESTION);
                 file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,

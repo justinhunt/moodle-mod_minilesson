@@ -1,7 +1,7 @@
-define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'core/ajax', 'mod_minilesson/pollyhelper',
+define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'core/ajax',
     'mod_minilesson/dictation', 'mod_minilesson/dictationchat', 'mod_minilesson/multichoice', 'mod_minilesson/speechcards', 'mod_minilesson/listenrepeat',
         'mod_minilesson/page','mod_minilesson/teachertools','mod_minilesson/shortanswer'],
-  function($, log, def, templates, Ajax, polly, dictation, dictationchat, multichoice, speechcards, listenrepeat, page, teachertools, shortanswer) {
+  function($, log, def, templates, Ajax, dictation, dictationchat, multichoice, speechcards, listenrepeat, page, teachertools, shortanswer) {
     "use strict"; // jshint ;_;
 
     /*
@@ -17,7 +17,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
       submitbuttonclass: 'mod_minilesson_quizsubmitbutton',
       stepresults: [],
 
-      init: function(quizcontainer, activitydata, cmid, attemptid) {
+      init: function(quizcontainer, activitydata, cmid, attemptid,polly) {
         this.quizdata = activitydata.quizdata;
         this.region = activitydata.region;
         this.ttslanguage = activitydata.ttslanguage;
@@ -27,7 +27,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         this.cmid = cmid;
         this.reattempturl = activitydata.reattempturl;
         this.prepare_html();
-        this.init_questions(this.quizdata);
+        this.init_questions(this.quizdata,polly);
         this.register_events();
         this.start_quiz();
       },
@@ -75,6 +75,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
           }
 
         });
+
+        //TTS in question headers
+          $("audio.mod_minilesson_itemttsaudio").each(function(){
+              var that=this;
+              polly.fetch_polly_url($(this).data('text'), 'text', $(this).data('voice')).then(function(audiourl) {
+                  $(that).attr("src", audiourl);
+              });
+          });
 
       },
 

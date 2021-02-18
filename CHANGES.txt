@@ -1,3 +1,6 @@
+Version 1.0.12 (Build 2021021800)
+-Added TTS option to content options
+
 Version 1.0.11  (Build 2021013100)
 -Improved differencing
 -Standardized audio recorder

@@ -247,6 +247,12 @@ class comprehensiontest
                         }//end of for each
                     }//end of if mediaurls
 
+                //TTS Question
+                if(!empty(trim($item->{constants::TTSQUESTION}))){
+                    $testitem->itemttsaudio=$item->{constants::TTSQUESTION};
+                    $testitem->itemttsaudiovoice=$item->{constants::TTSQUESTIONVOICE};
+                }
+
                     break;
                 default:
                     $testitem->text =  $item->{constants::TEXTQUESTION};

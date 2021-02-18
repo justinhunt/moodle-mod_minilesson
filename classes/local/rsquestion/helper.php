@@ -192,6 +192,16 @@ class helper
                     $filemanageroptions);
         }
 
+        //Item TTS
+        if (property_exists($data, constants::TTSQUESTION)) {
+            $theitem->{constants::TTSQUESTION} = $data->{constants::TTSQUESTION};
+            if (property_exists($data, constants::TTSQUESTIONVOICE)) {
+                $theitem->{constants::TTSQUESTIONVOICE} = $data->{constants::TTSQUESTIONVOICE};
+            }else{
+                $theitem->{constants::TTSQUESTIONVOICE} = 'Amy';
+            }
+        }
+
 
         //save correct answer if we have one
         if (property_exists($data, constants::CORRECTANSWER)) {

@@ -27,7 +27,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                 //set up our ajax request
                 var xhr = new XMLHttpRequest();
 
-
                 //set up our handler for the response
                 xhr.onreadystatechange = function (e) {
                     if (this.readyState === 4) {
