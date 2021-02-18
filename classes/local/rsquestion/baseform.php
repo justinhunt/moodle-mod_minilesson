@@ -155,7 +155,10 @@ abstract class baseform extends \moodleform {
                 $togglearray[] =& $mform->createElement('advcheckbox','addiframe',get_string('addiframe',constants::M_COMPONENT),'');
                 $togglearray[] =& $mform->createElement('advcheckbox','addttsaudio',get_string('addttsaudio',constants::M_COMPONENT),'');
                 $mform->addGroup($togglearray, 'togglearray', '', array(' '), false);
-                $mform->setDefault('addmedia', 1);
+                //in the case of page we assume they will want to use some media
+                if($this->type== constants::TYPE_PAGE) {
+                    $mform->setDefault('addmedia', 1);
+                }
 
                 //Question media upload
                 $this->add_media_upload(constants::MEDIAQUESTION,-1,get_string('itemmedia',constants::M_COMPONENT));

@@ -13,7 +13,7 @@ use \mod_minilesson\constants;
 class pageform extends baseform
 {
 
-    public $type = constants::TYPE_DICTATION;
+    public $type = constants::TYPE_PAGE;
 
     public function custom_definition() {
         //nothing here yet
