@@ -61,6 +61,17 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                     }
                 };
 
+                if(texttype!='ssml'){
+                    //fetch slightly slower version of speech
+                    //rate = 'slow' or 'x-slow' or 'medium'
+                    speaktext=  speaktext.replace("<","");
+                    speaktext = speaktext.replace(">","");
+                    log.debug("speaktext");
+                    var slowtext='<speak><break time="1000ms"></break><prosody rate="slow">' + speaktext + '</prosody></speak>';
+                    speaktext = slowtext;
+                    texttype='ssml';
+                }
+
                 //log.debug(params);
                 var xhrparams = "wstoken=" + that.token
                 + "&wsfunction=" + functionname
