@@ -224,7 +224,15 @@ class helper
                 $theitem->{constants::TEXTANSWER . $anumber . 'format'} = $data->{constants::TEXTANSWER . $anumber . 'format'};
                 //if its a text field, do this
             } else if (property_exists($data, constants::TEXTANSWER . $anumber)) {
-                $theitem->{constants::TEXTANSWER . $anumber} = $data->{constants::TEXTANSWER . $anumber};
+                $thetext = trim($data->{constants::TEXTANSWER . $anumber});
+                //segment the text if it is japanese and not already segmented
+                if($minilesson->ttslanguage == constants::M_LANG_JAJP &&
+                        ($data->type==CONSTANTS::TYPE_LISTENREPEAT ||$data->type==CONSTANTS::TYPE_SPEECHCARDS)){
+                    if(strpos($thetext,' ')==false){
+                        $thetext = utils::segment_japanese($thetext);
+                    }
+                }
+                $theitem->{constants::TEXTANSWER . $anumber} = $thetext;
             }
         }
 

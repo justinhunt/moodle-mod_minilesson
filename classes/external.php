@@ -74,6 +74,11 @@ class mod_minilesson_external extends external_api {
     public static function compare_passage_to_transcript($transcript,$passage,$language,$alternatives) {
         global $DB;
 
+        //If this is Japanese, and the passage has been segmented, we want to segment it into "words"
+        if($language == constants::M_LANG_JAJP && strpos(trim($passage),' ')!==false) {
+            $transcript = utils::segment_japanese($transcript);
+        }
+
         //turn the passage and transcript into an array of words
         $passagebits = diff::fetchWordArray($passage);
         $alternatives = diff::fetchAlternativesArray($alternatives);

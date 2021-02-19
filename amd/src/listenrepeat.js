@@ -226,7 +226,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
           passage: passage,
           transcript: transcript,
           alternatives: '',
-          language: 'en-US'
+          language: self.itemdata.language
         },
         done: function(ajaxresult) {
           var payloadobject = JSON.parse(ajaxresult);

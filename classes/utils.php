@@ -592,6 +592,12 @@ class utils{
         );
     }
 
+    //Insert spaces in between segments in order to create "words"
+    public static function segment_japanese($passage){
+        $segments = \mod_minilesson\jp\Analyzer::segment($passage);
+        return implode(" ",$segments);
+    }
+
 
     //convert a phrase or word to a series of phonetic characters that we can use to compare text/spoken
     public static function convert_to_phonetic($phrase,$language){
