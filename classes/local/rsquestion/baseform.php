@@ -247,6 +247,11 @@ abstract class baseform extends \moodleform {
                 $additionalfields, "add", true);
     }
 
+    protected final function add_showtextpromptoptions($name, $label = null) {
+        $options = utils::fetch_options_textprompt();
+        return $this->add_dropdown($name,$label,$options);
+    }
+
     protected final function add_dropdown($name, $label = null,$options) {
 
         $this->_form->addElement('select', $name, $label, $options);

@@ -285,8 +285,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
 
     },
     nextPrompt: function() {
-
-      var showText = false;
+      var showText = parseInt(this.itemdata.show_text);
       var self = this;
 
       var target = self.items[self.game.pointer].target;

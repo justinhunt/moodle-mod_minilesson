@@ -90,8 +90,8 @@ const MAXCUSTOMDATA=5;
 const MAXCUSTOMINT=5;
 
 const SHOWTEXTPROMPT = 'customint1';
-const TEXTPROMPT_WORDS = 0;
-const TEXTPROMPT_DOTS = 1;
+const TEXTPROMPT_WORDS = 1;
+const TEXTPROMPT_DOTS = 0;
 
 
 //CSS ids/classes

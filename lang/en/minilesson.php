@@ -402,8 +402,8 @@ $string['lr_instructions2'] = 'Click \'Start\' to begin!';
 
 $string['choosevoice'] = "Choose the prompt speaker's voice";
 $string['showtextprompt'] = 'Show text prompt';
-$string['textprompt_words'] = 'Show text prompt (words)';
-$string['textprompt_dots'] = 'Show dots for letters only';
+$string['textprompt_words'] = 'Show full text prompt';
+$string['textprompt_dots'] = 'Show dots instead of letters';
 
 $string['gradenow']= 'Grade Now';
 
@@ -457,3 +457,6 @@ $string['reattemptbody'] = 'If you continue your previous attempt will be replac
 $string['addmedia'] = 'Add Media';
 $string['addiframe'] = 'Add iFrame';
 $string['addttsaudio'] = 'Add TTS Audio';
+
+//showtextprompt
+$string['showtextprompt'] = 'Show text prompt';

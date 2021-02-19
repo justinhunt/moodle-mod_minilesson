@@ -253,6 +253,9 @@ class comprehensiontest
                     $testitem->itemttsaudiovoice=$item->{constants::TTSQUESTIONVOICE};
                 }
 
+                //show text prompt or dots, for listen and repeat really
+                $testitem->show_text=$item->{constants::SHOWTEXTPROMPT};
+
                     break;
                 default:
                     $testitem->text =  $item->{constants::TEXTQUESTION};

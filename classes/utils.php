@@ -614,8 +614,8 @@ class utils{
     }
 
     public static function fetch_options_textprompt() {
-        $options = array(constants::TEXTPROMPT_WORDS => get_string("textprompt_words", constants::M_COMPONENT),
-                constants::TEXTPROMPT_DOTS => get_string("textprompt_dots", constants::M_COMPONENT));
+        $options = array(constants::TEXTPROMPT_DOTS => get_string("textprompt_dots", constants::M_COMPONENT),
+                constants::TEXTPROMPT_WORDS => get_string("textprompt_words", constants::M_COMPONENT));
         return $options;
     }
 

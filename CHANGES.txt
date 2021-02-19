@@ -1,3 +1,6 @@
+Version 1.0.14 (Build 2021021802)
+-Added ability to show text or dots in listen and repeat.
+
 Version 1.0.13 (Build 2021021801)
 -Fixed bug in previous build with builtjs not shipped
 -slowed down TTS by default
