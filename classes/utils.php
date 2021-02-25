@@ -609,10 +609,9 @@ class utils{
                 break;
             case 'ja':
                 if(extension_loaded('mecab')){
-                    $limelight = new \mod_minilesson\Limelight\Limelight();
-                    $results = $limelight->parse($phrase);
-                    $hiragana = $results->toHiragana()->string('word');
-                    $phonetic = $hiragana;
+                   //use mecab here
+                    $katakana = $phrase;
+                    $phonetic = $katakana;
                     break;
                 }
 
