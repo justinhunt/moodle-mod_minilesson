@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Parse\PartOfSpeech\Classes;
+ namespace mod_minilesson\Limelight\Parse\PartOfSpeech\Classes;
 
 use Limelight\Parse\PartOfSpeech\PartOfSpeech;
 

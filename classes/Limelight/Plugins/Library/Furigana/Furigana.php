@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Plugins\Library\Furigana;
+ namespace mod_minilesson\Limelight\Plugins\Library\Furigana;
 
 use Limelight\Config\Config;
 use Limelight\Helpers\JapaneseHelpers;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Plugins;
+ namespace mod_minilesson\Limelight\Plugins;
 
 use Limelight\Plugins\Plugin;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Mecab;
+ namespace mod_minilesson\Limelight\Mecab;
 
 use Mecab\Node as MecabNode;
 

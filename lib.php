@@ -726,6 +726,7 @@ function minilesson_output_fragment_mform($args) {
     $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
     $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
 
+    $item=false;
     if($args->itemid){
         $item = $DB->get_record(constants::M_QTABLE, array('id'=>$args->itemid,constants::M_MODNAME => $cm->instance),
                 '*', MUST_EXIST);

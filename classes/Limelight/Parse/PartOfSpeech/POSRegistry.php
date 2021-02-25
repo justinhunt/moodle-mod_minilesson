@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Parse\PartOfSpeech;
+ namespace mod_minilesson\Limelight\Parse\PartOfSpeech;
 
 use Limelight\Exceptions\InternalErrorException;
 

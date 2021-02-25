@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Events;
+ namespace mod_minilesson\Limelight\Events;
 
 interface LimelightListener
 {

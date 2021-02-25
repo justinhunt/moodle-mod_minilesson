@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Helpers\Contracts;
+ namespace mod_minilesson\Limelight\Helpers\Contracts;
 
 interface Jsonable
 {

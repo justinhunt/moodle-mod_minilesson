@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight;
+ namespace mod_minilesson\Limelight;
 
 trait MecabMethods
 {

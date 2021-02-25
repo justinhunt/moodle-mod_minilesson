@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Providers\Laravel;
+ namespace mod_minilesson\Limelight\Providers\Laravel;
 
 use Illuminate\Support\ServiceProvider;
 use Limelight\Limelight;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Plugins\Library\Romaji;
+ namespace mod_minilesson\Limelight\Plugins\Library\Romaji;
 
 abstract class RomajiConverter
 {

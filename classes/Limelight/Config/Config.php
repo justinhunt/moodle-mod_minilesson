@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Config;
+ namespace mod_minilesson\Limelight\Config;
 
 use Limelight\Exceptions\InternalErrorException;
 use Limelight\Exceptions\InvalidInputException;

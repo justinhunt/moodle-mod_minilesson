@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Parse;
+ namespace mod_minilesson\Limelight\Parse;
 
 use Limelight\Classes\LimelightResults;
 use Limelight\Classes\LimelightWord;

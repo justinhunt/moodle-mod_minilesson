@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Classes;
+ namespace mod_minilesson\Limelight\Classes;
 
 use ArrayAccess;
 use ArrayIterator;

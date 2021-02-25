@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Plugins\Library\Romaji\Styles;
+ namespace mod_minilesson\Limelight\Plugins\Library\Romaji\Styles;
 
 use Limelight\Plugins\Library\Romaji\RomajiConverter;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Classes;
+ namespace mod_minilesson\Limelight\Classes;
 
 use Limelight\Helpers\Contracts\Arrayable;
 use Limelight\Helpers\Contracts\Convertable;

@@ -608,9 +608,8 @@ class utils{
                 $phonetic = metaphone($phrase);
                 break;
             case 'ja':
-                if(extension_loaded('php-mecab')){
-                    require_once($CFG->dirroot . '/mod/minilesson/classes/Limelight/Limelight.php');
-                    $limelight = new \Limelight\Limelight.php();
+                if(extension_loaded('mecab')){
+                    $limelight = new \mod_minilesson\Limelight\Limelight();
                     $results = $limelight->parse($phrase);
                     $hiragana = $results->toHiragana()->string('word');
                     $phonetic = $hiragana;

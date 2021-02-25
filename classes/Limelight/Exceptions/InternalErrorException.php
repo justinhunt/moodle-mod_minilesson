@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Exceptions;
+ namespace mod_minilesson\Limelight\Exceptions;
 
 class InternalErrorException extends LimelightException
 {

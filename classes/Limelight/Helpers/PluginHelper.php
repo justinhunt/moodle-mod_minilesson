@@ -1,6 +1,6 @@
 <?php
 
-namespace Limelight\Helpers;
+ namespace mod_minilesson\Limelight\Helpers;
 
 use Limelight\Classes\Collection;
 use Limelight\Config\Config;
