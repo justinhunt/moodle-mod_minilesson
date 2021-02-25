@@ -601,12 +601,22 @@ class utils{
 
     //convert a phrase or word to a series of phonetic characters that we can use to compare text/spoken
     public static function convert_to_phonetic($phrase,$language){
+        global $CFG;
 
         switch($language){
             case 'en':
                 $phonetic = metaphone($phrase);
                 break;
             case 'ja':
+                if(extension_loaded('php-mecab')){
+                    require_once($CFG->dirroot . '/mod/minilesson/classes/Limelight/Limelight.php');
+                    $limelight = new \Limelight\Limelight.php();
+                    $results = $limelight->parse($phrase);
+                    $hiragana = $results->toHiragana()->string('word');
+                    $phonetic = $hiragana;
+                    break;
+                }
+
             default:
                 $phonetic = $phrase;
         }
