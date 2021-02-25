@@ -79,7 +79,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                 + "&text=" + encodeURIComponent(speaktext)
                 + '&texttype=' + texttype
                 + '&voice=' + voice
-                + '&appid=' + 'mod_minilesson'
+                + '&appid=' + def.component
                 + '&owner=' + that.owner
                 + '&region=' + that.region;
 
