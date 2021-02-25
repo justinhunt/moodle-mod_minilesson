@@ -2,9 +2,9 @@
 
  namespace mod_minilesson\Limelight\Plugins\Library\Furigana;
 
-use Limelight\Config\Config;
-use Limelight\Helpers\JapaneseHelpers;
-use Limelight\Plugins\Plugin;
+use mod_minilesson\Limelight\Config\Config;
+use mod_minilesson\Limelight\Helpers\JapaneseHelpers;
+use mod_minilesson\Limelight\Plugins\Plugin;
 
 class Furigana extends Plugin
 {

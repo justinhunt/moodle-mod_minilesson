@@ -2,8 +2,8 @@
 
  namespace mod_minilesson\Limelight\Parse\PartOfSpeech\Classes;
 
-use Limelight\Parse\PartOfSpeech\PartOfSpeech;
-use Limelight\Parse\PartOfSpeech\POSRegistry;
+use mod_minilesson\Limelight\Parse\PartOfSpeech\PartOfSpeech;
+use mod_minilesson\Limelight\Parse\PartOfSpeech\POSRegistry;
 
 class Meishi implements PartOfSpeech
 {

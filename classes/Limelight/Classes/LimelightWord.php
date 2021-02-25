@@ -2,13 +2,13 @@
 
  namespace mod_minilesson\Limelight\Classes;
 
-use Limelight\Helpers\Contracts\Arrayable;
-use Limelight\Helpers\Contracts\Convertable;
-use Limelight\Helpers\Contracts\Jsonable;
-use Limelight\Helpers\Converter;
-use Limelight\Helpers\JapaneseHelpers;
-use Limelight\Helpers\PluginHelper;
-use Limelight\Limelight;
+use mod_minilesson\Limelight\Helpers\Contracts\Arrayable;
+use mod_minilesson\Limelight\Helpers\Contracts\Convertable;
+use mod_minilesson\Limelight\Helpers\Contracts\Jsonable;
+use mod_minilesson\Limelight\Helpers\Converter;
+use mod_minilesson\Limelight\Helpers\JapaneseHelpers;
+use mod_minilesson\Limelight\Helpers\PluginHelper;
+use mod_minilesson\Limelight\Limelight;
 
 class LimelightWord implements Arrayable, Convertable, Jsonable
 {

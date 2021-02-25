@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Plugins;
 
-use Limelight\Plugins\Plugin;
+use mod_minilesson\Limelight\Plugins\Plugin;
 
 class PluginTemplate extends Plugin
 {

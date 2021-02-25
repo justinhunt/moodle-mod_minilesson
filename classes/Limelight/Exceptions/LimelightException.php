@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Exceptions;
 
-use Limelight\Config\Config;
+use mod_minilesson\Limelight\Config\Config;
 
 class LimelightException extends \Exception
 {

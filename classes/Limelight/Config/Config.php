@@ -2,8 +2,8 @@
 
  namespace mod_minilesson\Limelight\Config;
 
-use Limelight\Exceptions\InternalErrorException;
-use Limelight\Exceptions\InvalidInputException;
+use mod_minilesson\Limelight\Exceptions\InternalErrorException;
+use mod_minilesson\Limelight\Exceptions\InvalidInputException;
 
 class Config
 {

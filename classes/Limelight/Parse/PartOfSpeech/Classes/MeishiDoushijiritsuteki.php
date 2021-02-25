@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Parse\PartOfSpeech\Classes;
 
-use Limelight\Parse\PartOfSpeech\PartOfSpeech;
+use mod_minilesson\Limelight\Parse\PartOfSpeech\PartOfSpeech;
 
 class MeishiDoushijiritsuteki implements PartOfSpeech
 {

@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Mecab\PhpMecab;
 
-use Limelight\Mecab\Node;
+use mod_minilesson\Limelight\Mecab\Node;
 use Mecab\Node as MecabNode;
 
 class PhpMecabNode implements Node

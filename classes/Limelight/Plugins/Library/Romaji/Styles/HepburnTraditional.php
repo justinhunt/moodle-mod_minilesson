@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Plugins\Library\Romaji\Styles;
 
-use Limelight\Plugins\Library\Romaji\RomajiConverter;
+use mod_minilesson\Limelight\Plugins\Library\Romaji\RomajiConverter;
 
 class HepburnTraditional extends RomajiConverter
 {

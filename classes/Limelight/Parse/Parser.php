@@ -2,10 +2,10 @@
 
  namespace mod_minilesson\Limelight\Parse;
 
-use Limelight\Classes\LimelightResults;
-use Limelight\Events\Dispatcher;
-use Limelight\Helpers\PluginHelper;
-use Limelight\Mecab\Mecab;
+use mod_minilesson\Limelight\Classes\LimelightResults;
+use mod_minilesson\Limelight\Events\Dispatcher;
+use mod_minilesson\Limelight\Helpers\PluginHelper;
+use mod_minilesson\Limelight\Mecab\Mecab;
 
 class Parser
 {

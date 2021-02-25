@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Parse;
 
-use Limelight\Mecab\Node;
+use mod_minilesson\Limelight\Mecab\Node;
 
 class Tokenizer
 {

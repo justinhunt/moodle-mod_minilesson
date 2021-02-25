@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Mecab\PhpMecab;
 
-use Limelight\Mecab\Mecab;
+use mod_minilesson\Limelight\Mecab\Mecab;
 use MeCab\Node;
 use MeCab\Tagger;
 

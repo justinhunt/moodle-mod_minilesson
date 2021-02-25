@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Events;
 
-use Limelight\Exceptions\EventErrorException;
+use mod_minilesson\Limelight\Exceptions\EventErrorException;
 
 class Dispatcher
 {

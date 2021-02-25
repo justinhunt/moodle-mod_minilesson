@@ -3,7 +3,7 @@
  namespace mod_minilesson\Limelight\Providers\Laravel;
 
 use Illuminate\Support\ServiceProvider;
-use Limelight\Limelight;
+use mod_minilesson\Limelight\Limelight;
 
 class LimelightServiceProvider extends ServiceProvider
 {

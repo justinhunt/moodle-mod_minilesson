@@ -2,10 +2,10 @@
 
  namespace mod_minilesson\Limelight\Parse;
 
-use Limelight\Classes\LimelightWord;
-use Limelight\Events\Dispatcher;
-use Limelight\Limelight;
-use Limelight\Parse\PartOfSpeech\POSRegistry;
+use mod_minilesson\Limelight\Classes\LimelightWord;
+use mod_minilesson\Limelight\Events\Dispatcher;
+use mod_minilesson\Limelight\Limelight;
+use mod_minilesson\Limelight\Parse\PartOfSpeech\POSRegistry;
 
 class TokenParser
 {

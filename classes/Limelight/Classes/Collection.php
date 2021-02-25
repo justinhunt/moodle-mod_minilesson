@@ -6,10 +6,10 @@ use ArrayAccess;
 use ArrayIterator;
 use IteratorAggregate;
 use JsonSerializable;
-use Limelight\Helpers\Arr;
-use Limelight\Helpers\Contracts\Arrayable;
-use Limelight\Helpers\Contracts\Convertable;
-use Limelight\Helpers\Converter;
+use mod_minilesson\Limelight\Helpers\Arr;
+use mod_minilesson\Limelight\Helpers\Contracts\Arrayable;
+use mod_minilesson\Limelight\Helpers\Contracts\Convertable;
+use mod_minilesson\Limelight\Helpers\Converter;
 
 abstract class Collection implements ArrayAccess, JsonSerializable, IteratorAggregate
 {

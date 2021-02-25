@@ -2,10 +2,10 @@
 
  namespace mod_minilesson\Limelight\Classes;
 
-use Limelight\Helpers\Contracts\Arrayable;
-use Limelight\Helpers\Contracts\Convertable;
-use Limelight\Helpers\Contracts\Jsonable;
-use Limelight\Helpers\PluginHelper;
+use mod_minilesson\Limelight\Helpers\Contracts\Arrayable;
+use mod_minilesson\Limelight\Helpers\Contracts\Convertable;
+use mod_minilesson\Limelight\Helpers\Contracts\Jsonable;
+use mod_minilesson\Limelight\Helpers\PluginHelper;
 
 class LimelightResults extends Collection implements Arrayable, Convertable, Jsonable
 {

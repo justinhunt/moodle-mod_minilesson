@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Helpers;
 
-use Limelight\Classes\Collection;
+use mod_minilesson\Limelight\Classes\Collection;
 
 trait Arr
 {

@@ -2,7 +2,7 @@
 
  namespace mod_minilesson\Limelight\Parse\PartOfSpeech;
 
-use Limelight\Exceptions\InternalErrorException;
+use mod_minilesson\Limelight\Exceptions\InternalErrorException;
 
 class POSRegistry
 {

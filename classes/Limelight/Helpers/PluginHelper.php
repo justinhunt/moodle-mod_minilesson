@@ -2,11 +2,11 @@
 
  namespace mod_minilesson\Limelight\Helpers;
 
-use Limelight\Classes\Collection;
-use Limelight\Config\Config;
-use Limelight\Exceptions\PluginNotFoundException;
-use Limelight\Mecab\Node;
-use Limelight\Plugins\Plugin;
+use mod_minilesson\Limelight\Classes\Collection;
+use mod_minilesson\Limelight\Config\Config;
+use mod_minilesson\Limelight\Exceptions\PluginNotFoundException;
+use mod_minilesson\Limelight\Mecab\Node;
+use mod_minilesson\Limelight\Plugins\Plugin;
 
 trait PluginHelper
 {

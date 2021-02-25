@@ -2,9 +2,9 @@
 
  namespace mod_minilesson\Limelight\Plugins\Library\Romaji;
 
-use Limelight\Config\Config;
-use Limelight\Exceptions\PluginErrorException;
-use Limelight\Plugins\Plugin;
+use mod_minilesson\Limelight\Config\Config;
+use mod_minilesson\Limelight\Exceptions\PluginErrorException;
+use mod_minilesson\Limelight\Plugins\Plugin;
 
 class Romaji extends Plugin
 {

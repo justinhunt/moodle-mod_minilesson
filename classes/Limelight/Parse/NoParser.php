@@ -2,13 +2,13 @@
 
  namespace mod_minilesson\Limelight\Parse;
 
-use Limelight\Classes\LimelightResults;
-use Limelight\Classes\LimelightWord;
-use Limelight\Events\Dispatcher;
-use Limelight\Exceptions\InvalidInputException;
-use Limelight\Helpers\JapaneseHelpers;
-use Limelight\Helpers\PluginHelper;
-use Limelight\Limelight;
+use mod_minilesson\Limelight\Classes\LimelightResults;
+use mod_minilesson\Limelight\Classes\LimelightWord;
+use mod_minilesson\Limelight\Events\Dispatcher;
+use mod_minilesson\Limelight\Exceptions\InvalidInputException;
+use mod_minilesson\Limelight\Helpers\JapaneseHelpers;
+use mod_minilesson\Limelight\Helpers\PluginHelper;
+use mod_minilesson\Limelight\Limelight;
 
 class NoParser
 {

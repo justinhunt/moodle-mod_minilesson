@@ -2,12 +2,12 @@
 
  namespace mod_minilesson\Limelight;
 
-use Limelight\Config\Config;
-use Limelight\Events\Dispatcher;
-use Limelight\Parse\NoParser;
-use Limelight\Parse\Parser;
-use Limelight\Parse\Tokenizer;
-use Limelight\Parse\TokenParser;
+use mod_minilesson\Limelight\Config\Config;
+use mod_minilesson\Limelight\Events\Dispatcher;
+use mod_minilesson\Limelight\Parse\NoParser;
+use mod_minilesson\Limelight\Parse\Parser;
+use mod_minilesson\Limelight\Parse\Tokenizer;
+use mod_minilesson\Limelight\Parse\TokenParser;
 
 class Limelight
 {
