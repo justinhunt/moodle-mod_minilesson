@@ -609,9 +609,18 @@ class utils{
                 break;
             case 'ja':
                 if(extension_loaded('mecab')){
-                   //use mecab here
-                    $katakana = $phrase;
-                    $phonetic = $katakana;
+                    $mecab = new \MeCab\Tagger();
+                    //$results=$mecab->parse('チョコレートがやめられない。');
+                    $nodes=$mecab->parseToNode('チョコレートがやめられない。');
+                    $katakanaarray=[];
+                    foreach ($nodes as $n) {
+                        $f =  $n->getFeature();
+                        $reading = explode(',',$f)[8];
+                        if($reading!='*'){
+                            $katakanaarray[] =$reading;
+                        }
+                    }
+                    $phonetic=implode($katakanaarray,'');
                     break;
                 }
 
