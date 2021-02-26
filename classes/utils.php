@@ -608,10 +608,11 @@ class utils{
                 $phonetic = metaphone($phrase);
                 break;
             case 'ja':
+                //gettting phonetics for JP requires php-mecab library doc'd here
+                //https://github.com/nihongodera/php-mecab-documentation
                 if(extension_loaded('mecab')){
                     $mecab = new \MeCab\Tagger();
-                    //$results=$mecab->parse('チョコレートがやめられない。');
-                    $nodes=$mecab->parseToNode('チョコレートがやめられない。');
+                    $nodes=$mecab->parseToNode($phrase);
                     $katakanaarray=[];
                     foreach ($nodes as $n) {
                         $f =  $n->getFeature();
