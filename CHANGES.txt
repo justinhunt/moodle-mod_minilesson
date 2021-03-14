@@ -1,3 +1,7 @@
+Version 1.0.15 (Build 2021022600)
+-Added mecab based comparison or Japanese text
+-Added setuptab to allow in iframe editing of settings
+
 Version 1.0.14 (Build 2021021802)
 -Added ability to show text or dots in listen and repeat.
 

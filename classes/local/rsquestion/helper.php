@@ -294,5 +294,4 @@ class helper
         }
         return $thepassagehash;
     }
-
 }

@@ -31,6 +31,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 
 use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 
 /**
@@ -38,7 +39,7 @@ use \mod_minilesson\constants;
  */
 class mod_minilesson_mod_form extends moodleform_mod {
 
-    public function __construct($current, $section, $cm, $course, $ajaxformdata=null) {
+    public function __construct($current, $section, $cm, $course, $ajaxformdata=null, $customdata=null) {
         global $CFG;
         $this->current   = $current;
         $this->_instance = $current->instance;
@@ -63,7 +64,8 @@ class mod_minilesson_mod_form extends moodleform_mod {
             $this->_modname = $matches[1];
         }
         $this->init_features();
-        moodleform::__construct('modedit.php', null, 'post', '', null, true, $ajaxformdata);
+        $action = 'modedit.php';
+        moodleform::__construct($action, $customdata, 'post', '', null, true, $ajaxformdata);
     }
 
     /**
@@ -74,125 +76,22 @@ class mod_minilesson_mod_form extends moodleform_mod {
 
         $mform = $this->_form;
 
-        //-------------------------------------------------------------------------------
-        // Adding the "general" fieldset, where all the common settings are showed
-        $mform->addElement('header', 'general', get_string('general', 'form'));
-
-        // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('minilessonname', constants::M_COMPONENT), array('size'=>'64'));
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('name', PARAM_TEXT);
-        } else {
-            $mform->setType('name', PARAM_CLEAN);
-        }
-        $mform->addRule('name', null, 'required', null, 'client');
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'minilessonname', constants::M_COMPONENT);
-
-         // Adding the standard "intro" and "introformat" fields
-        if($CFG->version < 2015051100){
-        	$this->add_intro_editor();
-        }else{
-        	$this->standard_intro_elements();
-		}
-
-        //page layout options
-        $layout_options = \mod_minilesson\utils::fetch_pagelayout_options();
-        $mform->addElement('select', 'pagelayout', get_string('pagelayout', constants::M_COMPONENT),$layout_options);
-        $mform->setDefault('pagelayout','standard');
-
-        //time target
-        $mform->addElement('hidden', 'timelimit',0);
-        $mform->setType('timelimit', PARAM_INT);
-
-/*
- * Later can add a proper time limit
-        $timelimit_options = \mod_minilesson\utils::get_timelimit_options();
-        $mform->addElement('select', 'timelimit', get_string('timelimit', constants::M_COMPONENT),
-            $timelimit_options);
-		$mform->setDefault('timelimit',60);
-*/
-
-		//add other editors
-		//could add files but need the context/mod info. So for now just rich text
-		$config = get_config(constants::M_COMPONENT);
-		
-		//The passage
-		//$edfileoptions = minilesson_editor_with_files_options($this->context);
-		$ednofileoptions = minilesson_editor_no_files_options($this->context);
-		$opts = array('rows'=>'15', 'columns'=>'80');
-
-		//welcome message [just kept cos its a pain in the butt to do this again from scratch if we ever do]
-        /*
-		$opts = array('rows'=>'6', 'columns'=>'80');
-		$mform->addElement('editor','welcome_editor',get_string('welcomelabel',constants::M_COMPONENT),$opts, $ednofileoptions);
-		$mform->setDefault('welcome_editor',array('text'=>$config->defaultwelcome, 'format'=>FORMAT_MOODLE));
-		$mform->setType('welcome_editor',PARAM_RAW);
-        */
-
-        //showq titles
-        $yesnooptions = array(1 => get_string('yes'), 0 => get_string('no'));
-        $mform->addElement('select', 'showqtitles', get_string('showqtitles', constants::M_COMPONENT), $yesnooptions);
-        $mform->setDefault('showqtitles',0);
-
-		//Attempts
-        $attemptoptions = array(0 => get_string('unlimited', constants::M_COMPONENT),
-                            1 => '1',2 => '2',3 => '3',4 => '4',5 => '5',);
-        $mform->addElement('select', 'maxattempts', get_string('maxattempts', constants::M_COMPONENT), $attemptoptions);
-
-        //tts options
-        $langoptions = \mod_minilesson\utils::get_lang_options();
-        $mform->addElement('select', 'ttslanguage', get_string('ttslanguage', constants::M_COMPONENT), $langoptions);
-        $mform->setDefault('ttslanguage',$config->ttslanguage);
-
-        //region
-        $regionoptions = \mod_minilesson\utils::get_region_options();
-        $mform->addElement('select', 'region', get_string('region', constants::M_COMPONENT), $regionoptions);
-        $mform->setDefault('region',$config->awsregion);
-
-        //prompt types
-        $prompttypes = \mod_minilesson\utils::get_prompttype_options();
-        $mform->addElement('select', 'richtextprompt', get_string('prompttype', constants::M_COMPONENT), $prompttypes);
-        $mform->addHelpButton('richtextprompt', 'prompttype', constants::M_COMPONENT);
-        $mform->setDefault('richtextprompt', $config->prompttype);
-
+        //Add this activity specific form fields
+        //We want to do this procedurally because in setup tabs we want to show a subset of this form
+        // with just the activity specific fields,and we use a custom form and the same elements
+        $cmid = isset($this->_cm->id) ? $this->_cm->id : false;
+        utils::add_mform_elements($mform,$this->context, $cmid);
 
         // Grade.
         $this->standard_grading_coursemodule_elements();
-        
+
         //grade options
         //for now we hard code this to latest attempt
         $mform->addElement('hidden', 'gradeoptions',constants::M_GRADELATEST);
         $mform->setType('gradeoptions', PARAM_INT);
 
-        // Post attempt
-        $mform->addElement('header', 'postattemptheader', get_string('postattemptheader',constants::M_COMPONENT));
-
-        // Get the modules.
-        if ($mods = get_course_mods($COURSE->id)) {
-            $modinstances = array();
-            foreach ($mods as $mod) {
-                // Get the module name and then store it in a new array.
-                if ($module = get_coursemodule_from_instance($mod->modname, $mod->instance, $COURSE->id)) {
-                    // Exclude this Poodll Time activity (if it's already been saved.)
-                    if (!isset($this->_cm->id) || $this->_cm->id != $mod->id) {
-                        $modinstances[$mod->id] = $mod->modname.' - '.$module->name;
-                    }
-                }
-            }
-            asort($modinstances); // Sort by module name.
-            $modinstances=array(0=>get_string('none'))+$modinstances;
-
-            $mform->addElement('select', 'activitylink', get_string('activitylink', 'lesson'), $modinstances);
-            $mform->addHelpButton('activitylink', 'activitylink', 'lesson');
-            $mform->setDefault('activitylink', 0);
-        }
-
-
-        //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
         $this->standard_coursemodule_elements();
-        //-------------------------------------------------------------------------------
         // add standard buttons, common to all modules
         $this->add_action_buttons();
     }
@@ -221,13 +120,9 @@ class mod_minilesson_mod_form extends moodleform_mod {
 	}
 	
 	public function data_preprocessing(&$form_data) {
-		$ednofileoptions = minilesson_editor_no_files_options($this->context);
-		$editors  = minilesson_get_editornames();
 		 if ($this->current->instance) {
-			$itemid = 0;
-			foreach($editors as $editor){
-				$form_data = file_prepare_standard_editor((object)$form_data,$editor, $ednofileoptions, $this->context,constants::M_COMPONENT,$editor, $itemid);
-			}
+             utils::prepare_file_and_json_stuff($form_data,$this->context);
+
 		}
 	}
 

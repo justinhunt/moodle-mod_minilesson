@@ -460,3 +460,6 @@ $string['addttsaudio'] = 'Add TTS Audio';
 
 //showtextprompt
 $string['showtextprompt'] = 'Show text prompt';
+$string['enablesetuptab']="Enable setup tab";
+$string['enablesetuptab_details']="Show a tab containing the activity instance settings to admins. Not super useful in most cases.";
+$string['setup']="Setup";
