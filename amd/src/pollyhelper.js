@@ -62,7 +62,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                 };
                 var texttype='ssml';
 
-                switch(voiceoption){
+                switch(parseInt(voiceoption)){
 
                     //slow
                     case 1:
