@@ -187,9 +187,11 @@ abstract class baseform extends \moodleform {
                 if($m35){
                     $mform->hideIf(constants::TTSQUESTION, 'addttsaudio', 'neq', 1);
                     $mform->hideIf(constants::TTSQUESTIONVOICE, 'addttsaudio', 'neq', 1);
+                    $mform->hideIf(constants::TTSQUESTIONOPTION, 'addttsaudio', 'neq', 1);
                 }else {
                     $mform->disabledIf(constants::TTSQUESTION, 'addttsaudio', 'neq', 1);
                     $mform->disabledIf(constants::TTSQUESTIONVOICE, 'addttsaudio', 'neq', 1);
+                    $mform->disabledIf(constants::TTSQUESTIONOPTION, 'addttsaudio', 'neq', 1);
                 }
 
 
