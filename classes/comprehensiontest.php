@@ -251,6 +251,7 @@ class comprehensiontest
                 if(!empty(trim($item->{constants::TTSQUESTION}))){
                     $testitem->itemttsaudio=$item->{constants::TTSQUESTION};
                     $testitem->itemttsaudiovoice=$item->{constants::TTSQUESTIONVOICE};
+                    $testitem->itemttsoption=$item->{constants::TTSQUESTIONOPTION};
                 }
 
                 //show text prompt or dots, for listen and repeat really
@@ -308,6 +309,7 @@ class comprehensiontest
                    $testitem->hints='';
                    $testitem->owner=hash('md5',$USER->username);
                    $testitem->usevoice=$item->{constants::POLLYVOICE};
+                   $testitem->voiceoption=$item->{constants::POLLYOPTION};
 
                    //TT Recorder stuff
                    $testitem->waveheight = 75;

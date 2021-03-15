@@ -79,7 +79,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         //TTS in question headers
           $("audio.mod_minilesson_itemttsaudio").each(function(){
               var that=this;
-              polly.fetch_polly_url($(this).data('text'), 'text', $(this).data('voice')).then(function(audiourl) {
+              polly.fetch_polly_url($(this).data('text'), $(this).data('ttsoption'), $(this).data('voice')).then(function(audiourl) {
                   $(that).attr("src", audiourl);
               });
           });

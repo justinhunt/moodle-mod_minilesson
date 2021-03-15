@@ -183,6 +183,7 @@ abstract class baseform extends \moodleform {
                 $mform->addElement('textarea', constants::TTSQUESTION, get_string('itemttsquestion', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
                 $mform->setType(constants::TTSQUESTION, PARAM_RAW);
                 $this->add_voiceselect(constants::TTSQUESTIONVOICE,get_string('itemttsquestionvoice',constants::M_COMPONENT));
+                $this->add_voiceoptions(constants::TTSQUESTIONOPTION,get_string('choosevoiceoptions',constants::M_COMPONENT));
                 if($m35){
                     $mform->hideIf(constants::TTSQUESTION, 'addttsaudio', 'neq', 1);
                     $mform->hideIf(constants::TTSQUESTIONVOICE, 'addttsaudio', 'neq', 1);
@@ -367,6 +368,16 @@ abstract class baseform extends \moodleform {
         $this->add_dropdown($name, $label,$voiceoptions);
     }
 
+    /**
+     * Convenience function: Adds a dropdown list of voice options
+     *
+     * @param string $label, null means default
+     * @return void
+     */
+    protected final function add_voiceoptions($name, $label = null) {
+        $voiceoptions = utils::get_tts_options();
+        $this->add_dropdown($name, $label,$voiceoptions);
+    }
     /**
      * Convenience function: Adds a dropdown list of tts language
      *

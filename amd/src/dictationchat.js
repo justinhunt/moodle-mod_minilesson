@@ -100,6 +100,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
     setvoice: function() {
         var self = this;
         self.usevoice = self.itemdata.usevoice;
+        self.voiceoption=self.itemdata.voiceoption;
         return;
     },
     getItems: function() {
@@ -123,7 +124,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       });
 
       $.each(self.items, function(index, item) {
-        polly.fetch_polly_url(item.prompt, 'text', self.usevoice).then(function(audiourl) {
+        polly.fetch_polly_url(item.prompt,  self.voiceoption, self.usevoice).then(function(audiourl) {
           item.audio = new Audio();
           item.audio.src = audiourl;
           if (self.items.filter(function(e) {

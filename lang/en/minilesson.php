@@ -463,3 +463,10 @@ $string['showtextprompt'] = 'Show text prompt';
 $string['enablesetuptab']="Enable setup tab";
 $string['enablesetuptab_details']="Show a tab containing the activity instance settings to admins. Not super useful in most cases.";
 $string['setup']="Setup";
+
+//TTS options
+$string['ttsnormal']='Normal';
+$string['ttsslow']='Slow';
+$string['ttsveryslow']='Very Slow';
+$string['ttsssml']='SSML';
+$string['choosevoiceoption']='Voice Options';

@@ -17,7 +17,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
             this.owner=owner;
         },
 
-        fetch_polly_url: function(speaktext,texttype, voice) {
+        fetch_polly_url: function(speaktext,voiceoption, voice) {
             var that = this;
             return new Promise(function(resolve,reject){
                 //The REST API we are calling
@@ -61,15 +61,43 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                     }
                 };
 
-                if(texttype!='ssml'){
-                    //fetch slightly slower version of speech
-                    //rate = 'slow' or 'x-slow' or 'medium'
-                    speaktext=  speaktext.replace("<","");
-                    speaktext = speaktext.replace(">","");
-                    log.debug("speaktext");
-                    var slowtext='<speak><break time="1000ms"></break><prosody rate="slow">' + speaktext + '</prosody></speak>';
-                    speaktext = slowtext;
-                    texttype='ssml';
+                switch(voiceoption){
+
+                    //slow
+                    case 1:
+                        //fetch slightly slower version of speech
+                        //rate = 'slow' or 'x-slow' or 'medium'
+                        speaktext=  speaktext.replace("<","");
+                        speaktext = speaktext.replace(">","");
+                        speaktext = '<speak><break time="1000ms"></break><prosody rate="slow">' + speaktext + '</prosody></speak>';
+                        texttype='ssml';
+                        break;
+                    //veryslow
+                    case 2:
+                        //fetch slightly slower version of speech
+                        //rate = 'slow' or 'x-slow' or 'medium'
+                        speaktext=  speaktext.replace("<","");
+                        speaktext = speaktext.replace(">","");
+                        speaktext = '<speak><break time="1000ms"></break><prosody rate="x-slow">' + speaktext + '</prosody></speak>';
+                        texttype='ssml';
+
+                    //ssml
+                    case 3:
+                        speaktext='<speak>' + speaktext + '</speak>';
+                        texttype='ssml';
+                        break;
+
+                    //normal
+                    case 0:
+                    default:
+                        //fetch slightly slower version of speech
+                        //rate = 'slow' or 'x-slow' or 'medium'
+                        speaktext=  speaktext.replace("<","");
+                        speaktext = speaktext.replace(">","");
+                        speaktext = '<speak><break time="1000ms"></break>' + speaktext + '</speak>';
+                        texttype='ssml';
+                        break;
+
                 }
 
                 //log.debug(params);

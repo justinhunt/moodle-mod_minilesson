@@ -110,6 +110,21 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021021800, 'minilesson');
     }
 
+    // Add TTS option to minilesson table
+    if ($oldversion < 2021031500) {
+        $table = new xmldb_table(constants::M_QTABLE);
+
+
+        // Define field itemtts to be added to minilesson
+        $itemttsoption= new xmldb_field('itemttsoption', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::TTS_NORMAL);
+
+        // add richtextprompt field to minilesson table
+        if (!$dbman->field_exists($table, $itemttsoption)) {
+            $dbman->add_field($table, $itemttsoption);
+        }
+        upgrade_mod_savepoint(true, 2021031500, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

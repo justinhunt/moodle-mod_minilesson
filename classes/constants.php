@@ -74,12 +74,14 @@ const TEXTQUESTION = 'itemtext';
 const TEXTQUESTION_FORMAT = 'itemtextformat';
 const TTSQUESTION = 'itemtts';
 const TTSQUESTIONVOICE = 'itemttsvoice';
+const TTSQUESTIONOPTION = 'itemttsoption';
 const MEDIAQUESTION = 'itemmedia';
 const MEDIAIFRAME = 'customdata5';
 const TEXTANSWER = 'customtext';
 const CUSTOMDATA = 'customdata';
 const CUSTOMINT = 'customint';
 const POLLYVOICE = 'customtext5';
+const POLLYOPTION = 'customint4';
 const TEXTQUESTION_FILEAREA = 'itemarea';
 const TEXTANSWER_FILEAREA ='customtextfilearea';
 const PASSAGEPICTURE='passagepicture';
@@ -93,6 +95,10 @@ const SHOWTEXTPROMPT = 'customint1';
 const TEXTPROMPT_WORDS = 1;
 const TEXTPROMPT_DOTS = 0;
 
+const TTS_NORMAL = 0;
+const TTS_SLOW = 1;
+const TTS_VERYSLOW = 2;
+const TTS_SSML = 3;
 
 //CSS ids/classes
 const M_RECORD_BUTTON='mod_minilesson_record_button';

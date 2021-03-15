@@ -20,6 +20,7 @@ class listenrepeatform extends baseform
         //nothing here
         $this->add_showtextpromptoptions(constants::SHOWTEXTPROMPT,get_string('showtextprompt',constants::M_COMPONENT));
         $this->add_voiceselect(constants::POLLYVOICE,get_string('choosevoice',constants::M_COMPONENT));
+        $this->add_voiceoptions(constants::POLLYOPTION,get_string('choosevoiceoption',constants::M_COMPONENT));
         //$textpromptoptions=utils::fetch_options_textprompt();
         //$this->add_dropdown(constants::SHOWTEXTPROMPT,get_string('showtextprompt',constants::M_COMPONENT),$textpromptoptions);
         $this->add_static_text('instructions','',get_string('phraseresponses',constants::M_COMPONENT));

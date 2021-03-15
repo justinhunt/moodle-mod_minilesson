@@ -200,6 +200,11 @@ class helper
             }else{
                 $theitem->{constants::TTSQUESTIONVOICE} = 'Amy';
             }
+            if (property_exists($data, constants::TTSQUESTIONOPTION)) {
+                $theitem->{constants::TTSQUESTIONOPTION} = $data->{constants::TTSQUESTIONOPTION};
+            }else{
+                $theitem->{constants::TTSQUESTIONOPTION} = constants::TTS_NORMAL;
+            }
         }
 
 
