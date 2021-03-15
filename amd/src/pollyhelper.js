@@ -60,6 +60,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                         }
                     }
                 };
+                var texttype='ssml';
 
                 switch(voiceoption){
 
@@ -70,7 +71,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                         speaktext=  speaktext.replace("<","");
                         speaktext = speaktext.replace(">","");
                         speaktext = '<speak><break time="1000ms"></break><prosody rate="slow">' + speaktext + '</prosody></speak>';
-                        texttype='ssml';
                         break;
                     //veryslow
                     case 2:
@@ -79,12 +79,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                         speaktext=  speaktext.replace("<","");
                         speaktext = speaktext.replace(">","");
                         speaktext = '<speak><break time="1000ms"></break><prosody rate="x-slow">' + speaktext + '</prosody></speak>';
-                        texttype='ssml';
-
+                        break;
                     //ssml
                     case 3:
                         speaktext='<speak>' + speaktext + '</speak>';
-                        texttype='ssml';
                         break;
 
                     //normal
@@ -95,7 +93,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                         speaktext=  speaktext.replace("<","");
                         speaktext = speaktext.replace(">","");
                         speaktext = '<speak><break time="1000ms"></break>' + speaktext + '</speak>';
-                        texttype='ssml';
                         break;
 
                 }
