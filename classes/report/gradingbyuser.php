@@ -83,7 +83,7 @@ class gradingbyuser extends basereport
 
     public function process_raw_data($formdata)
     {
-        global $DB;
+        global $DB, $USER;
 
         //heading data
         $this->headingdata = new \stdClass();
@@ -94,13 +94,41 @@ class gradingbyuser extends basereport
 
         $emptydata = array();
 
-        //if we are not machine grading the SQL is simpler
-        $human_sql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu " .
-            " WHERE tu.moduleid=? AND tu.status=" . constants::M_STATE_COMPLETE .
-            " AND tu.userid=? " .
-            " ORDER BY tu.id DESC";
+        //groupsmode
+        $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->moduleid), '*', MUST_EXIST);
+        $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
+        $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
 
-        $alldata =$DB->get_records_sql($human_sql, array($formdata->moduleid, $formdata->userid));
+        $groupsmode = groups_get_activity_groupmode($cm,$course);
+        $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
+        $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
+
+
+        //if no groups, or can see all groups then the SQL is simple
+        if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
+
+            //if we are not machine grading the SQL is simpler
+            $the_sql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu " .
+                    " WHERE tu.moduleid=? AND tu.status=" . constants::M_STATE_COMPLETE .
+                    " AND tu.userid=? " .
+                    " ORDER BY tu.id DESC";
+
+            $alldata =$DB->get_records_sql($the_sql, array($formdata->moduleid, $formdata->userid));
+            //if need to partition to groups, SQL for groups
+        }else{
+            $groups = groups_get_user_groups($course->id);
+            if (!$groups || empty($groups[0])) {
+                return false;
+            }
+            list($groupswhere, $allparams) = $DB->get_in_or_equal(array_values($groups[0]));
+
+            $allsql ="SELECT tu.* FROM {".constants::M_ATTEMPTSTABLE ."} tu " .
+                    " INNER JOIN {groups_members} gm ON tu.userid=gm.userid " .
+                    " WHERE gm.groupid $groupswhere AND tu.moduleid = ? AND tu.status=" . constants::M_STATE_COMPLETE .
+                    " ORDER BY tu.id DESC";
+            $allparams[]=$formdata->moduleid;
+            $alldata = $DB->get_records_sql($allsql, $allparams);
+        }
 
 
         if ($alldata) {

@@ -78,7 +78,7 @@ class attemptresults extends basereport
 
     public function process_raw_data($formdata)
     {
-        global $DB;
+        global $DB, $USER;
 
         $this->rawdata = [];
 
@@ -89,13 +89,46 @@ class attemptresults extends basereport
         $comp_test =  new \mod_minilesson\comprehensiontest($cm);
         $forcetitles=true;
         $quizdata = $comp_test->fetch_test_data_for_js($forcetitles);
-
         $emptydata = array();
 
 
-        //we jsut need the  individual recoen
-        $record =$DB->get_record(constants::M_ATTEMPTSTABLE,
-                array('id'=>$formdata->attemptid,'moduleid'=>$formdata->moduleid));
+        //groupsmode
+        $groupsmode = groups_get_activity_groupmode($cm,$course);
+        $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
+        $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
+
+
+        //if no groups, or can see all groups then the SQL is simple
+        if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
+
+            //we just need the  individual recoen
+            $record =$DB->get_record(constants::M_ATTEMPTSTABLE,
+                    array('id'=>$formdata->attemptid,'moduleid'=>$formdata->moduleid));
+
+        //if need to partition to groups, SQL for groups
+        }else{
+            $groups = groups_get_user_groups($course->id);
+            if (!$groups || empty($groups[0])) {
+                return false;
+            }
+            list($groupswhere, $allparams) = $DB->get_in_or_equal(array_values($groups[0]));
+
+            $allsql ="SELECT tu.* FROM {".constants::M_ATTEMPTSTABLE ."} tu " .
+                    " INNER JOIN {groups_members} gm ON tu.userid=gm.userid " .
+                    " WHERE gm.groupid $groupswhere AND tu.moduleid = ? AND tu.id= ?" .
+                    " ORDER BY tu.id DESC";
+            $allparams[]=$formdata->moduleid;
+            $allparams[]=$formdata->attemptid;
+            $records  = $DB->get_records_sql($allsql, $allparams);
+            if($records){
+                $record = array_shift($records);
+            }else{
+                $record =false;
+            }
+        }
+
+
+
 
 
         if ($record) {

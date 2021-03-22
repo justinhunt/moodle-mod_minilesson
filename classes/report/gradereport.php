@@ -99,7 +99,6 @@ class gradereport extends basereport
 
         //if no groups, or can see all groups then the SQL is simple
         if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
-            //if we are not machine grading the SQL is simpler
             $the_sql = "SELECT tu.*  FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id ".
                     " WHERE tu.moduleid=? AND tu.status=" . constants::M_STATE_COMPLETE .
                     " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
@@ -115,8 +114,9 @@ class gradereport extends basereport
 
             $allsql ="SELECT tu.* FROM {".constants::M_ATTEMPTSTABLE ."} tu " .
                     "INNER JOIN {groups_members} gm ON tu.userid=gm.userid " .
+                    "INNER JOIN {user} u ON tu.userid=u.id " .
                     "WHERE gm.groupid $groupswhere AND tu.moduleid = ? " .
-                    "ORDER BY timecreated DESC";
+                    "ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
             $allparams[]=$formdata->moduleid;
             $alldata = $DB->get_records_sql($allsql, $allparams);
         }
