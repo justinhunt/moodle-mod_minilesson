@@ -115,7 +115,7 @@ class gradereport extends basereport
 
             $allsql ="SELECT tu.* FROM {".constants::M_ATTEMPTSTABLE ."} tu " .
                     "INNER JOIN {groups_members} gm ON tu.userid=gm.userid " .
-                    "WHERE gm.groupid $groupswhere AND tu.modid = ? " .
+                    "WHERE gm.groupid $groupswhere AND tu.moduleid = ? " .
                     "ORDER BY timecreated DESC";
             $allparams[]=$formdata->moduleid;
             $alldata = $DB->get_records_sql($allsql, $allparams);
