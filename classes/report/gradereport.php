@@ -79,7 +79,7 @@ class gradereport extends basereport
     }
 
     public function process_raw_data($formdata){
-        global $DB;
+        global $DB,$USER;
 
         //heading data
         $this->headingdata = new \stdClass();
@@ -87,18 +87,40 @@ class gradereport extends basereport
         $emptydata = array();
         $user_attempt_totals = array();
 
-        //if we are not machine grading the SQL is simpler
-        $human_sql = "SELECT tu.*  FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id ".
-                " WHERE tu.moduleid=? AND tu.status=" . constants::M_STATE_COMPLETE .
-            " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
+        //groupsmode
+        $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->moduleid), '*', MUST_EXIST);
+        $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
+        $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
+
+        $groupsmode = groups_get_activity_groupmode($cm,$course);
+        $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
+        $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
 
 
+        //if no groups, or can see all groups then the SQL is simple
+        if($supergrouper || $groupsmode !=SEPARATEGROUPS) {
+            //if we are not machine grading the SQL is simpler
+            $the_sql = "SELECT tu.*  FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id ".
+                    " WHERE tu.moduleid=? AND tu.status=" . constants::M_STATE_COMPLETE .
+                    " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
+            $alldata =$DB->get_records_sql($the_sql, array($formdata->moduleid));
 
-        //we need a module instance to know which scoring method we are using.
-        $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->moduleid));
-        $alldata =$DB->get_records_sql($human_sql, array($formdata->moduleid));
+            //if need to partition to groups, SQL for groups
+        }else{
+            $groups = groups_get_user_groups($course->id);
+            if (!$groups || empty($groups[0])) {
+                return false;
+            }
+            list($groupswhere, $allparams) = $DB->get_in_or_equal(array_values($groups[0]));
 
-
+            $allsql ="SELECT tu.* FROM {".constants::M_ATTEMPTSTABLE ."} tu " .
+                    "INNER JOIN {groups_members} gm ON tu.userid=gm.userid " .
+                    "WHERE gm.groupid $groupswhere AND tu.modid = ? " .
+                    "ORDER BY timecreated DESC";
+            $allparams[]=$formdata->moduleid;
+            $alldata = $DB->get_records_sql($allsql, $allparams);
+        }
+        
 
         //loop through data getting most recent attempt
         if ($alldata) {
