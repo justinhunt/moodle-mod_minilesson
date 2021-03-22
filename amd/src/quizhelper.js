@@ -26,6 +26,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         this.courseurl = activitydata.courseurl;
         this.cmid = cmid;
         this.reattempturl = activitydata.reattempturl;
+        this.backtocourse = activitydata.backtocourse;
         this.prepare_html();
         this.init_questions(this.quizdata,polly);
         this.register_events();
@@ -179,6 +180,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
           console.log(results,correctitems,totalitems,totalpercent);
           var finishedparams ={results:results,total:totalpercent, courseurl: this.courseurl};
           if(this.reattempturl!=''){finishedparams.reattempturl = this.reattempturl;}
+          if(this.backtocourse!=''){finishedparams.backtocourse = true;}
           templates.render('mod_minilesson/quizfinished',finishedparams).then(
               function(html,js){
                   dd.controls.quizfinished.html(html);

@@ -217,6 +217,8 @@ class renderer extends \plugin_renderer_base {
 
         //quiz data
         $quizdata = $comp_test->fetch_test_data_for_js();
+        //config
+        $config = get_config(constants::M_COMPONENT);
 
         //steps data
         $steps = json_decode($latestattempt->sessiondata)->steps;
@@ -244,6 +246,10 @@ class renderer extends \plugin_renderer_base {
             $reattempturl = new \moodle_url( constants::M_URL . '/view.php',
                     array('n'=>$latestattempt->moduleid, 'retake'=>1));
             $tdata->reattempturl = $reattempturl->out();
+        }
+        //show back to course button if we are not in a tab
+        if(!$config->enablesetuptab) {
+            $tdata->backtocourse = true;
         }
 
         $finishedcontents = $this->render_from_template(constants::M_COMPONENT . '/quizfinished', $tdata);
@@ -402,6 +408,12 @@ class renderer extends \plugin_renderer_base {
             $reattempturl = new \moodle_url(constants::M_URL . '/view.php',
                     array('n' => $moduleinstance->id, 'retake' => 1));
             $recopts['reattempturl']=$reattempturl->out();
+        }
+        //show back to course button if we are not in an iframe
+        if(!$config->enablesetuptab) {
+            $recopts['backtocourse'] = true;
+        }else{
+            $recopts['backtocourse'] = '';
         }
 
 

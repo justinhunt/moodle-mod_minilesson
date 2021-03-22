@@ -177,7 +177,11 @@ switch($format){
 		echo $pagingbar;
 		echo $reportrenderer->show_grading_footer($moduleinstance,$cm,$mode);
         echo $reportrenderer->show_export_buttons($cm,$formdata,$action);
-        //backtotop
-        echo $renderer->backtotopbutton($course->id);
-		echo $renderer->footer();
+
+        //back to course if we are not in an iframe of some sort
+        if(!$config->enablesetuptab) {
+            echo $renderer->backtotopbutton($course->id);
+        }
+
+        echo $renderer->footer();
 }

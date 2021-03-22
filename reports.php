@@ -202,7 +202,9 @@ switch($format){
 		echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
 		echo $pagingbar;
 		echo $reportrenderer->show_reports_footer($moduleinstance,$cm,$formdata,$showreport);
-        //backtotop
-        echo $renderer->backtotopbutton($course->id);
+        //back to course button if not in frame
+		if(!$config->enablesetuptab) {
+            echo $renderer->backtotopbutton($course->id);
+        }
 		echo $renderer->footer();
 }
