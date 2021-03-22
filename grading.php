@@ -91,11 +91,9 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-//$PAGE->set_pagelayout('course');
-if(has_capability('mod/' . constants::M_MODNAME . ':' . 'manage',$modulecontext)) {
-    $PAGE->set_pagelayout('course');
+if($config->enablesetuptab){
+    $PAGE->set_pagelayout('embedded');
 }else{
-    //$PAGE->set_pagelayout('embedded');
     $PAGE->set_pagelayout('course');
 }
 
