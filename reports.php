@@ -94,7 +94,8 @@ $PAGE->set_context($modulecontext);
 if(has_capability('mod/' . constants::M_MODNAME . ':' . 'manage',$modulecontext)) {
     $PAGE->set_pagelayout('course');
 }else{
-    $PAGE->set_pagelayout('embedded');
+    //$PAGE->set_pagelayout('embedded');
+    $PAGE->set_pagelayout('course');
 }
 $PAGE->requires->jquery();
 
