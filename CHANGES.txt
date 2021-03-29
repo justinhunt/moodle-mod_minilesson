@@ -1,3 +1,7 @@
+Version 1.0.16 (Build 2021033000
+-added cleaning of text, so ssml requests did not get in trouble
+-improvements to JP handling
+
 Version 1.0.16 (Build 2021031500)
 -Added ttsoption so "slow" speech was not assumed. This distorts on some voices
 

@@ -81,77 +81,6 @@ class comprehensiontest
         }
     }
 
-    /*we will probably never need to use this again */
-    public function fetch_test_data_for_js_files(){
-
-        $items = $this->fetch_items();
-
-        //prepare data array for test
-        $testitems=array();
-        $currentitem=0;
-        $itemcount=count($items);
-        $itemid= $this->cm->instance;
-        foreach($items as $item) {
-            $currentitem++;
-            $testitem= new \stdClass();
-            $testitem->number =  $currentitem;
-            //text area
-            $testitem->text =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
-                'pluginfile.php', $this->context->id,constants::M_COMPONENT,
-                constants::TEXTQUESTION_FILEAREA, $itemid);
-
-            //Question media embed
-            if(!empty(trim($item->{constants::MEDIAIFRAME}))){
-                $testitem->itemiframe=$item->{constants::MEDIAIFRAME};
-            }
-
-            //media items
-            $mediaurls =$this->fetch_media_urls(constants::MEDIAQUESTION,$item);
-            if($mediaurls && count($mediaurls)>0){
-                foreach($mediaurls as $mediaurl){
-                    $file_parts = pathinfo(strtolower($mediaurl));
-                    switch($file_parts['extension'])
-                    {
-                        case "jpg":
-                        case "png":
-                        case "gif":
-                        case "bmp":
-                        case "svg":
-                            $testitem->itemimage = $mediaurl;
-                            break;
-
-                        case "mp4":
-                        case "mov":
-                        case "webm":
-                        case "ogv":
-                            $testitem->itemvideo = $mediaurl;
-                            break;
-
-                        case "mp3":
-                        case "ogg":
-                        case "wav":
-                            $testitem->itemaudio = $mediaurl;
-                            break;
-
-                        default:
-                            //do nothing
-                    }//end of extension switch
-                }//end of for each
-            }//end of if mediaurls
-
-            for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
-                $testitem->{'customtext' . $anumber} = file_rewrite_pluginfile_urls($item->{constants::TEXTANSWER . $anumber},
-                    'pluginfile.php', $this->context->id,constants::M_COMPONENT,
-                    constants::TEXTANSWER_FILEAREA . $anumber, $itemid);
-            }
-            $testitem->correctanswer =  $item->correctanswer;
-            $testitem->id = $item->id;
-            $testitem->type=$item->type;
-            $testitems[]=$testitem;
-        }
-        return $testitems;
-    }
-
     /* return the test items suitable for js to use */
     public function fetch_test_data_for_js($forcetitles=false){
         global $CFG, $USER;
@@ -290,6 +219,18 @@ class comprehensiontest
                            $displaysentence = trim($sentencebits[1]);
                        }else{
                            $displaysentence = $sentence;
+                       }
+
+
+                       //If this is Japanese and a'chat' activity, the display sentence will be read as is
+                       // but the sentence we show on screen as the students entry needs to be broken into "words"
+                       //so we process it. In listen and speak it still shows the target, so its word'ified.
+                       //speechcards we do not give word level feedback. so we do nothing special
+                       //key point is to pass unwordified passage to compare_passage_transcipt ajax.
+                       if($testitem->type ==constants::TYPE_LISTENREPEAT || $testitem->type ==constants::TYPE_DICTATIONCHAT ){
+                           if($this->mod->ttslanguage == constants::M_LANG_JAJP ) {
+                             $sentence = utils::segment_japanese($sentence);
+                           }
                        }
 
                        $s = new \stdClass();

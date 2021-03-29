@@ -17,6 +17,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
             this.owner=owner;
         },
 
+        clean_ssml_chars: function(speaktext){
+            //deal with SSML reserved characters
+            speaktext =  speaktext.replace(/&/g,'&amp;');
+            speaktext = speaktext.replace(/'/g,'&apos;');
+            speaktext= speaktext.replace(/"/g,'&quot;');
+            speaktext = speaktext.replace(/</g,'&lt;');
+            speaktext =  speaktext.replace(/>/g,'&gt;');
+            return speaktext;
+        },
+
         fetch_polly_url: function(speaktext,voiceoption, voice) {
             var that = this;
             return new Promise(function(resolve,reject){
@@ -68,16 +78,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                     case 1:
                         //fetch slightly slower version of speech
                         //rate = 'slow' or 'x-slow' or 'medium'
-                        speaktext=  speaktext.replace("<","");
-                        speaktext = speaktext.replace(">","");
+                        speaktext =that.clean_ssml_chars(speaktext);
                         speaktext = '<speak><break time="1000ms"></break><prosody rate="slow">' + speaktext + '</prosody></speak>';
                         break;
                     //veryslow
                     case 2:
                         //fetch slightly slower version of speech
                         //rate = 'slow' or 'x-slow' or 'medium'
-                        speaktext=  speaktext.replace("<","");
-                        speaktext = speaktext.replace(">","");
+                        speaktext =that.clean_ssml_chars(speaktext);
                         speaktext = '<speak><break time="1000ms"></break><prosody rate="x-slow">' + speaktext + '</prosody></speak>';
                         break;
                     //ssml
@@ -90,8 +98,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                     default:
                         //fetch slightly slower version of speech
                         //rate = 'slow' or 'x-slow' or 'medium'
-                        speaktext=  speaktext.replace("<","");
-                        speaktext = speaktext.replace(">","");
+                        speaktext =that.clean_ssml_chars(speaktext);
                         speaktext = '<speak><break time="1000ms"></break>' + speaktext + '</speak>';
                         break;
 

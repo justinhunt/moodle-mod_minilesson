@@ -75,8 +75,9 @@ class mod_minilesson_external extends external_api {
         global $DB;
 
         //If this is Japanese, and the passage has been segmented, we want to segment it into "words"
-        if($language == constants::M_LANG_JAJP && strpos(trim($passage),' ')!==false) {
+        if($language == constants::M_LANG_JAJP) {
             $transcript = utils::segment_japanese($transcript);
+            $passage = utils::segment_japanese($passage);
         }
 
         //turn the passage and transcript into an array of words

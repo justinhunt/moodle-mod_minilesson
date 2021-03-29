@@ -234,7 +234,7 @@ class helper
                 if($minilesson->ttslanguage == constants::M_LANG_JAJP &&
                         ($data->type==CONSTANTS::TYPE_LISTENREPEAT ||$data->type==CONSTANTS::TYPE_SPEECHCARDS)){
                     if(strpos($thetext,' ')==false){
-                        $thetext = utils::segment_japanese($thetext);
+                      //  $thetext = utils::segment_japanese($thetext);
                     }
                 }
                 $theitem->{constants::TEXTANSWER . $anumber} = $thetext;
