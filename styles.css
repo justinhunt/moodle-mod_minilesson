@@ -277,6 +277,7 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 .mod_minilesson_quiz_cont {
   display: none;
   max-width: 750px;
+  margin: auto;
 }
 
 div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
