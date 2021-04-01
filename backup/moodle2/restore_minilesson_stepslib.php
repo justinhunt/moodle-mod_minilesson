@@ -111,7 +111,7 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
         $data->courseid = $this->get_courseid();
         $data->userid = $this->get_mappingid('user', $data->userid);
         $data->timecreated = $this->apply_date_offset($data->timecreated);
-        $data->{constants::M_MODNAME . 'id'} = $this->get_new_parentid(constants::M_MODNAME);
+        $data->moduleid = $this->get_new_parentid(constants::M_MODNAME);
         $newitemid = $DB->insert_record(constants::M_ATTEMPTSTABLE, $data);
 		
 		// Mapping without files

@@ -60,7 +60,7 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
 		//attempts
         $attempts = new backup_nested_element('attempts');
         $attempt = new backup_nested_element('attempt', array('id'),array(
-			constants::M_MODNAME ."id","courseid","userid","status",
+			"moduleid","courseid","userid","status",
 			"sessionscore","sessiontime","sessiondata","sessionend","errorcount",
             "notes","qtextanswer1","qtextscore1","timecreated","timemodified"
 		));
