@@ -95,7 +95,7 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
         //sources if including user info
         if ($userinfo) {
 			$attempt->set_source_table(constants::M_ATTEMPTSTABLE,
-											array(constants::M_MODNAME . 'id' => backup::VAR_PARENTID));
+											array('moduleid' => backup::VAR_PARENTID));
 
         }
 
