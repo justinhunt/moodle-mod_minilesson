@@ -1,5 +1,6 @@
-Version 1.0.16 (Build 2021033000
+Version 1.0.16 (Build 2021033000)
 - fixed bug in backup/restore of user attempts
+- fixed bug in reset of user attempts
 
 Version 1.0.16 (Build 2021033000
 -added cleaning of text, so ssml requests did not get in trouble

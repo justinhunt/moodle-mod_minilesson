@@ -137,7 +137,7 @@ function minilesson_reset_userdata($data) {
                         WHERE l.course=:course";
 
         $params = array ("course" => $data->courseid);
-        $DB->delete_records_select(constants::M_ATTEMPTSTABLE, constants::M_MODNAME . "id IN ($sql)", $params);
+        $DB->delete_records_select(constants::M_ATTEMPTSTABLE, "moduleid IN ($sql)", $params);
 
 
         // remove all grades from gradebook
@@ -327,11 +327,10 @@ function minilesson_is_complete($course,$cm,$userid,$type) {
         return $type;
     }
 
-	$idfield = 'a.' . constants::M_MODNAME . 'id';
 	$params = array('moduleid'=>$moduleinstance->id, 'userid'=>$userid);
 	$sql = "SELECT  MAX( sessionscore  ) AS grade
                       FROM {". constants::M_ATTEMPTSTABLE ."}
-                     WHERE userid = :userid AND " . constants::M_MODNAME . "id = :moduleid" .
+                     WHERE userid = :userid AND moduleid = :moduleid" .
                      " AND status=" .constants::M_STATE_COMPLETE;
 	$result = $DB->get_field_sql($sql, $params);
 	if($result===false){return false;}
