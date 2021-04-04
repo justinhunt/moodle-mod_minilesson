@@ -144,7 +144,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         //post grade
         dd.report_step_grade(stepdata);
         //hide current question
-        $("#" + currentitem.uniqueid + "_container").hide();
+        var theoldquestion = $("#" + currentitem.uniqueid + "_container");
+        theoldquestion.hide();
         //show next question or End Screen
         if (dd.quizdata.length > currentquizdataindex+1) {
           var nextindex = currentquizdataindex+ 1;
@@ -190,8 +191,11 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
           );
 
         }
-        
+
         this.render_quiz_progress(stepdata.index+1,this.quizdata.length);
+
+          //we want to destroy the old question in the DOM also because iframe/media content might be playing
+          theoldquestion.remove();
         
       },
 
