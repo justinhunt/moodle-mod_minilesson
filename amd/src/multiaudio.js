@@ -50,33 +50,54 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
           //get selected item index
           var checked = $(this).data('index');
 
-          //disable the answers, cos its answered
-          $("#" + itemdata.uniqueid + "_container .minilesson_mc_response").addClass('minilesson_mc_disabled');
+          var percent = self.process_accepted_response(itemdata, checked);
 
-        //reveal answers
-        $("#" + itemdata.uniqueid + "_container .minilesson_mc_wrong").show();
-        $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_wrong").hide();
-        $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_right").show();
-        
-        //highlight selected answers
-        $("#" + itemdata.uniqueid + "_option" + checked).addClass('minilesson_mc_selected');
-
-
-        var percent = checked == itemdata.correctanswer ? 100 : 0;
-        
-        $(".minilesson_nextbutton").prop("disabled", true);
-        setTimeout(function() {
-          $(".minilesson_nextbutton").prop("disabled", false);
-          self.next_question(percent);
-        }, 2000);
+          //proceed to next question
+          $(".minilesson_nextbutton").prop("disabled", true);
+          setTimeout(function() {
+              $(".minilesson_nextbutton").prop("disabled", false);
+              this.next_question(percent);
+          }, 2000);
         
       });
       
     },//end of register events
 
+    process_accepted_response: function(itemdata, checked){
+
+        //disable the answers, cos its answered
+        $("#" + itemdata.uniqueid + "_container .minilesson_mc_response").addClass('minilesson_mc_disabled');
+
+        //reveal answers
+        $("#" + itemdata.uniqueid + "_container .minilesson_mc_wrong").show();
+        $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_wrong").hide();
+        $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_right").show();
+
+        //highlight selected answers
+        $("#" + itemdata.uniqueid + "_option" + checked).addClass('minilesson_mc_selected');
+
+
+        var percent = checked == itemdata.correctanswer ? 100 : 0;
+
+        return percent;
+
+    },
+
     init_components: function(index, itemdata, quizhelper) {
         var app= this;
         var correcttext = $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer).text();
+        var allresponses = $("#" + itemdata.uniqueid + "_container .minilesson_mc_response");
+        var cleanincorrecttexts=[];
+        for(var i=0;i<allresponses.length;i++){
+            if(i+1==itemdata.correctanswer) {
+                //to make life simple for ourselves we add an empty string entry in incorrecttexts at the correct answer index
+                //NB index of item in DOM is 1 based , so we need to mess with +1's
+                cleanincorrecttexts[i]='';
+            }else{
+                cleanincorrecttexts[i]=quizhelper.cleanText(allresponses[i].textContent);
+            }
+        }
+
         var cleancorrecttext = quizhelper.cleanText(correcttext);
 
         var theCallback = function(message) {
@@ -101,9 +122,36 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
                     //Similarity check by direct-match/acceptable-mistranscription
                     if (similarity >= app.passmark ||
                         app.wordsDoMatch(quizhelper, cleanspeechtext, cleancorrecttext)) {
-                        log.debug('local match:' + ':' + spoken + ':' + cleancorrecttext);
-                        app.flagCorrectAndTransition();
+                        log.debug('local correct match:' + ':' + spoken + ':' + cleancorrecttext);
+                        var percent = app.process_accepted_response(itemdata, itemdata.correctanswer);
+
+                        //proceed to next question
+                        setTimeout(function() {
+                            $(".minilesson_nextbutton").prop("disabled", false);
+                            app.next_question(percent);
+                        }, 2000);
+
                         return;
+                    }else{
+                        for(var x=0;x<cleanincorrecttexts.length;x++){
+                            //if this is the correct answer index, just move on
+                            if(cleanincorrecttexts[x]===''){continue;}
+                            var similar = quizhelper.similarity(spoken, cleanincorrecttexts[x]);
+                            log.debug('JS similarity: ' + spoken + ':' + cleanincorrecttexts[x] + ':' + similar);
+                            if (similar >= app.passmark ||
+                                app.wordsDoMatch(quizhelper, cleanspeechtext, cleanincorrecttexts[x])) {
+
+                              //proceed to next question
+                                var percent = app.process_accepted_response(itemdata, x+1);
+                                $(".minilesson_nextbutton").prop("disabled", true);
+
+                                //proceed to next question
+                                setTimeout(function() {
+                                    $(".minilesson_nextbutton").prop("disabled", false);
+                                    app.next_question(percent);
+                                }, 2000);
+                            }//end of if similarity
+                        }//end of for x
                     }
 
                     //Similarity check by phonetics(ajax)
@@ -111,9 +159,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
                         if (similarity === false) {
                             return $.Deferred().reject();
                         } else {
-                            log.debug('PHP similarity: ' + spoken + ':' + correct + ':' + similarity);
+                            log.debug('PHP similarity: ' + spoken + ':' + cleancorrecttext + ':' + similarity);
                             if (similarity >= app.passmark) {
-                                app.flagCorrectAndTransition();
+                                var percent = app.process_accepted_response(itemdata, itemdata.correctanswer);
+
+                                //proceed to next question
+                                $(".minilesson_nextbutton").prop("disabled", true);
+                                setTimeout(function() {
+                                    $(".minilesson_nextbutton").prop("disabled", false);
+                                    app.next_question(percent);
+                                }, 2000);
                             }
                         } //end of if check_by_phonetic result
                     }); //end of check by phonetic
