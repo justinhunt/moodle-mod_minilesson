@@ -1,7 +1,8 @@
 define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'core/ajax',
-    'mod_minilesson/dictation', 'mod_minilesson/dictationchat', 'mod_minilesson/multichoice', 'mod_minilesson/speechcards', 'mod_minilesson/listenrepeat',
+    'mod_minilesson/dictation', 'mod_minilesson/dictationchat', 'mod_minilesson/multichoice','mod_minilesson/multiaudio',
+        'mod_minilesson/speechcards', 'mod_minilesson/listenrepeat',
         'mod_minilesson/page','mod_minilesson/teachertools','mod_minilesson/shortanswer'],
-  function($, log, def, templates, Ajax, dictation, dictationchat, multichoice, speechcards, listenrepeat, page, teachertools, shortanswer) {
+  function($, log, def, templates, Ajax, dictation, dictationchat, multichoice, multiaudio, speechcards, listenrepeat, page, teachertools, shortanswer) {
     "use strict"; // jshint ;_;
 
     /*
@@ -53,7 +54,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             case def.qtype_multichoice:
               multichoice.clone().init(index, item, dd);
               break;
-              case def.qtype_speechcards:
+            case def.qtype_multiaudio:
+                multiaudio.clone().init(index, item, dd);
+                break;
+            case def.qtype_speechcards:
               //speechcards init needs to occur when it is visible. lame.
               // so we do that in do_next function, down below
               speechcards.clone().init(index, item, dd);
@@ -160,6 +164,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_dictation:
               case def.qtype_dictationchat:
               case def.qtype_multichoice:
+              case def.qtype_multiaudio:
               case def.qtype_listenrepeat:
               case def.qtype_teachertools:
               case def.qtype_shortanswer:
@@ -262,6 +267,66 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             return ret;
         },
 
+        //text comparison functions follow===============
 
+        similarity: function(s1, s2) {
+            var longer = s1;
+            var shorter = s2;
+            if (s1.length < s2.length) {
+                longer = s2;
+                shorter = s1;
+            }
+            var longerLength = longer.length;
+            if (longerLength == 0) {
+                return 1.0;
+            }
+            return (longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength);
+        },
+        editDistance: function(s1, s2) {
+            s1 = s1.toLowerCase();
+            s2 = s2.toLowerCase();
+
+            var costs = new Array();
+            for (var i = 0; i <= s1.length; i++) {
+                var lastValue = i;
+                for (var j = 0; j <= s2.length; j++) {
+                    if (i == 0)
+                        costs[j] = j;
+                    else {
+                        if (j > 0) {
+                            var newValue = costs[j - 1];
+                            if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                                newValue = Math.min(Math.min(newValue, lastValue),
+                                    costs[j]) + 1;
+                            costs[j - 1] = lastValue;
+                            lastValue = newValue;
+                        }
+                    }
+                }
+                if (i > 0)
+                    costs[s2.length] = lastValue;
+            }
+            return costs[s2.length];
+        },
+
+        cleanText: function(text) {
+            var lowertext = text.toLowerCase();
+            var punctuationless = lowertext.replace(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g,"");
+            var ret = punctuationless.replace(/\s+/g, " ").trim();
+            return ret;
+        },
+
+        //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match
+        checkByPhonetic: function(spoken, correct, language) {
+            return Ajax.call([{
+                'methodname': 'mod_minilesson_check_by_phonetic',
+                'args': {
+                    'spoken': spoken,
+                    'correct': correct,
+                    'language': language,
+                }
+            }])[0];
+
+        },
     }; //end of return value
   });

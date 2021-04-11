@@ -338,6 +338,7 @@ $string['notes']="Notes";
 
 
 $string['addmultichoiceitem']='Multi Choice';
+$string['addmultiaudioitem']='MultiChoice Audio';
 $string['adddictationchatitem']='Dictation Chat';
 $string['adddictationitem']='Dictation';
 $string['addlistenrepeatitem']='Listen and Speak';
@@ -349,6 +350,7 @@ $string['addshortansweritem']='Short Answer';
 
 
 $string['multichoice'] = 'Multi Choice';
+$string['multiaudio'] = 'MultiChoice Audio';
 $string['dictation']='Dictation';
 $string['dictationchat']='Dictation Chat';
 $string['speechcards']='Speech Cards';

@@ -117,6 +117,14 @@ switch($type){
         );
         break;
 
+    case constants::TYPE_MULTIAUDIO:
+        $mform = new \mod_minilesson\local\rsquestion\multiaudioform(null,
+                array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$minilesson)
+        );
+        break;
+
     case constants::TYPE_DICTATIONCHAT:
         $mform = new \mod_minilesson\local\rsquestion\dictationchatform(null,
                 array('editoroptions'=>$editoroptions,
@@ -269,6 +277,7 @@ if ($edit) {
 	//Set up the item type specific parts of the form data
 	switch($type){
         case constants::TYPE_MULTICHOICE:
+        case constants::TYPE_MULTIAUDIO:
         case constants::TYPE_DICTATIONCHAT:
         case constants::TYPE_DICTATION:
         case constants::TYPE_SPEECHCARDS:

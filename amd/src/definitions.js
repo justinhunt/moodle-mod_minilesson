@@ -63,6 +63,7 @@ This file contains class and ID definitions.
         //question types
         qtype_page: 'page',
         qtype_multichoice: 'multichoice',
+        qtype_multiaudio: 'multiaudio',
         qtype_dictationchat: 'dictationchat',
         qtype_dictation: 'dictation',
         qtype_speechcards: 'speechcards',

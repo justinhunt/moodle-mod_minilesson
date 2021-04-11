@@ -16,8 +16,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
           return $.extend(true, {}, this);
       },
 
-
-      init: function(index, itemdata, quizhelper) {
+    init: function(index, itemdata, quizhelper) {
 
       this.init_app(index, itemdata, quizhelper);
     },
@@ -27,7 +26,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
       console.log(itemdata);
 
       var app = {
-        passmark: 75,
+        passmark: 85,
         pointer: 1,
         jsondata: null,
         props: null,
@@ -104,7 +103,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
               case 'speech':
                 log.debug("speech at speechcards");
                 var speechtext = message.capturedspeech;
-                var cleanspeechtext = app.cleanText(speechtext);
+                var cleanspeechtext = quizhelper.cleanText(speechtext);
 
                 var spoken = cleanspeechtext;
                 var correct = app.terms[app.pointer - 1];
@@ -112,7 +111,7 @@ log.debug('speechtext:',speechtext);
 log.debug('spoken:',spoken);
 log.debug('correct:',correct);
                 //Similarity check by character matching
-                var similarity = app.similarity(spoken, correct);
+                var similarity = quizhelper.similarity(spoken, correct);
                 log.debug('JS similarity: ' + spoken + ':' + correct + ':' + similarity);
 
                 //Similarity check by direct-match/acceptable-mistranscription
@@ -125,7 +124,7 @@ log.debug('correct:',correct);
                 }
 
                 //Similarity check by phonetics(ajax)
-                app.checkByPhonetic(spoken, correct).then(function(similarity) {
+                quizhelper.checkByPhonetic(spoken, correct, app.language).then(function(similarity) {
                   if (similarity === false) {
                     return $.Deferred().reject();
                   } else {
@@ -193,73 +192,14 @@ log.debug('correct:',correct);
 
         wordsDoMatch: function(phraseheard, currentphrase) {
           //lets lower case everything
-          phraseheard = app.cleanText(phraseheard);
-          currentphrase = app.cleanText(currentphrase);
+          phraseheard = quizhelper.cleanText(phraseheard);
+          currentphrase = quizhelper.cleanText(currentphrase);
           if (phraseheard == currentphrase) {
             return true;
           }
           return false;
         },
 
-        similarity: function(s1, s2) {
-          var longer = s1;
-          var shorter = s2;
-          if (s1.length < s2.length) {
-            longer = s2;
-            shorter = s1;
-          }
-          var longerLength = longer.length;
-          if (longerLength == 0) {
-            return 1.0;
-          }
-          return (longerLength - app.editDistance(longer, shorter)) / parseFloat(longerLength);
-        },
-        editDistance: function(s1, s2) {
-          s1 = s1.toLowerCase();
-          s2 = s2.toLowerCase();
-
-          var costs = new Array();
-          for (var i = 0; i <= s1.length; i++) {
-            var lastValue = i;
-            for (var j = 0; j <= s2.length; j++) {
-              if (i == 0)
-                costs[j] = j;
-              else {
-                if (j > 0) {
-                  var newValue = costs[j - 1];
-                  if (s1.charAt(i - 1) != s2.charAt(j - 1))
-                    newValue = Math.min(Math.min(newValue, lastValue),
-                      costs[j]) + 1;
-                  costs[j - 1] = lastValue;
-                  lastValue = newValue;
-                }
-              }
-            }
-            if (i > 0)
-              costs[s2.length] = lastValue;
-          }
-          return costs[s2.length];
-        },
-
-        cleanText: function(text) {
-            var lowertext = text.toLowerCase();
-            var punctuationless = lowertext.replace(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g,"");
-            var ret = punctuationless.replace(/\s+/g, " ").trim();
-          return ret;
-        },
-
-        //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match
-        checkByPhonetic: function(spoken, correct) {
-          return Ajax.call([{
-            'methodname': 'mod_minilesson_check_by_phonetic',
-            'args': {
-              'spoken': spoken,
-              'correct': correct,
-              'language': app.language,
-            }
-          }])[0];
-
-        },
 
         showStarRating: function(similarity) {
           //how many stars code

@@ -52,9 +52,9 @@ const POSTATTEMPT_EVALERRORS=2;
 //Constants for RS Questions
 const NONE=0;
 const TYPE_TEXTPROMPT_LONG = 'multichoicelong';
-const TYPE_MULTICHOICE = 'multichoice';
-const TYPE_TEXTPROMPT_AUDIO = 'audioresponse';
 
+const TYPE_MULTIAUDIO = 'multiaudio';
+const TYPE_MULTICHOICE = 'multichoice';
 const TYPE_PAGE = 'page';
 const TYPE_DICTATIONCHAT = 'dictationchat';
 const TYPE_DICTATION = 'dictation';

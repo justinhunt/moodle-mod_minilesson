@@ -786,6 +786,14 @@ function minilesson_output_fragment_mform($args) {
             );
             break;
 
+        case constants::TYPE_MULTIAUDIO:
+            $mform = new \mod_minilesson\local\rsquestion\multiaudioform(null,
+                    array('editoroptions'=>$editoroptions,
+                            'filemanageroptions'=>$filemanageroptions,
+                            'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
         case constants::TYPE_DICTATIONCHAT:
             $mform = new \mod_minilesson\local\rsquestion\dictationchatform(null,
                     array('editoroptions'=>$editoroptions,

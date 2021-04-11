@@ -127,6 +127,7 @@ class comprehensiontest
                 case constants::TYPE_SPEECHCARDS:
                 case constants::TYPE_LISTENREPEAT:
                 case constants::TYPE_MULTICHOICE:
+                case constants::TYPE_MULTIAUDIO:
                 case constants::TYPE_PAGE:
                 case constants::TYPE_TEACHERTOOLS:
                 case constants::TYPE_SHORTANSWER:
@@ -164,6 +165,7 @@ class comprehensiontest
                                     $testitem->itemvideo = $mediaurl;
                                     break;
 
+                                case "m4a":
                                 case "mp3":
                                 case "ogg":
                                 case "wav":
@@ -283,6 +285,7 @@ class comprehensiontest
                     break;
 
                 case constants::TYPE_MULTICHOICE:
+                case constants::TYPE_MULTIAUDIO:
                 case constants::TYPE_PAGE:
                 case constants::TYPE_TEACHERTOOLS:
                 case constants::TYPE_SHORTANSWER:
