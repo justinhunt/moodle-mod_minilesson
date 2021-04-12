@@ -151,6 +151,7 @@ class comprehensiontest
                             switch($file_parts['extension'])
                             {
                                 case "jpg":
+                                case "jpeg":
                                 case "png":
                                 case "gif":
                                 case "bmp":
