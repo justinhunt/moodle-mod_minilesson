@@ -4,7 +4,16 @@
   <!-- @@CLOUDPOODLLTOKEN@@ -->
   {{> mod_minilesson/questionheader}}
 
-  {{#customtext1}}
+    {{#sentences}}
+        <div class="minilesson_mc_response" data-index="{{index}}" id="{{uniqueid}}_option{{indexplusone}}" name="{{uniqueid}}_options" >
+            <span class="minilesson_sentence">{{displaysentence}}</span>
+            <i class="fa fa-play fa-lg minilesson_mc_playstate"></i>
+            <i class="fa fa-check fa-lg minilesson_mc_right" style="display: none;"></i>
+            <i class="fa fa-times fa-lg minilesson_mc_wrong" style="display: none;"></i>
+        </div>
+    {{/sentences}}
+<!--
+    {{#customtext1}}
   <div class="minilesson_mc_response" data-index="1" id="{{uniqueid}}_option1" name="{{uniqueid}}_options" >
       {{customtext1}}
       <i class="fa fa-check fa-lg minilesson_mc_right" style="display: none;"></i>
@@ -35,6 +44,7 @@
         <i class="fa fa-times fa-lg minilesson_mc_wrong" style="display: none;"></i>
     </div>
     {{/customtext4}}
+-->
 
     {{> mod_minilesson/cloudpushrecorder}}
     {{> mod_minilesson/ttrecorder}}

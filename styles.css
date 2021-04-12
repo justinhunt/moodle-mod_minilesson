@@ -1811,5 +1811,9 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   color: red;
   float: right;
 }
+.minilesson_mc_playstate {
+  color: grey;
+  float: right;
+}
 
 

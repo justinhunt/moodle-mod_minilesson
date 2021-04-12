@@ -403,8 +403,10 @@ $string['lr_instructions1'] = 'Listen and respond to the sentences you hear';
 $string['lr_instructions2'] = 'Click \'Start\' to begin!';
 
 $string['choosevoice'] = "Choose the prompt speaker's voice";
+$string['choosemultiaudiovoice'] = "Choose the answer reader's voice";
+$string['showoptionsastext'] = 'Show answers as text';
 $string['showtextprompt'] = 'Show text prompt';
-$string['textprompt_words'] = 'Show full text prompt';
+$string['textprompt_words'] = 'Show full text';
 $string['textprompt_dots'] = 'Show dots instead of letters';
 
 $string['gradenow']= 'Grade Now';

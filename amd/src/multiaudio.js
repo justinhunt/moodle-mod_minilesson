@@ -57,8 +57,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
               theplayer.attr('src', $(this).attr('data-src'));
               theplayer[0].play();
               theplayer[0].onended = function() {
+                  $(el).find(".minilesson_mc_playstate").removeClass("fa-spin fa-spinner").addClass("fa-play");
                   self.playing = false;
               };
+              $(el).find(".minilesson_mc_playstate").removeClass("fa-play").addClass("fa-spin fa-spinner");
+          }else{
+              theplayer[0].pause();
+              theplayer[0].currentTime=0;
           }
 
           //get selected item index
@@ -71,7 +76,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
     prepare_audio: function(itemdata) {
          // debugger;
           $.each(itemdata.sentences, function(index, sentence) {
-              polly.fetch_polly_url(sentence.displaysentence, itemdata.voiceoption, itemdata.usevoice).then(function(audiourl) {
+              polly.fetch_polly_url(sentence.sentence, itemdata.voiceoption, itemdata.usevoice).then(function(audiourl) {
                   $("#" + itemdata.uniqueid + "_option" + (index+1)).attr("data-src", audiourl);
               });
           });
@@ -81,6 +86,17 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
 
         //disable the answers, cos its answered
         $("#" + itemdata.uniqueid + "_container .minilesson_mc_response").addClass('minilesson_mc_disabled');
+
+        //remove any audio player artifacts
+        $("#" + itemdata.uniqueid + "_container .minilesson_mc_playstate").hide();
+
+        //turn dots into text (if they were dots)
+        if(parseInt(itemdata.show_text)==0) {
+            for (var i = 0; i < itemdata.sentences.length; i++) {
+                var theline = $("#" + itemdata.uniqueid + "_option" + (i + 1));
+                $("#" + itemdata.uniqueid + "_option" + (i + 1) + ' .minilesson_sentence').text(itemdata.sentences[i].sentence);
+            }
+        }
 
         //reveal answers
         $("#" + itemdata.uniqueid + "_container .minilesson_mc_wrong").show();
@@ -99,16 +115,15 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
 
     init_components: function(index, itemdata, quizhelper) {
         var app= this;
-        var correcttext = $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer).text();
-        var allresponses = $("#" + itemdata.uniqueid + "_container .minilesson_mc_response");
+        var correcttext = itemdata.sentences[itemdata.correctanswer-1].sentence;
         var cleanincorrecttexts=[];
-        for(var i=0;i<allresponses.length;i++){
+        for(var i=0;i<itemdata.sentences.length;i++){
             if(i+1==itemdata.correctanswer) {
                 //to make life simple for ourselves we add an empty string entry in incorrecttexts at the correct answer index
                 //NB index of item in DOM is 1 based , so we need to mess with +1's
                 cleanincorrecttexts[i]='';
             }else{
-                cleanincorrecttexts[i]=quizhelper.cleanText(allresponses[i].textContent);
+                cleanincorrecttexts[i]=quizhelper.cleanText(itemdata.sentences[i].sentence);
             }
         }
 

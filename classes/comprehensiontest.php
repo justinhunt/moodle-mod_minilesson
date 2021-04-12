@@ -232,13 +232,23 @@ class comprehensiontest
                         if (empty($sentence)) {
                             continue;
                         }
-                        //if we have a pipe we are listening for array[0] and displaying array[1]
-                        $sentencebits = explode('|', $sentence);
-                        if (count($sentencebits) > 1) {
-                            $sentence = trim($sentencebits[0]);
-                            $displaysentence = trim($sentencebits[1]);
-                        } else {
-                            $displaysentence = $sentence;
+
+
+                        if($testitem->type==constants::TYPE_MULTIAUDIO){
+                            if($item->{constants::SHOWTEXTPROMPT}==constants::TEXTPROMPT_DOTS){
+                                $displaysentence = $this->dottify_text($sentence);
+                            }else{
+                                $displaysentence = $sentence;
+                            }
+                        }else{
+                            //if we have a pipe we are listening for array[0] and displaying array[1]
+                            $sentencebits = explode('|', $sentence);
+                            if (count($sentencebits) > 1) {
+                                $sentence = trim($sentencebits[0]);
+                                $displaysentence = trim($sentencebits[1]);
+                            } else {
+                                $displaysentence = $sentence;
+                            }
                         }
 
                         //If this is Japanese and a'chat' activity, the display sentence will be read as is
@@ -254,6 +264,7 @@ class comprehensiontest
 
                         $s = new \stdClass();
                         $s->index = $index;
+                        $s->indexplusone = $index + 1;
                         $s->sentence = $sentence;
                         $s->displaysentence = $displaysentence;
                         $s->length = strlen($s->sentence);
@@ -312,6 +323,14 @@ class comprehensiontest
         }
 
         return $testitems;
+    }
+
+    public function dottify_text($rawtext){
+        $re = '/[^\'!"#$%&\\\\\'()\*+,\-\.\/:;<=> ?@\[\\\\\]\^_`{|}~\']/u';
+        $subst = '•';
+
+        $dots = preg_replace($re, $subst, $rawtext);
+        return $dots;
     }
 
     /* called from ajaxhelper to grade test */
