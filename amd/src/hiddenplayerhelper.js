@@ -1,7 +1,7 @@
 define(['jquery','core/log','mod_minilesson/definitions'], function($,log,def) {
     "use strict"; // jshint ;_;
 
-    log.debug('Poodll Time hidden player helper: initialising');
+    log.debug('MiniLesson hidden player helper: initialising');
 
     return {
 

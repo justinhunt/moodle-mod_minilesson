@@ -2,7 +2,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
     function($, log, ajax, def, polly, cloudpoodll, ttrecorder) {
   "use strict"; // jshint ;_;
 
-  log.debug('Poodll Time listen and repeat: initialising');
+  log.debug('MiniLesson listen and repeat: initialising');
 
   return {
 

@@ -910,7 +910,7 @@ class utils{
                     foreach ($mods as $mod) {
                         // Get the module name and then store it in a new array.
                         if ($module = get_coursemodule_from_instance($mod->modname, $mod->instance, $COURSE->id)) {
-                            // Exclude this Poodll Time activity (if it's already been saved.)
+                            // Exclude this MiniLesson activity (if it's already been saved.)
                             if (!$cmid || $cmid != $mod->id) {
                                 $modinstances[$mod->id] = $mod->modname . ' - ' . $module->name;
                             }

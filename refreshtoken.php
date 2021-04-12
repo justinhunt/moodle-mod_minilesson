@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * A token refreshing helper for Poodll Time
+ * A token refreshing helper for MiniLesson
  *
  *
  * @package    mod_minilesson

@@ -5,7 +5,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
   This file is to manage the quiz stage
    */
 
-  log.debug('Poodll Time Multichoice: initialising');
+  log.debug('MiniLesson Multichoice: initialising');
 
   return {
 

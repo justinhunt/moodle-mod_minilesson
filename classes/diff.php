@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Differencing class for Poodll Poodll Time
+ * Differencing class for Poodll MiniLesson
  *
  * A class containing functions for computing diffs between reading passage and audio transcript
  * This mght be hard to follow, but its documented as well as I could

@@ -1,7 +1,7 @@
 define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper'], function($, log, ajax, def, polly) {
   "use strict"; // jshint ;_;
 
-  log.debug('Poodll Time dictation chat: initialising');
+  log.debug('MiniLesson dictation chat: initialising');
 
   return {
 

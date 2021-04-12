@@ -6,11 +6,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
   This file is to manage the quiz stage
    */
 
-  log.debug('Poodll Time Multiaudio: initialising');
+  log.debug('MiniLesson Multiaudio: initialising');
 
   return {
 
       passmark: 85,
+      playing: false,
 
     //for making multiple instances
       clone: function () {
@@ -18,6 +19,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
      },
 
     init: function(index, itemdata, quizhelper) {
+      this.prepare_audio(itemdata);
       this.register_events(index, itemdata, quizhelper);
       this.init_components(index, itemdata, quizhelper);
     },
@@ -34,6 +36,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
     register_events: function(index, itemdata, quizhelper) {
       
       var self = this;
+      var theplayer = $("#" + itemdata.uniqueid + "_player");
       self.index = index;
       self.quizhelper = quizhelper;
       
@@ -47,21 +50,32 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
             return;
           }
 
+          //audio play requests
+          if (!self.playing) {
+              var el = this;
+              self.playing = true;
+              theplayer.attr('src', $(this).attr('data-src'));
+              theplayer[0].play();
+              theplayer[0].onended = function() {
+                  self.playing = false;
+              };
+          }
+
           //get selected item index
-          var checked = $(this).data('index');
+          //var checked = $(this).data('index');
 
-          var percent = self.process_accepted_response(itemdata, checked);
-
-          //proceed to next question
-          $(".minilesson_nextbutton").prop("disabled", true);
-          setTimeout(function() {
-              $(".minilesson_nextbutton").prop("disabled", false);
-              this.next_question(percent);
-          }, 2000);
-        
       });
       
     },//end of register events
+
+    prepare_audio: function(itemdata) {
+         // debugger;
+          $.each(itemdata.sentences, function(index, sentence) {
+              polly.fetch_polly_url(sentence.displaysentence, itemdata.voiceoption, itemdata.usevoice).then(function(audiourl) {
+                  $("#" + itemdata.uniqueid + "_option" + (index+1)).attr("data-src", audiourl);
+              });
+          });
+    },
 
     process_accepted_response: function(itemdata, checked){
 

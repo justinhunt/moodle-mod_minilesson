@@ -5,7 +5,7 @@ define(['jquery','core/log'], function($,log) {
 This file contains class and ID definitions.
  */
 
-    log.debug('Poodll Time definitions: initialising');
+    log.debug('MiniLesson definitions: initialising');
 
     return{
         component: 'mod_minilesson',

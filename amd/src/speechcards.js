@@ -7,7 +7,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
   This file is to manage the quiz stage
    */
 
-  log.debug('Poodll Time Speechcards: initialising');
+  log.debug('MiniLesson Speechcards: initialising');
 
   return {
 

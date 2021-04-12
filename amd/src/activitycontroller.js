@@ -24,7 +24,7 @@ define(['jquery','jqueryui', 'core/log','mod_minilesson/definitions','mod_minile
                 $(theid).remove();
             }else{
                 //if there is no config we might as well give up
-                log.debug('Poodll Time Test Controller: No config found on page. Giving up.');
+                log.debug('MiniLesson activity Controller: No config found on page. Giving up.');
                 return;
             }
 

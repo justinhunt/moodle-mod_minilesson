@@ -210,47 +210,56 @@ class comprehensiontest
                 case constants::TYPE_LISTENREPEAT:
                 case constants::TYPE_MULTIAUDIO:
 
-                    //multi audio still needs TTrecorder so its in this "case" but it does not use sentences from customtext1
-                    //so it does not need to build a sentences list
-                    if($testitem->type !== constants::TYPE_MULTIAUDIO){
-
-                        $sentences = explode(PHP_EOL, $testitem->customtext1);
-                        $index = 0;
-                        $testitem->sentences = [];
-                        foreach ($sentences as $sentence) {
-                            $sentence = trim($sentence);
-                            if (empty($sentence)) {
-                                continue;
+                    //multi audio stores answers differently, and
+                   // at least for now there should be no difference between display and sentence
+                    if($testitem->type === constants::TYPE_MULTIAUDIO) {
+                        $sentences = [];
+                        for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
+                            if(!empty(trim($item->{constants::TEXTANSWER . $anumber}))) {
+                                $sentences[] = $item->{constants::TEXTANSWER . $anumber};
                             }
-                            //if we have a pipe we are listening for array[0] and displaying array[1]
-                            $sentencebits = explode('|', $sentence);
-                            if (count($sentencebits) > 1) {
-                                $sentence = trim($sentencebits[0]);
-                                $displaysentence = trim($sentencebits[1]);
-                            } else {
-                                $displaysentence = $sentence;
-                            }
-
-                            //If this is Japanese and a'chat' activity, the display sentence will be read as is
-                            // but the sentence we show on screen as the students entry needs to be broken into "words"
-                            //so we process it. In listen and speak it still shows the target, so its word'ified.
-                            //speechcards we do not give word level feedback. so we do nothing special
-                            //key point is to pass unwordified passage to compare_passage_transcipt ajax.
-                            if ($testitem->type == constants::TYPE_LISTENREPEAT || $testitem->type == constants::TYPE_DICTATIONCHAT) {
-                                if ($this->mod->ttslanguage == constants::M_LANG_JAJP) {
-                                    $sentence = utils::segment_japanese($sentence);
-                                }
-                            }
-
-                            $s = new \stdClass();
-                            $s->index = $index;
-                            $s->sentence = $sentence;
-                            $s->displaysentence = $displaysentence;
-                            $s->length = strlen($s->sentence);
-                            $index++;
-                            $testitem->sentences[] = $s;
                         }
+                    }else {
+                        $sentences = explode(PHP_EOL, $testitem->customtext1);
                     }
+
+                    //build a sentences object for mustache and JS
+                    $index = 0;
+                    $testitem->sentences = [];
+                    foreach ($sentences as $sentence) {
+                        $sentence = trim($sentence);
+                        if (empty($sentence)) {
+                            continue;
+                        }
+                        //if we have a pipe we are listening for array[0] and displaying array[1]
+                        $sentencebits = explode('|', $sentence);
+                        if (count($sentencebits) > 1) {
+                            $sentence = trim($sentencebits[0]);
+                            $displaysentence = trim($sentencebits[1]);
+                        } else {
+                            $displaysentence = $sentence;
+                        }
+
+                        //If this is Japanese and a'chat' activity, the display sentence will be read as is
+                        // but the sentence we show on screen as the students entry needs to be broken into "words"
+                        //so we process it. In listen and speak it still shows the target, so its word'ified.
+                        //speechcards we do not give word level feedback. so we do nothing special
+                        //key point is to pass unwordified passage to compare_passage_transcipt ajax.
+                        if ($testitem->type == constants::TYPE_LISTENREPEAT || $testitem->type == constants::TYPE_DICTATIONCHAT) {
+                            if ($this->mod->ttslanguage == constants::M_LANG_JAJP) {
+                                $sentence = utils::segment_japanese($sentence);
+                            }
+                        }
+
+                        $s = new \stdClass();
+                        $s->index = $index;
+                        $s->sentence = $sentence;
+                        $s->displaysentence = $displaysentence;
+                        $s->length = strlen($s->sentence);
+                        $index++;
+                        $testitem->sentences[] = $s;
+                    }
+
 
                    //cloudpoodll stuff
                    $testitem->region =$config->awsregion;

@@ -5,7 +5,7 @@ define(['jquery','core/log','mod_minilesson/definitions','https://cdnjs.cloudfla
 This file contains class and ID definitions.
  */
 
-    log.debug('Poodll Time QRCode helper: initialising');
+    log.debug('MiniLesson QRCode helper: initialising');
 
     return{
         //pass in config, amd set up table

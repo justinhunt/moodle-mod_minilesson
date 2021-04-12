@@ -5,7 +5,7 @@ define(['jquery','core/log','https://cdn.datatables.net/1.10.19/js/jquery.dataTa
 This file contains class and ID definitions.
  */
 
-    log.debug('Poodll Time Teacher Datatables helper: initialising');
+    log.debug('MiniLesson Teacher Datatables helper: initialising');
 
     return{
         //pass in config, amd set up table

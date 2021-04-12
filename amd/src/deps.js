@@ -5,7 +5,7 @@ define(['jquery','core/log','theme_boost/tether'], function($,log,Tether) {
 This file is a dependency of loader that is called by popover to ensure correct things are loaded in the right sequence
  */
 
-    log.debug('Poodll Time deps: initialising');
+    log.debug('MiniLesson deps: initialising');
 
     window.Tether = Tether;
     return{ };//end of return value
