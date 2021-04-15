@@ -1,8 +1,4 @@
-<div id="{{uniqueid}}_container" class="minilesson_questioncontainer" style="display: none">
-  {{> mod_minilesson/quiz_progress}}
-  <audio id="{{uniqueid}}_player"></audio>
-  <!-- @@CLOUDPOODLLTOKEN@@ -->
-  {{> mod_minilesson/questionheader}}
+{{> mod_minilesson/questionheader}}
 
   {{#customtext1}}
   <div class="minilesson_mc_response" data-index="1" id="{{uniqueid}}_option1" name="{{uniqueid}}_options" >
@@ -36,5 +32,4 @@
     </div>
     {{/customtext4}}
 
-  {{> mod_minilesson/nextbutton}}
-</div>
+{{> mod_minilesson/questionfooter}}

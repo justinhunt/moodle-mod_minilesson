@@ -76,6 +76,7 @@ const TTSQUESTION = 'itemtts';
 const TTSQUESTIONVOICE = 'itemttsvoice';
 const TTSQUESTIONOPTION = 'itemttsoption';
 const MEDIAQUESTION = 'itemmedia';
+const QUESTIONTEXTAREA = 'itemtextarea';
 const MEDIAIFRAME = 'customdata5';
 const TEXTANSWER = 'customtext';
 const CUSTOMDATA = 'customdata';

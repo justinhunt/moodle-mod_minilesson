@@ -121,6 +121,8 @@ class comprehensiontest
             $testitem->type=$item->type;
             if($this->mod->showqtitles||$forcetitles){$testitem->title=$item->name;}
             $testitem->uniqueid=$item->type . $testitem->number;
+
+            //The question header area (audio, video, tts, image iframe , text instrucions etc)
             switch($testitem->type) {
                 case constants::TYPE_DICTATION:
                 case constants::TYPE_DICTATIONCHAT:
@@ -186,6 +188,11 @@ class comprehensiontest
                     $testitem->itemttsoption=$item->{constants::TTSQUESTIONOPTION};
                 }
 
+                //Question TextArea
+                if(!empty(trim($item->{constants::QUESTIONTEXTAREA}))){
+                    $testitem->itemtextarea=$item->{constants::QUESTIONTEXTAREA};
+                }
+
                 //show text prompt or dots, for listen and repeat really
                 $testitem->show_text=$item->{constants::SHOWTEXTPROMPT};
 
@@ -196,14 +203,27 @@ class comprehensiontest
                     break;
             }
 
-
+            //Text answer fields
             for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
                 if(!empty(trim($item->{constants::TEXTANSWER . $anumber}))) {
                     $testitem->{'customtext' . $anumber} = $item->{constants::TEXTANSWER . $anumber};
                 }
             }
 
+            //vertical layout or horizontal layout determined by content options
+            if((isset($testitem->itemimage) && !empty($testitem->itemimage)) ||
+                    (isset($testitem->itemvideo) && !empty($testitem->itemvideo)) ||
+                    (isset($testitem->itemiframe) && !empty($testitem->itemiframe)) ||
+                    (isset($testitem->itemtextarea) && !empty($testitem->itemtextarea))
 
+            ){
+                if($testitem->type!==constants::TYPE_PAGE) {
+                    $testitem->horizontal = true;
+                }
+            }
+
+
+            //Sentences and Audio Recorder Logic
             switch($testitem->type){
                 case constants::TYPE_DICTATION:
                 case constants::TYPE_DICTATIONCHAT:

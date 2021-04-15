@@ -154,6 +154,7 @@ abstract class baseform extends \moodleform {
                 $togglearray[] =& $mform->createElement('advcheckbox','addmedia',get_string('addmedia',constants::M_COMPONENT),'');
                 $togglearray[] =& $mform->createElement('advcheckbox','addiframe',get_string('addiframe',constants::M_COMPONENT),'');
                 $togglearray[] =& $mform->createElement('advcheckbox','addttsaudio',get_string('addttsaudio',constants::M_COMPONENT),'');
+                $togglearray[] =& $mform->createElement('advcheckbox','addtextarea',get_string('addtextarea',constants::M_COMPONENT),'');
                 $mform->addGroup($togglearray, 'togglearray', '', array(' '), false);
                 //in the case of page we assume they will want to use some media
                 if($this->type== constants::TYPE_PAGE) {
@@ -192,6 +193,14 @@ abstract class baseform extends \moodleform {
                     $mform->disabledIf(constants::TTSQUESTION, 'addttsaudio', 'neq', 1);
                     $mform->disabledIf(constants::TTSQUESTIONVOICE, 'addttsaudio', 'neq', 1);
                     $mform->disabledIf(constants::TTSQUESTIONOPTION, 'addttsaudio', 'neq', 1);
+                }
+                //Question textarea
+                $mform->addElement('textarea', constants::QUESTIONTEXTAREA, get_string('itemtextarea', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
+                $mform->setType(constants::QUESTIONTEXTAREA, PARAM_RAW);
+                if($m35){
+                    $mform->hideIf(constants::QUESTIONTEXTAREA, 'addtextarea', 'neq', 1);
+                }else {
+                    $mform->disabledIf(constants::QUESTIONTEXTAREA, 'addtextarea', 'neq', 1);
                 }
 
 
@@ -369,8 +378,10 @@ abstract class baseform extends \moodleform {
      */
     protected final function add_voiceselect($name, $label = null) {
         $showall =true;
-        $voiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage,$showall);
-        $this->add_dropdown($name, $label,$voiceoptions);
+        $allvoiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage,$showall);
+        $somevoiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage,!$showall);
+        $defaultvoice =array_pop($somevoiceoptions );
+        $this->add_dropdown($name, $label,$allvoiceoptions,$defaultvoice);
     }
 
     /**
