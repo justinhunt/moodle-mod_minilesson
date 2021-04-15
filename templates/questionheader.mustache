@@ -1,0 +1,18 @@
+<div id="{{uniqueid}}_container" class="minilesson_questioncontainer" style="display: none">
+  {{> mod_minilesson/quiz_progress}}
+  <audio id="{{uniqueid}}_player"></audio>
+  <!-- @@CLOUDPOODLLTOKEN@@ -->
+  <!-- title + instructions -->
+    {{#title}}<div class="minilesson_questionheader"><b>{{#str}}d_question, mod_minilesson{{/str}} {{number}}: {{{title}}}</b></div>{{/title}}
+    <div class="mod_minilesson_itemtext">{{{text}}}</div>
+    {{#horizontal}}
+    <div class="row" style="margin-top: 20px;">
+    <div class="col-sm-6">
+    {{/horizontal}}
+    <!-- Content -->
+    {{> mod_minilesson/questioncontent}}
+
+    {{#horizontal}}
+    </div>
+    <div class="col-sm-6">
+    {{/horizontal}}
