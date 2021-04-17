@@ -190,7 +190,7 @@ class comprehensiontest
 
                 //Question TextArea
                 if(!empty(trim($item->{constants::QUESTIONTEXTAREA}))){
-                    $testitem->itemtextarea=$item->{constants::QUESTIONTEXTAREA};
+                    $testitem->itemtextarea=nl2br($item->{constants::QUESTIONTEXTAREA});
                 }
 
                 //show text prompt or dots, for listen and repeat really
@@ -211,13 +211,20 @@ class comprehensiontest
             }
 
             //vertical layout or horizontal layout determined by content options
-            if((isset($testitem->itemimage) && !empty($testitem->itemimage)) ||
-                    (isset($testitem->itemvideo) && !empty($testitem->itemvideo)) ||
-                    (isset($testitem->itemiframe) && !empty($testitem->itemiframe)) ||
-                    (isset($testitem->itemtextarea) && !empty($testitem->itemtextarea))
+            $textset = isset($testitem->itemtextarea) && !empty($testitem->itemtextarea);
+            $imageset = isset($testitem->itemimage) && !empty($testitem->itemimage);
+            $videoset =isset($testitem->itemvideo) && !empty($testitem->itemvideo);
+            $iframeset =isset($testitem->itemiframe) && !empty($testitem->itemiframe);
 
-            ){
-                if($testitem->type!==constants::TYPE_PAGE) {
+            //if its not a page, any big content item will make it horizontal layout
+            if($testitem->type!==constants::TYPE_PAGE) {
+                if($textset || $imageset|| $videoset||$iframeset){
+                    $testitem->horizontal = true;
+                }
+            //if its a page, a big content item + text would make it horizontal
+            //BUT ... we decided to nix this, but maybe we can do it in the future
+            }else if(false){
+                if($textset && ( $imageset|| $videoset||$iframeset)){
                     $testitem->horizontal = true;
                 }
             }
