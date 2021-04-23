@@ -408,6 +408,9 @@ $string['showoptionsastext'] = 'Show answers as text';
 $string['showtextprompt'] = 'Show text prompt';
 $string['textprompt_words'] = 'Show full text';
 $string['textprompt_dots'] = 'Show dots instead of letters';
+$string['listenorread'] = "Display options as";
+$string['listenorread_read'] = 'plain text';
+$string['listenorread_listen']= 'audio players';
 
 $string['gradenow']= 'Grade Now';
 

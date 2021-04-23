@@ -264,6 +264,11 @@ abstract class baseform extends \moodleform {
         return $this->add_dropdown($name,$label,$options,$default);
     }
 
+    protected final function add_showlistorreadoptions($name, $label = null, $default=constants::LISTENORREAD_READ) {
+        $options = utils::fetch_options_listenorread();
+        return $this->add_dropdown($name,$label,$options,$default);
+    }
+
     protected final function add_dropdown($name, $label = null,$options, $default=false) {
 
         $this->_form->addElement('select', $name, $label, $options);
@@ -376,12 +381,19 @@ abstract class baseform extends \moodleform {
      * @param string $label, null means default
      * @return void
      */
-    protected final function add_voiceselect($name, $label = null) {
+    protected final function add_voiceselect($name, $label = null, $showif=false) {
+        global $CFG;
         $showall =true;
         $allvoiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage,$showall);
         $somevoiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage,!$showall);
         $defaultvoice =array_pop($somevoiceoptions );
         $this->add_dropdown($name, $label,$allvoiceoptions,$defaultvoice);
+        $m35 = $CFG->version >= 2018051700;
+        if($m35){
+            $this->_form->hideIf($name, $showif, 'neq', 1);
+        }else {
+            $this->_form->disabledIf($name, $showif, 'neq', 1);
+        }
     }
 
     /**
@@ -390,9 +402,16 @@ abstract class baseform extends \moodleform {
      * @param string $label, null means default
      * @return void
      */
-    protected final function add_voiceoptions($name, $label = null) {
+    protected final function add_voiceoptions($name, $label = null,  $showif=false) {
+        global $CFG;
         $voiceoptions = utils::get_tts_options();
         $this->add_dropdown($name, $label,$voiceoptions);
+        $m35 = $CFG->version >= 2018051700;
+        if($m35){
+            $this->_form->hideIf($name, $showif, 'neq', 1);
+        }else {
+            $this->_form->disabledIf($name, $showif, 'neq', 1);
+        }
     }
     /**
      * Convenience function: Adds a dropdown list of tts language

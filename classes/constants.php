@@ -96,6 +96,11 @@ const SHOWTEXTPROMPT = 'customint1';
 const TEXTPROMPT_WORDS = 1;
 const TEXTPROMPT_DOTS = 0;
 
+const LISTENORREAD = 'customint2';
+const LISTENORREAD_READ = 0;
+const LISTENORREAD_LISTEN = 1;
+
+
 const TTS_NORMAL = 0;
 const TTS_SLOW = 1;
 const TTS_VERYSLOW = 2;

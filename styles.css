@@ -1134,6 +1134,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   border-radius: 5px;
 }
 
+.mcplaytrigger,
 .dictationtrigger {
   cursor: pointer;
   margin: auto;
@@ -1144,6 +1145,13 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   right: 0;
   width: 40px;
   height: 40px;
+}
+
+.mcplayrow {
+  margin: 5px;
+  padding: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .dictationrow {
@@ -1790,6 +1798,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   margin-top: 80px;
 }
 
+.mc_playbutton_container,
 .minilesson_mc_response {
   padding: 10px;
   border: 1px solid black;
@@ -1816,6 +1825,10 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 .minilesson_mc_wrong {
   color: red;
+  float: right;
+}
+.minilesson_mc_unanswered {
+  color: black;
   float: right;
 }
 .minilesson_mc_playstate {

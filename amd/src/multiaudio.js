@@ -64,6 +64,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
           }else{
               theplayer[0].pause();
               theplayer[0].currentTime=0;
+              $(el).find(".minilesson_mc_playstate").removeClass("fa-spin fa-spinner").addClass("fa-play");
+              self.playing = false;
           }
 
           //get selected item index

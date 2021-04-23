@@ -210,6 +210,10 @@ class comprehensiontest
                 }
             }
 
+            //if we need polly then lets do that
+            $testitem->usevoice=$item->{constants::POLLYVOICE};
+            $testitem->voiceoption=$item->{constants::POLLYOPTION};
+
             //vertical layout or horizontal layout determined by content options
             $textset = isset($testitem->itemtextarea) && !empty($testitem->itemtextarea);
             $imageset = isset($testitem->itemimage) && !empty($testitem->itemimage);
@@ -294,7 +298,7 @@ class comprehensiontest
                         $s->indexplusone = $index + 1;
                         $s->sentence = $sentence;
                         $s->displaysentence = $displaysentence;
-                        $s->length = strlen($s->sentence);
+                        $s->length = \core_text::strlen($s->sentence);
                         $index++;
                         $testitem->sentences[] = $s;
                     }
@@ -341,6 +345,25 @@ class comprehensiontest
                     break;
 
                 case constants::TYPE_MULTICHOICE:
+                    //multichoice also needs sentences if we are listening. Its a bit of double up but we do that here.
+                    if($item->{constants::LISTENORREAD}==constants::LISTENORREAD_LISTEN){
+                        $testitem->audiocontent = 1;
+                        $testitem->sentences = [];
+                        for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
+                            if (!empty(trim($item->{constants::TEXTANSWER . $anumber}))) {
+                                $sentence = trim($item->{constants::TEXTANSWER . $anumber});
+
+                                $s = new \stdClass();
+                                $s->index = $anumber - 1;
+                                $s->indexplusone = $anumber;
+                                $s->sentence = $sentence;
+                                $s->displaysentence = $this->dottify_text($sentence);
+                                $s->length = \core_text::strlen($sentence);
+                                $testitem->sentences[] = $s;
+                            }
+                        }
+                    }
+                    break;
                 case constants::TYPE_PAGE:
                 case constants::TYPE_TEACHERTOOLS:
                 case constants::TYPE_SHORTANSWER:
