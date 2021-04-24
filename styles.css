@@ -1798,13 +1798,20 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   margin-top: 80px;
 }
 
-.mc_playbutton_container,
 .minilesson_mc_response {
   padding: 10px;
   border: 1px solid black;
   margin-bottom: 10px;
   border-radius: 5px;
   background-color: white;
+  cursor: pointer;
+  font-size: 1.33em;
+}
+
+.mc_playbutton_container {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
   cursor: pointer;
   font-size: 1.33em;
 }
@@ -1832,7 +1839,6 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   float: right;
 }
 .minilesson_mc_playstate {
-  color: grey;
   float: right;
 }
 
