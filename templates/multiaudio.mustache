@@ -1,12 +1,24 @@
 {{> mod_minilesson/questionheader}}
     {{#sentences}}
-        <div class="minilesson_mc_response" data-index="{{index}}" id="{{uniqueid}}_option{{indexplusone}}" name="{{uniqueid}}_options" >
-            <span class="minilesson_sentence">{{displaysentence}}</span>
-            <i class="fa fa-play fa-lg minilesson_mc_playstate"></i>
-            <i class="fa fa-check fa-lg minilesson_mc_right" style="display: none;"></i>
-            <i class="fa fa-times fa-lg minilesson_mc_wrong" style="display: none;"></i>
+        <div class="row mcplayrow" id="{{uniqueid}}_option{{indexplusone}}">
+            <div class="col-md-1 mcaudioplayer_{{indexplusone}}">
+                <div class="mc_playbutton_container">
+                    <button class="minilesson_mc_audioplayer mcplaytrigger btn btn-secondary" data-index="{{index}}" id="{{uniqueid}}_audioplayer{{indexplusone}}">
+                        <i class="fa fa-play minilesson_mc_playstate"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-11 mcaudiotranscript_{{index}}">
+                <div class="minilesson_mc_response" data-index="{{index}}" name="{{uniqueid}}_options" >
+                    <span class="minilesson_sentence">{{displaysentence}}</span>
+                    <i class="fa fa-check fa-lg minilesson_mc_right" style="display: none;"></i>
+                    <i class="fa fa-times fa-lg minilesson_mc_wrong" style="display: none;"></i>
+                </div>
+            </div>
         </div>
     {{/sentences}}
+
+
 
     {{> mod_minilesson/cloudpushrecorder}}
     {{> mod_minilesson/ttrecorder}}
