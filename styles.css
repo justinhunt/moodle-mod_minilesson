@@ -1147,6 +1147,10 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   height: 40px;
 }
 
+.minilesson_mc_resultbox {
+  float: right;
+}
+
 .mcplayrow {
   margin: 5px 5px 10px 5px;
   padding: 0;
@@ -1827,15 +1831,12 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 .minilesson_mc_right {
   color: green;
-  float: right;
 }
 .minilesson_mc_wrong {
   color: red;
-  float: right;
 }
 .minilesson_mc_unanswered {
   color: black;
-  float: right;
 }
 .minilesson_mc_playstate {
   float: right;
