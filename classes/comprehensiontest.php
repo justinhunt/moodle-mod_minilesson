@@ -346,23 +346,30 @@ class comprehensiontest
 
                 case constants::TYPE_MULTICHOICE:
                     //multichoice also needs sentences if we are listening. Its a bit of double up but we do that here.
-                    if($item->{constants::LISTENORREAD}==constants::LISTENORREAD_LISTEN){
+                    $testitem->sentences = [];
+                    if($item->{constants::LISTENORREAD}==constants::LISTENORREAD_LISTEN) {
                         $testitem->audiocontent = 1;
-                        $testitem->sentences = [];
-                        for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
-                            if (!empty(trim($item->{constants::TEXTANSWER . $anumber}))) {
-                                $sentence = trim($item->{constants::TEXTANSWER . $anumber});
+                    }
+                    for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
+                        if (!empty(trim($item->{constants::TEXTANSWER . $anumber}))) {
+                            $sentence = trim($item->{constants::TEXTANSWER . $anumber});
 
-                                $s = new \stdClass();
-                                $s->index = $anumber - 1;
-                                $s->indexplusone = $anumber;
-                                $s->sentence = $sentence;
+                            $s = new \stdClass();
+                            $s->index = $anumber - 1;
+                            $s->indexplusone = $anumber;
+                            $s->sentence = $sentence;
+                            $s->length = \core_text::strlen($sentence);
+
+                            if($item->{constants::LISTENORREAD}==constants::LISTENORREAD_LISTEN) {
                                 $s->displaysentence = $this->dottify_text($sentence);
-                                $s->length = \core_text::strlen($sentence);
-                                $testitem->sentences[] = $s;
+                            }else {
+                                $s->displaysentence =$sentence;
                             }
+
+                            $testitem->sentences[] = $s;
                         }
                     }
+
                     break;
                 case constants::TYPE_PAGE:
                 case constants::TYPE_TEACHERTOOLS:

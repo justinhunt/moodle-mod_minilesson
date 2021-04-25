@@ -1148,7 +1148,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .mcplayrow {
-  margin: 5px;
+  margin: 5px 5px 10px 5px;
   padding: 0;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -1801,7 +1801,6 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .minilesson_mc_response {
   padding: 10px;
   border: 1px solid black;
-  margin-bottom: 10px;
   border-radius: 5px;
   background-color: white;
   cursor: pointer;
