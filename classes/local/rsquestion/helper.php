@@ -279,7 +279,14 @@ class helper
         switch($newitem->type) {
             case constants::TYPE_SPEECHCARDS:
             case constants::TYPE_LISTENREPEAT:
+            case constants::TYPE_MULTIAUDIO:
+
                 $passage = $newitem->customtext1;
+                if($newitem->type == constants::TYPE_MULTIAUDIO){
+                    $passage .= ' ' . $newitem->customtext2;
+                    $passage .= ' ' . $newitem->customtext3;
+                    $passage .= ' ' . $newitem->customtext4;
+                }
                 if (utils::needs_lang_model($moduleinstance,$passage)) {
                     $newpassagehash = utils::fetch_passagehash($passage);
                     if ($newpassagehash) {

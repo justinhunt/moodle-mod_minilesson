@@ -55,7 +55,7 @@ class utils{
 
 
     /*
- * Do we need to build a language model for this passage?
+ * Do we need to build a language model for this passage? always if en or de
  *
  */
     public static function needs_lang_model($moduleinstance, $passage) {
@@ -64,10 +64,12 @@ class utils{
             case 'useast1':
             case 'dublin':
             case 'sydney':
-                return substr($moduleinstance->ttslanguage,0,2)=='en' && trim($passage)!=="";
-                break;
+            case 'capetown':
+            case 'bahrain':
             default:
-                return false;
+                return (substr($moduleinstance->ttslanguage,0,2)=='en' || substr($moduleinstance->ttslanguage,0,2)=='de')
+                        && trim($passage)!=="";
+                break;
         }
     }
 
@@ -568,12 +570,14 @@ class utils{
           "tokyo" => get_string("tokyo",constants::M_COMPONENT),
           "sydney" => get_string("sydney",constants::M_COMPONENT),
           "dublin" => get_string("dublin",constants::M_COMPONENT),
-         // "ottawa" => get_string("ottawa",constants::M_COMPONENT),
-         // "frankfurt" => get_string("frankfurt",constants::M_COMPONENT),
-         // "london" => get_string("london",constants::M_COMPONENT),
-         // "saopaulo" => get_string("saopaulo",constants::M_COMPONENT),
-         // "singapore" => get_string("singapore",constants::M_COMPONENT),
-         // "mumbai" => get_string("mumbai",constants::M_COMPONENT)
+          "capetown" => get_string("capetown",constants::M_COMPONENT),
+          "bahrain" => get_string("bahrain",constants::M_COMPONENT),
+           "ottawa" => get_string("ottawa",constants::M_COMPONENT),
+           "frankfurt" => get_string("frankfurt",constants::M_COMPONENT),
+           "london" => get_string("london",constants::M_COMPONENT),
+           "saopaulo" => get_string("saopaulo",constants::M_COMPONENT),
+           "singapore" => get_string("singapore",constants::M_COMPONENT),
+            "mumbai" => get_string("mumbai",constants::M_COMPONENT)
       );
   }
 

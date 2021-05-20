@@ -249,22 +249,26 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             }
         },
 
-        //this will always be true if region is ok or chrome, but should it be false the old push recorder will show
+        //this will always be true these days
         use_ttrecorder: function(){
+            return true;
+            /*
             var ret =false;
             var chromeuser = this.chrome_user();
-            //check if region is ok
             switch(this.region){
                 case 'tokyo':
                 case 'useast1':
                 case 'dublin':
                 case 'sydney':
+                case 'bahrain':
+                case 'capetown':
                     ret =true;
                     break;
                 default:
                     ret = chromeuser;
             }
             return ret;
+            */
         },
 
         //text comparison functions follow===============

@@ -145,6 +145,8 @@ $string['london'] = 'London, U.K';
 $string['saopaulo'] = 'Sao Paulo, Brazil';
 $string['singapore'] = 'Singapore';
 $string['mumbai'] = 'Mumbai, India';
+$string['capetown'] = 'Capetown, South Africa';
+$string['bahrain'] = 'Bahrain';
 
 $string['forever'] = 'Never expire';
 

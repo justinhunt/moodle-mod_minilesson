@@ -327,19 +327,15 @@ class comprehensiontest
                         }
                     }
 
+                    //API gateway URL
                    switch($this->mod->region) {
-                       case 'tokyo':
-                           $testitem->asrurl = 'https://tokyo.ls.poodll.com/transcribe';
-                           break;
-                       case 'dublin':
-                           $testitem->asrurl = 'https://dublin.ls.poodll.com/transcribe';
-                           break;
-                       case 'sydney':
-                           $testitem->asrurl = 'https://sydney.ls.poodll.com/transcribe';
-                           break;
+
                        case 'useast1':
-                       default:
                            $testitem->asrurl = 'https://useast.ls.poodll.com/transcribe';
+                           break;
+                       default:
+                           $testitem->asrurl = 'https://' . $this->mod->region . '.ls.poodll.com/transcribe';
+
                    }
                    $testitem->maxtime = 15000;
                     break;
