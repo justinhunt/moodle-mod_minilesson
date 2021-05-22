@@ -141,6 +141,17 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021041500, 'minilesson');
     }
 
+    //Some passage hashs seem to be empty. This script will search for empty (and wrong) ones and update them
+    if ($oldversion < 2021052200) {
+        $instances = $DB->get_records(constants::M_TABLE);
+        if($instances){
+            foreach ($instances as $moduleinstance){
+                \mod_minilesson\local\rsquestion\helper::update_all_langmodels($moduleinstance);
+            }
+        }
+        upgrade_mod_savepoint(true, 2021052200, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

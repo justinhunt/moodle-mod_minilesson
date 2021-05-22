@@ -1,3 +1,6 @@
+Version 1.0.21 (Build 2021052200)
+- Added an update script to fix up any broken scorer paths
+
 Version 1.0.20 (Build 2021052000)
 - added capetown and bahrain
 

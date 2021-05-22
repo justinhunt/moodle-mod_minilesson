@@ -272,6 +272,31 @@ class helper
         }
     }//end of edit_insert_question
 
+    /*
+     *  If we change AWS region we will need a new lang model for all the items
+     *
+     *
+     */
+    public static function update_all_langmodels($moduleinstance){
+      global $DB;
+        $updates=0;
+        $items = $DB->get_records(constants:: M_QTABLE,array('minilesson'=>$moduleinstance->id));
+        foreach($items as $olditem) {
+            $newitem = new \stdClass();
+            //items for speech rec are in the custom text fields
+            $newitem->customtext1 = $olditem->customtext1;
+            $newitem->customtext2 = $olditem->customtext2;
+            $newitem->customtext3 = $olditem->customtext3;
+            $newitem->customtext4 = $olditem->customtext4;
+            $newitem->type = $olditem->type;
+            $passagehash = \mod_minilesson\local\rsquestion\helper::update_create_langmodel($moduleinstance, $olditem, $newitem);
+            if(!empty($passagehash)){
+                $DB->update_record(constants::M_QTABLE,array('id'=>$olditem->id,'passagehash'=>$passagehash));
+                $updates++;
+            }
+        }
+    }
+
     public static function update_create_langmodel($moduleinstance, $olditem, $newitem){
         //if we need to generate a DeepSpeech model for this, then lets do that now:
         //we want to process the hashcode and lang model if it makes sense

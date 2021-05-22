@@ -427,8 +427,20 @@ function minilesson_update_instance(stdClass $minilesson, mod_minilesson_mod_for
     $params = array('id' => $minilesson->instance);
     $oldgradefield = $DB->get_field(constants::M_TABLE, 'grade', $params);
 
+    //if region has changed we will need a new scorer. So lets flag that if necessary
+    $oldrecord = $DB->get_record(constants::M_TABLE,array('id'=>$minilesson->id));
+    $needs_new_langmodels=false;
+    if($minilesson->region!=$oldrecord->region) {
+        $needs_new_langmodels=true;
+    }
 
+    //perform our update
     $success = $DB->update_record(constants::M_TABLE, $minilesson);
+
+    //update lang models if required
+    if($needs_new_langmodels) {
+        \mod_minilesson\local\rsquestion\helper::update_all_langmodels($minilesson);
+    }
 
     if(!isset($minilesson->cmidnumber)){
         $minilesson->cmidnumber=null;
