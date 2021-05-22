@@ -125,10 +125,11 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021031500, 'minilesson');
     }
     // Add Question TextArea item  to minilesson table
-    if ($oldversion < 2021041500) {
+    if ($oldversion < 2021052200) {
         $table = new xmldb_table(constants::M_QTABLE);
 
         // Define fields itemtts and itemtts voice to be added to minilesson
+        //Item text area was added in 2021041500, but it was missed from install.xml ... so we double check it in this version
         $fields=[];
         $fields[] = new xmldb_field('itemtextarea', XMLDB_TYPE_TEXT, null, null, null, null);
 
@@ -138,11 +139,8 @@ function xmldb_minilesson_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
-        upgrade_mod_savepoint(true, 2021041500, 'minilesson');
-    }
 
-    //Some passage hashs seem to be empty. This script will search for empty (and wrong) ones and update them
-    if ($oldversion < 2021052200) {
+       //Some passage hashs seem to be empty. This script will search for empty (and wrong) ones and update them
         $instances = $DB->get_records(constants::M_TABLE);
         if($instances){
             foreach ($instances as $moduleinstance){
