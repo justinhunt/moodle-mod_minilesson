@@ -773,6 +773,9 @@ function minilesson_output_fragment_mform($args) {
                     $data->addiframe = 0;
                 }
                 if(!empty($data->{constants::QUESTIONTEXTAREA})){
+                    $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
+                    $data = file_prepare_standard_editor($data, constants::QUESTIONTEXTAREA, $edoptions, $context, constants::M_COMPONENT,
+                            constants::TEXTQUESTION_FILEAREA, $data->itemid);
                     $data->addtextarea = 1;
                 }else{
                     $data->addtextarea = 0;

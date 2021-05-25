@@ -36,6 +36,7 @@ $format = optional_param('format', 'html', PARAM_TEXT); //export format csv or h
 $showreport = optional_param('report', 'menu', PARAM_TEXT); // report type
 $userid = optional_param('userid', 0, PARAM_INT); // report type
 $attemptid = optional_param('attemptid', 0, PARAM_INT); // report type
+$groupid = optional_param('group', 0, PARAM_INT); // group id
 
 //paging details
 $paging = new stdClass();
@@ -83,6 +84,9 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot(constants::M_MODNAME, $moduleinstance);
 $event->trigger();
 
+$PAGE->set_url(constants::M_URL . '/grading.php',
+        array('id' => $cm->id,'format'=>$format,'report'=>$showreport,
+                'userid'=>$userid,'attemptid'=>$attemptid,'group'=>$groupid));
 
 
 /// Set up the page header
@@ -132,6 +136,7 @@ switch ($showreport){
         $formdata = new stdClass();
         $formdata->moduleid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupid = $groupid;
         break;
 
 
@@ -142,6 +147,7 @@ switch ($showreport){
         $formdata->moduleid = $moduleinstance->id;
         $formdata->attemptid = $attemptid;
         $formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupid = $groupid;
         break;
 
 
@@ -152,6 +158,7 @@ switch ($showreport){
 		$formdata = new stdClass();
 		$formdata->moduleid = $moduleinstance->id;
 		$formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupid = $groupid;
 		break;
 
     //list view of attempts and grades and action links
@@ -162,6 +169,7 @@ switch ($showreport){
         $formdata = new stdClass();
         $formdata->moduleid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupid = $groupid;
         break;
 
 
@@ -181,6 +189,19 @@ switch ($showreport){
 3) call $rows=report->fetch_formatted_records($withlinks=true(html) false(print/excel))
 5) call $reportrenderer->render_section_html($sectiontitle, $report->name, $report->get_head, $rows, $report->fields);
 */
+$groupmenu = '';
+if(isset($formdata->groupid)){
+    // fetch groupmode/menu/id for this activity
+    if ($groupmode = groups_get_activity_groupmode($cm)) {
+        $groupmenu = groups_print_activity_menu($cm, $PAGE->url, true);
+        $groupmenu .= ' ';
+        $formdata->groupid = groups_get_activity_group($cm);
+    }else{
+        $formdata->groupid  = 0;
+    }
+}else{
+    $formdata->groupid  = 0;
+}
 
 $report->process_raw_data($formdata);
 $reportheading = $report->fetch_formatted_heading();
@@ -198,6 +219,7 @@ switch($format){
 		$pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging,$PAGE->url);
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
 		echo $extraheader;
+        echo $groupmenu;
 		echo $pagingbar;
 		echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
 		echo $pagingbar;

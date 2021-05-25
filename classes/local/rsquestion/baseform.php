@@ -194,16 +194,20 @@ abstract class baseform extends \moodleform {
                     $mform->disabledIf(constants::TTSQUESTIONVOICE, 'addttsaudio', 'neq', 1);
                     $mform->disabledIf(constants::TTSQUESTIONOPTION, 'addttsaudio', 'neq', 1);
                 }
-                //Question textarea
-                $mform->addElement('textarea', constants::QUESTIONTEXTAREA, get_string('itemtextarea', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
+                //Question itemtextarea
+                $someid = \html_writer::random_id();
+                $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
+                $mform->addElement('editor', constants::QUESTIONTEXTAREA . '_editor',
+                        get_string('itemtextarea', constants::M_COMPONENT),
+                        array('id' => $someid, 'wrap' => 'virtual', 'style' => 'width: 100%;', 'rows' => '5'),
+                        $edoptions);
+                $this->_form->setDefault(constants::QUESTIONTEXTAREA . '_editor', array('text' => '', 'format' => FORMAT_HTML));
                 $mform->setType(constants::QUESTIONTEXTAREA, PARAM_RAW);
                 if($m35){
-                    $mform->hideIf(constants::QUESTIONTEXTAREA, 'addtextarea', 'neq', 1);
+                    $mform->hideIf(constants::QUESTIONTEXTAREA. '_editor', 'addtextarea', 'neq', 1);
                 }else {
-                    $mform->disabledIf(constants::QUESTIONTEXTAREA, 'addtextarea', 'neq', 1);
+                    $mform->disabledIf(constants::QUESTIONTEXTAREA. '_editor', 'addtextarea', 'neq', 1);
                 }
-
-
             }
 
         }

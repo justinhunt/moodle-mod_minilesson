@@ -208,10 +208,12 @@ class helper
         }
 
         //Item Text Area
-        if (property_exists($data, constants::QUESTIONTEXTAREA)) {
-            $theitem->{constants::QUESTIONTEXTAREA} = $data->{constants::QUESTIONTEXTAREA};
+        $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
+        if (property_exists($data, constants::QUESTIONTEXTAREA . '_editor')) {
+            $data = file_postupdate_standard_editor($data, constants::QUESTIONTEXTAREA, $edoptions, $context,
+                    constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, $theitem->id);
+            $theitem->{constants::QUESTIONTEXTAREA} = trim($data->{constants::QUESTIONTEXTAREA});
         }
-
 
         //save correct answer if we have one
         if (property_exists($data, constants::CORRECTANSWER)) {

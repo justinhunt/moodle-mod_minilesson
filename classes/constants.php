@@ -92,6 +92,8 @@ const MAXCUSTOMTEXT=5;
 const MAXCUSTOMDATA=5;
 const MAXCUSTOMINT=5;
 
+const ITEMTEXTAREA_EDOPTIONS =array('trusttext' => 0,'noclean'=>1, 'maxfiles' => 0);
+
 const SHOWTEXTPROMPT = 'customint1';
 const TEXTPROMPT_WORDS = 1;
 const TEXTPROMPT_DOTS = 0;

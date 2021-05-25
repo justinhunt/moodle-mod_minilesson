@@ -37,6 +37,7 @@ $userid = optional_param('userid', 0, PARAM_INT); // user id
 $attemptid = optional_param('attemptid', 0, PARAM_INT); // attemptid
 $returnurl = optional_param('returnurl', false, PARAM_URL); //returnurl
 $debug  = optional_param('debug', 0, PARAM_INT);
+$groupid = optional_param('group', 0, PARAM_INT); // group id
 
 
 //paging details
@@ -84,7 +85,8 @@ $event->trigger();
 
 
 $PAGE->set_url(constants::M_URL . '/grading.php',
-    array('id' => $cm->id,'format'=>$format,'action'=>$action,'userid'=>$userid,'attemptid'=>$attemptid,'returnurl'=>$returnurl));
+    array('id' => $cm->id,'format'=>$format,'action'=>$action,
+            'userid'=>$userid,'attemptid'=>$attemptid,'returnurl'=>$returnurl,'group'=>$groupid));
 
 /// Set up the page header
 $PAGE->set_title(format_string($moduleinstance->name));
@@ -120,6 +122,7 @@ switch ($action){
 		$formdata = new stdClass();
 		$formdata->moduleid = $moduleinstance->id;
 		$formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupid = $groupid;
 		break;
 
     //list view of attempts and grades and action links for a particular user
@@ -153,6 +156,20 @@ switch ($action){
 5) call $reportrenderer->render_section_html($sectiontitle, $report->name, $report->get_head, $rows, $report->fields);
 */
 
+$groupmenu = '';
+if(isset($formdata->groupid)){
+    // fetch groupmode/menu/id for this activity
+    if ($groupmode = groups_get_activity_groupmode($cm)) {
+        $groupmenu = groups_print_activity_menu($cm, $PAGE->url, true);
+        $groupmenu .= ' ';
+        $formdata->groupid = groups_get_activity_group($cm);
+    }else{
+        $formdata->groupid  = 0;
+    }
+}else{
+    $formdata->groupid  = 0;
+}
+
 $report->process_raw_data($formdata, $moduleinstance);
 $reportheading = $report->fetch_formatted_heading();
 
@@ -171,6 +188,7 @@ switch($format){
 
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_COMPONENT));
 		echo $extraheader;
+        echo $groupmenu;
 		echo $pagingbar;
 		echo $perpage_selector;
 		echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());

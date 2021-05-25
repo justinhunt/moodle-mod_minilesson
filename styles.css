@@ -1737,12 +1737,10 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   margin: auto;
 }
 .minilesson_questionheader_contents {
-  text-align: center;
   margin-bottom: 10px;
   margin-top: 10px;
 }
 .mod_minilesson_itemimage_cont,
-.mod_minilesson_itemtextarea_cont,
 .mod_minilesson_itemvideo_cont,
 .mod_minilesson_itemaudio_cont,
 .mod_minilesson_itemiframe_cont,
@@ -1750,6 +1748,10 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   width: 100%;
   margin-top: 10px;
   text-align: center;
+}
+.mod_minilesson_itemtextarea_cont {
+  width: 100%;
+  margin-top: 10px;
 }
 
 .mod_minilesson_iframe_responsive {
