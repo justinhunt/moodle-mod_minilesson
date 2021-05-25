@@ -36,7 +36,7 @@ $format = optional_param('format', 'html', PARAM_TEXT); //export format csv or h
 $showreport = optional_param('report', 'menu', PARAM_TEXT); // report type
 $userid = optional_param('userid', 0, PARAM_INT); // report type
 $attemptid = optional_param('attemptid', 0, PARAM_INT); // report type
-$groupid = optional_param('group', 0, PARAM_INT); // group id
+
 
 //paging details
 $paging = new stdClass();
@@ -136,7 +136,7 @@ switch ($showreport){
         $formdata = new stdClass();
         $formdata->moduleid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
-        $formdata->groupid = $groupid;
+        $formdata->groupmenu = true;
         break;
 
 
@@ -147,7 +147,7 @@ switch ($showreport){
         $formdata->moduleid = $moduleinstance->id;
         $formdata->attemptid = $attemptid;
         $formdata->modulecontextid = $modulecontext->id;
-        $formdata->groupid = $groupid;
+        $formdata->groupmenu = true;
         break;
 
 
@@ -158,7 +158,7 @@ switch ($showreport){
 		$formdata = new stdClass();
 		$formdata->moduleid = $moduleinstance->id;
 		$formdata->modulecontextid = $modulecontext->id;
-        $formdata->groupid = $groupid;
+        $formdata->groupmenu = true;
 		break;
 
     //list view of attempts and grades and action links
@@ -169,7 +169,7 @@ switch ($showreport){
         $formdata = new stdClass();
         $formdata->moduleid = $moduleinstance->id;
         $formdata->modulecontextid = $modulecontext->id;
-        $formdata->groupid = $groupid;
+        $formdata->groupmenu = true;
         break;
 
 
@@ -190,7 +190,7 @@ switch ($showreport){
 5) call $reportrenderer->render_section_html($sectiontitle, $report->name, $report->get_head, $rows, $report->fields);
 */
 $groupmenu = '';
-if(isset($formdata->groupid)){
+if(isset($formdata->groupmenu)){
     // fetch groupmode/menu/id for this activity
     if ($groupmode = groups_get_activity_groupmode($cm)) {
         $groupmenu = groups_print_activity_menu($cm, $PAGE->url, true);
