@@ -63,7 +63,9 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                         notification.alert("Error",'No microphone detected!', "OK");
                         break;
                     default:
-                        notification.alert("Error", error.name, "OK");
+                        //other errors, like from Edge can fire repeatedly so a notification is not a good idea
+                        //notification.alert("Error", error.name, "OK");
+                        log.debug("Error", error.name);
                 }
             };
 
