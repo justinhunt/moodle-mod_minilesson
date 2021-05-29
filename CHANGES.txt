@@ -1,3 +1,6 @@
+Version 1.0.23 (Build 2021052900)
+- Added lang models for FR and ES
+
 Version 1.0.22 (Build 2021052500)
 - Added ability to view reports by group
 

@@ -55,7 +55,7 @@ class utils{
 
 
     /*
- * Do we need to build a language model for this passage? always if en or de
+ * Do we need to build a language model for this passage?
  *
  */
     public static function needs_lang_model($moduleinstance, $passage) {
@@ -67,8 +67,11 @@ class utils{
             case 'capetown':
             case 'bahrain':
             default:
-                return (substr($moduleinstance->ttslanguage,0,2)=='en' || substr($moduleinstance->ttslanguage,0,2)=='de')
-                        && trim($passage)!=="";
+                return (substr($moduleinstance->ttslanguage,0,2)=='en' ||
+                                substr($moduleinstance->ttslanguage,0,2)=='de' ||
+                                substr($moduleinstance->ttslanguage,0,2)=='fr' ||
+                                substr($moduleinstance->ttslanguage,0,2)=='es') && trim($moduleinstance->passage)!=="";
+
                 break;
         }
     }
