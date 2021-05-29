@@ -24,7 +24,7 @@ define(['jquery', 'core/log'], function ($, log) {
             var brave = typeof navigator.brave !== 'undefined';
             if(brave){return false;}
 
-            var edge = navigator.userAgent.indexOf("edg/") > -1;
+            var edge = navigator.userAgent.toLowerCase().indexOf("edg/") > -1;
             if(edge){return false;}
 
             return ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window);
