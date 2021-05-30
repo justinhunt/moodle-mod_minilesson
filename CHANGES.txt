@@ -1,3 +1,6 @@
+Version 1.0.25 (Build 2021053100)
+- Set internal flag for iframe use
+
 Version 1.0.24 (Build 2021052901)
 - Fixed problem with lang file generation
 
