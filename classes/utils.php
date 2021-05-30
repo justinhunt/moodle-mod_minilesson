@@ -70,7 +70,7 @@ class utils{
                 return (substr($moduleinstance->ttslanguage,0,2)=='en' ||
                                 substr($moduleinstance->ttslanguage,0,2)=='de' ||
                                 substr($moduleinstance->ttslanguage,0,2)=='fr' ||
-                                substr($moduleinstance->ttslanguage,0,2)=='es') && trim($moduleinstance->passage)!=="";
+                                substr($moduleinstance->ttslanguage,0,2)=='es') && trim($passage)!=="";
 
                 break;
         }

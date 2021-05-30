@@ -1,3 +1,6 @@
+Version 1.0.24 (Build 2021052901)
+- Fixed problem with lang file generation
+
 Version 1.0.23 (Build 2021052900)
 - Added lang models for FR and ES
 
