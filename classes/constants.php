@@ -60,7 +60,7 @@ const TYPE_DICTATIONCHAT = 'dictationchat';
 const TYPE_DICTATION = 'dictation';
 const TYPE_SPEECHCARDS = 'speechcards';
 const TYPE_LISTENREPEAT = 'listenrepeat';
-const TYPE_TEACHERTOOLS = 'teachertools';
+const TYPE_SMARTFRAME = 'smartframe';
 const TYPE_SHORTANSWER = 'shortanswer';
 
 const AUDIOFNAME = 'itemaudiofname';

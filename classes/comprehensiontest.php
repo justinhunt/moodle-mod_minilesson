@@ -131,7 +131,7 @@ class comprehensiontest
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_MULTIAUDIO:
                 case constants::TYPE_PAGE:
-                case constants::TYPE_TEACHERTOOLS:
+                case constants::TYPE_SMARTFRAME:
                 case constants::TYPE_SHORTANSWER:
 
                     //Question Text
@@ -368,11 +368,20 @@ class comprehensiontest
 
                     break;
                 case constants::TYPE_PAGE:
-                case constants::TYPE_TEACHERTOOLS:
+                case constants::TYPE_SMARTFRAME:
                 case constants::TYPE_SHORTANSWER:
             }
 
-            $testitems[]=$testitem;
+            //if its a smart frame set the host name so we can pass data around
+            if($testitem->type==constants::TYPE_SMARTFRAME){
+                $testitem->smartframehost='';
+                if(!empty($testitem->customtext1)) {
+                    $hostbits = parse_url($testitem->customtext1);
+                    if($hostbits) {
+                        $testitem->smartframehost = $hostbits['scheme'] . "://" . $hostbits['host'];
+                    }
+                }
+            }
         }
 
         return $testitems;

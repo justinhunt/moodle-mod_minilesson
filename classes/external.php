@@ -256,8 +256,8 @@ class mod_minilesson_external extends external_api {
                 );
                 break;
 
-            case constants::TYPE_TEACHERTOOLS:
-                $mform = new \mod_minilesson\local\rsquestion\teachertoolsform(null,
+            case constants::TYPE_SMARTFRAME:
+                $mform = new \mod_minilesson\local\rsquestion\smartframeform(null,
                         array('editoroptions'=>$editoroptions,
                                 'filemanageroptions'=>$filemanageroptions,
                                 'moduleinstance'=>$moduleinstance),

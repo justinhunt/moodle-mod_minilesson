@@ -855,8 +855,8 @@ function minilesson_output_fragment_mform($args) {
             );
             break;
 
-        case constants::TYPE_TEACHERTOOLS:
-            $mform = new \mod_minilesson\local\rsquestion\teachertoolsform(null,
+        case constants::TYPE_SMARTFRAME:
+            $mform = new \mod_minilesson\local\rsquestion\smartframeform(null,
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)

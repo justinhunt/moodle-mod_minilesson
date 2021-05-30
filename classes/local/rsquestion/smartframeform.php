@@ -10,14 +10,14 @@ namespace mod_minilesson\local\rsquestion;
 
 use \mod_minilesson\constants;
 
-class teachertoolsform extends baseform
+class smartframeform extends baseform
 {
 
-    public $type = constants::TYPE_TEACHERTOOLS;
+    public $type = constants::TYPE_SMARTFRAME;
 
     public function custom_definition() {
 
-        $this->add_textboxresponse(1,'ttshorturl',true);
+        $this->add_textboxresponse(1,'smartframeurl',true);
 
     }
 

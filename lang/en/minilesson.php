@@ -346,7 +346,7 @@ $string['adddictationitem']='Dictation';
 $string['addlistenrepeatitem']='Listen and Speak';
 $string['addspeechcardsitem']='Speech Cards';
 $string['addpageitem']='Content Page';
-$string['addteachertoolsitem']='TeacherTools';
+$string['addsmartframeitem']='SmartFrame';
 $string['addshortansweritem']='Short Answer';
 
 
@@ -358,7 +358,7 @@ $string['dictationchat']='Dictation Chat';
 $string['speechcards']='Speech Cards';
 $string['listenrepeat']='Listen and Speak';
 $string['page']='Content Page';
-$string['teachertools']='TeacherTools';
+$string['smartframe']='SmartFrame';
 $string['shortanswer']='Short Answer';
 
 $string['transcriber'] = 'Transcriber';
@@ -429,7 +429,7 @@ $string['additems'] ='Add Items';
 $string['showqtitles'] ='Show item titles in lesson';
 $string['previewitem'] ='Preview Item';
 $string['showitemscores'] ='See All Results';
-$string['ttshorturl'] = 'TeacherTools Activity Short URL:';
+$string['ttshorturl'] = 'SmartFrame URL:';
 $string['reattempt'] ='Try Again';
 $string['attemptresultsheading']='{$a->username}: Attempt({$a->attemptid}): Score: {$a->sessionscore}% : - {$a->date} ';
 $string['result'] ='Result';

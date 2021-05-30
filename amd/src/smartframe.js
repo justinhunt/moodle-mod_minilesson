@@ -5,7 +5,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function($, log, de
   This file is to manage the quiz stage
    */
 
-  log.debug('MiniLesson TeacherTools: initialising');
+  log.debug('MiniLesson SmartFrame: initialising');
 
   return {
 
@@ -41,10 +41,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function($, log, de
       window.addEventListener("message", function(event) {
         log.debug('messageevent',event);
 
-            //if its not really teacher tools, or localhost get out of here
-            if (event.origin !== "https://dev.teachertools.digital" &&
-                event.origin !== "https://app.teachertools.digital" &&
-                event.origin !== "http://localhost") {
+            //if its not really our smartframe host get out of here
+            if (event.origin !== itemdata.smartframehost) {
                 return;
             }
             //pass back results and transition

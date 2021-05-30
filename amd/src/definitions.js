@@ -68,7 +68,7 @@ This file contains class and ID definitions.
         qtype_dictation: 'dictation',
         qtype_speechcards: 'speechcards',
         qtype_listenrepeat: 'listenrepeat',
-        qtype_teachertools: 'teachertools',
+        qtype_smartframe: 'smartframe',
         qtype_shortanswer: 'shortanswer',
 
         //running records features
