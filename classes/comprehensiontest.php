@@ -382,7 +382,13 @@ class comprehensiontest
                     }
                 }
             }
-        }
+
+            //add out item to test
+            $testitems[]=$testitem;
+
+        }//end of loop
+
+
 
         return $testitems;
     }
