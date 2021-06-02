@@ -84,23 +84,22 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot(constants::M_MODNAME, $moduleinstance);
 $event->trigger();
 
-$PAGE->set_url(constants::M_URL . '/grading.php',
-        array('id' => $cm->id,'format'=>$format,'report'=>$showreport,
-                'userid'=>$userid,'attemptid'=>$attemptid,'group'=>$groupid));
-
 
 /// Set up the page header
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-if($config->enablesetuptab){
+if($moduleinstance->foriframe==1) {
     $PAGE->set_pagelayout('embedded');
+}elseif($config->enablesetuptab){
+    $PAGE->set_pagelayout('popup');
 }else{
     $PAGE->set_pagelayout('course');
 }
 
-$PAGE->requires->jquery();
+//20210601 - we probably dont need this ... delete soon
+//$PAGE->requires->jquery();
 
 
 //This puts all our display logic into the renderer.php files in this plugin
@@ -117,9 +116,13 @@ switch ($showreport){
 	case 'menu':
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
 		echo $reportrenderer->render_reportmenu($moduleinstance,$cm);
-        //backtotop
-        echo $renderer->backtotopbutton($course->id);
-		// Finish the page
+
+		//show backtotop button in most cases
+        if(!$config->enablesetuptab) {
+            echo $renderer->backtotopbutton($course->id);
+        }
+
+        // Finish the page
 		echo $renderer->footer();
 		return;
 

@@ -1840,4 +1840,18 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   float: right;
 }
 
+.minilesson_reportsmenu_box {
+  text-align: center;
+  display: flex;
+}
 
+.minilesson_reportsmenu_item {
+  height: 80px;
+  width: 150px;
+  margin: 10px;
+}
+
+.minilesson_reportsmenu_itembutton button{
+  height: 80px;
+  width: 150px;
+}

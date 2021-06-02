@@ -93,16 +93,18 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-if($config->enablesetuptab){
+if($moduleinstance->foriframe==1) {
     $PAGE->set_pagelayout('embedded');
+}elseif($config->enablesetuptab){
+    $PAGE->set_pagelayout('popup');
 }else{
     $PAGE->set_pagelayout('course');
 }
 
 
 
-
-$PAGE->requires->jquery();
+//20210601 - we probably dont need this ... delete soon
+//$PAGE->requires->jquery();
 
 //This puts all our display logic into the renderer.php files in this plugin
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);

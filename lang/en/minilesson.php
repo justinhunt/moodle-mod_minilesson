@@ -53,6 +53,7 @@ $string['timecreated']='Time Created';
 $string['basicheading']='Basic Report';
 $string['attemptsheading']='Attempts Report';
 $string['gradereport']='Grade Report';
+$string['gradereport_explanation']='A list of grades';
 $string['gradereportheading']='Grade Report';
 $string['attemptsbyuserheading']='User Attempts Report';
 $string['gradingheading']='Grades for each user latest attempts.';
@@ -69,6 +70,8 @@ $string['grading']='Grades';
 $string['showingattempt']='Showing attempt for: {$a}';
 $string['showingmachinegradedattempt']='Machine evaluated attempt for: {$a}';
 $string['basicreport']='Basic Report';
+$string['basicreport_explanation']='A Basic Report';
+
 $string['returntoreports']='Return to Reports';
 $string['returntogradinghome']='Return to Grades Top';
 $string['exportexcel']='Export to CSV';
@@ -105,6 +108,7 @@ $string['beginreading'] = 'Begin Reading';
 $string['errorheader'] = 'Error';
 $string['uploadconverterror'] = 'An error occured while posting your file to the server. Your submission has NOT been received. Please refresh the page and try again.';
 $string['attemptsreport'] = 'Attempts Report';
+$string['attemptsreport_explanation']='A list of attempts';
 $string['submitted'] = 'submitted';
 $string['id'] = 'ID';
 $string['username'] = 'User';
@@ -472,7 +476,7 @@ $string['addtextarea'] = 'Add Text Block';
 //showtextprompt
 $string['showtextprompt'] = 'Show text prompt';
 $string['enablesetuptab']="Enable setup tab";
-$string['enablesetuptab_details']="Show a tab containing the activity instance settings to admins. Not super useful in most cases.";
+$string['enablesetuptab_details']="Probably don't check this. It will show a tab containing the activity instance settings to admins. This is for a special use case and minilesson pages will show without headers,footers or blocks.";
 $string['setup']="Setup";
 
 //TTS options
@@ -481,4 +485,6 @@ $string['ttsslow']='Slow';
 $string['ttsveryslow']='Very Slow';
 $string['ttsssml']='SSML';
 $string['choosevoiceoption']='Voice Options';
+
+$string['reportsmenutoptext'] = "Review grade and attempts details using the report buttons below.";
 
