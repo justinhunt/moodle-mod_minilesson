@@ -96,8 +96,14 @@ class renderer extends \plugin_renderer_base {
     /**
      * Return HTML to display limited header
      */
-    public function notabsheader(){
-        return $this->output->header();
+    public function notabsheader($moduleinstance){
+        $activityname = format_string($moduleinstance->name, true, $moduleinstance->course);
+        $output = $this->output->header();
+        //dont show the heading in an iframe, it will be outside this anyway
+        if(!$moduleinstance->foriframe) {
+            $output .= $this->output->heading($activityname);
+        }
+        return $output;
     }
     /**
      * Return a message that something is not right

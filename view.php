@@ -126,7 +126,7 @@ if(!$attempts || ($canattempt && $retake==1)){
 if(has_capability('mod/minilesson:evaluate',$modulecontext)){
 	echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_COMPONENT));
 }else{
-	echo $renderer->notabsheader();
+	echo $renderer->notabsheader($moduleinstance);
 }
 
 $comp_test =  new \mod_minilesson\comprehensiontest($cm);
