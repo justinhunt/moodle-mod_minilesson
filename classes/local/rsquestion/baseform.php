@@ -155,7 +155,7 @@ abstract class baseform extends \moodleform {
                 $togglearray[] =& $mform->createElement('advcheckbox','addiframe',get_string('addiframe',constants::M_COMPONENT),'');
                 $togglearray[] =& $mform->createElement('advcheckbox','addttsaudio',get_string('addttsaudio',constants::M_COMPONENT),'');
                 $togglearray[] =& $mform->createElement('advcheckbox','addtextarea',get_string('addtextarea',constants::M_COMPONENT),'');
-                $mform->addGroup($togglearray, 'togglearray', '', array(' '), false);
+                $mform->addGroup($togglearray, 'togglearray', get_string('mediaprompts', constants::M_COMPONENT), array(' '), false);
                 //in the case of page we assume they will want to use some media
                 if($this->type== constants::TYPE_PAGE) {
                     $mform->setDefault('addmedia', 1);
@@ -197,16 +197,21 @@ abstract class baseform extends \moodleform {
                 //Question itemtextarea
                 $someid = \html_writer::random_id();
                 $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
-                $mform->addElement('editor', constants::QUESTIONTEXTAREA . '_editor',
+                //a bug prevents hideif working, but putting it in a group works dandy
+                $groupelements= [];
+                $groupelements[] = &$mform->createElement('editor', constants::QUESTIONTEXTAREA . '_editor',
                         get_string('itemtextarea', constants::M_COMPONENT),
                         array('id' => $someid, 'wrap' => 'virtual', 'style' => 'width: 100%;', 'rows' => '5'),
                         $edoptions);
                 $this->_form->setDefault(constants::QUESTIONTEXTAREA . '_editor', array('text' => '', 'format' => FORMAT_HTML));
                 $mform->setType(constants::QUESTIONTEXTAREA, PARAM_RAW);
+                $mform->addGroup($groupelements, 'groupelements', get_string('itemtextarea', constants::M_COMPONENT), array(' '), false);
                 if($m35){
-                    $mform->hideIf(constants::QUESTIONTEXTAREA. '_editor', 'addtextarea', 'neq', 1);
+                    $mform->hideIf('groupelements', 'addtextarea', 'neq', 1);
+                   // $mform->hideIf(constants::QUESTIONTEXTAREA. '_editor', 'addtextarea', 'neq', 1);
                 }else {
-                    $mform->disabledIf(constants::QUESTIONTEXTAREA. '_editor', 'addtextarea', 'neq', 1);
+                    $mform->disabledIf('groupelements', 'addtextarea', 'neq', 1);
+                   // $mform->disabledIf(constants::QUESTIONTEXTAREA. '_editor', 'addtextarea', 'neq', 1);
                 }
             }
 

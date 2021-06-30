@@ -447,8 +447,8 @@ $string['phraseresponses'] ='Enter a list of speaking prompts in the text area b
 $string['phrases'] ='Phrases';
 
 $string['itemmedia'] ='Image, audio or video to show';
-$string['itemttsquestion'] ='Text to be read';
-$string['itemttsquestionvoice'] ='Speaker\'s voice';
+$string['itemttsquestion'] ='TTS prompt text';
+$string['itemttsquestionvoice'] ='TTS prompt speaker';
 $string['itemiframe'] ='iFrame embed code';
 $string['itemtextarea'] = 'Text Block';
 $string['prompt-separate'] ='Text and media separate (recommended)';
@@ -484,7 +484,8 @@ $string['ttsnormal']='Normal';
 $string['ttsslow']='Slow';
 $string['ttsveryslow']='Very Slow';
 $string['ttsssml']='SSML';
-$string['choosevoiceoption']='Voice Options';
+$string['choosevoiceoption']='TTS prompt options';
 
 $string['reportsmenutoptext'] = "Review grade and attempts details using the report buttons below.";
 
+$string['mediaprompts']="Media Prompts";
