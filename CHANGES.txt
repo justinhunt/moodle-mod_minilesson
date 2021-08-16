@@ -1,3 +1,6 @@
+Version 1.0.27 (Build 2021081600)
+- Fixed array key exists on php8
+
 Version 1.0.26 (Build 2021063000)
 - Fixed media prompt html editor that would not hide
 
