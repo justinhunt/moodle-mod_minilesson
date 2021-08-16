@@ -135,6 +135,7 @@ abstract class baseform extends \moodleform {
             $mform->addElement('text', 'name', get_string('itemtitle', constants::M_COMPONENT), array('size'=>70));
             $mform->setType('name', PARAM_TEXT);
             $mform->addRule('name', get_string('required'), 'required', null, 'client');
+            $mform->setDefault('name', get_string('item',constants::M_COMPONENT));
 
 
             if($this->moduleinstance->richtextprompt==constants::M_PROMPT_RICHTEXT) {
