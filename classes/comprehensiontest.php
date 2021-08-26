@@ -242,6 +242,14 @@ class comprehensiontest
                 case constants::TYPE_LISTENREPEAT:
                 case constants::TYPE_MULTIAUDIO:
 
+                    //phonetic
+                    $testitem->phonetic=$item->phonetic;
+                    if(!empty($testitem->phonetic)) {
+                        $phonetics = explode(PHP_EOL, $testitem->phonetic);
+                    }else{
+                        $phonetics=[];
+                    }
+
                     //multi audio stores answers differently, and
                    // at least for now there should be no difference between display and sentence
                     if($testitem->type === constants::TYPE_MULTIAUDIO) {
@@ -299,6 +307,14 @@ class comprehensiontest
                         $s->sentence = $sentence;
                         $s->displaysentence = $displaysentence;
                         $s->length = \core_text::strlen($s->sentence);
+
+                        //add phonetics if we have them
+                        if(isset($phonetics[$index]) && !empty($phonetics[$index])){
+                            $s->phonetic=$phonetics[$index];
+                        }else{
+                            $s->phonetic='';
+                        }
+
                         $index++;
                         $testitem->sentences[] = $s;
                     }
@@ -328,15 +344,9 @@ class comprehensiontest
                     }
 
                     //API gateway URL
-                   switch($this->mod->region) {
+                   $testitem->asrurl = utils::fetch_lang_server_url($this->mod->region,'transcribe');
 
-                       case 'useast1':
-                           $testitem->asrurl = 'https://useast.ls.poodll.com/transcribe';
-                           break;
-                       default:
-                           $testitem->asrurl = 'https://' . $this->mod->region . '.ls.poodll.com/transcribe';
 
-                   }
                    $testitem->maxtime = 15000;
                     break;
 

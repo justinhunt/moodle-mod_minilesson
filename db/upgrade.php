@@ -165,6 +165,25 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021053100, 'minilesson');
     }
 
+
+    // Add alternatives  to minilesson table
+    if ($oldversion < 2021081801) {
+        $table = new xmldb_table(constants::M_QTABLE);
+
+        // Define alternatives field to be added to minilesson
+        $fields=[];
+        $fields[] = new xmldb_field('alternatives', XMLDB_TYPE_TEXT, null, null, null, null);
+        $fields[] = new xmldb_field('phonetic', XMLDB_TYPE_TEXT, null, null, null, null);
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2021081801, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

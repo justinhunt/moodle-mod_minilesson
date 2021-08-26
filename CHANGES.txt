@@ -1,4 +1,7 @@
-Version 1.0.27 (Build 2021081600)
+Versio 1.0.28 (Build 2021082600)
+- Better phonetic comparisons
+
+Version 1.0.27 (Build 2021081800)
 - Fixed array key exists on php8
 
 Version 1.0.26 (Build 2021063000)

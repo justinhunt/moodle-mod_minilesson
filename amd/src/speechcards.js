@@ -33,6 +33,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
         dryRun: false,
         language: 'en-US',
         terms: [],
+        phonetics: [],
         displayterms: [],
         results: [],
         controls: {},
@@ -42,6 +43,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
           //init terms
           for (var i = 0; i < itemdata.sentences.length; i++) {
             app.terms[i] = itemdata.sentences[i].sentence;
+            app.phonetics[i] = itemdata.sentences[i].phonetic;
             app.displayterms[i] = itemdata.sentences[i].displaysentence;
           }
           log.debug("app terms", app.terms);
@@ -107,6 +109,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
 
                 var spoken = cleanspeechtext;
                 var correct = app.terms[app.pointer - 1];
+                var correctphonetic = app.phonetics[app.pointer - 1];
 log.debug('speechtext:',speechtext);
 log.debug('spoken:',spoken);
 log.debug('correct:',correct);
@@ -124,7 +127,7 @@ log.debug('correct:',correct);
                 }
 
                 //Similarity check by phonetics(ajax)
-                quizhelper.checkByPhonetic(spoken, correct, app.language).then(function(similarity) {
+                quizhelper.checkByPhonetic(correct, spoken, correctphonetic, app.language).then(function(similarity) {
                   if (similarity === false) {
                     return $.Deferred().reject();
                   } else {

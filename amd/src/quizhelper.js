@@ -315,22 +315,40 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
         cleanText: function(text) {
             var lowertext = text.toLowerCase();
-            var punctuationless = lowertext.replace(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g,"");
+            var punctuationless = lowertext.replace(/['!"#$%&\\'()。「」、\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g,"");
             var ret = punctuationless.replace(/\s+/g, " ").trim();
             return ret;
         },
 
         //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match
-        checkByPhonetic: function(spoken, correct, language) {
+        checkByPhonetic: function(passage, transcript, passagephonetic, language) {
             return Ajax.call([{
                 'methodname': 'mod_minilesson_check_by_phonetic',
                 'args': {
-                    'spoken': spoken,
-                    'correct': correct,
+                    'spoken': transcript,
+                    'correct': passage,
                     'language': language,
+                    'phonetic': passagephonetic,
+                    'region': this.region,
+                    'cmid': this.cmid
                 }
             }])[0];
 
         },
+
+       comparePassageToTranscript: function (passage,transcript,passagephonetic, language){
+          return Ajax.call([{
+               methodname: 'mod_minilesson_compare_passage_to_transcript',
+               args: {
+                   passage: passage,
+                   transcript: transcript,
+                   alternatives: '',
+                   phonetic: passagephonetic,
+                   language: language,
+                   region: this.region,
+                   cmid: this.cmid
+               }
+           }])[0];
+       }
     }; //end of return value
   });

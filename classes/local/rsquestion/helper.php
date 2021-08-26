@@ -138,6 +138,7 @@ class helper
         $theitem->itemorder = $data->itemorder;
         $theitem->type = $data->type;
         $theitem->name = $data->name;
+        $theitem->phonetic = $data->phonetic;
         $theitem->passagehash = $data->passagehash;
         $theitem->modifiedby = $USER->id;
         $theitem->timemodified = time();
@@ -337,5 +338,63 @@ class helper
                 }
         }
         return $thepassagehash;
+    }
+
+    //we want to generate a phonetics if this is phonetic'able
+    public static function update_create_phonetic($moduleinstance, $olditem, $newitem){
+        //if we have an old item, set the default return value to the current phonetic value
+        //we will update it if the text has changed
+        if($olditem) {
+            $thephonetics = $olditem->phonetic;
+        }else{
+            $thephonetics ='';
+        }
+
+
+        switch($newitem->type) {
+            case constants::TYPE_SPEECHCARDS:
+            case constants::TYPE_LISTENREPEAT:
+            case constants::TYPE_MULTIAUDIO:
+
+
+                    $newpassage = $newitem->customtext1;
+                    if ($newitem->type == constants::TYPE_MULTIAUDIO) {
+                        $newpassage .= PHP_EOL . $newitem->customtext2;
+                        $newpassage .= PHP_EOL . $newitem->customtext3;
+                        $newpassage .= PHP_EOL . $newitem->customtext4;
+                    }
+
+                    if($olditem!==false) {
+                        $oldpassage = $olditem->customtext1;
+                        if ($newitem->type == constants::TYPE_MULTIAUDIO) {
+                            $oldpassage .= PHP_EOL . $olditem->customtext2;
+                            $oldpassage .= PHP_EOL . $olditem->customtext3;
+                            $oldpassage .= PHP_EOL . $olditem->customtext4;
+                        }
+                    }else{
+                        $oldpassage='';
+                    }
+
+
+                if ($newpassage !== $oldpassage) {
+
+                    $segmented=true;
+                    $sentences=explode(PHP_EOL,$newpassage);
+                    $allphonetics =[];
+                    foreach($sentences as $sentence) {
+                        $thephones  = utils::convert_to_phonetic($sentence, $moduleinstance->ttslanguage, 'tokyo', $segmented);
+                        if(!empty($thephones)) {
+                            $allphonetics[] = $thephones;
+                        }
+                    }
+
+                    //build the final phonetics
+                    if(count($allphonetics)>0) {
+                        $thephonetics = implode(PHP_EOL, $allphonetics);
+                    }
+                }
+
+        }
+        return $thephonetics;
     }
 }

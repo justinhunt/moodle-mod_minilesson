@@ -316,14 +316,18 @@ class utils{
 
     //we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
     //this is our helper
-    public static function curl_fetch($url,$postdata=false)
+    public static function curl_fetch($url,$postdata=false,$method='get')
     {
         global $CFG;
 
         require_once($CFG->libdir.'/filelib.php');
         $curl = new \curl();
 
-        $result = $curl->get($url, $postdata);
+        if($method=='get') {
+            $result = $curl->get($url, $postdata);
+        }else{
+            $result = $curl->post($url, $postdata);
+        }
         return $result;
     }
 
@@ -607,35 +611,112 @@ class utils{
 
 
     //convert a phrase or word to a series of phonetic characters that we can use to compare text/spoken
-    public static function convert_to_phonetic($phrase,$language){
+    public static function convert_to_phonetic($phrase,$language,$region='tokyo',$segmented=true){
         global $CFG;
 
         switch($language){
-            case 'en':
-                $phonetic = metaphone($phrase);
+            case constants::M_LANG_ENUS:
+            case constants::M_LANG_ENAB:
+            case constants::M_LANG_ENAU:
+            case constants::M_LANG_ENIN:
+            case constants::M_LANG_ENIE:
+            case constants::M_LANG_ENWL:
+            case constants::M_LANG_ENGB:
+                $phrasebits = explode(' ',$phrase);
+                $phonebits=[];
+                foreach($phrasebits as $phrasebit){
+                    $phonebits[] = metaphone($phrasebit);
+                }
+                if($segmented) {
+                    $phonetic = implode($phonebits, ' ');
+                }else {
+                    $phonetic = implode($phonebits, '');
+                }
+                //the resulting phonetic string will look like this: 0S IS A TK IT IS A KT WN TW 0T IS A MNK
+                // but "one" and "won" result in diff phonetic strings and non english support is not there so
+                //really we want to put an IPA database on services server and poll as we do for katakanify
+                //see: https://github.com/open-dict-data/ipa-dict
+                //and command line searchable dictionaries https://github.com/open-dsl-dict/ipa-dict-dsl based on those
+                // gdcl :    https://github.com/dohliam/gdcl
                 break;
-            case 'ja':
-                //gettting phonetics for JP requires php-mecab library doc'd here
-                //https://github.com/nihongodera/php-mecab-documentation
-                if(extension_loaded('mecab')){
-                    $mecab = new \MeCab\Tagger();
-                    $nodes=$mecab->parseToNode($phrase);
-                    $katakanaarray=[];
-                    foreach ($nodes as $n) {
-                        $f =  $n->getFeature();
-                        $reading = explode(',',$f)[8];
-                        if($reading!='*'){
-                            $katakanaarray[] =$reading;
+            case constants::M_LANG_JAJP:
+
+                //fetch katakana/hiragana if the JP
+                $katakanify_url = utils::fetch_lang_server_url($region,'katakanify');
+
+                //results look like this:
+
+                /*
+                    {
+                        "status": true,
+                        "message": "Katakanify complete.",
+                        "data": {
+                            "status": true,
+                            "results": [
+                                "元気な\t形容詞,*,ナ形容詞,ダ列基本連体形,元気だ,げんきな,代表表記:元気だ/げんきだ",
+                                "男の子\t名詞,普通名詞,*,*,男の子,おとこのこ,代表表記:男の子/おとこのこ カテゴリ:人 ドメイン:家庭・暮らし",
+                                "は\t助詞,副助詞,*,*,は,は,連語",
+                                "いい\t動詞,*,子音動詞ワ行,基本連用形,いう,いい,連語",
+                                "こ\t接尾辞,動詞性接尾辞,カ変動詞,未然形,くる,こ,連語",
+                                "です\t判定詞,*,判定詞,デス列基本形,だ,です,連語",
+                                "。\t特殊,句点,*,*,。,。,連語",
+                                "EOS",
+                                ""
+                            ]
                         }
                     }
-                    $phonetic=implode($katakanaarray,'');
-                    break;
+                */
+
+                $postdata =array('passage'=>$phrase);
+                $results = self::curl_fetch($katakanify_url,$postdata,'post');
+                if(!self::is_json($results)){return false;}
+
+                $jsonresults = json_decode($results);
+                $nodes=[];
+                if($jsonresults && $jsonresults->status==true){
+                    foreach($jsonresults->data->results as $result){
+                        $bits = preg_split("/\t+/", $result);
+                        if(count($bits)>1) {
+                            $nodes[] = $bits[1];
+                        }
+                    }
                 }
 
+                //process nodes
+                $katakanaarray=[];
+                foreach ($nodes as $n) {
+                    $analysis = explode(',',$n);
+                    if(count($analysis) > 6) {
+                        $reading = $analysis[7];
+                        if ($reading != '*' && $analysis[0]!='記号') {
+                            $katakanaarray[] = $reading;
+                        }
+                    }
+                }
+                if($segmented) {
+                    $phonetic = implode($katakanaarray, ' ');
+                }else {
+                    $phonetic = implode($katakanaarray, '');
+                }
+                break;
+
             default:
-                $phonetic = $phrase;
+                $phonetic = '';
         }
         return $phonetic;
+
+    }
+
+    //fetch lang server url, services incl. 'transcribe' , 'lm', 'lt', 'spellcheck', 'katakanify'
+    public static function fetch_lang_server_url($region,$service='transcribe'){
+        switch($region) {
+            case 'useast1':
+                $ret = 'https://useast.ls.poodll.com/';
+                break;
+            default:
+                $ret = 'https://' . $region . '.ls.poodll.com/';
+        }
+        return $ret . $service;
     }
 
     public static function fetch_options_transcribers() {
