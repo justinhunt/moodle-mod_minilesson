@@ -279,6 +279,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         //text comparison functions follow===============
 
         similarity: function(s1, s2) {
+            //we remove spaces because JP transcript and passage might be different. And who cares about spaces anyway?
+            s1 = s1.replace(' ','').trim();
+            s2 = s2.replace(' ','').trim();
+
             var longer = s1;
             var shorter = s2;
             if (s1.length < s2.length) {
