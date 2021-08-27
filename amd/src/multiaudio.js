@@ -10,7 +10,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
 
   return {
 
-      passmark: 95,//lower this if it often doesnt match (was 85)
+      passmark: 90,//lower this if it often doesnt match (was 85)
       playing: false,
 
     //for making multiple instances

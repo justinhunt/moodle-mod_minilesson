@@ -26,7 +26,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
       console.log(itemdata);
 
       var app = {
-        passmark: 95,
+        passmark: 90,
         pointer: 1,
         jsondata: null,
         props: null,
@@ -205,10 +205,10 @@ log.debug('correct:',correct_clean);
         showStarRating: function(similarity) {
           //how many stars code
           var stars = [true, true, true];
-          if (similarity < 1) {
+          if (similarity < app.passmark) {
             stars = [true, true, false];
           }
-          if (similarity < app.passmark) {
+          if (similarity < .75) {
             stars = [true, false, false];
           }
           if (similarity < 0.5) {
