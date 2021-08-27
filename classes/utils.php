@@ -628,9 +628,9 @@ class utils{
                     $phonebits[] = metaphone($phrasebit);
                 }
                 if($segmented) {
-                    $phonetic = implode($phonebits, ' ');
+                    $phonetic = implode(' ', $phonebits);
                 }else {
-                    $phonetic = implode($phonebits, '');
+                    $phonetic = implode('', $phonebits);
                 }
                 //the resulting phonetic string will look like this: 0S IS A TK IT IS A KT WN TW 0T IS A MNK
                 // but "one" and "won" result in diff phonetic strings and non english support is not there so
@@ -696,9 +696,9 @@ class utils{
                     }
                 }
                 if($segmented) {
-                    $phonetic = implode($katakanaarray, ' ');
+                    $phonetic = implode(' ',$katakanaarray);
                 }else {
-                    $phonetic = implode($katakanaarray, '');
+                    $phonetic = implode('',$katakanaarray);
                 }
                 break;
 
