@@ -291,9 +291,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             }
             var longerLength = longer.length;
             if (longerLength == 0) {
-                return 1.0;
+                return 100;
             }
-            return (longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength);
+            return 100 * ((longerLength - this.editDistance(longer, shorter)) / parseFloat(longerLength));
         },
         editDistance: function(s1, s2) {
             s1 = s1.toLowerCase();
