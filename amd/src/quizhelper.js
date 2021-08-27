@@ -280,8 +280,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
         similarity: function(s1, s2) {
             //we remove spaces because JP transcript and passage might be different. And who cares about spaces anyway?
-            s1 = s1.replace(' ','').trim();
-            s2 = s2.replace(' ','').trim();
+            s1 = s1.replace(/\s+/g, '');
+            s2 = s2.replace(/\s+/g, '');
 
             var longer = s1;
             var shorter = s2;
