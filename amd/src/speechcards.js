@@ -113,7 +113,7 @@ log.debug('spoken:',spoken_clean);
 log.debug('correct:',correct_clean);
                 //Similarity check by character matching
                 var similarity_js = quizhelper.similarity(spoken_clean, correct_clean);
-                log.debug('JS similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity);
+                log.debug('JS similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_js);
 
                 //Similarity check by direct-match/acceptable-mistranscription
                 if (similarity_js >= app.passmark ||
