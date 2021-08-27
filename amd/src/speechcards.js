@@ -112,11 +112,11 @@ log.debug('speechtext:',speechtext);
 log.debug('spoken:',spoken_clean);
 log.debug('correct:',correct_clean);
                 //Similarity check by character matching
-                var similarity = quizhelper.similarity(spoken_clean, correct_clean);
+                var similarity_js = quizhelper.similarity(spoken_clean, correct_clean);
                 log.debug('JS similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity);
 
                 //Similarity check by direct-match/acceptable-mistranscription
-                if (similarity >= app.passmark ||
+                if (similarity_js >= app.passmark ||
                   app.wordsDoMatch(spoken_clean, correct_clean)) {
                   log.debug('local match:' + ':' + spoken_clean + ':' + correct_clean);
                   app.showStarRating(100);
@@ -125,14 +125,18 @@ log.debug('correct:',correct_clean);
                 }
 
                 //Similarity check by phonetics(ajax)
-                quizhelper.checkByPhonetic(correct_clean, spoken_clean, correctphonetic, app.language).then(function(similarity) {
-                  if (similarity === false) {
+                quizhelper.checkByPhonetic(correct_clean, spoken_clean, correctphonetic, app.language).then(function(similarity_php) {
+                  if (similarity_php === false) {
                     return $.Deferred().reject();
                   } else {
-                    log.debug('PHP similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity);
-                    app.showStarRating(similarity);
-                    if (similarity >= app.passmark) {
-                      app.flagCorrectAndTransition();
+                    log.debug('PHP similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_php);
+
+                    if (similarity_php >= app.passmark) {
+                        app.showStarRating(similarity_php);
+                        app.flagCorrectAndTransition();
+                    }else{
+                        //show the greater of the ratings
+                        app.showStarRating(Math.max(similarity_js,similarity_php));
                     }
                   } //end of if check_by_phonetic result
                 }); //end of check by phonetic
