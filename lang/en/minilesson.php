@@ -297,6 +297,7 @@ $string['addingitem'] = 'Adding a new lesson item';
 $string['editingitem'] = 'Editing a lesson item';
 $string['createaitem'] = 'Create a lesson item';
 $string['item'] = 'Item';
+$string['newitem'] = 'Item: untitled';
 $string['itemtitle'] = 'Item Title';
 $string['itemcontents'] = 'Item Text';
 $string['answer'] = 'Answer';
@@ -399,13 +400,15 @@ $string['start'] = 'Start';
 $string['next'] = 'Next';
 $string['nextlessonitem'] = 'Next Page';
 $string['loading'] = 'Loading...';
-$string['dc_instructions1'] = 'Listen and type the sentences you hear';
+$string['dictation_instructions1'] = 'Listen and type each sentence that you hear.';
+$string['sc_instructions1'] = 'Read the phrase on each card aloud.';
+$string['dc_instructions1'] = 'Listen and type the sentences you hear.';
 $string['dc_instructions2'] = 'Click \'Start\' to begin!';
 //dictation
 $string['d_question'] = 'Item';
 //listen and repeat
 $string['listenandrepeat'] = 'Listen and Speak';
-$string['lr_instructions1'] = 'Listen and respond to the sentences you hear';
+$string['lr_instructions1'] = 'Listen and respond to the sentences you hear.';
 $string['lr_instructions2'] = 'Click \'Start\' to begin!';
 
 $string['choosevoice'] = "Choose the prompt speaker's voice";

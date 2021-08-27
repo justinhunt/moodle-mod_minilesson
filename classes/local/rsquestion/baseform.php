@@ -135,7 +135,7 @@ abstract class baseform extends \moodleform {
             $mform->addElement('text', 'name', get_string('itemtitle', constants::M_COMPONENT), array('size'=>70));
             $mform->setType('name', PARAM_TEXT);
             $mform->addRule('name', get_string('required'), 'required', null, 'client');
-            $mform->setDefault('name', get_string('item',constants::M_COMPONENT));
+            $mform->setDefault('name', get_string('newitem',constants::M_COMPONENT));
 
 
             if($this->moduleinstance->richtextprompt==constants::M_PROMPT_RICHTEXT) {
@@ -150,6 +150,24 @@ abstract class baseform extends \moodleform {
                 //Question text
                 $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
                 $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
+                switch($this->type) {
+                    case constants::TYPE_LISTENREPEAT:
+                        $mform->setDefault(constants::TEXTQUESTION,
+                                get_string('lr_instructions1', constants::M_COMPONENT));
+                        break;
+                    case constants::TYPE_DICTATIONCHAT:
+                        $mform->setDefault(constants::TEXTQUESTION,
+                                get_string('dc_instructions1', constants::M_COMPONENT));
+                        break;
+                    case constants::TYPE_SPEECHCARDS:
+                        $mform->setDefault(constants::TEXTQUESTION,
+                                get_string('sc_instructions1', constants::M_COMPONENT));
+                        break;
+                     case constants::TYPE_DICTATION:
+                         $mform->setDefault(constants::TEXTQUESTION,
+                                 get_string('dictation_instructions1', constants::M_COMPONENT));
+                         break;
+                }
 
                 $togglearray=array();
                 $togglearray[] =& $mform->createElement('advcheckbox','addmedia',get_string('addmedia',constants::M_COMPONENT),'');
