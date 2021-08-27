@@ -12,7 +12,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
     log.debug('MiniLesson Quiz helper: initialising');
 
     return {
-      
+
+      //original spliton_regexp: new RegExp(/([,.!?:;" ])/, 'g'),
+      spliton_regexp: new RegExp(/([!"# $%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~])/, 'g'),
+      //nopunc is diff to split on because it does not match on spaces
+      nopunc_regexp: new RegExp(/[!"#$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~]/,'g'),
+      nonspaces_regexp: new RegExp(/[^ ]/,'g'),
 
       controls: {},
       submitbuttonclass: 'mod_minilesson_quizsubmitbutton',
@@ -315,7 +320,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
         cleanText: function(text) {
             var lowertext = text.toLowerCase();
-            var punctuationless = lowertext.replace(/['!"#$%&\\'()。「」、\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~']/g,"");
+            var punctuationless = lowertext.replace(this.nopunc_regexp,"");
             var ret = punctuationless.replace(/\s+/g, " ").trim();
             return ret;
         },

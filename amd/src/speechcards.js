@@ -26,7 +26,7 @@ define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitio
       console.log(itemdata);
 
       var app = {
-        passmark: 85,
+        passmark: 95,
         pointer: 1,
         jsondata: null,
         props: null,

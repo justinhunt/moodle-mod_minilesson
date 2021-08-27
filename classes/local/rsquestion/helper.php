@@ -300,6 +300,24 @@ class helper
         }
     }
 
+    /*
+     *  We want to upgrade all the phonetic models on occasion
+     *
+     */
+    public static function update_all_phonetic($moduleinstance){
+        global $DB;
+        $updates=0;
+        $items = $DB->get_records(constants:: M_QTABLE,array('minilesson'=>$moduleinstance->id));
+        foreach($items as $newitem) {
+            $olditem = false;
+            $phonetic = \mod_minilesson\local\rsquestion\helper::update_create_phonetic($moduleinstance, $olditem, $newitem);
+            if(!empty($phonetic)){
+                $DB->update_record(constants::M_QTABLE,array('id'=>$newitem->id,'phonetic'=>$phonetic));
+                $updates++;
+            }
+        }
+    }
+
     public static function update_create_langmodel($moduleinstance, $olditem, $newitem){
         //if we need to generate a DeepSpeech model for this, then lets do that now:
         //we want to process the hashcode and lang model if it makes sense

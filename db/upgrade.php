@@ -165,7 +165,6 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2021053100, 'minilesson');
     }
 
-
     // Add alternatives  to minilesson table
     if ($oldversion < 2021081801) {
         $table = new xmldb_table(constants::M_QTABLE);
@@ -182,6 +181,20 @@ function xmldb_minilesson_upgrade($oldversion) {
             }
         }
         upgrade_mod_savepoint(true, 2021081801, 'minilesson');
+    }
+
+    // Update all the phonetic fields in minilesson
+    if ($oldversion < 2021082701) {
+
+        //this will add phonetic info for speechy items that have none currently
+        $instances = $DB->get_records(constants::M_TABLE);
+        if($instances){
+            foreach ($instances as $moduleinstance){
+                \mod_minilesson\local\rsquestion\helper::update_all_phonetic($moduleinstance);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2021082701, 'minilesson');
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.

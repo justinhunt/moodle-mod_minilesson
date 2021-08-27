@@ -11,12 +11,6 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       },
 
       usevoice: 'Amy',
-      //the original spliton_regexp: new RegExp('([,.!?:;" ])', 'g'),
-      spliton_regexp: new RegExp(/([!"# $%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~])/, 'g'),
-      //nopunc is diff to split on because it does not match on spaces
-      nopunc_regexp: new RegExp(/[!"#$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~]/,'g'),
-      nonspaces_regexp: new RegExp(/[^ ]/,'g'),
-
 
       init: function(index, itemdata, quizhelper) {
       var self = this;
@@ -115,7 +109,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
 
       self.items = text_items.map(function(target) {
         return {
-          dictate_targetWords: target.sentence.trim().split(self.spliton_regexp).filter(function(e) {
+          dictate_targetWords: target.sentence.trim().split(self.quizhelper.spliton_regexp).filter(function(e) {
             return e !== "";
           }),
           target: target.sentence,
@@ -215,12 +209,12 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       if (checkcase == 'false') {
         thetext = thetext.toLowerCase();
       }
-      var chunks = thetext.split(self.spliton_regexp).filter(function(e) {
+      var chunks = thetext.split(self.quizhelper.spliton_regexp).filter(function(e) {
         return e !== "";
       });
       var words = [];
       for (var i = 0; i < chunks.length; i++) {
-        if (!chunks[i].match(self.spliton_regexp)) {
+        if (!chunks[i].match(self.quizhelper.spliton_regexp)) {
           words.push(chunks[i]);
         }
       }
@@ -287,8 +281,8 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       var self = this;
 
       var target = self.items[self.game.pointer].target;
-      var nopunc = target.replace(self.nopunc_regexp,"");
-      var dots = nopunc.replace(self.nonspaces_regexp, '•');
+      var nopunc = target.replace(self.quizhelper.nopunc_regexp,"");
+      var dots = nopunc.replace(self.quizhelper.nonspaces_regexp, '•');
       var code = "<div class='dictate_prompt dictate_prompt_" + self.game.pointer + "' style='display:none;'>";
 
       code += "<i class='fa fa-graduation-cap dictate_speech-icon-left'></i>";
@@ -328,7 +322,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       var dictate_targetWordsCode = "";
       var idx = 1;
       self.items[self.game.pointer].dictate_targetWords.forEach(function(word, realidx) {
-        if (!word.match(self.spliton_regexp)) {
+        if (!word.match(self.quizhelper.spliton_regexp)) {
           dictate_targetWordsCode += "<ruby><input type='text' maxlength='" + word.length + "' size='" + (word.length + 1) + "' class='dictate_targetWord' data-realidx='" + realidx + "' data-idx='" + idx + "'><rt><i data-idx='" + idx + "' class='dictate_feedback'></i></rt></ruby>";
           idx++;
         } else {

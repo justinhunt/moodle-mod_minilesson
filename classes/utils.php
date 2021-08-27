@@ -686,10 +686,12 @@ class utils{
                 $katakanaarray=[];
                 foreach ($nodes as $n) {
                     $analysis = explode(',',$n);
-                    if(count($analysis) > 6) {
-                        $reading = $analysis[7];
-                        if ($reading != '*' && $analysis[0]!='記号') {
-                            $katakanaarray[] = $reading;
+                    if(count($analysis) > 7) {
+                        if($analysis[0]!=='記号') {
+                            $reading = $analysis[7];
+                            if ($reading != '*') {
+                                $katakanaarray[] = $reading;
+                            }
                         }
                     }
                 }
