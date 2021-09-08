@@ -32,6 +32,9 @@ const M_NOITEMS_CONT= 'mod_minilesson_noitems_cont';
 const M_ITEMS_CONT= 'mod_minilesson_items_cont';
 const M_ITEMS_TABLE= 'mod_minilesson_qpanel';
 
+const M_NEURALVOICES = array("Amy","Emma","Brian","Olivia","Aria","Ayanda","Ivy","Joanna","Kendra","Kimberly",
+        "Salli","Joey","Justin","Kevin","Matthew","Camila","Lupe", "Gabrielle", "Vicki", "Seoyeon");
+
 
 //grading options
 const M_GRADEHIGHEST= 0;
@@ -182,6 +185,8 @@ const M_NOITEMS_MSG='mod_minilesson_noitems_msg';
 const M_LANG_ENUS = 'en-US';
 const M_LANG_ENGB = 'en-GB';
 const M_LANG_ENAU = 'en-AU';
+const M_LANG_ENNZ = 'en-NZ';
+const M_LANG_ENZA = 'en-ZA';
 const M_LANG_ENIN = 'en-IN';
 const M_LANG_ESUS = 'es-US';
 const M_LANG_ESES = 'es-ES';

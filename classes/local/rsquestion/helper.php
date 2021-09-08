@@ -368,7 +368,6 @@ class helper
             $thephonetics ='';
         }
 
-
         switch($newitem->type) {
             case constants::TYPE_SPEECHCARDS:
             case constants::TYPE_LISTENREPEAT:

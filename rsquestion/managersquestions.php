@@ -203,11 +203,10 @@ if ($data = $mform->get_data()) {
         }else{
             $olditem=false;
         }
-        $data->passagehash = \mod_minilesson\local\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
+        $data->passagehash = \mod_minilesson\local\rsquestion\helper::update_create_langmodel($minilesson,$olditem,$data);
 
         //lets update the phonetics
-        $data->phonetic = \mod_minilesson\local\rsquestion\helper::update_create_phonetic($moduleinstance,$olditem,$data);
-
+        $data->phonetic = \mod_minilesson\local\rsquestion\helper::update_create_phonetic($minilesson,$olditem,$data);
 
 		$result = \mod_minilesson\local\rsquestion\helper::update_insert_question($minilesson,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
 		if($result->error==true){

@@ -1,4 +1,7 @@
-Versio 1.0.28 (Build 2021082700)
+Version 1.0.29(Build 202109xxxx)
+- Added neural voices
+
+Version 1.0.28 (Build 2021082700)
 - Better phonetic comparisons
 
 Version 1.0.27 (Build 2021081800)
