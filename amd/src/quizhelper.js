@@ -33,6 +33,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         this.cmid = cmid;
         this.reattempturl = activitydata.reattempturl;
         this.backtocourse = activitydata.backtocourse;
+        this.ds_only = activitydata.ds_only;
         this.prepare_html();
         this.init_questions(this.quizdata,polly);
         this.register_events();
@@ -259,7 +260,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             return true;
         },
         is_ds_only: function(){
-          return this.activitydata.ds_only;
+          return this.ds_only;
         },
 
         //text comparison functions follow===============
