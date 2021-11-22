@@ -257,23 +257,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         //this will always be true these days
         use_ttrecorder: function(){
             return true;
-            /*
-            var ret =false;
-            var chromeuser = this.chrome_user();
-            switch(this.region){
-                case 'tokyo':
-                case 'useast1':
-                case 'dublin':
-                case 'sydney':
-                case 'bahrain':
-                case 'capetown':
-                    ret =true;
-                    break;
-                default:
-                    ret = chromeuser;
-            }
-            return ret;
-            */
+        },
+        is_ds_only: function(){
+          return this.activitydata.ds_only;
         },
 
         //text comparison functions follow===============
