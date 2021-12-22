@@ -15,20 +15,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
- * Defines the version of minilesson
+ * A Free Trial Jumper
  *
  *
  * @package    mod_minilesson
- * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
+ * @copyright  Justin Hunt (justin@poodll.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2021122200;
-$plugin->requires  = 2016052300;      // Requires Moodle 3.1
-$plugin->component = 'mod_minilesson';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = ' 1.0.30 (Build 2021122200)';
+require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+
+use \mod_minilesson\constants;
+
+require_login(0, false);
+$systemcontext = context_system::instance();
+$PAGE->set_context($systemcontext);
+$PAGE->set_url('/' . CONSTANTS::M_URL . '/fetchcbpage.php');
+
+if(has_capability('moodle/site:config',$systemcontext)){
+
+    $amddata=['poodllcbsite'=>'poodllcom','wwwroot'=>$CFG->wwwroot,
+        'first_name'=>$USER->firstname,'last_name'=>$USER->lastname,'email'=>$USER->email,'country'=>$USER->country];
+    echo $OUTPUT->header();
+    echo $OUTPUT->render_from_template( constants::M_COMPONENT . '/fetchcbpage',$amddata);
+    echo $OUTPUT->footer();
+}else{
+    echo "no permission to do that action";
+}
