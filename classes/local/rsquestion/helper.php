@@ -263,6 +263,11 @@ class helper
             }
         }
 
+        //in the case of qcard we will have an array of all sorts of stuff
+        if (property_exists($data, 'qcardbuttonaction')){
+            $theitem->{constants::QCARDDATA} = self::qcard_to_json($data);
+        }
+
 
         //now update the db once we have saved files and stuff
         if (!$DB->update_record(constants::M_QTABLE, $theitem)) {
@@ -274,6 +279,47 @@ class helper
             return $ret;
         }
     }//end of edit_insert_question
+
+    public static function qcard_from_json($data){
+        $qcarddata = $data->{constants::QCARDDATA};
+        if(!$qcarddata|| empty($qcarddata)){return $data;}
+        $qcard=json_decode($qcarddata);
+        if(isset($qcard->cardtype)) {$data->cardtype=$qcard->cardtype;}
+        if(isset($qcard->timelimit)) {$data->timelimit=$qcard->timelimit;}
+        if(isset($qcard->textprompt)) {$data->textprompt=$qcard->textprompt;}
+        if(isset($qcard->audioprompt)) {$data->audioprompt=$qcard->audioprompt;}
+        if(isset($qcard->bgimage)) {$data->bgimage=$qcard->bgimage;}
+        if(isset($qcard->entryanim)) {$data->entryanim=$qcard->entryanim;}
+        for($item=0;$item < count($qcard->buttons);$item++ ){
+            //store fields as array (strings that look like arrays actually)
+            $data->{"qcardbuttontext[$item]"}=$qcard->buttons[$item]->text;
+            $data->{"qcardbuttonaction[$item]"} = $qcard->buttons[$item]->action;
+            $data->{"qcardbuttonactiontarget[$item]"} = $qcard->buttons[$item]->actiontarget;
+            $data->{"qcardbuttonimage[$item]"} = $qcard->buttons[$item]->image;
+            $data->{"qcardbuttonentryanim[$item]"} = $qcard->buttons[$item]->entryanim;
+        }
+        return $data;
+    }
+
+    public static function qcard_to_json($data){
+        $qcard = new \stdClass();
+        if(isset($data->cardtype)) {$qcard->cardtype=$data->cardtype;}
+        if(isset($data->timelimit)) {$qcard->timelimit=$data->timelimit;}
+        if(isset($data->textprompt)) {$qcard->textprompt=$data->textprompt;}
+        if(isset($data->audioprompt)) {$qcard->audioprompt=$data->audioprompt;}
+        if(isset($data->bgimage)) {$qcard->bgimage=$data->bgimage;}
+        if(isset($data->entryanim)) {$qcard->entryanim=$data->entryanim;}
+        $qcard->buttons=array();
+        for($item=0;$item < count($data->qcardbuttonaction);$item++ ){
+            $qcard->buttons[$item]=new \stdClass();
+            $qcard->buttons[$item]->text=$data->qcardbuttontext[$item];
+            $qcard->buttons[$item]->action=$data->qcardbuttonaction[$item];
+            $qcard->buttons[$item]->actiontarget=$data->qcardbuttonactiontarget[$item];
+            $qcard->buttons[$item]->image=$data->qcardbuttonimage[$item];
+            $qcard->buttons[$item]->entryanim=$data->qcardbuttonentryanim[$item];
+        }
+        return json_encode($qcard);
+    }
 
     /*
      *  If we change AWS region we will need a new lang model for all the items

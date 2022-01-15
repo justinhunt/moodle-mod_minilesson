@@ -111,7 +111,8 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_minilesson/definit
             var dd = this;
           
             var qtypes =[def.qtype_dictation,def.qtype_dictationchat,def.qtype_page,
-                def.qtype_speechcards,def.qtype_listenrepeat, def.qtype_multichoice, def.qtype_multiaudio];
+                def.qtype_speechcards,def.qtype_listenrepeat, def.qtype_multichoice,
+                def.qtype_multiaudio, def.qtype_qcard];
 
             var after_questionmove= function(itemid, direction) {
                 dd.move_row(itemid,direction);

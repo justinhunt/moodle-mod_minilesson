@@ -298,6 +298,15 @@ class mod_minilesson_external extends external_api {
                 );
                 break;
 
+            case constants::TYPE_QCARD:
+                $mform = new \mod_minilesson\local\rsquestion\qcardform(null,
+                    array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$moduleinstance),
+                    $method, $target,$attributes,$editable,$data
+                );
+                break;
+
             case constants::NONE:
             default:
                 print_error('No item type specifified');

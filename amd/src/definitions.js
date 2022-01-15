@@ -70,6 +70,7 @@ This file contains class and ID definitions.
         qtype_listenrepeat: 'listenrepeat',
         qtype_smartframe: 'smartframe',
         qtype_shortanswer: 'shortanswer',
+        qtype_qcard: 'qcard',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_minilesson_grading_maybeselfcorrectedword',

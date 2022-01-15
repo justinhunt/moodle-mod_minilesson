@@ -66,6 +66,7 @@ const TYPE_SPEECHCARDS = 'speechcards';
 const TYPE_LISTENREPEAT = 'listenrepeat';
 const TYPE_SMARTFRAME = 'smartframe';
 const TYPE_SHORTANSWER = 'shortanswer';
+const TYPE_QCARD = 'qcard';
 
 const AUDIOFNAME = 'itemaudiofname';
 const AUDIOPROMPT = 'audioitem';
@@ -85,6 +86,7 @@ const MEDIAIFRAME = 'customdata5';
 const TEXTANSWER = 'customtext';
 const CUSTOMDATA = 'customdata';
 const CUSTOMINT = 'customint';
+const QCARDDATA = 'customtext1';
 const POLLYVOICE = 'customtext5';
 const POLLYOPTION = 'customint4';
 const TEXTQUESTION_FILEAREA = 'itemarea';

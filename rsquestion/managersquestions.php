@@ -179,6 +179,14 @@ switch($type){
                         'moduleinstance'=>$minilesson)
         );
         break;
+    case constants::TYPE_QCARD:
+        $mform = new \mod_minilesson\local\rsquestion\qcardform(null,
+            array('editoroptions'=>$editoroptions,
+                'filemanageroptions'=>$filemanageroptions,
+                'moduleinstance'=>$minilesson)
+        );
+        break;
+
 
     case constants::NONE:
 	default:
@@ -286,6 +294,12 @@ if ($edit) {
 
 	//Set up the item type specific parts of the form data
 	switch($type){
+        case constants::TYPE_QCARD:
+            $qcard =\mod_minilesson\local\rsquestion\helper::qcard_from_json($data->{constants::QCARDDATA});
+            $data->qcardbuttonaction=$qcard->qcardbuttonaction;
+            $data->qcardbuttontext=$qcard->qcardbuttontext;
+            break;
+
         case constants::TYPE_MULTICHOICE:
         case constants::TYPE_MULTIAUDIO:
         case constants::TYPE_DICTATIONCHAT:

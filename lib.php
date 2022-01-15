@@ -871,6 +871,14 @@ function minilesson_output_fragment_mform($args) {
             );
             break;
 
+        case constants::TYPE_QCARD:
+            $mform = new \mod_minilesson\local\rsquestion\qcardform(null,
+                array('editoroptions'=>$editoroptions,
+                    'filemanageroptions'=>$filemanageroptions,
+                    'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
         case constants::NONE:
         default:
             print_error('No item type specifified');
@@ -879,7 +887,17 @@ function minilesson_output_fragment_mform($args) {
     }
 
    //if we have item data set it
+    //if the item type requires the data to be massaged, do that
     if($item){
+        switch($formname){
+
+            //qcard stores lots of data as JSON so we convert the JSON into data for form fields
+            case constants::TYPE_QCARD:
+                $data =\mod_minilesson\local\rsquestion\helper::qcard_from_json($data);
+                break;
+        }
+       // print_r($data);
+       // die;
         $mform->set_data($data);
     }
 

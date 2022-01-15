@@ -1,8 +1,9 @@
 define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'core/ajax',
     'mod_minilesson/dictation', 'mod_minilesson/dictationchat', 'mod_minilesson/multichoice','mod_minilesson/multiaudio',
         'mod_minilesson/speechcards', 'mod_minilesson/listenrepeat',
-        'mod_minilesson/page','mod_minilesson/smartframe','mod_minilesson/shortanswer'],
-  function($, log, def, templates, Ajax, dictation, dictationchat, multichoice, multiaudio, speechcards, listenrepeat, page, smartframe, shortanswer) {
+        'mod_minilesson/page','mod_minilesson/smartframe','mod_minilesson/shortanswer', 'mod_minilesson/qcard'],
+  function($, log, def, templates, Ajax, dictation, dictationchat, multichoice, multiaudio, speechcards,
+           listenrepeat, page, smartframe, shortanswer, qcard) {
     "use strict"; // jshint ;_;
 
     /*
@@ -82,6 +83,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
               case def.qtype_shortanswer:
                   shortanswer.clone().init(index, item, dd);
+                  break;
+
+              case def.qtype_qcard:
+                  qcard.clone().init(index, item, dd, polly);
                   break;
           }
 

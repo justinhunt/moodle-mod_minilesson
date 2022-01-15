@@ -167,6 +167,10 @@ abstract class baseform extends \moodleform {
                          $mform->setDefault(constants::TEXTQUESTION,
                                  get_string('dictation_instructions1', constants::M_COMPONENT));
                          break;
+                    case constants::TYPE_QCARD:
+                        $mform->setDefault(constants::TEXTQUESTION,
+                            get_string('qcard_instructions1', constants::M_COMPONENT));
+                        break;
                 }
 
                 $togglearray=array();
@@ -256,12 +260,107 @@ abstract class baseform extends \moodleform {
 
     }
 
-    protected final function add_repeating_textboxes($name, $repeatno=5){
+    protected final function add_qcarditems() {
+
+        //cardtype
+        $name='cardtype';
+        $label=get_string($name,constants::M_COMPONENT);
+        $options = utils::fetch_options_cardtype();
+        $default= 'binarytext';
+        $this->add_dropdown($name,$label,$options,$default);
+
+        //bgimage
+        $name='bgimage';
+        $label=get_string($name,constants::M_COMPONENT);
+        $options = ['none'=>'none'];
+        $default= 'none';
+        $this->add_dropdown($name,$label,$options,$default);
+
+        $name='audioprompt';
+        $label=get_string($name,constants::M_COMPONENT);
+        $options = ['none'=>'none'];
+        $default= 'none';
+        $this->add_dropdown($name,$label,$options,$default);
+
+        //entry anim
+        $name='entryanim';
+        $label=get_string($name,constants::M_COMPONENT);
+        $options = utils::fetch_options_entryanim();
+        $default= 'none';
+        $this->add_dropdown($name,$label,$options,$default);
+
+        //text prompt
+        $itemname = "textprompt";
+        $itemlabel = get_string($itemname, constants::M_COMPONENT);
+        $this->_form->addElement('text', $itemname, $itemlabel);
+        $this->_form->setDefault($itemname,'');
+        $this->_form->setType($itemname,PARAM_TEXT);
+
+        //time limit
+        $itemname = "timelimit";
+        $itemlabel = get_string($itemname, constants::M_COMPONENT);
+        $this->_form->addElement('text', $itemname, $itemlabel);
+        $this->_form->setDefault($itemname,0);
+        $this->_form->setType($itemname,PARAM_INT);
+        $this->_form->addRule($itemname,'numbers only', 'numeric');
+
+
+    }
+
+    protected final function add_repeating_qcardbuttons($name, $repeatno=2){
         global $DB;
 
         $additionalfields=1;
         $repeatarray = array();
-        $repeatarray[] = $this->_form->createElement('text', $name, get_string($name. 'no', constants::M_COMPONENT));
+        $repeateloptions = array();
+
+        //button form label
+        $itemlabel = get_string("qcardbuttonno", constants::M_COMPONENT);
+        $repeatarray[] = $this->_form->createElement('static', 'qcarddivider', $itemlabel, "");
+        //caption
+        $itemname = $name . "text";
+        $itemlabel = get_string($itemname, constants::M_COMPONENT);
+        $repeatarray[] = $this->_form->createElement('text', $itemname, $itemlabel);
+        $repeateloptions[$itemname]['default'] = '';
+        $repeateloptions[$itemname]['type'] = PARAM_TEXT;
+        //$repeateloptions[$itemname]['helpbutton'] = array($itemname . '_help', constants::M_COMPONENT);
+        $this->_form->setType($itemname, PARAM_CLEANHTML);
+        //$repeateloptions[$itemname]['disabledif'] = array('limitanswers', 'eq', 0);
+        //$repeateloptions[$itemname]['rule'] = 'numeric';
+
+
+
+        //action
+        $itemname = $name . "action";
+        $itemlabel = get_string($itemname, constants::M_COMPONENT);
+        $options=array('qnext'=>'qnext','qback'=>'qback','qjump'=>'qjump');
+        $repeatarray[] = $this->_form->createElement('select', $itemname, $itemlabel,$options);
+        $repeateloptions[$itemname]['default'] = 'qback';
+
+        //action target
+        $itemname = $name . "actiontarget";
+        $itemlabel = get_string($itemname, constants::M_COMPONENT);
+        $options=array('none'=>'none','slide1'=>'slide2','slide3'=>'slide3');
+        $repeatarray[] = $this->_form->createElement('select', $itemname, $itemlabel,$options);
+        $repeateloptions[$itemname]['default'] = 'none';
+        $repeateloptions[$itemname]['disabledif'] = array($name . "action", 'neq', 'qjump');
+
+        //image
+        $itemname = $name . "image";
+        $itemlabel = get_string($itemname, constants::M_COMPONENT);
+        $options=array('none'=>'none','dog'=>'dog','cat'=>'cat','horse'=>'horse');
+        $repeatarray[] = $this->_form->createElement('select', $itemname, $itemlabel,$options);
+        $repeateloptions[$itemname]['default'] = 'none';
+
+
+        //entryanim
+        $itemname = $name . "entryanim";
+        $itemlabel = get_string($itemname, constants::M_COMPONENT);
+        $options=utils::fetch_options_entryanim();
+        $repeatarray[] = $this->_form->createElement('select', $itemname, $itemlabel,$options);
+        $repeateloptions[$itemname]['default'] = 'none';
+
+
         //$repeatarray[] = $this->_form->createElement('text', 'limit', get_string('limitno', constants::M_COMPONENT));
         //$repeatarray[] = $this->_form->createElement('hidden', $name . 'id', 0);
 /*
@@ -271,16 +370,9 @@ abstract class baseform extends \moodleform {
         }
 */
 
-        $repeateloptions = array();
-        $repeateloptions[$name]['default'] = '';
-        //$repeateloptions[$name]['disabledif'] = array('limitanswers', 'eq', 0);
-        //$repeateloptions[$name]['rule'] = 'numeric';
-        $repeateloptions[$name]['type'] = PARAM_TEXT;
-
-        $repeateloptions[$name]['helpbutton'] = array($name . '_help', constants::M_COMPONENT);
-        $this->_form->setType($name, PARAM_CLEANHTML);
-
-       // $this->_form->setType($name .'id', PARAM_INT);
+        $labeltitle ='';
+        $labeltext =get_string('qcardbuttons', constants::M_COMPONENT);
+        $this->_form->addElement('static', 'qcardbuttons', $labeltitle, $labeltext);
 
         $this->repeat_elements($repeatarray, $repeatno,
                 $repeateloptions, $name .'_repeats', $name . '_add_fields',

@@ -124,6 +124,7 @@ class comprehensiontest
 
             //The question header area (audio, video, tts, image iframe , text instrucions etc)
             switch($testitem->type) {
+                case constants::TYPE_QCARD:
                 case constants::TYPE_DICTATION:
                 case constants::TYPE_DICTATIONCHAT:
                 case constants::TYPE_SPEECHCARDS:
@@ -152,6 +153,8 @@ class comprehensiontest
                             $file_parts = pathinfo(strtolower($mediaurl));
                             switch($file_parts['extension'])
                             {
+                                case "webp":
+                                case "avif":
                                 case "jpg":
                                 case "jpeg":
                                 case "png":
@@ -165,6 +168,7 @@ class comprehensiontest
                                 case "mov":
                                 case "webm":
                                 case "ogv":
+                                case "mkv":
                                     $testitem->itemvideo = $mediaurl;
                                     break;
 
@@ -381,6 +385,9 @@ class comprehensiontest
                         }
                     }
 
+                    break;
+                case constants::TYPE_QCARD:
+                    $testitem->carddata = json_decode($testitem->{constants::QCARDDATA});
                     break;
                 case constants::TYPE_PAGE:
                 case constants::TYPE_SMARTFRAME:

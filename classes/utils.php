@@ -733,6 +733,18 @@ class utils{
         return $options;
     }
 
+    public static function fetch_options_entryanim() {
+        $options = array('none' => 'none',
+            'fade'=>'fade');
+        return $options;
+    }
+
+    public static function fetch_options_cardtype() {
+        $options = array('binarytext' => 'binary text',
+            'binaryimage'=>'binary image');
+        return $options;
+    }
+
     public static function fetch_options_yesno() {
         $yesnooptions = array(1 => get_string('yes'), 0 => get_string('no'));
         return $yesnooptions;

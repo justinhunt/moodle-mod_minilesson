@@ -1135,7 +1135,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .mcplaytrigger,
-.dictationtrigger {
+.dictationtrigger,
+.qcardtrigger {
   cursor: pointer;
   margin: auto;
   position: absolute;
@@ -1154,6 +1155,14 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .mcplayrow {
   margin: 5px 5px 10px 5px;
   padding: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.qcardrow {
+  margin: 5px;
+  padding: 0;
+  border: 2px solid darkgray;
   padding-top: 5px;
   padding-bottom: 5px;
 }
