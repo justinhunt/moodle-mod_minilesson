@@ -447,6 +447,8 @@ $string['qnumber'] ='No.';
 $string['title'] ='Title';
 $string['type'] ='Type';
 $string['sentences'] ='Sentences';
+$string['correctresponses'] ='Correct responses';
+$string['enterresponses'] ='Enter a list of correct responses in the text area below. Place each response on a new line.';
 $string['sentenceprompts'] ='Sentences (prompts)';
 $string['entersentences'] ='Enter a list of sentences in the text area below. Place each sentence on a new line.';
 $string['phraseresponses'] ='Enter a list of speaking prompts in the text area below. Place each prompt on a new line. If the prompt and the spoken response are different, seperate them with a pipe "|" character. <br>e.g How are you?|I am fine.';
@@ -491,8 +493,14 @@ $string['ttsslow']='Slow';
 $string['ttsveryslow']='Very Slow';
 $string['ttsssml']='SSML';
 $string['choosevoiceoption']='TTS prompt options';
+$string['autoplay']='Autoplay';
 
 $string['reportsmenutoptext'] = "Review grade and attempts details using the report buttons below.";
 
 $string['mediaprompts']="Media Prompts";
 $string['ignorepunctuation'] = 'Ignore Punctuation';
+$string['chooselayout']='Choose layout';
+$string['layoutauto']='Auto';
+$string['layoutvertical']='Vertical';
+$string['layouthorizontal']='Horizontal';
+$string['layoutmagazine']='Magazine';
