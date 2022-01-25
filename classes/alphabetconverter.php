@@ -9,13 +9,13 @@
 namespace mod_minilesson;
 
 /**
- * alphabet file safe converter class for Poodll Readaloud
+ * alphabet file safe converter class for Poodll Minilesson
  *
  * The KenLM generated scorers work on files of acceptable characters(alphabet.txt).
  *  Digits and German Eszett (ß) are commonly in passages, but not in alphabet.txt files
  *  So here we perform simple conversionts to ensure this does not trip up matching transcript <--> passage
  *
- * @package    mod_readaloud
+ * @package    mod_minilesson
  * @copyright  2021 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
