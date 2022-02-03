@@ -929,3 +929,23 @@ function mod_minilesson_get_fontawesome_icon_map() {
         'mod_minilesson:close' => 'fa-close'
     ];
 }
+
+function mod_minilesson_cm_info_dynamic(cm_info $cm) {
+    global $USER,$DB;
+
+         $moduleinstance= $DB->get_record('minilesson', array('id' => $cm->instance,), '*', MUST_EXIST);
+        $cm->override_customdata('duedate',  $moduleinstance->viewend);
+        $cm->override_customdata('allowsubmissionsfromdate', $moduleinstance->viewstart);
+    
+}
+function minilesson_get_coursemodule_info($coursemodule) {
+    global $DB;
+
+        $moduleinstance= $DB->get_record('minilesson', array('id' => $coursemodule->instance,), '*', MUST_EXIST);
+        $result = new cached_cm_info();
+        $result->content = format_module_intro('minilesson', $moduleinstance, $coursemodule->id, false);
+        $result->name = 'minilesson'; 
+        $result->customdata['duedate'] = $moduleinstance->viewend;
+        $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;
+        return $result;
+}

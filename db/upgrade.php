@@ -218,6 +218,23 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022012001, 'minilesson');
     }
 
+// Add open and close dates to the activity
+    if ($oldversion < 2022012500) {
+        $table = new xmldb_table(constants::M_TABLE);
+
+        $fields=[];
+        $fields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10, XMLDB_NOTNULL, null, 0);
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2022020100, 'readaloud');
+    }
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }
