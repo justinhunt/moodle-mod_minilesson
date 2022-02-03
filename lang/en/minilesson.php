@@ -480,6 +480,7 @@ $string['addmedia'] = 'Add Media';
 $string['addiframe'] = 'Add iFrame';
 $string['addttsaudio'] = 'Add TTS Audio';
 $string['addtextarea'] = 'Add Text Block';
+$string['addyoutubeclip'] = 'Add YouTube';
 
 //showtextprompt
 $string['showtextprompt'] = 'Show text prompt';

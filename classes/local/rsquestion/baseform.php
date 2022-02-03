@@ -176,6 +176,7 @@ abstract class baseform extends \moodleform {
                 $togglearray[] =& $mform->createElement('advcheckbox','addiframe',get_string('addiframe',constants::M_COMPONENT),'');
                 $togglearray[] =& $mform->createElement('advcheckbox','addttsaudio',get_string('addttsaudio',constants::M_COMPONENT),'');
                 $togglearray[] =& $mform->createElement('advcheckbox','addtextarea',get_string('addtextarea',constants::M_COMPONENT),'');
+                $togglearray[] =& $mform->createElement('advcheckbox','addyoutubeclip',get_string('addyoutubeclip',constants::M_COMPONENT),'');
                 $mform->addGroup($togglearray, 'togglearray', get_string('mediaprompts', constants::M_COMPONENT), array(' '), false);
                 //in the case of page we assume they will want to use some media
                 if($this->type== constants::TYPE_PAGE) {
@@ -239,7 +240,24 @@ abstract class baseform extends \moodleform {
                 }
             }
 
+            //Question YouTube Clip
+            $ytarray=array();
+            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOID, get_string('itemytvideoid', constants::M_COMPONENT),  array('size'=>20));
+            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOSTART, get_string('itemytvideostart', constants::M_COMPONENT),  array('size'=>8));
+            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOEND, get_string('itemytvideoend', constants::M_COMPONENT),  array('size'=>8));
+
+            $mform->addGroup($ytarray, 'ytarray', get_string('YouTube Details', constants::M_COMPONENT), array(' '), false);
+            $mform->setType(constants::YTVIDEOID, PARAM_RAW);
+            $mform->setType(constants::YTVIDEOSTART, PARAM_INT);
+            $mform->setType(constants::YTVIDEOEND, PARAM_INT);
+
+            if($m35){
+                $mform->hideIf('ytarray', 'addyoutubeclip', 'neq', 1);
+            }else {
+                $mform->disabledIf('ytarray', 'addyoutubeclip', 'neq', 1);
+            }
         }
+
 		//visibility
 		//$mform->addElement('selectyesno', 'visible', get_string('visible'));
         $mform->addElement('hidden', 'visible',1);
