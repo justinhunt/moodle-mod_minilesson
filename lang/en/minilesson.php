@@ -480,6 +480,7 @@ $string['addmedia'] = 'Add Media';
 $string['addiframe'] = 'Add iFrame';
 $string['addttsaudio'] = 'Add TTS Audio';
 $string['addtextarea'] = 'Add Text Block';
+$string['addyoutubeclip'] = 'Add YouTube Clip';
 
 //showtextprompt
 $string['showtextprompt'] = 'Show text prompt';
@@ -512,6 +513,7 @@ $string['memberdashboard'] = "Member Dashboard";
 $string['memberdashboard_desc'] = "";
 $string['fillcredentials']="Set API user and secret with existing credentials";
 
+
 $string['viewstart']="Activity open";
 $string['viewend']="Activity close";
 $string['viewstart_help']="If set, prevents a student from entering the activity before the start date/time.";
@@ -524,4 +526,10 @@ $string['activityisclosed']="This activity is closed.";
 $string['open']="Open: ";
 $string['until']="Until: ";
 $string['activityopenscloses']="Activity open/close dates";
+
+$string['ytclipdetails'] = "Youtube Clip";
+$string['itemytid'] = "Youtube Video ID";
+$string['itemytstart'] = "Start Secs";
+$string['itemytend'] = "End Secs";
+
 
