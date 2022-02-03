@@ -242,11 +242,13 @@ abstract class baseform extends \moodleform {
 
             //Question YouTube Clip
             $ytarray=array();
-            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOID, get_string('itemytvideoid', constants::M_COMPONENT),  array('size'=>20));
-            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOSTART, get_string('itemytvideostart', constants::M_COMPONENT),  array('size'=>8));
-            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOEND, get_string('itemytvideoend', constants::M_COMPONENT),  array('size'=>8));
+            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOID, get_string('itemytid', constants::M_COMPONENT),  array('size'=>15, 'placeholder'=>"Video ID"));
+            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOSTART, get_string('itemytstart', constants::M_COMPONENT),  array('size'=>3,'placeholder'=>"Start"));
+            $ytarray[] =& $mform->createElement('html','s - ');
+            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOEND, get_string('itemytend', constants::M_COMPONENT),  array('size'=>3,'placeholder'=>"End"));
+            $ytarray[] =& $mform->createElement('html','s');
 
-            $mform->addGroup($ytarray, 'ytarray', get_string('YouTube Details', constants::M_COMPONENT), array(' '), false);
+            $mform->addGroup($ytarray, 'ytarray', get_string('ytclipdetails', constants::M_COMPONENT), array(' '), false);
             $mform->setType(constants::YTVIDEOID, PARAM_RAW);
             $mform->setType(constants::YTVIDEOSTART, PARAM_INT);
             $mform->setType(constants::YTVIDEOEND, PARAM_INT);
