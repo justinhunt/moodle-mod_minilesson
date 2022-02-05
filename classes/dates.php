@@ -44,7 +44,7 @@ class dates extends activity_dates {
     protected function get_dates(): array {
         global $CFG;
 
-        require_once($CFG->dirroot . '/mod/assign/locallib.php');
+        
 
         $course = get_course($this->cm->course);
         $context = \context_module::instance($this->cm->id);
@@ -54,17 +54,7 @@ class dates extends activity_dates {
         $timedue = $this->cm->customdata['duedate'] ?? null;
 
         $activitygroup = groups_get_activity_group($this->cm, true);
-        if ($activitygroup) {
-            if ($assign->can_view_grades()) {
-                $groupoverride = \cache::make('mod_minilesson', 'overrides')->get("{$this->cm->instance}_g_{$activitygroup}");
-                if (!empty($groupoverride->allowsubmissionsfromdate)) {
-                    $timeopen = $groupoverride->allowsubmissionsfromdate;
-                }
-                if (!empty($groupoverride->duedate)) {
-                    $timedue = $groupoverride->duedate;
-                }
-            }
-        }
+        
 
         $now = time();
         $dates = [];
@@ -75,7 +65,7 @@ class dates extends activity_dates {
                 'label' => get_string($openlabelid, 'mod_minilesson'),
                 'timestamp' => (int) $timeopen,
             ];
-            if ($course->relativedatesmode && $assign->can_view_grades()) {
+            if ($course->relativedatesmode ) {
                 $date['relativeto'] = $course->startdate;
             }
             $dates[] = $date;
@@ -86,7 +76,7 @@ class dates extends activity_dates {
                 'label' => get_string('activitydate:submissionsdue', 'mod_minilesson'),
                 'timestamp' => (int) $timedue,
             ];
-            if ($course->relativedatesmode && $assign->can_view_grades()) {
+            if ($course->relativedatesmode ) {
                 $date['relativeto'] = $course->startdate;
             }
             $dates[] = $date;

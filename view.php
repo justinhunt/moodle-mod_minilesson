@@ -146,7 +146,7 @@ if($hasopenclosedates){
         $closed = true;
     }
     //if we are not a teacher and the activity is closed/not-open leave at this point
-    if(!has_capability('mod/minilesson:preview',$modulecontext) && $closed){
+    if(!has_capability('mod/minilesson:canpreview',$modulecontext) && $closed){
         echo $renderer->footer();
         exit;
     }
