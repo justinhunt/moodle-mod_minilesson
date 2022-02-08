@@ -135,7 +135,8 @@ $itemcount = $comp_test->fetch_item_count();
 //show open close dates
 $hasopenclosedates = $moduleinstance->viewend > 0 || $moduleinstance->viewstart>0;
 if($hasopenclosedates){
-    echo $renderer->show_open_close_dates($moduleinstance);
+    echo $renderer->box($renderer->show_open_close_dates($moduleinstance), 'generalbox');
+
     $current_time=time();
     $closed = false;
     if ( $current_time>$moduleinstance->viewend){

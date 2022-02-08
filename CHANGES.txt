@@ -1,3 +1,6 @@
+Version 1.0.33(Build 2022020800)
+- Added open and close start dates
+
 Version 1.0.32(Build 2022020300)
 - Fixed broken new item saving when not using Japanese on qs with speech recognition
 - Added Youtube Clip content type

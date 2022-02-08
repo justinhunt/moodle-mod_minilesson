@@ -44,11 +44,8 @@ class dates extends activity_dates {
     protected function get_dates(): array {
         global $CFG;
 
-        
-
         $course = get_course($this->cm->course);
         $context = \context_module::instance($this->cm->id);
-        $assign = new \assign($context, $this->cm, $course);
 
         $timeopen = $this->cm->customdata['allowsubmissionsfromdate'] ?? null;
         $timedue = $this->cm->customdata['duedate'] ?? null;

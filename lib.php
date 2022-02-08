@@ -948,7 +948,11 @@ function minilesson_get_coursemodule_info($coursemodule) {
 
         $moduleinstance= $DB->get_record('minilesson', array('id' => $coursemodule->instance,), '*', MUST_EXIST);
         $result = new cached_cm_info();
-        $result->content = format_module_intro('minilesson', $moduleinstance, $coursemodule->id, false);
+        if ($coursemodule->showdescription) {
+            if (time() > $moduleinstance->viewstart) {
+                $result->content = format_module_intro('minilesson', $moduleinstance, $coursemodule->id, false);
+            }
+        }
         $result->name = 'minilesson'; 
         $result->customdata['duedate'] = $moduleinstance->viewend;
         $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;

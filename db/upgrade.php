@@ -239,7 +239,7 @@ function xmldb_minilesson_upgrade($oldversion) {
 
 
  // Add open and close dates to the activity
-    if ($oldversion < 2022020100) {
+    if ($oldversion < 2022020800) {
         $table = new xmldb_table(constants::M_TABLE);
 
         $fields=[];
@@ -253,7 +253,7 @@ function xmldb_minilesson_upgrade($oldversion) {
             }
         }
 
-        upgrade_mod_savepoint(true, 2022020300, 'minilesson');
+        upgrade_mod_savepoint(true, 2022020800, 'minilesson');
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.
