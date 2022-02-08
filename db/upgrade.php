@@ -225,7 +225,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         $fields=[];
         $fields[] = new xmldb_field('itemytid', XMLDB_TYPE_TEXT, null, null, null, null);
         $fields[]= new xmldb_field('itemytstart', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
-        $fields[]= new xmldb_field('itemytend', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::LAYOUT_AUTO);
+        $fields[]= new xmldb_field('itemytend', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
 
         // Add fields
         foreach ($fields as $field) {
