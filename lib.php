@@ -939,8 +939,10 @@ function mod_minilesson_cm_info_dynamic(cm_info $cm) {
     global $USER,$DB;
 
          $moduleinstance= $DB->get_record('minilesson', array('id' => $cm->instance,), '*', MUST_EXIST);
-        $cm->override_customdata('duedate',  $moduleinstance->viewend);
-        $cm->override_customdata('allowsubmissionsfromdate', $moduleinstance->viewstart);
+        if(method_exists($cm,'override_customdata')) {
+            $cm->override_customdata('duedate', $moduleinstance->viewend);
+            $cm->override_customdata('allowsubmissionsfromdate', $moduleinstance->viewstart);
+        }
     
 }
 function minilesson_get_coursemodule_info($coursemodule) {
