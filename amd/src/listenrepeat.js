@@ -285,16 +285,17 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       var self = this;
 
       var target = self.items[self.game.pointer].target;
+      var prompt = self.items[self.game.pointer].prompt;
       var code = "<div class='landr_prompt landr_prompt_" + self.game.pointer + "' style='display:none;'>";
 
       code += "<i class='fa fa-graduation-cap landr_speech-icon-left'></i>";
       code += "<div style='margin-left:90px;' class='landr_speech landr_teacher_left'>";
       if(!showText){
-        var nopunc = target.replace(self.quizhelper.nopunc_regexp,"");
+        var nopunc = prompt.replace(self.quizhelper.nopunc_regexp,"");
         var dots = nopunc.replace(self.quizhelper.nonspaces_regexp, '•');
         code += dots;
       } else{
-        code += target;
+        code += prompt;
       }
       code += "</div>";
       code += "</div>";
