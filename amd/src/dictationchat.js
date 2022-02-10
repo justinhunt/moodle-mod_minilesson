@@ -281,7 +281,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       var self = this;
 
       var target = self.items[self.game.pointer].target;
-      var nopunc = target.replace(self.quizhelper.nopunc_regexp,"");
+      var nopunc = prompt.replace(self.quizhelper.nopunc_regexp,"");
       var dots = nopunc.replace(self.quizhelper.nonspaces_regexp, '•');
       var code = "<div class='dictate_prompt dictate_prompt_" + self.game.pointer + "' style='display:none;'>";
 
