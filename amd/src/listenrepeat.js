@@ -67,23 +67,33 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
     register_events: function() {
 
       var self = this;
-
+      //on next button click
       $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
         self.next_question();
       });
-
+      //on start button click
       $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").on("click", function() {
         self.start();
       });
-
+      //on listen button click
       $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").on("click", function() {
         self.items[self.game.pointer].audio.load();
         self.items[self.game.pointer].audio.play();
       });
-
+      //on skip button click
       $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn").on("click", function() {
+        //disable the buttons
         $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
-        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].target + "");
+        //reveal the prompt
+        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].prompt + "");
+        //reveal the answer
+        $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").each(function() {
+          var realidx = $(this).data("realidx");
+          var landr_targetWord = self.items[self.game.pointer].landr_targetWords[realidx];
+          $(this).val(landr_targetWord);
+        });
+
+        //move on after 3s
         setTimeout(function() {
           if (self.game.pointer < self.items.length - 1) {
             self.items[self.game.pointer].answered = true;
@@ -119,7 +129,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
             return e !== "";
           }),
           target: target.sentence,
-          prompt: target.displaysentence,
+          prompt: target.prompt,
           phonetic: target.phonetic,
           typed: "",
           answered: false,
@@ -183,7 +193,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
         }
 
       } else {
-
+        //mark up the words as correct or not
         comparison.forEach(function(obj) {
           if(!obj.matched){
             $("#" + self.itemdata.uniqueid + "_container .landr_targetWord[data-idx='" + obj.wordnumber + "']").addClass("landr_incorrect");
@@ -193,13 +203,13 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
             $("#" + self.itemdata.uniqueid + "_container .landr_feedback[data-idx='" + obj.wordnumber + "']").addClass("fa fa-check");
           }
         });
-
+        //shake the screen
         $("#" + self.itemdata.uniqueid + "_container .landr_reply_" + self.game.pointer).effect("shake", function() {
           $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", false);
         });
 
       }
-
+      //show all the correct words
       $("#" + self.itemdata.uniqueid + "_container .landr_targetWord.landr_correct").each(function() {
         var realidx = $(this).data("realidx");
         var landr_targetWord = self.items[self.game.pointer].landr_targetWords[realidx];

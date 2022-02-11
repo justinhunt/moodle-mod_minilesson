@@ -299,18 +299,19 @@ class comprehensiontest
 
                         if($testitem->type==constants::TYPE_MULTIAUDIO){
                             if($item->{constants::SHOWTEXTPROMPT}==constants::TEXTPROMPT_DOTS){
-                                $displaysentence = $this->dottify_text($sentence);
+                                $prompt = $this->dottify_text($sentence);
                             }else{
-                                $displaysentence = $sentence;
+                                $prompt = $sentence;
                             }
                         }else{
-                            //if we have a pipe we are listening for array[0] and displaying array[1]
+                            //if we have a pipe prompt = array[0] and response = array[1]
                             $sentencebits = explode('|', $sentence);
                             if (count($sentencebits) > 1) {
-                                $sentence = trim($sentencebits[0]);
-                                $displaysentence = trim($sentencebits[1]);
+                                $prompt = trim($sentencebits[0]);
+                                $sentence = trim($sentencebits[1]);
+                                
                             } else {
-                                $displaysentence = $sentence;
+                                $prompt = $sentence;
                             }
                         }
 
@@ -334,8 +335,8 @@ class comprehensiontest
                         $s = new \stdClass();
                         $s->index = $index;
                         $s->indexplusone = $index + 1;
-                        $s->sentence = $sentence;
-                        $s->displaysentence = $displaysentence;
+                        $s->sentence = $sentence; //prompt
+                        $s->prompt = $prompt;
                         $s->length = \core_text::strlen($s->sentence);
 
                         //add phonetics if we have them
@@ -397,9 +398,9 @@ class comprehensiontest
                             $s->length = \core_text::strlen($sentence);
 
                             if($item->{constants::LISTENORREAD}==constants::LISTENORREAD_LISTEN) {
-                                $s->displaysentence = $this->dottify_text($sentence);
+                                $s->prompt = $this->dottify_text($sentence);
                             }else {
-                                $s->displaysentence =$sentence;
+                                $s->prompt =$sentence;
                             }
 
                             $testitem->sentences[] = $s;
