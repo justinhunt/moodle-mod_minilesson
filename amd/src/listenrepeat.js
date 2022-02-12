@@ -130,6 +130,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
           }),
           target: target.sentence,
           prompt: target.prompt,
+          displayprompt: target.displayprompt,
           phonetic: target.phonetic,
           typed: "",
           answered: false,
@@ -295,17 +296,17 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       var self = this;
 
       var target = self.items[self.game.pointer].target;
-      var prompt = self.items[self.game.pointer].prompt;
+      var displayprompt = self.items[self.game.pointer].displayprompt;
       var code = "<div class='landr_prompt landr_prompt_" + self.game.pointer + "' style='display:none;'>";
 
       code += "<i class='fa fa-graduation-cap landr_speech-icon-left'></i>";
       code += "<div style='margin-left:90px;' class='landr_speech landr_teacher_left'>";
       if(!showText){
-        var nopunc = prompt.replace(self.quizhelper.nopunc_regexp,"");
+        var nopunc = displayprompt.replace(self.quizhelper.nopunc_regexp,"");
         var dots = nopunc.replace(self.quizhelper.nonspaces_regexp, '•');
         code += dots;
       } else{
-        code += prompt;
+        code += displayprompt;
       }
       code += "</div>";
       code += "</div>";

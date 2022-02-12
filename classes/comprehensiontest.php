@@ -300,8 +300,10 @@ class comprehensiontest
                         if($testitem->type==constants::TYPE_MULTIAUDIO){
                             if($item->{constants::SHOWTEXTPROMPT}==constants::TEXTPROMPT_DOTS){
                                 $prompt = $this->dottify_text($sentence);
+                                $displayprompt = $prompt;
                             }else{
                                 $prompt = $sentence;
+                                $displayprompt = $sentence;
                             }
                         }else{
                             //if we have a pipe prompt = array[0] and response = array[1]
@@ -309,9 +311,13 @@ class comprehensiontest
                             if (count($sentencebits) > 1) {
                                 $prompt = trim($sentencebits[0]);
                                 $sentence = trim($sentencebits[1]);
+                                if(count($sentencebits) >2){
+                                    $displayprompt = trim($sentencebits[2]);
+                                }
                                 
                             } else {
                                 $prompt = $sentence;
+                                $displayprompt = $sentence;
                             }
                         }
 
@@ -335,8 +341,9 @@ class comprehensiontest
                         $s = new \stdClass();
                         $s->index = $index;
                         $s->indexplusone = $index + 1;
-                        $s->sentence = $sentence; //prompt
+                        $s->sentence = $sentence;
                         $s->prompt = $prompt;
+                        $s->displayprompt = $displayprompt;
                         $s->length = \core_text::strlen($s->sentence);
 
                         //add phonetics if we have them

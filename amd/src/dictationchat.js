@@ -162,6 +162,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
           }),
           target: target.sentence,
           prompt: target.prompt,
+          displayprompt: target.displayprompt,
           typed: "",
           answered: false,
           correct: false,
@@ -329,6 +330,7 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       var self = this;
       var target = self.items[self.game.pointer].target;
       var prompt = self.items[self.game.pointer].prompt;
+      var displayprompt = self.items[self.game.pointer].displayprompt;
 
       var nopunc = prompt.replace(self.quizhelper.nopunc_regexp,"");
       var dots = nopunc.replace(self.quizhelper.nonspaces_regexp, '•');
