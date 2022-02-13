@@ -154,7 +154,7 @@ class helper
             }
         }
         $typelabel = get_string($item->type,constants::M_COMPONENT);
-       return [$newitemid,$item->name,$typelabel];
+       return [$newitemid,$item->name,$item->type,$typelabel];
     }//end of move item function
     
     public static function delete_item($minilesson, $itemid, $context)

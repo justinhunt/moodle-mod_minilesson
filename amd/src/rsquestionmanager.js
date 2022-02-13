@@ -146,6 +146,7 @@ define(['jquery','jqueryui', 'core/log','core/templates','mod_minilesson/definit
                 var item={};
                 item.id = ret.newitemid;
                 item.name = decodeURIComponent(ret.newitemname);
+                item.type = ret.type;
                 item.typelabel = decodeURIComponent(ret.typelabel);
                 item.index = dd.controls.questionstable.data().length+1;
                 item.up = {'key': 't/up','component': 'moodle','title': 'up'};

@@ -483,12 +483,13 @@ class mod_minilesson_external extends external_api {
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-        list($newitemid,$newitemname,$typelabel) = \mod_minilesson\local\rsquestion\helper::duplicate_item($moduleinstance,$context, $itemid);
+        list($newitemid,$newitemname,$type,$typelabel) = \mod_minilesson\local\rsquestion\helper::duplicate_item($moduleinstance,$context, $itemid);
 
         $ret = new \stdClass();
         $ret->olditemid=$itemid;
         $ret->newitemid=$newitemid;
         $ret->newitemname=$newitemname;
+        $ret->type=$type;
         $ret->typelabel=$typelabel;
         $ret->error=false;
         return json_encode($ret);
