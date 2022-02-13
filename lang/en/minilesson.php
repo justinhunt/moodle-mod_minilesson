@@ -312,6 +312,7 @@ $string['itemtype'] = 'Item Type';
 $string['actions'] = 'Actions';
 $string['edititem'] = 'Edit item';
 $string['previewitem'] = 'Preview item';
+$string['duplicateitem'] = 'Duplicate item';
 $string['deleteitem'] = 'Delete item';
 $string['confirmitemdelete'] = 'Are you sure you want to <i>DELETE</i> item? : {$a}';
 $string['confirmitemdeletetitle'] = 'Really Delete item?';

@@ -1,8 +1,8 @@
 /**
  * Add a modal to manage question adding and editing to the page.
  *
- * @module     mod_minilesson/moveitemhelper
- * @class      moveitemhelper
+ * @module     mod_minilesson/duplicateitemhelper
+ * @class      duplicateitemhelper
  * @package    mod_minilesson
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -58,14 +58,13 @@ define(['jquery', 'core/log','core/str', 'core/ajax'],
             $('body').on('click',selector,function(e) {
                 //prevent it doing a real click (which will do the non ajax version of a click)
                 e.preventDefault();
-                dd.direction=dd.direction=$(this).data('direction');
                 dd.itemid=$(this).data('id');
 
                 // Now we can continue...
                 Ajax.call([{
-                    methodname: 'mod_minilesson_move_item',
-                    args: {contextid: dd.contextid, itemid: dd.itemid, direction: dd.direction},
-                    done: dd.callback(dd.itemid,dd.direction)
+                    methodname: 'mod_minilesson_duplicate_item',
+                    args: {contextid: dd.contextid, itemid: dd.itemid},
+                    done: dd.callback
                 }]);
 
 
