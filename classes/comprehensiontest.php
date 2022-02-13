@@ -313,6 +313,8 @@ class comprehensiontest
                                 $sentence = trim($sentencebits[1]);
                                 if(count($sentencebits) >2){
                                     $displayprompt = trim($sentencebits[2]);
+                                }else{
+                                    $displayprompt = $prompt;
                                 }
                                 
                             } else {

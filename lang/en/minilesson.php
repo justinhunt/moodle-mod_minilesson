@@ -451,7 +451,7 @@ $string['correctresponses'] ='Correct responses';
 $string['enterresponses'] ='Enter a list of correct responses in the text area below. Place each response on a new line.';
 $string['sentenceprompts'] ='Sentences (prompts)';
 $string['entersentences'] ='Enter a list of sentences in the text area below. Place each sentence on a new line.';
-$string['phraseresponses'] ='Enter a list of speaking prompts in the text area below. Place each prompt on a new line. If the prompt and the spoken response are different, seperate them with a pipe "|" character. <br>e.g How are you?|I am fine.';
+$string['phraseresponses'] ='Enter a list of items in the text area below. Each item should be a on a new line. The format is:<br> audio prompt | correct response (optional)| text prompt (optional) <br>e.g How are you?|I am fine.';
 $string['phrases'] ='Phrases';
 
 $string['itemmedia'] ='Image, audio or video to show';
