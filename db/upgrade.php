@@ -255,6 +255,33 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         upgrade_mod_savepoint(true, 2022020800, 'minilesson');
     }
+    //redo the prompt/response =>
+    if ($oldversion < 2022021400) {
+        $questions = $DB->get_records(constants::M_QTABLE);
+        foreach($questions as $question){
+            $sentences = explode(PHP_EOL, $question->customtext1);
+            $updaterequired=false;
+            $newsentences=[];
+            foreach($sentences as $sentence){
+                $sentencebits = explode('|', $sentence);
+                if (count($sentencebits) > 1) {
+                    $updaterequired=true;
+                    $audioprompt = trim($sentencebits[1]);
+                    $correctresponse= trim($sentencebits[0]);
+                    $textprompt = $correctresponse;
+                    $newsentences[]=$audioprompt . '|' . $correctresponse .'|' . $textprompt;
+                }else{
+                    $newsentences[]=$sentence;
+                }//end of if count
+            }//end of for sentences
+            if($updaterequired){
+                $updatetext=implode(PHP_EOL,$newsentences);
+                $DB->update_record(constants::M_QTABLE,array('id'=>$question->id,'customtext1'=>$updatetext));
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2022021400, 'minilesson');
+    }
 
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;

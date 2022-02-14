@@ -1,5 +1,6 @@
-Version 1.0.34(Build 2022021300)
-- Added duplocate feature
+Version 1.0.34(Build 2022021400)
+- Added duplicate feature
+- Added a 3rd prompt/response option textprompt and changed sequence in UI. (update.php rewrites existing qs to match)
 
 Version 1.0.33(Build 2022020800)
 - Added open and close start dates
