@@ -113,8 +113,16 @@ class incompleteattempts extends basereport {
 
         if ($alldata) {
             foreach ($alldata as $thedata) {
-                $stepsdata = json_decode($thedata->sessiondata)->steps;
-                $thedata->itemscomplete = count($stepsdata);
+                $thedata->itemscomplete =0;
+                if(utils::is_json($thedata->sessiondata)) {
+                    $sessiondata = json_decode($thedata->sessiondata);
+                    if(isset($sessiondata->steps)) {
+                        $stepsdata = $sessiondata->steps;
+                        if ($stepsdata && is_array($stepsdata)) {
+                            $thedata->itemscomplete = count($stepsdata);
+                        }
+                    }
+                }
                 $this->rawdata[] = $thedata;
             }
             $this->rawdata = $alldata;
