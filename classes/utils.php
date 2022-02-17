@@ -261,7 +261,8 @@ class utils{
 
         //grade quiz results
         $comp_test =  new comprehensiontest($cm);
-        if($comp_test->fetch_item_count() == count($sessiondata->steps)) {
+        //there should never be more steps than items .. but there have been occasions ...
+        if($comp_test->fetch_item_count() <= count($sessiondata->steps)) {
             $newgrade=true;
             $latestattempt->sessionscore = self::calculate_session_score($sessiondata->steps);
             $latestattempt->status =constants::M_STATE_COMPLETE;

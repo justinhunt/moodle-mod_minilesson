@@ -13,10 +13,10 @@ namespace mod_minilesson\report;
 use \mod_minilesson\constants;
 use \mod_minilesson\utils;
 
-class attempts extends basereport {
+class incompleteattempts extends basereport {
 
-    protected $report = "attempts";
-    protected $fields = array('id', 'username', 'grade_p','timecreated', 'deletenow');
+    protected $report = "incompleteattempts";
+    protected $fields = array('id', 'username', 'itemscomplete','timecreated', 'deletenow');
     protected $headingdata = null;
     protected $qcache = array();
     protected $ucache = array();
@@ -33,13 +33,8 @@ class attempts extends basereport {
                 $ret = fullname($user);
                 break;
 
-            case 'grade_p':
-                $ret = $record->sessionscore;
-                if ($withlinks) {
-                    $link = new \moodle_url(constants::M_URL . '/reports.php',
-                            array('report' => 'attemptresults', 'n' => $record->moduleid, 'attemptid' => $record->id));
-                    $ret = \html_writer::link($link, $ret);
-                }
+            case 'itemscomplete':
+                $ret = $record->itemscomplete;
                 break;
 
             case 'timecreated':
@@ -75,7 +70,7 @@ class attempts extends basereport {
         if (!$record) {
             return $ret;
         }
-        return get_string('attemptsheading', constants::M_COMPONENT);
+        return get_string('incompleteattemptsheading', constants::M_COMPONENT);
 
     }
 
@@ -102,20 +97,24 @@ class attempts extends basereport {
 
             $allsql ="SELECT att.* FROM {".constants::M_ATTEMPTSTABLE ."} att " .
                     "INNER JOIN {groups_members} gm ON att.userid=gm.userid " .
-                    "WHERE gm.groupid $groupswhere AND att.moduleid = ? AND att.status = " . constants::M_STATE_COMPLETE .
+                    "WHERE gm.groupid $groupswhere AND att.moduleid = ? AND att.status = " . constants::M_STATE_INCOMPLETE .
                     " ORDER BY timecreated DESC";
             $allparams[]=$formdata->moduleid;
             $alldata = $DB->get_records_sql($allsql, $allparams);
 
         }else{
+
+
+
             $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE,
-                array('moduleid' => $formdata->moduleid, 'status' => constants::M_STATE_COMPLETE), 'timecreated DESC');
+                array('moduleid' => $formdata->moduleid, 'status' => constants::M_STATE_INCOMPLETE), 'timecreated DESC');
 
         }
 
         if ($alldata) {
             foreach ($alldata as $thedata) {
-
+                $stepsdata = json_decode($thedata->sessiondata)->steps;
+                $thedata->itemscomplete = count($stepsdata);
                 $this->rawdata[] = $thedata;
             }
             $this->rawdata = $alldata;
