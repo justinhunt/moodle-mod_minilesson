@@ -1866,6 +1866,11 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 .mod_minilesson_spokenandcorrect {
   text-align: center;
-  margin:auto;
+  margin-left:auto;
+  margin-right: auto;
+  margin-top: 5px;
+  margin-bottom: 8px;
   max-width: 400px;
+  padding: 5px;
+  border: 1px solid grey;
 }
