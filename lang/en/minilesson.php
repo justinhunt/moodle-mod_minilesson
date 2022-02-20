@@ -296,6 +296,7 @@ $string['moveitemdown']='Down';
 $string['rsquestions'] ='Lesson Items';
 $string['managersquestions'] ='Manage Lesson Items';
 $string['correctanswer'] ='Correct answer';
+$string['incorrectanswer'] ='Incorrect answer';
 $string['whatdonow'] = 'Add lesson items to activity:';
 $string['addnewitem'] = 'Add a new lesson item';
 $string['addingitem'] = 'Adding a new lesson item';
@@ -538,4 +539,6 @@ $string['itemytend'] = "End Secs";
 $string['itemscomplete'] = "Items Complete";
 
 
-
+$string['totalscore'] = 'Total Score:';
+$string['score'] = 'Score';
+$string['questiontext'] = 'Question';

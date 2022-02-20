@@ -1935,13 +1935,13 @@ div#itemscores {
 .quizrating {
   margin-bottom: 31px;
 }
-.panel-group .panel-heading a:after {
+.mod_minilesson_result_div .panel-group .panel-heading a:after {
   content: '-';
   float: right;
   font-size: 25px;
 }
 
-.panel-group .panel-heading a.collapsed:after {
+.mod_minilesson_result_div .panel-group .panel-heading a.collapsed:after {
   content: '+' !important;
 }
 
@@ -1975,4 +1975,24 @@ div#itemscores {
   .mod_minilesson_result_rating img {
     max-width: 100%;
   }
+}
+span.mod_minilesson_finishedanswer {
+  display: block;
+}
+.mod_minilesson_placeholder {
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+  margin: auto;
+}
+.mod_minilesson_skeleton_box {
+  background-color: #DDDBDD;
+  color: grey;
+  -webkit-mask: linear-gradient(-60deg,#000 30%,#0005,#000 70%) right/300% 100%;
+  background-repeat: no-repeat;
+  animation: minilessonshimmer 2.5s infinite;
+
+}
+@keyframes minilessonshimmer {
+  100% {-webkit-mask-position:left}
 }

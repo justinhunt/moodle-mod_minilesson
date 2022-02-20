@@ -1,6 +1,6 @@
 
 
-<h1 class="text-center">Total Score: {{total}}%</h1>
+<h1 class="text-center">{{#str}}totalscore, mod_minilesson{{/str}} {{total}}%</h1>
 <div class="quizrating">
     {{#yellowstars}}
         <span><img src="{{{ config.wwwroot }}}/mod/minilesson/pix/yellow_star.png"/></span>
@@ -22,22 +22,27 @@
         <div class="btn-primary mod_minilesson_result_index">{{index}}</div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4 class="panel-title"> <a class="accordion-toggle mod_minilesson_result_title collapsed"" data-toggle="collapse" data-parent="#accordion" href="#accordion{{index}}">  {{title}}</a> </h4>
+                <h4 class="panel-title"> <a class="accordion-toggle mod_minilesson_result_title collapsed" data-toggle="collapse" data-parent="#accordion" href="#accordion{{index}}">  {{title}}</a> </h4>
             </div>
             <div id="accordion{{index}}" class="panel-collapse collapse in">
                 <div class="panel-body">
                     <ul class="minilesson_result">
-                        <li><div class="mod_minilesson_question_text"><b>Question text: </b><br/>{{questext}}</div></li>
-                        <li><div class="mod_minilesson_result_score"><b>Score: </b><br/>{{correctitems}}/{{totalitems}}</div></li>
-                        <li><div class="mod_minilesson_result_grade"><b>Grade: </b><br/>{{grade}}%</div></li>
-                        {{#typeone}}
-                            <li> <div class="mod_minilesson_result_correctanswer"><b>Correct Answer: </b><br/>{{correctans}} </div></li>
-                            {{#typetwo}}
-                                {{#incorrectans}}
-                                    <li><div class="mod_minilesson_result_incorrectanswer"><b>Incorrect Answer: </b><br/>{{{.}}} </div></li>
-                                {{/incorrectans}}
-                            {{/typetwo}}
-                        {{/typeone}}
+                        <li><div class="mod_minilesson_question_text"><b>{{#str}}questiontext, mod_minilesson{{/str}}: </b><br/>{{questext}}</div></li>
+                        <li><div class="mod_minilesson_result_score"><b>{{#str}}score, mod_minilesson{{/str}}: </b><br/>{{correctitems}}/{{totalitems}}</div></li>
+                        <li><div class="mod_minilesson_result_grade"><b>{{#str}}grade, mod_minilesson{{/str}}: </b><br/>{{grade}}%</div></li>
+
+                            <li> <div class="mod_minilesson_result_correctanswer"><b>{{#str}}correctanswer, mod_minilesson{{/str}}</b><br/>
+                                {{#correctans}}<span class="mod_minilesson_finishedanswer">{{{sentence}}}</span>{{/correctans}}
+                            </div>
+                            </li>
+                            {{#hasincorrectanswer}}
+                                <li><div class="mod_minilesson_result_incorrectanswer"><b>{{#str}}incorrectanswer, mod_minilesson{{/str}} </b><br/>
+                                    {{#incorrectans}}<span class="mod_minilesson_finishedanswer">{{{sentence}}}</span>{{/incorrectans}}
+                                </div>
+                                </li>
+                            {{/hasincorrectanswer}}
+
+
                         <li><div class="mod_minilesson_result_rating">
                             {{#yellowstars}}
                                 <span><img src="{{{ config.wwwroot }}}/mod/minilesson/pix/yellow_star.png"/></span>
@@ -45,7 +50,8 @@
                             {{#graystars}}
                                 <span><img src="{{{ config.wwwroot }}}/mod/minilesson/pix/gray_star.png"/></span>
                             {{/graystars}}
-                        </div></li>
+                        </div>
+                        </li>
                     </ul>
                 </div>
             </div>

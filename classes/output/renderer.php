@@ -260,11 +260,54 @@ class renderer extends \plugin_renderer_base {
             $result->questext = $items->itemtext;
 
             // Lesson item types.
-            $result->typeone = ($quizdata[$result->index]->type == 'multichoice' || $quizdata[$result->index]->type == 'multiaudio' || $quizdata[$result->index]->type == 'dictationchat' || $quizdata[$result->index]->type == 'dictation' || $quizdata[$result->index]->type == 'speechcards' || $quizdata[$result->index]->type == 'shortanswer' || $quizdata[$result->index]->type == 'listenrepeat');
-
-            $result->typetwo = ($quizdata[$result->index]->type == 'multichoice' || $quizdata[$result->index]->type == 'multiaudio');
+            switch($quizdata[$result->index]->type ){
+                case constants::TYPE_DICTATION:
+                case constants::TYPE_DICTATIONCHAT:
+                case constants::TYPE_LISTENREPEAT:
+                case constants::TYPE_SPEECHCARDS:
+                case constants::TYPE_SHORTANSWER:
+                    $result->typeone = true;
+                    break;
+                case constants::TYPE_MULTIAUDIO:
+                case constants::TYPE_MULTICHOICE:
+                    $result->typetwo = true;
+                    break;
+            }
+          //  $result->typeone = ($quizdata[$result->index]->type == 'multichoice' || $quizdata[$result->index]->type == 'multiaudio' || $quizdata[$result->index]->type == 'dictationchat' || $quizdata[$result->index]->type == 'dictation' || $quizdata[$result->index]->type == 'speechcards' || $quizdata[$result->index]->type == 'shortanswer' || $quizdata[$result->index]->type == 'listenrepeat');
+          //  $result->typetwo = ($quizdata[$result->index]->type == 'multichoice' || $quizdata[$result->index]->type == 'multiaudio');
 
             // Correct answer.
+            switch($quizdata[$result->index]->type ){
+                case constants::TYPE_DICTATION:
+                case constants::TYPE_DICTATIONCHAT:
+                case constants::TYPE_LISTENREPEAT:
+                case constants::TYPE_SPEECHCARDS:
+                case constants::TYPE_SHORTANSWER:
+                case constants::TYPE_MULTIAUDIO:
+                    $result->correctans = $quizdata[$result->index]->sentences;
+                    break;
+
+                case constants::TYPE_MULTICHOICE:
+                    $result->hasincorrectanswer = true;
+                    $correctanswers=[];
+                    $incorrectanswers=[];
+                    $correctindex = $quizdata[$result->index]->correctanswer;
+                    for($i=1;$i<5;$i++){
+                        if($i==$correctindex){
+                            $correctanswers[]=['sentence'=>$quizdata[$result->index]->{"customtext" . $i}];
+                        }else{
+                            $incorrectanswers[]=['sentence'=>$quizdata[$result->index]->{"customtext" . $i}];
+                        }
+                    }
+                    $result->correctans = $correctanswers;
+                    $result->incorrectans = $incorrectanswers;
+                    break;
+
+                default:
+                    $result->correctans = [];
+                    $result->incorrectans = [];
+            }
+         /*
             if ($quizdata[$result->index]->type == 'multichoice' || $quizdata[$result->index]->type == 'multiaudio') {
                 $result->correctans = $quizdata[$result->index]->{'customtext'.$quizdata[$result->index]->correctanswer};
             } else {
@@ -285,7 +328,7 @@ class renderer extends \plugin_renderer_base {
                 $corrans = implode("<br>", $canswer);
                 $result->incorrectans = $corrans;
             }
-
+*/
 
 
             $result->index++;
@@ -372,11 +415,13 @@ class renderer extends \plugin_renderer_base {
 
         $finisheddiv = \html_writer::div("" ,constants::M_QUIZ_FINISHED,
             array('id'=>constants::M_QUIZ_FINISHED));
-      
+
+        $placeholderdiv = \html_writer::div('',constants::M_QUIZ_PLACEHOLDER . ' ' . constants::M_QUIZ_SKELETONBOX,
+            array('id'=>constants::M_QUIZ_PLACEHOLDER));
         $quizdiv = \html_writer::div($finisheddiv.implode('',$itemshtml) ,constants::M_QUIZ_CONTAINER,
             array('id'=>constants::M_QUIZ_CONTAINER));
       
-        $ret = $quizdiv;
+        $ret = $placeholderdiv  . $quizdiv;
         return $ret;
     }
 

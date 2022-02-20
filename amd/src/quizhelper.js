@@ -226,14 +226,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         
       },
 
-      report_step_grade: function(stepdata) {
+      report_step_grade: async function(stepdata) {
         var dd = this;
 
         //store results locally
         this.stepresults.push(stepdata);
 
         //push results to server
-        Ajax.call([{
+        await Ajax.call([{
           methodname: 'mod_minilesson_report_step_grade',
           args: {
             cmid: dd.cmid,
