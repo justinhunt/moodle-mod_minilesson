@@ -33,6 +33,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         this.courseurl = activitydata.courseurl;
         this.cmid = cmid;
         this.reattempturl = activitydata.reattempturl;
+        this.activityurl = activitydata.activityurl;
         this.backtocourse = activitydata.backtocourse;
         this.ds_only = activitydata.ds_only;
         this.prepare_html();
@@ -186,7 +187,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             }
 
         } else {
+          //just reload and re-fetch all the data to display
+          log.debug('going to ...' + this.activityurl);
+          window.location.href=this.activityurl;
+          return;
 
+          //no longer do this
+            /*
           var results = dd.stepresults.filter(function(e){return e.hasgrade;});
           var correctitems = 0;
           var totalitems = 0;
@@ -208,6 +215,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
                   templates.runTemplateJS(js);
               }
           );
+          */
 
         }//end of if has more questions
 
