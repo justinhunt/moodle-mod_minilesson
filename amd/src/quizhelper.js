@@ -144,7 +144,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
       },
 
-      do_next: function(stepdata){
+      do_next: async function(stepdata){
         var dd = this;
         //get current question
         var currentquizdataindex =   stepdata.index;
@@ -154,7 +154,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         if(currentitem.preview===true){return;}
 
         //post grade
-        dd.report_step_grade(stepdata);
+        await dd.report_step_grade(stepdata);
+
         //hide current question
         var theoldquestion = $("#" + currentitem.uniqueid + "_container");
         theoldquestion.hide();
@@ -188,7 +189,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
         } else {
           //just reload and re-fetch all the data to display
-          log.debug('going to ...' + this.activityurl);
           window.location.href=this.activityurl;
           return;
 

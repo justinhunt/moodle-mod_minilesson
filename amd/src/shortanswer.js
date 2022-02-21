@@ -77,6 +77,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
       var sentences = itemdata.sentences;//sentence & phonetic
       //clean the text of any junk
       for(var i=0;i<sentences.length;i++){
+          sentences[i].originalsentence= sentences[i].sentence
           sentences[i].sentence=quizhelper.cleanText(sentences[i].sentence);
       }
 
@@ -153,17 +154,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
                 $(".minilesson_nextbutton").prop("disabled", false);
                 app.next_question(percent);
               }, 2000);
-
-              //proceed to next question
-              setTimeout(function() {
-                $(".minilesson_nextbutton").prop("disabled", false);
-                app.next_question(percent);
-              }, 2000);
               return;
             }else{
               //shake the screen
-              log.debug('shaking');
-              log.debug("#" + itemdata.uniqueid + "_correctanswer");
               $("#" + itemdata.uniqueid + "_correctanswer").effect("shake");
             }
         } //end of switch message type
@@ -205,7 +198,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
 
         //hightlight successgit cm
         var  answerdisplay =  $("#" + itemdata.uniqueid + "_correctanswer");
-        answerdisplay.text(itemdata.sentences[sentenceindex].sentence);
+        answerdisplay.text(itemdata.sentences[sentenceindex].originalsentence);
         answerdisplay.addClass("minilesson_success");
       }
 
