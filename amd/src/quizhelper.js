@@ -190,8 +190,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
         } else {
           //just reload and re-fetch all the data to display
-            log.debug("forwarding to finished page");
-          window.location.href=this.activityurl;
+            $(".minilesson_nextbutton").prop("disabled", true);
+            setTimeout(function () {
+                log.debug("forwarding to finished page");
+                window.location.href=this.activityurl;
+            }, 1000);
+
           return;
 
           //no longer do this
