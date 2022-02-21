@@ -130,7 +130,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
             }
 
             //we do not do a passage match check , but this is how we would ..
-              if(!matched && false) {
+              if(!matched ) {
                 for (x = 0; x < sentences.length; x++) {
                   var ajaxresult = await quizhelper.comparePassageToTranscript(sentences[x].sentence, spoken, sentences[x].phonetic, itemdata.language);
                   var result = JSON.parse(ajaxresult);
@@ -147,7 +147,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
               }
 
               //if we got a match then process it
-            if(matched){
+            if(matched && false){
               //proceed to next question
               $(".minilesson_nextbutton").prop("disabled", true);
               setTimeout(function () {

@@ -259,23 +259,6 @@ class renderer extends \plugin_renderer_base {
             $result->title = $items->name;
             $result->questext = $items->itemtext;
 
-            // Lesson item types.
-            switch($quizdata[$result->index]->type ){
-                case constants::TYPE_DICTATION:
-                case constants::TYPE_DICTATIONCHAT:
-                case constants::TYPE_LISTENREPEAT:
-                case constants::TYPE_SPEECHCARDS:
-                case constants::TYPE_SHORTANSWER:
-                    $result->typeone = true;
-                    break;
-                case constants::TYPE_MULTIAUDIO:
-                case constants::TYPE_MULTICHOICE:
-                    $result->typetwo = true;
-                    break;
-            }
-          //  $result->typeone = ($quizdata[$result->index]->type == 'multichoice' || $quizdata[$result->index]->type == 'multiaudio' || $quizdata[$result->index]->type == 'dictationchat' || $quizdata[$result->index]->type == 'dictation' || $quizdata[$result->index]->type == 'speechcards' || $quizdata[$result->index]->type == 'shortanswer' || $quizdata[$result->index]->type == 'listenrepeat');
-          //  $result->typetwo = ($quizdata[$result->index]->type == 'multichoice' || $quizdata[$result->index]->type == 'multiaudio');
-
             // Correct answer.
             switch($quizdata[$result->index]->type ){
                 case constants::TYPE_DICTATION:
@@ -283,16 +266,17 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_LISTENREPEAT:
                 case constants::TYPE_SPEECHCARDS:
                 case constants::TYPE_SHORTANSWER:
-                case constants::TYPE_MULTIAUDIO:
                     $result->correctans = $quizdata[$result->index]->sentences;
                     break;
 
+                case constants::TYPE_MULTIAUDIO:
                 case constants::TYPE_MULTICHOICE:
                     $result->hasincorrectanswer = true;
                     $correctanswers=[];
                     $incorrectanswers=[];
                     $correctindex = $quizdata[$result->index]->correctanswer;
                     for($i=1;$i<5;$i++){
+                        if(!isset($quizdata[$result->index]->{"customtext" . $i})){continue;}
                         if($i==$correctindex){
                             $correctanswers[]=['sentence'=>$quizdata[$result->index]->{"customtext" . $i}];
                         }else{
@@ -307,28 +291,6 @@ class renderer extends \plugin_renderer_base {
                     $result->correctans = [];
                     $result->incorrectans = [];
             }
-         /*
-            if ($quizdata[$result->index]->type == 'multichoice' || $quizdata[$result->index]->type == 'multiaudio') {
-                $result->correctans = $quizdata[$result->index]->{'customtext'.$quizdata[$result->index]->correctanswer};
-            } else {
-                $result->correctans = $quizdata[$result->index]->customtext1;
-            }
-
-            // Incorrect answer.
-            if ($quizdata[$result->index]->type == 'multichoice' || $quizdata[$result->index]->type == 'multiaudio') {
-                $correctans = $quizdata[$result->index]->correctanswer;
-                $canswer = array(
-                    $quizdata[$result->index]->customtext1,
-                    $quizdata[$result->index]->customtext2,
-                    $quizdata[$result->index]->customtext3,
-                    $quizdata[$result->index]->customtext4,
-                );
-                unset($canswer[$correctans-1]);
-                $ans[] = $canswer;
-                $corrans = implode("<br>", $canswer);
-                $result->incorrectans = $corrans;
-            }
-*/
 
 
             $result->index++;

@@ -706,6 +706,8 @@ class utils{
                 //   $passage = utils::segment_japanese($phrase);
 
                 //First check if the phrase is in our cache
+                //TO DO make a proper cache definition ...https://docs.moodle.org/dev/Cache_API#Getting_a_cache_object
+                //fails on Japanese sometimes .. error unserialising on $cache->get .. which kills modal form submission
                 $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'jpphrases');
                 $phrasekey = sha1($phrase);
                 $phones_and_segments = $cache->get($phrasekey);

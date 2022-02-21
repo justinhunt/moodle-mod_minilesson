@@ -154,9 +154,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         if(currentitem.preview===true){return;}
 
         //post grade
-          log.debug("reporting step grade");
+         // log.debug("reporting step grade");
         await dd.report_step_grade(stepdata);
-          log.debug("reported step grade");
+         // log.debug("reported step grade");
         //hide current question
         var theoldquestion = $("#" + currentitem.uniqueid + "_container");
         theoldquestion.hide();
@@ -192,7 +192,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
           //just reload and re-fetch all the data to display
             $(".minilesson_nextbutton").prop("disabled", true);
             setTimeout(function () {
-                log.debug("forwarding to finished page");
+               // log.debug("forwarding to finished page");
                 window.location.href=dd.activityurl;
             }, 1000);
 
