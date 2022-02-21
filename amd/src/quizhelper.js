@@ -154,8 +154,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         if(currentitem.preview===true){return;}
 
         //post grade
+          log.debug("reporting step grade");
         await dd.report_step_grade(stepdata);
-
+          log.debug("reported step grade");
         //hide current question
         var theoldquestion = $("#" + currentitem.uniqueid + "_container");
         theoldquestion.hide();
@@ -189,6 +190,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
         } else {
           //just reload and re-fetch all the data to display
+            log.debug("forwarding to finished page");
           window.location.href=this.activityurl;
           return;
 
