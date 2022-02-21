@@ -1996,3 +1996,6 @@ span.mod_minilesson_finishedanswer {
 @keyframes minilessonshimmer {
   100% {-webkit-mask-position:left}
 }
+.mod_minilesson_spokenandcorrect.minilesson_success {
+  background-color: lightgreen;
+}
