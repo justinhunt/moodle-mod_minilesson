@@ -193,7 +193,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             $(".minilesson_nextbutton").prop("disabled", true);
             setTimeout(function () {
                 log.debug("forwarding to finished page");
-                window.location.href=this.activityurl;
+                window.location.href=dd.activityurl;
             }, 1000);
 
           return;
