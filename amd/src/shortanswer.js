@@ -206,7 +206,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
         //hightlight successgit cm
         var  answerdisplay =  $("#" + itemdata.uniqueid + "_correctanswer");
         answerdisplay.text(itemdata.sentences[sentenceindex].sentence);
-        answerdisplay.class("minilesson_success");
+        answerdisplay.addClass("minilesson_success");
       }
 
       return percent;
