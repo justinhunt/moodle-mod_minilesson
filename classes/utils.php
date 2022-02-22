@@ -710,7 +710,12 @@ class utils{
                 //fails on Japanese sometimes .. error unserialising on $cache->get .. which kills modal form submission
                 $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'jpphrases');
                 $phrasekey = sha1($phrase);
-                $phones_and_segments = $cache->get($phrasekey);
+                try {
+                    $phones_and_segments = $cache->get($phrasekey);
+                }catch(\Exception $e){
+                    //fails on japanese for some reason, but we cant dwell on it,
+                    $phones_and_segments =false;
+                }
                 //if we have phones and segments cached, yay
                 if($phones_and_segments){
                     return $phones_and_segments;
@@ -776,7 +781,7 @@ class utils{
                     $segments = implode('',$segmentarray);
                 }
                 //cache results, so the same data coming again returns faster and saves traffic
-
+                $phones_and_segments = [$phonetic,$segments];
                 $cache->set($phrasekey,$phones_and_segments );
                 break;
 
