@@ -232,6 +232,11 @@ const M_LANG_TAIN ='ta-IN';
 const M_LANG_TEIN ='te-IN';
 const M_LANG_TRTR ='tr-TR';
 
+const M_LANG_NBNO ='nb-NO';
+const M_LANG_PLPL ='pl-PL';
+const M_LANG_RORO ='ro-RO';
+const M_LANG_SVSE ='sv-SE';
+
 const M_PROMPT_SEPARATE=0;
 const M_PROMPT_RICHTEXT=1;
 

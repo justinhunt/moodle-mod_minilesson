@@ -194,6 +194,11 @@ $string['ta-in'] = 'Tamil';
 $string['te-in'] = 'Telegu';
 $string['tr-tr'] = 'Turkish';
 
+$string['sv-se'] = 'Swedish';
+$string['nb-no'] = 'Norwegian';
+$string['pl-pl'] = 'Polish';
+$string['ro-ro'] = 'Romanian';
+
 $string['awsregion']='AWS Region';
 $string['region']='AWS Region';
 $string['expiredays']='Days to keep file';
