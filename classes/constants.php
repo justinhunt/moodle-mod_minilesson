@@ -80,6 +80,13 @@ const TTSQUESTION = 'itemtts';
 const TTSQUESTIONVOICE = 'itemttsvoice';
 const TTSQUESTIONOPTION = 'itemttsoption';
 const TTSAUTOPLAY = 'itemttsautoplay';
+const TTSDIALOG = 'itemttsdialog';
+
+const TTSDIALOGVOICEA = 'itemttsdialogvoicea';
+const TTSDIALOGVOICEB = 'itemttsdialogvoiceb';
+const TTSDIALOGVOICEC = 'itemttsdialogvoicec';
+const TTSDIALOGVISIBLE = 'itemttsdialogvisible';
+
 const MEDIAQUESTION = 'itemmedia';
 const QUESTIONTEXTAREA = 'itemtextarea';
 const YTVIDEOID = 'itemytid';
