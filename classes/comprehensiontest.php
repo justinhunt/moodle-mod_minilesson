@@ -194,6 +194,50 @@ class comprehensiontest
                     $testitem->itemytvideostart=$item->{constants::YTVIDEOSTART};
                     $testitem->itemytvideoend=$item->{constants::YTVIDEOEND};
                 }
+                //TTS Dialog
+                if(!empty(trim($item->{constants::TTSDIALOG}))){
+                    $item = utils::unpack_ttsdialogopts($item);
+                    $testitem->itemttsdialog=$item->{constants::TTSDIALOG};
+                    $testitem->itemttsdialogvisible=$item->{constants::TTSDIALOGVISIBLE};
+                    $dialoglines = explode(PHP_EOL,$item->{constants::TTSDIALOG});
+                    $linesdata=[];
+                    foreach($dialoglines as $theline){
+                        if(\core_text::strlen($theline)>1) {
+                            $startchars = \core_text::substr($theline, 0, 2);
+                            switch($startchars){
+                                case 'A)':
+                                    $voice=$item->{constants::TTSDIALOGVOICEA};
+                                    $thetext = \core_text::substr($theline, 2);
+                                    break;
+                                case 'B)':
+                                    $voice=$item->{constants::TTSDIALOGVOICEB};
+                                    $thetext = \core_text::substr($theline, 2);
+                                    break;
+                                case 'C)':
+                                    $voice=$item->{constants::TTSDIALOGVOICEC};
+                                    $thetext = \core_text::substr($theline, 2);
+                                    break;
+                                default:
+                                    if(count($linesdata)>0){
+                                        $voice=$linesdata[count($linesdata)-1];
+                                    }else{
+                                        $voice=$item->{constants::TTSDIALOGVOICEA};
+                                        $thetext = $theline;
+                                    }
+
+                            }
+                            if(empty(trim($thetext))){continue;}
+                            $lineset=new \stdClass();
+                            $lineset->text=$thetext;
+                            $lineset->voice=$voice;
+                            $linesdata[] = $lineset;
+
+                        }
+
+                    }
+                    $testitem->ttsdialoglines = $linesdata;
+
+                }// end of tts dialog
 
                 //Question TextArea
                 if(!empty(trim($item->{constants::QUESTIONTEXTAREA}))){

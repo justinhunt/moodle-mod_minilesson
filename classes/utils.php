@@ -840,6 +840,25 @@ class utils{
         return $options;
     }
 
+    public static function unpack_ttsdialogopts($data){
+        if(!self::is_json($data->{constants::TTSDIALOGOPTS})){return $data;}
+        $opts = json_decode($data->{constants::TTSDIALOGOPTS});
+        $data->{constants::TTSDIALOGVISIBLE}=$opts->{constants::TTSDIALOGVISIBLE};
+        $data->{constants::TTSDIALOGVOICEA}=$opts->{constants::TTSDIALOGVOICEA};
+        $data->{constants::TTSDIALOGVOICEB}=$opts->{constants::TTSDIALOGVOICEB};
+        $data->{constants::TTSDIALOGVOICEC}=$opts->{constants::TTSDIALOGVOICEB};
+        return $data;
+    }
+    public static function pack_ttsdialogopts($data){
+        $opts = new \stdClass();
+        $opts->{constants::TTSDIALOGVISIBLE}=$data->{constants::TTSDIALOGVISIBLE};
+        $opts->{constants::TTSDIALOGVOICEA}=$data->{constants::TTSDIALOGVOICEA};
+        $opts->{constants::TTSDIALOGVOICEB}=$data->{constants::TTSDIALOGVOICEB};
+        $opts->{constants::TTSDIALOGVOICEB}=$data->{constants::TTSDIALOGVOICEC};
+        $opts_json = json_encode($opts);
+        return $opts_json;
+    }
+
     public static function fetch_auto_voice($langcode){
         $showall=false;
         $voices = self::get_tts_voices($langcode,$showall);
