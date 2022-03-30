@@ -197,7 +197,7 @@ class comprehensiontest
                 //TTS Dialog
                 if(!empty(trim($item->{constants::TTSDIALOG}))){
                     $item = utils::unpack_ttsdialogopts($item);
-                    $testitem->itemttsdialog=$item->{constants::TTSDIALOG};
+                    $testitem->itemttsdialog=true;
                     $testitem->itemttsdialogvisible=$item->{constants::TTSDIALOGVISIBLE};
                     $dialoglines = explode(PHP_EOL,$item->{constants::TTSDIALOG});
                     $linesdata=[];
@@ -206,30 +206,39 @@ class comprehensiontest
                             $startchars = \core_text::substr($theline, 0, 2);
                             switch($startchars){
                                 case 'A)':
+                                    $speaker="a";
                                     $voice=$item->{constants::TTSDIALOGVOICEA};
                                     $thetext = \core_text::substr($theline, 2);
                                     break;
                                 case 'B)':
+                                    $speaker="b";
                                     $voice=$item->{constants::TTSDIALOGVOICEB};
                                     $thetext = \core_text::substr($theline, 2);
                                     break;
                                 case 'C)':
+                                    $speaker="c";
                                     $voice=$item->{constants::TTSDIALOGVOICEC};
                                     $thetext = \core_text::substr($theline, 2);
                                     break;
                                 default:
+                                    //if it's just a new line for the previous voice
                                     if(count($linesdata)>0){
-                                        $voice=$linesdata[count($linesdata)-1];
+                                        $voice=$linesdata[count($linesdata)-1]->voice;
+                                        $speaker=$linesdata[count($linesdata)-1]->actor;
+                                    //if they never entered A) B) or C)
                                     }else{
                                         $voice=$item->{constants::TTSDIALOGVOICEA};
-                                        $thetext = $theline;
+                                        $speaker="a";
                                     }
+                                    $thetext = $theline;
 
                             }
                             if(empty(trim($thetext))){continue;}
                             $lineset=new \stdClass();
-                            $lineset->text=$thetext;
+                            $lineset->speaker=$speaker;
+                            $lineset->speakertext=$thetext;
                             $lineset->voice=$voice;
+                            $lineset->audiourl=utils::fetch_polly_url($token,'useast1',$thetext,'text',$voice);
                             $linesdata[] = $lineset;
 
                         }

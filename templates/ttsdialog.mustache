@@ -1,11 +1,58 @@
 <div class="ttsdialogplayer"  id="{{uniqid}}_ttsdialogplayer"
-></div>
+>
+    TTS Dialog
+    {{#ttsdialoglines}}
+    <span class="hide ttsdialogline" data-voice="{{voice}}" data-speaker="{{speaker}}" data-audiourl="{{audiourl}}" data-speakertext="{{speakertext}}"></span>
+    {{/ttsdialoglines}}
+    <button type="button" class="ttsdialog_button"><i class="fa fa-2x fa-play-circle-o"></i></button>
+    <div class="ttsdialog_text"> </div>
+    <audio class="ttsdialog_audioplayer" ></audio>
+
+</div>
 {{^element.frozen}}
     {{#js}}
         require(['jquery','core/log'],function($,log) {
+        var dialoglines = $('#' + '{{uniqid}}_ttsdialogplayer .ttsdialogline');
+        var linecount = dialoglines.length;
+        var stoppedstate = '<i class="fa fa-2x fa-play-circle-o"></i>';
+        var playingstate = '<i class="fa fa-2x fa-stop-circle-o "></i>';
+
+        var currentline=-1;
+
+        var player = $('#' + '{{uniqid}}_ttsdialogplayer .ttsdialog_audioplayer');
+        var speakertext = $('#' + '{{uniqid}}_ttsdialogplayer .ttsdialog_text');
+        var playbutton = $('#' + '{{uniqid}}_ttsdialogplayer .ttsdialog_button');
+
+        player[0].addEventListener('ended', nextPlay);
+
+        playbutton.click(function(){
+            if(!(player[0].paused)){
+                currentline--;
+                player[0].pause();
+                playbutton.html(stoppedstate);
+            }else{
+                nextPlay();
+                playbutton.html(playingstate);
+            }
+
+        });
+
+        function nextPlay(){
+            log.debug("currentline: " + currentline);
+            log.debug("linecount: " + linecount);
+            currentline++;
+            if (currentline >= linecount){
+                currentline =-1;
+                playbutton.html(stoppedstate);
+                speakertext.text(" ");
+                return;
+            }
+            player.attr('src',dialoglines.eq(currentline).data('audiourl'));
+            speakertext.text(dialoglines.eq(currentline).data('speakertext'));
+            player[0].play();
+        }
 
         <!-- script type="text/javascript" -->
-        log.debug();
 
 
         <!-- script -->
