@@ -220,6 +220,11 @@ class comprehensiontest
                                     $voice=$item->{constants::TTSDIALOGVOICEC};
                                     $thetext = \core_text::substr($theline, 2);
                                     break;
+                                case '>>':
+                                    $speaker="soundeffect";
+                                    $voice="soundeffect";
+                                    $thetext = \core_text::substr($theline, 2);
+                                    break;
                                 default:
                                     //if it's just a new line for the previous voice
                                     if(count($linesdata)>0){
@@ -238,7 +243,11 @@ class comprehensiontest
                             $lineset->speaker=$speaker;
                             $lineset->speakertext=$thetext;
                             $lineset->voice=$voice;
-                            $lineset->audiourl=utils::fetch_polly_url($token,'useast1',$thetext,'text',$voice);
+                            if($lineset->voice=="soundeffect"){
+                                $lineset->audiourl = $CFG->wwwroot  . '/' . constants::M_PATH . '/sounds/' . trim($thetext) . '.mp3';
+                            }else {
+                                $lineset->audiourl = utils::fetch_polly_url($token, 'useast1', $thetext, 'text', $voice);
+                            }
                             $linesdata[] = $lineset;
 
                         }

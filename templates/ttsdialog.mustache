@@ -1,12 +1,27 @@
-<div class="ttsdialogplayer"  id="{{uniqid}}_ttsdialogplayer"
+<div class="ttsdialogplayer container"  id="{{uniqid}}_ttsdialogplayer"
 >
     TTS Dialog
     {{#ttsdialoglines}}
     <span class="hide ttsdialogline" data-voice="{{voice}}" data-speaker="{{speaker}}" data-audiourl="{{audiourl}}" data-speakertext="{{speakertext}}"></span>
     {{/ttsdialoglines}}
-    <button type="button" class="ttsdialog_button"><i class="fa fa-2x fa-play-circle-o"></i></button>
-    <div class="ttsdialog_text"> </div>
+
+    <div class="row">
+        {{#itemttsdialogvisible}}
+            <div class="col-md-1">
+                    <button class="ttsdialog_button btn btn-secondary" ><i class="fa fa-play"></i></button>
+            </div>
+            <div class="col-md-11 ttsdialog_text"></div>
+        {{/itemttsdialogvisible}}
+        {{^itemttsdialogvisible}}
+            <div class="col-md-12" style="text-align: center">
+                <button class="ttsdialog_button btn btn-secondary" style="width: 200px;"><i class="fa fa-play"></i></button>
+            </div>
+            <div class="hide ttsdialog_text"></div>
+        {{/itemttsdialogvisible}}
+    </div>
     <audio class="ttsdialog_audioplayer" ></audio>
+
+
 
 </div>
 {{^element.frozen}}
@@ -14,8 +29,8 @@
         require(['jquery','core/log'],function($,log) {
         var dialoglines = $('#' + '{{uniqid}}_ttsdialogplayer .ttsdialogline');
         var linecount = dialoglines.length;
-        var stoppedstate = '<i class="fa fa-2x fa-play-circle-o"></i>';
-        var playingstate = '<i class="fa fa-2x fa-stop-circle-o "></i>';
+        var stoppedstate = '<i class="fa fa-play"></i>';
+        var playingstate = '<i class="fa fa-stop"></i>';
 
         var currentline=-1;
 
@@ -48,7 +63,12 @@
                 return;
             }
             player.attr('src',dialoglines.eq(currentline).data('audiourl'));
-            speakertext.text(dialoglines.eq(currentline).data('speakertext'));
+            if(dialoglines.eq(currentline).data('speaker')=='soundeffect'){
+                speakertext.text(' ');
+            }else{
+                speakertext.text(dialoglines.eq(currentline).data('speakertext'));
+            }
+
             player[0].play();
         }
 

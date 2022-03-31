@@ -854,7 +854,7 @@ class utils{
         $opts->{constants::TTSDIALOGVISIBLE}=$data->{constants::TTSDIALOGVISIBLE};
         $opts->{constants::TTSDIALOGVOICEA}=$data->{constants::TTSDIALOGVOICEA};
         $opts->{constants::TTSDIALOGVOICEB}=$data->{constants::TTSDIALOGVOICEB};
-        $opts->{constants::TTSDIALOGVOICEB}=$data->{constants::TTSDIALOGVOICEC};
+        $opts->{constants::TTSDIALOGVOICEC}=$data->{constants::TTSDIALOGVOICEC};
         $opts_json = json_encode($opts);
         return $opts_json;
     }
