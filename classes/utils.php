@@ -81,7 +81,7 @@ class utils{
                         substr($moduleinstance->ttslanguage,0,2)=='uk' ||
                         substr($moduleinstance->ttslanguage,0,2)=='hu' ||
                         substr($moduleinstance->ttslanguage,0,2)=='ro' ||
-                        substr($moduleinstance->ttslanguage,0,2)=='es') && trim($moduleinstance->passage)!=="";
+                        substr($moduleinstance->ttslanguage,0,2)=='es') && trim($passage)!=="";
         }
     }
 
