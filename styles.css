@@ -2004,4 +2004,23 @@ span.mod_minilesson_finishedanswer {
   border: 1px solid darkgray;
   background-color: white;
   min-height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.ttsdialog_actor {
+  margin: auto;
+  text-align: center;
+}
+.ttsdialog_actor.rolea {
+  color: blue;
+}
+.ttsdialog_actor.roleb {
+  color: green;
+}
+.ttsdialog_actor.rolec {
+  color: orange;
+}
+.ttsdialog_actor.rolenone {
+  opacity: 0;
 }

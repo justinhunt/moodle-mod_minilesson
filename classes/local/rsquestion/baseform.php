@@ -135,7 +135,8 @@ abstract class baseform extends \moodleform {
             $mform->addElement('text', 'name', get_string('itemtitle', constants::M_COMPONENT), array('size'=>70));
             $mform->setType('name', PARAM_TEXT);
             $mform->addRule('name', get_string('required'), 'required', null, 'client');
-            $mform->setDefault('name', get_string('newitem',constants::M_COMPONENT));
+            $typelabel =get_string($this->type,constants::M_COMPONENT);
+            $mform->setDefault('name', get_string('newitem',constants::M_COMPONENT, $typelabel));
 
 
             if($this->moduleinstance->richtextprompt==constants::M_PROMPT_RICHTEXT) {
@@ -261,6 +262,7 @@ abstract class baseform extends \moodleform {
             }
 
             //Question TTS Dialog
+            $this->add_static_text('ttsdialog_instructions',null,get_string('ttsdialoginstructions', constants::M_COMPONENT));
             $this->add_voiceselect(constants::TTSDIALOGVOICEA,get_string('ttsdialogvoicea',constants::M_COMPONENT));
             $this->add_voiceselect(constants::TTSDIALOGVOICEB,get_string('ttsdialogvoiceb',constants::M_COMPONENT));
             $this->add_voiceselect(constants::TTSDIALOGVOICEC,get_string('ttsdialogvoicec',constants::M_COMPONENT));
