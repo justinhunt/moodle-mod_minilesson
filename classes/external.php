@@ -34,7 +34,7 @@ class mod_minilesson_external extends external_api {
     }
     public static function check_by_phonetic($spoken, $correct, $phonetic, $language,$region, $cmid){
         $segmented = true;
-
+        $shortlang = utils::fetch_short_lang($language);
         switch($language){
             case constants::M_LANG_JAJP:
 
@@ -52,7 +52,7 @@ class mod_minilesson_external extends external_api {
             case constants::M_LANG_ENWL:
             case constants::M_LANG_ENZA:
                 //find digits in original passage, and convert number words to digits in the target passage
-                $spoken=alphabetconverter::words_to_numbers_convert($correct,$spoken);
+                $spoken=alphabetconverter::words_to_numbers_convert($correct,$spoken,$shortlang);
                 break;
             case constants::M_LANG_DEDE:
             case constants::M_LANG_DECH:

@@ -273,12 +273,14 @@ abstract class baseform extends \moodleform {
 
 
             if($m35){
+                $mform->hideIf('ttsdialog_instructions', 'addttsdialog', 'neq', 1);
                 $mform->hideIf(constants::TTSDIALOGVOICEA, 'addttsdialog', 'neq', 1);
                 $mform->hideIf(constants::TTSDIALOGVOICEB, 'addttsdialog', 'neq', 1);
                 $mform->hideIf(constants::TTSDIALOGVOICEC, 'addttsdialog', 'neq', 1);
                 $mform->hideIf(constants::TTSDIALOG, 'addttsdialog', 'neq', 1);
                 $mform->hideIf(constants::TTSDIALOGVISIBLE, 'addttsdialog', 'neq', 1);
             }else {
+                $mform->disabledIf('ttsdialog_instructions', 'addttsdialog', 'neq', 1);
                 $mform->disabledIf(constants::TTSDIALOGVOICEA, 'addttsdialog', 'neq', 1);
                 $mform->disabledIf(constants::TTSDIALOGVOICEB, 'addttsdialog', 'neq', 1);
                 $mform->disabledIf(constants::TTSDIALOGVOICEC, 'addttsdialog', 'neq', 1);
