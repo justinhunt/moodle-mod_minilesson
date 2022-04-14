@@ -35,7 +35,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         this.reattempturl = activitydata.reattempturl;
         this.activityurl = activitydata.activityurl;
         this.backtocourse = activitydata.backtocourse;
-        this.ds_only = activitydata.ds_only;
+        this.stt_guided = activitydata.stt_guided;
+        this.wwwroot = activitydata.wwwroot;
         this.prepare_html();
         this.init_questions(this.quizdata,polly);
         this.register_events();
@@ -287,8 +288,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         use_ttrecorder: function(){
             return true;
         },
-        is_ds_only: function(){
-          return this.ds_only;
+        is_stt_guided: function(){
+          return this.stt_guided;
         },
 
         //text comparison functions follow===============

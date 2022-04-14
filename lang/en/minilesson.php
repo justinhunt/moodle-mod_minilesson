@@ -44,7 +44,6 @@ $string['minilesson:manage'] = 'Can manage MiniLesson instances';
 $string['minilesson:canpreview'] = 'Can preview MiniLesson activities';
 $string['minilesson:evaluate'] = 'Can evaluate student MiniLesson attempts';
 $string['minilesson:submit'] = 'Can submit MiniLesson attempts';
-$string['privacy:metadata'] = 'The Poodll MiniLesson plugin does store personal data.';
 $string['tryagain'] = 'Try again';
 
 $string['id']='ID';
@@ -294,6 +293,9 @@ $string['privacy:metadata:transcriptpurpose']='The recording short transcripts.'
 $string['privacy:metadata:fulltranscriptpurpose']='The full transcripts of recordings.';
 $string['privacy:metadata:cloudpoodllcom:userid']='The MiniLesson plugin includes the moodle userid in the urls of recordings and transcripts';
 $string['privacy:metadata:cloudpoodllcom']='The MiniLesson plugin stores recordings in AWS S3 buckets via cloud.poodll.com.';
+$string['privacy:metadata'] = 'The Poodll MiniLesson plugin does store personal data.';
+$string['privacy:metadata:moduleid'] = 'The unique identifier of a MiniLesson activity instance.';
+$string['privacy:metadata:errorcount']='The error count of a users MiniLesson attempt.';
 
 //rsquestions
 $string['durationgradesettings'] = 'Grade Settings ';
@@ -387,8 +389,8 @@ $string['shortanswer']='Short Answer';
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';
 $string['transcriber_none'] = 'No transcription';
-$string['transcriber_auto'] = 'Hybrid STT (Browser STT + Poodll STT))';
-$string['transcriber_poodll'] = 'Use Poodll STT';
+$string['transcriber_auto'] = 'Open STT (Strict)';
+$string['transcriber_poodll'] = 'Guided STT (Poodll)';
 
 
 $string['pagelayout'] = 'Page layout';
