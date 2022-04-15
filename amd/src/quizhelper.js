@@ -14,9 +14,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
     return {
 
       //original spliton_regexp: new RegExp(/([,.!?:;" ])/, 'g'),
-      spliton_regexp: new RegExp(/([!"# $%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~])/, 'g'),
+      spliton_regexp: new RegExp(/([!"# ¡¿$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~])/, 'g'),
       //nopunc is diff to split on because it does not match on spaces
-      nopunc_regexp: new RegExp(/[!"#$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~]/,'g'),
+      nopunc_regexp: new RegExp(/[!"#¡¿$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~]/,'g'),
       nonspaces_regexp: new RegExp(/[^ ]/,'g'),
       autoplaydelay: 800,
 
