@@ -303,11 +303,11 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022032900, 'minilesson');
     }
 
-    // Add TTS item  to minilesson table
+    // Add lessonkey  to minilesson table
     if ($oldversion < 2022041700) {
         $table = new xmldb_table(constants::M_TABLE);
 
-        // Define fields itemtts and itemtts voice to be added to minilesson
+        // Define fields ,lessonkey,to be added to minilesson
         $fields=[];
         $fields[] = new xmldb_field('lessonkey', XMLDB_TYPE_CHAR, '255', null);
 

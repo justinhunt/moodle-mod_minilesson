@@ -1167,6 +1167,12 @@ class utils{
             $mform->addHelpButton('richtextprompt', 'prompttype', constants::M_COMPONENT);
             $mform->setDefault('richtextprompt', $config->prompttype);
 
+            // Add passagekey
+            $mform->addElement('text', 'lessonkey', get_string('lessonkey', constants::M_COMPONENT), array('size' => '8'));
+            $mform->setType('lessonkey', PARAM_TEXT);
+            $mform->setDefault('lessonkey', '');
+            $mform->addHelpButton('lessonkey', 'lessonkey', constants::M_COMPONENT);
+
                  
             //activity opens closes
         $name = 'activityopenscloses';

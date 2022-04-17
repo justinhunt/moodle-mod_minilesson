@@ -574,3 +574,7 @@ $string['activityname']="Lesson Name.";
 $string['itemcount']="No. of items";
 $string['correctcount']="No. of correct items";
 $string['lessonkey']="Lesson Key";
+$string['lessonkey_details'] =
+    'The lesson key is just a tag that will be exported to csv with some reports to make post processing those reports in a spreadsheet easier. It is fine to leave it empty.';
+$string['lessonkey_help'] =
+    'The lesson key is just a tag that will be exported to csv with some reports to make post processing those reports in a spreadsheet easier.';
