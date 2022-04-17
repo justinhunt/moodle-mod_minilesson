@@ -563,3 +563,14 @@ $string['totalscore'] = 'Total Score:';
 $string['score'] = 'Score';
 $string['questiontext'] = 'Question';
 $string['ttsdialoginstructions']="Choose the speaker voices for roles A,B and C and enter the dialog. Begin each dialog line with the speaker role + ')'. e.g A) Hello. Sound effect lines begin with >> e.g >>seagulls";
+
+$string['courseattempts'] = 'Course Attempts';
+$string['courseattemptsreport'] = 'Course Attempts Report';
+$string['courseattemptsheading'] = 'Course Attempts Heading';
+$string['courseattemptsreport_explanation']='All minilesson attempts in the course';
+$string['studentid']="St. No.";
+$string['studentname']="Student Name";
+$string['activityname']="Lesson Name.";
+$string['itemcount']="No. of items";
+$string['correctcount']="No. of correct items";
+$string['lessonkey']="Lesson Key";

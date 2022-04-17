@@ -47,6 +47,13 @@ class report_renderer extends \plugin_renderer_base
         $reports[] = array('button'=>$this->render($incompleteattemptsreport),
             'text'=>get_string('incompleteattemptsreport_explanation', constants::M_COMPONENT));
 
+        //course attempts report
+        $courseattemptsreport= new \single_button(
+            new \moodle_url(constants::M_URL . '/reports.php', array('report' => 'courseattempts', 'id' => $cm->id, 'n' => $moduleinstance->id)),
+            get_string('courseattemptsreport', constants::M_COMPONENT), 'get');
+        $reports[] = array('button'=>$this->render($courseattemptsreport),
+            'text'=>get_string('courseattemptsreport_explanation', constants::M_COMPONENT));
+
 
 
         $data=['reports' => $reports];

@@ -142,6 +142,16 @@ switch ($showreport){
         $formdata->groupmenu = true;
         break;
 
+    //list view of attempts and grades and action links
+    case 'courseattempts':
+        $report = new \mod_minilesson\report\courseattempts();
+        $formdata = new stdClass();
+        $formdata->moduleid = $moduleinstance->id;
+        $formdata->courseid = $moduleinstance->course;
+        $formdata->modulecontextid = $modulecontext->id;
+        $formdata->groupmenu = true;
+        break;
+
 
     //list view of attempts and grades and action links
     case 'attemptresults':
