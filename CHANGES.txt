@@ -1,3 +1,8 @@
+Version 1.0.39(Build 2022041800)
+- Added a course attempts report
+- Added DataTables support for report
+
+
 Version 1.0.38(Build 2022041300)
 - Added TTS Dialog
 - Added Ukranian, Finnish, Russian, Portuguese, Basque, Italian, Polish, Hungarian, Romanian to Poodll STT

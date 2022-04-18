@@ -842,6 +842,12 @@ class utils{
         return $ret . $service;
     }
 
+    public static function fetch_options_reportstable() {
+        $options = array(constants::M_USE_DATATABLES => get_string("reporttableajax", constants::M_COMPONENT),
+            constants::M_USE_PAGEDTABLES => get_string("reporttablepaged", constants::M_COMPONENT));
+        return $options;
+    }
+
     public static function fetch_options_transcribers() {
         $options = array(constants::TRANSCRIBER_AUTO => get_string("transcriber_auto", constants::M_COMPONENT),
             constants::TRANSCRIBER_POODLL => get_string("transcriber_poodll", constants::M_COMPONENT));

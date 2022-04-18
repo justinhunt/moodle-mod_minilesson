@@ -304,7 +304,7 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     // Add lessonkey  to minilesson table
-    if ($oldversion < 2022041700) {
+    if ($oldversion < 2022041800) {
         $table = new xmldb_table(constants::M_TABLE);
 
         // Define fields ,lessonkey,to be added to minilesson
@@ -317,7 +317,7 @@ function xmldb_minilesson_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
-        upgrade_mod_savepoint(true, 2022041700, 'minilesson');
+        upgrade_mod_savepoint(true, 2022041800, 'minilesson');
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.
