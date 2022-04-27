@@ -1,6 +1,6 @@
-define(['jquery', 'jqueryui', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper',
+define(['jquery',  'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper',
   'mod_minilesson/cloudpoodllloader','mod_minilesson/ttrecorder'
-], function($, jqui, log, Ajax, def, polly, cloudpoodll, ttrecorder) {
+], function($,  log, Ajax, def, polly, cloudpoodll, ttrecorder) {
   "use strict"; // jshint ;_;
 
   /*
