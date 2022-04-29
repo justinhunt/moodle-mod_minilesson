@@ -1,5 +1,6 @@
 Version 1.0.40(Build 202204XXXX)
 - Removed JQuery UI which was breaking Moodle 4.0 dock
+- Fixed issue with activity being closed if open date set, but close data not set
 
 Version 1.0.39(Build 2022041800)
 - Added a course attempts report
