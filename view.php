@@ -75,11 +75,6 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-//20210601 - we probably dont need this ... delete soon
-//load glide
-//$PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/glidejs@2.1.0/dist/css/glide.core.min.css'));
-
-
 //Get an admin settings 
 $config = get_config(constants::M_COMPONENT);
 

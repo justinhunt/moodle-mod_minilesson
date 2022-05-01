@@ -2,6 +2,9 @@ Version 1.0.40(Build 202204XXXX)
 - Removed JQuery UI which was breaking Moodle 4.0 dock
 - Fixed issue with activity being closed if open date set, but close data not set
 - Added read + listen option to multichoice answers
+- Added some logic to act as failsafe if step_upgrade fails or doesn't arrive
+- Added animate css for toggle and shake effect
+- removed results page for dictation chat and listen and repeat
 
 Version 1.0.39(Build 2022041800)
 - Added a course attempts report

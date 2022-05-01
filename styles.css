@@ -1056,22 +1056,6 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   background-position: center;
 }
 
-.glide__wrapper {
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.glide__slide {
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.glide {
-  height: 150px !important;
-}
-
 .minilesson-poodllspeechcards_box {
   text-align: center;
   width: 60%;

@@ -294,15 +294,19 @@ class utils{
             }
             $sessiondata->steps = $steps;
         }
-        
         //add our latest step to session
         $sessiondata->steps[$stepdata->index]=$stepdata;
 
 
         //grade quiz results
         $comp_test =  new comprehensiontest($cm);
-        //there should never be more steps than items .. but there have been occasions ...
-        if($comp_test->fetch_item_count() <= count($sessiondata->steps)) {
+        $totalitems = $comp_test->fetch_item_count();
+
+        //close out the attempt and update the grade
+        //there should never be more steps than items
+        //[hack] but there seem to be times when there are fewer( when an update_step_grade failed or didnt arrive),
+        // so we also allow the final item. Though it's not ideal because we will have missed one or more
+        if($totalitems <= count($sessiondata->steps) || $stepdata->index==$totalitems-1) {
             $newgrade=true;
             $latestattempt->sessionscore = self::calculate_session_score($sessiondata->steps);
             $latestattempt->status =constants::M_STATE_COMPLETE;
