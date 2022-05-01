@@ -440,7 +440,9 @@ $string['textprompt_words'] = 'Show full text';
 $string['textprompt_dots'] = 'Show dots instead of letters';
 $string['listenorread'] = "Display options as";
 $string['listenorread_read'] = 'plain text';
-$string['listenorread_listen']= 'audio players';
+$string['listenorread_listen']= 'audio players + dots';
+$string['listenorread_listenandread']= 'audio players + plain text';
+
 
 $string['gradenow']= 'Grade Now';
 

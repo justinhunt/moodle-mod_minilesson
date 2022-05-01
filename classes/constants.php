@@ -121,6 +121,7 @@ const TEXTPROMPT_DOTS = 0;
 const LISTENORREAD = 'customint2';
 const LISTENORREAD_READ = 0;
 const LISTENORREAD_LISTEN = 1;
+const LISTENORREAD_LISTENANDREAD = 2;
 
 const LAYOUT = 'layout';
 const LAYOUT_AUTO = 0;
