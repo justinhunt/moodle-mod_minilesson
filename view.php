@@ -120,6 +120,10 @@ if(!$attempts || ($canattempt && $retake==1)){
     $latestattempt = reset($attempts);
 }
 
+////this library is licensed with the hippocratic license (https://github.com/EthicalSource/hippocratic-license/)
+//which is high minded but not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN
+$PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
+
 
 //From here we actually display the page.
 //if we are teacher we see tabs. If student we just see the quiz

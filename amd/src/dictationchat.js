@@ -1,4 +1,10 @@
-define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper'], function($, log, ajax, def, polly) {
+define(['jquery',
+  'core/log',
+  'core/ajax',
+  'mod_minilesson/definitions',
+  'mod_minilesson/pollyhelper',
+  'mod_wordcards/animatecss'
+    ], function($, log, ajax, def, polly, anim) {
   "use strict"; // jshint ;_;
 
   log.debug('MiniLesson dictation chat: initialising');
@@ -13,13 +19,19 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       usevoice: 'Amy',
 
       init: function(index, itemdata, quizhelper) {
-      var self = this;
-      self.itemdata = itemdata;
-      self.quizhelper = quizhelper;
-      self.index = index;
-      self.register_events();
-      self.setvoice();
-      self.getItems();
+        var self = this;
+        self.itemdata = itemdata;
+        self.quizhelper = quizhelper;
+        self.index = index;
+
+        //anim
+        var animopts = {};
+        animopts.useanimatecss=true;
+        anim.init(animopts);
+
+        self.register_events();
+        self.setvoice();
+        self.getItems();
 
     },
     next_question:function(){
@@ -65,17 +77,17 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
         });
 
 
-        //move on after 3s
-        setTimeout(function() {
+          //move on after short time, to next prompt, or next question
           if (self.game.pointer < self.items.length - 1) {
-            self.items[self.game.pointer].answered = true;
-            self.items[self.game.pointer].correct = false;
-            self.game.pointer++;
-            self.nextPrompt();
+            setTimeout(function() {
+              self.items[self.game.pointer].answered = true;
+              self.items[self.game.pointer].correct = false;
+              self.game.pointer++;
+              self.nextPrompt();
+            }, 3000);
           } else {
             self.end();
           }
-        }, 3000);
       });
 
       
@@ -220,11 +232,9 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
           setTimeout(function() {
             self.game.pointer++;
             self.nextPrompt();
-          }, 3000);
+          }, 2200);
         } else {
-          setTimeout(function() {
             self.end();
-          }, 3000);
         }
 
       } else {
@@ -238,10 +248,16 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
             $("#" + self.itemdata.uniqueid + "_container .dictate_feedback[data-idx='" + obj.wordnumber + "']").addClass("fa fa-check");
           }
         });
-
+        var thereply = $("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer);
+        anim.do_animate(thereply,'shakeX animate__faster').then(
+            function() {$("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", false);}
+        );
+        /*
         $("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer).effect("shake", function() {
           $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", false);
-        });
+        }
+        );
+        */
 
       }
 
@@ -287,23 +303,13 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
 
     end: function() {
       var self = this;
-
-      var numCorrect = self.items.filter(function(e) {
-        return e.correct;
-      }).length;
-
-      var totalNum = self.items.length;
-
-      $("#" + self.itemdata.uniqueid + "_container .dictate_results").html("TOTAL<br/>" + numCorrect + "/" + totalNum).show();
-      
       $(".minilesson_nextbutton").prop("disabled",true);
       setTimeout(function() {
         $(".minilesson_nextbutton").prop("disabled",false);
         self.next_question();
-      }, 2000);
-      
-
+      }, 2200);
     },
+
     start: function() {
       var self = this;
 
@@ -358,9 +364,16 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       }).join(" ");
 
       $("#" + self.itemdata.uniqueid + "_container .dictate_title").html(progress);
+      var newprompt = $(".dictate_prompt_" + self.game.pointer);
+      newprompt.show();
+      anim.do_animate(newprompt,'zoomIn animate__faster','in').then(
+          function(){}
+      );
+      /*
       $(".dictate_prompt_" + self.game.pointer).toggle("slide", {
         direction: 'left'
       });
+       */
 
       self.nextReply();
 
@@ -383,9 +396,16 @@ define(['jquery', 'core/log', 'core/ajax', 'mod_minilesson/definitions', 'mod_mi
       code += "<div style='margin-right:90px;' class='dictate_speech dictate_right'>" + dictate_targetWordsCode + "</div>";
       code += "</div>";
       $("#" + self.itemdata.uniqueid + "_container .dictate_game").append(code);
+      var newreply = $(".dictate_reply_" + self.game.pointer);
+      newreply.show();
+      anim.do_animate(newreply,'zoomIn animate__faster','in').then(
+          function(){}
+      );
+      /*
       $(".dictate_reply_" + self.game.pointer).toggle("slide", {
         direction: 'right'
       });
+       */
       $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", false);
       setTimeout(function() {
         $(".dictate_targetWord").first().focus();

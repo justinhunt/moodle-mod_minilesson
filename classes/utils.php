@@ -266,20 +266,38 @@ class utils{
         $moduleinstance  = $DB->get_record(constants::M_MODNAME, array('id' => $cm->instance), '*', MUST_EXIST);
         $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('moduleid'=>$moduleinstance->id,'userid'=>$USER->id),'id DESC');
 
+        //get or create attempt
         if(!$attempts){
             $latestattempt = self::create_new_attempt($moduleinstance->course, $moduleinstance->id);
         }else{
             $latestattempt = reset($attempts);
         }
 
-
+        //get or create sessiondata
         if(empty($latestattempt->sessiondata)){
             $sessiondata = new \stdClass();
             $sessiondata->steps = [];
         }else{
             $sessiondata = json_decode($latestattempt->sessiondata);
         }
+
+        //if sessiondata is not an array, reconstruct it as an array
+        if(!is_array($sessiondata->steps)){
+            $steps = [];
+            foreach ($sessiondata->steps as $key => $value)
+            {
+                if(is_numeric($key)){
+                    $key=intval($key);
+                    $steps[$key] = $value;
+                }
+
+            }
+            $sessiondata->steps = $steps;
+        }
+        
+        //add our latest step to session
         $sessiondata->steps[$stepdata->index]=$stepdata;
+
 
         //grade quiz results
         $comp_test =  new comprehensiontest($cm);
