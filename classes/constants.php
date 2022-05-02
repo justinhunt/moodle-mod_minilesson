@@ -271,4 +271,7 @@ const M_PUSH_LEVEL =4;
 const M_QUIZ_FINISHED = "mod_minilesson_quiz_finished";
 const M_QUIZ_REATTEMPT = "mod_minilesson_quiz_reattempt";
 
+const M_ANIM_FANCY = 0;
+const M_ANIM_PLAIN = 1;
+
 }

@@ -5,7 +5,7 @@ define(['jquery',
       'mod_minilesson/pollyhelper',
       'mod_minilesson/cloudpoodllloader',
       'mod_minilesson/ttrecorder',
-      'mod_wordcards/animatecss'
+      'mod_minilesson/animatecss'
     ], function($, log, ajax, def, polly, cloudpoodll, ttrecorder, anim) {
   "use strict"; // jshint ;_;
 
@@ -60,7 +60,7 @@ define(['jquery',
 
         //anim
         var animopts = {};
-        animopts.useanimatecss=true;
+        animopts.useanimatecss= quizhelper.useanimatecss;
         anim.init(animopts);
 
         self.register_events();
@@ -341,16 +341,9 @@ define(['jquery',
 
       $("#" + self.itemdata.uniqueid + "_container .landr_title").html(progress);
       var newprompt = $(".landr_prompt_" + self.game.pointer);
-      newprompt.show();
       anim.do_animate(newprompt,'zoomIn animate__faster','in').then(
           function(){}
       );
-      /*
-      $(".landr_prompt_" + self.game.pointer).toggle("slide", {
-        direction: 'left'
-      });
-       */
-
       self.nextReply();
 
     },
@@ -374,8 +367,7 @@ define(['jquery',
       code += "</div>";
       $("#" + self.itemdata.uniqueid + "_container .landr_game").append(code);
       var newreply = $(".landr_reply_" + self.game.pointer);
-      newreply.show();
-      anim.do_animate($(".landr_reply_" + self.game.pointer),'zoomIn animate__faster','in').then(
+      anim.do_animate(newreply,'zoomIn animate__faster','in').then(
           function(){}
       );
       /*

@@ -516,7 +516,7 @@ class comprehensiontest
                 }
             }
 
-            //add out item to test
+            //add our item to test
             $testitems[]=$testitem;
 
         }//end of loop

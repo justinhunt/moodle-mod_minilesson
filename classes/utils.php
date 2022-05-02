@@ -283,16 +283,7 @@ class utils{
 
         //if sessiondata is not an array, reconstruct it as an array
         if(!is_array($sessiondata->steps)){
-            $steps = [];
-            foreach ($sessiondata->steps as $key => $value)
-            {
-                if(is_numeric($key)){
-                    $key=intval($key);
-                    $steps[$key] = $value;
-                }
-
-            }
-            $sessiondata->steps = $steps;
+            $sessiondata->steps = self::remake_steps_as_array($sessiondata->steps);
         }
         //add our latest step to session
         $sessiondata->steps[$stepdata->index]=$stepdata;
@@ -329,6 +320,26 @@ class utils{
 
         //return_to_page($result,$message,$returndata);
         return [$result,$message,$returndata];
+    }
+
+    //JSON stringify functions will make objects(not arrays) if keys are not sequential
+    //sometimes we seem to miss a step. Remedying that with this function prevents an all out disaster.
+    // But we should not miss steps
+    public static function remake_steps_as_array($stepsobject){
+        if(is_array($stepsobject)) {
+            return $stepsobject;
+        }else{
+            $steps = [];
+            foreach ($stepsobject as $key => $value)
+            {
+                if(is_numeric($key)){
+                    $key=intval($key);
+                    $steps[$key] = $value;
+                }
+
+            }
+            return $steps;
+        }
     }
 
     public static function calculate_session_score($steps){
@@ -874,6 +885,12 @@ class utils{
         $options = array(constants::TRANSCRIBER_AUTO => get_string("transcriber_auto", constants::M_COMPONENT),
             constants::TRANSCRIBER_POODLL => get_string("transcriber_poodll", constants::M_COMPONENT));
         return $options;
+    }
+
+    public static function fetch_options_animations(){
+        return array(
+            constants::M_ANIM_FANCY=> get_string('anim_fancy', constants::M_COMPONENT),
+            constants::M_ANIM_PLAIN => get_string('anim_plain', constants::M_COMPONENT));
     }
 
     public static function fetch_options_textprompt() {

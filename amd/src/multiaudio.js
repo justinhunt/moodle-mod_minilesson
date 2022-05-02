@@ -4,7 +4,7 @@ define(['jquery',
     'mod_minilesson/pollyhelper',
     'mod_minilesson/cloudpoodllloader',
     'mod_minilesson/ttrecorder',
-    'mod_wordcards/animatecss'
+    'mod_minilesson/animatecss'
     ], function($, log, def, polly,cloudpoodll, ttrecorder,anim) {
   "use strict"; // jshint ;_;
 
@@ -28,7 +28,7 @@ define(['jquery',
 
       //anim
       var animopts = {};
-      animopts.useanimatecss=true;
+        animopts.useanimatecss=quizhelper.useanimatecss;
       anim.init(animopts);
 
       this.prepare_audio(itemdata);

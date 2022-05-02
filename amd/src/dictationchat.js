@@ -3,7 +3,7 @@ define(['jquery',
   'core/ajax',
   'mod_minilesson/definitions',
   'mod_minilesson/pollyhelper',
-  'mod_wordcards/animatecss'
+  'mod_minilesson/animatecss'
     ], function($, log, ajax, def, polly, anim) {
   "use strict"; // jshint ;_;
 
@@ -26,7 +26,7 @@ define(['jquery',
 
         //anim
         var animopts = {};
-        animopts.useanimatecss=true;
+        animopts.useanimatecss=quizhelper.useanimatecss;
         anim.init(animopts);
 
         self.register_events();
@@ -112,26 +112,18 @@ define(['jquery',
         var myLength = target.value.length;
         var key = e.which;
         if (myLength >= maxLength) {
-          var next = $(this);
-          while (next = next.parent().next().children('input.dictate_targetWord')) {
-            if (next.length === 1){
-              next.focus();
-              break;
-            }else{
-              break;
-
-            }
+          var nextIdx = $(this).data('idx') + 1;
+          var next = $("#" + self.itemdata.uniqueid + "_container input.dictate_targetWord[data-idx=\""+nextIdx+"\"");
+          if (next.length === 1){
+            next.focus();
           }
+
           // Move to previous field if empty (user pressed backspace or delete)
         } else if (( key == 8 || key == 46 ) && myLength === 0) {
-          var previous = $(this);
-          while (previous = previous.parent().prev().children('input.dictate_targetWord')) {
-            if (previous.length === 1) {
-              previous.focus();
-              break;
-            }else{
-              break;
-            }
+          var previousIdx = $(this).data('idx') - 1;
+          var previous = $("#" + self.itemdata.uniqueid + "_container input.dictate_targetWord[data-idx=\""+previousIdx+"\"");
+          if (previous.length === 1){
+            previous.focus();
           }
         }
       });
@@ -145,13 +137,25 @@ define(['jquery',
     check_answer: function(){
       var self = this;
       var passage = self.items[self.game.pointer].target;
-      var transcriptArray = [];
+      var transcript = '';
+      $("#" + self.itemdata.uniqueid + "_container .dictate_targetBit").each(function() {
+        if($(this).hasClass('dictate_targetWord')){
+          transcript += $(this).val();
+        }else if($(this).hasClass('dictate_targetWordPunc')){
+          transcript += $(this).text();
+        }
+      });
 
+    //the old code looped over dictate_targetWord, pushed to transcriptArray, and joined with a space
+    //But that did not account for words split by punc, eg It's.
+      // Kept that here for now, but can delete  I think.
+      /*
+      var transcriptArray = [];
       $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").each(function() {
         transcriptArray.push($(this).val().trim() == "" ? "|" : $(this).val().trim());
       });
-
-      var transcript = transcriptArray.join(" ");
+     var transcript = transcriptArray.join(" ");
+    */
 
       self.getComparison(passage, transcript, function(comparison) {
         self.gotComparison(comparison, transcript);
@@ -365,7 +369,6 @@ define(['jquery',
 
       $("#" + self.itemdata.uniqueid + "_container .dictate_title").html(progress);
       var newprompt = $(".dictate_prompt_" + self.game.pointer);
-      newprompt.show();
       anim.do_animate(newprompt,'zoomIn animate__faster','in').then(
           function(){}
       );
@@ -387,17 +390,16 @@ define(['jquery',
       var idx = 1;
       self.items[self.game.pointer].dictate_targetWords.forEach(function(word, realidx) {
         if (!word.match(self.quizhelper.spliton_regexp)) {
-          dictate_targetWordsCode += "<ruby><input type='text' maxlength='" + word.length + "' size='" + (word.length + 1) + "' class='dictate_targetWord' data-realidx='" + realidx + "' data-idx='" + idx + "'><rt><i data-idx='" + idx + "' class='dictate_feedback'></i></rt></ruby>";
+          dictate_targetWordsCode += "<ruby><input type='text' maxlength='" + word.length + "' size='" + (word.length + 1) + "' class='dictate_targetBit dictate_targetWord' data-realidx='" + realidx + "' data-idx='" + idx + "'><rt><i data-idx='" + idx + "' class='dictate_feedback'></i></rt></ruby>";
           idx++;
         } else {
-          dictate_targetWordsCode += word;
+          dictate_targetWordsCode += "<span class='dictate_targetBit dictate_targetWordPunc' data-idx='" + idx + "'>" + word + "</span>";
         }
       });
       code += "<div style='margin-right:90px;' class='dictate_speech dictate_right'>" + dictate_targetWordsCode + "</div>";
       code += "</div>";
       $("#" + self.itemdata.uniqueid + "_container .dictate_game").append(code);
       var newreply = $(".dictate_reply_" + self.game.pointer);
-      newreply.show();
       anim.do_animate(newreply,'zoomIn animate__faster','in').then(
           function(){}
       );
