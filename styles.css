@@ -1750,6 +1750,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .mod_minilesson_itemtextarea_cont {
   width: 100%;
   margin-top: 10px;
+  padding: 5px;
+  border: 1px solid grey;
 }
 
 .mod_minilesson_iframe_responsive {
