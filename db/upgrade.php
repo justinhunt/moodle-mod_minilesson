@@ -321,7 +321,7 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     // Add containerwidth  to minilesson table
-    if ($oldversion < 2022053101) {
+    if ($oldversion < 2022053102) {
         $table = new xmldb_table(constants::M_TABLE);
 
         // Define fields ,lessonkey,to be added to minilesson
@@ -335,7 +335,19 @@ function xmldb_minilesson_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
-        upgrade_mod_savepoint(true, 2022053101, 'minilesson');
+
+        //add missign default if its missing
+        $vfields=[];
+        $vfields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,null, null, 0);
+        $vfields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, null, null, 0);
+
+        // Add fields
+        foreach ($vfields as $field) {
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->change_field_default($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2022053102, 'minilesson');
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.
