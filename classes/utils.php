@@ -929,7 +929,7 @@ class utils{
         $data->{constants::TTSDIALOGVISIBLE}=$opts->{constants::TTSDIALOGVISIBLE};
         $data->{constants::TTSDIALOGVOICEA}=$opts->{constants::TTSDIALOGVOICEA};
         $data->{constants::TTSDIALOGVOICEB}=$opts->{constants::TTSDIALOGVOICEB};
-        $data->{constants::TTSDIALOGVOICEC}=$opts->{constants::TTSDIALOGVOICEB};
+        $data->{constants::TTSDIALOGVOICEC}=$opts->{constants::TTSDIALOGVOICEC};
         return $data;
     }
     public static function pack_ttsdialogopts($data){
