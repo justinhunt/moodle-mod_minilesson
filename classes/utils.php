@@ -985,7 +985,7 @@ class utils{
     }
     public static function get_tts_voices($langcode,$showall){
         $alllang= array(
-                constants::M_LANG_ARAE => ['Zeina'],
+                constants::M_LANG_ARAE => ['Zeina'=>'Zeina','ar-XA-Wavenet-B'=>'Amir_g','ar-XA-Wavenet-A'=>'Salma_g'],
             //constants::M_LANG_ARSA => [],
                 constants::M_LANG_DEDE => ['Hans'=>'Hans','Marlene'=>'Marlene', 'Vicki'=>'Vicki'],
                 constants::M_LANG_DADK => ['Naja'=>'Naja','Mads'=>'Mads'],
