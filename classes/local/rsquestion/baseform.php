@@ -148,28 +148,80 @@ abstract class baseform extends \moodleform {
                 $this->_form->setDefault(constants::TEXTQUESTION . '_editor', array('text' => '', 'format' => FORMAT_HTML));
                 $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
             }else{
+                //Question instructions
+                $mform->addElement('text', constants::TEXTINSTRUCTIONS, get_string('iteminstructions', constants::M_COMPONENT), array('size'=>70));
+                $mform->setType(constants::TEXTINSTRUCTIONS, PARAM_RAW);
+
                 //Question text
                 $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
                 $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
                 //add layout
                 $this->add_layoutoptions();
                 switch($this->type) {
+
+                    case constants::TYPE_PAGE:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            '');
+                        break;
+
                     case constants::TYPE_LISTENREPEAT:
-                        $mform->setDefault(constants::TEXTQUESTION,
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
                                 get_string('lr_instructions1', constants::M_COMPONENT));
                         break;
                     case constants::TYPE_DICTATIONCHAT:
-                        $mform->setDefault(constants::TEXTQUESTION,
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
                                 get_string('dc_instructions1', constants::M_COMPONENT));
                         break;
                     case constants::TYPE_SPEECHCARDS:
-                        $mform->setDefault(constants::TEXTQUESTION,
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
                                 get_string('sc_instructions1', constants::M_COMPONENT));
                         break;
                      case constants::TYPE_DICTATION:
-                         $mform->setDefault(constants::TEXTQUESTION,
+                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                                  get_string('dictation_instructions1', constants::M_COMPONENT));
                          break;
+
+                     case constants::TYPE_MULTIAUDIO:
+                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                             get_string('multiaudio_instructions1', constants::M_COMPONENT));
+                         break;
+
+                    case constants::TYPE_MULTICHOICE:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('multichoice_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    case constants::TYPE_SHORTANSWER:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('shortanswer_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    case constants::TYPE_SMARTFRAME:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('smartframe_instructions1', constants::M_COMPONENT));
+                        break;
+                    //listening gapfill
+                    case constants::TYPE_LGAPFILL:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('lg_instructions1', constants::M_COMPONENT));
+                        break;
+                    //speaking gapfill
+                    case constants::TYPE_SGAPFILL:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('sg_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    //comprehension quiz
+                    case constants::TYPE_COMPQUIZ:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('listeningquiz_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    //button quiz
+                    case constants::TYPE_BUTTONQUIZ:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('buttonquiz_instructions1', constants::M_COMPONENT));
+                        break;
                 }
 
                 $togglearray=array();
@@ -179,6 +231,7 @@ abstract class baseform extends \moodleform {
                 $togglearray[] =& $mform->createElement('advcheckbox','addtextarea',get_string('addtextarea',constants::M_COMPONENT),'');
                 $togglearray[] =& $mform->createElement('advcheckbox','addyoutubeclip',get_string('addyoutubeclip',constants::M_COMPONENT),'');
                 $togglearray[] =& $mform->createElement('advcheckbox','addttsdialog',get_string('addttsdialog',constants::M_COMPONENT),'');
+                $togglearray[] =& $mform->createElement('advcheckbox','addttspassage',get_string('addttspassage',constants::M_COMPONENT),'');
                 $mform->addGroup($togglearray, 'togglearray', get_string('mediaprompts', constants::M_COMPONENT), array(' '), false);
                 //in the case of page we assume they will want to use some media
                 if($this->type== constants::TYPE_PAGE) {
@@ -277,21 +330,46 @@ abstract class baseform extends \moodleform {
             $mform->addElement('advcheckbox',constants::TTSDIALOGVISIBLE,get_string('ttsdialogvisible',constants::M_COMPONENT),get_string('ttsdialogvisible_desc', constants::M_COMPONENT));
             $mform->setDefault(constants::TTSDIALOGVISIBLE, 1);
 
-
             if($m35){
                 $mform->hideIf('ttsdialog_grp', 'addttsdialog', 'neq', 1);
                 $mform->hideIf(constants::TTSDIALOGVOICEA, 'addttsdialog', 'neq', 1);
                 $mform->hideIf(constants::TTSDIALOGVOICEB, 'addttsdialog', 'neq', 1);
                 $mform->hideIf(constants::TTSDIALOGVOICEC, 'addttsdialog', 'neq', 1);
-                $mform->hideIf(constants::TTSDIALOG, 'addttsdialog', 'neq', 1);
                 $mform->hideIf(constants::TTSDIALOGVISIBLE, 'addttsdialog', 'neq', 1);
+                $mform->hideIf(constants::TTSDIALOG, 'addttsdialog', 'neq', 1);
             }else {
                 $mform->disabledIf('ttsdialog_grp', 'addttsdialog', 'neq', 1);
                 $mform->disabledIf(constants::TTSDIALOGVOICEA, 'addttsdialog', 'neq', 1);
                 $mform->disabledIf(constants::TTSDIALOGVOICEB, 'addttsdialog', 'neq', 1);
                 $mform->disabledIf(constants::TTSDIALOGVOICEC, 'addttsdialog', 'neq', 1);
-                $mform->disabledIf(constants::TTSDIALOG, 'addttsdialog', 'neq', 1);
                 $mform->disabledIf(constants::TTSDIALOGVISIBLE, 'addttsdialog', 'neq', 1);
+                $mform->disabledIf(constants::TTSDIALOG, 'addttsdialog', 'neq', 1);
+
+            }
+
+            //Question TTS Passage
+            $ttspassage_instructions_array=array();
+            $ttspassage_instructions_array[] =& $mform->createElement('static', 'ttspassage_instructions', null,get_string('ttspassageinstructions', constants::M_COMPONENT));
+            $mform->addGroup($ttspassage_instructions_array, 'ttspassage_grp','', array(' '), false);
+            //Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
+            //$this->add_static_text('ttspassage_instructions',null,get_string('ttspassageinstructions', constants::M_COMPONENT));
+
+            $this->add_voiceselect(constants::TTSPASSAGEVOICE,get_string('ttspassagevoice',constants::M_COMPONENT));
+            $this->add_voiceoptions(constants::TTSPASSAGESPEED,get_string('ttspassagespeed',constants::M_COMPONENT));
+            $mform->addElement('textarea', constants::TTSPASSAGE, get_string('ttspassage', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;','placeholder'=>''));
+            $mform->setType(constants::TTSPASSAGE, PARAM_RAW);
+
+            if($m35){
+                $mform->hideIf('ttspassage_grp', 'addttspassage', 'neq', 1);
+                $mform->hideIf(constants::TTSPASSAGEVOICE, 'addttspassage', 'neq', 1);
+                $mform->hideIf(constants::TTSPASSAGESPEED, 'addttspassage', 'neq', 1);
+                $mform->hideIf(constants::TTSPASSAGE, 'addttspassage', 'neq', 1);
+            }else {
+                $mform->disabledIf('ttspassage_grp', 'addttspassage', 'neq', 1);
+                $mform->disabledIf(constants::TTSPASSAGEVOICE, 'addttspassage', 'neq', 1);
+                $mform->disabledIf(constants::TTSPASSAGESPEED, 'addttspassage', 'neq', 1);
+                $mform->disabledIf(constants::TTSPASSAGE, 'addttspassage', 'neq', 1);
+
             }
         }
 

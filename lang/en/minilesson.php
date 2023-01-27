@@ -362,6 +362,10 @@ $string['addspeechcardsitem']='Speech Cards';
 $string['addpageitem']='Content Page';
 $string['addsmartframeitem']='SmartFrame';
 $string['addshortansweritem']='Short Answer';
+$string['addlisteninggapfillitem']='Listening Gapfill';
+$string['addspeakinggapfillitem']='Speaking Gapfill';
+$string['addcomprehensionquizitem']='Comprehension Quiz';
+$string['addbuttonquizitem']='Button Quiz';
 
 
 
@@ -374,7 +378,8 @@ $string['listenrepeat']='Listen and Speak';
 $string['page']='Content Page';
 $string['smartframe']='SmartFrame';
 $string['shortanswer']='Short Answer';
-
+$string['lgapfill']='Listening Gapfill';
+$string['sgapfill']='Speaking Gapfill';
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';
 $string['transcriber_auto'] = 'Open STT (Strict)';
@@ -587,3 +592,26 @@ $string['contwidth-full']="Full";
 $string['lessonfont']="Custom font";
 $string['lessonfont_help']="A font name that will override site default for this minilesson when displayed. Must be exact in spelling and case. eg Andika or Comic Sans MS";
 $string['advanced']="Advanced";
+$string['multiaudio_instructions1'] = 'Choose the correct answer. Use the mic to read it aloud.';
+$string['multichoice_instructions1'] = 'Choose the correct answer.';
+$string['shortanswer_instructions1'] = 'Answer the question by using the mic.';
+$string['smartframe_instructions1'] = 'The page content will load below.';
+
+$string['addttspassage'] = "Add TTS Passage";
+$string['ttspassage']="TTS Passage";
+$string['ttspassagespeed']="Speed";
+$string['ttspassagevoice']="Voice";
+$string['ttspassageinstructions']="Choose the speaker voice and speed, and enter the passage to be read.";
+$string['lg_results'] = 'Results';
+$string['sg_results'] = 'Results';
+$string['listeninggapfill'] = 'Listening GapFill';
+$string['speakinggapfill'] = 'Speaking GapFill';
+$string['comprehensionquiz'] = 'Comprehension Quiz';
+$string['buttonquiz'] = 'Button Quiz';
+$string['lg_instructions1'] = 'Listening GapFill instructions';
+$string['sg_instructions1'] = 'Speaking GapFill instructions';
+$string['compquiz_results'] = 'Results';
+$string['buttonquiz_results'] = 'Results';
+$string['compquiz_instructions1'] = 'Comprehension Quiz instructions';
+$string['buttonquiz_instructions1'] = 'Button Quiz instructions';
+$string['iteminstructions'] = 'Item instructions';

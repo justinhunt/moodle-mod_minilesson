@@ -356,6 +356,42 @@ class mod_minilesson_external extends external_api {
                 );
                 break;
 
+            case constants::TYPE_LGAPFILL:
+                $mform = new \mod_minilesson\local\rsquestion\listeninggapfillform(null,
+                    array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$moduleinstance),
+                    $method, $target,$attributes,$editable,$data
+                );
+                break;
+
+            case constants::TYPE_SGAPFILL:
+                $mform = new \mod_minilesson\local\rsquestion\speakinggapfillform(null,
+                    array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$moduleinstance),
+                    $method, $target,$attributes,$editable,$data
+                );
+                break;
+
+            case constants::TYPE_COMPQUIZ:
+                $mform = new \mod_minilesson\local\rsquestion\compquizform(null,
+                    array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$moduleinstance),
+                    $method, $target,$attributes,$editable,$data
+                );
+                break;
+
+            case constants::TYPE_BUTTONQUIZ:
+                $mform = new \mod_minilesson\local\rsquestion\buttonquizform(null,
+                    array('editoroptions'=>$editoroptions,
+                        'filemanageroptions'=>$filemanageroptions,
+                        'moduleinstance'=>$moduleinstance),
+                    $method, $target,$attributes,$editable,$data
+                );
+                break;
+
             case constants::NONE:
             default:
                 print_error('No item type specifified');

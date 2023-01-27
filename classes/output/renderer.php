@@ -262,11 +262,15 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_LISTENREPEAT:
                 case constants::TYPE_SPEECHCARDS:
                 case constants::TYPE_SHORTANSWER:
+                case constants::TYPE_LGAPFILL:
+                case constants::TYPE_SGAPFILL:
                     $result->correctans = $quizdata[$result->index]->sentences;
                     break;
 
                 case constants::TYPE_MULTIAUDIO:
                 case constants::TYPE_MULTICHOICE:
+                case constants::TYPE_COMPQUIZ:
+                case constants::TYPE_BUTTONQUIZ:
                     $result->hasincorrectanswer = true;
                     $correctanswers=[];
                     $incorrectanswers=[];

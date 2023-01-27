@@ -69,6 +69,7 @@
             <FIELD NAME="itemorder" TYPE="int" LENGTH="10" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
             <FIELD NAME="type" TYPE="char" LENGTH="20" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="visible" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="1" SEQUENCE="false"/>
+            <FIELD NAME="iteminstructions" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="itemtext" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="itemtextformat" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
             <FIELD NAME="itemtts" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
@@ -82,6 +83,8 @@
             <FIELD NAME="itemaudiofname" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="itemttsdialog" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="itemttsdialogopts" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+            <FIELD NAME="itemttspassage" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+            <FIELD NAME="itemttspassageopts" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="customtext1" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="customtext1format" TYPE="int" LENGTH="2" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="customtext2" TYPE="text" NOTNULL="false" SEQUENCE="false"/>

@@ -260,6 +260,11 @@ class helper
             $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION};
         }
 
+        //Question instructions
+        if (property_exists($data, constants::TEXTINSTRUCTIONS)) {
+             $theitem->{constants::TEXTINSTRUCTIONS} = $data->iteminstructions;
+        }
+
         //layout
         if (property_exists($data, constants::LAYOUT)) {
             $theitem->{constants::LAYOUT} = $data->{constants::LAYOUT};
@@ -318,6 +323,12 @@ class helper
         if(property_exists($data,constants::TTSDIALOG)){
             $theitem->{constants::TTSDIALOG} = $data->{constants::TTSDIALOG};
             $theitem->{constants::TTSDIALOGOPTS} = utils::pack_ttsdialogopts($data);
+        }
+
+        //TTS Passage
+        if(property_exists($data,constants::TTSPASSAGE)){
+            $theitem->{constants::TTSPASSAGE} = $data->{constants::TTSPASSAGE};
+            $theitem->{constants::TTSPASSAGEOPTS} = utils::pack_ttspassageopts($data);
         }
 
         //save correct answer if we have one

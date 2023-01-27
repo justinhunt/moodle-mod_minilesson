@@ -263,6 +263,7 @@ class utils{
         $returndata=false;
 
         $cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
+        $modulecontext = \context_module::instance($cm->id);
         $moduleinstance  = $DB->get_record(constants::M_MODNAME, array('id' => $cm->instance), '*', MUST_EXIST);
         $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE,array('moduleid'=>$moduleinstance->id,'userid'=>$USER->id),'id DESC');
 
@@ -301,6 +302,7 @@ class utils{
             $newgrade=true;
             $latestattempt->sessionscore = self::calculate_session_score($sessiondata->steps);
             $latestattempt->status =constants::M_STATE_COMPLETE;
+            \mod_minilesson\event\attempt_submitted::create_from_attempt($latestattempt, $modulecontext)->trigger();
         }else{
             $newgrade=false;
         }
@@ -914,13 +916,20 @@ class utils{
         return $options;
     }
 
-    public static function unpack_ttsdialogopts($data){
-        if(!self::is_json($data->{constants::TTSDIALOGOPTS})){return $data;}
-        $opts = json_decode($data->{constants::TTSDIALOGOPTS});
-        $data->{constants::TTSDIALOGVISIBLE}=$opts->{constants::TTSDIALOGVISIBLE};
-        $data->{constants::TTSDIALOGVOICEA}=$opts->{constants::TTSDIALOGVOICEA};
-        $data->{constants::TTSDIALOGVOICEB}=$opts->{constants::TTSDIALOGVOICEB};
-        $data->{constants::TTSDIALOGVOICEC}=$opts->{constants::TTSDIALOGVOICEC};
+
+    public static function pack_ttspassageopts($data){
+        $opts = new \stdClass();
+        $opts->{constants::TTSPASSAGEVOICE}=$data->{constants::TTSPASSAGEVOICE};
+        $opts->{constants::TTSPASSAGESPEED}=$data->{constants::TTSPASSAGESPEED};
+        $opts_json = json_encode($opts);
+        return $opts_json;
+    }
+
+    public static function unpack_ttspassageopts($data){
+        if(!self::is_json($data->{constants::TTSPASSAGEOPTS})){return $data;}
+        $opts = json_decode($data->{constants::TTSPASSAGEOPTS});
+        $data->{constants::TTSPASSAGEVOICE}=$opts->{constants::TTSPASSAGEVOICE};
+        $data->{constants::TTSPASSAGESPEED}=$opts->{constants::TTSPASSAGESPEED};
         return $data;
     }
     public static function pack_ttsdialogopts($data){
@@ -931,6 +940,32 @@ class utils{
         $opts->{constants::TTSDIALOGVOICEC}=$data->{constants::TTSDIALOGVOICEC};
         $opts_json = json_encode($opts);
         return $opts_json;
+    }
+    public static function unpack_ttsdialogopts($data){
+        if(!self::is_json($data->{constants::TTSDIALOGOPTS})){return $data;}
+        $opts = json_decode($data->{constants::TTSDIALOGOPTS});
+        $data->{constants::TTSDIALOGVISIBLE}=$opts->{constants::TTSDIALOGVISIBLE};
+        $data->{constants::TTSDIALOGVOICEA}=$opts->{constants::TTSDIALOGVOICEA};
+        $data->{constants::TTSDIALOGVOICEB}=$opts->{constants::TTSDIALOGVOICEB};
+        $data->{constants::TTSDIALOGVOICEC}=$opts->{constants::TTSDIALOGVOICEC};
+        return $data;
+    }
+
+    public static function split_into_words($thetext) {
+        $thetext = preg_replace('/\s+/', ' ', trim($thetext));
+        if($thetext == ''){
+            return array();
+        }
+        return explode(' ', $thetext);
+    }
+
+    public static function split_into_sentences($thetext) {
+        $thetext = preg_replace('/\s+/', ' ', trim($thetext));
+        if($thetext == ''){
+            return array();
+        }
+        preg_match_all('/([^\.!\?]+[\.!\?"\']+)|([^\.!\?"\']+$)/', $thetext, $matches);
+        return $matches[0];
     }
 
     public static function fetch_auto_voice($langcode){
@@ -1208,7 +1243,7 @@ class utils{
 
             //region
             $regionoptions = \mod_minilesson\utils::get_region_options();
-            $mform->addElement('select', 'awsregion', get_string('awsregion', constants::M_COMPONENT), $regionoptions);
+            $mform->addElement('select', 'region', get_string('awsregion', constants::M_COMPONENT), $regionoptions);
             $mform->setDefault('region',$config->awsregion);
 
 
@@ -1305,16 +1340,60 @@ class utils{
 
         }//end of prepare_file_and_json_stuff
 
+    public static function clean_ssml_chars($speaktext){
+        //deal with SSML reserved characters
+        $speaktext =  str_replace("&", "&amp;", $speaktext);
+        $speaktext = str_replace("'", "&apos;", $speaktext);
+        $speaktext = str_replace('"', "&quot;", $speaktext);
+        $speaktext = str_replace("<", "&lt;", $speaktext);
+        $speaktext =  str_replace(">", "&gt;", $speaktext);
+        return $speaktext;
+    }
+
     //fetch the MP3 URL of the text we want read aloud
-    public static function fetch_polly_url($token,$region,$speaktext,$texttype, $voice) {
+    public static function fetch_polly_url($token,$region,$speaktext,$voiceoption, $voice) {
         global $USER;
 
-
+        $texttype='ssml';
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'polly');
         $key = sha1($speaktext . '|' . $texttype . '|' . $voice);
         $pollyurl = $cache->get($key);
         if($pollyurl && !empty($pollyurl)){
             return $pollyurl;
+        }
+
+
+
+        switch((int)($voiceoption)){
+
+            //slow
+            case 1:
+                //fetch slightly slower version of speech
+                //rate = 'slow' or 'x-slow' or 'medium'
+                $speaktext =self::clean_ssml_chars($speaktext);
+                $speaktext = '<speak><break time="1000ms"></break><prosody rate="slow">' . $speaktext . '</prosody></speak>';
+                break;
+            //veryslow
+            case 2:
+                //fetch slightly slower version of speech
+                //rate = 'slow' or 'x-slow' or 'medium'
+                $speaktext =self::clean_ssml_chars($speaktext);
+                $speaktext = '<speak><break time="1000ms"></break><prosody rate="x-slow">' . $speaktext . '</prosody></speak>';
+                break;
+            //ssml
+            case 3:
+                $speaktext='<speak>' . $speaktext . '</speak>';
+                break;
+
+            //normal
+            case 0:
+            default:
+                //fetch slightly slower version of speech
+                //rate = 'slow' or 'x-slow' or 'medium'
+                $speaktext =self::clean_ssml_chars($speaktext);
+                $speaktext = '<speak><break time="1000ms"></break>' + $speaktext + '</speak>';
+                break;
+
         }
 
         //The REST API we are calling

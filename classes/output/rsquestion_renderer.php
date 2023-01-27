@@ -49,6 +49,10 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $qtypes[]=constants::TYPE_SHORTANSWER;
         if(isset($CFG->minilesson_experimental) &&$CFG->minilesson_experimental){
            $qtypes[]=constants::TYPE_SMARTFRAME;
+            $qtypes[]=constants::TYPE_LGAPFILL;
+            $qtypes[]=constants::TYPE_SGAPFILL;
+            $qtypes[]=constants::TYPE_COMPQUIZ;
+            $qtypes[]=constants::TYPE_BUTTONQUIZ;
         }
         foreach($qtypes as $qtype){
             $url=

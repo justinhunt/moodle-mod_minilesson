@@ -4,7 +4,8 @@
   <!-- @@CLOUDPOODLLTOKEN@@ -->
   <!-- title + instructions -->
     {{#title}}<div class="minilesson_questionheader"><b>{{#str}}d_question, mod_minilesson{{/str}} {{number}}: {{{title}}}</b></div>{{/title}}
-    <div class="mod_minilesson_itemtext">{{{text}}}</div>
+    {{#iteminstructions}}<div class="mod_minilesson_iteminstructions">{{iteminstructions}}</div>{{/iteminstructions}}
+    {{#itemtext}}<div class="mod_minilesson_itemtext">{{{itemtext}}}</div>{{/itemtext}}
     {{#horizontal}}
     <div class="row" style="margin-top: 20px;">
     <div class="col-sm-6">

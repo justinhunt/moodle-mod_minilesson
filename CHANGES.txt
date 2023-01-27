@@ -1,3 +1,6 @@
+Version 1.0.47(Build 2023011801)
+- Added TTS Passage (beta)
+
 Version 1.0.47(Build 2022120200)
 - Fixed missing lang strings
 

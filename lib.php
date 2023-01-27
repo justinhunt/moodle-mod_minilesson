@@ -798,6 +798,13 @@ function minilesson_output_fragment_mform($args) {
                 }else{
                     $data->addttsdialog = 0;
                 }
+                if(!empty($data->{constants::TTSPASSAGE})){
+                    $data->addttspassage = 1;
+                    //expand opts
+                    $data=utils::unpack_ttspassageopts($data);
+                }else{
+                    $data->addttspassage = 0;
+                }
 
 
 
@@ -886,6 +893,38 @@ function minilesson_output_fragment_mform($args) {
                     array('editoroptions'=>$editoroptions,
                             'filemanageroptions'=>$filemanageroptions,
                             'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_LGAPFILL:
+            $mform = new \mod_minilesson\local\rsquestion\listeninggapfillform(null,
+                array('editoroptions'=>$editoroptions,
+                    'filemanageroptions'=>$filemanageroptions,
+                    'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_SGAPFILL:
+            $mform = new \mod_minilesson\local\rsquestion\speakinggapfillform(null,
+                array('editoroptions'=>$editoroptions,
+                    'filemanageroptions'=>$filemanageroptions,
+                    'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_COMPQUIZ:
+            $mform = new \mod_minilesson\local\rsquestion\compquizform(null,
+                array('editoroptions'=>$editoroptions,
+                    'filemanageroptions'=>$filemanageroptions,
+                    'moduleinstance'=>$moduleinstance)
+            );
+            break;
+
+        case constants::TYPE_BUTTONQUIZ:
+            $mform = new \mod_minilesson\local\rsquestion\buttonquizform(null,
+                array('editoroptions'=>$editoroptions,
+                    'filemanageroptions'=>$filemanageroptions,
+                    'moduleinstance'=>$moduleinstance)
             );
             break;
 

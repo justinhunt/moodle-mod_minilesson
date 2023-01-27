@@ -133,12 +133,24 @@ class comprehensiontest
                 case constants::TYPE_PAGE:
                 case constants::TYPE_SMARTFRAME:
                 case constants::TYPE_SHORTANSWER:
+                case constants::TYPE_LGAPFILL:
+                case constants::TYPE_SGAPFILL:
+                case constants::TYPE_COMPQUIZ:
+                case constants::TYPE_BUTTONQUIZ:
+
+                    //Question instructions
+                    if(!empty($item->{constants::TEXTINSTRUCTIONS})) {
+                        $testitem->iteminstructions = $item->{constants::TEXTINSTRUCTIONS};
+                    }
 
                     //Question Text
-                    $testitem->text =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
+                    $itemtext =  file_rewrite_pluginfile_urls($item->{constants::TEXTQUESTION},
                             'pluginfile.php', $this->context->id,constants::M_COMPONENT,
                             constants::TEXTQUESTION_FILEAREA, $testitem->id);
-                    $testitem->text =format_text($testitem->text,FORMAT_MOODLE ,$editoroptions);
+                    $itemtext = format_text($itemtext, FORMAT_MOODLE, $editoroptions);
+                    if(!empty($itemtext)) {
+                        $testitem->itemtext = $itemtext;
+                    }
 
                     //Question media embed
                     if(!empty(trim($item->{constants::MEDIAIFRAME}))){
@@ -253,10 +265,11 @@ class comprehensiontest
                             $lineset->speaker=$speaker;
                             $lineset->speakertext=$thetext;
                             $lineset->voice=$voice;
+                            $voiceoptions = constants::TTS_NORMAL;
                             if($lineset->voice=="soundeffect"){
                                 $lineset->audiourl = $CFG->wwwroot  . '/' . constants::M_PATH . '/sounds/' . trim($thetext) . '.mp3';
                             }else {
-                                $lineset->audiourl = utils::fetch_polly_url($token, 'useast1', $thetext, 'text', $voice);
+                                $lineset->audiourl = utils::fetch_polly_url($token, 'useast1', $thetext, $voiceoptions, $voice);
                             }
                             $linesdata[] = $lineset;
 
@@ -265,6 +278,25 @@ class comprehensiontest
                     }
                     $testitem->ttsdialoglines = $linesdata;
 
+                }// end of tts dialog
+
+                //TTS Passage
+                if(!empty(trim($item->{constants::TTSPASSAGE}))){
+                    $item = utils::unpack_ttspassageopts($item);
+                    $testitem->itemttspassage=true;
+                    $textlines = utils::split_into_sentences($item->{constants::TTSPASSAGE});
+                    $voice = $item->{constants::TTSPASSAGEVOICE};
+                    $voiceoptions = $item->{constants::TTSPASSAGESPEED};
+                    $linedatas=[];
+                    foreach($textlines as $theline){
+                        if(!empty(trim($theline))) {
+                            $linedata=new \stdClass();
+                            $linedata->sentence = $theline;
+                            $linedata->audiourl = utils::fetch_polly_url($token, 'useast1', $theline, $voiceoptions, $voice);
+                            $linedatas[]=$linedata;
+                        }
+                    }
+                    $testitem->ttspassagelines = $linedatas;
                 }// end of tts dialog
 
                 //Question TextArea
@@ -337,6 +369,8 @@ class comprehensiontest
                 case constants::TYPE_LISTENREPEAT:
                 case constants::TYPE_MULTIAUDIO:
                 case constants::TYPE_SHORTANSWER:
+                case constants::TYPE_SGAPFILL:
+                case constants::TYPE_LGAPFILL:
 
                     //phonetic
                     $testitem->phonetic=$item->phonetic;

@@ -350,6 +350,44 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022053102, 'minilesson');
     }
 
+    // Add iteminstructions to minilesson table
+    if ($oldversion < 2023011800) {
+        $table = new xmldb_table(constants::M_QTABLE);
+
+        // Define fields ,lessonkey,to be added to minilesson
+        $fields=[];
+        $fields[] = new xmldb_field('iteminstructions', XMLDB_TYPE_TEXT, null, null, null, null);
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2023011800, 'minilesson');
+    }
+
+    // Add TTS Passage to minilesson question table
+    if ($oldversion < 2023011801) {
+        $table = new xmldb_table(constants::M_QTABLE);
+
+
+        // Define field itemttspassage
+        $fields=[];
+        $fields[]= new xmldb_field('itemttspassage', XMLDB_TYPE_TEXT, null, null, null, null);
+        $fields[]= new xmldb_field('itemttspassageopts', XMLDB_TYPE_TEXT, null, null, null, null);
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2023011801, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }
