@@ -1434,7 +1434,45 @@ class utils{
         }
     }
 
+   public static function fetch_item_from_itemrecord($itemrecord,$moduleinstance, $context=false){
+       //Set up the item type specific parts of the form data
+       switch($itemrecord->type){
+           case constants::TYPE_MULTICHOICE: return new local\itemtype\item_multichoice($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_MULTIAUDIO: return new local\itemtype\item_multiaudio($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_DICTATIONCHAT: return new local\itemtype\item_dictationchat($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_DICTATION: return new local\itemtype\item_dictation($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_SPEECHCARDS: return new local\itemtype\item_speechcards($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_LISTENREPEAT: return new local\itemtype\item_listenrepeat($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_PAGE: return new local\itemtype\item_page($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_SMARTFRAME: return new local\itemtype\item_smartframe($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_SHORTANSWER: return new local\itemtype\item_shortanswer($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_COMPQUIZ: return new local\itemtype\item_compquiz($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_BUTTONQUIZ: return new local\itemtype\item_buttonquiz($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_SGAPFILL: return new local\itemtype\item_speakinggapfill($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_LGAPFILL: return new local\itemtype\item_listeninggapfill($itemrecord,$moduleinstance,$context);
+           default:
+       }
+   }
 
+    public static function fetch_itemform_classname($itemtype){
+        //Fetch the correct form
+        switch($itemtype){
+            case constants::TYPE_MULTICHOICE: return "\mod_minilesson\local\itemform\multichoiceform";
+            case constants::TYPE_MULTIAUDIO: return "\mod_minilesson\local\itemform\multiaudioform";
+            case constants::TYPE_DICTATIONCHAT: return "\mod_minilesson\local\itemform\dictationchatform";
+            case constants::TYPE_DICTATION: return "\mod_minilesson\local\itemform\dictationform";
+            case constants::TYPE_SPEECHCARDS: return "\mod_minilesson\local\itemform\speechcardsform";
+            case constants::TYPE_LISTENREPEAT: return "\mod_minilesson\local\itemform\listenrepeatform";
+            case constants::TYPE_PAGE: return "\mod_minilesson\local\itemform\pageform";
+            case constants::TYPE_SMARTFRAME: return "\mod_minilesson\local\itemform\smartframe";
+            case constants::TYPE_SHORTANSWER: return "\mod_minilesson\local\itemform\shortanswer";
+            case constants::TYPE_COMPQUIZ: return "\mod_minilesson\local\itemform\compquiz";
+            case constants::TYPE_BUTTONQUIZ: return "\mod_minilesson\local\itemform\buttonquiz";
+            case constants::TYPE_SGAPFILL: return "\mod_minilesson\local\itemform\speakinggapfill";
+            case constants::TYPE_LGAPFILL: return "\mod_minilesson\local\itemform\listeninggapfill";
+            default:
+        }
+    }
 
 
 

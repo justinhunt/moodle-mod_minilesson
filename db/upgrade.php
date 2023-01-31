@@ -144,7 +144,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         $instances = $DB->get_records(constants::M_TABLE);
         if($instances){
             foreach ($instances as $moduleinstance){
-                \mod_minilesson\local\rsquestion\helper::update_all_langmodels($moduleinstance);
+                \mod_minilesson\local\itemform\helper::update_all_langmodels($moduleinstance);
             }
         }
         upgrade_mod_savepoint(true, 2021052200, 'minilesson');
@@ -190,7 +190,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         $instances = $DB->get_records(constants::M_TABLE);
         if($instances){
             foreach ($instances as $moduleinstance){
-                \mod_minilesson\local\rsquestion\helper::update_all_phonetic($moduleinstance);
+                \mod_minilesson\local\itemform\helper::update_all_phonetic($moduleinstance);
             }
         }
 

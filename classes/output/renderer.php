@@ -251,7 +251,7 @@ class renderer extends \plugin_renderer_base {
             }
             */
 
-            $items = $DB->get_record('minilesson_rsquestions', array('id' => $quizdata[$result->index]->id));
+            $items = $DB->get_record(constants::M_QTABLE, array('id' => $quizdata[$result->index]->id));
             $result->title = $items->name;
             $result->questext = $items->itemtext;
 
@@ -537,7 +537,7 @@ class renderer extends \plugin_renderer_base {
 
         //quiz data
         $comp_test =  new comprehensiontest($cm);
-        $quizdata =$comp_test->fetch_test_data_for_js();
+        $quizdata =$comp_test->fetch_test_data_for_js($this);
         if($previewquestionid){
            foreach($quizdata as $item){
                if($item->id==$previewquestionid){

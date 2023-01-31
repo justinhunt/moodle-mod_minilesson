@@ -6,14 +6,14 @@
  * Time: 19:31
  */
 
-namespace mod_minilesson\local\rsquestion;
+namespace mod_minilesson\local\itemform;
 
 use \mod_minilesson\constants;
 
-class speakinggapfillform extends baseform
+class buttonquizform extends baseform
 {
 
-    public $type = constants::TYPE_SGAPFILL;
+    public $type = constants::TYPE_BUTTONQUIZ;
 
     public function custom_definition() {
 

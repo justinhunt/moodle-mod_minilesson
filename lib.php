@@ -445,7 +445,7 @@ function minilesson_update_instance(stdClass $minilesson, mod_minilesson_mod_for
 
     //update lang models if required
     if($needs_new_langmodels) {
-        \mod_minilesson\local\rsquestion\helper::update_all_langmodels($minilesson);
+        \mod_minilesson\local\itemform\helper::update_all_langmodels($minilesson);
     }
 
     if(!isset($minilesson->cmidnumber)){
@@ -735,8 +735,8 @@ function minilesson_output_fragment_mform($args) {
     list($ignored, $course) = get_context_info_array($context->id);
 
     //get filechooser and html editor options
-    $editoroptions = \mod_minilesson\local\rsquestion\helper::fetch_editor_options($course, $context);
-    $filemanageroptions = \mod_minilesson\local\rsquestion\helper::fetch_filemanager_options($course,3);
+    $editoroptions = \mod_minilesson\local\itemtype\item::fetch_editor_options($course, $context);
+    $filemanageroptions = \mod_minilesson\local\itemtype\item::fetch_filemanager_options($course,3);
 
     // get the objects we need
     $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
@@ -819,121 +819,17 @@ function minilesson_output_fragment_mform($args) {
         }
     }
 
-
-    //get the mform for our item
-    switch($formname){
-
-
-        case constants::TYPE_MULTICHOICE:
-            $mform = new \mod_minilesson\local\rsquestion\multichoiceform(null,
-                    array('editoroptions'=>$editoroptions,
-                            'filemanageroptions'=>$filemanageroptions,
-                            'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_MULTIAUDIO:
-            $mform = new \mod_minilesson\local\rsquestion\multiaudioform(null,
-                    array('editoroptions'=>$editoroptions,
-                            'filemanageroptions'=>$filemanageroptions,
-                            'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_DICTATIONCHAT:
-            $mform = new \mod_minilesson\local\rsquestion\dictationchatform(null,
-                    array('editoroptions'=>$editoroptions,
-                            'filemanageroptions'=>$filemanageroptions,
-                            'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_DICTATION:
-            $mform = new \mod_minilesson\local\rsquestion\dictationform(null,
-                    array('editoroptions'=>$editoroptions,
-                            'filemanageroptions'=>$filemanageroptions,
-                            'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_SPEECHCARDS:
-            $mform = new \mod_minilesson\local\rsquestion\speechcardsform(null,
-                    array('editoroptions'=>$editoroptions,
-                            'filemanageroptions'=>$filemanageroptions,
-                            'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_LISTENREPEAT:
-            $mform = new \mod_minilesson\local\rsquestion\listenrepeatform(null,
-                    array('editoroptions'=>$editoroptions,
-                            'filemanageroptions'=>$filemanageroptions,
-                            'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_PAGE:
-            $mform = new \mod_minilesson\local\rsquestion\pageform(null,
-                    array('editoroptions'=>$editoroptions,
-                            'filemanageroptions'=>$filemanageroptions,
-                            'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_SMARTFRAME:
-            $mform = new \mod_minilesson\local\rsquestion\smartframeform(null,
-                    array('editoroptions'=>$editoroptions,
-                            'filemanageroptions'=>$filemanageroptions,
-                            'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_SHORTANSWER:
-            $mform = new \mod_minilesson\local\rsquestion\shortanswerform(null,
-                    array('editoroptions'=>$editoroptions,
-                            'filemanageroptions'=>$filemanageroptions,
-                            'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_LGAPFILL:
-            $mform = new \mod_minilesson\local\rsquestion\listeninggapfillform(null,
-                array('editoroptions'=>$editoroptions,
-                    'filemanageroptions'=>$filemanageroptions,
-                    'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_SGAPFILL:
-            $mform = new \mod_minilesson\local\rsquestion\speakinggapfillform(null,
-                array('editoroptions'=>$editoroptions,
-                    'filemanageroptions'=>$filemanageroptions,
-                    'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_COMPQUIZ:
-            $mform = new \mod_minilesson\local\rsquestion\compquizform(null,
-                array('editoroptions'=>$editoroptions,
-                    'filemanageroptions'=>$filemanageroptions,
-                    'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::TYPE_BUTTONQUIZ:
-            $mform = new \mod_minilesson\local\rsquestion\buttonquizform(null,
-                array('editoroptions'=>$editoroptions,
-                    'filemanageroptions'=>$filemanageroptions,
-                    'moduleinstance'=>$moduleinstance)
-            );
-            break;
-
-        case constants::NONE:
-        default:
-            print_error('No item type specifified');
-            return 0;
-
+    $itemformclass  =utils::fetch_itemform_classname($formname);
+    if(!$itemformclass){
+        print_error('No item type specified');
+        return 0;
     }
+    $mform = new $itemformclass(null,
+        array('editoroptions'=>$editoroptions,
+            'filemanageroptions'=>$filemanageroptions,
+            'moduleinstance'=>$moduleinstance)
+    );
+
 
    //if we have item data set it
     if($item){

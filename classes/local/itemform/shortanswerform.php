@@ -6,7 +6,7 @@
  * Time: 19:31
  */
 
-namespace mod_minilesson\local\rsquestion;
+namespace mod_minilesson\local\itemform;
 
 use \mod_minilesson\constants;
 

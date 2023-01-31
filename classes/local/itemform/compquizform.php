@@ -6,14 +6,14 @@
  * Time: 19:31
  */
 
-namespace mod_minilesson\local\rsquestion;
+namespace mod_minilesson\local\itemform;
 
 use \mod_minilesson\constants;
 
-class buttonquizform extends baseform
+class compquizform extends baseform
 {
 
-    public $type = constants::TYPE_BUTTONQUIZ;
+    public $type = constants::TYPE_COMPQUIZ;
 
     public function custom_definition() {
 

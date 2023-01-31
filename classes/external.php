@@ -11,6 +11,7 @@ use mod_minilesson\utils;
 use mod_minilesson\constants;
 use mod_minilesson\diff;
 use mod_minilesson\alphabetconverter;
+use mod_minilesson\local\itemtype\item;
 
 /**
  * External class.
@@ -256,8 +257,8 @@ class mod_minilesson_external extends external_api {
         parse_str($serialiseddata, $data);
 
         //get filechooser and html editor options
-        $editoroptions = \mod_minilesson\local\rsquestion\helper::fetch_editor_options($course, $context);
-        $filemanageroptions = \mod_minilesson\local\rsquestion\helper::fetch_filemanager_options($course,3);
+        $editoroptions = \mod_minilesson\local\itemtype\item::fetch_editor_options($course, $context);
+        $filemanageroptions = \mod_minilesson\local\itemtype\item::fetch_filemanager_options($course,3);
 
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
@@ -271,133 +272,17 @@ class mod_minilesson_external extends external_api {
         $attributes=null;
         $editable=true;
 
-        //get the mform for our item
-        switch($formname){
-
-
-            case constants::TYPE_MULTICHOICE:
-                $mform = new \mod_minilesson\local\rsquestion\multichoiceform(null,
-                        array('editoroptions'=>$editoroptions,
-                                'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance),
-                        $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_MULTIAUDIO:
-                $mform = new \mod_minilesson\local\rsquestion\multiaudioform(null,
-                        array('editoroptions'=>$editoroptions,
-                                'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance),
-                        $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_DICTATIONCHAT:
-                $mform = new \mod_minilesson\local\rsquestion\dictationchatform(null,
-                        array('editoroptions'=>$editoroptions,
-                                'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance),
-                        $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_DICTATION:
-                $mform = new \mod_minilesson\local\rsquestion\dictationform(null,
-                        array('editoroptions'=>$editoroptions,
-                                'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance),
-                        $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_SPEECHCARDS:
-                $mform = new \mod_minilesson\local\rsquestion\speechcardsform(null,
-                        array('editoroptions'=>$editoroptions,
-                                'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance),
-                        $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_LISTENREPEAT:
-                $mform = new \mod_minilesson\local\rsquestion\listenrepeatform(null,
-                        array('editoroptions'=>$editoroptions,
-                                'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance),
-                        $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_PAGE:
-                $mform = new \mod_minilesson\local\rsquestion\pageform(null,
-                        array('editoroptions'=>$editoroptions,
-                                'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance),
-                        $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_SMARTFRAME:
-                $mform = new \mod_minilesson\local\rsquestion\smartframeform(null,
-                        array('editoroptions'=>$editoroptions,
-                                'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance),
-                        $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_SHORTANSWER:
-                $mform = new \mod_minilesson\local\rsquestion\shortanswerform(null,
-                        array('editoroptions'=>$editoroptions,
-                                'filemanageroptions'=>$filemanageroptions,
-                                'moduleinstance'=>$moduleinstance),
-                        $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_LGAPFILL:
-                $mform = new \mod_minilesson\local\rsquestion\listeninggapfillform(null,
-                    array('editoroptions'=>$editoroptions,
-                        'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$moduleinstance),
-                    $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_SGAPFILL:
-                $mform = new \mod_minilesson\local\rsquestion\speakinggapfillform(null,
-                    array('editoroptions'=>$editoroptions,
-                        'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$moduleinstance),
-                    $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_COMPQUIZ:
-                $mform = new \mod_minilesson\local\rsquestion\compquizform(null,
-                    array('editoroptions'=>$editoroptions,
-                        'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$moduleinstance),
-                    $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::TYPE_BUTTONQUIZ:
-                $mform = new \mod_minilesson\local\rsquestion\buttonquizform(null,
-                    array('editoroptions'=>$editoroptions,
-                        'filemanageroptions'=>$filemanageroptions,
-                        'moduleinstance'=>$moduleinstance),
-                    $method, $target,$attributes,$editable,$data
-                );
-                break;
-
-            case constants::NONE:
-            default:
+        $itemformclass  =utils::fetch_itemform_classname($formname);
+        if(!$itemformclass){
                 print_error('No item type specifified');
                 return 0;
-
         }
+        $mform = new $itemformclass(null,
+                        array('editoroptions'=>$editoroptions,
+                                'filemanageroptions'=>$filemanageroptions,
+                                'moduleinstance'=>$moduleinstance),
+                        $method, $target,$attributes,$editable,$data
+                );
 
         $validateddata = $mform->get_data();
         if ($validateddata) {
@@ -409,21 +294,23 @@ class mod_minilesson_external extends external_api {
 
             //lets update the passage hash here before we save the item in db
             if($edit){
+                $theitem=  utils::fetch_item_from_itemrecord($data,$moduleinstance); //  $DB->get_record(constants::M_QTABLE, array('id'=>$data->itemid,constants::M_MODNAME => $cm->instance));
                 $olditem=$DB->get_record(constants::M_QTABLE, array('id'=>$data->itemid,constants::M_MODNAME => $cm->instance));
             }else{
+                $theitem= utils::fetch_item_from_itemrecord($data,$moduleinstance);
                 $olditem=false;
             }
 
             //remove bad accents and things that mess up transcription (kind of like clear but permanent)
-            $data = \mod_minilesson\local\rsquestion\helper::deaccent_item($moduleinstance,$data);
+            $theitem->deaccent();
 
             //get passage hash
-            $data->passagehash = \mod_minilesson\local\rsquestion\helper::update_create_langmodel($moduleinstance,$olditem,$data);
+            $theitem->update_create_langmodel($olditem);
 
             //lets update the phonetics
-            $data->phonetic = \mod_minilesson\local\rsquestion\helper::update_create_phonetic($moduleinstance,$olditem,$data);
+            $theitem->update_create_phonetic($olditem);
 
-            $result = \mod_minilesson\local\rsquestion\helper::update_insert_question($moduleinstance,$data,$edit,$context,$cm,$editoroptions,$filemanageroptions);
+            $result = $theitem->update_insert_item();
             if($result->error==true){
                     $ret->message = $result->message;
                 }else{
@@ -467,7 +354,7 @@ class mod_minilesson_external extends external_api {
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-        $success = \mod_minilesson\local\rsquestion\helper::delete_item($moduleinstance,$itemid,$context);
+        $success = \mod_minilesson\local\itemtype\item::delete_item($itemid,$context);
 
         $ret = new \stdClass();
         $ret->itemid=$itemid;
@@ -507,7 +394,7 @@ class mod_minilesson_external extends external_api {
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-        \mod_minilesson\local\rsquestion\helper::move_item($moduleinstance,$itemid,$direction);
+        \mod_minilesson\local\itemform\helper::move_item($moduleinstance,$itemid,$direction);
 
         $ret = new \stdClass();
         $ret->itemid=$itemid;
@@ -545,7 +432,7 @@ class mod_minilesson_external extends external_api {
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-        list($newitemid,$newitemname,$type,$typelabel) = \mod_minilesson\local\rsquestion\helper::duplicate_item($moduleinstance,$context, $itemid);
+        list($newitemid,$newitemname,$type,$typelabel) = \mod_minilesson\local\itemform\helper::duplicate_item($moduleinstance,$context, $itemid);
 
         $ret = new \stdClass();
         $ret->olditemid=$itemid;

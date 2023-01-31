@@ -87,8 +87,7 @@ class attemptresults extends basereport
         $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
         $comp_test =  new \mod_minilesson\comprehensiontest($cm);
-        $forcetitles=true;
-        $quizdata = $comp_test->fetch_test_data_for_js($forcetitles);
+        $quizdata = $comp_test->fetch_test_data_for_js();
         $emptydata = array();
 
 
@@ -127,7 +126,7 @@ class attemptresults extends basereport
                 $steps = json_decode($record->sessiondata)->steps;
                 $results = array_filter($steps, function($step){return $step->hasgrade;});
                 foreach($results as $result){
-                    $result->title=$quizdata[$result->index]->title;
+                    $result->title=$quizdata[$result->index]->name;
                     $result->type=get_string($quizdata[$result->index]->type,constants::M_COMPONENT);
                     $result->index++;
                 }
@@ -140,5 +139,4 @@ class attemptresults extends basereport
         }
         return true;
     }//end of function
-
 }

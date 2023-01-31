@@ -1,6 +1,6 @@
 <?php
 
-namespace mod_minilesson\local\rsquestion;
+namespace mod_minilesson\local\itemform;
 
 ///////////////////////////////////////////////////////////////////////////
 //                                                                       //

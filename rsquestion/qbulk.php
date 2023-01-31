@@ -55,19 +55,15 @@ $context = context_module::instance($cm->id);
 $mis = $DB->get_records('minilesson');
 $updates = 0;
 foreach($mis as $moduleinstance){
-    $items = $DB->get_records(constants:: M_QTABLE,array('minilesson'=>$moduleinstance->id));
-    foreach($items as $olditem) {
-        $newitem = new \stdClass();
-        //most of the sentences for speech recognition are in customtext1, so we use that to generate lang model
-        $newitem->customtext1 = $olditem->customtext1;
-        $newitem->customtext2 = $olditem->customtext2;
-        $newitem->customtext3 = $olditem->customtext3;
-        $newitem->customtext4 = $olditem->customtext4;
-        $newitem->type = $olditem->type;
-        $passagehash = \mod_minilesson\local\rsquestion\helper::update_create_langmodel($moduleinstance, $olditem, $newitem);
-        if(!empty($passagehash)){
-            $DB->update_record(constants::M_QTABLE,array('id'=>$olditem->id,'passagehash'=>$passagehash));
-            $updates++;
+
+
+    $itemrecords = $DB->get_records(constants:: M_QTABLE,array('minilesson'=>$moduleinstance->id));
+    foreach($itemrecords as $itemrecord) {
+        $theitem =  \mod_minilesson\utils::fetch_item_from_itemrecord($itemrecord,$moduleinstance);
+        $olditemrecord=false;
+        $updated = $theitem->update_create_langmodel($olditemrecord);
+        if($updated) {
+            $theitem->update_insert_item();
             sleep(7);
         }
     }

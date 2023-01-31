@@ -143,8 +143,7 @@ class courseattempts extends basereport {
                 if(!array_key_exists($thedata->activityid,$quizdatas)){
                     $cm = get_coursemodule_from_instance(constants::M_TABLE, $thedata->activityid, $formdata->courseid, false, MUST_EXIST);
                     $comp_test =  new \mod_minilesson\comprehensiontest($cm);
-                    $forcetitles=false;
-                    $quizdatas[$thedata->activityid] = $comp_test->fetch_test_data_for_js($forcetitles);
+                    $quizdatas[$thedata->activityid] = $comp_test->fetch_test_data_for_js();
                 }
                 $quizdata = $quizdatas[$thedata->activityid];
 
