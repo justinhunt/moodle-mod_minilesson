@@ -286,18 +286,18 @@ class mod_minilesson_external extends external_api {
 
         $validateddata = $mform->get_data();
         if ($validateddata) {
-            $edit=$validateddata->id ? true : false;
+            $edit=$validateddata->itemid ? true : false;
             //currently data is an array, but it should be an object
-            $data = (object)$data;
-            $data->type = $formname;
+            $vdata = (object)$validateddata;
+            $vdata->type = $formname;
 
 
-            //lets update the passage hash here before we save the item in db
+            //update or add
             if($edit){
-                $theitem=  utils::fetch_item_from_itemrecord($data,$moduleinstance); //  $DB->get_record(constants::M_QTABLE, array('id'=>$data->itemid,constants::M_MODNAME => $cm->instance));
-                $olditem=$DB->get_record(constants::M_QTABLE, array('id'=>$data->itemid,constants::M_MODNAME => $cm->instance));
+                $theitem=  utils::fetch_item_from_itemrecord($vdata,$moduleinstance); //  $DB->get_record(constants::M_QTABLE, array('id'=>$data->itemid,constants::M_MODNAME => $cm->instance));
+                $olditem=$DB->get_record(constants::M_QTABLE, array('id'=>$vdata->itemid,constants::M_MODNAME => $cm->instance));
             }else{
-                $theitem= utils::fetch_item_from_itemrecord($data,$moduleinstance);
+                $theitem= utils::fetch_item_from_itemrecord($vdata,$moduleinstance);
                 $olditem=false;
             }
 

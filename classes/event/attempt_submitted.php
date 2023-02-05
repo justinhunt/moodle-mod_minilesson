@@ -60,6 +60,8 @@ class attempt_submitted extends \core\event\base {
         $data = array(
             'context' => $modulecontext,
             'objectid' => $attempt->id,
+            'userid' => $USER->id,
+            'relateduserid' => $USER->id,
             'other' => array(),
         );
         if (!empty($attempt->userid) && ($attempt->userid != $USER->id)) {

@@ -72,7 +72,7 @@ abstract class item implements templatable, renderable {
      *
      */
     public function __construct($itemrecord, $moduleinstance=false, $context=false){
-        $this->from_record($itemrecord, $moduleinstance=false, $context=false);
+        $this->from_record($itemrecord, $moduleinstance, $context);
     }
 
     /**
@@ -101,7 +101,7 @@ abstract class item implements templatable, renderable {
      */
     public function from_record($itemrecord, $moduleinstance=false, $context=false) {
         global $DB;
-
+        
         $this->itemrecord = $itemrecord;
         if(!$moduleinstance){
             $this->moduleinstance = $DB->get_record(constants::M_TABLE,['id'=>$this->itemrecord->minilesson],'*', MUST_EXIST);
@@ -793,7 +793,6 @@ abstract class item implements templatable, renderable {
     public function update_create_langmodel($olditemrecord){
         //if we need to generate a DeepSpeech model for this, then lets do that now:
         //we want to process the hashcode and lang model if it makes sense
-        $thepassagehash ='';
         $newitem = $this->itemrecord;
         if(self::NEEDS_SPEECHREC) {
 
@@ -823,6 +822,8 @@ abstract class item implements templatable, renderable {
                         }
                     }
                 }
+        }else{
+            $this->itemrecord->passagehash ='';
         }
         return false;
     }
