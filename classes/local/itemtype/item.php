@@ -101,7 +101,7 @@ abstract class item implements templatable, renderable {
      */
     public function from_record($itemrecord, $moduleinstance=false, $context=false) {
         global $DB;
-        
+
         $this->itemrecord = $itemrecord;
         if(!$moduleinstance){
             $this->moduleinstance = $DB->get_record(constants::M_TABLE,['id'=>$this->itemrecord->minilesson],'*', MUST_EXIST);

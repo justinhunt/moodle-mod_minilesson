@@ -62,14 +62,14 @@ class attempt_submitted extends \core\event\base {
             'objectid' => $attempt->id,
             'userid' => $USER->id,
             'relateduserid' => $USER->id,
-            'other' => array(),
+            'other' => ['submitterid'=>$USER->id],
         );
         if (!empty($attempt->userid) && ($attempt->userid != $USER->id)) {
             $data['relateduserid'] = $attempt->userid;
         }
         /** @var attempt_submitted $event */
         $event =  self::create($data);
-        $event->attempt=$attempt;
+        //$event->set_attempt($attempt);
         $event->add_record_snapshot(constants::M_ATTEMPTSTABLE, $attempt);
         return $event;
     }
@@ -142,5 +142,18 @@ class attempt_submitted extends \core\event\base {
         $othermapped['moduleid'] = array('db' => constants::M_TABLE, 'restore' => constants::M_MODNAME);
 
         return $othermapped;
+    }
+
+    /**
+     * Set assign instance for this event.
+     * @param \stdClass $attempt
+     * @throws \coding_exception
+     */
+    public function set_attempt($attempt) {
+        if ($this->is_triggered()) {
+            throw new \coding_exception('set_attempt() must be done before triggering of event');
+        }
+
+        $this->attempt = $attempt;
     }
 }
