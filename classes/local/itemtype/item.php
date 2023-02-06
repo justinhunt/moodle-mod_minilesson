@@ -65,7 +65,7 @@ abstract class item implements templatable, renderable {
     protected $moduleinstance;
 
     //NEEDS SPEECH REC
-    protected const NEEDS_SPEECHREC = false;
+    protected $needs_speechrec  =false;
 
     /**
      * The class constructor.
@@ -775,17 +775,14 @@ abstract class item implements templatable, renderable {
         return uniqid($prefix, true);
     }
 
+
+
     /*
   * Remove any accents and chars that would mess up the transcript//passage matching
   */
     public function deaccent(){
-        if(self::NEEDS_SPEECHREC) {
+        if($this->needs_speechrec) {
             $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1,$this->moduleinstance->ttslanguage);
-                if($$this->itemrecord->type == constants::TYPE_MULTIAUDIO){
-                    $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1,$this->moduleinstance->ttslanguage);
-                    $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1,$this->moduleinstance->ttslanguage);
-                    $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1,$this->moduleinstance->ttslanguage);
-                }
         }
     }
 
@@ -794,14 +791,9 @@ abstract class item implements templatable, renderable {
         //if we need to generate a DeepSpeech model for this, then lets do that now:
         //we want to process the hashcode and lang model if it makes sense
         $newitem = $this->itemrecord;
-        if(self::NEEDS_SPEECHREC) {
+        if($this->needs_speechrec) {
 
                 $passage = $newitem->customtext1;
-                if($newitem->type == constants::TYPE_MULTIAUDIO){
-                    $passage .= ' ' . $newitem->customtext2;
-                    $passage .= ' ' . $newitem->customtext3;
-                    $passage .= ' ' . $newitem->customtext4;
-                }
                 if (utils::needs_lang_model($this->moduleinstance,$passage)) {
                     $newpassagehash = utils::fetch_passagehash($this->language,$passage);
                     if ($newpassagehash) {
@@ -839,22 +831,11 @@ abstract class item implements templatable, renderable {
             $thephonetics ='';
         }
 
-        if(self::NEEDS_SPEECHREC) {
+        if($this->needs_speechrec) {
 
                 $newpassage = $newitem->customtext1;
-                if ($newitem->type == constants::TYPE_MULTIAUDIO) {
-                    $newpassage .= PHP_EOL . $newitem->customtext2;
-                    $newpassage .= PHP_EOL . $newitem->customtext3;
-                    $newpassage .= PHP_EOL . $newitem->customtext4;
-                }
-
                 if($olditemrecord!==false) {
                     $oldpassage = $olditemrecord->customtext1;
-                    if ($newitem->type == constants::TYPE_MULTIAUDIO) {
-                        $oldpassage .= PHP_EOL . $olditemrecord->customtext2;
-                        $oldpassage .= PHP_EOL . $olditemrecord->customtext3;
-                        $oldpassage .= PHP_EOL . $olditemrecord->customtext4;
-                    }
                 }else{
                     $oldpassage='';
                 }

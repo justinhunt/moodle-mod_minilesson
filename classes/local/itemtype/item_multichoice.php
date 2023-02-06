@@ -32,7 +32,6 @@ class item_multichoice extends item {
 
     //the item type
     public const ITEMTYPE = constants::TYPE_MULTICHOICE;
-    protected const NEEDS_SPEECHREC = true;
 
     /**
      * Export the data for the mustache template.

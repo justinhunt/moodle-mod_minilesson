@@ -32,9 +32,16 @@ class item_speechcards extends item {
 
     //the item type
      public const ITEMTYPE = constants::TYPE_SPEECHCARDS;
-     
-    //requires SPEECH REC
-    protected const NEEDS_SPEECHREC = true;
+
+
+    /**
+     * The class constructor.
+     *
+     */
+    public function __construct($itemrecord, $moduleinstance=false, $context=false){
+        parent::__construct($itemrecord, $moduleinstance, $context);
+        $this->needs_speechrec=true;
+    }
 
     /**
      * Export the data for the mustache template.

@@ -32,7 +32,16 @@ class item_multiaudio extends item {
 
     //the item type
     public const ITEMTYPE = constants::TYPE_MULTIAUDIO;
-    protected const NEEDS_SPEECHREC = true;
+
+
+    /**
+     * The class constructor.
+     *
+     */
+    public function __construct($itemrecord, $moduleinstance=false, $context=false){
+        parent::__construct($itemrecord, $moduleinstance, $context);
+        $this->needs_speechrec=true;
+    }
 
     /**
      * Export the data for the mustache template.
@@ -82,13 +91,11 @@ class item_multiaudio extends item {
  * Remove any accents and chars that would mess up the transcript//passage matching
  */
     public function deaccent(){
-        if(self::NEEDS_SPEECHREC) {
             $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1,$this->moduleinstance->ttslanguage);
             $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1,$this->moduleinstance->ttslanguage);
             $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1,$this->moduleinstance->ttslanguage);
             $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1,$this->moduleinstance->ttslanguage);
 
-        }
     }
 
     public function update_create_langmodel($olditemrecord){
@@ -96,7 +103,6 @@ class item_multiaudio extends item {
         //we want to process the hashcode and lang model if it makes sense
         $thepassagehash ='';
         $newitem = $this->itemrecord;
-        if(self::NEEDS_SPEECHREC) {
 
             $passage = $newitem->customtext1;
             $passage .= ' ' . $newitem->customtext2;
@@ -123,7 +129,6 @@ class item_multiaudio extends item {
                     }
                 }
             }
-        }
         return false;
     }
 
@@ -138,7 +143,6 @@ class item_multiaudio extends item {
             $thephonetics ='';
         }
 
-        if(self::NEEDS_SPEECHREC) {
 
             $newpassage = $newitem->customtext1;
             $newpassage .= PHP_EOL . $newitem->customtext2;
@@ -174,7 +178,6 @@ class item_multiaudio extends item {
                 }
             }
 
-        }
         $this->itemrecord->phonetic= $thephonetics;
         return $thephonetics;
     }

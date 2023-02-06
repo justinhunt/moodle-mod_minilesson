@@ -33,6 +33,16 @@ class item_shortanswer extends item {
     //the item type
     public const ITEMTYPE = constants::TYPE_SHORTANSWER;
 
+
+    /**
+     * The class constructor.
+     *
+     */
+    public function __construct($itemrecord, $moduleinstance=false, $context=false){
+        parent::__construct($itemrecord, $moduleinstance, $context);
+        $this->needs_speechrec=true;
+    }
+
     /**
      * Export the data for the mustache template.
      *
