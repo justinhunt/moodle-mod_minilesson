@@ -71,6 +71,8 @@ This file contains class and ID definitions.
         qtype_listenrepeat: 'listenrepeat',
         qtype_smartframe: 'smartframe',
         qtype_shortanswer: 'shortanswer',
+        qtype_listeninggapfill: 'listeninggapfill',
+        qtype_speakinggapfill: 'speakinggapfill',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_minilesson_grading_maybeselfcorrectedword',
