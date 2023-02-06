@@ -135,6 +135,12 @@ if ($ADMIN->fulltree) {
         get_string('itemsperpage', constants::M_COMPONENT), get_string('itemsperpage_details', constants::M_COMPONENT), 10, PARAM_INT));
 
 
+    $modalsettings = array(0=>get_string('modaleditform_newpage', constants::M_COMPONENT),
+        1=>get_string('modaleditform_modalform', constants::M_COMPONENT));
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/modaleditform',
+        get_string('modaleditform', constants::M_COMPONENT), get_string('modaleditform_details', constants::M_COMPONENT), 0, $modalsettings));
+
+
     $promptstyle = \mod_minilesson\utils::get_prompttype_options();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/prompttype',
             get_string('prompttype', constants::M_COMPONENT), '', constants::M_PROMPT_SEPARATE, $promptstyle));

@@ -154,7 +154,7 @@ if ($data = $mform->get_data()) {
         //$data->phonetic = \mod_minilesson\local\itemform\helper::update_create_phonetic($minilesson,$olditem,$data);
     $theitem->update_create_phonetic($olditem);
 
-		$result = $item->update_insert_item();
+		$result = $theitem->update_insert_item();
 		if($result->error==true){
             print_error($result->message);
             redirect($redirecturl);

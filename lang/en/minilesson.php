@@ -615,3 +615,7 @@ $string['buttonquiz_results'] = 'Results';
 $string['compquiz_instructions1'] = 'Comprehension Quiz instructions';
 $string['buttonquiz_instructions1'] = 'Button Quiz instructions';
 $string['iteminstructions'] = 'Item instructions';
+$string['modaleditform'] = 'Item Edit Form';
+$string['modaleditform_details'] = 'Adding or editing items in the Minilesson can be done via a modal(popup) form or on a new page';
+$string['modaleditform_newpage'] = 'New page';
+$string['modaleditform_modalform'] = 'Modal form (popup)';

@@ -33,12 +33,14 @@ class rsquestion_renderer extends \plugin_renderer_base {
 
  /**
  * Return HTML to display add first page links
- * @param lesson $lesson
+ * @param \context $context
+  * @param int $tableid
  * @return string
  */
  public function add_edit_page_links($context, $tableid) {
 		global $CFG;
         $itemid = 0;
+        $config = get_config(constants::M_COMPONENT);
 
         $output = $this->output->heading(get_string("whatdonow", "minilesson"), 3);
         $links = array();
@@ -54,20 +56,19 @@ class rsquestion_renderer extends \plugin_renderer_base {
             $qtypes[]=constants::TYPE_COMPQUIZ;
             $qtypes[]=constants::TYPE_BUTTONQUIZ;
         }
+        //If modaleditform is true adding and editing item types is done in a popup modal. Thats good ...
+        // but when there is a lot to be edited , a standalone page is better. The modaleditform flag is acted on on additemlink template and rsquestionmanager js
+        $modaleditform=$config->modaleditform=="1";
         foreach($qtypes as $qtype){
-            $url=
             $data=['wwwroot' => $CFG->wwwroot, 'type'=>$qtype,'itemid'=>$itemid,'cmid'=>$this->page->cm->id,
-                    'label'=>get_string('add' . $qtype . 'item', constants::M_COMPONENT)];
+                    'label'=>get_string('add' . $qtype . 'item', constants::M_COMPONENT),'modaleditform'=>$modaleditform];
             $links[]= $this->render_from_template('mod_minilesson/additemlink', $data);
         }
 
-     $usingajax=true;
-     if($usingajax){
-         $props=array('contextid'=>$context->id, 'tableid'=>$tableid);
+         $props=array('contextid'=>$context->id, 'tableid'=>$tableid,'modaleditform'=>$modaleditform,'wwwroot' => $CFG->wwwroot,'cmid'=>$this->page->cm->id,);
          $this->page->requires->js_call_amd(constants::M_COMPONENT . '/rsquestionmanager', 'init', array($props));
-     }
 
-     return $this->output->box($output.implode("",$links), 'generalbox firstpageoptions mod_minilesson_link_box_container');
+        return $this->output->box($output.implode("",$links), 'generalbox firstpageoptions mod_minilesson_link_box_container');
 
     }
 

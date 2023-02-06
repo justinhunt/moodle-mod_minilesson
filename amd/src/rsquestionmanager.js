@@ -20,6 +20,9 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             var dd = this;
             dd.contextid=props.contextid;
             dd.tableid = props.tableid;
+            dd.modaleditform = props.modaleditform;
+            dd.cmid = props.cmid;
+            dd.wwwroot = props.wwwroot;
 
             dd.register_events();
             dd.process_html();
@@ -186,9 +189,17 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             var editcallback=function(item, itemid){console.log(item);};
             var deletecallback=function(itemid){console.log(itemid);};
             var addcallback=function(itemid){console.log(itemid);};
-            mfh.init('.' + def.component + '_addlink', dd.contextid,after_questionadd);
-            //edit form helper
-            mfh.init('.' + def.itemrow + '_editlink', dd.contextid,after_questionedit);
+            if(dd.modaleditform) {
+                mfh.init('.' + def.component + '_addlink', dd.contextid, after_questionadd);
+                //edit form helper
+                mfh.init('.' + def.itemrow + '_editlink', dd.contextid, after_questionedit);
+            }else{
+                $('.' + def.itemrow + '_editlink').click(function(){
+                    var editurl = dd.wwwroot + '/mod/minilesson/rsquestion/managersquestions.php?id=' + dd.cmid + '&itemid='+ $(this).data('id');
+                    log.debug('editurl ' + editurl);
+                    window.location.href=editurl;
+                });
+            }
             //delete helpser
             mdh.init('.' + def.itemrow + '_deletelink', dd.contextid, 'deleteitem',after_questiondelete);
             //move helper

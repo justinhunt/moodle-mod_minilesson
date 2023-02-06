@@ -1,5 +1,9 @@
-Version 1.0.47(Build 2023011801)
+
+Version 1.0.49(Build 2023020601);
+- Primarily a code refactor
+- Added attempt submitted event
 - Added TTS Passage (beta)
+- Added several new item types, not yet complete ..so hidden
 
 Version 1.0.47(Build 2022120200)
 - Fixed missing lang strings

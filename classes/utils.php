@@ -1465,11 +1465,11 @@ class utils{
             case constants::TYPE_LISTENREPEAT: return "\mod_minilesson\local\itemform\listenrepeatform";
             case constants::TYPE_PAGE: return "\mod_minilesson\local\itemform\pageform";
             case constants::TYPE_SMARTFRAME: return "\mod_minilesson\local\itemform\smartframe";
-            case constants::TYPE_SHORTANSWER: return "\mod_minilesson\local\itemform\shortanswer";
-            case constants::TYPE_COMPQUIZ: return "\mod_minilesson\local\itemform\compquiz";
-            case constants::TYPE_BUTTONQUIZ: return "\mod_minilesson\local\itemform\buttonquiz";
-            case constants::TYPE_SGAPFILL: return "\mod_minilesson\local\itemform\speakinggapfill";
-            case constants::TYPE_LGAPFILL: return "\mod_minilesson\local\itemform\listeninggapfill";
+            case constants::TYPE_SHORTANSWER: return "\mod_minilesson\local\itemform\shortanswerform";
+            case constants::TYPE_COMPQUIZ: return "\mod_minilesson\local\itemform\compquizform";
+            case constants::TYPE_BUTTONQUIZ: return "\mod_minilesson\local\itemform\buttonquizform";
+            case constants::TYPE_SGAPFILL: return "\mod_minilesson\local\itemform\speakinggapfillform";
+            case constants::TYPE_LGAPFILL: return "\mod_minilesson\local\itemform\listeninggapfillform";
             default:
         }
     }
