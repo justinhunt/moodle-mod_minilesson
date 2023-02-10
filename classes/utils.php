@@ -1391,7 +1391,7 @@ class utils{
                 //fetch slightly slower version of speech
                 //rate = 'slow' or 'x-slow' or 'medium'
                 $speaktext =self::clean_ssml_chars($speaktext);
-                $speaktext = '<speak><break time="1000ms"></break>' + $speaktext + '</speak>';
+                $speaktext = '<speak><break time="1000ms"></break>' . $speaktext . '</speak>';
                 break;
 
         }
