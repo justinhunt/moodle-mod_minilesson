@@ -447,8 +447,8 @@ abstract class baseform extends \moodleform {
 
     }
 
-    protected final function add_media_upload($name, $count=-1, $label, $required = false) {
-		if($count>-1){
+    protected final function add_media_upload($name, $count, $label, $required = false) {
+		if($count!=null){
 			$name = $name . $count ;
 		}
 		
