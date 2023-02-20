@@ -128,6 +128,11 @@ class item_multiaudio extends item {
                         }
                     }
                 }
+                //if we get here just set the new passage hash to the existing one
+                $this->itemrecord->passagehash =$olditemrecord->passagehash;
+            }else{
+                //I think this will never get here
+                $this->itemrecord->passagehash ='';
             }
         return false;
     }

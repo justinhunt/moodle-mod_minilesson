@@ -424,21 +424,21 @@ abstract class baseform extends \moodleform {
                 $additionalfields, "add", true);
     }
 
-    protected final function add_showtextpromptoptions($name, $label = null, $default=constants::TEXTPROMPT_DOTS) {
+    protected final function add_showtextpromptoptions($name, $label, $default=constants::TEXTPROMPT_DOTS) {
         $options = utils::fetch_options_textprompt();
         return $this->add_dropdown($name,$label,$options,$default);
     }
-    protected final function add_showignorepuncoptions($name, $label = null, $default=constants::TEXTPROMPT_DOTS) {
+    protected final function add_showignorepuncoptions($name, $label, $default=constants::TEXTPROMPT_DOTS) {
         $options = utils::fetch_options_yesno();
         return $this->add_dropdown($name,$label,$options,$default);
     }
 
-    protected final function add_showlistorreadoptions($name, $label = null, $default=constants::LISTENORREAD_READ) {
+    protected final function add_showlistorreadoptions($name, $label, $default=constants::LISTENORREAD_READ) {
         $options = utils::fetch_options_listenorread();
         return $this->add_dropdown($name,$label,$options,$default);
     }
 
-    protected final function add_dropdown($name, $label = null,$options, $default=false) {
+    protected final function add_dropdown($name, $label,$options, $default=false) {
 
         $this->_form->addElement('select', $name, $label, $options);
         if($default!==false) {
@@ -447,7 +447,7 @@ abstract class baseform extends \moodleform {
 
     }
 
-    protected final function add_media_upload($name, $count=-1, $label = null, $required = false) {
+    protected final function add_media_upload($name, $count=-1, $label, $required = false) {
 		if($count>-1){
 			$name = $name . $count ;
 		}
