@@ -239,7 +239,7 @@ abstract class baseform extends \moodleform {
                 }
 
                 //Question media upload
-                $this->add_media_upload(constants::MEDIAQUESTION,-1,get_string('itemmedia',constants::M_COMPONENT));
+                $this->add_media_upload(constants::MEDIAQUESTION,get_string('itemmedia',constants::M_COMPONENT));
                 if($m35){
                     $mform->hideIf(constants::MEDIAQUESTION, 'addmedia', 'neq', 1);
                 }else {
@@ -447,10 +447,7 @@ abstract class baseform extends \moodleform {
 
     }
 
-    protected final function add_media_upload($name, $count, $label, $required = false) {
-		if($count!=null){
-			$name = $name . $count ;
-		}
+    protected final function add_media_upload($name, $label, $required = false) {
 		
 		$this->_form->addElement('filemanager',
                            $name,
@@ -462,7 +459,7 @@ abstract class baseform extends \moodleform {
 	}
 
 	protected final function add_media_prompt_upload($label = null, $required = false) {
-		return $this->add_media_upload(constants::AUDIOPROMPT,-1,$label,$required);
+		return $this->add_media_upload(constants::AUDIOPROMPT,$label,$required);
 	}
 
 

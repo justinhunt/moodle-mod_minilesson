@@ -113,7 +113,8 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
 
             // Get the content of the modal.
             var params = {itemid: this.itemid};
-            return Fragment.loadFragment('mod_minilesson', 'preview', this.contextid, params);
+            var html = Fragment.loadFragment('mod_minilesson', 'preview', this.contextid, params);
+            return html;
 
         };
 

@@ -133,9 +133,10 @@ if ($data = $mform->get_data()) {
             $olditem=$item;
         }else{
             $theitem= utils::fetch_item_from_itemrecord($data,$minilesson);
-            echo json_encode($data,JSON_PRETTY_PRINT);
-            die;
             $olditem=false;
+            //echo json_encode($data,JSON_PRETTY_PRINT);
+            //die;
+
         }
     /*
         if($edit){
