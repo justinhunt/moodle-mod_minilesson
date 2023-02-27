@@ -124,6 +124,9 @@ class attemptresults extends basereport
                 $this->headingdata= $record;
 
                 $steps = json_decode($record->sessiondata)->steps;
+                if(is_object($steps)){
+                    $steps = get_object_vars($steps);
+                }
                 $results = array_filter($steps, function($step){return $step->hasgrade;});
                 foreach($results as $result){
                     $result->title=$quizdata[$result->index]->name;

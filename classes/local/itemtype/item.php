@@ -797,6 +797,14 @@ abstract class item implements templatable, renderable {
 
                 $passage = $newitem->customtext1;
                 if (utils::needs_lang_model($this->moduleinstance,$passage)) {
+                    //lets assign a default passage hash
+                    if($olditemrecord) {
+                        $this->itemrecord->passagehash = $olditemrecord->passagehash;
+                    }else{
+                        $this->itemrecord->passagehash ="";
+                    }
+
+                    //then fetch a new passage hash and see if we need to update it on the servers
                     $newpassagehash = utils::fetch_passagehash($this->language,$passage);
                     if ($newpassagehash) {
                         //check if it has changed, if its a brand new one, if so register a langmodel

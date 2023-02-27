@@ -85,6 +85,7 @@ class item_multiaudio extends item {
     // This is just zenkaku to hankaku for comparison of numbers
     protected function process_japanese_phonetics($sentence){
         $sentence =  mb_convert_kana($sentence,"n");
+        return $sentence;
     }
 
     /*

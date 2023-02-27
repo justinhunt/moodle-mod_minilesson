@@ -13,6 +13,10 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
         audioContext: null,
         processor: null,
         uniqueid: null,
+        alreadyhadsound: false, //only start silence detection after we got a sound. Silence detection is end of speech.
+        silencecount: 0, //how many intervals of consecutive silence so far
+        silenceintervals: 20, //how many consecutive silence intervals (100ms) = silence detected
+        silencelevel: 25, //below this volume level = silence
 
         config: {
             bufferLen: 4096,
@@ -91,11 +95,16 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
 
                 that.bufferLength = that.listener.frequencyBinCount;
                 that.analyserData = new Uint8Array(that.bufferLength);
+                that.volumeData = new Uint8Array(that.bufferLength);
 
+                //reset canvas and silence detection
                 that.canvasCtx.clearRect(0, 0, that.canvas.width()*2, that.waveHeight*2);
+                that.alreadyhadsound= false;
+                that.silencecount= 0;
 
                 that.interval = setInterval(function() {
                     that.drawWave();
+                    that.detectSilence();
                 }, 100);
 
             };
@@ -113,6 +122,8 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             clearInterval(this.interval);
             this.canvasCtx.clearRect(0, 0, this.canvas.width()*2, this.waveHeight * 2);
             this.isRecording = false;
+            this.silencecount=0;
+            this.alreadyhadsound=false;
             this.therecorder.update_audio('isRecording',false);
             this.audioContext.close();
             this.processor.disconnect();
@@ -125,6 +136,30 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             for (var ch = 0; ch < 2; ++ch)
                 buffers[ch] = event.inputBuffer.getChannelData(ch);
             return buffers;
+        },
+
+        detectSilence: function () {
+
+            this.listener.getByteFrequencyData(this.volumeData);
+
+            let sum = 0;
+            for (var vindex =0; vindex <this.volumeData.length;vindex++) {
+                sum += this.volumeData[vindex] * this.volumeData[vindex];
+            }
+
+            var volume = Math.sqrt(sum / this.volumeData.length);
+           // log.debug("volume: " + volume + ', hadsound: ' + this.alreadyhadsound);
+            //if we already had a sound, we are looking for end of speech
+            if(volume < this.silencelevel && this.alreadyhadsound){
+                this.silencecount++;
+                if(this.silencecount>=this.silenceintervals){
+                    this.therecorder.silence_detected();
+                }
+            //if we have a sound, reset silence count to zero, and flag that we have started
+            }else if(volume > this.silencelevel){
+                this.alreadyhadsound = true;
+                this.silencecount=0;
+            }
         },
 
         drawWave: function() {
