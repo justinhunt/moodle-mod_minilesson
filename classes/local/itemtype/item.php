@@ -532,7 +532,9 @@ abstract class item implements templatable, renderable {
 
         $theitem = new \stdClass;
         $theitem->minilesson = $this->moduleinstance->id;
-        $theitem->id = $data->itemid;
+        if(!isset($theitem->id)&&isset($data->itemid)){
+            $theitem->id = $data->itemid;
+        }
         $theitem->visible = $data->visible;
         $theitem->itemorder = $data->itemorder;
         $theitem->type = $data->type;

@@ -917,10 +917,16 @@ class utils{
     }
 
 
-    public static function pack_ttspassageopts($data){
+    public static function pack_ttspassageopts($data)
+    {
         $opts = new \stdClass();
-        $opts->{constants::TTSPASSAGEVOICE}=$data->{constants::TTSPASSAGEVOICE};
-        $opts->{constants::TTSPASSAGESPEED}=$data->{constants::TTSPASSAGESPEED};
+        if (isset($opts->{constants::TTSPASSAGEVOICE})) {
+            $opts->{constants::TTSPASSAGEVOICE} = $data->{constants::TTSPASSAGEVOICE};
+            $opts->{constants::TTSPASSAGESPEED} = $data->{constants::TTSPASSAGESPEED};
+        }else{
+            $opts->{constants::TTSPASSAGEVOICE} = 'Salli';
+            $opts->{constants::TTSPASSAGESPEED} = constants::TTS_NORMAL;
+        }
         $opts_json = json_encode($opts);
         return $opts_json;
     }
@@ -934,16 +940,32 @@ class utils{
     }
     public static function pack_ttsdialogopts($data){
         $opts = new \stdClass();
-        $opts->{constants::TTSDIALOGVISIBLE}=$data->{constants::TTSDIALOGVISIBLE};
-        $opts->{constants::TTSDIALOGVOICEA}=$data->{constants::TTSDIALOGVOICEA};
-        $opts->{constants::TTSDIALOGVOICEB}=$data->{constants::TTSDIALOGVOICEB};
-        $opts->{constants::TTSDIALOGVOICEC}=$data->{constants::TTSDIALOGVOICEC};
+        if(isset($opts->{constants::TTSDIALOGVISIBLE})) {
+            $opts->{constants::TTSDIALOGVISIBLE} = $data->{constants::TTSDIALOGVISIBLE};
+        }else{
+            $opts->{constants::TTSDIALOGVISIBLE}=false;
+        }
+        //loop through A,B and C slots and put the data together
+        $voice_slots= [constants::TTSDIALOGVOICEA,constants::TTSDIALOGVOICEB,constants::TTSDIALOGVOICEC];
+        foreach($voice_slots as $slot){
+            if(isset($data->{$slot})){
+                $opts->{$slot}=$data->{$slot};
+            }else{
+                $opts->{$slot}="Salli";
+            }
+        }
+
         $opts_json = json_encode($opts);
         return $opts_json;
     }
     public static function unpack_ttsdialogopts($data){
         if(!self::is_json($data->{constants::TTSDIALOGOPTS})){return $data;}
         $opts = json_decode($data->{constants::TTSDIALOGOPTS});
+        if(isset($opts->{constants::TTSDIALOGVISIBLE})) {
+            $data->{constants::TTSDIALOGVISIBLE} = $opts->{constants::TTSDIALOGVISIBLE};
+        }else{
+            $data->{constants::TTSDIALOGVISIBLE}=false;
+        }
         $data->{constants::TTSDIALOGVISIBLE}=$opts->{constants::TTSDIALOGVISIBLE};
         //loop through A,B and C slots and put the data together
         $voice_slots= [constants::TTSDIALOGVOICEA,constants::TTSDIALOGVOICEB,constants::TTSDIALOGVOICEC];
