@@ -130,6 +130,10 @@ define(['jquery',
         var correcttext = itemdata.sentences[itemdata.correctanswer-1].sentence;
         var correctphonetic = itemdata.sentences[itemdata.correctanswer-1].phonetic;
         var cleanincorrecttexts=[];
+
+        log.debug('initcomponents_multiaudio');
+        log.debug(itemdata.sentences);
+
         for(var i=0;i<itemdata.sentences.length;i++){
             if(i+1==itemdata.correctanswer) {
                 //to make life simple for ourselves we add an empty string entry in incorrecttexts at the correct answer index

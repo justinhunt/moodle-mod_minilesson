@@ -80,7 +80,7 @@ class item_dictationchat extends item {
         //はなしてください=>(1)はな　して　く　だ　さい & (2)はな　して　ください
         //  $sentence = utils::segment_japanese($sentence);
         //TO DO save segments and not collect them at runtime
-        list($phones,$sentence) = utils::fetch_phones_and_segments($sentence,$this->mod->ttslanguage,$this->mod->region);
+        list($phones,$sentence) = utils::fetch_phones_and_segments($sentence,$this->moduleinstance->ttslanguage,$this->moduleinstance->region);
         return $sentence;
     }
 

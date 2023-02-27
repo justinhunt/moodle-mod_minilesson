@@ -210,6 +210,8 @@ if ($edit) {
         }
         if(!empty($data->{constants::QUESTIONTEXTAREA})){
             $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
+            $edoptions['context']=$context;
+            $data->{constants::QUESTIONTEXTAREA. 'format'}=FORMAT_HTML;
             $data = file_prepare_standard_editor($data, constants::QUESTIONTEXTAREA, $edoptions, $context, constants::M_COMPONENT,
                     constants::TEXTQUESTION_FILEAREA, $data->itemid);
             $data->addtextarea = 1;

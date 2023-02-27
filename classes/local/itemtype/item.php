@@ -618,7 +618,9 @@ abstract class item implements templatable, renderable {
 
         //Item Text Area
         $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
+        $edoptions['context']=$this->context;
         if (property_exists($data, constants::QUESTIONTEXTAREA . '_editor')) {
+            $data->{constants::QUESTIONTEXTAREA. 'format'}=FORMAT_HTML;
             $data = file_postupdate_standard_editor($data, constants::QUESTIONTEXTAREA, $edoptions, $this->context,
                 constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, $theitem->id);
             $theitem->{constants::QUESTIONTEXTAREA} = trim($data->{constants::QUESTIONTEXTAREA});

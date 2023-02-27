@@ -85,6 +85,10 @@ define(['jquery',
     init_components: function(index, itemdata, quizhelper) {
       var app= this;
       var sentences = itemdata.sentences;//sentence & phonetic
+
+      log.debug('initcomponents_shortanswer');
+      log.debug(sentences);
+
       //clean the text of any junk
       for(var i=0;i<sentences.length;i++){
           sentences[i].originalsentence= sentences[i].sentence

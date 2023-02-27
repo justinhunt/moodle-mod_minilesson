@@ -945,9 +945,16 @@ class utils{
         if(!self::is_json($data->{constants::TTSDIALOGOPTS})){return $data;}
         $opts = json_decode($data->{constants::TTSDIALOGOPTS});
         $data->{constants::TTSDIALOGVISIBLE}=$opts->{constants::TTSDIALOGVISIBLE};
-        $data->{constants::TTSDIALOGVOICEA}=$opts->{constants::TTSDIALOGVOICEA};
-        $data->{constants::TTSDIALOGVOICEB}=$opts->{constants::TTSDIALOGVOICEB};
-        $data->{constants::TTSDIALOGVOICEC}=$opts->{constants::TTSDIALOGVOICEC};
+        //loop through A,B and C slots and put the data together
+        $voice_slots= [constants::TTSDIALOGVOICEA,constants::TTSDIALOGVOICEB,constants::TTSDIALOGVOICEC];
+        foreach($voice_slots as $slot){
+            if(isset($opts->{$slot})){
+                $data->{$slot}=$opts->{$slot};
+            }else{
+                $data->{$slot}="Salli";
+            }
+        }
+
         return $data;
     }
 
