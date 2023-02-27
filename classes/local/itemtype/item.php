@@ -640,13 +640,13 @@ abstract class item implements templatable, renderable {
         }
 
         //TTS Dialog
-        if(property_exists($data,constants::TTSDIALOG)){
+        if(property_exists($data,constants::TTSDIALOG) && $data->{constants::TTSDIALOG}!==null ){
             $theitem->{constants::TTSDIALOG} = $data->{constants::TTSDIALOG};
             $theitem->{constants::TTSDIALOGOPTS} = utils::pack_ttsdialogopts($data);
         }
 
         //TTS Passage
-        if(property_exists($data,constants::TTSPASSAGE)){
+        if(property_exists($data,constants::TTSPASSAGE)&& $data->{constants::TTSPASSAGE}!==null ){
             $theitem->{constants::TTSPASSAGE} = $data->{constants::TTSPASSAGE};
             $theitem->{constants::TTSPASSAGEOPTS} = utils::pack_ttspassageopts($data);
         }

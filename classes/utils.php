@@ -920,6 +920,7 @@ class utils{
     public static function pack_ttspassageopts($data)
     {
         $opts = new \stdClass();
+        //This is probably over caution, but just in case the data comes in wrong, we want to fall back on something
         if (isset($opts->{constants::TTSPASSAGEVOICE})) {
             $opts->{constants::TTSPASSAGEVOICE} = $data->{constants::TTSPASSAGEVOICE};
             $opts->{constants::TTSPASSAGESPEED} = $data->{constants::TTSPASSAGESPEED};
@@ -934,12 +935,26 @@ class utils{
     public static function unpack_ttspassageopts($data){
         if(!self::is_json($data->{constants::TTSPASSAGEOPTS})){return $data;}
         $opts = json_decode($data->{constants::TTSPASSAGEOPTS});
-        $data->{constants::TTSPASSAGEVOICE}=$opts->{constants::TTSPASSAGEVOICE};
-        $data->{constants::TTSPASSAGESPEED}=$opts->{constants::TTSPASSAGESPEED};
+
+        //Overcaution follows ....
+        if(isset($opts->{constants::TTSPASSAGESPEED})) {
+            $data->{constants::TTSPASSAGESPEED} = $opts->{constants::TTSPASSAGESPEED};
+        }else{
+            $data->{constants::TTSPASSAGESPEED}=false;
+        }
+        if(isset($opts->{constants::TTSPASSAGEVOICE})) {
+            $data->{constants::TTSPASSAGEVOICE} = $opts->{constants::TTSPASSAGEVOICE};
+        }else{
+            $data->{constants::TTSPASSAGEVOICE}="Salli";
+        }
+
+
+
         return $data;
     }
     public static function pack_ttsdialogopts($data){
         $opts = new \stdClass();
+        //more overcaution
         if(isset($opts->{constants::TTSDIALOGVISIBLE})) {
             $opts->{constants::TTSDIALOGVISIBLE} = $data->{constants::TTSDIALOGVISIBLE};
         }else{
@@ -960,13 +975,14 @@ class utils{
     }
     public static function unpack_ttsdialogopts($data){
         if(!self::is_json($data->{constants::TTSDIALOGOPTS})){return $data;}
+        //more overcaution
         $opts = json_decode($data->{constants::TTSDIALOGOPTS});
         if(isset($opts->{constants::TTSDIALOGVISIBLE})) {
             $data->{constants::TTSDIALOGVISIBLE} = $opts->{constants::TTSDIALOGVISIBLE};
         }else{
             $data->{constants::TTSDIALOGVISIBLE}=false;
         }
-        $data->{constants::TTSDIALOGVISIBLE}=$opts->{constants::TTSDIALOGVISIBLE};
+
         //loop through A,B and C slots and put the data together
         $voice_slots= [constants::TTSDIALOGVOICEA,constants::TTSDIALOGVOICEB,constants::TTSDIALOGVOICEC];
         foreach($voice_slots as $slot){
@@ -1016,6 +1032,7 @@ class utils{
             case "frankfurt":
             case "london":
             case "singapore":
+            case "mumbai":
                 //ok
                 break;
             default:
