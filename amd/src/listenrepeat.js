@@ -287,6 +287,7 @@ define(['jquery',
 
       $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
       $("#" + self.itemdata.uniqueid + "_container .landr_speakbtncontainer").show();
+      $("#" + self.itemdata.uniqueid + "_container .landr_title").show();
 
       self.items.forEach(function(item) {
         item.spoken = "";

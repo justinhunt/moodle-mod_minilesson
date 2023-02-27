@@ -318,6 +318,7 @@ define(['jquery',
       var self = this;
 
       $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", true);
+      $("#" + self.itemdata.uniqueid + "_container .dictate_title").show();
 
       self.items.forEach(function(item) {
         item.spoken = "";
