@@ -90,9 +90,9 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-if($moduleinstance->foriframe==1) {
+if($moduleinstance->foriframe==1 || $moduleinstance->pagelayout=='embedded') {
     $PAGE->set_pagelayout('embedded');
-}elseif($config->enablesetuptab){
+}elseif($config->enablesetuptab  || $moduleinstance->pagelayout=='popup'){
     $PAGE->set_pagelayout('popup');
 }else{
     $PAGE->set_pagelayout('course');

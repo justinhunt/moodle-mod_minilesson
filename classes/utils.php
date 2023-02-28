@@ -906,11 +906,8 @@ class utils{
 
     public static function fetch_pagelayout_options(){
         $options = Array(
-                'frametop'=>'frametop',
-                'embedded'=>'embedded',
-                'mydashboard'=>'mydashboard',
-                'incourse'=>'incourse',
                 'standard'=>'standard',
+                'embedded'=>'embedded',
                 'popup'=>'popup'
         );
         return $options;

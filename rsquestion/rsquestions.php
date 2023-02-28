@@ -51,9 +51,9 @@ $context = context_module::instance($cm->id);
 //Get an admin settings
 $config = get_config(constants::M_COMPONENT);
 
-if($minilesson->foriframe==1) {
+if($minilesson->foriframe==1  || $minilesson->pagelayout=='embedded') {
     $PAGE->set_pagelayout('embedded');
-}elseif($config->enablesetuptab){
+}elseif($config->enablesetuptab  || $minilesson->pagelayout=='popup'){
     $PAGE->set_pagelayout('popup');
 }else{
     $PAGE->set_pagelayout('course');

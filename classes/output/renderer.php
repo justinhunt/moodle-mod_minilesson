@@ -63,7 +63,7 @@ class renderer extends \plugin_renderer_base {
     public function fetch_title($moduleinstance, $title){
         $displaytext='';
         //dont show the heading in an iframe, it will be outside this anyway
-        if(!$moduleinstance->foriframe) {
+        if(!$moduleinstance->foriframe && $moduleinstance->pagelayout!=='embedded') {
             $thetitle = $this->output->heading($title, 3, 'main');
             $displaytext = \html_writer::div($thetitle, constants::M_CLASS . '_center');
         }
@@ -234,6 +234,7 @@ class renderer extends \plugin_renderer_base {
         //config
         $config = get_config(constants::M_COMPONENT);
         $course = $DB->get_record('course', array('id' => $latestattempt->courseid));
+        $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
 
         //steps data
         $steps = json_decode($latestattempt->sessiondata)->steps;
@@ -349,7 +350,9 @@ class renderer extends \plugin_renderer_base {
             $tdata->reattempturl = $reattempturl->out();
         }
         //show back to course button if we are not in a tab
-        if(!$config->enablesetuptab) {
+        if(!$config->enablesetuptab &&
+            $moduleinstance->pagelayout!=='embedded' &&
+            $moduleinstance->pagelayout!=='popup') {
             $tdata->backtocourse = true;
         }
 
@@ -527,10 +530,10 @@ class renderer extends \plugin_renderer_base {
             $recopts['reattempturl']=$activityurl->out();
         }
         //show back to course button if we are not in an iframe
-        if(!$config->enablesetuptab) {
-            $recopts['backtocourse'] = true;
-        }else{
+        if($config->enablesetuptab || $moduleinstance->pagelayout=='embedded' ||  $moduleinstance->pagelayout=='popup') {
             $recopts['backtocourse'] = '';
+        }else{
+            $recopts['backtocourse'] = true;
         }
 
 

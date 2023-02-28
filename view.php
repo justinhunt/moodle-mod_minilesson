@@ -79,9 +79,9 @@ $PAGE->set_context($modulecontext);
 $config = get_config(constants::M_COMPONENT);
 
 
-if($moduleinstance->foriframe==1) {
+if($moduleinstance->foriframe==1  || $moduleinstance->pagelayout=='embedded') {
     $PAGE->set_pagelayout('embedded');
-}elseif($config->enablesetuptab){
+}elseif($config->enablesetuptab || $moduleinstance->pagelayout=='popup'){
     $PAGE->set_pagelayout('popup');
 }else{
     if(has_capability('mod/' . constants::M_MODNAME . ':' . 'manage',$modulecontext)) {
