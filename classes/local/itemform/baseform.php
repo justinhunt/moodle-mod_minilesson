@@ -205,6 +205,11 @@ abstract class baseform extends \moodleform {
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('lg_instructions1', constants::M_COMPONENT));
                         break;
+                    //typing gapfill
+                    case constants::TYPE_TGAPFILL:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('tg_instructions1', constants::M_COMPONENT));
+                        break;
                     //speaking gapfill
                     case constants::TYPE_SGAPFILL:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,

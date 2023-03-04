@@ -22,16 +22,16 @@ use templatable;
 use renderable;
 
 /**
- * Renderable class for a listening gap fill item in a minilesson activity.
+ * Renderable class for a typing gap fill item in a minilesson activity.
  *
  * @package    mod_minilesson
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class  item_listeninggapfill extends item {
+class  item_typinggapfill extends item {
 
     //the item type
-    public const ITEMTYPE = constants::TYPE_LGAPFILL;
+    public const ITEMTYPE = constants::TYPE_TGAPFILL;
 
 
     /**
@@ -45,7 +45,6 @@ class  item_listeninggapfill extends item {
         $testitem= new \stdClass();
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
-        $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
         //sentences
@@ -54,17 +53,10 @@ class  item_listeninggapfill extends item {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
         //build sentence objects containing display and phonetic text
-        $testitem->phonetic=$this->itemrecord->phonetic;
-        if(!empty($testitem->phonetic)) {
-            $phonetics = explode(PHP_EOL, $testitem->phonetic);
-        }else{
-            $phonetics=[];
-        }
 
+        //some processing of sentence settings to a format for mustache
         //TO DO implement the process_gapfill_sentences properly
         $testitem->sentences = $this->process_gapfill_sentences($sentences);
-        //cloudpoodll
-        $testitem = $this->set_cloudpoodll_details($testitem);
 
 
         return $testitem;

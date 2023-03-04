@@ -73,6 +73,7 @@ This file contains class and ID definitions.
         qtype_shortanswer: 'shortanswer',
         qtype_listeninggapfill: 'listeninggapfill',
         qtype_speakinggapfill: 'speakinggapfill',
+        qtype_typinggapfill: 'typinggapfill',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_minilesson_grading_maybeselfcorrectedword',

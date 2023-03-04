@@ -66,6 +66,7 @@ const TYPE_MULTICHOICE = 'multichoice';
 const TYPE_PAGE = 'page';
 const TYPE_DICTATIONCHAT = 'dictationchat';
 const TYPE_LGAPFILL = 'listeninggapfill';
+const TYPE_TGAPFILL = 'typinggapfill';
 const TYPE_SGAPFILL = 'speakinggapfill';
 const TYPE_COMPQUIZ = 'comprehensionquiz';
 const TYPE_BUTTONQUIZ = 'buttonquiz';

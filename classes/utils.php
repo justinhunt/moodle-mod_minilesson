@@ -1493,6 +1493,7 @@ class utils{
            case constants::TYPE_BUTTONQUIZ: return new local\itemtype\item_buttonquiz($itemrecord,$moduleinstance,$context);
            case constants::TYPE_SGAPFILL: return new local\itemtype\item_speakinggapfill($itemrecord,$moduleinstance,$context);
            case constants::TYPE_LGAPFILL: return new local\itemtype\item_listeninggapfill($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_TGAPFILL: return new local\itemtype\item_typinggapfill($itemrecord,$moduleinstance,$context);
            default:
        }
    }
@@ -1500,19 +1501,20 @@ class utils{
     public static function fetch_itemform_classname($itemtype){
         //Fetch the correct form
         switch($itemtype){
-            case constants::TYPE_MULTICHOICE: return "\mod_minilesson\local\itemform\multichoiceform";
-            case constants::TYPE_MULTIAUDIO: return "\mod_minilesson\local\itemform\multiaudioform";
-            case constants::TYPE_DICTATIONCHAT: return "\mod_minilesson\local\itemform\dictationchatform";
-            case constants::TYPE_DICTATION: return "\mod_minilesson\local\itemform\dictationform";
-            case constants::TYPE_SPEECHCARDS: return "\mod_minilesson\local\itemform\speechcardsform";
-            case constants::TYPE_LISTENREPEAT: return "\mod_minilesson\local\itemform\listenrepeatform";
-            case constants::TYPE_PAGE: return "\mod_minilesson\local\itemform\pageform";
-            case constants::TYPE_SMARTFRAME: return "\mod_minilesson\local\itemform\smartframe";
-            case constants::TYPE_SHORTANSWER: return "\mod_minilesson\local\itemform\shortanswerform";
-            case constants::TYPE_COMPQUIZ: return "\mod_minilesson\local\itemform\compquizform";
-            case constants::TYPE_BUTTONQUIZ: return "\mod_minilesson\local\itemform\buttonquizform";
-            case constants::TYPE_SGAPFILL: return "\mod_minilesson\local\itemform\speakinggapfillform";
-            case constants::TYPE_LGAPFILL: return "\mod_minilesson\local\itemform\listeninggapfillform";
+            case constants::TYPE_MULTICHOICE: return '\mod_minilesson\local\itemform\multichoiceform';
+            case constants::TYPE_MULTIAUDIO: return '\mod_minilesson\local\itemform\multiaudioform';
+            case constants::TYPE_DICTATIONCHAT: return '\mod_minilesson\local\itemform\dictationchatform';
+            case constants::TYPE_DICTATION: return '\mod_minilesson\local\itemform\dictationform';
+            case constants::TYPE_SPEECHCARDS: return '\mod_minilesson\local\itemform\speechcardsform';
+            case constants::TYPE_LISTENREPEAT: return '\mod_minilesson\local\itemform\listenrepeatform';
+            case constants::TYPE_PAGE: return '\mod_minilesson\local\itemform\pageform';
+            case constants::TYPE_SMARTFRAME: return '\mod_minilesson\local\itemform\smartframe';
+            case constants::TYPE_SHORTANSWER: return '\mod_minilesson\local\itemform\shortanswerform';
+            case constants::TYPE_COMPQUIZ: return '\mod_minilesson\local\itemform\compquizform';
+            case constants::TYPE_BUTTONQUIZ: return '\mod_minilesson\local\itemform\buttonquizform';
+            case constants::TYPE_SGAPFILL: return '\mod_minilesson\local\itemform\speakinggapfillform';
+            case constants::TYPE_LGAPFILL: return '\mod_minilesson\local\itemform\listeninggapfillform';
+            case constants::TYPE_TGAPFILL: return '\mod_minilesson\local\itemform\typinggapfillform';
             default:
         }
     }
