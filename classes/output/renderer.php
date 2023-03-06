@@ -264,6 +264,7 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_SPEECHCARDS:
                 case constants::TYPE_SHORTANSWER:
                 case constants::TYPE_LGAPFILL:
+                case constants::TYPE_TGAPFILL:
                 case constants::TYPE_SGAPFILL:
                     $result->correctans = $quizdata[$result->index]->sentences;
                     break;

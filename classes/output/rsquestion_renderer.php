@@ -52,6 +52,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
         if(isset($CFG->minilesson_experimental) &&$CFG->minilesson_experimental){
            $qtypes[]=constants::TYPE_SMARTFRAME;
             $qtypes[]=constants::TYPE_LGAPFILL;
+            $qtypes[]=constants::TYPE_TGAPFILL;
             $qtypes[]=constants::TYPE_SGAPFILL;
             $qtypes[]=constants::TYPE_COMPQUIZ;
             $qtypes[]=constants::TYPE_BUTTONQUIZ;

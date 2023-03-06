@@ -392,6 +392,34 @@ abstract class item implements templatable, renderable {
     }
 
     /*
+     * Processes gap fill sentences : TO DO not implemented, implement this
+     */
+    protected function process_gapfill_sentences($sentences){
+        $sentenceobjects = [];
+        foreach ($sentences as $sentence) {
+            $sentence = trim($sentence);
+            if (empty($sentence)) {
+                continue;
+            }
+
+            //TO DO replace [x] with gaps
+            $prompt = $sentence;
+
+            $s = new \stdClass();
+            $s->index = $index;
+            $s->indexplusone = $index + 1;
+            $s->sentence = $sentence;
+            $s->prompt = $prompt;
+            $s->displayprompt = $prompt;
+            $s->length = \core_text::strlen($s->sentence);
+
+            $index++;
+            $sentenceobjects[] = $s;
+        }
+        return $sentenceobjects;
+    }
+
+    /*
      * Takes an array of sentences and phonetics for the same, and returns sentence objects with display and spoken and phonetic data
      *
      */
