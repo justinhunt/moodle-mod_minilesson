@@ -2072,3 +2072,7 @@ span.mod_minilesson_finishedanswer {
   margin-bottom: 3px;
   margin-top: 3px;
 }
+.mod_minilesson_rtl {
+  direction: rtl;
+  text-align: right;
+}
