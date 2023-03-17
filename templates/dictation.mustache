@@ -4,7 +4,7 @@
     <div class="col-md-1 poodlldictationplayer dictationplayer_{{index}}">
       <button class="dictationtrigger btn btn-secondary" data-src="@AUDIO@"><i class="fa fa-play"></i></button>
     </div>
-    <div class="col-md-10 poodlldictationinput dictationinput_{{index}}">
+    <div class="col-md-10 poodlldictationinput dictationinput_{{index}} {{#rtl}}mod_minilesson_rtl{{/rtl}}">
       <small class="text-muted"><span class="dictationplayer_{{index}}_chars">0</span>/{{length}}</small>
       <input maxlength="{{length}}" class="form-control" data-index="{{index}}" type="text"></input>
     </div>

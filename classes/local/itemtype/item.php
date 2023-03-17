@@ -335,6 +335,18 @@ abstract class item implements templatable, renderable {
         //show text prompt or dots, for listen and repeat really
         $testitem->show_text=$itemrecord->{constants::SHOWTEXTPROMPT};
 
+        //For right to left languages we want to add the RTL direction and right justify.
+        switch($this->moduleinstance->ttslanguage){
+            case constants::M_LANG_ARAE:
+            case constants::M_LANG_ARSA:
+            case constants::M_LANG_FAIR:
+            case constants::M_LANG_HEIL:
+                $testitem->rtl=constants::M_CLASS . '_rtl';
+                break;
+            default:
+                $testitem->rtl='';
+        }
+
         return $testitem;
     }
 
@@ -853,6 +865,8 @@ abstract class item implements templatable, renderable {
                             }
                         }
                     }
+                }else{
+                    $this->itemrecord->passagehash ='';
                 }
         }else{
             $this->itemrecord->passagehash ='';

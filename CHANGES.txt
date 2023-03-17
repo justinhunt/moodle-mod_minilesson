@@ -1,3 +1,6 @@
+Version 1.0.50 (Build 2023031700)
+- Added RTL support for Hebrew, Arabic (and Farsi but no TTS)
+- Added TTS Voices for Tamil, Telegu, Hebrew and Indonesian
 
 Version 1.0.49(Build 2023022701);
 - Quite a large code refactor

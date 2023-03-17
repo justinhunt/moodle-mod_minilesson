@@ -520,18 +520,6 @@ class renderer extends \plugin_renderer_base {
 
         $recopts['useanimatecss']=$config->animations==constants::M_ANIM_FANCY;
 
-        //For right to left languages we want to add the RTL direction and right justify.
-        switch($moduleinstance->ttslanguage){
-            case constants::M_LANG_ARAE:
-            case constants::M_LANG_ARSA:
-            case constants::M_LANG_FAIR:
-            case constants::M_LANG_HEIL:
-                $recopts['rtl']=true;
-                break;
-            default:
-                //nothing special
-        }
-
         //the activity URL for returning to on finished
         $activityurl = new \moodle_url(constants::M_URL . '/view.php',
             array('n' => $moduleinstance->id));
