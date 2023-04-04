@@ -15,7 +15,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
         uniqueid: null,
         alreadyhadsound: false, //only start silence detection after we got a sound. Silence detection is end of speech.
         silencecount: 0, //how many intervals of consecutive silence so far
-        silenceintervals: 20, //how many consecutive silence intervals (100ms) = silence detected
+        silenceintervals: 15, //how many consecutive silence intervals (100ms) = silence detected
         silencelevel: 25, //below this volume level = silence
 
         config: {

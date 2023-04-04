@@ -445,8 +445,12 @@ abstract class item implements templatable, renderable {
                 continue;
             }
 
-            //build prompt and displayprompt which could be different
-            //dottify
+            //build prompt and displayprompt and sentence which could be different
+            // prompt = audio_prompt
+            // sentence = target_sentence ie what the student should say
+            // displayprompt = the text_prompt that we show the student before they speak
+
+            //dottify = if we dont show the text and just show dots ..
             if($dottify){
                 $prompt = $this->dottify_text($sentence);
                 $displayprompt = $prompt;
@@ -832,12 +836,13 @@ abstract class item implements templatable, renderable {
 
 
     public function update_create_langmodel($olditemrecord){
-        //if we need to generate a DeepSpeech model for this, then lets do that now:
+        //if we need to generate a Coqui model for this, then lets do that now:
         //we want to process the hashcode and lang model if it makes sense
         $newitem = $this->itemrecord;
         if($this->needs_speechrec) {
 
                 $passage = $newitem->customtext1;
+
                 if (utils::needs_lang_model($this->moduleinstance,$passage)) {
                     //lets assign a default passage hash
                     if($olditemrecord) {

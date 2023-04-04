@@ -192,7 +192,7 @@ define(['jquery',
         
         $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").addClass("landr_correct");
         $("#" + self.itemdata.uniqueid + "_container .landr_feedback").addClass("fa fa-check");
-        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].target + "");
+        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].prompt + "");
 
         self.items[self.game.pointer].answered = true;
         self.items[self.game.pointer].correct = true;

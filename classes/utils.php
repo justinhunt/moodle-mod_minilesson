@@ -134,7 +134,7 @@ class utils{
         foreach($sentences as $sentence){
             $sentencebits = explode('|',$sentence);
             if(count($sentencebits)>1){
-                $usesentences[] = trim($sentencebits[0]);
+                $usesentences[] = trim($sentencebits[1]);
             }else{
                 $usesentences[] = $sentence;
             }
@@ -705,6 +705,13 @@ class utils{
     //the segments will usually just return the phrase , but in japanese we want to segment into words
     public static function fetch_phones_and_segments($phrase, $language, $region='tokyo', $segmented=true){
         global $CFG;
+
+        //first we check if the phrase is segmented with a pipe
+        //if we have a pipe prompt = array[0] and response = array[1]
+        $phrasebits = explode('|', $phrase);
+        if (count($phrasebits) > 1) {
+            $phrase = trim($phrasebits[1]);
+        }
 
         switch($language){
             case constants::M_LANG_ENUS:
