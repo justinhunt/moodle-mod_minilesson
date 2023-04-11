@@ -640,4 +640,19 @@ abstract class baseform extends \moodleform {
     public function construction_override($itemid,  $minilesson) {
         return true;
     }
+
+    /**
+     * Time limit element
+     *
+     * @param string $name
+     * @param string $label
+     * @param bool|int $default
+     * @return void
+     */
+    protected final function add_timelimit($name, $label, $default=false) {
+        $this->_form->addElement('duration', $name, $label, ['optional' => true, 'defaultunit' => 1]);
+        if ($default !== false) {
+            $this->_form->setDefault($name, $default);
+        }
+    }
 }

@@ -48,24 +48,16 @@ class  item_listeninggapfill extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
-        //sentences
+        // Sentences.
         $sentences = [];
         if(isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
-        //build sentence objects containing display and phonetic text
-        $testitem->phonetic=$this->itemrecord->phonetic;
-        if(!empty($testitem->phonetic)) {
-            $phonetics = explode(PHP_EOL, $testitem->phonetic);
-        }else{
-            $phonetics=[];
-        }
 
-        //TO DO implement the process_gapfill_sentences properly
-        $testitem->sentences = $this->process_gapfill_sentences($sentences);
-        //cloudpoodll
+        $testitem->sentences = $this->process_listeninggapfill_sentences($sentences);
+
+        // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
-
 
         return $testitem;
     }

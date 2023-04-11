@@ -118,6 +118,7 @@ const TEXTQUESTION_FILEAREA = 'itemarea';
 const TEXTANSWER_FILEAREA ='customtextfilearea';
 const PASSAGEPICTURE='passagepicture';
 const PASSAGEPICTURE_FILEAREA = 'passagepicture';
+const TIMELIMIT = 'timelimit';
 const MAXANSWERS=4;
 const MAXCUSTOMTEXT=5;
 const MAXCUSTOMDATA=5;

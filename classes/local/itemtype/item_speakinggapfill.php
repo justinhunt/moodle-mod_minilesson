@@ -57,24 +57,17 @@ class item_speakinggapfill extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
-        //sentences
+        // Sentences
         $sentences = [];
         if(isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
-        //build sentence objects containing display and phonetic text
-        $testitem->phonetic=$this->itemrecord->phonetic;
-        if(!empty($testitem->phonetic)) {
-            $phonetics = explode(PHP_EOL, $testitem->phonetic);
-        }else{
-            $phonetics=[];
-        }
-        $testitem->sentences = $this->process_spoken_sentences($sentences,$phonetics);
 
-        //cloudpoodll
+        $testitem->sentences = $this->process_speakinggapfill_sentences($sentences);
+
+        // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
 
         return $testitem;
     }
-
 }
