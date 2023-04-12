@@ -624,3 +624,4 @@ $string['modaleditform'] = 'Item Edit Form';
 $string['modaleditform_details'] = 'Adding or editing items in the Minilesson can be done via a modal(popup) form or on a new page';
 $string['modaleditform_newpage'] = 'New page';
 $string['modaleditform_modalform'] = 'Modal form (popup)';
+$string['timelimit'] = 'Time limit';

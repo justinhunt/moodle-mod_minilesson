@@ -2072,7 +2072,39 @@ span.mod_minilesson_finishedanswer {
   margin-bottom: 3px;
   margin-top: 3px;
 }
-.mod_minilesson_rtl {
-  direction: rtl;
-  text-align: right;
+.gapfill-container input.single-character,
+.gapfill-container input.single-character-mtext {
+    width: 26px;
+    margin-left: 5px;
+    text-align: center;
+}
+.gapfill-container .single-character-mtext {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+}
+.gapfill-container .definition-container {
+    display: flex;
+    background-color: #eee;
+    height: 150px;
+}
+.gapfill-container .form-container {
+    margin: 20px auto 22px;
+}
+.gapfill-container .definition {
+    align-self: center;
+    width: 80%;
+    margin: auto;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 10px;
+    padding: 6px;
+    font-style: italic;
+}
+.gapfill-container .progress-container {
+    padding: 5px 8px;
+}
+.gapfill-container .progress.active {
+  margin-top: 8px;
+  margin-right: 3px;
 }

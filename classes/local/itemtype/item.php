@@ -163,6 +163,7 @@ abstract class item implements templatable, renderable {
         $testitem->id = $this->itemrecord->id;
         $testitem->type=$this->itemrecord->type;
         $testitem->name=$this->itemrecord->name;
+        $testitem->timelimit=$this->itemrecord->timelimit;
         if($this->forcetitles){$testitem->title=$this->itemrecord->name;}
         $testitem->uniqueid=$this->itemrecord->type . $testitem->number;
 
@@ -432,6 +433,100 @@ abstract class item implements templatable, renderable {
     }
 
     /*
+     * Processes gap fill sentences : TO DO not implemented, implement this
+     */
+    protected function process_typinggapfill_sentences($sentences) {
+        return $this->parse_gapfill_sentences($sentences);
+    }
+
+    /*
+     * Processes listening gap fill sentences : TO DO not implemented, implement this
+     */
+    protected function process_listeninggapfill_sentences($sentences) {
+        return $this->parse_gapfill_sentences($sentences);
+    }
+
+    /*
+     * Processes speaking gap fill sentences : TO DO not implemented, implement this
+     */
+    protected function process_speakinggapfill_sentences($sentences) {
+        return $this->parse_gapfill_sentences($sentences);
+    }
+
+    /*
+     * Processes listening gap fill sentences : TO DO not implemented, implement this
+     */
+    protected function parse_gapfill_sentences($sentences) {
+        $index = 0;
+        $sentenceobjects = [];
+
+        foreach ($sentences as $sentence) {
+            $arr = explode('|', trim($sentence));
+            $sentence = trim($arr[0] ?? '');
+            $definition = trim($arr[1] ?? '');
+            if (empty($sentence)) {
+                continue;
+            }
+
+            $parsedstring = [];
+            $started = false;
+            $words = explode(' ', $sentence);
+            $maskedwords = [];
+            foreach ($words as $index => $word) {
+                if (strpos($word, '[') !== false) {
+                    $maskedwords[$index] = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $word);
+                }
+            }
+
+            $characters = str_split($sentence);
+
+            $wordindex = 0;
+            foreach ($characters as $character) {
+                if ($character === ' ') {
+                    $wordindex++;
+                }
+                if ($character === '[') {
+                    $started = true;
+                    continue;
+                }
+                if ($character === ']') {
+                    $started = false;
+                    continue;
+                }
+                if (array_key_exists($wordindex, $maskedwords) && $character !== " " && $character !== "." ) {
+                    if ($started) {
+                        $parsedstring[] = ['index' => $wordindex, 'character' => $character, 'type' => 'input'];
+                    } else {
+                        $parsedstring[] = ['index' => $wordindex, 'character' => $character, 'type' => 'mtext'];
+                    }
+                } else {
+                    $parsedstring[] = ['index' => $wordindex, 'character' => $character, 'type' => 'text'];
+                }
+            }
+
+            $sentence = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $sentence);
+
+            // TO DO replace [x] with gaps
+            $prompt = $sentence;
+
+            $s = new \stdClass();
+            $s->index = $index;
+            $s->indexplusone = $index + 1;
+            $s->sentence = $sentence;
+            $s->prompt = $prompt;
+            $s->definition = $definition;
+            $s->displayprompt = $prompt;
+            $s->length = \core_text::strlen($s->sentence);
+            $s->parsedstring = $parsedstring;
+            $s->words = $maskedwords;
+            $sentenceobjects[] = $s;
+            $index++;
+        }
+
+        return $sentenceobjects;
+    }
+
+    /*
      * Takes an array of sentences and phonetics for the same, and returns sentence objects with display and spoken and phonetic data
      *
      */
@@ -625,6 +720,11 @@ abstract class item implements templatable, renderable {
         //Question instructions
         if (property_exists($data, constants::TEXTINSTRUCTIONS)) {
             $theitem->{constants::TEXTINSTRUCTIONS} = $data->iteminstructions;
+        }
+
+        // Time limit.
+        if (property_exists($data, constants::TIMELIMIT)) {
+            $theitem->{constants::TIMELIMIT} = $data->{constants::TIMELIMIT};
         }
 
         //layout

@@ -47,17 +47,16 @@ class  item_typinggapfill extends item {
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->set_layout($testitem);
 
-        //sentences
+        // Sentences.
         $sentences = [];
         if(isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
-        //build sentence objects containing display and phonetic text
 
-        //some processing of sentence settings to a format for mustache
-        //TO DO implement the process_gapfill_sentences properly
-        $testitem->sentences = $this->process_gapfill_sentences($sentences);
+        $testitem->sentences = $this->process_typinggapfill_sentences($sentences);
 
+        // cloudpoodll
+        $testitem = $this->set_cloudpoodll_details($testitem);
 
         return $testitem;
     }

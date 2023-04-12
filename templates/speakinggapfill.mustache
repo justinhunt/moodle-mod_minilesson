@@ -1,31 +1,36 @@
 {{> mod_minilesson/questionheader}}
-  <div class="minilesson_landr_player_box">
+<div class="minilesson_landr_player_box gapfill-container">
     <div style="display:none;" class="landr_results">{{#str}}dc_results, mod_minilesson{{/str}}</div>
 
     <div class="landr_title text-center">{{#str}}listenandrepeat, mod_minilesson{{/str}}</div>
 
     <div class="landr_mainmenu">
-      <div class="landr_loaded" style="display:none;">
-          <button disabled class='btn btn-block btn-primary landr_start_btn'>
-              <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
-          </button>
-      </div>
-      <div class="landr_not_loaded">
-        <p>{{#str}}loading, mod_minilesson{{/str}}</p>
-      </div>
+        <div class="landr_loaded" style="display:none;">
+            <button disabled class='btn btn-block btn-primary landr_start_btn'>
+                <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
+            </button>
+        </div>
+        <div class="landr_not_loaded">
+            <p>{{#str}}loading, mod_minilesson{{/str}}</p>
+        </div>
     </div>
 
-    <div style="display:none;" class="landr_game"></div>
+    <div class="progress-container d-flex"  style="display:none;">
+        <div id="progresstimer" class="flex-grow-1"></div>
+        <div><i class="fa fa-clock-o" aria-hidden="true"></i></div>
+    </div>
+
+    <div style="display:none;" class="question"></div>
 
     <div style="display:none;" class="landr_controls">
 
-      <button class="btn btn-secondary landr_ctrl-btn landr_listen_btn">
-        <i class="fa fa-volume-up"></i> {{#str}}listen, mod_minilesson{{/str}}
-      </button>
+        <button class="btn btn-secondary landr_ctrl-btn landr_listen_btn">
+            <i class="fa fa-volume-up"></i> {{#str}}listen, mod_minilesson{{/str}}
+        </button>
 
-      <button class="btn btn-danger landr_ctrl-btn landr_skip_btn">
-        {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
-      </button>
+        <button class="btn btn-danger landr_ctrl-btn landr_skip_btn">
+            {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
+        </button>
 
     </div>
 
@@ -36,6 +41,6 @@
 
     </div>
 
-  </div>
+</div>
 
 {{> mod_minilesson/questionfooter}}
