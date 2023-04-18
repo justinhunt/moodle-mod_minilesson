@@ -120,6 +120,8 @@ define(['jquery',
                     $(this).val(landr_targetWord);
                 });
 
+                self.stopTimer(self.items[self.game.pointer].timer);
+
                 if (self.game.pointer < self.items.length - 1) {
                     // Move on after short time to next prompt
                     setTimeout(function() {
@@ -165,6 +167,7 @@ define(['jquery',
                     phonetic: target.phonetic,
                     words: target.words,
                     typed: "",
+                    timer: [],
                     answered: false,
                     correct: false,
                     audio: null
@@ -222,6 +225,9 @@ define(['jquery',
                 self.items[self.game.pointer].typed = typed;
 
                 $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
+
+                self.stopTimer(self.items[self.game.pointer].timer);
+
                 if (self.game.pointer < self.items.length - 1) {
                     setTimeout(function() {
                         $(".landr_reply_" + self.game.pointer).hide();
@@ -296,7 +302,7 @@ define(['jquery',
                 $(".minilesson_nextbutton").prop("disabled", false);
                 self.next_question();
 
-            }, 2200);
+            }, 2000);
 
         },
 
@@ -357,7 +363,7 @@ define(['jquery',
             code += "<div class='form-container'>";
             self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
                 if (data.type === 'input') {
-                    code += "<input class='single-character' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "' readonly>";
+                    code += "<input class='single-character' autocomplete='off' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "' readonly>";
                 } else if (data.type === 'mtext') {
                     code += "<input class='single-character-mtext' type='text' name='readonly" + index + "' maxlength='1' value='" + data.character + "' readonly>";
                 } else {
@@ -378,21 +384,19 @@ define(['jquery',
             );
             $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", false);
 
-            var inputElements = [...document.querySelectorAll(".landr_reply_" + self.game.pointer + " input.single-character")];
-            self.formReady(inputElements);
-
             if (self.itemdata.timelimit > 0) {
                 $("#" + self.itemdata.uniqueid + "_container .progress-container").show();
-                $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
+                $("#" + self.itemdata.uniqueid + "_container .progress-container i").show();
+                var progresbar = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
                     height: '5px',
                     timeLimit: self.itemdata.timelimit,
-                    warningThreshold: 10,
-                    baseStyle: 'bg-danger progress-bar progress-bar-animated',
-                    warningStyle: 'bg-danger progress-bar progress-bar-animated',
-                    completeStyle: 'bg-danger progress-bar progress-bar-animated',
                     onFinish: function() {
-                        $("#" + self.itemdata.uniqueid + "_container .dictate_check_btn").trigger('click');
+                        $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn").trigger('click');
                     }
+                });
+
+                progresbar.each(function() {
+                    self.items[self.game.pointer].timer.push($(this).attr('timer'));
                 });
             }
 
@@ -403,32 +407,12 @@ define(['jquery',
             }
         },
 
-        formReady: function(inputElements) {
-            inputElements.forEach(function(ele, index) {
-                ele.addEventListener("keydown", function(e) {
-                    // If the keycode is backspace & the current field is empty
-                    // focus the input before the current. Then the event happens
-                    // which will clear the "before" input box.
-                    if (e.keyCode === 8 && e.target.value === "") {
-                        inputElements[Math.max(0, index - 1)].focus();
-                    }
+        stopTimer: function(timers) {
+            if (timers.length) {
+                timers.forEach(function(timer) {
+                    clearInterval(timer);
                 });
-                ele.addEventListener("input", function(e) {
-                    // Take the first character of the input
-                    // this actually breaks if you input an emoji like 👨‍👩‍👧‍👦....
-                    // but I'm willing to overlook insane security code practices.
-                    const [first, ...rest] = e.target.value;
-                    e.target.value = first ?? ""; // First will be undefined when backspace was entered, so set the input to ""
-                    const lastInputBox = index === inputElements.length - 1;
-                    const didInsertContent = first !== undefined;
-                    if (didInsertContent && !lastInputBox) {
-                        // Continue to input the rest of the string
-                        inputElements[index + 1].focus();
-                        inputElements[index + 1].value = rest.join("");
-                        inputElements[index + 1].dispatchEvent(new Event("input"));
-                    }
-                });
-            });
+            }
         },
     };
 });

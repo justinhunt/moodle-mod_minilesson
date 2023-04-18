@@ -66,19 +66,21 @@
 
             }, 250);
 
+            $(this).attr('timer', interval);
         });
 
         return this;
     };
 
     $.fn.progressTimer.defaults = {
+        action: '',
         height: '5px',
         timeLimit: 60,// Total number of seconds
         warningThreshold: 5,// Seconds remaining triggering switch to warning color
         onFinish: function() {},// Invoked once the timer expires
-        baseStyle: '',// Bootstrap progress bar style at the beginning of the timer
-        warningStyle: 'progress-bar-danger', // Bootstrap progress bar style in the warning phase
-        completeStyle: 'progress-bar-success'// Bootstrap progress bar style at completion of timer
+        baseStyle: 'bg-danger progress-bar progress-bar-animated',// Bootstrap progress bar style at the beginning of the timer
+        warningStyle: 'bg-danger progress-bar progress-bar-animated', // Bootstrap progress bar style in the warning phase
+        completeStyle: 'bg-danger progress-bar progress-bar-animated'// Bootstrap progress bar style at completion of timer
     };
 }));
 /* jshint ignore:end */

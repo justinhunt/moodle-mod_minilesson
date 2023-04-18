@@ -875,7 +875,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   }
 }
 
-/*! * * * * * * * * * * * * * * * * * * * *\  
+/*! * * * * * * * * * * * * * * * * * * * *\
   CSShake :: shake-rotate
   v1.5.0
   CSS classes to move your DOM
@@ -2075,8 +2075,14 @@ span.mod_minilesson_finishedanswer {
 .gapfill-container input.single-character,
 .gapfill-container input.single-character-mtext {
     width: 26px;
-    margin-left: 5px;
+    margin-left: 2px;
     text-align: center;
+}
+.gapfill-container .form-container input:first-child {
+    margin-left: 10px;
+}
+.gapfill-container .form-container input:last-child{
+    margin-right: 10px;
 }
 .gapfill-container .single-character-mtext {
     color: #0c5460;

@@ -62,6 +62,7 @@ define(['jquery',
             $("#" + self.itemdata.uniqueid + "_container .dictate_skip_btn").on("click", function() {
                 $(this).prop("disabled", true);
                 $("#" + self.itemdata.uniqueid + "_container .dictate_check_btn").prop("disabled", true);
+                self.stopTimer(self.items[self.game.pointer].timer);
                 // Move on after short time, to next prompt, or next question.
                 if (self.game.pointer < self.items.length - 1) {
                     setTimeout(function() {
@@ -116,6 +117,7 @@ define(['jquery',
                     prompt: target.prompt,
                     parsedstring: target.parsedstring,
                     definition: target.definition,
+                    timer: [],
                     typed: "",
                     answered: false,
                     correct: false,
@@ -146,6 +148,8 @@ define(['jquery',
                 self.items[self.game.pointer].correct = false;
                 self.items[self.game.pointer].typed = false;
             }
+
+            self.stopTimer(self.items[self.game.pointer].timer);
 
             if (self.game.pointer < self.items.length - 1) {
                 setTimeout(function() {
@@ -244,7 +248,7 @@ define(['jquery',
             code += "<div class='form-container'>";
             self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
                 if (data.type === 'input') {
-                    code += "<input class='single-character' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "'>";
+                    code += "<input class='single-character' autocomplete='off' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "'>";
                 } else if (data.type === 'mtext') {
                     code += "<input class='single-character-mtext' type='text' name='readonly" + index + "' maxlength='1' value='" + data.character + "' readonly>";
                 } else {
@@ -259,6 +263,7 @@ define(['jquery',
 
             code += "</div>";
             $("#" + self.itemdata.uniqueid + "_container .question").append(code);
+
             var newreply = $(".dictate_reply_" + self.game.pointer);
 
             anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
@@ -268,21 +273,32 @@ define(['jquery',
 
             $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", false);
 
-            var inputElements = [...document.querySelectorAll(".dictate_reply_" + self.game.pointer + " input.single-character")];
+            var inputElements = [...document.querySelectorAll("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer + ' input.single-character')];
             self.formReady(inputElements);
+
+            $("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer + ' input.single-character:first').focus();
 
             if (self.itemdata.timelimit > 0) {
                 $("#" + self.itemdata.uniqueid + "_container .progress-container").show();
-                $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
+                $("#" + self.itemdata.uniqueid + "_container .progress-container i").show();
+                var progresbar = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
                     height: '5px',
                     timeLimit: self.itemdata.timelimit,
-                    warningThreshold: 10,
-                    baseStyle: 'bg-danger progress-bar progress-bar-animated',
-                    warningStyle: 'bg-danger progress-bar progress-bar-animated',
-                    completeStyle: 'bg-danger progress-bar progress-bar-animated',
                     onFinish: function() {
                         $("#" + self.itemdata.uniqueid + "_container .dictate_check_btn").trigger('click');
                     }
+                });
+
+                progresbar.each(function() {
+                    self.items[self.game.pointer].timer.push($(this).attr('timer'));
+                });
+            }
+        },
+
+        stopTimer: function(timers) {
+            if (timers.length) {
+                timers.forEach(function(timer) {
+                    clearInterval(timer);
                 });
             }
         },
