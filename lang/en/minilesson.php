@@ -625,3 +625,5 @@ $string['modaleditform_details'] = 'Adding or editing items in the Minilesson ca
 $string['modaleditform_newpage'] = 'New page';
 $string['modaleditform_modalform'] = 'Modal form (popup)';
 $string['timelimit'] = 'Time limit';
+$string['gapfillitemsdesc'] ='Enter the list of items in the text area below. Each item should be on a new line. The letter gaps should be enclosed in square brackets: [ ].The format is:<br>Text prompt | hint<br>.e.g  This is my d[og]| a common pet';
+$string['listeninggapfillitemsdesc'] ='Enter the list of items in the text area below. Each item should be on a new line. The letter gaps should be enclosed in square brackets: [ ]. The format is:<br>Text prompt<br>.e.g  This is my d[og]';
