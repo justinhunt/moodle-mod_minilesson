@@ -11,8 +11,6 @@ define(['jquery','core/log'], function($,log) {
             //DECLARATIONS and INITs ...........................
             var stoporpause='stop';
 
-
-
             //audio player declarations
             var aplayer = $('#' + AUDIOID + '_ttsaudioplayer');
             var fa = $('#' + AUDIOID + '_ttsaudio .fa');
@@ -27,6 +25,11 @@ define(['jquery','core/log'], function($,log) {
             aplayer[0].addEventListener('ended', function(){
                     $(fa).removeClass('fa-stop');
                     $(fa).addClass('fa-volume-up');
+            });
+
+            aplayer[0].addEventListener('play', function(){
+                $(fa).removeClass('fa-volume-up');
+                $(fa).addClass('fa-stop');
             });
 
             //handle audio player button clicks

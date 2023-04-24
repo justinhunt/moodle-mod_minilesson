@@ -57,26 +57,53 @@ define(['jquery',
                 self.next_question();
             });
 
-            $("#" + self.itemdata.uniqueid + "_container .dictate_start_btn").on("click", function() {
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_start_btn").on("click", function() {
                 self.start();
             });
 
-            $("#" + self.itemdata.uniqueid + "_container .dictate_listen_btn").on("click", function() {
-                self.items[self.game.pointer].audio.load();
-                self.items[self.game.pointer].audio.play();
+            //AUDIO PLAYER events
+            var audioplayerbtn=$("#" + self.itemdata.uniqueid + "_container .lgapfill_listen_btn");
+            //audio button click event
+            audioplayerbtn.on("click", function() {
+                var theaudio =self.items[self.game.pointer].audio;
+
+                //change icon to indicate playing state
+                theaudio.addEventListener('ended', function(){
+                    $(audioplayerbtn).children('.fa').removeClass('fa-stop');
+                    $(audioplayerbtn).children('.fa').addClass('fa-volume-up');
+                });
+
+                theaudio.addEventListener('play', function(){
+                    $(audioplayerbtn).children('.fa').removeClass('fa-volume-up');
+                    $(audioplayerbtn).children('.fa').addClass('fa-stop');
+                });
+
+                theaudio.load();
+                theaudio.play();
             });
 
+            //toggle audio playback on spacekey press in input boxes
+            $("#" + self.itemdata.uniqueid + "_container").on("keydown", ".single-character", function(e) {
+                if (e.which == 32) {
+                    e.preventDefault();
+                    audioplayerbtn.trigger("click");
+                }
+            });
+
+
+
+
             // On skip button click
-            $("#" + self.itemdata.uniqueid + "_container .dictate_skip_btn").on("click", function() {
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_skip_btn").on("click", function() {
                 // Disable buttons
-                $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", true);
+                $("#" + self.itemdata.uniqueid + "_container .lgapfill_ctrl-btn").prop("disabled", true);
                 // Reveal prompt
-                $("#" + self.itemdata.uniqueid + "_container .dictate_speech.dictate_teacher_left").text(self.items[self.game.pointer].prompt + "");
+                $("#" + self.itemdata.uniqueid + "_container .lgapfill_speech.lgapfill_teacher_left").text(self.items[self.game.pointer].prompt + "");
                 // Reveal answers
-                $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").each(function() {
+                $("#" + self.itemdata.uniqueid + "_container .lgapfill_targetWord").each(function() {
                     var realidx = $(this).data("realidx");
-                    var dictate_targetWord = self.items[self.game.pointer].dictate_targetWords[realidx];
-                    $(this).val(dictate_targetWord);
+                    var lgapfill_targetWord = self.items[self.game.pointer].lgapfill_targetWords[realidx];
+                    $(this).val(lgapfill_targetWord);
                 });
 
                 self.stopTimer(self.items[self.game.pointer].timer);
@@ -84,7 +111,7 @@ define(['jquery',
                 // Move on after short time, to next prompt, or next question
                 if (self.game.pointer < self.items.length - 1) {
                     setTimeout(function() {
-                        $(".dictate_reply_" + self.game.pointer).hide();
+                        $(".lgapfill_reply_" + self.game.pointer).hide();
                         self.items[self.game.pointer].answered = true;
                         self.items[self.game.pointer].correct = false;
                         self.game.pointer++;
@@ -96,19 +123,19 @@ define(['jquery',
             });
 
 
-            $("#" + self.itemdata.uniqueid + "_container .dictate_check_btn").on("click", function() {
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_check_btn").on("click", function() {
                 self.check_answer();
             });
 
-            // Listen for enter key
-            $("#" + self.itemdata.uniqueid + "_container").on("keydown", ".dictate_targetWord", function(e) {
+            // Listen for enter key on input boxeslap
+            $("#" + self.itemdata.uniqueid + "_container").on("keydown", ".single-character", function(e) {
                 if (e.which == 13) {
                     self.check_answer();
                 }
             });
 
             // Auto nav between inputs
-            $("#" + self.itemdata.uniqueid + "_container").on("keyup", ".dictate_targetWord", function(e) {
+            $("#" + self.itemdata.uniqueid + "_container").on("keyup", ".lgapfill_targetWord", function(e) {
 
                 // Move focus between textboxes
                 // log.debug(e);
@@ -118,7 +145,7 @@ define(['jquery',
                 var key = e.which;
                 if (myLength >= maxLength) {
                     var nextIdx = $(this).data('idx') + 1;
-                    var next = $("#" + self.itemdata.uniqueid + "_container input.dictate_targetWord[data-idx=\"" + nextIdx + "\"");
+                    var next = $("#" + self.itemdata.uniqueid + "_container input.lgapfill_targetWord[data-idx=\"" + nextIdx + "\"");
                     if (next.length === 1) {
                         next.focus();
                     }
@@ -126,7 +153,7 @@ define(['jquery',
                     // Move to previous field if empty (user pressed backspace or delete)
                 } else if ((key == 8 || key == 46) && myLength === 0) {
                     var previousIdx = $(this).data('idx') - 1;
-                    var previous = $("#" + self.itemdata.uniqueid + "_container input.dictate_targetWord[data-idx=\"" + previousIdx + "\"");
+                    var previous = $("#" + self.itemdata.uniqueid + "_container input.lgapfill_targetWord[data-idx=\"" + previousIdx + "\"");
                     if (previous.length === 1) {
                         previous.focus();
                     }
@@ -142,7 +169,7 @@ define(['jquery',
         check_answer: function() {
             var self = this;
             var passage = self.items[self.game.pointer].parsedstring;
-            var characterunputs = $("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer + ' input.single-character');
+            var characterunputs = $("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer + ' input.single-character');
             var transcript = [];
 
             characterunputs.each(function() {
@@ -200,30 +227,39 @@ define(['jquery',
 
         appReady: function() {
             var self = this;
-            $("#" + self.itemdata.uniqueid + "_container .dictate_not_loaded").hide();
-            $("#" + self.itemdata.uniqueid + "_container .dictate_loaded").show();
-            $("#" + self.itemdata.uniqueid + "_container .dictate_start_btn").prop("disabled", false);
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_not_loaded").hide();
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_loaded").show();
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_start_btn").prop("disabled", false);
         },
 
         gotComparison: function(comparison) {
             var self = this;
             if (comparison) {
-                $("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer + " .dictate_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-check");
+                $("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer + " .lgapfill_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-check");
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = true;
                 self.items[self.game.pointer].typed = false;
-            } else {
-                $("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer + " .dictate_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-times");
+            } else if(!self.itemdata.allowretry) {
+                $("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer + " .lgapfill_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-times");
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = false;
                 self.items[self.game.pointer].typed = false;
+            } else {
+                //it was wrong but they can retry
+                var thereply = $("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer);
+                anim.do_animate(thereply, 'shakeX animate__faster').then(
+                    function() {
+                        $("#" + self.itemdata.uniqueid + "_container .lgapfill_ctrl-btn").prop("disabled", false);
+                    }
+                );
+                return;
             }
 
             self.stopTimer(self.items[self.game.pointer].timer);
 
             if (self.game.pointer < self.items.length - 1) {
                 setTimeout(function() {
-                    $(".dictate_reply_" + self.game.pointer).hide();
+                    $(".lgapfill_reply_" + self.game.pointer).hide();
                     self.game.pointer++;
                     self.nextPrompt();
                 }, 2000);
@@ -253,7 +289,7 @@ define(['jquery',
         getComparison: function(passage, transcript, callback) {
             var self = this;
 
-            $(".dictate_ctrl-btn").prop("disabled", true);
+            $(".lgapfill_ctrl-btn").prop("disabled", true);
 
             var correctanswer = true;
 
@@ -262,7 +298,7 @@ define(['jquery',
 
                 if (data.type === 'input') {
                     if (correctanswer === true) {
-                        char = $("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]').val();
+                        char = $("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]').val();
                         if (char == '') {
                             correctanswer = false;
                         } else if (char != data.character) {
@@ -287,7 +323,7 @@ define(['jquery',
         start: function() {
             var self = this;
 
-            $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", true);
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_ctrl-btn").prop("disabled", true);
 
             self.items.forEach(function(item) {
                 item.spoken = "";
@@ -296,12 +332,12 @@ define(['jquery',
             });
 
             self.game.pointer = 0;
-
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_listen_cont").show();
             $("#" + self.itemdata.uniqueid + "_container .question").show();
-            $("#" + self.itemdata.uniqueid + "_container .dictate_game").show();
-            $("#" + self.itemdata.uniqueid + "_container .dictate_start_btn").hide();
-            $("#" + self.itemdata.uniqueid + "_container .dictate_mainmenu").hide();
-            $("#" + self.itemdata.uniqueid + "_container .dictate_controls").show();
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_game").show();
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_start_btn").hide();
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_mainmenu").hide();
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_controls").show();
 
             self.nextPrompt();
 
@@ -311,7 +347,7 @@ define(['jquery',
 
             var self = this;
 
-            $(".dictate_ctrl-btn").prop("disabled", false);
+            $(".lgapfill_ctrl-btn").prop("disabled", false);
 
             var color;
 
@@ -325,42 +361,45 @@ define(['jquery',
                 return "<i style='color:" + color + "' class='fa fa-circle'></i>";
             }).join(" ");
 
-            $("#" + self.itemdata.uniqueid + "_container .dictate_title").html(progress);
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_title").html(progress);
 
             self.nextReply();
+
+            //play the audio
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_listen_btn").trigger('click')
         },
 
         nextReply: function() {
             var self = this;
-            var code = "<div class='dictate_reply dictate_reply_" + self.game.pointer + " text-center' style='display:none;'>";
+            var code = "<div class='lgapfill_reply lgapfill_reply_" + self.game.pointer + " text-center' style='display:none;'>";
 
             code += "<div class='form-container'>";
             self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
                 if (data.type === 'input') {
-                    code += "<input class='single-character' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "'>";
+                    code += "<input class='single-character' type='text' autocomplete='off' name='filltext" + index + "' maxlength='1' data-index='" + index + "'>";
                 } else if (data.type === 'mtext') {
                     code += "<input class='single-character-mtext' autocomplete='off' type='text' name='readonly" + index + "' maxlength='1' value='" + data.character + "' readonly>";
                 } else {
                     code += data.character;
                 }
             });
-            code += " <i data-idx='" + self.game.pointer + "' class='dictate_feedback'></i></div>";
+            code += " <i data-idx='" + self.game.pointer + "' class='lgapfill_feedback'></i></div>";
 
             code += "</div>";
             $("#" + self.itemdata.uniqueid + "_container .question").append(code);
-            var newreply = $(".dictate_reply_" + self.game.pointer);
+            var newreply = $(".lgapfill_reply_" + self.game.pointer);
 
             anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
                 function() {
                 }
             );
 
-            $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", false);
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_ctrl-btn").prop("disabled", false);
 
-            var inputElements = [...document.querySelectorAll("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer + ' input.single-character')];
+            var inputElements = [...document.querySelectorAll("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer + ' input.single-character')];
             self.formReady(inputElements);
 
-            $("#" + self.itemdata.uniqueid + "_container .dictate_reply_" + self.game.pointer + ' input.single-character:first').focus();
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer + ' input.single-character:first').focus();
 
             if (self.itemdata.timelimit > 0) {
                 $("#" + self.itemdata.uniqueid + "_container .progress-container").show();
@@ -369,7 +408,7 @@ define(['jquery',
                     height: '5px',
                     timeLimit: self.itemdata.timelimit,
                     onFinish: function () {
-                        $("#" + self.itemdata.uniqueid + "_container .dictate_check_btn").trigger('click');
+                        $("#" + self.itemdata.uniqueid + "_container .lgapfill_check_btn").trigger('click');
                     }
                 });
 

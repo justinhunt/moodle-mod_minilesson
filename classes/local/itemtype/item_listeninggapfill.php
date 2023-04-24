@@ -55,6 +55,7 @@ class  item_listeninggapfill extends item {
         }
 
         $testitem->sentences = $this->process_listeninggapfill_sentences($sentences);
+        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY}==1;
 
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);

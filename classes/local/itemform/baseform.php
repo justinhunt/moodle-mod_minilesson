@@ -655,4 +655,30 @@ abstract class baseform extends \moodleform {
             $this->_form->setDefault($name, $default);
         }
     }
+
+    /**
+     * Time limit element
+     *
+     * @param string $name
+     * @param string $label
+     * @param bool|int $default
+     * @return void
+     */
+    protected final function add_allowretry($name,  $default=0) {
+        $this->_form->addElement('advcheckbox',$name,
+            get_string('allowretry',constants::M_COMPONENT),
+            get_string('allowretry_desc',constants::M_COMPONENT),[],[0,1]);
+            if ($default !== 0) {
+                $this->_form->setDefault($name, 1);
+            }
+    }
+
+    /*
+     *
+
+    $mform->
+
+
+     *
+     */
 }
