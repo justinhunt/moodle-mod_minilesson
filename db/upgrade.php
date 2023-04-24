@@ -387,6 +387,25 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         upgrade_mod_savepoint(true, 2023011801, 'minilesson');
     }
+    // Add timelimit to itemtype
+    if ($oldversion < 2023040401) {
+        $table = new xmldb_table(constants::M_QTABLE);
+
+
+        // Define field itemttspassage
+        $fields=[];
+        $fields[]= new xmldb_field('timelimit', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,null, null, 0);
+
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2023040401, 'minilesson');
+    }
 
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
