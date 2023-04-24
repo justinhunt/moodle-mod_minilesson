@@ -387,15 +387,14 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         upgrade_mod_savepoint(true, 2023011801, 'minilesson');
     }
-    // Add timelimit to itemtype
-    if ($oldversion < 2023040401) {
+
+      // Added Gap fill questions with time limits
+    if ($oldversion < 2023041200) {
         $table = new xmldb_table(constants::M_QTABLE);
 
-
-        // Define field itemttspassage
+        // Define field item timelimit
         $fields=[];
-        $fields[]= new xmldb_field('timelimit', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,null, null, 0);
-
+        $fields[]= new xmldb_field('timelimit', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, null, null, 0);
 
         // Add fields
         foreach ($fields as $field) {
@@ -403,8 +402,8 @@ function xmldb_minilesson_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
+        upgrade_mod_savepoint(true, 2023041200, 'minilesson');
 
-        upgrade_mod_savepoint(true, 2023040401, 'minilesson');
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.

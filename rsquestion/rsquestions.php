@@ -60,6 +60,11 @@ if($minilesson->foriframe==1  || $minilesson->pagelayout=='embedded') {
 }
 
 
+//Not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN
+if($config->animations==constants::M_ANIM_FANCY) {
+    $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
+}
+
 $renderer = $PAGE->get_renderer('mod_minilesson');
 $rsquestion_renderer = $PAGE->get_renderer('mod_minilesson','rsquestion');
 

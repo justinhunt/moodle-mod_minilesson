@@ -1,14 +1,14 @@
 {{> mod_minilesson/questionheader}}
-<div class="minilesson_dictate_player_box gapfill-container">
-    <div class="dictate_title text-center">{{#str}}typinggapfill, mod_minilesson{{/str}}</div>
+<div class="minilesson_tgapfill_player_box gapfill-container">
+    <div class="tgapfill_title text-center">{{#str}}typinggapfill, mod_minilesson{{/str}}</div>
 
-    <div class="dictate_mainmenu">
-        <div class="dictate_loaded" style="display:none;">
-            <button disabled class='btn btn-block btn-primary dictate_start_btn'>
+    <div class="tgapfill_mainmenu">
+        <div class="tgapfill_loaded" style="display:none;">
+            <button disabled class='btn btn-block btn-primary tgapfill_start_btn'>
                 <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
             </button>
         </div>
-        <div class="dictate_not_loaded">
+        <div class="tgapfill_not_loaded">
             <p>{{#str}}loading, mod_minilesson{{/str}}</p>
         </div>
     </div>
@@ -22,13 +22,13 @@
 
     <div style="display:none;" class="question"></div>
 
-    <div style="display:none;" class="dictate_controls">
+    <div style="display:none;" class="tgapfill_controls">
 
-        <button class="btn btn-success dictate_ctrl-btn dictate_check_btn w-50">
+        <button class="btn btn-success tgapfill_ctrl-btn tgapfill_check_btn">
             <i class="fa fa-check"></i> {{#str}}check, mod_minilesson{{/str}}
         </button>
 
-        <button class="btn btn-danger dictate_ctrl-btn dictate_skip_btn w-50">
+        <button class="btn btn-danger tgapfill_ctrl-btn tgapfill_skip_btn">
             {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
         </button>
 

@@ -119,13 +119,14 @@ const TEXTANSWER_FILEAREA ='customtextfilearea';
 const PASSAGEPICTURE='passagepicture';
 const PASSAGEPICTURE_FILEAREA = 'passagepicture';
 const TIMELIMIT = 'timelimit';
+const GAPFILLALLOWRETRY = 'customint3';
 const MAXANSWERS=4;
 const MAXCUSTOMTEXT=5;
 const MAXCUSTOMDATA=5;
 const MAXCUSTOMINT=5;
 
 const ITEMTEXTAREA_EDOPTIONS =array('trusttext' => 0,'noclean'=>1, 'maxfiles' => 0);
-
+const READSENTENCE = 'customint2';
 const IGNOREPUNCTUATION = 'customint2';
 const SHOWTEXTPROMPT = 'customint1';
 const TEXTPROMPT_WORDS = 1;

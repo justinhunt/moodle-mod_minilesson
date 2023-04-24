@@ -54,6 +54,7 @@ class  item_typinggapfill extends item {
         }
 
         $testitem->sentences = $this->process_typinggapfill_sentences($sentences);
+        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY}==1;
 
         // cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);

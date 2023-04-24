@@ -1,3 +1,6 @@
+Version 1.0.51 (Build 20230412XX)
+- Added three gapfill question types
+
 Version 1.0.51 (Build 2023040400)
 - Fixed bug in listen and repeat where the prompt and response were different. It would not recognize the correct response
 

@@ -65,6 +65,8 @@ define(['jquery',
             }
 
             self.itemdata = itemdata;
+            log.debug("itemdata");
+            log.debug(itemdata);
             self.quizhelper = quizhelper;
             self.index = index;
 
@@ -99,25 +101,42 @@ define(['jquery',
                 self.next_question();
             });
             // On start button click
-            $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").on("click", function() {
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_start_btn").on("click", function() {
                 self.start();
             });
+
+            //AUDIO PLAYER Button events
+            var audioplayerbtn=$("#" + self.itemdata.uniqueid + "_container .sgapfill_listen_btn");
             // On listen button click
-            $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").on("click", function() {
-                self.items[self.game.pointer].audio.load();
-                self.items[self.game.pointer].audio.play();
-            });
+            if(self.itemdata.readsentence) {
+                audioplayerbtn.on("click", function () {
+                    var theaudio = self.items[self.game.pointer].audio;
+                    //change icon to indicate playing state
+                    theaudio.addEventListener('ended', function () {
+                        $(audioplayerbtn).children('.fa').removeClass('fa-stop');
+                        $(audioplayerbtn).children('.fa').addClass('fa-volume-up');
+                    });
+
+                    theaudio.addEventListener('play', function () {
+                        $(audioplayerbtn).children('.fa').removeClass('fa-volume-up');
+                        $(audioplayerbtn).children('.fa').addClass('fa-stop');
+                    });
+                    theaudio.load();
+                    theaudio.play();
+                });
+            }
+
             // On skip button click
-            $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn").on("click", function() {
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_skip_btn").on("click", function() {
                 // Disable the buttons
-                $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
+                $("#" + self.itemdata.uniqueid + "_container .sgapfill_ctrl-btn").prop("disabled", true);
                 // Reveal the prompt
-                $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].prompt + "");
+                $("#" + self.itemdata.uniqueid + "_container .sgapfill_speech.sgapfill_teacher_left").text(self.items[self.game.pointer].prompt + "");
                 // Reveal the answer
-                $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").each(function() {
+                $("#" + self.itemdata.uniqueid + "_container .sgapfill_targetWord").each(function() {
                     var realidx = $(this).data("realidx");
-                    var landr_targetWord = self.items[self.game.pointer].landr_targetWords[realidx];
-                    $(this).val(landr_targetWord);
+                    var sgapfill_targetWord = self.items[self.game.pointer].sgapfill_targetWords[realidx];
+                    $(this).val(sgapfill_targetWord);
                 });
 
                 self.stopTimer(self.items[self.game.pointer].timer);
@@ -125,7 +144,7 @@ define(['jquery',
                 if (self.game.pointer < self.items.length - 1) {
                     // Move on after short time to next prompt
                     setTimeout(function() {
-                        $(".landr_reply_" + self.game.pointer).hide();
+                        $(".sgapfill_reply_" + self.game.pointer).hide();
                         self.items[self.game.pointer].answered = true;
                         self.items[self.game.pointer].correct = false;
                         self.game.pointer++;
@@ -193,17 +212,17 @@ define(['jquery',
 
         appReady: function() {
             var self = this;
-            $("#" + self.itemdata.uniqueid + "_container .landr_not_loaded").hide();
-            $("#" + self.itemdata.uniqueid + "_container .landr_loaded").show();
-            $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").prop("disabled", false);
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_not_loaded").hide();
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_loaded").show();
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_start_btn").prop("disabled", false);
         },
 
         gotComparison: function(comparison, typed) {
             var self = this;
-            var feedback = $("#" + self.itemdata.uniqueid + "_container .landr_reply_" + self.game.pointer + " .dictate_feedback[data-idx='" + self.game.pointer + "']");
+            var feedback = $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer + " .dictate_feedback[data-idx='" + self.game.pointer + "']");
 
-            $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").removeClass("landr_correct landr_incorrect");
-            $("#" + self.itemdata.uniqueid + "_container .landr_feedback").removeClass("fa fa-check fa-times");
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_targetWord").removeClass("sgapfill_correct sgapfill_incorrect");
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_feedback").removeClass("fa fa-check fa-times");
 
             var allCorrect = comparison.filter(function(e) {
                 return !e.matched;
@@ -211,7 +230,7 @@ define(['jquery',
 
             if (allCorrect && comparison && comparison.length > 0) {
                 self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
-                    var characterinput = $("#" + self.itemdata.uniqueid + "_container .landr_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]');
+                    var characterinput = $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]');
                     if (data.type === 'input') {
                         characterinput.val(data.character);
                     }
@@ -224,13 +243,13 @@ define(['jquery',
                 self.items[self.game.pointer].correct = true;
                 self.items[self.game.pointer].typed = typed;
 
-                $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
+                $("#" + self.itemdata.uniqueid + "_container .sgapfill_ctrl-btn").prop("disabled", true);
 
                 self.stopTimer(self.items[self.game.pointer].timer);
 
                 if (self.game.pointer < self.items.length - 1) {
                     setTimeout(function() {
-                        $(".landr_reply_" + self.game.pointer).hide();
+                        $(".sgapfill_reply_" + self.game.pointer).hide();
                         self.game.pointer++;
                         self.nextPrompt();
                     }, 2000);
@@ -248,14 +267,14 @@ define(['jquery',
                         if (words[key] == obj.word) {
                             if (!obj.matched) {
                                 self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
-                                    var characterinput = $("#" + self.itemdata.uniqueid + "_container .landr_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]');
+                                    var characterinput = $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]');
                                     if (data.index == key && data.type === 'input') {
                                         characterinput.val('');
                                     }
                                 });
                             } else {
                                 self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
-                                    var characterinput = $("#" + self.itemdata.uniqueid + "_container .landr_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]');
+                                    var characterinput = $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]');
                                     if (data.index == key && data.type === 'input') {
                                         characterinput.val(data.character);
                                     }
@@ -264,26 +283,46 @@ define(['jquery',
                         }
                     });
                 });
-                var thereply = $("#" + self.itemdata.uniqueid + "_container .landr_reply_" + self.game.pointer);
+                var thereply = $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer);
                 anim.do_animate(thereply, 'shakeX animate__faster').then(
                     function() {
-                        $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", false);
+                        $("#" + self.itemdata.uniqueid + "_container .sgapfill_ctrl-btn").prop("disabled", false);
                     }
                 );
             }
             // Show all the correct words
-            $("#" + self.itemdata.uniqueid + "_container .landr_targetWord.landr_correct").each(function() {
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_targetWord.sgapfill_correct").each(function() {
                 var realidx = $(this).data("realidx");
-                var landr_targetWord = self.items[self.game.pointer].landr_targetWords[realidx];
-                $(this).val(landr_targetWord);
+                var sgapfill_targetWord = self.items[self.game.pointer].sgapfill_targetWords[realidx];
+                $(this).val(sgapfill_targetWord);
             });
+
+            if(!self.itemdata.allowretry){
+                self.items[self.game.pointer].answered = true;
+                self.items[self.game.pointer].correct = false;
+                self.items[self.game.pointer].typed = typed;
+
+                $("#" + self.itemdata.uniqueid + "_container .sgapfill_ctrl-btn").prop("disabled", true);
+
+                self.stopTimer(self.items[self.game.pointer].timer);
+
+                if (self.game.pointer < self.items.length - 1) {
+                    setTimeout(function() {
+                        $(".sgapfill_reply_" + self.game.pointer).hide();
+                        self.game.pointer++;
+                        self.nextPrompt();
+                    }, 2000);
+                } else {
+                    self.end();
+                }
+            }
 
         },
 
         getComparison: function(passage, transcript, phonetic, callback) {
             var self = this;
 
-            $(".landr_ctrl-btn").prop("disabled", true);
+            $(".sgapfill_ctrl-btn").prop("disabled", true);
             self.quizhelper.comparePassageToTranscript(passage, transcript, phonetic, self.itemdata.language).then(function(ajaxresult) {
                 var payloadobject = JSON.parse(ajaxresult);
                 if (payloadobject) {
@@ -309,8 +348,8 @@ define(['jquery',
         start: function() {
             var self = this;
 
-            $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
-            $("#" + self.itemdata.uniqueid + "_container .landr_speakbtncontainer").show();
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_ctrl-btn").prop("disabled", true);
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_speakbtncontainer").show();
 
             self.items.forEach(function(item) {
                 item.spoken = "";
@@ -321,9 +360,12 @@ define(['jquery',
             self.game.pointer = 0;
 
             $("#" + self.itemdata.uniqueid + "_container .question").show();
-            $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").hide();
-            $("#" + self.itemdata.uniqueid + "_container .landr_mainmenu").hide();
-            $("#" + self.itemdata.uniqueid + "_container .landr_controls").show();
+            if(self.itemdata.readsentence) {
+                $("#" + self.itemdata.uniqueid + "_container .sgapfill_listen_cont").show();
+            }
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_start_btn").hide();
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_mainmenu").hide();
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_controls").show();
 
             self.nextPrompt();
         },
@@ -331,7 +373,7 @@ define(['jquery',
         nextPrompt: function() {
             var self = this;
 
-            $(".landr_ctrl-btn").prop("disabled", false);
+            $(".sgapfill_ctrl-btn").prop("disabled", false);
 
             var color;
 
@@ -345,8 +387,8 @@ define(['jquery',
                 return "<i style='color:" + color + "' class='fa fa-circle'></i>";
             }).join(" ");
 
-            $("#" + self.itemdata.uniqueid + "_container .landr_title").html(progress);
-            var newprompt = $(".landr_prompt_" + self.game.pointer);
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_title").html(progress);
+            var newprompt = $(".sgapfill_prompt_" + self.game.pointer);
             anim.do_animate(newprompt, 'zoomIn animate__faster', 'in').then(
                 function() {
                 }
@@ -358,7 +400,7 @@ define(['jquery',
         nextReply: function() {
             var self = this;
 
-            var code = "<div class='landr_reply landr_reply_" + self.game.pointer + " text-center' style='display:none;'>";
+            var code = "<div class='sgapfill_reply sgapfill_reply_" + self.game.pointer + " text-center' style='display:none;'>";
 
             code += "<div class='form-container'>";
             self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
@@ -377,12 +419,12 @@ define(['jquery',
             code += "</div>";
 
             $("#" + self.itemdata.uniqueid + "_container .question").append(code);
-            var newreply = $(".landr_reply_" + self.game.pointer);
+            var newreply = $(".sgapfill_reply_" + self.game.pointer);
             anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
                 function() {
                 }
             );
-            $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", false);
+            $("#" + self.itemdata.uniqueid + "_container .sgapfill_ctrl-btn").prop("disabled", false);
 
             if (self.itemdata.timelimit > 0) {
                 $("#" + self.itemdata.uniqueid + "_container .progress-container").show();
@@ -391,7 +433,7 @@ define(['jquery',
                     height: '5px',
                     timeLimit: self.itemdata.timelimit,
                     onFinish: function() {
-                        $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn").trigger('click');
+                        $("#" + self.itemdata.uniqueid + "_container .sgapfill_skip_btn").trigger('click');
                     }
                 });
 
@@ -402,7 +444,7 @@ define(['jquery',
 
             if (!self.quizhelper.mobile_user()) {
                 setTimeout(function() {
-                    $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").trigger('click');
+                    $("#" + self.itemdata.uniqueid + "_container .sgapfill_listen_btn").trigger('click');
                 }, 1000);
             }
         },
