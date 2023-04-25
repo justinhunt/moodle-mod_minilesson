@@ -1812,7 +1812,10 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .minilesson_landr_player_box  .landr_start_btn,
-.minilesson_dictate_player_box  .dictate_start_btn {
+.minilesson_dictate_player_box  .dictate_start_btn,
+.minilesson_tgapfill_player_box  .tgapfill_start_btn ,
+.minilesson_lgapfill_player_box  .lgapfill_start_btn,
+.minilesson_sgapfill_player_box  .sgapfill_start_btn {
   /* position: absolute; */
   /* bottom: 0; */
   margin-left: auto;

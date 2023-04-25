@@ -144,12 +144,14 @@ define(['jquery',
 
         gotComparison: function(comparison) {
             var self = this;
+            var timelimit_progressbar = $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar");
             if (comparison) {
                 $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + " .tgapfill_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-check");
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = true;
                 self.items[self.game.pointer].typed = false;
-            } else if(!self.itemdata.allowretry) {
+            //if they cant retry OR the time limit is up, move on
+            } else if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')) {
                 $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + " .tgapfill_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-times");
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = false;
@@ -301,6 +303,10 @@ define(['jquery',
                     height: '5px',
                     timeLimit: self.itemdata.timelimit,
                     onFinish: function() {
+                        log.debug('timer finished');
+                        var btn = $("#" + self.itemdata.uniqueid + "_container .tgapfill_check_btn");
+                        log.debug(btn);
+
                         $("#" + self.itemdata.uniqueid + "_container .tgapfill_check_btn").trigger('click');
                     }
                 });

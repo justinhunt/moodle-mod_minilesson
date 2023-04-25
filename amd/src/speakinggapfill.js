@@ -297,7 +297,9 @@ define(['jquery',
                 $(this).val(sgapfill_targetWord);
             });
 
-            if(!self.itemdata.allowretry){
+            //if they cant retry OR the time limit is up, move on
+            var timelimit_progressbar = $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar");
+            if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')){
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = false;
                 self.items[self.game.pointer].typed = typed;
