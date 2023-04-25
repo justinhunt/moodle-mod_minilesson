@@ -67,6 +67,15 @@ define(['jquery',
             audioplayerbtn.on("click", function() {
                 var theaudio =self.items[self.game.pointer].audio;
 
+                //if we are already playing stop playing
+                if(!theaudio.paused){
+                    theaudio.pause();
+                    theaudio.currentTime=0;
+                    $(audioplayerbtn).children('.fa').removeClass('fa-stop');
+                    $(audioplayerbtn).children('.fa').addClass('fa-volume-up');
+                    return;
+                }
+
                 //change icon to indicate playing state
                 theaudio.addEventListener('ended', function(){
                     $(audioplayerbtn).children('.fa').removeClass('fa-stop');
