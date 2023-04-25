@@ -111,6 +111,16 @@ define(['jquery',
             if(self.itemdata.readsentence) {
                 audioplayerbtn.on("click", function () {
                     var theaudio = self.items[self.game.pointer].audio;
+
+                    //if we are already playing stop playing
+                    if(!theaudio.paused){
+                        theaudio.pause();
+                        theaudio.currentTime=0;
+                        $(audioplayerbtn).children('.fa').removeClass('fa-stop');
+                        $(audioplayerbtn).children('.fa').addClass('fa-volume-up');
+                        return;
+                    }
+
                     //change icon to indicate playing state
                     theaudio.addEventListener('ended', function () {
                         $(audioplayerbtn).children('.fa').removeClass('fa-stop');
@@ -297,7 +307,9 @@ define(['jquery',
                 $(this).val(sgapfill_targetWord);
             });
 
-            if(!self.itemdata.allowretry){
+            //if they cant retry OR the time limit is up, move on
+            var timelimit_progressbar = $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar");
+            if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')){
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = false;
                 self.items[self.game.pointer].typed = typed;
