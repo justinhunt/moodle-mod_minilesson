@@ -467,7 +467,7 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    function fetch_activity_amd($cm, $moduleinstance,$previewquestionid=0,$canreattempt=false){
+    function fetch_activity_amd($cm, $moduleinstance,$previewquestionid=0,$canreattempt=false,$embedded=false){
         global $CFG, $USER;
         //any html we want to return to be sent to the page
         $ret_html = '';
@@ -523,15 +523,29 @@ class renderer extends \plugin_renderer_base {
         //the activity URL for returning to on finished
         $activityurl = new \moodle_url(constants::M_URL . '/view.php',
             array('n' => $moduleinstance->id));
+        //add embedding url param if we are embedded
+        if($embedded) {
+            $activityurl->param('embed','1');
+        }
+        //set the activity url
         $recopts['activityurl']=$activityurl->out();
+
         //the reattempturl if its ok
         $recopts['reattempturl']="";
         if($canreattempt) {
             $activityurl->param('retake','1');
             $recopts['reattempturl']=$activityurl->out();
         }
+        if($embedded) {
+            $activityurl->param('embed','1');
+        }
+
+
         //show back to course button if we are not in an iframe
-        if($config->enablesetuptab || $moduleinstance->pagelayout=='embedded' ||  $moduleinstance->pagelayout=='popup') {
+        if($config->enablesetuptab ||
+            $moduleinstance->pagelayout=='embedded' ||
+            $moduleinstance->pagelayout=='popup' ||
+            $embedded) {
             $recopts['backtocourse'] = '';
         }else{
             $recopts['backtocourse'] = true;

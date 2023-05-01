@@ -289,7 +289,6 @@ class utils{
         //add our latest step to session
         $sessiondata->steps[$stepdata->index]=$stepdata;
 
-
         //grade quiz results
         $comp_test =  new comprehensiontest($cm);
         $totalitems = $comp_test->fetch_item_count();
@@ -315,6 +314,8 @@ class utils{
             if($newgrade) {
                 require_once($CFG->dirroot . constants::M_PATH . '/lib.php');
                 minilesson_update_grades($moduleinstance, $USER->id, false);
+                //tell JS about the grade situation
+
             }
         }else{
             $message = 'unable to update attempt record';
