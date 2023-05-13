@@ -33,3 +33,4 @@ $plugin->component = 'mod_minilesson';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = 'Version 1.0.52 (Build 2023051300)';
 
+

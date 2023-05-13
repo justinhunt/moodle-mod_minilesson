@@ -387,10 +387,10 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         upgrade_mod_savepoint(true, 2023011801, 'minilesson');
     }
+
       // Added Gap fill questions with time limits
     if ($oldversion < 2023041200) {
         $table = new xmldb_table(constants::M_QTABLE);
-
 
         // Define field item timelimit
         $fields=[];
@@ -402,8 +402,8 @@ function xmldb_minilesson_upgrade($oldversion) {
                 $dbman->add_field($table, $field);
             }
         }
-
         upgrade_mod_savepoint(true, 2023041200, 'minilesson');
+
     }
 
     if($oldversion < 2023051300){

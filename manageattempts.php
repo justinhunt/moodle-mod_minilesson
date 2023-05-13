@@ -29,7 +29,7 @@ use \mod_minilesson\constants;
 
 global $USER,$DB;
 
-// first get the nfo passed in to set up the page
+// first get the info passed in to set up the page
 $attemptid = optional_param('attemptid',0 ,PARAM_INT);
 $source = optional_param('source','attempts',PARAM_TEXT);
 $n     = required_param('n', PARAM_INT);         // instance ID

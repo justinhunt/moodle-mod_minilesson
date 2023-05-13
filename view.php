@@ -35,6 +35,7 @@ use \mod_minilesson\utils;
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $retake = optional_param('retake', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // minilesson instance ID - it should be named as the first character of the module
+$embed = optional_param('embed', 0, PARAM_INT); // course_module ID, or
 
 if ($id) {
     $cm         = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
@@ -48,7 +49,7 @@ if ($id) {
     print_error('You must specify a course_module ID or an instance ID');
 }
 
-$PAGE->set_url('/mod/minilesson/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/minilesson/view.php', array('id' => $cm->id,'retake'=>$retake,'embed'=>$embed));
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
@@ -79,7 +80,7 @@ $PAGE->set_context($modulecontext);
 $config = get_config(constants::M_COMPONENT);
 
 
-if($moduleinstance->foriframe==1  || $moduleinstance->pagelayout=='embedded') {
+if($moduleinstance->foriframe==1  || $moduleinstance->pagelayout=='embedded' || $embed==1){
     $PAGE->set_pagelayout('embedded');
 }elseif($config->enablesetuptab || $moduleinstance->pagelayout=='popup'){
     $PAGE->set_pagelayout('popup');
@@ -167,7 +168,7 @@ if($latestattempt->status==constants::M_STATE_COMPLETE){
 }else if($itemcount > 0) {
     echo $renderer->show_quiz($comp_test,$moduleinstance);
     $previewid=0;
-    echo $renderer->fetch_activity_amd($cm, $moduleinstance,$previewid,$canattempt);
+    echo $renderer->fetch_activity_amd($cm, $moduleinstance,$previewid,$canattempt,$embed);
 }else{
     $showadditemlinks = has_capability('mod/minilesson:evaluate',$modulecontext);
     echo $renderer->show_no_items($cm,$showadditemlinks);
