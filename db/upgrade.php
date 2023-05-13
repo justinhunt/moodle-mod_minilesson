@@ -406,6 +406,24 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2023041200, 'minilesson');
     }
 
+    if($oldversion < 2023051300){
+        $table = new xmldb_table(constants::M_TABLE);
+        // fields to change the notnull definition for
+        $fields=[];
+        $fields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $DB->set_field(constants::M_TABLE,'viewstart',0,['viewstart'=>null]);
+        $DB->set_field(constants::M_TABLE,'viewend',0,['viewend'=>null]);
+
+        // Alter fields
+        foreach ($fields as $field) {
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->change_field_notnull($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2023051300, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }
