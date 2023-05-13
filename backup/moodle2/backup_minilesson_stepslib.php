@@ -50,7 +50,7 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
 
         // root element describing minilesson instance
         $oneactivity = new backup_nested_element(constants::M_MODNAME, array('id'), array(
-            'course','name','intro','introformat','timelimit',
+            'course','name','intro','introformat',
                 //'welcome','welcomeformat',
             'grade','gradeoptions','maxattempts','mingrade','richtextprompt',
             'ttslanguage','transcriber','region','activitylink','pagelayout','showqtitles','foriframe',
@@ -76,7 +76,7 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
             'itemttsautoplay', 'itemaudiofname','itemtextarea','itemttsdialog', 'itemttsdialogopts','itemttspassage','itemttspassageopts', 'customtext1', 'customtext1format','customtext2', 'customtext2format','customtext3',
             'customtext3format','customtext4', 'customtext4format','customtext5', 'customtext5format',
                 'customdata1','customdata2', 'customdata3','customdata4', 'customdata5',
-                'customint1','customint2', 'customint3','customint4', 'customint5','layout','correctanswer',
+                'customint1','customint2', 'customint3','customint4', 'customint5','layout','correctanswer','timelimit',
             'timemodified','rsquestionkey','passagehash','alternatives','phonetic','createdby','modifiedby'));
 
 		

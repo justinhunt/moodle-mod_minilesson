@@ -11,7 +11,6 @@
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" />
         <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the minilesson activity" />
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)"/>
-		<FIELD NAME="timelimit" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
  		<FIELD NAME="grade" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
 		<FIELD NAME="gradeoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"  SEQUENCE="false" COMMENT="gradeoptions" />
 		<FIELD NAME="maxattempts" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="maxattempts" />
@@ -112,6 +111,7 @@
             <FIELD NAME="alternatives" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Alternatives"/>
             <FIELD NAME="phonetic" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="Phonetic"/>
             <FIELD NAME="rsquestionkey" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="" />
+            <FIELD NAME="timelimit" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"  SEQUENCE="false" />
             <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="modifiedby" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
         </FIELDS>
