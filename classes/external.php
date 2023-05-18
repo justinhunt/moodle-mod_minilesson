@@ -12,6 +12,9 @@ use mod_minilesson\constants;
 use mod_minilesson\diff;
 use mod_minilesson\alphabetconverter;
 use mod_minilesson\local\itemtype\item;
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
 
 /**
  * External class.
