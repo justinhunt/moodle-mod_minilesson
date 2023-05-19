@@ -7,14 +7,18 @@
  */
 
 
+global $CFG;
+require_once($CFG->libdir . '/externallib.php');
+
 use mod_minilesson\utils;
 use mod_minilesson\constants;
 use mod_minilesson\diff;
 use mod_minilesson\alphabetconverter;
 use mod_minilesson\local\itemtype\item;
-use core_external\external_api;
-use core_external\external_function_parameters;
-use core_external\external_value;
+
+use external_api;
+use external_function_parameters;
+use external_value;
 
 /**
  * External class.
