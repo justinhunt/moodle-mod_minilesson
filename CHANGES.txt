@@ -1,5 +1,9 @@
 Version 1.0.52 (Build 2023051300)
  - fixed bug in viewstart and viewend DB entries (can kill a restore)
+ - Moodle 4.2 support
+
+Version 1.0.52 (Build 2023051300)
+ - fixed bug in viewstart and viewend DB entries (can kill a restore)
 
 Version 1.0.51 (Build 20230412XX)
 - Added three gapfill question types
