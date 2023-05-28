@@ -1787,8 +1787,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   text-align: center;
   width: 100%;
   height: 100%;
-  max-width: 400px;
-  max-height: 225px;
+  max-width: 560px;
+  max-height: 315px;
 }
 
 .mod_minilesson_iframe_responsive iframe {
@@ -1797,8 +1797,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   height:100%;
   width:100%;
   position: absolute;
-  max-width: 400px;
-  max-height: 225px;
+  max-width: 560px;
+  max-height: 315px;
 }
 
 .minilesson_actionbutton {
