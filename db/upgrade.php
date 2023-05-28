@@ -406,6 +406,45 @@ function xmldb_minilesson_upgrade($oldversion) {
 
     }
 
+    if($oldversion < 2023051300){
+        // fields to change the notnull definition for] viewstart and viewend
+        $table = new xmldb_table(constants::M_TABLE);
+        $fields=[];
+        $fields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $DB->set_field(constants::M_TABLE,'viewstart',0,['viewstart'=>null]);
+        $DB->set_field(constants::M_TABLE,'viewend',0,['viewend'=>null]);
+
+        // Alter fields
+        foreach ($fields as $field) {
+            if ($dbman->field_exists($table, $field)) {
+                $dbman->change_field_notnull($table, $field);
+            }
+        }
+
+        //fix up messed up timelimit, if it had wrong null value or was on activity table
+        $table = new xmldb_table(constants::M_QTABLE);
+
+        // Define field item timelimit
+        $field= new xmldb_field('timelimit', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        //if its not there add it, if it is there, change the null decl
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }else{
+            $DB->set_field(constants::M_QTABLE,'timelimit',0,['timelimit'=>null]);
+            $dbman->change_field_notnull($table, $field);
+        }
+
+        //remove field from activity table if it was there (mistake)
+        $table = new xmldb_table(constants::M_TABLE);
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+
+        upgrade_mod_savepoint(true, 2023051300, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }
