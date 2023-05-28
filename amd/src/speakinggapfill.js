@@ -27,16 +27,13 @@ define(['jquery',
                         break;
 
                     case 'speech':
-                        log.debug("Speech at speaking gap fill");
+                        log.debug("Speech at speaking gap fill -");
                         var words = self.items[self.game.pointer].words;
                         var maskedwords = [];
 
                         Object.keys(words).forEach(function(key) {
                             maskedwords.push(words[key]);
                         });
-
-                        console.log(maskedwords.join(" "));
-                        console.log(message.capturedspeech);
 
                         self.getComparison(
                             maskedwords.join(" "),
@@ -228,6 +225,7 @@ define(['jquery',
         },
 
         gotComparison: function(comparison, typed) {
+            log.debug("sgapfill comparison");
             var self = this;
             var feedback = $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer + " .dictate_feedback[data-idx='" + self.game.pointer + "']");
 
@@ -237,8 +235,10 @@ define(['jquery',
             var allCorrect = comparison.filter(function(e) {
                 return !e.matched;
             }).length == 0;
+            log.debug('aallcorrect=' + allCorrect);
 
             if (allCorrect && comparison && comparison.length > 0) {
+
                 self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
                     var characterinput = $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]');
                     if (data.type === 'input') {
@@ -248,6 +248,9 @@ define(['jquery',
 
                 feedback.removeClass("fa fa-times");
                 feedback.addClass("fa fa-check");
+                //make the input boxes green and move forward
+                log.debug('applying correct class to input boxes');
+                $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer + " input").addClass("ml_gapfill_char_correct");
 
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = true;
@@ -424,11 +427,14 @@ define(['jquery',
                     code += data.character;
                 }
             });
+            //correct or not
             code += " <i data-idx='" + self.game.pointer + "' class='dictate_feedback'></i></div>";
 
+            //definition
             code += "<div class='definition-container'>";
             code += "<div class='definition'>" + self.items[self.game.pointer].definition + "</div>";
             code += "</div>";
+
 
             $("#" + self.itemdata.uniqueid + "_container .question").append(code);
             var newreply = $(".sgapfill_reply_" + self.game.pointer);

@@ -150,6 +150,9 @@ define(['jquery',
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = true;
                 self.items[self.game.pointer].typed = false;
+                //make the input boxes green and move forward
+                $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + " input").addClass("ml_gapfill_char_correct");
+
             //if they cant retry OR the time limit is up, move on
             } else if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')) {
                 $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + " .tgapfill_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-times");

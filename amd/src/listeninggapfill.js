@@ -211,6 +211,7 @@ define(['jquery',
                     target: target.sentence,
                     prompt: target.prompt,
                     parsedstring: target.parsedstring,
+                    definition: target.definition,
                     typed: "",
                     timer: [],
                     answered: false,
@@ -243,12 +244,18 @@ define(['jquery',
 
         gotComparison: function(comparison) {
             var self = this;
+            log.debug("gotComparison", comparison);
             var timelimit_progressbar = $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar");
             if (comparison) {
                 $("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer + " .lgapfill_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-check");
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = true;
                 self.items[self.game.pointer].typed = false;
+                //if they got it correct, make the input boxes green and move forward
+                log.debug("correct!!");
+                $("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer + " input").addClass("ml_gapfill_char_correct");
+
+
                 //if they cant retry OR the time limit is up, move on
             } else if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')) {
                 $("#" + self.itemdata.uniqueid + "_container .lgapfill_reply_" + self.game.pointer + " .lgapfill_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-times");
@@ -395,6 +402,13 @@ define(['jquery',
                 }
             });
             code += " <i data-idx='" + self.game.pointer + "' class='lgapfill_feedback'></i></div>";
+
+            if((self.items[self.game.pointer].definition )!=='') {
+                //hint or definition
+                code += "<div class='definition-container'>";
+                code += "<div class='definition'>" + self.items[self.game.pointer].definition + "</div>";
+                code += "</div>";
+            }
 
             code += "</div>";
             $("#" + self.itemdata.uniqueid + "_container .question").append(code);

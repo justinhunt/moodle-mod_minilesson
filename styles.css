@@ -2619,3 +2619,7 @@ span.mod_minilesson_finishedanswer {
   position: absolute;
   right: 10px;
 }
+/* the background color of gapfill words char inputs when marked correct */
+.ml_gapfill_char_correct {
+  background-color: palegreen;
+}
