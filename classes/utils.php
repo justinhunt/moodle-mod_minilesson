@@ -1505,23 +1505,24 @@ class utils{
        }
    }
 
+
     public static function fetch_itemform_classname($itemtype){
         //Fetch the correct form
         switch($itemtype){
-            case constants::TYPE_MULTICHOICE: return '\mod_minilesson\local\itemform\multichoiceform';
-            case constants::TYPE_MULTIAUDIO: return '\mod_minilesson\local\itemform\multiaudioform';
-            case constants::TYPE_DICTATIONCHAT: return '\mod_minilesson\local\itemform\dictationchatform';
-            case constants::TYPE_DICTATION: return '\mod_minilesson\local\itemform\dictationform';
-            case constants::TYPE_SPEECHCARDS: return '\mod_minilesson\local\itemform\speechcardsform';
-            case constants::TYPE_LISTENREPEAT: return '\mod_minilesson\local\itemform\listenrepeatform';
-            case constants::TYPE_PAGE: return '\mod_minilesson\local\itemform\pageform';
-            case constants::TYPE_SMARTFRAME: return '\mod_minilesson\local\itemform\smartframe';
-            case constants::TYPE_SHORTANSWER: return '\mod_minilesson\local\itemform\shortanswerform';
-            case constants::TYPE_COMPQUIZ: return '\mod_minilesson\local\itemform\compquizform';
-            case constants::TYPE_BUTTONQUIZ: return '\mod_minilesson\local\itemform\buttonquizform';
-            case constants::TYPE_SGAPFILL: return '\mod_minilesson\local\itemform\speakinggapfillform';
-            case constants::TYPE_LGAPFILL: return '\mod_minilesson\local\itemform\listeninggapfillform';
-            case constants::TYPE_TGAPFILL: return '\mod_minilesson\local\itemform\typinggapfillform';
+            case constants::TYPE_MULTICHOICE: return '\\'. constants::M_COMPONENT . '\local\itemform\multichoiceform';
+            case constants::TYPE_MULTIAUDIO: return '\\'. constants::M_COMPONENT . '\local\itemform\multiaudioform';
+            case constants::TYPE_DICTATIONCHAT: return '\\'. constants::M_COMPONENT . '\local\itemform\dictationchatform';
+            case constants::TYPE_DICTATION: return '\\'. constants::M_COMPONENT . '\local\itemform\dictationform';
+            case constants::TYPE_SPEECHCARDS: return '\\'. constants::M_COMPONENT . '\local\itemform\speechcardsform';
+            case constants::TYPE_LISTENREPEAT: return '\\'. constants::M_COMPONENT . '\local\itemform\listenrepeatform';
+            case constants::TYPE_PAGE: return '\\'. constants::M_COMPONENT . '\local\itemform\pageform';
+            case constants::TYPE_SMARTFRAME: return '\\'. constants::M_COMPONENT . '\local\itemform\smartframe';
+            case constants::TYPE_SHORTANSWER: return '\\'. constants::M_COMPONENT . '\local\itemform\shortanswerform';
+            case constants::TYPE_COMPQUIZ: return '\\'. constants::M_COMPONENT . '\local\itemform\compquizform';
+            case constants::TYPE_BUTTONQUIZ: return '\\'. constants::M_COMPONENT . '\ocal\itemform\buttonquizform';
+            case constants::TYPE_SGAPFILL: return '\\'. constants::M_COMPONENT . '\local\itemform\speakinggapfillform';
+            case constants::TYPE_LGAPFILL: return '\\'. constants::M_COMPONENT . '\local\itemform\listeninggapfillform';
+            case constants::TYPE_TGAPFILL: return '\\'. constants::M_COMPONENT . '\local\itemform\typinggapfillform';
             default:
         }
     }

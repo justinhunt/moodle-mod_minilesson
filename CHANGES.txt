@@ -1,3 +1,7 @@
+Version 1.0.53 (Build 2023061600)
+ - fixed colors for gapfills
+ - fixed iframe width
+
 Version 1.0.52 (Build 2023051300)
  - fixed bug in viewstart and viewend DB entries (can kill a restore)
  - Moodle 4.2 support
