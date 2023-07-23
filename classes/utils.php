@@ -293,6 +293,10 @@ class utils{
         $comp_test =  new comprehensiontest($cm);
         $totalitems = $comp_test->fetch_item_count();
 
+        //raise step submitted event
+        $latestattempt->sessiondata = json_encode($sessiondata);
+        \mod_minilesson\event\step_submitted::create_from_attempt($latestattempt, $modulecontext, $stepdata->index)->trigger();
+
         //close out the attempt and update the grade
         //there should never be more steps than items
         //[hack] but there seem to be times when there are fewer( when an update_step_grade failed or didnt arrive),
@@ -307,7 +311,6 @@ class utils{
         }
 
         //update the record
-        $latestattempt->sessiondata = json_encode($sessiondata);
         $result = $DB->update_record(constants::M_ATTEMPTSTABLE, $latestattempt);
         if($result) {
             $returndata= '';

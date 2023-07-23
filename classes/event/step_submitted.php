@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 use \mod_minilesson\constants;
 
 /**
- * The mod_minilesson assessable submitted event class.
+ * The mod_minilesson stepsubmitted event class.
  *
  * @property-read array $other {
  *      Extra information about event.
@@ -42,7 +42,7 @@ use \mod_minilesson\constants;
  * @copyright  2023 Justin Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class attempt_submitted extends \core\event\base {
+class step_submitted extends \core\event\base {
 
     /**
      * Create instance of event.
@@ -54,7 +54,7 @@ class attempt_submitted extends \core\event\base {
      * @param $editable
      * @return attempt_submitted
      */
-    public static function create_from_attempt($attempt,$modulecontext) {
+    public static function create_from_attempt($attempt,$modulecontext,$stepindex) {
         global $USER;
 
         $data = array(
@@ -62,14 +62,13 @@ class attempt_submitted extends \core\event\base {
             'objectid' => $attempt->id,
             'userid' => $USER->id,
             'relateduserid' => $USER->id,
-            'other' => ['submitterid'=>$USER->id],
+            'other' => ['submitterid'=>$USER->id,'stepindex'=>$stepindex]
         );
         if (!empty($attempt->userid) && ($attempt->userid != $USER->id)) {
             $data['relateduserid'] = $attempt->userid;
         }
         /** @var attempt_submitted $event */
         $event =  self::create($data);
-        //$event->set_attempt($attempt);
         $event->add_record_snapshot(constants::M_ATTEMPTSTABLE, $attempt);
         return $event;
     }
@@ -89,7 +88,7 @@ class attempt_submitted extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '$this->relateduserid' has submitted the attempt with id '$this->objectid' for the " .
+        return "The user with id '$this->relateduserid' has submitted step '".$this->other['stepindex']."' the attempt with id '$this->objectid' for the " .
             "minilesson with course module id '$this->contextinstanceid'.";
     }
 
@@ -99,7 +98,7 @@ class attempt_submitted extends \core\event\base {
      * @return string
      */
     public static function get_name() {
-        return get_string('eventminilessonattemptsubmitted', constants::M_COMPONENT);
+        return get_string('eventminilessonstepsubmitted', constants::M_COMPONENT);
     }
 
 
@@ -109,7 +108,6 @@ class attempt_submitted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-
         return new \moodle_url('/mod/minilesson/reports.php?report=attemptresults&n=5&attemptid=42',
             array('report'=>'attemptresults','attemptid' => $this->objectid, 'id'=>$this->contextinstanceid));
     }
@@ -130,6 +128,10 @@ class attempt_submitted extends \core\event\base {
         if (!array_key_exists('submitterid', $this->other)) {
             throw new \coding_exception('The \'submitterid\' value must be set in other.');
         }
+
+        if (!array_key_exists('stepindex', $this->other)) {
+            throw new \coding_exception('The \'stepindex\' value must be set in other.');
+        }
     }
 
     public static function get_objectid_mapping() {
@@ -144,16 +146,5 @@ class attempt_submitted extends \core\event\base {
         return $othermapped;
     }
 
-    /**
-     * Set assign instance for this event.
-     * @param \stdClass $attempt
-     * @throws \coding_exception
-     */
-    public function set_attempt($attempt) {
-        if ($this->is_triggered()) {
-            throw new \coding_exception('set_attempt() must be done before triggering of event');
-        }
 
-        $this->attempt = $attempt;
-    }
 }

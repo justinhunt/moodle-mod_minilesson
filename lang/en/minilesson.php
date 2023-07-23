@@ -631,3 +631,7 @@ $string['readsentences'] = 'Read Sentences (TTS)';
 $string['readsentences_desc'] = 'If checked each sentence will be read aloud. It will be a form of dictation';
 $string['allowretry'] = 'Allow retry';
 $string['allowretry_desc'] = 'If checked allows students to submit new attempts, if their previous response was not correct.';
+$string['eventminilessonstepsubmitted'] = 'Minilesson step submitted';
+$string['eventminilessonattemptsubmitted'] = 'Minilesson attempt submitted';
+
+

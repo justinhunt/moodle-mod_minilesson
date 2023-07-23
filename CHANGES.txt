@@ -1,3 +1,6 @@
+Version 1.0.54 (Build 2023072300)
+- added step submitted event
+
 Version 1.0.53 (Build 2023061600)
  - fixed colors for gapfills
  - fixed iframe width
