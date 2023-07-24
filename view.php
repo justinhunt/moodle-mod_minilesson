@@ -163,6 +163,14 @@ if($hasopenclosedates){
     }
 }
 
+//instructions /intro if less then Moodle 4.0 show
+if($CFG->version<2022041900) {
+    $introcontent = $renderer->show_intro($moduleinstance, $cm);
+    echo $introcontent;
+}else {
+    $introcontent = '';
+}
+
 if($latestattempt->status==constants::M_STATE_COMPLETE){
     echo $renderer->show_finished_results($comp_test,$latestattempt,$cm, $canattempt);
 }else if($itemcount > 0) {

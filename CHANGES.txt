@@ -1,3 +1,6 @@
+Version 1.0.55 (Build 2023072301)
+- fix for activity description on < M4.0 versions Moodle
+
 Version 1.0.54 (Build 2023072300)
 - added step submitted event
 
