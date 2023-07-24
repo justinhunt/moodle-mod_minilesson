@@ -110,7 +110,7 @@ class attempt_submitted extends \core\event\base {
      */
     public function get_url() {
 
-        return new \moodle_url('/mod/minilesson/reports.php?report=attemptresults&n=5&attemptid=42',
+        return new \moodle_url('/mod/minilesson/reports.php',
             array('report'=>'attemptresults','attemptid' => $this->objectid, 'id'=>$this->contextinstanceid));
     }
 
