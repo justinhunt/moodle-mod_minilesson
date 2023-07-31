@@ -63,6 +63,11 @@ if (has_capability('mod/minilesson:evaluate', $context)) {
     $row[] = new tabobject('reports', "$CFG->wwwroot/mod/minilesson/reports.php?id=$cm->id", get_string('reports', constants::M_COMPONENT), get_string('viewreports', constants::M_COMPONENT));
 }
 
+if(has_capability('mod/minilesson:manage',$context)) {
+    $row[] = new tabobject('import', "$CFG->wwwroot/mod/minilesson/import.php?id=$cm->id",
+        get_string('import', constants::M_COMPONENT), get_string('import', constants::M_COMPONENT));
+}
+
 $tabs[] = $row;
 
 print_tabs($tabs, $currenttab, $inactive, $activated);

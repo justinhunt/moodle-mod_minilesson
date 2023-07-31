@@ -157,17 +157,17 @@ if ($data = $mform->get_data()) {
         //$data->phonetic = \mod_minilesson\local\itemform\helper::update_create_phonetic($minilesson,$olditem,$data);
     $theitem->update_create_phonetic($olditem);
 
-		$result = $theitem->update_insert_item();
-		if($result->error==true){
-            print_error($result->message);
-            redirect($redirecturl);
+    $result = $theitem->update_insert_item();
+    if($result->error==true){
+        print_error($result->message);
+        redirect($redirecturl);
 
-        }else{
-		    $theitem=$result->item;
-        }
+    }else{
+        $theitem=$result->item;
+    }
 
-		//go back to edit quiz page
-		redirect($redirecturl);
+    //go back to edit quiz page
+    redirect($redirecturl);
 }
 
 

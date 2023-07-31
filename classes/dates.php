@@ -17,8 +17,8 @@
 /**
  * Contains the class for fetching the important dates in mod_assign for a given module instance and a user.
  *
- * @package   mod_assign
- * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
+ * @package   mod_minilesson
+ * @copyright 2022 Justin Hunt <justin@poodll.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -31,7 +31,7 @@ use core\activity_dates;
 /**
  * Class for fetching the important dates in mod_assign for a given module instance and a user.
  *
- * @copyright 2021 Shamim Rezaie <shamim@moodle.com>
+ * @copyright 2022 Justin Hunt <justin@poodll.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class dates extends activity_dates {

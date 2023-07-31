@@ -1527,9 +1527,8 @@ class utils{
             case constants::TYPE_LGAPFILL: return '\\'. constants::M_COMPONENT . '\local\itemform\listeninggapfillform';
             case constants::TYPE_TGAPFILL: return '\\'. constants::M_COMPONENT . '\local\itemform\typinggapfillform';
             default:
+                return false;
         }
     }
-
-
 
 }
