@@ -1,0 +1,2 @@
+type,name,visible,iteminstructions,itemtext,itemttsvoice,itemttsoption,itemtextarea,itemttsautoplay,itemytid,itemytstart,itemytend,itemaudiofname,itemttsdialog,itemttsdialogopts,itemttspassage,itemttspassageopts,customtext1,customtext1format,customtext2,customtext2format,customtext3,customtext3format,customtext4,customtext4format,customtext5,customtext5format,customdata1,customdata2,customdata3,customdata4,customdata5,layout,correctanswer
+multichoice,mc_test_1,1,Do your best,,,,,,,,,,,,,,red,,blue,,green,,yellow,,,,,,,,,,2

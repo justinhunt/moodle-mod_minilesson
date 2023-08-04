@@ -635,6 +635,16 @@ $string['eventminilessonstepsubmitted'] = 'Minilesson step submitted';
 $string['eventminilessonattemptsubmitted'] = 'Minilesson attempt submitted';
 $string['import'] = 'Import';
 $string['importing'] = 'Importing';
-$string['importinstructions']='You can import minilesson items using the \'import data\' text area below. File uploads (images, videos etc) are not supported. Each item should be on a new line. The format is:<br>Item type | Item text | Item answer | Item hint<br>.e.g  shortanswer | What is the capital of France? | Paris | Paris is the capital of France';
+$string['importresults'] = 'Import Results';
+$string['backtoimport'] = 'Return to Import Top';
+$string['importinstructions']='You can import Minilesson items using form below. The import file should be a CSV file. The first row should be the column headings. Refer to the import documentation for the columns and data to include for each item type.';
 $string['cannotsavecsv'] = 'Cannot save csv file';
+$string['csvdelimiter'] = 'Delimiter';
 $string['importitemsresult']="Import Items Results";
+$string['examplecsv'] = 'Example text file';
+$string['examplecsv_help'] = 'To use the example text file, download it then open it with a text or spreadsheet editor. Leave the first line unchanged, then edit the following lines (records) and add your Minilesson item data, adding more lines as necessary. Save the file as CSV then upload it.';
+$string['error:emptyfield'] = 'CNNOT BE EMPTY';
+$string['error:failed'] = 'FAILED';
+$string['error:correctanswer'] = 'INVALID ANSWER';
+
+

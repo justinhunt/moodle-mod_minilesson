@@ -83,13 +83,10 @@ if ($data = $form->get_data()) {
     $theimport = new \mod_minilesson\import($cir,$moduleinstance,$modulecontext,$course,$cm);
     echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('importing', constants::M_COMPONENT));
     echo $renderer->heading($pagetitle);
-    echo $renderer->box(get_string('importing',constants::M_COMPONENT), 'generalbox minilesson_importintro', 'intro');
+    echo $renderer->box(get_string('importresults',constants::M_COMPONENT), 'generalbox minilesson_importintro', 'intro');
     $theimport->import_process();
+    echo $renderer->back_to_import_button($cm);
     echo $renderer->footer();
-    //TO DO 2023-07-30
-    //depending on the item type do the import
-    //see managersquestions line 128 for how to do this, and implement it here
-    //define a CSV / TAB / PIPE format from minilesson_rsquestions table and then hook into upload format from managersquestions
     die;
 }
 

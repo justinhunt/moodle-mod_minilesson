@@ -20,23 +20,12 @@ class import_tracker
     /**
      * uu_progress_tracker constructor.
      */
-    public function __construct() {
-        $this->headers = [
-            'status' => get_string('status'),
-            'line' => get_string('uucsvline', 'tool_uploaduser'),
-            'id' => 'ID',
-            'username' => get_string('username'),
-            'firstname' => get_string('firstname'),
-            'lastname' => get_string('lastname'),
-            'email' => get_string('email'),
-            'password' => get_string('password'),
-            'auth' => get_string('authentication'),
-            'enrolments' => get_string('enrolments', 'enrol'),
-            'suspended' => get_string('suspended', 'auth'),
-            'theme' => get_string('theme'),
-            'deleted' => get_string('delete'),
-        ];
-        $this->columns = array_keys($this->headers);
+    public function __construct($keycolumns) {
+
+        $base_headers = ['id'=>'ID','line'=>'Line','status'=>'Status'];
+        $headers = array_merge($base_headers,$keycolumns );
+        $this->columns= array_keys($headers);
+        $this->headers = array_keys($headers);
     }
 
     /**

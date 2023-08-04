@@ -126,6 +126,17 @@ abstract class item implements templatable, renderable {
 
     }
 
+    /*
+     * Returns the itemtype class for the itemtype
+     */
+    public static function get_itemtype_class($itemtype){
+        $classname = '\\mod_minilesson\\local\\itemtype\\item_' . $itemtype;
+        if(class_exists($classname)){
+            return $classname;
+        }
+        return false;
+    }
+
 
     public function set_token($token){
         $this->token = $token;
@@ -134,6 +145,19 @@ abstract class item implements templatable, renderable {
         $this->currentnumber = $currentnumber;
     }
 
+    /*
+     * Validates the items data from the import record
+     * most types should override this with specific validation code
+     */
+    public static function validate_import($newrecord,$cm){
+        $error = new \stdClass();
+        $error->col='';
+        $error->message='';
+        //check for errors here
+
+        //return false to indicate no error
+        return false;
+    }
 
     /**
      * Export the data for the mustache template.
@@ -447,7 +471,7 @@ abstract class item implements templatable, renderable {
     }
 
     /*
-     * Processes speaking gap fill sentences : TO DO not implemented, implement this
+     * Processes speaking gap fill sentences
      */
     protected function process_speakinggapfill_sentences($sentences) {
         return $this->parse_gapfill_sentences($sentences);
@@ -1021,4 +1045,6 @@ abstract class item implements templatable, renderable {
         $this->itemrecord->phonetic= $thephonetics;
         return $thephonetics;
     }
+
+
 }

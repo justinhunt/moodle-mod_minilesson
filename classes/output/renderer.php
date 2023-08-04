@@ -133,6 +133,15 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
+    public function back_to_import_button($cm){
+        https://vbox.poodll.com/moodle/mod/minilesson/import.php?id=2081
+        $button = $this->output->single_button(new \moodle_url( constants::M_PATH . '/import.php',
+            array('id'=>$cm->id)),get_string('backtoimport',constants::M_COMPONENT));
+
+        $ret = \html_writer::div($button ,constants::M_CLASS  . '_backtoimport_cont');
+        return $ret;
+    }
+
 
     /**
      *
