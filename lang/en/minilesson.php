@@ -637,13 +637,13 @@ $string['import'] = 'Import';
 $string['importing'] = 'Importing';
 $string['importresults'] = 'Import Results';
 $string['backtoimport'] = 'Return to Import Top';
-$string['importinstructions']='You can import Minilesson items using form below. The import file should be a CSV file. The first row should be the column headings. Refer to the import documentation for the columns and data to include for each item type.';
+$string['importinstructions']='You can import Minilesson items using form below. The import file should be a CSV file. The first row should be the column headings. Refer to the <a href="https://support.poodll.com/en/support/solutions/articles/19000153051-importing-items-into-minilesson" target="_blank">import documentation</a> for the columns and data to include for each item type.';
 $string['cannotsavecsv'] = 'Cannot save csv file';
 $string['csvdelimiter'] = 'Delimiter';
 $string['importitemsresult']="Import Items Results";
 $string['examplecsv'] = 'Example text file';
 $string['examplecsv_help'] = 'To use the example text file, download it then open it with a text or spreadsheet editor. Leave the first line unchanged, then edit the following lines (records) and add your Minilesson item data, adding more lines as necessary. Save the file as CSV then upload it.';
-$string['error:emptyfield'] = 'CNNOT BE EMPTY';
+$string['error:emptyfield'] = 'CANNOT BE EMPTY';
 $string['error:failed'] = 'FAILED';
 $string['error:correctanswer'] = 'INVALID ANSWER';
 

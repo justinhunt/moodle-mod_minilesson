@@ -95,4 +95,19 @@ class item_listenrepeat extends item {
         return $sentence;
     }
 
+    public static function validate_import($newrecord,$cm){
+        $error = new \stdClass();
+        $error->col='';
+        $error->message='';
+
+        if($newrecord->customtext1==''){
+            $error->col='customtext1';
+            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+            return $error;
+        }
+
+        //return false to indicate no error
+        return false;
+    }
+
 }

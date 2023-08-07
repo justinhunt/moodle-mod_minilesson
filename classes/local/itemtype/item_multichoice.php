@@ -78,4 +78,30 @@ class item_multichoice extends item {
         return $testitem;
     }
 
+    public static function validate_import($newrecord,$cm){
+        $error = new \stdClass();
+        $error->col='';
+        $error->message='';
+
+        if($newrecord->customtext1==''){
+            $error->col='customtext1';
+            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+            return $error;
+        }
+        if($newrecord->customtext2==''){
+            $error->col='customtext2';
+            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+            return $error;
+        }
+
+        if(!isset($newrecord->{'customtext' . $newrecord->correctanswer}) || $newrecord->{'customtext' . $newrecord->correctanswer}==''){
+            $error->col='correctanswer';
+            $error->message=get_string('error:correctanswer',constants::M_COMPONENT);
+            return $error;
+        }
+
+        //return false to indicate no error
+        return false;
+    }
+
 }
