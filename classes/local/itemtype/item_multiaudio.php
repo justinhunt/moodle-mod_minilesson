@@ -188,6 +188,13 @@ class item_multiaudio extends item {
         return $thephonetics;
     }
 
+    public static function get_import_keycolumns(){
+        $keycols = [];
+        $keycols['text5']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
+        $keycols['int4']=['type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
+        return $keycols;
+    }
+
     public static function validate_import($newrecord,$cm){
         $error = new \stdClass();
         $error->col='';

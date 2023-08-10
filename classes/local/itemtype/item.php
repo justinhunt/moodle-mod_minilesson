@@ -145,6 +145,11 @@ abstract class item implements templatable, renderable {
         $this->currentnumber = $currentnumber;
     }
 
+    public static function get_import_keycolumns(){
+        $keycols = [];
+        return $keycols;
+    }
+
     /*
      * Validates the items data from the import record
      * most types should override this with specific validation code

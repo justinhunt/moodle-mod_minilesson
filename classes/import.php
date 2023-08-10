@@ -147,7 +147,6 @@ class import  {
         global $DB, $CFG, $SESSION;
 
         $keycolumns = $this->keycolumns;
-        $newrecord = [];
         if(count($this->allvoices) == 0){
             foreach (constants::ALL_VOICES as $lang => $langvoices) {
                 foreach ($langvoices as $voicecode=>$voicename) {
@@ -156,89 +155,8 @@ class import  {
             }
         }
         
-        // Add fields to user object.
-        foreach ($line as $keynum => $value) {
-            
-            
-            if (!isset($this->currentheader[$keynum])) {
-                // This should not happen.
-                continue;
-            }
-            $colname = $this->currentheader[$keynum];
-            if (!isset($keycolumns[$colname])) {
-                // This should not happen.
-
-                $this->upt->track('status','unknown column ' . $colname, 'error');
-                $this->errors++;
-                return false;
-            }
-            $coldef = $keycolumns[$colname];
-            
-            switch($coldef['type']){
-                case 'int':
-                    $value = intval($value);
-                    break;
-                case 'string':
-                    $value = strval($value);
-                    break;
-                case 'voice':
-                    if(empty($value) || $value == 'auto'){
-                        $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
-                    }else{
-                        if(array_key_exists(strtolower($value), $this->allvoices)){
-                            $value = $this->allvoices[strtolower($value)];
-                        }elseif(in_array(strtolower($value) . '_g', $this->allvoices)){
-                            $value = $this->allvoices[strtolower($value) . '_g'];
-                        }else{
-                            //not sure how to get this to user
-                            $this->upt->track($colname,'UNKNOWN VOICE' . $value, 'warning');
-                            $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
-                        }
-                    }
-                    break;
-
-                case 'voiceopts':
-                    switch($value){
-                        case 'slow':
-                            $value = constants::TTS_SLOW;
-                            break;
-                        case 'veryslow':
-                            $value = constants::TTS_VERYSLOW;
-                            break;
-                        case 'SSML':
-                            $value = constants::TTS_SSML;
-                            break;
-                        default:
-                            $value = constants::TTS_NORMAL;
-                            break;
-                    }
-                    break;
-
-                case 'boolean':
-                    switch(strtolower($value)){
-                        case 'true':
-                            $value = 1;
-                            break;
-                        case 'false':
-                            $value = 0;
-                            break;
-                        default:
-                            $value = 1;
-                    }
-                    break;
-            }
-
-            //set default values
-            if (in_array($colname, $this->upt->columns)) {
-                // Default value in progress tracking table, can be changed later.
-                $this->upt->track($colname, s($value), 'normal');
-            }
-            $newrecord[$coldef['dbname']] = $value;
-        }
-
-        //we need the item specific field types here (true / false / voice)
-        //eg multiaudio needs customtext5 to be voice and customint4 to be voice options
-
+        // Pre-Process Import Data, and turn into DB Ready data.
+        $newrecord = $this->preprocess_import_data($line, $keycolumns);
 
         //set the defaults
         foreach($keycolumns as $colname=>$coldef){
@@ -306,6 +224,99 @@ class import  {
             }
         }
         return false;
+    }
+
+    public function preprocess_import_data($line, $keycolumns){
+
+        //return value init
+        $newrecord = [];
+
+        //fetch item specific col definitions
+        //eg multiaudio needs customtext5 to be voice and customint4 to be voice options
+        $itemtype = $line[0]; //for now we force this to be at index 0
+        $itemtypeclass = local\itemtype\item::get_itemtype_class($itemtype);
+        $item_keycolumns = $itemtypeclass::get_import_keycolumns();
+        $keycolumns = array_merge($keycolumns,$item_keycolumns);
+
+
+        foreach ($line as $keynum => $value) {
+
+            if (!isset($this->currentheader[$keynum])) {
+                // This should not happen.
+                continue;
+            }
+            $colname = $this->currentheader[$keynum];
+            if (!isset($keycolumns[$colname])) {
+                // This should not happen.
+
+                $this->upt->track('status','unknown column ' . $colname, 'error');
+                $this->errors++;
+                return false;
+            }
+            $coldef = $keycolumns[$colname];
+
+            switch($coldef['type']){
+                case 'int':
+                    $value = intval($value);
+                    break;
+                case 'string':
+                    $value = strval($value);
+                    break;
+                case 'voice':
+                    if(empty($value) || $value == 'auto'){
+                        $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
+                    }else{
+                        if(array_key_exists(strtolower($value), $this->allvoices)){
+                            $value = $this->allvoices[strtolower($value)];
+                        }elseif(in_array(strtolower($value) . '_g', $this->allvoices)){
+                            $value = $this->allvoices[strtolower($value) . '_g'];
+                        }else{
+                            //not sure how to get this to user
+                            $this->upt->track($colname,'UNKNOWN VOICE' . $value, 'warning');
+                            $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
+                        }
+                    }
+                    break;
+
+                case 'voiceopts':
+                    switch($value){
+                        case 'slow':
+                            $value = constants::TTS_SLOW;
+                            break;
+                        case 'veryslow':
+                            $value = constants::TTS_VERYSLOW;
+                            break;
+                        case 'SSML':
+                            $value = constants::TTS_SSML;
+                            break;
+                        default:
+                            $value = constants::TTS_NORMAL;
+                            break;
+                    }
+                    break;
+
+                case 'boolean':
+                    switch(strtolower($value)){
+                        case 'true':
+                            $value = 1;
+                            break;
+                        case 'false':
+                            $value = 0;
+                            break;
+                        default:
+                            $value = 1;
+                    }
+                    break;
+            }
+
+            //set default values
+            if (in_array($colname, $this->upt->columns)) {
+                // Default value in progress tracking table, can be changed later.
+                $this->upt->track($colname, s($value), 'normal');
+            }
+            $newrecord[$coldef['dbname']] = $value;
+        }
+        return $newrecord;
     }
 
 }
