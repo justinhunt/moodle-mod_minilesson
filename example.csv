@@ -1,2 +1,3 @@
-type,name,visible,iteminstructions,itemtext,itemttsvoice,itemttsoption,itemtextarea,itemttsautoplay,itemytid,itemytstart,itemytend,itemaudiofname,itemttsdialog,itemttsdialogopts,itemttspassage,itemttspassageopts,customtext1,customtext1format,customtext2,customtext2format,customtext3,customtext3format,customtext4,customtext4format,customtext5,customtext5format,customdata1,customdata2,customdata3,customdata4,customdata5,layout,correctanswer
-multichoice,mc_test_1,1,Do your best,,,,,,,,,,,,,,red,,blue,,green,,yellow,,,,,,,,,,2
+type,name,visible,instructions,text,tts,ttsvoice,ttsoption,ttsautoplay,textarea,ytid,ytstart,ytend,ttsdialog,ttsdialogopts,ttspassage,ttspassageopts,text1,text2,text3,text4,text5,data1,data2,data3,data4,data5,layout,correctanswer
+multiaudio,mc_audio_1,FALSE,Listen and answer,,Is it Tuesday today?,brian,veryslow,TRUE,,,,,,,,,yes,no,,,,,,,,,,1
+multichoice,mc_test_1,TRUE,Do your best,,,,,,,,,,,,,,red,blue,green,yellow,,,,,,,,2

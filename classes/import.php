@@ -26,6 +26,8 @@
 namespace mod_minilesson;
 
 
+use gradereport_singleview\local\ui\empty_element;
+
 /**
  * Class for importing items into a minilesson
  *
@@ -46,53 +48,60 @@ class import  {
         $this->moduleinstance = $moduleinstance;
         $this->modulecontext = $modulecontext;
         $this->course = $course;
+        $this->allvoices=[];
         $this->cm = $cm;
         $this->errors = 0;
         $this->currentheader =  [];
         $this->keycolumns =  [];
-        $this->keycolumns['type']=['type'=>'string','optional'=>false,'default'=>''];
-        $this->keycolumns['name']=['type'=>'string','optional'=>false,'default'=>''];
-        $this->keycolumns['visible']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['iteminstructions']=['type'=>'string','optional'=>true,'default'=>''];
-        $this->keycolumns['itemtext']=['type'=>'string','optional'=>true,'default'=>''];
-        $this->keycolumns['itemtextformat']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['itemtts']=['type'=>'string','optional'=>true,'default'=>''];
-        $this->keycolumns['itemttsvoice']=['type'=>'string','optional'=>true,'default'=>''];
-        $this->keycolumns['itemttsoption']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['itemtextarea']=['type'=>'string','optional'=>true,'default'=>''];
-        $this->keycolumns['itemttsautoplay']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['itemytid']=['type'=>'string','optional'=>true,'default'=>''];
-        $this->keycolumns['itemytstart']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['itemytend']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['itemaudiofname']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['itemttsdialog']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['itemttsdialogopts']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['itemttspassage']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['itemttspassageopts']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customtext1']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customtext1format']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['customtext2']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customtext2format']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['customtext3']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customtext3format']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['customtext4']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customtext4format']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['customtext5']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customtext5format']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['customtext6']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customdata1']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customdata2']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customdata3']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customdata4']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customdata5']=['type'=>'string','optional'=>true,'default'=>null];
-        $this->keycolumns['customint1']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['customint2']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['customint3']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['customint4']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['customint5']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['timelimit']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['layout']=['type'=>'int','optional'=>true,'default'=>0];
-        $this->keycolumns['correctanswer']=['type'=>'int','optional'=>true,'default'=>0];
+        $this->keycolumns['type']=['type'=>'string','optional'=>false,'default'=>'','dbname'=>'type'];
+        $this->keycolumns['name']=['type'=>'string','optional'=>false,'default'=>'','dbname'=>'name'];
+        $this->keycolumns['visible']=['type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>'visible'];
+        $this->keycolumns['instructions']=['type'=>'string','optional'=>true,'default'=>'', 'dbname'=>'iteminstructions'];
+        $this->keycolumns['text']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemtext'];
+        $this->keycolumns['textformat']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemtextformat'];
+        $this->keycolumns['tts']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemtts'];
+        $this->keycolumns['ttsvoice']=['type'=>'voice','optional'=>true,'default'=>'','dbname'=>'itemttsvoice'];
+        $this->keycolumns['ttsoption']=['type'=>'voiceopts','optional'=>true,'default'=>0,'dbname'=>'itemttsoption'];
+        $this->keycolumns['ttsautoplay']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemttsautoplay'];
+        $this->keycolumns['textarea']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemtextarea'];
+        $this->keycolumns['ytid']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemytid'];
+        $this->keycolumns['ytstart']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytstart'];
+        $this->keycolumns['ytend']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytend'];
+        $this->keycolumns['audiofname']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemaudiofname'];
+        $this->keycolumns['ttsdialog']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttsdialog'];
+        $this->keycolumns['ttsdialogopts']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttsdialogopts'];
+        $this->keycolumns['ttsdialogvoicea']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEA];
+        $this->keycolumns['ttsdialogvoiceb']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEB];
+        $this->keycolumns['ttsdialogvoicec']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEC];
+        $this->keycolumns['ttsdialogvisible']=['type'=>'boolean','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVISIBLE];
+        $this->keycolumns['ttspassage']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttspassage'];
+        $this->keycolumns['ttspassageopts']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttspassageopts'];
+        $this->keycolumns['ttspassagevoice']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSPASSAGEVOICE];
+        $this->keycolumns['ttspassagespeed']=['type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::TTSPASSAGESPEED];
+        $this->keycolumns['text1']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext1'];
+        $this->keycolumns['text1format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext1format'];
+        $this->keycolumns['text2']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext2'];
+        $this->keycolumns['text2format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext2format'];
+        $this->keycolumns['text3']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext3'];
+        $this->keycolumns['text3format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext3format'];
+        $this->keycolumns['text4']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext4'];
+        $this->keycolumns['text4format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext4format'];
+        $this->keycolumns['text5']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext5'];
+        $this->keycolumns['text5format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext5format'];
+        $this->keycolumns['text6']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext6'];
+        $this->keycolumns['data1']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata1'];
+        $this->keycolumns['data2']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata2'];
+        $this->keycolumns['data3']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata3'];
+        $this->keycolumns['data4']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata4'];
+        $this->keycolumns['data5']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata5'];
+        $this->keycolumns['int1']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint1'];
+        $this->keycolumns['int2']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint2'];
+        $this->keycolumns['int3']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint3'];
+        $this->keycolumns['int4']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint4'];
+        $this->keycolumns['int5']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint5'];
+        $this->keycolumns['timelimit']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'timelimit'];
+        $this->keycolumns['layout']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'layout'];
+        $this->keycolumns['correctanswer']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'correctanswer'];
 
         // Keep timestamp consistent.
         $today = time();
@@ -139,6 +148,13 @@ class import  {
 
         $keycolumns = $this->keycolumns;
         $newrecord = [];
+        if(count($this->allvoices) == 0){
+            foreach (constants::ALL_VOICES as $lang => $langvoices) {
+                foreach ($langvoices as $voicecode=>$voicename) {
+                    $this->allvoices[strtolower($voicename)] = $voicecode;
+                }
+            }
+        }
         
         // Add fields to user object.
         foreach ($line as $keynum => $value) {
@@ -165,6 +181,51 @@ class import  {
                 case 'string':
                     $value = strval($value);
                     break;
+                case 'voice':
+                    if(empty($value) || $value == 'auto'){
+                        $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
+                    }else{
+                        if(array_key_exists(strtolower($value), $this->allvoices)){
+                            $value = $this->allvoices[strtolower($value)];
+                        }elseif(in_array(strtolower($value) . '_g', $this->allvoices)){
+                            $value = $this->allvoices[strtolower($value) . '_g'];
+                        }else{
+                            //not sure how to get this to user
+                            $this->upt->track($colname,'UNKNOWN VOICE' . $value, 'warning');
+                            $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
+                        }
+                    }
+                    break;
+
+                case 'voiceopts':
+                    switch($value){
+                        case 'slow':
+                            $value = constants::TTS_SLOW;
+                            break;
+                        case 'veryslow':
+                            $value = constants::TTS_VERYSLOW;
+                            break;
+                        case 'SSML':
+                            $value = constants::TTS_SSML;
+                            break;
+                        default:
+                            $value = constants::TTS_NORMAL;
+                            break;
+                    }
+                    break;
+
+                case 'boolean':
+                    switch(strtolower($value)){
+                        case 'true':
+                            $value = 1;
+                            break;
+                        case 'false':
+                            $value = 0;
+                            break;
+                        default:
+                            $value = 1;
+                    }
+                    break;
             }
 
             //set default values
@@ -172,17 +233,31 @@ class import  {
                 // Default value in progress tracking table, can be changed later.
                 $this->upt->track($colname, s($value), 'normal');
             }
-            $newrecord[$colname] = $value;
+            $newrecord[$coldef['dbname']] = $value;
         }
+
+        //we need the item specific field types here (true / false / voice)
+        //eg multiaudio needs customtext5 to be voice and customint4 to be voice options
+
 
         //set the defaults
         foreach($keycolumns as $colname=>$coldef){
-            if(!isset($newrecord[$colname])){
-                $newrecord[$colname]=$coldef['default'];
+            if(!isset($newrecord[$coldef['dbname']])){
+                $newrecord[$coldef['dbname']]=$coldef['default'];
             }
         }
         //turn array into object
         $newrecord = (object)$newrecord;
+
+        //fix up json fields which need to be packed into json
+        //tts dialog opts
+        if(!empty($newrecord->{constants::TTSDIALOG})){
+           $newrecord->{constants::TTSDIALOGOPTS} = utils::pack_ttsdialogopts($newrecord);
+        }
+        //tts passage opts
+        if(!empty($newrecord->{constants::TTSPASSAGE})){
+            $newrecord->{constants::TTSPASSAGEOPTS} = utils::pack_ttspassageopts($newrecord);
+        }
 
         // call the itemtype specific import validation function
         $error = $this->perform_import_validation($newrecord,$this->cm);

@@ -148,6 +148,54 @@ const TTS_SLOW = 1;
 const TTS_VERYSLOW = 2;
 const TTS_SSML = 3;
 
+const ALL_VOICES = array(
+    constants::M_LANG_ARAE => ['Zeina'=>'Zeina','ar-XA-Wavenet-B'=>'Amir_g','ar-XA-Wavenet-A'=>'Salma_g'],
+        //constants::M_LANG_ARSA => [],
+    constants::M_LANG_DEDE => ['Hans'=>'Hans','Marlene'=>'Marlene', 'Vicki'=>'Vicki','Daniel'=>'Daniel'],
+    constants::M_LANG_DEAT => ['Hannah'=>'Hannah'],
+    constants::M_LANG_DADK => ['Naja'=>'Naja','Mads'=>'Mads'],
+        //constants::M_LANG_DECH => [],
+    constants::M_LANG_ENUS => ['Joey'=>'Joey','Justin'=>'Justin','Kevin'=>'Kevin','Matthew'=>'Matthew','Ivy'=>'Ivy',
+    'Joanna'=>'Joanna','Kendra'=>'Kendra','Kimberly'=>'Kimberly','Salli'=>'Salli'],
+    constants::M_LANG_ENGB => ['Brian'=>'Brian','Amy'=>'Amy', 'Emma'=>'Emma'],
+    constants::M_LANG_ENAU => ['Russell'=>'Russell','Nicole'=>'Nicole','Olivia'=>'Olivia'],
+    constants::M_LANG_ENNZ => ['Aria'=>'Aria'],
+    constants::M_LANG_ENZA => ['Ayanda'=>'Ayanda'],
+    constants::M_LANG_ENIN => ['Aditi'=>'Aditi', 'Raveena'=>'Raveena', 'Kajal'=>'Kajal'],
+        // constants::M_LANG_ENIE => [],
+    constants::M_LANG_ENWL => ["Geraint"=>"Geraint"],
+        // constants::M_LANG_ENAB => [],
+    constants::M_LANG_ESUS => ['Miguel'=>'Miguel','Penelope'=>'Penelope'],
+    constants::M_LANG_ESES => [ 'Enrique'=>'Enrique', 'Conchita'=>'Conchita', 'Lucia'=>'Lucia'],
+        //constants::M_LANG_FAIR => [],
+    constants::M_LANG_FILPH => ['fil-PH-Wavenet-A'=>'Darna_g','fil-PH-Wavenet-B'=>'Reyna_g','fil-PH-Wavenet-C'=>'Bayani_g','fil-PH-Wavenet-D'=>'Ernesto_g'],
+    constants::M_LANG_FIFI => ['Suvi'=>'Suvi','fi-FI-Wavenet-A'=>'Kaarina_g'],
+    constants::M_LANG_FRCA => ['Chantal'=>'Chantal', 'Gabrielle'=>'Gabrielle','Liam'=>'Liam'],
+    constants::M_LANG_FRFR => ['Mathieu'=>'Mathieu','Celine'=>'Celine', 'Lea'=>'Lea'],
+    constants::M_LANG_HIIN => ["Aditi"=>"Aditi"],
+    constants::M_LANG_HEIL => ['he-IL-Wavenet-A'=>'Sarah_g','he-IL-Wavenet-B'=>'Noah_g'],
+    constants::M_LANG_HUHU => ['hu-HU-Wavenet-A'=>'Eszter_g'],
+    constants::M_LANG_IDID => ['id-ID-Wavenet-A'=>'Guntur_g','id-ID-Wavenet-B'=>'Bhoomik_g'],
+    constants::M_LANG_ITIT => ['Carla'=>'Carla',  'Bianca'=>'Bianca', 'Giorgio'=>'Giorgio'],
+    constants::M_LANG_JAJP => ['Takumi'=>'Takumi','Mizuki'=>'Mizuki'],
+    constants::M_LANG_KOKR => ['Seoyeon'=>'Seoyeon'],
+        //constants::M_LANG_MSMY => [],
+    constants::M_LANG_NBNO => ['Liv'=>'Liv','nb-NO-Wavenet-B'=>'Lars_g'],
+    constants::M_LANG_NLNL => ["Ruben"=>"Ruben","Lotte"=>"Lotte","Laura"=>"Laura"],
+    constants::M_LANG_NLBE => ["nl-BE-Wavenet-B"=>"Marc_g","nl-BE-Wavenet-A"=>"Marie_g"],
+    constants::M_LANG_PLPL => ['Ewa'=>'Ewa','Maja'=>'Maja','Jacek'=>'Jacek','Jan'=>'Jan'],
+    constants::M_LANG_PTBR => ['Ricardo'=>'Ricardo', 'Vitoria'=>'Vitoria','Camila'=>'Camila'],
+    constants::M_LANG_PTPT => ["Ines"=>"Ines",'Cristiano'=>'Cristiano'],
+    constants::M_LANG_RORO => ['Carmen'=>'Carmen','ro-RO-Wavenet-A'=>'Sorina_g'],
+    constants::M_LANG_RURU => ["Tatyana"=>"Tatyana","Maxim"=>"Maxim"],
+    constants::M_LANG_SVSE => ['Astrid'=>'Astrid'],
+    constants::M_LANG_TAIN => ['ta-IN-Wavenet-A'=>'Dyuthi_g','ta-IN-Wavenet-B'=>'Bhoomik_g'],
+    constants::M_LANG_TEIN => ['te-IN-Standard-A'=>'Anandi_g','te-IN-Standard-B'=>'Kai_g'],
+    constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
+    constants::M_LANG_UKUA => ['uk-UA-Wavenet-A'=>'Katya_g'],
+    constants::M_LANG_ZHCN => ['Zhiyu'=>'Zhiyu']
+);
+
 //CSS ids/classes
 const M_RECORD_BUTTON='mod_minilesson_record_button';
 const M_START_BUTTON='mod_minilesson_start_button';
