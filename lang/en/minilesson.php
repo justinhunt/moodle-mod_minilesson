@@ -646,5 +646,7 @@ $string['examplecsv_help'] = 'To use the example text file, download it then ope
 $string['error:emptyfield'] = 'CANNOT BE EMPTY';
 $string['error:failed'] = 'FAILED';
 $string['error:correctanswer'] = 'INVALID ANSWER';
+$string['error:invaliditemtype'] = 'INVALID ITEM TYPE';
+
 
 

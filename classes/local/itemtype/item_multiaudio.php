@@ -188,13 +188,21 @@ class item_multiaudio extends item {
         return $thephonetics;
     }
 
-    public static function get_import_keycolumns(){
-        $keycols = [];
+    /*
+     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+     */
+    public static function get_keycolumns(){
+        //get the basic key columns and customize a little for instances of this item type
+        $keycols = parent::get_keycolumns();
         $keycols['text5']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
         $keycols['int4']=['type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
+        $keycols['int1']=['type'=>'boolean','optional'=>true,'default'=>constants::TEXTPROMPT_WORDS,'dbname'=>constants::SHOWTEXTPROMPT];
         return $keycols;
     }
 
+    /*
+     * This is for use with importing, validating submitted data in each column
+     */
     public static function validate_import($newrecord,$cm){
         $error = new \stdClass();
         $error->col='';

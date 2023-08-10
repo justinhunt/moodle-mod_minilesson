@@ -144,6 +144,60 @@ abstract class item implements templatable, renderable {
     public function set_currentnumber($currentnumber){
         $this->currentnumber = $currentnumber;
     }
+    
+    public static function get_keycolumns(){
+        $keycolumns =  [];
+        $keycolumns['type']=['type'=>'string','optional'=>false,'default'=>'','dbname'=>'type'];
+        $keycolumns['name']=['type'=>'string','optional'=>false,'default'=>'','dbname'=>'name'];
+        $keycolumns['visible']=['type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>'visible'];
+        $keycolumns['instructions']=['type'=>'string','optional'=>true,'default'=>'', 'dbname'=>'iteminstructions'];
+        $keycolumns['text']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemtext'];
+        $keycolumns['textformat']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemtextformat'];
+        $keycolumns['tts']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemtts'];
+        $keycolumns['ttsvoice']=['type'=>'voice','optional'=>true,'default'=>'','dbname'=>'itemttsvoice'];
+        $keycolumns['ttsoption']=['type'=>'voiceopts','optional'=>true,'default'=>0,'dbname'=>'itemttsoption'];
+        $keycolumns['ttsautoplay']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemttsautoplay'];
+        $keycolumns['textarea']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemtextarea'];
+        $keycolumns['ytid']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemytid'];
+        $keycolumns['ytstart']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytstart'];
+        $keycolumns['ytend']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytend'];
+        $keycolumns['audiofname']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemaudiofname'];
+        $keycolumns['ttsdialog']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttsdialog'];
+        $keycolumns['ttsdialogopts']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttsdialogopts'];
+        $keycolumns['ttsdialogvoicea']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEA];
+        $keycolumns['ttsdialogvoiceb']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEB];
+        $keycolumns['ttsdialogvoicec']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEC];
+        $keycolumns['ttsdialogvisible']=['type'=>'boolean','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVISIBLE];
+        $keycolumns['ttspassage']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttspassage'];
+        $keycolumns['ttspassageopts']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttspassageopts'];
+        $keycolumns['ttspassagevoice']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSPASSAGEVOICE];
+        $keycolumns['ttspassagespeed']=['type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::TTSPASSAGESPEED];
+        $keycolumns['text1']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext1'];
+        $keycolumns['text1format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext1format'];
+        $keycolumns['text2']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext2'];
+        $keycolumns['text2format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext2format'];
+        $keycolumns['text3']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext3'];
+        $keycolumns['text3format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext3format'];
+        $keycolumns['text4']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext4'];
+        $keycolumns['text4format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext4format'];
+        $keycolumns['text5']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext5'];
+        $keycolumns['text5format']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customtext5format'];
+        $keycolumns['text6']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customtext6'];
+        $keycolumns['data1']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata1'];
+        $keycolumns['data2']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata2'];
+        $keycolumns['data3']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata3'];
+        $keycolumns['data4']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata4'];
+        $keycolumns['data5']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'customdata5'];
+        $keycolumns['int1']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint1'];
+        $keycolumns['int2']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint2'];
+        $keycolumns['int3']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint3'];
+        $keycolumns['int4']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint4'];
+        $keycolumns['int5']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint5'];
+        $keycolumns['timelimit']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'timelimit'];
+        $keycolumns['layout']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'layout'];
+        $keycolumns['correctanswer']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'correctanswer'];
+        return $keycolumns;
+    }
 
     public static function get_import_keycolumns(){
         $keycols = [];

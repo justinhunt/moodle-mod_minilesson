@@ -77,4 +77,14 @@ class  item_typinggapfill extends item {
         return false;
     }
 
+    /*
+    * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+    */
+    public static function get_keycolumns(){
+        //get the basic key columns and customize a little for instances of this item type
+        $keycols = parent::get_keycolumns();
+        $keycols['int3']=['type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
+        return $keycols;
+    }
+
 }
