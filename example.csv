@@ -1,3 +1,5 @@
-type,name,visible,instructions,text,layout,tts,ttsvoice,ttsoption,ttsautoplay,textarea,ytid,ytstart,ytend,ttsdialog,ttsdialogopts,ttspassage,ttspassageopts,text1,text2,text3,text4,text5,data1,data2,data3,data4,data5,int1,int2,int3,int4,int5,correctanswer
-multiaudio,mc_audio_1,FALSE,Listen and answer,,,Is it Tuesday today?,brian,veryslow,TRUE,,,,,,,,,yes,no,,,,,,,,,,,,,,1
-multichoice,mc_test_1,TRUE,Do your best,,,,,,,,,,,,,,,red,blue,green,yellow,,,,,,,,,,,,2
+type,name,visible,instructions,text,layout,tts,ttsvoice,ttsoption,ttsautoplay,textarea,ytid,ytstart,ytend,ttsdialog,ttsdialogopts,ttspassage,ttspassageopts,text1,text2,text3,text4,text5,data1,data2,data3,data4,data5,int1,int2,int3,int4,int5,timelimit,correctanswer
+multiaudio,mc_audio_1,FALSE,Listen and answer,,,Is it Tuesday today?,brian,veryslow,TRUE,,,,,,,,,yes,no,,,,,,,,,,,,,,,1
+multichoice,mc_test_1,TRUE,Do your best,,,,,,,,,,,,,,,red,blue,green,yellow,,,,,,,,,,,,,2
+dictationchat,dcchat_1,TRUE,Listen and Type,,,,,,,,,,,,,,,"I am happy.
+I drink water.",,,,Matthew,,,,,,,,,veryslow,,,
