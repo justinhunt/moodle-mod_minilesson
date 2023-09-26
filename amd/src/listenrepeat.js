@@ -99,7 +99,7 @@ define(['jquery',
         //disable the buttons
         $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
         //reveal the prompt
-        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].prompt + "");
+        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].displayprompt + "");
         //reveal the answer
         $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").each(function() {
           var realidx = $(this).data("realidx");
@@ -192,7 +192,7 @@ define(['jquery',
         
         $("#" + self.itemdata.uniqueid + "_container .landr_targetWord").addClass("landr_correct");
         $("#" + self.itemdata.uniqueid + "_container .landr_feedback").addClass("fa fa-check");
-        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].prompt + "");
+        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].displayprompt + "");
 
         self.items[self.game.pointer].answered = true;
         self.items[self.game.pointer].correct = true;

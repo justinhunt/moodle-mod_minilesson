@@ -613,7 +613,7 @@ abstract class item implements templatable, renderable {
      * Takes an array of sentences and phonetics for the same, and returns sentence objects with display and spoken and phonetic data
      *
      */
-    protected function process_spoken_sentences($sentences,$phonetics, $dottify=false){
+    protected function process_spoken_sentences($sentences,$phonetics, $dottify=false, $is_ssml=false){
         //build a sentences object for mustache and JS
         $index = 0;
         $sentenceobjects = [];
@@ -625,7 +625,7 @@ abstract class item implements templatable, renderable {
 
             //build prompt and displayprompt and sentence which could be different
             // prompt = audio_prompt
-            // sentence = target_sentence ie what the student should say
+            // sentence = target_sentence ie what the student should say (correct response)
             // displayprompt = the text_prompt that we show the student before they speak
 
             //dottify = if we dont show the text and just show dots ..
@@ -634,6 +634,7 @@ abstract class item implements templatable, renderable {
                 $displayprompt = $prompt;
 
             }else{
+
                 //if we have a pipe prompt = array[0] and response = array[1]
                 $sentencebits = explode('|', $sentence);
                 if (count($sentencebits) > 1) {
@@ -644,11 +645,17 @@ abstract class item implements templatable, renderable {
                     }else{
                         $displayprompt = $prompt;
                     }
-
                 } else {
                     $prompt = $sentence;
                     $displayprompt = $sentence;
                 }
+            }
+
+            //we strip the HTML tags off if it is SSML
+            //probably no harm in doing this if its SSML or not ...
+            if($is_ssml) {
+                $displayprompt = strip_tags($displayprompt );
+                $sentence = strip_tags($sentence);
             }
 
             if ($this->language == constants::M_LANG_JAJP) {

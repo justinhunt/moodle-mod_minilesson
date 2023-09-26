@@ -72,8 +72,9 @@ class item_multiaudio extends item {
         }else{
             $phonetics=[];
         }
+        $is_ssml=$testitem->voiceoption==constants::TTS_SSML;
         $dottify = $this->itemrecord->{constants::SHOWTEXTPROMPT}==constants::TEXTPROMPT_DOTS;
-        $testitem->sentences = $this->process_spoken_sentences($sentences,$phonetics,$dottify);
+        $testitem->sentences = $this->process_spoken_sentences($sentences,$phonetics,$dottify,$is_ssml);
 
         //cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);

@@ -1055,14 +1055,14 @@ class utils{
         }
     }
 
-    public static function get_tts_options(){
-        return array(constants::TTS_NORMAL=>get_string('ttsnormal',constants::M_COMPONENT),
+    public static function get_tts_options($no_ssml=false){
+        $ret = array(constants::TTS_NORMAL=>get_string('ttsnormal',constants::M_COMPONENT),
                 constants::TTS_SLOW=>get_string('ttsslow',constants::M_COMPONENT),
-                constants::TTS_VERYSLOW=>get_string('ttsveryslow',constants::M_COMPONENT),
-                constants::TTS_SSML=>get_string('ttsssml',constants::M_COMPONENT));
-
-
+                constants::TTS_VERYSLOW=>get_string('ttsveryslow',constants::M_COMPONENT));
+        if(!$no_ssml){$ret += array(constants::TTS_SSML=>get_string('ttsssml',constants::M_COMPONENT));}
+        return $ret;
     }
+
     public static function get_tts_voices($langcode,$showall){
         $alllang= constants::ALL_VOICES;
 

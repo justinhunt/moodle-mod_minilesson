@@ -590,9 +590,9 @@ abstract class baseform extends \moodleform {
      * @param string $label, null means default
      * @return void
      */
-    protected final function add_voiceoptions($name, $label = null,  $hideif_field=false,$hideif_value=false) {
+    protected final function add_voiceoptions($name, $label = null,  $hideif_field=false,$hideif_value=false,$no_ssml=false) {
         global $CFG;
-        $voiceoptions = utils::get_tts_options();
+        $voiceoptions = utils::get_tts_options($no_ssml);
         $this->add_dropdown($name, $label,$voiceoptions);
         $m35 = $CFG->version >= 2018051700;
         if($hideif_field !== false) {
