@@ -1071,10 +1071,12 @@ class utils{
         }elseif($showall) {
             $usearray =[];
 
-            //add current language first
-            foreach($alllang[$langcode] as $v=>$thevoice){
-                $neuraltag = in_array($v,constants::M_NEURALVOICES) ? ' (+)' : '';
-                $usearray[$v] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+            //add current language first (in some cases there is no TTS for the lang, eg Maori
+            if(isset($alllang[$langcode])) {
+                foreach ($alllang[$langcode] as $v => $thevoice) {
+                    $neuraltag = in_array($v, constants::M_NEURALVOICES) ? ' (+)' : '';
+                    $usearray[$v] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+                }
             }
             //then all the rest
             foreach($alllang as $lang=>$voices){
@@ -1119,6 +1121,7 @@ class utils{
                constants::M_LANG_ITIT => get_string('it-it', constants::M_COMPONENT),
                constants::M_LANG_JAJP => get_string('ja-jp', constants::M_COMPONENT),
                constants::M_LANG_KOKR => get_string('ko-kr', constants::M_COMPONENT),
+               constants::M_LANG_MINZ => get_string('mi-nz', constants::M_COMPONENT),
                constants::M_LANG_MSMY => get_string('ms-my', constants::M_COMPONENT),
                constants::M_LANG_NLNL => get_string('nl-nl', constants::M_COMPONENT),
                constants::M_LANG_NLBE => get_string('nl-be', constants::M_COMPONENT),

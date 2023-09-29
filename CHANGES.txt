@@ -1,3 +1,5 @@
+- Added Maori
+
 Version 1.0.56 (Build 2023092600)
 - fix for incorrect language-locale for Norwegian
 - fix for SSML voice option display in listen and speak (and related)
