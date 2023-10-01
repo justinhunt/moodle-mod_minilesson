@@ -251,6 +251,23 @@ class import  {
                     }
                     break;
 
+                case 'layout':
+                    switch($value){
+                        case 'horizontal':
+                            $value = constants::LAYOUT_HORIZONTAL;
+                            break;
+                        case 'vertical':
+                            $value = constants::LAYOUT_VERTICAL;
+                            break;
+                        case 'magazine':
+                            $value = constants::LAYOUT_MAGAZINE;
+                            break;
+                        default:
+                            $value = constants::LAYOUT_AUTO;
+                            break;
+                    }
+                    break;
+
                 case 'boolean':
                     switch(strtolower($value)){
                         case 'true':

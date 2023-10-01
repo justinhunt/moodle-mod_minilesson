@@ -194,7 +194,7 @@ abstract class item implements templatable, renderable {
         $keycolumns['int4']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint4'];
         $keycolumns['int5']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'customint5'];
         $keycolumns['timelimit']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'timelimit'];
-        $keycolumns['layout']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'layout'];
+        $keycolumns['layout']=['type'=>'layout','optional'=>true,'default'=>0,'dbname'=>'layout'];
         $keycolumns['correctanswer']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'correctanswer'];
         return $keycolumns;
     }
