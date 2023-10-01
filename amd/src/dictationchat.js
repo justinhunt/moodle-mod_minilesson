@@ -67,7 +67,7 @@ define(['jquery',
         //disable buttons
         $("#" + self.itemdata.uniqueid + "_container .dictate_ctrl-btn").prop("disabled", true);
         //reveal prompt
-        $("#" + self.itemdata.uniqueid + "_container .dictate_speech.dictate_teacher_left").text(self.items[self.game.pointer].prompt + "");
+        $("#" + self.itemdata.uniqueid + "_container .dictate_speech.dictate_teacher_left").text(self.items[self.game.pointer].displayprompt + "");
         //reveal answers
         //reveal the answer
         $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").each(function() {
@@ -193,7 +193,7 @@ define(['jquery',
           item.audio = new Audio();
           item.audio.src = audiourl;
           if (self.items.filter(function(e) {
-              return e.audio == null
+              return e.audio == null;
             }).length == 0) {
             self.appReady();
           } else {
@@ -225,7 +225,7 @@ define(['jquery',
 
         $("#" + self.itemdata.uniqueid + "_container .dictate_targetWord").addClass("dictate_correct").prop("disabled",true);
         $("#" + self.itemdata.uniqueid + "_container .dictate_feedback").addClass("fa fa-check");
-        $("#" + self.itemdata.uniqueid + "_container .dictate_speech.dictate_teacher_left").text(self.items[self.game.pointer].prompt + "");
+        $("#" + self.itemdata.uniqueid + "_container .dictate_speech.dictate_teacher_left").text(self.items[self.game.pointer].displayprompt + "");
 
         self.items[self.game.pointer].answered = true;
         self.items[self.game.pointer].correct = true;

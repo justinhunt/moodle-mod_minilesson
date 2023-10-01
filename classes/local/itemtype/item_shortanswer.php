@@ -69,7 +69,9 @@ class item_shortanswer extends item {
         }else{
             $phonetics=[];
         }
-        $testitem->sentences = $this->process_spoken_sentences($sentences,$phonetics);
+        $is_ssml=$testitem->voiceoption==constants::TTS_SSML;
+        $dottify=false;
+        $testitem->sentences = $this->process_spoken_sentences($sentences,$phonetics,$dottify,$is_ssml);
 
         //cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);

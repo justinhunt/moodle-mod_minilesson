@@ -13,6 +13,10 @@ define(['jquery',
     log.debug('MiniLesson speaking gap fill: initialising');
 
     return {
+
+        //a handle on the tt recorder
+        ttrec: null,
+
         // For making multiple instances
         clone: function() {
             return $.extend(true, {}, this);
@@ -55,7 +59,8 @@ define(['jquery',
                 opts.callback = theCallback;
                 opts.stt_guided = quizhelper.is_stt_guided();
                 opts.wwwroot = quizhelper.is_stt_guided();
-                ttrecorder.clone().init(opts);
+                self.ttrec = ttrecorder.clone();
+                self.ttrec.init(opts);
             } else {
                 // Init cloudpoodll push recorder
                 cloudpoodll.init('minilesson-recorder-listenrepeat-' + itemdata.id, theCallback);
@@ -464,6 +469,13 @@ define(['jquery',
                 setTimeout(function() {
                     $("#" + self.itemdata.uniqueid + "_container .sgapfill_listen_btn").trigger('click');
                 }, 1000);
+            }
+
+            //target is the speech we expect
+            var target = self.items[self.game.pointer].target;
+            //in some cases ttrecorder wants to know the target
+            if(self.quizhelper.use_ttrecorder()) {
+                self.ttrec.currentPrompt=target;
             }
         },
 

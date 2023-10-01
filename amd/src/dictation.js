@@ -75,7 +75,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
           theplayer[0].onended = function() {
             $(el).find(".fa").removeClass("fa-spin fa-spinner").addClass("fa-play");
             self.playing = false;
-          }
+          };
           $(el).find(".fa").removeClass("fa-play").addClass("fa-spin fa-spinner");
         }
       });

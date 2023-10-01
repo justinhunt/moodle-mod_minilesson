@@ -17,6 +17,8 @@ define(['jquery',
 
   return {
 
+
+
       //for making multiple instances
       clone: function () {
           return $.extend(true, {}, this);
@@ -43,6 +45,7 @@ define(['jquery',
         displayterms: [],
         results: [],
         controls: {},
+        ttrec: null, //a handle on the tt recorder
 
         init: function() {
 
@@ -105,74 +108,79 @@ define(['jquery',
 
         initComponents: function() {
 
-          var theCallback = function(message) {
+              var theCallback = function(message) {
 
-            switch (message.type) {
-              case 'recording':
+                switch (message.type) {
+                  case 'recording':
 
-                break;
+                    break;
 
-              case 'speech':
-                log.debug("speech at speechcards");
-                var speechtext = message.capturedspeech;
-                var spoken_clean  = quizhelper.cleanText(speechtext);
-                var correct_clean = quizhelper.cleanText(app.terms[app.pointer - 1]);
-                var correctphonetic = app.phonetics[app.pointer - 1];
-log.debug('speechtext:',speechtext);
-log.debug('spoken:',spoken_clean);
-log.debug('correct:',correct_clean);
-                //Similarity check by character matching
-                var similarity_js = quizhelper.similarity(spoken_clean, correct_clean);
-                log.debug('JS similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_js);
+                  case 'speech':
+                    log.debug("speech at speechcards");
+                    var speechtext = message.capturedspeech;
+                    var spoken_clean  = quizhelper.cleanText(speechtext);
+                    var correct_clean = quizhelper.cleanText(app.terms[app.pointer - 1]);
+                    var correctphonetic = app.phonetics[app.pointer - 1];
+        log.debug('speechtext:',speechtext);
+        log.debug('spoken:',spoken_clean);
+        log.debug('correct:',correct_clean);
+                    //Similarity check by character matching
+                    var similarity_js = quizhelper.similarity(spoken_clean, correct_clean);
+                    log.debug('JS similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_js);
 
-                //Similarity check by direct-match/acceptable-mistranscription
-                if (similarity_js >= app.passmark ||
-                  app.wordsDoMatch(spoken_clean, correct_clean)) {
-                  log.debug('local match:' + ':' + spoken_clean + ':' + correct_clean);
-                  app.showStarRating(100);
-                  app.flagCorrectAndTransition();
-                  return;
-                }
-
-                //Similarity check by phonetics(ajax)
-                quizhelper.checkByPhonetic(correct_clean, spoken_clean, correctphonetic, app.language).then(function(similarity_php) {
-                  if (similarity_php === false) {
-                    return $.Deferred().reject();
-                  } else {
-                    log.debug('PHP similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_php);
-
-                    if (similarity_php >= app.passmark) {
-                        app.showStarRating(similarity_php);
-                        app.flagCorrectAndTransition();
-                    }else{
-                        //show the greater of the ratings
-                        app.showStarRating(Math.max(similarity_js,similarity_php));
+                    //Similarity check by direct-match/acceptable-mistranscription
+                    if (similarity_js >= app.passmark ||
+                      app.wordsDoMatch(spoken_clean, correct_clean)) {
+                      log.debug('local match:' + ':' + spoken_clean + ':' + correct_clean);
+                      app.showStarRating(100);
+                      app.flagCorrectAndTransition();
+                      return;
                     }
-                  } //end of if check_by_phonetic result
-                }); //end of check by phonetic
 
-            } //end of switch message type
-          };
+                    //Similarity check by phonetics(ajax)
+                    quizhelper.checkByPhonetic(correct_clean, spoken_clean, correctphonetic, app.language).then(function(similarity_php) {
+                      if (similarity_php === false) {
+                        return $.Deferred().reject();
+                      } else {
+                        log.debug('PHP similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_php);
+
+                        if (similarity_php >= app.passmark) {
+                            app.showStarRating(similarity_php);
+                            app.flagCorrectAndTransition();
+                        }else{
+                            //show the greater of the ratings
+                            app.showStarRating(Math.max(similarity_js,similarity_php));
+                        }
+                      } //end of if check_by_phonetic result
+                    }); //end of check by phonetic
+
+                } //end of switch message type
+              };
 
 
 
-         if(quizhelper.use_ttrecorder()) {
-             //init tt recorder
-             var opts = {};
-             opts.uniqueid = itemdata.uniqueid;
-             opts.callback = theCallback;
-             opts.stt_guided=quizhelper.is_stt_guided();
-             ttrecorder.clone().init(opts);
-         }else{
-             //init cloudpoodll push recorder
-             cloudpoodll.init('minilesson-recorder-speechcards-' + itemdata.id, theCallback);
-         }
+             if(quizhelper.use_ttrecorder()) {
+                 //init tt recorder
+                 var opts = {};
+                 opts.uniqueid = itemdata.uniqueid;
+                 opts.callback = theCallback;
+                 opts.stt_guided=quizhelper.is_stt_guided();
+                 app.ttrec = ttrecorder.clone();
+                 app.ttrec.init(opts);
+                 //init prompt for first card
+                 //in some cases ttrecorder wants to know the target
+                 app.ttrec.currentPrompt=app.displayterms[app.pointer - 1];
+
+             }else{
+                 //init cloudpoodll push recorder
+                 cloudpoodll.init('minilesson-recorder-speechcards-' + itemdata.id, theCallback);
+             }
 
 
-          //init progress dots
-          app.progress_dots(app.results, app.terms);
+              //init progress dots
+              app.progress_dots(app.results, app.terms);
 
-          app.initSlider();
+              app.initSlider();
 
 
         },
@@ -270,6 +278,11 @@ log.debug('correct:',correct_clean);
           app.clearStarRating();
           if (!app.is_end()) {
             app.writeCurrentTerm();
+            //in some cases ttrecorder wants to know the target
+            if(quizhelper.use_ttrecorder()) {
+                app.ttrec.currentPrompt=app.displayterms[app.pointer - 1];
+            }
+
           } else {
             app.do_end();
           }

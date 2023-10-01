@@ -16,6 +16,9 @@ define(['jquery',
 
   return {
 
+      //a handle on the tt recorder
+      ttrec: null,
+
       passmark: 90,//lower this if it often doesnt match (was 85)
       playing: false,
 
@@ -240,7 +243,16 @@ define(['jquery',
             log.debug('ma uniqueid:' + itemdata.uniqueid);
             opts.callback = theCallback;
             opts.stt_guided=quizhelper.is_stt_guided();
-            ttrecorder.clone().init(opts);
+            app.ttrec = ttrecorder.clone();
+            app.ttrec.init(opts);
+
+            //prompt for TT recorder
+            var allsentences="";
+            for(var i=0;i< itemdata.sentences.length; i++){
+                allsentences += quizhelper.cleanText(itemdata.sentences[i].sentence) + ' ';
+            }
+            app.ttrec.currentPrompt=allsentences;
+
         }else{
             //init cloudpoodll push recorder
             cloudpoodll.init('minilesson-recorder-multiaudio-' + itemdata.id, theCallback);

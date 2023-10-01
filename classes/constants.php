@@ -180,7 +180,7 @@ const ALL_VOICES = array(
     constants::M_LANG_JAJP => ['Takumi'=>'Takumi','Mizuki'=>'Mizuki'],
     constants::M_LANG_KOKR => ['Seoyeon'=>'Seoyeon'],
         //constants::M_LANG_MSMY => [],
-    constants::M_LANG_NBNO => ['Liv'=>'Liv','nb-NO-Wavenet-B'=>'Lars_g'],
+    constants::M_LANG_NONO => ['Liv'=>'Liv','nb-NO-Wavenet-B'=>'Lars_g','nb-NO-Wavenet-A'=>'Hedda_g','nb-NO-Wavenet-D'=>'Anders_g'],
     constants::M_LANG_NLNL => ["Ruben"=>"Ruben","Lotte"=>"Lotte","Laura"=>"Laura"],
     constants::M_LANG_NLBE => ["nl-BE-Wavenet-B"=>"Marc_g","nl-BE-Wavenet-A"=>"Marie_g"],
     constants::M_LANG_PLPL => ['Ewa'=>'Ewa','Maja'=>'Maja','Jacek'=>'Jacek','Jan'=>'Jan'],
@@ -307,7 +307,7 @@ const M_LANG_RURU ='ru-RU';
 const M_LANG_TAIN ='ta-IN';
 const M_LANG_TEIN ='te-IN';
 const M_LANG_TRTR ='tr-TR';
-
+const M_LANG_NONO ='no-NO';
 const M_LANG_NBNO ='nb-NO';
 const M_LANG_PLPL ='pl-PL';
 const M_LANG_RORO ='ro-RO';
@@ -317,6 +317,7 @@ const M_LANG_UKUA ='uk-UA';
 const M_LANG_EUES ='eu-ES';
 const M_LANG_FIFI ='fi-FI';
 const M_LANG_HUHU='hu-HU';
+const M_LANG_MINZ ='mi-NZ';
 
 const M_PROMPT_SEPARATE=0;
 const M_PROMPT_RICHTEXT=1;

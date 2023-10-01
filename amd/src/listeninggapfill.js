@@ -384,7 +384,7 @@ define(['jquery',
             self.nextReply();
 
             //play the audio
-            $("#" + self.itemdata.uniqueid + "_container .lgapfill_listen_btn").trigger('click')
+            $("#" + self.itemdata.uniqueid + "_container .lgapfill_listen_btn").trigger('click');
         },
 
         nextReply: function() {

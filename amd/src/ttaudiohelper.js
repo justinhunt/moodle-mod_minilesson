@@ -133,8 +133,9 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
 
         getBuffers: function(event) {
             var buffers = [];
-            for (var ch = 0; ch < 2; ++ch)
+            for (var ch = 0; ch < 2; ++ch) {
                 buffers[ch] = event.inputBuffer.getChannelData(ch);
+            }
             return buffers;
         },
 

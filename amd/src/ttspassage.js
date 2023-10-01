@@ -28,19 +28,19 @@ define(['jquery','core/log'], function($,log) {
                 for (var thesentence=0; thesentence < linecount; thesentence++){
                     $(passagelines[thesentence]).attr('data-sentenceindex',thesentence);
                 }//end of for loop
-            }
+            };
 
             //FUNCTION:  unhighlight a sentence as active
             var dehighlight_all = function(){
                 passagelines.removeClass('passageplayer_activesentence');
-            }
+            };
 
             //FUNCTION:  highlight a sentence as active
             var highlight_sentence = function(thesentence){
                 passagelines.removeClass('passageplayer_activesentence');
                 $(passagelines[thesentence]).addClass('passageplayer_activesentence');
                 // $(sentenceselector + '[data-sentenceindex=' + thesentence + ']').addClass('passageplayer_activesentence');
-            }
+            };
 
             //FUNCTION: play a single sentence and mark it active for display purposes
             var doplayaudio = function(thesentence){

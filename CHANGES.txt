@@ -1,3 +1,9 @@
+- Added Maori
+
+Version 1.0.56 (Build 2023092600)
+- fix for incorrect language-locale for Norwegian
+- fix for SSML voice option display in listen and speak (and related)
+
 Version 1.0.55 (Build 2023072301)
 - fix for activity description on < M4.0 versions Moodle
 

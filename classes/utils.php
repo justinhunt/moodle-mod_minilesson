@@ -1055,14 +1055,14 @@ class utils{
         }
     }
 
-    public static function get_tts_options(){
-        return array(constants::TTS_NORMAL=>get_string('ttsnormal',constants::M_COMPONENT),
+    public static function get_tts_options($no_ssml=false){
+        $ret = array(constants::TTS_NORMAL=>get_string('ttsnormal',constants::M_COMPONENT),
                 constants::TTS_SLOW=>get_string('ttsslow',constants::M_COMPONENT),
-                constants::TTS_VERYSLOW=>get_string('ttsveryslow',constants::M_COMPONENT),
-                constants::TTS_SSML=>get_string('ttsssml',constants::M_COMPONENT));
-
-
+                constants::TTS_VERYSLOW=>get_string('ttsveryslow',constants::M_COMPONENT));
+        if(!$no_ssml){$ret += array(constants::TTS_SSML=>get_string('ttsssml',constants::M_COMPONENT));}
+        return $ret;
     }
+
     public static function get_tts_voices($langcode,$showall){
         $alllang= constants::ALL_VOICES;
 
@@ -1071,10 +1071,12 @@ class utils{
         }elseif($showall) {
             $usearray =[];
 
-            //add current language first
-            foreach($alllang[$langcode] as $v=>$thevoice){
-                $neuraltag = in_array($v,constants::M_NEURALVOICES) ? ' (+)' : '';
-                $usearray[$v] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+            //add current language first (in some cases there is no TTS for the lang, eg Maori
+            if(isset($alllang[$langcode])) {
+                foreach ($alllang[$langcode] as $v => $thevoice) {
+                    $neuraltag = in_array($v, constants::M_NEURALVOICES) ? ' (+)' : '';
+                    $usearray[$v] = get_string(strtolower($langcode), constants::M_COMPONENT) . ': ' . $thevoice . $neuraltag;
+                }
             }
             //then all the rest
             foreach($alllang as $lang=>$voices){
@@ -1119,6 +1121,7 @@ class utils{
                constants::M_LANG_ITIT => get_string('it-it', constants::M_COMPONENT),
                constants::M_LANG_JAJP => get_string('ja-jp', constants::M_COMPONENT),
                constants::M_LANG_KOKR => get_string('ko-kr', constants::M_COMPONENT),
+               constants::M_LANG_MINZ => get_string('mi-nz', constants::M_COMPONENT),
                constants::M_LANG_MSMY => get_string('ms-my', constants::M_COMPONENT),
                constants::M_LANG_NLNL => get_string('nl-nl', constants::M_COMPONENT),
                constants::M_LANG_NLBE => get_string('nl-be', constants::M_COMPONENT),
@@ -1129,7 +1132,8 @@ class utils{
                constants::M_LANG_TEIN => get_string('te-in', constants::M_COMPONENT),
                constants::M_LANG_TRTR => get_string('tr-tr', constants::M_COMPONENT),
                constants::M_LANG_ZHCN => get_string('zh-cn', constants::M_COMPONENT),
-           constants::M_LANG_NBNO => get_string('nb-no', constants::M_COMPONENT),
+           constants::M_LANG_NONO => get_string('no-no', constants::M_COMPONENT),
+           //constants::M_LANG_NBNO => get_string('nb-no', constants::M_COMPONENT),
            constants::M_LANG_PLPL => get_string('pl-pl', constants::M_COMPONENT),
            constants::M_LANG_RORO => get_string('ro-ro', constants::M_COMPONENT),
            constants::M_LANG_SVSE => get_string('sv-se', constants::M_COMPONENT),
