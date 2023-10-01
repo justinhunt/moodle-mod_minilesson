@@ -68,5 +68,5 @@ define(['jquery', 'core/log','core/modal_factory','core/str','core/modal_events'
             that.strings.reattempt = s[i++];
         });
     }
-  }
+  };
 });

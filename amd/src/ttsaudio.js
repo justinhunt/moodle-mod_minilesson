@@ -49,7 +49,7 @@ define(['jquery','core/log'], function($,log) {
                     $(fa).addClass('fa-stop');
                     //play
                 }else{
-                    doplayaudio(thesentence_number);
+                    doplayaudio();
                     $(fa).removeClass('fa-volume-up');
                     $(fa).addClass('fa-stop');
                 }//end of if paused ended

@@ -193,7 +193,7 @@ define(['jquery',
           item.audio = new Audio();
           item.audio.src = audiourl;
           if (self.items.filter(function(e) {
-              return e.audio == null
+              return e.audio == null;
             }).length == 0) {
             self.appReady();
           } else {

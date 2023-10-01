@@ -13,6 +13,9 @@ define(['jquery',
 
   return {
 
+      //a handle on the tt recorder
+      ttrec: null,
+
       //for making multiple instances
       clone: function () {
           return $.extend(true, {}, this);
@@ -48,7 +51,8 @@ define(['jquery',
             opts.callback = theCallback;
             opts.stt_guided=quizhelper.is_stt_guided();
             opts.wwwroot=quizhelper.is_stt_guided();
-            ttrecorder.clone().init(opts);
+            self.ttrec = ttrecorder.clone();
+            self.ttrec.init(opts);
         }else{
             //init cloudpoodll push recorder
             cloudpoodll.init('minilesson-recorder-listenrepeat-' + itemdata.id, theCallback);
@@ -164,7 +168,7 @@ define(['jquery',
           item.audio = new Audio();
           item.audio.src = audiourl;
           if (self.items.filter(function(e) {
-              return e.audio === null
+              return e.audio === null;
             }).length === 0) {
             self.appReady();
           }
@@ -309,7 +313,12 @@ define(['jquery',
       var showText = parseInt(this.itemdata.show_text);
       var self = this;
 
+      //target is the speech we expect
       var target = self.items[self.game.pointer].target;
+      //in some cases ttrecorder wants to know the target
+      if(self.quizhelper.use_ttrecorder()) {
+        self.ttrec.currentPrompt=target;
+      }
       var displayprompt = self.items[self.game.pointer].displayprompt;
       var code = "<div class='landr_prompt landr_prompt_" + self.game.pointer + "' style='display:none;'>";
 

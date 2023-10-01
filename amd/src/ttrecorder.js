@@ -33,6 +33,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         usebrowserrec: false,
         currentTime: 0,
         stt_guided: false,
+        currentPrompt: false,
 
         //for making multiple instances
         clone: function () {
@@ -206,7 +207,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
                 //div content WHEN?
                 that.controls.recorderbutton.html(that.recordBtnContent());
-            }
+            };
 
         },
 
@@ -312,6 +313,10 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 bodyFormData.append('strictmode', 'false');
             }else{
                 bodyFormData.append('strictmode', 'true');
+            }
+            //prompt is used by whisper and other transcibers down the line
+            if(this.currentPrompt!==false){
+                bodyFormData.append('prompt', this.currentPrompt);
             }
             bodyFormData.append('lang', this.lang);
             bodyFormData.append('wwwroot', M.cfg.wwwroot);
