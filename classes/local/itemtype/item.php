@@ -561,7 +561,7 @@ abstract class item implements templatable, renderable {
                 }
             }
 
-            $characters = str_split($sentence);
+            $characters = mb_str_split($sentence);
 
             $wordindex = 0;
             foreach ($characters as $character) {

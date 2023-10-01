@@ -582,7 +582,10 @@ class renderer extends \plugin_renderer_base {
         //this inits the M.mod_minilesson thingy, after the page has loaded.
         //we put the opts in html on the page because moodle/AMD doesn't like lots of opts in js
         //convert opts to json
-        $jsonstring = json_encode($recopts);
+        $jsonstring = json_encode($recopts,JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+        if(($jsonstring)===false){
+            $err = json_last_error();
+        }
         $widgetid = constants::M_RECORDERID . '_opts_9999';
         $opts_html = \html_writer::tag('input', '', array('id' => 'amdopts_' . $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
 
