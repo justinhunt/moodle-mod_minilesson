@@ -207,6 +207,20 @@ $string['pl-pl'] = 'Polish';
 $string['ro-ro'] = 'Romanian';
 $string['mi-nz'] = 'Maori';
 
+$string['bg-bg'] = 'Bulgarian'; // Bulgarian
+$string['cs-cz'] = 'Czech'; // Czech
+$string['el-gr'] = 'Greek'; // Greek
+$string['hr-hr'] = 'Croatian'; // Croatian
+$string['hu-hu'] = 'Hungarian'; // Hungarian
+$string['lt-lt'] = 'Lithuanian'; // Lithuanian
+$string['lv-lv'] = 'Latvian'; // Latvian
+$string['sk-sk'] = 'Slovak'; // Slovak
+$string['sl-si'] = 'Slovenian'; // Slovenian
+$string['is-is'] = 'Icelandic'; // Icelandic
+$string['mk-mk'] = 'Macedonian'; // Macedonian
+$string['no-no'] = 'Norwegian'; // Norwegian
+$string['sr-rs'] = 'Serbian'; // Serbian
+
 $string['awsregion']='AWS Region';
 //$string['region']='AWS Region';
 //$string['expiredays']='Days to keep file';

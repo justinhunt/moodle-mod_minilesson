@@ -1132,15 +1132,27 @@ class utils{
                constants::M_LANG_TEIN => get_string('te-in', constants::M_COMPONENT),
                constants::M_LANG_TRTR => get_string('tr-tr', constants::M_COMPONENT),
                constants::M_LANG_ZHCN => get_string('zh-cn', constants::M_COMPONENT),
-           constants::M_LANG_NONO => get_string('no-no', constants::M_COMPONENT),
-           //constants::M_LANG_NBNO => get_string('nb-no', constants::M_COMPONENT),
-           constants::M_LANG_PLPL => get_string('pl-pl', constants::M_COMPONENT),
-           constants::M_LANG_RORO => get_string('ro-ro', constants::M_COMPONENT),
-           constants::M_LANG_SVSE => get_string('sv-se', constants::M_COMPONENT),
-           constants::M_LANG_UKUA => get_string('uk-ua',constants::M_COMPONENT),
-           constants::M_LANG_EUES => get_string('eu-es',constants::M_COMPONENT),
-           constants::M_LANG_FIFI => get_string('fi-fi',constants::M_COMPONENT),
-           constants::M_LANG_HUHU => get_string('hu-hu',constants::M_COMPONENT)
+               constants::M_LANG_NONO => get_string('no-no', constants::M_COMPONENT),
+               //constants::M_LANG_NBNO => get_string('nb-no', constants::M_COMPONENT),
+               constants::M_LANG_PLPL => get_string('pl-pl', constants::M_COMPONENT),
+               constants::M_LANG_RORO => get_string('ro-ro', constants::M_COMPONENT),
+               constants::M_LANG_SVSE => get_string('sv-se', constants::M_COMPONENT),
+               constants::M_LANG_UKUA => get_string('uk-ua',constants::M_COMPONENT),
+               constants::M_LANG_EUES => get_string('eu-es',constants::M_COMPONENT),
+               constants::M_LANG_FIFI => get_string('fi-fi',constants::M_COMPONENT),
+               constants::M_LANG_HUHU => get_string('hu-hu',constants::M_COMPONENT),
+
+               constants::M_LANG_BGBG => get_string('bg-bg', constants::M_COMPONENT),
+               constants::M_LANG_CSCZ => get_string('cs-cz', constants::M_COMPONENT),
+               constants::M_LANG_ELGR => get_string('el-gr', constants::M_COMPONENT),
+               constants::M_LANG_HRHR => get_string('hr-hr', constants::M_COMPONENT),
+               constants::M_LANG_LTLT => get_string('lt-lt', constants::M_COMPONENT),
+               constants::M_LANG_LVLV => get_string('lv-lv', constants::M_COMPONENT),
+               constants::M_LANG_SKSK => get_string('sk-sk', constants::M_COMPONENT),
+               constants::M_LANG_SLSI => get_string('sl-si', constants::M_COMPONENT),
+               constants::M_LANG_ISIS => get_string('is-is', constants::M_COMPONENT),
+               constants::M_LANG_MKMK => get_string('mk-mk', constants::M_COMPONENT),
+               constants::M_LANG_SRRS => get_string('sr-rs', constants::M_COMPONENT)
        );
    }
 

@@ -37,7 +37,7 @@ const M_USE_PAGEDTABLES=1;
 
 const M_NEURALVOICES = array("Amy","Emma","Brian","Olivia","Aria","Ayanda","Ivy","Joanna","Kendra","Kimberly",
         "Salli","Joey","Justin","Kevin","Matthew","Camila","Lupe", "Gabrielle", "Vicki", "Seoyeon","Takumi", "Lucia",
-        "Lea","Bianca","Laura","Kajal","Suvi","Liam","Daniel","Hannah","Camila");
+        "Lea","Bianca","Laura","Kajal","Suvi","Liam","Daniel","Hannah","Camila","Ida","Kazuha","Tomoko","Elin");
 
 
 //grading options
@@ -193,7 +193,21 @@ const ALL_VOICES = array(
     constants::M_LANG_TEIN => ['te-IN-Standard-A'=>'Anandi_g','te-IN-Standard-B'=>'Kai_g'],
     constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
     constants::M_LANG_UKUA => ['uk-UA-Wavenet-A'=>'Katya_g'],
-    constants::M_LANG_ZHCN => ['Zhiyu'=>'Zhiyu']
+    constants::M_LANG_ZHCN => ['Zhiyu'=>'Zhiyu'],
+
+    constants::M_LANG_BGBG => array('bg-BG-Standard-A' => 'Mila_g'),//nikolai
+    constants::M_LANG_CSCZ => array('cs-CZ-Wavenet-A' => 'Zuzana_g', 'cs-CZ-Standard-A' => 'Karolina_g'),
+    constants::M_LANG_ELGR => array('el-GR-Wavenet-A' => 'Sophia_g', 'el-GR-Standard-A' => 'Isabella_g'),
+    // constants::M_LANG_HRHR => array('A' => 'Ivana', 'B' => 'Marko'),
+
+    constants::M_LANG_LVLV => array('lv-LV-Standard-A' => 'Janis_g'),
+    constants::M_LANG_LTLT => array('lt-LT-Standard-A' => 'Matas_g'),
+
+    constants::M_LANG_SKSK => array('sk-SK-Wavenet-A' => 'Laura_g', 'sk-SK-Standard-A' => 'Natalia_g'),
+    //   constants::M_LANG_SLSI => array('A' => 'Pia', 'B' => 'Vid'),
+    constants::M_LANG_ISIS => array('Dora' => 'Dora', 'Karl' => 'Karl'),
+    //    constants::M_LANG_MKMK => array('A' => 'Marija', 'B' => 'Trajko'),
+    constants::M_LANG_SRRS => array('sr-RS-Standard-A' => 'Milena_g'),
 );
 
 //CSS ids/classes
@@ -317,7 +331,19 @@ const M_LANG_UKUA ='uk-UA';
 const M_LANG_EUES ='eu-ES';
 const M_LANG_FIFI ='fi-FI';
 const M_LANG_HUHU='hu-HU';
+
 const M_LANG_MINZ ='mi-NZ';
+const M_LANG_BGBG = 'bg-BG';
+const M_LANG_CSCZ = 'cs-CZ';
+const M_LANG_ELGR = 'el-GR';
+const M_LANG_HRHR = 'hr-HR';
+const M_LANG_LTLT = 'lt-LT';
+const M_LANG_LVLV = 'lv-LV';
+const M_LANG_SKSK = 'sk-SK';
+const M_LANG_SLSI = 'sl-SI';
+const M_LANG_ISIS = 'is-IS';
+const M_LANG_MKMK = 'mk-MK';
+const M_LANG_SRRS = 'sr-RS';
 
 const M_PROMPT_SEPARATE=0;
 const M_PROMPT_RICHTEXT=1;
