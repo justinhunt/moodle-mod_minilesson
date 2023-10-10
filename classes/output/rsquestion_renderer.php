@@ -84,11 +84,16 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $columns[2]=array('orderable'=>false);
         $columns[3]=array('orderable'=>false);
         $columns[4]=array('orderable'=>false);
+        $columns[5]=array('orderable'=>false);
         $tableprops['columns']=$columns;
+        $tableprops['dom'] = 'lBfrtip';
+        $tableprops['buttons'] = [
+            'bulkdelete'
+        ];
 
         //default ordering
         $order = array();
-        $order[0] =array(0, "asc");
+        $order[0] =array(1, "asc");
         $tableprops['order']=$order;
 
         //here we set up any info we need to pass into javascript
@@ -97,6 +102,8 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $opts['tableprops']=$tableprops;
         $this->page->requires->js_call_amd(constants::M_COMPONENT . "/datatables", 'init', array($opts));
         $this->page->requires->css( new \moodle_url('https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'));
+        $this->page->requires->css( new \moodle_url('https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css'));
+        $this->page->requires->strings_for_js(['bulkdelete', 'bulkdeletequestion'], constants::M_COMPONENT);
     }
 
 
@@ -132,7 +139,6 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $down_pix = new \pix_icon('t/down', get_string('down'));
         $data['up'] = $up_pix->export_for_pix();
         $data['down']=$down_pix->export_for_pix();
-
 
         return $this->render_from_template('mod_minilesson/itemlist', $data);
 
