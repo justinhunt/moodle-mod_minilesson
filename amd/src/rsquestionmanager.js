@@ -45,7 +45,7 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             dd.rowIds=[];
 
             dd.controls.questionstable.rows().every( function ( rowindex, tableLoop, rowLoop ) {
-                var itemorder = dd.controls.questionstable.cell({row:rowindex, column:0}).data();
+                var itemorder = dd.controls.questionstable.cell({row:rowindex, column:1}).data();
                 dd.rowIds[itemorder]=rowindex;
             } );
         },
@@ -77,7 +77,7 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             var rowcount = thetable.data().length;
             for(var itemorder =fromorder; itemorder<rowcount;itemorder++){
                 var rowindex = this.rowIds[itemorder+1];
-                thetable.cell({row:rowindex, column:0}).data(itemorder);
+                thetable.cell({row:rowindex, column:1}).data(itemorder);
             }
         },
 
@@ -86,7 +86,7 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             var therow = '#' + def.itemrow + '_' + itemid;
             var currentrow = thetable.row(therow);
             var currentindex = currentrow.index();
-            var currentorder = parseInt(thetable.cell({row:currentindex, column:0}).data());
+            var currentorder = parseInt(thetable.cell({row:currentindex, column:1}).data());
 
 
             var targetorder;
@@ -102,10 +102,10 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             if(targetorder>rowcount){return;}
 
             var targetindex = this.rowIds[targetorder];
-            var from = thetable.cell({row:currentindex, column:0}).data();
-            var to = thetable.cell({row:targetindex, column:0}).data();
-            thetable.cell({row:currentindex, column:0}).data(to);
-            thetable.cell({row:targetindex, column:0}).data(from);
+            var from = thetable.cell({row:currentindex, column:1}).data();
+            var to = thetable.cell({row:targetindex, column:1}).data();
+            thetable.cell({row:currentindex, column:1}).data(to);
+            thetable.cell({row:targetindex, column:1}).data(from);
             thetable.draw(false);
             this.collate_rowids();
             

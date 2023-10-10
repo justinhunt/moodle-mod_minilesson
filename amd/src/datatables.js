@@ -16,7 +16,7 @@ This file contains class and ID definitions.
             value: 'bulkdelete'
         },
         action: function(e, dt, node) {
-            var btn = node.closest('button');
+            var btn = node.closest('button')[0];
 
             ModalFactory.create({
                 type: ModalFactory.types.SAVE_CANCEL,

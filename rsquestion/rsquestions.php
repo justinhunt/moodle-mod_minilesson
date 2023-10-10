@@ -76,6 +76,7 @@ if ($action === 'bulkdelete') {
         \mod_minilesson\local\itemtype\item::delete_item($questionid, $context);
     }
     if (!empty($questionids)) {
+        \mod_minilesson\utils::reset_item_order($minilesson->id);
         redirect($PAGE->url);
     }
 }
