@@ -1,4 +1,6 @@
-- Added Maori
+Version 1.0.57 (Build 2023101000)
+- Added Maori and other languages
+- Added bulk delete
 
 Version 1.0.56 (Build 2023092600)
 - fix for incorrect language-locale for Norwegian

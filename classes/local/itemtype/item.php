@@ -990,7 +990,6 @@ abstract class item implements templatable, renderable {
         return array('subdirs' => true, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes, 'accepted_types' => array('audio', 'video','image'));
     }
 
-
     //fetch the next item order in the list of items
     protected static function fetch_next_item_order($minilessonid){
         global $DB;

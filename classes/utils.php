@@ -207,6 +207,21 @@ class utils{
         }
     }
 
+    //reset the item order for a minilesson
+    public static function reset_item_order($minilessonid){
+        global $DB;
+
+        $allitems = $DB->get_records(constants::M_QTABLE, ['minilesson' => $minilessonid],'itemorder ASC');
+        if($allitems &&count($allitems) > 0 ){
+            $i=0;
+            foreach($allitems as $theitem){
+                $i++;
+                $theitem->itemorder = $i+1;
+                $DB->update_record(constants::M_QTABLE,$theitem);
+            }
+        }
+    }
+
     public static function XXX_update_final_grade($cmid,$stepresults,$attemptid){
 
         global $USER, $DB;

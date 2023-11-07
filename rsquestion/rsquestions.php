@@ -29,6 +29,7 @@ require_once($CFG->dirroot.'/mod/minilesson/lib.php');
 use \mod_minilesson\constants;
 
 $id = required_param('id', PARAM_INT);
+$action = optional_param('action', null, PARAM_ALPHA);
 
 $cm = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
@@ -67,6 +68,18 @@ if($config->animations==constants::M_ANIM_FANCY) {
 
 $renderer = $PAGE->get_renderer('mod_minilesson');
 $rsquestion_renderer = $PAGE->get_renderer('mod_minilesson','rsquestion');
+
+if ($action === 'bulkdelete') {
+    confirm_sesskey();
+    $questionids = optional_param_array('deletequestionid', [], PARAM_INT);
+    foreach ($questionids as $questionid) {
+        \mod_minilesson\local\itemtype\item::delete_item($questionid, $context);
+    }
+    if (!empty($questionids)) {
+        \mod_minilesson\utils::reset_item_order($minilesson->id);
+        redirect($PAGE->url);
+    }
+}
 
 //if we have items, Data tables will make them pretty
 //Prepare datatable(before header printed)
