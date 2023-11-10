@@ -82,7 +82,7 @@ $config = get_config(constants::M_COMPONENT);
 
 if($moduleinstance->foriframe==1  || $moduleinstance->pagelayout=='embedded' || $embed==1){
     $PAGE->set_pagelayout('embedded');
-}elseif($config->enablesetuptab || $moduleinstance->pagelayout=='popup'){
+}elseif($config->enablesetuptab || $moduleinstance->pagelayout=='popup' || $embed==2){
     $PAGE->set_pagelayout('popup');
 }else{
     if(has_capability('mod/' . constants::M_MODNAME . ':' . 'manage',$modulecontext)) {
