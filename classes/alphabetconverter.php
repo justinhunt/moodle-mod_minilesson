@@ -1029,7 +1029,7 @@ class alphabetconverter {
     function do_mb_str_split($string, $split_length = 1, $encoding = null)
     {
         //for greater than PHP 7.4
-        if (version_compare(PHP_VERSION, '7.4.0', '<=')) {
+        if (version_compare(PHP_VERSION, '7.4.0', '>=')) {
             // Code for PHP 7.4 and above
             return mb_str_split($string, $split_length, $encoding);
         }
