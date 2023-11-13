@@ -19,6 +19,7 @@ const M_TABLE='minilesson';
 const M_ATTEMPTSTABLE='minilesson_attempt';
 const M_AITABLE='minilesson_ai_result';
 const M_QTABLE='minilesson_rsquestions';
+const M_AUTHTABLE='minilesson_auth';
 const M_CORRECTPHONES_TABLE = 'minilesson_correctphones';
 const M_MODNAME='minilesson';
 const M_URL='/mod/minilesson';

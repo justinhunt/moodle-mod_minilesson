@@ -20,6 +20,8 @@ defined('MOODLE_INTERNAL') || die();
 
 use context_module;
 use mod_minilesson;
+use mod_minilesson\mobile_auth;
+use mod_minilesson\constants;
 
 class mobile {
 
@@ -57,10 +59,33 @@ class mobile {
         $context = context_module::instance($cm->id);
         require_capability('mod/minilesson:view', $context);
 
+        list($token, $secret) = mobile_auth::create_embed_auth_token();
+
+        // Store secret in database.
+        $auth             = $DB->get_record(constants::M_AUTHTABLE, array(
+            'user_id' => $USER->id,
+        ));
+        $currenttimestamp = time();
+        if ($auth) {
+            $DB->update_record(constants::M_AUTHTABLE, array(
+                'id'         => $auth->id,
+                'secret'     => $token,
+                'created_at' => $currenttimestamp,
+            ));
+        } else {
+            $DB->insert_record(constants::M_AUTHTABLE, array(
+                'user_id'    => $USER->id,
+                'secret'     => $token,
+                'created_at' => $currenttimestamp
+            ));
+        }
+
 
         $data = [
             'cmid'    => $cmid,
-            'wwwroot' => $CFG->wwwroot
+            'wwwroot' => $CFG->wwwroot,
+            'user_id' => $USER->id,
+            'secret'  => urlencode($secret)
         ];
 
         return array(
