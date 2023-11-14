@@ -451,7 +451,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2023092600, 'minilesson');
     }
 
-    $newversion = 2023111233;
+    $newversion = 2023111400;
     if ($oldversion < $newversion) {
         // Add auth table.
         $table = new xmldb_table('minilesson_auth');

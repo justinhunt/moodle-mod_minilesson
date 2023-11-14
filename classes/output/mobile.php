@@ -19,7 +19,6 @@ namespace mod_minilesson\output;
 defined('MOODLE_INTERNAL') || die();
 
 use context_module;
-use mod_minilesson;
 use mod_minilesson\mobile_auth;
 use mod_minilesson\constants;
 
