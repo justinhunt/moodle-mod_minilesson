@@ -234,7 +234,7 @@ class renderer extends \plugin_renderer_base {
     /**
      *  Finished View
      */
-    public function show_finished_results($comp_test, $latestattempt,$cm, $canattempt){
+    public function show_finished_results($comp_test, $latestattempt,$cm, $canattempt,$embed){
         global $CFG, $DB;
         $ans = array();
         //quiz data
@@ -356,11 +356,11 @@ class renderer extends \plugin_renderer_base {
         //output reattempt button
         if($canattempt){
             $reattempturl = new \moodle_url( constants::M_URL . '/view.php',
-                    array('n'=>$latestattempt->moduleid, 'retake'=>1));
+                    array('n'=>$latestattempt->moduleid, 'retake'=>1,'embed'=>$embed));
             $tdata->reattempturl = $reattempturl->out();
         }
         //show back to course button if we are not in a tab
-        if(!$config->enablesetuptab &&
+        if(!$config->enablesetuptab && $embed==0 &&
             $moduleinstance->pagelayout!=='embedded' &&
             $moduleinstance->pagelayout!=='popup') {
             $tdata->backtocourse = true;
