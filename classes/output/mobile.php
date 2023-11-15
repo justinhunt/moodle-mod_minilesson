@@ -85,7 +85,6 @@ class mobile {
             'wwwroot' => $CFG->wwwroot,
             'user_id' => $USER->id,
             'secret'  => urlencode($secret)
-            'cachebuser'
         ];
 
         return array(
@@ -95,7 +94,7 @@ class mobile {
                     'html' => $OUTPUT->render_from_template('mod_minilesson/mobile_view_page', $data),
                 ),
             ),
-            'javascript' => file_get_contents($CFG->dirroot . '/mod/minilesson/library/js/h5p-resizer.js'),
+            //'javascript' => file_get_contents($CFG->dirroot . '/mod/minilesson/library/js/h5p-resizer.js'),
         );
     }
 }

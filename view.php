@@ -61,7 +61,8 @@ if ($id) {
 }
 
 $PAGE->set_url('/mod/minilesson/view.php', array('id' => $cm->id,'retake'=>$retake,'embed'=>$embed));
-require_login($course, true, $cm);
+require_course_login($course, true, $cm, true, true);
+//require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 // Trigger module viewed event.
