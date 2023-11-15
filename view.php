@@ -41,11 +41,13 @@ $embed = optional_param('embed', 0, PARAM_INT); // course_module ID, or
 // Allow login through an authentication token.
 $userid = optional_param('user_id', null, PARAM_ALPHANUMEXT);
 $secret  = optional_param('secret', null, PARAM_RAW);
-if(!empty($userid) && !empty($secret) && !isloggedin() )
-if (mobile_auth::has_valid_token($userid, $secret)) {
-    $user = get_complete_user_data('id', $userid);
-    complete_user_login($user);
-    $embed=2;
+//formerly had !isloggedin() check, but we want tologin afresh on each embedded access
+if(!empty($userid) && !empty($secret) ) {
+    if (mobile_auth::has_valid_token($userid, $secret)) {
+        $user = get_complete_user_data('id', $userid);
+        complete_user_login($user);
+        $embed = 2;
+    }
 }
 
 if ($id) {
@@ -61,8 +63,7 @@ if ($id) {
 }
 
 $PAGE->set_url('/mod/minilesson/view.php', array('id' => $cm->id,'retake'=>$retake,'embed'=>$embed));
-require_course_login($course, true, $cm, true, true);
-//require_login($course, true, $cm);
+require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 // Trigger module viewed event.
