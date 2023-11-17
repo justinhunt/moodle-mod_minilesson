@@ -1,3 +1,8 @@
+Version 1.0.58 (Build 2023111400)
+- Added mobile support
+- fixed poor number word conversion
+- fixed poor recognition on guided speak with speaking gap fill
+
 Version 1.0.57 (Build 2023101000)
 - Added Maori and other languages
 - Added bulk delete

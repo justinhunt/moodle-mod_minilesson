@@ -525,8 +525,8 @@ class alphabetconverter {
 
             //english returns an array of conversion words for varieties eg 2015 two thousand fifteen, twenty fifteen
             if(is_array($conversion['words'])) {
-                foreach ($conversion['words'] as $digits => $words) {
-                    $targettext = str_replace($words, $digits, $targettext);
+                foreach ($conversion['words'] as $wdset) {
+                    $targettext = str_replace($wdset['words'], $wdset['digits'], $targettext);
                 }
             }else{
                 $targettext = str_replace($conversion['words'],$conversion['digits'],$targettext);

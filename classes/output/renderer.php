@@ -535,7 +535,7 @@ class renderer extends \plugin_renderer_base {
 
         //add embedding url param if we are embedded
         if($embed>0) {
-            $activityurl->param('embed','1');
+            $activityurl->param('embed',$embed);
         }
         //set the activity url
         $recopts['activityurl']=$activityurl->out();
