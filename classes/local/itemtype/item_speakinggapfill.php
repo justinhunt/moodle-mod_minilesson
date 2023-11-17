@@ -100,4 +100,48 @@ class item_speakinggapfill extends item {
         return $keycols;
     }
 
+    public function update_create_langmodel($olditemrecord){
+        //if we need to generate a DeepSpeech model for this, then lets do that now:
+        //we want to process the hashcode and lang model if it makes sense
+
+        $passage ='';
+
+        // Sentences
+        $sentences = [];
+        if(isset($this->itemrecord->customtext1)) {
+            $sentences = explode(PHP_EOL, $this->itemrecord->customtext1);
+        }
+        $sentencedata = $this->parse_gapfill_sentences($sentences);
+        foreach($sentencedata as $sentence){
+            $passage .= $sentence->prompt . ' ';
+        }
+
+        if (utils::needs_lang_model($this->moduleinstance,$passage)) {
+            $newpassagehash = utils::fetch_passagehash($this->language,$passage);
+            if ($newpassagehash) {
+                //check if it has changed, if its a brand new one, if so register a langmodel
+                if (!$olditemrecord || $olditemrecord->passagehash != ($this->region . '|' . $newpassagehash)) {
+
+                    //build a lang model
+                    $ret = utils::fetch_lang_model($passage, $this->language, $this->region);
+
+                    //for doing a dry run
+                    //$ret=new \stdClass();
+                    //$ret->success=true;
+
+                    if ($ret && isset($ret->success) && $ret->success) {
+                        $this->itemrecord->passagehash = $this->region . '|' . $newpassagehash;
+                        return true;
+                    }
+                }
+            }
+            //if we get here just set the new passage hash to the existing one
+            $this->itemrecord->passagehash =$olditemrecord->passagehash;
+        }else{
+            //I think this will never get here
+            $this->itemrecord->passagehash ='';
+        }
+        return false;
+    }
+
 }
