@@ -35,8 +35,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         this.attemptid = attemptid;
         this.courseurl = activitydata.courseurl;
         this.cmid = cmid;
-        this.reattempturl = activitydata.reattempturl;
-        this.activityurl = activitydata.activityurl;
+        this.reattempturl = decodeURIComponent(activitydata.reattempturl);
+        this.activityurl = decodeURIComponent(activitydata.activityurl);
         this.backtocourse = activitydata.backtocourse;
         this.stt_guided = activitydata.stt_guided;
         this.wwwroot = activitydata.wwwroot;
