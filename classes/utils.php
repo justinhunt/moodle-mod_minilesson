@@ -1086,7 +1086,7 @@ class utils{
         }elseif($showall) {
             $usearray =[];
 
-            //add current language first (in some cases there is no TTS for the lang, eg Maori
+            //add current language first (in some cases there is no TTS for the lang)
             if(isset($alllang[$langcode])) {
                 foreach ($alllang[$langcode] as $v => $thevoice) {
                     $neuraltag = in_array($v, constants::M_NEURALVOICES) ? ' (+)' : '';
