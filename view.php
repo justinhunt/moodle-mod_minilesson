@@ -28,6 +28,7 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 use \mod_minilesson\constants;
 use \mod_minilesson\utils;
+use \mod_minilesson\mobile_auth;
 
 
 
@@ -36,6 +37,18 @@ $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $retake = optional_param('retake', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // minilesson instance ID - it should be named as the first character of the module
 $embed = optional_param('embed', 0, PARAM_INT); // course_module ID, or
+
+// Allow login through an authentication token.
+$userid = optional_param('user_id', null, PARAM_ALPHANUMEXT);
+$secret  = optional_param('secret', null, PARAM_RAW);
+//formerly had !isloggedin() check, but we want tologin afresh on each embedded access
+if(!empty($userid) && !empty($secret) ) {
+    if (mobile_auth::has_valid_token($userid, $secret)) {
+        $user = get_complete_user_data('id', $userid);
+        complete_user_login($user);
+        $embed = 2;
+    }
+}
 
 if ($id) {
     $cm         = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
@@ -82,7 +95,7 @@ $config = get_config(constants::M_COMPONENT);
 
 if($moduleinstance->foriframe==1  || $moduleinstance->pagelayout=='embedded' || $embed==1){
     $PAGE->set_pagelayout('embedded');
-}elseif($config->enablesetuptab || $moduleinstance->pagelayout=='popup'){
+}elseif($config->enablesetuptab || $moduleinstance->pagelayout=='popup' || $embed==2){
     $PAGE->set_pagelayout('popup');
 }else{
     if(has_capability('mod/' . constants::M_MODNAME . ':' . 'manage',$modulecontext)) {
@@ -172,7 +185,7 @@ if($CFG->version<2022041900) {
 }
 
 if($latestattempt->status==constants::M_STATE_COMPLETE){
-    echo $renderer->show_finished_results($comp_test,$latestattempt,$cm, $canattempt);
+    echo $renderer->show_finished_results($comp_test,$latestattempt,$cm, $canattempt,$embed);
 }else if($itemcount > 0) {
     echo $renderer->show_quiz($comp_test,$moduleinstance);
     $previewid=0;

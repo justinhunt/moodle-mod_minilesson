@@ -155,6 +155,7 @@ define(['jquery',
 
                 if (self.game.pointer < self.items.length - 1) {
                     // Move on after short time to next prompt
+                    log.debug('moving to next prompt C');
                     setTimeout(function() {
                         $(".sgapfill_reply_" + self.game.pointer).hide();
                         self.items[self.game.pointer].answered = true;
@@ -232,6 +233,7 @@ define(['jquery',
         gotComparison: function(comparison, typed) {
             log.debug("sgapfill comparison");
             var self = this;
+            var countdownStarted = false;
             var feedback = $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer + " .dictate_feedback[data-idx='" + self.game.pointer + "']");
 
             $("#" + self.itemdata.uniqueid + "_container .sgapfill_targetWord").removeClass("sgapfill_correct sgapfill_incorrect");
@@ -265,7 +267,9 @@ define(['jquery',
 
                 self.stopTimer(self.items[self.game.pointer].timer);
 
-                if (self.game.pointer < self.items.length - 1) {
+                if ((self.game.pointer < self.items.length - 1) && !countdownStarted) {
+                    countdownStarted = true;
+                    log.debug('moving to next prompt B');
                     setTimeout(function() {
                         $(".sgapfill_reply_" + self.game.pointer).hide();
                         self.game.pointer++;
@@ -326,14 +330,18 @@ define(['jquery',
 
                 self.stopTimer(self.items[self.game.pointer].timer);
 
-                if (self.game.pointer < self.items.length - 1) {
-                    setTimeout(function() {
-                        $(".sgapfill_reply_" + self.game.pointer).hide();
-                        self.game.pointer++;
-                        self.nextPrompt();
-                    }, 2000);
-                } else {
-                    self.end();
+                if(!countdownStarted) {
+                    if (self.game.pointer < self.items.length - 1) {
+                        log.debug('moving to next prompt A');
+                        countdownStarted = true;
+                        setTimeout(function () {
+                            $(".sgapfill_reply_" + self.game.pointer).hide();
+                            self.game.pointer++;
+                            self.nextPrompt();
+                        }, 2000);
+                    } else {
+                        self.end();
+                    }
                 }
             }
 

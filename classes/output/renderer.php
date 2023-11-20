@@ -234,7 +234,7 @@ class renderer extends \plugin_renderer_base {
     /**
      *  Finished View
      */
-    public function show_finished_results($comp_test, $latestattempt,$cm, $canattempt){
+    public function show_finished_results($comp_test, $latestattempt,$cm, $canattempt,$embed){
         global $CFG, $DB;
         $ans = array();
         //quiz data
@@ -356,11 +356,11 @@ class renderer extends \plugin_renderer_base {
         //output reattempt button
         if($canattempt){
             $reattempturl = new \moodle_url( constants::M_URL . '/view.php',
-                    array('n'=>$latestattempt->moduleid, 'retake'=>1));
+                    array('n'=>$latestattempt->moduleid, 'retake'=>1,'embed'=>$embed));
             $tdata->reattempturl = $reattempturl->out();
         }
         //show back to course button if we are not in a tab
-        if(!$config->enablesetuptab &&
+        if(!$config->enablesetuptab && $embed==0 &&
             $moduleinstance->pagelayout!=='embedded' &&
             $moduleinstance->pagelayout!=='popup') {
             $tdata->backtocourse = true;
@@ -476,7 +476,7 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    function fetch_activity_amd($cm, $moduleinstance,$previewquestionid=0,$canreattempt=false,$embedded=false){
+    function fetch_activity_amd($cm, $moduleinstance,$previewquestionid=0,$canreattempt=false,$embed=0){
         global $CFG, $USER;
         //any html we want to return to be sent to the page
         $ret_html = '';
@@ -532,9 +532,10 @@ class renderer extends \plugin_renderer_base {
         //the activity URL for returning to on finished
         $activityurl = new \moodle_url(constants::M_URL . '/view.php',
             array('n' => $moduleinstance->id));
+
         //add embedding url param if we are embedded
-        if($embedded) {
-            $activityurl->param('embed','1');
+        if($embed>0) {
+            $activityurl->param('embed',$embed);
         }
         //set the activity url
         $recopts['activityurl']=$activityurl->out();
@@ -545,16 +546,14 @@ class renderer extends \plugin_renderer_base {
             $activityurl->param('retake','1');
             $recopts['reattempturl']=$activityurl->out();
         }
-        if($embedded) {
-            $activityurl->param('embed','1');
-        }
+
 
 
         //show back to course button if we are not in an iframe
         if($config->enablesetuptab ||
             $moduleinstance->pagelayout=='embedded' ||
             $moduleinstance->pagelayout=='popup' ||
-            $embedded) {
+            $embed>0) {
             $recopts['backtocourse'] = '';
         }else{
             $recopts['backtocourse'] = true;
