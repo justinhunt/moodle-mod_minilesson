@@ -244,6 +244,7 @@ class renderer extends \plugin_renderer_base {
         $config = get_config(constants::M_COMPONENT);
         $course = $DB->get_record('course', array('id' => $latestattempt->courseid));
         $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
+        $context= \context_module::instance($cm->id);
 
         //steps data
         $steps = json_decode($latestattempt->sessiondata)->steps;
@@ -263,7 +264,13 @@ class renderer extends \plugin_renderer_base {
 
             $items = $DB->get_record(constants::M_QTABLE, array('id' => $quizdata[$result->index]->id));
             $result->title = $items->name;
-            $result->questext = $items->itemtext;
+
+            //Question Text
+            $itemtext =  file_rewrite_pluginfile_urls($items->{constants::TEXTQUESTION},
+                'pluginfile.php', $context->id,constants::M_COMPONENT,
+                constants::TEXTQUESTION_FILEAREA, $items->id);
+            $itemtext = format_text($itemtext, FORMAT_MOODLE, \mod_minilesson\local\itemtype\item::fetch_editor_options($course,$context));
+            $result->questext = $itemtext;
 
             // Correct answer.
             switch($quizdata[$result->index]->type ){

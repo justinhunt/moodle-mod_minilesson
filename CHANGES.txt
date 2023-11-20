@@ -2,7 +2,7 @@ Version 1.0.58 (Build 2023111400)
 - Added mobile support
 - fixed poor number word conversion
 - fixed poor recognition on guided speak with speaking gap fill
-- Added voices from Whisper (good on English, not so good on other languages)   
+- Added voices from Whisper (good on English, not so good on other languages)
 
 Version 1.0.57 (Build 2023101000)
 - Added Maori and other languages
