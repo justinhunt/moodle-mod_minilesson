@@ -674,3 +674,4 @@ $string['speechtester_playertitle'] = 'Play Audio';
 $string["savestaudio"]='Record Audio';
 $string["uploadstaudio"]='Upload Audio';
 $string["sttstaudio"]='STT Audio';
+$string["speechtester"]='SpeechTester';

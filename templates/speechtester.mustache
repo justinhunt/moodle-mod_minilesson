@@ -1,5 +1,13 @@
-<select>
+<span>Choose a voice and a language and enter some text in the text area.</span><br>
+<select id="speechtester_voices">
     {{#voices}}
     <option value="{{value}}">{{key}}</option>
     {{/voices}}
-</select>
+</select><br>
+<select id="speechtester_languages">
+    {{#languages}}
+    <option value="{{value}}">{{key}}</option>
+    {{/languages}}
+</select><br>
+<textarea id="speechtester_textarea" rows="4" cols="50" placeholder="enter text to be spoken here">
+</textarea><br>

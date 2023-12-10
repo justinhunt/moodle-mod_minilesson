@@ -81,10 +81,12 @@ $tdata['language']=$moduleinstance->ttslanguage;
 $tdata['token']=$token;
 $showall=true;
 $ttsvoices=utils::get_tts_voices($moduleinstance->ttslanguage,$showall);
+$ttslanguages=utils::get_lang_options();
 $voices = array_map(function($key, $value) {
     return ['key' => $key, 'value' => $value];
 }, array_keys($ttsvoices), $ttsvoices);
 $tdata['voices']=$voices;
+$tdata['languages']=$ttslanguages;
 echo $renderer->render_from_template(constants::M_COMPONENT . '/speechtester', $tdata);
 
 //set up the AMD js and related opts
