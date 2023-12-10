@@ -15,14 +15,22 @@ define(['jquery',
 
   log.debug('MiniLesson ST Helper: initialising');
 
-  return {
+var app = {
 
 
+    passmark: 90,
+    pointer: 1,
+    jsondata: null,
+    props: null,
+    dryRun: false,
+    language: 'en-US',
+    terms: [],
+    phonetics: [],
+    displayterms: [],
+    results: [],
+    controls: {},
+    ttrec: null, //a handle on the tt recorder
 
-      //for making multiple instances
-      clone: function () {
-          return $.extend(true, {}, this);
-      },
 
     init: function(props) {
       var dd = this;
@@ -39,68 +47,160 @@ define(['jquery',
         return;
       }
 
-      //this.init_app(index, itemdata, quizhelper);
-    },
-
-    init_app: function(index, itemdata, quizhelper) {
-
-      console.log(itemdata);
-
-      var app = {
-        passmark: 90,
-        pointer: 1,
-        jsondata: null,
-        props: null,
-        dryRun: false,
-        language: 'en-US',
-        terms: [],
-        phonetics: [],
-        displayterms: [],
-        results: [],
-        controls: {},
-        ttrec: null, //a handle on the tt recorder
-
-        init: function() {
-
-
+         this.init_polly();
 
           this.init_controls();
-          this.initComponents();
+        //  this.initComponents();
           this.register_events();
-        },
+    },
+    init_polly: function() {
 
-        init_controls: function() {
+        //get the polly token
+        var pollytoken = this.activitydata.token;
+        var pollyregion = this.activitydata.region;
+        var pollyowner = 'poodll';
+        polly.init(pollytoken, pollyregion, pollyowner);
+        log.debug('polly initialised');
+    },
+
+    init_controls: function() {
+            log.debug('sthelper init controls');
           app.controls = {};
-          app.controls.star_rating = $("#" + itemdata.uniqueid + "_container .minilesson_star_rating");
-          app.controls.next_button = $("#" + itemdata.uniqueid + "_container .minilesson-speechcards_nextbutton");
-          app.controls.slider = $("#" + itemdata.uniqueid + "_container .minilesson_speechcards_target_phrase");
-        },
+          app.controls.pollybutton = $("#speechtester_pollybutton");
+          app.controls.pollyvoice = $("#speechtester_voice");
+          app.controls.pollylanguage = $("#speechtester_language");
+          app.controls.pollytext = $("#speechtester_text");
+          app.controls.audioplayer = $("#speechtester_audioplayer");
+          app.controls.transcribebutton = $("#speechtester_transcribebutton");
+          app.controls.transcription = $("#speechtester_transcription");
+          app.controls.transcriptioncoverage = $("#speechtester_transcription_coverage");
+          app.controls.opentranscription = $("#speechtester_open");
+
+    },
 
         register_events: function() {
+            log.debug('sthelper register events');
 
-          $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
-            app.next_question();
+            //polly button
+          app.controls.pollybutton.on('click',function() {
+              log.debug('pollybutton clicked');
+              log.debug(app.controls.pollytext.val());
+              log.debug(app.controls.pollyvoice.val());
+                polly.fetch_polly_url(app.controls.pollytext.val(),'text', app.controls.pollyvoice.val()).then(function(audiourl) {
+                    app.controls.audioplayer.attr('src',audiourl);
+                    log.debug(audiourl);
+                });
           });
-
-          app.controls.next_button.click(function() {
-            //user has given up ,update word as failed
-            app.check(false);
-
-            //transition if required
-            if (app.is_end()) {
-              setTimeout(function() {
-                app.do_end();
-              }, 200);
-            } else {
-              setTimeout(function() {
-                app.do_next();
-              }, 200);
-            }
-
-          });
+          //transcribe button
+            app.controls.transcribebutton.on('click',function() {
+                log.debug('transcribebutton clicked');
+                log.debug(app.controls.audioplayer.attr('src'));
+                app.downloadAndSubmitMP3(app.controls.audioplayer.attr('src'),app.doTranscribe);
+            });
         },
 
-        initComponents: function() {
+    downloadAndSubmitMP3: function(url, submitFunction) {
+        // Fetch the MP3 file from the URL
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                // Call the submit function with the Blob as an argument
+                submitFunction(blob);
+            })
+            .catch(error => {
+                log.debug('Error downloading MP3:', error);
+            });
+    },
+
+    doTranscribe: function(blob) {
+        //clear the existing results
+        app.controls.transcriptioncoverage.html('');
+        app.controls.transcription.html('');
+
+        var bodyFormData = new FormData();
+        var blobname = Math.floor(Math.random() * 100) +  '.wav';
+        var guided = app.controls.opentranscription.prop('checked')==false;
+        log.debug('guided is: ' + guided);
+        var prompt = app.controls.pollytext.val();
+        bodyFormData.append('audioFile', blob, blobname);
+        bodyFormData.append('scorer', '');
+        if(guided) {
+            bodyFormData.append('strictmode', 'false');
+        }else{
+            bodyFormData.append('strictmode', 'true');
+        }
+        //prompt is used by whisper and other transcibers down the line
+        if(guided){
+            bodyFormData.append('prompt', app.controls.pollytext.val());
+        }
+        bodyFormData.append('lang', app.controls.pollylanguage.val());
+        bodyFormData.append('wwwroot', M.cfg.wwwroot);
+
+        var oReq = new XMLHttpRequest();
+        oReq.open("POST", app.activitydata.asrurl, true);
+        oReq.onUploadProgress= function(progressEvent) {};
+        oReq.onload = function(oEvent) {
+            if (oReq.status === 200) {
+                var respObject = JSON.parse(oReq.response);
+                if(respObject.data.hasOwnProperty('transcript')) {
+                    var transcript = respObject.data.transcript;
+                    app.controls.transcription.text(transcript);
+                    //correct the transcript
+                    app.comparePassageToTranscript(prompt,transcript).then(function(ajaxresult) {
+                        var comparison = JSON.parse(ajaxresult);
+                        if (comparison) {
+                            var allCorrect = comparison.filter(function(e){return !e.matched;}).length==0;
+                            var coverage = comparison.filter(function(e){return e.matched;}).length/comparison.length;
+                            coverage = coverage * 100;
+                            coverage = Math.round(coverage);
+                            var tc_report = 'All correct: ' + allCorrect + '<br>';
+                            tc_report += 'Coverage: ' + coverage + '%<br>';
+                            if(coverage<100){
+                                $.each(comparison, function (index, value) {
+                                    if (!value.matched) {
+                                        tc_report += 'unmatched word: ' + value.word + '<br>';
+                                        //var start = value.start;
+                                        //var end = value.end;
+                                    }
+                                });
+                            }
+                            app.controls.transcriptioncoverage.html(tc_report);
+                        }
+                    });
+                }else{
+                    app.controls.transcription.text("no transcript was in the result");
+                }
+            } else {
+                app.controls.transcription.text( "error");
+                log.debug(oReq.error);
+            }
+        };
+        try {
+            oReq.send(bodyFormData);
+
+        }catch(err){
+            app.controls.transcription.text( "error");
+            log.debug(err);
+        }
+    },
+
+    comparePassageToTranscript: function (passage,transcript){
+        return Ajax.call([{
+            methodname: 'mod_minilesson_compare_passage_to_transcript',
+            args: {
+                passage: passage,
+                transcript: transcript,
+                alternatives: '',
+                phonetic: '',
+                language: app.controls.pollylanguage.val(),
+                region: app.activitydata.region,
+                cmid: app.activitydata.cmid
+            },
+            async: false
+        }])[0];
+    },
+
+     initComponents: function() {
 
               var theCallback = function(message) {
 
@@ -205,15 +305,8 @@ define(['jquery',
         },
 
 
-
-
-
-
       }; //end of app definition
-      app.init();
-
-    } //end of init_App
+      return app;
 
 
-  }; //end of return value
 });

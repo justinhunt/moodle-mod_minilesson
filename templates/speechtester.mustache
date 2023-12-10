@@ -1,13 +1,24 @@
 <span>Choose a voice and a language and enter some text in the text area.</span><br>
-<select id="speechtester_voices">
+<select id="speechtester_voice">
     {{#voices}}
-    <option value="{{value}}">{{key}}</option>
+    <option value="{{key}}">{{display}}</option>
     {{/voices}}
 </select><br>
-<select id="speechtester_languages">
+<select id="speechtester_language">
     {{#languages}}
-    <option value="{{value}}">{{key}}</option>
+    <option value="{{key}}">{{display}}</option>
     {{/languages}}
 </select><br>
-<textarea id="speechtester_textarea" rows="4" cols="50" placeholder="enter text to be spoken here">
+<textarea id="speechtester_text" rows="4" cols="50" placeholder="enter text to be spoken here">
 </textarea><br>
+<button type="button" class="btn btn-secondary" id="speechtester_pollybutton">Make Audio Player</button>
+<div id="speechtester_audiocontainer">
+    <audio id="speechtester_audioplayer" controls src="{{{itemaudio}}}" class="mod_minilesson_itemaudio"></audio>
+</div>
+<br>
+<button type="button" class="btn btn-secondary" id="speechtester_transcribebutton">Transcribe</button><br>
+<input type="checkbox" id="speechtester_open"> Check to use 'open transcription'<br>
+<div id="speechtester_transcription">
+</div><br>
+<div id="speechtester_transcription_coverage">
+</div><br>

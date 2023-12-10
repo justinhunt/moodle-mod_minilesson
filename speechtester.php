@@ -79,22 +79,29 @@ echo $renderer->header($moduleinstance, $cm,'speechtester', null, get_string('sp
 $tdata=[];
 $tdata['language']=$moduleinstance->ttslanguage;
 $tdata['token']=$token;
+$tdata['region']=$moduleinstance->region;
+$tdata['cmid']=$cm->id;
 $showall=true;
+
+//tts voices
 $ttsvoices=utils::get_tts_voices($moduleinstance->ttslanguage,$showall);
-$ttslanguages=utils::get_lang_options();
 $voices = array_map(function($key, $value) {
-    return ['key' => $key, 'value' => $value];
+    return ['key' => $key, 'display' => $value];
 }, array_keys($ttsvoices), $ttsvoices);
 $tdata['voices']=$voices;
-$tdata['languages']=$ttslanguages;
+
+//tts languages
+$ttslanguages=utils::get_lang_options();
+$languages = array_map(function($key, $value) {
+    return ['key' => $key, 'display' => $value];
+}, array_keys($ttslanguages), $ttslanguages);
+$tdata['languages']=$languages;
 echo $renderer->render_from_template(constants::M_COMPONENT . '/speechtester', $tdata);
 
 //set up the AMD js and related opts
-$st_opts = Array();
-$st_opts['recorderid']=constants::M_RECORDERID;
-
-
-$jsonstring = json_encode($st_opts);
+$tdata['recorderid']=constants::M_RECORDERID;
+$tdata['asrurl']=utils::fetch_lang_server_url($moduleinstance->region,'transcribe');
+$jsonstring = json_encode($tdata);
 $widgetid = constants::M_RECORDERID . '_opts_9999';
 $opts_html =
         \html_writer::tag('input', '', array('id' => 'amdopts_' . $widgetid, 'type' => 'hidden', 'value' => $jsonstring));
