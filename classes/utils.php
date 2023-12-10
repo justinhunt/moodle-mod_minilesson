@@ -930,6 +930,7 @@ class utils{
         return $options;
     }
 
+
     public static function fetch_pagelayout_options(){
         $options = Array(
                 'standard'=>'standard',

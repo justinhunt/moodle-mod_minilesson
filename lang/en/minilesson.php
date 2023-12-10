@@ -666,3 +666,11 @@ $string['error:invaliditemtype'] = 'INVALID ITEM TYPE';
 
 $string['bulkdelete'] = 'Delete selected';
 $string['bulkdeletequestion'] = 'Are you sure you want to delete the selected question?';
+
+$string['speechtester_recordinstructions'] = 'Record audio here to be used in testing. You can optionally choose to upload audio by pressing the upload audio button.';
+$string['modelaudio_playerinstructions'] = 'The current audio can be played using the player below.';
+$string['speechtester_recordtitle'] = 'Record Audio';
+$string['speechtester_playertitle'] = 'Play Audio';
+$string["savestaudio"]='Record Audio';
+$string["uploadstaudio"]='Upload Audio';
+$string["sttstaudio"]='STT Audio';

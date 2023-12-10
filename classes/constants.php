@@ -377,4 +377,8 @@ const M_STANDARD_FONTS = ["Arial", "Arial Black", "Verdana", "Tahoma", "Trebuche
 
 const M_GOOGLE_FONTS = ["Andika"];
 
+const M_ST_SRC_RECORD=1;
+const M_ST_SRC_UPLOAD=2;
+const M_ST_SRC_STT=3;
+
 }
