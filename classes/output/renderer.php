@@ -107,11 +107,12 @@ class renderer extends \plugin_renderer_base {
      * Return HTML to display limited header
      */
     public function notabsheader($moduleinstance){
-        $activityname = format_string($moduleinstance->name, true, $moduleinstance->course);
-        $output = $this->output->header();
-        //show (or not) title
-        $output .= $this->fetch_title($moduleinstance, $activityname);
 
+        $output = $this->output->header();
+
+        //show (or not) title -  we dont need this do we?
+        //$activityname = format_string($moduleinstance->name, true, $moduleinstance->course);
+        //$output .= $this->fetch_title($moduleinstance, $activityname);
         return $output;
     }
     /**
