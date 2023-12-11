@@ -202,7 +202,8 @@ $string['hu-hu'] = 'Hungarian';
 
 $string['sv-se'] = 'Swedish';
 $string['no-no'] = 'Norwegian';
-$string['nb-no'] = 'Norwegian'; //unused
+$string['nb-no'] = 'Norwegian (Bokmål)';
+$string['nn-no'] = 'Norwegian (Nynorsk)';
 $string['pl-pl'] = 'Polish';
 $string['ro-ro'] = 'Romanian';
 $string['mi-nz'] = 'Maori';
