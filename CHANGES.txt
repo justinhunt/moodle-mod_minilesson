@@ -1,4 +1,5 @@
 Version 1.0.59 (Build 2023121100)
+- added speechtester utility (secret link)
 
 Version 1.0.58 (Build 2023111400)
 - Added mobile support
