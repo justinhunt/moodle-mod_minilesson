@@ -1,3 +1,6 @@
+Version 1.0.60 (Build 2024011800)
+- added expected completion data API support
+
 Version 1.0.59 (Build 2023121100)
 - added speechtester utility (secret link)
 

@@ -393,8 +393,13 @@ function minilesson_add_instance(stdClass $minilesson, mod_minilesson_mod_form $
     }
     minilesson_grade_item_update($minilesson);
 
+    //add expected completion date
+    if (class_exists('\core_completion\api')) {
+        $completionexpected = (empty($minilesson->completionexpected) ? null : $minilesson->completionexpected);
+        \core_completion\api::update_completion_date_event($minilesson->coursemodule, 'minilesson', $minilesson->id,
+            $completionexpected);
+    }
     return  $minilesson->id;
-
 }
 
 
@@ -455,6 +460,13 @@ function minilesson_update_instance(stdClass $minilesson, mod_minilesson_mod_for
     $update_grades = ($minilesson->grade === $oldgradefield ? false : true);
     if ($update_grades) {
         minilesson_update_grades($minilesson, 0, false);
+    }
+
+    //update expected completion date
+    if (class_exists('\core_completion\api')) {
+        $completionexpected = (empty($minilesson->completionexpected) ? null : $minilesson->completionexpected);
+        \core_completion\api::update_completion_date_event($minilesson->coursemodule, 'minilesson', $minilesson->id,
+            $completionexpected);
     }
 
     return $success;
