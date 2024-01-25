@@ -207,7 +207,7 @@ class import  {
 
                 $this->upt->track('status','unknown column ' . $colname, 'error');
                 $this->errors++;
-                return false;
+                continue;
             }
             $coldef = $keycolumns[$colname];
 

@@ -158,6 +158,7 @@ abstract class item implements templatable, renderable {
         $keycolumns['ttsoption']=['type'=>'voiceopts','optional'=>true,'default'=>0,'dbname'=>'itemttsoption'];
         $keycolumns['ttsautoplay']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemttsautoplay'];
         $keycolumns['textarea']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemtextarea'];
+        $keycolumns['iframe']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>constants::MEDIAIFRAME];
         $keycolumns['ytid']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemytid'];
         $keycolumns['ytstart']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytstart'];
         $keycolumns['ytend']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytend'];
@@ -196,6 +197,7 @@ abstract class item implements templatable, renderable {
         $keycolumns['timelimit']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'timelimit'];
         $keycolumns['layout']=['type'=>'layout','optional'=>true,'default'=>0,'dbname'=>'layout'];
         $keycolumns['correctanswer']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'correctanswer'];
+      //  $keycolumns['correctanswers']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'customtext1'];
         return $keycolumns;
     }
 
