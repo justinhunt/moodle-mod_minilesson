@@ -87,9 +87,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $columns[5]=array('orderable'=>false);
         $tableprops['columns']=$columns;
         $tableprops['dom'] = 'lBfrtip';
-        $tableprops['buttons'] = [
-            'bulkdelete'
-        ];
+
 
         //default ordering
         $order = array();

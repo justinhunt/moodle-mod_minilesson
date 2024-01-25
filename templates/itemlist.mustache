@@ -1,6 +1,12 @@
 <div id="mod_minilesson_items_cont" class="mod_minilesson_items_cont" style="display: {{display}};">
-    <form method="POST">
-        <input type="hidden" name="sesskey" value="{{config.sesskey}}">
+    <form method="post">
+        <input type="hidden" name="sesskey" value="{{config.sesskey}}" />
+        <div class="mod_minilesson_bdbtn_container" id="mod_minilesson_bdbtn_container">
+            <button class="btn btn-primary d-none" tabindex="0" aria-controls="mod_minilesson_qpanel" type="button"
+                    id="mod_minilesson_deleteconfirmation" name="action" value="bulkdelete">
+                    <span>{{#str}}bulkdelete, mod_minilesson{{/str}}</span>
+            </button>
+        </div>
     <table class="generaltable mod_minilesson_qpanel" id="{{tableid}}">
         <thead>
         <tr>

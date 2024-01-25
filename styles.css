@@ -2623,3 +2623,6 @@ span.mod_minilesson_finishedanswer {
 .ml_gapfill_char_correct {
   background-color: palegreen;
 }
+body.poodll-minilesson-embed #page {
+  margin-top: 5px;
+}

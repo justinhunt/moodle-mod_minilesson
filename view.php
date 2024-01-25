@@ -97,6 +97,7 @@ if($moduleinstance->foriframe==1  || $moduleinstance->pagelayout=='embedded' || 
     $PAGE->set_pagelayout('embedded');
 }elseif($config->enablesetuptab || $moduleinstance->pagelayout=='popup' || $embed==2){
     $PAGE->set_pagelayout('popup');
+    $PAGE->add_body_class('poodll-minilesson-embed');
 }else{
     if(has_capability('mod/' . constants::M_MODNAME . ':' . 'manage',$modulecontext)) {
         $PAGE->set_pagelayout('course');
@@ -146,10 +147,11 @@ if(!empty($moduleinstance->lessonfont)){
 
 //From here we actually display the page.
 //if we are teacher we see tabs. If student we just see the quiz
-if(has_capability('mod/minilesson:evaluate',$modulecontext)){
+//in mobile no tabs are shown
+if(has_capability('mod/minilesson:evaluate',$modulecontext) && $embed!=2){
 	echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_COMPONENT));
 }else{
-	echo $renderer->notabsheader($moduleinstance);
+	echo $renderer->notabsheader($moduleinstance,$embed);
 }
 
 $comp_test =  new \mod_minilesson\comprehensiontest($cm);
