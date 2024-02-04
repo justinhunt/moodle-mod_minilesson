@@ -1,5 +1,9 @@
+Version 1.0.62 (Build 202402XXXX)
+- Added CP usage logging
+
 Version 1.0.61 (Build 2024012500)
 - Fixed datatables issue that broke events in the item list page if js caching was turned off
+- Fixed import issue if column name was wrong
 
 Version 1.0.60 (Build 2024011800)
 - added expected completion data API support

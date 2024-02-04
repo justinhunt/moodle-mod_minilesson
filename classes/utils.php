@@ -629,6 +629,71 @@ class utils{
         return '';
     }
 
+    //stage remote processing job ..just logging really
+    public static function stage_remote_process_job($language,$cmid) {
+
+        global $CFG, $USER;
+
+        $token=false;
+        $conf= get_config(constants::M_COMPONENT);
+        if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
+            $token = self::fetch_token($conf->apiuser, $conf->apisecret);
+        }
+        if(!$token || empty($token)){
+            return false;
+        }
+
+        $host = parse_url($CFG->wwwroot, PHP_URL_HOST);
+        if (!$host) {
+            $host = "unknown";
+        }
+        //owner
+        $owner = hash('md5',$USER->username);
+        $ownercomphash = hash('md5',$USER->username . constants::M_COMPONENT . $cmid .  date("Y-m-d"));
+
+        //The REST API we are calling
+        $functionname = 'local_cpapi_stage_remoteprocess_job';
+
+        //log.debug(params);
+        $params = array();
+        $params['wstoken'] = $token;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $params['appid'] = constants::M_COMPONENT;
+        $params['region'] = $conf->awsregion;
+        $params['host'] = $host;
+        $params['s3outfilename'] = $ownercomphash; //we just want a unique value per session here
+        $params['owner'] = $owner;
+        $params['transcode'] =  '0';
+        $params['transcoder'] = 'default';
+        $params['transcribe'] =  '0';
+        $params['subtitle'] = '0';
+        $params['language'] = $language;
+        $params['vocab'] = 'none';
+        $params['s3path'] ='/';
+        $params['mediatype'] = 'other';
+        $params['notificationurl'] = 'none';
+        $params['sourcemimetype'] = 'unknown';
+
+        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $response = self::curl_fetch($serverurl, $params);
+        if (!self::is_json($response)) {
+            return false;
+        }
+        $payloadobject = json_decode($response);
+
+        //returnCode > 0  indicates an error
+        if ($payloadobject->returnCode > 0) {
+            return false;
+            //if all good, then lets just return true
+        } else if ($payloadobject->returnCode === 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
     /*
      * Turn a passage with text "lines" into html "brs"
      *

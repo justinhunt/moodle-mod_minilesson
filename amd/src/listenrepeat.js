@@ -174,9 +174,6 @@ define(['jquery',
           }
         });
       });
-
-
-
     },
     appReady: function() {
       var self = this;

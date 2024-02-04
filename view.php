@@ -81,6 +81,9 @@ $event->trigger();
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
+//log usage to CP
+utils::stage_remote_process_job($moduleinstance->ttslanguage,$cm->id);
+
 //are we a teacher or a student?
 $mode= "view";
 
