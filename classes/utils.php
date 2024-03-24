@@ -1010,7 +1010,7 @@ class utils{
     {
         $opts = new \stdClass();
         //This is probably over caution, but just in case the data comes in wrong, we want to fall back on something
-        if (isset($opts->{constants::TTSPASSAGEVOICE})) {
+        if (isset($data->{constants::TTSPASSAGEVOICE})) {
             $opts->{constants::TTSPASSAGEVOICE} = $data->{constants::TTSPASSAGEVOICE};
             $opts->{constants::TTSPASSAGESPEED} = $data->{constants::TTSPASSAGESPEED};
         }else{
