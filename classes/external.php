@@ -115,9 +115,9 @@ class mod_minilesson_external extends external_api {
 
     public static function compare_passage_to_transcript_parameters(){
         return new external_function_parameters(
-                array('transcript' => new external_value(PARAM_TEXT, 'The spoken phrase'),
-                        'passage' => new external_value(PARAM_TEXT, 'The correct phrase'),
-                        'language' => new external_value(PARAM_TEXT, 'The language eg en-US'),
+                array('transcript' => new external_value(PARAM_TEXT, 'The spoken phrase',VALUE_REQUIRED),
+                        'passage' => new external_value(PARAM_TEXT, 'The correct phrase',VALUE_REQUIRED),
+                        'language' => new external_value(PARAM_TEXT, 'The language eg en-US',VALUE_REQUIRED),
                         'alternatives' => new external_value(PARAM_TEXT, 'list of alternatives',false,''),
                         'phonetic' => new external_value(PARAM_TEXT, 'phonetic reading',false,''),
                         'region' => new external_value(PARAM_TEXT, 'The region',false,'tokyo'),

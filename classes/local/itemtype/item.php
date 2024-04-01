@@ -267,7 +267,7 @@ abstract class item implements templatable, renderable {
         }
 
         //Question media embed
-        if(!empty(trim($itemrecord->{constants::MEDIAIFRAME}))){
+        if(!empty($itemrecord->{constants::MEDIAIFRAME}) && !empty(trim($itemrecord->{constants::MEDIAIFRAME}))){
             $testitem->itemiframe=$itemrecord->{constants::MEDIAIFRAME};
         }
 
@@ -308,14 +308,14 @@ abstract class item implements templatable, renderable {
         }//end of if mediaurls
 
         //TTS Question
-        if(!empty(trim($itemrecord->{constants::TTSQUESTION}))){
+        if(!empty($itemrecord->{constants::TTSQUESTION}) && !empty(trim($itemrecord->{constants::TTSQUESTION}))){
             $testitem->itemttsaudio=$itemrecord->{constants::TTSQUESTION};
             $testitem->itemttsaudiovoice=$itemrecord->{constants::TTSQUESTIONVOICE};
             $testitem->itemttsoption=$itemrecord->{constants::TTSQUESTIONOPTION};
             $testitem->itemttsautoplay=$itemrecord->{constants::TTSAUTOPLAY};
         }
         //YT Clip
-        if(!empty(trim($itemrecord->{constants::YTVIDEOID}))){
+        if(!empty($itemrecord->{constants::YTVIDEOID}) &&!empty(trim($itemrecord->{constants::YTVIDEOID}))){
             $ytvideoid = trim($itemrecord->{constants::YTVIDEOID});
             //if its a YT URL we want to parse the id from it
             if(\core_text::strlen($ytvideoid)>11){
@@ -331,7 +331,7 @@ abstract class item implements templatable, renderable {
             $testitem->itemytvideoend=$itemrecord->{constants::YTVIDEOEND};
         }
         //TTS Dialog
-        if(!empty(trim($itemrecord->{constants::TTSDIALOG}))){
+        if(!empty($itemrecord->{constants::TTSDIALOG}) && !empty(trim($itemrecord->{constants::TTSDIALOG}))){
             $itemrecord = utils::unpack_ttsdialogopts($itemrecord);
             $testitem->itemttsdialog=true;
             $testitem->itemttsdialogvisible=$itemrecord->{constants::TTSDIALOGVISIBLE};
@@ -395,7 +395,7 @@ abstract class item implements templatable, renderable {
         }// end of tts dialog
 
         //TTS Passage
-        if(!empty(trim($itemrecord->{constants::TTSPASSAGE}))){
+        if(!empty($itemrecord->{constants::TTSPASSAGE}) && !empty(trim($itemrecord->{constants::TTSPASSAGE}))){
             $itemrecord = utils::unpack_ttspassageopts($itemrecord);
             $testitem->itemttspassage=true;
             $textlines = utils::split_into_sentences($itemrecord->{constants::TTSPASSAGE});
@@ -414,7 +414,7 @@ abstract class item implements templatable, renderable {
         }// end of tts dialog
 
         //Question TextArea
-        if(!empty(trim($itemrecord->{constants::QUESTIONTEXTAREA}))){
+        if(!empty($itemrecord->{constants::QUESTIONTEXTAREA}) && !empty(trim($itemrecord->{constants::QUESTIONTEXTAREA}))){
             $testitem->itemtextarea=nl2br($itemrecord->{constants::QUESTIONTEXTAREA});
         }
 
@@ -440,7 +440,7 @@ abstract class item implements templatable, renderable {
         $itemrecord = $this->itemrecord;
         //Text answer fields
         for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
-            if(!empty(trim($itemrecord->{constants::TEXTANSWER . $anumber}))) {
+            if(!empty($itemrecord->{constants::TEXTANSWER . $anumber}) && !empty(trim($itemrecord->{constants::TEXTANSWER . $anumber}))) {
                 $testitem->{'customtext' . $anumber} = $itemrecord->{constants::TEXTANSWER . $anumber};
             }
         }
