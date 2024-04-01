@@ -591,7 +591,9 @@ abstract class item implements templatable, renderable {
 
             $sentence = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $sentence);
 
-            // TO DO replace [x] with gaps
+//$parsedstring = [];//REMOVE DEBUG USE ONLY
+
+
             $prompt = $sentence;
 
             $s = new \stdClass();
