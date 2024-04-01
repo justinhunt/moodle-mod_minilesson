@@ -562,8 +562,11 @@ abstract class item implements templatable, renderable {
                     $maskedwords[$index] = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $word);
                 }
             }
-
-            $characters = utils::do_mb_str_split($sentence);
+            $enc = mb_detect_encoding($sentence);
+            $characters = utils::do_mb_str_split($sentence,1, $enc);
+            //encoding parameter is required for < PHP 8.0
+        //    $characters=str_split($sentence); //DEBUG ONLY - fails on multibyte characters
+       //     $characters=mb_str_split($sentence); //DEBUG ONLY - - only exists on 7.4 and greater .. ie NOT for 7.3
 
             $wordindex = 0;
             foreach ($characters as $character) {
@@ -588,12 +591,7 @@ abstract class item implements templatable, renderable {
                     $parsedstring[] = ['index' => $wordindex, 'character' => $character, 'type' => 'text'];
                 }
             }
-
             $sentence = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $sentence);
-
-//$parsedstring = [];//REMOVE DEBUG USE ONLY
-
-
             $prompt = $sentence;
 
             $s = new \stdClass();
