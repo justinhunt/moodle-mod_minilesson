@@ -1118,6 +1118,7 @@ class utils{
             case "sydney":
             case "dublin":
             case "ottawa":
+            case "capetown":
             case "frankfurt":
             case "london":
             case "singapore":
