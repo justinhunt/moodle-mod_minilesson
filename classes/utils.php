@@ -1094,7 +1094,7 @@ class utils{
     }
 
     public static function split_into_sentences($thetext) {
-        $thetext = preg_replace('/\s+/', ' ', trim($thetext));
+        $thetext = preg_replace('/\s+/', ' ', \core_text::trim_utf8_bom($thetext));
         if($thetext == ''){
             return array();
         }
@@ -1118,6 +1118,7 @@ class utils{
             case "sydney":
             case "dublin":
             case "ottawa":
+            case "capetown":
             case "frankfurt":
             case "london":
             case "singapore":

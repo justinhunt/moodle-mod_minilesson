@@ -1,5 +1,9 @@
-Version 1.0.62 (Build 202402XXXX)
+Version 1.0.63 (Build 2024040100)
+- Fixed issue with gapfill question types failing to display properly on < PHP 8.0
+
+Version 1.0.62 (Build 2024032400)
 - Added CP usage logging
+- Better display of language options in settings
 
 Version 1.0.61 (Build 2024012500)
 - Fixed datatables issue that broke events in the item list page if js caching was turned off
