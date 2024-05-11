@@ -38,7 +38,7 @@ require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 require_capability('mod/minilesson:manage',$modulecontext);
 
-$pagetitle = format_string($moduleinstance->name, true, $course);
+$pagetitle = format_string($moduleinstance->name, true, $course->id);
 $pagetitle .= ': ' . get_string('import', constants::M_COMPONENT);
 $baseurl = new moodle_url('/mod/minilesson/import.php', ['id' => $cmid]);
 $formurl = new moodle_url($baseurl);
@@ -46,7 +46,7 @@ $term = null;
 
 $PAGE->set_url($baseurl);
 $PAGE->navbar->add($pagetitle, $PAGE->url);
-$PAGE->set_heading(format_string($course->fullname, true, [context_course::instance($course->id)]));
+$PAGE->set_heading(format_string($course->fullname, true, $course->id));
 $PAGE->set_title($pagetitle);
 $mode='import';
 

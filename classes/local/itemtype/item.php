@@ -241,6 +241,11 @@ abstract class item implements templatable, renderable {
 
         $itemrecord = $this->itemrecord;
         $editoroptions = $this->editoroptions;
+        //remove what we don't need for format_text (M44 complains in format_text)
+        unset($editoroptions['trusttext']);
+        unset($editoroptions['subdirs']);
+        unset($editoroptions['maxfiles']);
+        unset($editoroptions['maxbytes']);
 
         //the basic item attributes
         $testitem->number =  $this->currentnumber;
