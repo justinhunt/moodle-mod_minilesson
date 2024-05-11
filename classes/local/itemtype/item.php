@@ -403,7 +403,7 @@ abstract class item implements templatable, renderable {
             $voiceoptions = $itemrecord->{constants::TTSPASSAGESPEED};
             $linedatas=[];
             foreach($textlines as $theline){
-                if(!empty(trim($theline))) {
+                if(!empty(\core_text::trim_utf8_bom($theline))) {
                     $linedata=new \stdClass();
                     $linedata->sentence = $theline;
                     $linedata->audiourl = utils::fetch_polly_url($this->token, 'useast1', $theline, $voiceoptions, $voice);
