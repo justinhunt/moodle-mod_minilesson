@@ -16,10 +16,13 @@ define(['jquery','core/log'], function($,log) {
 
 
             //audio player declarations
-            var aplayer = $('#' + PASSAGEID + '_player');
+            var aplayer = $('#' + PASSAGEID + '_ttspassageaudio');
+            var thebutton = $('#' + PASSAGEID + '_ttspassagebutton');
+            var textblock = $('#' + PASSAGEID + '_textblock');
             var fa = $('#' + PASSAGEID + ' .fa');
 
             //some common selectors
+            var wordselector = '#' + PASSAGEID+ '_textblock span.tbr_word';
             var sentenceselector = '#' + PASSAGEID+ '_textblock span.tbr_sentence';
             var passagelines = $(sentenceselector);
 
@@ -67,7 +70,7 @@ define(['jquery','core/log'], function($,log) {
             });
 
             //handle audio player button clicks
-            $('#' + PASSAGEID).click(function(){
+            thebutton.click(function(){
                 if(!aplayer[0].paused && !aplayer[0].ended){
                     aplayer[0].pause();
                     if(stoporpause=='stop'){
@@ -109,6 +112,7 @@ define(['jquery','core/log'], function($,log) {
 
             //PROCEDURAL stuff
             numberSentences();
+
 
             //end of instance wrapper
         }
