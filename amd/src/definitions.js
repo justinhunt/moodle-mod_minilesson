@@ -112,7 +112,7 @@ This file contains class and ID definitions.
         msvbuttonsbox: 'mod_minilesson_msvbuttonsbox',
 
         //VOICES
-        voices: {'ar-AR': ['Zeina'],
+        voices: {'ar-AR': ['Zeina','Hala','Zayd'],
             'de-DE': ['Hans','Marlene','Vicki'],
             'en-US': ['Joey','Justin','Kevin','Matthew','Ivy','Joanna','Kendra','Kimberly','Salli'],
             'en-GB': ['Brian','Amy', 'Emma'],
@@ -127,7 +127,7 @@ This file contains class and ID definitions.
             'fr-FR': ['Mathieu','Celine','Lea'],
             'hi-IN': ["Aditi"],
             'it-IT': ['Carla','Bianca','Giorgio'],
-            'ja-JP': ['Takumi','Mizuki'],
+            'ja-JP': ['Takumi','Mizuki','Kazuha','Tomoko'],
             'ko-KR': ['Seoyeon'],
             'nl-NL': ["Ruben","Lotte"],
             'pt-BR': ['Ricardo','Vitoria'],

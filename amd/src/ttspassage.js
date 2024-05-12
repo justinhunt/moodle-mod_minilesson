@@ -22,7 +22,6 @@ define(['jquery','core/log'], function($,log) {
             var fa = $('#' + PASSAGEID + '_ttspassagebutton .fa');
 
             //some common selectors
-            var wordselector = '#' + PASSAGEID+ '_textblock span.tbr_word';
             var sentenceselector = '#' + PASSAGEID+ '_textblock span.tbr_sentence';
             var passagelines = $(sentenceselector);
 

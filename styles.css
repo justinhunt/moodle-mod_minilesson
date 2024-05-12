@@ -1140,6 +1140,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 
 .minilesson_mc_resultbox {
   float: right;
+  padding-left: 8px;
 }
 
 .mcplayrow {
