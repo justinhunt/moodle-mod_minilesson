@@ -1,5 +1,6 @@
 Version 1.0.65 (Build 2024051600)
 - Fixes for external API calls on pre M40 sites
+- Fixes for TTS and progress on Speaking Gap Fill
 
 Version 1.0.64 (Build 2024051200)
 - Tweaks to format functions for PHP8.2

@@ -168,7 +168,7 @@ abstract class item implements templatable, renderable {
         $keycolumns['ttsdialogvoicea']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEA];
         $keycolumns['ttsdialogvoiceb']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEB];
         $keycolumns['ttsdialogvoicec']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEC];
-        $keycolumns['ttsdialogvisible']=['type'=>'boolean','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVISIBLE];
+        $keycolumns['ttsdialogvisible']=['type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::TTSDIALOGVISIBLE];
         $keycolumns['ttspassage']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttspassage'];
         $keycolumns['ttspassageopts']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttspassageopts'];
         $keycolumns['ttspassagevoice']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSPASSAGEVOICE];
@@ -197,7 +197,9 @@ abstract class item implements templatable, renderable {
         $keycolumns['timelimit']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'timelimit'];
         $keycolumns['layout']=['type'=>'layout','optional'=>true,'default'=>0,'dbname'=>'layout'];
         $keycolumns['correctanswer']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'correctanswer'];
-      //  $keycolumns['correctanswers']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'customtext1'];
+        foreach($keycolumns as $key=>$keycol){
+            $keycolumns[$key]['jsonname'] = $key;
+        }
         return $keycolumns;
     }
 

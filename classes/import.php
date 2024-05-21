@@ -36,6 +36,9 @@ use gradereport_singleview\local\ui\empty_element;
  */
 class import  {
 
+    private $itemsfromjson = false;
+    private $cir;
+
     /**
      * process constructor.
      *
@@ -43,8 +46,7 @@ class import  {
      * @param string|null $progresstrackerclass
      * @throws \coding_exception
      */
-    public function __construct(\csv_import_reader $cir,$moduleinstance, $modulecontext, $course,$cm) {
-        $this->cir = $cir;
+    public function __construct($moduleinstance, $modulecontext, $course,$cm) {
         $this->moduleinstance = $moduleinstance;
         $this->modulecontext = $modulecontext;
         $this->course = $course;
@@ -60,42 +62,102 @@ class import  {
 
     }
 
+    public function set_reader($reader, $isjson=false){
+        if($isjson) {
+            $this->isjson = true;
+            $this->itemsfromjson = $reader;
+        }else{
+            $this->cir = $reader;
+        }
+    }
+
     public function import_process() {
         $this->errors = 0;
         $this->upt = new import_tracker($this->keycolumns);
         $this->upt->start(); // Start table.
 
-        // Init csv import helper.
-        $this->cir->init();
-        
-        //get the header line
-        $this->currentheader = $this->cir->get_columns();
-        
-        $linenum = 1; // Column header is first line.
-        while ($line = $this->cir->next()) {
-            $linenum++;
-            $this->upt->flush();
-            $this->upt->track('line', $linenum);
-            $this->import_process_line($line);
-        }
+        if($this->isjson) {
 
+            $linenum = 0;
+            foreach ($this->itemsfromjson->items as $item) {
+                $linenum++;
+                $this->upt->flush();
+                $this->upt->track('line', $linenum);
+                $this->import_process_line($item);
+            }
+        }else{
+            // Init csv import helper.
+            $this->cir->init();
+
+            //get the header line
+            $this->currentheader = $this->cir->get_columns();
+
+            $linenum = 1; // Column header is first line.
+            while ($item = $this->cir->next()) {
+                $linenum++;
+                $this->upt->flush();
+                $this->upt->track('line', $linenum);
+                $this->import_process_line($item);
+            }
+            $this->cir->close();
+            $this->cir->cleanup(true);
+        }
         $this->upt->close(); // Close table.
-        $this->cir->close();
-        $this->cir->cleanup(true);
     }
 
+    public function map_json_to_csv($itemdata){
+        $itemtypeclass = local\itemtype\item::get_itemtype_class($itemdata->type);
+        $keycolumns = $itemtypeclass::get_keycolumns();
+        $line= [];
+        foreach($keycolumns as $colname=>$coldef){
+            if(isset($itemdata->{$coldef['jsonname']})){
+                if($coldef['type'] == 'stringarray') {
+                    $line[] = join(PHP_EOL,$itemdata->{$coldef['jsonname']});
+                }else{
+                    $line[] = $itemdata->{$coldef['jsonname']};
+                }
+            }else{
+                if($coldef['type'] == 'stringarray') {
+                    $line[] = join(PHP_EOL,$coldef['default']);
+                }else{
+                    $line[] = $coldef['default'];
+                }
+            }
+        }
+        return $line;
+    }
 
     /**
-     * Process one line from CSV file
+     * Process one line of CSV or JSON
      *
      * @param array $line
      * @throws \coding_exception
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function import_process_line(array $line)
+    public function import_process_line($itemdata)
     {
         global $DB, $CFG, $SESSION;
+
+        if($this->isjson){
+            $itemtype = $itemdata->type;
+            $line = $this->map_json_to_csv($itemdata);
+        }else{
+            $line = $itemdata;
+            $itemtype = $line[0];
+        }
+        $itemtypeclass = local\itemtype\item::get_itemtype_class($itemtype);
+
+        //if the item type is invalid, we can't continue, just exit
+        if(!$itemtypeclass){
+            $this->upt->track('status',get_string('error:failed',constants::M_COMPONENT), 'error',true);
+            $this->upt->track('type',get_string('error:invaliditemtype',constants::M_COMPONENT), 'error');
+            return false;
+        }
+
+        //here we get the item specific keycolumns (it's the same columns, but with item specific col info for validation and data preprocessing)
+        //eg multiaudio needs customtext5 to be voice and customint4 to be voice options
+        $keycolumns = $itemtypeclass::get_keycolumns();
 
         //set up the voices array, it only needs to be done once, and probably should be done elsewhere
         //but here works too
@@ -107,18 +169,6 @@ class import  {
             }
         }
 
-        //here we get the item specific keycolumns (its the same columns, but with item specific col info for validation and data preprocessing)
-        //eg multiaudio needs customtext5 to be voice and customint4 to be voice options
-        $itemtype = $line[0]; //for now we force this to be at index 0
-        $itemtypeclass = local\itemtype\item::get_itemtype_class($itemtype);
-        //if the item type is invalid, we can't continue, just exit
-        if(!$itemtypeclass){
-            $this->upt->track('status',get_string('error:failed',constants::M_COMPONENT), 'error',true);
-            $this->upt->track('type',get_string('error:invaliditemtype',constants::M_COMPONENT), 'error');
-            return false;
-        }
-        $keycolumns = $itemtypeclass::get_keycolumns();
-        
         // Pre-Process Import Data, and turn into DB Ready data.
         $newrecord = $this->preprocess_import_data($line, $keycolumns);
 
@@ -197,11 +247,19 @@ class import  {
 
         foreach ($line as $keynum => $value) {
 
-            if (!isset($this->currentheader[$keynum])) {
-                // This should not happen.
-                continue;
+            //CSV files have the field name in the top line of the file = current header
+            // but JSON files its in the json per item (which we stripped away to make CSV like data duh ..)
+            //so we need to get the field name from the keycolumns array
+            if (isset($this->currentheader[$keynum])) {
+                //CSV data
+                $colname = $this->currentheader[$keynum];
+            }else{
+                //JSON data
+                $currentheader=array_keys($keycolumns);
+                $colname = $currentheader[$keynum];
             }
-            $colname = $this->currentheader[$keynum];
+
+
             if (!isset($keycolumns[$colname])) {
                 // This should not happen.
 
@@ -216,8 +274,10 @@ class import  {
                     $value = intval($value);
                     break;
                 case 'string':
+                case 'stringarray':
                     $value = strval($value);
                     break;
+
                 case 'voice':
                     if(empty($value) || $value == 'auto'){
                         $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
@@ -271,9 +331,13 @@ class import  {
                 case 'boolean':
                     switch(strtolower($value)){
                         case 'true':
+                        case 'yes':
+                        case '1':
                             $value = 1;
                             break;
                         case 'false':
+                        case 'no':
+                        case '0':
                             $value = 0;
                             break;
                         default:

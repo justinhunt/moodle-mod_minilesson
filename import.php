@@ -59,32 +59,47 @@ if($config->enablesetuptab){
 }
 
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
-
 $form = new baseimportform($formurl->out(false),['leftover_rows'=>$leftover_rows]);
 
 if ($data = $form->get_data()) {
-
-        $iid = csv_import_reader::get_new_iid('importminilessonitems');
-        $cir = new csv_import_reader($iid, 'importminilessonitems');
-
+        $errormessage = '';
         $content = $form->get_file_content('importfile');
+        $theimport = new \mod_minilesson\import($moduleinstance,$modulecontext,$course,$cm);
+        $isjson=true;
+        if($isjson){
+            if(!utils::is_json($content)){
+                $errormessage = get_string('error:invalidjson', constants::M_COMPONENT);
+            }else{
+                $importdata = json_decode($content);
+                if (!isset($importdata->items)) {
+                    $errormessage = get_string('error:noitemsinjson', constants::M_COMPONENT);
+                }else{
+                    $theimport->set_reader($importdata, $isjson);
+                }
+            }
+        }else {
+            $iid = csv_import_reader::get_new_iid('importminilessonitems');
+            $cir = new csv_import_reader($iid, 'importminilessonitems');
+            $readcount = $cir->load_csv_content($content, $data->encoding, $data->delimiter_name);
+            $csvloaderror = $cir->get_error();
+            $theimport->set_reader($cir,$isjson);
 
-        $readcount = $cir->load_csv_content($content, $data->encoding, $data->delimiter_name);
-        $csvloaderror = $cir->get_error();
-        unset($content);
-
-        if (!is_null($csvloaderror)) {
-            print_error('csvloaderror', '', $baseurl, $csvloaderror);
+            if (!is_null($csvloaderror)) {
+                $errormessage = get_string('error:csvloaderror', constants::M_COMPONENT);
+                //print_error('csvloaderror', '', $baseurl, $csvloaderror);
+            }
+            unset($content);
         }
 
 
-
-
-    $theimport = new \mod_minilesson\import($cir,$moduleinstance,$modulecontext,$course,$cm);
     echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('importing', constants::M_COMPONENT));
     echo $renderer->heading($pagetitle);
     echo $renderer->box(get_string('importresults',constants::M_COMPONENT), 'generalbox minilesson_importintro', 'intro');
-    $theimport->import_process();
+    if(empty($errormessage)) {
+        $theimport->import_process();
+    }else{
+        echo $renderer->box($errormessage, 'generalbox minilesson_importintro', 'intro');
+    }
     echo $renderer->back_to_import_button($cm);
     echo $renderer->footer();
     die;

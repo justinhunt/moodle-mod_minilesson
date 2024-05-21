@@ -47,7 +47,7 @@ class baseimportform extends \moodleform {
        $mform->setDefault('encoding', 'UTF-8');
 
        $file_options = array();
-       $file_options['accepted_types'] = array('.csv', '.txt');
+       $file_options['accepted_types'] = array('.csv', '.txt','.json');
        $mform->addElement('filepicker', 'importfile', get_string('file'), 'size="40"', $file_options);
        $mform->addRule('importfile', null, 'required');
 
