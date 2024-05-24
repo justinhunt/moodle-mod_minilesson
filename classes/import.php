@@ -25,9 +25,6 @@
 
 namespace mod_minilesson;
 
-
-use gradereport_singleview\local\ui\empty_element;
-
 /**
  * Class for importing items into a minilesson
  *
@@ -411,7 +408,7 @@ class import  {
                     break;
 
                 case 'stringarray':
-                    $lines[] = explode(PHP_EOL,$fieldvalue);
+                    $lines = explode(PHP_EOL,$fieldvalue);
                     $jsonvalue = $lines;
                     break;
 
@@ -472,7 +469,7 @@ class import  {
                     }
                     break;
             }//end of db values => human values
-            $itemobj->[$keycolumn['dbname']]=$jsonvalue;
+            $itemobj->{$keycolumn['jsonname']}=$jsonvalue;
         }//end of loop through key cols
         return $itemobj;
     }//end of export item function
