@@ -19,6 +19,7 @@ class speakinggapfillform extends baseform {
         $mform->addElement('advcheckbox',constants::READSENTENCE,
             get_string('readsentences',constants::M_COMPONENT),
             get_string('readsentences_desc',constants::M_COMPONENT),[],[0,1]);
+
         $this->add_voiceselect(constants::POLLYVOICE,get_string('choosevoice',constants::M_COMPONENT),constants::READSENTENCE,0);
         $no_ssml=true;
         $this->add_voiceoptions(constants::POLLYOPTION,get_string('choosevoiceoption',constants::M_COMPONENT),constants::READSENTENCE,0,$no_ssml);

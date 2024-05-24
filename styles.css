@@ -1140,6 +1140,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 
 .minilesson_mc_resultbox {
   float: right;
+  padding-left: 8px;
 }
 
 .mcplayrow {
@@ -2046,7 +2047,7 @@ span.mod_minilesson_finishedanswer {
   opacity: 0;
 }
 
-.mod_minilesson_itemttspassage_cont button.roundmini-audio-player{
+.mod_minilesson_itemttspassage_cont button.passage-audio-player{
   border: none;
   color: #fff;
   width: 50%;
@@ -2625,4 +2626,8 @@ span.mod_minilesson_finishedanswer {
 }
 body.poodll-minilesson-embed #page {
   margin-top: 5px;
+}
+.mod_minilesson_rtl {
+  direction: rtl;
+  text-align: right;
 }

@@ -8,17 +8,21 @@
 
 
 global $CFG;
+//This is for pre M4.0 and post M4.0 to work on same code base
 require_once($CFG->libdir . '/externallib.php');
+
+/*
+ * This is for M4.0 and later
+use core_external\external_api;
+use core_external\external_function_parameters;
+use core_external\external_value;
+*/
 
 use mod_minilesson\utils;
 use mod_minilesson\constants;
 use mod_minilesson\diff;
 use mod_minilesson\alphabetconverter;
 use mod_minilesson\local\itemtype\item;
-
-use external_api;
-use external_function_parameters;
-use external_value;
 
 /**
  * External class.
@@ -135,9 +139,9 @@ class mod_minilesson_external extends external_api {
                 array('transcript' => new external_value(PARAM_TEXT, 'The spoken phrase',VALUE_REQUIRED),
                         'passage' => new external_value(PARAM_TEXT, 'The correct phrase',VALUE_REQUIRED),
                         'language' => new external_value(PARAM_TEXT, 'The language eg en-US',VALUE_REQUIRED),
-                        'alternatives' => new external_value(PARAM_TEXT, 'list of alternatives',false,''),
-                        'phonetic' => new external_value(PARAM_TEXT, 'phonetic reading',false,''),
-                        'region' => new external_value(PARAM_TEXT, 'The region',false,'tokyo'),
+                        'alternatives' => new external_value(PARAM_TEXT, 'list of alternatives',VALUE_DEFAULT,''),
+                        'phonetic' => new external_value(PARAM_TEXT, 'phonetic reading',VALUE_DEFAULT,''),
+                        'region' => new external_value(PARAM_TEXT, 'The region',VALUE_DEFAULT,'tokyo'),
                         'cmid' => new external_value(PARAM_INT, 'The cmid')
                 )
         );

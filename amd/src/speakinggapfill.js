@@ -165,6 +165,7 @@ define(['jquery',
                     }, 2000);
                     // End question
                 } else {
+                    self.updateProgressDots();
                     self.end();
                 }
 
@@ -208,17 +209,21 @@ define(['jquery',
                 return e.target !== "";
             });
 
-            $.each(self.items, function(index, item) {
-                polly.fetch_polly_url(item.prompt, self.voiceoption, self.usevoice).then(function(audiourl) {
-                    item.audio = new Audio();
-                    item.audio.src = audiourl;
-                    if (self.items.filter(function(e) {
-                        return e.audio === null;
-                    }).length === 0) {
-                        self.appReady();
-                    }
+            if(self.itemdata.readsentence) {
+                $.each(self.items, function (index, item) {
+                    polly.fetch_polly_url(item.prompt, self.voiceoption, self.usevoice).then(function (audiourl) {
+                        item.audio = new Audio();
+                        item.audio.src = audiourl;
+                        if (self.items.filter(function (e) {
+                            return e.audio === null;
+                        }).length === 0) {
+                            self.appReady();
+                        }
+                    });
                 });
-            });
+            }else{
+                self.appReady();
+            }
 
 
         },
@@ -276,6 +281,7 @@ define(['jquery',
                         self.nextPrompt();
                     }, 2000);
                 } else {
+                    self.updateProgressDots();
                     self.end();
                 }
             } else {
@@ -311,40 +317,41 @@ define(['jquery',
                         $("#" + self.itemdata.uniqueid + "_container .sgapfill_ctrl-btn").prop("disabled", false);
                     }
                 );
-            }
-            // Show all the correct words
-            $("#" + self.itemdata.uniqueid + "_container .sgapfill_targetWord.sgapfill_correct").each(function() {
-                var realidx = $(this).data("realidx");
-                var sgapfill_targetWord = self.items[self.game.pointer].sgapfill_targetWords[realidx];
-                $(this).val(sgapfill_targetWord);
-            });
 
-            //if they cant retry OR the time limit is up, move on
-            var timelimit_progressbar = $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar");
-            if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')){
-                self.items[self.game.pointer].answered = true;
-                self.items[self.game.pointer].correct = false;
-                self.items[self.game.pointer].typed = typed;
+                // Show all the correct words
+                $("#" + self.itemdata.uniqueid + "_container .sgapfill_targetWord.sgapfill_correct").each(function() {
+                    var realidx = $(this).data("realidx");
+                    var sgapfill_targetWord = self.items[self.game.pointer].sgapfill_targetWords[realidx];
+                    $(this).val(sgapfill_targetWord);
+                });
 
-                $("#" + self.itemdata.uniqueid + "_container .sgapfill_ctrl-btn").prop("disabled", true);
+                //if they cant retry OR the time limit is up, move on
+                var timelimit_progressbar = $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar");
+                if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')){
+                    self.items[self.game.pointer].answered = true;
+                    self.items[self.game.pointer].correct = false;
+                    self.items[self.game.pointer].typed = typed;
 
-                self.stopTimer(self.items[self.game.pointer].timer);
+                    $("#" + self.itemdata.uniqueid + "_container .sgapfill_ctrl-btn").prop("disabled", true);
 
-                if(!countdownStarted) {
-                    if (self.game.pointer < self.items.length - 1) {
-                        log.debug('moving to next prompt A');
-                        countdownStarted = true;
-                        setTimeout(function () {
-                            $(".sgapfill_reply_" + self.game.pointer).hide();
-                            self.game.pointer++;
-                            self.nextPrompt();
-                        }, 2000);
-                    } else {
-                        self.end();
-                    }
-                }
-            }
+                    self.stopTimer(self.items[self.game.pointer].timer);
 
+                    if(!countdownStarted) {
+                        if (self.game.pointer < self.items.length - 1) {
+                            log.debug('moving to next prompt A');
+                            countdownStarted = true;
+                            setTimeout(function () {
+                                $(".sgapfill_reply_" + self.game.pointer).hide();
+                                self.game.pointer++;
+                                self.nextPrompt();
+                            }, 2000);
+                        } else {
+                            self.updateProgressDots();
+                            self.end();
+                        }
+                    }//end of if countdown not started
+                } //end of if can't retry or time limit up
+            }//end of if -all -correct or not
         },
 
         getComparison: function(passage, transcript, phonetic, callback) {
@@ -398,13 +405,9 @@ define(['jquery',
             self.nextPrompt();
         },
 
-        nextPrompt: function() {
+        updateProgressDots: function(){
             var self = this;
-
-            $(".sgapfill_ctrl-btn").prop("disabled", false);
-
             var color;
-
             var progress = self.items.map(function(item, idx) {
                 color = "gray";
                 if (self.items[idx].answered && self.items[idx].correct) {
@@ -414,15 +417,19 @@ define(['jquery',
                 }
                 return "<i style='color:" + color + "' class='fa fa-circle'></i>";
             }).join(" ");
-
             $("#" + self.itemdata.uniqueid + "_container .sgapfill_title").html(progress);
+        },
+
+        nextPrompt: function() {
+            var self = this;
+            $(".sgapfill_ctrl-btn").prop("disabled", false);
+            self.updateProgressDots();
             var newprompt = $(".sgapfill_prompt_" + self.game.pointer);
             anim.do_animate(newprompt, 'zoomIn animate__faster', 'in').then(
                 function() {
                 }
             );
             self.nextReply();
-
         },
 
         nextReply: function() {

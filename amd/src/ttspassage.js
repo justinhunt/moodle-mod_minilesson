@@ -11,13 +11,15 @@ define(['jquery','core/log'], function($,log) {
             //DECLARATIONS and INITs ...........................
             var thesentence_number =0;
             var lettered= false;
-            var stoporpause='stop';
+            var stoporpause='pause';
 
 
 
             //audio player declarations
-            var aplayer = $('#' + PASSAGEID + '_player');
-            var fa = $('#' + PASSAGEID + ' .fa');
+            var aplayer = $('#' + PASSAGEID + '_ttspassageaudio');
+            var thebutton = $('#' + PASSAGEID + '_ttspassagebutton');
+            var textblock = $('#' + PASSAGEID + '_textblock');
+            var fa = $('#' + PASSAGEID + '_ttspassagebutton .fa');
 
             //some common selectors
             var sentenceselector = '#' + PASSAGEID+ '_textblock span.tbr_sentence';
@@ -59,29 +61,29 @@ define(['jquery','core/log'], function($,log) {
                     doplayaudio(thesentence_number);
                 }else{
                     dehighlight_all();
-                    $(fa).removeClass('fa-stop');
-                    $(fa).addClass('fa-volume-up');
+                    fa.removeClass('fa-stop');
+                    fa.addClass('fa-volume-up');
                     thesentence_number=0;
                     aplayer.removeAttr('src');
                 }
             });
 
             //handle audio player button clicks
-            $('#' + PASSAGEID).click(function(){
+            thebutton.click(function(){
                 if(!aplayer[0].paused && !aplayer[0].ended){
                     aplayer[0].pause();
                     if(stoporpause=='stop'){
                         aplayer[0].load();
                         thesentence_number=0;
                     }
-                    $(fa).removeClass('fa-stop');
-                    $(fa).addClass('fa-volume-up');
+                    fa.removeClass('fa-stop');
+                    fa.addClass('fa-volume-up');
 
                     //if paused and in limbo no src state
                 }else if(aplayer[0].paused && aplayer.attr('src')){
                     aplayer[0].play();
-                    $(fa).removeClass('fa-volume-up');
-                    $(fa).addClass('fa-stop');
+                    fa.removeClass('fa-volume-up');
+                    fa.addClass('fa-stop');
                     //play
                 }else{
                     if(!lettered){
@@ -92,8 +94,8 @@ define(['jquery','core/log'], function($,log) {
                         thesentence_number=0;
                     }
                     doplayaudio(thesentence_number);
-                    $(fa).removeClass('fa-volume-up');
-                    $(fa).addClass('fa-stop');
+                    fa.removeClass('fa-volume-up');
+                    fa.addClass('fa-stop');
                 }//end of if paused ended
             });
 
@@ -101,14 +103,15 @@ define(['jquery','core/log'], function($,log) {
             $('#' + PASSAGEID + '_textblock  .tbr_innerdiv').on('click', '.tbr_sentence',function(){
                 aplayer[0].pause();
                 var sentenceindex = $(this).attr('data-sentenceindex');
-                $(fa).removeClass('fa-volume-up');
-                $(fa).addClass('fa-stop');
+                fa.removeClass('fa-volume-up');
+                fa.addClass('fa-stop');
                 thesentence_number = sentenceindex;
                 doplayaudio(sentenceindex);
             });
 
             //PROCEDURAL stuff
             numberSentences();
+
 
             //end of instance wrapper
         }

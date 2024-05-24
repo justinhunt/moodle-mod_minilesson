@@ -112,23 +112,24 @@ This file contains class and ID definitions.
         msvbuttonsbox: 'mod_minilesson_msvbuttonsbox',
 
         //VOICES
-        voices: {'ar-AR': ['Zeina'],
+        voices: {'ar-AR': ['Zeina','Hala','Zayd'],
             'de-DE': ['Hans','Marlene','Vicki'],
             'en-US': ['Joey','Justin','Kevin','Matthew','Ivy','Joanna','Kendra','Kimberly','Salli'],
-            'en-GB': ['Brian','Amy', 'Emma'],
+            'en-GB': ['Brian','Amy', 'Emma','Arthur'],
             'en-AU': ['Russell','Nicole','Olivia'],
             'en-NZ': ['Aria'],
             'en-ZA': ['Ayanda'],
             'en-IN': ['Aditi','Raveena'],
             'en-WL': ["Geraint"],
-            'es-US': ['Miguel','Penelope'],
+            'es-US': ['Miguel','Penelope','Lupe','Pedro'],
             'es-ES': [ 'Enrique','Conchita','Lucia'],
             'fr-CA': ['Chantal','Gabrielle'],
-            'fr-FR': ['Mathieu','Celine','Lea'],
+            'fr-FR': ['Mathieu','Celine','Lea','Remi'],
             'hi-IN': ["Aditi"],
             'it-IT': ['Carla','Bianca','Giorgio'],
-            'ja-JP': ['Takumi','Mizuki'],
+            'ja-JP': ['Takumi','Mizuki','Kazuha','Tomoko'],
             'ko-KR': ['Seoyeon'],
+            'nl-BE': ["Lisa"],
             'nl-NL': ["Ruben","Lotte"],
             'pt-BR': ['Ricardo','Vitoria'],
             'pt-PT': ["Ines",'Cristiano'],
@@ -138,7 +139,8 @@ This file contains class and ID definitions.
         },
 
         neural_voices: ["Amy","Emma","Brian","Olivia","Aria","Ayanda","Ivy","Joanna","Kendra","Kimberly",
-            "Salli","Joey","Justin","Kevin","Matthew","Camila","Lupe","Lucia","Gabrielle","Lea", "Vicki", "Seoyeon", "Takumi"]
+            "Salli","Joey","Justin","Kevin","Matthew","Camila","Lupe","Lucia","Gabrielle","Lea", "Vicki", "Seoyeon", "Takumi","Lucia",
+            "Lea","Bianca","Laura","Kajal","Suvi","Liam","Daniel","Hannah","Camila","Ida","Kazuha","Tomoko","Elin","Hala","Zayd"]
 
     };//end of return value
 });

@@ -664,6 +664,10 @@ $string['error:emptyfield'] = 'CANNOT BE EMPTY';
 $string['error:failed'] = 'FAILED';
 $string['error:correctanswer'] = 'INVALID ANSWER';
 $string['error:invaliditemtype'] = 'INVALID ITEM TYPE';
+$string['error:invalidjson'] = 'INVALID JSON';
+$string['error:noitemsinjson'] = 'NO ITEMS IN JSON';
+$string['error:csvloaderror'] = 'CSV LOAD ERROR';
+
 
 $string['bulkdelete'] = 'Delete selected';
 $string['bulkdeletequestion'] = 'Are you sure you want to delete the selected question?';

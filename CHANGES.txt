@@ -1,3 +1,11 @@
+Version 1.0.65 (Build 2024051600)
+- Fixes for external API calls on pre M40 sites
+- Fixes for TTS and progress on Speaking Gap Fill
+
+Version 1.0.64 (Build 2024051200)
+- Tweaks to format functions for PHP8.2
+- Better support for Arabic and RTL languages
+
 Version 1.0.63 (Build 2024040100)
 - Fixed issue with gapfill question types failing to display properly on < PHP 8.0
 
