@@ -93,10 +93,11 @@ class item_speakinggapfill extends item {
     public static function get_keycolumns(){
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['text5']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
-        $keycols['int4']=['type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
-        $keycols['int3']=['type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
-        $keycols['int2']=['type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::READSENTENCE];
+        $keycols['int4']=['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
+        $keycols['text5']=['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
+        $keycols['int3']=['jsonname'=>'allowretry','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
+        $keycols['int2']=['jsonname'=>'dictationstyle','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::READSENTENCE];
+        $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
         return $keycols;
     }
 

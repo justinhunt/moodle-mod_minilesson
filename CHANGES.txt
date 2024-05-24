@@ -1,3 +1,6 @@
+Version 1.0.65 (Build 2024052400)
+- Added export items feature
+
 Version 1.0.65 (Build 2024051600)
 - Fixes for external API calls on pre M40 sites
 - Fixes for TTS and progress on Speaking Gap Fill

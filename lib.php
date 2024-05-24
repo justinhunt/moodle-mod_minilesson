@@ -704,17 +704,39 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
         return false;
     }
 
+    if (strpos($filearea,'export')!==false) {
+        //exporting the items as JSON
+        require_login($course, false, $cm);
+        require_capability('mod/minilesson:export', $context);
 
+        if(!$moduleinstance  = $DB->get_record('minilesson', array('id' => $cm->instance), '*', MUST_EXIST)){
+            return false;
+        }
+        $name=$moduleinstance->name;
+        //make a nice filename
+        $filename = clean_filename(strip_tags(format_string($name)).'.json');
+        $filename = preg_replace('/\s+/', '_', $filename);
+        $theimport = new \mod_minilesson\import($moduleinstance,$context,$course,$cm);
+        $jsondata = $theimport->export_items();
+        //return to the browser that called us
+        send_file($jsondata, $filename, 0, 0, true, true);
+    }else{
+        //files uploaded into activity
         $fs = get_file_storage();
         $relativepath = implode('/', $args);
         $fullpath = "/$context->id/mod_minilesson/$filearea/$itemid/$relativepath";
 
         if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
-          return false;
+            return false;
         }
 
         // finally send the file
         send_stored_file($file, null, 0, $forcedownload, $options);
+
+    }
+
+
+
 }
 
 function minilesson_output_fragment_preview($args){

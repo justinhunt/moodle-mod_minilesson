@@ -195,9 +195,9 @@ class item_multiaudio extends item {
     public static function get_keycolumns(){
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['text5']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
-        $keycols['int4']=['type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
-        $keycols['int1']=['type'=>'boolean','optional'=>true,'default'=>constants::TEXTPROMPT_WORDS,'dbname'=>constants::SHOWTEXTPROMPT];
+        $keycols['text5']=['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
+        $keycols['int4']=['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
+        $keycols['int1']=['jsonname'=>'showtextprompt','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::SHOWTEXTPROMPT];
         return $keycols;
     }
 

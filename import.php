@@ -110,9 +110,16 @@ if ($data = $form->get_data()) {
 
 echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('import', constants::M_COMPONENT));
 echo $renderer->heading($pagetitle);
-echo $renderer->box(get_string('importinstructions',constants::M_COMPONENT), 'generalbox minilesson_importintro', 'intro');
+echo $renderer->box(get_string('importinstructions',constants::M_COMPONENT),
+    'generalbox minilesson_importintro', 'intro');
 
 $form->display();
+
+//export items form
+$exporturl= moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'exportjson', 0, "/", 'exportitems.json', true);
+echo $renderer->box(get_string('exportinstructions',constants::M_COMPONENT),
+    'generalbox minilesson_importintro', 'intro');
+echo html_writer::link($exporturl,get_string('exportitems',constants::M_COMPONENT,'class="btn btn-primary"'));
 /*
 $table = new mod_wordcards_table_terms('tblterms', $mod);
 $table->define_baseurl($PAGE->url);

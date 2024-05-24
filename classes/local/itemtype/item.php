@@ -133,8 +133,9 @@ abstract class item implements templatable, renderable {
         $classname = '\\mod_minilesson\\local\\itemtype\\item_' . $itemtype;
         if(class_exists($classname)){
             return $classname;
+        }else{
+            return false;
         }
-        return false;
     }
 
 

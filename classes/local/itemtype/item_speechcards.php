@@ -94,4 +94,14 @@ class item_speechcards extends item {
         return false;
     }
 
+    /*
+    * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+    */
+    public static function get_keycolumns(){
+        //get the basic key columns and customize a little for instances of this item type
+        $keycols = parent::get_keycolumns();
+        $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+        return $keycols;
+    }
+
 }

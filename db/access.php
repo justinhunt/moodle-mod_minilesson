@@ -168,5 +168,15 @@ $capabilities = array(
             ),
             'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ),
+
+    'mod/minilesson:export' => array(
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+    ),
 );
 

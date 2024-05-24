@@ -356,4 +356,125 @@ class import  {
         return $newrecord;
     }
 
+    public function export_items(){
+        global $DB;
+        $allitems = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->moduleinstance->id],'itemorder ASC');
+        $exportobj=new \stdClass();
+        $exportobj->items=[];
+        if($allitems &&count($allitems) > 0 ){
+            $i=0;
+            foreach($allitems as $theitem){
+                $i++;
+                $itemobj = $this->export_item_as_jsonobj($theitem);
+                if($itemobj){
+                    $exportobj->items[]=$itemobj;
+                }
+            }
+        }
+        return json_encode($exportobj);
+    }
+
+    public function export_item_as_jsonobj($itemrecord){
+        //get item type
+        $itemtypeclass = local\itemtype\item::get_itemtype_class($itemrecord->type);
+        if(!$itemtypeclass){return false;}
+
+        //get item column details
+        $keycolumns = $itemtypeclass::get_keycolumns();
+
+        //set up all voices if its not set up
+        if(count($this->allvoices) == 0){
+            foreach (constants::ALL_VOICES as $lang => $langvoices) {
+                foreach ($langvoices as $voicecode=>$voicename) {
+                    $this->allvoices[strtolower($voicename)] = $voicecode;
+                }
+            }
+        }
+
+        //make an empty item object
+        $itemobj=new \stdClass();
+
+        //loop through columnns making a nice value for our json object
+        foreach($keycolumns as $keycolumn){
+            $fieldvalue=$itemrecord->{$keycolumn['dbname']};
+            //skip any optional fields whose value is the default
+            if($keycolumn['optional']==true && $keycolumn['default']==$fieldvalue){
+                //skip
+                continue;
+            }
+
+            //turn db values into human values
+            switch($keycolumn['type']){
+                case 'int':
+                case 'string':
+                    $jsonvalue = $fieldvalue;
+                    break;
+
+                case 'stringarray':
+                    $lines[] = explode(PHP_EOL,$fieldvalue);
+                    $jsonvalue = $lines;
+                    break;
+
+                case 'voice':
+
+                    if(array_key_exists(strtolower($fieldvalue), $this->allvoices)){
+                        $jsonvalue = $this->allvoices[strtolower($fieldvalue)];
+                    }elseif(in_array(strtolower($fieldvalue) . '_g', $this->allvoices)){
+                        $jsonvalue = $this->allvoices[strtolower($fieldvalue) . '_g'];
+                    }else{
+                        $jsonvalue='auto';
+                    }
+                    break;
+
+                case 'voiceopts':
+                    switch($fieldvalue){
+                        case constants::TTS_SLOW:
+                            $jsonvalue = 'slow';
+                            break;
+                        case constants::TTS_VERYSLOW:
+                            $jsonvalue = 'veryslow';
+                            break;
+                        case constants::TTS_SSML:
+                            $jsonvalue = 'SSML';
+                            break;
+                        case constants::TTS_NORMAL:
+                        default:
+                            $jsonvalue ='normal' ;
+                            break;
+                    }
+                    break;
+
+                case 'layout':
+                    switch($fieldvalue){
+                        case constants::LAYOUT_HORIZONTAL:
+                            $jsonvalue = 'horizontal';
+                            break;
+                        case constants::LAYOUT_VERTICAL:
+                            $jsonvalue = 'vertical';
+                            break;
+                        case constants::LAYOUT_MAGAZINE:
+                            $jsonvalue = 'magazine';
+                            break;
+                        case constants::LAYOUT_AUTO:
+                        default:
+                            $jsonvalue = 'auto';
+                            break;
+                    }
+                    break;
+
+                case 'boolean':
+                    switch($fieldvalue){
+                        case true:
+                            $jsonvalue = 'yes';
+                            break;
+                        default:
+                            $jsonvalue = 'no';
+                    }
+                    break;
+            }//end of db values => human values
+            $itemobj->[$keycolumn['dbname']]=$jsonvalue;
+        }//end of loop through key cols
+        return $itemobj;
+    }//end of export item function
+
 }
