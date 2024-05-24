@@ -28,6 +28,23 @@ use external_value;
  */
 class mod_minilesson_external extends external_api {
 
+    public static function create_instance_parameters() {
+        return new external_function_parameters([
+            'name' => new external_value(PARAM_TEXT),
+            'description' => new external_value(PARAM_TEXT),
+        ]);
+    }
+
+    public static function create_instance($name,$description)
+    {
+        global $DB, $USER;
+        //create instance code goes here
+    }
+
+    public static function create_instance_returns() {
+        return new external_value(PARAM_RAW);
+    }
+
     public static function check_by_phonetic_parameters(){
         return new external_function_parameters(
                  array('spoken' => new external_value(PARAM_TEXT, 'The spoken phrase'),

@@ -69,6 +69,15 @@ $functions = array(
             'capabilities'=> 'mod/minilesson:managequestions',
             'type'        => 'write',
             'ajax'        => true,
+        ),
+
+        'mod_minilesson_create_instance' => array(
+            'classname'   => 'mod_minilesson_external',
+            'methodname'  => 'create_instance',
+            'description' => 'create a minilesson instance.',
+            'capabilities'=> 'mod/minilesson:addinstance',
+            'type'        => 'write',
+            'ajax'        => true,
         )
 
 );
