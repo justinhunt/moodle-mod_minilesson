@@ -8,8 +8,40 @@
 ></div>
 {{^element.frozen}}
     {{#js}}
-        require(['jquery', 'mod_minilesson/youtubeclip'], function($, youtubeclip) {
-            youtubeclip.initVideo("{{uniqid}}_ytplayer");
-        });
+       //<script>
+           function extractVimeoId(url) {
+               var match = url.match(/vimeo\.com\/(\d+)/);
+               return match ? match[1] : null;
+           }
+
+           require(['jquery', 'mod_minilesson/youtubeclip', 'mod_minilesson/vimeoclip'], function($, youtubeclip, vimeoclip) {
+               var videoUrlOrId = "{{itemytvideoid}}";
+               var videoId;
+
+               if (videoUrlOrId.includes("vimeo.com")) {
+                   videoId = extractVimeoId(videoUrlOrId);
+               } else {
+                   videoId = videoUrlOrId;
+               }
+
+               if (isYouTubeVideoId(videoId)) {
+                   youtubeclip.initVideo("{{uniqid}}_ytplayer");
+               } else if (isVimeoVideoId(videoId)) {
+                   vimeoclip.initVideo("{{uniqid}}_ytplayer");
+               } else {
+                   console.error("Unsupported video ID", videoId);
+               }
+
+               function isYouTubeVideoId(id) {
+                   var youtubeRegex = /^[a-zA-Z0-9_-]{11}$/;
+                   return youtubeRegex.test(id);
+               }
+
+               function isVimeoVideoId(id) {
+                   var vimeoRegex = /^[0-9]+$/;
+                   return vimeoRegex.test(id);
+               }
+           });
     {{/js}}
+
 {{/element.frozen}}
