@@ -62,7 +62,8 @@ class import  {
     public function set_reader($reader, $isjson=false){
         if($isjson) {
             $this->isjson = true;
-            $this->itemsfromjson = $reader;
+            $this->itemsfromjson = $reader->items;
+            $this->filesfromjson = $reader->files;
         }else{
             $this->cir = $reader;
         }
@@ -76,7 +77,7 @@ class import  {
         if($this->isjson) {
 
             $linenum = 0;
-            foreach ($this->itemsfromjson->items as $item) {
+            foreach ($this->itemsfromjson as $item) {
                 $linenum++;
                 $this->upt->flush();
                 $this->upt->track('line', $linenum);
@@ -171,12 +172,26 @@ class import  {
 
         //set the defaults
         foreach($keycolumns as $colname=>$coldef){
-            if(!isset($newrecord[$coldef['dbname']])){
+            if($coldef['dbname'] && !isset($newrecord[$coldef['dbname']])){
                 $newrecord[$coldef['dbname']]=$coldef['default'];
             }
         }
         //turn array into object
         $newrecord = (object)$newrecord;
+
+        //do files
+        //if the item has a filesid attribute and that filesid holds data in filesfromjson array
+        if(isset($itemdata->filesid) && isset($this->filesfromjson->{$itemdata->filesid})){
+            //files are stored as filename->base64data in the filesfromjson[filesid][filearea] array
+            //each item has a filesid, so we can match them up with the file location in filesfromjson
+            //json_encode can not be trusted to maintain arrays or objects, so force them to be arrays here
+            $filesdata = $this->filesfromjson->{$itemdata->filesid};
+            if(!is_array($filesdata)){$filesdata=(array)$filesdata;}
+            foreach($filesdata as $filearea => $thefiles){
+               if(!is_array($thefiles)){$thefiles=(array)$thefiles;}
+                $newrecord->{$filearea} = $thefiles;
+            }
+        }
 
         //fix up json fields which need to be packed into json
         //tts dialog opts
@@ -212,6 +227,7 @@ class import  {
         //lets update the phonetics
         $theitem->update_create_phonetic($olditem);
 
+        //finally do the update
         $result = $theitem->update_insert_item();
         if($result){
             $this->upt->track('status','Success', 'normal');
@@ -341,6 +357,13 @@ class import  {
                             $value = 1;
                     }
                     break;
+                case 'file':
+                    //we don't do anything with this here, but we need to set it to something
+                    $value = '';
+
+                case 'anonymousfile':
+                    //we don't do anything with this here, but we need to set it to something
+                    $value = '';
             }
 
             //set default values
@@ -358,12 +381,21 @@ class import  {
         $allitems = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->moduleinstance->id],'itemorder ASC');
         $exportobj=new \stdClass();
         $exportobj->items=[];
+        $exportobj->files=[];
         if($allitems &&count($allitems) > 0 ){
             $i=0;
             foreach($allitems as $theitem){
                 $i++;
                 $itemobj = $this->export_item_as_jsonobj($theitem);
                 if($itemobj){
+                    //do a files check .. if so move them to the final files obj at end of json file and set an id in the item
+                    if(count($itemobj->files)>0){
+                        $itemobj->filesid=$i;
+                        //add the files to the export obj
+                        $exportobj->files[$i]=$itemobj->files;
+                    }
+                    unset($itemobj->files);
+                    //add the item to the items array
                     $exportobj->items[]=$itemobj;
                 }
             }
@@ -375,6 +407,9 @@ class import  {
         //get item type
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemrecord->type);
         if(!$itemtypeclass){return false;}
+
+        //files info
+        $thefiles=[];
 
         //get item column details
         $keycolumns = $itemtypeclass::get_keycolumns();
@@ -388,6 +423,19 @@ class import  {
             }
         }
 
+        //Set fields where we pack data into json in DB
+        //tts dialog opts
+        if(!empty($itemrecord->{constants::TTSDIALOG})){
+            $itemrecord = utils::unpack_ttsdialogopts($itemrecord);
+        }
+        $itemrecord->{constants::TTSDIALOGOPTS}=null;
+
+        //tts passage opts
+        if(!empty($itemrecord->{constants::TTSPASSAGE})){
+            $itemrecord = utils::unpack_ttspassageopts($itemrecord);
+        }
+        $itemrecord->{constants::TTSPASSAGEOPTS}=null;
+
         //make an empty item object
         $itemobj=new \stdClass();
 
@@ -395,7 +443,9 @@ class import  {
         foreach($keycolumns as $keycolumn){
             $fieldvalue=$itemrecord->{$keycolumn['dbname']};
             //skip any optional fields whose value is the default
-            if($keycolumn['optional']==true && $keycolumn['default']==$fieldvalue){
+            //anonymous files are not in the DB record, so we need to process them a little later, to see if they are present
+            //for some reason integers and nulls are strings in $fieldvalue, so we  == though it should be ===
+            if($keycolumn['optional']==true && $keycolumn['default']==$fieldvalue && $keycolumn['type']!=='anonymousfile'){
                 //skip
                 continue;
             }
@@ -468,9 +518,51 @@ class import  {
                             $jsonvalue = 'no';
                     }
                     break;
-            }//end of db values => human values
-            $itemobj->{$keycolumn['jsonname']}=$jsonvalue;
+
+                case 'file':
+                    $fs = get_file_storage();
+                    $filearea=$keycolumn['type'];
+                    $files = $fs->get_area_files($this->modulecontext->id,  constants::M_COMPONENT,
+                        $filearea,$itemrecord->id);
+
+                    foreach ($files as $file) {
+                        $filename = $file->get_filename();
+                        if($filename=='.'){continue;}
+                        if($filename==$fieldvalue) {
+                            if(!isset($thefiles[$filearea])) {
+                                $thefiles[$filearea]=[];
+                            }
+                            $thefiles[$filearea][$filename]=base64_encode($file->get_content());
+                            $jsonvalue = $filename;
+                            break;
+                        }
+                    }
+                    break;
+                case 'anonymousfile':
+                    $fs = get_file_storage();
+                    $filearea=$keycolumn['jsonname'];
+                    $files = $fs->get_area_files($this->modulecontext->id,  constants::M_COMPONENT,
+                        $filearea,$itemrecord->id);
+
+                    foreach ($files as $file) {
+                        $filename = $file->get_filename();
+                        if($filename=='.'){continue;}
+                        if(!isset($thefiles[$filearea])) {
+                            $thefiles[$filearea]=[];
+                        }
+                        $thefiles[$filearea][$filename]=base64_encode($file->get_content());
+                    }
+            }//end of switch keycolumn type
+            //if the column has a DB field (file cols may not) we update it
+            if($keycolumn['dbname']) {
+                $itemobj->{$keycolumn['jsonname']} = $jsonvalue;
+            }
         }//end of loop through key cols
+
+        //Include the files
+        $itemobj->files = $thefiles;
+
+
         return $itemobj;
     }//end of export item function
 

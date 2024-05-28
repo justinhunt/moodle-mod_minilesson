@@ -149,6 +149,12 @@ abstract class item implements templatable, renderable {
     public static function get_keycolumns(){
         $keycolumns =  [];
         $keycolumns['type']=['type'=>'string','optional'=>false,'default'=>'','dbname'=>'type'];
+
+        //this is a special case. We don't store the media file(s) in the db or even the draft id. We just put it in the files area.
+        //there could be more than one. ie an audio, a video and a picture.
+        $keycolumns['itemmedia']=['type'=>'anonymousfile','optional'=>true,'default'=>null,'dbname'=>false];
+
+
         $keycolumns['name']=['type'=>'string','optional'=>false,'default'=>'','dbname'=>'name'];
         $keycolumns['visible']=['type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>'visible'];
         $keycolumns['instructions']=['type'=>'string','optional'=>true,'default'=>'', 'dbname'=>'iteminstructions'];
@@ -163,9 +169,9 @@ abstract class item implements templatable, renderable {
         $keycolumns['ytid']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemytid'];
         $keycolumns['ytstart']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytstart'];
         $keycolumns['ytend']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytend'];
-        $keycolumns['audiofname']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemaudiofname'];
-        $keycolumns['ttsdialog']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttsdialog'];
-        $keycolumns['ttsdialogopts']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemttsdialogopts'];
+        $keycolumns['audiofname']=['type'=>'file','optional'=>true,'default'=>null,'dbname'=>'itemaudiofname'];
+        $keycolumns['ttsdialog']=['type'=>'stringarray','optional'=>true,'default'=>null,'dbname'=>'itemttsdialog'];
+        $keycolumns['ttsdialogopts']=['type'=>'stringjson','optional'=>true,'default'=>null,'dbname'=>'itemttsdialogopts'];
         $keycolumns['ttsdialogvoicea']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEA];
         $keycolumns['ttsdialogvoiceb']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEB];
         $keycolumns['ttsdialogvoicec']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEC];
@@ -198,6 +204,7 @@ abstract class item implements templatable, renderable {
         $keycolumns['timelimit']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'timelimit'];
         $keycolumns['layout']=['type'=>'layout','optional'=>true,'default'=>0,'dbname'=>'layout'];
         $keycolumns['correctanswer']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'correctanswer'];
+
         foreach($keycolumns as $key=>$keycol){
             $keycolumns[$key]['jsonname'] = $key;
         }
@@ -836,10 +843,28 @@ abstract class item implements templatable, renderable {
 
         //Item media
         if (property_exists($data, constants::MEDIAQUESTION)) {
-            file_save_draft_area_files($data->{constants::MEDIAQUESTION},
-                $this->context->id, constants::M_COMPONENT,
-                constants::MEDIAQUESTION, $theitem->id,
-                $this->filemanageroptions);
+            //if this is from an import, it will be an array
+            if(is_array($data->{constants::MEDIAQUESTION})){
+                foreach ($data->{constants::MEDIAQUESTION} as $filename=>$filecontent){
+                    $filerecord = array(
+                        'contextid' => $this->context->id,
+                        'component' => constants::M_COMPONENT,
+                        'filearea'  => constants::MEDIAQUESTION,
+                        'itemid'    => $theitem->id,
+                        'filepath'  => '/',
+                        'filename'  => $filename,
+                        'userid'    => $USER->id
+                    );
+                    $fs = get_file_storage();
+                    $fs->create_file_from_string($filerecord, base64_decode($filecontent));
+                }
+            }else{
+                //if this is from a form submission, this will involve draft files
+                file_save_draft_area_files($data->{constants::MEDIAQUESTION},
+                    $this->context->id, constants::M_COMPONENT,
+                    constants::MEDIAQUESTION, $theitem->id,
+                    $this->filemanageroptions);
+            }
         }
 
         //Item TTS

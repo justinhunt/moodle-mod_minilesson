@@ -1,3 +1,6 @@
+Version 1.0.66 (Build 2024052800)
+- Added import/export items as JSON
+
 Version 1.0.65 (Build 2024052400)
 - Added export items feature
 
