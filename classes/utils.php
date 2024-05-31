@@ -1637,4 +1637,36 @@ class utils{
         return $result;
     }
 
+    public static function create_instance($courseid,$moduledata, $sectionid=1){
+        global $CFG,$DB;
+
+        //course id and module type (and sectionid) minimum required for cm creation
+        $modulename="minilesson";
+        $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
+
+        //create new cm
+        require_once($CFG->dirroot.'/course/modlib.php');
+        list($module, $context, $cw, $cm, $data) = prepare_new_moduleinfo_data($course, $modulename, $sectionid);
+        $data->coursemodule = $data->id = add_course_module($data);
+
+        //add specific stuff to it
+        $data->displayname="This is an auto minilesson";
+        $data->name="This is an auto minilesson";
+        $data->intro='';
+        $data->pagelayout='standard';
+     //   $data->timelimit=0;
+        $data->showqtitles=0;
+        $data->maxattempts=0;
+        $data->ttslanguage='en-US';
+        $data->region='useast1';
+        $data->richtextprompt=0;
+        $data->activitylink=0;
+        $data->foriframe=0;
+        $data->grade=0;
+
+        minilesson_add_instance($data, null);
+
+
+    }
+
 }

@@ -34,15 +34,17 @@ class mod_minilesson_external extends external_api {
 
     public static function create_instance_parameters() {
         return new external_function_parameters([
-            'name' => new external_value(PARAM_TEXT),
-            'description' => new external_value(PARAM_TEXT),
+            'courseid' => new external_value(PARAM_INT, 'The course id',VALUE_REQUIRED),
+            'moduledata' => new external_value(PARAM_TEXT, 'The module data in JSON format',VALUE_REQUIRED),
         ]);
     }
 
-    public static function create_instance($name,$description)
+    public static function create_instance($courseid,$moduledata)
     {
         global $DB, $USER;
         //create instance code goes here
+        utils::create_instance($courseid,$moduledata);
+        return '{}';
     }
 
     public static function create_instance_returns() {

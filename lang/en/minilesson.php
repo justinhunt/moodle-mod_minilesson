@@ -689,3 +689,6 @@ $string["exportitems"]='Export Items';
 $string["importformat"]="Import Format";
 $string["exportheading"]='Export Items as JSON';
 $string["importheading"]="Import JSON or CSV Items";
+$string["allowmicaccess"]="Please allow access to your microphone.";
+$string["nomicdetected"]="No microphone detected.";
+$string["speechnotrecognized"]="We could not recognize your speech.";

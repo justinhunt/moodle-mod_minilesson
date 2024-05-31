@@ -1,5 +1,5 @@
-define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper','mod_minilesson/ttbrowserrec' ],
-    function ($, log, notification, audioHelper, browserRec) {
+define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper','mod_minilesson/ttbrowserrec','core/str' ],
+    function ($, log, notification, audioHelper, browserRec,str) {
     "use strict"; // jshint ;_;
     /*
     *  The TT recorder
@@ -34,6 +34,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         currentTime: 0,
         stt_guided: false,
         currentPrompt: false,
+        strings: {},
 
         //for making multiple instances
         clone: function () {
@@ -47,6 +48,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             this.uniqueid=opts['uniqueid'];
             this.callback=opts['callback'];
             this.stt_guided = opts['stt_guided'] ? opts['stt_guided'] : false;
+            this.init_strings();
             this.prepare_html();
             this.controls.recordercontainer.show();
             this.register_events();
@@ -57,11 +59,11 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 switch (error.name) {
                     case 'PermissionDeniedError':
                     case 'NotAllowedError':
-                        notification.alert("Error",'Please allow access to your microphone!', "OK");
+                        notification.alert("Error",that.strings.allowmicaccess, "OK");
                         break;
                     case 'DevicesNotFoundError':
                     case 'NotFoundError':
-                        notification.alert("Error",'No microphone detected!', "OK");
+                        notification.alert("Error",that.strings.nomicdetected, "OK");
                         break;
                     default:
                         //other errors, like from Edge can fire repeatedly so a notification is not a good idea
@@ -72,6 +74,11 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
             var on_stopped = function(blob) {
                 clearInterval(that.interval);
+
+                //if the blob is undefined then the user is super clicking or something
+                if(blob===undefined){
+                    return;
+                }
 
                 //if ds recc
                 var newaudio = {
@@ -85,18 +92,22 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
                 that.deepSpeech2(that.audio.blob, function(response){
                     log.debug(response);
-                    that.update_audio('isRecognizing',false);
                     if(response.data.result==="success" && response.data.transcript){
                         that.gotRecognition(response.data.transcript.trim());
                     } else {
-                        notification.alert("Information","We could not recognize your speech.", "OK");
+                        notification.alert("Information",that.strings.speechnotrecognized, "OK");
                     }
+                    that.update_audio('isRecognizing',false);
                 });
 
             };
 
             //set up events
             var on_gotstream=  function(stream) {
+                //clear any existing interval
+                if(that.interval!==undefined){
+                    clearInterval(that.interval);
+                }
 
                 var newaudio={stream: stream, isRecording: true};
                 that.update_audio(newaudio);
@@ -150,6 +161,21 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 that.audiohelper.onStream = on_gotstream;
 
             }//end of setting up recorders
+        },
+
+        init_strings: function(){
+            var that=this;
+            str.get_strings([
+                { "key": "allowmicaccess", "component": 'mod_minilesson'},
+                { "key": "nomicdetected", "component": 'mod_minilesson'},
+                { "key": "speechnotrecognized", "component": 'mod_minilesson'},
+
+            ]).done(function (s) {
+                var i = 0;
+                that.strings.allowmicaccess = s[i++];
+                that.strings.nomicdetected = s[i++];
+                that.strings.speechnotrecognized = s[i++];
+            });
         },
 
         prepare_html: function(){
@@ -251,6 +277,11 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         toggleRecording: function() {
             var that =this;
 
+            //If we are recognizing, then we want to discourage super click'ers
+            if (this.audio.isRecognizing) {
+                return;
+            }
+
             //If we are current recording
             if (this.audio.isRecording) {
                 //If using Browser Rec (chrome speech)
@@ -329,14 +360,14 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                     callback(JSON.parse(oReq.response));
                 } else {
                     callback({data: {result: "error"}});
-                    console.error(oReq.error);
+                    log.debug(oReq.error);
                 }
             };
             try {
                 oReq.send(bodyFormData);
             }catch(err){
                 callback({data: {result: "error"}});
-                console.error(err);
+                log.debug(err);
             }
         },
 
