@@ -122,10 +122,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                         that.audiohelper.stop();
                     }
                 }, 10);
-
             };
-
-
 
             //If browser rec (Chrome Speech Rec) (and ds is optiona)
             if(browserRec.will_work_ok() && ! this.stt_guided){

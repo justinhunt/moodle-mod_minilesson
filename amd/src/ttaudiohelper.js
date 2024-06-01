@@ -125,7 +125,11 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             this.silencecount=0;
             this.alreadyhadsound=false;
             this.therecorder.update_audio('isRecording',false);
-            this.audioContext.close();
+            //we check audiocontext is not in an odd state before closing
+            //superclickers can get it in an odd state
+            if (this.audioContext!==null && this.audioContext.state !== "closed") {
+                this.audioContext.close();
+             }
             this.processor.disconnect();
             this.tracks.forEach(track => track.stop());
             this.onStop(this.encoder.finish());
