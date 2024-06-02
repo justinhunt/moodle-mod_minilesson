@@ -160,13 +160,12 @@ class mod_minilesson_external extends external_api {
         //EXPERIMENTAL
         $shortlang = utils::fetch_short_lang($language);
         switch ($shortlang){
-            case 'en':
-                //find digits in original passage, and convert number words to digits in the target passage
-                $transcript=alphabetconverter::words_to_numbers_convert($passage,$transcript,$shortlang);
-                break;
+
             case 'de':
-                //find eszetts in original passage, and convert ss words to eszetts in the target passage
+                $transcript=alphabetconverter::words_to_numbers_convert($passage,$transcript,$shortlang);
+                //find eszetts in original passage, and convert ss words to eszetts in the target passage (transcript)
                 $transcript=alphabetconverter::ss_to_eszett_convert($passage,$transcript );
+
                 break;
             case 'ja':
                 //find digits in original passage, and convert number words to digits in the target passage
@@ -174,9 +173,16 @@ class mod_minilesson_external extends external_api {
                 //from here and aigrade
                 $transcript=alphabetconverter::words_to_suji_convert($passage,$transcript);
                 break;
+            case 'en':
+            default:
+                //find digits in original passage, and convert number words to digits in the target passage (transcript)
+                $transcript=alphabetconverter::words_to_numbers_convert($passage,$transcript,$shortlang);
 
-
+                break;
         }
+
+        //we also want to fetch the alternatives for the number_words in passage (though we expect number_digits there)
+        $alternatives .= PHP_EOL . alphabetconverter::fetch_numerical_alternates($shortlang);  //"four|for|4";
 
         //If this is Japanese, and the passage has been segmented, we want to segment it into "words"
         /*
@@ -192,6 +198,7 @@ class mod_minilesson_external extends external_api {
 
         //turn the passage and transcript into an array of words
         $passagebits = diff::fetchWordArray($passage);
+
         $alternatives = diff::fetchAlternativesArray($alternatives);
         $transcriptbits = diff::fetchWordArray($transcript);
         $transcriptphonetic_bits = diff::fetchWordArray($transcript_phonetic);
