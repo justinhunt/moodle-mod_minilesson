@@ -17,7 +17,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
     return {
 
       //original spliton_regexp: new RegExp(/([,.!?:;" ])/, 'g'),
-      spliton_regexp: new RegExp(/([!"# ¡¿$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~])/, 'g'),
+        // V2 spliton_regexp new RegExp(/([!"# ¡¿$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~])/, 'g'),
+        //v3 we removed the apostrophe because it was not counting words correcting in listen and speak
+      spliton_regexp: new RegExp(/([!"# ¡¿$%&()。「」、*+,-.\/:;<=>?@[\]^_`{|}~])/, 'g'),
       //nopunc is diff to split on because it does not match on spaces
       nopunc_regexp: new RegExp(/[!"#¡¿$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~]/,'g'),
       nonspaces_regexp: new RegExp(/[^ ]/,'g'),
