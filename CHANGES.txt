@@ -1,3 +1,5 @@
+-- fixed wrong trim function
+
 Version 1.0.66 (Build 2024052800)
 - Added import/export items as JSON
 

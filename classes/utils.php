@@ -1094,7 +1094,7 @@ class utils{
     }
 
     public static function split_into_sentences($thetext) {
-        $thetext = preg_replace('/\s+/', ' ', \core_text::trim_utf8_bom($thetext));
+        $thetext = preg_replace('/\s+/', ' ', self::super_trim($thetext));
         if($thetext == ''){
             return array();
         }
@@ -1637,6 +1637,15 @@ class utils{
         return $result;
     }
 
+    public static function super_trim($str){
+        if($str==null){
+            return '';
+        }else{
+            $str = trim($str);
+            return $str;
+        }
+    }
+
     public static function create_instance($courseid,$moduledata, $sectionid=1){
         global $CFG,$DB;
 
@@ -1665,7 +1674,6 @@ class utils{
         $data->grade=0;
 
         minilesson_add_instance($data, null);
-
 
     }
 
