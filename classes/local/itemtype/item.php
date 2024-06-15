@@ -170,7 +170,7 @@ abstract class item implements templatable, renderable {
         $keycolumns['ytstart']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytstart'];
         $keycolumns['ytend']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytend'];
         $keycolumns['audiofname']=['type'=>'file','optional'=>true,'default'=>null,'dbname'=>'itemaudiofname'];
-        $keycolumns['ttsdialog']=['type'=>'stringarray','optional'=>true,'default'=>null,'dbname'=>'itemttsdialog'];
+        $keycolumns['ttsdialog']=['type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'itemttsdialog'];
         $keycolumns['ttsdialogopts']=['type'=>'stringjson','optional'=>true,'default'=>null,'dbname'=>'itemttsdialogopts'];
         $keycolumns['ttsdialogvoicea']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEA];
         $keycolumns['ttsdialogvoiceb']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEB];
