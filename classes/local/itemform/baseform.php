@@ -108,7 +108,7 @@ abstract class baseform extends \moodleform {
      * and then calls custom_definition();
      */
     public final function definition() {
-        global $CFG;
+        global $CFG,$OUTPUT;
 
         $m35 = $CFG->version >= 2018051700;
         $mform = $this->_form;
@@ -243,140 +243,10 @@ abstract class baseform extends \moodleform {
                     $mform->setDefault('addmedia', 1);
                 }
 
-                //Question media upload
-                $this->add_media_upload(constants::MEDIAQUESTION,get_string('itemmedia',constants::M_COMPONENT));
-                if($m35){
-                    $mform->hideIf(constants::MEDIAQUESTION, 'addmedia', 'neq', 1);
-                }else {
-                    $mform->disabledIf(constants::MEDIAQUESTION, 'addmedia', 'neq', 1);
-                }
-
-
-                //Question media iframe
-                $mform->addElement('text', constants::MEDIAIFRAME, get_string('itemiframe', constants::M_COMPONENT), array('size'=>100));
-                $mform->setType(constants::MEDIAIFRAME, PARAM_RAW);
-                if($m35){
-                    $mform->hideIf( constants::MEDIAIFRAME,'addiframe','neq', 1);
-                }else {
-                    $mform->disabledIf( constants::MEDIAIFRAME,'addiframe','neq', 1);
-                }
-
-
-                //Question text to speech
-                $mform->addElement('textarea', constants::TTSQUESTION, get_string('itemttsquestion', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
-                $mform->setType(constants::TTSQUESTION, PARAM_RAW);
-                $this->add_voiceselect(constants::TTSQUESTIONVOICE,get_string('itemttsquestionvoice',constants::M_COMPONENT));
-                $this->add_voiceoptions(constants::TTSQUESTIONOPTION,get_string('choosevoiceoption',constants::M_COMPONENT));
-                $mform->addElement('advcheckbox',constants::TTSAUTOPLAY,get_string('autoplay',constants::M_COMPONENT),'');
-                if($m35){
-                    $mform->hideIf(constants::TTSQUESTION, 'addttsaudio', 'neq', 1);
-                    $mform->hideIf(constants::TTSQUESTIONVOICE, 'addttsaudio', 'neq', 1);
-                    $mform->hideIf(constants::TTSQUESTIONOPTION, 'addttsaudio', 'neq', 1);
-                    $mform->hideIf(constants::TTSAUTOPLAY, 'addttsaudio', 'neq', 1);
-                }else {
-                    $mform->disabledIf(constants::TTSQUESTION, 'addttsaudio', 'neq', 1);
-                    $mform->disabledIf(constants::TTSQUESTIONVOICE, 'addttsaudio', 'neq', 1);
-                    $mform->disabledIf(constants::TTSQUESTIONOPTION, 'addttsaudio', 'neq', 1);
-                    $mform->disabledIf(constants::TTSAUTOPLAY, 'addttsaudio', 'neq', 1);
-                }
-                //Question itemtextarea
-                $someid = \html_writer::random_id();
-                $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
-                //a bug prevents hideif working, but putting it in a group works dandy
-                $groupelements= [];
-                $groupelements[] = &$mform->createElement('editor', constants::QUESTIONTEXTAREA . '_editor',
-                        get_string('itemtextarea', constants::M_COMPONENT),
-                        array('id' => $someid, 'wrap' => 'virtual', 'style' => 'width: 100%;', 'rows' => '5'),
-                        $edoptions);
-                $this->_form->setDefault(constants::QUESTIONTEXTAREA . '_editor', array('text' => '', 'format' => FORMAT_HTML));
-                $mform->setType(constants::QUESTIONTEXTAREA, PARAM_RAW);
-                $mform->addGroup($groupelements, 'groupelements', get_string('itemtextarea', constants::M_COMPONENT), array(' '), false);
-                if($m35){
-                    $mform->hideIf('groupelements', 'addtextarea', 'neq', 1);
-                   // $mform->hideIf(constants::QUESTIONTEXTAREA. '_editor', 'addtextarea', 'neq', 1);
-                }else {
-                    $mform->disabledIf('groupelements', 'addtextarea', 'neq', 1);
-                   // $mform->disabledIf(constants::QUESTIONTEXTAREA. '_editor', 'addtextarea', 'neq', 1);
-                }
-            }
-
-            //Question YouTube Clip
-            $ytarray=array();
-            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOID, get_string('itemytid', constants::M_COMPONENT),  array('size'=>15, 'placeholder'=>"Video ID"));
-            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOSTART, get_string('itemytstart', constants::M_COMPONENT),  array('size'=>3,'placeholder'=>"Start"));
-            $ytarray[] =& $mform->createElement('html','s - ');
-            $ytarray[] =& $mform->createElement('text', constants::YTVIDEOEND, get_string('itemytend', constants::M_COMPONENT),  array('size'=>3,'placeholder'=>"End"));
-            $ytarray[] =& $mform->createElement('html','s');
-
-            $mform->addGroup($ytarray, 'ytarray', get_string('ytclipdetails', constants::M_COMPONENT), array(' '), false);
-            $mform->setType(constants::YTVIDEOID, PARAM_RAW);
-            $mform->setType(constants::YTVIDEOSTART, PARAM_INT);
-            $mform->setType(constants::YTVIDEOEND, PARAM_INT);
-
-            if($m35){
-                $mform->hideIf('ytarray', 'addyoutubeclip', 'neq', 1);
-            }else {
-                $mform->disabledIf('ytarray', 'addyoutubeclip', 'neq', 1);
-            }
-
-            //Question TTS Dialog
-
-            $ttsdialog_instructions_array=array();
-            $ttsdialog_instructions_array[] =& $mform->createElement('static', 'ttsdialog_instructions', null,get_string('ttsdialoginstructions', constants::M_COMPONENT));
-            $mform->addGroup($ttsdialog_instructions_array, 'ttsdialog_grp','', array(' '), false);
-            //Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
-            //$this->add_static_text('ttsdialog_instructions',null,get_string('ttsdialoginstructions', constants::M_COMPONENT));
-
-            $this->add_voiceselect(constants::TTSDIALOGVOICEA,get_string('ttsdialogvoicea',constants::M_COMPONENT));
-            $this->add_voiceselect(constants::TTSDIALOGVOICEB,get_string('ttsdialogvoiceb',constants::M_COMPONENT));
-            $this->add_voiceselect(constants::TTSDIALOGVOICEC,get_string('ttsdialogvoicec',constants::M_COMPONENT));
-            $mform->addElement('textarea', constants::TTSDIALOG, get_string('ttsdialog', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;','placeholder'=>'A) Hello&#10;B) Goodbye'));
-            $mform->setType(constants::TTSDIALOG, PARAM_RAW);
-            $mform->addElement('advcheckbox',constants::TTSDIALOGVISIBLE,get_string('ttsdialogvisible',constants::M_COMPONENT),get_string('ttsdialogvisible_desc', constants::M_COMPONENT));
-            $mform->setDefault(constants::TTSDIALOGVISIBLE, 1);
-
-            if($m35){
-                $mform->hideIf('ttsdialog_grp', 'addttsdialog', 'neq', 1);
-                $mform->hideIf(constants::TTSDIALOGVOICEA, 'addttsdialog', 'neq', 1);
-                $mform->hideIf(constants::TTSDIALOGVOICEB, 'addttsdialog', 'neq', 1);
-                $mform->hideIf(constants::TTSDIALOGVOICEC, 'addttsdialog', 'neq', 1);
-                $mform->hideIf(constants::TTSDIALOGVISIBLE, 'addttsdialog', 'neq', 1);
-                $mform->hideIf(constants::TTSDIALOG, 'addttsdialog', 'neq', 1);
-            }else {
-                $mform->disabledIf('ttsdialog_grp', 'addttsdialog', 'neq', 1);
-                $mform->disabledIf(constants::TTSDIALOGVOICEA, 'addttsdialog', 'neq', 1);
-                $mform->disabledIf(constants::TTSDIALOGVOICEB, 'addttsdialog', 'neq', 1);
-                $mform->disabledIf(constants::TTSDIALOGVOICEC, 'addttsdialog', 'neq', 1);
-                $mform->disabledIf(constants::TTSDIALOGVISIBLE, 'addttsdialog', 'neq', 1);
-                $mform->disabledIf(constants::TTSDIALOG, 'addttsdialog', 'neq', 1);
-
-            }
-
-            //Question TTS Passage
-            $ttspassage_instructions_array=array();
-            $ttspassage_instructions_array[] =& $mform->createElement('static', 'ttspassage_instructions', null,get_string('ttspassageinstructions', constants::M_COMPONENT));
-            $mform->addGroup($ttspassage_instructions_array, 'ttspassage_grp','', array(' '), false);
-            //Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
-            //$this->add_static_text('ttspassage_instructions',null,get_string('ttspassageinstructions', constants::M_COMPONENT));
-
-            $this->add_voiceselect(constants::TTSPASSAGEVOICE,get_string('ttspassagevoice',constants::M_COMPONENT));
-            $this->add_voiceoptions(constants::TTSPASSAGESPEED,get_string('ttspassagespeed',constants::M_COMPONENT));
-            $mform->addElement('textarea', constants::TTSPASSAGE, get_string('ttspassage', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;','placeholder'=>''));
-            $mform->setType(constants::TTSPASSAGE, PARAM_RAW);
-
-            if($m35){
-                $mform->hideIf('ttspassage_grp', 'addttspassage', 'neq', 1);
-                $mform->hideIf(constants::TTSPASSAGEVOICE, 'addttspassage', 'neq', 1);
-                $mform->hideIf(constants::TTSPASSAGESPEED, 'addttspassage', 'neq', 1);
-                $mform->hideIf(constants::TTSPASSAGE, 'addttspassage', 'neq', 1);
-            }else {
-                $mform->disabledIf('ttspassage_grp', 'addttspassage', 'neq', 1);
-                $mform->disabledIf(constants::TTSPASSAGEVOICE, 'addttspassage', 'neq', 1);
-                $mform->disabledIf(constants::TTSPASSAGESPEED, 'addttspassage', 'neq', 1);
-                $mform->disabledIf(constants::TTSPASSAGE, 'addttspassage', 'neq', 1);
-
-            }
-        }
+                //add the media prompts chooser and fields
+                $this->add_media_prompts();
+            }//end of if richtextprompt or not
+        }//end of if standard = true
 
 		//visibility
 		//$mform->addElement('selectyesno', 'visible', get_string('visible'));
@@ -385,8 +255,6 @@ abstract class baseform extends \moodleform {
 
         $this->custom_definition();
 		
-		
-
 		//add the action buttons
         $this->add_action_buttons(get_string('cancel'), get_string('saveitem', constants::M_COMPONENT));
 
@@ -450,6 +318,122 @@ abstract class baseform extends \moodleform {
             $this->_form->setDefault($name, $default);
         }
 
+    }
+
+    protected function add_media_prompts(){
+        global $CFG,$OUTPUT;
+        $m35=true;
+
+        //cut down on the code by using media item types array to pre-prepare fieldsets and media prompt selector
+        $mediaprompts =['addmedia','addiframe','addttsaudio','addtextarea','addyoutubeclip','addttsdialog','addttspassage'];
+        $fulloptions=[];
+        $fieldsettops=[];
+        $fieldsetbottom="</fieldset>";
+        foreach($mediaprompts as $mediaprompt){
+            //dropdown options for media prompt selector
+            $fulloptions[$mediaprompt]=get_string($mediaprompt,constants::M_COMPONENT);
+            //fieldset
+            $panelopts["mediatype"]=$mediaprompt;
+            $panelopts["legend"]=get_string($mediaprompt,constants::M_COMPONENT);
+            $panelopts["instructions"]=get_string($mediaprompt . '_instructions',constants::M_COMPONENT);
+            $fieldsettops[$mediaprompt]=$OUTPUT->render_from_template('mod_minilesson/mediapromptfieldset',$panelopts);
+        }
+
+        //lets make life easy with short access to $this->_form
+        $mform = $this->_form;
+
+        //add media prompt selector
+        $mediaprompts_html = $OUTPUT->render_from_template('mod_minilesson/mediapromptselector',$fulloptions);
+       // $mform->addElement('static', 'mediaprompts', $mediaprompts_html, '' );
+        $mform->addElement('select', 'mediaprompts', get_string('mediaprompts',constants::M_COMPONENT), $fulloptions);
+
+
+        //Question media upload
+        $mform->addElement('html',$fieldsettops['addmedia'],[]);
+        $this->add_media_upload(constants::MEDIAQUESTION,get_string('itemmedia',constants::M_COMPONENT));   
+        $mform->addElement('html',$fieldsetbottom,[]);
+
+
+        //Question media iframe
+        $mform->addElement('html',$fieldsettops['addiframe'],[]);
+            $mform->addElement('text', constants::MEDIAIFRAME, get_string('itemiframe', constants::M_COMPONENT), array('size'=>100));
+            $mform->setType(constants::MEDIAIFRAME, PARAM_RAW);
+        //close the fieldset    
+        $mform->addElement('html',$fieldsetbottom,[]);
+
+
+        //Question text to speech
+        $mform->addElement('html',$fieldsettops['addttsaudio'],[]);
+        $mform->addElement('textarea', constants::TTSQUESTION, get_string('itemttsquestion', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
+        $mform->setType(constants::TTSQUESTION, PARAM_RAW);
+        $this->add_voiceselect(constants::TTSQUESTIONVOICE,get_string('itemttsquestionvoice',constants::M_COMPONENT));
+        $this->add_voiceoptions(constants::TTSQUESTIONOPTION,get_string('choosevoiceoption',constants::M_COMPONENT));
+        $mform->addElement('advcheckbox',constants::TTSAUTOPLAY,get_string('autoplay',constants::M_COMPONENT),'');
+        $mform->addElement('html',$fieldsetbottom,[]);
+
+        //Question itemtextarea
+        $mform->addElement('html',$fieldsettops['addtextarea'],[]);
+        $someid = \html_writer::random_id();
+        $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
+        //a bug prevents hideif working, but putting it in a group works dandy
+        $groupelements= [];
+        $groupelements[] = &$mform->createElement('editor', constants::QUESTIONTEXTAREA . '_editor',
+                get_string('itemtextarea', constants::M_COMPONENT),
+                array('id' => $someid, 'wrap' => 'virtual', 'style' => 'width: 100%;', 'rows' => '5'),
+                $edoptions);
+        $this->_form->setDefault(constants::QUESTIONTEXTAREA . '_editor', array('text' => '', 'format' => FORMAT_HTML));
+        $mform->setType(constants::QUESTIONTEXTAREA, PARAM_RAW);
+        $mform->addGroup($groupelements, 'groupelements', get_string('itemtextarea', constants::M_COMPONENT), array(' '), false);
+        $mform->addElement('html',$fieldsetbottom,[]);
+
+        //Question YouTube Clip
+        $mform->addElement('html',$fieldsettops['addyoutubeclip'],[]);
+        $ytarray=array();
+        $ytarray[] =& $mform->createElement('text', constants::YTVIDEOID, get_string('itemytid', constants::M_COMPONENT),  array('size'=>15, 'placeholder'=>"Video ID"));
+        $ytarray[] =& $mform->createElement('text', constants::YTVIDEOSTART, get_string('itemytstart', constants::M_COMPONENT),  array('size'=>3,'placeholder'=>"Start"));
+        $ytarray[] =& $mform->createElement('html','s - ');
+        $ytarray[] =& $mform->createElement('text', constants::YTVIDEOEND, get_string('itemytend', constants::M_COMPONENT),  array('size'=>3,'placeholder'=>"End"));
+        $ytarray[] =& $mform->createElement('html','s');
+
+        $mform->addGroup($ytarray, 'ytarray', get_string('ytclipdetails', constants::M_COMPONENT), array(' '), false);
+        $mform->setType(constants::YTVIDEOID, PARAM_RAW);
+        $mform->setType(constants::YTVIDEOSTART, PARAM_INT);
+        $mform->setType(constants::YTVIDEOEND, PARAM_INT);
+        $mform->addElement('html',$fieldsetbottom,[]);
+
+        //Question TTS Dialog
+        $mform->addElement('html',$fieldsettops['addttsdialog'],[]);
+        $ttsdialog_instructions_array=array();
+        $ttsdialog_instructions_array[] =& $mform->createElement('static', 'ttsdialog_instructions', null,get_string('ttsdialoginstructions', constants::M_COMPONENT));
+        $mform->addGroup($ttsdialog_instructions_array, 'ttsdialog_grp','', array(' '), false);
+        //Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
+        //$this->add_static_text('ttsdialog_instructions',null,get_string('ttsdialoginstructions', constants::M_COMPONENT));
+
+        $this->add_voiceselect(constants::TTSDIALOGVOICEA,get_string('ttsdialogvoicea',constants::M_COMPONENT));
+        $this->add_voiceselect(constants::TTSDIALOGVOICEB,get_string('ttsdialogvoiceb',constants::M_COMPONENT));
+        $this->add_voiceselect(constants::TTSDIALOGVOICEC,get_string('ttsdialogvoicec',constants::M_COMPONENT));
+        $mform->addElement('textarea', constants::TTSDIALOG, get_string('ttsdialog', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;','placeholder'=>'A) Hello&#10;B) Goodbye'));
+        $mform->setType(constants::TTSDIALOG, PARAM_RAW);
+        $mform->addElement('advcheckbox',constants::TTSDIALOGVISIBLE,get_string('ttsdialogvisible',constants::M_COMPONENT),get_string('ttsdialogvisible_desc', constants::M_COMPONENT));
+        $mform->setDefault(constants::TTSDIALOGVISIBLE, 1);
+        $mform->addElement('html',$fieldsetbottom,[]);
+
+        //Question TTS Passage
+        $mform->addElement('html',$fieldsettops['addttspassage'],[]);
+        $ttspassage_instructions_array=array();
+        $ttspassage_instructions_array[] =& $mform->createElement('static', 'ttspassage_instructions', null,get_string('ttspassageinstructions', constants::M_COMPONENT));
+        $mform->addGroup($ttspassage_instructions_array, 'ttspassage_grp','', array(' '), false);
+        //Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
+        //$this->add_static_text('ttspassage_instructions',null,get_string('ttspassageinstructions', constants::M_COMPONENT));
+
+        $this->add_voiceselect(constants::TTSPASSAGEVOICE,get_string('ttspassagevoice',constants::M_COMPONENT));
+        $this->add_voiceoptions(constants::TTSPASSAGESPEED,get_string('ttspassagespeed',constants::M_COMPONENT));
+        $mform->addElement('textarea', constants::TTSPASSAGE, get_string('ttspassage', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;','placeholder'=>''));
+        $mform->setType(constants::TTSPASSAGE, PARAM_RAW);
+        $mform->addElement('html',$fieldsetbottom,[]);
+
+
+        
     }
 
     protected final function add_media_upload($name, $label, $required = false) {

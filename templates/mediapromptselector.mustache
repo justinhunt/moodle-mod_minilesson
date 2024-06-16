@@ -1,0 +1,23 @@
+
+  
+  {{^element.frozen}}
+    {{#js}}
+        require(['jquery'],function($) {
+          
+            var select = $('#id_mediaprompts');
+            select.on('change',function(){
+                var mediaprompt = $(this).val();
+                console.log('selected somethig');
+                $('#ml_mediaprompt_panel_' + mediaprompt).show();
+            })
+
+            var fieldset_close = $('.ml_mediaprompt_panel button.close');
+            fieldset_close.on('click',function(){
+                //set to display: none the parent fieldset
+                $(this).closest('fieldset').hide();
+            })
+
+
+        });
+    {{/js}}
+{{/element.frozen}}

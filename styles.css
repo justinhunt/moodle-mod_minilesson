@@ -2631,3 +2631,6 @@ body.poodll-minilesson-embed #page {
   direction: rtl;
   text-align: right;
 }
+.ml_mediaprompt_instructions {
+  margin-bottom: 5px;
+}    

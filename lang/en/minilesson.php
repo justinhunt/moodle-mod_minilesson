@@ -510,10 +510,21 @@ $string['reattemptbody'] = 'If you continue your previous attempt will be replac
 
 //media toggles
 $string['addmedia'] = 'Add Media';
+$string['addmedia_instructions'] = 'Choose the media type you want to show in the lesson item.';
 $string['addiframe'] = 'Add iFrame';
+$string['addiframe_instructions'] = 'Paste the embed code for the iframe you want to show in the lesson item.';
 $string['addttsaudio'] = 'Add TTS Audio';
+$string['addttsaudio_instructions'] = 'Enter the text you want to be spoken by the TTS engine.';
 $string['addtextarea'] = 'Add Text Block';
+$string['addtextarea_instructions'] = 'Enter the text you want to show in the lesson item.';
 $string['addyoutubeclip'] = 'Add YouTube Clip';
+$string['addyoutubeclip_instructions'] = 'Enter the Youtube/Vimeo video ID and start and end times for the clip you want to show in the lesson item.';
+$string['addttsdialog'] = "Add TTS Dialog";
+$string['addttsdialog_instructions'] = "Add TTS Dialog";
+$string['addttspassage'] = "Add TTS Passage";
+$string['ttspassageinstructions']="Choose the speaker voice and speed, and enter the passage to be read.";
+$string['addttspassage_instructions']="Choose the speaker voice and speed, and enter the passage to be read.";
+
 
 //showtextprompt
 $string['showtextprompt'] = 'Show text prompt';
@@ -572,7 +583,11 @@ $string['ttsdialogvoiceb'] = "Voice B";
 $string['ttsdialogvoicec'] = "Voice C";
 $string['ttsdialogvisible'] = "Dialog Visible";
 $string['ttsdialogvisible_desc'] = "Uncheck if the students should not see the dialog text.";
-$string['addttsdialog'] = "Add TTS Dialog";
+
+$string['ttspassage']="TTS Passage";
+$string['ttspassagespeed']="Speed";
+$string['ttspassagevoice']="Voice";
+
 
 $string['totalscore'] = 'Total Score:';
 $string['score'] = 'Score';
@@ -618,11 +633,6 @@ $string['multichoice_instructions1'] = 'Choose the correct answer.';
 $string['shortanswer_instructions1'] = 'Answer the question by using the mic.';
 $string['smartframe_instructions1'] = 'The page content will load below.';
 
-$string['addttspassage'] = "Add TTS Passage";
-$string['ttspassage']="TTS Passage";
-$string['ttspassagespeed']="Speed";
-$string['ttspassagevoice']="Voice";
-$string['ttspassageinstructions']="Choose the speaker voice and speed, and enter the passage to be read.";
 $string['lg_results'] = 'Results';
 $string['sg_results'] = 'Results';
 $string['listeninggapfill'] = 'Listening GapFill';
