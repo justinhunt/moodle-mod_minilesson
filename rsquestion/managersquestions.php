@@ -240,6 +240,16 @@ if ($edit) {
                 $filemanageroptions);
         $data->{constants::MEDIAQUESTION} = $draftitemid;
 
+        //show the fields by default if they have some content
+        $visibility =['addmedia'=>$data->addmedia,
+        'addiframe'=>$data->addiframe,
+        'addttsaudio'=>$data->addttsaudio,
+        'addtextarea'=>$data->addtextarea,
+        'addyoutubeclip'=>$data->addyoutubeclip,
+        'addttsdialog'=>$data->addttsdialog,
+        'addttspassage'=>$data->addttspassage];
+        $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/mediaprompts', 'init', [$visibility]);
+
     }
 
 

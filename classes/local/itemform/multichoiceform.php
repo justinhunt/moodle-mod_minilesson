@@ -16,6 +16,8 @@ class multichoiceform extends baseform
     public $type = constants::TYPE_MULTICHOICE;
 
     public function custom_definition() {
+        //add a heading for this form
+        $this->add_itemsettings_heading();
         $this->add_showlistorreadoptions(constants::LISTENORREAD,get_string('listenorread',constants::M_COMPONENT),constants::LISTENORREAD_READ);
         $this->add_voiceselect(constants::POLLYVOICE,get_string('choosemultiaudiovoice',constants::M_COMPONENT),
             constants::LISTENORREAD,constants::LISTENORREAD_READ);

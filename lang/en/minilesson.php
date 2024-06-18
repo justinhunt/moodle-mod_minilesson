@@ -119,7 +119,6 @@ $string['username'] = 'User';
 $string['timecreated'] = 'Time Created';
 $string['nodataavailable'] = 'No Data Available Yet';
 $string['saveandnext'] = 'Save .... and next';
-$string['reattempt'] = 'Try Again';
 //$string['notgradedyet'] = 'Your submission has been received, but has not been graded yet';
 //$string['enabletts'] = 'Enable TTS(experimental)';
 //$string['enabletts_details'] = 'TTS is currently not implemented';
@@ -362,7 +361,6 @@ $string['minilesson:itemedit'] = 'Edit items';
 $string['correct'] = 'Correct';
 $string['avgcorrect'] = 'Av. Correct';
 $string['avgtotaltime'] = 'Av. Duration';
-$string['nodataavailable'] = 'No data available';
 //$string['quiz'] = 'Quiz';
 
 
@@ -509,14 +507,24 @@ $string['reattempttitle'] = 'Really Try Again?';
 $string['reattemptbody'] = 'If you continue your previous attempt will be replaced with this one. OK?';
 
 //media toggles
-$string['addmedia'] = 'Add Media';
-$string['addiframe'] = 'Add iFrame';
-$string['addttsaudio'] = 'Add TTS Audio';
-$string['addtextarea'] = 'Add Text Block';
-$string['addyoutubeclip'] = 'Add YouTube Clip';
+$string['addmedia'] = 'Image / audio or video';
+$string['addmedia_instructions'] = 'Choose the media type you want to show in the lesson item.';
+$string['addiframe'] = 'iFrame / custom HTML';
+$string['addiframe_instructions'] = 'Paste the embed code for the iframe you want to show in the lesson item.';
+$string['addttsaudio'] = 'TTS Audio';
+$string['addttsaudio_instructions'] = 'Enter the text you want to be spoken by the TTS engine.';
+$string['addtextarea'] = 'Text Block';
+$string['addtextarea_instructions'] = 'Enter the text you want to show in the lesson item.';
+$string['addyoutubeclip'] = 'YouTube Clip';
+$string['addyoutubeclip_instructions'] = 'Enter the Youtube/Vimeo video ID and start and end times for the clip you want to show in the lesson item.';
+$string['addttsdialog'] = "TTS Dialog";
+$string['addttsdialog_instructions'] = "Add TTS Dialog";
+$string['addttspassage'] = "TTS Passage";
+$string['ttspassageinstructions']="Choose the speaker voice and speed, and enter the passage to be read.";
+$string['addttspassage_instructions']="Choose the speaker voice and speed, and enter the passage to be read.";
+
 
 //showtextprompt
-$string['showtextprompt'] = 'Show text prompt';
 $string['enablesetuptab']="Enable setup tab";
 $string['enablesetuptab_details']="Probably don't check this. It will show a tab containing the activity instance settings to admins. This is for a special use case and minilesson pages will show without headers,footers or blocks.";
 $string['setup']="Setup";
@@ -572,7 +580,11 @@ $string['ttsdialogvoiceb'] = "Voice B";
 $string['ttsdialogvoicec'] = "Voice C";
 $string['ttsdialogvisible'] = "Dialog Visible";
 $string['ttsdialogvisible_desc'] = "Uncheck if the students should not see the dialog text.";
-$string['addttsdialog'] = "Add TTS Dialog";
+
+$string['ttspassage']="TTS Passage";
+$string['ttspassagespeed']="Speed";
+$string['ttspassagevoice']="Voice";
+
 
 $string['totalscore'] = 'Total Score:';
 $string['score'] = 'Score';
@@ -618,11 +630,6 @@ $string['multichoice_instructions1'] = 'Choose the correct answer.';
 $string['shortanswer_instructions1'] = 'Answer the question by using the mic.';
 $string['smartframe_instructions1'] = 'The page content will load below.';
 
-$string['addttspassage'] = "Add TTS Passage";
-$string['ttspassage']="TTS Passage";
-$string['ttspassagespeed']="Speed";
-$string['ttspassagevoice']="Voice";
-$string['ttspassageinstructions']="Choose the speaker voice and speed, and enter the passage to be read.";
 $string['lg_results'] = 'Results';
 $string['sg_results'] = 'Results';
 $string['listeninggapfill'] = 'Listening GapFill';
@@ -693,3 +700,12 @@ $string["allowmicaccess"]="Please allow access to your microphone.";
 $string["nomicdetected"]="No microphone detected.";
 $string["speechnotrecognized"]="We could not recognize your speech.";
 $string["nominilessons"]="No MiniLessons";
+
+$string["reallydeletemediaprompt"]="Really delete media: ";
+$string["deletemediaprompt"]="Delete media?";
+$string["choosemediaprompt"]="Choose media type ..";
+$string["deletefilesfirst"]="Delete any files you added manually. They will not be deleted automatically.";
+$string["cleartextfirst"]="Clear any content you added manually. It will not be deleted automatically.";
+
+$string["itemsettingsheadings"]="Item Settings";
+

@@ -270,7 +270,7 @@ class renderer extends \plugin_renderer_base {
             $itemtext =  file_rewrite_pluginfile_urls($items->{constants::TEXTQUESTION},
                 'pluginfile.php', $context->id,constants::M_COMPONENT,
                 constants::TEXTQUESTION_FILEAREA, $items->id);
-            $itemtext = format_text($itemtext, FORMAT_MOODLE, \mod_minilesson\local\itemtype\item::fetch_editor_options($course,$context));
+            $itemtext = format_text($itemtext, FORMAT_MOODLE, ['context'=>$context]);
             $result->questext = $itemtext;
 
             // Correct answer.
