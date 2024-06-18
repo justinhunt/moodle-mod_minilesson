@@ -65,7 +65,7 @@ if ($data = $form->get_data()) {
         $errormessage = '';
         $content = $form->get_file_content('importfile');
         $theimport = new \mod_minilesson\import($moduleinstance,$modulecontext,$course,$cm);
-        $isjson=true;
+        $isjson=utils::is_json($content);
         if($isjson){
             if(!utils::is_json($content)){
                 $errormessage = get_string('error:invalidjson', constants::M_COMPONENT);

@@ -692,3 +692,4 @@ $string["importheading"]="Import JSON or CSV Items";
 $string["allowmicaccess"]="Please allow access to your microphone.";
 $string["nomicdetected"]="No microphone detected.";
 $string["speechnotrecognized"]="We could not recognize your speech.";
+$string["nominilessons"]="No MiniLessons";

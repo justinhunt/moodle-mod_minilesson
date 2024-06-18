@@ -42,13 +42,48 @@ class mod_minilesson_external extends external_api {
     public static function create_instance($courseid,$moduledata)
     {
         global $DB, $USER;
+
+        $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
+        $config = get_config(constants::M_COMPONENT);
+
+        // get our default data
+        $data = new \stdClass();
+        $data->modulename="minilesson";
+        $data->name="This is an auto generated minilesson";
+        $data->intro='';
+        $data->pagelayout='standard';
+        //   $data->timelimit=0;
+        $data->showqtitles=0;
+        $data->maxattempts=0;
+        $data->ttslanguage=$config->ttslanguage;
+        $data->region=$config->awsregion;
+        $data->transcriber=$config->transcriber;
+        $data->richtextprompt=$config->prompttype;
+        $data->containerwidth=$config->containerwidth;
+        $data->activitylink=0;
+        $data->foriframe=0;
+        $data->grade=0;
+        $data->visible=1;
+
+        //write over the default data with any passed in data that we have
+        if(utils::is_json($moduledata)){
+            $moduledata = json_decode($moduledata);
+            foreach ($moduledata  as $property => $value) {
+                $data->{$property} = $value;
+            }
+        }
+
         //create instance code goes here
-        utils::create_instance($courseid,$moduledata);
-        return '{}';
+        $cmid = utils::create_instance($data,$course);
+        return ['cmid'=>$cmid];
     }
 
     public static function create_instance_returns() {
-        return new external_value(PARAM_RAW);
+        return new external_single_structure(
+            array(
+                'cmid' => new external_value(PARAM_INT, 'cmid of new instance')
+            )
+        );
     }
 
     public static function check_by_phonetic_parameters(){

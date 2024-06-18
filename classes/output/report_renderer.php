@@ -9,6 +9,7 @@
 namespace mod_minilesson\output;
 
 use \mod_minilesson\constants;
+use \mod_minilesson\utils;
 
 class report_renderer extends \plugin_renderer_base
 {
@@ -117,7 +118,7 @@ class report_renderer extends \plugin_renderer_base
 
         // Use the sectiontitle as the file name. Clean it and change any non-filename characters to '_'.
         $name = clean_param($sectiontitle, PARAM_FILE);
-        $name = preg_replace("/[^A-Z0-9]+/i", "_", trim($name));
+        $name = preg_replace("/[^A-Z0-9]+/i", "_", utils::super_trim($name));
         $quote = '"';
         $delim = ",";//"\t";
         $newline = "\r\n";
