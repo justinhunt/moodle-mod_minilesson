@@ -16,7 +16,8 @@ class pageform extends baseform
     public $type = constants::TYPE_PAGE;
 
     public function custom_definition() {
-        //nothing here yet
+        //we just open media prompts because probably the user want to use these
+        $this->_form->setExpanded('mediapromptsheading');
     }
 
 }

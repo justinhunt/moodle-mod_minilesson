@@ -229,21 +229,8 @@ abstract class baseform extends \moodleform {
                         break;
                 }
 
-                $togglearray=array();
-                $togglearray[] =& $mform->createElement('advcheckbox','addmedia',get_string('addmedia',constants::M_COMPONENT),'');
-                $togglearray[] =& $mform->createElement('advcheckbox','addiframe',get_string('addiframe',constants::M_COMPONENT),'');
-                $togglearray[] =& $mform->createElement('advcheckbox','addttsaudio',get_string('addttsaudio',constants::M_COMPONENT),'');
-                $togglearray[] =& $mform->createElement('advcheckbox','addtextarea',get_string('addtextarea',constants::M_COMPONENT),'');
-                $togglearray[] =& $mform->createElement('advcheckbox','addyoutubeclip',get_string('addyoutubeclip',constants::M_COMPONENT),'');
-                $togglearray[] =& $mform->createElement('advcheckbox','addttsdialog',get_string('addttsdialog',constants::M_COMPONENT),'');
-                $togglearray[] =& $mform->createElement('advcheckbox','addttspassage',get_string('addttspassage',constants::M_COMPONENT),'');
-                $mform->addGroup($togglearray, 'togglearray', get_string('mediaprompts', constants::M_COMPONENT), array(' '), false);
-                //in the case of page we assume they will want to use some media
-                if($this->type== constants::TYPE_PAGE) {
-                    $mform->setDefault('addmedia', 1);
-                }
-
                 //add the media prompts chooser and fields
+                $mform->addElement('header', 'mediapromptsheading', get_string('mediaprompts', constants::M_COMPONENT));
                 $this->add_media_prompts();
             }//end of if richtextprompt or not
         }//end of if standard = true
@@ -256,10 +243,16 @@ abstract class baseform extends \moodleform {
         $this->custom_definition();
 		
 		//add the action buttons
+        $mform->closeHeaderBefore('cancel');
         $this->add_action_buttons(get_string('cancel'), get_string('saveitem', constants::M_COMPONENT));
 
     }
         
+    protected function add_itemsettings_heading(){
+        //add the heading
+        $this->_form->addElement('header', 'itemsettingsheading', get_string('itemsettingsheadings', constants::M_COMPONENT));
+        $this->_form->setExpanded('itemsettingsheading');
+    }
 
     protected final function add_static_text($name, $label = null,$text='') {
 
