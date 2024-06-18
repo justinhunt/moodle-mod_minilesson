@@ -259,6 +259,7 @@ abstract class baseform extends \moodleform {
         $this->add_action_buttons(get_string('cancel'), get_string('saveitem', constants::M_COMPONENT));
 
     }
+        
 
     protected final function add_static_text($name, $label = null,$text='') {
 
@@ -326,6 +327,13 @@ abstract class baseform extends \moodleform {
 
         //cut down on the code by using media item types array to pre-prepare fieldsets and media prompt selector
         $mediaprompts =['addmedia','addiframe','addttsaudio','addtextarea','addyoutubeclip','addttsdialog','addttspassage'];
+        $keyfields =['addmedia'=>constants::MEDIAQUESTION,
+            'addiframe'=>constants::MEDIAIFRAME,
+            'addttsaudio'=>constants::TTSQUESTION,
+            'addtextarea'=>constants::QUESTIONTEXTAREA,
+            'addyoutubeclip'=>constants::YTVIDEOID,
+            'addttsdialog'=>constants::TTSDIALOG,
+            'addttspassage'=>constants::TTSPASSAGE];
         $fulloptions=[];
         $fieldsettops=[];
         $fieldsetbottom="</fieldset>";
@@ -335,6 +343,7 @@ abstract class baseform extends \moodleform {
             //fieldset
             $panelopts["mediatype"]=$mediaprompt;
             $panelopts["legend"]=get_string($mediaprompt,constants::M_COMPONENT);
+            $panelopts["keyfield"]=$keyfields[$mediaprompt];
             $panelopts["instructions"]=get_string($mediaprompt . '_instructions',constants::M_COMPONENT);
             $fieldsettops[$mediaprompt]=$OUTPUT->render_from_template('mod_minilesson/mediapromptfieldset',$panelopts);
         }
@@ -343,9 +352,8 @@ abstract class baseform extends \moodleform {
         $mform = $this->_form;
 
         //add media prompt selector
-        $mediaprompts_html = $OUTPUT->render_from_template('mod_minilesson/mediapromptselector',$fulloptions);
-       // $mform->addElement('static', 'mediaprompts', $mediaprompts_html, '' );
-        $mform->addElement('select', 'mediaprompts', get_string('mediaprompts',constants::M_COMPONENT), $fulloptions);
+        $useoptions = [0=>get_string('choosemediaprompt',constants::M_COMPONENT)] + $fulloptions;
+        $mform->addElement('select', 'mediaprompts', get_string('mediaprompts',constants::M_COMPONENT), $useoptions);
 
 
         //Question media upload
@@ -355,11 +363,11 @@ abstract class baseform extends \moodleform {
 
 
         //Question media iframe
-        $mform->addElement('html',$fieldsettops['addiframe'],[]);
+      $mform->addElement('html',$fieldsettops['addiframe'],[]);
             $mform->addElement('text', constants::MEDIAIFRAME, get_string('itemiframe', constants::M_COMPONENT), array('size'=>100));
             $mform->setType(constants::MEDIAIFRAME, PARAM_RAW);
         //close the fieldset    
-        $mform->addElement('html',$fieldsetbottom,[]);
+      $mform->addElement('html',$fieldsetbottom,[]);
 
 
         //Question text to speech
