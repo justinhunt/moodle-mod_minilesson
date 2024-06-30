@@ -707,3 +707,8 @@ $string["deletefilesfirst"]="Delete any files you added manually. They will not 
 $string["cleartextfirst"]="Clear any content you added manually. It will not be deleted automatically.";
 
 $string["itemsettingsheadings"]="Item Settings";
+$string["finishscreen"]="Finish Screen";
+$string["finishscreen_details"]="When you finish the activity, you can see a simple screen, a full screen or a custom screen. The custom screen is a page you can design yourself.";
+$string["finishscreen_simple"]="Simple";
+$string["finishscreen_full"]="Full";
+$string["finishscreen_custom"]="custom";

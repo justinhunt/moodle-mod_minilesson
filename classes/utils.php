@@ -971,6 +971,13 @@ class utils{
         return $options;
     }
 
+    public static function fetch_options_finishscreen() {
+        $options = array(constants::FINISHSCREEN_SIMPLE => get_string("finishscreen_simple", constants::M_COMPONENT),
+            constants::FINISHSCREEN_FULL => get_string("finishscreen_full", constants::M_COMPONENT),
+            constants::FINISHSCREEN_CUSTOM => get_string("finishscreen_custom", constants::M_COMPONENT));
+        return $options;
+    }
+
     public static function fetch_options_animations(){
         return array(
             constants::M_ANIM_FANCY=> get_string('anim_fancy', constants::M_COMPONENT),
@@ -1381,6 +1388,12 @@ class utils{
             $mform->addElement('select', 'containerwidth', get_string('containerwidth', constants::M_COMPONENT), $widthoptions);
             $mform->addHelpButton('containerwidth', 'containerwidth', constants::M_COMPONENT);
             $mform->setDefault('containerwidth', $config->containerwidth);
+
+            //finishscreen
+            $screenoptions = \mod_minilesson\utils::fetch_options_finishscreen();
+            $mform->addElement('select', 'finishscreen', get_string('finishscreen', constants::M_COMPONENT), $screenoptions);
+            $mform->addHelpButton('finishscreen', 'finishscreen', constants::M_COMPONENT);
+            $mform->setDefault('finishscreen', $config->finishscreen);
 
             //activity opens closes
         $name = 'activityopenscloses';
