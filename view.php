@@ -81,7 +81,7 @@ $event->trigger();
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
-//log usage to CP
+//log usage to CloudPoodll
 utils::stage_remote_process_job($moduleinstance->ttslanguage,$cm->id);
 
 //are we a teacher or a student?
@@ -95,7 +95,7 @@ $PAGE->set_context($modulecontext);
 //Get an admin settings 
 $config = get_config(constants::M_COMPONENT);
 
-
+//we want minilesson to embed nicely, or display according to layout settings
 if($moduleinstance->foriframe==1  || $moduleinstance->pagelayout=='embedded' || $embed==1){
     $PAGE->set_pagelayout('embedded');
 }elseif($config->enablesetuptab || $moduleinstance->pagelayout=='popup' || $embed==2){
@@ -134,7 +134,7 @@ if(!$attempts || ($canattempt && $retake==1)){
 }
 
 ////this library is licensed with the hippocratic license (https://github.com/EthicalSource/hippocratic-license/)
-//which is high minded but not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN
+//which is not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN
 if($config->animations==constants::M_ANIM_FANCY) {
     $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
 }
@@ -145,8 +145,6 @@ if(!empty($moduleinstance->lessonfont)){
         $PAGE->requires->css(new moodle_url('https://fonts.googleapis.com/css?family=' . $moduleinstance->lessonfont));
     }
 }
-
-
 
 //From here we actually display the page.
 //if we are teacher we see tabs. If student we just see the quiz

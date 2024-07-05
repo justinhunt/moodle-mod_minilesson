@@ -153,7 +153,7 @@ if ($ADMIN->fulltree) {
     $name = 'finishscreen';
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
-    $default = constants::FINISHSCREEN_SIMPLE;
+    $default = constants::FINISHSCREEN_FULL;
     $options = utils::fetch_options_finishscreen();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
         $label, $details, $default, $options));

@@ -974,7 +974,8 @@ class utils{
     public static function fetch_options_finishscreen() {
         $options = array(constants::FINISHSCREEN_SIMPLE => get_string("finishscreen_simple", constants::M_COMPONENT),
             constants::FINISHSCREEN_FULL => get_string("finishscreen_full", constants::M_COMPONENT),
-            constants::FINISHSCREEN_CUSTOM => get_string("finishscreen_custom", constants::M_COMPONENT));
+            constants::FINISHSCREEN_CUSTOM => get_string("finishscreen_custom", constants::M_COMPONENT)
+           );
         return $options;
     }
 
@@ -1394,6 +1395,12 @@ class utils{
             $mform->addElement('select', 'finishscreen', get_string('finishscreen', constants::M_COMPONENT), $screenoptions);
             $mform->addHelpButton('finishscreen', 'finishscreen', constants::M_COMPONENT);
             $mform->setDefault('finishscreen', $config->finishscreen);
+
+            //custom finish screen
+            $mform->addElement('textarea', 'finishscreencustom', get_string('finishscreencustom', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
+            $mform->addHelpButton('finishscreencustom', 'finishscreencustom', constants::M_COMPONENT);
+            $mform->setType('finishscreencustom', PARAM_RAW);
+            $mform->HideIf('finishscreencustom', 'finishscreen', 'neq',constants::FINISHSCREEN_CUSTOM);
 
             //activity opens closes
         $name = 'activityopenscloses';
