@@ -33,8 +33,6 @@ This file contains functions for media prompts on the mform
             //unselect the media prompts thingy
             that.controls.select.find('option[value="0"]').prop('disabled', true);
             that.controls.select.prop('selectedIndex',0);
-            
-
         },
 
          // Set up strings
@@ -66,9 +64,10 @@ This file contains functions for media prompts on the mform
         //register events on select and fieldsets etc
         register_events: function(){
             var that=this;
-
+            log.debug("register events");
             //on select change add the fieldset
             this.controls.select.on('change',function(){
+                log.debug("changed");
                 var mediaprompt = $(this).val();
                 var thefieldset = $('#ml_mediaprompt_panel_' + mediaprompt);
                 thefieldset.insertAfter(that.controls.selectcontainer);
