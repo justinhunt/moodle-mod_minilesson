@@ -31,8 +31,6 @@ use \mod_minilesson\utils;
 use \mod_minilesson\mobile_auth;
 
 
-
-
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $retake = optional_param('retake', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // minilesson instance ID - it should be named as the first character of the module

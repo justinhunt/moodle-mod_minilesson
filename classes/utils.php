@@ -1570,11 +1570,17 @@ class utils{
            case constants::TYPE_PAGE: return new local\itemtype\item_page($itemrecord,$moduleinstance,$context);
            case constants::TYPE_SMARTFRAME: return new local\itemtype\item_smartframe($itemrecord,$moduleinstance,$context);
            case constants::TYPE_SHORTANSWER: return new local\itemtype\item_shortanswer($itemrecord,$moduleinstance,$context);
-           case constants::TYPE_COMPQUIZ: return new local\itemtype\item_compquiz($itemrecord,$moduleinstance,$context);
-           case constants::TYPE_BUTTONQUIZ: return new local\itemtype\item_buttonquiz($itemrecord,$moduleinstance,$context);
            case constants::TYPE_SGAPFILL: return new local\itemtype\item_speakinggapfill($itemrecord,$moduleinstance,$context);
            case constants::TYPE_LGAPFILL: return new local\itemtype\item_listeninggapfill($itemrecord,$moduleinstance,$context);
            case constants::TYPE_TGAPFILL: return new local\itemtype\item_typinggapfill($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_COMPQUIZ: return new local\itemtype\item_compquiz($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_BUTTONQUIZ: return new local\itemtype\item_buttonquiz($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_SPACEGAME: return new local\itemtype\item_spacegame($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_FREEWRITING: return new local\itemtype\item_freewriting($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_FREESPEAKING: return new local\itemtype\item_freespeaking($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_FLUENCY: return new local\itemtype\item_fluency($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_PASSAGEREADING: return new local\itemtype\item_passagereading($itemrecord,$moduleinstance,$context);
+           case constants::TYPE_CONVERSATION: return new local\itemtype\item_conversation($itemrecord,$moduleinstance,$context);
            default:
        }
    }
@@ -1592,11 +1598,17 @@ class utils{
             case constants::TYPE_PAGE: return '\\'. constants::M_COMPONENT . '\local\itemform\pageform';
             case constants::TYPE_SMARTFRAME: return '\\'. constants::M_COMPONENT . '\local\itemform\smartframe';
             case constants::TYPE_SHORTANSWER: return '\\'. constants::M_COMPONENT . '\local\itemform\shortanswerform';
-            case constants::TYPE_COMPQUIZ: return '\\'. constants::M_COMPONENT . '\local\itemform\compquizform';
-            case constants::TYPE_BUTTONQUIZ: return '\\'. constants::M_COMPONENT . '\ocal\itemform\buttonquizform';
             case constants::TYPE_SGAPFILL: return '\\'. constants::M_COMPONENT . '\local\itemform\speakinggapfillform';
             case constants::TYPE_LGAPFILL: return '\\'. constants::M_COMPONENT . '\local\itemform\listeninggapfillform';
             case constants::TYPE_TGAPFILL: return '\\'. constants::M_COMPONENT . '\local\itemform\typinggapfillform';
+            case constants::TYPE_COMPQUIZ: return '\\'. constants::M_COMPONENT . '\local\itemform\compquizform';
+            case constants::TYPE_BUTTONQUIZ: return '\\'. constants::M_COMPONENT . '\local\itemform\buttonquizform';
+            case constants::TYPE_SPACEGAME: return '\\'. constants::M_COMPONENT . '\local\itemform\spacegameform';
+            case constants::TYPE_FREEWRITING: return '\\'. constants::M_COMPONENT . '\local\itemform\freewritingform';
+            case constants::TYPE_FREESPEAKING: return '\\'. constants::M_COMPONENT . '\local\itemform\freespeakingform';
+            case constants::TYPE_FLUENCY: return '\\'. constants::M_COMPONENT . '\local\itemform\fluencyform';
+            case constants::TYPE_PASSAGEREADING: return '\\'. constants::M_COMPONENT . '\local\itemform\passagereadingform';
+            case constants::TYPE_CONVERSATION: return '\\'. constants::M_COMPONENT . '\local\itemform\conversationform';
             default:
                 return false;
         }
