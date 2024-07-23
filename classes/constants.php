@@ -76,6 +76,12 @@ const TYPE_SPEECHCARDS = 'speechcards';
 const TYPE_LISTENREPEAT = 'listenrepeat';
 const TYPE_SMARTFRAME = 'smartframe';
 const TYPE_SHORTANSWER = 'shortanswer';
+const TYPE_SPACEGAME = 'spacegame';
+const TYPE_FREEWRITING = 'freewriting';
+const TYPE_FREESPEAKING = 'freespeaking';
+const TYPE_FLUENCY = 'fluency';
+const TYPE_PASSAGEREADING = 'passagereading';
+const TYPE_CONVERSATION = 'conversation';
 
 const AUDIOFNAME = 'itemaudiofname';
 const AUDIOPROMPT = 'audioitem';
@@ -381,5 +387,9 @@ const M_GOOGLE_FONTS = ["Andika"];
 const M_ST_SRC_RECORD=1;
 const M_ST_SRC_UPLOAD=2;
 const M_ST_SRC_STT=3;
+
+const FINISHSCREEN_SIMPLE=1;
+const FINISHSCREEN_FULL=0;
+const FINISHSCREEN_CUSTOM=2;
 
 }

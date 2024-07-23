@@ -1,7 +1,4 @@
 <?php
-
-
-
 /**
  * English strings for Mini Lesson
  *
@@ -383,8 +380,12 @@ $string['addspeakinggapfillitem']='Speaking Gapfill';
 $string['addtypinggapfillitem']='Typing Gapfill';
 $string['addcomprehensionquizitem']='Comprehension Quiz';
 $string['addbuttonquizitem']='Button Quiz';
-
-
+$string['addspacegameitem']='Space Game';
+$string['addfreewritingitem']='Free Writing';
+$string['addfreespeakingitem']='Free Speaking';
+$string['addfluencyitem']='Fluency';
+$string['addpassagereadingitem']='Passage Reading';
+$string['addconversationitem']='Conversation';
 
 $string['multichoice'] = 'Multi Choice';
 $string['multiaudio'] = 'MC Audio';
@@ -398,6 +399,12 @@ $string['shortanswer']='Short Answer';
 $string['lgapfill']='Listening Gapfill';
 $string['sgapfill']='Speaking Gapfill';
 $string['tgapfill']='Typing Gapfill';
+$string['spacegame']='Space Game';
+$string['freewriting']='Free Writing';
+$string['freespeaking']='Free Speaking';
+$string['fluency']='Fluency';
+$string['passagereading']='Passage Reading';
+$string['conversation']='Conversation';
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';
 $string['transcriber_auto'] = 'Open STT (Strict)';
@@ -442,6 +449,12 @@ $string['d_question'] = 'Item';
 $string['listenandrepeat'] = 'Listen and Speak';
 $string['lr_instructions1'] = 'Listen and respond to the sentences you hear.';
 //$string['lr_instructions2'] = 'Click \'Start\' to begin!';
+$string['spacegame_instructions1'] = 'replace these instructions.';
+$string['freewriting_instructions1'] = 'replace these instructions.';
+$string['freespeaking_instructions1'] = 'replace these instructions.';
+$string['fluency_instructions1'] = 'replace these instructions.';
+$string['passagereading_instructions1'] = 'replace these instructions.';
+$string['conversation_instructions1'] = 'replace these instructions.';
 
 $string['choosevoice'] = "Choose the prompt speaker's voice";
 $string['choosemultiaudiovoice'] = "Choose the answer reader's voice";
@@ -708,4 +721,21 @@ $string["deletefilesfirst"]="Delete any files you added manually. They will not 
 $string["cleartextfirst"]="Clear any content you added manually. It will not be deleted automatically.";
 
 $string["itemsettingsheadings"]="Item Settings";
+
+$string["finishscreen"]="Finish Screen";
+$string["finishscreen_details"]="When you finish the activity, you can see a simple screen, a full screen or a custom screen. The custom screen is a page you can design yourself.";
+$string["finishscreen_help"]="When you finish the activity, you can see a simple screen, a full screen or a custom screen. The custom screen is a page you can design yourself.";
+$string["finishscreen_simple"]="Simple";
+$string["finishscreen_full"]="Full";
+$string["finishscreen_custom"]="Custom";
+$string["finishscreencustom"]="Custom finish screen";
+$string["finishscreencustom_help"]="The custom screen is an advanced feature, beta , that allows you to build a custom finish screen using mustache notation and variables. Some of the variables are: {total} {courseurl} {coursename} {yellowstars} {graystars} {reattempturl} and an array of {results} each with {title}, {grade}, {yellowstars} and {graystars} variables.";
+$string['freewritingdesc'] ='[free writing task desc. here]';
+$string['freespeakingdesc'] ='[free speaking task desc. here]';
+$string['conversationdesc'] ='[conversation desc. here]';
+$string['fluencydesc'] ='[fluency desc. here]';
+$string['spacegamedesc'] ='[space game desc. here]';
+$string['passagereadingdesc'] ='[passage reading desc. here]';
+$string['passagetoread'] ='Passage to read';
+
 

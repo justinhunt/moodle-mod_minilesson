@@ -149,5 +149,13 @@ if ($ADMIN->fulltree) {
             get_string('enablesetuptab', constants::M_COMPONENT), get_string('enablesetuptab_details',constants::M_COMPONENT), 0));
 
 
+    // Finish Screen Options
+    $name = 'finishscreen';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = constants::FINISHSCREEN_FULL;
+    $options = utils::fetch_options_finishscreen();
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, $options));
 
 }

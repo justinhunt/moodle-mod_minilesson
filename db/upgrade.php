@@ -473,6 +473,24 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, $newversion, 'minilesson');
     }
 
+    $newversion = 2024062200;
+    if ($oldversion < $newversion) {
+        $table = new xmldb_table(constants::M_TABLE);
+        //add finish screen options
+        $fields=[];
+        $fields[] = new xmldb_field('finishscreen', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('finishscreencustom', XMLDB_TYPE_TEXT, null, null, null, null);
+
+        // Alter fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, $newversion, 'minilesson');
+    }
+
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

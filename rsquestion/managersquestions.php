@@ -258,6 +258,25 @@ if ($edit) {
 	$data->itemid = null;
 	$data->visible = 1;
 	$data->type=$type;
+
+    //If rich text, use editor otherwise use filepicker
+    if($minilesson->richtextprompt==constants::M_PROMPT_RICHTEXT) {
+        //init our editor
+        $data = file_prepare_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context, constants::M_COMPONENT,
+                constants::TEXTQUESTION_FILEAREA, $data->itemid);
+
+    }else {
+
+        //init media prompts - all hidden initiall
+        $visibility =['addmedia'=>0,
+            'addiframe'=>0,
+            'addttsaudio'=>0,
+            'addtextarea'=>0,
+            'addyoutubeclip'=>0,
+            'addttsdialog'=>0,
+            'addttspassage'=>0];
+        }
+        $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/mediaprompts', 'init', [$visibility]);
 }
 		
 	//init our item, we move the id fields around a little 

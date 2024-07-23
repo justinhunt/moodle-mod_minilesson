@@ -214,7 +214,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             setTimeout(function () {
                // log.debug("forwarding to finished page");
                 window.location.href=dd.activityurl;
-            }, 1000);
+            }, 200);
 
           return;
 

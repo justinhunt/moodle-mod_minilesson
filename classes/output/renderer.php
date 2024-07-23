@@ -250,7 +250,7 @@ class renderer extends \plugin_renderer_base {
         //steps data
         $steps = json_decode($latestattempt->sessiondata)->steps;
 
-        //prepare results fopr display
+        //prepare results for display
         if(!is_array($steps)){$steps = utils::remake_steps_as_array($steps);}
         $results = array_filter($steps, function($step){return $step->hasgrade;});
         $useresults=[];
@@ -283,6 +283,9 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_LGAPFILL:
                 case constants::TYPE_TGAPFILL:
                 case constants::TYPE_SGAPFILL:
+                case constants::TYPE_SPACEGAME: //TO DO how to handle this?
+                case constants::TYPE_FLUENCY:
+
                     $result->correctans = $quizdata[$result->index]->sentences;
                     break;
 
@@ -306,6 +309,10 @@ class renderer extends \plugin_renderer_base {
                     $result->incorrectans = $incorrectanswers;
                     break;
 
+                case constants::TYPE_CONVERSATION:  //TO DO how to handle this?
+                case constants::TYPE_PASSAGEREADING: //TO DO how to handle this?
+                case constants::TYPE_FREEWRITING: //TO DO how to handle this?
+                case constants::TYPE_FREESPEAKING: //TO DO how to handle this?
                 default:
                     $result->correctans = [];
                     $result->incorrectans = [];
@@ -360,22 +367,46 @@ class renderer extends \plugin_renderer_base {
         $tdata->total = $latestattempt->sessionscore;
         $tdata->courseurl = $CFG->wwwroot . '/course/view.php?id=' .
             $latestattempt->courseid . '#section-'. ($cm->section-1);
-        $tdata->results=$useresults;
+
+        //depending on finish screen settings    
+        switch($moduleinstance->finishscreen){
+            case constants::FINISHSCREEN_FULL:
+            case constants::FINISHSCREEN_CUSTOM:
+                $tdata->results=$useresults;
+                $tdata->showfullresults=true;
+                break;
+               
+            case constants::FINISHSCREEN_SIMPLE:
+            default:
+                $tdata->results=[];  
+        }    
+        
         //output reattempt button
         if($canattempt){
             $reattempturl = new \moodle_url( constants::M_URL . '/view.php',
                     array('n'=>$latestattempt->moduleid, 'retake'=>1,'embed'=>$embed));
             $tdata->reattempturl = $reattempturl->out();
         }
-        //show back to course button if we are not in a tab
+        //show back to course button if we are not in a tab or embedded 
         if(!$config->enablesetuptab && $embed==0 &&
             $moduleinstance->pagelayout!=='embedded' &&
             $moduleinstance->pagelayout!=='popup') {
             $tdata->backtocourse = true;
         }
 
-        $finishedcontents = $this->render_from_template(constants::M_COMPONENT . '/quizfinished', $tdata);
-
+        if($moduleinstance->finishscreen==constants::FINISHSCREEN_CUSTOM){
+            //here we fetch the mustache engine, reset the loader to string loader
+            //render the custom finish screen, and restore the original loader
+            $mustache = $this->get_mustache();
+            $oldloader=$mustache->getLoader();
+            $mustache->setLoader(new \Mustache_Loader_StringLoader());     
+            $tpl=$mustache->loadTemplate($moduleinstance->finishscreencustom);
+            $finishedcontents = $tpl->render($tdata);
+            $mustache->setLoader($oldloader);
+        }else{
+            $finishedcontents = $this->render_from_template(constants::M_COMPONENT . '/quizfinished', $tdata);
+        }
+       
         //put it all in a div and return it
         $finisheddiv = \html_writer::div($finishedcontents ,constants::M_QUIZ_FINISHED,
                 array('id'=>constants::M_QUIZ_FINISHED,'style'=>'display: block'));

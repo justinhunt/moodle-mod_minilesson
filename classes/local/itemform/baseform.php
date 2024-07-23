@@ -227,6 +227,42 @@ abstract class baseform extends \moodleform {
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('buttonquiz_instructions1', constants::M_COMPONENT));
                         break;
+
+                    //button quiz
+                    case constants::TYPE_SPACEGAME:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('spacegame_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    //button quiz
+                    case constants::TYPE_FREEWRITING:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('freewriting_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    //button quiz
+                    case constants::TYPE_FREESPEAKING:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('freespeaking_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    //button quiz
+                    case constants::TYPE_FLUENCY:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('fluency_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    //button quiz
+                    case constants::TYPE_PASSAGEREADING:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('passagereading_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    //button quiz
+                    case constants::TYPE_CONVERSATION:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('conversations_instructions1', constants::M_COMPONENT));
+                        break;
                 }
 
                 //add the media prompts chooser and fields

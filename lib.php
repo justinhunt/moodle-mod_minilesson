@@ -842,14 +842,23 @@ function minilesson_output_fragment_mform($args) {
                     $data->addttspassage = 0;
                 }
 
-
-
                 //init our itemmedia field
                 $draftitemid = file_get_submitted_draft_itemid(constants::MEDIAQUESTION);
                 file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,
                         constants::MEDIAQUESTION, $data->itemid,
                         $filemanageroptions);
                 $data->{constants::MEDIAQUESTION} = $draftitemid;
+
+                
+                //show the fields by default if they have some content
+                $visibility =['addmedia'=>$data->addmedia,
+                'addiframe'=>$data->addiframe,
+                'addttsaudio'=>$data->addttsaudio,
+                'addtextarea'=>$data->addtextarea,
+                'addyoutubeclip'=>$data->addyoutubeclip,
+                'addttsdialog'=>$data->addttsdialog,
+                'addttspassage'=>$data->addttspassage];
+                $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/mediaprompts', 'init', [$visibility]);
 
             }
         }

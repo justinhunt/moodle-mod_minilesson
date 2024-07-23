@@ -1,5 +1,3 @@
-
-
 <h1 class="text-center">{{#str}}totalscore, mod_minilesson{{/str}} {{total}}%</h1>
 <div class="quizrating">
     {{#yellowstars}}
@@ -9,12 +7,13 @@
         <span><img src="{{{ config.wwwroot }}}/mod/minilesson/pix/gray_star.png"/></span>
     {{/graystars}}
 </div>
+{{#showfullresults}}
 <p>
     <a class="btn btn-primary itemscoresbutton" data-toggle="collapse" href="#itemscores" role="button" aria-expanded="false" aria-controls="itemscores">
         {{#str}}showitemscores, mod_minilesson{{/str}}
     </a>
-
 </p>
+{{/showfullresults}}
 <div class="collapse" id="itemscores">
 {{#results}}
 <div class="mod_minilesson_result_div">

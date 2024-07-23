@@ -1,7 +1,9 @@
+Version 1.0.68 (Build 2024062200)
+- added finish screen option to settings (admin and instance)
+
 Version 1.0.67
 - fix for json import that could break on TTS Dialog
 - fix for broken speech rec. on non English langs since 2024052800
-- 
 
 Version 1.0.66 (Build 2024052800)
 - Added import/export items as JSON

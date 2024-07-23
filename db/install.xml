@@ -11,22 +11,24 @@
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" />
         <FIELD NAME="intro" TYPE="text" LENGTH="big" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the minilesson activity" />
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)"/>
- 		<FIELD NAME="grade" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-		<FIELD NAME="gradeoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"  SEQUENCE="false" COMMENT="gradeoptions" />
-		<FIELD NAME="maxattempts" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="maxattempts" />
-		<FIELD NAME="mingrade" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="completion condition mingrade" />
-		<FIELD NAME="ttslanguage" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" DEFAULT="none" COMMENT="the audio filename"/>
-          <FIELD NAME="transcriber" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" COMMENT="transcriber"/>
-          <FIELD NAME="region" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" DEFAULT="useast1" COMMENT="aws region" />
-          <FIELD NAME="activitylink" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-           <FIELD NAME="pagelayout" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="embedded" SEQUENCE="false"/>
-          <FIELD NAME="showqtitles" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
-          <FIELD NAME="richtextprompt" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
-          <FIELD NAME="foriframe" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="intended to be iframed"/>
-          <FIELD NAME="lessonkey" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="An identifier for the lesson that reports may use"/>
-          <FIELD NAME="containerwidth" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" DEFAULT="compact" COMMENT="An identifier for the lesson that reports may use"/>
-          <FIELD NAME="lessonfont" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="lesson font" />
-          <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
+        <FIELD NAME="grade" TYPE="int" LENGTH="3" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="gradeoptions" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0"  SEQUENCE="false" COMMENT="gradeoptions" />
+        <FIELD NAME="maxattempts" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="maxattempts" />
+        <FIELD NAME="mingrade" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="completion condition mingrade" />
+        <FIELD NAME="ttslanguage" TYPE="char" LENGTH="255" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" DEFAULT="none" COMMENT="the audio filename"/>
+        <FIELD NAME="transcriber" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="1" SEQUENCE="false" COMMENT="transcriber"/>
+        <FIELD NAME="region" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" DEFAULT="useast1" COMMENT="aws region" />
+        <FIELD NAME="activitylink" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="pagelayout" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="embedded" SEQUENCE="false"/>
+        <FIELD NAME="showqtitles" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
+        <FIELD NAME="richtextprompt" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="foriframe" TYPE="int" LENGTH="2" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" COMMENT="intended to be iframed"/>
+        <FIELD NAME="lessonkey" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="An identifier for the lesson that reports may use"/>
+        <FIELD NAME="containerwidth" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" DEFAULT="compact" COMMENT="An identifier for the lesson that reports may use"/>
+        <FIELD NAME="lessonfont" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="lesson font" />
+        <FIELD NAME="finishscreen" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="finishscreen"/>
+        <FIELD NAME="finishscreencustom" TYPE="text" LENGTH="big" NOTNULL="false" UNSIGNED="true" SEQUENCE="false" COMMENT="Custom information required for finish screen"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false" />
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
 		<FIELD NAME="viewstart" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
         <FIELD NAME="viewend" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false"/>
