@@ -37,9 +37,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'],
       self.index = index;
       self.quizhelper = quizhelper;
       var nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
+      var clickbutton = $("#" + itemdata.uniqueid + "_container .ml_sg_clickclick");
       
       nextbutton.on('click', function(e) {
         self.next_question(0);
+      });
+
+      clickbutton.on('click', function(e) {
+        var displayitems = self.itemdata.spacegameitems.join(' ');
+        alert('click ' + displayitems);
+        //self.next_question(100);
       });
 
     },
