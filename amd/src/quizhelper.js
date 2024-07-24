@@ -2,10 +2,15 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
     'mod_minilesson/dictation', 'mod_minilesson/dictationchat', 'mod_minilesson/multichoice','mod_minilesson/multiaudio',
         'mod_minilesson/speechcards', 'mod_minilesson/listenrepeat',
         'mod_minilesson/page','mod_minilesson/smartframe','mod_minilesson/shortanswer',
-        'mod_minilesson/listeninggapfill','mod_minilesson/typinggapfill','mod_minilesson/speakinggapfill'],
+        'mod_minilesson/listeninggapfill','mod_minilesson/typinggapfill','mod_minilesson/speakinggapfill',
+        'mod_minilesson/spacegame','mod_minilesson/fluency','mod_minilesson/freespeaking',
+        'mod_minilesson/freewriting','mod_minilesson/passagereading','mod_minilesson/buttonquiz',
+        'mod_minilesson/conversation','mod_minilesson/compquiz'],
   function($, log, def, templates, Ajax, dictation, dictationchat, multichoice, multiaudio,
            speechcards, listenrepeat, page, smartframe, shortanswer,
-           listeninggapfill,typinggapfill, speakinggapfill) {
+           listeninggapfill,typinggapfill, speakinggapfill,
+           spacegame,fluency, freespeaking,freewriting,
+           passagereading,buttonquiz,conversation,compquiz) {
     "use strict"; // jshint ;_;
 
     /*
@@ -105,6 +110,38 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_speakinggapfill:
                   speakinggapfill.clone().init(index, item, dd);
                   break;
+
+              case def.qtype_spacegame:
+                spacegame.clone().init(index, item, dd);
+                break;    
+
+              case def.qtype_fluency:
+                  fluency.clone().init(index, item, dd);
+                  break;
+
+              case def.qtype_freespeaking:
+                freespeaking.clone().init(index, item, dd);
+                break;
+                
+              case def.qtype_freewriting:
+                freewriting.clone().init(index, item, dd);
+                break;
+
+              case def.qtype_passagereading:
+                passagereading.clone().init(index, item, dd);
+                break;
+                  
+              case def.qtype_buttonquiz:
+                buttonquiz.clone().init(index, item, dd);
+                break;
+                
+              case def.qtype_conversation:
+                conversation.clone().init(index, item, dd);
+                break;
+
+              case def.qtype_compquiz:
+                compquiz.clone().init(index, item, dd);
+                break;
           }
 
         });
@@ -198,6 +235,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_listenrepeat:
               case def.qtype_smartframe:
               case def.qtype_shortanswer:
+              case def.qtype_spacegame:
+              case def.qtype_fluency:
+              case def.qtype_freespeaking:
+              case def.qtype_freewriting:
+              case def.qtype_passagereading:
+              case def.qtype_buttonquiz:
+              case def.qtype_conversation:
+              case def.qtype_compquiz:
               default:
           }//end of nextitem switch
 
