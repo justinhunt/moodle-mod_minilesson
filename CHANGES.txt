@@ -1,3 +1,9 @@
+Version 1.0.69 (Build 202408xxxx)
+- fixed youtube/vimeo embed breaking preview screen when editing items
+- added stubs for new type
+- new media prompt settings system
+
+
 Version 1.0.68 (Build 2024062200)
 - added finish screen option to settings (admin and instance)
 
