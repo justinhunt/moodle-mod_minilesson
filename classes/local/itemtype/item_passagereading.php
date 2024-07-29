@@ -48,6 +48,8 @@ class item_passagereading extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
+        $testitem->thepassage=$testitem->customtext1;
+
         return $testitem;
     }
 

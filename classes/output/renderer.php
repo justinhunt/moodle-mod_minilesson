@@ -283,7 +283,6 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_LGAPFILL:
                 case constants::TYPE_TGAPFILL:
                 case constants::TYPE_SGAPFILL:
-                case constants::TYPE_SPACEGAME: //TO DO how to handle this?
                 case constants::TYPE_FLUENCY:
 
                     $result->correctans = $quizdata[$result->index]->sentences;
@@ -313,6 +312,7 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_PASSAGEREADING: //TO DO how to handle this?
                 case constants::TYPE_FREEWRITING: //TO DO how to handle this?
                 case constants::TYPE_FREESPEAKING: //TO DO how to handle this?
+                case constants::TYPE_SPACEGAME: //TO DO how to handle this?
                 default:
                     $result->correctans = [];
                     $result->incorrectans = [];

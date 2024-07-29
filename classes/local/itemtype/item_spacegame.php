@@ -48,6 +48,8 @@ class item_spacegame extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
+        $testitem->spacegameitems=explode(PHP_EOL,$testitem->customtext1);
+
         return $testitem;
     }
 
