@@ -55,7 +55,7 @@ $PAGE->set_url('/mod/minilesson/rsquestion/managersquestions.php', array('itemid
 $PAGE->set_title(format_string($minilesson->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($context);
-$PAGE->set_pagelayout('course');
+$PAGE->set_pagelayout('incourse');
 
 //are we in new or edit mode?
 if ($itemid) {

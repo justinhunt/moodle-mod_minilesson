@@ -1006,7 +1006,7 @@ class utils{
 
     public static function fetch_pagelayout_options(){
         $options = Array(
-                'standard'=>'standard',
+                'standard'=>'incourse',
                 'embedded'=>'embedded',
                 'popup'=>'popup'
         );

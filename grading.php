@@ -98,7 +98,7 @@ if($moduleinstance->foriframe==1 || $moduleinstance->pagelayout=='embedded') {
 }elseif($config->enablesetuptab  || $moduleinstance->pagelayout=='popup'){
     $PAGE->set_pagelayout('popup');
 }else{
-    $PAGE->set_pagelayout('course');
+    $PAGE->set_pagelayout('incourse');
 }
 
 
