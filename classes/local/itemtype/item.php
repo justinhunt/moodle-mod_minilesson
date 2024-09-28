@@ -941,7 +941,7 @@ abstract class item implements templatable, renderable {
                 $theitem->{constants::TEXTANSWER . $anumber . 'format'} = $data->{constants::TEXTANSWER . $anumber . 'format'};
                 //if its a text field, do this
             } else if (property_exists($data, constants::TEXTANSWER . $anumber)) {
-                $thetext = trim($data->{constants::TEXTANSWER . $anumber});
+                $thetext = utils::super_trim($data->{constants::TEXTANSWER . $anumber});
                 //segment the text if it is japanese and not already segmented
                 //TO DO: remove this
                 /*
