@@ -218,6 +218,7 @@ $string['is-is'] = 'Icelandic'; // Icelandic
 $string['mk-mk'] = 'Macedonian'; // Macedonian
 $string['no-no'] = 'Norwegian'; // Norwegian
 $string['sr-rs'] = 'Serbian'; // Serbian
+$string['vi-vn'] = 'Vietnamese'; // Vietnamese
 
 $string['awsregion']='AWS Region';
 //$string['region']='AWS Region';
@@ -712,6 +713,7 @@ $string["importheading"]="Import JSON or CSV Items";
 $string["allowmicaccess"]="Please allow access to your microphone.";
 $string["nomicdetected"]="No microphone detected.";
 $string["speechnotrecognized"]="We could not recognize your speech.";
+$string["nominilessons"]="No MiniLessons";
 
 $string["reallydeletemediaprompt"]="Really delete media: ";
 $string["deletemediaprompt"]="Delete media?";
@@ -720,6 +722,7 @@ $string["deletefilesfirst"]="Delete any files you added manually. They will not 
 $string["cleartextfirst"]="Clear any content you added manually. It will not be deleted automatically.";
 
 $string["itemsettingsheadings"]="Item Settings";
+
 $string["finishscreen"]="Finish Screen";
 $string["finishscreen_details"]="When you finish the activity, you can see a simple screen, a full screen or a custom screen. The custom screen is a page you can design yourself.";
 $string["finishscreen_help"]="When you finish the activity, you can see a simple screen, a full screen or a custom screen. The custom screen is a page you can design yourself.";
@@ -735,4 +738,5 @@ $string['fluencydesc'] ='[fluency desc. here]';
 $string['spacegamedesc'] ='[space game desc. here]';
 $string['passagereadingdesc'] ='[passage reading desc. here]';
 $string['passagetoread'] ='Passage to read';
+
 

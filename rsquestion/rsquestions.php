@@ -57,7 +57,7 @@ if($minilesson->foriframe==1  || $minilesson->pagelayout=='embedded') {
 }elseif($config->enablesetuptab  || $minilesson->pagelayout=='popup'){
     $PAGE->set_pagelayout('popup');
 }else{
-    $PAGE->set_pagelayout('course');
+    $PAGE->set_pagelayout('incourse');
 }
 
 

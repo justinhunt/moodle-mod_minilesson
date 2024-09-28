@@ -216,7 +216,7 @@ const ALL_VOICES = array(
     constants::M_LANG_TEIN => ['te-IN-Standard-A'=>'Anandi_g','te-IN-Standard-B'=>'Kai_g'],
     constants::M_LANG_TRTR => ['Filiz'=>'Filiz'],
     constants::M_LANG_UKUA => ['uk-UA-Wavenet-A'=>'Katya_g'],
-
+    constants::M_LANG_VIVN => ['vi-VN-Wavenet-A'=>'Huyen_g','vi-VN-Wavenet-B'=>'Duy_g'],
 );
 
 //CSS ids/classes
@@ -354,6 +354,7 @@ const M_LANG_SLSI = 'sl-SI';
 const M_LANG_ISIS = 'is-IS';
 const M_LANG_MKMK = 'mk-MK';
 const M_LANG_SRRS = 'sr-RS';
+const M_LANG_VIVN = 'vi-VN';
 
 const M_PROMPT_SEPARATE=0;
 const M_PROMPT_RICHTEXT=1;

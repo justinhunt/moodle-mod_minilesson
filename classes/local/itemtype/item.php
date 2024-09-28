@@ -895,6 +895,8 @@ abstract class item implements templatable, renderable {
             $data = file_postupdate_standard_editor($data, constants::QUESTIONTEXTAREA, $edoptions, $this->context,
                 constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, $theitem->id);
             $theitem->{constants::QUESTIONTEXTAREA} = trim($data->{constants::QUESTIONTEXTAREA});
+        }else{
+            $theitem->{constants::QUESTIONTEXTAREA} = '';
         }
 
         //Item YT Clip

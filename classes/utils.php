@@ -1006,7 +1006,7 @@ class utils{
 
     public static function fetch_pagelayout_options(){
         $options = Array(
-                'standard'=>'standard',
+                'standard'=>'incourse',
                 'embedded'=>'embedded',
                 'popup'=>'popup'
         );
@@ -1240,7 +1240,8 @@ class utils{
                constants::M_LANG_TAIN => get_string('ta-in', constants::M_COMPONENT),
                constants::M_LANG_TEIN => get_string('te-in', constants::M_COMPONENT),
                constants::M_LANG_TRTR => get_string('tr-tr', constants::M_COMPONENT),
-                constants::M_LANG_UKUA => get_string('uk-ua',constants::M_COMPONENT),
+               constants::M_LANG_UKUA => get_string('uk-ua',constants::M_COMPONENT),
+               constants::M_LANG_VIVN => get_string('vi-vn',constants::M_COMPONENT),
 
        );
    }
@@ -1678,35 +1679,42 @@ class utils{
         }
     }
 
-    public static function create_instance($courseid,$moduledata, $sectionid=1){
-        global $CFG,$DB;
 
-        //course id and module type (and sectionid) minimum required for cm creation
-        $modulename="minilesson";
-        $course = $DB->get_record('course', array('id'=>$courseid), '*', MUST_EXIST);
+    /**
+     * @param  $moduledata
+     * @return mixed
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     * @throws \require_login_exception
+     */
+    public static function create_instance($moduledata,$course, $section=1) {
+        global $CFG;
+
+        require_once($CFG->dirroot . '/course/lib.php');
+        require_once($CFG->libdir.'/filelib.php');
+        require_once($CFG->libdir.'/gradelib.php');
+        require_once($CFG->libdir.'/completionlib.php');
+        require_once($CFG->libdir.'/plagiarismlib.php');
+        require_once($CFG->dirroot . '/course/modlib.php');
 
         //create new cm
-        require_once($CFG->dirroot.'/course/modlib.php');
-        list($module, $context, $cw, $cm, $data) = prepare_new_moduleinfo_data($course, $modulename, $sectionid);
-        $data->coursemodule = $data->id = add_course_module($data);
+        list($module, $context, $cw, $cm, $data) = prepare_new_moduleinfo_data($course,constants::M_MODNAME, $section);
 
-        //add specific stuff to it
-        $data->displayname="This is an auto minilesson";
-        $data->name="This is an auto minilesson";
-        $data->intro='';
-        $data->pagelayout='standard';
-     //   $data->timelimit=0;
-        $data->showqtitles=0;
-        $data->maxattempts=0;
-        $data->ttslanguage='en-US';
-        $data->region='useast1';
-        $data->richtextprompt=0;
-        $data->activitylink=0;
-        $data->foriframe=0;
-        $data->grade=0;
+        //add the module info to our moduledata object
+        $moduledata->module = $module->id;
+        $moduledata->section = $cw->section;
 
-        minilesson_add_instance($data, null);
+        //not sure id we need these .. but ok..
+        $moduledata->add    = 1;
+        $moduledata->update =  0;
+        $moduledata->return =  0;
+        $moduledata->type = constants::M_MODNAME;
+        $moduledata->sectionreturn =null;
 
-    }
+        //update module
+        $moduledata = add_moduleinfo($moduledata, $course);
+        return $moduledata->coursemodule;
 
+    }//end of function
 }

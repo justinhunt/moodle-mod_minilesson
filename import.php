@@ -55,7 +55,7 @@ $config = get_config(constants::M_COMPONENT);
 if($config->enablesetuptab){
     $PAGE->set_pagelayout('popup');
 }else{
-    $PAGE->set_pagelayout('course');
+    $PAGE->set_pagelayout('incourse');
 }
 
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
@@ -65,7 +65,7 @@ if ($data = $form->get_data()) {
         $errormessage = '';
         $content = $form->get_file_content('importfile');
         $theimport = new \mod_minilesson\import($moduleinstance,$modulecontext,$course,$cm);
-        $isjson=true;
+        $isjson=utils::is_json($content);
         if($isjson){
             if(!utils::is_json($content)){
                 $errormessage = get_string('error:invalidjson', constants::M_COMPONENT);

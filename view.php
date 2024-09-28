@@ -101,7 +101,7 @@ if($moduleinstance->foriframe==1  || $moduleinstance->pagelayout=='embedded' || 
     $PAGE->add_body_class('poodll-minilesson-embed');
 }else{
     if(has_capability('mod/' . constants::M_MODNAME . ':' . 'manage',$modulecontext)) {
-        $PAGE->set_pagelayout('course');
+        $PAGE->set_pagelayout('incourse');
     }else{
         $PAGE->set_pagelayout($moduleinstance->pagelayout);
     }

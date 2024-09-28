@@ -1,8 +1,14 @@
-Version 1.0.69 (Build 202408xxxx)
-- fixed youtube/vimeo embed breaking preview screen when editing items
+Version 1.0.71 (Build 2024092500)
+- Fix for broken item text area editing (texteditor was readonly sometimes)
+- Added Vietnamese Language support
+
+Version 1.0.70 (Build 2024082600)
+- Fix for layout(display of introduction) issue on Adaptable theme
+
+Version 1.0.69 (Build 2024082400)
+- fixed Youtube/Vimeo embed breaking preview screen when editing items
 - added stubs for new type
 - new media prompt settings system
-
 
 Version 1.0.68 (Build 2024062200)
 - added finish screen option to settings (admin and instance)

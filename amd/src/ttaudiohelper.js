@@ -74,12 +74,28 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
                 that.therecorder.update_audio('isRecording',true);
                 that.tracks = stream.getTracks();
 
-                // Create a MediaStreamAudioSourceNode for the microphone
+                //lets check the noise suppression and echo reduction on these
+                for(var i=0; i<that.tracks.length; i++){
+                    var track = that.tracks[i];
+                    if(track.kind == "audio"){
+                        var settings = track.getSettings();
+                        if(settings.noiseSuppression){
+                            log.debug("Noise Suppression is on");
+                        }else{
+                            log.debug("Noise Suppression is off");
+                        }
+                        if(settings.echoCancellation){
+                            log.debug("Echo Cancellation is on");
+                        }else{
+                            log.debug("Echo Cancellation is off");
+                        }
+                    }
+                }
 
+                // Create a MediaStreamAudioSourceNode for the microphone
                 that.microphone = that.audioContext.createMediaStreamSource(stream);
 
                 // Connect the AudioBufferSourceNode to the gainNode
-
                 that.microphone.connect(that.processor);
                 that.encoder = wavencoder.clone();
                 that.encoder.init(that.audioContext.sampleRate, 2);
@@ -109,7 +125,11 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
 
             };
 
-
+            //for ios we need to do this to keep playback volume high
+            if ("audioSession" in navigator) {
+                navigator.audioSession.type = 'play-and-record';
+                console.log("AudioSession API is supported");
+            }
 
             // Mic permission
             navigator.mediaDevices.getUserMedia({

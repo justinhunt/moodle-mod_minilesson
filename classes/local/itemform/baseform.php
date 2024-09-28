@@ -268,6 +268,7 @@ abstract class baseform extends \moodleform {
                 //add the media prompts chooser and fields
                 $mform->addElement('header', 'mediapromptsheading', get_string('mediaprompts', constants::M_COMPONENT));
                 $this->add_media_prompts();
+                $mform->setExpanded('mediapromptsheading',true);
             }//end of if richtextprompt or not
         }//end of if standard = true
 
@@ -392,11 +393,11 @@ abstract class baseform extends \moodleform {
 
 
         //Question media iframe
-      $mform->addElement('html',$fieldsettops['addiframe'],[]);
+        $mform->addElement('html',$fieldsettops['addiframe'],[]);
             $mform->addElement('text', constants::MEDIAIFRAME, get_string('itemiframe', constants::M_COMPONENT), array('size'=>100));
             $mform->setType(constants::MEDIAIFRAME, PARAM_RAW);
-        //close the fieldset    
-      $mform->addElement('html',$fieldsetbottom,[]);
+            //close the fieldset
+        $mform->addElement('html',$fieldsetbottom,[]);
 
 
         //Question text to speech

@@ -70,14 +70,16 @@ This file contains functions for media prompts on the mform
                 log.debug("changed");
                 var mediaprompt = $(this).val();
                 var thefieldset = $('#ml_mediaprompt_panel_' + mediaprompt);
-                thefieldset.insertAfter(that.controls.selectcontainer);
+              //tinymce breaks if we move it arround the DOM .. so we dont insertAfter for textarea
+                if(mediaprompt !== 'addtextarea') {
+                    thefieldset.insertAfter(that.controls.selectcontainer);
+                }
                 thefieldset.fadeIn(500); //thefieldset.show();
               
                 //disable the option in the dropdown
                 that.controls.select.find('option[value="' + mediaprompt + '"]').prop('disabled', true);
                 //deselect all options
                 that.controls.select.prop('selectedIndex',0);
-                
             });
 
             //close the fieldset on button click
