@@ -35,6 +35,18 @@ class import  {
 
     private $itemsfromjson = false;
     private $cir;
+    private $isjson = false;
+    private $filesfromjson = false;
+    private $moduleinstance;
+    private $modulecontext;
+    private $course;
+    private $cm;
+    private $errors;
+    private $upt;
+    private $currentheader;
+    private $keycolumns;
+    private $allvoices;
+    
 
     /**
      * process constructor.
