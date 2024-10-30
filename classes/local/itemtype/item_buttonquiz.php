@@ -40,14 +40,73 @@ class item_buttonquiz extends item {
      * @return array
      */
     public function export_for_template(\renderer_base $output){
-
+        $itemrecord = $this->itemrecord;
         $testitem= new \stdClass();
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
+        for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
+            if (!empty(trim($itemrecord->{constants::TEXTANSWER . $anumber}))) {
+                $sentence = trim($itemrecord->{constants::TEXTANSWER . $anumber});
 
+                $s = new \stdClass();
+                $s->index = $anumber - 1;
+                $s->indexplusone = $anumber;
+                $s->sentence = $sentence;
+                $s->length = \core_text::strlen($sentence);
+
+                if($itemrecord->{constants::LISTENORREAD}==constants::LISTENORREAD_LISTEN) {
+                    $s->prompt = $this->dottify_text($sentence);
+                }else {
+                    $s->prompt =$sentence;
+                }
+
+                $testitem->sentences[] = $s;
+            }
+        }
+        //button quiz also has a confirm choice option we need to include
+        $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
         return $testitem;
+    }
+
+    public static function validate_import($newrecord,$cm){
+        $error = new \stdClass();
+        $error->col='';
+        $error->message='';
+
+        if($newrecord->customtext1==''){
+            $error->col='customtext1';
+            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+            return $error;
+        }
+        if($newrecord->customtext2==''){
+            $error->col='customtext2';
+            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+            return $error;
+        }
+
+        if(!isset($newrecord->{'customtext' . $newrecord->correctanswer}) || $newrecord->{'customtext' . $newrecord->correctanswer}==''){
+            $error->col='correctanswer';
+            $error->message=get_string('error:correctanswer',constants::M_COMPONENT);
+            return $error;
+        }
+
+        //return false to indicate no error
+        return false;
+    }
+
+    /*
+    * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+    */
+    public static function get_keycolumns(){
+        //get the basic key columns and customize a little for instances of this item type
+        $keycols = parent::get_keycolumns();
+        $keycols['text5']=['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
+        $keycols['int4']=['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
+        $keycols['int3']=['jsonname'=>'confirmchoice','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::CONFIRMCHOICE];
+        $keycols['int2']=['jsonname'=>'listenorread','type'=>'int','optional'=>true,'default'=>0,'dbname'=>constants::LISTENORREAD]; //not boolean ..
+        return $keycols;
     }
 
 }

@@ -568,6 +568,9 @@ class renderer extends \plugin_renderer_base {
 
         $recopts['useanimatecss']=$config->animations==constants::M_ANIM_FANCY;
 
+        //to show a post item results panel
+        $recopts['useresultspanel']=isset($CFG->minilesson_experimental) && $CFG->minilesson_experimental;
+
         //the activity URL for returning to on finished
         $activityurl = new \moodle_url(constants::M_URL . '/view.php',
             array('n' => $moduleinstance->id));
@@ -636,6 +639,22 @@ class renderer extends \plugin_renderer_base {
 
         //these need to be returned and echo'ed to the page
         return $ret_html;
+    }
+
+    /**
+     * Return HTML to embed a minilesson
+     */
+    public function embed_minilesson($cmid,$token){
+        global $DB;
+        $cm= get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
+        $moduleinstance= $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
+        $comp_test =  new \mod_minilesson\comprehensiontest($cm);
+        $previewid=0;
+        $embed=1;
+        $canattempt=true;
+        $ret = $this->show_quiz($comp_test,$moduleinstance);
+        $ret .= $this->fetch_activity_amd($cm, $moduleinstance,$previewid,$canattempt,$embed);
+        return $ret;
     }
 
     /**

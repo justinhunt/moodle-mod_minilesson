@@ -28,6 +28,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
         anim.init(animopts);
 
     },
+
     next_question: function(percent) {
       var self = this;
       var stepdata = {};
@@ -47,15 +48,20 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
       var chosenelement=null;
       var theplayer = $("#" + itemdata.uniqueid + "_player");
       var nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
-      
+      var confirmchoicebutton = $("#" + itemdata.uniqueid + "_container .minilesson_mc_confirmchoice");
+      var resultspanel = $("#" + itemdata.uniqueid + "_container .minilesson_resultspanel");
+      var resultspanelswish = $("#" + itemdata.uniqueid + "_container .minilesson_resultspanel_swish");
+      var resultspanelstars = $("#" + itemdata.uniqueid + "_container .minilesson_swishstars");
+      var resultspanelscore = $("#" + itemdata.uniqueid + "_container .minilesson_swishscore");
+
       nextbutton.on('click', function(e) {
         self.next_question(0);
       });
 
       //if we need to submit this question we dont allow skip
-        if(itemdata.confirmchoice===1 || itemdata.confirmchoice==='1') {
+      if(itemdata.confirmchoice===1 || itemdata.confirmchoice==='1') {
             nextbutton.hide();
-        }
+      }
 
 
       var finalChoice = function() {
@@ -77,7 +83,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
           $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_wrong").hide();
           $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_right").show();
 
-
           //if answers were dots for audio content, show them
           if(itemdata.hasOwnProperty('audiocontent')) {
               for (var i = 0; i < itemdata.sentences.length; i++) {
@@ -86,18 +91,46 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
               }
           }
 
-
           //highlight selected answers
           $("#" + itemdata.uniqueid + "_option" + checked).addClass('minilesson_mc_selected');
-          var percent = checked == itemdata.correctanswer ? 100 : 0;
 
-          $(".minilesson_nextbutton").prop("disabled", true);
-          setTimeout(function() {
-              $(".minilesson_nextbutton").prop("disabled", false);
-              self.next_question(percent);
-          }, 2000);
+          //calculate score
+          var achieved = checked == itemdata.correctanswer ? 1 : 0;
+          var percent = achieved * 100;
 
+          if(quizhelper.useresultspanel) {
+              //hide the confirm choice button
+              confirmchoicebutton.hide();
+
+              //show the result panel
+              resultspanelswish.data('possible', '1');
+              resultspanelswish.data('achieved', achieved);
+              resultspanelscore.text(achieved + '/' + 1);
+              if (achieved > 0) {
+                  resultspanelstars.html('⭐'); // Display a star
+              }else{
+                    resultspanelstars.html('❌'); // Display a cross
+              }
+              resultspanel.show();
+              anim.do_animate(resultspanelswish,'zoomIn animate__faster','in');
+
+              //reset the handler for a call to move to next question
+              nextbutton.on('click', function(e) {
+                  self.next_question(percent);
+              });
+              //show the next button
+              nextbutton.show();
+
+          }else{
+              $(".minilesson_nextbutton").prop("disabled", true);
+              setTimeout(function() {
+                  $(".minilesson_nextbutton").prop("disabled", false);
+                  self.next_question(percent);
+              }, 2000);
+          }
       };//end of final choice
+
+
 
       //on tapping of a response, we either action the choice or show a confirmation button
       $("#" + itemdata.uniqueid + "_container .minilesson_mc_response").on('click', function(e){

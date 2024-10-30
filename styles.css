@@ -2633,4 +2633,61 @@ body.poodll-minilesson-embed #page {
 }
 .ml_mediaprompt_instructions {
   margin-bottom: 5px;
-}    
+}
+
+/* Button Quiz */
+minilesson_bq_resultbox {
+  float: right;
+  padding-left: 8px;
+}
+
+.bqplayrow {
+  margin: 5px 5px 10px 5px;
+  padding: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.minilesson_bq_response {
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 1.33em;
+  overflow: auto;
+}
+.minilesson_bq_confirmchoice {
+  text-align: center;
+  background-color: blue;
+  color: white;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.33em;
+  overflow: auto;
+}
+
+.minilesson_bq_selected {
+  background-color: lightblue;
+}
+.minilesson_bq_disabled {
+  pointer-events: none;
+}
+
+.minilesson_bq_disabled {
+  pointer-events: none;
+}
+.minilesson_bq_right {
+  color: green;
+}
+.minilesson_bq_wrong {
+  color: red;
+}
+.minilesson_bq_unanswered {
+  color: black;
+}
+.minilesson_bq_playstate {
+  float: right;
+}
