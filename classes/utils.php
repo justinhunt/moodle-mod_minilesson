@@ -1709,4 +1709,52 @@ class utils{
 
     }
 
+    // JB added.
+    public static function update_stepgrade($modid,$correct){
+        global $DB,$USER;
+        $mod = mod_minilesson_module::get_by_modid($modid);
+        // TODO: update this?
+        $records = $DB->get_records(constants::M_ATTEMPTSTABLE, ['modid' => $modid, 'userid' => $USER->id],'timecreated DESC');
+
+        if (!$records) {return false;}
+        $record = array_shift($records);
+        if (!$record) {return false;}
+
+        $field=false;
+        $termcount=0;
+        switch($record->state){
+            case mod_minilesson_module::STATE_STEP1:
+                $termcount=$mod->get_mod()->step1termcount;
+                $field = 'grade1';
+                break;
+            case mod_minilesson_module::STATE_STEP2:
+                $termcount=$mod->get_mod()->step2termcount;
+                $field = 'grade2';
+                break;
+            case mod_minilesson_module::STATE_STEP3:
+                $termcount=$mod->get_mod()->step3termcount;
+                $field = 'grade3';
+                break;
+            case mod_minilesson_module::STATE_STEP4:
+                $termcount=$mod->get_mod()->step4termcount;
+                $field = 'grade4';
+                break;
+            case mod_minilesson_module::STATE_STEP5:
+                $termcount=$mod->get_mod()->step5termcount;
+                $field = 'grade5';
+                break;
+            case mod_minilesson_module::STATE_END:
+            case mod_minilesson_module::STATE_TERMS:
+            default:
+                //do nothing
+                break;
+        }
+        if ($field && $termcount && ($termcount>=$correct)) {
+            $grade = ROUND(($correct / $termcount) * 100, 0);
+            // TODO: is this correct DB table?
+            $DB->set_field(constants::M_ATTEMPTSTABLE, $field, $grade,array('id'=>$record->id));
+        }
+
+        return true;
+    }
 }

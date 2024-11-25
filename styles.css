@@ -2633,4 +2633,48 @@ body.poodll-minilesson-embed #page {
 }
 .ml_mediaprompt_instructions {
   margin-bottom: 5px;
-}    
+}
+
+/* Activity */
+.minilesson_loading {
+  margin: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+.minilesson_loadingtext {
+  margin: 10px;
+}
+
+#minilesson-results {
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+}
+
+#minilesson-vocab-list {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+}
+
+#minilesson-gameboard {
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  max-width: 1200px;
+}
+
+.path-mod-minilesson #mod_minilesson_spacegame {
+  background-color: #000;
+  height: 100%;
+  width: 100%;
+}
+
+.mod_minilesson_activity_header {
+  color: #281D5B;
+  margin-bottom: 24px;
+  margin-top: 24px;
+}

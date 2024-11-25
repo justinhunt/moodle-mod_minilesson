@@ -485,7 +485,158 @@ class mod_minilesson_external extends external_api {
         return new external_value(PARAM_RAW);
     }
 
+    // JB added.
 
+    public static function report_successful_association_parameters() {
+        return new external_function_parameters([
+            'termid' => new external_value(PARAM_INT),
+            'isfreemode' => new external_value(PARAM_BOOL, 'True if free mode is being used', VALUE_DEFAULT, 0)
+        ]);
+    }
 
+    public static function report_successful_association($termid, $isfreemode = false) {
+        global $DB;
 
+        $params = self::validate_parameters(self::report_successful_association_parameters(), compact('termid'));
+        extract($params);
+
+        // TODO: change this but which table are we reading from?. 
+        $term = $DB->get_record('wordcards_terms', ['id' => $termid], '*', MUST_EXIST);
+        $mod = mod_minilesson_module::get_by_modid($term->modid);
+        self::validate_context($mod->get_context());
+
+        self::mark_as_seen_db($term->id);
+
+        // We do not log associations for teachers.
+        if ($mod->can_manage()) {
+            return true;
+        }
+
+        // We need read access.
+        $mod->require_view();
+        $mod->record_successful_association($term);
+
+        return true;
+    }
+
+    public static function report_successful_association_returns() {
+        return new external_value(PARAM_BOOL);
+    }
+
+    public static function report_failed_association_parameters() {
+        return new external_function_parameters([
+            'term1id' => new external_value(PARAM_INT),
+            'term2id' => new external_value(PARAM_INT),
+            'isfreemode' => new external_value(PARAM_BOOL, 'True if free mode is being used', VALUE_DEFAULT,0)
+        ]);
+    }
+
+    public static function report_failed_association($term1id, $term2id, $isfreemode = false) {
+        global $DB;
+
+        $params = self::validate_parameters(self::report_failed_association_parameters(), compact('term1id', 'term2id'));
+        extract($params);
+
+        // TODO: change this but which table are we reading from?..
+        $term = $DB->get_record('wordcards_terms', ['id' => $term1id], '*', MUST_EXIST);
+        $mod = mod_minilesson_module::get_by_modid($term->modid);
+        self::validate_context($mod->get_context());
+        self::mark_as_seen_db($term->id);
+
+        // We do not log associations for teachers.
+        if ($mod->can_manage()) {
+            return true;
+        }
+
+        // We need read access in at least one of the terms. The rest will be validated elsewhere.
+        $mod->require_view();
+        $mod->record_failed_association($term, $term2id);
+
+        return true;
+    }
+
+    public static function report_failed_association_returns() {
+        return new external_value(PARAM_BOOL);
+    }
+
+    private static function mark_as_seen_db(int $termid):bool {
+        global $DB, $USER;
+        $params = ['userid' => $USER->id, 'termid' => $termid];
+        if ($DB->record_exists('wordcards_seen', $params)) {
+            return true;
+        }
+        // TOOD: what is the minilesson equivalent of wordcards_seen?
+        $record = (object) $params;
+        $record->timecreated = time();
+        return (bool) $DB->insert_record('wordcards_seen', $record);
+    }
+
+    // TODO: these are duplicates brought in from wordcards but slightly different to the existing here.
+    // public static function report_step_grade_parameters() {
+    //     return new external_function_parameters([
+    //             'modid' => new external_value(PARAM_INT),
+    //             'correct' => new external_value(PARAM_INT),
+    //     ]);
+    // }
+
+    // public static function report_step_grade($modid, $correct) {
+    //     $ret = utils::update_stepgrade($modid, $correct);
+    //     return $ret;
+    // }
+
+    // public static function report_step_grade_returns() {
+    //     return new external_value(PARAM_BOOL);
+    // }
+
+    public static function set_my_words_parameters(){
+        return new external_function_parameters(
+            array(
+                'termid' => new external_value(PARAM_INT, 'The term id for the word'),
+                'newstatus' => new external_value(PARAM_BOOL, 'The new status (in my words or not)')
+            )
+        );
+    }
+
+    /**
+     * Set a word as being in "My words" pool or not.
+     * @param int $termid
+     * @param bool $newstatus
+     * @return array
+     * @throws invalid_parameter_exception
+     */
+    public static function set_my_words(int $termid, bool $newstatus){
+        global $DB;
+        $params = self::validate_parameters(
+            self::set_my_words_parameters(),
+            ['termid' => $termid, 'newstatus' => $newstatus]
+        );
+
+        $courseandmoduleid = $DB->get_record_sql(
+            "SELECT cm.course, cm.id as cmid
+            FROM {course_modules} cm
+            JOIN {modules} m ON m.id = cm.module AND m.name = 'wordcards'
+            JOIN {wordcards_terms} wt ON wt.modid = cm.instance AND wt.id = ?",
+            [$params['termid']]
+        );
+        if (!$courseandmoduleid) {
+            throw new invalid_parameter_exception('Term not found with id ' . $params['termid']);
+        }
+        $context = context_module::instance($courseandmoduleid->cmid);
+        self::validate_context($context);
+
+        $mywordspool = new \mod_wordcards\my_words_pool($courseandmoduleid->course);
+        return [
+            'success' => $newstatus ? $mywordspool->add_word($params['termid']) : $mywordspool->remove_word($params['termid']),
+            'newStatus' => $newstatus
+        ];
+    }
+
+    public static function set_my_words_returns(){
+        return new external_single_structure(
+            array(
+                'success' => new external_value(PARAM_INT, 'Indicates success or failure of the call'),
+                'newStatus' => new external_value(PARAM_BOOL, 'Indicates new status of the word')
+            )
+        );
+    }
 }

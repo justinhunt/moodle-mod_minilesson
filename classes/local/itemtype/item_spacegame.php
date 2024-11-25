@@ -17,9 +17,6 @@
 namespace mod_minilesson\local\itemtype;
 
 use mod_minilesson\constants;
-use mod_minilesson\utils;
-use templatable;
-use renderable;
 
 /**
  * Renderable class for a page item in a minilesson activity.
@@ -30,9 +27,10 @@ use renderable;
  */
 class item_spacegame extends item {
 
-    //the item type
+    /**
+     * The item type constant.
+     */
     public const ITEMTYPE = constants::TYPE_SPACEGAME;
-
 
     /**
      * Export the data for the mustache template.
@@ -42,15 +40,22 @@ class item_spacegame extends item {
      */
     public function export_for_template(\renderer_base $output) {
 
-        $testitem= new \stdClass();
+        $testitem = new \stdClass();
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
-        $testitem->spacegameitems=explode(PHP_EOL,$testitem->customtext1);
+        $testitem->spacegameitems = [];
+        $spacegameitems = explode(PHP_EOL, $testitem->customtext1);
+        foreach ($spacegameitems as $spacegameitem) {
+            $spacegameitem = explode("|", $spacegameitem);
+            $spacegameitemobj = new \stdClass();
+            $spacegameitemobj->term = trim($spacegameitem[0]);
+            $spacegameitemobj->definition = trim(str_replace("\r", "", $spacegameitem[1]));
+            $testitem->spacegameitems[] = json_encode($spacegameitemobj);
+        }
 
         return $testitem;
     }
-
 }

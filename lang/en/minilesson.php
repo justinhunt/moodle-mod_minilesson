@@ -736,3 +736,35 @@ $string['spacegamedesc'] ='[space game desc. here]';
 $string['passagereadingdesc'] ='[passage reading desc. here]';
 $string['passagetoread'] ='Passage to read';
 
+// Spacegame.
+$string['achievedhighscoreof'] = 'Achieved a high score of {$a}';
+$string['addtomywords'] = "Click to add to My Words";
+$string['emptyquiz'] = 'There are no multiple choice questions in the selected category.';
+$string['endofgame'] = 'Your score was: {$a}. Press space or click to restart.';
+$string['fullscreen'] = 'Fullscreen';
+$string['howtoplay'] = 'How to play';
+$string['howtoplay_help'] = 'You can move the ship by using the arrow keys, or by dragging it with the mouse.
+Press the spacebar or click the mouse button to shoot, or tap with two fingers anywhere on the game.
+Clear as many questions as possible by shooting the correct answer.  Good Luck!';
+$string['instructions_vocablist'] = 'Review the words that will be used in this activity. Tap the word card or the \'Flip\' button to show the other side of the cards. When you are ready, tap \'Begin\' to test your knowledge of these words.';
+$string['notyetplayed'] = 'Not yet played';
+$string['playedxtimeswithhighscore'] = 'Played {$a->times} times. The last game ended with a high score of {$a->score}';
+$string['playerscores'] = 'Player scores';
+$string['points'] = 'Points';
+$string['removefrommywords'] = "Click to remove from My Words";
+$string['removescores'] = 'Remove all user scores';
+$string['score'] = 'Score: {$a->score} Lives: {$a->lives}';
+$string['scoreheader'] = 'Score';
+$string['scoreslink'] = 'View all attempts';
+$string['scoreslink_help'] = 'View all player attempts and scores';
+$string['shootthepairs'] = 'shoot the pairs';
+$string['spacegameclickclick']  = 'Click the button to start the game';
+$string['spacetostart'] = 'Press space or click to start';
+$string['sound'] = 'Sound';
+$string['title_vocablist'] = 'Get Ready';
+
+// Minilesson generic.
+$string['done'] = 'Done';
+$string['starttest'] = 'Begin';
+$string['tryagain'] = 'Try Again';
+

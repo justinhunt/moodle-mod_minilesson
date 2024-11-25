@@ -1,0 +1,49 @@
+<div class="a4e-flashcards-container">
+
+  <button class='btn btn-block btn-lg btn-primary mod_wordcards_matching_frontbtn'>
+    <i class="fa fa-retweet"></i> {{#str}}flip, mod_wordcards{{/str}}
+  </button>
+
+   <audio id="poodll_vocabplayer"></audio>
+  
+  {{#terms}} 
+  
+    <div class="a4e-card a4e-noselect">
+
+    {{#frontfacedef}}
+      <div {{#showimageflip}}style="background-image: url('{{image}}'); background-repeat: no-repeat; background-position: center;"{{/showimageflip}}
+              class="wordcards_defcard front">
+          {{{definition}}}
+      </div>
+        <div class="wordcards_termcard back">
+            <button class="play-tts btn btn-secondary btn-sm" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}">
+                <i class="fa fa-volume-up"></i>
+            </button>
+            {{term}}
+        </div>
+    {{/frontfacedef}}
+  {{^frontfacedef}}
+      <div class="wordcards_termcard front">
+          <button class="play-tts btn btn-secondary btn-sm" data-modelaudio="{{audio}}" data-tts="{{term}}" data-ttsvoice="{{ttsvoice}}">
+              <i class="fa fa-volume-up"></i>
+          </button>
+          {{term}}
+      </div>
+      <div {{#showimageflip}}style="background-image: url('{{image}}'); background-repeat: no-repeat; background-position: center;"{{/showimageflip}}
+           class="wordcards_defcard back">
+          {{{definition}}}
+      </div>
+
+  {{/frontfacedef}}
+      
+
+      
+    </div>
+  
+  {{/terms}}
+  
+</div>
+
+<button id='minilesson-start-button' class='btn btn-success btn-lg center-block btn-block'>
+  <i class='fa fa-play'></i> {{#str}}starttest, mod_minilesson{{/str}}
+</button>

@@ -78,6 +78,31 @@ $functions = array(
             'capabilities'=> 'mod/minilesson:addinstance',
             'type'        => 'write',
             'ajax'        => true,
-        )
+        ),
 
+        'mod_minilesson_report_successful_association' => array(
+                'classname'   => 'mod_minilesson_external',
+                'methodname'  => 'report_successful_association',
+                'description' => 'Reports a successful association of terms.',
+                'capabilities' => 'mod/minilesson:view',
+                'type'        => 'write',
+                'ajax'        => true,
+        ),
+
+        'mod_minilesson_report_failed_association' => array(
+                'classname'   => 'mod_minilesson_external',
+                'methodname'  => 'report_failed_association',
+                'description' => 'Reports a failed association of terms.',
+                'capabilities' => 'mod/minilesson:view',
+                'type'        => 'write',
+                'ajax'        => true,
+        ),
+        'mod_minilesson_set_my_words' => array(
+                'classname'   => 'mod_minilesson_external',
+                'methodname'  => 'set_my_words',
+                'description' => 'Set a word as being in my words or not',
+                'capabilities' => 'mod/minilesson:view',
+                'type'        => 'write',
+                'ajax'        => true,
+        ),
 );
