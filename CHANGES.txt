@@ -1,3 +1,7 @@
+Version 1.0.72 (Build 2024100700)
+- Fixes for PHP 8.2/8.3
+- Added example JSON import file
+
 Version 1.0.71 (Build 2024092500)
 - Fix for broken item text area editing (texteditor was readonly sometimes)
 - Added Vietnamese Language support
