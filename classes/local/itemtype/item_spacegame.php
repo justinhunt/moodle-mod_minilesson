@@ -45,6 +45,10 @@ class item_spacegame extends item {
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
+        $testitem->allowretry = $this->itemrecord->{constants::SG_ALLOWRETRY};
+        $testitem->aliencountmultichoice = $this->itemrecord->{constants::SG_ALIENCOUNT_MULTICHOICE};
+        $testitem->aliencountmatching = $this->itemrecord->{constants::SG_ALIENCOUNT_MATCHING};
+        $testitem->includematching = $this->itemrecord->{constants::SG_INCLUDEMATCHING};
 
         $testitem->spacegameitems = [];
         $spacegameitems = explode(PHP_EOL, $testitem->customtext1);

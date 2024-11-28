@@ -905,6 +905,7 @@ var app = {
 
         // Template data.
         var tdata = [];
+        tdata['allowretry'] = app.allowretry;
         tdata['nexturl'] = app.nexturl;
         tdata['results'] = app.results;
         tdata['total'] = app.questions.length;
@@ -1628,16 +1629,17 @@ var app = {
         });
     },  
 
-    process: function(definitions) {
-        var terms = definitions.spacegameitems.map(function(item,index) {
+    process: function(itemdata) {
+        var terms = itemdata.spacegameitems.map(function(item,index) {
             var theitem = JSON.parse(item);
             theitem.id = index;
             return theitem;
         });
-        var multichoice_alien_chunksize = definitions.customint1;
-        var matching_alien_chunksize = definitions.customint2;
-        var include_matching_questions = definitions.customint3;
+        var multichoice_alien_chunksize = itemdata.aliencountmultichoice;
+        var matching_alien_chunksize = itemdata.aliencountmatching;
+        var include_matching_questions = itemdata.includematching;
         app.terms = terms;
+        app.allowretry = itemdata.allowretry;
         app.shuffle_array(terms);
 
         // Multichoice questions.
@@ -1812,13 +1814,10 @@ var app = {
      */
     init: function(index, itemdata, quizhelper) {
         log.debug('MiniLesson Space Game: init function');
-
-        var definitions = itemdata;
-        app.definitions = definitions;
         app.init_strings();
         app.register_events(index, itemdata, quizhelper);
         app.init_controls();
-        app.process(definitions);
+        app.process(itemdata);
         app.start();
     },
 }; // End of app declaration.

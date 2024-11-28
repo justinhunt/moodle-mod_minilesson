@@ -12,10 +12,11 @@
 
 {{> mod_minilesson/feedback_details}}
 
+{{#allowretry}}
 <hr/>
-
 <div class="try-again-or-next">
-    <button style="width:50%;margin:auto;" id="minilesson-try-again" class="btn btn-danger btn-lg">
+    <button id="minilesson-try-again" class="btn btn-danger ml-spacegame-bigbutton">
         <i class="fa fa-refresh"></i> {{#str}}tryagain, mod_minilesson{{/str}}
     </button>
 </div>
+{{/allowretry}}

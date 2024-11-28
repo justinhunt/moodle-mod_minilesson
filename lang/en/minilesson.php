@@ -772,3 +772,4 @@ $string['aliencount_mc'] = 'Alien Count (Multiple Choice)';
 $string['aliencount_match'] = 'Alien Count (Shoot the Pairs)';
 $string['spacegameitems'] = 'Spacegame Items';
 $string['enterspacegameitems'] = 'Enter the list of items in the text area below. Each item should be on a new line. The format is:<br>Question | Answer<br>e.g What is the capital of France?|Paris';
+$string['showdetailedresults'] = 'Show detailed results';

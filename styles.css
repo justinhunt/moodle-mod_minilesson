@@ -2672,7 +2672,8 @@ body.poodll-minilesson-embed #page {
   margin-top: 24px;
 }
 
-#minilesson-results .try-again-or-next {
+#minilesson-results .try-again-or-next,
+#minilesson-results .show-detailed-feedback {
   text-align: center;
 }
 
@@ -2708,4 +2709,9 @@ body.poodll-minilesson-embed #page {
   margin-top: 10px;
   margin-bottom: 10px;
   vertical-align: top;
+}
+
+.ml-spacegame-bigbutton {
+  width:50%;
+  margin:auto;
 }
