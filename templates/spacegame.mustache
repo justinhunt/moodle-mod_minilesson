@@ -1,12 +1,37 @@
 {{> mod_minilesson/questionheader}}
-  
+
     <div>
-        SPACE GAME
+        {{#str}} spacegame, mod_minilesson {{/str}}
     </div>
-    {{#spacegameitems}}
-        {{.}}<br>
-    {{/spacegameitems}}
+    <div id='minilesson-gameboard'>
+        <canvas id="mod_minilesson_spacegame"></canvas>
+        <audio id="mod_minilesson_sound_laser" preload="auto">
+            <source src="{{globals.config.wwwroot}}/mod/minilesson/sounds/spacegame/Laser.wav" type="audio/wav" />
+        </audio>
+        <audio id="mod_minilesson_sound_explosion" preload="auto">
+            <source src="{{globals.config.wwwroot}}/mod/minilesson/sounds/spacegame/Explosion.wav" type="audio/wav" />
+        </audio>
+        <audio id="mod_minilesson_sound_deflect" preload="auto">
+            <source src="{{globals.config.wwwroot}}/mod/minilesson/sounds/spacegame/Deflect.wav" type="audio/wav" />
+        </audio>
+        <audio id="mod_minilesson_sound_enemylaser" preload="auto">
+            <source src="{{globals.config.wwwroot}}/mod/minilesson/sounds/spacegame/EnemyLaser.wav" type="audio/wav" />
+        </audio>
+        <div id="button_container">
+            <input id="mod_minilesson_spacegame_fullscreen_button" class="btn btn-secondary" type="button" value="{{#str}} fullscreen, mod_minilesson{{/str}}"/>
+            <input type="checkbox" name="mod_minilesson_spacegame_sound_on" value="0" id="mod_minilesson_spacegame_sound_on" data-initial-value="0" />
+            {{#str}} sound, mod_minilesson{{/str}}
+        </div>
+    </div>
 
-    <a class="btn btn-secondary ml_sg_clickclick">click click</a>
+    <div id='minilesson-counter' style='display: none'>
+        <div id='minilesson-time-counter'></div>
+    </div>
 
+    <div id='minilesson-results'>
+        <div id='results-inner'>{{> mod_minilesson/loading}}</div>
+    </div>
+<!--
+    <a id="spacegame-start" class="btn btn-secondary ml_sg_clickclick">{{#str}} spacegameclickclick, mod_minilesson {{/str}}</a>
+-->
 {{> mod_minilesson/questionfooter}}

@@ -695,12 +695,16 @@ abstract class baseform extends \moodleform {
             }
     }
 
-    /*
-     *
-
-    $mform->
-
-
-     *
-     */
+    protected final function add_aliencount($name,$label,$default) {
+        $alienoptions = [
+            2=>2,
+            3=>3,
+            4=>4,
+            5=>5,
+            6=>6,
+            7=>7,
+            8=>8,
+        ];
+        $this->add_dropdown($name, $label,$alienoptions,$default);
+    }
 }

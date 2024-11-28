@@ -2633,4 +2633,79 @@ body.poodll-minilesson-embed #page {
 }
 .ml_mediaprompt_instructions {
   margin-bottom: 5px;
-}    
+}
+
+/* Activity */
+.minilesson_loading {
+  margin: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+.minilesson_loadingtext {
+  margin: 10px;
+}
+
+#minilesson-results {
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+}
+
+#minilesson-gameboard {
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  max-width: 1200px;
+}
+
+.path-mod-minilesson #mod_minilesson_spacegame {
+  background-color: #000;
+  width: 100%;
+}
+
+.mod_minilesson_activity_header {
+  color: #281D5B;
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+
+#minilesson-results .try-again-or-next {
+  text-align: center;
+}
+
+.ml-spacegame-correct {
+  background-color: rgba(0, 255, 0, .5) !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 1px;
+}
+
+.ml-spacegame-incorrect {
+  background-color: rgba(255, 0, 0, .5) !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 1px;
+}
+
+.ml-spacegame-basic_feedback {
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 1px solid darkgray;
+}
+
+.ml-spacegame-detailed_feedback_div {
+  text-align: left;
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 5px;
+  margin: 5px;
+  display: inline-block;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  vertical-align: top;
+}

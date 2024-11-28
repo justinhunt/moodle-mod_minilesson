@@ -1,0 +1,21 @@
+<div class='ml-spacegame-basic_feedback'>
+  <h2>
+    <i class='fa fa-trophy'></i> {{totalcorrect}}/{{total}} {{#str}}correct, mod_wordcards{{/str}}
+    <hr/>
+    <i class='fa fa-clock-o'></i> {{prettytime}}
+    {{#gamescore}}
+      <hr/>
+      <i class='fa fa-star'></i> {{gamescore}} {{#str}}points, mod_wordcards{{/str}}
+    {{/gamescore}}
+  </h2>
+</div>
+
+{{> mod_minilesson/feedback_details}}
+
+<hr/>
+
+<div class="try-again-or-next">
+    <button style="width:50%;margin:auto;" id="minilesson-try-again" class="btn btn-danger btn-lg">
+        <i class="fa fa-refresh"></i> {{#str}}tryagain, mod_minilesson{{/str}}
+    </button>
+</div>

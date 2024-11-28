@@ -520,7 +520,4 @@ class mod_minilesson_external extends external_api {
         return new external_value(PARAM_RAW);
     }
 
-
-
-
 }

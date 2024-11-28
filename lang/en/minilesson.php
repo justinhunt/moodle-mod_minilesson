@@ -738,5 +738,37 @@ $string['fluencydesc'] ='[fluency desc. here]';
 $string['spacegamedesc'] ='[space game desc. here]';
 $string['passagereadingdesc'] ='[passage reading desc. here]';
 $string['passagetoread'] ='Passage to read';
-
-
+// Spacegame.
+$string['achievedhighscoreof'] = 'Achieved a high score of {$a}';
+$string['addtomywords'] = "Click to add to My Words";
+$string['emptyquiz'] = 'There are no multiple choice questions in the selected category.';
+$string['endofgame'] = 'Your score was: {$a}. Press space or click to restart.';
+$string['fullscreen'] = 'Fullscreen';
+$string['howtoplay'] = 'How to play';
+$string['howtoplay_help'] = 'You can move the ship by using the arrow keys, or by dragging it with the mouse.
+Press the spacebar or click the mouse button to shoot, or tap with two fingers anywhere on the game.
+Clear as many questions as possible by shooting the correct answer.  Good Luck!';
+$string['notyetplayed'] = 'Not yet played';
+$string['playedxtimeswithhighscore'] = 'Played {$a->times} times. The last game ended with a high score of {$a->score}';
+$string['playerscores'] = 'Player scores';
+$string['points'] = 'Points';
+$string['removefrommywords'] = "Click to remove from My Words";
+$string['removescores'] = 'Remove all user scores';
+$string['score'] = 'Score: ';
+$string['scoreheader'] = 'Score';
+$string['scoreslink'] = 'View all attempts';
+$string['scoreslink_help'] = 'View all player attempts and scores';
+$string['shootthepairs'] = 'Shoot the Pairs';
+$string['spacegameclickclick']  = 'Click the button to start the game';
+$string['spacetostart'] = 'Press space or click to start';
+$string['sound'] = 'Sound';
+$string['done'] = 'Done';
+$string['starttest'] = 'Begin';
+$string['tryagain'] = 'Try Again';
+$string['lives'] = 'Lives: ';
+$string['includematching'] = 'Include Shoot-the-Pairs';
+$string['includematching_desc'] = 'Include \'Shoot the Pairs\' matching game in the Space Game';
+$string['aliencount_mc'] = 'Alien Count (Multiple Choice)';
+$string['aliencount_match'] = 'Alien Count (Shoot the Pairs)';
+$string['spacegameitems'] = 'Spacegame Items';
+$string['enterspacegameitems'] = 'Enter the list of items in the text area below. Each item should be on a new line. The format is:<br>Question | Answer<br>e.g What is the capital of France?|Paris';
