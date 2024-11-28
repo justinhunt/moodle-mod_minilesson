@@ -92,13 +92,11 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
         }
 
         loadImage(src) {
-            if (!this.image) {
-                this.image= app.loadedImages[src];
-            }if (!this.image) {
+            if (!this.image) {    
                 this.image = new Image();
-                this.image.src = M.cfg.wwwroot +'/mod/minilesson/' + src;
             }
-           // this.image.src = src;
+            // we dont use the pre-loaded images here, we should, but we need diff images in matching
+            this.image.src = M.cfg.wwwroot +'/mod/minilesson/' + src;
             return this.image;
         }
 
