@@ -860,7 +860,6 @@ var app = {
      * Helper function to load game objects
      */
     loadGame: function() {
-
         // We already do this elsewhere.
         app.shuffle(app.questions);
 
@@ -972,7 +971,6 @@ var app = {
      * Helper function process game start.
      */
     startGame: function() {
-
         app.score = 0;
         app.gameObjects = [];
         app.particles = [];
@@ -1627,17 +1625,45 @@ var app = {
         });
     },  
 
-    process: function(itemdata) {
-        var terms = itemdata.spacegameitems.map(function(item,index) {
+    reset: function() {
+        clearInterval(app.interval);
+        clearInterval(app.timer.interval);
+        //clear event handlers (they will be added again in start)
+        // The full screen toggle listeners
+        if (document.removeEventListener) {
+            document.removeEventListener('fullscreenchange', app.fschange, false);
+            document.removeEventListener('MSFullscreenChange', app.fschange, false);
+            document.removeEventListener('mozfullscreenchange', app.fschange, false);
+            document.removeEventListener('webkitfullscreenchange', app.fschange, false);
+        }
+        // Full screen toggle button handler.
+        $('#mod_minilesson_spacegame_fullscreen_button').off('click');
+
+
+        $("#results-inner").html('');
+        app.questions = [];
+        app.terms = [];
+        app.results = [];
+        app.score = 0;
+        app.gameObjects = [];
+        app.particles = [];
+        app.player = null;
+        app.planet = null;
+        app.loaded = false;
+        app.process();
+    },
+
+    process: function() {
+        var terms = app.itemdata.spacegameitems.map(function(item,index) {
             var theitem = JSON.parse(item);
             theitem.id = index;
             return theitem;
         });
-        var multichoice_alien_chunksize = itemdata.aliencountmultichoice;
-        var matching_alien_chunksize = itemdata.aliencountmatching;
-        var include_matching_questions = itemdata.includematching;
+        var multichoice_alien_chunksize = app.itemdata.aliencountmultichoice;
+        var matching_alien_chunksize = app.itemdata.aliencountmatching;
+        var include_matching_questions = app.itemdata.includematching;
         app.terms = terms;
-        app.allowretry = itemdata.allowretry;
+        app.allowretry = app.itemdata.allowretry;
         app.shuffle_array(terms);
 
         // Multichoice questions.
@@ -1706,8 +1732,6 @@ var app = {
         app.context.fillStyle = '#FFFFFF';
         app.context.font = "18px Audiowide";
         app.context.textAlign = 'center';
-
-        log.debug('Display screen: initialising');
 
         if (app.questions !== null && app.questions.length > 0) {
             app.context.fillText(app.strings.spacetostart, app.displayRect.width / 2, app.displayRect.height / 2);
@@ -1796,7 +1820,9 @@ var app = {
         });
 
         $('body').on('click', "#minilesson-try-again", function() {
-            location.reload();
+            //location.reload();
+            app.reset();
+            app.start();
         });
 
         $('body').on('click', "#minilesson-close-results", function() {
@@ -1812,10 +1838,11 @@ var app = {
      */
     init: function(index, itemdata, quizhelper) {
         log.debug('MiniLesson Space Game: init function');
+        app.itemdata = itemdata;
         app.init_strings();
         app.register_events(index, itemdata, quizhelper);
         app.init_controls();
-        app.process(itemdata);
+        app.process();
         app.start();
     },
 }; // End of app declaration.

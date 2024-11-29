@@ -23,7 +23,7 @@ class spacegameform extends baseform
         $this->add_static_text('enterspacegameitems', '', 
         get_string('enterspacegameitems', constants::M_COMPONENT));
         $this->add_textarearesponse(1, get_string('spacegameitems',  constants::M_COMPONENT), true);
-        $this->add_allowretry(constants::SG_ALLOWRETRY, 1);
+        $this->add_allowretry(constants::SG_ALLOWRETRY, '', 1);
 
         $multichoicealiencount = get_string('aliencount_mc', constants::M_COMPONENT);
         $this->add_aliencount(constants::SG_ALIENCOUNT_MULTICHOICE, $multichoicealiencount, 5);
