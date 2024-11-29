@@ -1669,7 +1669,7 @@ var app = {
         // Multichoice questions.
         // Split into groups(ie "levels") of 5 terms (a single of mc of more than 5 terms is too much).
         var chunkSize = multichoice_alien_chunksize;
-        if(terms.length) {chunkSize = terms.length;}
+        if(terms.length < chunkSize) {chunkSize = terms.length;}
         var mc_levels = app.split_array(terms, chunkSize);
         // For each level build a set of chunksize questions with 1 correct and chunksize -1  distractors.
         for (var thelevel = 0; thelevel < mc_levels.length; thelevel++) {
@@ -1703,6 +1703,7 @@ var app = {
         if(include_matching_questions == 1){
             // Split into groups(ie "levels") of 3 terms (even 4 terms = 8 items to shoot, its quite hard).
             chunkSize=matching_alien_chunksize;
+            if(terms.length < chunkSize) {chunkSize = terms.length;}
             var matching_levels = app.split_array(terms, chunkSize);
             for (var thelevel = 0; thelevel < matching_levels.length; thelevel++) {
                 var level = matching_levels[thelevel];
