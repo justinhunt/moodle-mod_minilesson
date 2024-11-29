@@ -78,6 +78,5 @@ $functions = array(
             'capabilities'=> 'mod/minilesson:addinstance',
             'type'        => 'write',
             'ajax'        => true,
-        )
-
+        ),
 );

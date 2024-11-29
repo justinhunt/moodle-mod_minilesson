@@ -127,6 +127,11 @@ const PASSAGEPICTURE='passagepicture';
 const PASSAGEPICTURE_FILEAREA = 'passagepicture';
 const TIMELIMIT = 'timelimit';
 const GAPFILLALLOWRETRY = 'customint3';
+
+const SG_INCLUDEMATCHING = 'customint3';
+const SG_ALIENCOUNT_MULTICHOICE = 'customint1';
+const SG_ALIENCOUNT_MATCHING = 'customint2';
+const SG_ALLOWRETRY = 'customint4';
 const MAXANSWERS=4;
 const MAXCUSTOMTEXT=5;
 const MAXCUSTOMDATA=5;

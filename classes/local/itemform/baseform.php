@@ -686,21 +686,25 @@ abstract class baseform extends \moodleform {
      * @param bool|int $default
      * @return void
      */
-    protected final function add_allowretry($name,  $default=0) {
+    protected final function add_allowretry($name, $detailslabel = null,  $default=0) {
         $this->_form->addElement('advcheckbox',$name,
             get_string('allowretry',constants::M_COMPONENT),
-            get_string('allowretry_desc',constants::M_COMPONENT),[],[0,1]);
+            $detailslabel,[],[0,1]);
             if ($default !== 0) {
                 $this->_form->setDefault($name, 1);
             }
     }
 
-    /*
-     *
-
-    $mform->
-
-
-     *
-     */
+    protected final function add_aliencount($name,$label,$default) {
+        $alienoptions = [
+            2=>2,
+            3=>3,
+            4=>4,
+            5=>5,
+            6=>6,
+            7=>7,
+            8=>8,
+        ];
+        $this->add_dropdown($name, $label,$alienoptions,$default);
+    }
 }

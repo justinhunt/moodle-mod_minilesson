@@ -1,0 +1,31 @@
+<p class='show-detailed-feedback'>
+    <a class="btn btn-primary ml-spacegame-bigbutton" data-toggle="collapse" href="#ml-spacegame-fb-container" role="button" aria-expanded="false" aria-controls="ml-spacegame-fb-container">
+        <i class="fa fa-list"></i> {{#str}}showdetailedresults, mod_minilesson{{/str}}
+    </a>
+</p>
+<div id="ml-spacegame-fb-container" class="collapse" style='text-align:center;overflow:hidden;'>
+
+  {{#results}}
+
+  <div class="ml-spacegame-detailed_feedback_div term-wrapper position-relative">
+
+    <div class="term">
+
+      <div class="term-header">
+        <div class="term-title">
+            <span>{{correct}}</span>
+        </div>
+        <div class="term-tick">
+            {{#points}}<div class="ml-spacegame-correct"><i class='fa fa-lg fa-check'></i></div>{{/points}}
+            {{^points}}<div class="ml-spacegame-incorrect"><i class='fa fa-lg fa-times'></i></div>{{/points}}
+        </div>
+      </div>
+
+      <div class="term-body">
+        <span>{{{question}}}</span>
+      </div>
+    </div>
+
+  </div>
+  {{/results}}
+</div>
