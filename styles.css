@@ -1700,7 +1700,14 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  background-color: red;
+}
+
+.mod_minilesson_ttrec_waveButtonContainer .ttrec_ready {
+  background: green;
+}
+
+.mod_minilesson_ttrec_waveButtonContainer .ttrec_engaged {
+  background: #e52;
 }
 
 .mod_minilesson_quiz_reattempt {

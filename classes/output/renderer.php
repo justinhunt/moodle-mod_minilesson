@@ -434,7 +434,7 @@ class renderer extends \plugin_renderer_base {
         $placeholderdiv = \html_writer::div('',constants::M_QUIZ_PLACEHOLDER . ' ' . constants::M_QUIZ_SKELETONBOX,
             array('id'=>constants::M_QUIZ_PLACEHOLDER));
 
-        $quizclass = constants::M_QUIZ_CONTAINER . ' ' . constants::M_COMPONENT . '_' . $moduleinstance->containerwidth;
+        $quizclass = constants::M_QUIZ_CONTAINER . ' ' . $moduleinstance->csskey . ' '. constants::M_COMPONENT . '_' . $moduleinstance->containerwidth;
         $quizattributes = array('id'=>constants::M_QUIZ_CONTAINER);
         if(!empty($moduleinstance->lessonfont)){
             $quizattributes['style']="font-family: '$moduleinstance->lessonfont', serif;";

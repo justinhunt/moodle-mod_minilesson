@@ -305,7 +305,10 @@ class import  {
 
                 case 'voice':
                     if(empty($value) || $value == 'auto'){
+                        //this will return the name, not the key
                         $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
+                        //here we go from name to key
+                        $value = $this->allvoices[strtolower($value)];
                     }else{
                         if(array_key_exists(strtolower($value), $this->allvoices)){
                             $value = $this->allvoices[strtolower($value)];

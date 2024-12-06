@@ -619,6 +619,11 @@ $string['lessonkey_details'] =
     'The lesson key is just a tag that will be exported to csv with some reports to make post processing those reports in a spreadsheet easier. It is fine to leave it empty.';
 $string['lessonkey_help'] =
     'The lesson key is just a tag that will be exported to csv with some reports to make post processing those reports in a spreadsheet easier.';
+$string['csskey']="CSS Key";
+$string['csskey_details'] =
+    'The CSS key is just a custom CSS class that will be appended to the question container, so designers can customize the look and feel easily(?). It is fine to leave it empty.';
+$string['csskey_help'] =
+    'The CSS key is just a custom CSS class that will be appended to the question container, so designers can customize the look and feel easily(?).';
 $string['reportstable']="Reports Style";
 $string['reportstable_details']="Ajax tables are faster to use and can sort data. Paged tables load faster but are harder to navigate with.";
 $string['reporttableajax']="Ajax Tables";

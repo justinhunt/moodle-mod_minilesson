@@ -1379,6 +1379,12 @@ class utils{
             $mform->setType('lessonfont', PARAM_TEXT);
 
 
+            // Add csskey
+            $mform->addElement('text', 'csskey', get_string('csskey', constants::M_COMPONENT), array('size' => '8'));
+            $mform->setType('csskey', PARAM_TEXT);
+            $mform->setDefault('csskey', '');
+            $mform->addHelpButton('csskey', 'csskey', constants::M_COMPONENT);
+
             // Add passagekey
             $mform->addElement('text', 'lessonkey', get_string('lessonkey', constants::M_COMPONENT), array('size' => '8'));
             $mform->setType('lessonkey', PARAM_TEXT);

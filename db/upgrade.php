@@ -490,6 +490,23 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, $newversion, 'minilesson');
     }
 
+    // Add csskey to minilesson table
+    if ($oldversion < 2024120700) {
+        $table = new xmldb_table(constants::M_TABLE);
+
+        // Define fields , csskey,to be added to minilesson.
+        $fields=[];
+        $fields[] = new xmldb_field('csskey', XMLDB_TYPE_CHAR, '255', null);
+
+        // Add fields
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+        upgrade_mod_savepoint(true, 2024120700, 'minilesson');
+    }
+
 
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;

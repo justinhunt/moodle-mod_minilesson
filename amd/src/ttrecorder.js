@@ -223,9 +223,11 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 }
 
                 if(that.audio.isRecognizing || that.audio.isRecording ) {
-                    this.controls.recorderbutton.css('background', '#e52');
+                    this.controls.recorderbutton.removeClass('ttrec_ready');
+                    this.controls.recorderbutton.addClass('ttrec_engaged');
                 }else{
-                    this.controls.recorderbutton.css('background', 'green');
+                    this.controls.recorderbutton.removeClass('ttrec_engaged');
+                    this.controls.recorderbutton.addClass('ttrec_ready');
                 }
 
                 //div content WHEN?

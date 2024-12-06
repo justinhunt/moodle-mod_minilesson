@@ -1,3 +1,6 @@
+Version 1.0.74 (Build 2024120700)
+- Added a custom CSS key to the minilesson
+
 Version 1.0.73 (Build 2024113000)
 - Added a renderable embed stub for rendered content
 - Added a results panel in minilesson in beta currently

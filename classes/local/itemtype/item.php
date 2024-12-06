@@ -430,7 +430,8 @@ abstract class item implements templatable, renderable {
 
         //Question TextArea
         if(!empty($itemrecord->{constants::QUESTIONTEXTAREA}) && !empty(trim($itemrecord->{constants::QUESTIONTEXTAREA}))){
-            $testitem->itemtextarea=nl2br($itemrecord->{constants::QUESTIONTEXTAREA});
+            $testitem->itemtextarea = nl2br($itemrecord->{constants::QUESTIONTEXTAREA});
+            $testitem->itemtextarea = format_text($testitem->itemtextarea, FORMAT_MOODLE, $editoroptions);
         }
 
         //show text prompt or dots, for listen and repeat really
@@ -896,7 +897,7 @@ abstract class item implements templatable, renderable {
                 constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, $theitem->id);
             $theitem->{constants::QUESTIONTEXTAREA} = trim($data->{constants::QUESTIONTEXTAREA});
         }else{
-            $theitem->{constants::QUESTIONTEXTAREA} = '';
+            $theitem->{constants::QUESTIONTEXTAREA} = trim($data->{constants::QUESTIONTEXTAREA});
         }
 
         //Item YT Clip
