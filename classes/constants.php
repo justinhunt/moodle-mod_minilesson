@@ -127,7 +127,7 @@ const PASSAGEPICTURE='passagepicture';
 const PASSAGEPICTURE_FILEAREA = 'passagepicture';
 const TIMELIMIT = 'timelimit';
 const GAPFILLALLOWRETRY = 'customint3';
-
+const GAPFILLHIDESTARTPAGE = 'customint5';
 const SG_INCLUDEMATCHING = 'customint3';
 const SG_ALIENCOUNT_MULTICHOICE = 'customint1';
 const SG_ALIENCOUNT_MATCHING = 'customint2';

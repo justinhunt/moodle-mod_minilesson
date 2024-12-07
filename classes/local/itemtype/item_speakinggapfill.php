@@ -51,7 +51,7 @@ class item_speakinggapfill extends item {
      */
     public function export_for_template(\renderer_base $output) {
 
-        $testitem= new \stdClass();
+        $testitem = new \stdClass();
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
@@ -59,13 +59,14 @@ class item_speakinggapfill extends item {
 
         // Sentences
         $sentences = [];
-        if(isset($testitem->customtext1)) {
+        if (isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
 
         $testitem->sentences = $this->process_speakinggapfill_sentences($sentences);
-        $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE}==1;
-        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY}==1;
+        $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE} == 1;
+        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
+        $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
 
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
@@ -75,12 +76,12 @@ class item_speakinggapfill extends item {
 
     public static function validate_import($newrecord,$cm){
         $error = new \stdClass();
-        $error->col='';
-        $error->message='';
+        $error->col = '';
+        $error->message = '';
 
-        if($newrecord->customtext1==''){
-            $error->col='customtext1';
-            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+        if($newrecord->customtext1 == ''){
+            $error->col = 'customtext1';
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
@@ -93,11 +94,12 @@ class item_speakinggapfill extends item {
     public static function get_keycolumns(){
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['int4']=['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
-        $keycols['text5']=['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
-        $keycols['int3']=['jsonname'=>'allowretry','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
-        $keycols['int2']=['jsonname'=>'dictationstyle','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::READSENTENCE];
-        $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+        $keycols['int4'] = ['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
+        $keycols['text5'] = ['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
+        $keycols['int3'] = ['jsonname'=>'allowretry','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
+        $keycols['int2'] = ['jsonname'=>'dictationstyle','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::READSENTENCE];
+        $keycols['text1'] = ['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+        $keycols['int5'] = ['jsonname'=>'hidestartpage','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLHIDESTARTPAGE];
         return $keycols;
     }
 

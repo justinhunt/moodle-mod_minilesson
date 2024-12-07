@@ -232,7 +232,11 @@ define(['jquery',
             var self = this;
             $("#" + self.itemdata.uniqueid + "_container .sgapfill_not_loaded").hide();
             $("#" + self.itemdata.uniqueid + "_container .sgapfill_loaded").show();
-            $("#" + self.itemdata.uniqueid + "_container .sgapfill_start_btn").prop("disabled", false);
+            if(self.itemdata.hidestartpage){
+                self.start();
+            }else{
+                $("#" + self.itemdata.uniqueid + "_container .sgapfill_start_btn").prop("disabled", false);
+            }
         },
 
         gotComparison: function(comparison, typed) {

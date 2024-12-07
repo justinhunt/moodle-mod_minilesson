@@ -55,7 +55,8 @@ class  item_listeninggapfill extends item {
         }
 
         $testitem->sentences = $this->process_listeninggapfill_sentences($sentences);
-        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY}==1;
+        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
+        $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
 
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
@@ -84,10 +85,11 @@ class  item_listeninggapfill extends item {
     public static function get_keycolumns(){
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['int4']=['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
-        $keycols['text5']=['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
-        $keycols['int3']=['jsonname'=>'allowretry','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
-        $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+        $keycols['int4'] = ['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
+        $keycols['text5'] = ['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
+        $keycols['int3'] = ['jsonname'=>'allowretry','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
+        $keycols['text1'] = ['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+        $keycols['int5'] = ['jsonname'=>'hidestartpage','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLHIDESTARTPAGE];
         return $keycols;
     }
 

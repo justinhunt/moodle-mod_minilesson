@@ -54,7 +54,8 @@ class  item_typinggapfill extends item {
         }
 
         $testitem->sentences = $this->process_typinggapfill_sentences($sentences);
-        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY}==1;
+        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
+        $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
 
         // cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
@@ -85,6 +86,7 @@ class  item_typinggapfill extends item {
         $keycols = parent::get_keycolumns();
         $keycols['int3']=['jsonname'=>'allowretry','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
         $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+        $keycols['int5'] = ['jsonname'=>'hidestartpage','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLHIDESTARTPAGE];
         return $keycols;
     }
 

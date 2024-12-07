@@ -679,7 +679,7 @@ abstract class baseform extends \moodleform {
     }
 
     /**
-     * Time limit element
+     * Allow retry element
      *
      * @param string $name
      * @param string $label
@@ -689,6 +689,23 @@ abstract class baseform extends \moodleform {
     protected final function add_allowretry($name, $detailslabel = null,  $default=0) {
         $this->_form->addElement('advcheckbox',$name,
             get_string('allowretry',constants::M_COMPONENT),
+            $detailslabel,[],[0,1]);
+            if ($default !== 0) {
+                $this->_form->setDefault($name, 1);
+            }
+    }
+
+    /**
+     * Hide start page element.
+     *
+     * @param string $name
+     * @param string $label
+     * @param bool|int $default
+     * @return void
+     */
+    protected final function add_hidestartpage($name, $detailslabel = null,  $default=0) {
+        $this->_form->addElement('advcheckbox',$name,
+            get_string('hidestartpage',constants::M_COMPONENT),
             $detailslabel,[],[0,1]);
             if ($default !== 0) {
                 $this->_form->setDefault($name, 1);
