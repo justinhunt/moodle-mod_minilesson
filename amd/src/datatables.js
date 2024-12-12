@@ -1,4 +1,4 @@
-define(['jquery', 'core/str', 'core/log', 'core/modal_factory', 'core/modal_events', 'https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js'],
+define(['jquery', 'core/str', 'core/log', 'core/modal_factory', 'core/modal_events', 'https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js'],
     function($, str, log, ModalFactory, ModalEvents) {
     "use strict"; // jshint ;_;
 

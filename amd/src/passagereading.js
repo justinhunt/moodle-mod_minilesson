@@ -45,6 +45,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
 
     init_components: function(quizhelper,itemdata){
           var self=this;
+          self.allwords = $("#" + self.itemdata.uniqueid + "_container.mod_minilesson_mu_passage_word");
+          self.thebutton = "thettrbutton"; // To Do impl. this
           var theCallback = function(message) {
 
             switch (message.type) {
@@ -56,11 +58,18 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
                 log.debug("speech at speechcards");
                 var speechtext = message.capturedspeech;
                 var spoken_clean  = quizhelper.cleanText(speechtext);
-               // var correct_clean = app.quizhelper.cleanText(app.terms[app.pointer - 1]);
-               // var correctphonetic = app.phonetics[app.pointer - 1];
+                var phonetic = ''; // TO DO - add phonetic option
                 log.debug('speechtext:',speechtext);
                 log.debug('spoken:',spoken_clean);
-               // log.debug('correct:',correct_clean);
+                self.getComparison(
+                  self.itemdata.passagetext,
+                  spoken_clean,
+                  phonetic,
+                  function(comparison) {
+                      self.gotComparison(comparison, message);
+                  }
+              );
+               
     
             } //end of switch message type
           };
@@ -85,7 +94,74 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
         }
 
 
-    }//end of init components
+    }, //end of init components
+
+    getComparison: function(passage, transcript, phonetic, callback) {
+      var self = this;
+      
+      //TO DO disable the TT Recorder button
+      $("#" + self.thebutton ).prop("disabled", true);
+
+      self.quizhelper.comparePassageToTranscript(passage,transcript,phonetic,self.itemdata.language).then(function(ajaxresult) {
+            var payloadobject = JSON.parse(ajaxresult);
+            if (payloadobject) {
+                callback(payloadobject);
+            } else {
+                callback(false);
+            }
+       });
+
+    },
+
+    gotComparison: function(comparison, typed) {
+      var self = this;
+      log.debug("gotComparison");
+
+      //TO DO mark up the words as correct
+      self.allwords.removeClass("pr_correct pr_incorrect");
+
+      var allCorrect = comparison.filter(function(e){return !e.matched;}).length==0;
+      
+      if (allCorrect && comparison && comparison.length>0) {
+        log.debug("gotComparison: all correct");
+        //TO DO mark up the words as correct
+        $("#" + self.allwords ).addClass("pr_correct");
+
+        // Mark the item as answered and correct.
+        self.items[self.game.pointer].answered = true;
+        self.items[self.game.pointer].correct = true;
+        self.items[self.game.pointer].typed = typed;
+
+        //TO DO disable the TT Recorder button
+        $("#" + self.thebutton ).prop("disabled", true);
+
+        //Move on to the next item
+        if (self.game.pointer < self.items.length - 1) {
+          setTimeout(function() {
+            self.game.pointer++;
+            self.nextPrompt();
+          }, 2200);
+        } else {
+            self.end();
+        }
+
+      } else {
+        log.debug("gotComparison: not all correct");
+
+        //mark up the words as correct or not
+        comparison.forEach(function(obj) {
+          log.debug("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word[data-wordnumber='" + obj.wordnumber + "']");
+          if(!obj.matched){
+            $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word[data-wordnumber='" + obj.wordnumber + "']").addClass("pr_incorrect");
+          } else {
+            $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word[data-wordnumber='" + obj.wordnumber + "']").addClass("pr_correct");
+          }
+        });
+        
+
+      }
+
+    },
 
   };//end of return objects
   return app;

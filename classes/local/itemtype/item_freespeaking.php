@@ -30,9 +30,17 @@ use renderable;
  */
 class item_freespeaking extends item {
 
-    //the item type
+    // The item type.
     public const ITEMTYPE = constants::TYPE_FREESPEAKING;
 
+     /**
+     * The class constructor.
+     *
+     */
+    public function __construct($itemrecord, $moduleinstance=false, $context = false) {
+        parent::__construct($itemrecord, $moduleinstance, $context);
+        $this->needs_speechrec = true;
+    }
 
     /**
      * Export the data for the mustache template.
@@ -42,11 +50,18 @@ class item_freespeaking extends item {
      */
     public function export_for_template(\renderer_base $output) {
 
-        $testitem= new \stdClass();
+        $testitem = new \stdClass();
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
-        $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
+        if ($this->itemrecord->customint1 > 0) {
+            $testitem->targetwordcount = $this->itemrecord->customint1;
+        }
+
+         // Cloudpoodll.
+         $maxtime = $this->itemrecord->timelimit;
+         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
+ 
 
         return $testitem;
     }

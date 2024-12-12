@@ -444,12 +444,12 @@ class mod_minilesson_external extends external_api {
                 array(
                         'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
                         'itemid' => new external_value(PARAM_INT, 'The itemid to move'),
-                        'direction' => new external_value(PARAM_TEXT, 'The move direction')
+                        'direction' => new external_value(PARAM_TEXT, 'The move direction'),
                 )
         );
     }
 
-    public static function move_item($contextid,$itemid, $direction)
+    public static function move_item($contextid, $itemid, $direction)
     {
         global $CFG, $DB, $USER;
 
@@ -466,11 +466,11 @@ class mod_minilesson_external extends external_api {
         // get the objects we need
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-        \mod_minilesson\local\itemform\helper::move_item($moduleinstance,$itemid,$direction);
+        \mod_minilesson\local\itemform\helper::move_item($moduleinstance, $itemid, $direction);
 
         $ret = new \stdClass();
-        $ret->itemid=$itemid;
-        $ret->error=false;
+        $ret->itemid = $itemid;
+        $ret->error = false;
         return json_encode($ret);
     }
 
@@ -487,7 +487,7 @@ class mod_minilesson_external extends external_api {
         );
     }
 
-    public static function duplicate_item($contextid,$itemid)
+    public static function duplicate_item($contextid, $itemid)
     {
         global $CFG, $DB, $USER;
 
@@ -507,16 +507,60 @@ class mod_minilesson_external extends external_api {
         list($newitemid,$newitemname,$type,$typelabel) = \mod_minilesson\local\itemform\helper::duplicate_item($moduleinstance,$context, $itemid);
 
         $ret = new \stdClass();
-        $ret->olditemid=$itemid;
-        $ret->newitemid=$newitemid;
-        $ret->newitemname=$newitemname;
-        $ret->type=$type;
-        $ret->typelabel=$typelabel;
-        $ret->error=false;
+        $ret->olditemid = $itemid;
+        $ret->newitemid = $newitemid;
+        $ret->newitemname = $newitemname;
+        $ret->type = $type;
+        $ret->typelabel = $typelabel;
+        $ret->error = false;
         return json_encode($ret);
     }
 
     public static function duplicate_item_returns() {
+        return new external_value(PARAM_RAW);
+    }
+
+    
+    public static function check_grammar($text,$language) {
+        global $DB, $USER;
+
+        $params = self::validate_parameters(self::check_grammar_parameters(), [
+            'text' => $text,
+            'language' => $language]);
+        extract($params);
+
+        $siteconfig = get_config(constants::M_COMPONENT);
+        $region = $siteconfig->awsregion;
+        $token = utils::fetch_token($siteconfig->apiuser, $siteconfig->apisecret);
+        $textanalyser = new textanalyser($token, $text, $region, $language);
+        $suggestions = $textanalyser->fetch_grammar_correction();
+        if ($suggestions == $text || empty($suggestions)) {
+            return "";
+        }
+
+        //if we have suggestions, mark those up and return them
+        $direction = "r2l"; //"l2r";
+        list($grammarerrors, $grammarmatches, $insertioncount) = \mod_minilesson\utils::fetch_grammar_correction_diff($text, $suggestions,$direction);
+        $markedupsuggestions = \mod_minilesson\aitranscriptutils::render_passage($suggestions, 'corrections');
+        $ret = [];
+        $ret['grammarerrors'] = $grammarerrors;
+        $ret['grammarmatches'] = $grammarmatches;
+        $ret['suggestions'] = $suggestions;
+        $ret['markedupsuggestions'] = $markedupsuggestions;
+        $ret['insertioncount'] = $insertioncount;
+
+        return json_encode($ret);
+
+    }
+
+    public static function check_grammar_parameters() {
+        return new external_function_parameters([
+            'text' => new external_value(PARAM_TEXT),
+            'language' => new external_value(PARAM_TEXT),
+        ]);
+    }
+
+    public static function check_grammar_returns() {
         return new external_value(PARAM_RAW);
     }
 

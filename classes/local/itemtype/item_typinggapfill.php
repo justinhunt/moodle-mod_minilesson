@@ -42,7 +42,7 @@ class  item_typinggapfill extends item {
      */
     public function export_for_template(\renderer_base $output){
 
-        $testitem= new \stdClass();
+        $testitem = new \stdClass();
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->set_layout($testitem);
@@ -63,14 +63,14 @@ class  item_typinggapfill extends item {
         return $testitem;
     }
 
-    public static function validate_import($newrecord,$cm){
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
-        $error->col='';
-        $error->message='';
+        $error->col = '';
+        $error->message = '';
 
-        if($newrecord->customtext1==''){
-            $error->col='customtext1';
-            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+        if ($newrecord->customtext1 == '') {
+            $error->col = 'customtext1';
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
@@ -81,12 +81,12 @@ class  item_typinggapfill extends item {
     /*
     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
     */
-    public static function get_keycolumns(){
+    public static function get_keycolumns() {
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['int3']=['jsonname'=>'allowretry','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
-        $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
-        $keycols['int5'] = ['jsonname'=>'hidestartpage','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLHIDESTARTPAGE];
+        $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
+        $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
+        $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
         return $keycols;
     }
 

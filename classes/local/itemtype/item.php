@@ -706,7 +706,7 @@ abstract class item implements templatable, renderable {
         return $sentence;
     }
 
-    protected function set_cloudpoodll_details($testitem){
+    protected function set_cloudpoodll_details($testitem,$maxtime = 15){
         global $USER,$CFG;
 
         $itemrecord = $this->itemrecord;
@@ -735,7 +735,7 @@ abstract class item implements templatable, renderable {
         //API gateway URL
         $testitem->asrurl = utils::fetch_lang_server_url($this->region,'transcribe');
         //recording max time
-        $testitem->maxtime = 15000;
+        $testitem->maxtime = $maxtime;
 
         return $testitem;
     }

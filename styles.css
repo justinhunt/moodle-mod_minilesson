@@ -2779,3 +2779,11 @@ minilesson_bq_resultbox {
   width:50%;
   margin:auto;
 }
+
+.mod_minilesson_mu_passage_word.pr_correct {
+  background-color: green;
+}
+
+.mod_minilesson_mu_passage_word.pr_incorrect {
+  background-color: red;
+}

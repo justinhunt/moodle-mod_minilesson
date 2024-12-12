@@ -30,16 +30,16 @@ use renderable;
  */
 class item_passagereading extends item {
 
-    //the item type
+    // The item type.
     public const ITEMTYPE = constants::TYPE_PASSAGEREADING;
 
      /**
      * The class constructor.
      *
      */
-    public function __construct($itemrecord, $moduleinstance=false, $context=false){
+    public function __construct($itemrecord, $moduleinstance=false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec=true;
+        $this->needs_speechrec = true;
     }
 
 
@@ -51,15 +51,16 @@ class item_passagereading extends item {
      */
     public function export_for_template(\renderer_base $output) {
 
-        $testitem= new \stdClass();
+        $testitem = new \stdClass();
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
-        $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
+        $testitem->passagetext = $this->itemrecord->customtext1;
+        $testitem->passagehtml = \mod_minilesson\aitranscriptutils::render_passage($testitem->customtext1);
 
-        $testitem->thepassage=$testitem->customtext1;
-        //cloudpoodll
-        $testitem = $this->set_cloudpoodll_details($testitem);
+        // Cloudpoodll.
+        $maxtime = $this->itemrecord->timelimit;
+        $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
 
         return $testitem;
     }

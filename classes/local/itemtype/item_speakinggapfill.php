@@ -91,23 +91,24 @@ class item_speakinggapfill extends item {
         /*
     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
     */
-    public static function get_keycolumns(){
+    public static function get_keycolumns()
+    {
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['int4'] = ['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
-        $keycols['text5'] = ['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
-        $keycols['int3'] = ['jsonname'=>'allowretry','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLALLOWRETRY];
-        $keycols['int2'] = ['jsonname'=>'dictationstyle','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::READSENTENCE];
-        $keycols['text1'] = ['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
-        $keycols['int5'] = ['jsonname'=>'hidestartpage','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::GAPFILLHIDESTARTPAGE];
+        $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
+        $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
+        $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
+        $keycols['int2'] = ['jsonname' => 'dictationstyle', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE];
+        $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
+        $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
         return $keycols;
     }
 
-    public function update_create_langmodel($olditemrecord){
-        //if we need to generate a DeepSpeech model for this, then lets do that now:
-        //we want to process the hashcode and lang model if it makes sense
+    public function update_create_langmodel($olditemrecord) {
+        // If we need to generate a DeepSpeech model for this, then lets do that now.
+        // We want to process the hashcode and lang model if it makes sense.
 
-        $passage ='';
+        $passage = '';
 
         // Sentences
         $sentences = [];
@@ -115,12 +116,12 @@ class item_speakinggapfill extends item {
             $sentences = explode(PHP_EOL, $this->itemrecord->customtext1);
         }
         $sentencedata = $this->parse_gapfill_sentences($sentences);
-        foreach($sentencedata as $sentence){
+        foreach ($sentencedata as $sentence) {
             $passage .= $sentence->prompt . ' ';
         }
 
-        if (utils::needs_lang_model($this->moduleinstance,$passage)) {
-            $newpassagehash = utils::fetch_passagehash($this->language,$passage);
+        if (utils::needs_lang_model($this->moduleinstance, $passage)) {
+            $newpassagehash = utils::fetch_passagehash($this->language, $passage);
             if ($newpassagehash) {
                 //check if it has changed, if its a brand new one, if so register a langmodel
                 if (!$olditemrecord || $olditemrecord->passagehash != ($this->region . '|' . $newpassagehash)) {

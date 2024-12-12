@@ -31,6 +31,7 @@ define(['jquery',
 
                 case 'speech':
                     log.debug("speech at listen_repeat");
+                    //var wordcount = quizhelper.count_words(message.capturedspeech);
                     self.getComparison(
                         self.items[self.game.pointer].target,
                         message.capturedspeech,

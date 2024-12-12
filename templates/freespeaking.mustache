@@ -1,7 +1,19 @@
 {{> mod_minilesson/questionheader}}
-  
+<div class="minilesson_freespeaking_box">  
+    {{#targetwordcount}}
     <div>
-        Free Speaking
+        {{#str}}targetwordcount, mod_minilesson, {{targetwordcount}}{{/str}} 
     </div>
+     {{/targetwordcount}}
+     <div class="ml_freespeaking_resultbox"></div>
+     <div class="ml_freespeaking_speakbtncontainer" style="width:246px;margin:auto;">
 
+            {{> mod_minilesson/cloudpushrecorder}}
+            {{> mod_minilesson/ttrecorder}}
+
+     </div>
+     <button class="btn btn-danger freespeaking_ctrl-btn freespeaking_skip_btn">
+        {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
+     </button>
+</div>
 {{> mod_minilesson/questionfooter}}

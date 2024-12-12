@@ -360,6 +360,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
           return this.stt_guided;
         },
 
+        //count words
+        count_words: function(transcript) {
+          return transcript.trim().split(/\s+/).filter(function(word) {
+              return word.length > 0;
+          }).length;
+        },
+
         //text comparison functions follow===============
 
         similarity: function(s1, s2) {

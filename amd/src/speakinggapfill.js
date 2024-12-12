@@ -251,7 +251,7 @@ define(['jquery',
             var allCorrect = comparison.filter(function(e) {
                 return !e.matched;
             }).length == 0;
-            log.debug('aallcorrect=' + allCorrect);
+            log.debug('allcorrect=' + allCorrect);
 
             if (allCorrect && comparison && comparison.length > 0) {
 

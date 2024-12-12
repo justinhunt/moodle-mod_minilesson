@@ -56,8 +56,10 @@ const ACCMETHOD_NOERRORS =3;
 const POSTATTEMPT_NONE=0;
 const POSTATTEMPT_EVAL=1;
 const POSTATTEMPT_EVALERRORS=2;
-
-
+const RELEVANCE = "customint2";
+const RELEVANCETYPE_NONE = 0;
+const RELEVANCETYPE_QUESTION = 1;
+const RELEVANCETYPE_MODELANSWER = 2;
 //Constants for RS Questions
 const NONE=0;
 const TYPE_TEXTPROMPT_LONG = 'multichoicelong';

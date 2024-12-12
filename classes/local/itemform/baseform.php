@@ -511,7 +511,7 @@ abstract class baseform extends \moodleform {
     }
 
     /**
-     * Convenience function: Adds a ext area response
+     * Convenience function: Adds a text area response
      *
      * @param int $count The count of the element to add
      * @param string $label, null means default
@@ -545,6 +545,27 @@ abstract class baseform extends \moodleform {
         $this->_form->setType(constants::TEXTANSWER .$count, PARAM_TEXT);
         if ($required) {
             $this->_form->addRule(constants::TEXTANSWER .$count, get_string('required'), 'required', null, 'client');
+        }
+    }
+
+       /**
+     * Convenience function: Adds an response editor
+     *
+     * @param int $count The count of the element to add
+     * @param string $label, null means default
+     * @param bool $required
+     * @return void
+     */
+    protected final function add_numericboxresponse($count, $label = null, $required = false) {
+        if ($label === null) {
+            $label = get_string('response', constants::M_COMPONENT);
+        }
+        $this->_form->addElement('text', constants::CUSTOMINT .$count, $label, array('size'=>'8'));
+        $this->_form->setType(constants::CUSTOMINT .$count, PARAM_INT);
+        $this->_form->setDefault(constants::CUSTOMINT .$count, 0);
+        $this->_form->addRule(constants::CUSTOMINT .$count, get_string('numberonly',constants::M_COMPONENT), 'numeric', null, 'client');
+        if ($required) {
+            $this->_form->addRule(constants::CUSTOMINT .$count, get_string('required'), 'required', null, 'client');
         }
     }
 
@@ -627,8 +648,14 @@ abstract class baseform extends \moodleform {
         }
     }
 
+    protected final function add_relevanceoptions($name, $label,$default=false) {
+        global $CFG;
+        $relevanceoptions = utils::get_relevance_options();
+        $this->add_dropdown($name, $label,$relevanceoptions,$default);
+    }
+
     /**
-     * Convenience function: Adds a dropdown list of voice options
+     * Convenience function: Adds a yesno dropdown
      *
      * @param string $label, null means default
      * @return void

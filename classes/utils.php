@@ -1145,6 +1145,16 @@ class utils{
         }
     }
 
+    public static function get_relevance_options()
+    {
+        $ret = array(
+            constants::RELEVANCETYPE_NONE => get_string('relevancetype_none', constants::M_COMPONENT),
+            constants::RELEVANCETYPE_QUESTION => get_string('relevancetype_question', constants::M_COMPONENT),
+            constants::RELEVANCETYPE_MODELANSWER => get_string('relevancetype_modelanswer', constants::M_COMPONENT)
+        );
+        return $ret;
+    }
+
     public static function get_tts_options($no_ssml=false){
         $ret = array(constants::TTS_NORMAL=>get_string('ttsnormal',constants::M_COMPONENT),
                 constants::TTS_SLOW=>get_string('ttsslow',constants::M_COMPONENT),
