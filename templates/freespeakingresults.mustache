@@ -1,0 +1,42 @@
+<div class="ml_freespeaking_results">
+<div class="mlfsr_fullscore">{{#str}}score , mod_minilesson{{/str}}: {{percentscore}}%</div>
+<div class="mlfsr_fullscore">{{#str}}score , mod_minilesson{{/str}}: {{rawscore}}/{{maxscore}}</div>
+<div class="mlfsr_words">Words: {{stats.words}}</div>
+<div class="mlfsr_correctedtext"><b>raw speech:</b><br/>{{rawspeech}}</div>
+<div class="mlfsr_correctedtext"><b>corrected text:</b><br/>{{correctedtext}}</div>
+<div class="mlfsr_words"><b>sentences:</b><br/>{{stats.sentences}}</div>
+<div class="mlfsr_words"><b>words:</b><br/>{{stats.words}}</div>
+<div class="mlfsr_words"><b>unique words:</b><br/>{{stats.wordsunique}}</div>
+<div class="mlfsr_words"><b>idea count:</b><br/>{{stats.ideacount}}</div>
+<div class="mlfsr_words"><b>relevance:</b><br/>{{stats.relevance}}%</div>
+<br/><b>Feedback:</b>
+<ul>
+{{#feedback}}
+<li>{{.}}</li>
+{{/feedback}}
+</ul>
+</div>
+<div class="minilesson_actionbutton">
+<a class="btn btn-secondary center" href="#" id = "{{uniqid}}_reattempt">
+    {{#str}}reattempt, mod_minilesson{{/str}}</a>
+</div>
+{{^element.frozen}}
+{{#js}}
+    require(['jquery', 'core/notification', 'core/log'], function($, notification, log) {
+      var reattemptbutton = $('#{{uniqid}}_reattempt');
+      reattemptbutton.on('click',function(e){
+        e.preventDefault();
+        notification.confirm('{{#str}}reattempt, mod_minilesson{{/str}}', 
+                            '{{#str}}reallyreattempt, mod_minilesson{{/str}}',
+                            '{{#str}}reattempt, mod_minilesson{{/str}}','',
+                            function(){
+                                reattemptbutton .closest('.ml_freespeaking_resultsbox').hide();
+                                reattemptbutton .closest('.ml_freespeaking_pendingbox').hide();
+                                reattemptbutton .closest('.ml_freespeaking_resultsbox').siblings('.ml_freespeaking_actionbox').show();
+                            });
+            
+            
+      });
+    });
+{{/js}}
+{{/element.frozen}}

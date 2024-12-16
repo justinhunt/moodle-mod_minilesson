@@ -2780,10 +2780,27 @@ minilesson_bq_resultbox {
   margin:auto;
 }
 
-.mod_minilesson_mu_passage_word.pr_correct {
-  background-color: green;
+.mod_minilesson_mu_passage_word.pr_correct,
+.mod_minilesson_mu_passage_space.pr_correct {
+  text-decoration: underline;
+  text-decoration-color: green;
+  background-color: #c5efcf;
 }
 
-.mod_minilesson_mu_passage_word.pr_incorrect {
-  background-color: red;
+.mod_minilesson_mu_passage_word.pr_incorrect,
+.mod_minilesson_mu_passage_space.pr_incorrect {
+  text-decoration: underline;
+  text-decoration-color: red;
+  background-color: #ffcaca;
+}
+
+.mod_minilesson_mu_passage_space.pr_unreached,
+.mod_minilesson_mu_passage_word.pr_unreached {
+  background-color: rgb(234, 229, 229);
+}
+
+.ml_recsession {
+  width: 150px;
+  margin: auto;
+  text-align: center;
 }

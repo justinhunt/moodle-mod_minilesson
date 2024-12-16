@@ -12,9 +12,12 @@
             {{> mod_minilesson/ttrecorder}}
 
      </div>
-     <button class="btn btn-danger passagereading_ctrl-btn passagereading_skip_btn">
-        {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
-     </button>
+     <div class="ml_passagereading_reattemptcontainer" style="width:246px;margin:auto;display: none">
+      <div class="minilesson_actionbutton">
+        <a class="btn btn-secondary center ml_reattemptbutton" href="#">
+            {{#str}}reattempt, mod_minilesson{{/str}}</a>
+      </div>
+     </div>
 </div>
 
 {{> mod_minilesson/questionfooter}}

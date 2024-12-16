@@ -513,59 +513,82 @@ abstract class baseform extends \moodleform {
     /**
      * Convenience function: Adds a text area response
      *
-     * @param int $count The count of the element to add
+     * @param $name_or_count The name or count of the element to add
      * @param string $label, null means default
      * @param bool $required
      * @return void
      */
-    protected final function add_textarearesponse($count, $label = null, $required = false) {
+    protected final function add_textarearesponse($name_or_count, $label = null, $required = false) {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
 
-        $this->_form->addElement('textarea', constants::TEXTANSWER .$count , $label,array('rows'=>'4', 'columns'=>'140', 'style'=>'width: 600px'));
+        // Set the form element name
+        if(is_number($name_or_count) || empty($name_or_count)){
+            $element = constants::TEXTANSWER . $name_or_count;
+        }else{
+            $element = $name_or_count;
+        }
+
+        $this->_form->addElement('textarea', $element , $label,array('rows'=>'4', 'columns'=>'140', 'style'=>'width: 600px'));
         if ($required) {
-            $this->_form->addRule(constants::TEXTANSWER .$count, get_string('required'), 'required', null, 'client');
+            $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
         }
     }
 
     /**
-     * Convenience function: Adds an response editor
+     * Convenience function: Adds a textbox
      *
-     * @param int $count The count of the element to add
+     * @param int  $name_or_count The name or count of the element to add
      * @param string $label, null means default
      * @param bool $required
      * @return void
      */
-    protected final function add_textboxresponse($count, $label = null, $required = false) {
+    protected final function add_textboxresponse($name_or_count, $label = null, $required = false) {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
-        $this->_form->addElement('text', constants::TEXTANSWER .$count, $label, array('size'=>'60'));
-        $this->_form->setType(constants::TEXTANSWER .$count, PARAM_TEXT);
+
+        // Set the form element name
+        if(is_number($name_or_count) || empty($name_or_count)){
+            $element = constants::TEXTANSWER . $name_or_count;
+        }else{
+            $element = $name_or_count;
+        }
+
+        $this->_form->addElement('text', $element, $label, array('size'=>'60'));
+        $this->_form->setType($element, PARAM_TEXT);
         if ($required) {
-            $this->_form->addRule(constants::TEXTANSWER .$count, get_string('required'), 'required', null, 'client');
+            $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
         }
     }
 
        /**
-     * Convenience function: Adds an response editor
+     * Convenience function: Adds a number only textbox
      *
-     * @param int $count The count of the element to add
+     * @param int $name_or_count The name or count of the element to add
      * @param string $label, null means default
      * @param bool $required
      * @return void
      */
-    protected final function add_numericboxresponse($count, $label = null, $required = false) {
+    protected final function add_numericboxresponse($name_or_count, $label = null, $required = false) {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
-        $this->_form->addElement('text', constants::CUSTOMINT .$count, $label, array('size'=>'8'));
-        $this->_form->setType(constants::CUSTOMINT .$count, PARAM_INT);
-        $this->_form->setDefault(constants::CUSTOMINT .$count, 0);
-        $this->_form->addRule(constants::CUSTOMINT .$count, get_string('numberonly',constants::M_COMPONENT), 'numeric', null, 'client');
+
+        // Set the form element name
+        if(is_number($name_or_count) || empty($name_or_count)){
+            $element = constants::CUSTOMINT . $name_or_count;
+        }else{
+            $element = $name_or_count;
+        }
+
+        $this->_form->addElement('text', $element, $label, array('size'=>'8'));
+        $this->_form->setType( $element, PARAM_INT);
+        $this->_form->setDefault( $element, 0);
+        $this->_form->addRule( $element, get_string('numberonly',constants::M_COMPONENT), 'numeric', null, 'client');
         if ($required) {
-            $this->_form->addRule(constants::CUSTOMINT .$count, get_string('required'), 'required', null, 'client');
+            $this->_form->addRule( $element, get_string('required'), 'required', null, 'client');
         }
     }
 
@@ -673,9 +696,9 @@ abstract class baseform extends \moodleform {
      * @param string $label, null means default
      * @return void
      */
-    protected final function add_ttslanguage($name, $label = null) {
+    protected final function add_languageselect($name, $label = null, $default = false) {
         $langoptions = utils::get_lang_options();
-        $this->add_dropdown($name, $label,$langoptions);
+        $this->add_dropdown($name, $label,$langoptions, $default);
     }
 
     /**

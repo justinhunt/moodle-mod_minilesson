@@ -54,14 +54,19 @@ class item_freespeaking extends item {
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->set_layout($testitem);
-        if ($this->itemrecord->customint1 > 0) {
-            $testitem->targetwordcount = $this->itemrecord->customint1;
+        $testitem->relevance = $this->itemrecord->{constants::RELEVANCE};
+        $testitem->totalmarks = $this->itemrecord->{constants::TOTALMARKS};
+        if ($this->itemrecord->{constants::TARGETWORDCOUNT} > 0) {
+            $testitem->targetwordcount = $this->itemrecord->{constants::TARGETWORDCOUNT};
+            $testitem->countwords = true;
         }
+
+        // We need cmid and itemid to do the AI evaluation by ajax.
+        $testitem->itemid = $this->itemrecord->id;
 
          // Cloudpoodll.
          $maxtime = $this->itemrecord->timelimit;
          $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
- 
 
         return $testitem;
     }

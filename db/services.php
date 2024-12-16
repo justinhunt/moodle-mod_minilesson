@@ -35,10 +35,10 @@ $functions = [
             'ajax'        => true,
         ),
 
-        'mod_minilesson__check_grammar' => array(
+        'mod_minilesson_evaluate_transcript' => array(
                 'classname'   => 'mod_minilesson_external',
-                'methodname'  => 'check_grammar',
-                'description' => 'check grammar',
+                'methodname'  => 'evaluate_transcript',
+                'description' => 'evaluate transcript',
                 'capabilities' => 'mod/minilesson:view',
                 'type'        => 'read',
                 'ajax'        => true,

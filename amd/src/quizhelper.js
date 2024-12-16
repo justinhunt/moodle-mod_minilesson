@@ -453,6 +453,20 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
                },
               async: false
            }])[0];
-       }
+       },
+
+      //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match
+      evaluateTranscript: function(transcript, itemid) {
+        return Ajax.call([{
+            methodname: 'mod_minilesson_evaluate_transcript',
+            args: {
+                'transcript': transcript,
+                'itemid': itemid,
+                'cmid': this.cmid
+            },
+            async: false
+        }])[0];
+      },
+
     }; //end of return value
   });

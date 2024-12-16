@@ -693,6 +693,106 @@ class utils{
         }
     }
 
+    public static function evaluate_transcript($transcript, $itemid, $cmid) {
+        global $CFG, $USER, $DB, $OUTPUT;
+
+        $token=false;
+        $conf= get_config(constants::M_COMPONENT);
+        if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
+            $token = self::fetch_token($conf->apiuser, $conf->apisecret);
+        }
+        if(!$token || empty($token)){
+            return false;
+        }
+        $cm         = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
+        $moduleinstance  = $DB->get_record(constants::M_MODNAME, array('id' => $cm->instance), '*', MUST_EXIST);
+        $item = $DB->get_record(constants::M_QTABLE, array('id' => $itemid,'minilesson' => $moduleinstance->id), '*', MUST_EXIST);
+        
+        
+        //$modulecontext = \context_module::instance($cm->id);
+        //$fullitem = self::fetch_item_from_itemrecord($item, $moduleinstance, $modulecontext);
+        //$itemdata = $fullitem->export_for_template($OUTPUT);
+
+        
+        //AI Grade
+        $maxmarks = $item->{constants::TOTALMARKS};
+        $instructions = new \stdClass();
+        $instructions->feedbackscheme = $item->{constants::AIGRADE_FEEDBACK};
+        $instructions->feedbacklanguage =  $item->{constants::AIGRADE_FEEDBACK_LANGUAGE};
+        $instructions->markscheme =  $item->{constants::AIGRADE_INSTRUCTIONS};
+        $instructions->maxmarks = $maxmarks;
+        $instructions->questiontext = strip_tags($item->itemtext);
+        $instructions->modeltext = $item->{constants::AIGRADE_MODELANSWER};
+        $aigraderesults = self::fetch_ai_grade($token, $moduleinstance->region,
+         $moduleinstance->ttslanguage, $transcript, $instructions);
+        
+         //STATS
+         $userlanguage = false;
+        $targetembedding = false;
+        $targetwords = [];
+        if($item->{constants::RELEVANCE} == constants::RELEVANCETYPE_QUESTION){
+            $targettopic = strip_tags($item->itemtext);
+        }
+        $textanalyser = new textanalyser($token, $transcript, $moduleinstance->region,
+        $moduleinstance->ttslanguage, $targetembedding, $userlanguage, $targettopic);
+        $aigraderesults->stats = $textanalyser->process_some_stats($targetwords);
+
+        return $aigraderesults;
+
+    }
+
+      // fetch the AI Grade
+      public static function fetch_ai_grade($token, $region, $ttslanguage, $studentresponse, $instructions) {
+        global $USER;
+        $instructionsjson = json_encode($instructions);
+        // The REST API we are calling
+        $functionname = 'local_cpapi_call_ai';
+
+        $params = [];
+        $params['wstoken'] = $token;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $params['action'] = 'autograde_text';
+        $params['appid'] = 'mod_solo';
+        $params['prompt'] = $instructionsjson;
+        $params['language'] = $ttslanguage;
+        $params['subject'] = $studentresponse;
+        $params['region'] = $region;
+        $params['owner'] = hash('md5', $USER->username);
+
+        // log.debug(params);
+
+        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $response = self::curl_fetch($serverurl, $params);
+        if (!self::is_json($response)) {
+            return false;
+        }
+        $payloadobject = json_decode($response);
+
+        // returnCode > 0  indicates an error
+        if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
+            return false;
+            // if all good, then lets return
+        } else if ($payloadobject->returnCode === 0) {
+            $autograderesponse = $payloadobject->returnMessage;
+            // clean up the correction a little
+            if(\core_text::strlen($autograderesponse) > 0 && self::is_json($autograderesponse)){
+                $autogradeobj = json_decode($autograderesponse);
+                if(isset($autogradeobj->feedback) && $autogradeobj->feedback == null){
+                    unset($autogradeobj->feedback);
+                }
+                if(isset($autogradeobj->marks) && $autogradeobj->marks == null){
+                    unset($autogradeobj->marks);
+                }
+                return $autogradeobj;
+            }else{
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
 
     /*
      * Turn a passage with text "lines" into html "brs"

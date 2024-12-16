@@ -291,6 +291,24 @@ class mod_minilesson_external extends external_api {
         return new external_value(PARAM_RAW);
     }
 
+    public static function evaluate_transcript_parameters() {
+        return new external_function_parameters(
+                array('transcript' => new external_value(PARAM_TEXT, 'The transcript of speaking or writing', VALUE_REQUIRED),
+                        'itemid' => new external_value(PARAM_INT, 'The item id in the minilesson', VALUE_REQUIRED),
+                        'cmid' => new external_value(PARAM_INT, 'The cmid', VALUE_REQUIRED),
+                )
+        );
+    }
+
+    public static function evaluate_transcript($transcript, $itemid, $cmid) {
+        global $DB;
+        $ret = utils::evaluate_transcript($transcript, $itemid, $cmid);
+        return json_encode($ret);
+    }
+
+    public static function evaluate_transcript_returns() {
+        return new external_value(PARAM_RAW);
+    }
 
     public static function submit_mform_parameters() {
         return new external_function_parameters(

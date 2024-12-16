@@ -60,17 +60,21 @@ class textanalyser {
     /** @var string $targetembedding The vector for the 'correct'/model answer. */
     protected $targetembedding;
 
+    /** @var string $targettopic The topic. */
+    protected $targettopic;
+
         /**
          * The class constructor.
          *
          */
-    public function __construct($token, $passage, $region,  $language, $targetembedding=false, $userlanguage = false) {
+    public function __construct($token, $passage, $region, $language, $targetembedding=false, $userlanguage = false, $targettopic = false) {
         $this->token = $token;
         $this->region = $region;
         $this->passage = $passage;
         $this->language = $language;
         $this->targetembedding = $targetembedding;
         $this->userlanguage = $userlanguage;
+        $this->targettopic = $targettopic;
     }
 
     // fetch lang server url, services incl. 'transcribe' , 'lm', 'lt', 'spellcheck'
@@ -283,6 +287,25 @@ break;
             return $stats;
     }
 
+    public function process_some_stats($targetwords=[]) {
+
+        $stats = $this->calculate_stats($this->passage, $targetwords);
+        if ($stats) {
+            $stats['ideacount'] = $this->process_idea_count();
+          //  $stats['cefrlevel'] = $this->process_cefr_level();
+            $stats['relevance'] = $this->process_relevance();
+            // something went wrong, but it might be used for grading. Lets give them 100, though it sucks
+            if ( $stats['relevance'] == 0 || $stats['relevance'] == false) {
+                $stats['relevance'] = 100;
+            }
+            $stats = array_merge($stats, $this->fetch_sentence_stats());
+            $stats = array_merge($stats, $this->fetch_word_stats());
+          //  $stats = array_merge($stats, $this->calc_grammarspell_stats($stats['words']));
+            $stats = (object)$stats;
+        }
+        return $stats;
+}
+
     public function process_grammar_correction($passage) {
 
         $ret = ['gcorrections' => false, 'gcerrors' => false, 'gcmatches' => false, 'gcerrorcount' => false];
@@ -307,56 +330,170 @@ break;
         return $ret;
     }
 
-    public function process_relevance($passage='', $targetembedding=false) {
+    public function process_relevance($passage='', $targetembedding = false, $targettopic = false) {
 
-        if(empty($passage)){
+        if (empty($passage)) {
             $passage = $this->passage;
         }
-        if(!$targetembedding){
+        if (!$targetembedding) {
             $targetembedding = $this->targetembedding;
         }
+        if (!$targettopic) {
+            $targettopic = $this->targettopic;
+        }
 
-        $relevance = false;// default is blank
-        if(!empty($passage)&&$targetembedding !== false){
-            $relevance = $this->fetch_relevance($passage, $targetembedding);
+        $relevance = false;
+        if (!empty($passage)) {
+            if ($targettopic !== false) {
+                $relevance = $this->fetch_relevance_topic($targettopic, $passage);
+            } else if ($targetembedding !== false) {
+                $relevance = $this->fetch_relevance_semantic($targetembedding, $passage);
+            }
         }
         if ($relevance !== false) {
             return $relevance;
-        }else{
+        } else {
             return 0;
+        }
+    }
+
+    //fetch the relevance by topic
+    public function fetch_relevance_topic($topic, $passage='') {
+        global $USER;
+
+        // Default to 100% relevant if no TTS model.
+        if ($topic === false || empty($topic)) {
+            return 100;
+        }
+
+        // Use local passage if not set.
+        if (empty($passage)) {
+            $passage = $this->passage;
+        }
+
+        // The REST API we are calling.
+        $functionname = 'local_cpapi_call_ai';
+
+        $params = array();
+        $params['wstoken'] = $this->token;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $params['action'] = 'get_topic_relevance';
+        $params['appid'] = 'mod_minilesson';
+        $params['prompt'] = $passage;
+        $params['subject'] = $topic;
+        $params['language'] = $this->language;
+        $params['region'] = $this->region;
+        $params['owner'] = hash('md5', $USER->username);
+
+
+        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $response = self::curl_fetch($serverurl, $params, 'post');
+        if (!self::is_json($response)) {
+            return false;
+        }
+        $payloadobject = json_decode($response);
+
+        // ReturnCode > 0  indicates an error.
+        if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
+            return false;
+            //if all good, then return the value
+        } else if ($payloadobject->returnCode === 0) {
+            $relevance = $payloadobject->returnMessage;
+            if (is_numeric($relevance)) {
+                $relevance = (int)round($relevance * 100, 0);
+            } else {
+                $relevance = false;
+            }
+            return $relevance;
+        } else {
+            return false;
+        }
+    }
+
+    //fetch the relevance by semantic similarity
+    public function fetch_relevance_semantic($model_or_modelembedding, $passage='') {
+        global $USER;
+
+        // Default to 100% relevant if no TTS model.
+        if ($model_or_modelembedding === false || empty($model_or_modelembedding)) {
+            return 100;
+        }
+
+        // Use local passage if not set.
+        if (empty($passage)) {
+            $passage = $this->passage;
+        }
+
+        //The REST API we are calling
+        $functionname = 'local_cpapi_call_ai';
+
+        $params = array();
+        $params['wstoken'] = $this->token;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $params['action'] = 'get_semantic_sim';
+        $params['appid'] = 'mod_minilesson';
+        $params['prompt'] = $passage;
+        $params['subject'] = $model_or_modelembedding;
+        $params['language'] = $this->language;
+        $params['region'] = $this->region;
+        $params['owner'] = hash('md5', $USER->username);
+
+        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $response = self::curl_fetch($serverurl, $params,'post');
+        if (!self::is_json($response)) {
+            return false;
+        }
+        $payloadobject = json_decode($response);
+
+        // ReturnCode > 0  indicates an error.
+        if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
+            return false;
+            //if all good, then return the value
+        } else if ($payloadobject->returnCode === 0) {
+            $relevance = $payloadobject->returnMessage;
+            if (is_numeric($relevance)) {
+                $relevance = (int)round($relevance * 100, 0);
+            } else {
+                $relevance = false;
+            }
+            return $relevance;
+        } else {
+            return false;
         }
     }
 
     public function process_cefr_level($passage='') {
 
-        if(empty($passage)){
+        if (empty($passage)) {
             $passage = $this->passage;
         }
 
-        $cefrlevel = false;// default is blank
-        if(!empty($passage)){
+        $cefrlevel = false;
+        if (!empty($passage)) {
             $cefrlevel = $this->fetch_cefr_level($passage);
         }
         if ($cefrlevel !== false) {
             return $cefrlevel;
-        }else{
+        } else {
             return "";
         }
     }
 
     public function process_idea_count($passage='') {
 
-        if(empty($passage)){
+        if (empty($passage)) {
             $passage = $this->passage;
         }
 
         $ideacount = false;
-        if(!empty($passage)){
+        if (!empty($passage)) {
             $ideacount = $this->fetch_idea_count($passage);
         }
         if ($ideacount !== false) {
             return $ideacount;
-        }else{
+        } else {
             return 0;
         }
 
@@ -653,7 +790,7 @@ break;
         $params['moodlewsrestformat'] = 'json';
         $params['action'] = 'request_grammar_correction';
         $params['appid'] = 'mod_minilesson';
-        $params['prompt'] = $passage;// urlencode($passage);
+        $params['prompt'] = $passage;
         $params['language'] = $this->language;
         $params['subject'] = 'none';
         $params['region'] = $this->region;
@@ -684,61 +821,6 @@ break;
             }
 
             return $correction;
-        } else {
-            return false;
-        }
-    }
-
-    // fetch the relevance
-    public function fetch_relevance($modelormodelembedding, $passage='') {
-        global $USER;
-
-        // default to 100% relevant if no TTS model or if it's not English
-        if($modelormodelembedding === false || empty($modelormodelembedding)){
-            return 100;
-        }
-
-        // use local passage if not set
-        if(empty($passage)){
-            $passage = $this->passage;
-        }
-
-        // The REST API we are calling
-        $functionname = 'local_cpapi_call_ai';
-
-        $params = [];
-        $params['wstoken'] = $this->token;
-        $params['wsfunction'] = $functionname;
-        $params['moodlewsrestformat'] = 'json';
-        $params['action'] = 'get_semantic_sim';
-        $params['appid'] = 'mod_minilesson';
-        $params['prompt'] = $passage;// urlencode($passage);
-        $params['subject'] = $modelormodelembedding;
-        $params['language'] = $this->language;
-        $params['region'] = $this->region;
-        $params['owner'] = hash('md5', $USER->username);
-
-        // log.debug(params);
-
-        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
-        $response = self::curl_fetch($serverurl, $params, 'post');
-        if (!self::is_json($response)) {
-            return false;
-        }
-        $payloadobject = json_decode($response);
-
-        // returnCode > 0  indicates an error
-        if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
-            return false;
-            // if all good, then return the value
-        } else if ($payloadobject->returnCode === 0) {
-            $relevance = $payloadobject->returnMessage;
-            if(is_numeric($relevance)){
-                $relevance = (int)round($relevance * 100, 0);
-            }else{
-                $relevance = false;
-            }
-            return $relevance;
         } else {
             return false;
         }

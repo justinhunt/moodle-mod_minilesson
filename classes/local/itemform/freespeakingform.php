@@ -35,17 +35,25 @@ class freespeakingform extends baseform {
         $this->add_itemsettings_heading();
         $mform = $this->_form;
         $this->add_static_text('instructions', '', get_string('freespeakingdesc', constants::M_COMPONENT));
-        $this->add_numericboxresponse(1, get_string('targetwordcount_instructions', constants::M_COMPONENT), false);
-        $this->add_textarearesponse(1, get_string('aigrade_instructions', constants::M_COMPONENT), true);
-        $this->add_textarearesponse(2, get_string('aifeedback_instructions', constants::M_COMPONENT), true);
+        $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
+        $mform->setDefault(constants::TOTALMARKS, 5);
+        $this->add_numericboxresponse(constants::TARGETWORDCOUNT, get_string('targetwordcount_title', constants::M_COMPONENT), false);
+        $this->add_textarearesponse(constants::AIGRADE_INSTRUCTIONS, get_string('aigrade_instructions', constants::M_COMPONENT), true);
+        $this->add_textarearesponse(constants::AIGRADE_FEEDBACK, get_string('aigrade_feedback', constants::M_COMPONENT), true);
+        // Feedback language.
+        $this->add_languageselect(constants::AIGRADE_FEEDBACK_LANGUAGE,
+            get_string('aigrade_feedback_language', constants::M_COMPONENT),
+            constants::M_LANG_ENUS
+        );
+
         $this->add_relevanceoptions(constants::RELEVANCE, get_string('relevancetype', constants::M_COMPONENT),
         constants::RELEVANCETYPE_NONE);
-        $this->add_textarearesponse(3, get_string('modelanswer', constants::M_COMPONENT), false);
+        $this->add_textarearesponse(constants::AIGRADE_MODELANSWER, get_string('aigrade_modelanswer', constants::M_COMPONENT), false);
         $m35 = $CFG->version >= 2018051700;
         if ($m35) {
-            $mform->hideIf("customtext3", constants::RELEVANCE, 'neq', constants::RELEVANCETYPE_MODELANSWER);
+            $mform->hideIf(constants::AIGRADE_MODELANSWER, constants::RELEVANCE, 'neq', constants::RELEVANCETYPE_MODELANSWER);
         } else {
-            $mform->disabledIf("customtext3", constants::RELEVANCE, 'neq', constants::RELEVANCETYPE_MODELANSWER);
+            $mform->disabledIf(constants::AIGRADE_MODELANSWER, constants::RELEVANCE, 'neq', constants::RELEVANCETYPE_MODELANSWER);
         }
         
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
