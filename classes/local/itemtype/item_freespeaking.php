@@ -71,4 +71,41 @@ class item_freespeaking extends item {
         return $testitem;
     }
 
+    public static function validate_import($newrecord, $cm) {
+        $error = new \stdClass();
+        $error->col = '';
+        $error->message = '';
+
+        if ($newrecord->{constants::AIGRADE_INSTRUCTIONS} == '') {
+            $error->col = constants::AIGRADE_INSTRUCTIONS;
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
+            return $error;
+        }
+
+        if ($newrecord->{constants::AIGRADE_FEEDBACK} == '') {
+            $error->col = constants::AIGRADE_FEEDBACK;
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
+            return $error;
+        }
+
+        // return false to indicate no error
+        return false;
+    }
+
+    /*
+    * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+    */
+    public static function get_keycolumns() {
+        // get the basic key columns and customize a little for instances of this item type
+        $keycols = parent::get_keycolumns();
+        $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'integer', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
+        $keycols['int2'] = ['jsonname' => 'relevance', 'type' => 'integer', 'optional' => true, 'default' => 0, 'dbname' => constants::RELEVANCE];
+        $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'integer', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
+        $keycols['text1'] = ['jsonname' => 'aigradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_INSTRUCTIONS];
+        $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
+        $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];
+        $keycols['text4'] = ['jsonname' => 'aigradefeedbacklanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AIGRADE_FEEDBACK_LANGUAGE];
+        return $keycols;
+    }
+
 }

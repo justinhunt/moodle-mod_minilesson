@@ -1,6 +1,6 @@
 define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloudpoodllloader',
-    'mod_minilesson/ttrecorder','core/notification','core/str'],
-    function($, log, def,cloudpoodll, ttrecorder, notification, str) {
+    'mod_minilesson/ttrecorder','core/notification','core/str', 'core/templates'],
+    function($, log, def,cloudpoodll, ttrecorder, notification, str, templates) {
   "use strict"; // jshint ;_;
 
   /*
@@ -12,8 +12,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
   var app= {
 
     allwords: {},
-    totalcorrect: 0,
     strings: {},
+    totals: {},
 
     //for making multiple instances
       clone: function () {
@@ -47,11 +47,19 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
       var stepdata = {};
       stepdata.index = self.index;
       stepdata.hasgrade = true;
-      stepdata.totalitems = self.allwords.length;
-      stepdata.correctitems = self.totalcorrect;
+      stepdata.totalitems = 0;
+      stepdata.correctitems = 0;
       var percent = 0;
       if(self.allwords.length> 0) {
-        percent = Math.round((self.totalcorrect /self.allwords.length) * 100 );
+        percent = Math.round((self.totals.correct /self.allwords.length) * 100 );
+        //If total marks is set, we use percent to calc correct items / total items
+        if(self.itemdata.totalmarks > 0){
+          stepdata.totalitems = self.itemdata.totalmarks;
+          stepdata.correctitems = Math.round((self.totals.correct /self.allwords.length) * self.itemdata.totalmarks);
+        }else{
+          stepdata.totalitems = self.allwords.length;
+          stepdata.correctitems = self.totals.correct;
+        }
       }
       stepdata.grade = percent;
       this.quizhelper.do_next(stepdata);
@@ -71,6 +79,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
                             self.strings.reallyreattempt,
                             self.strings.reattempt,'',
                             function(){
+                                self.resultscontainer.hide();
                                 self.reattemptcontainer.hide();
                                 self.recordercontainer.show();
                                  //Reset all words css
@@ -87,6 +96,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
           self.allspaces = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_space");
           self.recordercontainer = $("#" + self.itemdata.uniqueid + "_container .ml_passagereading_speakbtncontainer");
           self.reattemptcontainer = $("#" + self.itemdata.uniqueid + "_container .ml_passagereading_reattemptcontainer");
+          self.resultscontainer = $("#" + self.itemdata.uniqueid + "_container .ml_passagereading_resultscontainer");
           self.reattemptbutton =  self.reattemptcontainer.find(".ml_reattemptbutton");
           self.nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
 
@@ -145,7 +155,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
       //TO DO disable the TT Recorder button
       $("#" + self.thebutton ).prop("disabled", true);
 
-      self.quizhelper.comparePassageToTranscript(passage,transcript,phonetic,self.itemdata.language).then(function(ajaxresult) {
+      self.quizhelper.comparePassageToTranscript(passage,transcript,phonetic,self.itemdata.language, self.itemdata.alternates).then(function(ajaxresult) {
             var payloadobject = JSON.parse(ajaxresult);
             if (payloadobject) {
                 callback(payloadobject);
@@ -217,13 +227,27 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
 
       //update our scores
       var correctwords = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word.pr_correct");
-      self.totalcorrect = correctwords.length;
-      log.debug(("totalcorrect", self.totalcorrect));
+      var incorrectwords = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word.pr_incorrect");
+      var unreachedwords = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word.pr_unreached");
+      self.totals.correct = correctwords.length;
+      self.totals.incorrect = incorrectwords.length;
+      self.totals.unreached = unreachedwords.length;
+      self.totals.read = incorrectwords.length + correctwords.length;
+      self.totals.accuracy = Math.round((self.totals.correct / self.totals.read) * 100);
+      self.totals.score = Math.round((self.totals.correct /self.allwords.length) * 100);
+      log.debug(("total correct", self.totals.correct));
       log.debug(("allwords", self.allwords.length));
 
-       //Hide the recorder and show the reattempt button
-       self.recordercontainer.hide();
-       self.reattemptcontainer.show();
+       //Hide the recorder and show the reattempt button and results
+        //display results
+        templates.render('mod_minilesson/passagereadingresults',self.totals).then(
+          function(html,js){
+              self.recordercontainer.hide();
+              self.resultscontainer.html(html);
+              self.resultscontainer.show();
+              self.reattemptcontainer.show();
+          }
+        );
 
        //To auto transition you could do this
        var moveon = false;

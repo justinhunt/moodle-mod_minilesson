@@ -439,13 +439,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
         },
 
-       comparePassageToTranscript: function (passage,transcript,passagephonetic, language){
+       comparePassageToTranscript: function (passage,transcript,passagephonetic,language,alternatives=""){
           return Ajax.call([{
                methodname: 'mod_minilesson_compare_passage_to_transcript',
                args: {
                    passage: passage,
                    transcript: transcript,
-                   alternatives: '',
+                   alternatives: alternatives,
                    phonetic: passagephonetic,
                    language: language,
                    region: this.region,

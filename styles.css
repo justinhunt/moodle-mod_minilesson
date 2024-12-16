@@ -2804,3 +2804,26 @@ minilesson_bq_resultbox {
   margin: auto;
   text-align: center;
 }
+
+.ml_passagereading_passage {
+  border: 1px solid grey;
+  padding: 6px;
+  font-size: large;
+  margin-bottom: 15px;
+}
+
+.ml_passagereading_resultscontainer {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid grey;
+  padding: 4px;
+}
+
+.ml_rp_resultcell {
+  text-align: center;
+}
+
+.ml_rp_resultcell_title {
+  font-size: 0.8em;
+  display: block;
+}
