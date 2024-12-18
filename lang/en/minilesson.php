@@ -804,3 +804,5 @@ $string['rp_result_incorrect'] = "Incorrect";
 $string['rp_result_unreached'] = "Not Read";
 $string['rp_result_accuracy'] = "Accuracy";
 $string['rp_result_score'] = "Score";
+$string['showcorrections'] = "Show inline corrections";
+$string['hidecorrections'] = "Hide inline corrections";

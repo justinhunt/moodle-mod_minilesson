@@ -1,6 +1,6 @@
 define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloudpoodllloader',
-    'mod_minilesson/ttrecorder', 'core/templates'],
-    function($, log, def, cloudpoodll, ttrecorder, templates) {
+    'mod_minilesson/ttrecorder', 'mod_minilesson/correctionsmarkup', 'core/templates'],
+    function($, log, def, cloudpoodll, ttrecorder, correctionsmarkup, templates) {
   "use strict"; // jshint ;_;
 
   /*
@@ -82,15 +82,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
       var self=this;
       self.allwords = $("#" + self.itemdata.uniqueid + "_container.mod_minilesson_mu_passage_word");
       self.thebutton = "thettrbutton"; // To Do impl. this
-      self.resultbox = $("#" + self.itemdata.uniqueid + "_container .ml_freespeaking_resultbox");
       self.wordcount = $("#" + self.itemdata.uniqueid + "_container span.ml_wordcount");
       self.actionbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_actionbox");
       self.pendingbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_pendingbox");
       self.resultsbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_resultsbox");
       self.timerdisplay = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_timerdisplay");
 
-    // Callback: Recorder updates.
-    var recorderCallback = function(message) {
+      // Callback: Recorder updates.
+      var recorderCallback = function(message) {
 
         switch (message.type) {
           case 'recording':
@@ -128,6 +127,18 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
       }
     }, //end of init components
 
+    do_corrections_markup: function(grammarerrors,grammarmatches,insertioncount) {
+      var self = this;
+      //corrected text container is created at runtime, so it wont exist at init_components time
+      //thats we find it here 
+       var correctionscontainer = self.resultsbox.find('.mlfsr_correctedtext');
+      
+       correctionsmarkup.init({ "correctionscontainer": correctionscontainer,
+            "grammarerrors": grammarerrors,
+            "grammarmatches": grammarmatches,
+            "insertioncount": insertioncount});
+    },
+
     do_evaluation: function(speechtext) {
       var self = this;
 
@@ -158,6 +169,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
           templates.render('mod_minilesson/freespeakingresults',transcript_evaluation).then(
             function(html,js){
                 self.resultsbox.html(html);
+                //do corrections markup
+                if(transcript_evaluation.hasOwnProperty('grammarerrors')){
+                  self.do_corrections_markup(transcript_evaluation.grammarerrors,
+                    transcript_evaluation.grammarmatches,
+                    transcript_evaluation.insertioncount
+                  );
+                }
+                //show and hide
                 self.resultsbox.show();
                 self.pendingbox.hide();
                 self.actionbox.hide();

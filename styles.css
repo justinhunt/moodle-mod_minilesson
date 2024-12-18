@@ -2780,6 +2780,13 @@ minilesson_bq_resultbox {
   margin:auto;
 }
 
+.mlfsr_correctedtext_container,
+.mlfsr_originaltext_container {
+  border: 1px solid grey;
+  padding: 6px;
+  font-size: large;
+}
+
 .mod_minilesson_mu_passage_word.pr_correct,
 .mod_minilesson_mu_passage_space.pr_correct {
   text-decoration: underline;
@@ -2812,18 +2819,116 @@ minilesson_bq_resultbox {
   margin-bottom: 15px;
 }
 
-.ml_passagereading_resultscontainer {
+.ml_passagereading_resultscontainer,
+.ml_freespeaking_results_summaries {
   display: flex;
   justify-content: space-between;
   border: 1px solid grey;
   padding: 4px;
 }
 
-.ml_rp_resultcell {
+.ml_rp_resultcell,
+.ml_fs_results_summary {
   text-align: center;
 }
 
-.ml_rp_resultcell_title {
+.ml_rp_resultcell_title,
+.ml_fs_sumcell_title {
   font-size: 0.8em;
   display: block;
+}
+
+/* FreeSpeaking */
+
+.mod_minilesson_grading_badword {
+  /*
+  color: red;
+  background-color: #ffcaca;
+  padding: 5px;
+  border-radius: 5px 5px 5px;
+  border: 1px solid red;
+  position: relative;
+  */
+  text-decoration: underline #0000FF;
+  font-weight: bold;
+}
+
+.mod_minilesson_grading_endspace {
+  /*
+  color: blue;
+  background-color: #cacaff;
+  padding: 5px;
+  border-radius: 5px 5px 5px;
+  border: 1px solid blue;
+  position: relative;
+  */
+}
+
+.mod_minilesson_mu_passage_space {
+ /* padding: 2px; */
+}
+
+div.mod_minilesson_postattempt .mod_minilesson_grading_unreadword {
+  text-decoration: none;
+  background-color: lightgrey;
+}
+
+div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
+  background-color: lightgrey;
+  padding: 0px 2px;
+}
+
+.mod_minilesson_grading_unreadword {
+color: #F13B3B;
+font-weight: 700;
+}
+
+.mod_minilesson_mu_passage_word.mod_minilesson_aicorrected,
+.mod_minilesson_mu_passage_space.mod_minilesson_aicorrected {
+background-color: lightpink;
+}
+
+.mod_minilesson_mu_passage_word.asf_cp_aiomitted, .mod_minilesson_mu_passage_space.asf_cp_aiomitted {
+text-decoration: line-through;
+}
+
+.mod_minilesson_mu_passage_word.mod_minilesson_aiunmatched {
+  /*background-color: lightgrey;*/
+}
+
+.mod_minilesson_mu_passage_space.mod_minilesson_aiunmatched {
+  /*background-color: lightgrey;*/
+  text-decoration: underline #0000FF;
+  font-weight: bold;
+}
+
+
+.mod_minilesson_corrections {
+	text-align: left;
+	font-style: normal;
+}
+
+/* delete? */
+span.mod_minilesson_corrections_suggestedword {
+	font-weight: bold;
+	background-color: lightgreen;
+}
+
+span.mod_minilesson_corrections_insertionword {
+	font-weight: bold;
+	background-color: lightgreen;
+}
+
+span.mod_minilesson_corrections_omittedword {
+	font-weight: bold;
+	background-color: lightgreen;
+	word-spacing: 5px;
+}
+span.mod_minilesson_mu_original_preword,span.mod_minilesson_mu_original_postword {
+	font-weight: 500;
+	background-color: antiquewhite;
+}
+
+.mod_minilesson_overflow_auto {
+overflow: auto;
 }

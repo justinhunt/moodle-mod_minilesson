@@ -725,9 +725,21 @@ class utils{
         $instructions->modeltext = $item->{constants::AIGRADE_MODELANSWER};
         $aigraderesults = self::fetch_ai_grade($token, $moduleinstance->region,
          $moduleinstance->ttslanguage, $transcript, $instructions);
+
+         //Mark up AI Grade corrections
+         if ($aigraderesults && isset($aigraderesults->correctedtext)) {
+            //if we have corrections mark those up and return them
+            $direction="r2l";//"l2r";
+            list($grammarerrors,$grammarmatches,$insertioncount) = self::fetch_grammar_correction_diff($transcript, $aigraderesults->correctedtext,$direction);
+            $aigraderesults->markedupcorrections = aitranscriptutils::render_passage($aigraderesults->correctedtext,'corrections');
+            $aigraderesults->markeduppassage = aitranscriptutils::render_passage($transcript,'passage');
+            $aigraderesults->grammarerrors = $grammarerrors;
+            $aigraderesults->grammarmatches  = $grammarmatches;
+            $aigraderesults->insertioncount  = $insertioncount;
+         }
         
          //STATS
-         $userlanguage = false;
+        $userlanguage = false;
         $targetembedding = false;
         $targetwords = [];
         if($item->{constants::RELEVANCE} == constants::RELEVANCETYPE_QUESTION){
@@ -739,6 +751,95 @@ class utils{
 
         return $aigraderesults;
 
+    }
+
+    public static function fetch_grammar_correction_diff($selftranscript,$correction,$direction='l2r'){
+
+
+        //turn the passage and transcript into an array of words
+        $alternatives = diff::fetchAlternativesArray('');
+        $wildcards = diff::fetchWildcardsArray($alternatives);
+
+        //the direction of diff depends on which text we want to mark up. Because we only highlight
+        //this is because if we show the pre-text (eg student typed text) we can not highlight corrections .. they are not there
+        //if we show post-text (eg corrections) we can not highlight mistakes .. they are not there
+        //the diffs tell us where the diffs are with relation to text A
+        if($direction=='l2r') {
+            $passagebits = diff::fetchWordArray($selftranscript);
+            $transcriptbits = diff::fetchWordArray($correction);
+        }else {
+            $passagebits = diff::fetchWordArray($correction);
+            $transcriptbits = diff::fetchWordArray($selftranscript);
+        }
+
+        //fetch sequences of transcript/passage matched words
+        // then prepare an array of "differences"
+        $passagecount = count($passagebits);
+        $transcriptcount = count($transcriptbits);
+        //rough estimate of insertions
+        $insertioncount = $transcriptcount - $passagecount;
+        if($insertioncount<0){$insertioncount=0;}
+
+        $language = constants::M_LANG_ENUS;
+        $sequences = diff::fetchSequences($passagebits,$transcriptbits,$alternatives,$language);
+
+        //fetch diffs
+        $diffs = diff::fetchDiffs($sequences, $passagecount,$transcriptcount);
+        $diffs = diff::applyWildcards($diffs,$passagebits,$wildcards);
+
+
+        //from the array of differences build error data, match data, markers, scores and metrics
+        $errors = new \stdClass();
+        $matches = new \stdClass();
+        $currentword=0;
+        $lastunmodified=0;
+        //loop through diffs
+        foreach($diffs as $diff){
+            $currentword++;
+            switch($diff[0]){
+                case Diff::UNMATCHED:
+                    //we collect error info so we can count and display them on passage
+                    $error = new \stdClass();
+                    $error->word=$passagebits[$currentword-1];
+                    $error->wordnumber=$currentword;
+                    $errors->{$currentword}=$error;
+                    break;
+
+                case Diff::MATCHED:
+                    //we collect match info so we can play audio from selected word
+                    $match = new \stdClass();
+                    $match->word=$passagebits[$currentword-1];
+                    $match->pposition=$currentword;
+                    $match->tposition = $diff[1];
+                    $match->audiostart=0;//not meaningful when processing corrections
+                    $match->audioend=0;//not meaningful when processing corrections
+                    $match->altmatch=$diff[2];//not meaningful when processing corrections
+                    $matches->{$currentword}=$match;
+                    $lastunmodified = $currentword;
+                    break;
+
+                default:
+                    //do nothing
+                    //should never get here
+
+            }
+        }
+        $sessionendword = $lastunmodified;
+
+        //discard errors that happen after session end word.
+        $errorcount = 0;
+        $finalerrors = new \stdClass();
+        foreach($errors as $key=>$error) {
+            if ($key < $sessionendword) {
+                $finalerrors->{$key} = $error;
+                $errorcount++;
+            }
+        }
+        //finalise and serialise session errors
+        $sessionerrors = json_encode($finalerrors);
+        $sessionmatches = json_encode($matches);
+
+        return [$sessionerrors,$sessionmatches,$insertioncount];
     }
 
       // fetch the AI Grade

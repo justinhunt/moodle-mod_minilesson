@@ -1,14 +1,48 @@
 <div class="ml_freespeaking_results">
-<div class="mlfsr_fullscore">{{#str}}score , mod_minilesson{{/str}}: {{percentscore}}%</div>
-<div class="mlfsr_fullscore">{{#str}}score , mod_minilesson{{/str}}: {{rawscore}}/{{maxscore}}</div>
-<div class="mlfsr_words">Words: {{stats.words}}</div>
-<div class="mlfsr_correctedtext"><b>raw speech:</b><br/>{{rawspeech}}</div>
-<div class="mlfsr_correctedtext"><b>corrected text:</b><br/>{{correctedtext}}</div>
-<div class="mlfsr_words"><b>sentences:</b><br/>{{stats.sentences}}</div>
-<div class="mlfsr_words"><b>words:</b><br/>{{stats.words}}</div>
-<div class="mlfsr_words"><b>unique words:</b><br/>{{stats.wordsunique}}</div>
-<div class="mlfsr_words"><b>idea count:</b><br/>{{stats.ideacount}}</div>
-<div class="mlfsr_words"><b>relevance:</b><br/>{{stats.relevance}}%</div>
+<div class="ml_freespeaking_results_summaries">
+  <div class="ml_fs_results_summary">
+    <span class="ml_fs_sumcell_title">sentences</span>
+    <span class="ml_fs_sumcell_content">{{stats.sentences}}</span>
+  </div>
+  <div class="ml_fs_results_summary">
+    <span class="ml_fs_sumcell_title">words</span>
+    <span class="ml_fs_sumcell_content">{{stats.words}}</span>
+  </div>
+  <div class="ml_fs_results_summary">
+    <span class="ml_fs_sumcell_title">unique words</span>
+    <span class="ml_fs_sumcell_content">{{stats.wordsunique}}</span>
+  </div>
+  <div class="ml_fs_results_summary">
+    <span class="ml_fs_sumcell_title">idea count</span>
+    <span class="ml_fs_sumcell_content">{{stats.ideacount}}</span>
+  </div>
+  <div class="ml_fs_results_summary">
+    <span class="ml_fs_sumcell_title">relevance</span>
+    <span class="ml_fs_sumcell_content">{{stats.relevance}}%</span>
+  </div>
+</div>
+<div class="mlfsr_originaltext_container"><b>Original:</b><br/><span class="mlfsr_originaltext">{{{markeduppassage}}}</span></div>
+<div class="mlfsr_correctedtext_container"><b>Corrected:</b><br/>
+  <span class="mlfsr_correctedtext">{{{markedupcorrections}}}</span>
+  {{>mod_minilesson/summary_togglecorrections}}
+</div>
+<div class="ml_freespeaking_results_summaries">
+  <!-- not needed currently
+  <div class="ml_fs_results_summary">
+    <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
+    <span class="ml_fs_sumcell_content">{{rawscore}}/{{maxscore}}</span>
+  </div>
+  <div class="ml_fs_results_summary">
+    <span class="ml_fs_sumcell_title">Words</span>
+    <span class="ml_fs_sumcell_content">{{stats.words}}</span>
+  </div>
+  -->
+  <div class="ml_fs_results_summary" style="margin: auto">
+    <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
+    <span class="ml_fs_sumcell_content">{{percentscore}}%</span>
+  </div>
+</div>
+</div>
 <br/><b>Feedback:</b>
 <ul>
 {{#feedback}}

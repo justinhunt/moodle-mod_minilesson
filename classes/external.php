@@ -558,7 +558,7 @@ class mod_minilesson_external extends external_api {
 
         //if we have suggestions, mark those up and return them
         $direction = "r2l"; //"l2r";
-        list($grammarerrors, $grammarmatches, $insertioncount) = \mod_minilesson\utils::fetch_grammar_correction_diff($text, $suggestions,$direction);
+        list($grammarerrors, $grammarmatches, $insertioncount) = utils::fetch_grammar_correction_diff($text, $suggestions,$direction);
         $markedupsuggestions = \mod_minilesson\aitranscriptutils::render_passage($suggestions, 'corrections');
         $ret = [];
         $ret['grammarerrors'] = $grammarerrors;
