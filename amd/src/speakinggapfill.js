@@ -6,8 +6,9 @@ define(['jquery',
     'mod_minilesson/cloudpoodllloader',
     'mod_minilesson/ttrecorder',
     'mod_minilesson/animatecss',
-    'mod_minilesson/progresstimer'
-], function($, log, ajax, def, polly, cloudpoodll, ttrecorder, anim, progresstimer) {
+    'mod_minilesson/progresstimer',
+    'core/templates'
+], function($, log, ajax, def, polly, cloudpoodll, ttrecorder, anim, progresstimer, templates) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson speaking gap fill: initialising');
@@ -95,6 +96,38 @@ define(['jquery',
             self.quizhelper.do_next(stepdata);
         },
 
+        show_item_review:function(){
+            var self=this;
+            var review_data = {};
+            review_data.items = self.items;
+            review_data.totalitems=self.items.length;
+            review_data.correctitems=self.items.filter(function(e) {return e.correct;}).length;
+
+            //Get controls
+            var listencont = $("#" + self.itemdata.uniqueid + "_container .sgapfill_listen_cont");
+            var qbox = $("#" + self.itemdata.uniqueid + "_container .question");
+            var recorderbox = $("#" + self.itemdata.uniqueid + "_container .sgapfill_speakbtncontainer");
+            var gamebox = $("#" + self.itemdata.uniqueid + "_container .sgapfill_game");
+            var controlsbox = $("#" + self.itemdata.uniqueid + "_container .sgapfill_controls");
+            var resultsbox = $("#" + self.itemdata.uniqueid + "_container .sgapfill_resultscontainer");
+
+            //display results
+            templates.render('mod_minilesson/listitemresults',review_data).then(
+              function(html,js){
+                  resultsbox.html(html);
+                  //show and hide
+                  resultsbox.show();
+                  gamebox.hide();
+                  controlsbox.hide();
+                  listencont.hide();
+                  qbox.hide();
+                  recorderbox.hide();
+                  // Run js for audio player events
+                  templates.runTemplateJS(js);
+              }
+            );// End of templates
+        },
+
         register_events: function() {
 
             var self = this;
@@ -153,19 +186,19 @@ define(['jquery',
 
                 self.stopTimer(self.items[self.game.pointer].timer);
 
+                //mark as answered and incorrect
+                self.items[self.game.pointer].answered = true;
+                self.items[self.game.pointer].correct = false;
+
                 if (self.game.pointer < self.items.length - 1) {
                     // Move on after short time to next prompt
-                    log.debug('moving to next prompt C');
                     setTimeout(function() {
                         $(".sgapfill_reply_" + self.game.pointer).hide();
-                        self.items[self.game.pointer].answered = true;
-                        self.items[self.game.pointer].correct = false;
                         self.game.pointer++;
                         self.nextPrompt();
                     }, 2000);
                     // End question
                 } else {
-                    self.updateProgressDots();
                     self.end();
                 }
 
@@ -375,11 +408,17 @@ define(['jquery',
         end: function() {
             var self = this;
             $(".minilesson_nextbutton").prop("disabled", true);
+
+            //progress dots are updated on next_item. The last item has no next item, so we update from here
+            self.updateProgressDots();
+
             setTimeout(function() {
-
-                $(".minilesson_nextbutton").prop("disabled", false);
-                self.next_question();
-
+                $(".minilesson_nextbutton").prop("disabled",false);
+                if(self.quizhelper.showitemreview){
+                    self.show_item_review();
+                }else{
+                    self.next_question();
+                }
             }, 2000);
 
         },
@@ -435,6 +474,7 @@ define(['jquery',
             );
             self.nextReply();
         },
+        
 
         nextReply: function() {
             var self = this;

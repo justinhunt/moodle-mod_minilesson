@@ -123,7 +123,7 @@ abstract class item implements templatable, renderable {
         $this->forcetitles = $this->moduleinstance->showqtitles;
         $this->region = $this->moduleinstance->region;
         $this->language = $this->moduleinstance->ttslanguage;
-
+        $this->showitemreview = $this->moduleinstance->showitemreview;
     }
 
     /*

@@ -98,7 +98,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
           var achieved = checked == itemdata.correctanswer ? 1 : 0;
           var percent = achieved * 100;
 
-          if(quizhelper.useresultspanel) {
+          if(quizhelper.showitemreview) {
               //hide the confirm choice button
               confirmchoicebutton.hide();
 

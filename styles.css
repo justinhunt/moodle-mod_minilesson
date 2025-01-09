@@ -2932,3 +2932,36 @@ span.mod_minilesson_mu_original_preword,span.mod_minilesson_mu_original_postword
 .mod_minilesson_overflow_auto {
 overflow: auto;
 }
+
+.ml_listitem_result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.ml_listitem_result .ml_li_resultitem {
+  flex-grow: 1;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.ml_listitem_result .ml_li_resultaudio,
+.ml_listitem_result .ml_li_resultstatus {
+  flex-shrink: 0;
+}
+.ml_listitem_result .ml_li_resultstatus {
+  border: 1px solid grey;
+  padding: 3px;
+  margin: 5px;
+  min-width: 25px;
+  text-align: center;
+  border-radius: 5px;
+}
+.ml_listitem_result .ml_li_resultstatus.ml_correct {
+  background-color: lightgreen;
+}
+.ml_listitem_result .ml_li_resultstatus.ml_incorrect {
+  background-color: lightcoral;
+}
+.ml_listitem_results_header h3 {
+  text-align: center;
+  padding-top: 7px;
+}

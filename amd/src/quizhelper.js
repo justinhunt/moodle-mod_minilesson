@@ -48,7 +48,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         this.stt_guided = activitydata.stt_guided;
         this.wwwroot = activitydata.wwwroot;
         this.useanimatecss  = activitydata.useanimatecss;
-        this.useresultspanel  = activitydata.useresultspanel;
+        this.showitemreview  = activitydata.showitemreview;
 
         this.prepare_html();
         this.init_questions(this.quizdata,polly);

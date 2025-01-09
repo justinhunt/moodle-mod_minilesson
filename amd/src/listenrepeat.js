@@ -5,8 +5,9 @@ define(['jquery',
       'mod_minilesson/pollyhelper',
       'mod_minilesson/cloudpoodllloader',
       'mod_minilesson/ttrecorder',
-      'mod_minilesson/animatecss'
-    ], function($, log, ajax, def, polly, cloudpoodll, ttrecorder, anim) {
+      'mod_minilesson/animatecss',
+      'core/templates'
+    ], function($, log, ajax, def, polly, cloudpoodll, ttrecorder, anim, templates) {
   "use strict"; // jshint ;_;
 
   log.debug('MiniLesson listen and repeat: initialising');
@@ -83,6 +84,33 @@ define(['jquery',
       stepdata.grade = Math.round((stepdata.correctitems/stepdata.totalitems)*100);
       self.quizhelper.do_next(stepdata);
     },
+
+    show_item_review:function(){
+      var self=this;
+      var review_data = {};
+      review_data.items = self.items;
+      review_data.totalitems=self.items.length;
+      review_data.correctitems=self.items.filter(function(e) {return e.correct;}).length;
+
+      //display results
+      var gamebox= $("#" + self.itemdata.uniqueid + "_container .landr_game");
+      var controlsbox = $("#" + self.itemdata.uniqueid + "_container .landr_controls");
+      var recorderbox = $("#" + self.itemdata.uniqueid + "_container .landr_speakbtncontainer");
+      var resultsbox = $("#" + self.itemdata.uniqueid + "_container .landr_resultscontainer");
+      templates.render('mod_minilesson/listitemresults',review_data).then(
+        function(html,js){
+            resultsbox.html(html);
+            //show and hide
+            resultsbox.show();
+            gamebox.hide();
+            controlsbox.hide();
+            recorderbox.hide();
+            // Run js for audio player events
+            templates.runTemplateJS(js);
+        }
+      );// End of templates
+    },
+
     register_events: function() {
 
       var self = this;
@@ -112,20 +140,21 @@ define(['jquery',
           $(this).val(landr_targetWord);
         });
 
+        //mark as answered and incorrect
+        self.items[self.game.pointer].answered = true;
+        self.items[self.game.pointer].correct = false;
 
-          if (self.game.pointer < self.items.length - 1) {
-            //move on after short time to next prompt
-            setTimeout(function() {
-              self.items[self.game.pointer].answered = true;
-              self.items[self.game.pointer].correct = false;
-              self.game.pointer++;
-              self.nextPrompt();
-            }, 2200);
-          //end question
-          } else {
-            self.end();
-          }
-
+        //next prompt or end
+        if (self.game.pointer < self.items.length - 1) {
+          //move on after short time to next prompt
+          setTimeout(function() {
+            self.game.pointer++;
+            self.nextPrompt();
+          }, 2200);
+        //end question
+        } else {
+          self.end();
+        }
       });
       
     },
@@ -276,11 +305,18 @@ define(['jquery',
     end: function() {
       var self = this;
       $(".minilesson_nextbutton").prop("disabled",true);
+      
+      //progress dots are updated on next_item. The last item has no next item, so we update from here
+      self.updateProgressDots();
+      
+      //disable the buttons and go to next question or review
       setTimeout(function() {
-        
         $(".minilesson_nextbutton").prop("disabled",false);
-        self.next_question();
-        
+        if(self.quizhelper.showitemreview){
+          self.show_item_review();
+        }else{
+          self.next_question();
+        }
       }, 2200);
 
     },
@@ -335,8 +371,18 @@ define(['jquery',
       $("#" + self.itemdata.uniqueid + "_container .landr_game").html(code);
       $(".landr_ctrl-btn").prop("disabled", false);
 
-      var color;
+      self.updateProgressDots();
 
+      var newprompt = $(".landr_prompt_" + self.game.pointer);
+      anim.do_animate(newprompt,'zoomIn animate__faster','in').then(
+          function(){}
+      );
+      self.nextReply();
+    },
+
+    updateProgressDots: function() {
+      var self = this;
+      var color;
       var progress = self.items.map(function(item, idx) {
         color = "gray";
         if (self.items[idx].answered && self.items[idx].correct) {
@@ -346,15 +392,9 @@ define(['jquery',
         }
         return "<i style='color:" + color + "' class='fa fa-circle'></i>";
       }).join(" ");
-
       $("#" + self.itemdata.uniqueid + "_container .landr_title").html(progress);
-      var newprompt = $(".landr_prompt_" + self.game.pointer);
-      anim.do_animate(newprompt,'zoomIn animate__faster','in').then(
-          function(){}
-      );
-      self.nextReply();
-
     },
+
     nextReply: function() {
       var self = this;
       var target = self.items[self.game.pointer].target;

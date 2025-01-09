@@ -1,4 +1,5 @@
 {{> mod_minilesson/questionheader}}
+<div class="ml_dictation_rows">
 {{#sentences}}
   <div class="row dictationrow">
     <div class="col-md-1 poodlldictationplayer dictationplayer_{{index}}">
@@ -15,4 +16,6 @@
     </div>
   </div>
   {{/sentences}}
+  </div>
+  <div class="ml_dictation_resultscontainer"></div>
 {{> mod_minilesson/questionfooter}}

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -32,7 +31,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 /**
  * Execute minilesson upgrade from the given old version
@@ -45,15 +44,12 @@ function xmldb_minilesson_upgrade($oldversion) {
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
 
-
-
     // Add question titles to minilesson table
     if ($oldversion < 2020090700) {
         $activitytable = new xmldb_table(constants::M_TABLE);
 
-
         // Define field showqtitles to be added to minilesson\
-        $showqtitles= new xmldb_field('showqtitles', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '1');
+        $showqtitles = new xmldb_field('showqtitles', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '1');
 
         // add showqtitles field to minilesson table
         if (!$dbman->field_exists($activitytable, $showqtitles)) {
@@ -65,7 +61,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     // Add passagehash to questions table
     if ($oldversion < 2020100200) {
         $qtable = new xmldb_table(constants::M_QTABLE);
-
 
         // Define field showqtitles to be added to minilesson\
         $field = new xmldb_field('passagehash', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED, XMLDB_NOTNULL, null);
@@ -81,9 +76,8 @@ function xmldb_minilesson_upgrade($oldversion) {
     if ($oldversion < 2020122300) {
         $activitytable = new xmldb_table(constants::M_TABLE);
 
-
         // Define field richtextprompt to be added to minilesson
-        $richtextprompt= new xmldb_field('richtextprompt', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_PROMPT_RICHTEXT);
+        $richtextprompt = new xmldb_field('richtextprompt', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::M_PROMPT_RICHTEXT);
 
         // add richtextprompt field to minilesson table
         if (!$dbman->field_exists($activitytable, $richtextprompt)) {
@@ -97,7 +91,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_QTABLE);
 
         // Define fields itemtts and itemtts voice to be added to minilesson
-        $fields=[];
+        $fields = [];
         $fields[] = new xmldb_field('itemttsvoice', XMLDB_TYPE_CHAR, '255', XMLDB_UNSIGNED);
         $fields[] = new xmldb_field('itemtts', XMLDB_TYPE_TEXT, null, null, null, null);
 
@@ -114,9 +108,8 @@ function xmldb_minilesson_upgrade($oldversion) {
     if ($oldversion < 2021031500) {
         $table = new xmldb_table(constants::M_QTABLE);
 
-
         // Define field itemtts to be added to minilesson
-        $itemttsoption= new xmldb_field('itemttsoption', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::TTS_NORMAL);
+        $itemttsoption = new xmldb_field('itemttsoption', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::TTS_NORMAL);
 
         // add richtextprompt field to minilesson table
         if (!$dbman->field_exists($table, $itemttsoption)) {
@@ -129,8 +122,8 @@ function xmldb_minilesson_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_QTABLE);
 
         // Define fields itemtts and itemtts voice to be added to minilesson
-        //Item text area was added in 2021041500, but it was missed from install.xml ... so we double check it in this version
-        $fields=[];
+        // Item text area was added in 2021041500, but it was missed from install.xml ... so we double check it in this version
+        $fields = [];
         $fields[] = new xmldb_field('itemtextarea', XMLDB_TYPE_TEXT, null, null, null, null);
 
         // Add fields
@@ -140,7 +133,7 @@ function xmldb_minilesson_upgrade($oldversion) {
             }
         }
 
-       //Some passage hashs seem to be empty. This script will search for empty (and wrong) ones and update them
+        // Some passage hashs seem to be empty. This script will search for empty (and wrong) ones and update them
         $instances = $DB->get_records(constants::M_TABLE);
         if($instances){
             foreach ($instances as $moduleinstance){
@@ -154,9 +147,8 @@ function xmldb_minilesson_upgrade($oldversion) {
     if ($oldversion < 2021053100) {
         $table = new xmldb_table(constants::M_TABLE);
 
-
         // Define field itemtts to be added to minilesson
-        $field= new xmldb_field('foriframe', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $field = new xmldb_field('foriframe', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
 
         // add richtextprompt field to minilesson table
         if (!$dbman->field_exists($table, $field)) {
@@ -170,7 +162,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_QTABLE);
 
         // Define alternatives field to be added to minilesson
-        $fields=[];
+        $fields = [];
         $fields[] = new xmldb_field('alternatives', XMLDB_TYPE_TEXT, null, null, null, null);
         $fields[] = new xmldb_field('phonetic', XMLDB_TYPE_TEXT, null, null, null, null);
 
@@ -186,7 +178,7 @@ function xmldb_minilesson_upgrade($oldversion) {
     // Update all the phonetic fields in minilesson
     if ($oldversion < 2021082701) {
 
-        //this will add phonetic info for speechy items that have none currently
+        // this will add phonetic info for speechy items that have none currently
         $instances = $DB->get_records(constants::M_TABLE);
         if($instances){
             foreach ($instances as $moduleinstance){
@@ -201,11 +193,10 @@ function xmldb_minilesson_upgrade($oldversion) {
     if ($oldversion < 2022012001) {
         $table = new xmldb_table(constants::M_QTABLE);
 
-
         // Define fields itemttsautoplay and layout to be added to minilesson q table
-        $fields=[];
-        $fields[]= new xmldb_field('itemttsautoplay', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
-        $fields[]= new xmldb_field('layout', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::LAYOUT_AUTO);
+        $fields = [];
+        $fields[] = new xmldb_field('itemttsautoplay', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('layout', XMLDB_TYPE_INTEGER, '4', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, constants::LAYOUT_AUTO);
 
         // Add fields
         foreach ($fields as $field) {
@@ -222,10 +213,10 @@ function xmldb_minilesson_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_QTABLE);
 
         // Define YT clip fields to be added to minilesson
-        $fields=[];
+        $fields = [];
         $fields[] = new xmldb_field('itemytid', XMLDB_TYPE_TEXT, null, null, null, null);
-        $fields[]= new xmldb_field('itemytstart', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
-        $fields[]= new xmldb_field('itemytend', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('itemytstart', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('itemytend', XMLDB_TYPE_INTEGER, '10', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
 
         // Add fields
         foreach ($fields as $field) {
@@ -237,12 +228,11 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2022020300, 'minilesson');
     }
 
-
- // Add open and close dates to the activity
+    // Add open and close dates to the activity
     if ($oldversion < 2022020800) {
         $table = new xmldb_table(constants::M_TABLE);
 
-        $fields=[];
+        $fields = [];
         $fields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_NOTNULL, null, 0);
         $fields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10, XMLDB_NOTNULL, null, 0);
 
@@ -255,28 +245,28 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         upgrade_mod_savepoint(true, 2022020800, 'minilesson');
     }
-    //redo the prompt/response =>
+    // redo the prompt/response =>
     if ($oldversion < 2022021400) {
         $questions = $DB->get_records(constants::M_QTABLE);
         foreach($questions as $question){
             $sentences = explode(PHP_EOL, $question->customtext1);
-            $updaterequired=false;
-            $newsentences=[];
+            $updaterequired = false;
+            $newsentences = [];
             foreach($sentences as $sentence){
                 $sentencebits = explode('|', $sentence);
                 if (count($sentencebits) > 1) {
-                    $updaterequired=true;
+                    $updaterequired = true;
                     $audioprompt = trim($sentencebits[1]);
-                    $correctresponse= trim($sentencebits[0]);
+                    $correctresponse = trim($sentencebits[0]);
                     $textprompt = $correctresponse;
-                    $newsentences[]=$audioprompt . '|' . $correctresponse .'|' . $textprompt;
+                    $newsentences[] = $audioprompt . '|' . $correctresponse .'|' . $textprompt;
                 }else{
-                    $newsentences[]=$sentence;
+                    $newsentences[] = $sentence;
                 }//end of if count
             }//end of for sentences
             if($updaterequired){
-                $updatetext=implode(PHP_EOL,$newsentences);
-                $DB->update_record(constants::M_QTABLE,array('id'=>$question->id,'customtext1'=>$updatetext));
+                $updatetext = implode(PHP_EOL, $newsentences);
+                $DB->update_record(constants::M_QTABLE, ['id' => $question->id, 'customtext1' => $updatetext]);
             }
         }
 
@@ -287,11 +277,10 @@ function xmldb_minilesson_upgrade($oldversion) {
     if ($oldversion < 2022032900) {
         $table = new xmldb_table(constants::M_QTABLE);
 
-
         // Define field itemttsdialog
-        $fields=[];
-        $fields[]= new xmldb_field('itemttsdialog', XMLDB_TYPE_TEXT, null, null, null, null);
-        $fields[]= new xmldb_field('itemttsdialogopts', XMLDB_TYPE_TEXT, null, null, null, null);
+        $fields = [];
+        $fields[] = new xmldb_field('itemttsdialog', XMLDB_TYPE_TEXT, null, null, null, null);
+        $fields[] = new xmldb_field('itemttsdialogopts', XMLDB_TYPE_TEXT, null, null, null, null);
 
         // Add fields
         foreach ($fields as $field) {
@@ -308,7 +297,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_TABLE);
 
         // Define fields ,lessonkey,to be added to minilesson
-        $fields=[];
+        $fields = [];
         $fields[] = new xmldb_field('lessonkey', XMLDB_TYPE_CHAR, '255', null);
 
         // Add fields
@@ -325,9 +314,9 @@ function xmldb_minilesson_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_TABLE);
 
         // Define fields ,lessonkey,to be added to minilesson
-        $fields=[];
-        $fields[] = new xmldb_field('containerwidth', XMLDB_TYPE_CHAR, '255', null, true, null,'compact');
-        $fields[] = new xmldb_field('lessonfont', XMLDB_TYPE_CHAR, '255', null, null, null,null);
+        $fields = [];
+        $fields[] = new xmldb_field('containerwidth', XMLDB_TYPE_CHAR, '255', null, true, null, 'compact');
+        $fields[] = new xmldb_field('lessonfont', XMLDB_TYPE_CHAR, '255', null, null, null, null);
 
         // Add fields
         foreach ($fields as $field) {
@@ -336,10 +325,10 @@ function xmldb_minilesson_upgrade($oldversion) {
             }
         }
 
-        //add missign default if its missing
-        $vfields=[];
-        $vfields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,null, null, 0);
-        $vfields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, null, null, 0);
+        // add missign default if its missing
+        $vfields = [];
+        $vfields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, null, null, 0);
+        $vfields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, null, null, 0);
 
         // Add fields
         foreach ($vfields as $field) {
@@ -355,7 +344,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_QTABLE);
 
         // Define fields ,lessonkey,to be added to minilesson
-        $fields=[];
+        $fields = [];
         $fields[] = new xmldb_field('iteminstructions', XMLDB_TYPE_TEXT, null, null, null, null);
 
         // Add fields
@@ -372,11 +361,10 @@ function xmldb_minilesson_upgrade($oldversion) {
     if ($oldversion < 2023011801) {
         $table = new xmldb_table(constants::M_QTABLE);
 
-
         // Define field itemttspassage
-        $fields=[];
-        $fields[]= new xmldb_field('itemttspassage', XMLDB_TYPE_TEXT, null, null, null, null);
-        $fields[]= new xmldb_field('itemttspassageopts', XMLDB_TYPE_TEXT, null, null, null, null);
+        $fields = [];
+        $fields[] = new xmldb_field('itemttspassage', XMLDB_TYPE_TEXT, null, null, null, null);
+        $fields[] = new xmldb_field('itemttspassageopts', XMLDB_TYPE_TEXT, null, null, null, null);
 
         // Add fields
         foreach ($fields as $field) {
@@ -393,8 +381,8 @@ function xmldb_minilesson_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_QTABLE);
 
         // Define field item timelimit
-        $fields=[];
-        $fields[]= new xmldb_field('timelimit', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, null, null, 0);
+        $fields = [];
+        $fields[] = new xmldb_field('timelimit', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, null, null, 0);
 
         // Add fields
         foreach ($fields as $field) {
@@ -409,11 +397,11 @@ function xmldb_minilesson_upgrade($oldversion) {
     if($oldversion < 2023051300){
         // fields to change the notnull definition for] viewstart and viewend
         $table = new xmldb_table(constants::M_TABLE);
-        $fields=[];
-        $fields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,XMLDB_NOTNULL, null, 0);
-        $fields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
-        $DB->set_field(constants::M_TABLE,'viewstart',0,['viewstart'=>null]);
-        $DB->set_field(constants::M_TABLE,'viewend',0,['viewend'=>null]);
+        $fields = [];
+        $fields[] = new xmldb_field('viewstart', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $fields[] = new xmldb_field('viewend', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        $DB->set_field(constants::M_TABLE, 'viewstart', 0, ['viewstart' => null]);
+        $DB->set_field(constants::M_TABLE, 'viewend', 0, ['viewend' => null]);
 
         // Alter fields
         foreach ($fields as $field) {
@@ -422,32 +410,31 @@ function xmldb_minilesson_upgrade($oldversion) {
             }
         }
 
-        //fix up messed up timelimit, if it had wrong null value or was on activity table
+        // fix up messed up timelimit, if it had wrong null value or was on activity table
         $table = new xmldb_table(constants::M_QTABLE);
 
         // Define field item timelimit
-        $field= new xmldb_field('timelimit', XMLDB_TYPE_INTEGER, 10,XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
-        //if its not there add it, if it is there, change the null decl
+        $field = new xmldb_field('timelimit', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
+        // if its not there add it, if it is there, change the null decl
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }else{
-            $DB->set_field(constants::M_QTABLE,'timelimit',0,['timelimit'=>null]);
+            $DB->set_field(constants::M_QTABLE, 'timelimit', 0, ['timelimit' => null]);
             $dbman->change_field_notnull($table, $field);
         }
 
-        //remove field from activity table if it was there (mistake)
+        // remove field from activity table if it was there (mistake)
         $table = new xmldb_table(constants::M_TABLE);
         if ($dbman->field_exists($table, $field)) {
             $dbman->drop_field($table, $field);
         }
 
-
         upgrade_mod_savepoint(true, 2023051300, 'minilesson');
     }
 
     if($oldversion < 2023092600){
-        //The norwegian language-locale code nb-no is not supported by all STT engines in Poodll, and no-no is. So updating
-        $DB->set_field(constants::M_TABLE,'ttslanguage',constants::M_LANG_NONO,['ttslanguage'=>constants::M_LANG_NBNO]);
+        // The norwegian language-locale code nb-no is not supported by all STT engines in Poodll, and no-no is. So updating
+        $DB->set_field(constants::M_TABLE, 'ttslanguage', constants::M_LANG_NONO, ['ttslanguage' => constants::M_LANG_NBNO]);
         upgrade_mod_savepoint(true, 2023092600, 'minilesson');
     }
 
@@ -476,12 +463,12 @@ function xmldb_minilesson_upgrade($oldversion) {
     $newversion = 2024062200;
     if ($oldversion < $newversion) {
         $table = new xmldb_table(constants::M_TABLE);
-        //add finish screen options
-        $fields=[];
-        $fields[] = new xmldb_field('finishscreen', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED,XMLDB_NOTNULL, null, 0);
+        // Add finish screen options.
+        $fields = [];
+        $fields[] = new xmldb_field('finishscreen', XMLDB_TYPE_INTEGER, 10, XMLDB_UNSIGNED, XMLDB_NOTNULL, null, 0);
         $fields[] = new xmldb_field('finishscreencustom', XMLDB_TYPE_TEXT, null, null, null, null);
 
-        // Alter fields
+        // Alter fields.
         foreach ($fields as $field) {
             if (!$dbman->field_exists($table, $field)) {
                 $dbman->add_field($table, $field);
@@ -495,7 +482,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         $table = new xmldb_table(constants::M_TABLE);
 
         // Define fields , csskey,to be added to minilesson.
-        $fields=[];
+        $fields = [];
         $fields[] = new xmldb_field('csskey', XMLDB_TYPE_CHAR, '255', null);
 
         // Add fields
@@ -507,6 +494,18 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120700, 'minilesson');
     }
 
+     // Add showitemreview field to minilesson table.
+    if ($oldversion < 2025010700) {
+        $activitytable = new xmldb_table(constants::M_TABLE);
+        // Define field showitemreview to be added to minilesson.
+        $showitemreview = new xmldb_field('showitemreview', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0');
+
+        // add showitemreview field to minilesson table
+        if (!$dbman->field_exists($activitytable, $showitemreview)) {
+            $dbman->add_field($activitytable, $showitemreview);
+        }
+        upgrade_mod_savepoint(true, 2025010700, 'minilesson');
+    }
 
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;

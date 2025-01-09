@@ -158,4 +158,13 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
         $label, $details, $default, $options));
 
+    // Show item review.
+    $name = 'showitemreview';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_help', constants::M_COMPONENT);
+    $default = 1;
+    $yesnooptions = [1 => get_string('yes'), 0 => get_string('no')];
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, $yesnooptions)); 
+
 }

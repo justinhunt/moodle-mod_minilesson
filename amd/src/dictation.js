@@ -1,4 +1,9 @@
-define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper'], function($, log, def, polly) {
+define(['jquery',
+   'core/log',
+   'mod_minilesson/definitions',
+   'mod_minilesson/pollyhelper',
+   'core/templates'
+  ], function($, log, def, polly, templates) {
   "use strict"; // jshint ;_;
 
   /*
@@ -11,17 +16,38 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
 
     playing: false,
 
-      //for making multiple instances
-      clone: function () {
-          return $.extend(true, {}, this);
-      },
+    //for making multiple instances
+    clone: function () {
+        return $.extend(true, {}, this);
+    },
 
+    init: function(index, itemdata, quizhelper, polly) {
+      var self = this;
+      self.itemdata = itemdata;
+      self.quizhelper = quizhelper;
+      self.index = index;
 
-      init: function(index, itemdata, quizhelper, polly) {
+      self.prepare_audio(itemdata, polly);
+      self.register_events(index, itemdata, quizhelper);
+      self.getItems();
+    },
 
-      this.prepare_audio(itemdata, polly);
-      this.register_events(index, itemdata, quizhelper);
+    getItems: function() {
+      var self = this;
+      var text_items = self.itemdata.sentences;
 
+      self.items = text_items.map(function(target) {
+        return {
+          landr_targetWords: target.sentence.trim().split(self.quizhelper.spliton_regexp).filter(function(e) {
+            return e !== "";
+          }),
+          target: target.sentence,
+          audio: {},
+          correct: false,
+        };
+      }).filter(function(e) {
+        return e.target !== "";
+      });
     },
 
     prepare_html: function(itemdata) {
@@ -34,6 +60,50 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
           $("#" + itemdata.uniqueid + "_container .dictationplayer_" + index + " .dictationtrigger").attr("data-src", audiourl);
         });
       });
+    },
+
+    show_item_review:function(){
+      var self=this;
+      //build review data
+      var review_data = {};
+      review_data.correctitems = $('#' + self.itemdata.uniqueid + '_container .dictate-feedback.fa-check').length;
+      review_data.totalitems = $('#' + self.itemdata.uniqueid + '_container .dictate-feedback').length;
+      var rows = $('#' + self.itemdata.uniqueid + '_container .dictationrow');
+      rows.each(function(index){
+        self.items[index].audio.src = $(this).find('.dictationtrigger').attr('data-src');
+        self.items[index].correct = $(this).find('.dictate-feedback').hasClass('fa-check');
+      });
+      review_data.items = self.items;
+
+
+      //display results
+      var gamebox= $("#" + self.itemdata.uniqueid + "_container .ml_dictation_rows");
+      var resultsbox = $("#" + self.itemdata.uniqueid + "_container .ml_dictation_resultscontainer");
+      templates.render('mod_minilesson/listitemresults',review_data).then(
+        function(html,js){
+            resultsbox.html(html);
+            //show and hide
+            resultsbox.show();
+            gamebox.hide();
+            // Run js for audio player events
+            templates.runTemplateJS(js);
+        }
+      );// End of templates
+    },
+
+    next_question:function(){
+      var self=this;
+      var stepdata = {};
+      var correct = $('#' + self.itemdata.uniqueid + '_container .dictate-feedback.fa-check').length;
+      var total = $('#' + self.itemdata.uniqueid + '_container .dictate-feedback').length;
+      var grade = Math.round(correct / total, 2) * 100;
+      stepdata.index = self.index;
+      stepdata.hasgrade = true;
+      stepdata.grade = grade;
+      stepdata.totalitems=total;
+      stepdata.correctitems=correct;
+      stepdata.grade = grade;
+      self.quizhelper.do_next(stepdata);
     },
 
     register_events: function(qindex, itemdata, quizhelper) {
@@ -82,17 +152,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
 
       //When click next button , report and leave it up to parent to eal with it.
       $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
-        var stepdata = {};
-        var correct = $('#' + itemdata.uniqueid + '_container .dictate-feedback.fa-check').length;
-        var total = $('#' + itemdata.uniqueid + '_container .dictate-feedback').length;
-        var grade = Math.round(correct / total, 2) * 100;
-        stepdata.index = qindex;
-        stepdata.hasgrade = true;
-        stepdata.grade = grade;
-        stepdata.totalitems=total;
-        stepdata.correctitems=correct;
-        stepdata.grade = grade;
-        quizhelper.do_next(stepdata);
+        var dictationcontainer = $("#" + self.itemdata.uniqueid + "_container .ml_dictation_rows");
+        if(self.quizhelper.showitemreview && dictationcontainer.is(':visible')){
+          self.show_item_review();
+        }else{
+          self.next_question();
+        }
       });
     }
   }; //end of return value

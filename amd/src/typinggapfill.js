@@ -4,7 +4,8 @@ define(['jquery',
     'mod_minilesson/definitions',
     'mod_minilesson/animatecss',
     'mod_minilesson/progresstimer',
-], function($, log, ajax, def, anim, progresstimer) {
+    'core/templates'
+], function($, log, ajax, def, anim, progresstimer, templates) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson typing gap fill: initialising');
@@ -44,6 +45,38 @@ define(['jquery',
             self.quizhelper.do_next(stepdata);
         },
 
+        show_item_review:function(){
+            var self=this;
+            var review_data = {};
+            review_data.items = self.items;
+            review_data.totalitems=self.items.length;
+            review_data.correctitems=self.items.filter(function(e) {return e.correct;}).length;
+
+            //Get controls
+            var listencont = $("#" + self.itemdata.uniqueid + "_container .tgapfill_listen_cont");
+            var qbox = $("#" + self.itemdata.uniqueid + "_container .question");
+            //var recorderbox = $("#" + self.itemdata.uniqueid + "_container .tgapfill_speakbtncontainer");
+            var gamebox = $("#" + self.itemdata.uniqueid + "_container .tgapfill_game");
+            var controlsbox = $("#" + self.itemdata.uniqueid + "_container .tgapfill_controls");
+            var resultsbox = $("#" + self.itemdata.uniqueid + "_container .tgapfill_resultscontainer");
+
+            //display results
+            templates.render('mod_minilesson/listitemresults',review_data).then(
+              function(html,js){
+                  resultsbox.html(html);
+                  //show and hide
+                  resultsbox.show();
+                  gamebox.hide();
+                  controlsbox.hide();
+                  listencont.hide();
+                  qbox.hide();
+                  //recorderbox.hide();
+                  // Run js for audio player events
+                  templates.runTemplateJS(js);
+              }
+            );// End of templates
+        },
+
         register_events: function() {
 
             var self = this;
@@ -63,12 +96,15 @@ define(['jquery',
                 $(this).prop("disabled", true);
                 $("#" + self.itemdata.uniqueid + "_container .tgapfill_check_btn").prop("disabled", true);
                 self.stopTimer(self.items[self.game.pointer].timer);
+
+                //mark as answered and incorrect
+                self.items[self.game.pointer].answered = true;
+                self.items[self.game.pointer].correct = false;
+
                 // Move on after short time, to next prompt, or next question.
                 if (self.game.pointer < self.items.length - 1) {
                     setTimeout(function() {
                         $(".tgapfill_reply_" + self.game.pointer).hide();
-                        self.items[self.game.pointer].answered = true;
-                        self.items[self.game.pointer].correct = false;
                         self.game.pointer++;
                         self.nextPrompt();
                     }, 2000);
@@ -215,9 +251,17 @@ define(['jquery',
         end: function() {
             var self = this;
             $(".minilesson_nextbutton").prop("disabled", true);
+
+            //progress dots are updated on next_item. The last item has no next item, so we update from here
+            self.updateProgressDots();
+
             setTimeout(function() {
-                $(".minilesson_nextbutton").prop("disabled", false);
-                self.next_question();
+                $(".minilesson_nextbutton").prop("disabled",false);
+                if(self.quizhelper.showitemreview){
+                    self.show_item_review();
+                }else{
+                    self.next_question();
+                }
             }, 2000);
         },
 
@@ -249,21 +293,24 @@ define(['jquery',
 
             $(".tgapfill_ctrl-btn").prop("disabled", false);
 
-            var color;
-
-            var progress = self.items.map(function(item, idx) {
-                color = "gray";
-                if (self.items[idx].answered && self.items[idx].correct) {
-                    color = "green";
-                } else if (self.items[idx].answered && !self.items[idx].correct) {
-                    color = "red";
-                }
-                return "<i style='color:" + color + "' class='fa fa-circle'></i>";
-            }).join(" ");
-
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_title").html(progress);
+            self.updateProgressDots();
 
             self.nextReply();
+        },
+
+        updateProgressDots: function() {
+            var self = this;
+            var color;
+            var progress = self.items.map(function(item, idx) {
+              color = "gray";
+              if (self.items[idx].answered && self.items[idx].correct) {
+                color = "green";
+              } else if (self.items[idx].answered && !self.items[idx].correct) {
+                color = "red";
+              }
+              return "<i style='color:" + color + "' class='fa fa-circle'></i>";
+            }).join(" ");
+            $("#" + self.itemdata.uniqueid + "_container .tgapfill_title").html(progress);
         },
 
         nextReply: function() {
