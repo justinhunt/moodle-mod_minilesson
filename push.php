@@ -68,22 +68,24 @@ $cloneconditions = [];
 switch($scope){
     case PUSHMODE_MODULENAME:
         $cloneconditions['name'] = $moduleinstance->name;
-        $scopedescription = get_string('pushpage_scopemodule', constants::M_COMPONENT, $moduleinstance->name);
         break;
     case PUSHMODE_COURSE:
-        $cloneconditions['course'] = $moduleinstance->name;
-        $scopedescription = get_string('pushpage_scopecourse', constants::M_COMPONENT, $course->fullname);
+        $cloneconditions['course'] = $moduleinstance->course;
         break;
     case PUSHMODE_SITE:
-        $scopedescription = get_string('pushpage_scopesite', constants::M_COMPONENT);
+        // There are no conditions for a site wide push.
         break;
     default:
         // We should never get here, nor should we push anything if we do.
         $cloneconditions['id'] = 0;
-        $scopedescription = get_string('pushpage_scopenone', constants::M_COMPONENT);
         break;
 }
-$clonecount = $DB->count_records(constants::M_TABLE, $cloneconditions);
+
+$whereclause = ' NOT id = ' . $moduleinstance->id;
+foreach ($cloneconditions as $key => $value) {
+    $whereclause .= " AND $key = '$value'";
+}
+$clonecount = $DB->count_records_select(constants::M_TABLE, $whereclause);
 
 switch($action){
     case constants::M_PUSH_TRANSCRIBER:
@@ -106,9 +108,9 @@ switch($action){
 // Do the DB updates and then refresh.
 if ($updatefields && count($updatefields) > 0) {
     foreach ($updatefields as $thefield) {
-        $DB->set_field(constants::M_TABLE, $thefield, $moduleinstance->{$thefield}, $cloneconditions);
+        $DB->set_field_select(constants::M_TABLE, $thefield, $moduleinstance->{$thefield}, $whereclause);
     }
-    redirect($PAGE->url, get_string('pushpage_done', constants::M_COMPONENT,$clonecount), 10);
+    redirect($PAGE->url, get_string('pushpage_done', constants::M_COMPONENT, $clonecount), 10);
 }
 
 // Set up the page header.
@@ -121,11 +123,10 @@ $mode = "push";
 
 // This puts all our display logic into the renderer.php files in this plugin.
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
-echo $renderer->header($moduleinstance,$cm);
+echo $renderer->header($moduleinstance ,$cm);
 echo $renderer->heading($pagetitle);
 
 echo html_writer::div(get_string('pushpage_explanation', constants::M_COMPONENT), constants::M_COMPONENT . '_pushpageexplanation');
-echo html_writer::div($scopedescription, constants::M_COMPONENT . '_pushpageexplanation');
 
 //scope selector
 $scopeopts = [
@@ -134,15 +135,15 @@ $scopeopts = [
     PUSHMODE_SITE => get_string('pushpage_scopesite', constants::M_COMPONENT),
     PUSHMODE_NONE => get_string('pushpage_scopenone', constants::M_COMPONENT),
 ];
-$scopeselector = new \single_select($PAGE->url,'scope', $scopeopts, $scope);
+$scopeselector = new \single_select($PAGE->url, 'scope', $scopeopts, $scope);
 $scopeselector->set_label(get_string('scopeselector', constants::M_COMPONENT));
 echo $renderer->render($scopeselector);
 
 if ($clonecount > 0) {
-    echo html_writer::div(get_string('pushpage_clonecount', constants::M_COMPONENT, $clonecount), constants::M_COMPONENT . '_clonecount');
-    echo $renderer->push_buttons_menu($cm);
+    echo html_writer::div(get_string('pushpage_clonecount', constants::M_COMPONENT, $clonecount), constants::M_COMPONENT . '_clonecount' . ' mb-2');
+    echo $renderer->push_buttons_menu($cm, $clonecount);
 } else {
-    echo get_string('pushpage_noclones', constants::M_COMPONENT);
+    echo html_writer::div(get_string('pushpage_noclones', constants::M_COMPONENT, $clonecount), constants::M_COMPONENT . '_clonecount' . ' mb-2');
 }
 
 echo $renderer->footer();

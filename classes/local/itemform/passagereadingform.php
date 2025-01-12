@@ -38,7 +38,7 @@ class passagereadingform extends baseform {
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
         $mform->setDefault(constants::TOTALMARKS, 5);
         $this->add_static_text('passagereadingtotalmarks_instructions', '', get_string('pr_totalmarks_instructions', constants::M_COMPONENT));
-        $this->add_textarearesponse(constants::ALTERNATES, get_string('alternates', constants::M_COMPONENT), true);
+        $this->add_textarearesponse(constants::ALTERNATES, get_string('alternates', constants::M_COMPONENT), false);
         $this->add_static_text('alternates_instructions', '', get_string('pr_alternates_instructions', constants::M_COMPONENT));
     }
 }

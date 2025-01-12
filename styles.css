@@ -1812,6 +1812,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .minilesson_actionbutton {
   margin: 5px;
   padding: 5px;
+  text-align: center;
 }
 
 .minilesson_dictate_player_box .dictate_loaded,
@@ -2964,4 +2965,8 @@ overflow: auto;
 .ml_listitem_results_header h3 {
   text-align: center;
   padding-top: 7px;
+}
+.minilesson_resultspanel_swish {
+  text-align: center;
+  font-size: x-large;
 }
