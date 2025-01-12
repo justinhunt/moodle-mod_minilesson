@@ -148,6 +148,14 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/enablesetuptab',
             get_string('enablesetuptab', constants::M_COMPONENT), get_string('enablesetuptab_details',constants::M_COMPONENT), 0));
 
+    // Show item review.
+    $name = 'showitemreview';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_help', constants::M_COMPONENT);
+    $default = 1;
+    $yesnooptions = [1 => get_string('yes'), 0 => get_string('no')];
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, $yesnooptions));
 
     // Finish Screen Options
     $name = 'finishscreen';
@@ -158,13 +166,27 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
         $label, $details, $default, $options));
 
-    // Show item review.
-    $name = 'showitemreview';
+    //Default custom Finish Screen
+    $name = 'finishscreencustom';
     $label = get_string($name, constants::M_COMPONENT);
-    $details = get_string($name . '_help', constants::M_COMPONENT);
-    $default = 1;
-    $yesnooptions = [1 => get_string('yes'), 0 => get_string('no')];
-    $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, $yesnooptions)); 
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    //The default custom finish screen ... a section with title, grade, stars and a try again button
+    $default = '{{total}} %<br />
+ {{#yellowstars}}<i class="fa fa-star"></i>{{/yellowstars}}{{#graystars}}<i class="fa fa-star-o"></i>{{/graystars}} <br />
+<div class="container">
+  {{#results}}
+  <div class="row">
+    <div class="col-sm">{{title}}</div>
+    <div class="col-sm">{{grade}}%</div>
+    <div class="col-sm"> {{#yellowstars}}<i class="fa fa-star"></i>{{/yellowstars}} {{#graystars}}<i class="fa fa-star-o"></i>{{/graystars}} <br /></div>
+  </div>
+{{/results}}
+</div>
+ <a class ="btn btn-secondary" href="{{reattempturl}}">{{#str}} tryagain, mod_minilesson {{/str}}</a> <br />';
+
+    $settings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, PARAM_RAW));
+
+
 
 }

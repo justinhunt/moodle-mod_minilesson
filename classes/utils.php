@@ -1616,6 +1616,7 @@ class utils {
         $mform->addHelpButton('finishscreencustom', 'finishscreencustom', constants::M_COMPONENT);
         $mform->setType('finishscreencustom', PARAM_RAW);
         $mform->HideIf('finishscreencustom', 'finishscreen', 'neq', constants::FINISHSCREEN_CUSTOM);
+        $mform->setDefault('finishscreencustom', $config->finishscreencustom);
 
         // activity opens closes
         $name = 'activityopenscloses';

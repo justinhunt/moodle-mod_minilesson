@@ -403,9 +403,13 @@ const M_GOOGLE_FONTS = ["Andika"];
 const M_ST_SRC_RECORD=1;
 const M_ST_SRC_UPLOAD=2;
 const M_ST_SRC_STT=3;
-
+// Finish screen options.
 const FINISHSCREEN_SIMPLE=1;
 const FINISHSCREEN_FULL=0;
 const FINISHSCREEN_CUSTOM=2;
+// Push Options.
+const M_PUSH_TRANSCRIBER = 1;
+const M_PUSH_SHOWITEMREVIEW = 2;
+const M_PUSH_MAXATTEMPTS = 4;
 
 }

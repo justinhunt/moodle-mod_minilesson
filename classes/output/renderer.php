@@ -684,4 +684,29 @@ class renderer extends \plugin_renderer_base {
         $ret = $this->output->render_from_template( constants::M_COMPONENT . '/openclosedates', $tdata);
         return $ret;
     }
+
+    public function push_buttons_menu($cm){
+        $templateitems=[];
+        $pushthings = ['maxattempts', 'transcriber', 'showitemreview'];
+
+        foreach($pushthings as $pushthing){
+            switch($pushthing){
+                case 'transcriber': $action=constants::M_PUSH_TRANSCRIBER;break;
+                case 'showimageflip': $action=constants::M_PUSH_SHOWITEMREVIEW;break;
+                case 'maxattempts': $action=constants::M_PUSH_MAXATTEMPTS;break;
+
+            }
+            $templateitems[] = ['title'=>get_string($pushthing, constants::M_COMPONENT),
+                'description'=>get_string($pushthing . '_details', constants::M_COMPONENT),
+                'content'=>$this->output->single_button(new \moodle_url( constants::M_URL . '/push.php',
+                    array('id'=>$cm->id,'action'=>$action)),get_string($pushthing,constants::M_COMPONENT))];
+        }
+
+        //Generate and return menu
+        $ret = $this->output->render_from_template( constants::M_COMPONENT . '/manybuttonsmenu', ['items'=>$templateitems]);
+
+        return $ret;
+
+    }
+
 }

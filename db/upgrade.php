@@ -495,7 +495,7 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
      // Add showitemreview field to minilesson table.
-    if ($oldversion < 2025010700) {
+    if ($oldversion < 2025010702) {
         $activitytable = new xmldb_table(constants::M_TABLE);
         // Define field showitemreview to be added to minilesson.
         $showitemreview = new xmldb_field('showitemreview', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0');
@@ -504,7 +504,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         if (!$dbman->field_exists($activitytable, $showitemreview)) {
             $dbman->add_field($activitytable, $showitemreview);
         }
-        upgrade_mod_savepoint(true, 2025010700, 'minilesson');
+        upgrade_mod_savepoint(true, 2025010702, 'minilesson');
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.

@@ -1114,7 +1114,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .minilesson_nextbutton {
-  float: right;
+  /* float: right; */
 }
 
 .minilesson_questionheader {
@@ -2643,7 +2643,7 @@ body.poodll-minilesson-embed #page {
 }
 
 /* Button Quiz */
-minilesson_bq_resultbox {
+.minilesson_bq_resultbox {
   float: right;
   padding-left: 8px;
 }
