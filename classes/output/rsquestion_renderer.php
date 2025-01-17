@@ -54,12 +54,12 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $qtypes[]=constants::TYPE_SGAPFILL;
         $qtypes[]=constants::TYPE_SPACEGAME;
         $qtypes[]=constants::TYPE_FREESPEAKING;
+        $qtypes[]=constants::TYPE_FREEWRITING;
         $qtypes[]=constants::TYPE_PASSAGEREADING;
         if (isset($CFG->minilesson_experimental) &&$CFG->minilesson_experimental) {
             $qtypes[]=constants::TYPE_SMARTFRAME;
             $qtypes[]=constants::TYPE_COMPQUIZ;
             $qtypes[]=constants::TYPE_BUTTONQUIZ;
-            $qtypes[]=constants::TYPE_FREEWRITING;
             $qtypes[]=constants::TYPE_FLUENCY;
             $qtypes[]=constants::TYPE_CONVERSATION;
         }
