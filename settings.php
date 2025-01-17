@@ -145,6 +145,11 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/prompttype',
             get_string('prompttype', constants::M_COMPONENT), '', constants::M_PROMPT_SEPARATE, $promptstyle));
 
+
+    $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/enablepushtab',
+        get_string('enablepushtab', constants::M_COMPONENT), get_string('enablepushtab_details',constants::M_COMPONENT), 0));
+
+
     $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/enablesetuptab',
             get_string('enablesetuptab', constants::M_COMPONENT), get_string('enablesetuptab_details',constants::M_COMPONENT), 0));
 

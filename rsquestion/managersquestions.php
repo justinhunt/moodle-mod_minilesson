@@ -288,5 +288,10 @@ if ($edit) {
 	$renderer = $PAGE->get_renderer('mod_minilesson');
 	$mode='rsquestions';
 	echo $renderer->header($minilesson, $cm,$mode, null, get_string('edit', constants::M_COMPONENT));
-	$mform->display();
+	if($edit){
+        echo $renderer->heading(get_string('editingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
+    }else{
+        echo $renderer->heading(get_string('addingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
+    }
+    $mform->display();
 	echo $renderer->footer();

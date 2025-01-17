@@ -50,18 +50,21 @@ if ($id) {
     $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
 } else {
-    print_error('You must specify a course_module ID or an instance ID');
+    throw new moodle_exception('You must specify a course_module ID or an instance ID', constants::M_COMPONENT);
 }
 
 $PAGE->set_url(constants::M_URL . '/push.php', ['id' => $cm->id,'scope'=>$scope]);
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
-require_capability('mod/minilesson:manage', $modulecontext);
 require_capability('mod/minilesson:push', $modulecontext);
 
 // Get an admin settings.
 $config = get_config(constants::M_COMPONENT);
+
+if(!$config->enablepushtab){
+    throw new moodle_exception('The Push Tab is not enabled. This must be enabled in the minilesson admin settings.', constants::M_COMPONENT);
+}
 
 // Fetch the likely number of affected records.
 $cloneconditions = [];
@@ -119,11 +122,12 @@ $PAGE->set_title(format_string($moduleinstance->name. ' ' . $pagetitle ));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 $PAGE->set_pagelayout('incourse');
-$mode = "push";
+
 
 // This puts all our display logic into the renderer.php files in this plugin.
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
-echo $renderer->header($moduleinstance ,$cm);
+$mode = "push";
+echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('push', constants::M_COMPONENT));
 echo $renderer->heading($pagetitle);
 
 echo html_writer::div(get_string('pushpage_explanation', constants::M_COMPONENT), constants::M_COMPONENT . '_pushpageexplanation');

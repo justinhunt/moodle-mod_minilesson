@@ -1,3 +1,9 @@
+Version 1.0.75 (Build 2025010702)
+- Added a new item type "Passage Reading"
+- Added a new item type "Free Speaking"
+- Added a "push" feature for admins to clone specific settings to other instances
+- Added item review feature so that students can review their responses immediately after submission
+
 Version 1.0.74 (Build 2024120700)
 - Added a custom CSS key to the minilesson
 
