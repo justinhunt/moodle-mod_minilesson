@@ -50,6 +50,7 @@ class item_freewriting extends item {
         $testitem->totalmarks = $this->itemrecord->{constants::TOTALMARKS};
         if ($this->itemrecord->{constants::TARGETWORDCOUNT} > 0) {
             $testitem->targetwordcount = $this->itemrecord->{constants::TARGETWORDCOUNT};
+            $testitem->textarearows = round($this->itemrecord->{constants::TARGETWORDCOUNT} / 10, 0) + 1;
             $testitem->countwords = true;
         }
 

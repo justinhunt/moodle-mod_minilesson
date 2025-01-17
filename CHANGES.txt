@@ -1,3 +1,7 @@
+Version 1.0.76 (Build 2025011700)
+- Added a free writing response type
+- Fixed the display of questions with titles
+
 Version 1.0.75 (Build 2025010702)
 - Added a new item type "Passage Reading"
 - Added a new item type "Free Speaking"
