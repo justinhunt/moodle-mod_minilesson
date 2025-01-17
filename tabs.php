@@ -68,7 +68,7 @@ if(has_capability('mod/minilesson:manage',$context)) {
         get_string('import', constants::M_COMPONENT), get_string('import', constants::M_COMPONENT));
 }
 
-if(has_capability('mod/minilesson:push',$context)) {
+if(has_capability('mod/minilesson:push',$context) && $config->enablepushtab) {
     $row[] = new tabobject('push', "$CFG->wwwroot/mod/minilesson/push.php?id=$cm->id",
         get_string('push', constants::M_COMPONENT), get_string('push', constants::M_COMPONENT));
 }
