@@ -1,5 +1,5 @@
-define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/correctionsmarkup', 'core/templates'],
-    function($, log, def,  correctionsmarkup, templates) {
+define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/definitions', 'mod_minilesson/correctionsmarkup', 'core/templates'],
+    function($, log,  str, notification, def,  correctionsmarkup, templates) {
   "use strict"; // jshint ;_;
 
   /*
@@ -13,6 +13,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/corr
         transcript_evaluation: null,
         rawscore: 0,
         percentscore: 0,
+        strings: {},
 
         //for making multiple instances
         clone: function () {
@@ -23,9 +24,26 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/corr
           this.itemdata = itemdata;
           log.debug('itemdata',itemdata);
           this.quizhelper = quizhelper;
+          this.init_strings();
           this.init_components(quizhelper,itemdata);
           this.register_events(index, itemdata, quizhelper);
 
+        },
+
+        init_strings: function(){
+          var self = this;
+          str.get_strings([
+            { "key": "notsubmitted", "component": 'mod_minilesson'},
+            { "key": "notsubmit", "component": 'mod_minilesson'},
+            { "key": "submitnow", "component": 'mod_minilesson'},
+            { "key": "cancel", "component": 'mod_minilesson'},
+          ]).done(function (s) {
+            var i = 0;
+            self.strings.notsubmitted = s[i++];
+            self.strings.notsubmit = s[i++];
+            self.strings.submitnow = s[i++];
+            self.strings.cancel = s[i++];
+          });
         },
 
         next_question: function() {
@@ -36,6 +54,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/corr
           stepdata.totalitems = self.itemdata.totalmarks;
           stepdata.correctitems = self.rawscore > 0 ? self.rawscore : 0;
           stepdata.grade = self.percentscore;
+          stepdata.resultsdata = self.transcript_evaluation;
           self.quizhelper.do_next(stepdata);
         },
 
@@ -71,7 +90,19 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/corr
           self.quizhelper = quizhelper;
 
           self.nextbutton.on('click', function(e) {
-            self.next_question();
+            e.preventDefault();
+            var wordcount = self.quizhelper.count_words(self.thetextarea.val());
+            var submitted = self.transcript_evaluation !== null;
+            if(submitted || wordcount === 0 ) {
+              self.next_question();
+            }else{
+              notification.confirm(self.strings.notsubmit,
+                  self.strings.notsubmitted,
+                  self.strings.submitnow,'',
+                  function(){
+                    self.submitbutton.click();
+                  });
+            }
           });
 
           self.thetextarea.on('input', function(e) {
@@ -108,7 +139,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/corr
         do_corrections_markup: function(grammarerrors,grammarmatches,insertioncount) {
           var self = this;
           //corrected text container is created at runtime, so it wont exist at init_components time
-          //thats we find it here
+          //that's why we find it here
           var correctionscontainer = self.resultsbox.find('.mlfsr_correctedtext');
 
           correctionsmarkup.init({ "correctionscontainer": correctionscontainer,

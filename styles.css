@@ -2979,3 +2979,7 @@ textarea.ml_freewriting_textarea {
 .ml_freewriting_actionbox {
   text-align: center;
 }
+.ml_qf_itemresults {
+  max-width: 80%;
+  margin: auto;
+}

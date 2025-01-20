@@ -61,7 +61,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
           stepdata.correctitems = self.totals.correct;
         }
       }
+
       stepdata.grade = percent;
+      stepdata.resultsdata = self.totals;
       this.quizhelper.do_next(stepdata);
     },
 
@@ -169,72 +171,20 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
     gotComparison: function(comparison, typed) {
       var self = this;
       log.debug("gotComparison");
-
-      //Reset all words css
-      self.allwords.removeClass("pr_correct pr_incorrect pr_unreached");
-      self.allspaces.removeClass("pr_correct pr_incorrect pr_unreached");
-
-      //how many correct
-      var allCorrect = comparison.filter(function(e){return !e.matched;}).length==0;
-      
-      //mark up the words as correct or not
-      if (allCorrect && comparison && comparison.length > 0) {
-
-        log.debug("gotComparison: all correct");
-        self.allwords.addClass("pr_correct");
-        self.allspaces.addClass("pr_correct");
-
-      } else {
-        log.debug("gotComparison: not all correct");
-        var lastmatched = 0;
-        comparison.forEach(function(obj) {
-          var theword = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word[data-wordnumber='" + obj.wordnumber + "']");
-          var thespace = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_space[data-wordnumber='" + obj.wordnumber + "']");
-          if(!obj.matched){
-            theword.addClass("pr_incorrect");
-            thespace.addClass("pr_incorrect");
-          } else {
-            theword.addClass("pr_correct");
-            thespace.addClass("pr_correct");
-            if(lastmatched < obj.wordnumber){
-              lastmatched = obj.wordnumber;
-            }
-          }
-        });
-
-        //2nd pass now we know what each word is
-        comparison.forEach(function(obj) {
-          var theword = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word[data-wordnumber='" + obj.wordnumber + "']");
-          var thespace = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_space[data-wordnumber='" + obj.wordnumber + "']");
-          var nextword = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word[data-wordnumber='" + (obj.wordnumber + 1) + "']");
-          //mark incorrect as unreached if after last match
-          if(lastmatched < obj.wordnumber && theword.hasClass('pr_incorrect')){
-            theword.addClass("pr_unreached");
-            thespace.addClass("pr_unreached");
-            theword.removeClass("pr_incorrect");
-            thespace.removeClass("pr_incorrect");
-          }
-          //clear formatting on spaces in between correct/incorrect and incorrect/correct words
-          if(nextword.length>0){
-            if(theword.hasClass('pr_incorrect') && nextword.hasClass('pr_correct')){
-              thespace.removeClass('pr_incorrect');
-            }else if(theword.hasClass('pr_correct') && nextword.hasClass('pr_incorrect')){
-              thespace.removeClass('pr_correct');
-            }
-          }
-        });
-      }
+      var containerid = self.itemdata.uniqueid + "_container";
+      self.doComparisonMarkup(comparison, containerid);
 
       //update our scores
-      var correctwords = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word.pr_correct");
-      var incorrectwords = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word.pr_incorrect");
-      var unreachedwords = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_word.pr_unreached");
+      var correctwords = $("#" + containerid + " .mod_minilesson_mu_passage_word.pr_correct");
+      var incorrectwords = $("#" + containerid + " .mod_minilesson_mu_passage_word.pr_incorrect");
+      var unreachedwords = $("#" + containerid + " .mod_minilesson_mu_passage_word.pr_unreached");
       self.totals.correct = correctwords.length;
       self.totals.incorrect = incorrectwords.length;
       self.totals.unreached = unreachedwords.length;
       self.totals.read = incorrectwords.length + correctwords.length;
       self.totals.accuracy = Math.round((self.totals.correct / self.totals.read) * 100);
       self.totals.score = Math.round((self.totals.correct /self.allwords.length) * 100);
+      self.totals.comparison = comparison;
       log.debug(("total correct", self.totals.correct));
       log.debug(("allwords", self.allwords.length));
 
@@ -257,6 +207,68 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
           }, 2200);
         }
     },
+
+  doComparisonMarkup: function(comparison, containerid){
+      var allwords = $("#" + containerid + " .mod_minilesson_mu_passage_word");
+      var allspaces = $("#" + + containerid + "  .mod_minilesson_mu_passage_space");;
+
+      //Reset all words css
+      allwords.removeClass("pr_correct pr_incorrect pr_unreached");
+      allspaces.removeClass("pr_correct pr_incorrect pr_unreached");
+
+      //how many correct
+      var allCorrect = comparison.filter(function(e){return !e.matched;}).length==0;
+
+      //mark up the words as correct or not
+      if (allCorrect && comparison && comparison.length > 0) {
+
+          log.debug("gotComparison: all correct");
+          allwords.addClass("pr_correct");
+          allspaces.addClass("pr_correct");
+
+      } else {
+          log.debug("gotComparison: not all correct");
+          var lastmatched = 0;
+          comparison.forEach(function(obj) {
+              var theword = $("#" + containerid + "  .mod_minilesson_mu_passage_word[data-wordnumber='" + obj.wordnumber + "']");
+              var thespace = $("#" + containerid + "  .mod_minilesson_mu_passage_space[data-wordnumber='" + obj.wordnumber + "']");
+
+              if(!obj.matched){
+                  theword.addClass("pr_incorrect");
+                  thespace.addClass("pr_incorrect");
+              } else {
+                  theword.addClass("pr_correct");
+                  thespace.addClass("pr_correct");
+                  if(lastmatched < obj.wordnumber){
+                      lastmatched = obj.wordnumber;
+                  }
+              }
+          });
+
+          //2nd pass now we know what each word is
+          comparison.forEach(function(obj) {
+              var theword = $("#" + containerid + "  .mod_minilesson_mu_passage_word[data-wordnumber='" + obj.wordnumber + "']");
+              var thespace = $("#" + containerid + "  .mod_minilesson_mu_passage_space[data-wordnumber='" + obj.wordnumber + "']");
+              var nextword = $("#" + containerid + "  .mod_minilesson_mu_passage_word[data-wordnumber='" + (obj.wordnumber + 1) + "']");
+              //mark incorrect as unreached if after last match
+              if(lastmatched < obj.wordnumber && theword.hasClass('pr_incorrect')){
+                  theword.addClass("pr_unreached");
+                  thespace.addClass("pr_unreached");
+                  theword.removeClass("pr_incorrect");
+                  thespace.removeClass("pr_incorrect");
+              }
+              //clear formatting on spaces in between correct/incorrect and incorrect/correct words
+              if(nextword.length>0){
+                  if(theword.hasClass('pr_incorrect') && nextword.hasClass('pr_correct')){
+                      thespace.removeClass('pr_incorrect');
+                  }else if(theword.hasClass('pr_correct') && nextword.hasClass('pr_incorrect')){
+                      thespace.removeClass('pr_correct');
+                  }
+              }
+          });
+      }
+
+  }
 
   };//end of return objects
   return app;

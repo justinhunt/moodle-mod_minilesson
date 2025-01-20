@@ -215,11 +215,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
          // log.debug("reporting step grade");
         dd.report_step_grade(stepdata);
          // log.debug("reported step grade");
-        //hide current question
-        var theoldquestion = $("#" + currentitem.uniqueid + "_container");
-        theoldquestion.hide();
+
         //show next question or End Screen
         if (dd.quizdata.length > currentquizdataindex+1) {
+          // we want to hide current question - before show new one
+          var theoldquestion = $("#" + currentitem.uniqueid + "_container");
+          theoldquestion.hide();
+
           var nextindex = currentquizdataindex+ 1;
           var nextitem = this.quizdata[nextindex];
             //show the question
@@ -260,7 +262,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
             setTimeout(function () {
                // log.debug("forwarding to finished page");
                 window.location.href=dd.activityurl;
-            }, 200);
+            }, 500);
 
           return;
 

@@ -1,4 +1,7 @@
-define(['jquery', 'core/log','core/modal_factory','core/str','core/modal_events','mod_minilesson/definitions' ], function($, log,ModalFactory, str, ModalEvents, def) {
+define(['jquery', 'core/log','core/modal_factory','core/str','core/modal_events',
+        'mod_minilesson/definitions','core/templates', 'mod_minilesson/correctionsmarkup',
+        'mod_minilesson/passagereading'],
+    function($, log,ModalFactory, str, ModalEvents, def, templates, correctionsmarkup, passagereading) {
   "use strict"; // jshint ;_;
 
   /*
@@ -49,8 +52,47 @@ define(['jquery', 'core/log','core/modal_factory','core/str','core/modal_events'
                 });
                 modal.show();
             });
-      }
-        );
+      });
+
+      $('body').on('click','.mod_minilesson_finishedanswerdetailslink',function(e) {
+          e.preventDefault();
+          var type = $(this).data('type');
+          var resultstemplate = $(this).data('resultstemplate');
+          var resultsdata = $(this).data('resultsdata');
+          var thetarget = $(this).data('target');
+          if(thetarget === undefined){return;}
+          var resultsbox = $('#' + thetarget);
+          if(resultsbox === undefined){return;}
+          if(resultsbox.is(':visible')){
+              resultsbox.hide();
+              return;
+          }
+          if(!resultsbox.is(':visible') && resultsbox.html().length > 0){
+              resultsbox.show();
+              return;
+          }
+          //otherwise load the results and show the box
+          templates.render('mod_minilesson/' + resultstemplate,resultsdata).then(
+              function(html,js){
+                  resultsbox.html(html);
+                  //do corrections markup .. if we have them
+                  if(resultsdata.hasOwnProperty('grammarerrors')){
+                      correctionsmarkup.init({ "correctionscontainer": resultsbox,
+                          "grammarerrors": resultsdata.grammarerrors,
+                          "grammarmatches": resultsdata.grammarmatches,
+                          "insertioncount": resultsdata.insertioncount});
+                  }
+                  //do passage results
+                  if(resultsdata.hasOwnProperty('unreached')){
+                      passagereading.doComparisonMarkup(resultsdata.comparison,thetarget);
+                  }
+
+                  //show and hide
+                  resultsbox.show();
+                  templates.runTemplateJS(js);
+              }
+          );// End of templates
+      });
     },
 
     init_strings: function(){

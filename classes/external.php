@@ -171,7 +171,7 @@ class mod_minilesson_external extends external_api {
     public static function report_step_grade_parameters() {
         return new external_function_parameters([
                 'cmid' => new external_value(PARAM_INT),
-                'step' => new external_value(PARAM_TEXT),
+                'step' => new external_value(PARAM_RAW),
         ]);
     }
 

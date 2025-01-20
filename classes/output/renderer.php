@@ -288,9 +288,11 @@ class renderer extends \plugin_renderer_base {
                 constants::TEXTQUESTION_FILEAREA, $items->id);
             $itemtext = format_text($itemtext, FORMAT_MOODLE, ['context' => $context]);
             $result->questext = $itemtext;
+            $result->itemtype = $quizdata[$result->index]->type;
+            $result->resultstemplate =  $result->itemtype .'results';
 
             // Correct answer.
-            switch($quizdata[$result->index]->type ){
+            switch($result->itemtype){
                 case constants::TYPE_DICTATION:
                 case constants::TYPE_DICTATIONCHAT:
                 case constants::TYPE_LISTENREPEAT:
@@ -300,15 +302,18 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_TGAPFILL:
                 case constants::TYPE_SGAPFILL:
                 case constants::TYPE_FLUENCY:
-
+                    $result->hascorrectanswer = true;
                     $result->correctans = $quizdata[$result->index]->sentences;
+                    $result->hasanswerdetails = false;
                     break;
 
                 case constants::TYPE_MULTIAUDIO:
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_COMPQUIZ:
                 case constants::TYPE_BUTTONQUIZ:
+                    $result->hascorrectanswer = true;
                     $result->hasincorrectanswer = true;
+                    $result->hasanswerdetails = false;
                     $correctanswers = [];
                     $incorrectanswers = [];
                     $correctindex = $quizdata[$result->index]->correctanswer;
@@ -325,12 +330,32 @@ class renderer extends \plugin_renderer_base {
                     $result->incorrectans = $incorrectanswers;
                     break;
 
+                case constants::TYPE_PASSAGEREADING:
+                case constants::TYPE_FREEWRITING:
+                case constants::TYPE_FREESPEAKING:
+                    $result->hascorrectanswer = false;
+                    $result->hasincorrectanswer = false;
+                    if(isset($result->resultsdata)) {
+                        $result->hasanswerdetails = true;
+                        //the free writing and reading both need to be told to show no reattempt button
+                        $result->resultsdata->noreattempt = true;
+                        //passage reading needs the marked up HTML passage
+                        if($result->itemtype == constants::TYPE_PASSAGEREADING){
+                            $result->resultstemplate = 'passagereadingreviewresults';
+                            $result->resultsdata->passagehtml = \mod_minilesson\aitranscriptutils::render_passage($items->{constants::READINGPASSAGE});
+                        }
+
+                        $result->resultsdatajson = json_encode($result->resultsdata, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    }else{
+                        $result->hasanswerdetails = false;
+                    }
+                    break;
                 case constants::TYPE_CONVERSATION:  // TO DO how to handle this?
-                case constants::TYPE_PASSAGEREADING: // TO DO how to handle this?
-                case constants::TYPE_FREEWRITING: // TO DO how to handle this?
-                case constants::TYPE_FREESPEAKING: // TO DO how to handle this?
                 case constants::TYPE_SPACEGAME: // TO DO how to handle this?
                 default:
+                    $result->hascorrectanswer = false;
+                    $result->hasincorrectanswer = false;
+                    $result->hasanswerdetails = false;
                     $result->correctans = [];
                     $result->incorrectans = [];
             }

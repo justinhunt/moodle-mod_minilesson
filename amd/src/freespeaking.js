@@ -37,6 +37,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
       stepdata.totalitems = self.itemdata.totalmarks;
       stepdata.correctitems = self.rawscore > 0 ? self.rawscore : 0;
       stepdata.grade = self.percentscore;
+      stepdata.resultsdata = self.transcript_evaluation;
       self.quizhelper.do_next(stepdata);
     },
 
