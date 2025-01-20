@@ -13,7 +13,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
 
     allwords: {},
     strings: {},
-    totals: {},
+    totals: {correct: 0,incorrect: 0,unreached: 0,read: 0,accuracy: 0,score: 0,comparison: {}},
 
     //for making multiple instances
       clone: function () {
