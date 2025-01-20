@@ -331,6 +331,20 @@ class renderer extends \plugin_renderer_base {
                     break;
 
                 case constants::TYPE_PASSAGEREADING:
+                    $result->hascorrectanswer = false;
+                    $result->hasincorrectanswer = false;
+                    if(isset($result->resultsdata)
+                        && isset($result->resultsdata->read)
+                        && ($result->resultsdata->read + $result->resultsdata->unreached)> 0){
+                        $result->hasanswerdetails = true;
+                            $result->resultstemplate = 'passagereadingreviewresults';
+                            $result->resultsdata->passagehtml = \mod_minilesson\aitranscriptutils::render_passage($items->{constants::READINGPASSAGE});
+                        $result->resultsdatajson = json_encode($result->resultsdata, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    }else{
+                        $result->hasanswerdetails = false;
+                    }
+                    break;
+
                 case constants::TYPE_FREEWRITING:
                 case constants::TYPE_FREESPEAKING:
                     $result->hascorrectanswer = false;
@@ -339,12 +353,6 @@ class renderer extends \plugin_renderer_base {
                         $result->hasanswerdetails = true;
                         //the free writing and reading both need to be told to show no reattempt button
                         $result->resultsdata->noreattempt = true;
-                        //passage reading needs the marked up HTML passage
-                        if($result->itemtype == constants::TYPE_PASSAGEREADING){
-                            $result->resultstemplate = 'passagereadingreviewresults';
-                            $result->resultsdata->passagehtml = \mod_minilesson\aitranscriptutils::render_passage($items->{constants::READINGPASSAGE});
-                        }
-
                         $result->resultsdatajson = json_encode($result->resultsdata, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                     }else{
                         $result->hasanswerdetails = false;
