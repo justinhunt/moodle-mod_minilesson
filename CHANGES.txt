@@ -1,6 +1,9 @@
 Version 1.0.76 (Build 2025011700)
 - Added a free writing response type
 - Fixed the display of questions with titles
+- Fixed some issues with Passage Reading results display
+- Added results display of Free writing, speaking and passage reading
+- Fixed issue with push tab display
 
 Version 1.0.75 (Build 2025010702)
 - Added a new item type "Passage Reading"
