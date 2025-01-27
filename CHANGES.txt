@@ -1,3 +1,7 @@
+Version 1.0.77 (Build 20250127XX)
+- Fixed free exercise spinner which did not work well on old moodles
+- Turned off item review on free exercised of show-item-review was turned off 
+
 Version 1.0.76 (Build 2025011700)
 - Added a free writing response type
 - Fixed the display of questions with titles
