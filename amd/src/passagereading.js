@@ -188,8 +188,15 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
       log.debug(("total correct", self.totals.correct));
       log.debug(("allwords", self.allwords.length));
 
-       //Hide the recorder and show the reattempt button and results
+      //display results or move next if not show item review
+      if(!self.quizhelper.showitemreview){
+        //clear markup .. though it was briefly shown (so we could calculate the score)
+        self.allwords.removeClass("pr_correct pr_incorrect pr_unreached");
+        self.allspaces.removeClass("pr_correct pr_incorrect pr_unreached");
+        self.next_question();
+      }else{
         //display results
+       //Hide the recorder and show the reattempt button and results
         templates.render('mod_minilesson/passagereadingresults',self.totals).then(
           function(html,js){
               self.recordercontainer.hide();
@@ -198,14 +205,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
               self.reattemptcontainer.show();
           }
         );
-
-       //To auto transition you could do this
-       var moveon = false;
-       if (moveon) {
-          setTimeout(function() {
-            self.end();
-          }, 2200);
-        }
+      }//end of show item review or transition
     },
 
   doComparisonMarkup: function(comparison, containerid){
