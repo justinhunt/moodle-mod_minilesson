@@ -166,29 +166,34 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
           self.transcript_evaluation = transcript_evaluation;
 
           log.debug(transcript_evaluation);
-          //display results
-          templates.render('mod_minilesson/freespeakingresults',transcript_evaluation).then(
-            function(html,js){
-                self.resultsbox.html(html);
-                //do corrections markup
-                if(transcript_evaluation.hasOwnProperty('grammarerrors')){
-                  self.do_corrections_markup(transcript_evaluation.grammarerrors,
-                    transcript_evaluation.grammarmatches,
-                    transcript_evaluation.insertioncount
-                  );
-                }
-                //show and hide
-                self.resultsbox.show();
-                self.pendingbox.hide();
-                self.actionbox.hide();
-                templates.runTemplateJS(js);
-                //reset timer and wordcount on this page, in case reattempt
-                self.wordcount.text('0');
-                self.ttrec.timer.reset();
-                var displaytime = self.ttrec.timer.fetch_display_time();
-                self.timerdisplay.html(displaytime);
-            }
-          );// End of templates
+          //display results or move next if not show item review
+          if(!self.quizhelper.showitemreview){
+            self.next_question();
+          }else{
+            //display results
+            templates.render('mod_minilesson/freespeakingresults',transcript_evaluation).then(
+              function(html,js){
+                  self.resultsbox.html(html);
+                  //do corrections markup
+                  if(transcript_evaluation.hasOwnProperty('grammarerrors')){
+                    self.do_corrections_markup(transcript_evaluation.grammarerrors,
+                      transcript_evaluation.grammarmatches,
+                      transcript_evaluation.insertioncount
+                    );
+                  }
+                  //show and hide
+                  self.resultsbox.show();
+                  self.pendingbox.hide();
+                  self.actionbox.hide();
+                  templates.runTemplateJS(js);
+                  //reset timer and wordcount on this page, in case reattempt
+                  self.wordcount.text('0');
+                  self.ttrec.timer.reset();
+                  var displaytime = self.ttrec.timer.fetch_display_time();
+                  self.timerdisplay.html(displaytime);
+              }
+            );// End of templates
+          } //end of if show item review
         } else {
           log.debug('transcript_evaluation: oh no it failed');
           self.resultsbox.hide();

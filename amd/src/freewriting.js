@@ -27,7 +27,6 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
           this.init_strings();
           this.init_components(quizhelper,itemdata);
           this.register_events(index, itemdata, quizhelper);
-
         },
 
         init_strings: function(){
@@ -36,7 +35,7 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
             { "key": "notsubmitted", "component": 'mod_minilesson'},
             { "key": "notsubmit", "component": 'mod_minilesson'},
             { "key": "submitnow", "component": 'mod_minilesson'},
-            { "key": "cancel", "component": 'mod_minilesson'},
+            { "key": "cancel", "component": 'core'},
           ]).done(function (s) {
             var i = 0;
             self.strings.notsubmitted = s[i++];
@@ -174,29 +173,34 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
               self.transcript_evaluation = transcript_evaluation;
 
               log.debug(transcript_evaluation);
-              //display results
-              templates.render('mod_minilesson/freewritingresults',transcript_evaluation).then(
-                  function(html,js){
-                    self.resultsbox.html(html);
-                    //do corrections markup
-                    if(transcript_evaluation.hasOwnProperty('grammarerrors')){
-                      self.do_corrections_markup(transcript_evaluation.grammarerrors,
-                          transcript_evaluation.grammarmatches,
-                          transcript_evaluation.insertioncount
-                      );
+
+              //display results or move next if not show item review
+              if(!self.quizhelper.showitemreview){
+                self.next_question();
+              }else{
+                templates.render('mod_minilesson/freespeakingresults',transcript_evaluation).then(
+                    function(html,js){
+                      self.resultsbox.html(html);
+                      //do corrections markup
+                      if(transcript_evaluation.hasOwnProperty('grammarerrors')){
+                        self.do_corrections_markup(transcript_evaluation.grammarerrors,
+                            transcript_evaluation.grammarmatches,
+                            transcript_evaluation.insertioncount
+                        );
+                      }
+                      //show and hide
+                      self.resultsbox.show();
+                      self.pendingbox.hide();
+                      self.actionbox.hide();
+                      templates.runTemplateJS(js);
+                      //reset timer and wordcount on this page, in case reattempt
+                      self.wordcount.text('0');
+                      self.ttrec.timer.reset();
+                      var displaytime = self.ttrec.timer.fetch_display_time();
+                      self.timerdisplay.html(displaytime);
                     }
-                    //show and hide
-                    self.resultsbox.show();
-                    self.pendingbox.hide();
-                    self.actionbox.hide();
-                    templates.runTemplateJS(js);
-                    //reset timer and wordcount on this page, in case reattempt
-                    self.wordcount.text('0');
-                    self.ttrec.timer.reset();
-                    var displaytime = self.ttrec.timer.fetch_display_time();
-                    self.timerdisplay.html(displaytime);
-                  }
-              );// End of templates
+                );// End of templates
+              }//end of show item review or not
             } else {
               log.debug('transcript_evaluation: oh no it failed');
               self.resultsbox.hide();
