@@ -178,7 +178,7 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
               if(!self.quizhelper.showitemreview){
                 self.next_question();
               }else{
-                templates.render('mod_minilesson/freespeakingresults',transcript_evaluation).then(
+                templates.render('mod_minilesson/freewritingresults',transcript_evaluation).then(
                     function(html,js){
                       self.resultsbox.html(html);
                       //do corrections markup

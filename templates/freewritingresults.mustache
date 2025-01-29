@@ -13,32 +13,32 @@
       <span class="ml_fs_sumcell_content">{{stats.wordsunique}}</span>
     </div>
     <!--
-  <div class="ml_fs_results_summary">
-    <span class="ml_fs_sumcell_title">{{#str}}ideacount, mod_minilesson{{/str}}</span>
-    <span class="ml_fs_sumcell_content">{{stats.ideacount}}</span>
+    <div class="ml_fs_results_summary">
+      <span class="ml_fs_sumcell_title">{{#str}}ideacount, mod_minilesson{{/str}}</span>
+      <span class="ml_fs_sumcell_content">{{stats.ideacount}}</span>
+    </div>
+    -->
+    <div class="ml_fs_results_summary">
+      <span class="ml_fs_sumcell_title">{{#str}}relevance, mod_minilesson{{/str}}</span>
+      <span class="ml_fs_sumcell_content">{{stats.relevance}}%</span>
+    </div>
   </div>
-  -->
-  <div class="ml_fs_results_summary">
-    <span class="ml_fs_sumcell_title">{{#str}}relevance, mod_minilesson{{/str}}</span>
-    <span class="ml_fs_sumcell_content">{{stats.relevance}}%</span>
+  <div class="mlfsr_originaltext_container"><b>{{#str}}original, mod_minilesson{{/str}}:</b><br/><span class="mlfsr_originaltext">{{{markeduppassage}}}</span></div>
+  <div class="mlfsr_correctedtext_container"><b>{{#str}}corrected, mod_minilesson{{/str}}:</b><br/>
+    <span class="mlfsr_correctedtext">{{{markedupcorrections}}}</span>
+    {{>mod_minilesson/summary_togglecorrections}}
   </div>
-</div>
-<div class="mlfsr_originaltext_container"><b>{{#str}}original, mod_minilesson{{/str}}:</b><br/><span class="mlfsr_originaltext">{{{markeduppassage}}}</span></div>
-<div class="mlfsr_correctedtext_container"><b>{{#str}}corrected, mod_minilesson{{/str}}:</b><br/>
-  <span class="mlfsr_correctedtext">{{{markedupcorrections}}}</span>
-  {{>mod_minilesson/summary_togglecorrections}}
-</div>
-<div class="ml_freespeaking_results_summaries">
-  <!-- not needed currently
-  <div class="ml_fs_results_summary">
-    <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
-    <span class="ml_fs_sumcell_content">{{rawscore}}/{{maxscore}}</span>
-  </div>
-  <div class="ml_fs_results_summary">
-    <span class="ml_fs_sumcell_title">Words</span>
-    <span class="ml_fs_sumcell_content">{{stats.words}}</span>
-  </div>
-  -->
+  <div class="ml_freespeaking_results_summaries">
+    <!-- not needed currently
+    <div class="ml_fs_results_summary">
+      <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
+      <span class="ml_fs_sumcell_content">{{rawscore}}/{{maxscore}}</span>
+    </div>
+    <div class="ml_fs_results_summary">
+      <span class="ml_fs_sumcell_title">Words</span>
+      <span class="ml_fs_sumcell_content">{{stats.words}}</span>
+    </div>
+    -->
     <div class="ml_fs_results_summary" style="margin: auto">
       <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
       <span class="ml_fs_sumcell_content">{{percentscore}}%</span>
@@ -46,14 +46,14 @@
   </div>
 </div>
 <div class="ml_freespeaking_feedback">
-  <b>{{#str}}feedback, mod_minilesson{{/str}}:</b>
-  <ul>
+<br/><b>{{#str}}feedback, mod_minilesson{{/str}}:</b>
+<ul>
   {{#feedback}}
   <li>{{.}}</li>
   {{/feedback}}
-  </ul>
+</ul>
 </div>
-{{^noreattempt}}
+ {{^noreattempt}}
 <div class="minilesson_actionbutton">
 <a class="btn btn-secondary center" href="#" id = "{{uniqid}}_reattempt">
   {{#str}}reattempt, mod_minilesson{{/str}}</a>
@@ -69,9 +69,9 @@
                             '{{#str}}reallyreattempt, mod_minilesson{{/str}}',
                             '{{#str}}reattempt, mod_minilesson{{/str}}','',
                             function(){
-                                reattemptbutton .closest('.ml_freespeaking_resultsbox').hide();
-                                reattemptbutton .closest('.ml_freespeaking_pendingbox').hide();
-                                reattemptbutton .closest('.ml_freespeaking_resultsbox').siblings('.ml_freespeaking_actionbox').show();
+                                reattemptbutton .closest('.ml_freewriting_resultsbox').hide();
+                                reattemptbutton .closest('.ml_freewriting_pendingbox').hide();
+                                reattemptbutton .closest('.ml_freewriting_resultsbox').siblings('.ml_freewriting_actionbox').show();
                             });
             
             
