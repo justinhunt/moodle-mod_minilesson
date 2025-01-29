@@ -76,21 +76,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
           //disable the answers, cos its answered
           $("#" + itemdata.uniqueid + "_container .minilesson_mc_response").addClass('minilesson_mc_disabled');
 
-          //reveal answers
-          $("#" + itemdata.uniqueid + "_container .minilesson_mc_unanswered").hide();
-          $("#" + itemdata.uniqueid + "_container .minilesson_mc_wrong").show();
-
-          $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_wrong").hide();
-          $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_right").show();
-
-          //if answers were dots for audio content, show them
-          if(itemdata.hasOwnProperty('audiocontent')) {
-              for (var i = 0; i < itemdata.sentences.length; i++) {
-                  var theline = $("#" + itemdata.uniqueid + "_option" + (i + 1));
-                  $("#" + itemdata.uniqueid + "_option" + (i + 1) + ' .minilesson_sentence').text(itemdata.sentences[i].sentence);
-              }
-          }
-
           //highlight selected answers
           $("#" + itemdata.uniqueid + "_option" + checked).addClass('minilesson_mc_selected');
 
@@ -99,6 +84,22 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
           var percent = achieved * 100;
 
           if(quizhelper.showitemreview) {
+
+              //reveal answers
+              $("#" + itemdata.uniqueid + "_container .minilesson_mc_unanswered").hide();
+              $("#" + itemdata.uniqueid + "_container .minilesson_mc_wrong").show();
+
+              $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_wrong").hide();
+              $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_right").show();
+
+              //if answers were dots for audio content, show them
+              if(itemdata.hasOwnProperty('audiocontent')) {
+                  for (var i = 0; i < itemdata.sentences.length; i++) {
+                      var theline = $("#" + itemdata.uniqueid + "_option" + (i + 1));
+                      $("#" + itemdata.uniqueid + "_option" + (i + 1) + ' .minilesson_sentence').text(itemdata.sentences[i].sentence);
+                  }
+              }
+
               //hide the confirm choice button
               confirmchoicebutton.hide();
 
@@ -109,7 +110,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
               if (achieved > 0) {
                   resultspanelstars.html('⭐'); // Display a star
               }else{
-                    resultspanelstars.html('❌'); // Display a cross
+                  resultspanelstars.html('❌'); // Display a cross
               }
               resultspanel.show();
               anim.do_animate(resultspanelswish,'zoomIn animate__faster','in');

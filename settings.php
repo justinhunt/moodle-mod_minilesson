@@ -153,6 +153,10 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/enablesetuptab',
             get_string('enablesetuptab', constants::M_COMPONENT), get_string('enablesetuptab_details',constants::M_COMPONENT), 0));
 
+    //Native Language Setting
+    $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/setnativelanguage',
+        get_string('enablenativelanguage', constants::M_COMPONENT), get_string('enablenativelanguage_details',constants::M_COMPONENT), 1));
+
     // Show item review.
     $name = 'showitemreview';
     $label = get_string($name, constants::M_COMPONENT);
@@ -187,7 +191,7 @@ if ($ADMIN->fulltree) {
   </div>
 {{/results}}
 </div>
- <a class ="btn btn-secondary" href="{{reattempturl}}">{{#str}} tryagain, mod_minilesson {{/str}}</a> <br />';
+ <a class ="btn btn-secondary" href="{{{reattempturl}}}">{{#str}} tryagain, mod_minilesson {{/str}}</a> <br />';
 
     $settings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
         $label, $details, $default, PARAM_RAW));

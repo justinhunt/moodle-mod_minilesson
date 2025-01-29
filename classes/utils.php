@@ -706,15 +706,26 @@ class utils {
         $moduleinstance  = $DB->get_record(constants::M_MODNAME, ['id' => $cm->instance], '*', MUST_EXIST);
         $item = $DB->get_record(constants::M_QTABLE, ['id' => $itemid, 'minilesson' => $moduleinstance->id], '*', MUST_EXIST);
 
-        // $modulecontext = \context_module::instance($cm->id);
-        // $fullitem = self::fetch_item_from_itemrecord($item, $moduleinstance, $modulecontext);
-        // $itemdata = $fullitem->export_for_template($OUTPUT);
+        //Feedback language for AI instructions
+        //its awful but we hijack the wordcards student native language setting
+        $feedbacklanguage = $item->{constants::AIGRADE_FEEDBACK_LANGUAGE};
+        if($conf->setnativelanguage) {
+            $userprefdeflanguage = get_user_preferences('wordcards_deflang');
+            if (!empty($userprefdeflanguage)) {
+                //the WC language is 2 char but Poodll AI expects a locale code
+                $wc_language = self::lang_to_locale($userprefdeflanguage);
+                //if we did get a locale code lets use that.
+                if ($wc_language !== $userprefdeflanguage && $wc_language !== $feedbacklanguage) {
+                    $feedbacklanguage = $wc_language;
+                }
+            }
+        }
 
         // AI Grade
         $maxmarks = $item->{constants::TOTALMARKS};
         $instructions = new \stdClass();
         $instructions->feedbackscheme = $item->{constants::AIGRADE_FEEDBACK};
-        $instructions->feedbacklanguage = $item->{constants::AIGRADE_FEEDBACK_LANGUAGE};
+        $instructions->feedbacklanguage = $feedbacklanguage;
         $instructions->markscheme = $item->{constants::AIGRADE_INSTRUCTIONS};
         $instructions->maxmarks = $maxmarks;
         $instructions->questiontext = strip_tags($item->itemtext);
@@ -748,6 +759,110 @@ class utils {
         return $aigraderesults;
 
     }
+
+    //This function takes the 2-character language code ($lang) as input and returns the corresponding locale code.
+    public static function lang_to_locale($lang)
+    {
+        switch ($lang) {
+            case 'ar':
+                return 'ar-AE'; // Assuming Arabic (Modern Standard) is the default
+            case 'en':
+                return 'en-US'; // Assuming US English is the default
+            case 'es':
+                return 'es-ES'; // Assuming Spanish (Spain) is the default
+            case 'fr':
+                return 'fr-FR'; // Assuming French (France) is the default
+            case 'id':
+                return 'id-ID'; // Assuming Indonesian (Indonesia) is the default
+            case 'ja':
+                return 'ja-JP'; // Assuming Japanese (Japan) is the default
+            case 'ko':
+                return 'ko-KR'; // Assuming Korean (South Korea) is the default
+            case 'pt':
+                return 'pt-BR'; // Assuming Brazilian Portuguese is the default
+            case 'ru':
+                return 'ru-RU'; // Assuming Russian (Russia) is the default
+            case 'zh':
+                return 'zh-CN'; // Assuming Chinese (Simplified, China) is the default
+            case 'zh_tw':
+                return 'zh-TW'; // Assuming Chinese (Traditional, Taiwan) is the default
+            case 'af':
+                return 'af-ZA'; // Assuming Afrikaans (South Africa) is the default
+            case 'bn':
+                return 'bn-BD'; // Assuming Bengali (Bangladesh) is the default
+            case 'bs':
+                return 'bs-Latn-BA'; // Assuming Bosnian (Latin, Bosnia and Herzegovina) is the default
+            case 'bg':
+                return 'bg-BG'; // Assuming Bulgarian (Bulgaria) is the default
+            case 'ca':
+                return 'ca-ES'; // Assuming Catalan (Spain) is the default
+            case 'hr':
+                return 'hr-HR'; // Assuming Croatian (Croatia) is the default
+            case 'cs':
+                return 'cs-CZ'; // Assuming Czech (Czech Republic) is the default
+            case 'da':
+                return 'da-DK'; // Assuming Danish (Denmark) is the default
+            case 'nl':
+                return 'nl-NL'; // Assuming Dutch (Netherlands) is the default
+            case 'fi':
+                return 'fi-FI'; // Assuming Finnish (Finland) is the default
+            case 'de':
+                return 'de-DE'; // Assuming German (Germany) is the default
+            case 'el':
+                return 'el-GR'; // Assuming Greek (Greece) is the default
+            case 'ht':
+                return 'ht-HT'; // Assuming Haitian Creole (Haiti) is the default
+            case 'he':
+                return 'he-IL'; // Assuming Hebrew (Israel) is the default
+            case 'hi':
+                return 'hi-IN'; // Assuming Hindi (India) is the default
+            case 'hu':
+                return 'hu-HU'; // Assuming Hungarian (Hungary) is the default
+            case 'is':
+                return 'is-IS'; // Assuming Icelandic (Iceland) is the default
+            case 'it':
+                return 'it-IT'; // Assuming Italian (Italy) is the default
+            case 'lv':
+                return 'lv-LV'; // Assuming Latvian (Latvia) is the default
+            case 'lt':
+                return 'lt-LT'; // Assuming Lithuanian (Lithuania) is the default
+            case 'ms':
+                return 'ms-MY'; // Assuming Malay (Malaysia) is the default
+            case 'mt':
+                return 'mt-MT'; // Assuming Maltese (Malta) is the default
+            case 'nb':
+                return 'nb-NO'; // Assuming Norwegian Bokmål (Norway) is the default
+            case 'fa':
+                return 'fa-IR'; // Assuming Persian (Iran) is the default
+            case 'pl':
+                return 'pl-PL'; // Assuming Polish (Poland) is the default
+            case 'ro':
+                return 'ro-RO'; // Assuming Romanian (Romania) is the default
+            case 'sr':
+                return 'sr-Latn-RS'; // Assuming Serbian (Latin, Serbia) is the default
+            case 'sk':
+                return 'sk-SK'; // Assuming Slovak (Slovakia) is the default
+            case 'sl':
+                return 'sl-SI'; // Assuming Slovenian (Slovenia) is the default
+            case 'sw':
+                return 'sw-KE'; // Assuming Swahili (Kenya) is the default
+            case 'sv':
+                return 'sv-SE'; // Assuming Swedish (Sweden) is the default
+            case 'ta':
+                return 'ta-IN'; // Assuming Tamil (India) is the default
+            case 'tr':
+                return 'tr-TR'; // Assuming Turkish (Turkey) is the default
+            case 'uk':
+                return 'uk-UA'; // Assuming Ukrainian (Ukraine) is the default
+            case 'ur':
+                return 'ur-PK'; // Assuming Urdu (Pakistan) is the default
+            case 'cy':
+                return 'cy-GB'; // Assuming Welsh (United Kingdom) is the default
+            default:
+                return $lang; // If no match, return the original lang code
+        }
+    }
+
 
     public static function fetch_grammar_correction_diff($selftranscript, $correction, $direction='l2r') {
 

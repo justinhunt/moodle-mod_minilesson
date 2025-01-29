@@ -104,20 +104,20 @@ define(['jquery',
         //disable the answers, cos its answered
         $("#" + itemdata.uniqueid + "_container .mcplayrow").addClass('minilesson_mc_disabled');
 
-
-        //turn dots into text (if they were dots)
-        if(parseInt(itemdata.show_text)==0) {
-            for (var i = 0; i < itemdata.sentences.length; i++) {
-                var theline = $("#" + itemdata.uniqueid + "_option" + (i + 1));
-                $("#" + itemdata.uniqueid + "_option" + (i + 1) + ' .minilesson_sentence').text(itemdata.sentences[i].sentence);
+        if(quizhelper.showitemreview) {
+            //turn dots into text (if they were dots)
+            if (parseInt(itemdata.show_text) == 0) {
+                for (var i = 0; i < itemdata.sentences.length; i++) {
+                    var theline = $("#" + itemdata.uniqueid + "_option" + (i + 1));
+                    $("#" + itemdata.uniqueid + "_option" + (i + 1) + ' .minilesson_sentence').text(itemdata.sentences[i].sentence);
+                }
             }
+
+            //reveal answers
+            $("#" + itemdata.uniqueid + "_container .minilesson_mc_wrong").show();
+            $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_wrong").hide();
+            $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_right").show();
         }
-
-        //reveal answers
-        $("#" + itemdata.uniqueid + "_container .minilesson_mc_wrong").show();
-        $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_wrong").hide();
-        $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_right").show();
-
         //highlight selected answers
         $("#" + itemdata.uniqueid + "_option" + checked + ' .minilesson_mc_response').addClass('minilesson_mc_selected');
 
