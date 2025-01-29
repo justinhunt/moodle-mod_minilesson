@@ -781,6 +781,7 @@ class utils {
             case 'pt':
                 return 'pt-BR'; // Assuming Brazilian Portuguese is the default
             case 'ru':
+            case 'rus':
                 return 'ru-RU'; // Assuming Russian (Russia) is the default
             case 'zh':
                 return 'zh-CN'; // Assuming Chinese (Simplified, China) is the default
