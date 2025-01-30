@@ -859,6 +859,8 @@ class utils {
                 return 'ur-PK'; // Assuming Urdu (Pakistan) is the default
             case 'cy':
                 return 'cy-GB'; // Assuming Welsh (United Kingdom) is the default
+            case 'vi':
+                return 'vi-VN'; // Assuming Vietnamese (Vietnam) is the default
             default:
                 return $lang; // If no match, return the original lang code
         }
