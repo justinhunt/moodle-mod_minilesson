@@ -702,8 +702,8 @@ class utils {
         if(!$token || empty($token)){
             return false;
         }
-        $cm         = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
-        $moduleinstance  = $DB->get_record(constants::M_MODNAME, ['id' => $cm->instance], '*', MUST_EXIST);
+        $cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
+        $moduleinstance = $DB->get_record(constants::M_MODNAME, ['id' => $cm->instance], '*', MUST_EXIST);
         $item = $DB->get_record(constants::M_QTABLE, ['id' => $itemid, 'minilesson' => $moduleinstance->id], '*', MUST_EXIST);
 
         //Feedback language for AI instructions
@@ -748,9 +748,12 @@ class utils {
          // STATS
         $userlanguage = false;
         $targetembedding = false;
+        $targettopic = false;
         $targetwords = [];
         if($item->{constants::RELEVANCE} == constants::RELEVANCETYPE_QUESTION){
             $targettopic = strip_tags($item->itemtext);
+        }else{
+            $targetembedding = $item->{constants::AIGRADE_MODELANSWER};
         }
         $textanalyser = new textanalyser($token, $transcript, $moduleinstance->region,
         $moduleinstance->ttslanguage, $targetembedding, $userlanguage, $targettopic);

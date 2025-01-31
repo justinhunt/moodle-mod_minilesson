@@ -294,7 +294,7 @@ break;
             $stats['ideacount'] = $this->process_idea_count();
           //  $stats['cefrlevel'] = $this->process_cefr_level();
             $stats['relevance'] = $this->process_relevance();
-            // something went wrong, but it might be used for grading. Lets give them 100, though it sucks
+            // something went wrong, but it might be used for grading. Let's give them 100, though it sucks
             if ( $stats['relevance'] == 0 || $stats['relevance'] == false) {
                 $stats['relevance'] = 100;
             }
@@ -344,9 +344,9 @@ break;
 
         $relevance = false;
         if (!empty($passage)) {
-            if ($targettopic !== false) {
+            if ($targettopic !== false && !empty($targettopic)) {
                 $relevance = $this->fetch_relevance_topic($targettopic, $passage);
-            } else if ($targetembedding !== false) {
+            } else if (($targetembedding !== false) && !empty($targetembedding)) {
                 $relevance = $this->fetch_relevance_semantic($targetembedding, $passage);
             }
         }
