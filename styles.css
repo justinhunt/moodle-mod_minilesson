@@ -1842,6 +1842,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   cursor: pointer;
   font-size: 1.33em;
   overflow: auto;
+  margin-bottom: 5px;
 }
 .minilesson_mc_confirmchoice {
   text-align: center;
@@ -2982,4 +2983,34 @@ textarea.ml_freewriting_textarea {
 .ml_qf_itemresults {
   max-width: 80%;
   margin: auto;
+}
+/*
+.minilesson_mc_image {
+  max-width: 100%;
+  margin: auto;
+}
+.minilesson_mc_image img{
+  max-width: 100%;
+  margin: auto;
+  display: block;
+}
+  */
+
+.minilesson_mc_image {
+  position: relative; /* Needed for padding trick */
+  width: 100%;
+  padding-bottom: 75%; /* Example aspect ratio (4:3). Adjust as needed */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.minilesson_mc_image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down; /* or contain */
 }

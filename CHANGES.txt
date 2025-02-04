@@ -1,6 +1,7 @@
 Version 1.0.77 (Build 20250127XX)
 - Fixed free exercise spinner which did not work well on old moodles
 - Turned off item review on free exercises and passage reading if show-item-review was turned off 
+- Added image option to multichoice
 
 Version 1.0.76 (Build 2025011701)
 - Added a free writing response type

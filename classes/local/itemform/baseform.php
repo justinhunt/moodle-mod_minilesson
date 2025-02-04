@@ -474,21 +474,24 @@ abstract class baseform extends \moodleform {
         
     }
 
-    protected final function add_media_upload($name, $label, $required = false) {
-		
+    protected final function add_media_upload($name, $label, $required = false, $accept = '') {
+		$filemanageroptions = $this->filemanageroptions;
+        if(!empty($accept)){
+            $filemanageroptions['accepted_types'] = $accept;
+        }
 		$this->_form->addElement('filemanager',
                            $name,
                            $label,
                            null,
-						   $this->filemanageroptions
+						   $filemanageroptions
                            );
 		
 	}
 
 	protected final function add_media_prompt_upload($label = null, $required = false) {
-		return $this->add_media_upload(constants::AUDIOPROMPT,$label,$required);
+		$accept='';
+        return $this->add_media_upload(constants::AUDIOPROMPT,$label,$required, $accept);
 	}
-
 
     /**
      * Convenience function: Adds an response editor
@@ -563,6 +566,38 @@ abstract class baseform extends \moodleform {
         }
     }
 
+    protected final function add_imageresponse_upload($name_or_count, $label = null, $required = false,$hideif_field=false,$hideif_values=[]) {
+        global $CFG;
+
+        if ($label === null) {
+            $label = get_string('response', constants::M_COMPONENT);
+        }
+
+        // Set the form element name
+        if(is_number($name_or_count) || empty($name_or_count)){
+            $element = constants::FILEANSWER . $name_or_count;
+        }else{
+            $element = $name_or_count;
+        }
+
+        $accept = 'image';
+		$this->add_media_upload($element,$label,$required, $accept);
+
+        if($hideif_field !== false && !empty($hideif_values)) {
+            $m35 = $CFG->version >= 2018051700;
+            if(!is_array($hideif_values)){
+                $hideif_values = [$hideif_values];
+            }
+            foreach($hideif_values as $hideif_value){
+                if ($m35) {
+                    $this->_form->hideIf($element, $hideif_field, 'eq', $hideif_value);
+                } else {
+                    $this->_form->disabledIf($element, $hideif_field, 'eq', $hideif_value);
+                }
+            }
+        }
+	}
+
        /**
      * Convenience function: Adds a number only textbox
      *
@@ -633,19 +668,24 @@ abstract class baseform extends \moodleform {
      * @param string $label, null means default
      * @return void
      */
-    protected final function add_voiceselect($name, $label = null, $hideif_field=false,$hideif_value=false) {
+    protected final function add_voiceselect($name, $label = null, $hideif_field=false,$hideif_values=[]) {
         global $CFG;
         $showall =true;
         $allvoiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage,$showall);
         $somevoiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage,!$showall);
         $defaultvoice =array_pop($somevoiceoptions );
         $this->add_dropdown($name, $label,$allvoiceoptions,$defaultvoice);
-        if($hideif_field !== false) {
+        if($hideif_field !== false && !empty($hideif_values)) {
             $m35 = $CFG->version >= 2018051700;
-            if ($m35) {
-                $this->_form->hideIf($name, $hideif_field, 'eq', $hideif_value);
-            } else {
-                $this->_form->disabledIf($name, $hideif_field, 'eq', $hideif_value);
+            if(!is_array($hideif_values)){
+                $hideif_values = [$hideif_values];
+            }
+            foreach($hideif_values as $hideif_value){
+                if ($m35) {
+                    $this->_form->hideIf($name, $hideif_field, 'eq', $hideif_value);
+                } else {
+                    $this->_form->disabledIf($name, $hideif_field, 'eq', $hideif_value);
+                }
             }
         }
     }
@@ -656,17 +696,22 @@ abstract class baseform extends \moodleform {
      * @param string $label, null means default
      * @return void
      */
-    protected final function add_voiceoptions($name, $label = null,  $hideif_field=false,$hideif_value=false,$no_ssml=false) {
+    protected final function add_voiceoptions($name, $label = null,  $hideif_field=false,$hideif_values=[],$no_ssml=false) {
         global $CFG;
         $voiceoptions = utils::get_tts_options($no_ssml);
         $this->add_dropdown($name, $label,$voiceoptions);
         $m35 = $CFG->version >= 2018051700;
-        if($hideif_field !== false) {
+        if($hideif_field !== false && !empty($hideif_values)) {
             $m35 = $CFG->version >= 2018051700;
-            if ($m35) {
-                $this->_form->hideIf($name, $hideif_field, 'eq', $hideif_value);
-            } else {
-                $this->_form->disabledIf($name, $hideif_field, 'eq', $hideif_value);
+            if(!is_array($hideif_values)){
+                $hideif_values = [$hideif_values];
+            }
+            foreach($hideif_values as $hideif_value){
+                if ($m35) {
+                    $this->_form->hideIf($name, $hideif_field, 'eq', $hideif_value);
+                } else {
+                    $this->_form->disabledIf($name, $hideif_field, 'eq', $hideif_value);
+                }
             }
         }
     }

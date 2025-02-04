@@ -118,6 +118,7 @@ const YTVIDEOSTART = 'itemytstart';
 const YTVIDEOEND = 'itemytend';
 const MEDIAIFRAME = 'customdata5';
 const TEXTANSWER = 'customtext';
+const FILEANSWER = 'customfile';
 const CUSTOMDATA = 'customdata';
 const CUSTOMINT = 'customint';
 const POLLYVOICE = 'customtext5';
@@ -158,6 +159,7 @@ const LISTENORREAD = 'customint2';
 const LISTENORREAD_READ = 0;
 const LISTENORREAD_LISTEN = 1;
 const LISTENORREAD_LISTENANDREAD = 2;
+const LISTENORREAD_IMAGE = 3;
 
 const LAYOUT = 'layout';
 const LAYOUT_AUTO = 0;
