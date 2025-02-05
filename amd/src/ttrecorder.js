@@ -63,7 +63,11 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 log.debug('displaytime: ' + displaytime);
                 if (that.timer.seconds == 0 && that.timer.initseconds > 0) {
                     that.update_audio('isRecognizing', true);
-                    that.audiohelper.stop();
+                    if(that.usebrowserrec){
+                        that.browserrec.stop();
+                    }else{
+                        that.audiohelper.stop();
+                    }
                 }
             };
 

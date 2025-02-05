@@ -98,6 +98,10 @@
             <FIELD NAME="customtext4format" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
             <FIELD NAME="customtext5" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="customtext5format" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+            <FIELD NAME="customtext6" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+            <FIELD NAME="customtext6format" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
+            <FIELD NAME="customtext7" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+            <FIELD NAME="customtext7format" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false"/>
             <FIELD NAME="customdata1" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="customdata2" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="customdata3" TYPE="text" NOTNULL="false" SEQUENCE="false"/>

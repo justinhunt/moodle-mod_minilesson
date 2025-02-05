@@ -124,7 +124,7 @@ const CUSTOMINT = 'customint';
 const POLLYVOICE = 'customtext5';
 const POLLYOPTION = 'customint4';
 const CONFIRMCHOICE = 'customint3';
-const AIGRADE_INSTRUCTIONS = 'customtext1';
+const AIGRADE_INSTRUCTIONS = 'customtext6';
 const AIGRADE_FEEDBACK = 'customtext2';
 const AIGRADE_FEEDBACK_LANGUAGE = 'customtext4';
 const AIGRADE_MODELANSWER = 'customtext3';
@@ -144,7 +144,7 @@ const SG_ALIENCOUNT_MULTICHOICE = 'customint1';
 const SG_ALIENCOUNT_MATCHING = 'customint2';
 const SG_ALLOWRETRY = 'customint4';
 const MAXANSWERS=4;
-const MAXCUSTOMTEXT=5;
+const MAXCUSTOMTEXT=7;
 const MAXCUSTOMDATA=5;
 const MAXCUSTOMINT=5;
 

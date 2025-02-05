@@ -513,6 +513,37 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025011701, 'minilesson');
     }
 
+    if($oldversion < 2025020700){
+        // Add itemttsvoice to minilesson question table
+        $table = new xmldb_table(constants::M_QTABLE);
+
+        // Define new custom fields
+        $fields = [];
+        $fields[] = new xmldb_field('customtext6', XMLDB_TYPE_TEXT, null, null, null, null);
+        $fields[] = new xmldb_field('customtext6format', XMLDB_TYPE_INTEGER, '2', null, false, null);
+        $fields[] = new xmldb_field('customtext7', XMLDB_TYPE_TEXT, null, null, null, null);
+        $fields[] = new xmldb_field('customtext7format', XMLDB_TYPE_INTEGER, '2', null, false, null);
+
+        // Add fields.
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // Update AI instructions field.
+        if ($DB->record_exists(constants::M_QTABLE, ['type' => 'freespeaking']) ||
+         $DB->record_exists(constants::M_QTABLE, ['type' => 'freewriting'])) {
+            $sql = "UPDATE {". constants::M_QTABLE . "} q SET q.customtext6 = q.customtext1, q.customtext1 = ''";
+            $sql .= " WHERE q.type = 'freewriting' OR q.type = 'freespeaking'";
+            $DB->execute($sql);
+        }
+        
+
+
+        upgrade_mod_savepoint(true, 2025020700, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

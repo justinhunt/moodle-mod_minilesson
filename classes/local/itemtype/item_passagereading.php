@@ -87,7 +87,7 @@ class item_passagereading extends item {
     public static function get_keycolumns() {
         // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'integer', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
+        $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
         $keycols['text1'] = ['jsonname' => 'passage', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::READINGPASSAGE];
         $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
         return $keycols;

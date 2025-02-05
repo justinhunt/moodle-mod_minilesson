@@ -74,8 +74,8 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
             constants::M_MODNAME, 'name','itemorder', 'type','visible','iteminstructions','itemtext', 'itemtextformat','itemtts','itemttsvoice','itemttsoption',
             'itemytid','itemytstart','itemytend',
             'itemttsautoplay', 'itemaudiofname','itemtextarea','itemttsdialog', 'itemttsdialogopts','itemttspassage','itemttspassageopts', 'customtext1', 'customtext1format','customtext2', 'customtext2format','customtext3',
-            'customtext3format','customtext4', 'customtext4format','customtext5', 'customtext5format',
-                'customdata1','customdata2', 'customdata3','customdata4', 'customdata5',
+            'customtext3format','customtext4', 'customtext4format','customtext5', 'customtext5format','customtext6', 'customtext6format',
+                'customtext7', 'customtext7format','customdata1','customdata2', 'customdata3','customdata4', 'customdata5',
                 'customint1','customint2', 'customint3','customint4', 'customint5','layout','correctanswer','timelimit',
             'timemodified','rsquestionkey','passagehash','alternatives','phonetic','createdby','modifiedby'));
 

@@ -65,13 +65,13 @@ abstract class item implements templatable, renderable {
     protected $moduleinstance;
 
     //NEEDS SPEECH REC
-    protected $needs_speechrec  =false;
+    protected $needs_speechrec = false;
 
     /**
      * The class constructor.
      *
      */
-    public function __construct($itemrecord, $moduleinstance=false, $context=false){
+    public function __construct($itemrecord, $moduleinstance=false, $context = false){
         $this->from_record($itemrecord, $moduleinstance, $context);
     }
 
@@ -1084,19 +1084,19 @@ abstract class item implements templatable, renderable {
   * Remove any accents and chars that would mess up the transcript//passage matching
   */
     public function deaccent(){
-        if($this->needs_speechrec) {
+        if ($this->needs_speechrec && isset($this->itemrecord->customtext1) 
+                && !empty($this->itemrecord->customtext1)) { 
             $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1,$this->moduleinstance->ttslanguage);
+            }
         }
-    }
 
 
     public function update_create_langmodel($olditemrecord){
         //if we need to generate a Coqui model for this, then lets do that now:
         //we want to process the hashcode and lang model if it makes sense
         $newitem = $this->itemrecord;
-        if($this->needs_speechrec) {
-
-                $passage = $newitem->customtext1;
+        $passage = isset($newitem->customtext1) ? $newitem->customtext1 : '';
+        if($this->needs_speechrec && !empty($passage)) {
 
                 if (utils::needs_lang_model($this->moduleinstance,$passage)) {
                     //lets assign a default passage hash
@@ -1144,10 +1144,9 @@ abstract class item implements templatable, renderable {
         }else{
             $thephonetics ='';
         }
+        $newpassage = isset($newitem->customtext1) ? $newitem->customtext1 : '';
+        if($this->needs_speechrec && !empty($newpassage)) {
 
-        if($this->needs_speechrec) {
-
-                $newpassage = $newitem->customtext1;
                 if($olditemrecord!==false) {
                     $oldpassage = $olditemrecord->customtext1;
                 }else{

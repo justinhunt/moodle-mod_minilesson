@@ -31,7 +31,7 @@ namespace mod_minilesson;
  * @copyright 2023 Justin Hunt <justin@poodll.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class import  {
+class import {
 
     private $itemsfromjson = false;
     private $cir;
@@ -46,7 +46,7 @@ class import  {
     private $currentheader;
     private $keycolumns;
     private $allvoices;
-    
+
 
     /**
      * process constructor.
@@ -55,14 +55,14 @@ class import  {
      * @param string|null $progresstrackerclass
      * @throws \coding_exception
      */
-    public function __construct($moduleinstance, $modulecontext, $course,$cm) {
+    public function __construct($moduleinstance, $modulecontext, $course, $cm) {
         $this->moduleinstance = $moduleinstance;
         $this->modulecontext = $modulecontext;
         $this->course = $course;
-        $this->allvoices=[];
+        $this->allvoices = [];
         $this->cm = $cm;
         $this->errors = 0;
-        $this->currentheader =  [];
+        $this->currentheader = [];
         $this->keycolumns = local\itemtype\item::get_keycolumns();
 
         // Keep timestamp consistent.
@@ -71,7 +71,7 @@ class import  {
 
     }
 
-    public function set_reader($reader, $isjson=false){
+    public function set_reader($reader, $isjson=false) {
         if($isjson) {
             $this->isjson = true;
             $this->itemsfromjson = $reader->items;
@@ -99,7 +99,7 @@ class import  {
             // Init csv import helper.
             $this->cir->init();
 
-            //get the header line
+            // get the header line
             $this->currentheader = $this->cir->get_columns();
 
             $linenum = 1; // Column header is first line.
@@ -115,20 +115,20 @@ class import  {
         $this->upt->close(); // Close table.
     }
 
-    public function map_json_to_csv($itemdata){
+    public function map_json_to_csv($itemdata) {
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemdata->type);
         $keycolumns = $itemtypeclass::get_keycolumns();
-        $line= [];
-        foreach($keycolumns as $colname=>$coldef){
+        $line = [];
+        foreach($keycolumns as $colname => $coldef){
             if(isset($itemdata->{$coldef['jsonname']})){
                 if($coldef['type'] == 'stringarray') {
-                    $line[] = join(PHP_EOL,$itemdata->{$coldef['jsonname']});
+                    $line[] = join(PHP_EOL, $itemdata->{$coldef['jsonname']});
                 }else{
                     $line[] = $itemdata->{$coldef['jsonname']};
                 }
             }else{
                 if($coldef['type'] == 'stringarray') {
-                    $line[] = join(PHP_EOL,$coldef['default']);
+                    $line[] = join(PHP_EOL, $coldef['default']);
                 }else{
                     $line[] = $coldef['default'];
                 }
@@ -145,8 +145,7 @@ class import  {
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function import_process_line($itemdata)
-    {
+    public function import_process_line($itemdata) {
         global $DB, $CFG, $SESSION;
 
         if($this->isjson){
@@ -158,22 +157,22 @@ class import  {
         }
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemtype);
 
-        //if the item type is invalid, we can't continue, just exit
+        // if the item type is invalid, we can't continue, just exit
         if(!$itemtypeclass){
-            $this->upt->track('status',get_string('error:failed',constants::M_COMPONENT), 'error',true);
-            $this->upt->track('type',get_string('error:invaliditemtype',constants::M_COMPONENT), 'error');
+            $this->upt->track('status', get_string('error:failed', constants::M_COMPONENT), 'error', true);
+            $this->upt->track('type', get_string('error:invaliditemtype', constants::M_COMPONENT), 'error');
             return false;
         }
 
-        //here we get the item specific keycolumns (it's the same columns, but with item specific col info for validation and data preprocessing)
-        //eg multiaudio needs customtext5 to be voice and customint4 to be voice options
+        // here we get the item specific keycolumns (it's the same columns, but with item specific col info for validation and data preprocessing)
+        // eg multiaudio needs customtext5 to be voice and customint4 to be voice options
         $keycolumns = $itemtypeclass::get_keycolumns();
 
-        //set up the voices array, it only needs to be done once, and probably should be done elsewhere
-        //but here works too
+        // set up the voices array, it only needs to be done once, and probably should be done elsewhere
+        // but here works too
         if(count($this->allvoices) == 0){
             foreach (constants::ALL_VOICES as $lang => $langvoices) {
-                foreach ($langvoices as $voicecode=>$voicename) {
+                foreach ($langvoices as $voicecode => $voicename) {
                     $this->allvoices[strtolower($voicename)] = $voicecode;
                 }
             }
@@ -182,77 +181,79 @@ class import  {
         // Pre-Process Import Data, and turn into DB Ready data.
         $newrecord = $this->preprocess_import_data($line, $keycolumns);
 
-        //set the defaults
-        foreach($keycolumns as $colname=>$coldef){
+        // set the defaults
+        foreach($keycolumns as $colname => $coldef){
             if($coldef['dbname'] && !isset($newrecord[$coldef['dbname']])){
-                $newrecord[$coldef['dbname']]=$coldef['default'];
+                $newrecord[$coldef['dbname']] = $coldef['default'];
             }
         }
-        //turn array into object
+        // turn array into object
         $newrecord = (object)$newrecord;
 
-        //do files
-        //if the item has a filesid attribute and that filesid holds data in filesfromjson array
+        // do files
+        // if the item has a filesid attribute and that filesid holds data in filesfromjson array
         if(isset($itemdata->filesid) && isset($this->filesfromjson->{$itemdata->filesid})){
-            //files are stored as filename->base64data in the filesfromjson[filesid][filearea] array
-            //each item has a filesid, so we can match them up with the file location in filesfromjson
-            //json_encode can not be trusted to maintain arrays or objects, so force them to be arrays here
+            // files are stored as filename->base64data in the filesfromjson[filesid][filearea] array
+            // each item has a filesid, so we can match them up with the file location in filesfromjson
+            // json_encode can not be trusted to maintain arrays or objects, so force them to be arrays here
             $filesdata = $this->filesfromjson->{$itemdata->filesid};
-            if(!is_array($filesdata)){$filesdata=(array)$filesdata;}
+            if(!is_array($filesdata)){$filesdata = (array)$filesdata;
+            }
             foreach($filesdata as $filearea => $thefiles){
-               if(!is_array($thefiles)){$thefiles=(array)$thefiles;}
+                if(!is_array($thefiles)){$thefiles = (array)$thefiles;
+                }
                 $newrecord->{$filearea} = $thefiles;
             }
         }
 
-        //fix up json fields which need to be packed into json
-        //tts dialog opts
+        // fix up json fields which need to be packed into json
+        // tts dialog opts
         if(!empty($newrecord->{constants::TTSDIALOG})){
-           $newrecord->{constants::TTSDIALOGOPTS} = utils::pack_ttsdialogopts($newrecord);
+            $newrecord->{constants::TTSDIALOGOPTS} = utils::pack_ttsdialogopts($newrecord);
         }
-        //tts passage opts
+        // tts passage opts
         if(!empty($newrecord->{constants::TTSPASSAGE})){
             $newrecord->{constants::TTSPASSAGEOPTS} = utils::pack_ttspassageopts($newrecord);
         }
 
         // call the itemtype specific import validation function
-        $error = $this->perform_import_validation($newrecord,$this->cm);
+        $error = $this->perform_import_validation($newrecord, $this->cm);
         if($error) {
-            $this->upt->track('status',get_string('error:failed',constants::M_COMPONENT), 'error',true);
+            $this->upt->track('status', get_string('error:failed', constants::M_COMPONENT), 'error', true);
             $this->upt->track($error->col, $error->message, 'error');
             return false;
         }
 
-        //get itemorder
+        // get itemorder
         $newrecord->itemorder = local\itemform\helper::get_new_itemorder($this->cm);
 
-        //create a rsquestionkey
+        // create a rsquestionkey
         $newrecord->rsquestionkey = local\itemtype\item::create_itemkey();
-        $theitem= utils::fetch_item_from_itemrecord($newrecord,$this->moduleinstance);
-        //remove bad accents and things that mess up transcription (kind of like clear but permanent)
+        $theitem = utils::fetch_item_from_itemrecord($newrecord, $this->moduleinstance);
+        // remove bad accents and things that mess up transcription (kind of like clear but permanent)
         $theitem->deaccent();
 
-        //xreate passage hash
-        $olditem=false;
+        // xreate passage hash
+        $olditem = false;
         $theitem->update_create_langmodel($olditem);
 
-        //lets update the phonetics
+        // lets update the phonetics
         $theitem->update_create_phonetic($olditem);
 
-        //finally do the update
+        // finally do the update
         $result = $theitem->update_insert_item();
         if($result){
-            $this->upt->track('status','Success', 'normal');
+            $this->upt->track('status', 'Success', 'normal');
         }else{
-            $this->upt->track('status','Failed', 'error');
+            $this->upt->track('status', 'Failed', 'error');
         }
 
         return true;
-        //Do what we have to do
+        // Do what we have to do
 
     }
 
-    public function perform_import_validation($newrecord,$cm){
+    public function perform_import_validation($newrecord, $cm) {
         global $DB;
         $itemtype = $newrecord->type;
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemtype);
@@ -265,30 +266,29 @@ class import  {
         return false;
     }
 
-    public function preprocess_import_data($line, $keycolumns){
+    public function preprocess_import_data($line, $keycolumns) {
 
-        //return value init
+        // return value init
         $newrecord = [];
 
         foreach ($line as $keynum => $value) {
 
-            //CSV files have the field name in the top line of the file = current header
+            // CSV files have the field name in the top line of the file = current header
             // but JSON files its in the json per item (which we stripped away to make CSV like data duh ..)
-            //so we need to get the field name from the keycolumns array
+            // so we need to get the field name from the keycolumns array
             if (isset($this->currentheader[$keynum])) {
-                //CSV data
+                // CSV data
                 $colname = $this->currentheader[$keynum];
             }else{
-                //JSON data
-                $currentheader=array_keys($keycolumns);
+                // JSON data
+                $currentheader = array_keys($keycolumns);
                 $colname = $currentheader[$keynum];
             }
-
 
             if (!isset($keycolumns[$colname])) {
                 // This should not happen.
 
-                $this->upt->track('status','unknown column ' . $colname, 'error');
+                $this->upt->track('status', 'unknown column ' . $colname, 'error');
                 $this->errors++;
                 continue;
             }
@@ -305,18 +305,18 @@ class import  {
 
                 case 'voice':
                     if(empty($value) || $value == 'auto'){
-                        //this will return the name, not the key
+                        // this will return the name, not the key
                         $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
-                        //here we go from name to key
+                        // here we go from name to key
                         $value = $this->allvoices[strtolower($value)];
                     }else{
                         if(array_key_exists(strtolower($value), $this->allvoices)){
                             $value = $this->allvoices[strtolower($value)];
-                        }elseif(in_array(strtolower($value) . '_g', $this->allvoices)){
+                        }else if(in_array(strtolower($value) . '_g', $this->allvoices)){
                             $value = $this->allvoices[strtolower($value) . '_g'];
                         }else{
-                            //not sure how to get this to user
-                            $this->upt->track($colname,'UNKNOWN VOICE' . $value, 'warning');
+                            // not sure how to get this to user
+                            $this->upt->track($colname, 'UNKNOWN VOICE' . $value, 'warning');
                             $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
                         }
                     }
@@ -373,99 +373,104 @@ class import  {
                     }
                     break;
                 case 'file':
-                    //we don't do anything with this here, but we need to set it to something
+                    // we don't do anything with this here, but we need to set it to something
                     $value = '';
 
                 case 'anonymousfile':
-                    //we don't do anything with this here, but we need to set it to something
+                    // we don't do anything with this here, but we need to set it to something
                     $value = '';
             }
 
-            //set default values
+            // set default values
             if (in_array($colname, $this->upt->columns)) {
                 // Default value in progress tracking table, can be changed later.
-                $this->upt->track($colname, s($value), 'normal');
+                if(is_array($value)){
+                    $this->upt->track($colname, join(PHP_EOL, $value), 'normal');    
+                }else{
+                    $this->upt->track($colname, s($value), 'normal');
+                }
             }
             $newrecord[$coldef['dbname']] = $value;
         }
         return $newrecord;
     }
 
-    public function export_items(){
+    public function export_items() {
         global $DB;
-        $allitems = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->moduleinstance->id],'itemorder ASC');
-        $exportobj=new \stdClass();
-        $exportobj->items=[];
-        $exportobj->files=[];
+        $allitems = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->moduleinstance->id], 'itemorder ASC');
+        $exportobj = new \stdClass();
+        $exportobj->items = [];
+        $exportobj->files = [];
         if($allitems &&count($allitems) > 0 ){
-            $i=0;
+            $i = 0;
             foreach($allitems as $theitem){
                 $i++;
                 $itemobj = $this->export_item_as_jsonobj($theitem);
                 if($itemobj){
-                    //do a files check .. if so move them to the final files obj at end of json file and set an id in the item
-                    if(count($itemobj->files)>0){
-                        $itemobj->filesid=$i;
-                        //add the files to the export obj
-                        $exportobj->files[$i]=$itemobj->files;
+                    // do a files check .. if so move them to the final files obj at end of json file and set an id in the item
+                    if(count($itemobj->files) > 0){
+                        $itemobj->filesid = $i;
+                        // add the files to the export obj
+                        $exportobj->files[$i] = $itemobj->files;
                     }
                     unset($itemobj->files);
-                    //add the item to the items array
-                    $exportobj->items[]=$itemobj;
+                    // add the item to the items array
+                    $exportobj->items[] = $itemobj;
                 }
             }
         }
         return json_encode($exportobj);
     }
 
-    public function export_item_as_jsonobj($itemrecord){
-        //get item type
+    public function export_item_as_jsonobj($itemrecord) {
+        // get item type
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemrecord->type);
-        if(!$itemtypeclass){return false;}
+        if(!$itemtypeclass){return false;
+        }
 
-        //files info
-        $thefiles=[];
+        // files info
+        $thefiles = [];
 
-        //get item column details
+        // get item column details
         $keycolumns = $itemtypeclass::get_keycolumns();
 
-        //set up all voices if its not set up
+        // set up all voices if its not set up
         if(count($this->allvoices) == 0){
             foreach (constants::ALL_VOICES as $lang => $langvoices) {
-                foreach ($langvoices as $voicecode=>$voicename) {
+                foreach ($langvoices as $voicecode => $voicename) {
                     $this->allvoices[strtolower($voicename)] = $voicecode;
                 }
             }
         }
 
-        //Set fields where we pack data into json in DB
-        //tts dialog opts
+        // Set fields where we pack data into json in DB
+        // tts dialog opts
         if(!empty($itemrecord->{constants::TTSDIALOG})){
             $itemrecord = utils::unpack_ttsdialogopts($itemrecord);
         }
-        $itemrecord->{constants::TTSDIALOGOPTS}=null;
+        $itemrecord->{constants::TTSDIALOGOPTS} = null;
 
-        //tts passage opts
+        // tts passage opts
         if(!empty($itemrecord->{constants::TTSPASSAGE})){
             $itemrecord = utils::unpack_ttspassageopts($itemrecord);
         }
-        $itemrecord->{constants::TTSPASSAGEOPTS}=null;
+        $itemrecord->{constants::TTSPASSAGEOPTS} = null;
 
-        //make an empty item object
-        $itemobj=new \stdClass();
+        // make an empty item object
+        $itemobj = new \stdClass();
 
-        //loop through columnns making a nice value for our json object
+        // loop through columnns making a nice value for our json object
         foreach($keycolumns as $keycolumn){
-            $fieldvalue=$itemrecord->{$keycolumn['dbname']};
-            //skip any optional fields whose value is the default
-            //anonymous files are not in the DB record, so we need to process them a little later, to see if they are present
-            //for some reason integers and nulls are strings in $fieldvalue, so we  == though it should be ===
-            if($keycolumn['optional']==true && $keycolumn['default']==$fieldvalue && $keycolumn['type']!=='anonymousfile'){
-                //skip
+            $fieldvalue = $itemrecord->{$keycolumn['dbname']};
+            // skip any optional fields whose value is the default
+            // anonymous files are not in the DB record, so we need to process them a little later, to see if they are present
+            // for some reason integers and nulls are strings in $fieldvalue, so we  == though it should be ===
+            if($keycolumn['optional'] == true && $keycolumn['default'] == $fieldvalue && $keycolumn['type'] !== 'anonymousfile'){
+                // skip
                 continue;
             }
 
-            //turn db values into human values
+            // turn db values into human values
             switch($keycolumn['type']){
                 case 'int':
                 case 'string':
@@ -473,7 +478,7 @@ class import  {
                     break;
 
                 case 'stringarray':
-                    $lines = explode(PHP_EOL,$fieldvalue);
+                    $lines = explode(PHP_EOL, $fieldvalue);
                     $jsonvalue = $lines;
                     break;
 
@@ -481,10 +486,10 @@ class import  {
 
                     if(array_key_exists(strtolower($fieldvalue), $this->allvoices)){
                         $jsonvalue = $this->allvoices[strtolower($fieldvalue)];
-                    }elseif(in_array(strtolower($fieldvalue) . '_g', $this->allvoices)){
+                    }else if(in_array(strtolower($fieldvalue) . '_g', $this->allvoices)){
                         $jsonvalue = $this->allvoices[strtolower($fieldvalue) . '_g'];
                     }else{
-                        $jsonvalue='auto';
+                        $jsonvalue = 'auto';
                     }
                     break;
 
@@ -501,7 +506,7 @@ class import  {
                             break;
                         case constants::TTS_NORMAL:
                         default:
-                            $jsonvalue ='normal' ;
+                            $jsonvalue = 'normal';
                             break;
                     }
                     break;
@@ -536,18 +541,19 @@ class import  {
 
                 case 'file':
                     $fs = get_file_storage();
-                    $filearea=$keycolumn['type'];
+                    $filearea = $keycolumn['type'];
                     $files = $fs->get_area_files($this->modulecontext->id,  constants::M_COMPONENT,
-                        $filearea,$itemrecord->id);
+                        $filearea, $itemrecord->id);
 
                     foreach ($files as $file) {
                         $filename = $file->get_filename();
-                        if($filename=='.'){continue;}
-                        if($filename==$fieldvalue) {
+                        if($filename == '.'){continue;
+                        }
+                        if($filename == $fieldvalue) {
                             if(!isset($thefiles[$filearea])) {
-                                $thefiles[$filearea]=[];
+                                $thefiles[$filearea] = [];
                             }
-                            $thefiles[$filearea][$filename]=base64_encode($file->get_content());
+                            $thefiles[$filearea][$filename] = base64_encode($file->get_content());
                             $jsonvalue = $filename;
                             break;
                         }
@@ -555,28 +561,28 @@ class import  {
                     break;
                 case 'anonymousfile':
                     $fs = get_file_storage();
-                    $filearea=$keycolumn['jsonname'];
+                    $filearea = $keycolumn['jsonname'];
                     $files = $fs->get_area_files($this->modulecontext->id,  constants::M_COMPONENT,
-                        $filearea,$itemrecord->id);
+                        $filearea, $itemrecord->id);
 
                     foreach ($files as $file) {
                         $filename = $file->get_filename();
-                        if($filename=='.'){continue;}
-                        if(!isset($thefiles[$filearea])) {
-                            $thefiles[$filearea]=[];
+                        if($filename == '.'){continue;
                         }
-                        $thefiles[$filearea][$filename]=base64_encode($file->get_content());
+                        if(!isset($thefiles[$filearea])) {
+                            $thefiles[$filearea] = [];
+                        }
+                        $thefiles[$filearea][$filename] = base64_encode($file->get_content());
                     }
             }//end of switch keycolumn type
-            //if the column has a DB field (file cols may not) we update it
+            // if the column has a DB field (file cols may not) we update it
             if($keycolumn['dbname']) {
                 $itemobj->{$keycolumn['jsonname']} = $jsonvalue;
             }
         }//end of loop through key cols
 
-        //Include the files
+        // Include the files
         $itemobj->files = $thefiles;
-
 
         return $itemobj;
     }//end of export item function
