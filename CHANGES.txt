@@ -1,3 +1,6 @@
+Version 1.0.78 (Build 2025020701)
+- Fixed bug in new multichoice code that might mark a correct answer false
+
 Version 1.0.77 (Build 2025020700)
 - Fixed free exercise spinner which did not work well on old moodles
 - Turned off item review on free exercises and passage reading if show-item-review was turned off 
