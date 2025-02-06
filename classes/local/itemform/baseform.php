@@ -791,6 +791,23 @@ abstract class baseform extends \moodleform {
     }
 
     /**
+     * Disable pasting in the textbox
+     *
+     * @param string $name
+     * @param string $label
+     * @param bool|int $default
+     * @return void
+     */
+    protected final function add_nopasting($name, $detailslabel = null,  $default = 1) {
+        $this->_form->addElement('advcheckbox',$name,
+            get_string('nopasting',constants::M_COMPONENT),
+            $detailslabel,[],[0,1]);
+        if ($default !== 0) {
+            $this->_form->setDefault($name, 1);
+        }
+    }
+
+    /**
      * Hide start page element.
      *
      * @param string $name

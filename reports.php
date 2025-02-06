@@ -193,7 +193,24 @@ switch ($showreport){
         $formdata->groupmenu = true;
         break;
 
-
+    //Show a single attempt, basically the students finished view of the attempt for the teacher
+    case 'viewattempt':
+        $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE,array('id'=>$attemptid));
+        if($attempt) {
+            if ($attempt->userid === $USER->id || has_capability('mod/minilesson:manageattempts', $modulecontext)) {
+                $comptest = new \mod_minilesson\comprehensiontest($cm);
+                echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
+                $attemptuser = $DB->get_record('user', array('id' => $attempt->userid));
+                echo $renderer->heading(get_string('attemptfor', constants::M_COMPONENT, fullname($attemptuser)), 3);
+                $teacherreport = true;
+                echo $renderer->show_finished_results($comptest, $attempt, $cm, false, false, $teacherreport);
+                $link = new \moodle_url(constants::M_URL . '/reports.php', array('report' => 'menu', 'id' => $cm->id, 'n' => $moduleinstance->id));
+                echo  \html_writer::link($link, get_string('returntoreports', constants::M_COMPONENT));
+                echo $renderer->footer();
+                return;
+            }
+        }
+        break;
 		
 	default:
 		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));

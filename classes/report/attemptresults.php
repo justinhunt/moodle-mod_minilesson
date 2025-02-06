@@ -63,7 +63,6 @@ class attemptresults extends basereport
                 $ret = $record->grade;
                 break;
 
-
             default:
                 if (property_exists($record, $field)) {
                     $ret = $record->{$field};

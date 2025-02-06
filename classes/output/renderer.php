@@ -249,7 +249,7 @@ class renderer extends \plugin_renderer_base {
     /**
      *  Finished View
      */
-    public function show_finished_results($comptest, $latestattempt, $cm, $canattempt, $embed) {
+    public function show_finished_results($comptest, $latestattempt, $cm, $canattempt, $embed, $teacherreport = false) {
         global $CFG, $DB;
         $ans = [];
         // quiz data
@@ -417,33 +417,39 @@ class renderer extends \plugin_renderer_base {
         $tdata->courseurl = $CFG->wwwroot . '/course/view.php?id=' .
             $latestattempt->courseid . '#section-'. ($cm->section - 1);
 
-        // depending on finish screen settings
-        switch($moduleinstance->finishscreen){
-            case constants::FINISHSCREEN_FULL:
-            case constants::FINISHSCREEN_CUSTOM:
-                $tdata->results = $useresults;
-                $tdata->showfullresults = true;
-                break;
+        // depending on finish screen settings and if its a teacher report
+        if($teacherreport){
+            $tdata->showfullresults = true;
+            $tdata->results = $useresults;
 
-            case constants::FINISHSCREEN_SIMPLE:
-            default:
-                $tdata->results = [];
+        } else {
+            switch ($moduleinstance->finishscreen) {
+                case constants::FINISHSCREEN_FULL:
+                case constants::FINISHSCREEN_CUSTOM:
+                    $tdata->results = $useresults;
+                    $tdata->showfullresults = true;
+                    break;
+
+                case constants::FINISHSCREEN_SIMPLE:
+                default:
+                    $tdata->results = [];
+            }
         }
 
         // output reattempt button
-        if($canattempt){
+        if($canattempt && !$teacherreport){
             $reattempturl = new \moodle_url( constants::M_URL . '/view.php',
                     ['n' => $latestattempt->moduleid, 'retake' => 1, 'embed' => $embed]);
             $tdata->reattempturl = $reattempturl->out();
         }
         // show back to course button if we are not in a tab or embedded
-        if(!$config->enablesetuptab && $embed == 0 &&
+        if(!$config->enablesetuptab && $embed == 0 && !$teacherreport &&
             $moduleinstance->pagelayout !== 'embedded' &&
             $moduleinstance->pagelayout !== 'popup') {
             $tdata->backtocourse = true;
         }
 
-        if($moduleinstance->finishscreen == constants::FINISHSCREEN_CUSTOM){
+        if($moduleinstance->finishscreen == constants::FINISHSCREEN_CUSTOM && !$teacherreport){
             // here we fetch the mustache engine, reset the loader to string loader
             // render the custom finish screen, and restore the original loader
             $mustache = $this->get_mustache();

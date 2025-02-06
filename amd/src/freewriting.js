@@ -110,6 +110,15 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
             self.wordcount.text(wordcount);
           });
 
+          if(self.itemdata.nopasting > 0){
+             self.thetextarea.bind("cut copy paste", function(e) {
+              e.preventDefault();
+              });
+              self.thetextarea.bind("contextmenu", function(e) {
+                e.preventDefault();
+              });
+          }
+
           self.submitbutton.on('click', function(e) {
             e.preventDefault();
             var transcript = self.thetextarea.val();

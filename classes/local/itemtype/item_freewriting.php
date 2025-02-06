@@ -48,6 +48,7 @@ class item_freewriting extends item {
         $testitem = $this->set_layout($testitem);
         $testitem->relevance = $this->itemrecord->{constants::RELEVANCE};
         $testitem->totalmarks = $this->itemrecord->{constants::TOTALMARKS};
+        $testitem->nopasting = $this->itemrecord->{constants::NOPASTING};
         if ($this->itemrecord->{constants::TARGETWORDCOUNT} > 0) {
             $testitem->targetwordcount = $this->itemrecord->{constants::TARGETWORDCOUNT};
             $testitem->textarearows = round($this->itemrecord->{constants::TARGETWORDCOUNT} / 10, 0) + 1;
@@ -94,6 +95,7 @@ class item_freewriting extends item {
         $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
         $keycols['int2'] = ['jsonname' => 'relevance', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::RELEVANCE];
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
+        $keycols['int4'] = ['jsonname' => 'nopasting', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::NOPASTING];
         $keycols['text6'] = ['jsonname' => 'aigradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_INSTRUCTIONS];
         $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
         $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];

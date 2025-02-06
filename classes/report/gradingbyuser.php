@@ -15,7 +15,7 @@ class gradingbyuser extends basereport
 {
 
     protected $report="gradingbyuser";
-    protected $fields = array('id','grade_p','timecreated','deletenow');
+    protected $fields = array('id','grade_p','timecreated','view', 'deletenow');
     protected $headingdata = null;
     protected $qcache=array();
     protected $ucache=array();
@@ -63,6 +63,17 @@ class gradingbyuser extends basereport
                         array('action' => 'delete', 'n' => $record->moduleid, 'attemptid' => $record->id, 'source' => $this->report));
                     $btn = new \single_button($url, get_string('delete'), 'post');
                     $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_COMPONENT));
+                    $ret = $OUTPUT->render($btn);
+                } else {
+                    $ret = '';
+                }
+                break;
+
+            case 'view':
+                if ($withlinks) {
+                    $url = new \moodle_url(constants::M_URL . '/reports.php',
+                        array('report' => 'viewattempt', 'n' => $record->moduleid, 'attemptid' => $record->id));
+                    $btn = new \single_button($url, get_string('view'), 'post');
                     $ret = $OUTPUT->render($btn);
                 } else {
                     $ret = '';

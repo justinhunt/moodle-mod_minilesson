@@ -847,4 +847,6 @@ $string['notsubmitted'] = 'You have not submitted your answer. Submit now?';
 $string['submitnow'] = 'Submit';
 $string['enablenativelanguage'] = "Enable Native Language";
 $string['enablenativelanguage_details'] = 'If set, the student can choose their native language, this will override the default language of the feedback language that AI returns with the results. The language must currently be <a href="https://support.poodll.com/en/support/solutions/articles/19000163890-definitions-in-user-s-native-language">set in Poodll WordCards</a>, and it is picked up here.';
-$string['listenorread_image'] = "Image";
+$string['nopasting'] = "Disable copy/paste";
+$string['nopasting_desc'] = "Disable copy/paste into the text area. This is to prevent students from pasting in answers from elsewhere.";
+$string['attemptfor'] = 'Attempt: {$a}';

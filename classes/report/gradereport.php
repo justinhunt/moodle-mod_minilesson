@@ -15,7 +15,7 @@ class gradereport extends basereport
 {
 
     protected $report="gradereport";
-    protected $fields = array('id','username','grade_p','timecreated','deletenow');
+    protected $fields = array('id','username','grade_p','timecreated','view', 'deletenow');
     protected $headingdata = null;
     protected $qcache=array();
     protected $ucache=array();
@@ -56,6 +56,17 @@ class gradereport extends basereport
                     $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_COMPONENT));
                     $ret = $OUTPUT->render($btn);
                 }else {
+                    $ret = '';
+                }
+                break;
+
+            case 'view':
+                if ($withlinks) {
+                    $url = new \moodle_url(constants::M_URL . '/reports.php',
+                        array('report' => 'viewattempt', 'n' => $record->moduleid, 'attemptid' => $record->id));
+                    $btn = new \single_button($url, get_string('view'), 'post');
+                    $ret = $OUTPUT->render($btn);
+                } else {
                     $ret = '';
                 }
                 break;

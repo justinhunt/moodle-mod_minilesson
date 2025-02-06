@@ -185,7 +185,8 @@ if($CFG->version < 2022041900) {
 }
 
 if($latestattempt->status == constants::M_STATE_COMPLETE){
-    echo $renderer->show_finished_results($comptest, $latestattempt, $cm, $canattempt, $embed);
+    $teacherreport = false;
+    echo $renderer->show_finished_results($comptest, $latestattempt, $cm, $canattempt, $embed, $teacherreport);
 }else if($itemcount > 0) {
     echo $renderer->show_quiz($comptest, $moduleinstance);
     $previewid = 0;

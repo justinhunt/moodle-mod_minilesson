@@ -46,5 +46,6 @@ class freewritingform extends baseform {
         }
 
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
+        $this->add_nopasting(constants::NOPASTING, get_string('nopasting_desc', constants::M_COMPONENT));
     }
 }
