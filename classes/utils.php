@@ -766,7 +766,6 @@ class utils {
         return $aigraderesults;
 
     }
-
     public static function is_rtl($language){
         switch($language){
             case constants::M_LANG_ARAE:

@@ -197,7 +197,7 @@ switch ($showreport){
     case 'viewattempt':
         $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE,array('id'=>$attemptid));
         if($attempt) {
-            if ($attempt->userid === $USER->id || has_capability('mod/minilesson:manageattempts', $modulecontext)) {
+            if ($attempt->userid === $USER->id || has_capability('mod/minilesson:canmanageattempts', $modulecontext)) {
                 $comptest = new \mod_minilesson\comprehensiontest($cm);
                 echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
                 $attemptuser = $DB->get_record('user', array('id' => $attempt->userid));
