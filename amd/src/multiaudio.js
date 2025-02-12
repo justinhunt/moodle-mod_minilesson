@@ -100,11 +100,11 @@ define(['jquery',
     },
 
     process_accepted_response: function(itemdata, checked){
-
+        var self = this;
         //disable the answers, cos its answered
         $("#" + itemdata.uniqueid + "_container .mcplayrow").addClass('minilesson_mc_disabled');
 
-        if(quizhelper.showitemreview) {
+        if(self.quizhelper.showitemreview) {
             //turn dots into text (if they were dots)
             if (parseInt(itemdata.show_text) == 0) {
                 for (var i = 0; i < itemdata.sentences.length; i++) {
