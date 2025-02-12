@@ -1,3 +1,6 @@
+Version 1.0.79
+- Added fix for speech rec. on Polish numbers 22 - 99
+
 Version 1.0.78 (Build 2025020701)
 - Fixed bug in new multichoice code that might mark a correct answer false
 

@@ -731,18 +731,22 @@ class utils {
         $instructions->questiontext = strip_tags($item->itemtext);
         $instructions->modeltext = $item->{constants::AIGRADE_MODELANSWER};
         $aigraderesults = self::fetch_ai_grade($token, $moduleinstance->region,
-         $moduleinstance->ttslanguage, $transcript, $instructions);
+            $moduleinstance->ttslanguage, $transcript, $instructions);
 
          // Mark up AI Grade corrections
         if ($aigraderesults && isset($aigraderesults->correctedtext)) {
             // if we have corrections mark those up and return them
-            $direction = "r2l";// "l2r";
-            list($grammarerrors, $grammarmatches, $insertioncount) = self::fetch_grammar_correction_diff($transcript, $aigraderesults->correctedtext, $direction);
+            $markupdirection = "r2l";
+            list($grammarerrors, $grammarmatches, $insertioncount) = self::fetch_grammar_correction_diff($transcript, $aigraderesults->correctedtext, $markupdirection);
             $aigraderesults->markedupcorrections = aitranscriptutils::render_passage($aigraderesults->correctedtext, 'corrections');
             $aigraderesults->markeduppassage = aitranscriptutils::render_passage($transcript, 'passage');
             $aigraderesults->grammarerrors = $grammarerrors;
             $aigraderesults->grammarmatches  = $grammarmatches;
             $aigraderesults->insertioncount  = $insertioncount;
+            // For right to left languages we want to add the RTL direction and right justify.
+            if(self::is_rtl($feedbacklanguage)){
+                $aigraderesults->rtl = constants::M_CLASS . '_rtl';
+            }
         }
 
          // STATS
@@ -761,6 +765,18 @@ class utils {
 
         return $aigraderesults;
 
+    }
+
+    public static function is_rtl($language){
+        switch($language){
+            case constants::M_LANG_ARAE:
+            case constants::M_LANG_ARSA:
+            case constants::M_LANG_FAIR:
+            case constants::M_LANG_HEIL:
+                return true;
+            default:
+                return false;
+        }
     }
 
     //This function takes the 2-character language code ($lang) as input and returns the corresponding locale code.
@@ -880,6 +896,7 @@ class utils {
         // this is because if we show the pre-text (eg student typed text) we can not highlight corrections .. they are not there
         // if we show post-text (eg corrections) we can not highlight mistakes .. they are not there
         // the diffs tell us where the diffs are with relation to text A
+        //NB this is not a language direction thing(arabic hebrew etc), its a markup direction thing
         if($direction == 'l2r') {
             $passagebits = diff::fetchWordArray($selftranscript);
             $transcriptbits = diff::fetchWordArray($correction);
