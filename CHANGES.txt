@@ -1,5 +1,6 @@
-Version 1.0.79
+Version 1.0.79 (Build 2025021200)
 - Added fix for speech rec. on Polish numbers 22 - 99
+- Added fix so that teachers could see the view attempt report
 
 Version 1.0.78 (Build 2025020701)
 - Fixed bug in new multichoice code that might mark a correct answer false
