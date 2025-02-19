@@ -534,8 +534,8 @@ function xmldb_minilesson_upgrade($oldversion) {
         // Update AI instructions field.
         if ($DB->record_exists(constants::M_QTABLE, ['type' => 'freespeaking']) ||
          $DB->record_exists(constants::M_QTABLE, ['type' => 'freewriting'])) {
-            $sql = "UPDATE {". constants::M_QTABLE . "} q SET q.customtext6 = q.customtext1, q.customtext1 = ''";
-            $sql .= " WHERE q.type = 'freewriting' OR q.type = 'freespeaking'";
+            $sql = "UPDATE {". constants::M_QTABLE . "} SET customtext6 = customtext1, customtext1 = ''";
+            $sql .= " WHERE type = 'freewriting' OR type = 'freespeaking'";
             $DB->execute($sql);
         }
         
