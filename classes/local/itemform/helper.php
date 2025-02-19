@@ -89,7 +89,6 @@ class helper
     public static function duplicate_item($minilesson,$context, $itemid)
     {
         global $CFG, $USER, $DB;
-        
 
         if (!$item = $DB->get_record(constants::M_QTABLE, array('minilesson' => $minilesson->id, 'id'=>$itemid))) {
             print_error("Could not fetch item for duplication");
@@ -100,11 +99,32 @@ class helper
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
         $newitemorder = self::get_new_itemorder($cm);
         $item->itemorder = $newitemorder;
-        $item->name = $item->name . '(1)';
+        // Get the last 3 characters of the name. First check there are more then 3 letters.
+        if ( \core_text::strlen($item->name) < 3) {
+            $item->name = $item->name . ' (2)';
+        } else {
+            $last3 = \core_text::substr($item->name, -3);
+            switch ($last3) {
+                case '(2)':
+                    $item->name = \core_text::substr($item->name, 0, -3) . '(3)';
+                    break;
+                case '(3)':
+                    $item->name = \core_text::substr($item->name, 0, -3) . '(4)';
+                    break;
+                case '(4)':
+                    $item->name = \core_text::substr($item->name, 0, -3). '(5)';
+                case '(5)':
+                        $item->name = \core_text::substr($item->name, 0, -3). '(6)';
+                    break;
+                default:
+                    $item->name = $item->name . ' (2)';
+            }
+        }
+
         $olditemid = $item->id;
         unset($item->id);
-        
-        //insert new record
+
+        // Insert new record.
         if (!$newitemid = $DB->insert_record(constants::M_QTABLE, $item)) {
             print_error("Could not duplicate item");
             return;
@@ -117,6 +137,10 @@ class helper
             constants::TEXTPROMPT_FILEAREA . '2',
             constants::TEXTPROMPT_FILEAREA . '3',
             constants::TEXTPROMPT_FILEAREA . '4',
+            constants::FILEANSWER . '1',
+            constants::FILEANSWER . '2',
+            constants::FILEANSWER . '3',
+            constants::FILEANSWER . '4',
             constants::MEDIAQUESTION);
         
         //file record
