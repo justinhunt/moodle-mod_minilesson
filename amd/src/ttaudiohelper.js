@@ -20,6 +20,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
         silencecount: 0, //how many intervals of consecutive silence so far
         silenceintervals: 15, //how many consecutive silence intervals (100ms) = silence detected
         silencelevel: 25, //below this volume level = silence
+        enablesilencedetection: true,
 
         wavconfig: {
             bufferLen: 4096,
@@ -46,21 +47,22 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
             this.waveHeight = waveHeight;
             this.uniqueid=uniqueid;
             this.therecorder= therecorder;
+            this.region = therecorder.region;
             if(this.therecorder.is_streaming()){
                 this.encodingconfig = this.streamingconfig;
             } else {
                 this.encodingconfig = this.wavconfig;
             }
             this.prepare_html();
-
-
             window.AudioContext = window.AudioContext || window.webkitAudioContext;
-
         },
 
         onStop: function() {},
         onStream: function() {},
+        onSocketReady: function() {},
         onError: function() {},
+        onfinalspeechcapture: function (speechtext) {},
+        oninterimspeechcapture: function (speechtext) {},
 
 
         prepare_html: function(){
@@ -126,7 +128,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
                 //if we have a streaming transcriber we need to initialize it
                 if(that.therecorder.is_streaming()){
                     that.streamer = audiostreamer.clone();
-                    that.streamer.init(that.therecorder.streamingtoken);
+                    that.streamer.init(that.therecorder.streamingtoken, that);
                 }
 
                 // Init WAV encoder
@@ -138,6 +140,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
                     that.encoder.audioprocess(that.getBuffers(event));
                     if(that.streamer){
                         that.streamer.audioprocess(that.getBuffers(event));
+                        that.enablesilencedetection = false;
                     }
                 };
 
@@ -189,6 +192,9 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
             this.processor.disconnect();
             this.tracks.forEach(track => track.stop());
             this.onStop(this.encoder.finish());
+            if(this.streamer){
+                this.streamer.finish();
+            }
         },
 
         getBuffers: function(event) {
@@ -200,6 +206,8 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
         },
 
         detectSilence: function () {
+
+            if(!this.enablesilencedetection){return;}
 
             this.listener.getByteFrequencyData(this.volumeData);
 

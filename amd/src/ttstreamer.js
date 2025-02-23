@@ -10,14 +10,20 @@ define(['jquery', 'core/log'], function ($, log) {
 
         streamingtoken: null,
         socket: null,
+        audiohelper: null,
+        partials: [],
+        finals: [],
+        ready: false,
+        finaltext: '',
 
         //for making multiple instances
         clone: function () {
             return $.extend(true, {}, this);
         },
 
-        init: function(streamingtoken) {
+        init: function(streamingtoken, theaudiohelper) {
             this.streamingtoken = streamingtoken;
+            this.audiohelper = theaudiohelper;
             this.preparesocket();
 
         },
@@ -26,22 +32,69 @@ define(['jquery', 'core/log'], function ($, log) {
             var that = this;
 
             // establish wss with AssemblyAI (AAI) at 16000 sample rate
-            this.socket = await new WebSocket(
-                `wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000&encoding=pcm_s16le&token=${this.streamingtoken}`,
-            );
+            switch(this.audiohelper.region){
+                case 'frankfurt':
+                case 'london':
+                case 'dublin':
+                    //did not work
+               //     this.socket = await new WebSocket(
+               //         `wss://api.eu.assemblyai.com/v2/realtime/ws?sample_rate=16000&encoding=pcm_s16le&token=${this.streamingtoken}`,
+                //    );
+                //    break;
+                default:
+                    this.socket = await new WebSocket(
+                        `wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000&encoding=pcm_s16le&token=${this.streamingtoken}`,
+                    );
+            }
+            log.debug('TT Streamer socket prepared');
+            
 
             // handle incoming messages which contain the transcription
-            const texts = {};
-            this.socket.onmessage = (message) => {
+            this.socket.onmessage= function(message) {
                 let msg = "";
                 const res = JSON.parse(message.data);
-                texts[res.audio_start] = res.text;
-                const keys = Object.keys(texts);
-                keys.sort((a, b) => a - b);
-                for (const key of keys) {
-                    if (texts[key]) {
-                        msg += ` ${texts[key]}`;
-                    }
+                switch(res.message_type){
+                    case 'PartialTranscript':
+                        that.partials[res.audio_start] = res.text;
+                        var keys = Object.keys(that.partials);
+                        keys.sort((a, b) => a - b);
+                        for (const key of keys) {
+                            if (that.partials[key]) {
+                                msg += ` ${that.partials[key]}`;
+                            }
+                        }
+                        that.audiohelper.oninterimspeechcapture(that.finaltext + ' ' + msg);
+                        break;
+
+                    case 'FinalTranscript':
+                        //clear partials if we have a final
+                        that.partials = [];
+                        //process finals
+                        that.finals[res.audio_start] = res.text;
+                        var keys = Object.keys(that.finals);
+                        keys.sort((a, b) => a - b);
+                        for (const key of keys) {
+                            if (that.finals[key]) {
+                                msg += ` ${that.finals[key]}`;
+                            }
+                        }
+                        that.finaltext = msg;
+                        //we do not send final speech capture event until the speaking session ends
+                        //that.audiohelper.onfinalspeechcapture(msg);
+                        that.audiohelper.oninterimspeechcapture(msg);
+                        log.debug('interim (final) transcript: ' + msg);
+                        break;
+                    case 'Session_Begins':
+                            break;      
+                    case 'Session_Ends':
+                            break;    
+                    case 'Session_Information':
+                        break;
+                    case 'Realtime_Error':
+                        log.debug(res.error);
+                        break;    
+                    default:
+                        break;
                 }
                 log.debug(msg);
             };
@@ -49,6 +102,9 @@ define(['jquery', 'core/log'], function ($, log) {
             this.socket.onopen = (event) => {
                 log.debug('TT Streamer socket opened');
                 that.ready = true;
+                that.partials = [];
+                that.finals = [];
+                that.audiohelper.onSocketReady('fromsocketopen');
             };
 
             this.socket.onerror = (event) => {
@@ -79,7 +135,6 @@ define(['jquery', 'core/log'], function ($, log) {
             }
             var sendbuffer = new Uint8Array(tempbuffer)
 
-
             var binary = '';
             for (var i = 0; i < sendbuffer.length; i++) {
                 binary += String.fromCharCode(sendbuffer[i]);
@@ -98,17 +153,37 @@ define(['jquery', 'core/log'], function ($, log) {
 
 
         finish: function(mimeType) {
+            var that = this;
+
             //this would be an event that occurs after recorder has stopped lets just ignore it
             if(this.ready===undefined || !this.ready){
                 return;
             }
-
-
-            this.cleanup();
+            setTimeout(function() {
+                var msg = "";
+                var sets = [that.finals,that.partials];
+                for (const set of sets) {
+                    var keys = Object.keys(set);
+                    keys.sort((a, b) => a - b);
+                    for (const key of keys) {
+                        if (set[key]) {
+                            msg += ` ${set[key]}`;
+                        }
+                    }
+                }
+                that.audiohelper.onfinalspeechcapture(msg);
+                that.cleanup();
+            }, 1000);
         },
 
         cancel: function() {
-            delete this.ready;
+           this.ready = false;
+           this.partials = [];
+           this.finals = [];
+           this.finaltext = '';
+           if(this.socket){
+               this.socket.close();
+           }
         },
 
         cleanup: function() {

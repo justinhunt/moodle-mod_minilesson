@@ -17,6 +17,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             end: null,
             isRecording: false,
             isRecognizing: false,
+            isWaiting: false,
             transcript: null
         },
         submitting: false,
@@ -34,6 +35,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         currentTime: 0,
         stt_guided: false,
         currentPrompt: false,
+        streamingtoken: '',
         strings: {},
 
         //for making multiple instances
@@ -44,11 +46,9 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         init: function(opts){
 
             var that = this;
-
             this.uniqueid=opts['uniqueid'];
             this.callback=opts['callback'];
             this.stt_guided = opts['stt_guided'] ? opts['stt_guided'] : false;
-            this.streamingtoken = '';//opts['streamingtoken'];
             this.init_strings();
             this.prepare_html();
             this.controls.recordercontainer.show();
@@ -109,15 +109,18 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 };
                 that.update_audio(newaudio);
 
-                that.deepSpeech2(that.audio.blob, function(response){
-                    log.debug(response);
-                    if(response.data.result==="success" && response.data.transcript){
-                        that.gotRecognition(response.data.transcript.trim());
-                    } else {
-                        notification.alert("Information",that.strings.speechnotrecognized, "OK");
-                    }
-                    that.update_audio('isRecognizing',false);
-                });
+                //if we are not streaming then deep speech rec
+                if(!that.is_streaming()){
+                    that.deepSpeech2(that.audio.blob, function(response){
+                        log.debug(response);
+                        if(response.data.result==="success" && response.data.transcript){
+                            that.gotRecognition(response.data.transcript.trim());
+                        } else {
+                            notification.alert("Information",that.strings.speechnotrecognized, "OK");
+                        }
+                        that.update_audio('isRecognizing',false);
+                    });
+                }
 
             };
 
@@ -130,11 +133,10 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 //so a device error does not cause timer disaster
                 // that.timer.reset();
                 // that.timer.start();
-                
             };
 
             //If browser rec (Chrome Speech Rec) (and ds is optional)
-            if(browserRec.will_work_ok() && ! this.stt_guided){
+            if(browserRec.will_work_ok() && ! this.stt_guided && !this.is_streaming()){
                 //Init browserrec
                 log.debug("using browser rec");
                 this.browserrec = browserRec.clone();
@@ -160,29 +162,26 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 };
 
             //If we have a streaming token
-            }else if( this.is_streaming()) {
+            }else if( this.is_streaming() && ! this.stt_guided ) {
                 //Init streaming audio helper
                 log.debug("using audio helper and streaming rec");
                 this.audiohelper =  audioHelper.clone();
                 this.audiohelper.init(this.waveHeight,this.uniqueid, this);
 
                 that.audiohelper.onError = on_error;
-                that.audiohelper.onfinalspeechcapture=function(speechtext){
+                that.audiohelper.onStop = on_stopped;
+                that.audiohelper.onSocketReady = on_gotstream;
+                that.audiohelper.onfinalspeechcapture = function(speechtext){
                     that.gotRecognition(speechtext);
                     that.update_audio('isRecording',false);
                     that.update_audio('isRecognizing',false);
                 };
-
-                that.audiohelper.oninterimspeechcapture=function(speechtext){
+                that.audiohelper.oninterimspeechcapture = function(speechtext){
                     that.gotInterimRecognition(speechtext);
                 };
-                that.audiohelper.onStop = function(){
-                    that.timer.stop();
-                };
-                //that.audiohelper.onStop = on_stopped;
-                that.audiohelper.onStream = on_gotstream;
+                
             //If DS rec
-            }else {
+            } else {
                 //set up wav for ds rec
                 log.debug("using ds rec");
                 this.audiohelper =  audioHelper.clone();
@@ -202,7 +201,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         },
 
         is_streaming: function( ){
-            return (this.streamingtoken && !this.stt_guided);
+            return (this.streamingtoken && this.streamingtoken !== 'false' && !this.stt_guided);
         },
 
         init_strings: function(){
@@ -228,6 +227,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             this.region=this.controls.recorderbutton.data('region');
             this.lang=this.controls.recorderbutton.data('lang');
             this.asrurl=this.controls.recorderbutton.data('asrurl');
+            this.streamingtoken=this.controls.recorderbutton.data('streamingtoken');
             this.maxtime=this.controls.recorderbutton.data('maxtime');
             this.waveHeight=this.controls.recorderbutton.data('waveheight');
         },
@@ -262,12 +262,12 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
             this.audio_updated=function() {
                 //pointer
-                if (that.audio.isRecognizing) {
+                if (that.audio.isRecognizing || that.audio.isWaiting ) {
                     that.show_recorder_pointer('none');
                 } else {
                     that.show_recorder_pointer('auto');
                 }
-
+                //the color
                 if(that.audio.isRecognizing || that.audio.isRecording ) {
                     this.controls.recorderbutton.removeClass('ttrec_ready');
                     this.controls.recorderbutton.addClass('ttrec_engaged');
@@ -276,7 +276,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                     this.controls.recorderbutton.addClass('ttrec_ready');
                 }
 
-                //div content WHEN?
+                //the font awesome spinner/mic/square
                 that.controls.recorderbutton.html(that.recordBtnContent());
             };
 
@@ -291,13 +291,12 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
         },
 
-
         gotRecognition:function(transcript){
             log.debug('transcript:' + transcript);
+            if(transcript.trim()==''){return;}
             var message={};
             message.type='speech';
             message.capturedspeech = transcript;
-           //POINT
             this.callback(message);
         },
 
@@ -319,10 +318,13 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
                 if (this.audio.isRecording) {
                     return '<i class="fa fa-stop">';
+
+                } else if(this.audio.isWaiting) {
+                    return '<i class="fa fa-spinner fa-spin">';
+
                 } else {
                     return '<i class="fa fa-microphone">';
                 }
-
             } else {
                 return '<i class="fa fa-spinner fa-spin">';
             }
@@ -344,7 +346,6 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                     that.update_audio('isRecording',false);
                     that.update_audio('isRecognizing',true);
                     this.browserrec.stop();
-
                 //If using DS rec
                 }else{
                     this.update_audio('isRecognizing',true);
@@ -364,7 +365,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                     this.update_audio('isRecording',true);
                     this.browserrec.start();
 
-                //If using DS Rec
+                //If using Audio helper
                 }else {
                     var newaudio = {
                         stream: null,
@@ -373,7 +374,8 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                         start: new Date(),
                         end: null,
                         isRecording: false,
-                        isRecognizing:false,
+                        isRecognizing: false,
+                        isWaiting: false,
                         transcript: null
                     };
                     this.update_audio(newaudio);
@@ -381,7 +383,6 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 }
             }
         },
-
 
         deepSpeech2: function(blob, callback) {
             var bodyFormData = new FormData();

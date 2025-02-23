@@ -59,6 +59,13 @@ class item_passagereading extends item {
         $testitem->passagetext = $this->itemrecord->{constants::READINGPASSAGE};
         $testitem->passagehtml = \mod_minilesson\aitranscriptutils::render_passage($this->itemrecord->{constants::READINGPASSAGE});
 
+        // Do we need a streaming token?
+        $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
+        $isenglish = strpos($this->moduleinstance->ttslanguage, 'en') === 0;
+        if ($isenglish && $alternatestreaming) {
+            $testitem->streamingtoken = utils::fetch_streaming_token($this->moduleinstance->region);
+        }
+
         // Cloudpoodll.
         $maxtime = $this->itemrecord->timelimit;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,63 +26,63 @@
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot.'/mod/minilesson/lib.php');
 
-use \mod_minilesson\constants;
-use \mod_minilesson\utils;
+use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 if ($ADMIN->fulltree) {
 
     /*
-	 $settings->add(new admin_setting_configtextarea(constants::M_COMPONENT .  '/defaultwelcome',
+    $settings->add(new admin_setting_configtextarea(constants::M_COMPONENT .  '/defaultwelcome',
         get_string('welcomelabel', constants::M_COMPONENT), get_string('welcomelabel_details', constants::M_COMPONENT), get_string('defaultwelcome',constants::M_COMPONENT), PARAM_TEXT));
-	*/
+    */
 
     $settings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/apiuser',
         get_string('apiuser', constants::M_COMPONENT),
             get_string('apiuser_details', constants::M_COMPONENT), '', PARAM_TEXT));
 
-    $cloudpoodll_apiuser=get_config(constants::M_COMPONENT,'apiuser');
-    $cloudpoodll_apisecret=get_config(constants::M_COMPONENT,'apisecret');
-    $show_below_apisecret='';
-//if we have an API user and secret we fetch token
-    if(!empty($cloudpoodll_apiuser) && !empty($cloudpoodll_apisecret)) {
-        $tokeninfo = utils::fetch_token_for_display($cloudpoodll_apiuser,$cloudpoodll_apisecret);
-        $show_below_apisecret=$tokeninfo;
-//if we have no API user and secret we show a "fetch from elsewhere on site" or "take a free trial" link
+    $cloudpoodllapiuser = get_config(constants::M_COMPONENT, 'apiuser');
+    $cloudpoodllapisecret = get_config(constants::M_COMPONENT, 'apisecret');
+    $showbelowapisecret = '';
+    // if we have an API user and secret we fetch token
+    if(!empty($cloudpoodllapiuser) && !empty($cloudpoodllapisecret)) {
+        $tokeninfo = utils::fetch_token_for_display($cloudpoodllapiuser, $cloudpoodllapisecret);
+        $showbelowapisecret = $tokeninfo;
+        // if we have no API user and secret we show a "fetch from elsewhere on site" or "take a free trial" link
     }else{
-        $amddata=['apppath'=>$CFG->wwwroot . '/' .constants::M_URL];
-        $cp_components=['filter_poodll','qtype_cloudpoodll','mod_readaloud','mod_wordcards','mod_solo','mod_englishcentral','mod_pchat',
-            'atto_cloudpoodll','tinymce_cloudpoodll', 'assignsubmission_cloudpoodll','assignfeedback_cloudpoodll'];
-        foreach($cp_components as $cp_component){
-            switch($cp_component){
+        $amddata = ['apppath' => $CFG->wwwroot . '/' .constants::M_URL];
+        $cpcomponents = ['filter_poodll', 'qtype_cloudpoodll', 'mod_readaloud', 'mod_wordcards', 'mod_solo', 'mod_englishcentral', 'mod_pchat',
+            'atto_cloudpoodll', 'tinymce_cloudpoodll', 'assignsubmission_cloudpoodll', 'assignfeedback_cloudpoodll'];
+        foreach($cpcomponents as $cpcomponent){
+            switch($cpcomponent){
                 case 'filter_poodll':
-                    $apiusersetting='cpapiuser';
-                    $apisecretsetting='cpapisecret';
+                    $apiusersetting = 'cpapiuser';
+                    $apisecretsetting = 'cpapisecret';
                     break;
                 case 'mod_englishcentral':
-                    $apiusersetting='poodllapiuser';
-                    $apisecretsetting='poodllapisecret';
+                    $apiusersetting = 'poodllapiuser';
+                    $apisecretsetting = 'poodllapisecret';
                     break;
                 default:
-                    $apiusersetting='apiuser';
-                    $apisecretsetting='apisecret';
+                    $apiusersetting = 'apiuser';
+                    $apisecretsetting = 'apisecret';
             }
-            $cloudpoodll_apiuser=get_config($cp_component,$apiusersetting);
-            if(!empty($cloudpoodll_apiuser)){
-                $cloudpoodll_apisecret=get_config($cp_component,$apisecretsetting);
-                if(!empty($cloudpoodll_apisecret)){
-                    $amddata['apiuser']=$cloudpoodll_apiuser;
-                    $amddata['apisecret']=$cloudpoodll_apisecret;
+            $cloudpoodllapiuser = get_config($cpcomponent, $apiusersetting);
+            if(!empty($cloudpoodllapiuser)){
+                $cloudpoodllapisecret = get_config($cpcomponent, $apisecretsetting);
+                if(!empty($cloudpoodllapisecret)){
+                    $amddata['apiuser'] = $cloudpoodllapiuser;
+                    $amddata['apisecret'] = $cloudpoodllapisecret;
                     break;
                 }
             }
         }
-        $show_below_apisecret=$OUTPUT->render_from_template( constants::M_COMPONENT . '/managecreds',$amddata);
+        $showbelowapisecret = $OUTPUT->render_from_template( constants::M_COMPONENT . '/managecreds', $amddata);
     }
 
 
-    //get_string('apisecret_details', constants::M_COMPONENT)
+    // get_string('apisecret_details', constants::M_COMPONENT)
     $settings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/apisecret',
-        get_string('apisecret', constants::M_COMPONENT),$show_below_apisecret, '', PARAM_TEXT));
+        get_string('apisecret', constants::M_COMPONENT), $showbelowapisecret, '', PARAM_TEXT));
 
 
     $regions = \mod_minilesson\utils::get_region_options();
@@ -91,8 +90,8 @@ if ($ADMIN->fulltree) {
             get_string('awsregion', constants::M_COMPONENT), '', 'useast1', $regions));
 
 
-	 $langoptions = \mod_minilesson\utils::get_lang_options();
-	 $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/ttslanguage',
+    $langoptions = \mod_minilesson\utils::get_lang_options();
+    $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/ttslanguage',
              get_string('ttslanguage', constants::M_COMPONENT), '', 'en-US', $langoptions));
 
     // Transcriber options
@@ -121,11 +120,11 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
         $label, $details, $default, $options));
 
-    //animations
+    // animations
     $name = 'animations';
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
-    $default = constants::M_ANIM_FANCY ;
+    $default = constants::M_ANIM_FANCY;
     $options = utils::fetch_options_animations();
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
         $label, $details, $default, $options));
@@ -135,8 +134,8 @@ if ($ADMIN->fulltree) {
         get_string('itemsperpage', constants::M_COMPONENT), get_string('itemsperpage_details', constants::M_COMPONENT), 10, PARAM_INT));
 
 
-    $modalsettings = array(0=>get_string('modaleditform_newpage', constants::M_COMPONENT),
-        1=>get_string('modaleditform_modalform', constants::M_COMPONENT));
+    $modalsettings = [0 => get_string('modaleditform_newpage', constants::M_COMPONENT),
+        1 => get_string('modaleditform_modalform', constants::M_COMPONENT)];
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/modaleditform',
         get_string('modaleditform', constants::M_COMPONENT), get_string('modaleditform_details', constants::M_COMPONENT), 0, $modalsettings));
 
@@ -147,15 +146,19 @@ if ($ADMIN->fulltree) {
 
 
     $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/enablepushtab',
-        get_string('enablepushtab', constants::M_COMPONENT), get_string('enablepushtab_details',constants::M_COMPONENT), 0));
+        get_string('enablepushtab', constants::M_COMPONENT), get_string('enablepushtab_details', constants::M_COMPONENT), 0));
+
+    $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/alternatestreaming',
+    get_string('alternatestreaming', constants::M_COMPONENT), get_string('alternatestreaming_details', constants::M_COMPONENT), 0));
+
 
 
     $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/enablesetuptab',
-            get_string('enablesetuptab', constants::M_COMPONENT), get_string('enablesetuptab_details',constants::M_COMPONENT), 0));
+            get_string('enablesetuptab', constants::M_COMPONENT), get_string('enablesetuptab_details', constants::M_COMPONENT), 0));
 
-    //Native Language Setting
+    // Native Language Setting
     $settings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/setnativelanguage',
-        get_string('enablenativelanguage', constants::M_COMPONENT), get_string('enablenativelanguage_details',constants::M_COMPONENT), 1));
+        get_string('enablenativelanguage', constants::M_COMPONENT), get_string('enablenativelanguage_details', constants::M_COMPONENT), 1));
 
     // Show item review.
     $name = 'showitemreview';
@@ -175,11 +178,11 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
         $label, $details, $default, $options));
 
-    //Default custom Finish Screen
+    // Default custom Finish Screen
     $name = 'finishscreencustom';
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
-    //The default custom finish screen ... a section with title, grade, stars and a try again button
+    // The default custom finish screen ... a section with title, grade, stars and a try again button
     $default = '{{total}} %<br />
  {{#yellowstars}}<i class="fa fa-star"></i>{{/yellowstars}}{{#graystars}}<i class="fa fa-star-o"></i>{{/graystars}} <br />
 <div class="container">

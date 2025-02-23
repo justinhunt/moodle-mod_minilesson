@@ -36,7 +36,8 @@ use mod_minilesson\constants;
  */
 class utils {
 
-    // const CLOUDPOODLL = 'http://localhost/moodle';
+     // const CLOUDPOODLL = 'http://localhost:8044';
+     // const CLOUDPOODLL = 'http://localhost/moodle';
     // const CLOUDPOODLL = 'https://vbox.poodll.com/cphost';
     const CLOUDPOODLL = 'https://cloud.poodll.com';
 
@@ -689,6 +690,57 @@ class utils {
         } else {
             return false;
         }
+    }
+
+    // Fetch the streaming token for the region and language
+    public static function fetch_streaming_token($region) {
+
+        // if we already have a token just use that
+        $now = time();
+        $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
+        $tokenobject = $cache->get('assemblyaitoken');
+        if ($tokenobject && isset($tokenobject->validuntil) && $tokenobject->validuntil > $now) {
+            return $tokenobject->token;
+        }
+
+        $cloudpoodlltoken = false;
+        $conf = get_config(constants::M_COMPONENT);
+        if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
+            $cloudpoodlltoken = self::fetch_token($conf->apiuser, $conf->apisecret);
+        }
+        if (!$cloudpoodlltoken || empty($cloudpoodlltoken)) {
+            return false;
+        }
+
+         // The REST API we are calling.
+         $functionname = 'local_cpapi_fetch_assemblyai_token';
+
+         // log.debug(params);
+         $params = [];
+         $params['wstoken'] = $cloudpoodlltoken;
+         $params['wsfunction'] = $functionname;
+         $params['moodlewsrestformat'] = 'json';
+         $params['region'] = $region;
+         // $params['language'] = $language;
+
+         $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+         $response = self::curl_fetch($serverurl, $params);
+         if (!self::is_json($response)) {
+             return false;
+         } else {
+            $payloadobject = json_decode($response);
+            if ($payloadobject->returnCode == 0 && isset($payloadobject->returnMessage)) {
+                $assemblyaitoken = $payloadobject->returnMessage;
+                // cache the token
+                $tokenobject = new \stdClass();
+                $tokenobject->token = $assemblyaitoken;
+                $tokenobject->validuntil = $now + (30 * MINSECS);
+                $cache->set('assemblyaitoken', $tokenobject);
+                return $assemblyaitoken;
+            } else {
+                return false;
+            }
+         }
     }
 
     public static function evaluate_transcript($transcript, $itemid, $cmid) {
