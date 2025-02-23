@@ -1,4 +1,5 @@
-define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, wavencoder) {
+define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/ttstreamer'],
+    function ($, log, wavencoder, audiostreamer) {
     "use strict"; // jshint ;_;
     /*
     This file is the engine that drives audio rec and canvas drawing. TT Recorder is the just the glory kid
@@ -7,6 +8,8 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
     log.debug('TT Audio Helper initialising');
 
     return {
+        encodingconfig: null,
+        streamer: null,
         encoder: null,
         microphone: null,
         isRecording: false,
@@ -18,9 +21,17 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
         silenceintervals: 15, //how many consecutive silence intervals (100ms) = silence detected
         silencelevel: 25, //below this volume level = silence
 
-        config: {
+        wavconfig: {
             bufferLen: 4096,
             numChannels: 2,
+            desiredSampleRate: null,
+            mimeType: 'audio/wav'
+        },
+
+        streamingconfig: {
+            bufferLen: 4096,
+            numChannels: 1,
+            desiredSampleRate: 16000,
             mimeType: 'audio/wav'
         },
 
@@ -35,6 +46,11 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             this.waveHeight = waveHeight;
             this.uniqueid=uniqueid;
             this.therecorder= therecorder;
+            if(this.therecorder.is_streaming()){
+                this.encodingconfig = this.streamingconfig;
+            } else {
+                this.encodingconfig = this.wavconfig;
+            }
             this.prepare_html();
 
 
@@ -57,11 +73,20 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             var that =this;
 
             // Audio context
-            this.audioContext = new AudioContext();
+            this.audioContext = new AudioContext(
+                {
+                    sampleRate: this.encodingconfig.desiredSampleRate
+                });
             if (this.audioContext.createJavaScriptNode) {
-                this.processor = this.audioContext.createJavaScriptNode(this.config.bufferLen, this.config.numChannels, this.config.numChannels);
+                this.processor = this.audioContext.createJavaScriptNode(
+                    this.encodingconfig.bufferLen,
+                    this.encodingconfig.numChannels,
+                    this.encodingconfig.numChannels);
             } else if (this.audioContext.createScriptProcessor) {
-                this.processor = this.audioContext.createScriptProcessor(this.config.bufferLen, this.config.numChannels, this.config.numChannels);
+                this.processor = this.audioContext.createScriptProcessor(
+                    this.encodingconfig.bufferLen,
+                    this.encodingconfig.numChannels,
+                    this.encodingconfig.numChannels);
             } else {
                 log.debug('WebAudio API has no support on this browser.');
             }
@@ -97,12 +122,23 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
 
                 // Connect the AudioBufferSourceNode to the gainNode
                 that.microphone.connect(that.processor);
+
+                //if we have a streaming transcriber we need to initialize it
+                if(that.therecorder.is_streaming()){
+                    that.streamer = audiostreamer.clone();
+                    that.streamer.init(that.therecorder.streamingtoken);
+                }
+
+                // Init WAV encoder
                 that.encoder = wavencoder.clone();
-                that.encoder.init(that.audioContext.sampleRate, 2);
+                that.encoder.init(that.audioContext.sampleRate, that.audioContext.numChannels);
 
                 // Give the node a function to process audio events
                 that.processor.onaudioprocess = function(event) {
-                    that.encoder.encode(that.getBuffers(event));
+                    that.encoder.audioprocess(that.getBuffers(event));
+                    if(that.streamer){
+                        that.streamer.audioprocess(that.getBuffers(event));
+                    }
                 };
 
                 that.listener = that.audioContext.createAnalyser();
@@ -157,7 +193,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
 
         getBuffers: function(event) {
             var buffers = [];
-            for (var ch = 0; ch < 2; ++ch) {
+            for (var ch = 0; ch < this.encodingconfig.numChannels; ++ch) {
                 buffers[ch] = event.inputBuffer.getChannelData(ch);
             }
             return buffers;

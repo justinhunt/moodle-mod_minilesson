@@ -48,6 +48,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             this.uniqueid=opts['uniqueid'];
             this.callback=opts['callback'];
             this.stt_guided = opts['stt_guided'] ? opts['stt_guided'] : false;
+            this.streamingtoken = '';//opts['streamingtoken'];
             this.init_strings();
             this.prepare_html();
             this.controls.recordercontainer.show();
@@ -132,7 +133,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 
             };
 
-            //If browser rec (Chrome Speech Rec) (and ds is optiona)
+            //If browser rec (Chrome Speech Rec) (and ds is optional)
             if(browserRec.will_work_ok() && ! this.stt_guided){
                 //Init browserrec
                 log.debug("using browser rec");
@@ -158,6 +159,28 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                     that.gotInterimRecognition(speechtext);
                 };
 
+            //If we have a streaming token
+            }else if( this.is_streaming()) {
+                //Init streaming audio helper
+                log.debug("using audio helper and streaming rec");
+                this.audiohelper =  audioHelper.clone();
+                this.audiohelper.init(this.waveHeight,this.uniqueid, this);
+
+                that.audiohelper.onError = on_error;
+                that.audiohelper.onfinalspeechcapture=function(speechtext){
+                    that.gotRecognition(speechtext);
+                    that.update_audio('isRecording',false);
+                    that.update_audio('isRecognizing',false);
+                };
+
+                that.audiohelper.oninterimspeechcapture=function(speechtext){
+                    that.gotInterimRecognition(speechtext);
+                };
+                that.audiohelper.onStop = function(){
+                    that.timer.stop();
+                };
+                //that.audiohelper.onStop = on_stopped;
+                that.audiohelper.onStream = on_gotstream;
             //If DS rec
             }else {
                 //set up wav for ds rec
@@ -176,6 +199,10 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             this.timer.init(this.maxtime, handle_timer_update);
             // Init the timer readout
             handle_timer_update();
+        },
+
+        is_streaming: function( ){
+            return (this.streamingtoken && !this.stt_guided);
         },
 
         init_strings: function(){
