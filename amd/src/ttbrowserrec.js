@@ -29,8 +29,11 @@ define(['jquery', 'core/log'], function ($, log) {
                 is_iframe = true;
             }
 
-            //for now assume molbileapp = iframe
-            var is_mobileapp = is_iframe;
+            //is mobileapp ?
+            var is_mobileapp = false;
+            if (typeof cordova !== 'undefined' || typeof Capacitor !== 'undefined') {
+                is_mobileapp = true;
+            }
 
             //Brave looks like it does speech rec, but it doesn't
             var brave = typeof navigator.brave !== 'undefined';
@@ -61,7 +64,7 @@ define(['jquery', 'core/log'], function ($, log) {
             //This is feature detection, and for chrome it can be trusted.
             // The others might say they do speech rec, but that does not mean it works
             // we know safari in webapp does not so we nix that here
-            if(is_mobileapp && this.browsertype === 'safari') {
+            if(is_mobileapp && has_safari) {
                 return false;
             } else if(this.browsertype === 'brave'){
                 return false;
