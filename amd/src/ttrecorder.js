@@ -330,7 +330,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                     return '<i class="fa fa-stop">';
 
                 } else if(this.audio.isWaiting) {
-                    return '<i class="fa fa-ellipsis-h fa-pulse">';
+                    return '<i class="fa fa-solid fa-cog fa-spin">';
 
                 } else {
                     return '<i class="fa fa-microphone">';

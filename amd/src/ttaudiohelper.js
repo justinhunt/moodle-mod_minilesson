@@ -181,24 +181,29 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
         },
 
         stop: function() {
+            var that = this;
             clearInterval(this.interval);
             this.canvasCtx.clearRect(0, 0, this.canvas.width()*2, this.waveHeight * 2);
             this.isRecording = false;
             this.silencecount=0;
             this.alreadyhadsound=false;
             this.therecorder.update_audio('isRecording',false);
+            //we set a timeout to allow the audiocontext buffer to fill up since we can't flush it
+            //if we don't we may miss 1s of audio at the end
+            setTimeout(function() {
+                //we check audiocontext is not in an odd state before closing
+                //superclickers can get it in an odd state
+                if (that.audioContext!==null && that.audioContext.state !== "closed") {
+                    that.audioContext.close();
+                }
+                that.processor.disconnect();
+                that.tracks.forEach(track => track.stop());
+                that.onStop(that.encoder.finish());
+                if(that.streamer){
+                    that.streamer.finish();
+                }
+            },1000);
 
-            //we check audiocontext is not in an odd state before closing
-            //superclickers can get it in an odd state
-            if (this.audioContext!==null && this.audioContext.state !== "closed") {
-                this.audioContext.close();
-             }
-            this.processor.disconnect();
-            this.tracks.forEach(track => track.stop());
-            this.onStop(this.encoder.finish());
-            if(this.streamer){
-                this.streamer.finish();
-            }
         },
 
         getBuffers: function(event) {

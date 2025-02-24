@@ -186,7 +186,7 @@ define(['jquery', 'core/log'], function ($, log) {
                 log.debug('sending final speech capture event');
                 that.audiohelper.onfinalspeechcapture(msg);
                 that.cleanup();
-            }, 1500);
+            }, 1000);
         },
 
         cancel: function() {
