@@ -50,7 +50,8 @@ define(['jquery', 'core/log'], function ($, log) {
             //Safari may or may not work, but its hard to tell from the browser agent
             var has_chrome = navigator.userAgent.indexOf('Chrome') > -1;
             var has_safari = navigator.userAgent.indexOf("Safari") > -1;
-            var has_applewebkit = navigator.userAgent.indexOf("AppleWebKit") > -1;
+            var is_ios = (navigator.userAgent.indexOf("iPhone") > -1 ||
+                navigator.userAgent.indexOf("iPad") > -1);
             var safari = has_safari && !has_chrome;
             if(safari && this.browsertype === ''){
                 this.browsertype = 'safari';
@@ -65,7 +66,7 @@ define(['jquery', 'core/log'], function ($, log) {
             //This is feature detection, and for chrome it can be trusted.
             // The others might say they do speech rec, but that does not mean it works
             // we know safari in webapp does not so we nix that here
-            if(is_mobileapp && has_applewebkit) {
+            if(is_mobileapp && is_ios) {
                 return false;
             } else if(this.browsertype === 'brave'){
                 return false;
