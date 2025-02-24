@@ -132,7 +132,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
       //corrected text container is created at runtime, so it wont exist at init_components time
       //thats we find it here 
        var correctionscontainer = self.resultsbox.find('.mlfsr_correctedtext');
-      
+       log.debug('navigator.userAgent');
+        log.debug(navigator.userAgent);
+      correctionscontainer.text(navigator.userAgent + ' ' + typeof cordova + ' ' + typeof Capacitor);
        correctionsmarkup.init({ "correctionscontainer": correctionscontainer,
             "grammarerrors": grammarerrors,
             "grammarmatches": grammarmatches,
