@@ -22,13 +22,15 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
         silencelevel: 25, //below this volume level = silence
         enablesilencedetection: true,
 
+        // wav config for encoding to wav
         wavconfig: {
             bufferLen: 4096,
             numChannels: 2,
-            desiredSampleRate: null,
+            desiredSampleRate: 48000,
             mimeType: 'audio/wav'
         },
-
+        //streaming config for encoding to pcm and later base64
+        // TO DO: wav config might work just as well. test.
         streamingconfig: {
             bufferLen: 4096,
             numChannels: 1,
@@ -79,26 +81,18 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
                 {
                     sampleRate: this.encodingconfig.desiredSampleRate
                 });
-            if (this.audioContext.createJavaScriptNode) {
-                this.processor = this.audioContext.createJavaScriptNode(
-                    this.encodingconfig.bufferLen,
-                    this.encodingconfig.numChannels,
-                    this.encodingconfig.numChannels);
-            } else if (this.audioContext.createScriptProcessor) {
-                this.processor = this.audioContext.createScriptProcessor(
-                    this.encodingconfig.bufferLen,
-                    this.encodingconfig.numChannels,
-                    this.encodingconfig.numChannels);
-            } else {
-                log.debug('WebAudio API has no support on this browser.');
-            }
+
+            this.processor = this.audioContext.createScriptProcessor(
+                this.encodingconfig.bufferLen,
+                this.encodingconfig.numChannels,
+                this.encodingconfig.numChannels);
+
             this.processor.connect(this.audioContext.destination);
 
 
             var gotStreamMethod= function(stream) {
-                that.onStream(stream);
+
                 that.isRecording = true;
-                that.therecorder.update_audio('isRecording',true);
                 that.tracks = stream.getTracks();
 
                 //lets check the noise suppression and echo reduction on these
@@ -129,18 +123,27 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
                 if(that.therecorder.is_streaming()){
                     that.streamer = audiostreamer.clone();
                     that.streamer.init(that.therecorder.streamingtoken, that);
+                    that.enablesilencedetection = false;
+                }else{
+                    //This is hacky, but we need to tell TTRecorder that we have started
+                    //so it knows state and can change visuals
+                    //but streaming transcription ignores first few seconds of audio
+                    //so we dont want to make that notification if its streaming (yet)
+                    //so only if we are not streaming, we notify that we have started
+                    //streaming will notify when it is ready
+                    that.onStream(stream);
+                   // that.therecorder.update_audio('isRecording',true);
                 }
 
                 // Init WAV encoder
                 that.encoder = wavencoder.clone();
-                that.encoder.init(that.audioContext.sampleRate, that.audioContext.numChannels);
+                that.encoder.init(that.audioContext.sampleRate, that.encodingconfig.numChannels);
 
                 // Give the node a function to process audio events
                 that.processor.onaudioprocess = function(event) {
                     that.encoder.audioprocess(that.getBuffers(event));
                     if(that.streamer){
                         that.streamer.audioprocess(that.getBuffers(event));
-                        that.enablesilencedetection = false;
                     }
                 };
 
@@ -184,6 +187,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
             this.silencecount=0;
             this.alreadyhadsound=false;
             this.therecorder.update_audio('isRecording',false);
+
             //we check audiocontext is not in an odd state before closing
             //superclickers can get it in an odd state
             if (this.audioContext!==null && this.audioContext.state !== "closed") {

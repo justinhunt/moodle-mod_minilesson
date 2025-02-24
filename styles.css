@@ -1706,6 +1706,14 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   background: green;
 }
 
+.mod_minilesson_ttrec_waveButtonContainer .mod_minilesson_ttrec_waveButton.ttrec_waiting {
+  background: grey;
+  box-shadow: none;
+}
+.mod_minilesson_ttrec_waveButtonContainer .mod_minilesson_ttrec_waveForm.ttrec_waiting {
+  display: none;
+}
+
 .mod_minilesson_ttrec_waveButtonContainer .ttrec_engaged {
   background: #e52;
 }

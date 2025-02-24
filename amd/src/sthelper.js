@@ -210,7 +210,6 @@ var app = {
                     break;
 
                   case 'speech':
-                    log.debug("speech at speechcards");
                     var speechtext = message.capturedspeech;
                     var spoken_clean  = quizhelper.cleanText(speechtext);
                     var correct_clean = quizhelper.cleanText(app.terms[app.pointer - 1]);

@@ -102,7 +102,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
             break;
 
           case 'speech':
-            log.debug("speech at speechcards");
             var speechtext = message.capturedspeech;
 
             //update the wordcount

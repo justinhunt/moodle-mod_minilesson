@@ -124,8 +124,9 @@ define(['jquery', 'core/log'], function ($, log) {
             if(this.ready===undefined || !this.ready){
                 return;
             }
-
+            //it might be stereo so we will just take the first channel
             var monoaudiodata = audiodata[0];
+            //convert to 16 bit pcm
             var tempbuffer = []
             for (let i = 0; i < monoaudiodata.length; i++) {
                 const sample = Math.max(-1, Math.min(1, monoaudiodata[i]))
@@ -135,13 +136,14 @@ define(['jquery', 'core/log'], function ($, log) {
             }
             var sendbuffer = new Uint8Array(tempbuffer)
 
+            // Encode binary string to base64
             var binary = '';
             for (var i = 0; i < sendbuffer.length; i++) {
                 binary += String.fromCharCode(sendbuffer[i]);
             }
-
-            // Encode binary string to base64
             var base64 = btoa(binary);
+
+            //Send it off !!
             if (that.socket) {
                 that.socket.send(
                     JSON.stringify({
@@ -159,6 +161,16 @@ define(['jquery', 'core/log'], function ($, log) {
             if(this.ready===undefined || !this.ready){
                 return;
             }
+            log.debug('forcing end uttterance');
+            //get any remanining transcription
+            if (that.socket) {
+                that.socket.send(
+                    JSON.stringify({
+                        force_end_utterance: true,
+                    }),
+                );
+            }
+            log.debug('timing out');
             setTimeout(function() {
                 var msg = "";
                 var sets = [that.finals,that.partials];
@@ -171,9 +183,10 @@ define(['jquery', 'core/log'], function ($, log) {
                         }
                     }
                 }
+                log.debug('sending final speech capture event');
                 that.audiohelper.onfinalspeechcapture(msg);
                 that.cleanup();
-            }, 1000);
+            }, 1500);
         },
 
         cancel: function() {

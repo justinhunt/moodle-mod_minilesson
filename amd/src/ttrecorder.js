@@ -126,7 +126,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
             // Callback: Recorder device got stream - start recording
             var on_gotstream=  function(stream) {
-                var newaudio={stream: stream, isRecording: true};
+                var newaudio={stream: stream, isRecording: true, isWaiting: false};
                 that.update_audio(newaudio);
 
                 //TO DO - conditionally start timer here (not toggle recording)
@@ -222,6 +222,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         prepare_html: function(){
             this.controls.recordercontainer =$('#ttrec_container_' + this.uniqueid);
             this.controls.recorderbutton = $('#' + this.uniqueid + '_recorderdiv');
+            this.controls.waveform = $('#' + this.uniqueid + '_waveform');
             this.controls.timerstatus = $('.timerstatus_' + this.uniqueid);
             this.passagehash = this.controls.recorderbutton.data('passagehash');
             this.region=this.controls.recorderbutton.data('region');
@@ -270,9 +271,18 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 //the color
                 if(that.audio.isRecognizing || that.audio.isRecording ) {
                     this.controls.recorderbutton.removeClass('ttrec_ready');
+                    this.controls.recorderbutton.removeClass('ttrec_waiting');
+                    this.controls.waveform.removeClass('ttrec_waiting');
                     this.controls.recorderbutton.addClass('ttrec_engaged');
+                }else if (that.audio.isWaiting) {
+                    this.controls.recorderbutton.removeClass('ttrec_engaged');
+                    this.controls.recorderbutton.removeClass('ttrec_ready');
+                    this.controls.recorderbutton.addClass('ttrec_waiting');
+                    this.controls.waveform.addClass('ttrec_waiting');
                 }else{
                     this.controls.recorderbutton.removeClass('ttrec_engaged');
+                    this.controls.recorderbutton.removeClass('ttrec_waiting');
+                    this.controls.waveform.removeClass('ttrec_waiting');
                     this.controls.recorderbutton.addClass('ttrec_ready');
                 }
 
@@ -320,7 +330,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                     return '<i class="fa fa-stop">';
 
                 } else if(this.audio.isWaiting) {
-                    return '<i class="fa fa-spinner fa-spin">';
+                    return '<i class="fa fa-ellipsis-h fa-pulse">';
 
                 } else {
                     return '<i class="fa fa-microphone">';
@@ -375,7 +385,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                         end: null,
                         isRecording: false,
                         isRecognizing: false,
-                        isWaiting: false,
+                        isWaiting: true,
                         transcript: null
                     };
                     this.update_audio(newaudio);
