@@ -84,14 +84,14 @@ define(['jquery', 'core/log'], function ($, log) {
                         that.audiohelper.oninterimspeechcapture(msg);
                         log.debug('interim (final) transcript: ' + msg);
                         break;
-                    case 'Session_Begins':
+                    case 'SessionBegins':
                             that.audiohelper.onSocketReady('fromsocketopen');
                             break;      
-                    case 'Session_Ends':
+                    case 'SessionEnds':
                             break;    
-                    case 'Session_Information':
+                    case 'SessionInformation':
                         break;
-                    case 'Realtime_Error':
+                    case 'RealtimeError':
                         log.debug(res.error);
                         break;    
                     default:
