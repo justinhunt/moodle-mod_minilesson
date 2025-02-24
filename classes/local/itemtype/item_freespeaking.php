@@ -67,8 +67,11 @@ class item_freespeaking extends item {
         // Do we need a streaming token?
         $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
         $isenglish = strpos($this->moduleinstance->ttslanguage, 'en') === 0;
-        if ($isenglish && $alternatestreaming) {
+        if ($isenglish) {
             $testitem->streamingtoken = utils::fetch_streaming_token($this->moduleinstance->region);
+            if($alternatestreaming){
+                $testitem->forcestreaming = true;
+            }
         }
 
          // Cloudpoodll.

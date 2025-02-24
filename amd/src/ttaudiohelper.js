@@ -50,7 +50,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
             this.uniqueid=uniqueid;
             this.therecorder= therecorder;
             this.region = therecorder.region;
-            if(this.therecorder.is_streaming()){
+            if(this.therecorder.is_streaming){
                 this.encodingconfig = this.streamingconfig;
             } else {
                 this.encodingconfig = this.wavconfig;
@@ -120,7 +120,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
                 that.microphone.connect(that.processor);
 
                 //if we have a streaming transcriber we need to initialize it
-                if(that.therecorder.is_streaming()){
+                if(that.therecorder.is_streaming){
                     that.streamer = audiostreamer.clone();
                     that.streamer.init(that.therecorder.streamingtoken, that);
                     that.enablesilencedetection = false;

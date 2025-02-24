@@ -36,6 +36,8 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         stt_guided: false,
         currentPrompt: false,
         streamingtoken: '',
+        forcestreaming: false,
+        is_streaming: false,
         strings: {},
 
         //for making multiple instances
@@ -110,7 +112,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 that.update_audio(newaudio);
 
                 //if we are not streaming then deep speech rec
-                if(!that.is_streaming()){
+                if(!that.is_streaming){
                     that.deepSpeech2(that.audio.blob, function(response){
                         log.debug(response);
                         if(response.data.result==="success" && response.data.transcript){
@@ -128,15 +130,10 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             var on_gotstream=  function(stream) {
                 var newaudio={stream: stream, isRecording: true, isWaiting: false};
                 that.update_audio(newaudio);
-
-                //TO DO - conditionally start timer here (not toggle recording)
-                //so a device error does not cause timer disaster
-                // that.timer.reset();
-                // that.timer.start();
             };
 
             //If browser rec (Chrome Speech Rec) (and ds is optional)
-            if(browserRec.will_work_ok() && ! this.stt_guided && !this.is_streaming()){
+            if(browserRec.will_work_ok() && ! this.stt_guided && !this.forcestreaming){
                 //Init browserrec
                 log.debug("using browser rec");
                 this.browserrec = browserRec.clone();
@@ -162,7 +159,8 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 };
 
             //If we have a streaming token
-            }else if( this.is_streaming() && ! this.stt_guided ) {
+            }else if( this.can_stream() && !this.stt_guided ) {
+                this.is_streaming = true;
                 //Init streaming audio helper
                 log.debug("using audio helper and streaming rec");
                 this.audiohelper =  audioHelper.clone();
@@ -200,7 +198,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             handle_timer_update();
         },
 
-        is_streaming: function( ){
+        can_stream: function( ){
             return (this.streamingtoken && this.streamingtoken !== 'false' && !this.stt_guided);
         },
 
@@ -229,6 +227,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             this.lang=this.controls.recorderbutton.data('lang');
             this.asrurl=this.controls.recorderbutton.data('asrurl');
             this.streamingtoken=this.controls.recorderbutton.data('streamingtoken');
+            this.forcestreaming=this.controls.recorderbutton.data('forcestreaming');
             this.maxtime=this.controls.recorderbutton.data('maxtime');
             this.waveHeight=this.controls.recorderbutton.data('waveheight');
         },

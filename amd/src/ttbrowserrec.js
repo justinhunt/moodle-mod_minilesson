@@ -23,18 +23,25 @@ define(['jquery', 'core/log'], function ($, log) {
         },
 
         will_work_ok: function(opts){
-            //Brave looks like it does speech rec, but it doesnt
+            //let's check if we are in an iframe
+            var is_iframe = false;
+            if (window.self !== window.top) {
+                is_iframe = true;
+            }
+
+            //for now assume molbileapp = iframe
+            var is_mobileapp = is_iframe;
+
+            //Brave looks like it does speech rec, but it doesn't
             var brave = typeof navigator.brave !== 'undefined';
             if(brave){
                 this.browsertype = 'brave';
-               // return false;
             }
 
             //Edge may or may not work, but its hard to tell from the browser agent
             var edge = navigator.userAgent.toLowerCase().indexOf("edg/") > -1;
            if(edge && this.browsertype === ''){
                this.browsertype = 'edge';
-               //return false;
            }
 
             //Safari may or may not work, but its hard to tell from the browser agent
@@ -43,7 +50,6 @@ define(['jquery', 'core/log'], function ($, log) {
             var safari = has_safari && !has_chrome;
             if(safari && this.browsertype === ''){
                 this.browsertype = 'safari';
-                //return false;
             }
 
             //This is feature detection, and for chrome it can be trusted.
@@ -54,8 +60,14 @@ define(['jquery', 'core/log'], function ($, log) {
 
             //This is feature detection, and for chrome it can be trusted.
             // The others might say they do speech rec, but that does not mean it works
-            return hasspeechrec;
-
+            // we know safari in webapp does not so we nix that here
+            if(is_mobileapp && this.browsertype === 'safari') {
+                return false;
+            } else if(this.browsertype === 'brave'){
+                return false;
+            } else {
+                return hasspeechrec;
+            }
         },
 
         init: function (lang,waveheight,uniqueid) {
