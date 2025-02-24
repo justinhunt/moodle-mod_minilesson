@@ -733,12 +733,8 @@ abstract class item implements templatable, renderable {
         }
 
         //transcription server url
-        if (isset($testitem->streamingtoken) && $testitem->streamingtoken) {
-            // for streaming we hard code  it in js, since different implementations will need more than the url
-            $testitem->asrurl = "";
-        } else {
-            $testitem->asrurl = utils::fetch_lang_server_url($this->region,'transcribe');
-        }
+        $testitem->asrurl = utils::fetch_lang_server_url($this->region,'transcribe');
+
         //recording max time
         $testitem->maxtime = $maxtime;
 
