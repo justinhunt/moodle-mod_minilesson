@@ -85,6 +85,7 @@ define(['jquery', 'core/log'], function ($, log) {
                         log.debug('interim (final) transcript: ' + msg);
                         break;
                     case 'Session_Begins':
+                            that.audiohelper.onSocketReady('fromsocketopen');
                             break;      
                     case 'Session_Ends':
                             break;    
@@ -104,7 +105,6 @@ define(['jquery', 'core/log'], function ($, log) {
                 that.ready = true;
                 that.partials = [];
                 that.finals = [];
-                that.audiohelper.onSocketReady('fromsocketopen');
             };
 
             this.socket.onerror = (event) => {
