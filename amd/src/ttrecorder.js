@@ -342,7 +342,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             var that =this;
 
             //If we are recognizing, then we want to discourage super click'ers
-            if (this.audio.isRecognizing) {
+            if (this.audio.isRecognizing || this.audio.isWaiting) {
                 return;
             }
 
