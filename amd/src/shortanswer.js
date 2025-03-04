@@ -151,7 +151,7 @@ define(['jquery',
             //we do not do a passage match check , but this is how we would ..
               if(!matched ) {
                 for (x = 0; x < sentences.length; x++) {
-                  var ajaxresult = await quizhelper.comparePassageToTranscript(sentences[x].sentence, spoken, sentences[x].phonetic, itemdata.language);
+                  var ajaxresult = await quizhelper.comparePassageToTranscript(sentences[x].sentence, spoken, sentences[x].phonetic, itemdata.language, itemdata.alternates);
                   var result = JSON.parse(ajaxresult);
                   var haserror=false;
                   for (var i=0;i<result.length;i++){

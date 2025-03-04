@@ -292,7 +292,7 @@ define(['jquery',
       var self = this;
       
       $(".landr_ctrl-btn").prop("disabled", true);
-      self.quizhelper.comparePassageToTranscript(passage,transcript,phonetic,self.itemdata.language).then(function(ajaxresult) {
+      self.quizhelper.comparePassageToTranscript(passage,transcript,phonetic,self.itemdata.language, self.itemdata.alternates).then(function(ajaxresult) {
             var payloadobject = JSON.parse(ajaxresult);
             if (payloadobject) {
                 callback(payloadobject);

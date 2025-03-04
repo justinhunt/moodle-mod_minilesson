@@ -55,6 +55,7 @@ class item_speakinggapfill extends item {
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
+        $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
 
         // Sentences
         $sentences = [];
@@ -110,6 +111,7 @@ class item_speakinggapfill extends item {
         $keycols['int2'] = ['jsonname' => 'dictationstyle', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
+        $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
         return $keycols;
     }
 

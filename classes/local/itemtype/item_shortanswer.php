@@ -56,6 +56,7 @@ class item_shortanswer extends item {
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
+        $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
 
         //sentences
         $sentences = [];
@@ -85,9 +86,6 @@ class item_shortanswer extends item {
 
         //cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
-
-
-
         return $testitem;
     }
 
@@ -104,6 +102,18 @@ class item_shortanswer extends item {
 
         //return false to indicate no error
         return false;
+    }
+
+    /*
+* This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+*/
+    public static function get_keycolumns(){
+        //get the basic key columns and customize a little for instances of this item type
+        //get the basic key columns and customize a little for instances of this item type
+       $keycols = parent::get_keycolumns();
+       $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+       $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
+        return $keycols;
     }
 
 }

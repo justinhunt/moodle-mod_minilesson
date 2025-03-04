@@ -56,6 +56,7 @@ class item_listenrepeat extends item {
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
+        $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
 
         //sentences
         $sentences = [];
@@ -132,6 +133,7 @@ class item_listenrepeat extends item {
         $keycols['text5']=['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
         $keycols['int1']=['jsonname'=>'showtextprompt','type'=>'boolean','optional'=>true,'default'=>constants::TEXTPROMPT_WORDS,'dbname'=>constants::SHOWTEXTPROMPT];
         $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+        $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
         return $keycols;
     }
 

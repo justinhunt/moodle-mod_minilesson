@@ -25,6 +25,9 @@ class listenrepeatform extends baseform
         //$this->add_dropdown(constants::SHOWTEXTPROMPT,get_string('showtextprompt',constants::M_COMPONENT),$textpromptoptions);
         $this->add_static_text('instructions','',get_string('phraseresponses',constants::M_COMPONENT));
         $this->add_textarearesponse(1,get_string('sentenceprompts',constants::M_COMPONENT),true);
+        $this->add_textarearesponse(constants::ALTERNATES, get_string('alternates', constants::M_COMPONENT), false);
+        $this->add_static_text('alternates_instructions', '', get_string('pr_alternates_instructions', constants::M_COMPONENT));
+
     }
 
 }

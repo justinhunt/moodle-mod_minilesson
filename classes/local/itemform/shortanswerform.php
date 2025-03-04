@@ -20,6 +20,8 @@ class shortanswerform extends baseform
         //all answers are correct
         $this->add_static_text('instructions','',get_string('enterresponses',constants::M_COMPONENT));
         $this->add_textarearesponse(1,get_string('correctresponses',constants::M_COMPONENT),true);
+        $this->add_textarearesponse(constants::ALTERNATES, get_string('alternates', constants::M_COMPONENT), false);
+        $this->add_static_text('alternates_instructions', '', get_string('pr_alternates_instructions', constants::M_COMPONENT));
 
     }
 
