@@ -11,6 +11,7 @@ define(['jquery', 'core/log'], function ($, log) {
         streamingtoken: null,
         socket: null,
         audiohelper: null,
+        earlyaudio: [],
         partials: [],
         finals: [],
         ready: false,
@@ -85,7 +86,8 @@ define(['jquery', 'core/log'], function ($, log) {
                         log.debug('interim (final) transcript: ' + msg);
                         break;
                     case 'SessionBegins':
-                            that.audiohelper.onSocketReady('fromsocketopen');
+                            log.debug('TT Streamer session begins');
+                            that.ready = true;
                             break;      
                     case 'SessionEnds':
                             break;    
@@ -102,9 +104,9 @@ define(['jquery', 'core/log'], function ($, log) {
 
             this.socket.onopen = (event) => {
                 log.debug('TT Streamer socket opened');
-                that.ready = true;
                 that.partials = [];
                 that.finals = [];
+                that.audiohelper.onSocketReady('fromsocketopen');
             };
 
             this.socket.onerror = (event) => {
@@ -118,14 +120,35 @@ define(['jquery', 'core/log'], function ($, log) {
             };
         },
 
-        audioprocess: function(audiodata) {
+        audioprocess: function(stereodata) {
             var that = this;
-            //this would be an event that occurs after recorder has stopped lets just ignore it
+            const base64data = this.binarytobase64(stereodata[0]);
+
+            //this would be an event that occurs after recorder has stopped or before we are ready
+            //session opening can be slower than socket opening, so store audio data until session is open
             if(this.ready===undefined || !this.ready){
-                return;
+                log.debug('TT Streamer storing base64 audio');
+                this.earlyaudio.push(base64data);
+
+            //session opened after we collected audio data, send earlyaudio first
+            }else if(this.earlyaudio.length > 0 ){
+                for (var i=0; i < this.earlyaudio.length; i++) {
+                    this.sendaudio(this.earlyaudio[i]);
+                }
+                //clear earlyaudio and send the audio we just got
+                this.earlyaudio = [];
+                this.sendaudio(base64data);
+
+            }else{
+                //just send the audio we got
+                log.debug('TT Streamer sending current audiodata');
+                this.sendaudio(base64data);
             }
-            //it might be stereo so we will just take the first channel
-            var monoaudiodata = audiodata[0];
+        },
+
+        binarytobase64: function(monoaudiodata) {
+            var that = this;
+
             //convert to 16 bit pcm
             var tempbuffer = []
             for (let i = 0; i < monoaudiodata.length; i++) {
@@ -142,7 +165,11 @@ define(['jquery', 'core/log'], function ($, log) {
                 binary += String.fromCharCode(sendbuffer[i]);
             }
             var base64 = btoa(binary);
+            return base64;
+        },
 
+        sendaudio: function(base64) {
+            var that = this;
             //Send it off !!
             if (that.socket) {
                 that.socket.send(
@@ -153,7 +180,6 @@ define(['jquery', 'core/log'], function ($, log) {
             }
         },
 
-
         finish: function(mimeType) {
             var that = this;
 
@@ -161,7 +187,7 @@ define(['jquery', 'core/log'], function ($, log) {
             if(this.ready===undefined || !this.ready){
                 return;
             }
-            log.debug('forcing end uttterance');
+            log.debug('forcing end utterance');
             //get any remanining transcription
             if (that.socket) {
                 that.socket.send(
@@ -191,6 +217,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
         cancel: function() {
            this.ready = false;
+           this.earlyaudio = [];
            this.partials = [];
            this.finals = [];
            this.finaltext = '';

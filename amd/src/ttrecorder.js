@@ -168,7 +168,8 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
                 that.audiohelper.onError = on_error;
                 that.audiohelper.onStop = on_stopped;
-                that.audiohelper.onSocketReady = on_gotstream;
+                that.audiohelper.onStream = on_gotstream;
+            //    that.audiohelper.onSocketReady = on_gotstream;
                 that.audiohelper.onfinalspeechcapture = function(speechtext){
                     that.gotRecognition(speechtext);
                     that.update_audio('isRecording',false);

@@ -67,6 +67,9 @@ abstract class item implements templatable, renderable {
     //NEEDS SPEECH REC
     protected $needs_speechrec = false;
 
+    /** @var boolean show itemreview */
+    protected $showitemreview = true;
+
     /**
      * The class constructor.
      *

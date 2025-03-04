@@ -124,16 +124,9 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
                     that.streamer = audiostreamer.clone();
                     that.streamer.init(that.therecorder.streamingtoken, that);
                     that.enablesilencedetection = false;
-                }else{
-                    //This is hacky, but we need to tell TTRecorder that we have started
-                    //so it knows state and can change visuals
-                    //but streaming transcription ignores first few seconds of audio
-                    //so we dont want to make that notification if its streaming (yet)
-                    //so only if we are not streaming, we notify that we have started
-                    //streaming will notify when it is ready
-                    that.onStream(stream);
-                   // that.therecorder.update_audio('isRecording',true);
                 }
+                //Alert TT recorder that we are ready to go (it will do visuals and manage state of recorder)
+                that.onStream(stream);
 
                 // Init WAV encoder
                 that.encoder = wavencoder.clone();
@@ -141,9 +134,10 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
 
                 // Give the node a function to process audio events
                 that.processor.onaudioprocess = function(event) {
-                    that.encoder.audioprocess(that.getBuffers(event));
+                    var thebuffers = that.getBuffers(event);
+                    that.encoder.audioprocess(thebuffers);
                     if(that.streamer){
-                        that.streamer.audioprocess(that.getBuffers(event));
+                        that.streamer.audioprocess(thebuffers);
                     }
                 };
 
