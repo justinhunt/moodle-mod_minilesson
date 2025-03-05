@@ -1,3 +1,10 @@
+Version 1.0.81 (Build 2025030500)
+- Fix for lack of import in short answer questions
+- Streaming audio recorder for open transcription in English (on in MMA, toggle on in admin settings)
+- Added alternates field in Short answer, Listen and Speak, Speaking Gap Fill and passage reading
+- Better detection of mobile app
+
+
 Version 1.0.80 (Build 2025021900)
 - Fix for upgrade script on postgresql
 - Fix for multichoice question duplicate when answer options are images

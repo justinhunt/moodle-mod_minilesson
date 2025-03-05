@@ -852,4 +852,4 @@ $string['nopasting'] = "Disable copy/paste";
 $string['nopasting_desc'] = "Disable copy/paste into the text area. This is to prevent students from pasting in answers from elsewhere.";
 $string['attemptfor'] = 'Attempt: {$a}';
 $string['alternatestreaming'] = 'Enable alternate streaming';
-$string['alternatestreaming_details'] = 'Streams audio for transcription in Free Speaking and Passage Reading from a different server. This is slower and only works in English. If you are having trouble with transcription, try enabling this.';
+$string['alternatestreaming_details'] = 'Streams recorded audio for open transcription. Slightly slower then the default browser transcription and only works in English. On by default in mobile app.';

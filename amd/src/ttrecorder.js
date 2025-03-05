@@ -169,7 +169,6 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                 that.audiohelper.onError = on_error;
                 that.audiohelper.onStop = on_stopped;
                 that.audiohelper.onStream = on_gotstream;
-            //    that.audiohelper.onSocketReady = on_gotstream;
                 that.audiohelper.onfinalspeechcapture = function(speechtext){
                     that.gotRecognition(speechtext);
                     that.update_audio('isRecording',false);
@@ -269,12 +268,13 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                     that.show_recorder_pointer('auto');
                 }
                 //the color
-                if(that.audio.isRecognizing || that.audio.isRecording ) {
+                //we no longer swap out colors for waiting .. its too fast and a bit jarring
+                if(that.audio.isRecognizing || that.audio.isRecording || that.audio.isWaiting){
                     this.controls.recorderbutton.removeClass('ttrec_ready');
                     this.controls.recorderbutton.removeClass('ttrec_waiting');
                     this.controls.waveform.removeClass('ttrec_waiting');
                     this.controls.recorderbutton.addClass('ttrec_engaged');
-                }else if (that.audio.isWaiting) {
+                }else if (that.audio.isWaiting && false) {
                     this.controls.recorderbutton.removeClass('ttrec_engaged');
                     this.controls.recorderbutton.removeClass('ttrec_ready');
                     this.controls.recorderbutton.addClass('ttrec_waiting');
