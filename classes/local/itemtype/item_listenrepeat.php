@@ -30,7 +30,7 @@ use renderable;
  */
 class item_listenrepeat extends item {
 
-    //the item type
+    // the item type
     public const ITEMTYPE = constants::TYPE_LISTENREPEAT;
 
 
@@ -38,9 +38,9 @@ class item_listenrepeat extends item {
      * The class constructor.
      *
      */
-    public function __construct($itemrecord, $moduleinstance=false, $context=false){
+    public function __construct($itemrecord, $moduleinstance=false, $context=false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec=true;
+        $this->needs_speechrec = true;
     }
 
     /**
@@ -51,88 +51,88 @@ class item_listenrepeat extends item {
      */
     public function export_for_template(\renderer_base $output) {
 
-        $testitem= new \stdClass();
+        $testitem = new \stdClass();
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
         $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
 
-        //sentences
+        // sentences
         $sentences = [];
         if(isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
-        //build sentence objects containing display and phonetic text
-        $testitem->phonetic=$this->itemrecord->phonetic;
+        // build sentence objects containing display and phonetic text
+        $testitem->phonetic = $this->itemrecord->phonetic;
         if(!empty($testitem->phonetic)) {
             $phonetics = explode(PHP_EOL, $testitem->phonetic);
         }else{
-            $phonetics=[];
+            $phonetics = [];
         }
-        $is_ssml=$testitem->voiceoption==constants::TTS_SSML;
-        $dottify=false;
-        $testitem->sentences = $this->process_spoken_sentences($sentences,$phonetics,$dottify,$is_ssml);
+        $isssml = $testitem->voiceoption == constants::TTS_SSML;
+        $dottify = false;
+        $testitem->sentences = $this->process_spoken_sentences($sentences, $phonetics, $dottify, $isssml);
 
         // Do we need a streaming token?
         $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
         $isenglish = strpos($this->moduleinstance->ttslanguage, 'en') === 0;
         if ($isenglish) {
-            $testitem->streamingtoken = utils::fetch_streaming_token($this->moduleinstance->region);
+            $testitem->speechtoken = utils::fetch_streaming_token($this->moduleinstance->region);
+            $testitem->speechtokentype = 'assemblyai';
             if($alternatestreaming){
                 $testitem->forcestreaming = true;
             }
         }
 
-        //cloudpoodll
+        // cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
-
 
         return $testitem;
     }
 
-    //overriding to get jp phonemes
-    //If this is Japanese and a'chat' activity, the display sentence will be read as is
+    // overriding to get jp phonemes
+    // If this is Japanese and a'chat' activity, the display sentence will be read as is
     // but the sentence we show on screen as the students entry needs to be broken into "words"
-    //so we process it. In listen and speak it still shows the target, so its word'ified.
-    //speechcards we do not give word level feedback. so we do nothing special
-    //key point is to pass unwordified passage to compare_passage_transcipt ajax.
-    protected function process_japanese_phonetics($sentence){
+    // so we process it. In listen and speak it still shows the target, so its word'ified.
+    // speechcards we do not give word level feedback. so we do nothing special
+    // key point is to pass unwordified passage to compare_passage_transcipt ajax.
+    protected function process_japanese_phonetics($sentence) {
         // sadly this segmentation algorithm mismatches with server based one we need for phonetics
-        //so we are not using it. We ought to save the segment rather than call each time
+        // so we are not using it. We ought to save the segment rather than call each time
         // 初めまして =>(1) はじめまし て　＆　(2) はじめま　して
-        //はなしてください=>(1)はな　して　く　だ　さい & (2)はな　して　ください
-        //  $sentence = utils::segment_japanese($sentence);
-        //TO DO save segments and not collect them at runtime
-        list($phones,$sentence) = utils::fetch_phones_and_segments($sentence,$this->moduleinstance->ttslanguage,$this->moduleinstance->region);
+        // はなしてください=>(1)はな　して　く　だ　さい & (2)はな　して　ください
+        // $sentence = utils::segment_japanese($sentence);
+        // TO DO save segments and not collect them at runtime
+        list($phones, $sentence) = utils::fetch_phones_and_segments($sentence, $this->moduleinstance->ttslanguage, $this->moduleinstance->region);
         return $sentence;
     }
 
-    public static function validate_import($newrecord,$cm){
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
-        $error->col='';
-        $error->message='';
+        $error->col = '';
+        $error->message = '';
 
-        if($newrecord->customtext1==''){
-            $error->col='customtext1';
-            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+        if($newrecord->customtext1 == ''){
+            $error->col = 'customtext1';
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
-        //return false to indicate no error
+        // return false to indicate no error
         return false;
     }
 
     /*
-* This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
-*/
-    public static function get_keycolumns(){
-        //get the basic key columns and customize a little for instances of this item type
+    * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+    */
+    public static function get_keycolumns() {
+        // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['int4']=['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
-        $keycols['text5']=['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
-        $keycols['int1']=['jsonname'=>'showtextprompt','type'=>'boolean','optional'=>true,'default'=>constants::TEXTPROMPT_WORDS,'dbname'=>constants::SHOWTEXTPROMPT];
-        $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+        $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
+        $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
+        $keycols['int1'] = ['jsonname' => 'showtextprompt', 'type' => 'boolean', 'optional' => true, 'default' => constants::TEXTPROMPT_WORDS, 'dbname' => constants::SHOWTEXTPROMPT];
+        $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
         return $keycols;
     }

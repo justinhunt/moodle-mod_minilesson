@@ -1,14 +1,14 @@
 define(['jquery', 'core/log'], function ($, log) {
     "use strict"; // jshint ;_;
     /*
-    This file is the engine that drives audio rec and canvas drawing. TT Recorder is the just the glory kid
+    This file is the streamer to assembly ai
      */
 
     log.debug('TT Streamer initialising');
 
     return {
 
-        streamingtoken: null,
+        speechtoken: null,
         socket: null,
         audiohelper: null,
         earlyaudio: [],
@@ -22,11 +22,10 @@ define(['jquery', 'core/log'], function ($, log) {
             return $.extend(true, {}, this);
         },
 
-        init: function(streamingtoken, theaudiohelper) {
-            this.streamingtoken = streamingtoken;
+        init: function(speechtoken, theaudiohelper) {
+            this.speechtoken = speechtoken;
             this.audiohelper = theaudiohelper;
             this.preparesocket();
-
         },
 
         preparesocket: async function(){
@@ -39,12 +38,12 @@ define(['jquery', 'core/log'], function ($, log) {
                 case 'dublin':
                     //did not work
                //     this.socket = await new WebSocket(
-               //         `wss://api.eu.assemblyai.com/v2/realtime/ws?sample_rate=16000&encoding=pcm_s16le&token=${this.streamingtoken}`,
+               //         `wss://api.eu.assemblyai.com/v2/realtime/ws?sample_rate=16000&encoding=pcm_s16le&token=${this.speechtoken}`,
                 //    );
                 //    break;
                 default:
                     this.socket = await new WebSocket(
-                        `wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000&encoding=pcm_s16le&token=${this.streamingtoken}`,
+                        `wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000&encoding=pcm_s16le&token=${this.speechtoken}`,
                     );
             }
             log.debug('TT Streamer socket prepared');

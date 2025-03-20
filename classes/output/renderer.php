@@ -270,14 +270,10 @@ class renderer extends \plugin_renderer_base {
         $results = array_filter($steps, function($step){return $step->hasgrade;
         });
         $useresults = [];
-        foreach($results as $result){
-            /*
-            if(isset($quizdata[$result->index]->title)) {
-                $result->title = $quizdata[$result->index]->title;
-            }else{
-                $result->title = get_string($quizdata[$result->index]->type,constants::M_COMPONENT);
-            }
-            */
+        foreach ($results as $result) {
+            // If the quiz items have been altered since the attempt, and the item does not exist, skip.
+            // .. TO DO prevent adding/ removing items after an attempt has been made.
+            if (!array_key_exists($result->index, $quizdata)) { continue;}
 
             $items = $DB->get_record(constants::M_QTABLE, ['id' => $quizdata[$result->index]->id]);
             $result->title = $items->name;

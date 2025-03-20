@@ -123,7 +123,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
 
       }else{
           //init cloudpoodll push recorder
-          cloudpoodll.init('minilesson-recorder-passagereading-' + itemdata.id, recorderCallback);
+          cloudpoodll.init('minilesson-recorder-freespeaking-' + itemdata.id, recorderCallback);
       }
     }, //end of init components
 

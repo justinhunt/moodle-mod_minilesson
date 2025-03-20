@@ -16,8 +16,6 @@ define(['jquery',
   log.debug('MiniLesson ST Helper: initialising');
 
 var app = {
-
-
     passmark: 90,
     pointer: 1,
     jsondata: null,
@@ -47,10 +45,9 @@ var app = {
         return;
       }
 
-         this.init_polly();
-
+          this.init_polly();
           this.init_controls();
-        //  this.initComponents();
+          this.initComponents();
           this.register_events();
     },
     init_polly: function() {
@@ -105,6 +102,7 @@ var app = {
             .then(response => response.blob())
             .then(blob => {
                 // Call the submit function with the Blob as an argument
+                log.debug(blob);
                 submitFunction(blob);
             })
             .catch(error => {
@@ -118,7 +116,7 @@ var app = {
         app.controls.transcription.html('');
 
         var bodyFormData = new FormData();
-        var blobname = Math.floor(Math.random() * 100) +  '.wav';
+        var blobname = Math.floor(Math.random() * 100) +  '.mp3';
         var guided = app.controls.opentranscription.prop('checked')==false;
         log.debug('guided is: ' + guided);
         var prompt = app.controls.pollytext.val();
@@ -211,96 +209,20 @@ var app = {
 
                   case 'speech':
                     var speechtext = message.capturedspeech;
-                    var spoken_clean  = quizhelper.cleanText(speechtext);
-                    var correct_clean = quizhelper.cleanText(app.terms[app.pointer - 1]);
-                    var correctphonetic = app.phonetics[app.pointer - 1];
-        log.debug('speechtext:',speechtext);
-        log.debug('spoken:',spoken_clean);
-        log.debug('correct:',correct_clean);
-                    //Similarity check by character matching
-                    var similarity_js = quizhelper.similarity(spoken_clean, correct_clean);
-                    log.debug('JS similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_js);
-
-                    //Similarity check by direct-match/acceptable-mistranscription
-                    if (similarity_js >= app.passmark ||
-                      app.wordsDoMatch(spoken_clean, correct_clean)) {
-                      log.debug('local match:' + ':' + spoken_clean + ':' + correct_clean);
-                      app.showStarRating(100);
-                      app.flagCorrectAndTransition();
-                      return;
-                    }
-
-                    //Similarity check by phonetics(ajax)
-                    quizhelper.checkByPhonetic(correct_clean, spoken_clean, correctphonetic, app.language).then(function(similarity_php) {
-                      if (similarity_php === false) {
-                        return $.Deferred().reject();
-                      } else {
-                        log.debug('PHP similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_php);
-
-                        if (similarity_php >= app.passmark) {
-                            app.showStarRating(similarity_php);
-                            app.flagCorrectAndTransition();
-                        }else{
-                            //show the greater of the ratings
-                            app.showStarRating(Math.max(similarity_js,similarity_php));
-                        }
-                      } //end of if check_by_phonetic result
-                    }); //end of check by phonetic
+             
+                    log.debug('speechtext:',speechtext);
 
                 } //end of switch message type
               };
 
+              //init tt recorder
+              var opts = {};
+              opts.uniqueid = app.activitydata.uniqueid;
+              opts.callback = theCallback;
+              opts.stt_guided= app.controls.opentranscription.prop('checked')==false;
+              app.ttrec = ttrecorder.clone();
+              app.ttrec.init(opts);
 
-
-             if(quizhelper.use_ttrecorder()) {
-                 //init tt recorder
-                 var opts = {};
-                 opts.uniqueid = itemdata.uniqueid;
-                 opts.callback = theCallback;
-                 opts.stt_guided=quizhelper.is_stt_guided();
-                 app.ttrec = ttrecorder.clone();
-                 app.ttrec.init(opts);
-                 //init prompt for first card
-                 //in some cases ttrecorder wants to know the target
-                 app.ttrec.currentPrompt=app.displayterms[app.pointer - 1];
-
-             }else{
-                 //init cloudpoodll push recorder
-                 cloudpoodll.init('minilesson-recorder-speechcards-' + itemdata.id, theCallback);
-             }
-
-
-              //init progress dots
-              app.progress_dots(app.results, app.terms);
-
-              app.initSlider();
-
-
-        },
-
-
-
-        wordsDoMatch: function(phraseheard, currentphrase) {
-          //lets lower case everything
-          phraseheard = quizhelper.cleanText(phraseheard);
-          currentphrase = quizhelper.cleanText(currentphrase);
-          if (phraseheard == currentphrase) {
-            return true;
-          }
-          return false;
-        },
-
-        check: function(correct) {
-          var points = 1;
-          if (correct == true) {
-            points = 1;
-          } else {
-            points = 0;
-          }
-          var result = {
-            points: points
-          };
-          app.results.push(result);
         },
 
 

@@ -122,7 +122,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
                 //if we have a streaming transcriber we need to initialize it
                 if(that.therecorder.is_streaming){
                     that.streamer = audiostreamer.clone();
-                    that.streamer.init(that.therecorder.streamingtoken, that);
+                    that.streamer.init(that.therecorder.speechtoken, that);
                     that.enablesilencedetection = false;
                 }
                 //Alert TT recorder that we are ready to go (it will do visuals and manage state of recorder)

@@ -467,7 +467,6 @@ $string['listenorread'] = "Display options as";
 $string['listenorread_read'] = 'plain text';
 $string['listenorread_listen']= 'audio players + dots';
 $string['listenorread_listenandread']= 'audio players + plain text';
-$string['listenorread_listenandread']= 'audio players + plain text';
 $string['listenorread_image']= 'images + plain text';
 
 //$string['gradenow']= 'Grade Now';

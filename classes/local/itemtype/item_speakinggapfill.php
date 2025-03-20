@@ -72,7 +72,8 @@ class item_speakinggapfill extends item {
         $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
         $isenglish = strpos($this->moduleinstance->ttslanguage, 'en') === 0;
         if ($isenglish) {
-            $testitem->streamingtoken = utils::fetch_streaming_token($this->moduleinstance->region);
+            $testitem->speechtoken = utils::fetch_streaming_token($this->moduleinstance->region);
+            $testitem->speechtokentype = 'assemblyai';
             if($alternatestreaming){
                 $testitem->forcestreaming = true;
             }

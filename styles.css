@@ -1056,13 +1056,6 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   padding: 10px;
 }
 
-.minilesson_speechcards_pushrecorder {
-  text-align: center;
-  background-image: url([[pix:mod_minilesson|spinner]]);
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
 .minilesson-poodllspeechcards_box {
   text-align: center;
   width: 60%;
