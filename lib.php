@@ -743,6 +743,16 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
 
 }
 
+/**
+ * Whether the activity is branded.
+ * This information is used, for instance, to decide if a filter should be applied to the icon or not.
+ *
+ * @return bool True if the activity is branded, false otherwise.
+ */
+function minilesson_is_branded(){
+    return true;
+}
+
 function minilesson_output_fragment_preview($args) {
     global $DB, $PAGE;
     $args = (object) $args;
