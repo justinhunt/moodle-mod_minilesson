@@ -37,8 +37,6 @@ define(['jquery',
                     log.debug(that.speechsdk);
                 });
             }
-
-            //this.speechsdk = require('microsoft-speech-browser-sdk');
         },
 
         recognize: function(blob, callback) {
@@ -84,6 +82,10 @@ define(['jquery',
                   exit();
               }
           );
+        },
+
+        set_reference_text: function(referencetext){
+            this.thereferencetext = referencetext;
         },
 
         on_recognition: function(){

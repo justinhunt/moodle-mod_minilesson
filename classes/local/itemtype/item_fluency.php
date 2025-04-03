@@ -52,6 +52,10 @@ class item_fluency extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
+        $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE} == 1;
+        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
+        $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
+
         // Cloud Poodll.
         $maxtime = 0;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
@@ -59,13 +63,36 @@ class item_fluency extends item {
         // MS token and region.
         $testitem->speechtoken = utils::fetch_msspeech_token($this->moduleinstance->region);
         $testitem->speechtokentype = 'msspeech';
-        // We overwrite our regular poodll region with the MS region, eg useast1 becomes eastus, frankfurt becomes westeurope
+        // We overwrite our regular poodll region with the MS region, eg useast1 becomes eastus, frankfurt becomes westeurope.
         $testitem->region = utils::fetch_ms_region($this->moduleinstance->region);
 
-        // Reference text.
-        $testitem->referencetext = $testitem->customtext1; //explode(PHP_EOL, $testitem->customtext1)
 
+
+        // Build sentence objects.
+        /* We do this right now so we get character level arrays. So  we can match mspeech per char results
+        ultimately we want to do this in a way that suits fluency rather than piggy back on sgapfill. */
+        $sentences = [];
+        if (isset($testitem->customtext1)) {
+            $sentences = explode(PHP_EOL, $testitem->customtext1);
+        }
+
+        $testitem->sentences = $this->process_speakinggapfill_sentences($sentences);
         return $testitem;
+    }
+
+    public static function validate_import($newrecord, $cm) {
+        $error = new \stdClass();
+        $error->col = '';
+        $error->message = '';
+
+        if ($newrecord->customtext1 == '') {
+            $error->col = 'customtext1';
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
+            return $error;
+        }
+
+        // Return false to indicate no error.
+        return false;
     }
 
     /*
@@ -74,6 +101,12 @@ class item_fluency extends item {
     public static function get_keycolumns() {
         // Get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
+        $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
+        $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
+        $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
+        $keycols['int2'] = ['jsonname' => 'dictationstyle', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE];
+        $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
+        $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
         return $keycols;
     }
 

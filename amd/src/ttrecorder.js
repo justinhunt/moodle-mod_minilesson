@@ -221,6 +221,13 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             return (this.speechtoken && this.speechtoken !== 'false' && this.speechtokentype === 'msspeech');
         },
 
+        update_currentprompt: function(targettext){
+            this.currentPrompt = targettext;
+            if(this.using_msspeech){
+                msspeech.set_reference_text(targettext);
+            }
+        },
+
         blobToArrayBuffer: function (blob) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();

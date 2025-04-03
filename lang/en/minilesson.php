@@ -404,6 +404,7 @@ $string['spacegame']='Space Game';
 $string['freewriting']='Free Writing';
 $string['freespeaking']='Free Speaking';
 $string['fluency']='Fluency';
+$string['fluencyresults']='Fluency Results';
 $string['passagereading']='Passage Reading';
 $string['conversation']='Conversation';
 $string['transcriber'] = 'Transcriber';

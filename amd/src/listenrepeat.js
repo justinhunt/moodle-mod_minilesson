@@ -205,6 +205,7 @@ define(['jquery',
         });
       });
     },
+    
     appReady: function() {
       var self = this;
       $("#" + self.itemdata.uniqueid + "_container .landr_not_loaded").hide();

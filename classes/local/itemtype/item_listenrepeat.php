@@ -60,14 +60,14 @@ class item_listenrepeat extends item {
 
         // sentences
         $sentences = [];
-        if(isset($testitem->customtext1)) {
+        if (isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
         // build sentence objects containing display and phonetic text
         $testitem->phonetic = $this->itemrecord->phonetic;
-        if(!empty($testitem->phonetic)) {
+        if (!empty($testitem->phonetic)) {
             $phonetics = explode(PHP_EOL, $testitem->phonetic);
-        }else{
+        } else {
             $phonetics = [];
         }
         $isssml = $testitem->voiceoption == constants::TTS_SSML;
@@ -80,7 +80,7 @@ class item_listenrepeat extends item {
         if ($isenglish) {
             $testitem->speechtoken = utils::fetch_streaming_token($this->moduleinstance->region);
             $testitem->speechtokentype = 'assemblyai';
-            if($alternatestreaming){
+            if ($alternatestreaming) {
                 $testitem->forcestreaming = true;
             }
         }
