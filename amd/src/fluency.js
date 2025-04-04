@@ -1,7 +1,7 @@
 define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/pollyhelper','mod_minilesson/cloudpoodllloader',
     'mod_minilesson/ttrecorder', 'mod_minilesson/animatecss',
-    'mod_minilesson/progresstimer', 'core/templates'],
-    function($, log, def,polly, cloudpoodll, ttrecorder,anim, progresstimer, templates) {
+    'mod_minilesson/progresstimer', 'core/templates', 'core/chartjs'],
+    function($, log, def,polly, cloudpoodll, ttrecorder,anim, progresstimer, templates, chartjs) {
   "use strict"; // jshint ;_;
 
   /*
@@ -377,16 +377,32 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
     do_evaluation: function (pronunciation_result) {
       var self = this;
-      itemresultscont = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
+      var itemresultscont = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
       itemresultscont.html("");
       
       var itemresults = [];
+
       itemresults.push("Accuracy score: " + pronunciation_result.accuracyScore);
       itemresults.push("Pronunciation score: " + pronunciation_result.pronunciationScore);
       itemresults.push("Completeness score: " + pronunciation_result.completenessScore);
       itemresults.push("Fluency score: " + pronunciation_result.fluencyScore);
       itemresults.push("Prosody score: " +  pronunciation_result.prosodyScore);
       itemresultscont.append(itemresults.join("<br>"));
+
+        //make a chart for each score
+        var labels = ["Accuracy", "Pronunciation", "Completeness", "Fluency", "Prosody"];
+        var data = [
+            pronunciation_result.accuracyScore,
+            pronunciation_result.pronunciationScore,
+            pronunciation_result.completenessScore,
+            pronunciation_result.fluencyScore,
+            pronunciation_result.prosodyScore
+        ];
+        labels.forEach(function(label, index) {
+            var chartContainerId = self.itemdata.uniqueid + "_chart_" + index;
+            itemresultscont.append('<canvas id="' + chartContainerId + '"></canvas>');
+            self.createRadialChart(chartContainerId, [label], [data[index]]);
+        });
 
       log.debug("Accuracy score: ", pronunciation_result.accuracyScore);
       log.debug("Pronunciation score: ", pronunciation_result.pronunciationScore);
@@ -399,5 +415,31 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
           console.log("    ", idx + 1, ": word: ", word.Word, "\taccuracy score: ", word.PronunciationAssessment.AccuracyScore, "\terror type: ", word.PronunciationAssessment.ErrorType, ";");
       });
     },
+
+    createRadialChart: function(containerId, labels, data) {
+        var ctx = document.getElementById(containerId).getContext('2d');
+        new chartjs(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Scores',
+                    data: data,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scale: {
+                    ticks: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    },
+
   };
 });

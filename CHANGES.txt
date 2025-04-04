@@ -1,3 +1,9 @@
+Version 1.0.82 (Build 2025040400)
+- Added is_branded callback so the app icons don't look like pink smudges
+- Added new fluency item type (not really ready yet for testing, so it's hidden)
+- Fixed a bug which could cause gapfill items to collapse if hide start page was set
+
+
 Version 1.0.81 (Build 2025030500)
 - Fix for lack of import in short answer questions
 - Streaming audio recorder for open transcription in English (on in MMA, toggle on in admin settings)
