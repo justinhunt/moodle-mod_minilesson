@@ -3,12 +3,11 @@ define(['jquery',
     'core/ajax',
     'mod_minilesson/definitions',
     'mod_minilesson/pollyhelper',
-    'mod_minilesson/cloudpoodllloader',
     'mod_minilesson/ttrecorder',
     'mod_minilesson/animatecss',
     'mod_minilesson/progresstimer',
     'core/templates'
-], function($, log, ajax, def, polly, cloudpoodll, ttrecorder, anim, progresstimer, templates) {
+], function($, log, ajax, def, polly, ttrecorder, anim, progresstimer, templates) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson speaking gap fill: initialising');
@@ -54,18 +53,14 @@ define(['jquery',
 
             };
 
-            if (quizhelper.use_ttrecorder()) {
-                var opts = {};
-                opts.uniqueid = itemdata.uniqueid;
-                opts.callback = theCallback;
-                opts.stt_guided = quizhelper.is_stt_guided();
-                opts.wwwroot = quizhelper.is_stt_guided();
-                self.ttrec = ttrecorder.clone();
-                self.ttrec.init(opts);
-            } else {
-                // Init cloudpoodll push recorder
-                cloudpoodll.init('minilesson-recorder-listenrepeat-' + itemdata.id, theCallback);
-            }
+            // Init the TT Recorder
+            var opts = {};
+            opts.uniqueid = itemdata.uniqueid;
+            opts.callback = theCallback;
+            opts.stt_guided = quizhelper.is_stt_guided();
+            opts.wwwroot = quizhelper.is_stt_guided();
+            self.ttrec = ttrecorder.clone();
+            self.ttrec.init(opts);
 
             self.itemdata = itemdata;
             log.debug("itemdata");

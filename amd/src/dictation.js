@@ -1,9 +1,8 @@
 define(['jquery',
    'core/log',
    'mod_minilesson/definitions',
-   'mod_minilesson/pollyhelper',
    'core/templates'
-  ], function($, log, def, polly, templates) {
+  ], function($, log, def, templates) {
   "use strict"; // jshint ;_;
 
   /*
@@ -54,7 +53,7 @@ define(['jquery',
       //do something
     },
 
-    prepare_audio: function(itemdata) {
+    prepare_audio: function(itemdata, polly) {
       $.each(itemdata.sentences, function(index, sentence) {
         polly.fetch_polly_url(sentence.prompt, itemdata.voiceoption, itemdata.usevoice).then(function(audiourl) {
           $("#" + itemdata.uniqueid + "_container .dictationplayer_" + index + " .dictationtrigger").attr("data-src", audiourl);

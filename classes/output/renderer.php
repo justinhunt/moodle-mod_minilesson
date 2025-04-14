@@ -609,6 +609,7 @@ class renderer extends \plugin_renderer_base {
         $recopts['token'] = $token;
         $recopts['owner'] = hash('md5', $USER->username);
         $recopts['region'] = $moduleinstance->region;
+        $recopts['cloudpoodllurl'] = utils::get_cloud_poodll_server();
         $recopts['ttslanguage'] = $moduleinstance->ttslanguage;
         $recopts['stt_guided'] = $moduleinstance->transcriber == constants::TRANSCRIBER_POODLL;
 

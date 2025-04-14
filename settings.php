@@ -94,6 +94,12 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/ttslanguage',
              get_string('ttslanguage', constants::M_COMPONENT), '', 'en-US', $langoptions));
 
+    // Cloud Poodll Server.
+    $settings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/cloudpoodllserver',
+        get_string('cloudpoodllserver', constants::M_COMPONENT),
+            get_string('cloudpoodllserver_details', constants::M_COMPONENT),
+             constants::M_DEFAULT_CLOUDPOODLL, PARAM_URL));
+
     // Transcriber options
     $name = 'transcriber';
     $label = get_string($name, constants::M_COMPONENT);

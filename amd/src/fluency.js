@@ -1,7 +1,7 @@
-define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/pollyhelper','mod_minilesson/cloudpoodllloader',
+define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/pollyhelper',
     'mod_minilesson/ttrecorder', 'mod_minilesson/animatecss',
     'mod_minilesson/progresstimer', 'core/templates', 'core/chartjs'],
-    function($, log, def,polly, cloudpoodll, ttrecorder,anim, progresstimer, templates, chartjs) {
+    function($, log, def,polly, ttrecorder,anim, progresstimer, templates, chartjs) {
   "use strict"; // jshint ;_;
 
   /*
@@ -75,21 +75,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             self.do_evaluation(speechresults);    
         } //end of switch message type
       };
+ 
+        //init tt recorder
+        var opts = {};
+        opts.uniqueid = itemdata.uniqueid;
+        opts.callback = recorderCallback;
+        opts.stt_guided=false;
+        opts.referencetext=this.referencetext;
+        self.ttrec = ttrecorder.clone();
+        self.ttrec.init(opts);
 
-      if(quizhelper.use_ttrecorder()) {
-          //init tt recorder
-          var opts = {};
-          opts.uniqueid = itemdata.uniqueid;
-          opts.callback = recorderCallback;
-          opts.stt_guided=false;
-          opts.referencetext=this.referencetext;
-          self.ttrec = ttrecorder.clone();
-          self.ttrec.init(opts);
-
-      }else{
-          //init cloudpoodll push recorder
-          cloudpoodll.init('minilesson-recorder-fluency-' + itemdata.id, recorderCallback);
-      }
     }, //end of init components
 
     setvoice: function() {

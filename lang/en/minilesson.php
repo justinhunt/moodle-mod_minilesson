@@ -853,3 +853,5 @@ $string['nopasting_desc'] = "Disable copy/paste into the text area. This is to p
 $string['attemptfor'] = 'Attempt: {$a}';
 $string['alternatestreaming'] = 'Enable alternate streaming';
 $string['alternatestreaming_details'] = 'Streams recorded audio for open transcription. Slightly slower then the default browser transcription and only works in English. On by default in mobile app.';
+$string['cloudpoodllserver'] = 'Cloud Poodll Server';
+$string['cloudpoodllserver_details'] = 'The server to use for Cloud Poodll. Only change this if Poodll has provided a different one.';

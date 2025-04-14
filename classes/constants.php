@@ -14,6 +14,8 @@ class constants
 {
 //component name, db tables, things that define app
 const M_COMPONENT='mod_minilesson';
+
+const M_DEFAULT_CLOUDPOODLL = "cloud.poodll.com";
 const M_FILEAREA_SUBMISSIONS='submission';
 const M_TABLE='minilesson';
 const M_ATTEMPTSTABLE='minilesson_attempt';

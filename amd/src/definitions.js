@@ -11,9 +11,6 @@ This file contains class and ID definitions.
         component: 'mod_minilesson',
         componentpath: 'mod/minilesson',
         quizcontainer: 'mod_minilesson_quiz_cont',
-        cloudpoodllurl: 'https://cloud.poodll.com',
-        //cloudpoodllurl: 'http://localhost/moodle',
-       // cloudpoodllurl: 'https://vbox.poodll.com/cphost',
 
         //player code
         hiddenplayer: 'mod_minilesson_hidden_player',

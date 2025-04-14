@@ -3,10 +3,9 @@ define(['jquery',
     'core/ajax',
     'mod_minilesson/definitions',
     'mod_minilesson/pollyhelper',
-    'mod_minilesson/cloudpoodllloader',
     'mod_minilesson/ttrecorder',
     'mod_minilesson/animatecss',
-], function($,  log, Ajax, def, polly, cloudpoodll, ttrecorder, anim) {
+], function($,  log, Ajax, def, polly, ttrecorder, anim) {
   "use strict"; // jshint ;_;
 
   /*
@@ -157,25 +156,16 @@ define(['jquery',
                 } //end of switch message type
               };
 
-
-
-             if(quizhelper.use_ttrecorder()) {
-                 //init tt recorder
-                 var opts = {};
-                 opts.uniqueid = itemdata.uniqueid;
-                 opts.callback = theCallback;
-                 opts.stt_guided=quizhelper.is_stt_guided();
-                 app.ttrec = ttrecorder.clone();
-                 app.ttrec.init(opts);
-                 //init prompt for first card
-                 //in some cases ttrecorder wants to know the target
-                 app.ttrec.currentPrompt=app.displayterms[app.pointer - 1];
-
-             }else{
-                 //init cloudpoodll push recorder
-                 cloudpoodll.init('minilesson-recorder-speechcards-' + itemdata.id, theCallback);
-             }
-
+              //init tt recorder
+              var opts = {};
+              opts.uniqueid = itemdata.uniqueid;
+              opts.callback = theCallback;
+              opts.stt_guided=quizhelper.is_stt_guided();
+              app.ttrec = ttrecorder.clone();
+              app.ttrec.init(opts);
+              //init prompt for first card
+              //in some cases ttrecorder wants to know the target
+              app.ttrec.currentPrompt=app.displayterms[app.pointer - 1];
 
               //init progress dots
               app.progress_dots(app.results, app.terms);

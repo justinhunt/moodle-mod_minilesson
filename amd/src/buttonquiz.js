@@ -1,5 +1,5 @@
-define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/pollyhelper','mod_minilesson/animatecss'],
-    function($, log, def, polly, anim) {
+define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/animatecss'],
+    function($, log, def, anim) {
   "use strict"; // jshint ;_;
 
   /*

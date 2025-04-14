@@ -1,6 +1,6 @@
-define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloudpoodllloader',
+define(['jquery', 'core/log', 'mod_minilesson/definitions',
     'mod_minilesson/ttrecorder', 'mod_minilesson/correctionsmarkup', 'core/templates'],
-    function($, log, def, cloudpoodll, ttrecorder, correctionsmarkup, templates) {
+    function($, log, def, ttrecorder, correctionsmarkup, templates) {
   "use strict"; // jshint ;_;
 
   /*
@@ -112,19 +112,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/cloud
         } //end of switch message type
       };
 
-      if(quizhelper.use_ttrecorder()) {
-          //init tt recorder
-          var opts = {};
-          opts.uniqueid = itemdata.uniqueid;
-          opts.callback = recorderCallback;
-          opts.stt_guided=false;
-          self.ttrec = ttrecorder.clone();
-          self.ttrec.init(opts);
+      //init tt recorder
+      var opts = {};
+      opts.uniqueid = itemdata.uniqueid;
+      opts.callback = recorderCallback;
+      opts.stt_guided=false;
+      self.ttrec = ttrecorder.clone();
+      self.ttrec.init(opts);
 
-      }else{
-          //init cloudpoodll push recorder
-          cloudpoodll.init('minilesson-recorder-freespeaking-' + itemdata.id, recorderCallback);
-      }
     }, //end of init components
 
     do_corrections_markup: function(grammarerrors,grammarmatches,insertioncount) {
