@@ -3,11 +3,10 @@ define(['jquery',
       'core/ajax',
       'mod_minilesson/definitions',
       'mod_minilesson/pollyhelper',
-      'mod_minilesson/cloudpoodllloader',
       'mod_minilesson/ttrecorder',
       'mod_minilesson/animatecss',
       'core/templates'
-    ], function($, log, ajax, def, polly, cloudpoodll, ttrecorder, anim, templates) {
+    ], function($, log, ajax, def, polly, ttrecorder, anim, templates) {
   "use strict"; // jshint ;_;
 
   log.debug('MiniLesson listen and repeat: initialising');

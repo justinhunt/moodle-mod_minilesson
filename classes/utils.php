@@ -36,10 +36,15 @@ use mod_minilesson\constants;
  */
 class utils {
 
-     // const CLOUDPOODLL = 'http://localhost:8044';
-     // const CLOUDPOODLL = 'http://localhost/moodle';
-    // const CLOUDPOODLL = 'https://vbox.poodll.com/cphost';
-    const CLOUDPOODLL = 'https://cloud.poodll.com';
+
+    public static function get_cloud_poodll_server() {
+        $conf = get_config(constants::M_COMPONENT);
+        if (isset($conf->cloudpoodllserver) && !empty($conf->cloudpoodllserver)) {
+            return 'https://' . $conf->cloudpoodllserver;
+        } else {
+            return 'https://' . constants::M_DEFAULT_CLOUDPOODLL;
+        }
+    }
 
     // we need to consider legacy client side URLs and cloud hosted ones
     public static function make_audio_url($filename, $contextid, $component, $filearea, $itemid) {
@@ -186,7 +191,7 @@ class utils {
             if(empty($token)){
                 return false;
             }
-            $url = self::CLOUDPOODLL . "/webservice/rest/server.php";
+            $url = self::get_cloud_poodll_server() . "/webservice/rest/server.php";
             $params["wstoken"] = $token;
             $params["wsfunction"] = 'local_cpapi_generate_lang_model';
             $params["moodlewsrestformat"] = 'json';
@@ -532,7 +537,7 @@ class utils {
         }
 
         // Send the request & save response to $resp
-        $tokenurl = self::CLOUDPOODLL . "/local/cpapi/poodlltoken.php";
+        $tokenurl = self::get_cloud_poodll_server() . "/local/cpapi/poodlltoken.php";
         $postdata = [
             'username' => $apiuser,
             'password' => $apisecret,
@@ -674,7 +679,7 @@ class utils {
         $params['notificationurl'] = 'none';
         $params['sourcemimetype'] = 'unknown';
 
-        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
@@ -723,7 +728,7 @@ class utils {
          $params['region'] = $region;
          // $params['language'] = $language;
 
-         $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+         $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
          $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
@@ -795,7 +800,7 @@ class utils {
         $params['moodlewsrestformat'] = 'json';
         $params['region'] = self::fetch_ms_region($poodllregion);
 
-        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
@@ -1129,7 +1134,7 @@ class utils {
 
         // log.debug(params);
 
-        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;
@@ -2018,7 +2023,7 @@ class utils {
         $params['owner'] = hash('md5', $USER->username);
         $params['region'] = $region;
         $params['engine'] = self::can_speak_neural($voice, $region) ? 'neural' : 'standard';
-        $serverurl = self::CLOUDPOODLL . '/webservice/rest/server.php';
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
             return false;

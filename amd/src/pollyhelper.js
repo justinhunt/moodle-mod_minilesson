@@ -10,11 +10,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
         token:  '',
         region: '',
         owner: '',
+        cloudpoodllurl: '',
 
-        init: function(token, region, owner){
+        init: function(token, region, owner, cloudpoodllurl){
             this.token =token;
             this.region=region;
             this.owner=owner;
+            this.cloudpoodllurl = cloudpoodllurl;
         },
 
         clean_ssml_chars: function(speaktext){
@@ -145,7 +147,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                 + '&region=' + that.region
                 + '&engine=' + engine;
 
-                var serverurl = def.cloudpoodllurl + "/webservice/rest/server.php";
+                var serverurl = that.cloudpoodllurl + "/webservice/rest/server.php";
                 xhr.open("POST", serverurl, true);
                 xhr.setRequestHeader("Cache-Control", "no-cache");
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

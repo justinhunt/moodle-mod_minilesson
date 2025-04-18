@@ -3,10 +3,9 @@ define(['jquery',
     'core/ajax',
     'mod_minilesson/definitions',
     'mod_minilesson/pollyhelper',
-    'mod_minilesson/cloudpoodllloader',
     'mod_minilesson/ttrecorder',
     'mod_minilesson/animatecss',
-], function($,  log, Ajax, def, polly, cloudpoodll, ttrecorder, anim) {
+], function($,  log, Ajax, def, polly, ttrecorder, anim) {
   "use strict"; // jshint ;_;
 
   /*
@@ -51,12 +50,12 @@ var app = {
           this.register_events();
     },
     init_polly: function() {
-
         //get the polly token
         var pollytoken = this.activitydata.token;
         var pollyregion = this.activitydata.region;
+        var pollycloudpoodllurl = this.activitydata.cloudpoodllurl;
         var pollyowner = 'poodll';
-        polly.init(pollytoken, pollyregion, pollyowner);
+        polly.init(pollytoken, pollyregion, pollyowner, pollycloudpoodllurl);
         log.debug('polly initialised');
     },
 
