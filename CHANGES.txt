@@ -1,3 +1,7 @@
+Version 1.0.83 (Build 2025041800)
+ - Support for Moodle 5.0 and PHP 8.4
+ - Added support for custom Cloud Poodll server
+
 Version 1.0.82 (Build 2025040400)
 - Added is_branded callback so the app icons don't look like pink smudges
 - Added new fluency item type (not really ready yet for testing, so it's hidden)

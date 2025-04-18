@@ -3203,3 +3203,7 @@ margin-right: 3px;
   position: absolute;
   right: 10px;
 }
+div.mcaudioplayer,
+div.poodlldictationplayer {
+  position: relative;
+}
