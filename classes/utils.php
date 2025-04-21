@@ -756,6 +756,7 @@ class utils {
             case 'dublin':
             case 'frankfurt':
             case 'london':
+            case 'ningxia':
                 return 'westeurope';
             case 'tokyo':
             case 'useast1':
@@ -1233,6 +1234,7 @@ class utils {
            "saopaulo" => get_string("saopaulo", constants::M_COMPONENT),
            "singapore" => get_string("singapore", constants::M_COMPONENT),
             "mumbai" => get_string("mumbai", constants::M_COMPONENT),
+            "ningxia" => get_string("ningxia", constants::M_COMPONENT),
         ];
     }
 

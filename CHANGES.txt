@@ -1,3 +1,6 @@
+Version 1.0.84 (Build 2025042100)
+ - Support Ningxia region (requires Poodll China subscription)
+
 Version 1.0.83 (Build 2025041800)
  - Support for Moodle 5.0 and PHP 8.4
  - Added support for custom Cloud Poodll server
