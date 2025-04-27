@@ -1,3 +1,5 @@
+- support for lang server in Ningxia
+
 Version 1.0.84 (Build 2025042100)
  - Support Ningxia region (requires Poodll China subscription)
 

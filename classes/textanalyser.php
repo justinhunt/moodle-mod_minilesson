@@ -88,6 +88,9 @@ class textanalyser {
             case 'useast1':
                 $ret = 'https://useast.ls.poodll.com/';
                 break;
+            case 'ningxia':
+                $ret = 'https://ningxia.ls.poodll.cn/';
+                break;
             default:
                 $ret = 'https://' . $this->region . '.ls.poodll.com/';
         }
