@@ -32,6 +32,7 @@ $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
 
 
+
 if ($id) {
     $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
@@ -53,6 +54,11 @@ require_capability('mod/minilesson:manage', $modulecontext);
 
 // Get an admin settings
 $config = get_config(constants::M_COMPONENT);
+
+//recorder parameters
+$forcestreaming  = optional_param('forcestreaming', 0, PARAM_INT);
+$language  = optional_param('language', $moduleinstance->ttslanguage, PARAM_TEXT);
+$stt_guided  = optional_param('stt_guided',  0, PARAM_INT);
 
 // get token
 $token = utils::fetch_token($config->apiuser, $config->apisecret);
@@ -76,29 +82,83 @@ $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 echo $renderer->header($moduleinstance, $cm, 'speechtester', null, get_string('speechtester', constants::M_COMPONENT));
 
 $tdata = [];
-$tdata['language'] = $moduleinstance->ttslanguage;
+$tdata['cloudpoodllurl'] = utils::get_cloud_poodll_server();
+$tdata['pageurl'] = $PAGE->url->out(false);
+$tdata['language'] = $language;
 $tdata['token'] = $token;
 $tdata['region'] = $moduleinstance->region;
 $tdata['cmid'] = $cm->id;
 $tdata['waveheight'] = 75;
+$tdata['forcestreaming'] = $forcestreaming;
+$tdata['stt_guided'] = $stt_guided;
+$tdata['checked_forcestreaming'] = $forcestreaming ? 'checked' : '';
+$tdata['checked_stt_guided'] = $stt_guided ? 'checked' : '';
+$isenglish = strpos($language, 'en') === 0;
+if ($isenglish) {
+    $tdata['speechtoken'] = utils::fetch_streaming_token($moduleinstance->region);
+    $tdata['speechtokentype'] = 'assemblyai';
+}
+if ($stt_guided) {
+    $items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $moduleinstance->id], 'itemorder ASC');
+    $longestitem = null;
+    $longesttext = "";
+    $longesthash = "";
+    foreach($items as $item){
+        $itemtext = $item->customtext1;
+        if(core_text::strlen($itemtext) > core_Text::strlen($longesttext) && !empty($item->passagehash)){
+            $longestitem = $item;
+            $longesttext = $itemtext;
+            $longesthash = explode('|', $item->passagehash)[1];
+        }
+    }
+    if($longestitem) {
+
+        $tdata['passagehash'] = $longesthash;
+        $theitem = utils::fetch_item_from_itemrecord($longestitem, $moduleinstance, $modulecontext);
+        switch($longestitem->type){
+            case constants::TYPE_LGAPFILL:
+            case constants::TYPE_TGAPFILL:
+            case constants::TYPE_SGAPFILL:
+                $sentences = [];
+                $longesttext = "";
+                if(isset($longestitem->customtext1)) {
+                    $sentences = explode(PHP_EOL, $longestitem->customtext1);
+                    $sentencedatas = $theitem->parse_gapfill_sentences($sentences);
+                    foreach($sentencedatas as $sentencedata){
+                        $longesttext .= $sentencedata->sentence . '<br/>';
+                    }
+                }
+                break;
+            case constants::TYPE_LISTENREPEAT:
+            case constants::TYPE_SPEECHCARDS:
+            default:
+                break;
+        }
+        $tdata['guidedusetext'] = $longesttext;
+    }
+}
+
 $showall = true;
 
-// tts voices
+// tts voices (data for template)
 $ttsvoices = utils::get_tts_voices($moduleinstance->ttslanguage, $showall);
-$voices = array_map(function($key, $value) {
+$voices = array_map(function($key, $value)  {
     return ['key' => $key, 'display' => $value];
 }, array_keys($ttsvoices), $ttsvoices);
 $tdata['voices'] = $voices;
 
-// tts languages
+// STT languages (data for template)
 $ttslanguages = utils::get_lang_options();
-$languages = array_map(function($key, $value) {
-    return ['key' => $key, 'display' => $value];
+$languages = array_map(function($key, $value) use ($language) {
+    return ['key' => $key, 'display' => $value, 'selected' => $key == $language ? 'selected' : ''];
 }, array_keys($ttslanguages), $ttslanguages);
 $tdata['languages'] = $languages;
 // set up the AMD js and related opts
 $tdata['recorderid'] = constants::M_RECORDERID;
+$tdata['uniqueid'] = "uniqueidforspeechtester";
 $tdata['asrurl'] = utils::fetch_lang_server_url($moduleinstance->region, 'transcribe');
+
+//Merge data with template and output to page
 echo $renderer->render_from_template(constants::M_COMPONENT . '/speechtester', $tdata);
 
 

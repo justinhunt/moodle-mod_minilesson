@@ -1,27 +1,57 @@
-<span>Choose a voice and a language and enter some text in the text area.</span><br>
+<h3>Text to Speech Options</h3>
+<span>Choose a voice and a language and enter some text in the text area.</span><br />
 <select id="speechtester_voice">
     {{#voices}}
     <option value="{{key}}">{{display}}</option>
     {{/voices}}
-</select><br>
-<select id="speechtester_language">
-    {{#languages}}
-    <option value="{{key}}">{{display}}</option>
-    {{/languages}}
-</select><br>
+</select><br />
+
 <textarea id="speechtester_text" rows="4" cols="50" placeholder="enter text to be spoken here">
-</textarea><br>
+</textarea><br />
 <button type="button" class="btn btn-secondary" id="speechtester_pollybutton">Make Audio Player</button>
 <div id="speechtester_audiocontainer">
-    <audio id="speechtester_audioplayer" controls src="{{{itemaudio}}}" class="mod_minilesson_itemaudio"></audio>
+    <audio id="speechtester_audioplayer" controls src="{{{itemaudio}}}" class="mod_minilesson_itemaudio" crossorigin="anonymous"></audio>
 </div>
-<br>
-<button type="button" class="btn btn-secondary" id="speechtester_transcribebutton">Transcribe</button><br>
-<input type="checkbox" id="speechtester_open"> Check to use 'open transcription'<br>
-<div id="speechtester_transcription">
-</div><br>
+<br />
+ {{#checked_stt_guided}}
+<hr/>
+Transcribe the generated audio using the transcription settings below<br />
+<button type="button" class="btn btn-secondary" id="speechtester_transcribebutton">Transcribe</button><br />
+
+ {{/checked_stt_guided}}
+<hr />
+<h3>Transcription Results</h3>
+<div id="speechtester_transcription" style="
+    width: 400px;
+    border: 1px grey solid;
+    padding: 5px;
+    margin: 5px;">
+</div><br />
+<hr />
+<h3>Recording and Transcription Options</h3>
+<span>Select the recorder options below, press submit, and test recording.</span><br />
+<form id="speechtester_form" method="post" action="{{{pageurl}}}">
+<select name="language" id="speechtester_language">
+{{#languages}}
+<option value="{{key}}" {{selected}}>{{display}}</option>
+{{/languages}}
+</select><br />
+<input type="checkbox" name="stt_guided" id="speechtester_stt_guided" value="1" {{checked_stt_guided}}> Check to use 'guided transcription' (otherwise it is 'open transcription'</input><br />
+<input type="checkbox" name="forcestreaming" id="speechtester_forcestreaming" value="1" {{checked_forcestreaming}}> Check to use 'alternate streaming' (only applies with 'open transcription')</input><br />
+<button type="submit" class="btn btn-primary" id="speechtester_submit">Submit</button>
+</form>
+<hr />
+<h3>Recorder</h3>
 <div id="speechtester_transcription_coverage">
-</div><br>
-<div class="ml_speechtester_speakbtncontainer" style="width:246px;margin:auto;">
-            {{> mod_minilesson/ttrecorder}}
+<ul>
+    <li>Guided Transcription: {{#checked_stt_guided}}YES{{/checked_stt_guided}}{{^checked_stt_guided}}NO{{/checked_stt_guided}}</li>
+    {{#checked_stt_guided}}<li>Guided Usable Text: <br />{{{guidedusetext}}}</li>{{/checked_stt_guided}}
+    <li>Open Transcription: {{#checked_stt_guided}}NO{{/checked_stt_guided}}{{^checked_stt_guided}}YES{{/checked_stt_guided}}</li>
+    <li>Alternate Transcription : {{#checked_forcestreaming}}YES{{/checked_forcestreaming}}{{^checked_forcestreaming}}NO{{/checked_forcestreaming}}</li>
+    <li>Language : {{language}}</li>
+    <li>Region : {{region}}</li>
+</ul>
+</div><br />
+<div class="ml_speechtester_speakbtncontainer" style="width:246px;">
+    {{> mod_minilesson/ttrecorder}}
 </div>

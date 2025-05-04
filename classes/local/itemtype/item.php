@@ -558,9 +558,9 @@ abstract class item implements templatable, renderable {
     }
 
     /*
-     * Processes listening gap fill sentences : TO DO not implemented, implement this
+     * Processes listening gap fill sentences
      */
-    protected function parse_gapfill_sentences($sentences) {
+    public function parse_gapfill_sentences($sentences) {
         $index = 0;
         $sentenceobjects = [];
 

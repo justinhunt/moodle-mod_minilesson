@@ -214,7 +214,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         },
 
         can_stream: function( ){
-            return (this.speechtoken && this.speechtoken !== 'false'&& this.speechtokentype == 'assemblyai' && !this.stt_guided);
+            return (this.speechtoken && this.speechtoken !== 'false'&& this.speechtokentype === 'assemblyai' && !this.stt_guided);
         },
 
         can_msspeech: function( ){
@@ -341,6 +341,14 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
         },
 
+        startedRecording:function(){
+
+            var message={};
+            message.type='recording';
+            message.results = '';
+            this.callback(message);
+        },
+
         gotMSResults:function(results){
             log.debug(results);
             var message={};
@@ -439,6 +447,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
                     this.update_audio(newaudio);
                     this.audiohelper.start();
                 }
+                this.startedRecording();
             }
         },
 
