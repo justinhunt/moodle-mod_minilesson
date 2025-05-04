@@ -98,7 +98,7 @@ if ($isenglish) {
     $tdata['speechtoken'] = utils::fetch_streaming_token($moduleinstance->region);
     $tdata['speechtokentype'] = 'assemblyai';
 }
-if ($stt_guided) {
+if ($stt_guided && $language==$moduleinstance->ttslanguage) {
     $items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $moduleinstance->id], 'itemorder ASC');
     $longestitem = null;
     $longesttext = "";

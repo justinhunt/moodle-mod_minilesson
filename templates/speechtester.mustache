@@ -1,3 +1,27 @@
+<h1> Speech Tester </h1>
+<div><span>This page is for testing the speech recognition and text to speech features of this MiniLesson.</span><br />
+    <span>Set the "Recording, Language and Transcription" options first. Pressing submit will reload the page.</span><br />
+    <span>If the transcription method is set to <strong>guided</strong>:</span><br />
+    <ul>
+        <li>there is an option to transcribe the generated text to speech.</li>
+        <li>sample text to use from THIS activity will be displayed.</li>
+    </ul>
+    <span>NB "Guided" for English and some other languages is limited to the text in THIS activity</span><br />
+</div>
+<hr />
+<h3>Recording, Language and Transcription Options</h3>
+<span>Select the recorder options below, press submit, and test recording.</span><br />
+<form id="speechtester_form" method="post" action="{{{pageurl}}}">
+<select name="language" id="speechtester_language">
+    {{#languages}}
+    <option value="{{key}}" {{selected}}>{{display}}</option>
+{{/languages}}
+</select><br />
+<input type="checkbox" name="stt_guided" id="speechtester_stt_guided" value="1" {{checked_stt_guided}}> Check to use 'guided transcription' (otherwise it is 'open transcription'</input><br />
+<input type="checkbox" name="forcestreaming" id="speechtester_forcestreaming" value="1" {{checked_forcestreaming}}> Check to use 'alternate streaming' (only applies with 'open transcription')</input><br />
+<button type="submit" class="btn btn-primary" id="speechtester_submit">Submit</button>
+</form>
+<hr />
 <h3>Text to Speech Options</h3>
 <span>Choose a voice and a language and enter some text in the text area.</span><br />
 <select id="speechtester_voice">
@@ -10,7 +34,7 @@
 </textarea><br />
 <button type="button" class="btn btn-secondary" id="speechtester_pollybutton">Make Audio Player</button>
 <div id="speechtester_audiocontainer">
-    <audio id="speechtester_audioplayer" controls src="{{{itemaudio}}}" class="mod_minilesson_itemaudio" crossorigin="anonymous"></audio>
+    <audio id="speechtester_audioplayer" controls="controls" src="{{{itemaudio}}}" class="mod_minilesson_itemaudio" crossorigin="anonymous"></audio>
 </div>
 <br />
  {{#checked_stt_guided}}
@@ -27,19 +51,6 @@ Transcribe the generated audio using the transcription settings below<br />
     padding: 5px;
     margin: 5px;">
 </div><br />
-<hr />
-<h3>Recording and Transcription Options</h3>
-<span>Select the recorder options below, press submit, and test recording.</span><br />
-<form id="speechtester_form" method="post" action="{{{pageurl}}}">
-<select name="language" id="speechtester_language">
-{{#languages}}
-<option value="{{key}}" {{selected}}>{{display}}</option>
-{{/languages}}
-</select><br />
-<input type="checkbox" name="stt_guided" id="speechtester_stt_guided" value="1" {{checked_stt_guided}}> Check to use 'guided transcription' (otherwise it is 'open transcription'</input><br />
-<input type="checkbox" name="forcestreaming" id="speechtester_forcestreaming" value="1" {{checked_forcestreaming}}> Check to use 'alternate streaming' (only applies with 'open transcription')</input><br />
-<button type="submit" class="btn btn-primary" id="speechtester_submit">Submit</button>
-</form>
 <hr />
 <h3>Recorder</h3>
 <div id="speechtester_transcription_coverage">
