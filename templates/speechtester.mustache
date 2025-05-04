@@ -51,9 +51,11 @@ Transcribe the generated audio using the transcription settings below<br />
     padding: 5px;
     margin: 5px;">
 </div><br />
+<div id="speechtester_transcription_coverage">
+</div>
 <hr />
 <h3>Recorder</h3>
-<div id="speechtester_transcription_coverage">
+<div>
 <ul>
     <li>Guided Transcription: {{#checked_stt_guided}}YES{{/checked_stt_guided}}{{^checked_stt_guided}}NO{{/checked_stt_guided}}</li>
     {{#checked_stt_guided}}<li>Guided Usable Text: <br />{{{guidedusetext}}}</li>{{/checked_stt_guided}}

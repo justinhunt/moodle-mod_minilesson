@@ -1640,8 +1640,25 @@ class utils {
         return $ret;
     }
 
-    public static function get_tts_voices($langcode, $showall) {
-        $alllang = constants::ALL_VOICES;
+    public static function get_tts_voices($langcode, $showall, $region='useast1') {
+        switch($region){
+            case "ningxia":
+                $alllang = constants::ALL_VOICES_NINGXIA;
+                break;
+            case "useast1":
+            case "tokyo":
+            case "sydney":
+            case "dublin":
+            case "ottawa":
+            case "capetown":
+            case "frankfurt":
+            case "london":
+            case "singapore":
+            case "mumbai":
+            default:
+                $alllang = constants::ALL_VOICES;
+        }
+        
 
         if(array_key_exists($langcode, $alllang) && !$showall) {
             return $alllang[$langcode];
@@ -1666,7 +1683,7 @@ class utils {
             }
             return $usearray;
         }else{
-                return $alllang[constants::M_LANG_ENUS];
+            return $alllang[constants::M_LANG_ENUS];
         }
     }
 

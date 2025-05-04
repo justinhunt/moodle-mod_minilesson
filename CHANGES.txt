@@ -1,5 +1,8 @@
+Version 1.0.85 (Build 2025050400)
 - support for lang server in Ningxia
 - added a better speech tester
+- fix for open speech on Android Chrome
+- limited list of TTS voices for Ningxia region
 
 Version 1.0.84 (Build 2025042100)
  - Support Ningxia region (requires Poodll China subscription)

@@ -131,6 +131,7 @@ var app = {
        // app.controls.transcriptioncoverage.html('');
         //init the transcription results div
         app.controls.transcription.html('<i class="fa fa-spinner fa-spin" style="font-size:24px;"></i>');
+        app.controls.transcriptioncoverage.html('');
         app.controls.transcription.show();
 
         //set the scorer if we have one
@@ -164,8 +165,7 @@ var app = {
                 if(respObject.data.hasOwnProperty('transcript')) {
                     var transcript = respObject.data.transcript;
                     app.controls.transcription.text(transcript);
-                    //correct the transcript
-                    /*
+                    //do a passage comparison
                     app.comparePassageToTranscript(prompt,transcript).then(function(ajaxresult) {
                         var comparison = JSON.parse(ajaxresult);
                         if (comparison) {
@@ -187,7 +187,7 @@ var app = {
                             app.controls.transcriptioncoverage.html(tc_report);
                         }
                     });
-                    */
+                    
                 }else{
                     app.controls.transcription.text("no transcript was in the result");
                 }

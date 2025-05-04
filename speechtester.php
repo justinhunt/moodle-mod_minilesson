@@ -141,7 +141,7 @@ if ($stt_guided && $language==$moduleinstance->ttslanguage) {
 $showall = true;
 
 // tts voices (data for template)
-$ttsvoices = utils::get_tts_voices($moduleinstance->ttslanguage, $showall);
+$ttsvoices = utils::get_tts_voices($moduleinstance->ttslanguage, $showall, $moduleinstance->region);
 $voices = array_map(function($key, $value)  {
     return ['key' => $key, 'display' => $value];
 }, array_keys($ttsvoices), $ttsvoices);
