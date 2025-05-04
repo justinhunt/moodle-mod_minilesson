@@ -59,6 +59,8 @@ class item_freespeaking extends item {
         if ($this->itemrecord->{constants::TARGETWORDCOUNT} > 0) {
             $testitem->targetwordcount = $this->itemrecord->{constants::TARGETWORDCOUNT};
             $testitem->countwords = true;
+        } else {
+            $testitem->countwords = false;
         }
 
         // We need cmid and itemid to do the AI evaluation by ajax.

@@ -58,6 +58,7 @@ define(['jquery', 'core/log'], function ($, log) {
             }
 
             //This is feature detection, and for chrome it can be trusted.
+            var is_android = navigator.userAgent.indexOf("Android") > -1;
             var hasspeechrec = ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window);
             if(hasspeechrec && this.browsertype === '' && has_chrome){
                 this.browsertype = 'chrome';
@@ -77,9 +78,11 @@ define(['jquery', 'core/log'], function ($, log) {
 
         init: function (lang,waveheight,uniqueid) {
             var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+            var is_android = navigator.userAgent.indexOf("Android") > -1;
             this.recognition = new SpeechRecognition();
             this.recognition.continuous = true;
-            this.recognition.interimResults = true;
+            //a bug in android chrome means it reverses isfinal true and false, so we cant use interim results
+            this.recognition.interimResults = !is_android;
             this.lang = lang;
             this.waveHeight = waveheight;
             this.uniqueid = uniqueid;
@@ -166,6 +169,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
             recognition.onresult = function (event) {
                 for (var i = event.resultIndex; i < event.results.length; ++i) {
+                    // a bug on android chrome means it reverses isfinal true and false, so we cant use interim results
                     if (event.results[i].isFinal) {
                         that.final_transcript += event.results[i][0].transcript;
                     } else {
