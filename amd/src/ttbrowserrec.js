@@ -171,7 +171,7 @@ define(['jquery', 'core/log'], function ($, log) {
                 for (var i = event.resultIndex; i < event.results.length; ++i) {
                     // a bug on android chrome means it reverses isfinal true and false, so we cant use interim results
                     if (event.results[i].isFinal) {
-                        that.final_transcript += event.results[i][0].transcript;
+                        that.final_transcript += event.results[i][0].transcript + ' ';
                     } else {
                         var provisional_transcript = that.final_transcript + event.results[i][0].transcript;
                         //the interim and final events do not arrive in sequence, we dont want the length going down, its weird
