@@ -1990,6 +1990,15 @@ class utils {
     public static function fetch_polly_url($token, $region, $speaktext, $voiceoption, $voice) {
         global $USER;
 
+        switch($region){
+            case 'ningxia':
+                $useregion = 'ningxia';
+                break;
+            case 'useast1':
+            default:
+                $useregion = 'useast1';
+        }
+
         $texttype = 'ssml';
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'polly');
         $key = sha1($speaktext . '|' . $texttype . '|' . $voice);
@@ -2043,8 +2052,8 @@ class utils {
         $params['voice'] = $voice;
         $params['appid'] = constants::M_COMPONENT;;
         $params['owner'] = hash('md5', $USER->username);
-        $params['region'] = $region;
-        $params['engine'] = self::can_speak_neural($voice, $region) ? 'neural' : 'standard';
+        $params['region'] = $useregion;
+        $params['engine'] = self::can_speak_neural($voice, $useregion) ? 'neural' : 'standard';
         $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
         if (!self::is_json($response)) {
@@ -2059,7 +2068,7 @@ class utils {
         } else if ($payloadobject->returnCode === 0) {
             $pollyurl = $payloadobject->returnMessage;
             // if its an S3 URL  then we cache it, yay
-            if(\core_text::strpos($pollyurl, 'pollyfile.poodll.net') > 0) {
+            if(\core_text::strpos($pollyurl, 'pollyfile') > 0) {
                 $cache->set($key, $pollyurl);
             }
             return $pollyurl;

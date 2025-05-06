@@ -401,7 +401,7 @@ abstract class item implements templatable, renderable {
                     if($lineset->voice=="soundeffect"){
                         $lineset->audiourl = $CFG->wwwroot  . '/' . constants::M_PATH . '/sounds/' . trim($thetext) . '.mp3';
                     }else {
-                        $lineset->audiourl = utils::fetch_polly_url($this->token, 'useast1', $thetext, $voiceoptions, $voice);
+                        $lineset->audiourl = utils::fetch_polly_url($this->token, $this->region, $thetext, $voiceoptions, $voice);
                     }
                     $linesdata[] = $lineset;
 
@@ -424,7 +424,7 @@ abstract class item implements templatable, renderable {
                 if(!empty(utils::super_trim($theline))) {
                     $linedata=new \stdClass();
                     $linedata->sentence = $theline;
-                    $linedata->audiourl = utils::fetch_polly_url($this->token, 'useast1', $theline, $voiceoptions, $voice);
+                    $linedata->audiourl = utils::fetch_polly_url($this->token, $this->region, $theline, $voiceoptions, $voice);
                     $linedatas[]=$linedata;
                 }
             }

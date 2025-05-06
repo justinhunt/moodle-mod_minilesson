@@ -1,3 +1,6 @@
+Version 1.0.86 (Build 2025050500)
+- Fixed bug in TTS voices for Ningxia region
+
 Version 1.0.85 (Build 2025050400)
 - support for lang server in Ningxia
 - added a better speech tester
