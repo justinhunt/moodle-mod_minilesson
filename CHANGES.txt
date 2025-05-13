@@ -1,3 +1,6 @@
+Version 1.0.87 (Build 2025051300)
+- Added Somali and Pashto languages
+
 Version 1.0.86 (Build 2025050500)
 - Fixed bug in TTS voices for Ningxia region
 

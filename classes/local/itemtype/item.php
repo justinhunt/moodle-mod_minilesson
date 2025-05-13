@@ -446,6 +446,7 @@ abstract class item implements templatable, renderable {
             case constants::M_LANG_ARSA:
             case constants::M_LANG_FAIR:
             case constants::M_LANG_HEIL:
+            case constants::M_LANG_PSAF:
                 $testitem->rtl=constants::M_CLASS . '_rtl';
                 break;
             default:

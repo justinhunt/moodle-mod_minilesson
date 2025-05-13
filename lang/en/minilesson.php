@@ -221,8 +221,10 @@ $string['mk-mk'] = 'Macedonian'; // Macedonian
 $string['no-no'] = 'Norwegian'; // Norwegian
 $string['sr-rs'] = 'Serbian'; // Serbian
 $string['vi-vn'] = 'Vietnamese'; // Vietnamese
+$string['so-so'] = 'Somali'; // Somali
+$string['ps-af'] = 'Pashto'; // Somali
 
-$string['awsregion']='AWS Region';
+$string['awsregion'] = 'AWS Region';
 //$string['region']='AWS Region';
 //$string['expiredays']='Days to keep file';
 

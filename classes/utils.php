@@ -910,6 +910,7 @@ class utils {
             case constants::M_LANG_ARSA:
             case constants::M_LANG_FAIR:
             case constants::M_LANG_HEIL:
+            case constants::M_LANG_PSAF:
                 return true;
             default:
                 return false;
@@ -1731,11 +1732,13 @@ class utils {
                constants::M_LANG_MSMY => get_string('ms-my', constants::M_COMPONENT),
                 constants::M_LANG_MKMK => get_string('mk-mk', constants::M_COMPONENT),
                 constants::M_LANG_NONO => get_string('no-no', constants::M_COMPONENT),
+                constants::M_LANG_PSAF => get_string('ps-af', constants::M_COMPONENT),
                 constants::M_LANG_PLPL => get_string('pl-pl', constants::M_COMPONENT),
                constants::M_LANG_PTBR => get_string('pt-br', constants::M_COMPONENT),
                constants::M_LANG_PTPT => get_string('pt-pt', constants::M_COMPONENT),
                 constants::M_LANG_RORO => get_string('ro-ro', constants::M_COMPONENT),
                constants::M_LANG_RURU => get_string('ru-ru', constants::M_COMPONENT),
+               constants::M_LANG_SOSO => get_string('so-so', constants::M_COMPONENT),
                 constants::M_LANG_ESUS => get_string('es-us', constants::M_COMPONENT),
                 constants::M_LANG_ESES => get_string('es-es', constants::M_COMPONENT),
                constants::M_LANG_SKSK => get_string('sk-sk', constants::M_COMPONENT),
