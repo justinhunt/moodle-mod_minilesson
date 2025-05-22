@@ -72,6 +72,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
           case 'pronunciation_results':
             var speechresults= message.results;
+            log.debug(speechresults);
             self.do_evaluation(speechresults);    
         } //end of switch message type
       };
@@ -435,6 +436,199 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             }
         });
     },
+    markuphelper: {
+        // Language mappings for phoneme to grapheme groups
+        languageMappings: {
+            en: {
+                graphemeGroups: ["sh", "th", "ch", "ph", "wh", "ck", "ng"],
+                phonemeGroups: {
+                    "ʃ": ["sh"],
+                    "tʃ": ["ch"],
+                    "θ": ["th"],
+                    "ŋ": ["ng"],
+                }
+            },
+            es: {
+                graphemeGroups: ["ll", "ch", "rr"],
+                phonemeGroups: {
+                    "ʎ": ["ll"],
+                    "tʃ": ["ch"],
+                    "r": ["rr"],
+                }
+            },
+            fr: {
+                graphemeGroups: ["ch", "gn", "ou", "eau", "oi"],
+                phonemeGroups: {
+                    "ʃ": ["ch"],
+                    "ɲ": ["gn"],
+                    "u": ["ou"],
+                    "o": ["eau"],
+                    "wa": ["oi"]
+                }
+            },
+            ar: {
+                graphemeGroups: [], // Arabic uses isolated characters
+                phonemeGroups: {}   // Optional: use Arabic IPA mappings if needed
+            }
+        },
 
-  };
+
+        alignPhonemesToLetters: function(word, phonemesWithScores, language = "en") {
+            const { graphemeGroups = [], phonemeGroups = {} } = languageMappings[language] || {};
+
+            // Normalize letters (strip accents, diacritics)
+            function normalizeWord(word, language) {
+                switch (language) {
+                    case "ar": return word.normalize("NFKD").replace(/[\u064B-\u065F\u0670]/g, "");
+                    default: return word.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                }
+            }
+
+            // Chunk graphemes into known groups
+            function tokenizeGraphemes(word, groups) {
+                const tokens = [];
+                let i = 0;
+                while (i < word.length) {
+                    let matched = false;
+                    for (const g of groups.sort((a, b) => b.length - a.length)) {
+                        if (word.slice(i, i + g.length) === g) {
+                            tokens.push(g);
+                            i += g.length;
+                            matched = true;
+                            break;
+                        }
+                    }
+                    if (!matched) {
+                        tokens.push(word[i]);
+                        i += 1;
+                    }
+                }
+                return tokens;
+            }
+
+            // Tokenize phonemes based on mappings
+            function normalizePhoneme(p) {
+                for (const group in phonemeGroups) {
+                    if (phonemeGroups[group].includes(p)) return group;
+                }
+                return p;
+            }
+
+            const normWord = normalizeWord(word, language);
+            const graphemes = tokenizeGraphemes(normWord, graphemeGroups);
+            const phonemes = phonemesWithScores.map(p => normalizePhoneme(p.phoneme));
+
+            // Dynamic programming
+            const m = graphemes.length, n = phonemes.length;
+            const dp = Array(m + 1).fill().map(() => Array(n + 1).fill(0));
+            const traceback = Array(m + 1).fill().map(() => Array(n + 1).fill(null));
+
+            const matchCost = 0, mismatchCost = 1, gap = 1;
+
+            for (let i = 0; i <= m; i++) { dp[i][0] = i * gap; traceback[i][0] = "up"; }
+            for (let j = 0; j <= n; j++) { dp[0][j] = j * gap; traceback[0][j] = "left"; }
+
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= n; j++) {
+                    const letter = graphemes[i - 1];
+                    const phoneme = phonemes[j - 1];
+                    const cost = letter === phoneme ? matchCost : mismatchCost;
+
+                    const diag = dp[i - 1][j - 1] + cost;
+                    const up = dp[i - 1][j] + gap;
+                    const left = dp[i][j - 1] + gap;
+
+                    dp[i][j] = Math.min(diag, up, left);
+                    traceback[i][j] = (dp[i][j] === diag) ? "diag" : (dp[i][j] === up ? "up" : "left");
+                }
+            }
+
+            let i = m, j = n;
+            const result = [];
+
+            while (i > 0 || j > 0) {
+                const move = traceback[i][j];
+                if (move === "diag") {
+                    result.unshift({
+                        letter: graphemes[i - 1],
+                        phoneme: phonemesWithScores[j - 1].phoneme,
+                        score: phonemesWithScores[j - 1].accuracy,
+                    });
+                    i--; j--;
+                } else if (move === "up") {
+                    result.unshift({ letter: graphemes[i - 1], phoneme: null, score: null });
+                    i--;
+                } else {
+                    j--;
+                }
+            }
+
+            return result;
+        },
+
+        scoreToColorClass: function(score)
+        {
+            if (score === null) return "gray";
+            if (score >= 85) return "green";
+            if (score >= 70) return "orange";
+            return "red";
+        },
+
+        renderPronunciationFeedback: function(containerId, alignmentData) {
+            const $container = $("#" + containerId);
+            $container.empty();
+
+            const $wrapper = $("<div>").css({
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "8px",
+                fontSize: "1.25rem",
+                marginTop: "10px",
+            });
+
+            alignmentData.forEach(({letter, phoneme, score}) => {
+                const $span = $("<span>")
+                    .text(letter)
+                    .css({
+                        padding: "4px 8px",
+                        borderRadius: "8px",
+                        border: "1px solid transparent",
+                        backgroundColor: "#f9f9f9",
+                        color: scoreToColorClass(score),
+                        cursor: "default",
+                    });
+
+                // Tooltip
+                const tooltipText = score === null
+                    ? "No phoneme matched"
+                    : `Phoneme: ${phoneme}, Score: ${score}`;
+                $span.attr("title", tooltipText);
+
+                // Apply color
+                const color = scoreToColorClass(score);
+                switch (color) {
+                    case "green":
+                        $span.css("color", "#15803d");
+                        break;
+                    case "orange":
+                        $span.css("color", "#b45309");
+                        break;
+                    case "red":
+                        $span.css("color", "#b91c1c");
+                        break;
+                    case "gray":
+                    default:
+                        $span.css("color", "#6b7280");
+                        break;
+                }
+
+                $wrapper.append($span);
+            });
+
+            $container.append($wrapper);
+        } //end of renderPronunciationFeedback
+    }//end of markup helper
+
+
+    };
 });

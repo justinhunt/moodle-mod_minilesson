@@ -812,7 +812,10 @@ class utils {
                 // cache the token
                 $tokenobject = new \stdClass();
                 $tokenobject->token = $msspeechtoken;
-                $tokenobject->validuntil = $now + (30 * MINSECS);
+                //ms speech tokens are only valid for 10 minutes
+                //And each user could come in at a different time meaning they get a token that might have only 1 min left
+                //so we just cache for 2 mins - maybe should cache per user ...
+                $tokenobject->validuntil = $now + (2 * MINSECS);
                 $cache->set('msspeechtoken'. '_' . $msregion, $tokenobject);
                 return $msspeechtoken;
             } else {

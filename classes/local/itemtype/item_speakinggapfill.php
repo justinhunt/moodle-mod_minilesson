@@ -152,7 +152,12 @@ class item_speakinggapfill extends item {
                 }
             }
             //if we get here just set the new passage hash to the existing one
-            $this->itemrecord->passagehash =$olditemrecord->passagehash;
+            if($olditemrecord) {
+                $this->itemrecord->passagehash = $olditemrecord->passagehash;
+            } else {
+                //This would happen if the user changed region, forcing an update, but there was no valid cloud poodll token
+                $this->itemrecord->passagehash = '';
+            }
         }else{
             //I think this will never get here
             $this->itemrecord->passagehash ='';

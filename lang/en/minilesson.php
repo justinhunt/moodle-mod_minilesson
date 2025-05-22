@@ -225,7 +225,8 @@ $string['so-so'] = 'Somali'; // Somali
 $string['ps-af'] = 'Pashto'; // Somali
 
 $string['awsregion'] = 'AWS Region';
-//$string['region']='AWS Region';
+$string['region']='AWS Region';
+$string['region_details']='The AWS Region sets where data is stored and processed.';
 //$string['expiredays']='Days to keep file';
 
 
@@ -646,6 +647,7 @@ $string['contwidth-compact']="Compact";
 $string['contwidth-wide']="Wide";
 $string['contwidth-full']="Full";
 $string['lessonfont']="Custom font";
+$string['lessonfont_details']="A font name that will override site default for this minilesson when displayed. Must be exact in spelling and case. eg Andika or Comic Sans MS";
 $string['lessonfont_help']="A font name that will override site default for this minilesson when displayed. Must be exact in spelling and case. eg Andika or Comic Sans MS";
 $string['advanced']="Advanced";
 $string['multiaudio_instructions1'] = 'Choose the correct answer. Use the mic to read it aloud.';

@@ -103,6 +103,30 @@ switch($action){
         $updatefields = ['maxattempts'];
         break;
 
+    case constants::M_PUSH_REGION:
+        $updatefields = ['region'];
+        break;
+
+    case constants::M_PUSH_CONTAINERWIDTH:
+        $updatefields = ['containerwidth'];
+        break;
+
+    case constants::M_PUSH_CSSKEY:
+        $updatefields = ['csskey'];
+        break;
+
+    case constants::M_PUSH_FINISHSCREEN:
+        $updatefields = ['finishscreen'];
+        break;
+
+    case constants::M_PUSH_FINISHSCREENCUSTOM:
+        $updatefields = ['finishscreencustom'];
+        break;
+
+    case constants::M_PUSH_LESSONFONT:
+        $updatefields = ['lessonfont'];
+        break;
+
     case constants::M_PUSH_NONE:
     default:
         $updatefields = [];

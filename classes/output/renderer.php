@@ -723,15 +723,27 @@ class renderer extends \plugin_renderer_base {
 
     public function push_buttons_menu($cm, $clonecount) {
         $templateitems = [];
-        $pushthings = ['maxattempts', 'transcriber', 'showitemreview'];
+        $pushthings = ['maxattempts', 'transcriber', 'showitemreview', 'region', 'containerwidth', 'csskey' , 'lessonfont' , 'finishscreen', 'finishscreencustom'];
 
         foreach ($pushthings as $pushthing) {
             switch($pushthing){
                 case 'transcriber': $action = constants::M_PUSH_TRANSCRIBER;
                     break;
-                case 'showimageflip': $action = constants::M_PUSH_SHOWITEMREVIEW;
+                case 'showitemreview': $action = constants::M_PUSH_SHOWITEMREVIEW;
                     break;
                 case 'maxattempts': $action = constants::M_PUSH_MAXATTEMPTS;
+                    break;
+                case 'region': $action = constants::M_PUSH_REGION;
+                    break;
+                case 'containerwidth': $action = constants::M_PUSH_REGION;
+                    break;
+                case 'csskey': $action = constants::M_PUSH_REGION;
+                    break;
+                case 'lessonfont': $action = constants::M_PUSH_REGION;
+                    break;
+                case 'finishscreen': $action = constants::M_PUSH_REGION;
+                    break;
+                case 'finishscreencustom': $action = constants::M_PUSH_REGION;
                     break;
             }
             $thepushbutton = new \single_button(new \moodle_url( constants::M_URL . '/push.php',
