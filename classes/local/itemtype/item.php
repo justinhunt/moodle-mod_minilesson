@@ -334,7 +334,7 @@ abstract class item implements templatable, renderable {
         }
         //YT Clip
         if(!empty($itemrecord->{constants::YTVIDEOID}) &&!empty(trim($itemrecord->{constants::YTVIDEOID}))){
-            $ytvideoid = trim($itemrecord->{constants::YTVIDEOID});
+            $ytvideoid = utils::super_trim($itemrecord->{constants::YTVIDEOID});
             //if its a YT URL we want to parse the id from it
             if(\core_text::strlen($ytvideoid)>11){
                 $urlbits=[];
@@ -399,7 +399,7 @@ abstract class item implements templatable, renderable {
                     $lineset->voice=$voice;
                     $voiceoptions = constants::TTS_NORMAL;
                     if($lineset->voice=="soundeffect"){
-                        $lineset->audiourl = $CFG->wwwroot  . '/' . constants::M_PATH . '/sounds/' . trim($thetext) . '.mp3';
+                        $lineset->audiourl = $CFG->wwwroot  . '/' . constants::M_PATH . '/sounds/' . utils::super_trim($thetext) . '.mp3';
                     }else {
                         $lineset->audiourl = utils::fetch_polly_url($this->token, $this->region, $thetext, $voiceoptions, $voice);
                     }
@@ -515,7 +515,7 @@ abstract class item implements templatable, renderable {
     protected function process_gapfill_sentences($sentences){
         $sentenceobjects = [];
         foreach ($sentences as $sentence) {
-            $sentence = trim($sentence);
+            $sentence = utils::super_trim($sentence);
             if (empty($sentence)) {
                 continue;
             }
@@ -566,9 +566,9 @@ abstract class item implements templatable, renderable {
         $sentenceobjects = [];
 
         foreach ($sentences as $sentence) {
-            $arr = explode('|', trim($sentence));
-            $sentence = trim($arr[0] ?? '');
-            $definition = trim($arr[1] ?? '');
+            $arr = explode('|', utils::super_trim($sentence));
+            $sentence = utils::super_trim($arr[0] ?? '');
+            $definition = utils::super_trim($arr[1] ?? '');
             if (empty($sentence)) {
                 continue;
             }
@@ -640,7 +640,7 @@ abstract class item implements templatable, renderable {
         $index = 0;
         $sentenceobjects = [];
         foreach ($sentences as $sentence) {
-            $sentence = trim($sentence);
+            $sentence = utils::super_trim($sentence);
             if (empty($sentence)) {
                 continue;
             }
@@ -660,10 +660,10 @@ abstract class item implements templatable, renderable {
                 //if we have a pipe prompt = array[0] and response = array[1]
                 $sentencebits = explode('|', $sentence);
                 if (count($sentencebits) > 1) {
-                    $prompt = trim($sentencebits[0]);
-                    $sentence = trim($sentencebits[1]);
+                    $prompt = utils::super_trim($sentencebits[0]);
+                    $sentence = utils::super_trim($sentencebits[1]);
                     if(count($sentencebits) >2){
-                        $displayprompt = trim($sentencebits[2]);
+                        $displayprompt = utils::super_trim($sentencebits[2]);
                     }else{
                         $displayprompt = $prompt;
                     }
@@ -928,9 +928,9 @@ abstract class item implements templatable, renderable {
             $data->{constants::QUESTIONTEXTAREA. 'format'}=FORMAT_HTML;
             $data = file_postupdate_standard_editor($data, constants::QUESTIONTEXTAREA, $edoptions, $this->context,
                 constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, $theitem->id);
-            $theitem->{constants::QUESTIONTEXTAREA} = trim($data->{constants::QUESTIONTEXTAREA});
+            $theitem->{constants::QUESTIONTEXTAREA} =  utils::super_trim($data->{constants::QUESTIONTEXTAREA});
         }else{
-            $theitem->{constants::QUESTIONTEXTAREA} = trim($data->{constants::QUESTIONTEXTAREA});
+            $theitem->{constants::QUESTIONTEXTAREA} = utils::super_trim($data->{constants::QUESTIONTEXTAREA});
         }
 
         //Item YT Clip

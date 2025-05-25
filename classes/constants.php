@@ -178,7 +178,7 @@ const TTS_SSML = 3;
 
 const ALL_VOICES_NINGXIA = array(
     constants::M_LANG_ARAE => ['Hala'=>'Hala','Zayd'=>'Zayd'],
-    constants::M_LANG_ARSA => ['Zeina'=>'Zeina', 'ar-MA-Azure-JamalNeural'=>'Jamal_a','ar-MA-Azure-MounaNeural'=>'Mouna_a'],
+    constants::M_LANG_ARSA => ['Zeina'=>'Zeina','ar-XA-Wavenet-B'=>'Amir_g','ar-XA-Wavenet-A'=>'Salma_g', 'ar-MA-Azure-JamalNeural'=>'Jamal_a','ar-MA-Azure-MounaNeural'=>'Mouna_a'],
     constants::M_LANG_ZHCN => ['Zhiyu'=>'Zhiyu'],
     constants::M_LANG_DADK => ['Naja'=>'Naja','Mads'=>'Mads'],
     constants::M_LANG_NLNL => ["Ruben"=>"Ruben","Lotte"=>"Lotte","Laura"=>"Laura"],
@@ -235,8 +235,6 @@ const ALL_VOICES = array(
         // constants::M_LANG_ENIE => [],
     constants::M_LANG_ENWL => ["Geraint"=>"Geraint"],
         // constants::M_LANG_ENAB => [],
-
-        //constants::M_LANG_FAIR => [],
     constants::M_LANG_FILPH => ['fil-PH-Wavenet-A'=>'Darna_g','fil-PH-Wavenet-B'=>'Reyna_g','fil-PH-Wavenet-C'=>'Bayani_g','fil-PH-Wavenet-D'=>'Ernesto_g'],
     constants::M_LANG_FIFI => ['Suvi'=>'Suvi','fi-FI-Wavenet-A'=>'Kaarina_g'],
     constants::M_LANG_FRCA => ['Chantal'=>'Chantal', 'Gabrielle'=>'Gabrielle','Liam'=>'Liam'],
@@ -260,6 +258,7 @@ const ALL_VOICES = array(
     constants::M_LANG_MSMY => ['ms-MY-Whisper-alloy'=>'Afsah','ms-MY-Whisper-shimmer'=>'Siti'],
     constants::M_LANG_NONO => ['Liv'=>'Liv','Ida'=>'Ida','nb-NO-Wavenet-B'=>'Lars_g','nb-NO-Wavenet-A'=>'Hedda_g','nb-NO-Wavenet-D'=>'Anders_g'],
     constants::M_LANG_PSAF => ['ps-AF-Azure-GulNawazNeural'=>'GulNawaz_a','ps-AF-Azure-LatifaNeural'=>'Latifa_a'],
+    constants::M_LANG_FAIR => ['fa-IR-Azure-FaridNeural'=>'Farid_a', 'fa-IR-Azure-DilaraNeural'=>'Dilara_a'],
     constants::M_LANG_PLPL => ['Ewa'=>'Ewa','Maja'=>'Maja','Jacek'=>'Jacek','Jan'=>'Jan'],
     constants::M_LANG_PTBR => ['Ricardo'=>'Ricardo', 'Vitoria'=>'Vitoria','Camila'=>'Camila'],
     constants::M_LANG_PTPT => ["Ines"=>"Ines",'Cristiano'=>'Cristiano'],

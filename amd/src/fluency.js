@@ -372,6 +372,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
     },
 
     do_evaluation: function (pronunciation_result) {
+        var self = this;
+        var twoletterlang = self.itemdata.language.substr(0, 2);
+        pronunciation_result.privPronJson.Words.forEach(function (wordobject) {
+            var adata = self.markuphelper.alignPhonemesToLetters(wordobject.Word, 
+                wordobject.Phonemes, 
+                twoletterlang);
+             self.markuphelper.renderPronunciationFeedback( self.itemdata.uniqueid + "_container .item-results-container", adata);
+        });
+        return;
+
       var self = this;
       var itemresultscont = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
       itemresultscont.html("");
@@ -436,6 +446,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             }
         });
     },
+
     markuphelper: {
         // Language mappings for phoneme to grapheme groups
         languageMappings: {
@@ -474,7 +485,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
 
         alignPhonemesToLetters: function(word, phonemesWithScores, language = "en") {
-            const { graphemeGroups = [], phonemeGroups = {} } = languageMappings[language] || {};
+            const { graphemeGroups = [], phonemeGroups = {} } = this.languageMappings[language] || {};
 
             // Normalize letters (strip accents, diacritics)
             function normalizeWord(word, language) {
@@ -516,7 +527,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
             const normWord = normalizeWord(word, language);
             const graphemes = tokenizeGraphemes(normWord, graphemeGroups);
-            const phonemes = phonemesWithScores.map(p => normalizePhoneme(p.phoneme));
+            const phonemes = phonemesWithScores.map(p => normalizePhoneme(p.Phoneme));
 
             // Dynamic programming
             const m = graphemes.length, n = phonemes.length;
@@ -551,8 +562,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 if (move === "diag") {
                     result.unshift({
                         letter: graphemes[i - 1],
-                        phoneme: phonemesWithScores[j - 1].phoneme,
-                        score: phonemesWithScores[j - 1].accuracy,
+                        phoneme: phonemesWithScores[j - 1].Phoneme,
+                        score: phonemesWithScores[j - 1].PronunciationAssessment.AccuracyScore,
                     });
                     i--; j--;
                 } else if (move === "up") {
@@ -575,27 +586,17 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         },
 
         renderPronunciationFeedback: function(containerId, alignmentData) {
+            var mhelper = this;
             const $container = $("#" + containerId);
-            $container.empty();
+           // $container.empty();
 
-            const $wrapper = $("<div>").css({
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "8px",
-                fontSize: "1.25rem",
-                marginTop: "10px",
-            });
+            const $wrapper = $("<div class='fluencywordresult'>");
 
             alignmentData.forEach(({letter, phoneme, score}) => {
-                const $span = $("<span>")
+                const $span = $("<span class='fluencyletterresult'>")
                     .text(letter)
                     .css({
-                        padding: "4px 8px",
-                        borderRadius: "8px",
-                        border: "1px solid transparent",
-                        backgroundColor: "#f9f9f9",
-                        color: scoreToColorClass(score),
-                        cursor: "default",
+                        color: mhelper.scoreToColorClass(score),
                     });
 
                 // Tooltip
@@ -605,7 +606,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 $span.attr("title", tooltipText);
 
                 // Apply color
-                const color = scoreToColorClass(score);
+                const color = mhelper.scoreToColorClass(score);
                 switch (color) {
                     case "green":
                         $span.css("color", "#15803d");

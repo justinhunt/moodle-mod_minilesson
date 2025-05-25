@@ -183,7 +183,7 @@ $string['nl-be'] = 'Dutch (BE)';
 $string['en-ie'] = 'English (Ireland)';
 $string['en-wl'] = 'English (Wales)';
 $string['en-ab'] = 'English (Scotland)';
-$string['fa-ir'] = 'Farsi';
+$string['fa-ir'] = 'Persian';
 $string['he-il'] = 'Hebrew';
 $string['id-id'] = 'Indonesian';
 $string['ja-jp'] = 'Japanese';
@@ -222,7 +222,7 @@ $string['no-no'] = 'Norwegian'; // Norwegian
 $string['sr-rs'] = 'Serbian'; // Serbian
 $string['vi-vn'] = 'Vietnamese'; // Vietnamese
 $string['so-so'] = 'Somali'; // Somali
-$string['ps-af'] = 'Pashto'; // Somali
+$string['ps-af'] = 'Pashto'; // Afghan Pashto
 
 $string['awsregion'] = 'AWS Region';
 $string['region']='AWS Region';
