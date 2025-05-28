@@ -34,7 +34,7 @@ class multichoiceform extends baseform {
         // add a heading for this form
         $this->add_itemsettings_heading();
         $this->add_showlistorreadoptions(constants::LISTENORREAD, get_string('listenorread', constants::M_COMPONENT), constants::LISTENORREAD_READ);
-        $this->add_voiceselect(constants::POLLYVOICE, get_string('choosemultiaudiovoice', constants::M_COMPONENT),
+        $this->add_ttsaudioselect(constants::POLLYVOICE, get_string('choosemultiaudiovoice', constants::M_COMPONENT),
             constants::LISTENORREAD,
             [constants::LISTENORREAD_READ, constants::LISTENORREAD_IMAGE]);
         $this->add_voiceoptions(constants::POLLYOPTION, get_string('choosevoiceoption', constants::M_COMPONENT),

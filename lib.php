@@ -31,6 +31,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use mod_minilesson\constants;
+use mod_minilesson\local\formelement\ttsaudio;
 use mod_minilesson\utils;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -964,4 +965,21 @@ function minilesson_get_coursemodule_info($coursemodule) {
         $result->customdata['duedate'] = $moduleinstance->viewend;
         $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;
         return $result;
+}
+
+function minilesson_output_fragment_ttsaudioelement($args) {
+    $formdata = [];
+    $args = (object) $args;
+    parse_str($args->formdata, $formdata);
+    $options = json_decode($args->options, true);
+
+    ttsaudio::register();
+    $form = new MoodleQuickForm('dummy', 'POST', '');
+    $formelement = $form->addElement(ttsaudio::ELNAME, $args->groupname, $options['label'], $options);
+
+    $formrenderer = $form->defaultRenderer();
+    $form->updateSubmission($formdata, []);
+    $formelement->accept($formrenderer);
+
+    return $formrenderer->toHtml();
 }
