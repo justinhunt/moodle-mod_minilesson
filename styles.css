@@ -3023,8 +3023,10 @@ textarea.ml_freewriting_textarea {
 .minilesson_fluency_box .item-results-container {
   display: flex;
   background-color: #eee;
-  height: 100px;
+  height: 50px;
   margin-bottom: 50px;
+  align-items: center;
+  justify-content: center;
 }
 .minilesson_fluency_box .form-container {
   margin: 20px auto 22px;
@@ -3208,7 +3210,7 @@ div.poodlldictationplayer {
   position: relative;
 }
 div.fluencywordresult {
-  display: flex;
+ /* display: flex; */
   flex-wrap: nowrap;
   gap: 3px;
   font-size: 1.25rem;

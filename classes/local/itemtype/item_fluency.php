@@ -52,6 +52,9 @@ class item_fluency extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
+        //Is rtl
+        $testitem->rtl = utils::is_rtl($this->language);
+
         $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE} == 1;
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;

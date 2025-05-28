@@ -10,7 +10,338 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
   log.debug('MiniLesson Fluency: initialising');
 
-  return {
+  var thefluencyitem = {
+    phonemeWarningThreshold: 75, // Threshold for phoneme error rate
+    phonemeErrorThreshold: 50, // Threshold for phoneme error rate
+    dummyResult: {
+    "privPronJson": {
+        "Confidence": 0.84381866,
+        "Lexical": "this is a pencil",
+        "ITN": "this is a pencil",
+        "MaskedITN": "this is a pencil",
+        "Display": "This is a pencil.",
+        "PronunciationAssessment": {
+            "AccuracyScore": 42,
+            "FluencyScore": 100,
+            "ProsodyScore": 81.1,
+            "CompletenessScore": 44,
+            "PronScore": 61.8
+        },
+        "Words": [
+            {
+                "Word": "this",
+                "Offset": 11000000,
+                "Duration": 4900000,
+                "PronunciationAssessment": {
+                    "AccuracyScore": 94,
+                    "ErrorType": "None",
+                    "Feedback": {
+                        "Prosody": {
+                            "Break": {
+                                "ErrorTypes": [
+                                    "None"
+                                ],
+                                "BreakLength": 0
+                            },
+                            "Intonation": {
+                                "ErrorTypes": [],
+                                "Monotone": {
+                                    "SyllablePitchDeltaConfidence": 0.8836736
+                                }
+                            }
+                        }
+                    }
+                },
+                "Syllables": [
+                    {
+                        "Syllable": "dhihs",
+                        "Grapheme": "this",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 69
+                        },
+                        "Offset": 11000000,
+                        "Duration": 4900000
+                    }
+                ],
+                "Phonemes": [
+                    {
+                        "Phoneme": "dh",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 78
+                        },
+                        "Offset": 11000000,
+                        "Duration": 2000000
+                    },
+                    {
+                        "Phoneme": "ih",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 100
+                        },
+                        "Offset": 13100000,
+                        "Duration": 600000
+                    },
+                    {
+                        "Phoneme": "s",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 51
+                        },
+                        "Offset": 13800000,
+                        "Duration": 2100000
+                    }
+                ]
+            },
+            {
+                "Word": "is",
+                "Offset": 16000000,
+                "Duration": 1500000,
+                "PronunciationAssessment": {
+                    "AccuracyScore": 91,
+                    "ErrorType": "None",
+                    "Feedback": {
+                        "Prosody": {
+                            "Break": {
+                                "ErrorTypes": [
+                                    "None"
+                                ],
+                                "UnexpectedBreak": {
+                                    "Confidence": 3.7878788e-8
+                                },
+                                "MissingBreak": {
+                                    "Confidence": 1
+                                },
+                                "BreakLength": 0
+                            },
+                            "Intonation": {
+                                "ErrorTypes": [],
+                                "Monotone": {
+                                    "SyllablePitchDeltaConfidence": 0.8836736
+                                }
+                            }
+                        }
+                    }
+                },
+                "Syllables": [
+                    {
+                        "Syllable": "ihz",
+                        "Grapheme": "is",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 91
+                        },
+                        "Offset": 16000000,
+                        "Duration": 1500000
+                    }
+                ],
+                "Phonemes": [
+                    {
+                        "Phoneme": "ih",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 80
+                        },
+                        "Offset": 16000000,
+                        "Duration": 500000
+                    },
+                    {
+                        "Phoneme": "z",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 98
+                        },
+                        "Offset": 16600000,
+                        "Duration": 900000
+                    }
+                ]
+            },
+            {
+                "Word": "a",
+                "Offset": 17600000,
+                "Duration": 700000,
+                "PronunciationAssessment": {
+                    "AccuracyScore": 100,
+                    "ErrorType": "None",
+                    "Feedback": {
+                        "Prosody": {
+                            "Break": {
+                                "ErrorTypes": [
+                                    "None"
+                                ],
+                                "UnexpectedBreak": {
+                                    "Confidence": 3.7878788e-8
+                                },
+                                "MissingBreak": {
+                                    "Confidence": 1
+                                },
+                                "BreakLength": 0
+                            },
+                            "Intonation": {
+                                "ErrorTypes": [],
+                                "Monotone": {
+                                    "SyllablePitchDeltaConfidence": 0.8836736
+                                }
+                            }
+                        }
+                    }
+                },
+                "Syllables": [
+                    {
+                        "Syllable": "ax",
+                        "Grapheme": "a",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 100
+                        },
+                        "Offset": 17600000,
+                        "Duration": 700000
+                    }
+                ],
+                "Phonemes": [
+                    {
+                        "Phoneme": "ax",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 100
+                        },
+                        "Offset": 17600000,
+                        "Duration": 700000
+                    }
+                ]
+            },
+            {
+                "Word": "pencil",
+                "Offset": 18400000,
+                "Duration": 5700000,
+                "PronunciationAssessment": {
+                    "AccuracyScore": 97,
+                    "ErrorType": "None",
+                    "Feedback": {
+                        "Prosody": {
+                            "Break": {
+                                "ErrorTypes": [
+                                    "None"
+                                ],
+                                "UnexpectedBreak": {
+                                    "Confidence": 3.7878788e-8
+                                },
+                                "MissingBreak": {
+                                    "Confidence": 1
+                                },
+                                "BreakLength": 0
+                            },
+                            "Intonation": {
+                                "ErrorTypes": [],
+                                "Monotone": {
+                                    "SyllablePitchDeltaConfidence": 0.8836736
+                                }
+                            }
+                        }
+                    }
+                },
+                "Syllables": [
+                    {
+                        "Syllable": "pehn",
+                        "Grapheme": "pen",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 94
+                        },
+                        "Offset": 18400000,
+                        "Duration": 3100000
+                    },
+                    {
+                        "Syllable": "saxl",
+                        "Grapheme": "cil",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 83
+                        },
+                        "Offset": 21600000,
+                        "Duration": 2500000
+                    }
+                ],
+                "Phonemes": [
+                    {
+                        "Phoneme": "p",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 85
+                        },
+                        "Offset": 18400000,
+                        "Duration": 1100000
+                    },
+                    {
+                        "Phoneme": "eh",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 100
+                        },
+                        "Offset": 19600000,
+                        "Duration": 900000
+                    },
+                    {
+                        "Phoneme": "n",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 100
+                        },
+                        "Offset": 20600000,
+                        "Duration": 900000
+                    },
+                    {
+                        "Phoneme": "s",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 100
+                        },
+                        "Offset": 21600000,
+                        "Duration": 1200000
+                    },
+                    {
+                        "Phoneme": "ax",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 80
+                        },
+                        "Offset": 22900000,
+                        "Duration": 600000
+                    },
+                    {
+                        "Phoneme": "l",
+                        "PronunciationAssessment": {
+                            "AccuracyScore": 49
+                        },
+                        "Offset": 23600000,
+                        "Duration": 500000
+                    }
+                ]
+            },
+            {
+                "Word": "and",
+                "PronunciationAssessment": {
+                    "ErrorType": "Omission"
+                },
+                "Phonemes": []
+            },
+            {
+                "Word": "this",
+                "PronunciationAssessment": {
+                    "ErrorType": "Omission"
+                },
+                "Phonemes": []
+            },
+            {
+                "Word": "is",
+                "PronunciationAssessment": {
+                    "ErrorType": "Omission"
+                },
+                "Phonemes": []
+            },
+            {
+                "Word": "a",
+                "PronunciationAssessment": {
+                    "ErrorType": "Omission"
+                },
+                "Phonemes": []
+            },
+            {
+                "Word": "pen",
+                "PronunciationAssessment": {
+                    "ErrorType": "Omission"
+                },
+                "Phonemes": []
+            }
+        ]
+    }
+},
+
 
     speechConfig: null,
     //this is just a placeholder for the actualtext which is from the sentences in items
@@ -186,6 +517,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
               theaudio.addEventListener('ended', function () {
                   $(self.audioplayerbtn).children('.fa').removeClass('fa-stop');
                   $(self.audioplayerbtn).children('.fa').addClass('fa-volume-up');
+                  self.do_evaluation(self.dummyResult);  
+
               });
 
               theaudio.addEventListener('play', function () {
@@ -373,12 +706,25 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
     do_evaluation: function (pronunciation_result) {
         var self = this;
+        var itemresultscont = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
+        // Clear previous results
+        itemresultscont.html("");
+
         var twoletterlang = self.itemdata.language.substr(0, 2);
-        pronunciation_result.privPronJson.Words.forEach(function (wordobject) {
+        if(self.itemdata.rtl){
+            var words = pronunciation_result.privPronJson.Words.reverse();
+        }else{
+            var words = pronunciation_result.privPronJson.Words;
+        }
+      
+      
+        // Render pronunciation feedback for each word
+
+        words.forEach(function (wordobject) {
             var adata = self.markuphelper.alignPhonemesToLetters(wordobject.Word, 
                 wordobject.Phonemes, 
                 twoletterlang);
-             self.markuphelper.renderPronunciationFeedback( self.itemdata.uniqueid + "_container .item-results-container", adata);
+             self.markuphelper.renderPronunciationFeedback( self.itemdata.uniqueid + "_container .item-results-container", adata, self.itemdata.rtl);
         });
         return;
 
@@ -580,15 +926,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         scoreToColorClass: function(score)
         {
             if (score === null) return "gray";
-            if (score >= 85) return "green";
-            if (score >= 70) return "orange";
+            if (score >= thefluencyitem.phonemeWarningThreshold) return "green";
+            if (score >= thefluencyitem.phonemeErrorThreshold) return "orange";
             return "red";
         },
 
-        renderPronunciationFeedback: function(containerId, alignmentData) {
+        renderPronunciationFeedback: function(containerId, alignmentData, rtl) {
             var mhelper = this;
             const $container = $("#" + containerId);
-           // $container.empty();
 
             const $wrapper = $("<div class='fluencywordresult'>");
 
@@ -622,8 +967,11 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                         $span.css("color", "#6b7280");
                         break;
                 }
-
-                $wrapper.append($span);
+               // if(rtl){
+               //     $wrapper.prepend($span);
+               // }else{
+                    $wrapper.append($span);
+               // }
             });
 
             $container.append($wrapper);
@@ -631,5 +979,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
     }//end of markup helper
 
 
-    };
+    };//end of thefluencyitem
+    return thefluencyitem;
 });
