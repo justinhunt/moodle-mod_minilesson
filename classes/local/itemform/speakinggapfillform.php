@@ -21,7 +21,7 @@ class speakinggapfillform extends baseform {
             get_string('readsentences', constants::M_COMPONENT),
             get_string('readsentences_desc', constants::M_COMPONENT), [], [0, 1]);
 
-        $this->add_voiceselect(constants::POLLYVOICE, get_string('choosevoice', constants::M_COMPONENT),
+        $this->add_ttsaudioselect(constants::POLLYVOICE, get_string('choosevoice', constants::M_COMPONENT),
         constants::READSENTENCE, 0);
 
         $nossml = true;

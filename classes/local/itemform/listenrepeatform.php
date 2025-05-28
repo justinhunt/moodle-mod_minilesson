@@ -19,7 +19,7 @@ class listenrepeatform extends baseform
     public function custom_definition() {
         $this->add_itemsettings_heading();
         $this->add_showtextpromptoptions(constants::SHOWTEXTPROMPT,get_string('showtextprompt',constants::M_COMPONENT));
-        $this->add_voiceselect(constants::POLLYVOICE,get_string('choosevoice',constants::M_COMPONENT));
+        $this->add_ttsaudioselect(constants::POLLYVOICE,get_string('choosevoice',constants::M_COMPONENT));
         $this->add_voiceoptions(constants::POLLYOPTION,get_string('choosevoiceoption',constants::M_COMPONENT));
         //$textpromptoptions=utils::fetch_options_textprompt();
         //$this->add_dropdown(constants::SHOWTEXTPROMPT,get_string('showtextprompt',constants::M_COMPONENT),$textpromptoptions);
