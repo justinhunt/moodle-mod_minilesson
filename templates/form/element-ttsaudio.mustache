@@ -1,0 +1,7 @@
+<div class="position-relative" data-root="elementwrapper" {{#wrapperoptions}} data-{{{key}}}="{{{value}}}"{{/wrapperoptions}}>
+{{> core_form/element-group }}
+{{> core/overlay_loading }}
+</div>
+{{#js}}
+require(['mod_minilesson/ttsaudioformelement'], amd => amd.registerElement({{{jsargs}}}))
+{{/js}}

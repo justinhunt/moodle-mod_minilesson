@@ -860,3 +860,5 @@ $string['alternatestreaming'] = 'Enable alternate streaming';
 $string['alternatestreaming_details'] = 'Streams recorded audio for open transcription. Slightly slower then the default browser transcription and only works in English. On by default in mobile app on iOS.';
 $string['cloudpoodllserver'] = 'Cloud Poodll Server';
 $string['cloudpoodllserver_details'] = 'The server to use for Cloud Poodll. Only change this if Poodll has provided a different one.';
+$string['language'] = 'Language';
+$string['voice'] = 'Voice';

@@ -1,0 +1,13 @@
+<div class="samplettsaudio"  id="{{uniqid}}_ttsaudio">
+    <button type='button' id='{{uniqid}}' class="roundmini-audio-player">
+        <audio id="{{uniqid}}_ttsaudioplayer" data-text="{{ttsaudio}}" data-autoplay="{{ttsautoplay}}"  data-ttsoption="{{ttsoption}}" data-voice="{{ttsaudiovoice}}" src="{{{audiosrc}}}" class="mod_minilesson_itemttsaudio"></audio>
+        <i class="fa fa-volume-up" aria-hidden="true"></i>
+    </button>
+</div>
+{{^element.frozen}}
+    {{#js}}
+        require(['jquery', 'mod_minilesson/ttsaudio'], function($, ttsaudio) {
+            ttsaudio.init('{{uniqid}}');
+        });
+    {{/js}}
+{{/element.frozen}}
