@@ -925,10 +925,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
         scoreToColorClass: function(score)
         {
-            if (score === null) return "gray";
-            if (score >= thefluencyitem.phonemeWarningThreshold) return "green";
-            if (score >= thefluencyitem.phonemeErrorThreshold) return "orange";
-            return "red";
+            if (score === null) return "letter_missing"; //grey
+            if (score >= thefluencyitem.phonemeWarningThreshold) return "letter_good"; //green
+            if (score >= thefluencyitem.phonemeErrorThreshold) return "letter_fair"; //orange
+            return "letter_wrong"; //red
         },
 
         renderPronunciationFeedback: function(containerId, alignmentData, rtl) {
@@ -938,40 +938,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             const $wrapper = $("<div class='fluencywordresult'>");
 
             alignmentData.forEach(({letter, phoneme, score}) => {
-                const $span = $("<span class='fluencyletterresult'>")
-                    .text(letter)
-                    .css({
-                        color: mhelper.scoreToColorClass(score),
-                    });
+                var resultcolorclass = mhelper.scoreToColorClass(score);
+                const $span = $("<span class='fluencyletterresult " + resultcolorclass + "'>")
+                    .text(letter);
 
                 // Tooltip
                 const tooltipText = score === null
                     ? "No phoneme matched"
                     : `Phoneme: ${phoneme}, Score: ${score}`;
                 $span.attr("title", tooltipText);
-
-                // Apply color
-                const color = mhelper.scoreToColorClass(score);
-                switch (color) {
-                    case "green":
-                        $span.css("color", "#15803d");
-                        break;
-                    case "orange":
-                        $span.css("color", "#b45309");
-                        break;
-                    case "red":
-                        $span.css("color", "#b91c1c");
-                        break;
-                    case "gray":
-                    default:
-                        $span.css("color", "#6b7280");
-                        break;
-                }
-               // if(rtl){
-               //     $wrapper.prepend($span);
-               // }else{
-                    $wrapper.append($span);
-               // }
+                $wrapper.append($span);
             });
 
             $container.append($wrapper);

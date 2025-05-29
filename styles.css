@@ -3242,3 +3242,16 @@ span.fluencyletterresult {
     background-color: #f9f9f9;
     cursor: default;
 }
+
+span.fluencyletterresult.letter_missing {
+  color: gray;
+}
+span.fluencyletterresult.letter_fair {
+  color: orange;
+}
+span.fluencyletterresult.letter_good {
+  color: green;
+}
+span.fluencyletterresult.letter_wrong {
+  color: red;
+}
