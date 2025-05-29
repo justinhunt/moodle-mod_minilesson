@@ -35,6 +35,7 @@ namespace mod_minilesson\local\itemform;
 require_once($CFG->libdir . '/formslib.php');
 
 use \mod_minilesson\constants;
+use mod_minilesson\local\formelement\ttsaudio;
 use \mod_minilesson\utils;
 
 /**
@@ -404,7 +405,7 @@ abstract class baseform extends \moodleform {
         $mform->addElement('html',$fieldsettops['addttsaudio'],[]);
         $mform->addElement('textarea', constants::TTSQUESTION, get_string('itemttsquestion', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;'));
         $mform->setType(constants::TTSQUESTION, PARAM_RAW);
-        $this->add_voiceselect(constants::TTSQUESTIONVOICE,get_string('itemttsquestionvoice',constants::M_COMPONENT));
+        $this->add_ttsaudioselect(constants::TTSQUESTIONVOICE,get_string('itemttsquestionvoice',constants::M_COMPONENT));
         $this->add_voiceoptions(constants::TTSQUESTIONOPTION,get_string('choosevoiceoption',constants::M_COMPONENT));
         $mform->addElement('advcheckbox',constants::TTSAUTOPLAY,get_string('autoplay',constants::M_COMPONENT),'');
         $mform->addElement('html',$fieldsetbottom,[]);
@@ -447,9 +448,9 @@ abstract class baseform extends \moodleform {
         //Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
         //$this->add_static_text('ttsdialog_instructions',null,get_string('ttsdialoginstructions', constants::M_COMPONENT));
 
-        $this->add_voiceselect(constants::TTSDIALOGVOICEA,get_string('ttsdialogvoicea',constants::M_COMPONENT));
-        $this->add_voiceselect(constants::TTSDIALOGVOICEB,get_string('ttsdialogvoiceb',constants::M_COMPONENT));
-        $this->add_voiceselect(constants::TTSDIALOGVOICEC,get_string('ttsdialogvoicec',constants::M_COMPONENT));
+        $this->add_ttsaudioselect(constants::TTSDIALOGVOICEA,get_string('ttsdialogvoicea',constants::M_COMPONENT));
+        $this->add_ttsaudioselect(constants::TTSDIALOGVOICEB,get_string('ttsdialogvoiceb',constants::M_COMPONENT));
+        $this->add_ttsaudioselect(constants::TTSDIALOGVOICEC,get_string('ttsdialogvoicec',constants::M_COMPONENT));
         $mform->addElement('textarea', constants::TTSDIALOG, get_string('ttsdialog', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;','placeholder'=>'A) Hello&#10;B) Goodbye'));
         $mform->setType(constants::TTSDIALOG, PARAM_RAW);
         $mform->addElement('advcheckbox',constants::TTSDIALOGVISIBLE,get_string('ttsdialogvisible',constants::M_COMPONENT),get_string('ttsdialogvisible_desc', constants::M_COMPONENT));
@@ -464,7 +465,7 @@ abstract class baseform extends \moodleform {
         //Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
         //$this->add_static_text('ttspassage_instructions',null,get_string('ttspassageinstructions', constants::M_COMPONENT));
 
-        $this->add_voiceselect(constants::TTSPASSAGEVOICE,get_string('ttspassagevoice',constants::M_COMPONENT));
+        $this->add_ttsaudioselect(constants::TTSPASSAGEVOICE,get_string('ttspassagevoice',constants::M_COMPONENT));
         $this->add_voiceoptions(constants::TTSPASSAGESPEED,get_string('ttspassagespeed',constants::M_COMPONENT));
         $mform->addElement('textarea', constants::TTSPASSAGE, get_string('ttspassage', constants::M_COMPONENT), array('wrap'=>'virtual','style'=>'width: 100%;','placeholder'=>''));
         $mform->setType(constants::TTSPASSAGE, PARAM_RAW);
@@ -675,6 +676,36 @@ abstract class baseform extends \moodleform {
         $somevoiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage,!$showall, $this->moduleinstance->region);
         $defaultvoice =array_pop($somevoiceoptions );
         $this->add_dropdown($name, $label,$allvoiceoptions,$defaultvoice);
+        if($hideif_field !== false && !empty($hideif_values)) {
+            $m35 = $CFG->version >= 2018051700;
+            if(!is_array($hideif_values)){
+                $hideif_values = [$hideif_values];
+            }
+            foreach($hideif_values as $hideif_value){
+                if ($m35) {
+                    $this->_form->hideIf($name, $hideif_field, 'eq', $hideif_value);
+                } else {
+                    $this->_form->disabledIf($name, $hideif_field, 'eq', $hideif_value);
+                }
+            }
+        }
+    }
+
+    /**
+     * Convenience function: Adds a dropdown list of voices
+     *
+     * @param string $label, null means default
+     * @return void
+     */
+    protected final function add_ttsaudioselect($name, $label = null, $hideif_field=false,$hideif_values=[]) {
+        global $CFG;
+
+        ttsaudio::register();
+        $this->_form->addElement(ttsaudio::ELNAME, $name, $label, [
+            'region' => $this->moduleinstance->ttslanguage,
+            'langcode' => $this->moduleinstance->ttslanguage,
+        ]);
+
         if($hideif_field !== false && !empty($hideif_values)) {
             $m35 = $CFG->version >= 2018051700;
             if(!is_array($hideif_values)){
