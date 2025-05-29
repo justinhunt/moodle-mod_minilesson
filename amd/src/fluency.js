@@ -517,7 +517,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
               theaudio.addEventListener('ended', function () {
                   $(self.audioplayerbtn).children('.fa').removeClass('fa-stop');
                   $(self.audioplayerbtn).children('.fa').addClass('fa-volume-up');
-                  self.do_evaluation(self.dummyResult);  
+                 // self.do_evaluation(self.dummyResult);  
 
               });
 
@@ -721,9 +721,22 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         // Render pronunciation feedback for each word
 
         words.forEach(function (wordobject) {
-            var adata = self.markuphelper.alignPhonemesToLetters(wordobject.Word, 
-                wordobject.Phonemes, 
-                twoletterlang);
+            //MS Returns syllables, at least for English, and these have a grapheme so its the best data
+            if(wordobject.Syllables){
+                var adata =[];
+                wordobject.Syllables.forEach(function(syllable){
+                    adata.push({
+                        letter: syllable.Grapheme,
+                        phoneme: syllable.Syllable,
+                        score: syllable.PronunciationAssessment.AccuracyScore,
+                    });
+                });
+            //If no syllable data we do our best to simulate it    
+            }else{
+                var adata = self.markuphelper.alignPhonemesToLetters(wordobject.Word, 
+                    wordobject.Phonemes, 
+                    twoletterlang);
+            }
              self.markuphelper.renderPronunciationFeedback( self.itemdata.uniqueid + "_container .item-results-container", adata, self.itemdata.rtl);
         });
         return;
