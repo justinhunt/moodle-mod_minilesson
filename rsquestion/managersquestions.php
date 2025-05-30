@@ -257,6 +257,29 @@ if ($edit) {
             $data->{constants::FILEANSWER . $i} = $draftitemid;
         }
 
+        //Prepare sentence assets
+        $i = $mform->item_no_of_sentence() > 0 ? 1: 0;
+        if ($i > 0) {
+            $prefix = constants::TEXTANSWER;
+            for(; $i <= $mform->item_no_of_sentence();$i++) {
+                foreach([
+                    "{$prefix}{$i}_image" => 'image',
+                    "{$prefix}{$i}_audio" => 'audio',
+                ] as $elname => $type) {
+                    $draftitemid = file_get_submitted_draft_itemid($elname);
+                    file_prepare_draft_area($draftitemid,
+                        $context->id, constants::M_COMPONENT,
+                        $elname, $data->itemid,
+                        array_merge(
+                            $filemanageroptions,
+                            ['accepted_types' => $type]
+                        )
+                    );
+                    $data->{$elname} = $draftitemid;
+                }
+            }
+        }
+
         $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/mediaprompts', 'init', [$visibility]);
 
     }

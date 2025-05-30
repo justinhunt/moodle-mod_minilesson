@@ -3262,3 +3262,26 @@ span.fluencyletterresult.letter_wrong {
 .btn.fluency_listen_btn.audioself {
   color: deeppink;
 }
+.element-sentenceprompt-container {
+  display: flex;
+  border: 1px solid rgb(203, 213, 225);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  max-height: 32rem;
+}
+
+.element-sentenceprompt-container .sentenceprompt__textarea {
+  border: none;
+  outline: none;
+  padding: 0.5rem;
+  width: 100%;
+}
+.element-sentenceprompt-container .sentenceprompt__lines {
+  border-right: 1px solid rgb(203, 213, 225);
+  padding: 0.5rem;
+  text-align: right;
+  overflow: hidden;
+}
+.element-sentenceprompt-container .sentenceprompt__textarea:focus {
+  box-shadow: none;
+}

@@ -35,7 +35,9 @@ namespace mod_minilesson\local\itemform;
 require_once($CFG->libdir . '/formslib.php');
 
 use \mod_minilesson\constants;
+use mod_minilesson\local\formelement\sentenceprompt;
 use mod_minilesson\local\formelement\ttsaudio;
+use mod_minilesson\local\itemtype\item;
 use \mod_minilesson\utils;
 
 /**
@@ -87,6 +89,8 @@ abstract class baseform extends \moodleform {
      * @var bool
      */
     protected $standard = true;
+
+    public const ITEMCLASS = item::class;
 
     /**
      * Each item type can and should override this to add any custom elements to
@@ -544,6 +548,65 @@ abstract class baseform extends \moodleform {
         }
     }
 
+    protected final function add_sentenceprompt($name_or_count, $label = null, $required = false) {
+        if ($label === null) {
+            $label = get_string('response', constants::M_COMPONENT);
+        }
+
+        // Set the form element name
+        if(is_number($name_or_count) || empty($name_or_count)){
+            $element = constants::TEXTANSWER . $name_or_count;
+        }else{
+            $element = $name_or_count;
+        }
+
+        sentenceprompt::register();
+        $this->_form->addElement(sentenceprompt::ELNAME, $element , $label,array('rows'=>'4', 'columns'=>'140', 'style'=>'width: 600px'));
+        if ($required) {
+            $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
+        }
+    }
+
+    protected final function add_sentenceimage($name_or_count, $label = null, $required = false) {
+        if ($label === null) {
+            $label = get_string('sentenceimage', constants::M_COMPONENT);
+        }
+
+        // Set the form element name
+        if(is_number($name_or_count) || empty($name_or_count)){
+            $element = constants::TEXTANSWER . $name_or_count;
+        }else{
+            $element = $name_or_count;
+        }
+
+        $filemanageroptions = $this->filemanageroptions;
+        $filemanageroptions['accepted_types'] = 'image';
+        $this->_form->addElement('filemanager', "{$element}_image" , $label, [], $filemanageroptions);
+        if ($required) {
+            $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
+        }
+    }
+
+    protected final function add_sentenceaudio($name_or_count, $label = null, $required = false) {
+        if ($label === null) {
+            $label = get_string('sentenceaudio', constants::M_COMPONENT);
+        }
+
+        // Set the form element name
+        if(is_number($name_or_count) || empty($name_or_count)){
+            $element = constants::TEXTANSWER . $name_or_count;
+        }else{
+            $element = $name_or_count;
+        }
+
+        $filemanageroptions = $this->filemanageroptions;
+        $filemanageroptions['accepted_types'] = 'audio';
+        $this->_form->addElement('filemanager', "{$element}_audio" , $label, [], $filemanageroptions);
+        if ($required) {
+            $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
+        }
+    }
+
     /**
      * Convenience function: Adds a textbox
      *
@@ -870,5 +933,9 @@ abstract class baseform extends \moodleform {
             8=>8,
         ];
         $this->add_dropdown($name, $label,$alienoptions,$default);
+    }
+
+    public function item_no_of_sentence() {
+        return call_user_func([static::ITEMCLASS, 'get_no_of_sentence']);
     }
 }

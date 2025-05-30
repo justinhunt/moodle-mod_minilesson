@@ -871,3 +871,5 @@ $string['voice'] = 'Voice';
 $string['passagegapfill'] = 'Passage GapFill';
 $string['hints'] = 'Hints';
 $string['gethints'] = 'Get Hints';
+$string['sentenceimage'] = 'Sentence Images';
+$string['sentenceaudio'] = 'Sentence Audios';
