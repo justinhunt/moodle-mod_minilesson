@@ -79,6 +79,7 @@ This file contains class and ID definitions.
         qtype_buttonquiz: 'buttonquiz',
         qtype_conversation: 'conversation',
         qtype_compquiz: 'compquiz',
+        qtype_passagegapfill: 'passagegapfill',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_minilesson_grading_maybeselfcorrectedword',

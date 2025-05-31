@@ -5,12 +5,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         'mod_minilesson/listeninggapfill','mod_minilesson/typinggapfill','mod_minilesson/speakinggapfill',
         'mod_minilesson/spacegame','mod_minilesson/fluency','mod_minilesson/freespeaking',
         'mod_minilesson/freewriting','mod_minilesson/passagereading','mod_minilesson/buttonquiz',
-        'mod_minilesson/conversation','mod_minilesson/compquiz'],
+        'mod_minilesson/conversation','mod_minilesson/compquiz','mod_minilesson/passagegapfill'],
   function($, log, def, templates, Ajax, dictation, dictationchat, multichoice, multiaudio,
            speechcards, listenrepeat, page, smartframe, shortanswer,
            listeninggapfill,typinggapfill, speakinggapfill,
            spacegame,fluency, freespeaking,freewriting,
-           passagereading,buttonquiz,conversation,compquiz) {
+           passagereading,buttonquiz,conversation,compquiz,passagegapfill) {
     "use strict"; // jshint ;_;
 
     /*
@@ -143,6 +143,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_compquiz:
                 compquiz.clone().init(index, item, dd);
                 break;
+
+              case def.qtype_passagegapfill:
+                  passagegapfill.clone().init(index, item, dd);
+                  break;
           }
 
         });

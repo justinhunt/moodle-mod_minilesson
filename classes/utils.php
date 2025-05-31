@@ -2110,6 +2110,8 @@ class utils {
                 return new local\itemtype\item_listeninggapfill($itemrecord, $moduleinstance, $context);
             case constants::TYPE_TGAPFILL:
                 return new local\itemtype\item_typinggapfill($itemrecord, $moduleinstance, $context);
+            case constants::TYPE_PGAPFILL:
+                return new local\itemtype\item_passagegapfill($itemrecord, $moduleinstance, $context);
             case constants::TYPE_COMPQUIZ:
                 return new local\itemtype\item_compquiz($itemrecord, $moduleinstance, $context);
             case constants::TYPE_BUTTONQUIZ:
@@ -2158,6 +2160,8 @@ class utils {
                 return '\\'. constants::M_COMPONENT . '\local\itemform\listeninggapfillform';
             case constants::TYPE_TGAPFILL:
                 return '\\'. constants::M_COMPONENT . '\local\itemform\typinggapfillform';
+            case constants::TYPE_PGAPFILL:
+                return '\\'. constants::M_COMPONENT . '\local\itemform\passagegapfillform';
             case constants::TYPE_COMPQUIZ:
                 return '\\'. constants::M_COMPONENT . '\local\itemform\compquizform';
             case constants::TYPE_BUTTONQUIZ:

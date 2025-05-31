@@ -1,0 +1,29 @@
+{{> mod_minilesson/questionheader}}
+<div class="minilesson_pgapfill_box">
+    <div class="ml_pgapfill_resultscontainer" style="display: none"></div>
+    <audio class="pgapfill_audio_player" controls="controls" src="{{passageaudio}}"></audio>
+
+    <div class="pgapfill_passage {{rtl}}">
+      {{#passagedata.words}}
+        {{#isgap}}
+          <input type="text" class="pgapfill_gap_input"  data-wordindex="{{wordindex}}" data-wordtext="{{text}}" placeholder="{{placeholder}}" />
+        {{/isgap}}
+        {{^isgap}}
+        {{{text}}}
+        {{/isgap}}
+      {{/passagedata.words}}
+    </div>
+
+      <div class="minilesson_actionbutton">
+        <a class="btn btn-secondary center ml_checkbutton" href="#">
+            {{#str}}check, mod_minilesson{{/str}}
+        </a>
+      </div>
+
+    <div class="minilesson_actionbutton">
+        <a class="btn btn-secondary center ml_hintbutton" href="#">
+            {{#str}}gethints, mod_minilesson{{/str}}
+        </a>
+    </div>
+</div>
+{{> mod_minilesson/questionfooter}}

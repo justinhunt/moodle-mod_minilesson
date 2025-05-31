@@ -216,7 +216,11 @@ abstract class baseform extends \moodleform {
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('sg_instructions1', constants::M_COMPONENT));
                         break;
-
+                    //passage gapfill
+                    case constants::TYPE_PGAPFILL:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('pg_instructions1', constants::M_COMPONENT));
+                        break;
                     //comprehension quiz
                     case constants::TYPE_COMPQUIZ:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
@@ -517,7 +521,7 @@ abstract class baseform extends \moodleform {
     /**
      * Convenience function: Adds a text area response
      *
-     * @param $name_or_count The name or count of the element to add
+     * @param int $name_or_count The name or count of the element to add
      * @param string $label, null means default
      * @param bool $required
      * @return void
