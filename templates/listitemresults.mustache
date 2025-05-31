@@ -11,6 +11,11 @@
         <i class="fa fa-play"></i>
       </a>
       {{/audio}}
+      {{#audioself}}
+      <a class="btn ml_li_resultaudioself" data-src="{{{audioself.src}}}" tabindex="0">
+        <i class="fa fa-play"></i>
+      </a>
+      {{/audioself}}
       <div class="ml_li_resultitem">
       {{target}}
       </div>
@@ -26,7 +31,7 @@
 {{^element.frozen}}
 {{#js}}
     require(['jquery', 'core/log'], function($, log) {
-      var audiobutton = $('#{{uniqid}} .ml_li_resultaudio');
+      var audiobutton = $('#{{uniqid}} .ml_li_resultaudio, #{{uniqid}} .ml_li_resultaudioself');
       var audio = $('#{{uniqid}} .ml_listitem_resultsplayer');
       audiobutton.on('click',function(e){
          e.preventDefault();
@@ -37,8 +42,8 @@
           itag.removeClass('fa-stop');
           itag.addClass('fa-play');
         }else{
-          audiobutton.find('i').removeClass('fa-stop');
-          audiobutton.find('i').addClass('fa-play');
+          //$.find('i').removeClass('fa-stop');
+          //audiobutton.find('i').addClass('fa-play');
           itag.removeClass('fa-play');
           itag.addClass('fa-stop');
           var src = $(this).data('src');

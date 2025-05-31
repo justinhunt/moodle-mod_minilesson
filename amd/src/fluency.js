@@ -358,6 +358,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
     init: function(index, itemdata, quizhelper) {
       this.itemdata = itemdata;
       this.quizhelper = quizhelper;
+      this.index = index;
       this.init_components(quizhelper, itemdata);
 
       // Anim
@@ -378,9 +379,11 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.wordcount = $("#" + self.itemdata.uniqueid + "_container span.ml_wordcount");
       self.actionbox = $("#" + self.itemdata.uniqueid + "_container div.ml_fluency_actionbox");
       self.pendingbox = $("#" + self.itemdata.uniqueid + "_container div.ml_fluency_pendingbox");
-      self.resultsbox = $("#" + self.itemdata.uniqueid + "_container div.ml_fluency_resultsbox");
+      self.resultsbox = $("#" + self.itemdata.uniqueid + "_container div.fluency_resultscontainer");
       self.timerdisplay = $("#" + self.itemdata.uniqueid + "_container div.ml_fluency_timerdisplay");
       self.audioplayerbtn =$("#" + self.itemdata.uniqueid + "_container .fluency_listen_btn");
+      self.audioplayerbtn_audiomodel =$("#" + self.itemdata.uniqueid + "_container .fluency_listen_btn.audiomodel");
+      self.audioplayerbtn_audioself =$("#" + self.itemdata.uniqueid + "_container .fluency_listen_btn.audioself");
       self.skipbtn = $("#" + self.itemdata.uniqueid + "_container .fluency_skip_btn");
       self.startbtn = $("#" + self.itemdata.uniqueid + "_container .fluency_start_btn");
       self.smallnextbtn = $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton");
@@ -390,6 +393,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.questioncont = $("#" + self.itemdata.uniqueid + "_container .question");
       self.listencont = $("#" + self.itemdata.uniqueid + "_container .fluency_listen_cont");
       self.mainmenu = $("#" + self.itemdata.uniqueid + "_container .fluency_mainmenu");
+      self.mainstage = $("#" + self.itemdata.uniqueid + "_container .fluency_mainstage");
       self.controls = $("#" + self.itemdata.uniqueid + "_container .fluency_controls");
       self.progresscont = $("#" + self.itemdata.uniqueid + "_container .progress-container");
       self.itemresultscont = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
@@ -474,14 +478,25 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       }
   },
 
-    next_question: function(percent) {
+    next_question: function() {
       var self = this;
       var stepdata = {};
       stepdata.index = self.index;
       stepdata.hasgrade = true;
-      stepdata.totalitems = 1;
-      stepdata.correctitems = percent>0?1:0;
-      stepdata.grade = percent;
+      stepdata.totalitems = self.items.length;
+      stepdata.correctitems = self.items.filter(function(e) {
+                return e.correct;
+            }).length;
+      stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
+      stepdata.resultsdata = self.items.map(function(target) {
+          return {
+              target: target.target,
+              audio: target.audio ? target.audio.src : null,
+              answered: target.answered,
+              correct: target.correct,
+              pronunciation_result: target.pronunciation_result,
+          };
+      })
       self.quizhelper.do_next(stepdata);
     },
 
@@ -490,7 +505,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       var self = this;
       // On next button click
       self.bignextbtn.on('click', function(e) {
-          self.next_question(0);
+          self.next_question();
       });
 
       // On start button click
@@ -502,31 +517,36 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       // On listen button click
       if(self.itemdata.readsentence) {
           self.audioplayerbtn.on("click", function () {
+            const $button = $(this);  // capture the button
+            if($button.hasClass('audioself')) {
+              var theaudio = self.items[self.game.pointer].audioself;
+            }else{
               var theaudio = self.items[self.game.pointer].audio;
+            }
 
-              //if we are already playing stop playing
-              if(!theaudio.paused){
-                  theaudio.pause();
-                  theaudio.currentTime=0;
-                  $(self.audioplayerbtn).children('.fa').removeClass('fa-stop');
-                  $(self.audioplayerbtn).children('.fa').addClass('fa-volume-up');
-                  return;
-              }
+            //if we are already playing stop playing
+            if(!theaudio.paused){
+                theaudio.pause();
+                theaudio.currentTime=0;
+                $button.children('.fa').removeClass('fa-stop');
+                $button.children('.fa').addClass('fa-volume-up');
+                return;
+            }
 
-              //change icon to indicate playing state
-              theaudio.addEventListener('ended', function () {
-                  $(self.audioplayerbtn).children('.fa').removeClass('fa-stop');
-                  $(self.audioplayerbtn).children('.fa').addClass('fa-volume-up');
-                 // self.do_evaluation(self.dummyResult);  
+            //change icon to indicate playing state
+            theaudio.addEventListener('ended', function () {
+                $button.children('.fa').removeClass('fa-stop');
+                $button.children('.fa').addClass('fa-volume-up');
+                // self.do_evaluation(self.dummyResult);  
 
-              });
+            });
 
-              theaudio.addEventListener('play', function () {
-                  $(self.audioplayerbtn).children('.fa').removeClass('fa-volume-up');
-                  $(self.audioplayerbtn).children('.fa').addClass('fa-stop');
-              });
-              theaudio.load();
-              theaudio.play();
+            theaudio.addEventListener('play', function () {
+                $button.children('.fa').removeClass('fa-volume-up');
+                $button.children('.fa').addClass('fa-stop');
+            });
+            theaudio.load();
+            theaudio.play();
           });
       }
 
@@ -607,6 +627,27 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.nextPrompt();
   },
 
+  show_item_review:function(){
+      var self=this;
+      //build review data
+      var review_data = {};
+      review_data.correctitems = self.items.filter(function(e) {return e.correct;}).length;
+      review_data.totalitems = self.items.length;
+      review_data.items = self.items;
+
+      //display results
+      templates.render('mod_minilesson/listitemresults',review_data).then(
+        function(html,js){
+            self.resultsbox.html(html);
+            //show and hide
+            self.resultsbox.show();
+            self.mainstage.hide();
+            // Run js for audio player events
+            templates.runTemplateJS(js);
+        }
+      );// End of templates
+    },
+
   updateProgressDots: function(){
       var self = this;
       var color;
@@ -682,9 +723,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
           });
       }
 
+      //Hide the response audio because its not ready yet
+       self.audioplayerbtn_audioself.hide();
+
+      //Autoplay the audio
       if (!self.quizhelper.mobile_user()) {
           setTimeout(function() {
-              self.audioplayerbtn.trigger('click');
+              self.audioplayerbtn_audiomodel.trigger('click');
           }, 1000);
       }
 
@@ -739,6 +784,33 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             }
              self.markuphelper.renderPronunciationFeedback( self.itemdata.uniqueid + "_container .item-results-container", adata, self.itemdata.rtl);
         });
+
+        //store results for later use
+        self.items[self.game.pointer].pronunciation_result = pronunciation_result;
+        self.items[self.game.pointer].answered = true;
+        self.items[self.game.pointer].correct = pronunciation_result.privPronJson.PronunciationAssessment.AccuracyScore >= self.phonemeWarningThreshold;
+        self.items[self.game.pointer].audioself = new Audio();
+        self.items[self.game.pointer].audioself.src = URL.createObjectURL(self.ttrec.audio.blob);
+
+        //since we now have audio, show the self audio player button
+        self.audioplayerbtn_audioself.show();
+   
+        
+        //If we are correct move to next item
+        if(self.items[self.game.pointer].correct ){
+            if ((self.game.pointer < self.items.length - 1)) {
+                log.debug('moving to next prompt B');
+                setTimeout(function() {
+                    $("#" + self.itemdata.uniqueid + "_container .fluency_reply_" + self.game.pointer).hide();
+                    self.game.pointer++;
+                    self.nextReply();
+                }, 2000);
+            } else {
+                self.updateProgressDots();
+                self.end();
+            }
+        }
+        
         return;
 
       var self = this;
