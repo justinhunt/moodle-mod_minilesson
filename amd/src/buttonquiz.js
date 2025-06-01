@@ -75,7 +75,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/anim
 
 
         //if answers were dots for audio content, show them
-        if(itemdata.hasOwnProperty('audiocontent')) {
+         if(itemdata.hasOwnProperty('audiocontent') && itemdata.audiocontent===true) {
           for (var i = 0; i < itemdata.sentences.length; i++) {
             var theline = $("#" + itemdata.uniqueid + "_option" + (i + 1));
             $("#" + itemdata.uniqueid + "_option" + (i + 1) + ' .minilesson_sentence').text(itemdata.sentences[i].sentence);

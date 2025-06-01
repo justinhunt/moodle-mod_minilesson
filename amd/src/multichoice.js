@@ -16,7 +16,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
      },
 
     init: function(index, itemdata, quizhelper) {
-      if(itemdata.hasOwnProperty('audiocontent')) {
+      if(itemdata.hasOwnProperty('audiocontent') && itemdata.audiocontent===true) {
           this.prepare_audio(itemdata);
       }
       this.itemdata = itemdata;
@@ -93,7 +93,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
               $("#" + itemdata.uniqueid + "_option" + itemdata.correctanswer + " .minilesson_mc_right").show();
 
               //if answers were dots for audio content, show them
-              if(itemdata.hasOwnProperty('audiocontent')) {
+              if(itemdata.hasOwnProperty('audiocontent') && itemdata.audiocontent===true) {
                   for (var i = 0; i < itemdata.sentences.length; i++) {
                       var theline = $("#" + itemdata.uniqueid + "_option" + (i + 1));
                       $("#" + itemdata.uniqueid + "_option" + (i + 1) + ' .minilesson_sentence').text(itemdata.sentences[i].sentence);

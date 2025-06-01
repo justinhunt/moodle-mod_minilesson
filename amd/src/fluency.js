@@ -529,20 +529,20 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 theaudio.pause();
                 theaudio.currentTime=0;
                 $button.children('.fa').removeClass('fa-stop');
-                $button.children('.fa').addClass('fa-volume-up');
+                $button.children('.fa').addClass('fa-play');
                 return;
             }
 
             //change icon to indicate playing state
             theaudio.addEventListener('ended', function () {
                 $button.children('.fa').removeClass('fa-stop');
-                $button.children('.fa').addClass('fa-volume-up');
+                $button.children('.fa').addClass('fa-play');
                 // self.do_evaluation(self.dummyResult);  
 
             });
 
             theaudio.addEventListener('play', function () {
-                $button.children('.fa').removeClass('fa-volume-up');
+                $button.children('.fa').removeClass('fa-play');
                 $button.children('.fa').addClass('fa-stop');
             });
             theaudio.load();
@@ -552,23 +552,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
       // On skip button click
       self.skipbtn.on("click", function() {
-          // Disable all the control buttons
-         self.ctrlbtns.prop("disabled", true);
-          // Reveal the prompt
-          $("#" + self.itemdata.uniqueid + "_container .fluency_speech.fluency_teacher_left").text(self.items[self.game.pointer].prompt + "");
-          // Reveal the answer
-          var targetwords =  $("#" + self.itemdata.uniqueid + "_container .fluency_targetWord");
-          targetwords.each(function() {
-              var realidx = $(this).data("realidx");
-              var fluency_targetWord = self.items[self.game.pointer].fluency_targetWords[realidx];
-              $(this).val(fluency_targetWord);
-          });
 
           self.stopTimer(self.items[self.game.pointer].timer);
-
-          //mark as answered and incorrect
-          self.items[self.game.pointer].answered = true;
-          self.items[self.game.pointer].correct = false;
 
           if (self.game.pointer < self.items.length - 1) {
               // Move on after short time to next prompt
@@ -794,10 +779,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
         //since we now have audio, show the self audio player button
         self.audioplayerbtn_audioself.show();
-   
+
+        //update progress dots
+        self.updateProgressDots();
         
-        //If we are correct move to next item
-        if(self.items[self.game.pointer].correct ){
+        //We no longer do this!!! left in for future ref.
+        // If we are correct move to next item
+        if(false && self.items[self.game.pointer].correct ){
             if ((self.game.pointer < self.items.length - 1)) {
                 log.debug('moving to next prompt B');
                 setTimeout(function() {
@@ -806,7 +794,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                     self.nextReply();
                 }, 2000);
             } else {
-                self.updateProgressDots();
                 self.end();
             }
         }

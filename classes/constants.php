@@ -265,7 +265,7 @@ const ALL_VOICES = array(
     constants::M_LANG_PTBR => ['Ricardo'=>'Ricardo', 'Vitoria'=>'Vitoria','Camila'=>'Camila'],
     constants::M_LANG_PTPT => ["Ines"=>"Ines",'Cristiano'=>'Cristiano'],
     constants::M_LANG_RORO => ['Carmen'=>'Carmen','ro-RO-Wavenet-A'=>'Sorina_g'],
-    constants::M_LANG_RURU => ["Tatyana"=>"Tatyana","Maxim"=>"Maxim"],
+    constants::M_LANG_RURU => ["Tatyana"=>"Tatyana","Maxim"=>"Maxim","ru-RU-Azure-SvetlanaNeural"=>'Svetlana_a',"ru-RU-Azure-DmitryNeural"=>"Dmitry_a","ru-RU-Azure-DariyaNeural"=>"Dariya_a"],
     constants::M_LANG_ESUS => ['Miguel'=>'Miguel','Penelope'=>'Penelope','Lupe'=>'Lupe','Pedro'=>'Pedro'],
     constants::M_LANG_ESES => [ 'Enrique'=>'Enrique', 'Conchita'=>'Conchita', 'Lucia'=>'Lucia'],
     constants::M_LANG_SVSE => ['Astrid'=>'Astrid','Elin'=>'Elin'],

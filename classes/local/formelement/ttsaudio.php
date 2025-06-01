@@ -150,7 +150,7 @@ class ttsaudio extends MoodleQuickForm_group {
             }
         }
 
-        if (empty($valuearray)) {
+        if (empty($valuearray) || !array_key_exists('voice', $valuearray)) {
             return null;
         }
         return $this->_prepareValue($valuearray['voice'], $assoc);

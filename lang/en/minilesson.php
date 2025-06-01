@@ -443,6 +443,7 @@ $string['listenandtype'] = 'Listen and Type';
 $string['listen'] = 'Listen';
 $string['check'] = 'Check';
 $string['skip'] = 'Skip';
+$string['skip-fluency'] = 'Continue';
 $string['start'] = 'Start';
 //$string['next'] = 'Next';
 $string['nextlessonitem'] = 'Next Page';

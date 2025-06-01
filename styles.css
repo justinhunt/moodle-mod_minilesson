@@ -3255,3 +3255,7 @@ span.fluencyletterresult.letter_good {
 span.fluencyletterresult.letter_wrong {
   color: red;
 }
+.btn.ml_li_resultaudioself,
+.btn.fluency_listen_btn.audioself {
+  color: deeppink;
+}
