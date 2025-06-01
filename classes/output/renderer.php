@@ -298,7 +298,6 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_TGAPFILL:
                 case constants::TYPE_SGAPFILL:
                 case constants::TYPE_PGAPFILL:
-                case constants::TYPE_FLUENCY:
                     $result->hascorrectanswer = true;
                     $result->correctans = $quizdata[$result->index]->sentences;
                     $result->hasanswerdetails = false;
@@ -337,6 +336,19 @@ class renderer extends \plugin_renderer_base {
                         $result->resultstemplate = 'passagereadingreviewresults';
                         $result->resultsdata->passagehtml = \mod_minilesson\aitranscriptutils::render_passage($items->{constants::READINGPASSAGE});
                         $result->resultsdatajson = json_encode($result->resultsdata, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    }else{
+                        $result->hasanswerdetails = false;
+                    }
+                    break;
+
+                case constants::TYPE_FLUENCY:
+                    $result->hascorrectanswer = true;
+                    $result->correctans = $quizdata[$result->index]->sentences;
+                    if(isset($result->resultsdata)) {
+                        $result->hasanswerdetails = true;
+                        $result->resultsdatajson = json_encode($result->resultsdata, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                        //For now ...
+                        $result->resultstemplate =  'listitemresults';
                     }else{
                         $result->hasanswerdetails = false;
                     }

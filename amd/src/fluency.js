@@ -488,15 +488,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 return e.correct;
             }).length;
       stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
-      stepdata.resultsdata = self.items.map(function(target) {
-          return {
-              target: target.target,
-              audio: target.audio ? target.audio.src : null,
-              answered: target.answered,
-              correct: target.correct,
-              pronunciation_result: target.pronunciation_result,
-          };
-      })
+
+      //prepare results data for detailed review on finished page or by teacher
+      var results_data = {};
+      results_data.correctitems = self.items.filter(function(e) {return e.correct;}).length;
+      results_data.totalitems = self.items.length;
+      results_data.items = self.items;
+      stepdata.resultsdata = results_data;
+
       self.quizhelper.do_next(stepdata);
     },
 
