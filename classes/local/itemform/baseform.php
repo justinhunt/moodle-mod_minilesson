@@ -581,7 +581,9 @@ abstract class baseform extends \moodleform {
 
         $filemanageroptions = $this->filemanageroptions;
         $filemanageroptions['accepted_types'] = 'image';
+        $filemanageroptions['maxfiles'] = -1;
         $this->_form->addElement('filemanager', "{$element}_image" , $label, [], $filemanageroptions);
+        $this->_form->addHelpButton("{$element}_image", 'sentenceimage', constants::M_COMPONENT);
         if ($required) {
             $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
         }
@@ -601,7 +603,9 @@ abstract class baseform extends \moodleform {
 
         $filemanageroptions = $this->filemanageroptions;
         $filemanageroptions['accepted_types'] = 'audio';
+        $filemanageroptions['maxfiles'] = -1;
         $this->_form->addElement('filemanager', "{$element}_audio" , $label, [], $filemanageroptions);
+        $this->_form->addHelpButton("{$element}_audio", 'sentenceaudio', constants::M_COMPONENT);
         if ($required) {
             $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
         }
