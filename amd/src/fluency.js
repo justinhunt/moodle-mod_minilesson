@@ -13,335 +13,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
   var thefluencyitem = {
     phonemeWarningThreshold: 75, // Threshold for phoneme error rate
     phonemeErrorThreshold: 50, // Threshold for phoneme error rate
-    dummyResult: {
-    "privPronJson": {
-        "Confidence": 0.84381866,
-        "Lexical": "this is a pencil",
-        "ITN": "this is a pencil",
-        "MaskedITN": "this is a pencil",
-        "Display": "This is a pencil.",
-        "PronunciationAssessment": {
-            "AccuracyScore": 42,
-            "FluencyScore": 100,
-            "ProsodyScore": 81.1,
-            "CompletenessScore": 44,
-            "PronScore": 61.8
-        },
-        "Words": [
-            {
-                "Word": "this",
-                "Offset": 11000000,
-                "Duration": 4900000,
-                "PronunciationAssessment": {
-                    "AccuracyScore": 94,
-                    "ErrorType": "None",
-                    "Feedback": {
-                        "Prosody": {
-                            "Break": {
-                                "ErrorTypes": [
-                                    "None"
-                                ],
-                                "BreakLength": 0
-                            },
-                            "Intonation": {
-                                "ErrorTypes": [],
-                                "Monotone": {
-                                    "SyllablePitchDeltaConfidence": 0.8836736
-                                }
-                            }
-                        }
-                    }
-                },
-                "Syllables": [
-                    {
-                        "Syllable": "dhihs",
-                        "Grapheme": "this",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 69
-                        },
-                        "Offset": 11000000,
-                        "Duration": 4900000
-                    }
-                ],
-                "Phonemes": [
-                    {
-                        "Phoneme": "dh",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 78
-                        },
-                        "Offset": 11000000,
-                        "Duration": 2000000
-                    },
-                    {
-                        "Phoneme": "ih",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 100
-                        },
-                        "Offset": 13100000,
-                        "Duration": 600000
-                    },
-                    {
-                        "Phoneme": "s",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 51
-                        },
-                        "Offset": 13800000,
-                        "Duration": 2100000
-                    }
-                ]
-            },
-            {
-                "Word": "is",
-                "Offset": 16000000,
-                "Duration": 1500000,
-                "PronunciationAssessment": {
-                    "AccuracyScore": 91,
-                    "ErrorType": "None",
-                    "Feedback": {
-                        "Prosody": {
-                            "Break": {
-                                "ErrorTypes": [
-                                    "None"
-                                ],
-                                "UnexpectedBreak": {
-                                    "Confidence": 3.7878788e-8
-                                },
-                                "MissingBreak": {
-                                    "Confidence": 1
-                                },
-                                "BreakLength": 0
-                            },
-                            "Intonation": {
-                                "ErrorTypes": [],
-                                "Monotone": {
-                                    "SyllablePitchDeltaConfidence": 0.8836736
-                                }
-                            }
-                        }
-                    }
-                },
-                "Syllables": [
-                    {
-                        "Syllable": "ihz",
-                        "Grapheme": "is",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 91
-                        },
-                        "Offset": 16000000,
-                        "Duration": 1500000
-                    }
-                ],
-                "Phonemes": [
-                    {
-                        "Phoneme": "ih",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 80
-                        },
-                        "Offset": 16000000,
-                        "Duration": 500000
-                    },
-                    {
-                        "Phoneme": "z",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 98
-                        },
-                        "Offset": 16600000,
-                        "Duration": 900000
-                    }
-                ]
-            },
-            {
-                "Word": "a",
-                "Offset": 17600000,
-                "Duration": 700000,
-                "PronunciationAssessment": {
-                    "AccuracyScore": 100,
-                    "ErrorType": "None",
-                    "Feedback": {
-                        "Prosody": {
-                            "Break": {
-                                "ErrorTypes": [
-                                    "None"
-                                ],
-                                "UnexpectedBreak": {
-                                    "Confidence": 3.7878788e-8
-                                },
-                                "MissingBreak": {
-                                    "Confidence": 1
-                                },
-                                "BreakLength": 0
-                            },
-                            "Intonation": {
-                                "ErrorTypes": [],
-                                "Monotone": {
-                                    "SyllablePitchDeltaConfidence": 0.8836736
-                                }
-                            }
-                        }
-                    }
-                },
-                "Syllables": [
-                    {
-                        "Syllable": "ax",
-                        "Grapheme": "a",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 100
-                        },
-                        "Offset": 17600000,
-                        "Duration": 700000
-                    }
-                ],
-                "Phonemes": [
-                    {
-                        "Phoneme": "ax",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 100
-                        },
-                        "Offset": 17600000,
-                        "Duration": 700000
-                    }
-                ]
-            },
-            {
-                "Word": "pencil",
-                "Offset": 18400000,
-                "Duration": 5700000,
-                "PronunciationAssessment": {
-                    "AccuracyScore": 97,
-                    "ErrorType": "None",
-                    "Feedback": {
-                        "Prosody": {
-                            "Break": {
-                                "ErrorTypes": [
-                                    "None"
-                                ],
-                                "UnexpectedBreak": {
-                                    "Confidence": 3.7878788e-8
-                                },
-                                "MissingBreak": {
-                                    "Confidence": 1
-                                },
-                                "BreakLength": 0
-                            },
-                            "Intonation": {
-                                "ErrorTypes": [],
-                                "Monotone": {
-                                    "SyllablePitchDeltaConfidence": 0.8836736
-                                }
-                            }
-                        }
-                    }
-                },
-                "Syllables": [
-                    {
-                        "Syllable": "pehn",
-                        "Grapheme": "pen",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 94
-                        },
-                        "Offset": 18400000,
-                        "Duration": 3100000
-                    },
-                    {
-                        "Syllable": "saxl",
-                        "Grapheme": "cil",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 83
-                        },
-                        "Offset": 21600000,
-                        "Duration": 2500000
-                    }
-                ],
-                "Phonemes": [
-                    {
-                        "Phoneme": "p",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 85
-                        },
-                        "Offset": 18400000,
-                        "Duration": 1100000
-                    },
-                    {
-                        "Phoneme": "eh",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 100
-                        },
-                        "Offset": 19600000,
-                        "Duration": 900000
-                    },
-                    {
-                        "Phoneme": "n",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 100
-                        },
-                        "Offset": 20600000,
-                        "Duration": 900000
-                    },
-                    {
-                        "Phoneme": "s",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 100
-                        },
-                        "Offset": 21600000,
-                        "Duration": 1200000
-                    },
-                    {
-                        "Phoneme": "ax",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 80
-                        },
-                        "Offset": 22900000,
-                        "Duration": 600000
-                    },
-                    {
-                        "Phoneme": "l",
-                        "PronunciationAssessment": {
-                            "AccuracyScore": 49
-                        },
-                        "Offset": 23600000,
-                        "Duration": 500000
-                    }
-                ]
-            },
-            {
-                "Word": "and",
-                "PronunciationAssessment": {
-                    "ErrorType": "Omission"
-                },
-                "Phonemes": []
-            },
-            {
-                "Word": "this",
-                "PronunciationAssessment": {
-                    "ErrorType": "Omission"
-                },
-                "Phonemes": []
-            },
-            {
-                "Word": "is",
-                "PronunciationAssessment": {
-                    "ErrorType": "Omission"
-                },
-                "Phonemes": []
-            },
-            {
-                "Word": "a",
-                "PronunciationAssessment": {
-                    "ErrorType": "Omission"
-                },
-                "Phonemes": []
-            },
-            {
-                "Word": "pen",
-                "PronunciationAssessment": {
-                    "ErrorType": "Omission"
-                },
-                "Phonemes": []
-            }
-        ]
-    }
-},
-
 
     speechConfig: null,
     //this is just a placeholder for the actualtext which is from the sentences in items
@@ -387,7 +58,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.skipbtn = $("#" + self.itemdata.uniqueid + "_container .fluency_skip_btn");
       self.startbtn = $("#" + self.itemdata.uniqueid + "_container .fluency_start_btn");
       self.smallnextbtn = $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton");
-      self.bignextbtn = $(".minilesson_nextbutton");
       self.ctrlbtns =  $("#" + self.itemdata.uniqueid + "_container .fluency_ctrl_btn");
       self.speakbtncont = $("#" + self.itemdata.uniqueid + "_container .fluency_speakbtncontainer");
       self.questioncont = $("#" + self.itemdata.uniqueid + "_container .question");
@@ -396,7 +66,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.mainstage = $("#" + self.itemdata.uniqueid + "_container .fluency_mainstage");
       self.controls = $("#" + self.itemdata.uniqueid + "_container .fluency_controls");
       self.progresscont = $("#" + self.itemdata.uniqueid + "_container .progress-container");
-      self.itemresultscont = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
 
       // Callback: Recorder updates.
       var recorderCallback = function(message) {
@@ -493,9 +162,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       var results_data = {};
       results_data.correctitems = self.items.filter(function(e) {return e.correct;}).length;
       results_data.totalitems = self.items.length;
-      results_data.items = self.items;
+      var includeaudioself = false;
+      results_data.items = self.items_for_results_display(includeaudioself);
       stepdata.resultsdata = results_data;
-
       self.quizhelper.do_next(stepdata);
     },
 
@@ -503,7 +172,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       
       var self = this;
       // On next button click
-      self.bignextbtn.on('click', function(e) {
+      self.smallnextbtn.on('click', function(e) {
           self.next_question();
       });
 
@@ -514,40 +183,37 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
       //AUDIO PLAYER Button events
       // On listen button click
-      if(self.itemdata.readsentence) {
-          self.audioplayerbtn.on("click", function () {
-            const $button = $(this);  // capture the button
-            if($button.hasClass('audioself')) {
-              var theaudio = self.items[self.game.pointer].audioself;
-            }else{
-              var theaudio = self.items[self.game.pointer].audio;
-            }
+      self.audioplayerbtn.on("click", function () {
+        const $button = $(this);  // capture the button
+        if($button.hasClass('audioself')) {
+          var theaudio = self.items[self.game.pointer].audioself;
+        }else{
+          var theaudio = self.items[self.game.pointer].audio;
+        }
 
-            //if we are already playing stop playing
-            if(!theaudio.paused){
-                theaudio.pause();
-                theaudio.currentTime=0;
-                $button.children('.fa').removeClass('fa-stop');
-                $button.children('.fa').addClass('fa-play');
-                return;
-            }
+        //if we are already playing stop playing
+        if(!theaudio.paused){
+            theaudio.pause();
+            theaudio.currentTime=0;
+            $button.children('.fa').removeClass('fa-stop');
+            $button.children('.fa').addClass('fa-play');
+            return;
+        }
 
-            //change icon to indicate playing state
-            theaudio.addEventListener('ended', function () {
-                $button.children('.fa').removeClass('fa-stop');
-                $button.children('.fa').addClass('fa-play');
-                // self.do_evaluation(self.dummyResult);  
+        //change icon to indicate playing state
+        theaudio.addEventListener('ended', function () {
+            $button.children('.fa').removeClass('fa-stop');
+            $button.children('.fa').addClass('fa-play');
+        });
 
-            });
+        theaudio.addEventListener('play', function () {
+            $button.children('.fa').removeClass('fa-play');
+            $button.children('.fa').addClass('fa-stop');
+        });
+        theaudio.load();
+        theaudio.play();
+      });
 
-            theaudio.addEventListener('play', function () {
-                $button.children('.fa').removeClass('fa-play');
-                $button.children('.fa').addClass('fa-stop');
-            });
-            theaudio.load();
-            theaudio.play();
-          });
-      }
 
       // On skip button click
       self.skipbtn.on("click", function() {
@@ -570,13 +236,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
     end: function() {
       var self = this;
-      self.bignextbtn.prop("disabled", true);
+      self.smallnextbtn.prop("disabled", true);
 
       //progress dots are updated on next_item. The last item has no next item, so we update from here
       self.updateProgressDots();
 
       setTimeout(function() {
-          self.bignextbtn.prop("disabled",false);
+          self.smallnextbtn.prop("disabled",false);
           if(self.quizhelper.showitemreview){
               self.show_item_review();
           }else{
@@ -601,9 +267,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.game.pointer = 0;
 
       self.questioncont.show();
-      if(self.itemdata.readsentence) {
-          self.listencont.show();
-      }
+      self.listencont.show();
       self.startbtn.hide();
       self.mainmenu.hide();
       self.controls.show();
@@ -617,7 +281,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       var review_data = {};
       review_data.correctitems = self.items.filter(function(e) {return e.correct;}).length;
       review_data.totalitems = self.items.length;
-      review_data.items = self.items;
+      var includeaudioself = true;
+      review_data.items = self.items_for_results_display(includeaudioself);
 
       //display results
       templates.render('mod_minilesson/listitemresults',review_data).then(
@@ -735,9 +400,11 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
     do_evaluation: function (pronunciation_result) {
         var self = this;
-        var itemresultscont = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
+        //this is part of the generated html for each sentence in the item, so we need to create a handle each time
+        var itemresultscontainer = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
+
         // Clear previous results
-        itemresultscont.html("");
+        itemresultscontainer.html("");
 
         var twoletterlang = self.itemdata.language.substr(0, 2);
         if(self.itemdata.rtl){
@@ -748,10 +415,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       
       
         // Render pronunciation feedback for each word
-
+        var lineresulthtml="";
         words.forEach(function (wordobject) {
             //MS Returns syllables, at least for English, and these have a grapheme so its the best data
-            if(wordobject.Syllables){
+            //for some words e.g "didn't" sometimes the grapheme is missing. duh
+            //so we send it down the no grapheme path
+            var have_graphemes = wordobject.Syllables && wordobject.Syllables.length > 0 && wordobject.Syllables[0].Grapheme;
+            if(have_graphemes){
                 var adata =[];
                 wordobject.Syllables.forEach(function(syllable){
                     adata.push({
@@ -766,8 +436,11 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                     wordobject.Phonemes, 
                     twoletterlang);
             }
-             self.markuphelper.renderPronunciationFeedback( self.itemdata.uniqueid + "_container .item-results-container", adata, self.itemdata.rtl);
+            lineresulthtml += self.markuphelper.renderPronunciationFeedback(adata);
         });
+
+        //Display result
+        itemresultscontainer.html(lineresulthtml);
 
         //store results for later use
         self.items[self.game.pointer].pronunciation_result = pronunciation_result;
@@ -775,6 +448,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         self.items[self.game.pointer].correct = pronunciation_result.privPronJson.PronunciationAssessment.AccuracyScore >= self.phonemeWarningThreshold;
         self.items[self.game.pointer].audioself = new Audio();
         self.items[self.game.pointer].audioself.src = URL.createObjectURL(self.ttrec.audio.blob);
+        self.items[self.game.pointer].lineresulthtml = lineresulthtml;
 
         //since we now have audio, show the self audio player button
         self.audioplayerbtn_audioself.show();
@@ -796,21 +470,24 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 self.end();
             }
         }
-        
-        return;
+    },
 
-      var self = this;
-      var itemresultscont = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
-      itemresultscont.html("");
-      
-      var itemresults = [];
+      //The old evaluation display with some radial charts etc. We might want to use it later
+      oldDoEvaluation: function(pronunciation_result) {
+        var self = this;
+        //this is part of the generated html for each sentence in the item, so we need to create a handle each time
+        var itemresultscontainer = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
 
-      itemresults.push("Accuracy score: " + pronunciation_result.accuracyScore);
-      itemresults.push("Pronunciation score: " + pronunciation_result.pronunciationScore);
-      itemresults.push("Completeness score: " + pronunciation_result.completenessScore);
-      itemresults.push("Fluency score: " + pronunciation_result.fluencyScore);
-      itemresults.push("Prosody score: " +  pronunciation_result.prosodyScore);
-      itemresultscont.append(itemresults.join("<br>"));
+        // Clear previous results
+        itemresultscontainer.html("");
+        var itemresults = [];
+
+        itemresults.push("Accuracy score: " + pronunciation_result.accuracyScore);
+        itemresults.push("Pronunciation score: " + pronunciation_result.pronunciationScore);
+        itemresults.push("Completeness score: " + pronunciation_result.completenessScore);
+        itemresults.push("Fluency score: " + pronunciation_result.fluencyScore);
+        itemresults.push("Prosody score: " +  pronunciation_result.prosodyScore);
+        itemresultscont.append(itemresults.join("<br>"));
 
         //make a chart for each score
         var labels = ["Accuracy", "Pronunciation", "Completeness", "Fluency", "Prosody"];
@@ -827,16 +504,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             self.createRadialChart(chartContainerId, [label], [data[index]]);
         });
 
-      log.debug("Accuracy score: ", pronunciation_result.accuracyScore);
-      log.debug("Pronunciation score: ", pronunciation_result.pronunciationScore);
-      log.debug("Completeness score : ", pronunciation_result.completenessScore);
-      log.debug("Fluency score: ", pronunciation_result.fluencyScore);
-      log.debug("Prosody score: ", pronunciation_result.prosodyScore);
-      
-      log.debug("  Word-level details:");
-      pronunciation_result.detailResult.Words.forEach(function (word, idx) {
-          console.log("    ", idx + 1, ": word: ", word.Word, "\taccuracy score: ", word.PronunciationAssessment.AccuracyScore, "\terror type: ", word.PronunciationAssessment.ErrorType, ";");
-      });
+        log.debug("Accuracy score: ", pronunciation_result.accuracyScore);
+        log.debug("Pronunciation score: ", pronunciation_result.pronunciationScore);
+        log.debug("Completeness score : ", pronunciation_result.completenessScore);
+        log.debug("Fluency score: ", pronunciation_result.fluencyScore);
+        log.debug("Prosody score: ", pronunciation_result.prosodyScore);
+
+        log.debug("  Word-level details:");
+        pronunciation_result.detailResult.Words.forEach(function (word, idx) {
+            console.log("    ", idx + 1, ": word: ", word.Word, "\taccuracy score: ", word.PronunciationAssessment.AccuracyScore, "\terror type: ", word.PronunciationAssessment.ErrorType, ";");
+        });
     },
 
     createRadialChart: function(containerId, labels, data) {
@@ -864,6 +541,22 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         });
     },
 
+    //Prepare items for display in the listitemresults template (here and letter in finished review)
+    items_for_results_display: function(includeaudioself) {
+          var self = this;
+          return self.items.map(function(target) {
+              return {
+                  target: target.lineresulthtml, //target.sentence,
+                  pronunciation_result: target.pronunciation_result,
+                  answered: target.answered,
+                  correct: target.correct,
+                  audio: target.audio ? {src: target.audio.src} : null,
+                  audioself: (includeaudioself && target.audioself) ? {src: target.audioself.src} : null,
+              };
+          });
+    },
+
+    //Marking up graphemes letters and phonemes is a dark art, we do that in this object
     markuphelper: {
         // Language mappings for phoneme to grapheme groups
         languageMappings: {
@@ -1002,9 +695,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             return "letter_wrong"; //red
         },
 
-        renderPronunciationFeedback: function(containerId, alignmentData, rtl) {
+        renderPronunciationFeedback: function( alignmentData) {
             var mhelper = this;
-            const $container = $("#" + containerId);
 
             const $wrapper = $("<div class='fluencywordresult'>");
 
@@ -1021,7 +713,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 $wrapper.append($span);
             });
 
-            $container.append($wrapper);
+            return $wrapper.prop('outerHTML');
         } //end of renderPronunciationFeedback
     }//end of markup helper
 

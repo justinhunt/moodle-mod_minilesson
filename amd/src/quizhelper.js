@@ -211,7 +211,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         //get current question
         var currentquizdataindex =   stepdata.index;
         var currentitem = this.quizdata[currentquizdataindex];
-
         //in preview mode do no do_next
         if(currentitem.preview===true){return;}
 
