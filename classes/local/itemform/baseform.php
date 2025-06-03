@@ -574,7 +574,7 @@ abstract class baseform extends \moodleform {
 
         // Set the form element name
         if(is_number($name_or_count) || empty($name_or_count)){
-            $element = constants::TEXTANSWER . $name_or_count;
+            $element = constants::FILEANSWER . $name_or_count;
         }else{
             $element = $name_or_count;
         }
@@ -596,7 +596,7 @@ abstract class baseform extends \moodleform {
 
         // Set the form element name
         if(is_number($name_or_count) || empty($name_or_count)){
-            $element = constants::TEXTANSWER . $name_or_count;
+            $element = constants::FILEANSWER . $name_or_count;
         }else{
             $element = $name_or_count;
         }
@@ -939,7 +939,4 @@ abstract class baseform extends \moodleform {
         $this->add_dropdown($name, $label,$alienoptions,$default);
     }
 
-    public function item_no_of_sentence() {
-        return call_user_func([static::ITEMCLASS, 'get_no_of_sentence']);
-    }
 }

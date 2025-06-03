@@ -250,33 +250,27 @@ if ($edit) {
 
         // Init file upload areas for item answers
         for ($i = 1; $i <= constants::MAXANSWERS; $i++){
-            $draftitemid = file_get_submitted_draft_itemid(constants::FILEANSWER . $i);
-            file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,
-                    constants::FILEANSWER . $i, $data->itemid,
-                    $filemanageroptions);
-            $data->{constants::FILEANSWER . $i} = $draftitemid;
-        }
-
-        //Prepare sentence assets
-        $i = $mform->item_no_of_sentence() > 0 ? 1: 0;
-        if ($i > 0) {
-            $prefix = constants::TEXTANSWER;
-            for(; $i <= $mform->item_no_of_sentence();$i++) {
-                foreach([
-                    "{$prefix}{$i}_image" => 'image',
-                    "{$prefix}{$i}_audio" => 'audio',
-                ] as $elname => $type) {
-                    $draftitemid = file_get_submitted_draft_itemid($elname);
-                    file_prepare_draft_area($draftitemid,
-                        $context->id, constants::M_COMPONENT,
-                        $elname, $data->itemid,
-                        array_merge(
-                            $filemanageroptions,
-                            ['accepted_types' => $type]
-                        )
-                    );
-                    $data->{$elname} = $draftitemid;
+            //multichoice, sentence audio, and sentence image areas
+            $fileareas = [constants::FILEANSWER . $i, constants::FILEANSWER . $i . '_audio', constants::FILEANSWER . $i . '_image'];
+            foreach($fileareas as $filearea) {
+                $draftitemid = file_get_submitted_draft_itemid($filearea);
+                //file manager is different depending on the filearea
+                switch($filearea){
+                    case constants::FILEANSWER . $i . '_audio':
+                        $fm = array_merge( $filemanageroptions, ['accepted_types' => 'audio', 'maxfiles' => -1]);
+                        break;
+                    case constants::FILEANSWER . $i . '_image':
+                        $fm = array_merge( $filemanageroptions, ['accepted_types' => 'image', 'maxfiles' => -1]);
+                        break;
+                    case constants::FILEANSWER . $i:
+                    default:
+                        $fm = $filemanageroptions;
                 }
+                //now we can prepare draft area
+                file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,
+                        $filearea, $data->itemid,
+                        $filemanageroptions);
+                $data->{$filearea} = $draftitemid;
             }
         }
 

@@ -137,8 +137,4 @@ class item_listenrepeat extends item {
         return $keycols;
     }
 
-    public static function get_no_of_sentence() {
-        return 1;
-    }
-
 }

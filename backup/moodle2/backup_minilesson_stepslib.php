@@ -117,6 +117,8 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
         for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
             $rsquestion->annotate_files(constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA . $anumber, 'id');
             $rsquestion->annotate_files(constants::M_COMPONENT, constants::FILEANSWER . $anumber, 'id');
+            $rsquestion->annotate_files(constants::M_COMPONENT, constants::FILEANSWER . $anumber . '_image', 'id');
+            $rsquestion->annotate_files(constants::M_COMPONENT, constants::FILEANSWER . $anumber . '_audio', 'id');
         }
 		
 		//file annotation if including user info

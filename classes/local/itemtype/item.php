@@ -832,54 +832,61 @@ abstract class item implements templatable, renderable {
 
         //Files (audio or images) for answer options
         for ($i = 1; $i <= constants::MAXANSWERS; $i++) {
-            if (property_exists($data, constants::FILEANSWER . $i)) {
-                //if this is from an import, it will be an array
-                if(is_array($data->{constants::FILEANSWER . $i})){
-                    foreach ($data->{constants::FILEANSWER . $i} as $filename=>$filecontent){
-                        $filerecord = array(
-                            'contextid' => $this->context->id,
-                            'component' => constants::M_COMPONENT,
-                            'filearea'  => constants::FILEANSWER . $i,
-                            'itemid'    => $theitem->id,
-                            'filepath'  => '/',
-                            'filename'  => $filename,
-                            'userid'    => $USER->id
-                        );
-                        $fs = get_file_storage();
-                        $fs->create_file_from_string($filerecord, base64_decode($filecontent));
+            $fileareas = [constants::FILEANSWER . $i, constants::FILEANSWER . $i . '_audio', constants::FILEANSWER . $i . '_image'];
+            foreach ($fileareas as $thefilearea) {
+                if (property_exists($data, $thefilearea)) {
+                    //if this is from an import, it will be an array
+                    if (is_array($data->{$thefilearea})) {
+                        foreach ($data->{$thefilearea} as $filename => $filecontent) {
+                            $filerecord = array(
+                                'contextid' => $this->context->id,
+                                'component' => constants::M_COMPONENT,
+                                'filearea' => $thefilearea,
+                                'itemid' => $theitem->id,
+                                'filepath' => '/',
+                                'filename' => $filename,
+                                'userid' => $USER->id
+                            );
+                            $fs = get_file_storage();
+                            $fs->create_file_from_string($filerecord, base64_decode($filecontent));
+                        }
+                    } else {
+                        //if this is from a form submission, this will involve draft files
+                        switch($thefilearea) {
+                            case constants::FILEANSWER . $i:
+                                //save multichoice question answer images or audios
+                                file_save_draft_area_files($data->{$thefilearea},
+                                    $this->context->id, constants::M_COMPONENT,
+                                    $thefilearea, $theitem->id,
+                                    $this->filemanageroptions);
+                                break;
+                            case constants::FILEANSWER . $i . '_audio':
+                                //save sentence audio
+                                file_save_draft_area_files($this->itemrecord->{$thefilearea},
+                                    $this->context->id, constants::M_COMPONENT,
+                                    $thefilearea, $theitem->id,
+                                    array_merge(
+                                        $this->filemanageroptions,
+                                        ['accepted_types' => 'audio', 'maxfiles' => -1]
+                                    )
+                                );
+                                break;
+                            case constants::FILEANSWER . $i . '_image':
+                                //save sentence image
+                                file_save_draft_area_files($this->itemrecord->{$thefilearea},
+                                    $this->context->id, constants::M_COMPONENT,
+                                    $thefilearea, $theitem->id,
+                                    array_merge(
+                                        $this->filemanageroptions,
+                                        ['accepted_types' => 'image', 'maxfiles' => -1]
+                                    )
+                                );
+                                break;
+                        }
                     }
-                }else{
-                    //if this is from a form submission, this will involve draft files
-                    file_save_draft_area_files($data->{constants::FILEANSWER . $i},
-                        $this->context->id, constants::M_COMPONENT,
-                        constants::FILEANSWER . $i, $theitem->id,
-                        $this->filemanageroptions);
-                }
-            }
-        }
-
-        //Process sentence assets
-        $i = $this->get_no_of_sentence() > 0 ? 1: 0;
-        if ($i > 0) {
-            $prefix = constants::TEXTANSWER;
-            for(; $i <= $this->get_no_of_sentence();$i++) {
-                foreach([
-                    "{$prefix}{$i}_image" => 'image',
-                    "{$prefix}{$i}_audio" => 'audio',
-                ] as $elname => $type) {
-                    if (isset($this->itemrecord->{$elname})) {
-                        file_save_draft_area_files($this->itemrecord->{$elname},
-                            $this->context->id, constants::M_COMPONENT,
-                            $elname, $theitem->id,
-                            array_merge(
-                                $this->filemanageroptions,
-                                ['accepted_types' => $type]
-                            )
-                        );
-                    }
-                }
-            }
-        }
+                }//end of if property exists filearea
+             }//end of foreach file areas
+        }//end of max answers loop
 
         //Question instructions
         if (property_exists($data, constants::TEXTINSTRUCTIONS)) {
@@ -1202,10 +1209,6 @@ abstract class item implements templatable, renderable {
         }
         $this->itemrecord->phonetic= $thephonetics;
         return $thephonetics;
-    }
-
-    public static function get_no_of_sentence() {
-        return 0;
     }
 
 }
