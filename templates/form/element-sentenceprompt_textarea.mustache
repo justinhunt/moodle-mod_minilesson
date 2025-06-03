@@ -1,0 +1,9 @@
+<div class="element-sentenceprompt-container">
+    <div class="sentenceprompt__lines" data-region="lines"></div>
+    <textarea id="{{id}}" name="{{name}}[text]" class="form-control sentenceprompt__textarea" rows="{{rows}}" cols="{{cols}}" spellcheck="true" {{#changelistener}} onblur="{{onblur}}"
+        onchange="{{onchange}}" {{/changelistener}} data-region="textarea">{{text}}</textarea>
+</div>
+<div>
+    <input name="{{name}}[itemid]" id="menu{{name}}itemid" type="hidden" value="{{itemid}}"/>
+    <input name="{{name}}[format]" id="menu{{name}}format" type="hidden" value="{{format}}"/>
+</div>

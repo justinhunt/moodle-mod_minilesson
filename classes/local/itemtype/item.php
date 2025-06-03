@@ -858,6 +858,29 @@ abstract class item implements templatable, renderable {
             }
         }
 
+        //Process sentence assets
+        $i = $this->get_no_of_sentence() > 0 ? 1: 0;
+        if ($i > 0) {
+            $prefix = constants::TEXTANSWER;
+            for(; $i <= $this->get_no_of_sentence();$i++) {
+                foreach([
+                    "{$prefix}{$i}_image" => 'image',
+                    "{$prefix}{$i}_audio" => 'audio',
+                ] as $elname => $type) {
+                    if (isset($this->itemrecord->{$elname})) {
+                        file_save_draft_area_files($this->itemrecord->{$elname},
+                            $this->context->id, constants::M_COMPONENT,
+                            $elname, $theitem->id,
+                            array_merge(
+                                $this->filemanageroptions,
+                                ['accepted_types' => $type]
+                            )
+                        );
+                    }
+                }
+            }
+        }
+
         //Question instructions
         if (property_exists($data, constants::TEXTINSTRUCTIONS)) {
             $theitem->{constants::TEXTINSTRUCTIONS} = $data->iteminstructions;
@@ -1181,5 +1204,8 @@ abstract class item implements templatable, renderable {
         return $thephonetics;
     }
 
+    public static function get_no_of_sentence() {
+        return 0;
+    }
 
 }

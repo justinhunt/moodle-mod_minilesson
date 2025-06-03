@@ -1,0 +1,6 @@
+<div class="position-relative" data-root="elementwrapper">
+{{> core_form/element-editor }}
+</div>
+{{#js}}
+require(['mod_minilesson/sentencepromptformelement'], amd => amd.registerElement({{{jsargs}}}))
+{{/js}}
