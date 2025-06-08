@@ -143,6 +143,7 @@ const PASSAGEPICTURE = 'passagepicture';
 const PASSAGEPICTURE_FILEAREA = 'passagepicture';
 const TIMELIMIT = 'timelimit';
 const GAPFILLALLOWRETRY = 'customint3';
+const FLUENCYCORRECTTHRESHOLD = 'customint3';
 const NOPASTING = 'customint4';
 const GAPFILLHIDESTARTPAGE = 'customint5';
 const SG_INCLUDEMATCHING = 'customint3';

@@ -3027,21 +3027,34 @@ textarea.ml_freewriting_textarea {
 }
 
 /* Fluency */
-
-.minilesson_fluency_box .item-results-container {
+.minilesson_fluency_box .item-feedback-container  {
   display: flex;
   background-color: #eee;
   height: 50px;
-  margin-bottom: 50px;
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
   font-size: 1.1rem;
   padding: 2px;
+  margin-bottom: 50px
 }
+
+.minilesson_fluency_box .item-results-container {
+  margin-bottom: 5px;
+  display: flex;
+  height: 25px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 1.1rem;
+  padding: 2px;
+  margin-bottom: 5px
+}
+
+
 .minilesson_fluency_box .form-container {
   margin: 20px auto 22px;
-  min-height: 100px;
+  min-height: 50px;
 }
 .minilesson_fluency_box .item-results {
   align-self: center;
@@ -3075,6 +3088,7 @@ margin-right: 3px;
 .minilesson_fluency_box .fluency_prompt {
   position: relative;
   margin-top: 10px;
+  font-size: 1.3em;
 }
 
 .minilesson_fluency_box .fluency_reply {
@@ -3216,10 +3230,17 @@ margin-right: 3px;
   position: absolute;
   right: 10px;
 }
-div.mcaudioplayer,
-div.poodlldictationplayer {
-  position: relative;
+
+.minilesson_fluency_box .item-results-container .fa-star {
+  color: gold;
+  font-size: 1.5em;
 }
+
+.minilesson_fluency_box .item-results-container .fa-star-o {
+  color: gray;
+  font-size: 1.5em;
+}
+
 div.fluencywordresult {
  /* display: flex; */
   flex-wrap: nowrap;
@@ -3298,4 +3319,10 @@ span.fluencyletterresult.letter_wrong {
 }
 .element-sentenceprompt-container .sentenceprompt__textarea:focus {
   box-shadow: none;
+}
+
+
+div.mcaudioplayer,
+div.poodlldictationplayer {
+  position: relative;
 }

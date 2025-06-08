@@ -875,3 +875,5 @@ $string['sentenceimage'] = 'Sentence Images';
 $string['sentenceimage_help'] = '(optional) Upload image files to be displayed with the sentence prompt. The image file name should match the sentence prompt number, eg. 1.png or 2.jpg';
 $string['sentenceaudio'] = 'Sentence Audios';
 $string['sentenceaudio_help'] = '(optional) Upload audio files to match the sentence prompt. The audio file name should match the sentence prompt number, eg. 1.mp3 or 2.mp3';
+$string['correctthreshold_desc'] = 'The accuracy percentage required to pass the item.';
+$string['correctthreshold'] = 'Correct Threshold (%)';

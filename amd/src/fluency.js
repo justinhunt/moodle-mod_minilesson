@@ -11,7 +11,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
   log.debug('MiniLesson Fluency: initialising');
 
   var thefluencyitem = {
-    phonemeWarningThreshold: 75, // Threshold for phoneme error rate
+    phonemeWarningThreshold: 80, // Threshold for phoneme error rate
     phonemeErrorThreshold: 50, // Threshold for phoneme error rate
 
     speechConfig: null,
@@ -31,6 +31,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       this.quizhelper = quizhelper;
       this.index = index;
       this.init_components(quizhelper, itemdata);
+
+      //correct threshold
+      this.phonemeWarningThreshold = itemdata.correctthreshold || this.phonemeWarningThreshold;
+      if(this.phonemeErrorThreshold >= this.phonemeWarningThreshold) {
+          this.phonemeErrorThreshold = Math.max(this.phonemeWarningThreshold - 25, 1);
+      }
 
       // Anim
       var animopts = {};
@@ -77,7 +83,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
           case 'pronunciation_results':
             var speechresults= message.results;
             log.debug(speechresults);
-            self.do_evaluation(speechresults);    
+            self.do_evaluation_feedback(speechresults);
+            self.do_evaluation_stars(speechresults);   
+           // self.do_evaluation_results(speechresults);   
         } //end of switch message type
       };
  
@@ -330,23 +338,23 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       var code = "<div class='fluency_reply fluency_reply_" + self.game.pointer + " text-center' style='display:none;'>";
 
       code += "<div class='form-container'>";
-      self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
-          if (data.type === 'input') {
-              code += "<input class='single-character' autocomplete='off' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "' readonly>";
-          } else if (data.type === 'mtext') {
-              code += "<input class='single-character-mtext' type='text' name='readonly" + index + "' maxlength='1' value='" + data.character + "' readonly>";
-          } else {
-              code += data.character;
-          }
-      });
+      code += "<div class='fluency_prompt fluency_prompt_" + self.game.pointer + "'>";
+      code += self.items[self.game.pointer].displayprompt || self.items[self.game.pointer].prompt;
+      code += "</div>";
+     
       //correct or not
       code += " <i data-idx='" + self.game.pointer + "' class='fluency_feedback'></i></div>";
 
-      //definition
-      code += "<div class='item-results-container'>";
-      code += "</div>";
+      //hint - image
+    if( self.items[self.game.pointer].imageurl) {
+        code += "<div class='minilesson_sentence_image'><div class='minilesson_padded_image'><img src='"
+            + self.items[self.game.pointer].imageurl + "' alt='Image for gap fill' /></div></div>";
+    }
 
-
+      //feedback and results containers
+      code += "<div class='item-results-container'></div>";
+      code += "<div class='item-feedback-container'></div>";
+      
       $("#" + self.itemdata.uniqueid + "_container .question").append(code);
       var newreply = $(".fluency_reply_" + self.game.pointer);
       anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
@@ -397,13 +405,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       }
     },
 
-    do_evaluation: function (pronunciation_result) {
+    do_evaluation_feedback: function (pronunciation_result) {
         var self = this;
         //this is part of the generated html for each sentence in the item, so we need to create a handle each time
-        var itemresultscontainer = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
+        var itemfeedbackcontainer = $("#" + self.itemdata.uniqueid + "_container .item-feedback-container");
 
         // Clear previous results
-        itemresultscontainer.html("");
+        itemfeedbackcontainer.html("");
 
         var twoletterlang = self.itemdata.language.substr(0, 2);
         if(self.itemdata.rtl){
@@ -439,7 +447,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         });
 
         //Display result
-        itemresultscontainer.html(lineresulthtml);
+        itemfeedbackcontainer.html(lineresulthtml);
 
         //store results for later use
         self.items[self.game.pointer].pronunciation_result = pronunciation_result;
@@ -471,8 +479,48 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         }
     },
 
+    do_evaluation_stars: function(pronunciation_result) {
+        var self = this;
+        //this is part of the generated html for each sentence in the item, so we need to create a handle each time
+        var itemstarscontainer = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
+        // Clear previous results
+        itemstarscontainer.html("");
+        // Create star ratings
+        var starRating = $("<div class='fluency_star_rating'>");
+        var accuracyScore = pronunciation_result.accuracyScore;
+        var maxStars = 5;
+        // calculate starBandWidth // band 1 = 0-19 / band 2 = 20-39 etc.
+        var correctBandwidth = 100 - self.phonemeWarningThreshold;
+        var starBandWidth = (100 - correctBandwidth) / 4;
+        
+        for (var i = 0; i < maxStars; i++) {
+            var star = $("<i class='fa'>");
+            if (i <= accuracyScore / starBandWidth ) { 
+                star.addClass("fa-star");
+            } else {
+                star.addClass("fa-star-o");
+            }
+            starRating.append(star);
+        }
+        // Append star rating to the feedback container
+        itemstarscontainer.append(starRating);
+        // Add a message based on the accuracy score
+        /*
+        var message = $("<div class='fluency_feedback_message'>");
+        if (accuracyScore >= 80) {
+            message.text("Great job! Your pronunciation is excellent.");
+        } else if (accuracyScore >= 50) {
+            message.text("Good effort! Keep practicing to improve your pronunciation.");
+        } else {
+            message.text("Keep trying! Focus on the pronunciation of individual words.");
+        }
+           
+        itemstarscontainer.append(message);
+         */
+    },
+
       //The old evaluation display with some radial charts etc. We might want to use it later
-      oldDoEvaluation: function(pronunciation_result) {
+      do_evaluation_results: function(pronunciation_result) {
         var self = this;
         //this is part of the generated html for each sentence in the item, so we need to create a handle each time
         var itemresultscontainer = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
@@ -486,7 +534,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         itemresults.push("Completeness score: " + pronunciation_result.completenessScore);
         itemresults.push("Fluency score: " + pronunciation_result.fluencyScore);
         itemresults.push("Prosody score: " +  pronunciation_result.prosodyScore);
-        itemresultscont.append(itemresults.join("<br>"));
+        itemresultscontainer.append(itemresults.join("<br>"));
 
         //make a chart for each score
         var labels = ["Accuracy", "Pronunciation", "Completeness", "Fluency", "Prosody"];
@@ -499,7 +547,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         ];
         labels.forEach(function(label, index) {
             var chartContainerId = self.itemdata.uniqueid + "_chart_" + index;
-            itemresultscont.append('<canvas id="' + chartContainerId + '"></canvas>');
+            itemresultscontainer.append('<canvas id="' + chartContainerId + '"></canvas>');
             self.createRadialChart(chartContainerId, [label], [data[index]]);
         });
 

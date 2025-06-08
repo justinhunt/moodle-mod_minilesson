@@ -59,6 +59,9 @@ class item_fluency extends item {
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
 
+        //Correct threshold.
+        $testitem->correctthreshold = $this->itemrecord->{constants::FLUENCYCORRECTTHRESHOLD};
+
         // Cloud Poodll.
         $maxtime = 0;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
@@ -79,7 +82,7 @@ class item_fluency extends item {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
 
-        $testitem->sentences = $this->process_speakinggapfill_sentences($sentences);
+        $testitem->sentences = $this->process_spoken_sentences($sentences, []);
         return $testitem;
     }
 
@@ -106,7 +109,7 @@ class item_fluency extends item {
         $keycols = parent::get_keycolumns();
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
-        $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
+        $keycols['int3'] = ['jsonname' => 'correctthreshold', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FLUENCYCORRECTTHRESHOLD];
         $keycols['int2'] = ['jsonname' => 'dictationstyle', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
