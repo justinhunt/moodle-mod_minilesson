@@ -231,7 +231,9 @@ define(['jquery',
                     timer: [],
                     answered: false,
                     correct: false,
-                    audio: null
+                    audio: null,
+                    audiourl: target.audiourl ? target.audiourl : "",
+                    imageurl: target.imageurl,
                 };
             }).filter(function(e) {
                 return e.target !== "";
@@ -239,21 +241,13 @@ define(['jquery',
 
             if(self.itemdata.readsentence) {
                 $.each(self.items, function (index, item) {
-                    polly.fetch_polly_url(item.prompt, self.voiceoption, self.usevoice).then(function (audiourl) {
-                        item.audio = new Audio();
-                        item.audio.src = audiourl;
-                        if (self.items.filter(function (e) {
-                            return e.audio === null;
-                        }).length === 0) {
-                            self.appReady();
-                        }
-                    });
+                    item.audio = new Audio();
+                    item.audio.src = item.audiourl;
                 });
+                self.appReady();
             }else{
                 self.appReady();
             }
-
-
         },
 
         appReady: function() {
@@ -489,13 +483,21 @@ define(['jquery',
             //correct or not
             code += " <i data-idx='" + self.game.pointer + "' class='dictate_feedback'></i></div>";
 
-            //definition
-            code += "<div class='definition-container'>";
-            code += "<div class='definition'>" + self.items[self.game.pointer].definition + "</div>";
-            code += "</div>";
+            //hint - image
+            if( self.items[self.game.pointer].imageurl) {
+                code += "<div class='minilesson_sentence_image'><div class='minilesson_padded_image'><img src='"
+                    + self.items[self.game.pointer].imageurl + "' alt='Image for gap fill' /></div></div>";
+            }
+            //hint - definition
+            if( self.items[self.game.pointer].definition) {
+                code += "<div class='definition-container'><div class='definition'>"
+                    + self.items[self.game.pointer].definition + "</div>";
+            }
 
 
             $("#" + self.itemdata.uniqueid + "_container .question").append(code);
+
+
             var newreply = $("#" + self.itemdata.uniqueid + "_container .sgapfill_reply_" + self.game.pointer);
             anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
                 function() {

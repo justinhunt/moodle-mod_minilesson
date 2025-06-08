@@ -21,8 +21,8 @@ class dictationform extends baseform
         $this->add_voiceoptions(constants::POLLYOPTION,get_string('choosevoiceoption',constants::M_COMPONENT));
         $this->add_showignorepuncoptions(constants::IGNOREPUNCTUATION,get_string('ignorepunctuation',constants::M_COMPONENT));
         $this->add_static_text('instructions','',get_string('phraseresponses',constants::M_COMPONENT));
-        $this->add_textarearesponse(1,get_string('sentenceprompts',constants::M_COMPONENT),true);
-
+        $this->add_sentenceprompt(1,get_string('sentenceprompts',constants::M_COMPONENT),true);
+        $this->add_sentenceaudio(1, null, false);
     }
 
 }

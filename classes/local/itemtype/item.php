@@ -509,6 +509,37 @@ abstract class item implements templatable, renderable {
         return $testitem;
     }
 
+    /**
+     * Fetches the media urls for the item.
+     *
+     * @param string $mediatype The file area to fetch from, either "image" or "audio"
+     * @param int $itemrecord The customtext field that holds all the sentences usually: 1
+     * @return array
+     */
+    protected function fetch_sentence_media($mediatype, $sentencefieldindex) {
+        global $DB;
+        $mediaurls = [];
+        $filearea = constants::FILEANSWER . $sentencefieldindex . '_' . $mediatype;
+        $itemid  = $this->itemrecord->id;
+        if ($itemid) {
+            $fs = get_file_storage();
+                $files = $fs->get_area_files($this->context->id, constants::M_COMPONENT, $filearea, $itemid, 'id', false);
+                foreach ($files as $file) {
+                    if ($file->is_directory()) {
+                        continue;
+                    }
+                    $filename = $file->get_filename();
+                    $filepath = $file->get_filepath();
+                    $filename_no_extension = pathinfo($file->get_filename(), PATHINFO_FILENAME);
+                    $mediaurl = \moodle_url::make_pluginfile_url($this->context->id, constants::M_COMPONENT,
+                        $filearea, $itemid,
+                        $filepath, $filename);
+                    $mediaurls[$filename_no_extension] = $mediaurl->__toString();
+                }
+        }//end if item id
+        return $mediaurls;
+    }
+
     /*
      * Processes gap fill sentences : TO DO not implemented, implement this
      */
@@ -548,24 +579,58 @@ abstract class item implements templatable, renderable {
      * Processes listening gap fill sentences : TO DO not implemented, implement this
      */
     protected function process_listeninggapfill_sentences($sentences) {
-        return $this->parse_gapfill_sentences($sentences);
+        $thesentences = $this->parse_gapfill_sentences($sentences);
+        $custom_sentence_audio = $this->fetch_sentence_media('audio',1);
+        foreach($thesentences as $sentence) {
+            if(isset($custom_sentence_audio[$sentence->indexplusone])) {
+                $sentence->audiourl = $custom_sentence_audio[$sentence->indexplusone];
+            } else {
+                //if we have no custom audio then we use the polly audio
+                $sentence->audiourl = utils::fetch_polly_url(
+                    $this->token,
+                    $this->region,
+                    $sentence->prompt,
+                    $this->itemrecord->{constants::POLLYOPTION},
+                    $this->itemrecord->{constants::POLLYVOICE}
+                );
+            }
+        }
+        return $thesentences;
     }
 
     /*
      * Processes speaking gap fill sentences
      */
     protected function process_speakinggapfill_sentences($sentences) {
-        return $this->parse_gapfill_sentences($sentences);
+        $thesentences = $this->parse_gapfill_sentences($sentences);
+        $custom_sentence_audio = $this->fetch_sentence_media('audio',1);
+        foreach($thesentences as $sentence) {
+            if(isset($custom_sentence_audio[$sentence->indexplusone])) {
+                $sentence->audiourl = $custom_sentence_audio[$sentence->indexplusone];
+            } else {
+                //if we have no custom audio then we use the polly audio
+                $sentence->audiourl = utils::fetch_polly_url(
+                    $this->token,
+                    $this->region,
+                    $sentence->prompt,
+                    $this->itemrecord->{constants::POLLYOPTION},
+                    $this->itemrecord->{constants::POLLYVOICE}
+                );
+            }
+        }
+        return $thesentences;
     }
 
     /*
      * Processes listening gap fill sentences
      */
     public function parse_gapfill_sentences($sentences) {
-        $index = 0;
-        $sentenceobjects = [];
 
+        $sentenceobjects = [];
+        $sentenceimages = $this->fetch_sentence_media('image', 1);
+        $sentenceindex = -1;
         foreach ($sentences as $sentence) {
+            $sentenceindex++;
             $arr = explode('|', utils::super_trim($sentence));
             $sentence = utils::super_trim($arr[0] ?? '');
             $definition = utils::super_trim($arr[1] ?? '');
@@ -615,17 +680,18 @@ abstract class item implements templatable, renderable {
             $prompt = $sentence;
 
             $s = new \stdClass();
-            $s->index = $index;
-            $s->indexplusone = $index + 1;
+            $s->index = $sentenceindex;
+            $s->indexplusone = $sentenceindex + 1;
             $s->sentence = $sentence;
             $s->prompt = $prompt;
             $s->definition = $definition;
             $s->displayprompt = $prompt;
             $s->length = \core_text::strlen($s->sentence);
             $s->parsedstring = $parsedstring;
+            $s->imageurl = isset($sentenceimages[$s->indexplusone ]) ? $sentenceimages[$s->indexplusone] : false;
             $s->words = $maskedwords;
+            
             $sentenceobjects[] = $s;
-            $index++;
         }
 
         return $sentenceobjects;
@@ -639,11 +705,19 @@ abstract class item implements templatable, renderable {
         //build a sentences object for mustache and JS
         $index = 0;
         $sentenceobjects = [];
+
+        //Prepare sentence media
+        $sentence_images = $this->fetch_sentence_media('image', 1);
+        $sentence_audio = $this->fetch_sentence_media('audio',1);
+
+        $sentenceindex=0;
         foreach ($sentences as $sentence) {
             $sentence = utils::super_trim($sentence);
             if (empty($sentence)) {
                 continue;
             }
+            // Sentence index starts at 1 and keys with sentence_audios and sentence_images
+            $sentenceindex++;
 
             //build prompt and displayprompt and sentence which could be different
             // prompt = audio_prompt
@@ -684,6 +758,21 @@ abstract class item implements templatable, renderable {
                 $sentence = $this->process_japanese_phonetics($sentence);
             }
 
+            // We prepare the audio url.
+            if(isset($sentence_audio[$sentenceindex])) {
+                $theaudiourl = $sentence_audio[$sentenceindex];
+            } else {
+                // If we have no custom audio then we use the polly audio.
+                $theaudiourl = utils::fetch_polly_url(
+                    $this->token,
+                    $this->region,
+                    $prompt,
+                    $this->itemrecord->{constants::POLLYOPTION},
+                    $this->itemrecord->{constants::POLLYVOICE}
+                );
+            }
+
+            // Build the sentence object.
             $s = new \stdClass();
             $s->index = $index;
             $s->indexplusone = $index + 1;
@@ -691,12 +780,14 @@ abstract class item implements templatable, renderable {
             $s->prompt = $prompt;
             $s->displayprompt = $displayprompt;
             $s->length = \core_text::strlen($s->sentence);
+            $s->imageurl = isset($sentence_images[$sentenceindex]) ? $sentence_images[$sentenceindex] : false;
+            $s->audiourl = $theaudiourl;
 
-            //add phonetics if we have them
+            // Add phonetics if we have them.
             if(isset($phonetics[$index]) && !empty($phonetics[$index])){
-                $s->phonetic=$phonetics[$index];
+                $s->phonetic = $phonetics[$index];
             }else{
-                $s->phonetic='';
+                $s->phonetic = '';
             }
 
             $index++;

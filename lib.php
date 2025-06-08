@@ -766,7 +766,7 @@ function minilesson_output_fragment_preview($args) {
     $renderer = $PAGE->get_renderer('mod_minilesson');
     $comptest = new \mod_minilesson\comprehensiontest($cm);
     $ret = $renderer->show_quiz_preview($comptest, $args->itemid);
-    $ret .= $renderer->fetch_activity_amd($cm, $moduleinstance, $args->itemid);
+    $ret .= $renderer->fetch_activity_amd($comptest, $cm, $moduleinstance, $args->itemid);
     return $ret;
 }
 

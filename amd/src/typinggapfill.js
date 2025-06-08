@@ -164,7 +164,8 @@ define(['jquery',
                     typed: "",
                     answered: false,
                     correct: false,
-                    audio: null
+                    audio: null,
+                    imageurl: target.imageurl,
                 };
             }).filter(function(e) {
                 return e.target !== "";
@@ -329,9 +330,16 @@ define(['jquery',
             });
             code += " <i data-idx='" + self.game.pointer + "' class='tgapfill_feedback'></i></div>";
 
-            code += "<div class='definition-container'>";
-            code += "<div class='definition'>" + self.items[self.game.pointer].definition + "</div>";
-            code += "</div>";
+            //hint - image
+            if( self.items[self.game.pointer].imageurl) {
+                code += "<div class='minilesson_sentence_image'><div class='minilesson_padded_image'><img src='"
+                    + self.items[self.game.pointer].imageurl + "' alt='Image for gap fill' /></div></div>";
+            }
+            //hint - definition
+            if( self.items[self.game.pointer].definition) {
+                code += "<div class='definition-container'><div class='definition'>"
+                    + self.items[self.game.pointer].definition + "</div>";
+            }
 
             code += "</div>";
             $("#" + self.itemdata.uniqueid + "_container .question").append(code);

@@ -31,6 +31,7 @@ class comprehensiontest {
     protected $mod;
     protected $items;
     protected $course;
+    protected $quizdata = null;
 
     public function __construct($cm) {
         global $DB;
@@ -80,6 +81,11 @@ class comprehensiontest {
     public function fetch_test_data_for_js($renderer=false) {
         global $CFG, $USER, $OUTPUT;
 
+        if($this->quizdata){
+            // if we already have quizdata, then we should return that instead of making it again
+            return $this->quizdata;
+        }
+
         $items = $this->fetch_items();
 
         // first confirm we are authorised before we try to get the token
@@ -114,6 +120,11 @@ class comprehensiontest {
             }
             $testitems[] = $titem->export_for_template($renderer);
         }//end of loop
+
+        //Store the test items in the class property for later use
+        $this->quizdata = $testitems;
+
+        // return the test items
         return $testitems;
     }
 

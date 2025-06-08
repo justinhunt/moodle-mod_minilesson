@@ -25,7 +25,9 @@ class listeninggapfillform extends baseform {
          $hideiffield, $hideifvalue, $nossml);
 
         $this->add_static_text('instructions', '', get_string('listeninggapfillitemsdesc', constants::M_COMPONENT));
-        $this->add_textarearesponse(1, get_string('sentenceprompts', constants::M_COMPONENT), true);
+        $this->add_sentenceprompt(1,get_string('sentenceprompts',constants::M_COMPONENT),true);
+        $this->add_sentenceimage(1, null, false);
+        $this->add_sentenceaudio(1, null, false);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         $this->add_allowretry(constants::GAPFILLALLOWRETRY, get_string('allowretry_desc', constants::M_COMPONENT));
         $this->add_hidestartpage(constants::GAPFILLHIDESTARTPAGE, get_string('hidestartpage_desc', constants::M_COMPONENT));

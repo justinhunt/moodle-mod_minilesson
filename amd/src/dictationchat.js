@@ -209,16 +209,17 @@ define(['jquery',
           typed: "",
           answered: false,
           correct: false,
-          audio: null
+          audio: null,
+          audiourl: target.audiourl ? target.audiourl : "",
+          imageurl: target.imageurl,
         };
       }).filter(function(e) {
         return e.target !== "";
       });
 
       $.each(self.items, function(index, item) {
-        polly.fetch_polly_url(item.prompt,  self.voiceoption, self.usevoice).then(function(audiourl) {
           item.audio = new Audio();
-          item.audio.src = audiourl;
+          item.audio.src = item.audiourl;
           if (self.items.filter(function(e) {
               return e.audio == null;
             }).length == 0) {
@@ -226,8 +227,6 @@ define(['jquery',
           } else {
             console.log(self.items);
           }
-        });
-
       });
 
     },

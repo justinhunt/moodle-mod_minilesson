@@ -485,6 +485,7 @@ class renderer extends \plugin_renderer_base {
 
         // quiz data
         $quizdata = $comptest->fetch_test_data_for_js();
+
         $itemshtml = [];
         foreach($quizdata as $item){
             $itemshtml[] = $this->render_from_template(constants::M_COMPONENT . '/' . $item->type, $item);
@@ -578,7 +579,7 @@ class renderer extends \plugin_renderer_base {
     }
 
 
-    function fetch_activity_amd($cm, $moduleinstance, $previewquestionid=0, $canreattempt=false, $embed=0) {
+    function fetch_activity_amd($comptest, $cm, $moduleinstance, $previewquestionid=0, $canreattempt=false, $embed=0) {
         global $CFG, $USER;
         // any html we want to return to be sent to the page
         $rethtml = '';
@@ -663,7 +664,6 @@ class renderer extends \plugin_renderer_base {
         }
 
         // quiz data
-        $comptest = new comprehensiontest($cm);
         $quizdata = $comptest->fetch_test_data_for_js($this);
         if($previewquestionid){
             foreach($quizdata as $item){
@@ -709,7 +709,7 @@ class renderer extends \plugin_renderer_base {
         $embed = 1;
         $canattempt = true;
         $ret = $this->show_quiz($comptest, $moduleinstance);
-        $ret .= $this->fetch_activity_amd($cm, $moduleinstance, $previewid, $canattempt, $embed);
+        $ret .= $this->fetch_activity_amd($comptest, $cm, $moduleinstance, $previewid, $canattempt, $embed);
         return $ret;
     }
 

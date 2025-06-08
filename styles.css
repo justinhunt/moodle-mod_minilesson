@@ -3006,17 +3006,6 @@ textarea.ml_freewriting_textarea {
   max-width: 80%;
   margin: auto;
 }
-/*
-.minilesson_mc_image {
-  max-width: 100%;
-  margin: auto;
-}
-.minilesson_mc_image img{
-  max-width: 100%;
-  margin: auto;
-  display: block;
-}
-  */
 
 .minilesson_mc_image {
   position: relative; /* Needed for padding trick */
@@ -3262,6 +3251,31 @@ span.fluencyletterresult.letter_wrong {
 .btn.fluency_listen_btn.audioself {
   color: deeppink;
 }
+.minilesson_sentence_image {
+  max-width:400px;
+  width: 75%;
+  margin: auto;
+}
+.minilesson_padded_image {
+  position: relative; /* Needed for padding trick */
+  width: 100%;
+  padding-bottom: 75%; /* Example aspect ratio (4:3). Adjust as needed */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.minilesson_padded_image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: scale-down; /* or contain */
+}
+
+
 .element-sentenceprompt-container {
   display: flex;
   border: 1px solid rgb(203, 213, 225);

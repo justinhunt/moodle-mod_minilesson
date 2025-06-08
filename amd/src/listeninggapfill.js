@@ -131,9 +131,6 @@ define(['jquery',
                 }
             });
 
-
-
-
             // On skip button click
             $("#" + self.itemdata.uniqueid + "_container .lgapfill_skip_btn").on("click", function() {
                 // Disable buttons
@@ -250,26 +247,21 @@ define(['jquery',
                     timer: [],
                     answered: false,
                     correct: false,
-                    audio: null
+                    audio: null,
+                    audiourl: target.audiourl ? target.audiourl : "",
+                    imageurl: target.imageurl,
                 };
             }).filter(function(e) {
                 return e.target !== "";
             });
 
-            $.each(self.items, function(index, item) {
-                polly.fetch_polly_url(item.prompt, self.voiceoption, self.usevoice).then(function(audiourl) {
-                    item.audio = new Audio();
-                    item.audio.src = audiourl;
-                    if (self.items.filter(function(e) {
-                        return e.audio == null;
-                    }).length == 0) {
-                        // Calling AppReady caused issues when the appReady had already been called AND hidestartpage was true
-                        //it would cause next prompt -> next reply to be called again, and two prompts would be shown at once
-                        //probably ok just to call it here
-                        self.appReady();
-                    }
-                });
+            //Prepare audio
+            $.each(self.items, function (index, item) {
+                item.audio = new Audio();
+                item.audio.src = item.audiourl;
             });
+            self.appReady();
+
         },
 
         appReady: function() {
@@ -455,11 +447,15 @@ define(['jquery',
             });
             code += " <i data-idx='" + self.game.pointer + "' class='lgapfill_feedback'></i></div>";
 
-            if((self.items[self.game.pointer].definition )!=='') {
-                //hint or definition
-                code += "<div class='definition-container'>";
-                code += "<div class='definition'>" + self.items[self.game.pointer].definition + "</div>";
-                code += "</div>";
+            //hint - image
+            if( self.items[self.game.pointer].imageurl) {
+                code += "<div class='minilesson_sentence_image'><div class='minilesson_padded_image'><img src='"
+                    + self.items[self.game.pointer].imageurl + "' alt='Image for gap fill' /></div></div>";
+            }
+            //hint - definition
+            if( self.items[self.game.pointer].definition) {
+                code += "<div class='definition-container'><div class='definition'>"
+                    + self.items[self.game.pointer].definition + "</div>";
             }
 
             code += "</div>";
