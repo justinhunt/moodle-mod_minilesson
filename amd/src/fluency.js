@@ -11,8 +11,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
   log.debug('MiniLesson Fluency: initialising');
 
   var thefluencyitem = {
-    phonemeWarningThreshold: 80, // Threshold for phoneme error rate
-    phonemeErrorThreshold: 50, // Threshold for phoneme error rate
+    phonemeWarningThreshold: 90, // Threshold for phoneme error rate
+    phonemeErrorThreshold: 70, // Threshold for phoneme error rate
 
     speechConfig: null,
     //this is just a placeholder for the actualtext which is from the sentences in items
@@ -164,6 +164,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 return e.correct;
             }).length;
       stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
+
+        //stop audio
+        self.stop_audio();
 
       //prepare results data for detailed review on finished page or by teacher
       var results_data = {};
@@ -404,6 +407,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
           });
       }
     },
+
+      // Stop audio .. usually when leaving the item or sentence
+      stop_audio: function(){
+          var self =this;
+          //pause audio if its playing
+          var theaudio = self.items[self.game.pointer].audio;
+          if(theaudio && !theaudio.paused) {
+              theaudio.pause();
+          }
+      },
 
     do_evaluation_feedback: function (pronunciation_result) {
         var self = this;

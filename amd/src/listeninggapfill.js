@@ -46,6 +46,10 @@ define(['jquery',
                 return e.correct;
             }).length;
             stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
+
+            //stop audio
+            self.stop_audio();
+
             self.quizhelper.do_next(stepdata);
         },
 
@@ -496,6 +500,16 @@ define(['jquery',
                 timers.forEach(function(timer) {
                     clearInterval(timer);
                 });
+            }
+        },
+
+        // Stop audio .. usually when leaving the item or sentence
+        stop_audio: function(){
+            var self =this;
+            //pause audio if its playing
+            var theaudio = self.items[self.game.pointer].audio;
+            if(theaudio && !theaudio.paused) {
+                theaudio.pause();
             }
         },
 

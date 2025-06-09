@@ -95,7 +95,7 @@ echo $renderer->header($minilesson, $cm, $mode, null, get_string('rsquestions', 
     
     //if have edit permission, show edit buttons
     if(has_capability('mod/minilesson:itemview', $context)){
-    	echo $rsquestion_renderer ->add_edit_page_links($context,$tableid);
+    	echo $rsquestion_renderer ->add_edit_page_links($context,$tableid, $minilesson->region);
     }
 
 //if we have items, show em

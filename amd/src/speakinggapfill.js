@@ -88,6 +88,10 @@ define(['jquery',
                 return e.correct;
             }).length;
             stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
+
+            //stop audio
+            self.stop_audio();
+
             self.quizhelper.do_next(stepdata);
         },
 
@@ -532,6 +536,16 @@ define(['jquery',
             //in some cases ttrecorder wants to know the target
             if(self.quizhelper.use_ttrecorder()) {
                 self.ttrec.currentPrompt=target;
+            }
+        },
+
+        // Stop audio .. usually when leaving the item or sentence
+        stop_audio: function(){
+            var self =this;
+            //pause audio if its playing
+            var theaudio = self.items[self.game.pointer].audio;
+            if(theaudio && !theaudio.paused) {
+                theaudio.pause();
             }
         },
 

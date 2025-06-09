@@ -196,6 +196,7 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                     var editurl = dd.wwwroot + '/mod/minilesson/rsquestion/managersquestions.php?id=' + dd.cmid + '&itemid='+ $(this).data('id');
                     log.debug('editurl ' + editurl);
                     window.location.href=editurl;
+                    return false;
                 });
             }
             //delete helpser

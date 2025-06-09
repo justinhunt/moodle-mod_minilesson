@@ -1,5 +1,5 @@
 {{> mod_minilesson/questionheader}}
-  <div class="minilesson_landr_player_box">
+  <div class="minilesson_landr_player_box gapfill-container">
     <div style="display:none;" class="landr_results">{{#str}}dc_results, mod_minilesson{{/str}}</div>
 
     <div class="landr_title text-center" style="display: none">{{#str}}listenandrepeat, mod_minilesson{{/str}}</div>
@@ -15,22 +15,28 @@
       </div>
     </div>
 
+    <div class="progress-container d-flex" style="display:none;">
+      <div id="progresstimer" class="flex-grow-1"></div>
+      <div>
+        <i style="display:none;" class="fa fa-clock-o" aria-hidden="true"></i>
+      </div>
+    </div>
+
+    <div style="display:none;" class="landr_listen_cont">
+      <button class="btn btn-secondary landr_ctrl-btn landr_listen_btn">
+        <i class="fa fa-volume-up"></i>
+      </button>
+    </div>
+
     <div style="display:none;" class="landr_game {{rtl}}"></div>
 
     <div style="display:none;" class="landr_controls">
-
-      <button class="btn btn-secondary landr_ctrl-btn landr_listen_btn">
-        <i class="fa fa-volume-up"></i> {{#str}}listen, mod_minilesson{{/str}}
-      </button>
-
-      <button class="btn btn-danger landr_ctrl-btn landr_skip_btn">
-        {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
-      </button>
-
-    </div>
-
-    <div class="landr_speakbtncontainer">
-        {{> mod_minilesson/ttrecorder}}
+      <div class="landr_speakbtncontainer" style="width:246px;margin:auto;position:absolute;left:0;right:0;bottom:0;">
+          {{> mod_minilesson/ttrecorder}}
+      </div>
+        <button class="btn btn-danger landr_ctrl-btn landr_skip_btn">
+          {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
+        </button>
     </div>
 
     <div class="landr_resultscontainer"></div>

@@ -1,3 +1,9 @@
+Version 1.0.88 (Build 2025060900)
+- Added new voice selector
+- Added new item type "Fluency" (not available in Ningxia region yet)
+- Added sentenceimage and sentenceaudio fields to item types with "sentences"
+- Redesign of listen and speak item type
+
 Version 1.0.87 (Build 2025051300)
 - Added Somali and Pashto languages
 

@@ -1324,11 +1324,77 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   border: 1px solid darkgray;
   position: relative;
   margin: auto;
+  padding-bottom: 15px;
 }
 
-.minilesson_landr_player_box .landr_prompt {
-  position: relative;
-  margin-top: 10px;
+.minilesson_landr_player_box .landr_prompt_container {
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background-color: #f9f9f9; /* subtle background */
+  max-width: 600px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.minilesson_landr_player_box .landr_reply_container {
+  margin: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 0.75rem;
+  max-width: 600px;
+  background-color: #f9f9f9;
+}
+
+.landr_icon {
+  font-size: 1.5rem;
+  color: #4a90e2;
+}
+
+.landr_speech_text {
+  font-size: 1.3rem;
+  color: #333;
+}
+
+
+.landr_speech_inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background-color: #f0f0f0;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  flex-grow: 1;
+  font-size: 1rem;
+  color: #333;
+}
+
+.landr_word_input {
+  padding: 0.3rem 0.5rem;
+  font-size: 1rem;
+  width: auto;
+  min-width: 40px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.landr_word_input:disabled {
+  background-color: #f9f9f9;
+  color: #555;
+}
+
+.landr_feedback_icon {
+  font-size: 0.9rem;
+  color: #999;
+}
+.minilesson_landr_player_box .minilesson_sentence_image {
+  margin-bottom: 8px;
 }
 
 .minilesson_landr_player_box .landr_reply {
@@ -1341,9 +1407,6 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .minilesson_landr_player_box .landr_game {
   min-height: 250px;
   padding: 10px;
-  border-top: 1px solid darkgray;
-  border-bottom: 1px solid darkgray;
-  background-color: rgba(98, 135, 182, 1);
 }
 
 .minilesson_landr_player_box .landr_speech {
@@ -1426,29 +1489,18 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .minilesson_landr_player_box .landr_controls {
-  /* position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 75px;
-  */
+
   height: 35px;
   background-color: white;
 }
 
-.minilesson_landr_player_box .landr_controls .landr_ctrl-btn {
-  width: 50%;
-  float: left;
+.minilesson_landr_player_box .landr_skip_btn {
+    position: absolute;
+    right: 10px;
 }
 
 .minilesson_landr_player_box .landr_speakbtncontainer {
-  /*
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  */
   height: 75px;
-  background-color: rgba(98, 135, 182, 1);
   text-align: center;
   display: none;
 }
@@ -1463,7 +1515,6 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   align-items: center;
   justify-content: center;
   font-size: 75px;
-  background-color: rgba(98, 135, 182, 1);
   font-weight: bold;
   color: white;
   text-align: center;
@@ -1482,6 +1533,11 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   padding: 3px;
   border-radius: 5px;
   margin: 5px;
+}
+
+.landr_listen_cont {
+  text-align: center;
+  margin-top: 5px;
 }
 
 
