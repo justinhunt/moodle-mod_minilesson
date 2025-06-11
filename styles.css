@@ -3240,12 +3240,12 @@ margin-right: 3px;
 }
 
 .minilesson_fluency_box .fluency_controls {
-  height: 35px; 
+  height: 35px;
   background-color: white;
 }
 
 .minilesson_fluency_box .fluency_speakbtncontainer {
- 
+
   height: 75px;
   /* background-color: rgba(98, 135, 182, 1); */
   text-align: center;
@@ -3381,4 +3381,36 @@ span.fluencyletterresult.letter_wrong {
 div.mcaudioplayer,
 div.poodlldictationplayer {
   position: relative;
+}
+
+.pgapfill_gap_wrapper {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.pgapfill_gap_wrapper .character-input {
+    --input-size: 1;
+    font-size: 0.9375rem;
+    width: calc(var(--input-size) * 0.6875rem);
+    border: 1px inset rgb(118, 118, 118);
+}
+.pgapfill_gap_wrapper .character-input:placeholder-shown {
+    letter-spacing: 0.25rem;
+}
+.pgapfill_gap_wrapper.pgapfill_gap_reviewing .pgapfill_gap_input,
+.pgapfill_gap_wrapper.psg_gapfill_correct .pgapfill_gap_input {
+  background-color: lightgreen;
+}
+.pgapfill_gap_wrapper.psg_gapfill_correct .correctIcon {
+  color: green;
+}
+.pgapfill_gap_wrapper.psg_gapfill_wrong .wrongIcon {
+  color: red;
+}
+.pgapfill_gap_wrapper:not(.psg_gapfill_wrong) .wrongIcon,
+.pgapfill_gap_wrapper:not(.psg_gapfill_correct) .correctIcon {
+  display: none;
+}
+.pgapfill_audio_player {
+  width: 100%;
 }

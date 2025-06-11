@@ -374,12 +374,17 @@ class utils {
         });
         $correctitems = 0;
         $totalitems = 0;
+        $penalty = 0;
         foreach($results as $result){
             $correctitems += $result->correctitems;
             $totalitems += $result->totalitems;
+            if (isset($result->penalty)) {
+                $penalty += $result->penalty;
+            }
         }
         $totalpercent = round(($correctitems / $totalitems) * 100, 0);
-        return $totalpercent;
+        $totalpercent -= $penalty;
+        return max(0, $totalpercent);
     }
 
 

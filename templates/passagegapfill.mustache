@@ -6,7 +6,12 @@
     <div class="pgapfill_passage {{rtl}}">
       {{#passagedata.words}}
         {{#isgap}}
-          <input type="text" class="pgapfill_gap_input"  data-wordindex="{{wordindex}}" data-wordtext="{{text}}" placeholder="{{placeholder}}" />
+        <span class="pgapfill_gap_wrapper">
+          <input type="text" class="pgapfill_gap_input character-input" data-wordindex="{{wordindex}}"
+            placeholder="{{placeholder}}" style="--input-size: {{{ textlength }}}" maxlength="{{{textlength}}}"/>
+          <i class="correctIcon fa fa-check"></i>
+          <i class="wrongIcon fa fa-times"></i>
+        </span>
         {{/isgap}}
         {{^isgap}}
         {{{text}}}
@@ -14,16 +19,18 @@
       {{/passagedata.words}}
     </div>
 
+    <div class="passage_gapfill_results_actions">
       <div class="minilesson_actionbutton">
-        <a class="btn btn-secondary center ml_checkbutton" href="#">
-            {{#str}}check, mod_minilesson{{/str}}
+        <a class="btn btn-secondary center ml_hintbutton" href="#" data-alttext={{#quote}} {{{ althintstring }}} {{/quote}}>
+            {{#str}}gethints, mod_minilesson{{/str}}
         </a>
       </div>
 
-    <div class="minilesson_actionbutton">
-        <a class="btn btn-secondary center ml_hintbutton" href="#">
-            {{#str}}gethints, mod_minilesson{{/str}}
+      <div class="minilesson_actionbutton">
+        <a class="btn btn-secondary center ml_finishbutton" href="#">
+            {{#str}}finish, mod_minilesson{{/str}}
         </a>
+      </div>
     </div>
 </div>
 {{> mod_minilesson/questionfooter}}
