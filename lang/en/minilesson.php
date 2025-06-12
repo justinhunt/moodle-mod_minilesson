@@ -877,3 +877,5 @@ $string['sentenceaudio'] = 'Sentence Audios';
 $string['sentenceaudio_help'] = '(optional) Upload audio files to match the sentence prompt. The audio file name should match the sentence prompt number, eg. 1.mp3 or 2.mp3';
 $string['correctthreshold_desc'] = 'The accuracy percentage required to pass the item.';
 $string['correctthreshold'] = 'Correct Threshold (%)';
+$string['anotherhint'] = 'Another hint';
+$string['finish'] = 'Finish';

@@ -63,7 +63,7 @@ abstract class baseform extends \moodleform {
      */
     public $typestring;
 
-	
+
     /**
      * An array of options used in the htmleditor
      * @var array
@@ -121,7 +121,7 @@ abstract class baseform extends \moodleform {
 		$this->filemanageroptions = $this->_customdata['filemanageroptions'];
         $this->moduleinstance = $this->_customdata['moduleinstance'];
 
-	
+
         $mform->addElement('header', 'typeheading', get_string('createaitem', constants::M_COMPONENT, get_string($this->type, constants::M_COMPONENT)));
 
         $mform->addElement('hidden', 'id');
@@ -133,7 +133,7 @@ abstract class baseform extends \moodleform {
         if ($this->standard === true) {
             $mform->addElement('hidden', 'type');
             $mform->setType('type', PARAM_TEXT);
-			
+
 			$mform->addElement('hidden', 'itemorder');
             $mform->setType('itemorder', PARAM_INT);
 
@@ -287,13 +287,13 @@ abstract class baseform extends \moodleform {
         $mform->setType('visible', PARAM_INT);
 
         $this->custom_definition();
-		
+
 		//add the action buttons
         $mform->closeHeaderBefore('cancel');
         $this->add_action_buttons(get_string('cancel'), get_string('saveitem', constants::M_COMPONENT));
 
     }
-        
+
     protected function add_itemsettings_heading(){
         //add the heading
         $this->_form->addElement('header', 'itemsettingsheading', get_string('itemsettingsheadings', constants::M_COMPONENT));
@@ -397,7 +397,7 @@ abstract class baseform extends \moodleform {
 
         //Question media upload
         $mform->addElement('html',$fieldsettops['addmedia'],[]);
-        $this->add_media_upload(constants::MEDIAQUESTION,get_string('itemmedia',constants::M_COMPONENT));   
+        $this->add_media_upload(constants::MEDIAQUESTION,get_string('itemmedia',constants::M_COMPONENT));
         $mform->addElement('html',$fieldsetbottom,[]);
 
 
@@ -480,7 +480,7 @@ abstract class baseform extends \moodleform {
         $mform->addElement('html',$fieldsetbottom,[]);
 
 
-        
+
     }
 
     protected final function add_media_upload($name, $label, $required = false, $accept = '') {
@@ -494,7 +494,7 @@ abstract class baseform extends \moodleform {
                            null,
 						   $filemanageroptions
                            );
-		
+
 	}
 
 	protected final function add_media_prompt_upload($label = null, $required = false) {

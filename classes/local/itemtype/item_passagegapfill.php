@@ -60,7 +60,7 @@ class  item_passagegapfill extends item {
             if (strpos($word, '[') !== false) {
                 $text = str_replace(['[', ']'], ['', ''], $word);
                 //$placeholder = the first letter of the part between square brackets and an asterisk for each subsequent letter
-                $placeholder = substr($text, 0, 1) . str_repeat('*', mb_strlen($text) - 1);
+                $placeholder = substr($text, 0, 1) . str_repeat('&#x2022;', mb_strlen($text) - 1);
                 $isgap=true;
             }else{
                 $text = $word;
@@ -72,6 +72,7 @@ class  item_passagegapfill extends item {
                 'text' => $text,
                 'placeholder' => $placeholder,
                 'isgap' => $isgap,
+                'textlength' => strlen($text)
             ];
         }
         $passagedata = ['rawtext'=>$passagetext,'plaintext'=>$plaintext,'words'=>$parsedwords];
@@ -83,10 +84,12 @@ class  item_passagegapfill extends item {
             $this->itemrecord->{constants::POLLYVOICE});
 
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
-        $testitem->hints = $this->itemrecord->{constants::PASSAGEGAPFILL_HINTS};
 
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
+        // Hints gone from function so regain it here
+        $testitem->hints = $this->itemrecord->{constants::PASSAGEGAPFILL_HINTS};
+        $testitem->althintstring = get_string('anotherhint', constants::M_COMPONENT);
 
         return $testitem;
     }

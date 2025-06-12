@@ -1,1 +1,8 @@
-{{passagetext}}
+<div class="row minilesson_resultspanel">
+    <div class="col-md-6 mx-auto">
+        <div class="minilesson_resultspanel_swish" data-possible="{{{ totalitems }}}" data-achieved="{{{ correctitems }}}">
+            <span class="minilesson_swishstars">{{#correctitems}}⭐{{/correctitems}}{{^correctitems}}❌{{/correctitems}}</span>
+            <span class="minilesson_swishscore">{{{ correctitems }}} / {{{ totalitems }}}</span>
+        </div>
+    </div>
+</div>
