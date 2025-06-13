@@ -203,11 +203,8 @@ define(['jquery',
             var self = this;
             var passagedata = self.itemdata.passagedata;
 
-            //We probably want something like this to track the inputboxes and assoc data so we can work with it from JS
-            //Right now it doesnt do anything special
-            //check item_passagegapfill exportfortemplate function to prepare the passagedata to use here
-            //Alternatively any data we need could also be set as attributes on divs in mustache template and picked up here.
-            self.gapitems = passagedata.words.map(target => ({
+            //Track the inputboxes and assoc data so we can work with it from JS
+            self.gapitems = passagedata.chunks.map(target => ({
                 wordindex: target.wordindex,
                 text: target.text,
                 placeholder: target.placeholder,
@@ -254,7 +251,5 @@ define(['jquery',
                     clearInterval(timer);
             }
         },
-
-
     };
 });

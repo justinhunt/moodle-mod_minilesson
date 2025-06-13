@@ -53,22 +53,36 @@ class  item_passagegapfill extends item {
         $passagetext = $this->itemrecord->{constants::PASSAGEGAPFILL_PASSAGE};
         $plaintext = str_replace(['[', ']'], ['', ''], $passagetext);
         $passagetextwithnewlines = nl2br(s($passagetext));
-        // Process the passage text to create the gaps and info that the mustache template and javascript needs.
-        $parsedwords = [];
 
-        // Split the passage text into words, preserving gaps
-        $words = explode(' ', $passagetextwithnewlines);
-        foreach ($words as $index => $word) {
-            if (strpos($word, '[') !== false) {
-                $text = str_replace(['[', ']'], ['', ''], $word);
-                //$placeholder = the first letter of the part between square brackets and an asterisk for each subsequent letter
-                $placeholder = \core_text::substr($text, 0, 1) . str_repeat('&#x2022;', mb_strlen($text) - 1);
+        // Process the passage text to create the gaps and info that the mustache template and javascript needs.
+        // we split on square brackets, so that we can identify the chunks that are to be replaced with gaps.
+        $parsedchunks = [];
+        $chunks = preg_split('/(\[|\])/u', $passagetextwithnewlines, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $inside = false;
+        $index = -1;
+        $wordindex = -1;
+        foreach ($chunks as $chunk) {
+            if ($chunk === '[') {
+                $inside = true;
+                continue;
+            } elseif ($chunk === ']') {
+                $inside = false;
+                continue;
+            } elseif ($inside) {
+                // This is the bracketed word – create placeholder
+                $placeholder = \core_text::substr($chunk, 0, 1) . str_repeat('&#x2022;', mb_strlen($chunk) - 1);
+                $text = $chunk;
                 $isgap = true;
+                $index++;
+                $wordindex++;
             } else {
-                $text = $word;
+                // Regular text (including punctuation, partial words, etc.)
                 $placeholder = '';
+                $text = $chunk;
                 $isgap = false;
+                $index++;
             }
+
             switch($this->language){
                 case 'ar-SA':
                 case 'ar-AE':
@@ -80,8 +94,8 @@ class  item_passagegapfill extends item {
                 default:
                     $textpadding = 1;
             }
-            $parsedwords[$index] = [
-                'wordindex' => $index,
+            $parsedchunks[$index] = [
+                'wordindex' => $wordindex,
                 'text' => $text,
                 'placeholder' => $placeholder,
                 'isgap' => $isgap,
@@ -89,7 +103,7 @@ class  item_passagegapfill extends item {
                 'paddedtextlength' => mb_strlen($text) + $textpadding,
             ];
         }
-        $passagedata = ['rawtext' => $passagetext, 'plaintext' => $plaintext, 'words' => $parsedwords];
+        $passagedata = ['rawtext' => $passagetext, 'plaintext' => $plaintext, 'chunks' => $parsedchunks];
         $testitem->passagedata = $passagedata;
 
         //Item audio
