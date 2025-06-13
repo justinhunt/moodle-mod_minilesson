@@ -3388,14 +3388,32 @@ div.poodlldictationplayer {
   vertical-align: middle;
 }
 
+.pgapfill_passage {
+  line-height: 2.0;
+}
+
+.pgapfull_monospace {
+  font-family: "Roboto Mono", monospace;
+  font-size: 1.2rem;
+}
+
+.pgapfull_monospace .fa {
+  font-size: 1rem;
+}
+
 .pgapfill_gap_wrapper .character-input {
-    --input-size: 1;
-    font-size: 0.9375rem;
-    width: calc(var(--input-size) * 0.6875rem);
+    display: inline-block;
+    border: 1px inset #767676;
+    /* vertical-align: middle; */
+    line-height: initial !important;
+    height: auto;
+    padding: 6px 4px;
     border: 1px inset rgb(118, 118, 118);
 }
 .pgapfill_gap_wrapper .character-input:placeholder-shown {
+  /*
     letter-spacing: 0.25rem;
+    */
 }
 .pgapfill_gap_wrapper.pgapfill_gap_reviewing .pgapfill_gap_input,
 .pgapfill_gap_wrapper.psg_gapfill_correct .pgapfill_gap_input {

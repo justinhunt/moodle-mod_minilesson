@@ -606,7 +606,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
           var self = this;
           return self.items.map(function(target) {
               return {
-                  target: target.lineresulthtml, //target.sentence,
+                  target: target.answered ? target.lineresulthtml : target.target,
                   pronunciation_result: target.pronunciation_result,
                   answered: target.answered,
                   correct: target.correct,
@@ -647,9 +647,84 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                     "wa": ["oi"]
                 }
             },
+            // This assumes no diacritics or accents in the Arabic letters
             ar: {
-                graphemeGroups: [], // Arabic uses isolated characters
-                phonemeGroups: {}   // Optional: use Arabic IPA mappings if needed
+                    graphemeGroups: ["ث", "ذ", "ش", "خ", "غ", "ق", "ع", "ص", "ض", "ط", "ظ", "ء"],
+                    phonemeGroups: {
+                    // Fricatives
+                    "θ": ["ث"],     // voiceless dental fricative
+                    "ð": ["ذ"],     // voiced dental fricative
+                    "ʃ": ["ش"],     // voiceless postalveolar fricative (sh)
+                    "x": ["خ"],     // voiceless uvular fricative
+                    "ɣ": ["غ"],     // voiced uvular fricative
+                    "ħ": ["ح"],     // voiceless pharyngeal fricative
+                    "ʕ": ["ع"],     // voiced pharyngeal fricative
+                    "h": ["ه"],     // glottal fricative
+
+                    // Emphatics
+                    "sˤ": ["ص"],
+                    "dˤ": ["ض"],
+                    "tˤ": ["ط"],
+                    "ðˤ": ["ظ"],
+
+                    // Stops and other consonants
+                    "q": ["ق"],
+                    "ʔ": ["ء"],     // glottal stop (hamza)
+
+                    // Long vowels (represented as letters)
+                    "aː": ["ا"],    // alif
+                    "uː": ["و"],    // waw
+                    "iː": ["ي"]     // yaa
+                    }
+                }
+                ,
+            ru: {
+                graphemeGroups: ["щ", "ч", "ш", "ж", "ю", "я"],
+                phonemeGroups: {
+                "ɕː": ["щ"],
+                "tɕ": ["ч"],
+                "ʂ": ["ш"],
+                "ʒ": ["ж"],
+                "ju": ["ю"],
+                "ja": ["я"]
+                }
+            },
+            no: {
+                graphemeGroups: ["kj", "sj", "ng"],
+                phonemeGroups: {
+                "ç": ["kj"],
+                "ʃ": ["sj"],
+                "ŋ": ["ng"]
+                }
+            },
+            so: {
+                graphemeGroups: ["kh", "dh", "sh"],
+                phonemeGroups: {
+                "x": ["kh"],
+                "ð": ["dh"],
+                "ʃ": ["sh"]
+                }
+            },
+            de: {
+                graphemeGroups: ["sch", "ch", "ng", "sp", "st", "z"],
+                phonemeGroups: {
+                "ʃ": ["sch"],
+                "ç": ["ch"],
+                "ŋ": ["ng"],
+                "ʃp": ["sp"],
+                "ʃt": ["st"],
+                "ts": ["z"]
+                }
+            },
+            it: {
+                graphemeGroups: ["gl", "gn", "sc", "ch", "ci", "ce"],
+                phonemeGroups: {
+                "ʎ": ["gl"],
+                "ɲ": ["gn"],
+                "ʃ": ["sc"],
+                "k": ["ch"],
+                "tʃ": ["ci", "ce"]
+                }
             }
         },
 

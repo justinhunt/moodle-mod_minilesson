@@ -3,18 +3,18 @@
     <div class="ml_pgapfill_resultscontainer" style="display: none"></div>
     <audio class="pgapfill_audio_player" controls="controls" src="{{passageaudio}}"></audio>
 
-    <div class="pgapfill_passage {{rtl}}">
+    <div class="pgapfill_passage pgapfull_monospace {{rtl}}">
       {{#passagedata.words}}
         {{#isgap}}
         <span class="pgapfill_gap_wrapper">
-          <input type="text" class="pgapfill_gap_input character-input" data-wordindex="{{wordindex}}"
-            placeholder="{{placeholder}}" style="--input-size: {{{ textlength }}}" maxlength="{{{textlength}}}"/>
+          <input type="text" class="pgapfill_gap_input character-input pgapfull_monospace" data-wordindex="{{wordindex}}"
+            placeholder="{{placeholder}}" style="width: {{{ paddedtextlength }}}ch" maxlength="{{{textlength}}}"/>
           <i class="correctIcon fa fa-check"></i>
           <i class="wrongIcon fa fa-times"></i>
         </span>
         {{/isgap}}
         {{^isgap}}
-        {{{text}}}
+         {{{text}}}
         {{/isgap}}
       {{/passagedata.words}}
     </div>

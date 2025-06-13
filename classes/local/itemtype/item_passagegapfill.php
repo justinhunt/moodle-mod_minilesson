@@ -42,7 +42,7 @@ class  item_passagegapfill extends item {
      */
     public function export_for_template(\renderer_base $output){
 
-        $testitem= new \stdClass();
+        $testitem = new \stdClass();
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
@@ -52,34 +52,48 @@ class  item_passagegapfill extends item {
         // Passage Text
         $passagetext = $this->itemrecord->{constants::PASSAGEGAPFILL_PASSAGE};
         $plaintext = str_replace(['[', ']'], ['', ''], $passagetext);
-        //TO DO process the passage text to create the gaps and info that the mustache template and javascript needs
-        // this is just a quick attempt (helped by chatgpt) to get something working
+        $passagetextwithnewlines = nl2br(s($passagetext));
+        // Process the passage text to create the gaps and info that the mustache template and javascript needs.
         $parsedwords = [];
-        $words = explode(' ', $passagetext);
+
+        // Split the passage text into words, preserving gaps
+        $words = explode(' ', $passagetextwithnewlines);
         foreach ($words as $index => $word) {
             if (strpos($word, '[') !== false) {
                 $text = str_replace(['[', ']'], ['', ''], $word);
                 //$placeholder = the first letter of the part between square brackets and an asterisk for each subsequent letter
-                $placeholder = substr($text, 0, 1) . str_repeat('&#x2022;', mb_strlen($text) - 1);
-                $isgap=true;
-            }else{
+                $placeholder = \core_text::substr($text, 0, 1) . str_repeat('&#x2022;', mb_strlen($text) - 1);
+                $isgap = true;
+            } else {
                 $text = $word;
                 $placeholder = '';
-                $isgap= false;
+                $isgap = false;
+            }
+            switch($this->language){
+                case 'ar-SA':
+                case 'ar-AE':
+                case 'fa-IR':
+                case 'he-IL':
+                case 'ps-AF':
+                    $textpadding = 2; // RTL langs seem to be wider and need more padding for proper display.
+                    break;
+                default:
+                    $textpadding = 1;
             }
             $parsedwords[$index] = [
                 'wordindex' => $index,
                 'text' => $text,
                 'placeholder' => $placeholder,
                 'isgap' => $isgap,
-                'textlength' => strlen($text)
+                'textlength' => mb_strlen($text),
+                'paddedtextlength' => mb_strlen($text) + $textpadding,
             ];
         }
-        $passagedata = ['rawtext'=>$passagetext,'plaintext'=>$plaintext,'words'=>$parsedwords];
+        $passagedata = ['rawtext' => $passagetext, 'plaintext' => $plaintext, 'words' => $parsedwords];
         $testitem->passagedata = $passagedata;
 
         //Item audio
-        $testitem->passageaudio = utils::fetch_polly_url($this->token,$this->region,
+        $testitem->passageaudio = utils::fetch_polly_url($this->token, $this->region,
             $plaintext, $this->itemrecord->{constants::POLLYOPTION},
             $this->itemrecord->{constants::POLLYVOICE});
 

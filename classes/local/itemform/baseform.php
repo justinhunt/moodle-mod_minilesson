@@ -773,10 +773,10 @@ abstract class baseform extends \moodleform {
 
         ttsaudio::register();
         $this->_form->addElement(ttsaudio::ELNAME, $name, $label, [
-            'region' => $this->moduleinstance->ttslanguage,
+            'region' => $this->moduleinstance->region,
             'langcode' => $this->moduleinstance->ttslanguage,
         ]);
-
+      
         if($hideif_field !== false && !empty($hideif_values)) {
             $m35 = $CFG->version >= 2018051700;
             if(!is_array($hideif_values)){

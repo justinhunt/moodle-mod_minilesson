@@ -134,6 +134,10 @@ class ttsaudio extends MoodleQuickForm_group {
                     $this->setValue($finalvalue);
                 }
                 break;
+            case 'addElement':
+                // We need to pass through the langcode and region here, otherwise the site defaults get used.
+                $this->_options = $arg[2];
+                return parent::onQuickFormEvent($event, $arg, $caller);
             case 'createElement':
                 $caller->_defaultValues[$arg[0]] = ['language' => $this->_options['langcode']];
             default:

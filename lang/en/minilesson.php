@@ -505,8 +505,7 @@ $string['enterresponses'] ='Enter a list of correct responses in the text area b
 $string['sentenceprompts'] ='Sentences (prompts)';
 //$string['entersentences'] ='Enter a list of sentences in the text area below. Place each sentence on a new line.';
 $string['phraseresponses'] ='Enter a list of items in the text area below. Each item should be a on a new line. The format is:<br> audio prompt | correct response (optional)| text prompt (optional) <br>e.g How are you?|I am fine.';
-//$string['phrases'] ='Phrases';
-
+$string['fluencyresponses'] ='Enter a list of phrases/sentences in the text area below. Each item should be a on a new line. ';
 $string['itemmedia'] ='Image, audio or video to show';
 $string['itemttsquestion'] ='TTS prompt text';
 $string['itemttsquestionvoice'] ='TTS prompt speaker';
