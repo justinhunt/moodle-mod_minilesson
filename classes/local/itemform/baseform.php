@@ -876,6 +876,23 @@ abstract class baseform extends \moodleform {
     }
 
     /**
+     * Add checkbox element
+     *
+     * @param string $name
+     * @param string $label
+     * @param bool|int $default
+     * @return void
+     */
+    protected final function add_checkbox($name, $label, $detailslabel = null,  $default=0) {
+        $this->_form->addElement('advcheckbox',$name,
+            $label,
+            $detailslabel,[],[0,1]);
+            if ($default !== 0) {
+                $this->_form->setDefault($name, 1);
+            }
+    }
+
+    /**
      * Allow retry element
      *
      * @param string $name

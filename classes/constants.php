@@ -134,6 +134,7 @@ const AIGRADE_MODELANSWER = 'customtext3';
 const READINGPASSAGE = 'customtext1';
 const PASSAGEGAPFILL_PASSAGE = 'customtext1';
 const PASSAGEGAPFILL_HINTS = 'customint5';
+const PENALIZEHINTS = 'customint2';
 const ALTERNATES = 'customtext2';
 const TARGETWORDCOUNT = 'customint3';
 const TOTALMARKS = 'customint1';

@@ -22,10 +22,12 @@ define(['jquery',
         gapitems: [],
         items: [],
         hintsused: 0,
+        penalizehints: false,
 
         init: function(index, itemdata, quizhelper) {
             var self = this;
             self.itemdata = itemdata;
+            self.penalizehints = itemdata.penalizehints || false; // Default to penalizing hints
             self.quizhelper = quizhelper;
             self.index = index;
 
@@ -75,11 +77,16 @@ define(['jquery',
             var stepdata = {};
             stepdata.index = self.index;
             stepdata.hasgrade = true;
+            stepdata.resultsdata = {items: self.items};
             stepdata.totalitems = self.items.length;
+            var totalhints = self.items.reduce((sum, obj) => sum + (obj.totalhints || 0), 0);
             stepdata.correctitems = self.items.filter(e => e.correct).length;
-            stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
-            stepdata.penalty = self.hintsused * 30;
-            stepdata.grade = Math.max(0, stepdata.grade - stepdata.penalty);
+            // If the user has used hints, we need to adjust the grade - its a bit yuk
+            var hintspenalty = self.penalizehints ? totalhints / 3 : 0;
+            stepdata.grade = Math.round(((stepdata.correctitems - hintspenalty) / stepdata.totalitems) * 100);
+            if(hintspenalty >0){
+                stepdata.correctitems = Math.round(stepdata.correctitems - hintspenalty);
+            }
             return stepdata;
         },
 
@@ -121,6 +128,7 @@ define(['jquery',
                 // self.submit_grade();
                 self.show_item_review();
                 $(this).hide();
+                self.controls.hintbtn.hide();
             });
 
             self.controls.rootelement.addEventListener('input', e => {
@@ -149,6 +157,7 @@ define(['jquery',
                 const gapelement = gapitem.inputelement.parentElement;
                 gapelement.classList.remove('psg_gapfill_wrong', 'psg_gapfill_correct');
                 gapitem.correct = gapitem.inputelement.value === gapitem.text;
+                gapitem.totalhints = parseInt(gapitem.inputelement.getAttribute('data-hints')) || 0;
                 if (gapitem.correct) {
                     gapelement.classList.add('psg_gapfill_correct');
                 } else if (displaywrong) {
@@ -173,20 +182,24 @@ define(['jquery',
                 if (!inputelement) {
                     return;
                 }
+                //update the placeholder text
+                const placeholder = inputelement.placeholder;
+                const replaceposition = self.hintsused === 1 ? 1: element.placeholder.length - 1;
+                inputelement.placeholder = placeholder.slice(0, replaceposition) +
+                    element.text[replaceposition] + placeholder.slice(replaceposition + 1);
+                inputelement.setAttribute('placeholder', inputelement.placeholder);
+
+                // If the user has not entered the correct text, clear the input box, so they see the hint
                 if (inputelement.value !== element.text) {
-                    const placeholder = inputelement.placeholder;
-                    const replaceposition = self.hintsused === 1 ? 1: element.placeholder.length - 1;
-                    inputelement.placeholder = placeholder.slice(0, replaceposition) +
-                        element.text[replaceposition] + placeholder.slice(replaceposition + 1);
-                    inputelement.setAttribute('placeholder', inputelement.placeholder);
                     inputelement.value = '';
+                    inputelement.setAttribute('data-hints', 1 + self.hintsused);
                     anyhintdisplayed = true;
                 }
-                inputelement.setAttribute('data-hints', 1 + self.hintsused);
+                
             });
-            if (anyhintdisplayed) {
-                self.hintsused++;
-            }
+
+           //manage the hint count
+            self.hintsused++;
             if (self.hintsused >= parseInt(self.itemdata.hints)) {
                 self.controls.hintbtn.remove();
             } else if (self.hintsused === 1 && self.hintsused < parseInt(self.itemdata.hints)) {

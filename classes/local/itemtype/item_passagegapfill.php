@@ -118,7 +118,7 @@ class  item_passagegapfill extends item {
         // Hints gone from function so regain it here
         $testitem->hints = $this->itemrecord->{constants::PASSAGEGAPFILL_HINTS} == 0 ? false : $this->itemrecord->{constants::PASSAGEGAPFILL_HINTS};
         $testitem->althintstring = get_string('anotherhint', constants::M_COMPONENT);
-
+        $testitem->penalizehints = $this->itemrecord->{constants::PENALIZEHINTS} == 1;
         return $testitem;
     }
 
@@ -148,6 +148,7 @@ class  item_passagegapfill extends item {
         $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::PASSAGEGAPFILL_PASSAGE];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PASSAGEGAPFILL_HINTS];
+         $keycols['int2'] = ['jsonname' => 'penalizehints', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PENALIZEHINTS];
         return $keycols;
     }
 

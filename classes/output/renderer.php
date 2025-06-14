@@ -306,7 +306,6 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_COMPQUIZ:
                 case constants::TYPE_BUTTONQUIZ:
-                case constants::TYPE_PGAPFILL:
                     $result->hascorrectanswer = true;
                     $result->hasincorrectanswer = true;
                     $result->hasanswerdetails = false;
@@ -326,17 +325,49 @@ class renderer extends \plugin_renderer_base {
                     $result->incorrectans = $incorrectanswers;
                     break;
 
+                case constants::TYPE_PGAPFILL:
+                    $resultsdata = isset($result->resultsdata) ? $result->resultsdata : null;
+                    $hasitems = $resultsdata && isset($resultsdata->items) && $resultsdata->items && $resultsdata->items > 0;
+                    if (!$hasitems || !$resultsdata) {
+                        $result->correctans = [];
+                        $result->incorrectans = [];
+                        break;
+                    }
+                    $result->hascorrectanswer = $hasitems;
+                    $result->hasincorrectanswer = $hasitems;
+                    $result->hasanswerdetails = false;
+                    $resultsdata = isset($result->resultsdata) ? $result->resultsdata : null;
+                    $correctanswers = [];
+                    $incorrectanswers = [];
+
+                    $items = $resultsdata->items;
+                    for ($i = 0; $i < count($items); $i++){
+                        $theitem = $resultsdata->items[$i];
+                        if (!$theitem) {
+                            continue;
+                        }
+                        if ($theitem->correct) {
+                            $correctanswers[] = ['sentence' => $theitem->text];
+                        } else {
+                            $incorrectanswers[] = ['sentence' => $theitem->text];
+                        }
+                    }
+                    $result->correctans = $correctanswers;
+                    $result->incorrectans = $incorrectanswers;
+                    break;
+
+
                 case constants::TYPE_PASSAGEREADING:
                     $result->hascorrectanswer = false;
                     $result->hasincorrectanswer = false;
                     if(isset($result->resultsdata)
                         && isset($result->resultsdata->read)
-                        && ($result->resultsdata->read + $result->resultsdata->unreached)> 0){
+                        && ($result->resultsdata->read + $result->resultsdata->unreached) > 0){
                         $result->hasanswerdetails = true;
                         $result->resultstemplate = 'passagereadingreviewresults';
                         $result->resultsdata->passagehtml = \mod_minilesson\aitranscriptutils::render_passage($items->{constants::READINGPASSAGE});
                         $result->resultsdatajson = json_encode($result->resultsdata, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-                    }else{
+                    } else {
                         $result->hasanswerdetails = false;
                     }
                     break;
@@ -673,7 +704,7 @@ class renderer extends \plugin_renderer_base {
                     break;
                 }
             }
-        }else {
+        } else {
             $recopts['quizdata'] = $quizdata;
         }
 

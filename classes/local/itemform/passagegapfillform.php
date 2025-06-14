@@ -32,7 +32,11 @@ class passagegapfillform extends baseform {
         $this->add_allowretry(constants::GAPFILLALLOWRETRY, get_string('allowretry_desc', constants::M_COMPONENT));
         //add a hints option here:
         $this->add_dropdown(constants::PASSAGEGAPFILL_HINTS, get_string('hints', constants::M_COMPONENT),
-            [0 => get_string('none'), 1 => 1,2 => 2], 0);
+            [0 => get_string('none'), 1 => 1, 2 => 2], 0);
+        $this->add_checkbox(constants::PENALIZEHINTS,
+        get_string('penalizehints', constants::M_COMPONENT),
+         get_string('penalizehints_desc', constants::M_COMPONENT), 0);
+
 
     }
 }

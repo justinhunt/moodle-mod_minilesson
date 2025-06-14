@@ -878,3 +878,5 @@ $string['correctthreshold_desc'] = 'The accuracy percentage required to pass the
 $string['correctthreshold'] = 'Correct Threshold (%)';
 $string['anotherhint'] = 'Another hint';
 $string['finish'] = 'Finish';
+$string['penalizehints'] = 'Penalize for hints';
+$string['penalizehints_desc'] = 'If checked, the student will be penalized for using hints.';

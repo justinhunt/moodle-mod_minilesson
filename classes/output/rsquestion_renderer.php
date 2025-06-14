@@ -56,6 +56,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $qtypes[]=constants::TYPE_FREESPEAKING;
         $qtypes[]=constants::TYPE_FREEWRITING;
         $qtypes[]=constants::TYPE_PASSAGEREADING;
+        $qtypes[]=constants::TYPE_PGAPFILL;
         if($region != "ningxia") {
             $qtypes[] = constants::TYPE_FLUENCY;
         }
@@ -63,7 +64,6 @@ class rsquestion_renderer extends \plugin_renderer_base {
             $qtypes[]=constants::TYPE_SMARTFRAME;
             $qtypes[]=constants::TYPE_COMPQUIZ;
             $qtypes[]=constants::TYPE_BUTTONQUIZ;
-            $qtypes[]=constants::TYPE_PGAPFILL;
             $qtypes[]=constants::TYPE_CONVERSATION;
         }
         //If modaleditform is true adding and editing item types is done in a popup modal. Thats good ...
