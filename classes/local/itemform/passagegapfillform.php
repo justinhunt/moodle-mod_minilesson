@@ -29,7 +29,6 @@ class passagegapfillform extends baseform {
 
         //other opts
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
-        $this->add_allowretry(constants::GAPFILLALLOWRETRY, get_string('allowretry_desc', constants::M_COMPONENT));
         //add a hints option here:
         $this->add_dropdown(constants::PASSAGEGAPFILL_HINTS, get_string('hints', constants::M_COMPONENT),
             [0 => get_string('none'), 1 => 1, 2 => 2], 0);

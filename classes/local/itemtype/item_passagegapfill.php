@@ -111,8 +111,6 @@ class  item_passagegapfill extends item {
             $plaintext, $this->itemrecord->{constants::POLLYOPTION},
             $this->itemrecord->{constants::POLLYVOICE});
 
-        $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
-
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
         // Hints gone from function so regain it here
@@ -145,7 +143,6 @@ class  item_passagegapfill extends item {
         $keycols = parent::get_keycolumns();
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
-        $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::PASSAGEGAPFILL_PASSAGE];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PASSAGEGAPFILL_HINTS];
          $keycols['int2'] = ['jsonname' => 'penalizehints', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PENALIZEHINTS];
