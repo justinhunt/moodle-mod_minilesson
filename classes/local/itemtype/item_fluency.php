@@ -30,9 +30,9 @@ use renderable;
  */
 class item_fluency extends item {
 
-    //the item type
+    // the item type
     public const ITEMTYPE = constants::TYPE_FLUENCY;
-    
+
     public function __construct($itemrecord, $moduleinstance=false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
         $this->needs_speechrec = true;
@@ -52,14 +52,14 @@ class item_fluency extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
-        //Is rtl
+        // Is rtl
         $testitem->rtl = utils::is_rtl($this->language);
 
         $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE} == 1;
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
 
-        //Correct threshold.
+        // Correct threshold.
         $testitem->correctthreshold = $this->itemrecord->{constants::FLUENCYCORRECTTHRESHOLD};
 
         // Cloud Poodll.
@@ -71,8 +71,6 @@ class item_fluency extends item {
         $testitem->speechtokentype = 'msspeech';
         // We overwrite our regular poodll region with the MS region, eg useast1 becomes eastus, frankfurt becomes westeurope.
         $testitem->region = utils::fetch_ms_region($this->moduleinstance->region);
-
-
 
         // Build sentence objects.
         /* We do this right now so we get character level arrays. So  we can match mspeech per char results
@@ -113,6 +111,8 @@ class item_fluency extends item {
         $keycols['int2'] = ['jsonname' => 'dictationstyle', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
+        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+        $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         return $keycols;
     }
 

@@ -132,18 +132,15 @@ class helper
 
         //copy files
         $fs = get_file_storage();
-        $fileareas = array(constants::TEXTPROMPT_FILEAREA,
-            constants::TEXTPROMPT_FILEAREA . '1',
-            constants::TEXTPROMPT_FILEAREA . '2',
-            constants::TEXTPROMPT_FILEAREA . '3',
-            constants::TEXTPROMPT_FILEAREA . '4',
-            constants::FILEANSWER . '1',
-            constants::FILEANSWER . '2',
-            constants::FILEANSWER . '3',
-            constants::FILEANSWER . '4',
-            constants::MEDIAQUESTION);
-        
-        //file record
+        $fileareas = [constants::TEXTPROMPT_FILEAREA, constants::MEDIAQUESTION];
+        for ($i = 1; $i <= constants::MAXANSWERS; $i++) {
+            $fileareas[] = constants::TEXTPROMPT_FILEAREA . $i;
+            $fileareas[] = constants::FILEANSWER . $i;
+             $fileareas[] = constants::FILEANSWER . $i .'_image';
+             $fileareas[] = constants::FILEANSWER . $i .'_audio';
+        }
+ 
+        // File record.
         $newfilerecord = new \stdClass();
         $newfilerecord->userid = $USER->id;
         $newfilerecord->contextid = $context->id;
@@ -161,7 +158,7 @@ class helper
             $files = $fs->get_area_files($context->id, constants::M_COMPONENT, $filearea, $olditemid);
             if($files){
                 foreach ($files as $file){
-                    if($file->get_filename()!=='.') {
+                    if($file->get_filename() !== '.') {
                         $newfilerecord->filename = $file->get_filename();
                         $fs->create_file_from_storedfile($newfilerecord, $file);
                     }
