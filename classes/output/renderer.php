@@ -297,7 +297,6 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_LGAPFILL:
                 case constants::TYPE_TGAPFILL:
                 case constants::TYPE_SGAPFILL:
-                case constants::TYPE_PGAPFILL:
                     $result->hascorrectanswer = true;
                     $result->correctans = $quizdata[$result->index]->sentences;
                     $result->hasanswerdetails = false;
@@ -307,6 +306,7 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_COMPQUIZ:
                 case constants::TYPE_BUTTONQUIZ:
+                case constants::TYPE_PGAPFILL:
                     $result->hascorrectanswer = true;
                     $result->hasincorrectanswer = true;
                     $result->hasanswerdetails = false;

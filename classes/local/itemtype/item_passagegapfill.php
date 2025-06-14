@@ -65,10 +65,10 @@ class  item_passagegapfill extends item {
             if ($chunk === '[') {
                 $inside = true;
                 continue;
-            } elseif ($chunk === ']') {
+            } else if ($chunk === ']') {
                 $inside = false;
                 continue;
-            } elseif ($inside) {
+            } else if ($inside) {
                 // This is the bracketed word – create placeholder
                 $placeholder = \core_text::substr($chunk, 0, 1) . str_repeat('&#x2022;', mb_strlen($chunk) - 1);
                 $text = $chunk;
@@ -116,7 +116,7 @@ class  item_passagegapfill extends item {
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
         // Hints gone from function so regain it here
-        $testitem->hints = $this->itemrecord->{constants::PASSAGEGAPFILL_HINTS};
+        $testitem->hints = $this->itemrecord->{constants::PASSAGEGAPFILL_HINTS} == 0 ? false : $this->itemrecord->{constants::PASSAGEGAPFILL_HINTS};
         $testitem->althintstring = get_string('anotherhint', constants::M_COMPONENT);
 
         return $testitem;

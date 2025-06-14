@@ -45,8 +45,8 @@ define(['jquery',
             self.controls.rootelement = document.querySelector(`#${self.itemdata.uniqueid}_container`);
             self.controls.audioplayer =$("#" + self.itemdata.uniqueid + "_container .pgapfill_audio_player");
             self.controls.resultsbox = $("#" + self.itemdata.uniqueid + "_container .passage_gapfill_results_actions");
-            self.controls.finishbtn = $("#" + self.itemdata.uniqueid + "_container .ml_finishbutton");
-            self.controls.hintbtn = $("#" + self.itemdata.uniqueid + "_container .ml_hintbutton");
+            self.controls.finishbtn = $("#" + self.itemdata.uniqueid + "_container .pgapfill_finish_btn");
+            self.controls.hintbtn = $("#" + self.itemdata.uniqueid + "_container .pgapfill_hint_btn");
             self.controls.nextbtn = $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton");
         },
 
@@ -120,6 +120,7 @@ define(['jquery',
                 // Prevent submit grade when finishing.
                 // self.submit_grade();
                 self.show_item_review();
+                $(this).hide();
             });
 
             self.controls.rootelement.addEventListener('input', e => {

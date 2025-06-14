@@ -16,18 +16,15 @@
       {{/passagedata.chunks}}
     </div>
 
-    <div class="passage_gapfill_results_actions">
-      <div class="minilesson_actionbutton">
-        <a class="btn btn-secondary center ml_hintbutton" href="#" data-alttext={{#quote}} {{{ althintstring }}} {{/quote}}>
-            {{#str}}gethints, mod_minilesson{{/str}}
-        </a>
-      </div>
-
-      <div class="minilesson_actionbutton">
-        <a class="btn btn-secondary center ml_finishbutton" href="#">
-            {{#str}}finish, mod_minilesson{{/str}}
-        </a>
-      </div>
+    <div class="pgapfill_controls">
+        <button class="btn btn-success pgapfill_ctrl-btn pgapfill_finish_btn">
+            <i class="fa fa-check"></i> {{#str}}finish, mod_minilesson{{/str}}
+        </button>
+        {{#hints}}
+        <button class="btn btn-danger pgapfill_ctrl-btn pgapfill_hint_btn" data-alttext={{#quote}} {{{ althintstring }}} {{/quote}}>
+            {{#str}}gethints, mod_minilesson{{/str}} <i class="fa fa-question-circle"></i>
+        </button>
+        {{/hints}}
     </div>
 </div>
 {{> mod_minilesson/questionfooter}}

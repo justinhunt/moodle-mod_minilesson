@@ -3432,3 +3432,18 @@ div.poodlldictationplayer {
 .pgapfill_audio_player {
   width: 100%;
 }
+.minilesson_pgapfill_box .pgapfill_controls {
+  position: relative;
+  margin-top: 10px;;
+  height: 35px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.minilesson_pgapfill_box  .pgapfill_hint_btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
