@@ -155,7 +155,8 @@ abstract class item implements templatable, renderable {
 
         //this is a special case. We don't store the media file(s) in the db or even the draft id. We just put it in the files area.
         //there could be more than one. ie an audio, a video and a picture.
-        $keycolumns['itemmedia']=['type'=>'anonymousfile','optional'=>true,'default'=>null,'dbname'=>false];
+        $keycolumns[constants::MEDIAQUESTION]=['type'=>'anonymousfile','optional'=>true,'default'=>null,'dbname'=>false];
+        $keycolumns[constants::AUDIOSTORY] = ['type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
 
 
         $keycolumns['name']=['type'=>'string','optional'=>false,'default'=>'','dbname'=>'name'];
@@ -172,7 +173,7 @@ abstract class item implements templatable, renderable {
         $keycolumns['ytid']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemytid'];
         $keycolumns['ytstart']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytstart'];
         $keycolumns['ytend']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemytend'];
-        $keycolumns['audiofname']=['type'=>'file','optional'=>true,'default'=>null,'dbname'=>'itemaudiofname'];
+        $keycolumns['audiofname']=['type'=>'string','optional'=>true,'default'=>null,'dbname'=>'itemaudiofname'];
         $keycolumns['ttsdialog']=['type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'itemttsdialog'];
         $keycolumns['ttsdialogopts']=['type'=>'stringjson','optional'=>true,'default'=>null,'dbname'=>'itemttsdialogopts'];
         $keycolumns['ttsdialogvoicea']=['type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::TTSDIALOGVOICEA];
@@ -429,7 +430,62 @@ abstract class item implements templatable, renderable {
                 }
             }
             $testitem->ttspassagelines = $linedatas;
-        }// end of tts dialog
+        }// end of tts passage
+
+        //Audio story files media items (upload)
+        $testitem->audiostory = false;
+        $testitem->audiostoryaudio = false;
+        $testitem->audiostorysubtitles = false;
+        $testitem->audiostoryimages = [];
+        $testitem->audiostorymeta = [];
+        if (!empty($itemrecord->{constants::AUDIOSTORYMETA})) {
+            $audiostorymeta = explode(PHP_EOL, $itemrecord->{constants::AUDIOSTORYMETA});
+            foreach ($audiostorymeta as $timestamp) {
+                $seconds = $this->time_to_seconds($timestamp);
+                if($seconds !== false) {
+                    $testitem->audiostorymeta[] = $seconds;
+                }
+            }
+        }
+        $mediaurls =$this->fetch_media_urls(constants::AUDIOSTORY,$itemrecord);
+        if($mediaurls && count($mediaurls)>0){
+            foreach($mediaurls as $mediaurl){
+                $file_parts = pathinfo(strtolower($mediaurl));
+                switch($file_parts['extension'])
+                {
+                    case "jpg":
+                    case "jpeg":
+                    case "png":
+                    case "gif":
+                    case "bmp":
+                    case "svg":
+                        $imagecount = count($testitem->audiostoryimages);
+                        $entrytime = isset($testitem->audiostorymeta[$imagecount]) ? $testitem->audiostorymeta[$imagecount] : '';
+                        $testitem->audiostoryimages[] = ['mediaurl' => $mediaurl, 'entrytime' => $entrytime];
+                        break;
+
+                    case "m4a":
+                    case "mp3":
+                    case "ogg":
+                    case "wav":
+                        $testitem->audiostoryaudio = $mediaurl;
+                        break;
+                    case "vtt":
+                        $testitem->audiostorysubtitles = $mediaurl;
+                        break;    
+
+                    default:
+                        //do nothing
+                }//end of extension switch
+            }//end of for each
+
+            //if we have enough data to make an audio story, enable it
+            if(count($testitem->audiostoryimages) > 0 
+            && !empty($testitem->audiostoryaudio) 
+            && count($testitem->audiostorymeta) > 0){
+                $testitem->audiostory = true;
+            }
+        }//end of if audio story
 
         //Question TextArea
         if(!empty($itemrecord->{constants::QUESTIONTEXTAREA}) && !empty(trim($itemrecord->{constants::QUESTIONTEXTAREA}))){
@@ -1077,6 +1133,37 @@ abstract class item implements templatable, renderable {
             $theitem->{constants::TTSPASSAGEOPTS} = utils::pack_ttspassageopts($data);
         }
 
+        // Audio Story
+        if(property_exists($data,constants::AUDIOSTORYMETA)&& $data->{constants::AUDIOSTORYMETA}!==null ){
+            $theitem->{constants::AUDIOSTORYMETA} = $data->{constants::AUDIOSTORYMETA};
+        }
+        if (property_exists($data, constants::AUDIOSTORY)) {
+            //if this is from an import, it will be an array
+            if(is_array($data->{constants::AUDIOSTORY})){
+                foreach ($data->{constants::AUDIOSTORY} as $filename=>$filecontent){
+                    $filerecord = array(
+                        'contextid' => $this->context->id,
+                        'component' => constants::M_COMPONENT,
+                        'filearea'  => constants::AUDIOSTORY,
+                        'itemid'    => $theitem->id,
+                        'filepath'  => '/',
+                        'filename'  => $filename,
+                        'userid'    => $USER->id
+                    );
+                    $fs = get_file_storage();
+                    $fs->create_file_from_string($filerecord, base64_decode($filecontent));
+                }
+            }else{
+                //if this is from a form submission, this will involve draft files
+                $asfilemanageroptions = self::fetch_filemanager_options($this->course, -1);
+                $asfilemanageroptions['accepted_types'] = '*';
+                file_save_draft_area_files($data->{constants::AUDIOSTORY},
+                    $this->context->id, constants::M_COMPONENT,
+                    constants::AUDIOSTORY, $theitem->id,
+                    $asfilemanageroptions);
+            }
+        }
+
         //save correct answer if we have one
         if (property_exists($data, constants::CORRECTANSWER)) {
             $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER};
@@ -1300,6 +1387,20 @@ abstract class item implements templatable, renderable {
         }
         $this->itemrecord->phonetic= $thephonetics;
         return $thephonetics;
+    }
+
+    function time_to_seconds($timestamp) {
+        $timestamp = utils::super_trim($timestamp);
+        if (preg_match('/^(\d{2}):(\d{2}):(\d{2})$/', $timestamp, $matches)) {
+            $hours = (int)$matches[1];
+            $minutes = (int)$matches[2];
+            $seconds = (int)$matches[3];
+
+            if ($minutes < 60 && $seconds < 60) {
+                return $hours * 3600 + $minutes * 60 + $seconds;
+            }
+        }
+        return false; // Malformed string
     }
 
 }

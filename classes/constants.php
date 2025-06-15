@@ -88,7 +88,7 @@ const TYPE_FLUENCY = 'fluency';
 const TYPE_PASSAGEREADING = 'passagereading';
 const TYPE_CONVERSATION = 'conversation';
 
-const AUDIOFNAME = 'itemaudiofname';
+const AUDIOSTORYMETA = 'itemaudiofname';
 const AUDIOPROMPT = 'audioitem';
 const AUDIOANSWER = 'audioanswer';
 const AUDIOMODEL = 'audiomodel';
@@ -104,6 +104,8 @@ const TTSQUESTIONOPTION = 'itemttsoption';
 const TTSAUTOPLAY = 'itemttsautoplay';
 const TTSDIALOG = 'itemttsdialog';
 const TTSPASSAGE = 'itemttspassage';
+const AUDIOSTORY = 'itemaudiostory';
+const AUDIOSTORYTIMES = 'itemaudiostorytimes';
 const TTSDIALOGOPTS = 'itemttsdialogopts';
 const TTSPASSAGEOPTS = 'itemttspassageopts';
 

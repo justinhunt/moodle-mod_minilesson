@@ -95,6 +95,9 @@ This file contains functions for media prompts on the mform
                     case 'itemtts':
                         var keyfield = thefieldset.find("textarea[name='"+keyfieldname +"']");
                         break;
+                    case 'itemaudiostory':
+                        var keyfield = thefieldset.find("textarea[name='itemaudiofname[text]']");
+                        break;
                     default:
                         var keyfield = thefieldset.find("input[name='"+keyfieldname +"']");
                 }
@@ -123,6 +126,13 @@ This file contains functions for media prompts on the mform
                                 that.strings.delete,'',
                                 dodelete);
                         break;
+                    case 'itemaudiostory':
+                        //item media is inaccessible, and hard to clear data so we confirm with a specific message
+                        notification.confirm(that.strings.deletemediaprompt, 
+                                that.strings.deletefilesfirst + ' '+ that.strings.reallydeletemediaprompt + legend + '?',
+                                that.strings.delete,'',
+                                dodelete);
+                        break;    
                     case 'itemtextarea':
                         //item text area is hard to check, and hard to clear data so we confirm with a specific message
                         notification.confirm(that.strings.deletemediaprompt, 

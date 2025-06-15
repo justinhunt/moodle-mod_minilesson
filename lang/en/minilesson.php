@@ -543,7 +543,10 @@ $string['addttsdialog_instructions'] = "Add TTS Dialog";
 $string['addttspassage'] = "TTS Passage";
 $string['ttspassageinstructions']="Choose the speaker voice and speed, and enter the passage to be read.";
 $string['addttspassage_instructions']="Choose the speaker voice and speed, and enter the passage to be read.";
-
+$string['addaudiostory'] = 'Audio Story';
+$string['addaudiostory_instructions'] = 'To create an audio story, add an audio file, image files with numerical names (eg 1.png,2.jpg) and an optional subtitle track (.vtt file). Set image entry times (format HH:MM:SS) in the text area.';
+$string['audiostorytimes'] = 'Image Entry Times';
+$string['audiostoryfiles'] = 'Audio Story Files';
 
 //showtextprompt
 $string['enablesetuptab']="Enable setup tab";

@@ -365,14 +365,15 @@ abstract class baseform extends \moodleform {
         $m35=true;
 
         //cut down on the code by using media item types array to pre-prepare fieldsets and media prompt selector
-        $mediaprompts =['addmedia','addiframe','addttsaudio','addtextarea','addyoutubeclip','addttsdialog','addttspassage'];
+        $mediaprompts =['addmedia','addiframe','addttsaudio','addtextarea','addyoutubeclip','addttsdialog','addttspassage','addaudiostory'];
         $keyfields =['addmedia'=>constants::MEDIAQUESTION,
             'addiframe'=>constants::MEDIAIFRAME,
             'addttsaudio'=>constants::TTSQUESTION,
             'addtextarea'=>constants::QUESTIONTEXTAREA,
             'addyoutubeclip'=>constants::YTVIDEOID,
             'addttsdialog'=>constants::TTSDIALOG,
-            'addttspassage'=>constants::TTSPASSAGE];
+            'addttspassage'=>constants::TTSPASSAGE,
+            'addaudiostory'=>constants::AUDIOSTORY];
         $fulloptions=[];
         $fieldsettops=[];
         $fieldsetbottom="</fieldset>";
@@ -479,14 +480,33 @@ abstract class baseform extends \moodleform {
         $mform->setType(constants::TTSPASSAGE, PARAM_RAW);
         $mform->addElement('html',$fieldsetbottom,[]);
 
+        //Question Audio Story
+        $mform->addElement('html',$fieldsettops['addaudiostory'],[]);
+        $mform->addElement('static', 'audiostory_instructions', null,'');
+        sentenceprompt::register();
+         $this->add_media_upload(constants::AUDIOSTORY,get_string('audiostoryfiles',constants::M_COMPONENT),false,'*', -1);
+        $mform->addElement(sentenceprompt::ELNAME, constants::AUDIOSTORYMETA, get_string('audiostorytimes', constants::M_COMPONENT),
+            array('rows'=>'4', 'columns'=>'140', 'style'=>'width: 600px'));
+        $mform->setType(constants::AUDIOSTORYMETA, PARAM_TEXT);
+        $mform->setDefault(constants::AUDIOSTORYMETA, '00:00:00');
+
+        $mform->addElement('html',$fieldsetbottom,[]);
+
 
 
     }
 
-    protected final function add_media_upload($name, $label, $required = false, $accept = '') {
+    protected final function add_media_upload($name, $label, $required = false, $accept = '', $maxfiles = 0) {
+        global $CFG;
+
+        // If accept is set, add it to the filemanager options
 		$filemanageroptions = $this->filemanageroptions;
         if(!empty($accept)){
             $filemanageroptions['accepted_types'] = $accept;
+        }
+        // If maxfiles is set, add it to the filemanager options
+        if($maxfiles !== 0){
+            $filemanageroptions['maxfiles'] = $maxfiles;
         }
 		$this->_form->addElement('filemanager',
                            $name,

@@ -192,21 +192,25 @@ if ($edit) {
         }else{
             $data->addmedia = 0;
         }
+        //TTS Question
         if(!empty($data->{constants::TTSQUESTION})){
             $data->addttsaudio = 1;
         }else{
             $data->addttsaudio = 0;
         }
+        // Iframe
         if(!empty($data->{constants::MEDIAIFRAME})){
             $data->addiframe = 1;
         }else{
             $data->addiframe = 0;
         }
+        // Youtube clip
         if(!empty($data->{constants::YTVIDEOID})){
             $data->addyoutubeclip = 1;
         }else{
             $data->addyoutubeclip = 0;
         }
+        // Textarea
         if(!empty($data->{constants::QUESTIONTEXTAREA})){
             $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
             $edoptions['context'] = $context;
@@ -217,6 +221,7 @@ if ($edit) {
         }else{
             $data->addtextarea = 0;
         }
+        // TTS Dialog
         if(!empty($data->{constants::TTSDIALOG})){
             $data->addttsdialog = 1;
             // expand opts
@@ -224,12 +229,21 @@ if ($edit) {
         }else{
             $data->addttsdialog = 0;
         }
+        // TTS Passage
         if(!empty($data->{constants::TTSPASSAGE})){
             $data->addttspassage = 1;
             // expand opts
             $data = utils::unpack_ttspassageopts($data);
         }else{
             $data->addttspassage = 0;
+        }
+
+        // Audio Story/
+        $audiostoryfiles = $fs->get_area_files( $context->id,  constants::M_COMPONENT, constants::AUDIOSTORY, $data->itemid);
+        if($audiostoryfiles){
+            $data->addaudiostory = 1;
+        }else{
+            $data->addaudiostory = 0;
         }
 
         // init our itemmedia upload file field
@@ -239,6 +253,15 @@ if ($edit) {
                 $filemanageroptions);
         $data->{constants::MEDIAQUESTION} = $draftitemid;
 
+        // init our audio story upload file field
+        $draftitemid = file_get_submitted_draft_itemid(constants::AUDIOSTORY);
+        $asfilemanageroptions = \mod_minilesson\local\itemtype\item::fetch_filemanager_options($course, -1);
+        $asfilemanageroptions['accepted_types'] = '*';
+        file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,
+                constants::AUDIOSTORY, $data->itemid,
+                $asfilemanageroptions);
+        $data->{constants::AUDIOSTORY} = $draftitemid;
+
         // show the fields by default if they have some content
         $visibility = ['addmedia' => $data->addmedia,
         'addiframe' => $data->addiframe,
@@ -246,7 +269,8 @@ if ($edit) {
         'addtextarea' => $data->addtextarea,
         'addyoutubeclip' => $data->addyoutubeclip,
         'addttsdialog' => $data->addttsdialog,
-        'addttspassage' => $data->addttspassage];
+        'addttspassage' => $data->addttspassage,
+        'addaudiostory' => $data->addaudiostory];
 
         // Init file upload areas for item answers
         for ($i = 1; $i <= constants::MAXANSWERS; $i++){

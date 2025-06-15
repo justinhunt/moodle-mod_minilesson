@@ -132,7 +132,7 @@ class helper
 
         //copy files
         $fs = get_file_storage();
-        $fileareas = [constants::TEXTPROMPT_FILEAREA, constants::MEDIAQUESTION];
+        $fileareas = [constants::TEXTPROMPT_FILEAREA, constants::MEDIAQUESTION, constants::AUDIOSTORY];
         for ($i = 1; $i <= constants::MAXANSWERS; $i++) {
             $fileareas[] = constants::TEXTPROMPT_FILEAREA . $i;
             $fileareas[] = constants::FILEANSWER . $i;
