@@ -1,3 +1,6 @@
+Version 1.0.90 (Build 2025061501)
+- Fix for animation issue on Audio Story
+
 Version 1.0.89 (Build 2025061500)
 - Added new item type: Passage Gap Fill
 - A fix for default language in voice selector

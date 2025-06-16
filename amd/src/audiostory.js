@@ -74,6 +74,35 @@ define(['jquery','core/log'], function($,log) {
             const audio = self.controls.aplayer[0];
             const captionDiv = self.controls.captioncontainer[0];
             const layers = self.controls.layers;
+            var doUpdate = function(timestamp) {
+                const audio = self.controls.aplayer[0];
+                const layers = self.controls.layers;
+                const currentTime = audio.currentTime;
+                const entryTimes = self.controls.entryTimes;
+
+                let newIndex = -1;
+                for (let i = 0; i < entryTimes.length; i++) {
+                    if (currentTime >= entryTimes[i]) {
+                        newIndex = i;
+                    } else {
+                        break;
+                    }
+                }
+
+                if (newIndex !== self.currentIndex) {
+                    self.currentIndex = newIndex;
+                    layers.forEach((l, i) => {
+                        l.element.style.opacity = i === self.currentIndex ? '1' : '0';
+                        l.animation.progress = 0;
+                        l.animation.direction = 1;
+                        l.animation.lastTimestamp = null;
+                    });
+                }
+
+                self.animateCurrentImage(timestamp);
+
+                self.animationFrameId = requestAnimationFrame(doUpdate);
+            };
 
             
 
@@ -85,7 +114,7 @@ define(['jquery','core/log'], function($,log) {
             audio.addEventListener('play', () => {
                 self.controls.overlay.hide();
                 if (!self.animationFrameId) {
-                    self.animationFrameId = requestAnimationFrame(self.update);
+                    self.animationFrameId = requestAnimationFrame(doUpdate);
                 }
             });
 
@@ -98,7 +127,9 @@ define(['jquery','core/log'], function($,log) {
 
             audio.addEventListener('seeked', () => {
                 self.currentIndex = -1;
-                if (!audio.paused) self.update();
+                if (!audio.paused) {
+                    doUpdate();
+                }
             });
 
             // Caption handling using textTracks
@@ -169,37 +200,6 @@ define(['jquery','core/log'], function($,log) {
             const y = (pan.yStart + (pan.yEnd - pan.yStart) * panFactor);
 
             element.style.transform = `scale(${scale}) translate(${x}px, ${y}px)`;
-        },
-
-        update: function(timestamp) {
-            var self = audiostoryapp;
-            const audio = self.controls.aplayer[0];
-            const layers = self.controls.layers;
-            const currentTime = audio.currentTime;
-            const entryTimes = self.controls.entryTimes;
-
-            let newIndex = -1;
-            for (let i = 0; i < entryTimes.length; i++) {
-                if (currentTime >= entryTimes[i]) {
-                    newIndex = i;
-                } else {
-                    break;
-                }
-            }
-
-            if (newIndex !== self.currentIndex) {
-            self.currentIndex = newIndex;
-            layers.forEach((l, i) => {
-                l.element.style.opacity = i === self.currentIndex ? '1' : '0';
-                l.animation.progress = 0;
-                l.animation.direction = 1;
-                l.animation.lastTimestamp = null;
-            });
-            }
-
-            self.animateCurrentImage(timestamp);
-
-            self.animationFrameId = requestAnimationFrame(self.update);
         },
 
     };//end of audiostoryapp def
