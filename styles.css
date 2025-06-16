@@ -3465,7 +3465,6 @@ div.poodlldictationplayer {
   }
 
   .audiostory_audio {
-    margin-bottom: 20px;
     width: 80%;
     max-width: 600px;
   }
@@ -3521,4 +3520,8 @@ div.poodlldictationplayer {
   border-radius: 1em;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.audiostory_caption {
+  min-height: 45px;
 }

@@ -1,10 +1,4 @@
 <div class="audiostoryplayer container"  id="{{uniqid}}_audiostoryplayer">
-    <audio id="{{uniqid}}_audiostory_audio" class="audiostory_audio" controls="controls" crossorigin="anonymous" >
-        <source src="{{audiostoryaudio}}">
-        {{#audiostorysubtitles}}
-        <track kind="subtitles" src="{{audiostorysubtitles}}" default="default">
-        {{/audiostorysubtitles}}
-    </audio>
     <div id="{{uniqid}}_audiostory_slideshow_container" class="audiostory_slideshow_container">
         <div class="audiostory_overlay" tabindex="0" role="button" aria-label="Play Audio Story">
         <button class="audiostory_play_button" aria-label="Play">▶</button>
@@ -16,11 +10,18 @@
     {{#audiostorysubtitles}}
         <div id="{{uniqid}}_audiostory_caption"  class="audiostory_caption"></div>
     {{/audiostorysubtitles}}
+    <audio id="{{uniqid}}_audiostory_audio" class="audiostory_audio" controls="controls" crossorigin="anonymous" >
+        <source src="{{audiostoryaudio}}">
+        {{#audiostorysubtitles}}
+        <track kind="subtitles" src="{{audiostorysubtitles}}" default="default">
+        {{/audiostorysubtitles}}
+    </audio>
 </div>
 {{^element.frozen}}
     {{#js}}
         require(['jquery', 'mod_minilesson/audiostory'], function($, audiostory) {
-            audiostory.init('{{uniqid}}');
+            var as = audiostory.clone();
+            as.init('{{uniqid}}');
         });
     {{/js}}
 {{/element.frozen}}

@@ -15,6 +15,11 @@ define(['jquery','core/log'], function($,log) {
         controls: {},
         panOptions: null,
 
+        //for making multiple instances
+        clone: function () {
+            return $.extend(true, {}, this);
+        },
+
         init: function(uniqid){
             var self =this;
             self.panOptions = [
