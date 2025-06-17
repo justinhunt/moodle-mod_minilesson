@@ -10,10 +10,10 @@ namespace mod_minilesson\local\itemform;
 
 use \mod_minilesson\constants;
 
-class buttonquizform extends baseform
+class h5pform extends baseform
 {
 
-    public $type = constants::TYPE_BUTTONQUIZ;
+    public $type = constants::TYPE_H5P;
 
     public function custom_definition() {
         $this->add_itemsettings_heading();

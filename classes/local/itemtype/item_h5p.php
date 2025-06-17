@@ -22,16 +22,16 @@ use templatable;
 use renderable;
 
 /**
- * Renderable class for a button quiz item in a minilesson activity.
+ * Renderable class for a h5p item in a minilesson activity.
  *
  * @package    mod_minilesson
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_buttonquiz extends item {
+class item_h5p extends item {
 
     //the item type
-    public const ITEMTYPE = constants::TYPE_BUTTONQUIZ;
+    public const ITEMTYPE = constants::TYPE_H5P;
 
     /**
      * Export the data for the mustache template.
@@ -65,7 +65,7 @@ class item_buttonquiz extends item {
                 $testitem->sentences[] = $s;
             }
         }
-        //button quiz also has a confirm choice option we need to include
+        //h5p also has a confirm choice option we need to include
         $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
         return $testitem;
     }

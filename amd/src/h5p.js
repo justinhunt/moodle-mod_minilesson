@@ -3,10 +3,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/anim
   "use strict"; // jshint ;_;
 
   /*
-  This file is to manage the Button Quiz item type
+  This file is to manage the H5P item type
    */
 
-  log.debug('MiniLesson Button Quiz: initialising');
+  log.debug('MiniLesson H5P: initialising');
 
   return {
 
