@@ -2200,13 +2200,6 @@ span.mod_minilesson_finishedanswer {
     padding: 6px;
     font-style: italic;
 }
-.gapfill-container .progress-container {
-    padding: 5px 8px;
-}
-.gapfill-container .progress.active {
-  margin-top: 8px;
-  margin-right: 3px;
-}
 
 /* Listening Gapfill */
 .minilesson_lgapfill_player_box {
@@ -2721,7 +2714,7 @@ body.poodll-minilesson-embed #page {
   margin-bottom: 5px;
 }
 
-/* Button Quiz */
+/* H5P */
 .minilesson_bq_resultbox {
   float: right;
   padding-left: 8px;
@@ -3122,13 +3115,6 @@ textarea.ml_freewriting_textarea {
   padding: 6px;
   font-style: italic;
 }
-.minilesson_fluency_box .progress-container {
-  padding: 5px 8px;
-}
-.minilesson_fluency_box .progress.active {
-margin-top: 8px;
-margin-right: 3px;
-}
 
 .fluency_listen_cont {
   text-align: center;
@@ -3524,4 +3510,12 @@ div.poodlldictationplayer {
 
 .audiostory_caption {
   min-height: 45px;
+}
+
+.progress-container {
+  padding: 5px 8px;
+}
+.progress-container .progress.active {
+  margin-top: 8px;
+  margin-right: 3px;
 }

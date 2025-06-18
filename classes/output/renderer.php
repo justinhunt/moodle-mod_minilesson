@@ -305,7 +305,7 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_MULTIAUDIO:
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_COMPQUIZ:
-                case constants::TYPE_BUTTONQUIZ:
+                case constants::TYPE_H5P:
                     $result->hascorrectanswer = true;
                     $result->hasincorrectanswer = true;
                     $result->hasanswerdetails = false;

@@ -27,6 +27,7 @@ class multiaudioform extends baseform
         $this->add_textboxresponse(4,'answer4',false);
 
        // $this->add_repeating_textboxes('sentence',5);
+       $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
     }
 
 }

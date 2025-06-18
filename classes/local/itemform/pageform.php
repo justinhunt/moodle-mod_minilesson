@@ -18,6 +18,9 @@ class pageform extends baseform
     public function custom_definition() {
         //we just open media prompts because probably the user want to use these
         $this->_form->setExpanded('mediapromptsheading');
+
+        $this->add_itemsettings_heading();
+        $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
     }
 
 }

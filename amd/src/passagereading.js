@@ -90,6 +90,22 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
                             });
       });
 
+
+
+      $("#" + itemdata.uniqueid + "_container").on('showElement', () => {
+        if (itemdata.timelimit > 0) {
+            $("#" + itemdata.uniqueid + "_container .progress-container").show();
+            $("#" + itemdata.uniqueid + "_container .progress-container i").show();
+            $("#" + itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
+                height: '5px',
+                timeLimit: itemdata.timelimit,
+                onFinish: function() {
+                    self.nextbutton.trigger('click');
+                }
+            });
+        }
+      });
+
     },
 
     init_components: function(quizhelper,itemdata){
@@ -200,7 +216,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
 
   doComparisonMarkup: function(comparison, containerid){
       var allwords = $("#" + containerid + " .mod_minilesson_mu_passage_word");
-      var allspaces = $("#" + + containerid + "  .mod_minilesson_mu_passage_space");;
+      var allspaces = $("#" + + containerid + "  .mod_minilesson_mu_passage_space");
 
       //Reset all words css
       allwords.removeClass("pr_correct pr_incorrect pr_unreached");

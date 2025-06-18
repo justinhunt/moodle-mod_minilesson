@@ -2119,8 +2119,8 @@ class utils {
                 return new local\itemtype\item_passagegapfill($itemrecord, $moduleinstance, $context);
             case constants::TYPE_COMPQUIZ:
                 return new local\itemtype\item_compquiz($itemrecord, $moduleinstance, $context);
-            case constants::TYPE_BUTTONQUIZ:
-                return new local\itemtype\item_buttonquiz($itemrecord, $moduleinstance, $context);
+            case constants::TYPE_H5P:
+                return new local\itemtype\item_h5p($itemrecord, $moduleinstance, $context);
             case constants::TYPE_SPACEGAME:
                 return new local\itemtype\item_spacegame($itemrecord, $moduleinstance, $context);
             case constants::TYPE_FREEWRITING:
@@ -2169,8 +2169,8 @@ class utils {
                 return '\\'. constants::M_COMPONENT . '\local\itemform\passagegapfillform';
             case constants::TYPE_COMPQUIZ:
                 return '\\'. constants::M_COMPONENT . '\local\itemform\compquizform';
-            case constants::TYPE_BUTTONQUIZ:
-                return '\\'. constants::M_COMPONENT . '\local\itemform\buttonquizform';
+            case constants::TYPE_H5P:
+                return '\\'. constants::M_COMPONENT . '\local\itemform\h5pform';
             case constants::TYPE_SPACEGAME:
                 return '\\'. constants::M_COMPONENT . '\local\itemform\spacegameform';
             case constants::TYPE_FREEWRITING:

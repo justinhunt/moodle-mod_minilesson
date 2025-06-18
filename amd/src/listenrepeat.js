@@ -446,9 +446,10 @@ define(['jquery',
         }
         return theword;
       });
+      var displaytimer = self.itemdata.timelimit > 0;
 
       templates.render('mod_minilesson/listenrepeat_reply',
-          {words: words, pointer: self.game.pointer, imageurl: self.items[self.game.pointer].imageurl})
+          {words: words, pointer: self.game.pointer, imageurl: self.items[self.game.pointer].imageurl, displaytimer})
           .then(function (html, js) {
             //update html reply area
             $("#" + self.itemdata.uniqueid + "_container .landr_game").append(html);
@@ -467,6 +468,18 @@ define(['jquery',
               setTimeout(function () {
                 $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").trigger('click');
               }, 1000);
+            }
+
+            if (displaytimer) {
+              $("#" + self.itemdata.uniqueid + "_container .landr_game .progress-container").show();
+              $("#" + self.itemdata.uniqueid + "_container .landr_game .progress-container i").show();
+              $("#" + self.itemdata.uniqueid + "_container .landr_game .progress-container #progresstimer").progressTimer({
+                  height: '5px',
+                  timeLimit: self.itemdata.timelimit,
+                  onFinish: function() {
+                      $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn").trigger('click');
+                  }
+              });
             }
           });//end of templates.render
     },//end of next reply

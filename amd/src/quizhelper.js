@@ -4,13 +4,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         'mod_minilesson/page','mod_minilesson/smartframe','mod_minilesson/shortanswer',
         'mod_minilesson/listeninggapfill','mod_minilesson/typinggapfill','mod_minilesson/speakinggapfill',
         'mod_minilesson/spacegame','mod_minilesson/fluency','mod_minilesson/freespeaking',
-        'mod_minilesson/freewriting','mod_minilesson/passagereading','mod_minilesson/buttonquiz',
-        'mod_minilesson/conversation','mod_minilesson/compquiz','mod_minilesson/passagegapfill'],
+        'mod_minilesson/freewriting','mod_minilesson/passagereading','mod_minilesson/h5p',
+        'mod_minilesson/conversation','mod_minilesson/compquiz','mod_minilesson/passagegapfill',
+        'mod_minilesson/progresstimer'],
   function($, log, def, templates, Ajax, dictation, dictationchat, multichoice, multiaudio,
            speechcards, listenrepeat, page, smartframe, shortanswer,
            listeninggapfill,typinggapfill, speakinggapfill,
            spacegame,fluency, freespeaking,freewriting,
-           passagereading,buttonquiz,conversation,compquiz,passagegapfill) {
+           passagereading,h5p,conversation,compquiz,passagegapfill) {
     "use strict"; // jshint ;_;
 
     /*
@@ -132,8 +133,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
                 passagereading.clone().init(index, item, dd);
                 break;
                   
-              case def.qtype_buttonquiz:
-                buttonquiz.clone().init(index, item, dd);
+              case def.qtype_h5p:
+                h5p.clone().init(index, item, dd);
                 break;
                 
               case def.qtype_conversation:
@@ -228,7 +229,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
           var nextindex = currentquizdataindex+ 1;
           var nextitem = this.quizdata[nextindex];
             //show the question
-            $("#" + nextitem.uniqueid + "_container").show();
+            $("#" + nextitem.uniqueid + "_container").show().trigger("showElement");
           //any per question type init that needs to occur can go here
           switch (nextitem.type) {
               case def.qtype_speechcards:
@@ -246,7 +247,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_freespeaking:
               case def.qtype_freewriting:
               case def.qtype_passagereading:
-              case def.qtype_buttonquiz:
+              case def.qtype_h5p:
               case def.qtype_conversation:
               case def.qtype_compquiz:
               default:
@@ -325,7 +326,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
 
       start_quiz: function() {
-        $("#" + this.quizdata[0].uniqueid + "_container").show();
+        $("#" + this.quizdata[0].uniqueid + "_container").show().trigger("showElement");
           //autoplay audio if we need to
           var ttsquestionplayer = $("#" + this.quizdata[0].uniqueid + "_container audio.mod_minilesson_itemttsaudio");
           if(ttsquestionplayer.data('autoplay')=="1"){

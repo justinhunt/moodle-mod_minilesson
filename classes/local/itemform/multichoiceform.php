@@ -52,6 +52,7 @@ class multichoiceform extends baseform {
             [constants::LISTENORREAD_LISTEN, constants::LISTENORREAD_READ, constants::LISTENORREAD_LISTENANDREAD]);
         }
         // $this->add_repeating_textboxes('sentence',5);
+        $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
     }
 
 }
