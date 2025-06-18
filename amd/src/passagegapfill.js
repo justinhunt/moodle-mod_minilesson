@@ -140,6 +140,20 @@ define(['jquery',
                 });
             });
 
+            $("#" + self.itemdata.uniqueid + "_container").on("showElement", () => {
+                if (self.itemdata.timelimit > 0) {
+                    $("#" + self.itemdata.uniqueid + "_container .progress-container").show();
+                    $("#" + self.itemdata.uniqueid + "_container .progress-container i").show();
+                    $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
+                        height: '5px',
+                        timeLimit: self.itemdata.timelimit,
+                        onFinish: function() {
+                            self.controls.nextbtn.trigger('click');
+                        }
+                    });
+                }
+            });
+
 
         },
 

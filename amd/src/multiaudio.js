@@ -86,7 +86,21 @@ define(['jquery',
           //var checked = $(this).data('index');
 
       });
-      
+
+      $("#" + itemdata.uniqueid + "_container").on('showElement', () => {
+        if (itemdata.timelimit > 0) {
+            $("#" + itemdata.uniqueid + "_container .progress-container").show();
+            $("#" + itemdata.uniqueid + "_container .progress-container i").show();
+            $("#" + itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
+                height: '5px',
+                timeLimit: itemdata.timelimit,
+                onFinish: function() {
+                    $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").trigger('click');
+                }
+            });
+        }
+      });
+
     },//end of register events
 
     prepare_audio: function(itemdata) {
