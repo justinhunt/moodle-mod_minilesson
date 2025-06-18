@@ -129,6 +129,20 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
             self.do_evaluation(transcript);
           });
 
+          $("#" + itemdata.uniqueid + "_container").on("showElement", () => {
+              if (itemdata.timelimit > 0) {
+                $("#" + itemdata.uniqueid + "_container .progress-container").show();
+                $("#" + itemdata.uniqueid + "_container .progress-container i").show();
+                $("#" + itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
+                    height: '5px',
+                    timeLimit: itemdata.timelimit,
+                    onFinish: function() {
+                        self.nextbutton.trigger('click');
+                    }
+                });
+              }
+          });
+
         },
 
         init_components: function(quizhelper,itemdata){

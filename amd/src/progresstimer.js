@@ -61,7 +61,7 @@
                         .removeClass(settings.warningStyle)
                         .addClass(settings.completeStyle);
 
-                    settings.onFinish.call(this);
+                    setTimeout(() => settings.onFinish.call(this), 600);
                 }
 
             }, 250);
