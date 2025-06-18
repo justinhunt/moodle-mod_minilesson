@@ -173,6 +173,11 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
           array.push(i);
         }
 
+        if (total <= 1) {
+          $(".minilesson_quiz_progress").hide();
+          return;
+        }
+
         if(total<6) {
             var slice = array.slice(0, 5);
             var linestyles = "width: " + (100 - 100 / slice.length) + "%; margin-left: auto; margin-right: auto";
