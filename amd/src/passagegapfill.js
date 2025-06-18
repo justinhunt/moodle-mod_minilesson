@@ -157,12 +157,18 @@ define(['jquery',
                 const gapelement = gapitem.inputelement.parentElement;
                 gapelement.classList.remove('psg_gapfill_wrong', 'psg_gapfill_correct');
                 gapitem.correct = gapitem.inputelement.value === gapitem.text;
-                gapitem.totalhints = parseInt(gapitem.inputelement.getAttribute('data-hints')) || 0;
+                //It is correct we add the correct class, and calc hints penalty
                 if (gapitem.correct) {
+                    gapitem.totalhints = parseInt(gapitem.inputelement.getAttribute('data-hints')) || 0;
                     gapelement.classList.add('psg_gapfill_correct');
-                } else if (displaywrong) {
-                    gapelement.classList.add('psg_gapfill_wrong');
+                } else {
+                    //If it is not correct we do not count the hint as used, because they already got zero
+                    gapitem.totalhints = 0;
+                    if (displaywrong) {
+                        gapelement.classList.add('psg_gapfill_wrong');
+                    }
                 }
+
                 if (readonly) {
                     if (self.quizhelper.showitemreview) {
                         gapitem.inputelement.value = gapitem.text;

@@ -1,3 +1,6 @@
+Version 1.0.91 (Build 20250xxxxx)
+- Fix for hints penalty when the student already got the gap wrong
+
 Version 1.0.90 (Build 2025061501)
 - Fix for animation issue on Audio Story
 
