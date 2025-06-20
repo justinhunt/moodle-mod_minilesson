@@ -16,6 +16,7 @@
 
 namespace mod_minilesson\local\itemtype;
 
+use core_h5p\player;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 use templatable;
@@ -50,8 +51,10 @@ class item_h5p extends item {
         // Get the H5P File
          $mediaurls = $this->fetch_media_urls(constants::H5PFILE, $itemrecord);
         if ($mediaurls && count($mediaurls) > 0) {
+            $config = (object) array_fill_keys(['frame', 'export', 'embed', 'copyright'], 0);
             $h5purl = $mediaurls[0];
             $testitem->h5purl = $h5purl;
+            $testitem->h5pembedcode = player::display($h5purl, $config, true, 'mod_minilesson');
         } else {
             $testitem->h5purl = false;
         }
