@@ -71,7 +71,8 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $modaleditform=$config->modaleditform=="1";
         foreach($qtypes as $qtype){
             $data=['wwwroot' => $CFG->wwwroot, 'type'=>$qtype,'itemid'=>$itemid,'cmid'=>$this->page->cm->id,
-                    'label'=>get_string('add' . $qtype . 'item', constants::M_COMPONENT),'modaleditform'=>$modaleditform];
+                    'label'=>get_string('add' . $qtype . 'item', constants::M_COMPONENT),'modaleditform'=>$modaleditform,
+                    'imgrev' => '?ver=' . $CFG->themerev];
             $links[]= $this->render_from_template('mod_minilesson/additemlink', $data);
         }
 
