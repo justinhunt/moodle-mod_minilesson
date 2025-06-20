@@ -12,7 +12,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'],
 
     //for making multiple instances
       clone: function () {
-          return $.extend(true, {}, this);
+          return $.extend(true, {correctitems: 0, totalitems: 0}, this);
      },
 
     init: function(index, itemdata, quizhelper) {
@@ -22,29 +22,45 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'],
       log.debug('MiniLesson H5P Total Marks: ' + itemdata.totalmarks);
 
     },
-    
-    next_question: function(percent) {
+
+    next_question: function() {
       var self = this;
       var stepdata = {};
       stepdata.index = self.index;
       stepdata.hasgrade = true;
-      stepdata.totalitems = 1;
-      stepdata.correctitems = percent>0?1:0;
-      stepdata.grade = percent;
+      stepdata.totalitems = self.totalitems;
+      stepdata.correctitems = self.correctitems;
+      stepdata.grade = self.totalitems > 0 ? 100 * self.correctitems / self.totalitems: 0;
       self.quizhelper.do_next(stepdata);
     },
 
     register_events: function(index, itemdata, quizhelper) {
-      
+
       var self = this;
       self.index = index;
       self.quizhelper = quizhelper;
       var h5pplayer = $("#" + itemdata.uniqueid + "_h5pplayer");
       var nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
-      
+
       nextbutton.on('click', function(e) {
-        self.next_question(0);
+        self.next_question();
       });
+
+      var iframe = h5pplayer.find('iframe')[0];
+      if (iframe) {
+        addEventListener('message', event => {
+          if (window === event.target && event.data.context === 'h5p' && !iframe.getAttribute('data-gradelistener')) {
+            iframe.contentWindow.H5P.externalDispatcher.on('xAPI', function(event){
+              if (event.getMaxScore() > 0) {
+                console.log('gradehit');
+                self.correctitems = event.getScore();
+                self.totalitems = event.getMaxScore();
+              }
+            });
+            iframe.setAttribute('data-gradelistener', 1);
+          }
+        });
+      }
 
     },
 
