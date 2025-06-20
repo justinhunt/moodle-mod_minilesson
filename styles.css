@@ -1141,6 +1141,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   padding: 0;
   padding-top: 5px;
   padding-bottom: 5px;
+  display: flex;
 }
 
 .dictationrow {
@@ -1149,6 +1150,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   border: 2px solid darkgray;
   padding-top: 5px;
   padding-bottom: 5px;
+  display: flex;
+  align-items: center;
 }
 
 .dictate-feedback {
@@ -3362,11 +3365,22 @@ span.fluencyletterresult.letter_wrong {
 .element-sentenceprompt-container .sentenceprompt__textarea:focus {
   box-shadow: none;
 }
-
-
+div.mcaudiotranscript {
+  flex-grow: 1;
+}
 div.mcaudioplayer,
 div.poodlldictationplayer {
   position: relative;
+  min-width: 50px;
+}
+
+.poodlldictationinput {
+  flex-grow:  1;
+}
+.poodlldictationstatus {
+  text-align: center;
+  position: relative;
+  min-width: 50px;
 }
 
 .pgapfill_gap_wrapper {

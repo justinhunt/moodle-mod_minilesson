@@ -1,7 +1,7 @@
 {{> mod_minilesson/questionheader}}
 <div class="ml_dictation_rows">
 {{#sentences}}
-  <div class="row dictationrow">
+  <div class="dictationrow">
     <div class="col-md-1 poodlldictationplayer dictationplayer_{{index}}">
       <button class="dictationtrigger btn btn-secondary" data-src="@AUDIO@"><i class="fa fa-play"></i></button>
     </div>
@@ -9,8 +9,8 @@
       <small class="text-muted"><span class="dictationplayer_{{index}}_chars">0</span>/{{length}}</small>
       <input maxlength="{{length}}" class="form-control" data-index="{{index}}" type="text"></input>
     </div>
-    <div class="col-md-1">
-      <div id="dictationstatus_{{index}}" class="poodlldictationstatus">
+    <div class="poodlldictationstatus col-md-1">
+      <div id="dictationstatus_{{index}}">
         <i style="display:none;" data-index="{{index}}" class="dictate-feedback fa fa-times"></i>
       </div>
     </div>

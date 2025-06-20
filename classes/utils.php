@@ -1493,7 +1493,8 @@ class utils {
 
     public static function fetch_pagelayout_options() {
         $options = [
-                'standard' => 'incourse',
+                'incourse' => 'incourse',
+                'standard' => 'standard',
                 'embedded' => 'embedded',
                 'popup' => 'popup',
         ];
@@ -1819,7 +1820,7 @@ class utils {
         // page layout options
         $layoutoptions = self::fetch_pagelayout_options();
         $mform->addElement('select', 'pagelayout', get_string('pagelayout', constants::M_COMPONENT), $layoutoptions);
-        $mform->setDefault('pagelayout', 'standard');
+        $mform->setDefault('pagelayout', 'incourse');
 
         // time target
         $mform->addElement('hidden', 'timelimit', 0);
@@ -2000,6 +2001,11 @@ class utils {
     // fetch the MP3 URL of the text we want read aloud
     public static function fetch_polly_url($token, $region, $speaktext, $voiceoption, $voice) {
         global $USER;
+
+        //Do a little sanity check
+        if(empty($speaktext) || empty($voice) || empty($token)){
+            return false;
+        }
 
         switch($region){
             case 'ningxia':

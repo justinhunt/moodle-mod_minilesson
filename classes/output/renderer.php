@@ -305,7 +305,6 @@ class renderer extends \plugin_renderer_base {
                 case constants::TYPE_MULTIAUDIO:
                 case constants::TYPE_MULTICHOICE:
                 case constants::TYPE_COMPQUIZ:
-                case constants::TYPE_H5P:
                     $result->hascorrectanswer = true;
                     $result->hasincorrectanswer = true;
                     $result->hasanswerdetails = false;
@@ -356,6 +355,11 @@ class renderer extends \plugin_renderer_base {
                     $result->incorrectans = $incorrectanswers;
                     break;
 
+                case constants::TYPE_H5P:
+                    $result->hascorrectanswer = false;
+                    $result->hasincorrectanswer = false;
+                    $result->hasanswerdetails = false;
+                    break;
 
                 case constants::TYPE_PASSAGEREADING:
                     $result->hascorrectanswer = false;

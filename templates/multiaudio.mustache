@@ -1,7 +1,7 @@
 {{> mod_minilesson/questionheader}}
 {{> mod_minilesson/progresstimer}}
     {{#sentences}}
-        <div class="row mcplayrow" id="{{uniqueid}}_option{{indexplusone}}">
+        <div class="mcplayrow" id="{{uniqueid}}_option{{indexplusone}}">
             <div class="col-md-1 mcaudioplayer mcaudioplayer_{{indexplusone}}">
                 <div class="mc_playbutton_container">
                     <button class="minilesson_mc_audioplayer mcplaytrigger btn btn-secondary" data-index="{{index}}" id="{{uniqueid}}_audioplayer{{indexplusone}}">
@@ -9,7 +9,7 @@
                     </button>
                 </div>
             </div>
-            <div class="col-md-11 mcaudiotranscript_{{index}}">
+            <div class="col-md-11 mcaudiotranscript mcaudiotranscript_{{index}}">
                 <div class="minilesson_mc_response {{rtl}}" data-index="{{index}}" name="{{uniqueid}}_options" >
                     <span class="minilesson_sentence">{{prompt}}</span>
                     <span class="minilesson_mc_resultbox">

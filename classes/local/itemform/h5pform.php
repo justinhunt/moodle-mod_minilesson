@@ -20,7 +20,7 @@ class h5pform extends baseform
 
         $this->add_itemsettings_heading();
         $mform = $this->_form;
-
+        $this->add_static_text('instructions', '', get_string('h5pforminstructions', constants::M_COMPONENT));
         // Set the total marks for the item.
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
         $mform->setDefault(constants::TOTALMARKS, 5);
