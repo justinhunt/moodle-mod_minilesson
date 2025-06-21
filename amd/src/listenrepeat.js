@@ -244,8 +244,14 @@ define(['jquery',
       var self = this;
       $("#" + self.itemdata.uniqueid + "_container .landr_not_loaded").hide();
       $("#" + self.itemdata.uniqueid + "_container .landr_loaded").show();
-      $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").prop("disabled", false);
+      if(self.itemdata.hidestartpage){
+        self.start();
+      }else{
+        $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").prop("disabled", false);
+      }
+
     },
+
     gotComparison: function (comparison, typed) {
       var self = this;
 
@@ -463,11 +469,13 @@ define(['jquery',
             // Enable the skip button
             $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", false);
 
-            //play the audio if we are not a mobile user and that is the setting
-            if (!self.quizhelper.mobile_user()) {
-              setTimeout(function () {
-                $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").trigger('click');
-              }, 1000);
+            //we autoplay the audio on item entry, if its not a mobile user
+            //and we have a startpage (or we have a startpage but its not the first item)
+            if (!self.quizhelper.mobile_user() &&
+                (!self.itemdata.hidestartpage || self.game.pointer > 0)) {
+                setTimeout(function () {
+                  $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").trigger('click');
+                }, 1000);
             }
 
             if (displaytimer) {

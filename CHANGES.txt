@@ -1,5 +1,10 @@
+Version 1.0.93 (Build 202506XXXX)
+- tweaks to continue btn for fluency item
+- fixed bug where audio would play on item if hidestart page was set
+- allowed hide start page on listen and speak item type
+
 Version 1.0.92 (Build 2025062001)
-- Rebuilt compatibile JS for old with Moodles
+- Rebuilt compatibile JS for old Moodles
 
 Version 1.0.91 (Build 2025062000)
 - Fix for hints penalty when the student already got the gap wrong

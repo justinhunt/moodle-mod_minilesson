@@ -84,8 +84,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             var speechresults= message.results;
             log.debug(speechresults);
             self.do_evaluation_feedback(speechresults);
-            self.do_evaluation_stars(speechresults);   
-           // self.do_evaluation_results(speechresults);   
+            self.do_evaluation_stars(speechresults);
+            self.do_recolor_continue_button(speechresults);
+            // self.do_evaluation_results(speechresults);
         } //end of switch message type
       };
  
@@ -366,6 +367,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       );
       self.ctrlbtns.prop("disabled", false);
 
+      //reset skip/continue button to red
+      self.skipbtn.removeClass('btn-success');
+      self.skipbtn.addClass('btn-danger');
+
       if (self.itemdata.timelimit > 0) {
           self.progresscont.show();
           self.progresscont.find('i').show();
@@ -385,8 +390,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       //Hide the response audio because its not ready yet
        self.audioplayerbtn_audioself.hide();
 
-      //Autoplay the audio
-      if (!self.quizhelper.mobile_user()) {
+      //we autoplay the audio on item entry, if its not a mobile user
+      //and we have a startpage (or we have a startpage but its not the first item)
+      if (!self.quizhelper.mobile_user() &&
+          (!self.itemdata.hidestartpage || self.game.pointer > 0)) {
           setTimeout(function() {
               self.audioplayerbtn_audiomodel.trigger('click');
           }, 1000);
@@ -492,8 +499,27 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         }
     },
 
+    do_recolor_continue_button: function(pronunciation_result) {
+        var self = this;
+
+        var accuracyScore = pronunciation_result.accuracyScore;
+        var warningthreshold = self.phonemeWarningThreshold;
+
+        if(accuracyScore >= warningthreshold) {
+            // If the pronunciation is good, make button green
+            self.skipbtn.removeClass('btn-danger');
+            self.skipbtn.addClass('btn-success');
+        }else{
+            // If the pronunciation is not good,
+            self.skipbtn.removeClass('btn-success');
+            self.skipbtn.addClass('btn-danger');
+        }
+    },
+
     do_evaluation_stars: function(pronunciation_result) {
         var self = this;
+        log.debug("Accuracy score: ", pronunciation_result.accuracyScore);
+
         //this is part of the generated html for each sentence in the item, so we need to create a handle each time
         var itemstarscontainer = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
         // Clear previous results

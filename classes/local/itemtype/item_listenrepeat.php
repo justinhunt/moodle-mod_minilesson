@@ -57,6 +57,7 @@ class item_listenrepeat extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
         $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
+        $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
 
         // sentences
         $sentences = [];

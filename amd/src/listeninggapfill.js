@@ -415,7 +415,11 @@ define(['jquery',
             self.nextReply();
 
             //play the audio (if the audio player is ready)
-            if(self.items[self.game.pointer].audio !==null) {
+            //we autoplay the audio on item entry, if its not a mobile user
+            //and we have a startpage (or we have a startpage but its not the first item)
+            if(self.items[self.game.pointer].audio !==null &&
+                !self.quizhelper.mobile_user() &&
+                (!self.itemdata.hidestartpage || self.game.pointer > 0)) {
                 $("#" + self.itemdata.uniqueid + "_container .lgapfill_listen_btn").trigger('click');
             }
         },

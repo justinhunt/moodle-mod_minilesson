@@ -60,7 +60,7 @@ class item_fluency extends item {
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
 
         // Correct threshold.
-        $testitem->correctthreshold = $this->itemrecord->{constants::FLUENCYCORRECTTHRESHOLD};
+        $testitem->correctthreshold = (int) $this->itemrecord->{constants::FLUENCYCORRECTTHRESHOLD};
 
         // Cloud Poodll.
         $maxtime = 0;
