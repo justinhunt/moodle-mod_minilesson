@@ -68,9 +68,34 @@ define(['jquery',
       animopts.useanimatecss = quizhelper.useanimatecss;
       anim.init(animopts);
 
+      self.init_controls();
       self.register_events();
       self.setvoice();
       self.getItems();
+    },
+
+    init_controls: function() {
+      var self = this;
+      self.controls = {
+        container: $("#" + self.itemdata.uniqueid + "_container"),
+        nextbutton: $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton"),
+        start_btn: $("#" + self.itemdata.uniqueid + "_container .landr_start_btn"),
+        skip_btn: $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn"),
+        ctrl_btn: $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn"),
+        game: $("#" + self.itemdata.uniqueid + "_container .landr_game"),
+        controlsbox: $("#" + self.itemdata.uniqueid + "_container .landr_controls"),
+        resultscontainer: $("#" + self.itemdata.uniqueid + "_container .landr_resultscontainer"),
+        speakbtncontainer: $("#" + self.itemdata.uniqueid + "_container .landr_speakbtncontainer"),
+        mainmenu: $("#" + self.itemdata.uniqueid + "_container .landr_mainmenu"),
+        title: $("#" + self.itemdata.uniqueid + "_container .landr_title"),
+        question: $("#" + self.itemdata.uniqueid + "_container .landr_question"),
+        speech_container: $("#" + self.itemdata.uniqueid + "_container .landr_speechcontainer"),
+        landr_correctfeedback: $("#" + self.itemdata.uniqueid + "_container .landr_correctfeedback"),
+        landr_incorrectfeedback: $("#" + self.itemdata.uniqueid + "_container .landr_incorrectfeedback"),
+        landr_fbcontainer: $("#" + self.itemdata.uniqueid + "_container .landr_fbcontainer"),
+        landr_feedback: $("#" + self.itemdata.uniqueid + "_container .landr_feedback"),
+        landr_listen_btn: $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn"),
+      };
     },
 
     next_question: function (percent) {
@@ -101,10 +126,11 @@ define(['jquery',
       }).length;
 
       //display results
-      var gamebox = $("#" + self.itemdata.uniqueid + "_container .landr_game");
-      var controlsbox = $("#" + self.itemdata.uniqueid + "_container .landr_controls");
-      var recorderbox = $("#" + self.itemdata.uniqueid + "_container .landr_speakbtncontainer");
-      var resultsbox = $("#" + self.itemdata.uniqueid + "_container .landr_resultscontainer");
+      var gamebox = self.controls.game;
+      var controlsbox = self.controls.controlsbox;
+      var recorderbox = self.controls.speakbtncontainer;
+      var resultsbox = self.controls.resultscontainer;
+      var audioplayerbtn = self.controls.landr_listen_btn;
       templates.render('mod_minilesson/listitemresults', review_data).then(
           function (html, js) {
             resultsbox.html(html);
@@ -113,6 +139,7 @@ define(['jquery',
             gamebox.hide();
             controlsbox.hide();
             recorderbox.hide();
+            audioplayerbtn.hide();
             // Run js for audio player events
             templates.runTemplateJS(js);
           }
@@ -123,17 +150,17 @@ define(['jquery',
 
       var self = this;
       //on next button click
-      $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function (e) {
+      self.controls.nextbutton.on('click', function (e) {
         self.next_question();
       });
       //on start button click
-      $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").on("click", function () {
+      self.controls.start_btn.on("click", function () {
         self.start();
       });
 
 
       //AUDIO PLAYER Button events
-      var audioplayerbtn=$("#" + self.itemdata.uniqueid + "_container .landr_listen_btn");
+      var audioplayerbtn = self.controls.landr_listen_btn;
       // On listen button click
       audioplayerbtn.on("click", function () {
         var theaudio = self.items[self.game.pointer].audio;
@@ -162,13 +189,13 @@ define(['jquery',
       });
 
       //on skip button click
-      $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn").on("click", function () {
+      self.controls.skip_btn.on("click", function () {
         //disable the buttons
-        $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
+        self.controls.ctrl_btn.prop("disabled", true);
         //reveal the prompt
-        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].displayprompt + "");
+        self.controls.container.find('.landr_speech.landr_teacher_left').text(self.items[self.game.pointer].displayprompt + "");
         //reveal the answer
-        $("#" + self.itemdata.uniqueid + "_container .landr_word_input").each(function () {
+        self.controls.container.find('.landr_word_input').each(function () {
           var realidx = $(this).data("realidx");
           var landr_word_input = self.items[self.game.pointer].landr_targetWords[realidx];
           $(this).val(landr_word_input);
@@ -177,6 +204,9 @@ define(['jquery',
         //mark as answered and incorrect
         self.items[self.game.pointer].answered = true;
         self.items[self.game.pointer].correct = false;
+
+        //Stop timer
+        self.stopTimer(self.items[self.game.pointer].timer);
 
         //next prompt or end
         if (self.game.pointer < self.items.length - 1) {
@@ -221,6 +251,7 @@ define(['jquery',
           answered: false,
           correct: false,
           audio: null,
+          timer: [],
           audiourl: target.audiourl ? target.audiourl : "",
           imageurl: target.imageurl,
         };
@@ -242,12 +273,12 @@ define(['jquery',
 
     appReady: function () {
       var self = this;
-      $("#" + self.itemdata.uniqueid + "_container .landr_not_loaded").hide();
-      $("#" + self.itemdata.uniqueid + "_container .landr_loaded").show();
+      self.controls.container.find('.landr_not_loaded').hide();
+      self.controls.container.find('.landr_loaded').show();
       if(self.itemdata.hidestartpage){
         self.start();
       }else{
-        $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").prop("disabled", false);
+        self.controls.start_btn.prop("disabled", false);
       }
 
     },
@@ -255,8 +286,8 @@ define(['jquery',
     gotComparison: function (comparison, typed) {
       var self = this;
 
-      $("#" + self.itemdata.uniqueid + "_container .landr_word_input").removeClass("landr_correct landr_incorrect");
-      $("#" + self.itemdata.uniqueid + "_container .landr_feedback_icon").removeClass("fa fa-check fa-times");
+      self.controls.container.find('.landr_word_input').removeClass("landr_correct landr_incorrect");
+      self.controls.container.find('.landr_feedback_icon').removeClass("fa fa-check fa-times");
 
       var allCorrect = comparison.filter(function (e) {
         return !e.matched;
@@ -264,15 +295,18 @@ define(['jquery',
 
       if (allCorrect && comparison && comparison.length > 0) {
 
-        $("#" + self.itemdata.uniqueid + "_container .landr_word_input").addClass("landr_correct");
-        $("#" + self.itemdata.uniqueid + "_container .landr_feedback_icon").addClass("fa fa-check");
-        $("#" + self.itemdata.uniqueid + "_container .landr_speech.landr_teacher_left").text(self.items[self.game.pointer].displayprompt + "");
+        self.controls.container.find('.landr_word_input').addClass("landr_correct");
+        self.controls.container.find('.landr_feedback_icon').addClass("fa fa-check");
+        self.controls.container.find('.landr_speech.landr_teacher_left').text(self.items[self.game.pointer].displayprompt + "");
 
         self.items[self.game.pointer].answered = true;
         self.items[self.game.pointer].correct = true;
         self.items[self.game.pointer].typed = typed;
 
-        $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
+        //stop timer
+        self.stopTimer(self.items[self.game.pointer].timer);
+
+        self.controls.ctrl_btn.prop("disabled", true);
         if (self.game.pointer < self.items.length - 1) {
           setTimeout(function () {
             self.game.pointer++;
@@ -286,23 +320,23 @@ define(['jquery',
         //mark up the words as correct or not
         comparison.forEach(function (obj) {
           if (!obj.matched) {
-            $("#" + self.itemdata.uniqueid + "_container .landr_word_input[data-idx='" + obj.wordnumber + "']").addClass("landr_incorrect");
-            $("#" + self.itemdata.uniqueid + "_container .landr_feedback_icon[data-idx='" + obj.wordnumber + "']").addClass("fa fa-times");
+            self.controls.container.find('.landr_word_input[data-idx="' + obj.wordnumber + '"]').addClass("landr_incorrect");
+            self.controls.container.find('.landr_feedback_icon[data-idx="' + obj.wordnumber + '"]').addClass("fa fa-times");
           } else {
-            $("#" + self.itemdata.uniqueid + "_container .landr_word_input[data-idx='" + obj.wordnumber + "']").addClass("landr_correct");
-            $("#" + self.itemdata.uniqueid + "_container .landr_feedback_icon[data-idx='" + obj.wordnumber + "']").addClass("fa fa-check");
+            self.controls.container.find('.landr_word_input[data-idx="' + obj.wordnumber + '"]').addClass("landr_correct");
+            self.controls.container.find('.landr_feedback_icon[data-idx="' + obj.wordnumber + '"]').addClass("fa fa-check");
           }
         });
-        var thereply = $("#" + self.itemdata.uniqueid + "_container .landr_reply_" + self.game.pointer);
+        var thereply = self.controls.container.find('.landr_reply_' + self.game.pointer);
         anim.do_animate(thereply, 'shakeX animate__faster').then(
             function () {
-              $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", false);
+              self.controls.ctrl_btn.prop("disabled", false);
             }
         );
 
       }
       //show all the correct words
-      $("#" + self.itemdata.uniqueid + "_container .landr_word_input.landr_correct").each(function () {
+      self.controls.container.find('.landr_word_input.landr_correct').each(function () {
         var realidx = $(this).data("realidx");
         var landr_word_input = self.items[self.game.pointer].landr_targetWords[realidx];
         $(this).val(landr_word_input);
@@ -343,14 +377,14 @@ define(['jquery',
     },
     end: function () {
       var self = this;
-      $(".minilesson_nextbutton").prop("disabled", true);
+      self.controls.nextbutton.prop("disabled", true);
 
       //progress dots are updated on next_item. The last item has no next item, so we update from here
       self.updateProgressDots();
 
       //disable the buttons and go to next question or review
       setTimeout(function () {
-        $(".minilesson_nextbutton").prop("disabled", false);
+        self.controls.nextbutton.prop("disabled", false);
         if (self.quizhelper.showitemreview) {
           self.show_item_review();
         } else {
@@ -362,9 +396,9 @@ define(['jquery',
     start: function () {
       var self = this;
 
-      $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", true);
-      $("#" + self.itemdata.uniqueid + "_container .landr_speakbtncontainer").show();
-      $("#" + self.itemdata.uniqueid + "_container .landr_title").show();
+      self.controls.ctrl_btn.prop("disabled", true);
+      self.controls.speakbtncontainer.show();
+      self.controls.title.show();
 
       self.items.forEach(function (item) {
         item.spoken = "";
@@ -374,11 +408,11 @@ define(['jquery',
 
       self.game.pointer = 0;
 
-      $("#" + self.itemdata.uniqueid + "_container .landr_game").show();
-      $("#" + self.itemdata.uniqueid + "_container .landr_start_btn").hide();
-      $("#" + self.itemdata.uniqueid + "_container .landr_listen_cont").show();
-      $("#" + self.itemdata.uniqueid + "_container .landr_mainmenu").hide();
-      $("#" + self.itemdata.uniqueid + "_container .landr_controls").show();
+      self.controls.game.show();
+      self.controls.start_btn.hide();
+      self.controls.container.find('.landr_listen_cont').show();
+      self.controls.mainmenu.hide();
+      self.controls.controlsbox.show();
 
       self.nextPrompt();
 
@@ -406,8 +440,8 @@ define(['jquery',
       templates.render('mod_minilesson/listenrepeat_prompt',
           {showprompt: showprompt, pointer: self.game.pointer})
           .then(function (html, js) {
-                $("#" + self.itemdata.uniqueid + "_container .landr_game").html(html);
-                $(".landr_ctrl-btn").prop("disabled", false);
+                self.controls.game.html(html);
+                self.controls.ctrl_btn.prop("disabled", false);
                 self.updateProgressDots();
                 var newprompt = $(".landr_prompt_" + self.game.pointer);
                 anim.do_animate(newprompt, 'zoomIn animate__faster', 'in').then(
@@ -431,7 +465,7 @@ define(['jquery',
         }
         return "<i style='color:" + color + "' class='fa fa-circle'></i>";
       }).join(" ");
-      $("#" + self.itemdata.uniqueid + "_container .landr_title").html(progress);
+      self.controls.title.html(progress);
     },
 
     nextReply: function () {
@@ -471,24 +505,25 @@ define(['jquery',
 
             //we autoplay the audio on item entry, if its not a mobile user
             //and we have a startpage (or we have a startpage but its not the first item)
-            if (!self.quizhelper.mobile_user() &&
-                (!self.itemdata.hidestartpage || self.game.pointer > 0)) {
-                setTimeout(function () {
-                  $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").trigger('click');
-                }, 1000);
+            if (!self.quizhelper.mobile_user()){
+              if(self.itemdata.hidestartpage && self.game.pointer === 0){
+                  $("#" + self.itemdata.uniqueid + "_container").on("showElement", () => {
+                      setTimeout(function() {
+                          $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").trigger('click');
+                      }, 1000);
+                  });
+              }else{
+                  setTimeout(function() {
+                      $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").trigger('click');
+                  }, 1000);
+              }
             }
 
+            //do the timer
             if (displaytimer) {
-              $("#" + self.itemdata.uniqueid + "_container .landr_game .progress-container").show();
-              $("#" + self.itemdata.uniqueid + "_container .landr_game .progress-container i").show();
-              $("#" + self.itemdata.uniqueid + "_container .landr_game .progress-container #progresstimer").progressTimer({
-                  height: '5px',
-                  timeLimit: self.itemdata.timelimit,
-                  onFinish: function() {
-                      $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn").trigger('click');
-                  }
-              });
+              self.startTimer();
             }
+
           });//end of templates.render
     },//end of next reply
 
@@ -500,7 +535,49 @@ define(['jquery',
       if(theaudio && !theaudio.paused) {
         theaudio.pause();
       }
-    }
+    },
+
+    startTimer: function(){
+        var self = this;
+        var progress_container = $("#" + self.itemdata.uniqueid + "_container .landr_game .progress-container");
+        // If we have a time limit, set up the timer, otherwise return
+        if (self.itemdata.timelimit > 0) {
+            // This is a function to start the timer (we call it conditionally below)
+            var doStartTimer = function() {
+                  // This shows progress bar
+                progress_container.show();
+                progress_container.find('i').show();
+                var progresbar = progress_container.find('#progresstimer').progressTimer({
+                    height: '5px',
+                    timeLimit: self.itemdata.timelimit,
+                    onFinish: function() {
+                        $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn").trigger('click');
+                    }
+                });
+                progresbar.each(function() {
+                    self.items[self.game.pointer].timer.push($(this).attr('timer'));
+                });
+            }
+
+            // This adds the timer and starts it. But if we dont have a start page and its the first item
+            // we need to defer the timer start until the item is shown
+            if(self.itemdata.hidestartpage && self.game.pointer === 0){
+                $("#" + self.itemdata.uniqueid + "_container").on("showElement", () => {
+                    doStartTimer();
+                });
+            }else{
+                doStartTimer();
+            }
+        }
+    }, //end of start timer
+
+    stopTimer: function(timers) {
+        if (timers.length) {
+            timers.forEach(function(timer) {
+                clearInterval(timer);
+            });
+        }
+    },// end of stop timer
 
   } // end of return
 });//end of define

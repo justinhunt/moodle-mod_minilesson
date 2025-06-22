@@ -53,6 +53,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       var self=this;
 
       self.thebutton = "thettrbutton"; // To Do impl. this
+      self.container = $("#" + self.itemdata.uniqueid + "_container");
       self.wordcount = $("#" + self.itemdata.uniqueid + "_container span.ml_wordcount");
       self.actionbox = $("#" + self.itemdata.uniqueid + "_container div.ml_fluency_actionbox");
       self.pendingbox = $("#" + self.itemdata.uniqueid + "_container div.ml_fluency_pendingbox");
@@ -370,33 +371,27 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       //reset skip/continue button to red
       self.skipbtn.removeClass('btn-success');
       self.skipbtn.addClass('btn-danger');
-
-      if (self.itemdata.timelimit > 0) {
-          self.progresscont.show();
-          self.progresscont.find('i').show();
-          var progresbar = self.progresscont.find('#progresstimer').progressTimer({
-              height: '5px',
-              timeLimit: self.itemdata.timelimit,
-              onFinish: function() {
-                  self.skipbtn.trigger('click');
-              }
-          });
-
-          progresbar.each(function() {
-              self.items[self.game.pointer].timer.push($(this).attr('timer'));
-          });
-      }
+    
+      //Start timer if we have one
+      self.startTimer();
 
       //Hide the response audio because its not ready yet
        self.audioplayerbtn_audioself.hide();
 
-      //we autoplay the audio on item entry, if its not a mobile user
-      //and we have a startpage (or we have a startpage but its not the first item)
-      if (!self.quizhelper.mobile_user() &&
-          (!self.itemdata.hidestartpage || self.game.pointer > 0)) {
-          setTimeout(function() {
-              self.audioplayerbtn_audiomodel.trigger('click');
-          }, 1000);
+      // We autoplay the audio on item entry, if its not a mobile user.
+      // If we do not have a start page and its the first item, we play on the item show event
+      if (!self.quizhelper.mobile_user()){
+        if(self.itemdata.hidestartpage && self.game.pointer === 0){
+            self.container.on("showElement", () => {
+                setTimeout(function() {
+                    self.audioplayerbtn_audiomodel.trigger('click');
+                }, 1000);
+            });
+        }else{
+            setTimeout(function() {
+                self.audioplayerbtn_audiomodel.trigger('click');
+            }, 1000);
+        }
       }
 
       //target is the speech we expect
@@ -405,6 +400,39 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       if(self.quizhelper.use_ttrecorder()) {
         self.ttrec.update_currentprompt(target);
       }
+    },
+
+    startTimer: function(){
+        var self = this;
+        // If we have a time limit, set up the timer, otherwise return
+        if (self.itemdata.timelimit > 0) {
+            // This is a function to start the timer (we call it conditionally below)
+            var doStartTimer = function() {
+                    // This shows progress bar
+                self.progresscont.show();
+                self.progresscont.find('i').show();
+                var progresbar = self.progresscont.find('#progresstimer').progressTimer({
+                    height: '5px',
+                    timeLimit: self.itemdata.timelimit,
+                    onFinish: function() {
+                        self.skip_btn.trigger('click');
+                    }
+                });
+                progresbar.each(function() {
+                    self.items[self.game.pointer].timer.push($(this).attr('timer'));
+                });
+            }
+
+            // This adds the timer and starts it. But if we dont have a start page and its the first item
+            // we need to defer the timer start until the item is shown
+            if(self.itemdata.hidestartpage && self.game.pointer === 0){
+                self.container.on("showElement", () => {
+                    doStartTimer();
+                });
+            }else{
+                doStartTimer();
+            }
+        }
     },
 
     stopTimer: function(timers) {

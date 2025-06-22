@@ -376,23 +376,39 @@ define(['jquery',
 
             self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character:first').focus();
 
+            self.startTimer();
+        },
+
+        startTimer: function(){
+            var self = this;
+            // If we have a time limit, set up the timer, otherwise return
             if (self.itemdata.timelimit > 0) {
-                self.controls.progress_container.show();
-                self.controls.progress_container.find('i').show();
-                var progresbar = self.controls.progress_container.find('#progresstimer').progressTimer({
-                    height: '5px',
-                    timeLimit: self.itemdata.timelimit,
-                    onFinish: function() {
-                        log.debug('timer finished');
-                        log.debug(self.controls.check_btn);
+               // This is a function to start the timer (we call it conditionally below)
+                var doStartTimer = function() {
+                     // This shows progress bar
+                    self.controls.progress_container.show();
+                    self.controls.progress_container.find('i').show();
+                    var progresbar = self.controls.progress_container.find('#progresstimer').progressTimer({
+                        height: '5px',
+                        timeLimit: self.itemdata.timelimit,
+                        onFinish: function() {
+                            self.controls.skip_btn.trigger('click');
+                        }
+                    });
+                    progresbar.each(function() {
+                        self.items[self.game.pointer].timer.push($(this).attr('timer'));
+                    });
+                }
 
-                        self.controls.check_btn.trigger('click');
-                    }
-                });
-
-                progresbar.each(function() {
-                    self.items[self.game.pointer].timer.push($(this).attr('timer'));
-                });
+                // This adds the timer and starts it. But if we dont have a start page and its the first item
+                // we need to defer the timer start until the item is shown
+                if(self.itemdata.hidestartpage && self.game.pointer === 0){
+                    self.controls.container.on("showElement", () => {
+                        doStartTimer();
+                    });
+                }else{
+                    doStartTimer();
+                }
             }
         },
 

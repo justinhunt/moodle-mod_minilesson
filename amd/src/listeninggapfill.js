@@ -436,13 +436,20 @@ define(['jquery',
 
             self.nextReply();
 
-            //play the audio (if the audio player is ready)
-            //we autoplay the audio on item entry, if its not a mobile user
-            //and we have a startpage (or we have a startpage but its not the first item)
-            if(self.items[self.game.pointer].audio !==null &&
-                !self.quizhelper.mobile_user() &&
-                (!self.itemdata.hidestartpage || self.game.pointer > 0)) {
-                self.controls.listen_btn.trigger('click');
+            // We autoplay the audio on item entry, if its not a mobile user.
+            // If we do not have a start page and its the first item, we play on the item show event
+            if (self.items[self.game.pointer].audio !==null && !self.quizhelper.mobile_user()){
+                if(self.itemdata.hidestartpage && self.game.pointer === 0){
+                    self.controls.container.on("showElement", () => {
+                        setTimeout(function() {
+                            self.controls.listen_btn.trigger('click');
+                        }, 1000);
+                    });
+                }else{
+                    setTimeout(function() {
+                        self.controls.listen_btn.trigger('click');
+                    }, 1000);
+                }
             }
         },
 
@@ -504,20 +511,39 @@ define(['jquery',
 
             self.controls.container.find('.lgapfill_reply_' + self.game.pointer + ' input.single-character:first').focus();
 
-            if (self.itemdata.timelimit > 0) {
-                self.controls.progress_container.show();
-                self.controls.progress_container.find('i').show();
-                var progresbar = self.controls.progress_container.find('#progresstimer').progressTimer({
-                    height: '5px',
-                    timeLimit: self.itemdata.timelimit,
-                    onFinish: function () {
-                        self.controls.check_btn.trigger('click');
-                    }
-                });
+            self.startTimer();
+        },
 
-                progresbar.each(function() {
-                    self.items[self.game.pointer].timer.push($(this).attr('timer'));
-                });
+         startTimer: function(){
+            var self = this;
+            // If we have a time limit, set up the timer, otherwise return
+            if (self.itemdata.timelimit > 0) {
+               // This is a function to start the timer (we call it conditionally below)
+                var doStartTimer = function() {
+                     // This shows progress bar
+                    self.controls.progress_container.show();
+                    self.controls.progress_container.find('i').show();
+                    var progresbar = self.controls.progress_container.find('#progresstimer').progressTimer({
+                        height: '5px',
+                        timeLimit: self.itemdata.timelimit,
+                        onFinish: function() {
+                            self.controls.skip_btn.trigger('click');
+                        }
+                    });
+                    progresbar.each(function() {
+                        self.items[self.game.pointer].timer.push($(this).attr('timer'));
+                    });
+                }
+
+                // This adds the timer and starts it. But if we dont have a start page and its the first item
+                // we need to defer the timer start until the item is shown
+                if(self.itemdata.hidestartpage && self.game.pointer === 0){
+                    self.controls.container.on("showElement", () => {
+                        doStartTimer();
+                    });
+                }else{
+                    doStartTimer();
+                }
             }
         },
 
