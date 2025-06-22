@@ -388,14 +388,14 @@ define(['jquery',
 
         end: function() {
             var self = this;
-            $(".minilesson_nextbutton").prop("disabled", true);
+            self.controls.nextbutton.prop("disabled", true);
 
             //progress dots are updated on next_item. The last item has no next item, so we update from here
             self.updateProgressDots();
 
             //disable the buttons and go to next question or review
             setTimeout(function() {
-                $(".minilesson_nextbutton").prop("disabled",false);
+                self.controls.nextbutton.prop("disabled",false);
                 if(self.quizhelper.showitemreview){
                     self.show_item_review();
                 }else{

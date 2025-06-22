@@ -45,7 +45,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $output = $this->output->heading(get_string("whatdonow", "minilesson"), 3);
         $links = array();
 
-        $qtypes = [constants::TYPE_PAGE,constants::TYPE_MULTICHOICE, constants::TYPE_DICTATIONCHAT,
+        $qtypes = [constants::TYPE_PAGE,constants::TYPE_MULTICHOICE, 
                 constants::TYPE_DICTATION,constants::TYPE_SPEECHCARDS, constants::TYPE_LISTENREPEAT];
         $qtypes[]= constants::TYPE_MULTIAUDIO;
         $qtypes[]=constants::TYPE_SHORTANSWER;
@@ -62,9 +62,10 @@ class rsquestion_renderer extends \plugin_renderer_base {
             $qtypes[] = constants::TYPE_FLUENCY;
         }
         if (isset($CFG->minilesson_experimental) && $CFG->minilesson_experimental) {
-            $qtypes[]=constants::TYPE_SMARTFRAME;
-            $qtypes[]=constants::TYPE_COMPQUIZ;
-            $qtypes[]=constants::TYPE_CONVERSATION;
+            $qtypes[] = constants::TYPE_SMARTFRAME;
+            $qtypes[] = constants::TYPE_COMPQUIZ;
+            $qtypes[] = constants::TYPE_CONVERSATION;
+            $qtypes[] = constants::TYPE_DICTATIONCHAT;
         }
         //If modaleditform is true adding and editing item types is done in a popup modal. Thats good ...
         // but when there is a lot to be edited , a standalone page is better. The modaleditform flag is acted on on additemlink template and rsquestionmanager js

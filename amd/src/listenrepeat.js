@@ -95,6 +95,7 @@ define(['jquery',
         landr_fbcontainer: $("#" + self.itemdata.uniqueid + "_container .landr_fbcontainer"),
         landr_feedback: $("#" + self.itemdata.uniqueid + "_container .landr_feedback"),
         landr_listen_btn: $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn"),
+        progress_container: $("#" + self.itemdata.uniqueid + "_container .progress-container"),
       };
     },
 
@@ -364,7 +365,7 @@ define(['jquery',
     getComparison: function (passage, transcript, phonetic, callback) {
       var self = this;
 
-      $(".landr_ctrl-btn").prop("disabled", true);
+      self.controls.ctrl_btn.prop("disabled", true);
       self.quizhelper.comparePassageToTranscript(passage, transcript, phonetic, self.itemdata.language, self.itemdata.alternates).then(function (ajaxresult) {
         var payloadobject = JSON.parse(ajaxresult);
         if (payloadobject) {
@@ -443,7 +444,7 @@ define(['jquery',
                 self.controls.game.html(html);
                 self.controls.ctrl_btn.prop("disabled", false);
                 self.updateProgressDots();
-                var newprompt = $(".landr_prompt_" + self.game.pointer);
+                var newprompt = self.controls.container.find(".landr_prompt_" + self.game.pointer);
                 anim.do_animate(newprompt, 'zoomIn animate__faster', 'in').then(
                     function () {
                     }
@@ -492,29 +493,29 @@ define(['jquery',
           {words: words, pointer: self.game.pointer, imageurl: self.items[self.game.pointer].imageurl, displaytimer})
           .then(function (html, js) {
             //update html reply area
-            $("#" + self.itemdata.uniqueid + "_container .landr_game").append(html);
+            self.controls.game.append(html);
             // set handle to the reply and animate it in
-            var newreply = $(".landr_reply_" + self.game.pointer);
+            var newreply = self.controls.container.find(".landr_reply_" + self.game.pointer);
             anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
                 function () {
                 }
             );
 
             // Enable the skip button
-            $("#" + self.itemdata.uniqueid + "_container .landr_ctrl-btn").prop("disabled", false);
+            self.controls.ctrl_btn.prop("disabled", false);
 
             //we autoplay the audio on item entry, if its not a mobile user
             //and we have a startpage (or we have a startpage but its not the first item)
             if (!self.quizhelper.mobile_user()){
               if(self.itemdata.hidestartpage && self.game.pointer === 0){
-                  $("#" + self.itemdata.uniqueid + "_container").on("showElement", () => {
+                  self.controls.container.on("showElement", () => {
                       setTimeout(function() {
-                          $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").trigger('click');
+                          self.controls.landr_listen_btn.trigger('click');
                       }, 1000);
                   });
               }else{
                   setTimeout(function() {
-                      $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn").trigger('click');
+                      self.controls.landr_listen_btn.trigger('click');
                   }, 1000);
               }
             }
@@ -539,7 +540,7 @@ define(['jquery',
 
     startTimer: function(){
         var self = this;
-        var progress_container = $("#" + self.itemdata.uniqueid + "_container .landr_game .progress-container");
+        var progress_container = self.controls.progress_container;
         // If we have a time limit, set up the timer, otherwise return
         if (self.itemdata.timelimit > 0) {
             // This is a function to start the timer (we call it conditionally below)
@@ -551,7 +552,7 @@ define(['jquery',
                     height: '5px',
                     timeLimit: self.itemdata.timelimit,
                     onFinish: function() {
-                        $("#" + self.itemdata.uniqueid + "_container .landr_skip_btn").trigger('click');
+                        self.controls.skip_btn.trigger('click');
                     }
                 });
                 progresbar.each(function() {
@@ -562,7 +563,7 @@ define(['jquery',
             // This adds the timer and starts it. But if we dont have a start page and its the first item
             // we need to defer the timer start until the item is shown
             if(self.itemdata.hidestartpage && self.game.pointer === 0){
-                $("#" + self.itemdata.uniqueid + "_container").on("showElement", () => {
+                self.controls.container.on("showElement", () => {
                     doStartTimer();
                 });
             }else{
