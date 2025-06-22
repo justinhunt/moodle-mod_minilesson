@@ -110,7 +110,7 @@ class comprehensiontest {
         // prepare data array for test
         $testitems = [];
         $currentitem = 0;
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $currentitem++;
             $titem = utils::fetch_item_from_itemrecord($item, $this->mod, $this->context);
             $titem->set_token($token);

@@ -470,7 +470,25 @@ const M_PUSH_FINISHSCREENCUSTOM = 7;
 const M_PUSH_FINISHSCREEN = 8;
 const M_PUSH_CSSKEY = 9;
 const M_PUSH_CONTAINERWIDTH =  10;
+const M_PUSH_ITEMS =  11;
 
+/**
+ * No push mode selected.
+ */
+const PUSHMODE_NONE = 0;
+
+/**
+ * Push mode that matches on the module name.
+ */
+const PUSHMODE_MODULENAME = 1;
+/**
+ * Push mode to all minilessons in the course.
+ */
+const PUSHMODE_COURSE = 2;
+/**
+ * Push mode to all minilessons in the site.
+ */
+const PUSHMODE_SITE = 3;
 const M_LANG_SAMPLES = [
     constants::M_LANG_ARAE => 'عندما يكون الطقس مشمسًا، دعنا نخرج للتنزه في الحديقة.',
     constants::M_LANG_ARSA => 'عندما يكون الطقس مشمسًا، دعنا نخرج للتنزه في الحديقة.',

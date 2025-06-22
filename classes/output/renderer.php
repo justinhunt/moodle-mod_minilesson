@@ -769,9 +769,14 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
-    public function push_buttons_menu($cm, $clonecount) {
+    public function push_buttons_menu($cm, $clonecount, $scope) {
         $templateitems = [];
-        $pushthings = ['maxattempts', 'transcriber', 'showitemreview', 'region', 'containerwidth', 'csskey' , 'lessonfont' , 'finishscreen', 'finishscreencustom'];
+        $pushthings = ['maxattempts', 'transcriber', 'showitemreview', 'region', 'containerwidth', 'csskey' ,
+         'lessonfont' , 'finishscreen', 'finishscreencustom'];
+
+        if ($scope == constants::PUSHMODE_MODULENAME) {
+            $pushthings[] = 'pushitems';
+        }
 
         foreach ($pushthings as $pushthing) {
             switch($pushthing){
@@ -783,19 +788,22 @@ class renderer extends \plugin_renderer_base {
                     break;
                 case 'region': $action = constants::M_PUSH_REGION;
                     break;
-                case 'containerwidth': $action = constants::M_PUSH_REGION;
+                case 'containerwidth': $action = constants::M_PUSH_CONTAINERWIDTH;
                     break;
-                case 'csskey': $action = constants::M_PUSH_REGION;
+                case 'csskey': $action = constants::M_PUSH_CSSKEY;
                     break;
-                case 'lessonfont': $action = constants::M_PUSH_REGION;
+                case 'lessonfont': $action = constants::M_PUSH_LESSONFONT;
                     break;
-                case 'finishscreen': $action = constants::M_PUSH_REGION;
+                case 'finishscreen': $action = constants::M_PUSH_FINISHSCREEN;
                     break;
-                case 'finishscreencustom': $action = constants::M_PUSH_REGION;
+                case 'finishscreencustom': $action = constants::M_PUSH_FINISHSCREENCUSTOM;
                     break;
+                case 'pushitems': $action = constants::M_PUSH_ITEMS;
+                    break;
+
             }
             $thepushbutton = new \single_button(new \moodle_url( constants::M_URL . '/push.php',
-                    ['id' => $cm->id, 'action' => $action]), get_string('push', constants::M_COMPONENT));
+                    ['id' => $cm->id, 'action' => $action, 'scope' => $scope]), get_string('push', constants::M_COMPONENT));
             $thepushbutton->add_confirm_action(get_string('pushconfirm', constants::M_COMPONENT, ['pushthing' => $pushthing, 'clonecount' => $clonecount]));
 
             $templateitems[] = ['title' => get_string($pushthing, constants::M_COMPONENT),

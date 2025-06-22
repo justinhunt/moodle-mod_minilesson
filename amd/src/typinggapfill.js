@@ -27,9 +27,31 @@ define(['jquery',
             animopts.useanimatecss = quizhelper.useanimatecss;
             anim.init(animopts);
 
+            self.init_controls();
             self.register_events();
             self.getItems();
             self.appReady();
+        },
+
+        init_controls: function() {
+            var self = this;
+            self.controls = {
+                container: $("#" + self.itemdata.uniqueid + "_container"),
+                listen_cont: $("#" + self.itemdata.uniqueid + "_container .tgapfill_listen_cont"),
+                nextbutton: $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton"),
+                start_btn: $("#" + self.itemdata.uniqueid + "_container .tgapfill_start_btn"),
+                skip_btn: $("#" + self.itemdata.uniqueid + "_container .tgapfill_skip_btn"),
+                ctrl_btn: $("#" + self.itemdata.uniqueid + "_container .tgapfill_ctrl-btn"),
+                check_btn: $("#" + self.itemdata.uniqueid + "_container .tgapfill_check_btn"),
+                game: $("#" + self.itemdata.uniqueid + "_container .tgapfill_game"),
+                controlsbox: $("#" + self.itemdata.uniqueid + "_container .tgapfill_controls"),
+                resultscontainer: $("#" + self.itemdata.uniqueid + "_container .tgapfill_resultscontainer"),
+                mainmenu: $("#" + self.itemdata.uniqueid + "_container .tgapfill_mainmenu"),
+                title: $("#" + self.itemdata.uniqueid + "_container .tgapfill_title"),
+                progress_container: $("#" + self.itemdata.uniqueid + "_container .progress-container"),
+                progress_bar: $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar"),
+                question: $("#" + self.itemdata.uniqueid + "_container .question")
+            };
         },
 
         next_question: function() {
@@ -53,12 +75,11 @@ define(['jquery',
             review_data.correctitems=self.items.filter(function(e) {return e.correct;}).length;
 
             //Get controls
-            var listencont = $("#" + self.itemdata.uniqueid + "_container .tgapfill_listen_cont");
-            var qbox = $("#" + self.itemdata.uniqueid + "_container .question");
-            //var recorderbox = $("#" + self.itemdata.uniqueid + "_container .tgapfill_speakbtncontainer");
-            var gamebox = $("#" + self.itemdata.uniqueid + "_container .tgapfill_game");
-            var controlsbox = $("#" + self.itemdata.uniqueid + "_container .tgapfill_controls");
-            var resultsbox = $("#" + self.itemdata.uniqueid + "_container .tgapfill_resultscontainer");
+            var listencont = self.controls.listen_cont;
+            var qbox = self.controls.question;
+            var gamebox = self.controls.game;
+            var controlsbox = self.controls.controlsbox;
+            var resultsbox = self.controls.resultscontainer;
 
             //display results
             templates.render('mod_minilesson/listitemresults',review_data).then(
@@ -82,19 +103,19 @@ define(['jquery',
             var self = this;
 
             // Next page button.
-            $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
+            self.controls.nextbutton.on('click', function(e) {
                 self.next_question();
             });
 
             // Start button.
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_start_btn").on("click", function() {
+            self.controls.start_btn.on("click", function() {
                 self.start();
             });
 
             // Skip.
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_skip_btn").on("click", function() {
+            self.controls.skip_btn.on("click", function() {
                 $(this).prop("disabled", true);
-                $("#" + self.itemdata.uniqueid + "_container .tgapfill_check_btn").prop("disabled", true);
+                self.controls.check_btn.prop("disabled", true);
                 self.stopTimer(self.items[self.game.pointer].timer);
 
                 //mark as answered and incorrect
@@ -104,7 +125,7 @@ define(['jquery',
                 // Move on after short time, to next prompt, or next question.
                 if (self.game.pointer < self.items.length - 1) {
                     setTimeout(function() {
-                        $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer).hide();
+                        self.controls.container.find('.tgapfill_reply_' + self.game.pointer).hide();
                         self.game.pointer++;
                         self.nextPrompt();
                     }, 2000);
@@ -114,12 +135,12 @@ define(['jquery',
             });
 
             // Check.
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_check_btn").on("click", function() {
+            self.controls.check_btn.on("click", function() {
                 self.check_answer();
             });
 
             // Listen for enter key on input boxes
-            $("#" + self.itemdata.uniqueid + "_container").on("keydown", ".single-character", function(e) {
+            self.controls.container.on("keydown", ".single-character", function(e) {
                 if (e.which == 13) {
                     self.check_answer();
                 }
@@ -133,7 +154,7 @@ define(['jquery',
         check_answer: function() {
             var self = this;
             var passage = self.items[self.game.pointer].parsedstring;
-            var characterunputs = $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + ' input.single-character');
+            var characterunputs = self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character');
             var transcript = [];
 
             characterunputs.each(function() {
@@ -174,38 +195,38 @@ define(['jquery',
 
         appReady: function() {
             var self = this;
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_not_loaded").hide();
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_loaded").show();
+            self.controls.container.find('.tgapfill_not_loaded').hide();
+            self.controls.container.find('.tgapfill_loaded').show();
             if(self.itemdata.hidestartpage){
                 self.start();
             }else{
-                $("#" + self.itemdata.uniqueid + "_container .tgapfill_start_btn").prop("disabled", false);
+                self.controls.start_btn.prop("disabled", false);
             }
         },
 
         gotComparison: function(comparison) {
             var self = this;
-            var timelimit_progressbar = $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar");
+            var timelimit_progressbar = self.controls.progress_bar;
             if (comparison) {
-                $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + " .tgapfill_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-check");
+                self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' .tgapfill_feedback[data-idx="' + self.game.pointer + '"]').addClass("fa fa-check");
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = true;
                 self.items[self.game.pointer].typed = false;
                 //make the input boxes green and move forward
-                $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + " input").addClass("ml_gapfill_char_correct");
+                self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input').addClass("ml_gapfill_char_correct");
 
             //if they cant retry OR the time limit is up, move on
             } else if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')) {
-                $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + " .tgapfill_feedback[data-idx='" + self.game.pointer + "']").addClass("fa fa-times");
+                self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' .tgapfill_feedback[data-idx="' + self.game.pointer + '"]').addClass("fa fa-times");
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = false;
                 self.items[self.game.pointer].typed = false;
             } else {
                 //it was wrong but they can retry
-                var thereply = $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer);
+                var thereply = self.controls.container.find('.tgapfill_reply_' + self.game.pointer);
                 anim.do_animate(thereply, 'shakeX animate__faster').then(
                     function() {
-                        $("#" + self.itemdata.uniqueid + "_container .tgapfill_ctrl-btn").prop("disabled", false);
+                        self.controls.ctrl_btn.prop("disabled", false);
                     }
                 );
                 return;
@@ -236,7 +257,7 @@ define(['jquery',
 
                 if (data.type === 'input') {
                     if (correctanswer === true) {
-                        char = $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + ' input.single-character[data-index="' + index + '"]').val();
+                        char = self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character[data-index="' + index + '"]').val();
                         if (char == '') {
                             correctanswer = false;
                         } else if (char != data.character) {
@@ -269,7 +290,7 @@ define(['jquery',
         start: function() {
             var self = this;
 
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_ctrl-btn").prop("disabled", true);
+            self.controls.ctrl_btn.prop("disabled", true);
 
             self.items.forEach(function(item) {
                 item.spoken = "";
@@ -279,10 +300,10 @@ define(['jquery',
 
             self.game.pointer = 0;
 
-            $("#" + self.itemdata.uniqueid + "_container .question").show();
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_start_btn").hide();
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_mainmenu").hide();
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_controls").show();
+            self.controls.question.show();
+            self.controls.start_btn.hide();
+            self.controls.mainmenu.hide();
+            self.controls.controlsbox.show();
 
             self.nextPrompt();
 
@@ -292,7 +313,7 @@ define(['jquery',
 
             var self = this;
 
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_ctrl-btn").prop("disabled", false);
+            self.controls.ctrl_btn.prop("disabled", false);
 
             self.updateProgressDots();
 
@@ -311,7 +332,7 @@ define(['jquery',
               }
               return "<i style='color:" + color + "' class='fa fa-circle'></i>";
             }).join(" ");
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_title").html(progress);
+            self.controls.title.html(progress);
         },
 
         nextReply: function() {
@@ -339,37 +360,33 @@ define(['jquery',
             if( self.items[self.game.pointer].definition) {
                 code += "<div class='definition-container'><div class='definition'>"
                     + self.items[self.game.pointer].definition + "</div>";
-            }
-
-            code += "</div>";
-            $("#" + self.itemdata.uniqueid + "_container .question").append(code);
-
-            var newreply = $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer);
+            }            code += "</div>";
+            self.controls.question.append(code);
+            var newreply = self.controls.container.find('.tgapfill_reply_' + self.game.pointer);
 
             anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
                 function() {
                 }
             );
 
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_ctrl-btn").prop("disabled", false);
+            self.controls.ctrl_btn.prop("disabled", false);
 
-            var inputElements = [...document.querySelectorAll("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + ' input.single-character')];
+            var inputElements = Array.from(self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character'));
             self.formReady(inputElements);
 
-            $("#" + self.itemdata.uniqueid + "_container .tgapfill_reply_" + self.game.pointer + ' input.single-character:first').focus();
+            self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character:first').focus();
 
             if (self.itemdata.timelimit > 0) {
-                $("#" + self.itemdata.uniqueid + "_container .progress-container").show();
-                $("#" + self.itemdata.uniqueid + "_container .progress-container i").show();
-                var progresbar = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
+                self.controls.progress_container.show();
+                self.controls.progress_container.find('i').show();
+                var progresbar = self.controls.progress_container.find('#progresstimer').progressTimer({
                     height: '5px',
                     timeLimit: self.itemdata.timelimit,
                     onFinish: function() {
                         log.debug('timer finished');
-                        var btn = $("#" + self.itemdata.uniqueid + "_container .tgapfill_check_btn");
-                        log.debug(btn);
+                        log.debug(self.controls.check_btn);
 
-                        $("#" + self.itemdata.uniqueid + "_container .tgapfill_check_btn").trigger('click');
+                        self.controls.check_btn.trigger('click');
                     }
                 });
 
