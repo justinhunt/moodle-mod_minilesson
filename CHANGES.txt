@@ -1,7 +1,10 @@
-Version 1.0.93 (Build 202506XXXX)
+Version 1.0.93 (Build 2025062300)
 - tweaks to continue btn for fluency item
 - fixed bug where audio would play on item if hidestart page was set
 - allowed hide start page on listen and speak item type
+- added timelimit feature to most item types
+- removed dictation chat item type (from new item menu)
+- added push items feature to push page
 
 Version 1.0.92 (Build 2025062001)
 - Rebuilt compatibile JS for old Moodles
