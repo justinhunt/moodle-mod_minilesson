@@ -160,7 +160,7 @@ abstract class item implements templatable, renderable {
 
 
         $keycolumns['name']=['type'=>'string','optional'=>false,'default'=>'','dbname'=>'name'];
-        $keycolumns['visible']=['type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>'visible'];
+        $keycolumns['visible']=['type'=>'boolean','optional'=>true,'default'=>1,'dbname'=>'visible'];
         $keycolumns['instructions']=['type'=>'string','optional'=>true,'default'=>'', 'dbname'=>'iteminstructions'];
         $keycolumns['text']=['type'=>'string','optional'=>true,'default'=>'','dbname'=>'itemtext'];
         $keycolumns['textformat']=['type'=>'int','optional'=>true,'default'=>0,'dbname'=>'itemtextformat'];
@@ -248,6 +248,176 @@ abstract class item implements templatable, renderable {
         $testitem = $this->set_layout($testitem);
 
         return $testitem;
+    }
+
+    /*
+    TO DO: create context mappings eg ['sentences' =>user_sentences] or ['sentences' => 'item1_sentences']
+    TO DO: create utils::aigen_api_call() method to call the AI generation API
+    TO DO: append new context data to the contextdata array for use in subsequent items
+    */
+    public static function aigen_generate ($itemtemplate, $contextdata, $contextmappings, $generatemethod, $prompt) {
+        if($generatemethod == 'reuse'){
+            $newcontextdata = [];
+            foreach ($placeholderfields as $field) {
+                if (isset($contextdata[$contextmappings[$field]])) {
+                    $itemtemplate->{$field} = $contextdata[$contextmappings[$field]];
+                    $newcontextdata[$field] = $itemtemplate->{$field} ;
+                }
+            }
+            return [
+                'itemtemplate' => $itemtemplate,
+                'newcontextdata' => $newcontextdata
+            ];
+        }
+
+        // Merge prompt with the context data
+        foreach ($contextmappings as $key => $value) {
+            $prompt = str_replace('{' . $key . '}', $contextdata[$value], $prompt);
+        }
+        // Call the generation method with the prompt
+        $placeholderfields = $this->aigen_fetch_placeholders($itemtemplate);
+        // Append prompt as response format.
+        $prompt .= ' Response format: ' . json_encode($placeholderfields);
+        // Call the AI generation API
+        $response = \mod_minilesson\utils::call_aigen_api($prompt); 
+        // Process the response to fill in the item template
+        if(!empty($response) && is_array($response)) {
+            foreach ($placeholderfields as $field) {
+                if (isset($response[$field])) {
+                    $itemtemplate->{$field} = $response[$field];
+                }
+            }
+        } else {
+            throw new \moodle_exception('aigen:invalidresponse', constants::M_COMPONENT);
+        }
+
+        return[
+            'itemtemplate' => $itemtemplate,
+            'newcontextdata' => $response
+        ];
+
+    }
+
+    /*
+    This function return the fields that the generate method will generate 
+    */
+    public static function aigen_fetch_placeholders ($itemtemplate) {
+        $allfields = static::get_keycolumns();
+        $placeholderfields = [];
+        $ignorefields = ['type','name','instructions','audiofname'];
+        foreach($allfields as $key => $field) {
+            if (in_array($field['jsonname'], $ignorefields)) {
+                continue; // Skip fields that are not placeholders.
+            }
+
+            $isset =false;
+            if (isset($itemtemplate[$field['jsonname']])) {
+                switch($field['type']) {
+                    case 'string':
+                    case 'int':
+                        $isset = $itemtemplate[$field['jsonname']] !== $field['default'];
+                        break;
+                    case 'boolean':
+                        $isset = $itemtemplate[$field['jsonname']] !==  ($field['default'] ? 'yes' : 'no') ;
+                        break;
+                    case 'voice':
+                    case 'voiceopts':
+                    case 'layout':
+                        //we dont replace these
+                        break;
+
+                    case 'stringarray':
+                        // For string arrays, we might want to handle them differently.
+                        if (is_array($itemtemplate[$field['jsonname']]) && count($itemtemplate[$field['jsonname']]) > 0) {
+                            foreach ($itemtemplate[$field['jsonname']] as $value) {
+                                if (!empty($value)) {
+                                    $isset = true;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+
+                    case 'anonymousfile':
+                        // For anonymous files, we might not need to include them as placeholders.
+                        break;
+
+                    default:
+                        // Other types can be added as needed.
+                }
+            }
+            if ($isset) {
+                $placeholderfields[] = $field['jsonname'];
+            }
+        }
+
+        //At this point we have all the fields that are not the default value.
+        //But most of these are not going to be generated
+        /*
+        foreach($placeholderfields as $index =>$thefield) {
+            switch($thefield) {
+                case 'ttspassage':
+                case 'ttspassageopts':
+                case 'ttspassagevoice':
+                case 'ttspassagespeed':
+                    break;
+
+                case 'audiofname':     
+                    break;
+
+                case 'type':
+                case 'name':
+                case 'visible':
+                case 'instructions':
+                case 'text':
+                case 'textformat':
+                case 'tts':
+                case 'ttsvoice':
+                case 'ttsoption':
+                case 'ttsautoplay':
+                case 'textarea':
+                case 'iframe':
+                case 'ytid':
+                case 'ytstart':
+                case 'ytend':
+                case 'ttsdialog':
+                case 'ttsdialogopts':
+                case 'ttsdialogvoicea':
+                case 'ttsdialogvoiceb':
+                case 'ttsdialogvoicec':
+                case 'ttsdialogvisible':
+                default:
+                    unset($placeholderfields[$index]);
+            }
+        }
+            */
+        return $placeholderfields;
+    }
+
+    /*
+    This function return the prompt that the generate method requires. 
+    */
+    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
+        switch($generatemethod) {
+            
+            case 'extract':
+                $prompt = "Extract 3 sentences from the following {language} text: {text}. " .
+                    "The sentences should be suitable for {level} level learners. " .
+                    "The sentences should be about 10 words long.";
+                    break;
+
+            case 'reuse':
+                $prompt = "Map field to re-use to {reuse}. ";
+                break;
+
+            case 'generate':
+            default:
+                $prompt = "Generate a passage of text in {language} suitable for {level} level learners. " .
+                    "The passage should be about 30 words long and should include the following elements. " .
+                    "The passage should be engaging and appropriate for the target audience.";
+                    break;
+        }   
+        return $prompt;
     }
 
     protected function get_common_elements($testitem){

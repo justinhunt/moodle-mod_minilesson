@@ -2294,4 +2294,10 @@ class utils {
         $moduledata = add_moduleinfo($moduledata, $course);
         return $moduledata->coursemodule;
     }//end of function
+
+    // Extracts fields from a string that are enclosed in curly braces.
+    public static function extract_curly_fields(string $input): array {
+        preg_match_all('/\{(\w+)\}/', $input, $matches);
+        return array_unique($matches[1]); // Remove duplicates
+    }
 }

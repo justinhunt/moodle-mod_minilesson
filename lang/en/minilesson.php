@@ -888,3 +888,4 @@ $string['finish'] = 'Finish';
 $string['penalizehints'] = 'Penalize for hints';
 $string['penalizehints_desc'] = 'If checked, the student will be penalized for using hints.';
 $string['h5pforminstructions'] = 'Select an H5P activity from the content bank and set the number of points this activity should contribute to the MiniLesson. Open the content bank (link below) and choose -add- to create an H5P activity if you need to.';
+$string['aigen'] = 'AI Gen';

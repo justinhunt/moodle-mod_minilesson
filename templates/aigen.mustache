@@ -1,0 +1,30 @@
+<h1> AIGEN </h1>
+<div><span>This page is for testing the AI Lesson Generation Features of MiniLesson.</span><br />
+    <span>Pressing Import JSON will reload the page.</span><br />
+</div>
+<hr />
+<h3>Paste in an exported JSON import file</h3>
+{{{aigenform}}}
+
+{{#items}}
+    <div class="parseditem" data-itemnumber="{{itemnumber}} ">
+        Name: {{name}} <br />
+        Type: {{type}} <br />
+        <select name="generatemethod">
+            <option value="generate">Generate</option>
+            <option value="extract">Extract</option>
+            <option value="reuse">Re-use</option>
+        </select>
+        <textarea name="itemprompt" style="width: 100%; max-width: 1200px;">{{aigenprompt}}</textarea>
+        Generating for replace:{ {{#aigenplaceholders}}{{.}} , {{/aigenplaceholders}} } <br/>
+        Prompt field mapping: {{#promptfields}}
+            {{.}} 
+            <select name="mapping">
+                {{#availablecontext}}
+                    <option value="{{.}}">{{.}}</option>
+                {{/availablecontext}}
+            </select>
+        {{/promptfields}}
+        <hr/>
+    </div>
+{{/items}}
