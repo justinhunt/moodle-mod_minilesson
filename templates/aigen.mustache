@@ -1,30 +1,49 @@
-<h1> AIGEN </h1>
-<div><span>This page is for testing the AI Lesson Generation Features of MiniLesson.</span><br />
-    <span>Pressing Import JSON will reload the page.</span><br />
-</div>
-<hr />
-<h3>Paste in an exported JSON import file</h3>
-{{{aigenform}}}
-
-{{#items}}
-    <div class="parseditem" data-itemnumber="{{itemnumber}} ">
-        Name: {{name}} <br />
-        Type: {{type}} <br />
-        <select name="generatemethod">
-            <option value="generate">Generate</option>
-            <option value="extract">Extract</option>
-            <option value="reuse">Re-use</option>
-        </select>
-        <textarea name="itemprompt" style="width: 100%; max-width: 1200px;">{{aigenprompt}}</textarea>
-        Generating for replace:{ {{#aigenplaceholders}}{{.}} , {{/aigenplaceholders}} } <br/>
-        Prompt field mapping: {{#promptfields}}
-            {{.}} 
-            <select name="mapping">
-                {{#availablecontext}}
-                    <option value="{{.}}">{{.}}</option>
-                {{/availablecontext}}
-            </select>
-        {{/promptfields}}
-        <hr/>
+<div id="{{uniqid}}" class="ml_aigen">
+    <h1> AIGEN </h1>
+    <div><span>This page is for testing the AI Lesson Generation Features of MiniLesson.</span><br />
+        <span>Pressing Import JSON will reload the page.</span><br />
     </div>
-{{/items}}
+    <hr />
+    <h3>Paste in an exported JSON import file</h3>
+    {{{aigenform}}}
+    <h3>Create the AIGEN JSON file</h3>
+    <div class="ml_aigen_gen_aigen_make_btn" id='{{uniqid}}_aigen_make_btn'>
+    <textarea class="ml_aigen_make_textarea" id='{{uniqid}}_aigen_make_textarea' style="width: 100%; max-width: 1200px;"></textarea>
+    <a class="btn btn-primary" href="#">Create AIGEN file</a>
+    </div>
+    <div id="{{uniqid}}_ml_aigen_lesson_title" class="ml_aigen_lesson_title">
+    <label>Lesson Title</label>
+    <input name="lessontitle" type="text"></input>
+    </div>
+    <div id="{{uniqid}}_ml_aigen_lesson_description" class="ml_aigen_lesson_description">
+    <label>Lesson Description</label>
+    <textarea name="lessondescription" style="width: 100%; max-width: 1200px;"></textarea>
+    </div>
+    <div id="{{uniqid}}" class="ml_aigen_items">
+    {{#items}}
+        <div class="ml_aigen_item" data-itemnumber="{{itemnumber}}">
+        <fieldset>
+            <legend>{{name}} </legend>
+            Type: {{type}} <br />
+            Generate Method:
+            <select name="generatemethod">
+                <option value="generate">Generate</option>
+                <option value="extract">Extract</option>
+                <option value="reuse">Re-use</option>
+            </select>
+            <textarea class="ml_aigen_promptbox" name="aigenprompt" data-generateprompt="{{aigenpromptgenerate}}" data-extractprompt="{{aigenpromptextract}}" data-reuseprompt=""  style="width: 100%; max-width: 1200px;">{{aigenprompt}}</textarea>
+            <div class="ml_aigen_mappings" data-promptfields="" data-generatemethod="generate" data-aigenplaceholders="{{#aigenplaceholders}}{{.}},{{/aigenplaceholders}}" data-availablecontext="{{#availablecontext}}{{.}},{{/availablecontext}}">
+                {{> mod_minilesson/aigenmappings}}
+            </div>
+            </fieldset>
+        </div>
+    {{/items}}
+    </div>
+</div>
+{{^element.frozen}}
+    {{#js}}
+        require(['jquery', 'mod_minilesson/aigenmake'], function($, aigenmake) {
+            aigenmake.init('{{uniqid}}');
+        });
+    {{/js}}
+{{/element.frozen}}

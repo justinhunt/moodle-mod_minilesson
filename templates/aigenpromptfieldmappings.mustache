@@ -1,0 +1,14 @@
+<label> Prompt field mapping: </label>
+<br />
+{{#aigenpromptfields}}
+    {{.}} 
+    <select data-name="{{.}}" name="mapping">
+        {{#availablecontext}}
+            <option value="{{.}}">{{.}}</option>
+        {{/availablecontext}}
+    </select>
+{{/aigenpromptfields}}
+<span class="aigen-reload-button">
+    <i class="fas fa-sync-alt"></i>
+</span>
+<br/>

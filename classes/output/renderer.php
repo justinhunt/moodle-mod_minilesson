@@ -769,6 +769,34 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
+    public function aigen_buttons_menu($cm, $lessontemplates){
+    
+        // Generate and return menu
+        $buttondata = [];
+        foreach ($lessontemplates as $keyname => $lessontemplate) {
+            $templatecount = count($lessontemplate['template']->items);
+            $templatetitle = $lessontemplate['config']->lessonTitle;
+            $templatedescription = $lessontemplate['config']->lessonDescription;
+
+            $thebutton = new \single_button(new \moodle_url( constants::M_URL . '/aigen.php',
+                    ['id' => $cm->id, 'action' => 1, 'keyname' => $keyname]), get_string('aigen', constants::M_COMPONENT));
+            $thebutton->add_confirm_action(get_string('aigenconfirm', constants::M_COMPONENT, ['title' => $templatetitle, 'templatecount' => $templatecount]));
+
+
+            $buttondata[] = [
+                'keyname' => $keyname,
+                'title' => $templatetitle,
+                'description' => $templatedescription,
+                'itemcount' => $templatecount,
+                'thebutton' => $this->render($thebutton)];
+        };
+
+
+        $ret = $this->output->render_from_template( constants::M_COMPONENT . '/aigenbuttonsmenu', ['buttons' => $buttondata]);
+
+        return $ret;
+    }
+
     public function push_buttons_menu($cm, $clonecount, $scope) {
         $templateitems = [];
         $pushthings = ['maxattempts', 'transcriber', 'showitemreview', 'region', 'containerwidth', 'csskey' ,

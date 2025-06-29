@@ -1,0 +1,25 @@
+{{#methodreuse}}
+<div class="aigen_fields-to-generate" >
+{{#aigenplaceholders}}
+      {{.}} <input type="checkbox" name="{{.}}" value="1" checked="checked"/>
+        <select name="{{.}}_mapping">
+            {{#availablecontext}}
+                <option value="{{.}}">{{.}}</option>
+            {{/availablecontext}}
+        </select><br />
+  {{/aigenplaceholders}}
+  </div>
+{{/methodreuse}}
+{{^methodreuse}}
+<div class="aigen_promptfield-mappings" style="padding: 5px; border: 1px grey solid; margin: 3px">
+  {{>mod_minilesson/aigenpromptfieldmappings}}
+ </div>
+ <div class="aigen_fields-to-generate" style="padding: 5px; border: 1px grey solid; margin: 3px">
+  <label>Fields that AI should generate</label>
+  <br />
+  {{#aigenplaceholders}}
+      {{.}} <input type="checkbox" name="{{.}}" value="1" checked="checked"/>
+  {{/aigenplaceholders}}
+{{/methodreuse}} 
+</div
+<hr/>

@@ -1,3 +1,6 @@
+Version 1.0.94 (Build 2025062901)
+- AI Item Generation
+
 Version 1.0.93 (Build 2025062300)
 - tweaks to continue btn for fluency item
 - fixed bug where audio would play on item if hidestart page was set

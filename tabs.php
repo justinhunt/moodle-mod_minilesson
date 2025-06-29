@@ -16,14 +16,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
-* Sets up the tabs at the top of the module view page　for teachers.
-*
-* This file was adapted from the mod/lesson/tabs.php
-*
+ * Sets up the tabs at the top of the module view page　for teachers.
+ *
+ * This file was adapted from the mod/lesson/tabs.php
+ *
  * @package mod_minilesson
  * @copyright  2014 Justin Hunt  {@link http://poodll.com}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
-*/
+ */
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -53,9 +53,13 @@ $row[] = new tabobject('view', "$CFG->wwwroot/mod/minilesson/view.php?id=$cm->id
 if (has_capability('mod/minilesson:manage', $context)) {
     $row[] = new tabobject('rsquestions', "$CFG->wwwroot/mod/minilesson/rsquestion/rsquestions.php?id=$cm->id", get_string('rsquestions', constants::M_COMPONENT), get_string('managersquestions', constants::M_COMPONENT));
 }
-if(has_capability('mod/minilesson:manage',$context) && $config->enablesetuptab) {
-    $row[] = new tabobject('setup', "$CFG->wwwroot/mod/minilesson/setup.php?id=$cm->id",
-            get_string('setup', constants::M_COMPONENT), get_string('setup', constants::M_COMPONENT));
+if (has_capability('mod/minilesson:manage', $context) && $config->enablesetuptab) {
+    $row[] = new tabobject(
+        'setup',
+        "$CFG->wwwroot/mod/minilesson/setup.php?id=$cm->id",
+        get_string('setup', constants::M_COMPONENT),
+        get_string('setup', constants::M_COMPONENT)
+    );
 }
 
 if (has_capability('mod/minilesson:evaluate', $context)) {
@@ -63,14 +67,32 @@ if (has_capability('mod/minilesson:evaluate', $context)) {
     $row[] = new tabobject('reports', "$CFG->wwwroot/mod/minilesson/reports.php?id=$cm->id", get_string('reports', constants::M_COMPONENT), get_string('viewreports', constants::M_COMPONENT));
 }
 
-if(has_capability('mod/minilesson:manage',$context)) {
-    $row[] = new tabobject('import', "$CFG->wwwroot/mod/minilesson/import.php?id=$cm->id",
-        get_string('import', constants::M_COMPONENT), get_string('import', constants::M_COMPONENT));
+if (has_capability('mod/minilesson:manage', $context)) {
+    $row[] = new tabobject(
+        'import',
+        "$CFG->wwwroot/mod/minilesson/import.php?id=$cm->id",
+        get_string('import', constants::M_COMPONENT),
+        get_string('import', constants::M_COMPONENT)
+    );
 }
 
-if(has_capability('mod/minilesson:push',$context) && $config->enablepushtab) {
-    $row[] = new tabobject('push', "$CFG->wwwroot/mod/minilesson/push.php?id=$cm->id",
-        get_string('push', constants::M_COMPONENT), get_string('push', constants::M_COMPONENT));
+if (has_capability('mod/minilesson:canuseaigen', $context)) {
+    $row[] = new tabobject(
+        'aigen',
+        "$CFG->wwwroot/mod/minilesson/aigen.php?id=$cm->id",
+        get_string('aigen', constants::M_COMPONENT),
+        get_string('aigen', constants::M_COMPONENT)
+    );
+}
+
+
+if (has_capability('mod/minilesson:push', $context) && $config->enablepushtab) {
+    $row[] = new tabobject(
+        'push',
+        "$CFG->wwwroot/mod/minilesson/push.php?id=$cm->id",
+        get_string('push', constants::M_COMPONENT),
+        get_string('push', constants::M_COMPONENT)
+    );
 }
 
 

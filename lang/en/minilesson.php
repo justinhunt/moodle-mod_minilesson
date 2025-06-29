@@ -43,6 +43,8 @@ $string['minilesson:canpreview'] = 'Can preview MiniLesson activities';
 $string['minilesson:evaluate'] = 'Can evaluate student MiniLesson attempts';
 $string['minilesson:submit'] = 'Can submit MiniLesson attempts';
 $string['minilesson:push'] = 'Push settings from one instance to others';
+$string['minilesson:canuseaigen'] = 'Can use AI Generation feature';
+
 
 $string['id']='ID';
 $string['name']='Name';
@@ -888,4 +890,10 @@ $string['finish'] = 'Finish';
 $string['penalizehints'] = 'Penalize for hints';
 $string['penalizehints_desc'] = 'If checked, the student will be penalized for using hints.';
 $string['h5pforminstructions'] = 'Select an H5P activity from the content bank and set the number of points this activity should contribute to the MiniLesson. Open the content bank (link below) and choose -add- to create an H5P activity if you need to.';
-$string['aigen'] = 'AI Gen';
+$string['aigen'] = 'AI Generate';
+$string['aigenpage'] = 'AI Generate';
+$string['aigenpage_done'] = 'AI Generation Done: {$a} items created and added to the activity.';
+$string['aigenpage_explanation'] = 'Select a lesson template and then set the template options. The AI will use the current activity settings and the information you provide to generate the lesson items. The lesson items will be added to the current activity.';
+$string['aigenpage_notemplates'] = 'There are no templates available for AI generation. Please create a template first.';
+$string['itemcount'] = 'Item Count';
+$string['aigenconfirm'] = 'You are about to use template: <b>{$a->title}</b> to generate {$a->templatecount} items. Are you sure?';
