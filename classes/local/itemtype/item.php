@@ -299,6 +299,22 @@ abstract class item implements templatable, renderable {
     }
 
     /*
+    This function return the fileareas that the generate method will put files into
+    */
+    public static function aigen_fetch_fileareas ($itemtemplate, $thefiles) {
+        $fileareas = [];
+        if(isset($itemtemplate['filesid']) && !empty($itemtemplate['filesid'])) {
+            $filesid = $itemtemplate['filesid'];
+            if(isset($thefiles[$filesid])) {
+                foreach($thefiles[$filesid] as $filearea => $files) {
+                    $fileareas[] = $filearea;
+                }
+            }
+        }
+        return $fileareas;
+    }
+
+    /*
     This function return the fields that the generate method will generate 
     */
     public static function aigen_fetch_placeholders ($itemtemplate) {
@@ -401,19 +417,20 @@ abstract class item implements templatable, renderable {
         switch($generatemethod) {
             
             case 'extract':
-                $prompt = "Extract 3 sentences from the following {language} text: {text}. " .
-                    "The sentences should be suitable for {level} level learners. " .
-                    "The sentences should be about 10 words long.";
+                $prompt = "Extract 4 sentences from the following {language} text: [{text}]. " . PHP_EOL .
+                    "The sentences should be suitable for {level} level learners. ";
                     break;
 
             case 'reuse':
-                $prompt = "Map field to re-use to {reuse}. ";
+                // This is a special case where we reuse the existing data, so we do not need a prompt.
+                // We don't call AI. So will just return an empty string.
+                $prompt = "";
                 break;
 
             case 'generate':
             default:
-                $prompt = "Generate a passage of text in {language} suitable for {level} level learners. " .
-                    "The passage should be about 30 words long and should include the following elements. " .
+                $prompt = "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] " .
+                    "The passage should take about 1 minute to read aloud. " . PHP_EOL .
                     "The passage should be engaging and appropriate for the target audience.";
                     break;
         }   
@@ -738,16 +755,18 @@ abstract class item implements templatable, renderable {
     /**
      * Fetches the media urls for the item.
      *
-     * @param string $mediatype The file area to fetch from, either "image" or "audio"
-     * @param int $itemrecord The customtext field that holds all the sentences usually: 1
+     * @param string $mediatype either "audio" or "video"
+     * @param int $sentencefieldindex The customtext field that holds all the sentences usually: 1 (ie customtext1)
      * @return array
      */
     protected function fetch_sentence_media($mediatype, $sentencefieldindex) {
         global $DB;
         $mediaurls = [];
+        //file area to fetch from, eg "customfile2_image" or "fileanswer1_audio"
         $filearea = constants::FILEANSWER . $sentencefieldindex . '_' . $mediatype;
         $itemid  = $this->itemrecord->id;
-        if ($itemid) {
+        if (isset($this->itemrecord->id) && !empty($this->itemrecord->id)) {
+            $itemid  = $this->itemrecord->id;
             $fs = get_file_storage();
                 $files = $fs->get_area_files($this->context->id, constants::M_COMPONENT, $filearea, $itemid, 'id', false);
                 foreach ($files as $file) {

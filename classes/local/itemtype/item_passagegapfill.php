@@ -149,5 +149,32 @@ class  item_passagegapfill extends item {
         return $keycols;
     }
 
+    /*
+    This function return the prompt that the generate method requires. 
+    */
+    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
+        switch($generatemethod) {
+
+            case 'extract':
+                $prompt = "Choose 8 keywords from the following {language} text: [{text}]. " .PHP_EOL;
+                $prompt .= "Surround each instance of the keyword in the passage with square brackets, e.g [word].  ";
+                break;
+
+            case 'reuse':
+                // This is a special case where we reuse the existing data, so we do not need a prompt.
+                // We don't call AI. So will just return an empty string.
+                $prompt = "";
+                break;
+
+            case 'generate':
+            default:
+                $prompt = "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] " . PHP_EOL;
+                $prompt .= "The passage should be about 6 sentences long. ";
+                $prompt .= "Choose 8 keywords from the passage and surround each with square brackets, e.g [word].  ";
+                break;
+        }
+        return $prompt;
+    }
+
 
 }

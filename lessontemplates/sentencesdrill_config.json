@@ -1,11 +1,11 @@
 {
-  "lessonTitle": "sentences drill",
-  "lessonDescription": "This will create a set of gap fills based on a single set of sentences",
+  "lessonTitle": "gapfill exercise",
+  "lessonDescription": "A series of speaking and listening gapfill activities",
   "items": [
     {
       "itemnumber": 0,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
-      "generatemethod": "generate",
+      "prompt": "Extract 4 sentences from the following {language} text: [{text}]. In each sentence surround one or two keywords with square brackets, e.g [word].\nThe sentences should be suitable for {level} level learners. \n",
+      "generatemethod": "extract",
       "generatefields": [
         {
           "name": "sentences",
@@ -14,147 +14,115 @@
         },
         {
           "name": "timelimit",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         }
       ],
       "promptfields": [
         {
           "name": "language",
-          "mapping": "user_topic"
+          "mapping": "system_language"
+        },
+        {
+          "name": "text",
+          "mapping": "user_text"
         },
         {
           "name": "level",
-          "mapping": "user_topic"
+          "mapping": "user_level"
         }
       ]
     },
     {
       "itemnumber": 1,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
-      "generatemethod": "generate",
+      "prompt": "",
+      "generatemethod": "reuse",
       "generatefields": [
         {
           "name": "sentences",
           "generate": 1,
-          "mapping": ""
+          "mapping": "item0_sentences"
         },
         {
           "name": "hidestartpage",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         },
         {
           "name": "timelimit",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         }
       ],
-      "promptfields": [
-        {
-          "name": "language",
-          "mapping": "user_topic"
-        },
-        {
-          "name": "level",
-          "mapping": "user_topic"
-        }
-      ]
+      "promptfields": []
     },
     {
       "itemnumber": 2,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
-      "generatemethod": "generate",
+      "prompt": "",
+      "generatemethod": "reuse",
       "generatefields": [
         {
           "name": "sentences",
           "generate": 1,
-          "mapping": ""
+          "mapping": "item0_sentences"
         },
         {
           "name": "showtextprompt",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         }
       ],
-      "promptfields": [
-        {
-          "name": "language",
-          "mapping": "user_topic"
-        },
-        {
-          "name": "level",
-          "mapping": "user_topic"
-        }
-      ]
+      "promptfields": []
     },
     {
       "itemnumber": 3,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
-      "generatemethod": "generate",
+      "prompt": "",
+      "generatemethod": "reuse",
       "generatefields": [
         {
           "name": "sentences",
           "generate": 1,
-          "mapping": ""
+          "mapping": "item0_sentences"
         },
         {
           "name": "showtextprompt",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         },
         {
           "name": "int5",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         }
       ],
-      "promptfields": [
-        {
-          "name": "language",
-          "mapping": "user_topic"
-        },
-        {
-          "name": "level",
-          "mapping": "user_topic"
-        }
-      ]
+      "promptfields": []
     },
     {
       "itemnumber": 4,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
-      "generatemethod": "generate",
+      "prompt": "",
+      "generatemethod": "reuse",
       "generatefields": [
         {
           "name": "sentences",
           "generate": 1,
-          "mapping": ""
+          "mapping": "item0_sentences"
         },
         {
           "name": "correctthreshold",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         },
         {
           "name": "timelimit",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         }
       ],
-      "promptfields": [
-        {
-          "name": "language",
-          "mapping": "user_topic"
-        },
-        {
-          "name": "level",
-          "mapping": "user_topic"
-        }
-      ]
+      "promptfields": []
     },
     {
       "itemnumber": 5,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
+      "prompt": "Generate 4 sentences in {language} suitable for {level} level learnerson the topic of: [{topic}] . In each sentence surround one or two keywords with square brackets, e.g [word].",
       "generatemethod": "generate",
       "generatefields": [
         {
@@ -180,132 +148,100 @@
         },
         {
           "name": "level",
+          "mapping": "user_topic"
+        },
+        {
+          "name": "topic",
           "mapping": "user_topic"
         }
       ]
     },
     {
       "itemnumber": 6,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
-      "generatemethod": "generate",
+      "prompt": "",
+      "generatemethod": "reuse",
       "generatefields": [
         {
           "name": "sentences",
           "generate": 1,
-          "mapping": ""
+          "mapping": "item5_sentences"
         },
         {
           "name": "timelimit",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         }
       ],
-      "promptfields": [
-        {
-          "name": "language",
-          "mapping": "user_topic"
-        },
-        {
-          "name": "level",
-          "mapping": "user_topic"
-        }
-      ]
+      "promptfields": []
     },
     {
       "itemnumber": 7,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
-      "generatemethod": "generate",
+      "prompt": "",
+      "generatemethod": "reuse",
       "generatefields": [
         {
           "name": "sentences",
           "generate": 1,
-          "mapping": ""
+          "mapping": "item5_sentences"
         },
         {
           "name": "correctthreshold",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         },
         {
           "name": "hidestartpage",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         },
         {
           "name": "timelimit",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         }
       ],
-      "promptfields": [
-        {
-          "name": "language",
-          "mapping": "user_topic"
-        },
-        {
-          "name": "level",
-          "mapping": "user_topic"
-        }
-      ]
+      "promptfields": []
     },
     {
       "itemnumber": 8,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
-      "generatemethod": "generate",
+      "prompt": "",
+      "generatemethod": "reuse",
       "generatefields": [
         {
           "name": "sentences",
           "generate": 1,
-          "mapping": ""
+          "mapping": "item5_sentences"
         },
         {
           "name": "timelimit",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         }
       ],
-      "promptfields": [
-        {
-          "name": "language",
-          "mapping": "user_topic"
-        },
-        {
-          "name": "level",
-          "mapping": "user_topic"
-        }
-      ]
+      "promptfields": []
     },
     {
       "itemnumber": 9,
-      "prompt": "Generate a passage of text in {language} suitable for {level} level learners. The passage should be about 30 words long and should include the following elements. The passage should be engaging and appropriate for the target audience.",
-      "generatemethod": "generate",
+      "prompt": "",
+      "generatemethod": "reuse",
       "generatefields": [
         {
           "name": "sentences",
           "generate": 1,
-          "mapping": ""
+          "mapping": "item5_sentences"
         },
         {
           "name": "hidestartpage",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         },
         {
           "name": "timelimit",
-          "generate": 1,
+          "generate": 0,
           "mapping": ""
         }
       ],
-      "promptfields": [
-        {
-          "name": "language",
-          "mapping": "user_topic"
-        },
-        {
-          "name": "level",
-          "mapping": "user_topic"
-        }
-      ]
+      "promptfields": []
     }
   ]
 }

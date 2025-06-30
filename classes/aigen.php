@@ -57,18 +57,19 @@ class aigen
         'user_text' => $text, 'system_language' => $this->moduleinstance->ttslanguage];
         $importitems = [];
         $importfiles = [];
-        foreach ($aigenconfig->configitems as $configitem) {
+        foreach ($aigenconfig->items as $configitem) {
             $importitem = $aigentemplate->items[$configitem->itemnumber];
             switch ($configitem->generatemethod) {
                 case 'generate':
                 case 'extract':
+                    // Prepare the prompt with context data
                     $useprompt = $configitem->prompt;
-                    foreach ($configitem->promptfields as $promptfield => $mapping) {
-                        if (isset($useprompt->{$promptfield})) {
-                            $useprompt = str_replace('{' . $promptfield . '}', $contextdata[$mapping]);
+                    foreach ($configitem->promptfields as $promptfield) {
+                        if (isset($contextdata[$promptfield->mapping])) {
+                            $useprompt = str_replace('{' . $promptfield->name . '}', $contextdata[$promptfield->mapping],$useprompt);
                         }
                     };
-
+                    // Prepare the response format (JSON)
                     $generateformat = new \stdClass();
                     foreach ($configitem->generatefields as $generatefield) {
                         if (isset($importitem->{$generatefield->name})) {
@@ -95,7 +96,7 @@ class aigen
 
                 case 'reuse':
                     foreach ($configitem->generatefields as $generatefield) {
-                        if (isset($importitem->{$generatefield->name})) {
+                        if (isset($importitem->{$generatefield->name}) && !empty($generatefield->mapping && isset($contextdata[$generatefield->mapping]))) {
                             $importitem->{$generatefield->name} = $contextdata[$generatefield->mapping];
                         }
                     };
@@ -124,9 +125,10 @@ class aigen
      * @return \stdClass|false Returns an object with success status and payload, or false on failure.
      */
     public function generate_data($prompt) {
+        global $USER;
  
-        if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
-            $token = utils::fetch_token($conf->apiuser, $conf->apisecret);
+        if (!empty($this->conf->apiuser) && !empty($this->conf->apisecret)) {
+            $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
 
 
             if (empty($token)) {
@@ -134,14 +136,17 @@ class aigen
             }
             $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
             $params["wstoken"] = $token;
-            $params["wsfunction"] = 'local_cpapi_generate_structured_data';
+            $params["wsfunction"] = 'local_cpapi_call_ai';
             $params["moodlewsrestformat"] = 'json';
+            $params['appid'] = 'mod_minilesson';
+            $params['action'] = 'generate_structured_content';
             $params["prompt"] = $prompt;
-            $params["language"] = $moduleinstance->ttslanguage;
-            $params["region"] = $moduleinstance->region;
+            $params["language"] = $this->moduleinstance->ttslanguage;
+            $params["region"] = $this->moduleinstance->region;
+             $params['owner'] = hash('md5', $USER->username);
             $params["subject"] = 'none';
 
-            $resp = self::curl_fetch($url, $params);
+            $resp = utils::curl_fetch($url, $params);
             $respobj = json_decode($resp);
             $ret = new \stdClass();
             if (isset($respobj->returnCode)) {

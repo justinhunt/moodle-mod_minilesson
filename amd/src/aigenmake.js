@@ -69,6 +69,20 @@ This file contains class and ID definitions.
                     });
                     itemdata.generatefields = generateFields;
 
+                     //get the file areas
+                    var generateFileareasCheckboxes = $(itemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"]');
+                    var generateFileareas = [];
+                    generateFileareasCheckboxes.each(function() {
+                        var generateFilearea = {};
+                        generateFilearea.name = $(this).attr('name');
+                        generateFilearea.generate  = $(this).is(':checked') ? 1 : 0;
+                        if(generateFilearea.generate) {
+                            generateFilearea.mapping = $(itemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]').val();
+                        }
+                        generateFileareas.push(generateFilearea);
+                    });
+                    itemdata.generatefileareas = generateFileareas;
+
                     //get the prompt field mappings div
                     var promptFields=[];
                     var mappingsSelects= $(itemcontrol).find('.aigen_promptfield-mappings select');
@@ -79,6 +93,7 @@ This file contains class and ID definitions.
                         promptFields.push(promptField);
                     });
                     itemdata.promptfields = promptFields;
+
                     // Add the current itemdata to the items array
                     items.push(itemdata);
                     
@@ -149,9 +164,34 @@ This file contains class and ID definitions.
                         mappingsDiv.html(html);
                     }
                 );// End of templates
+
+                //Update the files areas div
+                var fileareasDiv = $(this).closest('.ml_aigen_item').find('.ml_aigen_filearea_mappings');
+                var fileareasData = {
+                    methodreuse: selectedValue=='reuse',
+                    aigenplaceholders: self.splitDataField(fileareasDiv.data('aigenplaceholders')),
+                    contextfileareas: self.splitDataField(fileareasDiv.data('contextfileareas')),
+                    aigenfileareas: self.splitDataField(fileareasDiv.data('aigenfileareas'))
+                };
+                templates.render('mod_minilesson/aigenfilemappings',fileareasData).then(
+                    function(html,js){
+                        log.debug('redoing fileareadata: ');
+                        fileareasDiv.html(html);
+                    }
+                );// End of templates
+                
+
             });
            
         },  // end of register_events
+
+        splitDataField: function(datafield) {
+            if(!datafield || datafield.trim() === '') {
+                return [];
+            }else{
+                return datafield.split(',').filter(element => element.trim() !== "")
+            }
+        },
 
         extractFieldsFromString: function(input) {
             const regex = /\{(\w+)\}/g; // Matches fields inside curly brackets

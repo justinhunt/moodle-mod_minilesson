@@ -23,7 +23,7 @@
     {{#items}}
         <div class="ml_aigen_item" data-itemnumber="{{itemnumber}}">
         <fieldset>
-            <legend>{{name}} </legend>
+            <legend>[{{itemnumber}}] {{name}} </legend>
             Type: {{type}} <br />
             Generate Method:
             <select name="generatemethod">
@@ -35,7 +35,11 @@
             <div class="ml_aigen_mappings" data-promptfields="" data-generatemethod="generate" data-aigenplaceholders="{{#aigenplaceholders}}{{.}},{{/aigenplaceholders}}" data-availablecontext="{{#availablecontext}}{{.}},{{/availablecontext}}">
                 {{> mod_minilesson/aigenmappings}}
             </div>
+            <div class="ml_aigen_filearea_mappings" data-aigenfileareas="{{#aigenfileareas}}{{.}},{{/aigenfileareas}}" data-aigenplaceholders="{{#aigenplaceholders}}{{.}},{{/aigenplaceholders}}" data-contextfileareas="{{#contextfileareas}}{{.}},{{/contextfileareas}}">
+                {{> mod_minilesson/aigenfilemappings}}
+            </div>
             </fieldset>
+            <hr/>
         </div>
     {{/items}}
     </div>

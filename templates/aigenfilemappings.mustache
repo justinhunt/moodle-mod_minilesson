@@ -1,0 +1,24 @@
+<div class="aigen_fileareas-to-generate" style="padding: 5px; border: 1px grey solid; margin: 3px">
+{{#methodreuse}}
+<label>File areas that AI should re-use (map to earlier item field) </label><br />
+  {{#aigenfileareas}}
+        {{.}} <input type="checkbox" name="{{.}}" value="1" checked="checked"/>
+          <select name="{{.}}_mapping">
+              {{#contextfileareas}}
+                  <option value="{{.}}">{{.}}</option>
+              {{/contextfileareas}}
+          </select><br />
+  {{/aigenfileareas}}
+{{/methodreuse}}
+{{^methodreuse}}
+<label>File areas that AI should generate (map to generate field in this item) </label><br />
+  {{#aigenfileareas}}
+        {{.}} <input type="checkbox" name="{{.}}" value="1" checked="checked"/>
+          <select name="{{.}}_mapping">
+              {{#aigenplaceholders}}
+                  <option value="{{.}}">{{.}}</option>
+              {{/aigenplaceholders}}
+          </select><br />
+  {{/aigenfileareas}}
+{{/methodreuse}}
+</div>

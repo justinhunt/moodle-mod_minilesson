@@ -117,7 +117,11 @@ if ($aigenform->is_cancelled()) {
     $availablecontext[] = 'user_level'; // Sample data that the user might provide. eg "A1" or "Intermediate"
     $availablecontext[] = 'user_text'; // Sample data that the user might provide. eg " One fine day I decided .."
     $availablecontext[] = 'system_language'; // Data from the activity settings, language is required
- 
+
+    // We will also need to fetch the file areas for each item.
+    $contextfileareas = [];
+
+
     // Now we loop through the items in the activity and fetch the AI generation prompt for each item.
     // We also fetch the placeholders for each item, and update the available context fields.
     // We also parse the prompt to get the prompt fields that we will match with availablecontext to make the full AI generation prompt.
@@ -143,11 +147,25 @@ if ($aigenform->is_cancelled()) {
             $thisplaceholders = $itemclass::aigen_fetch_placeholders($item);
             $tdata['items'][$itemnumber]['aigenplaceholders'] = $thisplaceholders;
             $tdata['items'][$itemnumber]['availablecontext'] = $availablecontext;
+
+            // Fetch the file areas for this item.
+            $thefiles = $theactivity['files'];
+            $thisfileareas = $itemclass::aigen_fetch_fileareas($item, $thefiles, $contextfileareas);
+            $tdata['items'][$itemnumber]['aigenfileareas'] = $thisfileareas;
+            $tdata['items'][$itemnumber]['contextfileareas'] = $contextfileareas;
+
             // Update available context.
             $thiscontext = array_map(function($placeholder) use ($itemnumber) {
                 return 'item' . $itemnumber . '_' . $placeholder;
             }, $thisplaceholders);
             $availablecontext = array_merge($availablecontext, $thiscontext);
+
+            // Update available file areas.
+             $itemfileareas = array_map(function($filearea) use ($itemnumber) {
+                return 'item' . $itemnumber . '_' . $filearea;
+            }, $thisfileareas);
+            $contextfileareas = array_merge($contextfileareas, $itemfileareas);
+
         } else {
             debugging('Item type ' . $itemtype . ' does not exist', DEBUG_DEVELOPER);
         }

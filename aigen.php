@@ -98,7 +98,7 @@ switch($action){
  
         // Do the import -- TO DO error checking.
         $theimport = new \mod_minilesson\import($moduleinstance, $modulecontext, $course, $cm);
-        $theimport->set_reader($importdata, $isjson);
+        $theimport->set_reader($importdata, true);
         $theimport->import_process();
 
 
