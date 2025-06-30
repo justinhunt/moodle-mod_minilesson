@@ -94,7 +94,6 @@ $aigenform = new \mod_minilesson\aigen_form(null, [
 $tdata['aigenform'] = $aigenform->render();
 
 // If this page is from a form submission, process it.
-$itemtemplatedata = '';
 if ($aigenform->is_cancelled()) {
     // If the form is cancelled, redirect to the module page.
     redirect(new moodle_url('/mod/minilesson/aigen.php', ['id' => $cm->id]));
@@ -102,8 +101,6 @@ if ($aigenform->is_cancelled()) {
     // If the form is submitted, process the data.
     $importjson = $data->importjson;
     $theactivity = json_decode($importjson, true);
-    $itemtemplatedata .= '<h3>' . count($theactivity['items']) . ' Items  </h3>';
-    $itemtemplatedata .= '<h3>' . count($theactivity['files']) . ' Files  </h3>';
     // These are the items in the imported activity (that is the template lesson)
     $tdata['items'] = $theactivity['items'];
 
@@ -175,7 +172,6 @@ if ($aigenform->is_cancelled()) {
 
 
 // Merge data with template and output to page.
-echo $itemtemplatedata;
 echo $renderer->render_from_template(constants::M_COMPONENT . '/aigen', $tdata);
 
 

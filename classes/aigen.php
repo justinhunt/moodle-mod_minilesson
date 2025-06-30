@@ -32,7 +32,7 @@ class aigen
     private $cm = null;
     private $context = null;
     private $conf = null;
-    
+
     /**
      * aigen constructor.
      *
@@ -44,21 +44,33 @@ class aigen
     {
         global $PAGE, $OUTPUT;
 
-         global $DB;
+        global $DB;
         $this->cm = $cm;
         $this->moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
         $this->context = \context_module::instance($cm->id);
         $this->course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
         $this->conf = get_config(constants::M_COMPONENT);
     }
- 
-    public function make_import_data($aigenconfig, $aigentemplate, $topic, $level, $text) {
-        $contextdata = ['user_topic' => $topic, 'user_level' => $level,
-        'user_text' => $text, 'system_language' => $this->moduleinstance->ttslanguage];
+
+    public function make_import_data($aigenconfig, $aigentemplate, $topic, $level, $text)
+    {
+        $contextdata = [
+            'user_topic' => $topic,
+            'user_level' => $level,
+            'user_text' => $text,
+            'system_language' => $this->moduleinstance->ttslanguage,
+        ];
+        $contextfileareas = [];
         $importitems = [];
-        $importfiles = [];
+        $importfiles = new \stdClass();
+
         foreach ($aigenconfig->items as $configitem) {
             $importitem = $aigentemplate->items[$configitem->itemnumber];
+            $importfile = isset($aigentemplate->files->{$importitem->filesid}) ?
+                        $aigentemplate->files->{$importitem->filesid} :
+                        false;
+
+
             switch ($configitem->generatemethod) {
                 case 'generate':
                 case 'extract':
@@ -66,22 +78,25 @@ class aigen
                     $useprompt = $configitem->prompt;
                     foreach ($configitem->promptfields as $promptfield) {
                         if (isset($contextdata[$promptfield->mapping])) {
-                            $useprompt = str_replace('{' . $promptfield->name . '}', $contextdata[$promptfield->mapping],$useprompt);
+                            $useprompt = str_replace('{' . $promptfield->name . '}', $contextdata[$promptfield->mapping], $useprompt);
                         }
-                    };
+                    }
+
+
                     // Prepare the response format (JSON)
                     $generateformat = new \stdClass();
                     foreach ($configitem->generatefields as $generatefield) {
                         if (isset($importitem->{$generatefield->name})) {
                             $generateformat->{$generatefield->name} = $generatefield->name . '_data';
                         }
-                    };
+                    }
+ 
                     $generateformatjson = json_encode($generateformat);
 
                     // Complete the prompt
                     $useprompt = $useprompt . PHP_EOL . 'Generate the data in this JSON format: ' . $generateformatjson;
 
-                    //Generate the data and update the importitem
+                    // Generate the data and update the importitem
                     $genresult = $this->generate_data($useprompt);
                     if ($genresult && $genresult->success) {
                         $genpayload = $genresult->payload;
@@ -92,6 +107,18 @@ class aigen
                             }
                         }
                     }
+                    // Generate the file areas if needed
+                    // If the filearea is in the template, and the mapping data (topic/sentences etc) is set, generate images
+                    foreach ($configitem->generatefileareas as $generatefilearea) {
+                        if (
+                            $importfile && isset($importfile->{$generatefilearea->name})
+                            && isset($importitem->{$generatefilearea->mapping})
+                        ) {
+                            $importfile->{$generatefilearea->name} =
+                                $this->generate_images($importfile->{$generatefilearea->name}, $importitem->{$generatefilearea->mapping});
+                        }
+                    }
+
                     break;
 
                 case 'reuse':
@@ -99,22 +126,131 @@ class aigen
                         if (isset($importitem->{$generatefield->name}) && !empty($generatefield->mapping && isset($contextdata[$generatefield->mapping]))) {
                             $importitem->{$generatefield->name} = $contextdata[$generatefield->mapping];
                         }
-                    };
+                    }
+
+                    foreach ($configitem->generatefileareas as $generatefilearea) {
+                        if ($importfile && isset($importfile->{$generatefilearea->name}) && !empty($generatefilearea->mapping && isset($contextfileareas[$generatefilearea->mapping]))) {
+                            $importfile->{$generatefilearea->name} = $contextfileareas[$generatefilearea->mapping];
+                        }
+                    }
+
             }
             // Update the context data
             foreach ($configitem->generatefields as $generatefield) {
                 if ($generatefield->generate == 1) {
                     $contextdata["item" . $configitem->itemnumber . "_" . $generatefield->name]
-                             = $importitem->{$generatefield->name};
+                        = $importitem->{$generatefield->name};
                 }
             }
+
+            // Update the filearea data
+            foreach ($configitem->generatefileareas as $generatefilearea) {
+                if ($importfile && $generatefilearea->generate == 1) {
+                    $contextfileareas["item" . $configitem->itemnumber . "_" . $generatefilearea->name]
+                        = $importfile->{$generatefilearea->name};
+                }
+            }
+
+
+
             // Update the import items.
             $importitems[] = $importitem;
+            $importfiles->{$importitem->filesid} = $importfile;
         }
         $thereturn = new \stdClass();
         $thereturn->items = $importitems;
-        $thereturn->files = $aigentemplate->files;
+        $thereturn->files = $importfiles;
         return $thereturn;
+    }
+
+    public function generate_images($fileareatemplate, $contextdata)
+    {
+        global $USER;
+
+        $imagecnt = 0;
+        $imageurls = [];
+        foreach ($fileareatemplate as $filename => $filecontent) {
+            if (!is_array($contextdata)) {
+                $prompt = $contextdata;
+            } else if (array_key_exists($imagecnt, $contextdata)) {
+                $prompt = $contextdata[$imagecnt];
+            } else {
+                // this is a problem, we have no context data for this image.
+                continue;
+            }
+
+            //Add the style
+            $prompt = "simple cute cartoon style: " . $prompt;
+
+            //Do the image generation.
+            $ret = $this->generate_image($prompt);
+
+            if ($ret && $ret->success) {
+                $url = $ret->payload[0]->url;
+                if ($url) {
+                    $rawdata = file_get_contents($url);
+                    if ($rawdata === false) {
+                        // If we cannot fetch the image, skip this one.
+                        continue;
+                    } else {
+                        $base64data = base64_encode($rawdata);
+                        $imageurls[$filename] = $base64data;
+                    }
+                } else {
+                    // If no URL is returned, skip this one.
+                    continue;
+                }
+            }
+            // Increment file counter
+            $imagecnt++;
+        }
+        return $imageurls;
+    }
+    /**
+     * Generates structured data using the CloudPoodll service.
+     *
+     * @param string $prompt The prompt to generate data for.
+     * @return \stdClass|false Returns an object with success status and payload, or false on failure.
+     */
+    public function generate_image($prompt)
+    {
+        global $USER;
+
+        if (!empty($this->conf->apiuser) && !empty($this->conf->apisecret)) {
+            $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
+
+
+            if (empty($token)) {
+                return false;
+            }
+
+            $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
+            $params["wstoken"] = $token;
+            $params["wsfunction"] = 'local_cpapi_call_ai';
+            $params["moodlewsrestformat"] = 'json';
+            $params['appid'] = 'mod_minilesson';
+            $params['action'] = 'generate_images';
+            $params["subject"] = '1';
+            $params["prompt"] = $prompt;
+            $params["language"] = $this->moduleinstance->ttslanguage;
+            $params["region"] = $this->moduleinstance->region;
+            $params['owner'] = hash('md5', $USER->username);
+
+
+            $resp = utils::curl_fetch($url, $params);
+            $respobj = json_decode($resp);
+            $ret = new \stdClass();
+            if (isset($respobj->returnCode)) {
+                $ret->success = $respobj->returnCode == '0' ? true : false;
+                $ret->payload = json_decode($respobj->returnMessage);
+            } else {
+                $ret->success = false;
+                $ret->payload = "unknown problem occurred";
+            }
+            return $ret;
+        } else {
+            return false;
+        }
     }
 
 
@@ -124,9 +260,10 @@ class aigen
      * @param string $prompt The prompt to generate data for.
      * @return \stdClass|false Returns an object with success status and payload, or false on failure.
      */
-    public function generate_data($prompt) {
+    public function generate_data($prompt)
+    {
         global $USER;
- 
+
         if (!empty($this->conf->apiuser) && !empty($this->conf->apisecret)) {
             $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
 
@@ -143,7 +280,7 @@ class aigen
             $params["prompt"] = $prompt;
             $params["language"] = $this->moduleinstance->ttslanguage;
             $params["region"] = $this->moduleinstance->region;
-             $params['owner'] = hash('md5', $USER->username);
+            $params['owner'] = hash('md5', $USER->username);
             $params["subject"] = 'none';
 
             $resp = utils::curl_fetch($url, $params);
@@ -196,7 +333,7 @@ class aigen
                         if (strpos($name, '_config') !== false) {
                             $keyname = str_replace('_config', '', $name);
                             $templatepart = ['config' => $theobject];
-                        } else if (strpos($name, '_template') !== false) { 
+                        } else if (strpos($name, '_template') !== false) {
                             // If the name has _template in it, remove that to get the display name.
                             $keyname = str_replace('_template', '', $name);
                             $templatepart = ['template' => $theobject];
@@ -205,7 +342,7 @@ class aigen
                             $keyname = false;
                             continue;
                         }
-                        if (array_key_exists($keyname, $ret)){
+                        if (array_key_exists($keyname, $ret)) {
                             $ret[$keyname] = array_merge($ret[$keyname], $templatepart);
                         } else {
                             $ret[$keyname] = $templatepart;
