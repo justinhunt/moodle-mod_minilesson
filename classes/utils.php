@@ -1697,6 +1697,24 @@ class utils {
         }
     }
 
+    public static function get_nice_voices($ttslanguage, $region) {
+        // Get all the best voices (neural/whisper/azure)
+        $langvoices = self::get_tts_voices($ttslanguage, false, $region);
+        $nicevoices = [];
+        foreach ($langvoices as $voicekey => $voice) {
+            if (strpos($voicekey, 'Whisper') !== false ||
+                strpos($voicekey, 'Azure') !== false ||
+                in_array($voicekey, constants::M_NEURALVOICES)) {
+                $nicevoices[$voicekey] = $voice;
+            }
+        }
+        if (count($nicevoices) == 0) {
+            // If we have no nice voices, all the voices are nice voices.
+            $nicevoices = $langvoices;
+        }
+        return $nicevoices;
+    }
+
     public static function get_lang_options() {
         return [
                constants::M_LANG_ARAE => get_string('ar-ae', constants::M_COMPONENT),

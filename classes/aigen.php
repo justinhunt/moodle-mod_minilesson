@@ -62,11 +62,15 @@ class aigen
         ];
         $contextfileareas = [];
         $importitems = [];
-        $importfiles = new \stdClass();
+        $importlessonfiles = new \stdClass();
+
+        // Get all the voices and get just the nice ones (neural/whisper/azure).
+        $langvoices = utils::get_tts_voices($this->moduleinstance->ttslanguage, false, $this->moduleinstance->region);
+        $nicevoices = utils::get_nice_voices($this->moduleinstance->ttslanguage, $this->moduleinstance->region);
 
         foreach ($aigenconfig->items as $configitem) {
             $importitem = $aigentemplate->items[$configitem->itemnumber];
-            $importfile = isset($aigentemplate->files->{$importitem->filesid}) ?
+            $importitemfileareas = (isset($importitem->filesid) && isset($aigentemplate->files->{$importitem->filesid})) ?
                         $aigentemplate->files->{$importitem->filesid} :
                         false;
 
@@ -82,7 +86,6 @@ class aigen
                         }
                     }
 
-
                     // Prepare the response format (JSON)
                     $generateformat = new \stdClass();
                     foreach ($configitem->generatefields as $generatefield) {
@@ -90,7 +93,7 @@ class aigen
                             $generateformat->{$generatefield->name} = $generatefield->name . '_data';
                         }
                     }
- 
+
                     $generateformatjson = json_encode($generateformat);
 
                     // Complete the prompt
@@ -111,11 +114,11 @@ class aigen
                     // If the filearea is in the template, and the mapping data (topic/sentences etc) is set, generate images
                     foreach ($configitem->generatefileareas as $generatefilearea) {
                         if (
-                            $importfile && isset($importfile->{$generatefilearea->name})
+                            $importitemfileareas && isset($importitemfileareas->{$generatefilearea->name})
                             && isset($importitem->{$generatefilearea->mapping})
                         ) {
-                            $importfile->{$generatefilearea->name} =
-                                $this->generate_images($importfile->{$generatefilearea->name}, $importitem->{$generatefilearea->mapping});
+                            $importitemfileareas->{$generatefilearea->name} =
+                                $this->generate_images($importitemfileareas->{$generatefilearea->name}, $importitem->{$generatefilearea->mapping});
                         }
                     }
 
@@ -129,12 +132,13 @@ class aigen
                     }
 
                     foreach ($configitem->generatefileareas as $generatefilearea) {
-                        if ($importfile && isset($importfile->{$generatefilearea->name}) && !empty($generatefilearea->mapping && isset($contextfileareas[$generatefilearea->mapping]))) {
-                            $importfile->{$generatefilearea->name} = $contextfileareas[$generatefilearea->mapping];
+                        if ($importitemfileareas && isset($importitemfileareas->{$generatefilearea->name}) && !empty($generatefilearea->mapping && isset($contextfileareas[$generatefilearea->mapping]))) {
+                            $importitemfileareas->{$generatefilearea->name} = $contextfileareas[$generatefilearea->mapping];
                         }
                     }
 
             }
+
             // Update the context data
             foreach ($configitem->generatefields as $generatefield) {
                 if ($generatefield->generate == 1) {
@@ -145,21 +149,40 @@ class aigen
 
             // Update the filearea data
             foreach ($configitem->generatefileareas as $generatefilearea) {
-                if ($importfile && $generatefilearea->generate == 1) {
+                if ($importitemfileareas && $generatefilearea->generate == 1) {
                     $contextfileareas["item" . $configitem->itemnumber . "_" . $generatefilearea->name]
-                        = $importfile->{$generatefilearea->name};
+                        = $importitemfileareas->{$generatefilearea->name};
                 }
             }
 
+            // Voices - these are a special case and we may ultimately do this in a different way.
+            // If the itemtemplate has set a voice field, and the template language is different from the module language
+            // We need a voice in the module language
+            $itemtype = $importitem->type;
+            $itemclass = '\\mod_minilesson\\local\\itemtype\\item_' . $itemtype;
 
+            // Now check the item for voice fields and update them if necessary.
+            if (class_exists($itemclass)) {
+                $allfields = $itemclass::get_keycolumns();
+                foreach ($allfields as $key => $field) {
+                    if (isset($importitem->{$field['jsonname']}) &&
+                        $field['type'] == 'voice' &&
+                        !in_array($importitem->{$field['jsonname']}, $langvoices)) {
+                            // If the voice is not in the module language we randomly select a voice in the right language.
+                            $importitem->{$field['jsonname']} = array_rand(array_flip($nicevoices));
+                    }
+                }
+            }
 
             // Update the import items.
             $importitems[] = $importitem;
-            $importfiles->{$importitem->filesid} = $importfile;
+            if (isset($importitem->filesid)) {
+                 $importlessonfiles->{$importitem->filesid} = $importitemfileareas;
+            }
         }
         $thereturn = new \stdClass();
         $thereturn->items = $importitems;
-        $thereturn->files = $importfiles;
+        $thereturn->files = $importlessonfiles;
         return $thereturn;
     }
 
@@ -312,7 +335,7 @@ class aigen
         $iterator = null;
 
 
-        //we search the Generico "presets" and the themes "generico" folders for presets
+        //we search the lessontemplates dir for templates
         $templatesdir = $CFG->dirroot . '/mod/minilesson/lessontemplates';
         if (file_exists($templatesdir)) {
             $iterator = new \DirectoryIterator($templatesdir);
@@ -352,7 +375,7 @@ class aigen
             }
         }
         return $ret;
-    }//end of fetch presets function
+    }//end of fetch_lesson_templates function
 
     /**
      * Parses a lesson template file and returns its content.

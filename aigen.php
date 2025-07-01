@@ -108,7 +108,6 @@ switch($action){
 
     case AIGEN_LIST:
     default:
-        $updatefields = ['transcriber'];
         break;
 }
 

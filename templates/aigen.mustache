@@ -22,7 +22,8 @@
                 <option value="generate">Generate</option>
                 <option value="extract">Extract</option>
                 <option value="reuse">Re-use</option>
-            </select>
+            </select><br>
+            <label>Prompt</label>
             <textarea class="ml_aigen_promptbox" name="aigenprompt" data-generateprompt="{{aigenpromptgenerate}}" data-extractprompt="{{aigenpromptextract}}" data-reuseprompt=""  style="width: 100%; max-width: 1200px;">{{aigenprompt}}</textarea>
             <div class="ml_aigen_mappings" data-promptfields="" data-generatemethod="generate" data-aigenplaceholders="{{#aigenplaceholders}}{{.}},{{/aigenplaceholders}}" data-availablecontext="{{#availablecontext}}{{.}},{{/availablecontext}}">
                 {{> mod_minilesson/aigenmappings}}
