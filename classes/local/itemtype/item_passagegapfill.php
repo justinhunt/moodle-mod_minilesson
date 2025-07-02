@@ -143,7 +143,7 @@ class  item_passagegapfill extends item {
         $keycols = parent::get_keycolumns();
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
-        $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::PASSAGEGAPFILL_PASSAGE];
+        $keycols['text1'] = ['jsonname' => 'passage', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::PASSAGEGAPFILL_PASSAGE];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PASSAGEGAPFILL_HINTS];
          $keycols['int2'] = ['jsonname' => 'penalizehints', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PENALIZEHINTS];
         return $keycols;

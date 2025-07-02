@@ -118,7 +118,7 @@ class item_fluency extends item {
      /*
     This function return the prompt that the generate method requires. 
     */
-    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch($generatemethod) {
 
             case 'extract':

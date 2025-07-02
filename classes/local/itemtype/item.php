@@ -261,10 +261,11 @@ abstract class item implements templatable, renderable
     }
 
     /*
-    TO DO: create context mappings eg ['sentences' =>user_sentences] or ['sentences' => 'item1_sentences']
-    TO DO: create utils::aigen_api_call() method to call the AI generation API
-    TO DO: append new context data to the contextdata array for use in subsequent items
+    Perform the AI generation and return the updated template and contect data for a single item
     */
+
+/*
+
     public static function aigen_generate($itemtemplate, $contextdata, $contextmappings, $generatemethod, $prompt)
     {
         if ($generatemethod == 'reuse') {
@@ -304,10 +305,12 @@ abstract class item implements templatable, renderable
 
         return [
             'itemtemplate' => $itemtemplate,
-            'newcontextdata' => $response
+            'newcontextdata' => $response,
         ];
 
     }
+
+    */
 
     /*
     This function return the fileareas that the generate method will put files into
@@ -367,7 +370,7 @@ abstract class item implements templatable, renderable
                         break;
 
                     case 'anonymousfile':
-                        // For anonymous files, we might not need to include them as placeholders.
+                        // Files are handled elsewhere
                         break;
 
                     default:

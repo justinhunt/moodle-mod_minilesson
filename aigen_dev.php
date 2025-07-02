@@ -109,15 +109,20 @@ if ($aigenform->is_cancelled()) {
     // that is why the context grows, as we loop through the items.
     // Here we are building the AI Lesson Generation (AIGEN) config. 
     // So it is the location or name of the data. not the data itself.
+    //TO DO replace sample data with real data from user input or activity settings. currently hardcoded here an in /mod/minilesson/aigen.php
     $availablecontext = [];
+    $availablecontext[] = 'target_language'; // Data from the activity settings, language is required
     $availablecontext[] = 'user_topic'; // Sample data that the user might provide. eg "Your plan for the weekend"
     $availablecontext[] = 'user_level'; // Sample data that the user might provide. eg "A1" or "Intermediate"
     $availablecontext[] = 'user_text'; // Sample data that the user might provide. eg " One fine day I decided .."
-    $availablecontext[] = 'system_language'; // Data from the activity settings, language is required
+    $availablecontext[] = 'user_keywords'; // Sample data that the user might provide. eg "big dog, cat, mouse, eat a horse"
+    $availablecontext[] = 'user_customdata1'; // Sample data that the user might provide.
+    $availablecontext[] = 'user_customdata2'; // Sample data that the user might provide.
+    $availablecontext[] = 'user_customdata3'; // Sample data that the user might provide. 
+
 
     // We will also need to fetch the file areas for each item.
     $contextfileareas = [];
-
 
     // Now we loop through the items in the activity and fetch the AI generation prompt for each item.
     // We also fetch the placeholders for each item, and update the available context fields.

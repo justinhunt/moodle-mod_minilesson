@@ -1,0 +1,162 @@
+{
+  "lessonTitle": "Story Template",
+  "lessonDescription": "Will generate a story and then a series of activities based on that story.",
+  "items": [
+    {
+      "itemnumber": 0,
+      "prompt": "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] The passage should take about 1 minute to read aloud. It should include some of these keywords: [{keywords}]\nThe passage should be engaging and appropriate for the target audience.",
+      "generatemethod": "generate",
+      "generatefields": [
+        {
+          "name": "ttspassage",
+          "generate": 1,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [
+        {
+          "name": "itemmedia",
+          "generate": 1,
+          "mapping": "ttspassage"
+        }
+      ],
+      "promptfields": [
+        {
+          "name": "language",
+          "mapping": "target_language"
+        },
+        {
+          "name": "level",
+          "mapping": "user_level"
+        },
+        {
+          "name": "topic",
+          "mapping": "user_topic"
+        },
+        {
+          "name": "keywords",
+          "mapping": "user_keywords"
+        }
+      ]
+    },
+    {
+      "itemnumber": 1,
+      "prompt": "Extract a 1 dimensional array of 4 sentences from the following {language} text: [{text}]. In each sentence surround one keyword with square brackets, e.g [word]. ",
+      "generatemethod": "extract",
+      "generatefields": [
+        {
+          "name": "sentences",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "allowretry",
+          "generate": 0,
+          "mapping": ""
+        },
+        {
+          "name": "hidestartpage",
+          "generate": 0,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [
+        {
+          "name": "customfile1_image",
+          "generate": 1,
+          "mapping": "sentences"
+        }
+      ],
+      "promptfields": [
+        {
+          "name": "language",
+          "mapping": "target_language"
+        },
+        {
+          "name": "text",
+          "mapping": "item0_ttspassage"
+        }
+      ]
+    },
+    {
+      "itemnumber": 2,
+      "prompt": "",
+      "generatemethod": "reuse",
+      "generatefields": [
+        {
+          "name": "sentences",
+          "generate": 1,
+          "mapping": "item1_sentences"
+        },
+        {
+          "name": "allowretry",
+          "generate": 0,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [
+        {
+          "name": "customfile1_image",
+          "generate": 1,
+          "mapping": "item1_customfile1_image"
+        }
+      ],
+      "promptfields": []
+    },
+    {
+      "itemnumber": 3,
+      "prompt": "Find any  of these  keywords [{keywords}] in the following {language} text: [{text}]. \nSurround each instance of the keyword in the passage with square brackets, e.g [word].  ",
+      "generatemethod": "extract",
+      "generatefields": [
+        {
+          "name": "passage",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "hidestartpage",
+          "generate": 0,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [],
+      "promptfields": [
+        {
+          "name": "keywords",
+          "mapping": "user_keywords"
+        },
+        {
+          "name": "language",
+          "mapping": "target_language"
+        },
+        {
+          "name": "text",
+          "mapping": "item0_ttspassage"
+        }
+      ]
+    },
+    {
+      "itemnumber": 4,
+      "prompt": "Generate a 1 dimensional array of 'sentences' of format 'keyword|keyword_definition' in {language} from the following keywords: [{keywords}]",
+      "generatemethod": "generate",
+      "generatefields": [
+        {
+          "name": "sentences",
+          "generate": 1,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [],
+      "promptfields": [
+        {
+          "name": "language",
+          "mapping": "target_language"
+        },
+        {
+          "name": "keywords",
+          "mapping": "user_keywords"
+        }
+      ]
+    }
+  ]
+}

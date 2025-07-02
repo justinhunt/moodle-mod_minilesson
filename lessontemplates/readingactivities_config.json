@@ -1,0 +1,257 @@
+{
+  "lessonTitle": "Reading Activities",
+  "lessonDescription": "Reading Activities based on a passage of text supplied by the teacher",
+  "items": [
+    {
+      "itemnumber": 0,
+      "prompt": "",
+      "generatemethod": "reuse",
+      "generatefields": [
+        {
+          "name": "text",
+          "generate": 0,
+          "mapping": ""
+        },
+        {
+          "name": "textarea",
+          "generate": 1,
+          "mapping": "user_text"
+        }
+      ],
+      "generatefileareas": [],
+      "promptfields": []
+    },
+    {
+      "itemnumber": 1,
+      "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
+      "generatemethod": "extract",
+      "generatefields": [
+        {
+          "name": "text",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "text1",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "text2",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "text3",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "text4",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "correctanswer",
+          "generate": 1,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [],
+      "promptfields": [
+        {
+          "name": "language",
+          "mapping": "target_language"
+        },
+        {
+          "name": "level",
+          "mapping": "user_level"
+        },
+        {
+          "name": "text",
+          "mapping": "user_text"
+        }
+      ]
+    },
+    {
+      "itemnumber": 2,
+      "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
+      "generatemethod": "extract",
+      "generatefields": [
+        {
+          "name": "text",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "text1",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "text2",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "text3",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "text4",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "listenorread",
+          "generate": 0,
+          "mapping": ""
+        },
+        {
+          "name": "correctanswer",
+          "generate": 1,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [
+        {
+          "name": "customfile1",
+          "generate": 1,
+          "mapping": "text1"
+        },
+        {
+          "name": "customfile2",
+          "generate": 1,
+          "mapping": "text2"
+        },
+        {
+          "name": "customfile3",
+          "generate": 1,
+          "mapping": "text3"
+        },
+        {
+          "name": "customfile4",
+          "generate": 1,
+          "mapping": "text4"
+        }
+      ],
+      "promptfields": [
+        {
+          "name": "language",
+          "mapping": "target_language"
+        },
+        {
+          "name": "level",
+          "mapping": "user_level"
+        },
+        {
+          "name": "text",
+          "mapping": "user_text"
+        }
+      ]
+    },
+    {
+      "itemnumber": 3,
+      "prompt": "Extract a 1 dimensional array of 4 sentences from the following {language} text: [{text}]. ",
+      "generatemethod": "extract",
+      "generatefields": [
+        {
+          "name": "sentences",
+          "generate": 1,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [],
+      "promptfields": [
+        {
+          "name": "language",
+          "mapping": "target_language"
+        },
+        {
+          "name": "text",
+          "mapping": "user_text"
+        }
+      ]
+    },
+    {
+      "itemnumber": 4,
+      "prompt": "Generate a writing question(text) suitable for {level} level learners of {language} on the topic of: [{topic}]",
+      "generatemethod": "generate",
+      "generatefields": [
+        {
+          "name": "text",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "aigradefeedback",
+          "generate": 0,
+          "mapping": ""
+        },
+        {
+          "name": "aigradeinstructions",
+          "generate": 0,
+          "mapping": ""
+        },
+        {
+          "name": "totalmarks",
+          "generate": 0,
+          "mapping": ""
+        },
+        {
+          "name": "targetwordcount",
+          "generate": 0,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [],
+      "promptfields": [
+        {
+          "name": "level",
+          "mapping": "user_level"
+        },
+        {
+          "name": "language",
+          "mapping": "target_language"
+        },
+        {
+          "name": "topic",
+          "mapping": "user_topic"
+        }
+      ]
+    },
+    {
+      "itemnumber": 5,
+      "prompt": "Create a closed question (text) and a 1 dimensional array of  grammatically correct answers (sentences) on the topic of: [{topic}] The question and answers should be in {language} and suitable for {level} level learners. ",
+      "generatemethod": "generate",
+      "generatefields": [
+        {
+          "name": "text",
+          "generate": 1,
+          "mapping": ""
+        },
+        {
+          "name": "sentences",
+          "generate": 1,
+          "mapping": ""
+        }
+      ],
+      "generatefileareas": [],
+      "promptfields": [
+        {
+          "name": "topic",
+          "mapping": "user_topic"
+        },
+        {
+          "name": "language",
+          "mapping": "target_language"
+        },
+        {
+          "name": "level",
+          "mapping": "user_level"
+        }
+      ]
+    }
+  ]
+}

@@ -28,7 +28,8 @@ use renderable;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_multichoice extends item {
+class item_multichoice extends item
+{
 
     //the item type
     public const ITEMTYPE = constants::TYPE_MULTICHOICE;
@@ -39,7 +40,8 @@ class item_multichoice extends item {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(\renderer_base $output)
+    {
         $itemrecord = $this->itemrecord;
         $testitem = new \stdClass();
         $testitem = $this->get_common_elements($testitem);
@@ -103,47 +105,75 @@ class item_multichoice extends item {
         return $testitem;
     }
 
-    public static function validate_import($newrecord,$cm){
+    public static function validate_import($newrecord, $cm)
+    {
         $error = new \stdClass();
-        $error->col='';
-        $error->message='';
- 
-/* The presence of images now means this check is not valid (no text + image is a possibility)
-        if($newrecord->customtext1==''){
-            $error->col='customtext1';
-            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
-            return $error;
-        }
-        if($newrecord->customtext2==''){
-            $error->col='customtext2';
-            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
-            return $error;
-        }
+        $error->col = '';
+        $error->message = '';
 
-        if(!isset($newrecord->{'customtext' . $newrecord->correctanswer}) || $newrecord->{'customtext' . $newrecord->correctanswer}==''){
-            $error->col='correctanswer';
-            $error->message=get_string('error:correctanswer',constants::M_COMPONENT);
-            return $error;
-        }
-*/
+        /* The presence of images now means this check is not valid (no text + image is a possibility)
+                if($newrecord->customtext1==''){
+                    $error->col='customtext1';
+                    $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+                    return $error;
+                }
+                if($newrecord->customtext2==''){
+                    $error->col='customtext2';
+                    $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+                    return $error;
+                }
+
+                if(!isset($newrecord->{'customtext' . $newrecord->correctanswer}) || $newrecord->{'customtext' . $newrecord->correctanswer}==''){
+                    $error->col='correctanswer';
+                    $error->message=get_string('error:correctanswer',constants::M_COMPONENT);
+                    return $error;
+                }
+        */
         //return false to indicate no error
         return false;
     }
 
     /*
-* This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
-*/
-    public static function get_keycolumns(){
+     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+     */
+    public static function get_keycolumns()
+    {
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['text5']=['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
-        $keycols['int4']=['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
-        $keycols['int3']=['jsonname'=>'confirmchoice','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::CONFIRMCHOICE];
-        $keycols['int2']=['jsonname'=>'listenorread','type'=>'int','optional'=>true,'default'=>0,'dbname'=>constants::LISTENORREAD]; //not boolean ..
-        for ($i=1;$i<=constants::MAXANSWERS;$i++){
-            $keycols['fileanswer'.($i+constants::MAXANSWERS)]=['jsonname'=>constants::FILEANSWER.$i,'type'=>'anonymousfile','optional'=>true,'default'=>null,'dbname'=>false];
+        $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
+        $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
+        $keycols['int3'] = ['jsonname' => 'confirmchoice', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::CONFIRMCHOICE];
+        $keycols['int2'] = ['jsonname' => 'listenorread', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::LISTENORREAD]; //not boolean ..
+        for ($i = 1; $i <= constants::MAXANSWERS; $i++) {
+            $keycols['fileanswer' . ($i + constants::MAXANSWERS)] = ['jsonname' => constants::FILEANSWER . $i, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         }
         return $keycols;
+    }
+
+     /*
+    * This function return the prompt that the generate method requires for listening gap fill items.
+    */
+    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
+        switch($generatemethod) {
+
+            case 'extract':
+                $prompt = "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] ";
+                $prompt .= "Also specify the correct answer as a number 1-4 in 'correctanswer'. ";
+                    break;
+
+            case 'reuse':
+                // This is a special case where we reuse the existing data, so we do not need a prompt.
+                // We don't call AI. So will just return an empty string.
+                $prompt = "";
+                break;
+
+            case 'generate':
+            default:
+                $prompt = "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners on the topic of: [{topic}] ";
+                $prompt .= "Also specify the correct answer as a number 1-4 in 'correctanswer'. ";
+                    break;
+        }
+        return $prompt;
     }
 
 }

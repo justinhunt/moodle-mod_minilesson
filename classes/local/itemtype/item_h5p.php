@@ -80,11 +80,29 @@ class item_h5p extends item {
     public static function get_keycolumns() {
         // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
-        $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
-        $keycols['int3'] = ['jsonname' => 'confirmchoice', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::CONFIRMCHOICE];
-        $keycols['int2'] = ['jsonname' => 'listenorread', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::LISTENORREAD]; // not boolean ..
         return $keycols;
+    }
+
+    /*
+   This function return the prompt that the generate method requires. 
+   */
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
+    {
+        switch ($generatemethod) {
+
+            case 'reuse':
+                // This is a special case where we reuse the existing data, so we do not need a prompt.
+                // We don't call AI. So will just return an empty string.
+                $prompt = "";
+                break;
+
+            case 'generate':
+            case 'extract':
+            default:
+                $prompt = "H5P activities can not be created by AI. You should remove H5P from the item template";
+                break;
+        }
+        return $prompt;
     }
 
 }

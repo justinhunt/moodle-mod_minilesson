@@ -68,10 +68,17 @@ $config = get_config(constants::M_COMPONENT);
 $lessontemplates = aigen::fetch_lesson_templates();
 $templatecount = count($lessontemplates);
 
-// Testing data.
-$testtopic = 'Glass Bridges in China';
-$testlevel = 'CEFR A2';
-$testtext = 'On my way to school I met a dog. We became friends. But he met a cat and ran after it. Was he my friend?';
+// Testing data. // hard coded here and in aigen_dev.php
+$contextdata = [
+            'target_language' => $moduleinstance->ttslanguage,
+            'user_topic' => 'Glass Bridges in China',
+            'user_level' => 'CEFR A2',
+            'user_text' => 'On my way to school I met a dog. We became friends. But he met a cat and ran after it. Was he my friend?',
+            'user_keywords' => 'dog, cat, school, friend',
+            'user_customdata1' => 'French',
+            'user_customdata2' => '',
+            'user_customdata3' => '',
+        ];
 
 switch($action){
 
@@ -91,11 +98,9 @@ switch($action){
         $importdata = $aigen->make_import_data(
             $config,
             $template,
-            $testtopic,
-            $testlevel,
-            $testtext
+            $contextdata,
         );
- 
+
         // Do the import -- TO DO error checking.
         $theimport = new \mod_minilesson\import($moduleinstance, $modulecontext, $course, $cm);
         $theimport->set_reader($importdata, true);
@@ -130,7 +135,7 @@ echo html_writer::div(get_string('aigenpage_explanation', constants::M_COMPONENT
 
 
 if ($templatecount > 0) {
-    echo html_writer::div("For testing:<br> topic='$testtopic',<br> level='$testlevel', <br>text='$testtext'<br>",  ' mb-2');
+    echo html_writer::div("For testing:<br> <pre>" . print_r($contextdata, true) . '</pre>',  ' mb-2');
     echo $renderer->aigen_buttons_menu($cm, $lessontemplates);
 } else {
     echo html_writer::div(get_string('aigenpage_notemplates', constants::M_COMPONENT, $templatecount), constants::M_COMPONENT . '_clonecount' . ' mb-2');

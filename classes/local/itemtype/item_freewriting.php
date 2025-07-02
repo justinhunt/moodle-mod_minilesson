@@ -103,4 +103,28 @@ class item_freewriting extends item {
         return $keycols;
     }
 
+       /*
+    This function return the prompt that the generate method requires. 
+    */
+    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
+        switch($generatemethod) {
+
+            case 'extract':
+                $prompt = "Create a writing question(text) suitable for {level} level learners of {language} as a follow up activity on the following reading: [{text}] ";
+                break;
+
+            case 'reuse':
+                // This is a special case where we reuse the existing data, so we do not need a prompt.
+                // We don't call AI. So will just return an empty string.
+                $prompt = "";
+                break;
+
+            case 'generate':
+            default:
+                $prompt = "Generate a writing question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] ";
+                break;
+        }
+        return $prompt;
+    }
+
 }

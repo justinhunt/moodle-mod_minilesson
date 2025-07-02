@@ -52,14 +52,8 @@ class aigen
         $this->conf = get_config(constants::M_COMPONENT);
     }
 
-    public function make_import_data($aigenconfig, $aigentemplate, $topic, $level, $text)
+    public function make_import_data($aigenconfig, $aigentemplate, $contextdata)
     {
-        $contextdata = [
-            'user_topic' => $topic,
-            'user_level' => $level,
-            'user_text' => $text,
-            'system_language' => $this->moduleinstance->ttslanguage,
-        ];
         $contextfileareas = [];
         $importitems = [];
         $importlessonfiles = new \stdClass();
