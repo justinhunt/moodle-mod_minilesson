@@ -3532,3 +3532,66 @@ div.poodlldictationplayer {
   margin-top: 8px;
   margin-right: 3px;
 }
+/* Speedy Audio Player */
+.ml_speedyplayer_row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: #fff;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+  .ml_speedyplayer_row audio {
+      flex: 1;
+      min-width: 200px;
+    }
+
+ .ml_speedyplayer_row .speedy_btn {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #4a90e2;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+  .ml_speedyplayer_row .speedy_btn:hover {
+      background: #357ab8;
+    }
+
+  .ml_speedyplayer_row .speedy_btn {
+      gap: 6px;
+    }
+
+   .ml_speedyplayer_label {
+    line-height: 1;
+    vertical-align: middle;
+    display: inline-block;
+   } 
+
+    @media (max-width: 480px) {
+      .ml_speedyplayer_row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .ml_speedyplayer_row audio {
+        width: 100%;
+      }
+
+      .ml_speedyplayer_row audio .speedy_btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }

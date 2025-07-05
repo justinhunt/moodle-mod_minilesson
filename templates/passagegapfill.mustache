@@ -2,7 +2,11 @@
 {{> mod_minilesson/progresstimer}}
 <div class="minilesson_pgapfill_box">
     <div class="ml_pgapfill_resultscontainer" style="display: none"></div>
-    <audio class="pgapfill_audio_player" controls="controls" src="{{passageaudio}}"></audio>
+    {{< mod_minilesson/speedyplayer}}
+        {{$audioplayer}}
+        <audio class="pgapfill_audio_player" controls="controls" src="{{passageaudio}}"></audio>
+        {{/audioplayer}}
+    {{/ mod_minilesson/speedyplayer}}
 
     <div class="pgapfill_passage pgapfull_monospace {{rtl}}">
       {{#passagedata.chunks}}

@@ -1,0 +1,97 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/speedyplayer
+
+    A Block which allows templates to include an audio player that will be surrounded
+    by speed and skip buttons
+
+}}
+  <div id="{{uniqid}}_speedyplayer_row" class="ml_speedyplayer_row">
+    <button class="speedy_btn ml_speedyplayer_skipback" title="Back 5s">
+      <i class="fa fa-undo"></i>
+    </button>
+
+    {{$audioplayer}}<audio id="ml_speedyplayer_audio" controls src="an-audio-file.mp3"></audio>{{/audioplayer}}
+
+    <button class="speedy_btn ml_speedyplayer_skipforward" title="Forward 5s">
+      <i class="fa fa-repeat"></i>
+    </button>
+
+    <button class="speedy_btn ml_speedyplayer_togglespeed" title="Toggle Speed">
+      <i class="fa fa-tachometer"></i>
+      <span class="ml_speedyplayer_label">1x</span>
+    </button>
+  </div>
+{{^element.frozen}}
+{{#js}}
+    require(['jquery','core/log'], function($, log) {
+        var speedyplayer = {
+                controls: {},
+                normalSpeed: true,
+
+                init: function(){
+                    var self = this;
+                    self.initControls();
+                    self.registerEvents();
+                },
+
+                initControls: function(){
+                    var self = this;
+                    var playerrow =$('#{{uniqid}}_speedyplayer_row');
+                    self.controls.player = playerrow.find('audio')[0];
+                    self.controls.speedLabel =  playerrow.find('.ml_speedyplayer_label');
+                    self.controls.skipbackbutton = playerrow.find('.ml_speedyplayer_skipback');
+                    self.controls.skipforwardbutton = playerrow.find('.ml_speedyplayer_skipforward');
+                    self.controls.speedtogglebutton = playerrow.find('.ml_speedyplayer_togglespeed');
+                },
+
+                registerEvents: function() {
+                    var self = this;
+                    self.controls.skipbackbutton.on('click',function(e){
+                        self.skip(-5);
+                        e.preventDefault();
+                    });
+                    
+                    self.controls.skipforwardbutton.on('click',function(e){
+                        self.skip(5);
+                        e.preventDefault();
+                    });
+
+                    self.controls.speedtogglebutton.on('click',function(e){
+                        self.toggleSpeed();
+                        e.preventDefault();
+                    });
+                },
+
+                toggleSpeed: function(){
+                    var self = this;
+                    self.normalSpeed = !self.normalSpeed;
+                    self.controls.player.playbackRate = self.normalSpeed ? 1.0 : 0.8;
+                    self.controls.speedLabel.text(self.controls.player.playbackRate + 'x');
+                },
+
+                skip: function (seconds) {
+                    var self = this;
+                    self.controls.player.currentTime += seconds;
+                }
+        };
+
+        speedyplayer.init();
+    });
+{{/js}}
+{{/element.frozen}}

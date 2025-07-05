@@ -10,12 +10,16 @@
     {{#audiostorysubtitles}}
         <div id="{{uniqid}}_audiostory_caption"  class="audiostory_caption"></div>
     {{/audiostorysubtitles}}
-    <audio id="{{uniqid}}_audiostory_audio" class="audiostory_audio" controls="controls" crossorigin="anonymous" >
-        <source src="{{audiostoryaudio}}">
-        {{#audiostorysubtitles}}
-        <track kind="subtitles" src="{{audiostorysubtitles}}" default="default">
-        {{/audiostorysubtitles}}
-    </audio>
+    {{< mod_minilesson/speedyplayer}}
+        {{$audioplayer}}
+        <audio id="{{uniqid}}_audiostory_audio" class="audiostory_audio" controls="controls" crossorigin="anonymous" >
+            <source src="{{audiostoryaudio}}">
+            {{#audiostorysubtitles}}
+            <track kind="subtitles" src="{{audiostorysubtitles}}" default="default">
+            {{/audiostorysubtitles}}
+        </audio>
+        {{/audioplayer}}
+    {{/ mod_minilesson/speedyplayer}}
 </div>
 {{^element.frozen}}
     {{#js}}
