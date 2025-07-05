@@ -109,7 +109,7 @@ class aigen
                     foreach ($configitem->generatefileareas as $generatefilearea) {
                         if (
                             $importitemfileareas && isset($importitemfileareas->{$generatefilearea->name})
-                            && isset($importitem->{$generatefilearea->mapping})
+                            && isset($generatefilearea->mapping) && isset($importitem->{$generatefilearea->mapping})
                         ) {
                             $importitemfileareas->{$generatefilearea->name} =
                                 $this->generate_images($importitemfileareas->{$generatefilearea->name}, $importitem->{$generatefilearea->mapping});

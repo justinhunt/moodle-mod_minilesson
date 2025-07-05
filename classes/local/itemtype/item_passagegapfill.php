@@ -156,8 +156,9 @@ class  item_passagegapfill extends item {
         switch($generatemethod) {
 
             case 'extract':
-                $prompt = "Choose 8 keywords from the following {language} text: [{text}]. " .PHP_EOL;
-                $prompt .= "Surround each instance of the keyword in the passage with square brackets, e.g [word].  ";
+                $prompt = "Choose 8 keywords from the following {language} text. ";
+                $prompt .= "Surround each instance of the keyword in the passage with square brackets, e.g [word].  " . PHP_EOL;
+                $prompt .= " [{text}]. ";
                 break;
 
             case 'reuse':
