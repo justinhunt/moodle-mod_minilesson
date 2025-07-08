@@ -1,7 +1,7 @@
 <div id="{{uniqid}}" class="ml_aigen">
     <h1> AIGEN </h1>
     <div><span>This page is for creating AI Generate config files for MiniLesson.</span><br />
-       <span> 1) Paste in a full minilesson JSON export/import file. That will be the template for this lesson. Then press Import JSON. The page will reload.</span></br> 
+       <span> 1) Paste in a full minilesson JSON export/import file. That will be the template for this lesson. Then press Import JSON. The page will reload.</span></br>
        <span> 2) Configure each item. Its quite complicated. Its not really for end users, its for Poodll devs.</span><br>
        <span> 3) Give the new lesson template a title and description and generate the config. </span><br />
        <span> 4) Copy the JSON and save it to a json file. It should be called something_config.json. And the original json you imported from should be called something_template.json. Both those files should be put in the mod/minilesson/lessontemplates folder. Then they will be available for use in the AI generate tab. </span><br />
@@ -36,6 +36,7 @@
         </div>
     {{/items}}
     </div>
+    {{{ fieldmappingsinput }}}
      <h3>3. Create the Lesson Template JSON config</h3>
      <div id="{{uniqid}}_ml_aigen_lesson_title" class="ml_aigen_lesson_title">
         <label>Lesson Template Title</label>
@@ -44,12 +45,12 @@
      <div id="{{uniqid}}_ml_aigen_lesson_description" class="ml_aigen_lesson_description">
         <label>Lesson Template Title Description</label>
         <textarea name="lessondescription" style="width: 100%; max-width: 1200px;"></textarea>
-     </div>   
+     </div>
     <div class="ml_aigen_gen_aigen_make_btn" id='{{uniqid}}_aigen_make_btn'>
         <a class="btn btn-primary" href="#">Create JSON Config</a><br />
         <hr>
          <label>The Generated Config JSON</label><br />
-        <textarea class="ml_aigen_make_textarea" id='{{uniqid}}_aigen_make_textarea' style="width: 100%; max-width: 1200px;"></textarea>    
+        <textarea class="ml_aigen_make_textarea" id='{{uniqid}}_aigen_make_textarea' style="width: 100%; max-width: 1200px;"></textarea>
     </div>
 </div>
 {{^element.frozen}}
