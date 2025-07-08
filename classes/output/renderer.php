@@ -770,7 +770,7 @@ class renderer extends \plugin_renderer_base {
     }
 
     public function aigen_buttons_menu($cm, $lessontemplates){
-    
+
         // Generate and return menu
         $buttondata = [];
         foreach ($lessontemplates as $keyname => $lessontemplate) {
@@ -779,10 +779,7 @@ class renderer extends \plugin_renderer_base {
             $templatedescription = $lessontemplate['config']->lessonDescription;
 
             $thebutton = new \single_button(new \moodle_url( constants::M_URL . '/aigen.php',
-                    ['id' => $cm->id, 'action' => 1, 'keyname' => $keyname]), get_string('aigen', constants::M_COMPONENT));
-            $thebutton->add_confirm_action(get_string('aigenconfirm', constants::M_COMPONENT, ['title' => $templatetitle, 'templatecount' => $templatecount]));
-
-
+                ['id' => $cm->id, 'action' => 1, 'keyname' => $keyname]), get_string('aigen', constants::M_COMPONENT));
             $buttondata[] = [
                 'keyname' => $keyname,
                 'title' => $templatetitle,
