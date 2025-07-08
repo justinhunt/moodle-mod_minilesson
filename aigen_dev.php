@@ -107,19 +107,31 @@ if ($aigenform->is_cancelled()) {
     // This is the set of data that can be used in the AI generation prompt.
     // Since each item is generated in sequence, we can use the previous item data in the next item.
     // that is why the context grows, as we loop through the items.
-    // Here we are building the AI Lesson Generation (AIGEN) config. 
+    // Here we are building the AI Lesson Generation (AIGEN) config.
     // So it is the location or name of the data. not the data itself.
     //TO DO replace sample data with real data from user input or activity settings. currently hardcoded here an in /mod/minilesson/aigen.php
-    $availablecontext = [];
-    $availablecontext[] = 'target_language'; // Data from the activity settings, language is required
-    $availablecontext[] = 'user_topic'; // Sample data that the user might provide. eg "Your plan for the weekend"
-    $availablecontext[] = 'user_level'; // Sample data that the user might provide. eg "A1" or "Intermediate"
-    $availablecontext[] = 'user_text'; // Sample data that the user might provide. eg " One fine day I decided .."
-    $availablecontext[] = 'user_keywords'; // Sample data that the user might provide. eg "big dog, cat, mouse, eat a horse"
-    $availablecontext[] = 'user_customdata1'; // Sample data that the user might provide.
-    $availablecontext[] = 'user_customdata2'; // Sample data that the user might provide.
-    $availablecontext[] = 'user_customdata3'; // Sample data that the user might provide. 
-
+    $availablecontext = $aigenform::mappings();
+    $typeoptions = $aigenform::type_options();
+    $fielddatas = array_filter((array) $data, function($k) use ($availablecontext) {
+        return in_array($k, $availablecontext);
+    }, ARRAY_FILTER_USE_KEY);
+    foreach($fielddatas as $fieldname => $fielddata) {
+        $fielddatas[$fieldname]['enabled'] = !empty($fielddata['enabled']);
+        if ($fielddata['type'] === end($typeoptions)) {
+            $fieldoptions = explode(PHP_EOL, $fielddata['options']);
+            $fieldoptions = array_map('trim', $fieldoptions);
+            $fieldoptions = array_filter($fieldoptions, 'trim');
+            $fielddatas[$fieldname]['options'] = $fieldoptions;
+        } else {
+            unset($fielddatas[$fieldname]['options']);
+        }
+    }
+    $tdata['fieldmappingsinput'] = html_writer::empty_tag('input',
+        [
+            'type' => 'hidden', 'name' => 'fieldmappings', 'id' => 'id_fieldmappings',
+            'value' => json_encode($fielddatas, JSON_PRETTY_PRINT),
+        ]
+    );
 
     // We will also need to fetch the file areas for each item.
     $contextfileareas = [];

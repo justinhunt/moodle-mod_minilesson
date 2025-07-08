@@ -1,4 +1,6 @@
-define(['jquery','core/log','core/templates'], function($,log,templates) {
+define(
+    ['jquery','core/log','core/templates','core/fragment','core/modal_factory','core/str','core/config','core/modal_events'],
+    function($,log,templates,Fragment,Modalfactory,Str,Config,ModalEvents) {
     "use strict"; // jshint ;_;
 
 /*
@@ -22,6 +24,7 @@ This file contains class and ID definitions.
             var self = this;
             self.controls.selectgenerate = $('#' + uniqid + ' select[name="generatemethod"]');
             self.controls.aigenmakebtn = $('#' + uniqid + '_aigen_make_btn');
+            self.controls.fieldmappings = $('#' + uniqid + ' #id_fieldmappings');
         },
 
         register_events: function(uniqid){
@@ -96,13 +99,18 @@ This file contains class and ID definitions.
 
                     // Add the current itemdata to the items array
                     items.push(itemdata);
-                    
+
                 });// End of itemcontrols.each
-                
+
                 var alldata = {};
                 alldata.lessonTitle = lessonTitle;
                 alldata.lessonDescription = lessonDescription;
                 alldata.items = items;
+
+                if (self.controls.fieldmappings.length) {
+                    alldata[self.controls.fieldmappings.attr('name')] = JSON.parse(self.controls.fieldmappings.val());
+                }
+
                 aigenmake_textarea.val(JSON.stringify(alldata, null, 2));
                 log.debug('AiGen make button clicked, items: ' + JSON.stringify(alldata, null,2));
              });
@@ -118,13 +126,13 @@ This file contains class and ID definitions.
                 //update the mappings div
                 var mappingsDiv = $(this).closest('.ml_aigen_item').find('.ml_aigen_mappings');
                 mappingsDiv.data('promptfields',self.extractFieldsFromString(newprompt).join(','));
-                
+
                 //update the prompt fields mappings div
                 var mappingsdata = {
                     availablecontext: mappingsDiv.data('availablecontext').split(',').filter(element => element.trim() !== ""),
                     aigenpromptfields: mappingsDiv.data('promptfields').split(',').filter(element => element.trim() !== ""),
                 };
-                var promptfieldmappingsDiv = $(this).closest('.ml_aigen_item').find('.aigen_promptfield-mappings'); 
+                var promptfieldmappingsDiv = $(this).closest('.ml_aigen_item').find('.aigen_promptfield-mappings');
                 templates.render('mod_minilesson/aigenpromptfieldmappings',mappingsdata).then(
                     function(html,js){
                         promptfieldmappingsDiv.html(html);
@@ -179,10 +187,10 @@ This file contains class and ID definitions.
                         fileareasDiv.html(html);
                     }
                 );// End of templates
-                
+
 
             });
-           
+
         },  // end of register_events
 
         splitDataField: function(datafield) {
@@ -204,6 +212,51 @@ This file contains class and ID definitions.
 
             // Remove duplicates using a Set
             return [...new Set(matches)];
+        },
+
+        registerAiGenerateAction: function(wrapperselector) {
+            var self = this;
+            var wrapper = document.querySelector(wrapperselector);
+            if (wrapper) {
+                wrapper.addEventListener('submit', function(e) {
+                    if (e.target.elements.hasOwnProperty('keyname')) {
+                        e.preventDefault();
+                        Modalfactory.create({
+                            type: Modalfactory.types.SAVE_CANCEL,
+                            title: Str.get_string('aigenmodaltitle', 'mod_minilesson'),
+                            body: self.callAiGenerateContextFormApi(e.target),
+                            large: true,
+                            removeOnClose: true
+                        }).then(function(modal) {
+                            modal.getRoot().on('submit ' + ModalEvents.save, function(e) {
+                                var form = this.querySelector('form');
+                                if (form.getAttribute('data-submitted')) {
+                                    return;
+                                }
+                                e.preventDefault();
+                                modal.setBody(self.callAiGenerateContextFormApi(form).then(function(html, js) {
+                                    if (html === 'submitted') {
+                                        form.setAttribute('data-submitted', 1);
+                                        js = '<script>document.getElementById("'+form.getAttribute('id')+'").submit()</script>';
+                                    }
+                                    return [form, js];
+                                }));
+                            });
+                            modal.show();
+                        });
+                    }
+                });
+            }
+        },
+
+        callAiGenerateContextFormApi: function(form) {
+            return Fragment.loadFragment(
+                'mod_minilesson', 'aigen_contextform',
+                Config.contextid, {
+                    url: form.getAttribute('action'),
+                    params: new URLSearchParams(new FormData(form)).toString()
+                }
+            );
         }
     };//end of return value
 });

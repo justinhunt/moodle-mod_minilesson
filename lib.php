@@ -30,6 +30,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use mod_minilesson\aigen_contextform;
 use mod_minilesson\constants;
 use mod_minilesson\local\formelement\ttsaudio;
 use mod_minilesson\utils;
@@ -982,4 +983,27 @@ function minilesson_output_fragment_ttsaudioelement($args) {
     $formelement->accept($formrenderer);
 
     return $formrenderer->toHtml();
+}
+
+function minilesson_output_fragment_aigen_contextform($args) {
+    global $CFG;
+    require_once($CFG->libdir . '/externallib.php');
+
+    $formdata = [];
+    $args = (object) $args;
+    parse_str($args->params, $formdata);
+
+    require_capability('mod/minilesson:canuseaigen', $args->context);
+
+    $formurl = new moodle_url($args->url, [
+        'id' => $formdata['id'],
+        'action' => $formdata['action'],
+        'keyname' => $formdata['keyname']
+    ]);
+
+    $form = new aigen_contextform($formurl, null, 'post', '', null, true, $formdata);
+    if (!$form->is_cancelled() && $form->is_submitted() && $form->is_validated()) {
+        return 'submitted';
+    }
+    return $form->render();
 }

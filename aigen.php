@@ -70,15 +70,15 @@ $templatecount = count($lessontemplates);
 
 // Testing data. // hard coded here and in aigen_dev.php
 $contextdata = [
-            'target_language' => $moduleinstance->ttslanguage,
-            'user_topic' => 'Glass Bridges in China',
-            'user_level' => 'CEFR A2',
-            'user_text' => 'On my way to school I met a dog. We became friends. But he met a cat and ran after it. Was he my friend?',
-            'user_keywords' => 'dog, cat, school, friend',
-            'user_customdata1' => 'French',
-            'user_customdata2' => '',
-            'user_customdata3' => '',
-        ];
+    'target_language' => $moduleinstance->ttslanguage,
+    'user_topic' => 'Glass Bridges in China',
+    'user_level' => 'CEFR A2',
+    'user_text' => 'On my way to school I met a dog. We became friends. But he met a cat and ran after it. Was he my friend?',
+    'user_keywords' => 'dog, cat, school, friend',
+    'user_customdata1' => 'French',
+    'user_customdata2' => '',
+    'user_customdata3' => '',
+];
 
 switch($action){
 
@@ -94,11 +94,18 @@ switch($action){
             $config = $thetemplate['config'];
             $template = $thetemplate['template'];
         }
+        if ($postdata = data_submitted()) {
+            foreach(mod_minilesson\aigen_form::mappings() as $fieldname) {
+                if (isset($postdata->{$fieldname})) {
+                    $contextdata[$fieldname] = $postdata->{$fieldname};
+                }
+            }
+        }
         $aigen = new aigen($cm);
         $importdata = $aigen->make_import_data(
             $config,
             $template,
-            $contextdata,
+            $contextdata
         );
 
         // Do the import -- TO DO error checking.
@@ -108,7 +115,7 @@ switch($action){
 
 
         $insertcount = count($template->items);
-         redirect($PAGE->url, get_string('aigenpage_done', constants::M_COMPONENT, $insertcount), delay: 10);
+        redirect($PAGE->url, get_string('aigenpage_done', constants::M_COMPONENT, $insertcount), 10);
         break;
 
     case AIGEN_LIST:

@@ -1,4 +1,4 @@
-<div class="mod_minilesson_manybuttonsmenu_container">
+<div id="mod_minilesson_aigenerate_container-{{uniqid}}" class="mod_minilesson_manybuttonsmenu_container">
 
 {{#buttons}}
 <div class="mod_minilesson_manybuttonsmenu_item card">
@@ -13,3 +13,8 @@
 </div>
 {{/buttons}}
 </div>
+{{#js}}
+    require(['mod_minilesson/aigenmake'], function(amd) {
+        amd.registerAiGenerateAction('#mod_minilesson_aigenerate_container-{{uniqid}}');
+    });
+{{/js}}
