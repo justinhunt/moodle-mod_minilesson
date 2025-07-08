@@ -23,7 +23,7 @@
  * @copyright  2024 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
+define('NO_OUTPUT_BUFFERING', true); // So that we can use the progress bar.
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
@@ -80,6 +80,20 @@ $contextdata = [
     'user_customdata3' => '',
 ];
 
+// Set up the page header.
+$pagetitle = get_string('aigenpage', constants::M_COMPONENT);
+$PAGE->set_title(format_string($moduleinstance->name. ' ' . $pagetitle ));
+$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_context($modulecontext);
+$PAGE->set_pagelayout('incourse');
+
+
+// This puts all our display logic into the renderer.php files in this plugin.
+$renderer = $PAGE->get_renderer(constants::M_COMPONENT);
+$mode = "aigen";
+echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('aigen', constants::M_COMPONENT));
+echo $renderer->heading($pagetitle);
+
 switch($action){
 
     case AIGEN_SUBMIT:
@@ -101,7 +115,14 @@ switch($action){
                 }
             }
         }
-        $aigen = new aigen($cm);
+
+        // Make a progress bar to show the user how the import is going and keep the page session alive.
+        $progressbar = new \core\output\progress_bar('ml_aigen_progressbar', 500);
+        $progressbar->create();
+
+        //Make the AI generator object.
+        $aigen = new aigen($cm, $progressbar);
+
         $importdata = $aigen->make_import_data(
             $config,
             $template,
@@ -109,13 +130,24 @@ switch($action){
         );
 
         // Do the import -- TO DO error checking.
+        $insertcount = count($template->items);
+                $aigen->update_progress( $insertcount,  $insertcount, get_string('aigenpageimporting', constants::M_COMPONENT));
+
+        // Hide output from the import process.
+        ob_start();
+
+        // Do the import.
         $theimport = new \mod_minilesson\import($moduleinstance, $modulecontext, $course, $cm);
         $theimport->set_reader($importdata, true);
         $theimport->import_process();
 
+        // Open output again
+        $o = ob_get_contents();
+        ob_end_clean();
 
-        $insertcount = count($template->items);
-        redirect($PAGE->url, get_string('aigenpage_done', constants::M_COMPONENT, $insertcount), 10);
+        echo $renderer->aigen_complete($cm, $insertcount);
+        echo $renderer->footer();
+        die;
         break;
 
     case AIGEN_LIST:
@@ -123,19 +155,7 @@ switch($action){
         break;
 }
 
-// Set up the page header.
-$pagetitle = get_string('aigenpage', constants::M_COMPONENT);
-$PAGE->set_title(format_string($moduleinstance->name. ' ' . $pagetitle ));
-$PAGE->set_heading(format_string($course->fullname));
-$PAGE->set_context($modulecontext);
-$PAGE->set_pagelayout('incourse');
-
-
-// This puts all our display logic into the renderer.php files in this plugin.
-$renderer = $PAGE->get_renderer(constants::M_COMPONENT);
-$mode = "aigen";
-echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('aigen', constants::M_COMPONENT));
-echo $renderer->heading($pagetitle);
+//If we get here, we are listing the AIGEN templates
 
 echo html_writer::div(get_string('aigenpage_explanation', constants::M_COMPONENT), constants::M_COMPONENT . '_aigenpageexplanation');
 

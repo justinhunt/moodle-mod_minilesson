@@ -794,6 +794,15 @@ class renderer extends \plugin_renderer_base {
         return $ret;
     }
 
+    public function aigen_complete($cm, $doneitems) {
+        $ret = '';
+        $ret .= $this->output->heading(get_string('aigenpage_done', constants::M_COMPONENT, $doneitems), 3, 'main');
+        $thebutton = new \single_button(new \moodle_url( constants::M_URL . '/view.php',
+            ['id' => $cm->id]), get_string('aigenviewresult', constants::M_COMPONENT));
+        $ret = $this->render($thebutton);
+        return $ret;
+    }
+
     public function push_buttons_menu($cm, $clonecount, $scope) {
         $templateitems = [];
         $pushthings = ['maxattempts', 'transcriber', 'showitemreview', 'region', 'containerwidth', 'csskey' ,

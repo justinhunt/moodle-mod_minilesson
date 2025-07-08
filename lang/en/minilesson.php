@@ -906,3 +906,7 @@ $string['contextmapping:type'] = 'Field type';
 $string['contextmapping:options'] = 'Field options';
 $string['contextmapping:options_desc'] = 'Input Field Options';
 $string['aigenmodaltitle'] = 'Input context data';
+$string['generatingtextdata'] = 'Making text data for: {$a}';
+$string['generatingimagedata'] = 'Making image data for: {$a}';
+$string['aigenpageimporting'] = 'Importing AI generated items';
+$string['aigenviewresult'] = 'View AI Generated Items';

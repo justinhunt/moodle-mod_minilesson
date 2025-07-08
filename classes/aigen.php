@@ -32,6 +32,7 @@ class aigen
     private $cm = null;
     private $context = null;
     private $conf = null;
+    private $progressbar = null;
 
     /**
      * aigen constructor.
@@ -40,7 +41,7 @@ class aigen
      * @param \stdClass|null $course The course object, if available.
      * @param \stdClass|null $cm The course module object, if available.
      */
-    public function __construct($cm)
+    public function __construct($cm, $progressbar = null)
     {
         global $PAGE, $OUTPUT;
 
@@ -50,6 +51,7 @@ class aigen
         $this->context = \context_module::instance($cm->id);
         $this->course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
         $this->conf = get_config(constants::M_COMPONENT);
+        $this->progressbar = $progressbar;
     }
 
     public function make_import_data($aigenconfig, $aigentemplate, $contextdata)
@@ -57,17 +59,18 @@ class aigen
         $contextfileareas = [];
         $importitems = [];
         $importlessonfiles = new \stdClass();
+        $currentitemcount = 0;
 
         // Get all the voices and get just the nice ones (neural/whisper/azure).
         $langvoices = utils::get_tts_voices($this->moduleinstance->ttslanguage, false, $this->moduleinstance->region);
         $nicevoices = utils::get_nice_voices($this->moduleinstance->ttslanguage, $this->moduleinstance->region);
 
         foreach ($aigenconfig->items as $configitem) {
+            $currentitemcount++;
             $importitem = $aigentemplate->items[$configitem->itemnumber];
             $importitemfileareas = (isset($importitem->filesid) && isset($aigentemplate->files->{$importitem->filesid})) ?
                         $aigentemplate->files->{$importitem->filesid} :
                         false;
-
 
             switch ($configitem->generatemethod) {
                 case 'generate':
@@ -93,6 +96,10 @@ class aigen
                     // Complete the prompt
                     $useprompt = $useprompt . PHP_EOL . 'Generate the data in this JSON format: ' . $generateformatjson;
 
+                    // Update the user.
+                    $this->update_progress($currentitemcount, count($aigenconfig->items),
+                     get_string('generatingtextdata', constants::M_COMPONENT, $importitem->name));
+
                     // Generate the data and update the importitem
                     $genresult = $this->generate_data($useprompt);
                     if ($genresult && $genresult->success) {
@@ -111,6 +118,10 @@ class aigen
                             $importitemfileareas && isset($importitemfileareas->{$generatefilearea->name})
                             && isset($generatefilearea->mapping) && isset($importitem->{$generatefilearea->mapping})
                         ) {
+                            // Update the user.
+                            $this->update_progress($currentitemcount, count($aigenconfig->items),
+                            get_string('generatingimagedata', constants::M_COMPONENT, $importitem->name));
+
                             $importitemfileareas->{$generatefilearea->name} =
                                 $this->generate_images($importitemfileareas->{$generatefilearea->name}, $importitem->{$generatefilearea->mapping});
                         }
@@ -314,6 +325,13 @@ class aigen
         } else {
             return false;
         }
+    }
+
+    public function update_progress($taskno, $totaltasks, $message)
+    {
+       if ($this->progressbar) {
+         $this->progressbar->update($taskno, $totaltasks, $message);
+       }
     }
 
     /**
