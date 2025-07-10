@@ -65,7 +65,7 @@ require_capability('mod/minilesson:canuseaigen', $modulecontext);
 $config = get_config(constants::M_COMPONENT);
 
 // Fetch templates.
-$lessontemplates = aigen::fetch_lesson_templates();
+$lessontemplates = aigen::fetch_lesson_templates($moduleinstance->id);
 $templatecount = count($lessontemplates);
 
 // Testing data. // hard coded here and in aigen_dev.php
@@ -97,7 +97,6 @@ echo $renderer->heading($pagetitle);
 switch($action){
 
     case AIGEN_SUBMIT:
-        $lessontemplates = aigen::fetch_lesson_templates();
         if (!array_key_exists($keyname, $lessontemplates)) {
             throw new moodle_exception('Invalid template keyname', constants::M_COMPONENT);
         } else {

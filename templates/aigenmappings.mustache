@@ -3,7 +3,7 @@
 <label>Fields that should re-use previous item data</label>
   <br />
 {{#aigenplaceholders}}
-      <input type="checkbox" name="{{.}}" value="1" checked="checked"/> {{.}}
+      <label><input type="checkbox" name="{{.}}" value="1" checked="checked"/> {{.}}</label>
         <select name="{{.}}_mapping">
             {{#availablecontext}}
                 <option value="{{.}}">{{.}}</option>
@@ -20,7 +20,7 @@
   <label>Fields that AI should generate</label>
   <br />
   {{#aigenplaceholders}}
-    <input type="checkbox" name="{{.}}" value="1" checked="checked"/> {{.}} 
+    <label><input type="checkbox" name="{{.}}" value="1" checked="checked"/> {{.}}</label>
   {{/aigenplaceholders}}
 </div>
-{{/methodreuse}} 
+{{/methodreuse}}

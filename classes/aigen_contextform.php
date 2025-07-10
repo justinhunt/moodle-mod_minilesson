@@ -25,9 +25,10 @@ class aigen_contextform extends moodleform {
 
     public function definition() {
         $mform = $this->_form;
+        $modid = $this->optional_param('modid', null, PARAM_INT);
         $keyname = $this->optional_param('keyname', null, PARAM_FILE);
 
-        $lessontemplates = aigen::fetch_lesson_templates();
+        $lessontemplates = aigen::fetch_lesson_templates($modid);
         if (!array_key_exists($keyname, $lessontemplates)) {
             throw new moodle_exception('Invalid template keyname', constants::M_COMPONENT);
         }

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,20 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_minilesson\table;
+
+use core_table\local\filter\integer_filter;
 
 /**
- * Defines the version of minilesson
- *
+ * Class templates_filterset
  *
  * @package    mod_minilesson
- * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
+ * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class templates_filterset extends filterset {
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version   = 2025062906;
-$plugin->requires  = 2016052300;      // Requires Moodle 3.1
-$plugin->component = 'mod_minilesson';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Version 1.0.94 (Build 2025062901)';
+    public function get_required_filters(): array {
+        return [
+            'cmid' => integer_filter::class
+        ];
+    }
+}

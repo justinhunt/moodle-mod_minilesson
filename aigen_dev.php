@@ -26,12 +26,12 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 use mod_minilesson\constants;
-use mod_minilesson\utils;
+use mod_minilesson\table\templates;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
-
-
+$action = optional_param('action', null, PARAM_ALPHA);
+$templateid = optional_param('templateid', 0, PARAM_INT);
 
 if ($id) {
     $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
@@ -46,17 +46,14 @@ if ($id) {
 }
 
 $PAGE->set_url(constants::M_URL . '/aigen_dev.php',
-        ['id' => $cm->id]);
+        ['id' => $cm->id, 'action' => $action]);
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
-require_capability('mod/minilesson:manage', $modulecontext);
+require_capability('mod/minilesson:managetemplate', $modulecontext);
 
 // Get an admin settings.
 $config = get_config(constants::M_COMPONENT);
-
-// Get token.
-$token = utils::fetch_token($config->apiuser, $config->apisecret);
 
 /// Set up the page header
 $PAGE->set_title(format_string($moduleinstance->name));
@@ -64,133 +61,57 @@ $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 $PAGE->set_pagelayout('incourse');
 
-
-
 // This puts all our display logic into the renderer.php files in this plugin
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 
-// Prepare the page template data.
-$tdata = [];
-$tdata['cloudpoodllurl'] = utils::get_cloud_poodll_server();
-$tdata['pageurl'] = $PAGE->url->out(false);
-$tdata['language'] =  $moduleinstance->ttslanguage;
-$tdata['token'] = $token;
-$tdata['region'] = $moduleinstance->region;
-$tdata['cmid'] = $cm->id;
+$widgethtml = null;
+switch($action) {
+    case 'delete': {
+        if ($templateid && confirm_sesskey()) {
+            $DB->delete_records('minilesson_templates', ['id' => $templateid]);
+            redirect(
+                new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]),
+                get_string('templatedeleted', constants::M_COMPONENT)
+            );
+        }
+        break;
+    }
+    case 'edit': {
+        $aigenform = new \mod_minilesson\aigen_form();
+        $aigenform->set_data_for_dynamic_submission();
 
+        // If this page is from a form submission, process it.
+        if ($aigenform->is_cancelled()) {
+            // If the form is cancelled, redirect to the module page.
+            redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
+        } else if ($template = $aigenform->process_dynamic_submission()) {
+            redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
+        }
 
+        $widgethtml = $aigenform->render();
+        break;
+    }
+    default: {
+        $tablefilterset = templates::get_filterset_object()
+            ->upsert_filter('cmid', (int) $cm->id);
+        $table = new templates();
+        $table->set_filterset($tablefilterset);
+
+        $addtemplatebtn = new single_button(
+            new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id, 'action' => 'edit']),
+            get_string('action:addtemplate', constants::M_COMPONENT)
+        );
+        $widgethtml = $renderer->container($renderer->render($addtemplatebtn), 'mb-3 text-right');
+        $widgethtml .= $table->render();
+        break;
+    }
+}
 
 // From here we actually display the page.
 echo $renderer->header($moduleinstance, $cm, 'aigen', null, get_string('aigen', constants::M_COMPONENT));
 
-$aigenform = new \mod_minilesson\aigen_form(null, [
-    'id' => $cm->id,
-    'moduleinstance' => $moduleinstance,
-    'cm' => $cm,
-    'modulecontext' => $modulecontext,
-    'token' => $token,
-]);
-// Add the form to the template data.
-$tdata['aigenform'] = $aigenform->render();
-
-// If this page is from a form submission, process it.
-if ($aigenform->is_cancelled()) {
-    // If the form is cancelled, redirect to the module page.
-    redirect(new moodle_url('/mod/minilesson/aigen.php', ['id' => $cm->id]));
-} else if ($data = $aigenform->get_data()) {
-    // If the form is submitted, process the data.
-    $importjson = $data->importjson;
-    $theactivity = json_decode($importjson, true);
-    // These are the items in the imported activity (that is the template lesson)
-    $tdata['items'] = $theactivity['items'];
-
-    // This is the set of data that can be used in the AI generation prompt.
-    // Since each item is generated in sequence, we can use the previous item data in the next item.
-    // that is why the context grows, as we loop through the items.
-    // Here we are building the AI Lesson Generation (AIGEN) config.
-    // So it is the location or name of the data. not the data itself.
-    //TO DO replace sample data with real data from user input or activity settings. currently hardcoded here an in /mod/minilesson/aigen.php
-    $availablecontext = $aigenform::mappings();
-    $typeoptions = $aigenform::type_options();
-    $fielddatas = array_filter((array) $data, function($k) use ($availablecontext) {
-        return in_array($k, $availablecontext);
-    }, ARRAY_FILTER_USE_KEY);
-    foreach($fielddatas as $fieldname => $fielddata) {
-        $fielddatas[$fieldname]['enabled'] = !empty($fielddata['enabled']);
-        if ($fielddata['type'] === end($typeoptions)) {
-            $fieldoptions = explode(PHP_EOL, $fielddata['options']);
-            $fieldoptions = array_map('trim', $fieldoptions);
-            $fieldoptions = array_filter($fieldoptions, 'trim');
-            $fielddatas[$fieldname]['options'] = $fieldoptions;
-        } else {
-            unset($fielddatas[$fieldname]['options']);
-        }
-    }
-    $tdata['fieldmappingsinput'] = html_writer::empty_tag('input',
-        [
-            'type' => 'hidden', 'name' => 'fieldmappings', 'id' => 'id_fieldmappings',
-            'value' => json_encode($fielddatas, JSON_PRETTY_PRINT),
-        ]
-    );
-
-    // We will also need to fetch the file areas for each item.
-    $contextfileareas = [];
-
-    // Now we loop through the items in the activity and fetch the AI generation prompt for each item.
-    // We also fetch the placeholders for each item, and update the available context fields.
-    // We also parse the prompt to get the prompt fields that we will match with availablecontext to make the full AI generation prompt.
-    foreach ($tdata['items'] as $itemnumber => $item) {
-        $itemtype = $item['type'];
-        $itemclass = '\\mod_minilesson\\local\\itemtype\\item_' . $itemtype;
-        if (class_exists($itemclass)) {
-            $tdata['items'][$itemnumber]['itemnumber'] = $itemnumber;
-            // Fetch the prompt
-            $generatemethods = ['generate', 'extract'];
-            foreach ($generatemethods as $method) {
-                $theprompt = $itemclass::aigen_fetch_prompt($theactivity, $method);
-                $tdata['items'][$itemnumber]['aigenprompt' . $method] = $theprompt;
-                // Parse the prompt to get the fields that we will use in the AI generation
-                // Extract fields which are words in curly brackets from the prompt.
-                $tdata['items'][$itemnumber]['promptfields' . $method] = utils::extract_curly_fields($theprompt);
-            }
-            // By default we will set prompt fields and generate methds to 'generate'.
-            $tdata['items'][$itemnumber]['aigenprompt'] = $tdata['items'][$itemnumber]['aigenpromptgenerate'];
-            $tdata['items'][$itemnumber]['aigenpromptfields'] = $tdata['items'][$itemnumber]['promptfieldsgenerate'];
-
-            // Fetch the placeholders for this item.
-            $thisplaceholders = $itemclass::aigen_fetch_placeholders($item);
-            $tdata['items'][$itemnumber]['aigenplaceholders'] = $thisplaceholders;
-            $tdata['items'][$itemnumber]['availablecontext'] = $availablecontext;
-
-            // Fetch the file areas for this item.
-            $thefiles = $theactivity['files'];
-            $thisfileareas = $itemclass::aigen_fetch_fileareas($item, $thefiles, $contextfileareas);
-            $tdata['items'][$itemnumber]['aigenfileareas'] = $thisfileareas;
-            $tdata['items'][$itemnumber]['contextfileareas'] = $contextfileareas;
-
-            // Update available context.
-            $thiscontext = array_map(function($placeholder) use ($itemnumber) {
-                return 'item' . $itemnumber . '_' . $placeholder;
-            }, $thisplaceholders);
-            $availablecontext = array_merge($availablecontext, $thiscontext);
-
-            // Update available file areas.
-             $itemfileareas = array_map(function($filearea) use ($itemnumber) {
-                return 'item' . $itemnumber . '_' . $filearea;
-            }, $thisfileareas);
-            $contextfileareas = array_merge($contextfileareas, $itemfileareas);
-
-        } else {
-            debugging('Item type ' . $itemtype . ' does not exist', DEBUG_DEVELOPER);
-        }
-    }
-}
-
-
-
-// Merge data with template and output to page.
-echo $renderer->render_from_template(constants::M_COMPONENT . '/aigen', $tdata);
-
+// Render main html
+echo $widgethtml;
 
 // Finish the page.
 echo $renderer->footer();

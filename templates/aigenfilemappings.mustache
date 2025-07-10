@@ -2,7 +2,7 @@
 {{#methodreuse}}
 <label>File areas that AI should re-use (map to earlier item field) </label><br />
   {{#aigenfileareas}}
-          <input type="checkbox" name="{{.}}" value="1" checked="checked"/> {{.}}
+          <label><input type="checkbox" name="{{.}}" value="1" checked="checked"/> {{.}}</label>
           <select name="{{.}}_mapping">
               {{#contextfileareas}}
                   <option value="{{.}}">{{.}}</option>
@@ -13,7 +13,7 @@
 {{^methodreuse}}
 <label>File areas that AI should generate (map to generate field in this item) </label><br />
   {{#aigenfileareas}}
-        <input type="checkbox" name="{{.}}" value="1" checked="checked"/> {{.}}
+        <label><input type="checkbox" name="{{.}}" value="1" checked="checked"/> {{.}}</label>
           <select name="{{.}}_mapping">
               {{#aigenplaceholders}}
                   <option value="{{.}}">{{.}}</option>
