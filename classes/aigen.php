@@ -339,75 +339,16 @@ class aigen
      *
      * @return array An associative array of lesson templates, where the key is the template name and the value is an array containing 'config' and 'template' objects.
      */
-    public static function fetch_lesson_templates()
+    public static function fetch_lesson_templates($modid)
     {
-        global $CFG, $PAGE;
-        // Init return array
-        $ret = [];
-        $iterator = null;
+        global $DB;
 
-
-        //we search the lessontemplates dir for templates
-        $templatesdir = $CFG->dirroot . '/mod/minilesson/lessontemplates';
-        if (file_exists($templatesdir)) {
-            $iterator = new \DirectoryIterator($templatesdir);
+        $templates = $DB->get_records('minilesson_templates', ['minilessonid' => $modid]);
+        foreach($templates as $i => $template) {
+            $template->config = json_decode($template->config);
+            $template->template = json_decode($template->template);
+            $templates[$i] = (array) $template;
         }
-
-        if ($iterator) {
-            foreach ($iterator as $fileinfo) {
-                if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
-                    $thetemplate = self::parse_lesson_template($fileinfo);
-                    if ($thetemplate) {
-                        if (!isset($thetemplate['name']) || !$thetemplate['theobject']) {
-                            continue;
-                        } else {
-                            $name = $thetemplate['name'];
-                            $theobject = $thetemplate['theobject'];
-                        }
-                        // If the name has _config in it, remove that to get the display name.
-                        if (strpos($name, '_config') !== false) {
-                            $keyname = str_replace('_config', '', $name);
-                            $templatepart = ['config' => $theobject];
-                        } else if (strpos($name, '_template') !== false) {
-                            // If the name has _template in it, remove that to get the display name.
-                            $keyname = str_replace('_template', '', $name);
-                            $templatepart = ['template' => $theobject];
-                        } else {
-                            // If the name does not have _config or _template -  its wrong
-                            $keyname = false;
-                            continue;
-                        }
-                        if (array_key_exists($keyname, $ret)) {
-                            $ret[$keyname] = array_merge($ret[$keyname], $templatepart);
-                        } else {
-                            $ret[$keyname] = $templatepart;
-                        }
-                    }
-                }
-            }
-        }
-        return $ret;
+        return $templates;
     }//end of fetch_lesson_templates function
-
-    /**
-     * Parses a lesson template file and returns its content.
-     *
-     * @param \SplFileInfo $fileinfo The file information object for the lesson template file.
-     * @return array|false An associative array containing the template name and the decoded JSON object, or false if parsing fails.
-     */
-    protected static function parse_lesson_template(\SplFileInfo $fileinfo)
-    {
-        $file = $fileinfo->openFile("r");
-        $filename = $fileinfo->getFilename();
-        $content = "";
-        while (!$file->eof()) {
-            $content .= $file->fgets();
-        }
-        $templateobject = json_decode($content);
-        if ($templateobject && is_object($templateobject)) {
-            return ['name' => $filename, 'theobject' => $templateobject];
-        } else {
-            return false;
-        }
-    }//end of parse lesson template
 }

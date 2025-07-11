@@ -538,10 +538,88 @@ function xmldb_minilesson_upgrade($oldversion) {
             $sql .= " WHERE type = 'freewriting' OR type = 'freespeaking'";
             $DB->execute($sql);
         }
-        
+
 
 
         upgrade_mod_savepoint(true, 2025020700, 'minilesson');
+    }
+
+    if ($oldversion < 2025062902) {
+
+        // Define table minilesson_templates to be created.
+        $table = new xmldb_table('minilesson_templates');
+
+        // Adding fields to table minilesson_templates.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('minilessonid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table minilesson_templates.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('fkminilessonid', XMLDB_KEY_FOREIGN, ['minilessonid'], 'minilesson', ['id']);
+
+        // Conditionally launch create table for minilesson_templates.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025062902, 'minilesson');
+    }
+
+    if ($oldversion < 2025062903) {
+
+        // Define field description to be added to minilesson_templates.
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('description', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null, 'name');
+
+        // Conditionally launch add field description.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025062903, 'minilesson');
+    }
+
+    if ($oldversion < 2025062904) {
+
+        // Define field config to be added to minilesson_templates.
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('config', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null, 'description');
+
+        // Conditionally launch add field config.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field template to be added to minilesson_templates.
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('template', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null, 'config');
+
+        // Conditionally launch add field template.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025062904, 'minilesson');
+    }
+
+    if ($oldversion < 2025062905) {
+
+        // Define field timemodified to be added to minilesson_templates.
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'timecreated');
+
+        // Conditionally launch add field timemodified.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025062905, 'minilesson');
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.

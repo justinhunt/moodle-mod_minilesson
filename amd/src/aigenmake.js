@@ -25,6 +25,53 @@ This file contains class and ID definitions.
             self.controls.selectgenerate = $('#' + uniqid + ' select[name="generatemethod"]');
             self.controls.aigenmakebtn = $('#' + uniqid + '_aigen_make_btn');
             self.controls.fieldmappings = $('#' + uniqid + ' #id_fieldmappings');
+            self.controls.aigenmake_textarea = $('#' + uniqid + '_aigen_make_textarea');
+            try {
+                var textareavalue = self.controls.aigenmake_textarea.val();
+                var jsonvalue = JSON.parse(textareavalue);
+                jsonvalue.items.forEach(function(itemdata, index) {
+                    var itemcontrol = $('.ml_aigen_item[data-itemnumber="'+index+'"]');
+
+                    //set the prompt
+                    var promptTextArea = $(itemcontrol).find('textarea[name="aigenprompt"]');
+                    promptTextArea.val(itemdata.prompt);
+
+                    //set the generate method
+                    var generateMethodSelect = $(itemcontrol).find('select[name="generatemethod"]');
+                    generateMethodSelect.val(itemdata.generatemethod);
+
+                    //get the generate fields
+                    itemdata.generatefields.forEach(function(generateField) {
+                        var $generateCheckbox = $(itemcontrol).find('.aigen_fields-to-generate input[type="checkbox"][name="'+generateField.name+'"]');
+                        $generateCheckbox.prop('checked', generateField.generate);
+                        if (generateField.generate) {
+                            if (itemdata.generatemethod=="reuse") {
+                                var $mappingSelect = $(itemcontrol).find('select[name="' + generateField.name + '_mapping"]');
+                                $mappingSelect.val(generateField.mapping);
+                            }
+                        }
+                    });
+
+                    //set the file areas
+                    itemdata.generatefileareas.forEach(function(generateFilearea) {
+                        var $generateFileareasCheckbox = $(itemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"][name="'+generateFilearea.name+'"]');
+                        $generateFileareasCheckbox.prop('checked', generateFilearea.generate);
+                        if(generateFilearea.generate) {
+                            var $mappingSelect = $(itemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]');
+                            $mappingSelect.val(generateFilearea.mapping);
+                        }
+                    });
+
+                    //set the prompt field mappings div
+                    itemdata.promptfields.forEach(function(promptField) {
+                        var $mappingsSelect= $(itemcontrol).find('.aigen_promptfield-mappings select[data-name="'+promptField.name+'"]');
+                        $mappingsSelect.val(promptField.mapping);
+                    });
+                });
+            } catch (error) {
+                log.debug('Invalid JSON');
+                log.debug(error);
+            }
         },
 
         register_events: function(uniqid){
@@ -33,10 +80,8 @@ This file contains class and ID definitions.
 
             //On clicking the make aigen button
              self.controls.aigenmakebtn.on('click', function(e) {
-                e.preventDefault();
                 var items = [];
                 var itemcontrols =$('.ml_aigen_item');
-                var aigenmake_textarea = $('#' + uniqid + '_aigen_make_textarea');
                 // Get the lesson title and description
                 var lessonTitle = $('#' + uniqid + '_ml_aigen_lesson_title input').val();
                 var lessonDescription = $('#' + uniqid + '_ml_aigen_lesson_description textarea').val();
@@ -111,7 +156,7 @@ This file contains class and ID definitions.
                     alldata[self.controls.fieldmappings.attr('name')] = JSON.parse(self.controls.fieldmappings.val());
                 }
 
-                aigenmake_textarea.val(JSON.stringify(alldata, null, 2));
+                self.controls.aigenmake_textarea.val(JSON.stringify(alldata, null, 2));
                 log.debug('AiGen make button clicked, items: ' + JSON.stringify(alldata, null,2));
              });
 
