@@ -247,16 +247,13 @@ This file contains class and ID definitions.
         },
 
         extractFieldsFromString: function(input) {
-            const regex = /\{(\w+)\}/g; // Matches fields inside curly brackets
-            const matches = [];
-            let match;
-
-            while ((match = regex.exec(input)) !== null) {
-                matches.push(match[1]); // Add the captured group to the array
-            }
-
-            // Remove duplicates using a Set
-            return [...new Set(matches)];
+            const regex = new RegExp('\\{(\\w+)\\}', 'g'); // fresh regex every time
+            return Array.from(input.matchAll(regex)).reduce(function(a,i) {
+                if (a.indexOf(i[1]) === -1) {
+                    a.push(i[1]);
+                }
+                return a;
+            }, []);
         },
 
         registerAiGenerateAction: function(wrapperselector) {

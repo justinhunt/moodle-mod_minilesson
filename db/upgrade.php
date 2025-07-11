@@ -622,6 +622,28 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025062905, 'minilesson');
     }
 
+    if ($oldversion < 2025062907) {
+
+        // Define key fkminilessonid (foreign) to be dropped form minilesson_templates.
+        $table = new xmldb_table('minilesson_templates');
+        $key = new xmldb_key('fkminilessonid', XMLDB_KEY_FOREIGN, ['minilessonid'], 'minilesson', ['id']);
+
+        // Launch drop key fkminilessonid.
+        $dbman->drop_key($table, $key);
+
+        // Define field minilessonid to be dropped from minilesson_templates.
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('minilessonid');
+
+        // Conditionally launch drop field minilessonid.
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025062907, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

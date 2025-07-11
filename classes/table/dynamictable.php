@@ -29,7 +29,7 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class dynamictable extends table_sql implements dynamic {
+abstract class dynamictable extends table_sql implements dynamic {
 
     public function __construct($uniqueid = null) {
         if (is_null($uniqueid)) {
@@ -55,5 +55,7 @@ class dynamictable extends table_sql implements dynamic {
         ob_end_clean();
         return $out;
     }
+
+    abstract public function has_capability(): bool;
 
 }
