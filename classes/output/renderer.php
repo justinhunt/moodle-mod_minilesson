@@ -779,7 +779,7 @@ class renderer extends \plugin_renderer_base {
             $templatedescription = $lessontemplate['config']->lessonDescription;
 
             $thebutton = new \single_button(new \moodle_url( constants::M_URL . '/aigen.php',
-                ['id' => $cm->id, 'action' => 1, 'keyname' => $keyname, 'modid' => $cm->instance]),
+                ['id' => $cm->id, 'action' => 1, 'keyname' => $keyname]),
                 get_string('aigen', constants::M_COMPONENT)
             );
             $buttondata[] = [

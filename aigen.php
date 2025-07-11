@@ -65,7 +65,7 @@ require_capability('mod/minilesson:canuseaigen', $modulecontext);
 $config = get_config(constants::M_COMPONENT);
 
 // Fetch templates.
-$lessontemplates = aigen::fetch_lesson_templates($moduleinstance->id);
+$lessontemplates = aigen::fetch_lesson_templates();
 $templatecount = count($lessontemplates);
 
 // Testing data. // hard coded here and in aigen_dev.php
@@ -116,7 +116,7 @@ switch($action){
         }
 
         // Make a progress bar to show the user how the import is going and keep the page session alive.
-        $progressbar = new \core\output\progress_bar('ml_aigen_progressbar', 500);
+        $progressbar = new progress_bar('ml_aigen_progressbar', 500);
         $progressbar->create();
 
         //Make the AI generator object.

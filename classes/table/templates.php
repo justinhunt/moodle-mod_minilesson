@@ -58,7 +58,7 @@ class templates extends dynamictable {
         $this->strings['delete'] = get_string('action:deletetemplate', constants::M_COMPONENT);
 
 
-        $this->set_sql('*', '{minilesson_templates}', 'minilessonid = :moduleid', ['moduleid' => $this->cm->instance]);
+        $this->set_sql('*', '{minilesson_templates}', '1 = 1');
         $this->sortable(true, 'id', SORT_DESC);
     }
 
@@ -87,6 +87,10 @@ class templates extends dynamictable {
 
     public function col_timemodified(stdClass $record) {
         return $record->timemodified > 0 ? userdate($record->timemodified): '';
+    }
+
+    public function has_capability(): bool {
+        return has_capability('mod/minilesson:managetemplate', $this->get_context());
     }
 
 }

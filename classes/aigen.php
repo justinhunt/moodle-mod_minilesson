@@ -339,11 +339,11 @@ class aigen
      *
      * @return array An associative array of lesson templates, where the key is the template name and the value is an array containing 'config' and 'template' objects.
      */
-    public static function fetch_lesson_templates($modid)
+    public static function fetch_lesson_templates()
     {
         global $DB;
 
-        $templates = $DB->get_records('minilesson_templates', ['minilessonid' => $modid]);
+        $templates = $DB->get_records('minilesson_templates');
         foreach($templates as $i => $template) {
             $template->config = json_decode($template->config);
             $template->template = json_decode($template->template);
