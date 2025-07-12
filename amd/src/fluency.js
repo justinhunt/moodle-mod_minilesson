@@ -235,7 +235,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
           if (self.game.pointer < self.items.length - 1) {
               // Move on after short time to next prompt
               setTimeout(function() {
-                  $(".fluency_reply_" + self.game.pointer).hide();
+                  self.container.find(".fluency_reply_" + self.game.pointer).hide();
                   self.game.pointer++;
                   self.nextPrompt();
               }, 2000);
