@@ -40,7 +40,7 @@ class aigen_contextform extends moodleform {
             if (!empty($fieldmapping->enabled)) {
                 switch($fieldmapping->type) {
                     case 'dropdown':
-                        $options = array_merge($fieldmapping->options, $fieldmapping->options);
+                        $options = array_combine($fieldmapping->options, $fieldmapping->options) ;
                         $mform->addElement('select', $fieldname, $fieldmapping->title, $options);
                         break;
                     case 'textarea':

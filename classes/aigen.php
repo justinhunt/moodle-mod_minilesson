@@ -85,8 +85,8 @@ class aigen
 
                     // Prepare the response format (JSON)
                     $generateformat = new \stdClass();
-                    foreach ($configitem->generatefields as $generatefield) {
-                        if (isset($importitem->{$generatefield->name})) {
+                    foreach ($configitem->generatefields as $generatefield ) {
+                        if (isset($importitem->{$generatefield->name}) && isset($generatefield->generate) && $generatefield->generate == 1) {
                             $generateformat->{$generatefield->name} = $generatefield->name . '_data';
                         }
                     }

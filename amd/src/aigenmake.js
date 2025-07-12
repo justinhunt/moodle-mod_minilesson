@@ -242,7 +242,7 @@ This file contains class and ID definitions.
                     generateMethodSelect.val(itemdata.generatemethod);
                     log.debug('Setting generate method to: ' + itemdata.generatemethod);
                     // We need to do this to make sure the correct fields are on the page, before we set data to them.
-                    if (itemdata.generatemethod === 'reuse') {
+                    if (itemdata.generatemethod !== 'generate') {
                         log.debug('triggering');
                         generateMethodSelect.trigger('change');
                         //wait a second for the change to take effect
