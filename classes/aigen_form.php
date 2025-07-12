@@ -15,9 +15,9 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 
-use \mod_minilesson\constants;
-use \mod_minilesson\utils;
-use \stored_file;
+use mod_minilesson\constants;
+use mod_minilesson\utils;
+use stored_file;
 
 
 /**
@@ -26,9 +26,11 @@ use \stored_file;
  * @package mod_minilesson
  * @author  Justin Hunt
  */
-class aigen_form extends \moodleform {
+class aigen_form extends \moodleform
+{
 
-   public function definition() {
+    public function definition()
+    {
         $mform = $this->_form;
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -58,7 +60,8 @@ class aigen_form extends \moodleform {
         $mform->_registerCancelButton('back');
     }
 
-    public function definition_after_data() {
+    public function definition_after_data()
+    {
         global $DB, $PAGE;
         $mform = $this->_form;
         $id = $this->get_element_value('id');
@@ -89,13 +92,13 @@ class aigen_form extends \moodleform {
             return;
         }
 
-        $renderer = $PAGE->get_renderer('mod_assign');
+        $renderer = $PAGE->get_renderer('mod_minilesson');
 
         // Prepare the page template data.
         $tdata = ['uniqid' => (string) new mustache_uniqid_helper];
         $tdata['cloudpoodllurl'] = utils::get_cloud_poodll_server();
         $tdata['pageurl'] = $PAGE->url->out(false);
-        $tdata['language'] =  $moduleinstance->ttslanguage;
+        $tdata['language'] = $moduleinstance->ttslanguage;
         $tdata['token'] = $token;
         $tdata['region'] = $moduleinstance->region;
         $tdata['cmid'] = $cm->id;
@@ -105,7 +108,7 @@ class aigen_form extends \moodleform {
             $this->_customdata['jsonfile'] = reset($importjson);
         }
         $jsonfile = $this->_customdata['jsonfile'];
-        $jsoncontent = $jsonfile instanceof stored_file ? $jsonfile->get_content(): null;
+        $jsoncontent = $jsonfile instanceof stored_file ? $jsonfile->get_content() : null;
         $theactivity = json_decode($jsoncontent, true);
         // These are the items in the imported activity (that is the template lesson)
         $tdata['items'] = $theactivity['items'];
@@ -122,6 +125,10 @@ class aigen_form extends \moodleform {
             $itemclass = '\\mod_minilesson\\local\\itemtype\\item_' . $itemtype;
             if (class_exists($itemclass)) {
                 $tdata['items'][$itemnumber]['itemnumber'] = $itemnumber;
+
+                // Get the generatemethod.
+                $tdata['items'][$itemnumber]['methodreuse'] = $this->get_element_value('generatemethod[' . $itemnumber . ']') == 'reuse';
+
                 // Fetch the prompt
                 $generatemethods = ['generate', 'extract'];
                 foreach ($generatemethods as $method) {
@@ -147,13 +154,13 @@ class aigen_form extends \moodleform {
                 $tdata['items'][$itemnumber]['contextfileareas'] = $contextfileareas;
 
                 // Update available context.
-                $thiscontext = array_map(function($placeholder) use ($itemnumber) {
+                $thiscontext = array_map(function ($placeholder) use ($itemnumber) {
                     return 'item' . $itemnumber . '_' . $placeholder;
                 }, $thisplaceholders);
                 $availablecontext = array_merge($availablecontext, $thiscontext);
 
                 // Update available file areas.
-                $itemfileareas = array_map(function($filearea) use ($itemnumber) {
+                $itemfileareas = array_map(function ($filearea) use ($itemnumber) {
                     return 'item' . $itemnumber . '_' . $filearea;
                 }, $thisfileareas);
                 $contextfileareas = array_merge($contextfileareas, $itemfileareas);
@@ -166,14 +173,23 @@ class aigen_form extends \moodleform {
         $mform->addElement('header', 'step2', '2. Configure Items');
         $mform->setExpanded('step2');
         $mform->addElement('html', $renderer->render_from_template(constants::M_COMPONENT . '/aigen', $tdata));
-
-        $mform->addElement('hidden', 'aigen_config', '',
-            ['id' => "{$tdata['uniqid']}_aigen_make_textarea", 'class' => 'ml_aigen_make_textarea']);
+        
+        // This is where we put the AI generation config.
+        $mform->addElement(
+            'hidden',
+            'aigen_config',
+            '',
+            ['id' => "{$tdata['uniqid']}_aigen_make_textarea", 'class' => 'ml_aigen_make_textarea']
+        );
         $mform->setType('aigen_config', PARAM_RAW);
 
         $mform->registerNoSubmitButton('savestep2');
-        $mform->addElement('submit', 'savestep2', 'Save Configuration',
-            ['id' => "{$tdata['uniqid']}_aigen_make_btn", 'class' => 'ml_aigen_gen_aigen_make_btn']);
+        $mform->addElement(
+            'submit',
+            'savestep2',
+            'Save Configuration',
+            ['id' => "{$tdata['uniqid']}_aigen_make_btn", 'class' => 'ml_aigen_gen_aigen_make_btn']
+        );
 
         if (!$step2done && $this->optional_param('savestep2', null, PARAM_BOOL)) {
             $mform->setExpanded('step2', false, true);
@@ -191,16 +207,28 @@ class aigen_form extends \moodleform {
 
         $typeoptions = self::type_options();
 
-        foreach(self::mappings() as $fieldname) {
+        foreach (self::mappings() as $fieldname) {
             $controls = [];
             $controls[0] = $mform->createElement('selectyesno', 'enabled', get_string('contextmapping:enabled', constants::M_COMPONENT));
-            $controls[1] = $mform->createElement('text', 'title', get_string('contextmapping:title', constants::M_COMPONENT),
-                ['placeholder' => get_string('contextmapping:title_desc', constants::M_COMPONENT)]);
-            $controls[2] = $mform->createElement('textarea', 'description', get_string('contextmapping:description', constants::M_COMPONENT),
-                ['placeholder' => get_string('contextmapping:description_desc', constants::M_COMPONENT)]);
+            $controls[1] = $mform->createElement(
+                'text',
+                'title',
+                get_string('contextmapping:title', constants::M_COMPONENT),
+                ['placeholder' => get_string('contextmapping:title_desc', constants::M_COMPONENT)]
+            );
+            $controls[2] = $mform->createElement(
+                'textarea',
+                'description',
+                get_string('contextmapping:description', constants::M_COMPONENT),
+                ['placeholder' => get_string('contextmapping:description_desc', constants::M_COMPONENT)]
+            );
             $controls[3] = $mform->createElement('select', 'type', get_string('contextmapping:description', constants::M_COMPONENT), $typeoptions);
-            $controls[4] = $mform->createElement('textarea', 'options', get_string('contextmapping:options', constants::M_COMPONENT),
-                ['placeholder' => get_string('contextmapping:options_desc', constants::M_COMPONENT)]);
+            $controls[4] = $mform->createElement(
+                'textarea',
+                'options',
+                get_string('contextmapping:options', constants::M_COMPONENT),
+                ['placeholder' => get_string('contextmapping:options_desc', constants::M_COMPONENT)]
+            );
             $mform->setType("{$fieldname}[title]", PARAM_TEXT);
             $mform->disabledIf("{$fieldname}[options]", "{$fieldname}[type]", 'neq', end($typeoptions));
             $mform->addGroup($controls, $fieldname, $fieldname);
@@ -224,12 +252,20 @@ class aigen_form extends \moodleform {
         $mform->addElement('header', 'step4', '4. Create the Lesson Template JSON config');
         $mform->setExpanded('step4');
 
-        $mform->addElement('text', 'lessontitle', 'Lesson Template Title',
-            ['id' => "{$tdata['uniqid']}_ml_aigen_lesson_title", 'class' => 'ml_aigen_lesson_title', 'size' => 50]);
+        $mform->addElement(
+            'text',
+            'lessontitle',
+            'Lesson Template Title',
+            ['id' => "{$tdata['uniqid']}_ml_aigen_lesson_title", 'class' => 'ml_aigen_lesson_title', 'size' => 50]
+        );
         $mform->setType('lessontitle', PARAM_TEXT);
 
-        $mform->addElement('textarea', 'lessondescription', 'Lesson Template Title Description',
-            ['id' => "{$tdata['uniqid']}_ml_aigen_lesson_description", 'class' => 'ml_aigen_lesson_description', 'rows' => 5, 'cols' => 100]);
+        $mform->addElement(
+            'textarea',
+            'lessondescription',
+            'Lesson Template Title Description',
+            ['id' => "{$tdata['uniqid']}_ml_aigen_lesson_description", 'class' => 'ml_aigen_lesson_description', 'rows' => 5, 'cols' => 100]
+        );
         $mform->setType('lessondescription', PARAM_TEXT);
 
         $mform->addElement('submit', 'savestep4', 'Create JSON Config');
@@ -237,7 +273,8 @@ class aigen_form extends \moodleform {
         $mform->addElement('cancel', 'back', get_string('back'));
     }
 
-    public function set_data_for_dynamic_submission() {
+    public function set_data_for_dynamic_submission()
+    {
         global $DB, $USER;
         $formdata = [
             'id' => $this->optional_param('id', null, PARAM_INT),
@@ -254,8 +291,12 @@ class aigen_form extends \moodleform {
                 $draftitemid = file_get_unused_draft_itemid();
                 $usercontext = context_user::instance($USER->id);
                 $file_record = [
-                    'contextid' => $usercontext->id, 'component'=>'user', 'filearea'=>'draft',
-                    'itemid'=> $draftitemid, 'filepath' => '/', 'filename' => 'template.json'
+                    'contextid' => $usercontext->id,
+                    'component' => 'user',
+                    'filearea' => 'draft',
+                    'itemid' => $draftitemid,
+                    'filepath' => '/',
+                    'filename' => 'template.json'
                 ];
                 $this->_customdata['jsonfile'] = get_file_storage()
                     ->create_file_from_string($file_record, $template->template);
@@ -263,14 +304,14 @@ class aigen_form extends \moodleform {
             }
             $jsonconfig = json_decode($template->config);
             if (!json_last_error() && !empty($jsonconfig->fieldmappings)) {
-                foreach($jsonconfig->fieldmappings as $fieldname => $fieldconfig) {
+                foreach ($jsonconfig->fieldmappings as $fieldname => $fieldconfig) {
                     $formdata[$fieldname] = [
                         'enabled' => !empty($fieldconfig->enabled),
                         'title' => $fieldconfig->title,
                         'description' => $fieldconfig->description,
                         'type' => $fieldconfig->type,
                         'options' => isset($fieldconfig->options) ?
-                            join(PHP_EOL, (array) $fieldconfig->options): null,
+                            join(PHP_EOL, (array) $fieldconfig->options) : null,
                     ];
                 }
             }
@@ -278,7 +319,8 @@ class aigen_form extends \moodleform {
         $this->set_data($formdata);
     }
 
-    public function process_dynamic_submission() {
+    public function process_dynamic_submission()
+    {
         global $DB;
         if (!$this->is_cancelled() && $this->is_submitted() && $this->is_validated()) {
             $formdata = $this->get_data();
@@ -301,10 +343,10 @@ class aigen_form extends \moodleform {
                 $jsonconfig->lessonDescription = $template->description;
                 $availablecontext = self::mappings();
                 $typeoptions = self::type_options();
-                $fielddatas = array_filter((array) $formdata, function($k) use ($availablecontext) {
+                $fielddatas = array_filter((array) $formdata, function ($k) use ($availablecontext) {
                     return in_array($k, $availablecontext);
                 }, ARRAY_FILTER_USE_KEY);
-                foreach($fielddatas as $fieldname => $fielddata) {
+                foreach ($fielddatas as $fieldname => $fielddata) {
                     $fielddatas[$fieldname]['enabled'] = !empty($fielddata['enabled']);
                     if ($fielddata['type'] === end($typeoptions)) {
                         $fieldoptions = explode(PHP_EOL, $fielddata['options']);
@@ -320,8 +362,8 @@ class aigen_form extends \moodleform {
             }
             $jsontemplate = json_decode($template->template);
             if (!json_last_error() && !empty($jsontemplate->files)) {
-                foreach($jsontemplate->files as $fileareas) {
-                    foreach($fileareas as $j => $filearea) {
+                foreach ($jsontemplate->files as $fileareas) {
+                    foreach ($fileareas as $j => $filearea) {
                         $fileareas->{$j} = array_fill_keys(array_keys((array) $filearea), 'QQQQ');
                     }
                 }
@@ -338,12 +380,14 @@ class aigen_form extends \moodleform {
         return false;
     }
 
-    public function get_element_value($elname) {
+    public function get_element_value($elname)
+    {
         $mform = $this->_form;
-        return $mform->elementExists($elname) ? $mform->getElement($elname)->getValue(): null;
+        return $mform->elementExists($elname) ? $mform->getElement($elname)->getValue() : null;
     }
 
-    public static function mappings() {
+    public static function mappings()
+    {
         $availablecontext = [];
         $availablecontext[] = 'target_language'; // Data from the activity settings, language is required
         $availablecontext[] = 'user_topic'; // Sample data that the user might provide. eg "Your plan for the weekend"
@@ -356,7 +400,8 @@ class aigen_form extends \moodleform {
         return $availablecontext;
     }
 
-    public static function type_options() {
+    public static function type_options()
+    {
         $types = ['text', 'textarea', 'dropdown'];
         return array_combine($types, $types);
     }

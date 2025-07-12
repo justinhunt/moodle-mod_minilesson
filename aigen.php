@@ -68,13 +68,13 @@ $config = get_config(constants::M_COMPONENT);
 $lessontemplates = aigen::fetch_lesson_templates();
 $templatecount = count($lessontemplates);
 
-// Testing data. // hard coded here and in aigen_dev.php
+// Sample Data -  will beoverwritten by form submission
 $contextdata = [
     'target_language' => $moduleinstance->ttslanguage,
-    'user_topic' => 'Glass Bridges in China',
+    'user_topic' => 'A dog and a cat',
     'user_level' => 'CEFR A2',
     'user_text' => 'On my way to school I met a dog. We became friends. But he met a cat and ran after it. Was he my friend?',
-    'user_keywords' => 'dog, cat, school, friend',
+    'user_keywords' => 'dog' . PHP_EOL . 'cat' . PHP_EOL . ' school',
     'user_customdata1' => 'French',
     'user_customdata2' => '',
     'user_customdata3' => '',
@@ -108,7 +108,7 @@ switch($action){
             $template = $thetemplate['template'];
         }
         if ($postdata = data_submitted()) {
-            foreach(mod_minilesson\aigen_form::mappings() as $fieldname) {
+            foreach (mod_minilesson\aigen_form::mappings() as $fieldname) {
                 if (isset($postdata->{$fieldname})) {
                     $contextdata[$fieldname] = $postdata->{$fieldname};
                 }
@@ -154,14 +154,11 @@ switch($action){
         break;
 }
 
-//If we get here, we are listing the AIGEN templates
-
+// If we get here, we are listing the AIGEN templates.
 echo html_writer::div(get_string('aigenpage_explanation', constants::M_COMPONENT), constants::M_COMPONENT . '_aigenpageexplanation');
 
 
-
 if ($templatecount > 0) {
-    echo html_writer::div("For testing:<br> <pre>" . print_r($contextdata, true) . '</pre>',  ' mb-2');
     echo $renderer->aigen_buttons_menu($cm, $lessontemplates);
 } else {
     echo html_writer::div(get_string('aigenpage_notemplates', constants::M_COMPONENT, $templatecount), constants::M_COMPONENT . '_clonecount' . ' mb-2');

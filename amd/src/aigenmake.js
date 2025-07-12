@@ -17,6 +17,7 @@ This file contains class and ID definitions.
             var self = this;
             self.init_controls(uniqid);
             self.register_events(uniqid);
+            self.set_data();
         },
 
         init_controls: function(uniqid){
@@ -26,52 +27,6 @@ This file contains class and ID definitions.
             self.controls.aigenmakebtn = $('#' + uniqid + '_aigen_make_btn');
             self.controls.fieldmappings = $('#' + uniqid + ' #id_fieldmappings');
             self.controls.aigenmake_textarea = $('#' + uniqid + '_aigen_make_textarea');
-            try {
-                var textareavalue = self.controls.aigenmake_textarea.val();
-                var jsonvalue = JSON.parse(textareavalue);
-                jsonvalue.items.forEach(function(itemdata, index) {
-                    var itemcontrol = $('.ml_aigen_item[data-itemnumber="'+index+'"]');
-
-                    //set the prompt
-                    var promptTextArea = $(itemcontrol).find('textarea[name="aigenprompt"]');
-                    promptTextArea.val(itemdata.prompt);
-
-                    //set the generate method
-                    var generateMethodSelect = $(itemcontrol).find('select[name="generatemethod"]');
-                    generateMethodSelect.val(itemdata.generatemethod);
-
-                    //get the generate fields
-                    itemdata.generatefields.forEach(function(generateField) {
-                        var $generateCheckbox = $(itemcontrol).find('.aigen_fields-to-generate input[type="checkbox"][name="'+generateField.name+'"]');
-                        $generateCheckbox.prop('checked', generateField.generate);
-                        if (generateField.generate) {
-                            if (itemdata.generatemethod=="reuse") {
-                                var $mappingSelect = $(itemcontrol).find('select[name="' + generateField.name + '_mapping"]');
-                                $mappingSelect.val(generateField.mapping);
-                            }
-                        }
-                    });
-
-                    //set the file areas
-                    itemdata.generatefileareas.forEach(function(generateFilearea) {
-                        var $generateFileareasCheckbox = $(itemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"][name="'+generateFilearea.name+'"]');
-                        $generateFileareasCheckbox.prop('checked', generateFilearea.generate);
-                        if(generateFilearea.generate) {
-                            var $mappingSelect = $(itemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]');
-                            $mappingSelect.val(generateFilearea.mapping);
-                        }
-                    });
-
-                    //set the prompt field mappings div
-                    itemdata.promptfields.forEach(function(promptField) {
-                        var $mappingsSelect= $(itemcontrol).find('.aigen_promptfield-mappings select[data-name="'+promptField.name+'"]');
-                        $mappingsSelect.val(promptField.mapping);
-                    });
-                });
-            } catch (error) {
-                log.debug('Invalid JSON');
-                log.debug(error);
-            }
         },
 
         register_events: function(uniqid){
@@ -237,6 +192,75 @@ This file contains class and ID definitions.
             });
 
         },  // end of register_events
+
+        set_data: function(){
+            //set up the controls
+            var self = this;
+            try {
+                var textareavalue = self.controls.aigenmake_textarea.val();
+                var jsonvalue = JSON.parse(textareavalue);
+                jsonvalue.items.forEach(function(itemdata, index) {
+                    var itemcontrol = $('.ml_aigen_item[data-itemnumber="'+index+'"]');
+
+                    //set the prompt
+                    var promptTextArea = $(itemcontrol).find('textarea[name="aigenprompt"]');
+                    promptTextArea.val(itemdata.prompt);
+
+                    var updateTheFields = function() {
+                                            
+                        //get the generate fields
+                        itemdata.generatefields.forEach(function(generateField) {
+                            var $generateCheckbox = $(itemcontrol).find('.aigen_fields-to-generate input[type="checkbox"][name="'+generateField.name+'"]');
+                            $generateCheckbox.prop('checked', generateField.generate);
+                            if (generateField.generate) {
+                                if (itemdata.generatemethod=="reuse") {
+                                    var $mappingSelect = $(itemcontrol).find('select[name="' + generateField.name + '_mapping"]');
+                                    $mappingSelect.val(generateField.mapping);
+                                }
+                            }
+                        });
+
+                        //set the file areas
+                        itemdata.generatefileareas.forEach(function(generateFilearea) {
+                            var $generateFileareasCheckbox = $(itemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"][name="'+generateFilearea.name+'"]');
+                            $generateFileareasCheckbox.prop('checked', generateFilearea.generate);
+                            if(generateFilearea.generate) {
+                                var $mappingSelect = $(itemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]');
+                                $mappingSelect.val(generateFilearea.mapping);
+                            }
+                        });
+
+                        //set the prompt field mappings div
+                        itemdata.promptfields.forEach(function(promptField) {
+                            var $mappingsSelect= $(itemcontrol).find('.aigen_promptfield-mappings select[data-name="'+promptField.name+'"]');
+                            $mappingsSelect.val(promptField.mapping);
+                        });
+                    }
+
+                    //set the generate method
+                    var generateMethodSelect = $(itemcontrol).find('select[name="generatemethod"]');
+                    generateMethodSelect.val(itemdata.generatemethod);
+                    log.debug('Setting generate method to: ' + itemdata.generatemethod);
+                    // We need to do this to make sure the correct fields are on the page, before we set data to them.
+                    if (itemdata.generatemethod === 'reuse') {
+                        log.debug('triggering');
+                        generateMethodSelect.trigger('change');
+                        //wait a second for the change to take effect
+                        setTimeout(function() {
+                            log.debug('updating after triggering');
+                            updateTheFields();
+                        }, 1000);
+                    }else{
+                        log.debug('updating without triggering');
+                        updateTheFields();
+                    }
+
+                });
+            } catch (error) {
+                log.debug('Invalid JSON');
+                log.debug(error);
+            }
+        },
 
         splitDataField: function(datafield) {
             if(!datafield || datafield.trim() === '') {

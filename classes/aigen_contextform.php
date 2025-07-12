@@ -52,7 +52,7 @@ class aigen_contextform extends moodleform {
                         break;
                 }
                 if (!empty($fieldmapping->description)) {
-                    $mform->addElement('static', "{$fieldname}_desc", "Explaination", $fieldmapping->description);
+                    $mform->addElement('static', "{$fieldname}_desc", "", $fieldmapping->description);
                 }
             }
         }
