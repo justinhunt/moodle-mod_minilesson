@@ -416,8 +416,6 @@ class aigen
         $t3->timemodified = time();
         $templates[] = $t3;
 
-        $t3->id = $DB->insert_record('minilesson_templates', $t3);
-
         foreach ($templates as $template) {
             $DB->insert_record('minilesson_templates', $template);
         }
