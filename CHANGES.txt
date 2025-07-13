@@ -1,6 +1,7 @@
 
-Version 1.0.94 (Build 2025071300)
+Version 1.0.95 (Build 2025071300)
 - AI Item Generation -- default templates
+- Fix for fluency item bug when hide start page enabled
 
 Version 1.0.94 (Build 2025062901)
 - AI Item Generation
