@@ -76,6 +76,21 @@ switch($action) {
         }
         break;
     }
+    case 'duplicate': {
+        if ($templateid && confirm_sesskey()) {
+            // Duplicate the template
+            $template = $DB->get_record('minilesson_templates', ['id' => $templateid], '*', MUST_EXIST);
+            $template->id = null; // Reset the ID to create a new record.
+            $template->timemodified = time(); // Update the modified time.
+            $template->name .= ' (copy)'; // Append '(copy)' to the name
+            $DB->insert_record('minilesson_templates', $template);
+            redirect(
+                new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]),
+                get_string('templateduplicated', constants::M_COMPONENT)
+            );
+        }
+        break;
+    }
     case 'edit': {
         $aigenform = new \mod_minilesson\aigen_form();
         $aigenform->set_data_for_dynamic_submission();

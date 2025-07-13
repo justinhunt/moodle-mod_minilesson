@@ -11,7 +11,13 @@
   {{/aigenfileareas}}
 {{/methodreuse}}
 {{^methodreuse}}
-<label>File areas that AI should generate (map to generate field in this item) </label><br />
+<label>Overall Image Context</label>
+    <select name="overall_image_context">
+        {{#availablecontext}}
+            <option value="{{.}}">{{.}}</option>
+        {{/availablecontext}}
+    </select><br />
+ <label>File areas that AI should generate (map to generate field in this item) </label><br />
   {{#aigenfileareas}}
         <label><input type="checkbox" name="{{.}}" value="1" checked="checked"/> {{.}}</label>
           <select name="{{.}}_mapping">

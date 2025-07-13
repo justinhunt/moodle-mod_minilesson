@@ -86,6 +86,10 @@ This file contains class and ID definitions.
                     });
                     itemdata.generatefileareas = generateFileareas;
 
+                    //Get the overall image context for the item (if any) e.g "user_topic" - "A man and a boy are walking in a park"
+                    var overallimagecontext = $(itemcontrol).find('select[name="overall_image_context"]').val();
+                    itemdata.overallimagecontext = overallimagecontext;
+
                     //get the prompt field mappings div
                     var promptFields=[];
                     var mappingsSelects= $(itemcontrol).find('.aigen_promptfield-mappings select');
@@ -179,7 +183,8 @@ This file contains class and ID definitions.
                     methodreuse: selectedValue=='reuse',
                     aigenplaceholders: self.splitDataField(fileareasDiv.data('aigenplaceholders')),
                     contextfileareas: self.splitDataField(fileareasDiv.data('contextfileareas')),
-                    aigenfileareas: self.splitDataField(fileareasDiv.data('aigenfileareas'))
+                    aigenfileareas: self.splitDataField(fileareasDiv.data('aigenfileareas')),
+                    availablecontext: self.splitDataField(fileareasDiv.data('availablecontext')),
                 };
                 templates.render('mod_minilesson/aigenfilemappings',fileareasData).then(
                     function(html,js){
@@ -205,6 +210,7 @@ This file contains class and ID definitions.
                     //set the prompt
                     var promptTextArea = $(itemcontrol).find('textarea[name="aigenprompt"]');
                     promptTextArea.val(itemdata.prompt);
+                    
 
                     var updateTheFields = function() {
                                             
@@ -230,6 +236,10 @@ This file contains class and ID definitions.
                             }
                         });
 
+                        //set the overall image context
+                        var overallimagecontext = $(itemcontrol).find('select[name="overall_image_context"]');
+                        overallimagecontext.val(itemdata.overallimagecontext);
+
                         //set the prompt field mappings div
                         itemdata.promptfields.forEach(function(promptField) {
                             var $mappingsSelect= $(itemcontrol).find('.aigen_promptfield-mappings select[data-name="'+promptField.name+'"]');
@@ -240,20 +250,17 @@ This file contains class and ID definitions.
                     //set the generate method
                     var generateMethodSelect = $(itemcontrol).find('select[name="generatemethod"]');
                     generateMethodSelect.val(itemdata.generatemethod);
+                    promptTextArea.data(itemdata.generatemethod + 'prompt', itemdata.prompt);
                     log.debug('Setting generate method to: ' + itemdata.generatemethod);
                     // We need to do this to make sure the correct fields are on the page, before we set data to them.
-                    if (itemdata.generatemethod !== 'generate') {
-                        log.debug('triggering');
-                        generateMethodSelect.trigger('change');
-                        //wait a second for the change to take effect
-                        setTimeout(function() {
-                            log.debug('updating after triggering');
-                            updateTheFields();
-                        }, 1000);
-                    }else{
-                        log.debug('updating without triggering');
+                    log.debug('triggering');
+                    generateMethodSelect.trigger('change');
+                    //wait a second for the change to take effect
+                    setTimeout(function() {
+                        log.debug('updating after triggering');
                         updateTheFields();
-                    }
+                    }, 1000);
+                
 
                 });
             } catch (error) {

@@ -362,13 +362,26 @@ class aigen_form extends \moodleform
             }
             $jsontemplate = json_decode($template->template);
             if (!json_last_error() && !empty($jsontemplate->files)) {
-                foreach ($jsontemplate->files as $fileareas) {
-                    foreach ($fileareas as $j => $filearea) {
-                        $fileareas->{$j} = array_fill_keys(array_keys((array) $filearea), 'QQQQ');
+                // Files will be an array of fileareas each containing of files: filename = file content.
+                // We don't want the file content in the template because its saved in DB, so we replace it with a placeholder'QQQQ'.
+                // Test case: we want to translate an existing activity (and keep the images)
+                $clearfiles = true;
+                // If template name contains 'translate' we assume we want to keep the files.
+                if (stripos($template->name, 'translate') === false) {
+                    $clearfiles = false;
+                }
+                if ($clearfiles) {
+                    foreach ($jsontemplate->files as $fileareas) {
+                        foreach ($fileareas as $j => $filearea) {
+                            $fileareas->{$j} = array_fill_keys(array_keys((array) $filearea), 'QQQQ');
+                        }
                     }
                 }
+                // Encod the template
                 $template->template = json_encode($jsontemplate, JSON_PRETTY_PRINT);
             }
+
+            // Save the template 
             if (!empty($template->id)) {
                 $DB->update_record('minilesson_templates', $template);
             } else {

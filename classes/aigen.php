@@ -69,13 +69,13 @@ class aigen
             $currentitemcount++;
             $importitem = $aigentemplate->items[$configitem->itemnumber];
             $importitemfileareas = (isset($importitem->filesid) && isset($aigentemplate->files->{$importitem->filesid})) ?
-                        $aigentemplate->files->{$importitem->filesid} :
-                        false;
+                $aigentemplate->files->{$importitem->filesid} :
+                false;
 
             switch ($configitem->generatemethod) {
                 case 'generate':
                 case 'extract':
-                    // Prepare the prompt with context data
+                    // Prepare the prompt with context data.
                     $useprompt = $configitem->prompt;
                     foreach ($configitem->promptfields as $promptfield) {
                         if (isset($contextdata[$promptfield->mapping])) {
@@ -85,7 +85,7 @@ class aigen
 
                     // Prepare the response format (JSON)
                     $generateformat = new \stdClass();
-                    foreach ($configitem->generatefields as $generatefield ) {
+                    foreach ($configitem->generatefields as $generatefield) {
                         if (isset($importitem->{$generatefield->name}) && isset($generatefield->generate) && $generatefield->generate == 1) {
                             $generateformat->{$generatefield->name} = $generatefield->name . '_data';
                         }
@@ -97,8 +97,11 @@ class aigen
                     $useprompt = $useprompt . PHP_EOL . 'Generate the data in this JSON format: ' . $generateformatjson;
 
                     // Update the user.
-                    $this->update_progress($currentitemcount, count($aigenconfig->items),
-                     get_string('generatingtextdata', constants::M_COMPONENT, $importitem->name));
+                    $this->update_progress(
+                        $currentitemcount,
+                        count($aigenconfig->items),
+                        get_string('generatingtextdata', constants::M_COMPONENT, $importitem->name)
+                    );
 
                     // Generate the data and update the importitem
                     $genresult = $this->generate_data($useprompt);
@@ -112,18 +115,28 @@ class aigen
                         }
                     }
                     // Generate the file areas if needed
-                    // If the filearea is in the template, and the mapping data (topic/sentences etc) is set, generate images
+                    // First collect overall image context which is just used to encourage AI to make consistent images.
+                    $overallimagecontext = false;
+                    if (isset($configitem->overallimagecontext) && $configitem->overallimagecontext !== "--"
+                        && isset($contextdata[$configitem->overallimagecontext])
+                        && !empty($contextdata[$configitem->overallimagecontext])) {
+                            $overallimagecontext = $contextdata[$configitem->overallimagecontext];
+                    }
+                    // If the filearea is in the template, and the mapping data (topic/sentences etc) is set, generate images.
                     foreach ($configitem->generatefileareas as $generatefilearea) {
                         if (
                             $importitemfileareas && isset($importitemfileareas->{$generatefilearea->name})
                             && isset($generatefilearea->mapping) && isset($importitem->{$generatefilearea->mapping})
                         ) {
                             // Update the user.
-                            $this->update_progress($currentitemcount, count($aigenconfig->items),
-                            get_string('generatingimagedata', constants::M_COMPONENT, $importitem->name));
+                            $this->update_progress(
+                                $currentitemcount,
+                                count($aigenconfig->items),
+                                get_string('generatingimagedata', constants::M_COMPONENT, $importitem->name)
+                            );
 
                             $importitemfileareas->{$generatefilearea->name} =
-                                $this->generate_images($importitemfileareas->{$generatefilearea->name}, $importitem->{$generatefilearea->mapping});
+                                $this->generate_images($importitemfileareas->{$generatefilearea->name}, $importitem->{$generatefilearea->mapping}, $overallimagecontext);
                         }
                     }
 
@@ -146,7 +159,7 @@ class aigen
 
             // Update the context data
             foreach ($configitem->generatefields as $generatefield) {
-                if ($generatefield->generate == 1) {
+                if ($generatefield->generate == 1 && isset($importitem->{$generatefield->name})) {
                     $contextdata["item" . $configitem->itemnumber . "_" . $generatefield->name]
                         = $importitem->{$generatefield->name};
                 }
@@ -170,11 +183,13 @@ class aigen
             if (class_exists($itemclass)) {
                 $allfields = $itemclass::get_keycolumns();
                 foreach ($allfields as $key => $field) {
-                    if (isset($importitem->{$field['jsonname']}) &&
+                    if (
+                        isset($importitem->{$field['jsonname']}) &&
                         $field['type'] == 'voice' &&
-                        !in_array($importitem->{$field['jsonname']}, $langvoices)) {
-                            // If the voice is not in the module language we randomly select a voice in the right language.
-                            $importitem->{$field['jsonname']} = array_rand(array_flip($nicevoices));
+                        !in_array($importitem->{$field['jsonname']}, $langvoices)
+                    ) {
+                        // If the voice is not in the module language we randomly select a voice in the right language.
+                        $importitem->{$field['jsonname']} = array_rand(array_flip($nicevoices));
                     }
                 }
             }
@@ -182,7 +197,7 @@ class aigen
             // Update the import items.
             $importitems[] = $importitem;
             if (isset($importitem->filesid)) {
-                 $importlessonfiles->{$importitem->filesid} = $importitemfileareas;
+                $importlessonfiles->{$importitem->filesid} = $importitemfileareas;
             }
         }
         $thereturn = new \stdClass();
@@ -191,31 +206,35 @@ class aigen
         return $thereturn;
     }
 
-    public function generate_images($fileareatemplate, $contextdata)
+    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext)
     {
         global $USER;
 
         $imagecnt = 0;
         $imageurls = [];
         foreach ($fileareatemplate as $filename => $filecontent) {
-            if (!is_array($contextdata)) {
-                $prompt = $contextdata;
-            } else if (array_key_exists($imagecnt, $contextdata)) {
-                $prompt = $contextdata[$imagecnt];
+            if (!is_array($imagepromptdata)) {
+                $prompt = $imagepromptdata;
+            } else if (array_key_exists($imagecnt, $imagepromptdata)) {
+                $prompt = $imagepromptdata[$imagecnt];
             } else {
                 // this is a problem, we have no context data for this image.
                 continue;
             }
 
-            //Add the style
-            $prompt = "simple cute cartoon style: " . $prompt;
+            // Add the style and greate context
+            $prompt = "Give me a simple cute cartoon image depicting: " . $prompt;
+            if ($overallimagecontext && !empty($overallimagecontext) && $overallimagecontext !== "--") {
+                $prompt .= PHP_EOL . " in the context of the following topic: " . $overallimagecontext;
+            }
 
-            //Do the image generation.
+            // Do the image generation.
             $ret = $this->generate_image($prompt);
 
             if ($ret && $ret->success) {
-                $url = $ret->payload[0]->url;
-                if ($url) {
+
+                if (isset($ret->payload[0]->url)) {
+                    $url = $ret->payload[0]->url;
                     $rawdata = file_get_contents($url);
                     if ($rawdata === false) {
                         // If we cannot fetch the image, skip this one.
@@ -224,6 +243,11 @@ class aigen
                         $base64data = base64_encode($rawdata);
                         $imageurls[$filename] = $base64data;
                     }
+                } else if (isset($ret->payload[0]->b64_json)) {
+                    // If the payload has a base64 encoded image, use that.
+                    $base64data = $ret->payload[0]->b64_json;
+                    $imageurls[$filename] = $base64data;
+
                 } else {
                     // If no URL is returned, skip this one.
                     continue;
@@ -329,9 +353,9 @@ class aigen
 
     public function update_progress($taskno, $totaltasks, $message)
     {
-       if ($this->progressbar) {
-         $this->progressbar->update($taskno, $totaltasks, $message);
-       }
+        if ($this->progressbar) {
+            $this->progressbar->update($taskno, $totaltasks, $message);
+        }
     }
 
     /**
@@ -344,7 +368,7 @@ class aigen
         global $DB;
 
         $templates = $DB->get_records('minilesson_templates');
-        foreach($templates as $i => $template) {
+        foreach ($templates as $i => $template) {
             $template->config = json_decode($template->config);
             $template->template = json_decode($template->template);
             $templates[$i] = (array) $template;
