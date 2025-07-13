@@ -66,6 +66,20 @@ $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 
 $widgethtml = null;
 switch($action) {
+    case 'download': {
+        if ($templateid && confirm_sesskey()) {
+            $template = $DB->get_record('minilesson_templates', ['id' => $templateid], '*', MUST_EXIST);
+            $filename = $template->name . '_config.json';
+            $jsondata = $template->config;
+            header('Content-Type: application/json');
+            header('Content-Disposition: attachment; filename="' . $filename . '"');
+            header('Content-Length: ' . strlen($jsondata));
+            echo $jsondata;
+            exit; // Ensure no further output is sent.
+        }
+        break;
+    }
+
     case 'delete': {
         if ($templateid && confirm_sesskey()) {
             $DB->delete_records('minilesson_templates', ['id' => $templateid]);

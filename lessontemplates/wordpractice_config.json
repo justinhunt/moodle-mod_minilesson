@@ -1,0 +1,241 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": "user_keywords"
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "Generate a 1 dimensional array of 5 example sentences in {language} suitable for {level} level learners using the following keywords [{keywords}]. In each sentence surround one keyword with square brackets, e.g [word]. ",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "timelimit",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "sentences"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                }
+            ]
+        },
+        {
+            "itemnumber": 2,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": "item1_sentences"
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "timelimit",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "item1_customfile1_image"
+                }
+            ],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 3,
+            "prompt": "Generate a 1 dimensional array of 5 'sentences' of format 'keyword | {native_language} translation' from the following  {language} keywords: [{keywords}]",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "native_language",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                }
+            ]
+        },
+        {
+            "itemnumber": 4,
+            "prompt": "Generate a short writing question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] . Set the aigradefeedbacklanguage to {native_language}. Also generate instructions for the AI grader (aigradeinstructions) that tell it to penalize 1 mark per grammar mistake and to give one mark for each use of a keyword: [{keywords}]",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedback",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedbacklanguage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradeinstructions",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "targetwordcount",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Word Practice",
+    "lessonDescription": "Enter a list of words (5)  and Poodll will make a short activity for students to practice those words",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "Topic",
+            "description": "Enter a topic that will be used when asking student to write",
+            "type": "textarea"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": " A comma separated list of keywords for the activity",
+            "type": "textarea"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Native Language",
+            "description": "The native language of the learners",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    }
+}

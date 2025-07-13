@@ -130,7 +130,7 @@ switch($action){
 
         // Do the import -- TO DO error checking.
         $insertcount = count($template->items);
-                $aigen->update_progress( $insertcount,  $insertcount, get_string('aigenpageimporting', constants::M_COMPONENT));
+        $aigen->update_progress( $insertcount,  $insertcount, get_string('aigenpageimporting', constants::M_COMPONENT));
 
         // Hide output from the import process.
         ob_start();
@@ -143,6 +143,10 @@ switch($action){
         // Open output again
         $o = ob_get_contents();
         ob_end_clean();
+
+        // Complete Progress bar.
+        $aigen->update_progress( $insertcount,  $insertcount, '');
+
 
         echo $renderer->aigen_complete($cm, $insertcount);
         echo $renderer->footer();

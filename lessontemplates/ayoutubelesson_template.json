@@ -1,0 +1,135 @@
+{
+    "items": [
+        {
+            "type": "page",
+            "name": "Watch the Video (content page)",
+            "text": "Watch the video and be ready to answer questions.",
+            "ttsvoice": "Kendra",
+            "ytid": "b0gpqBCi7Q0",
+            "ytend": "25",
+            "ttsdialog": [
+                ""
+            ]
+        },
+        {
+            "type": "multichoice",
+            "name": "Answer the question I (multichoice)",
+            "text": "What does Ernie decide to do after Bert tells him not to eat cookies in bed?",
+            "ttsvoice": "auto",
+            "ttsdialog": [
+                ""
+            ],
+            "text1": "Ernie decides to stop eating cookies altogether.",
+            "text2": "Ernie decides to eat cookies in Bert's bed instead.",
+            "text3": "Ernie decides to eat cookies in the kitchen.",
+            "text4": "Ernie decides to eat cookies in the morning.",
+            "promptvoice": "Kevin",
+            "promptvoiceopt": "normal",
+            "correctanswer": "2"
+        },
+        {
+            "type": "multichoice",
+            "name": "Answer the question II (multichoice + image)",
+            "instructions": "Choose the correct answer.",
+            "text": "Why does Bert tell Ernie not to eat cookies in bed?",
+            "ttsvoice": "auto",
+            "ttsdialog": [
+                ""
+            ],
+            "text1": "Because Ernie might spill milk.",
+            "text2": "Because Ernie might get crumbs in his pajamas and feel itchy.",
+            "text3": "Because Ernie might wake up Bert.",
+            "text4": "Because Ernie might drop the cookies on the floor.",
+            "promptvoice": "Kendra",
+            "promptvoiceopt": "slow",
+            "correctanswer": "2",
+            "filesid": 3
+        },
+        {
+            "type": "multiaudio",
+            "name": "Answer the question III (multiaudio)",
+            "instructions": "Choose the correct answer. Use the mic to read it aloud.",
+            "text": "What does Ernie do after agreeing not to eat cookies in his own bed?",
+            "tts": "What does Ernie do after agreeing not to eat cookies in his own bed?",
+            "ttsvoice": "Salli",
+            "ttsdialog": [
+                ""
+            ],
+            "text1": "He throws the cookies away.",
+            "text2": "He eats cookies in Bert's bed instead.",
+            "text3": "He goes to the kitchen to eat cookies.",
+            "text4": "He decides to go to sleep without eating cookies.",
+            "promptvoice": "Kendra",
+            "promptvoiceopt": "normal",
+            "correctanswer": "2",
+            "filesid": 4
+        },
+        {
+            "type": "listenrepeat",
+            "name": "Say the Sentences (listen and speak)",
+            "instructions": "Listen and respond to the sentences you hear.",
+            "text": "Listen and Repeat",
+            "ttsvoice": "auto",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "Ernie and Bert are in bed.\r",
+                "Ernie eats cookies before sleeping.\r",
+                "Bert worries about crumbs in bed.\r",
+                "Ernie moves to Bert's bed to eat."
+            ],
+            "alternates": [
+                ""
+            ],
+            "promptvoice": "Justin",
+            "showtextprompt": "no",
+            "promptvoiceopt": "normal"
+        },
+        {
+            "type": "speechcards",
+            "name": "Speak the words (speechcards)",
+            "text": "Speak the phrases on the cards",
+            "ttsvoice": "Kimberly",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "Ernie and Bert are in bed.\r",
+                "Ernie eats cookies before sleeping.\r",
+                "Bert worries about crumbs in bed.\r",
+                "Ernie moves to Bert's bed to eat."
+            ]
+        },
+        {
+            "type": "dictation",
+            "name": "Type what you hear (dictation)",
+            "text": "Type what you hear",
+            "ttsvoice": "auto",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "Ernie and Bert are in bed.\r",
+                "Ernie eats cookies before sleeping.\r",
+                "Bert worries about crumbs in bed.\r",
+                "Ernie moves to Bert's bed to eat."
+            ],
+            "promptvoice": "Joey",
+            "ignorepunc": "yes",
+            "promptvoiceopt": "normal"
+        }
+    ],
+    "files": {
+        "3": {
+            "itemmedia": {
+                "2021-05-03_21-48-02.png": "QQQQ"
+            }
+        },
+        "4": {
+            "itemmedia": {
+                "2021-05-05_21-25-16.png": "QQQQ"
+            }
+        }
+    }
+}

@@ -375,4 +375,52 @@ class aigen
         }
         return $templates;
     }//end of fetch_lesson_templates function
+
+    /**
+     * Fetches the lesson templates from the lesson templates directory.
+     *
+     * @return array An associative array of lesson templates, where the key is the template name and the value is an array containing 'config' and 'template' objects.
+     */
+    public static function create_default_templates()
+    {
+        global $CFG, $DB;
+
+        $templates = [];
+        // A YouTube Lesson.
+        $t1 = new \stdClass();
+        $t1->name = 'A YouTube Lesson';
+        $t1->description = 'Enter a YouTube video id (or URL) and summaries. Poodll will generate a short lesson with multi-choice and speaking activities';
+        $t1->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_config.json');
+        $t1->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_template.json');
+        $t1->timecreated = time();
+        $t1->timemodified = time();
+        $templates[] = $t1;
+
+        // Passage Reading.
+        $t2 = new \stdClass();
+        $t2->name = 'Passage Reading';
+        $t2->description = 'AI will prepare a passage of text and some reading and speaking activities based on it.';
+        $t2->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_config.json');
+        $t2->template =  file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_template.json');
+        $t2->timecreated = time();
+        $t2->timemodified = time();
+        $templates[] = $t2;
+
+        // Word Practice.
+        $t3 = new \stdClass();
+        $t3->name = 'Word Practice';
+        $t3->description = 'Enter a list of words (5) and Poodll will make a short activity for students to practice those words';
+        $t3->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_config.json');
+        $t3->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_template.json');
+        $t3->timecreated = time();
+        $t3->timemodified = time();
+        $templates[] = $t3;
+
+        $t3->id = $DB->insert_record('minilesson_templates', $t3);
+
+        foreach ($templates as $template) {
+            $DB->insert_record('minilesson_templates', $template);
+        }
+
+    } //end of create default_templates function
 }

@@ -57,6 +57,7 @@ class templates extends dynamictable {
         $this->strings['edit'] = get_string('action:edittemplate', constants::M_COMPONENT);
         $this->strings['delete'] = get_string('action:deletetemplate', constants::M_COMPONENT);
         $this->strings['duplicate'] = get_string('action:duplicatetemplate', constants::M_COMPONENT);
+        $this->strings['download'] = get_string('action:downloadtemplate', constants::M_COMPONENT);
 
 
         $this->set_sql('*', '{minilesson_templates}', '1 = 1');
@@ -81,6 +82,11 @@ class templates extends dynamictable {
             new moodle_url($this->baseurl, ['action' => 'duplicate', 'templateid' => $record->id,  'sesskey' => sesskey()]),
              $this->renderer->pix_icon('t/copy', $this->strings['duplicate']));
         $o[] = $this->renderer->render($duplicatebutton);
+
+        $downloadbutton = new action_link(
+            new moodle_url($this->baseurl, ['action' => 'download', 'templateid' => $record->id,  'sesskey' => sesskey()]),
+             $this->renderer->pix_icon('t/download', $this->strings['download']));
+        $o[] = $this->renderer->render($downloadbutton);
 
         $deletebutton = new action_link(
             new moodle_url($this->baseurl, ['action' => 'delete', 'templateid' => $record->id, 'sesskey' => sesskey()]),

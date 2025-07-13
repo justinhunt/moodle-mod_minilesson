@@ -2311,12 +2311,7 @@ span.mod_minilesson_finishedanswer {
 }
 
 .minilesson_lgapfill_player_box .lgapfill_controls {
-  /*
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  */
+  margin-top: 5px;
   height: 35px;
   background-color: white;
   text-align: center;
@@ -2475,12 +2470,7 @@ span.mod_minilesson_finishedanswer {
 }
 
 .minilesson_tgapfill_player_box .tgapfill_controls {
-  /*
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  */
+  margin-top: 5px;
   height: 35px;
   background-color: white;
   text-align: center;
@@ -2644,6 +2634,7 @@ span.mod_minilesson_finishedanswer {
   right: 0;
   bottom: 75px;
   */
+  margin-top: 5px;
   height: 35px;
   background-color: white;
 }
@@ -3228,6 +3219,7 @@ textarea.ml_freewriting_textarea {
 }
 
 .minilesson_fluency_box .fluency_controls {
+  margin-top: 5px;
   height: 35px;
   background-color: white;
 }
@@ -3594,4 +3586,8 @@ div.poodlldictationplayer {
         width: 100%;
         justify-content: center;
       }
+    }
+
+    .mod_minilesson_aigenpageexplanation {
+      margin: 10px auto;
     }

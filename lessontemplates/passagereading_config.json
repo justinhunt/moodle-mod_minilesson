@@ -1,0 +1,258 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Generate a passage of text (tts) in {language} suitable for {level} level learners on the topic of: [{topic}] The passage should take about 1 minute to read aloud. The passage of text should contain the following keywords: [{keywords}]\nThe passage should be engaging and appropriate for the target audience.",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "tts",
+                    "generate": 1,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "tts"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                }
+            ]
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "Find any of the keywords [{keywords}] in the following {language} text. Return the text as a passage with each instance of the keyword surrounded with square brackets, e.g [word].  \n [{text}]. ",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "hidestartpage",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "text",
+                    "mapping": "item0_tts"
+                }
+            ]
+        },
+        {
+            "itemnumber": 2,
+            "prompt": "Extract a 1 dimensional array of 4 sentences from the following {language} text: [{text}]. ",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctthreshold",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "sentences"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "text",
+                    "mapping": "item0_tts"
+                }
+            ]
+        },
+        {
+            "itemnumber": 3,
+            "prompt": "Create a {language} passage that is a 5 or 6 sentence summarisation of the following text: [{text}]. ",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "text",
+                    "mapping": "item0_tts"
+                }
+            ]
+        },
+        {
+            "itemnumber": 4,
+            "prompt": "Generate an oral discussion question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] ",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedback",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradeinstructions",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "relevance",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "targetwordcount",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "text"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Passage Reading",
+    "lessonDescription": "AI will prepare a passage of text and some reading and speaking activities based on it.",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "Story\/Article Topic",
+            "description": "Enter a story outline or article topic for AI to use to generate a reading passage.",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "User Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": "Enter a short comma separated list of keywords that should be in the passage",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    }
+}

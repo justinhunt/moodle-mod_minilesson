@@ -1,0 +1,112 @@
+{
+    "items": [
+        {
+            "type": "page",
+            "name": "Item: Content Page",
+            "instructions": "Let's practice with new words",
+            "text": "some text",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "layout": "vertical"
+        },
+        {
+            "type": "listeninggapfill",
+            "name": "Item: Listening GapFill",
+            "instructions": "Listen and fill in the gaps",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "I found the [house key] in my bag.",
+                "He put the key in his [pocket] and left.",
+                "Be careful not to [drop] the glass.",
+                "We need to [search] the room for clues.",
+                "If you lose something, you can ask the [police] for help."
+            ],
+            "promptvoice": "Matthew",
+            "allowretry": "yes",
+            "promptvoiceopt": "normal",
+            "timelimit": "12",
+            "filesid": 2
+        },
+        {
+            "type": "typinggapfill",
+            "name": "Item: Typing GapFill",
+            "instructions": "Fill in the missing words or letters",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "I found the [house key] in my bag.",
+                "He put the key in his [pocket] and left.",
+                "Be careful not to [drop] the glass.",
+                "We need to [search] the room for clues.",
+                "If you lose something, you can ask the [police] for help."
+            ],
+            "allowretry": "yes",
+            "timelimit": "10",
+            "filesid": 3
+        },
+        {
+            "type": "spacegame",
+            "name": "Item: Space Game",
+            "instructions": "Shoot the aliens by selecting the correct answer.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "house key \u5bb6\u306e\u9375|house key",
+                "pocket \u30dd\u30b1\u30c3\u30c8|pocket",
+                "drop \u843d\u3068\u3059|drop",
+                "search \u63a2\u3059|search",
+                "police \u8b66\u5bdf|police"
+            ],
+            "includematching": "no"
+        },
+        {
+            "type": "freewriting",
+            "name": "Item: Free Writing",
+            "instructions": "Write about the topic below. Try to use all of the keywords from this lesson.",
+            "text": "Write about what you would do if you lost something important, like your house key. Use words like pocket, drop, search, and police in your answer.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "aigradefeedback": "Explain each mistake simply.",
+            "aigradefeedbacklanguage": "Thank you for your response. Remember to check your grammar and try to use the keywords provided.",
+            "aigradeinstructions": "Penalize 1 mark for each grammar mistake. Award 1 mark for each use of the keywords: house key, pocket, drop, search, police.",
+            "totalmarks": "10",
+            "targetwordcount": "30"
+        }
+    ],
+    "files": {
+        "2": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ"
+            }
+        },
+        "3": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ"
+            }
+        }
+    }
+}

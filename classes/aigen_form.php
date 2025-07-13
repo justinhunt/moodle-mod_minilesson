@@ -367,7 +367,7 @@ class aigen_form extends \moodleform
                 // Test case: we want to translate an existing activity (and keep the images)
                 $clearfiles = true;
                 // If template name contains 'translate' we assume we want to keep the files.
-                if (stripos($template->name, 'translate') === false) {
+                if (stripos($template->name, 'translate') !== false) {
                     $clearfiles = false;
                 }
                 if ($clearfiles) {

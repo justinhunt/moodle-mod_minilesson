@@ -1,0 +1,108 @@
+{
+    "items": [
+        {
+            "type": "page",
+            "name": "Item: Content Page",
+            "instructions": "Listen to the Story",
+            "tts": "Ernie and Bert are in separate beds trying to sleep at night. But Bert notices that Ernie is eating cookies. He asks Ernie what he is doing with cookies in bed. Ernie says that he is hungry and will eat ccookies before sleeping. Bert says that he will get crumbs in bed. And then he will get crumbs in his pajamas. And then he will be itchy. Ernie understands and agrees. Ernie says he will never eat cookies in his bed again. And then he goes over to Berts bed to eat cookies there.",
+            "ttsvoice": "auto",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "layout": "vertical",
+            "filesid": 1
+        },
+        {
+            "type": "passagegapfill",
+            "name": "Item: Passage GapFill",
+            "instructions": "Fill in each of the missing words.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "passage": "I [like] you",
+            "promptvoice": "Kevin",
+            "promptvoiceopt": "normal",
+            "hidestartpage": "yes"
+        },
+        {
+            "type": "fluency",
+            "name": "Item: Fluency",
+            "instructions": "Read the sentences aloud. Click the microphone icon to start recording.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "He wants to help his community.",
+                "Please help us raise food in the garden.",
+                "One particular morning, he stood in front of his school.",
+                "We can grow white beans here.",
+                "The plants in the garden became strong and healthy.",
+                "A customer came to buy vegetables."
+            ],
+            "promptvoice": "Matthew",
+            "correctthreshold": "90",
+            "promptvoiceopt": "normal",
+            "filesid": 3
+        },
+        {
+            "type": "passagereading",
+            "name": "Item: Passage Reading",
+            "instructions": "Use the microphone to record yourself reading the passage.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "passage": "A girl named Hannah wanted to help her community. One particular morning, she stood in front of her school and saw a sign on the door.\nIt said: \u201cPlease help us raise food in the garden. Call this number to join the project.\u201d\nHannah made a phone call and said, \u201cI would like to help.\u201d The woman said, \u201cWe need someone to take the role of planting flowers and vegetables.\u201d\nAt the garden, Hannah met people from many places.",
+            "alternates": [
+                ""
+            ],
+            "totalmarks": "20"
+        },
+        {
+            "type": "freespeaking",
+            "name": "Item: Free Speaking",
+            "instructions": "Use the microphone to record your answer to the question.",
+            "text": "Do you think young people should grow food in the garden? Give a reason for your answer. (30 words or more)",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "aigradefeedback": "Explain each grammar mistake in simple language. Do not comment on spelling or punctuation.",
+            "aigradeinstructions": "Deduct 3 points for each grammar mistake. Do not penalize for spelling or punctuation errors.",
+            "totalmarks": "20",
+            "relevance": "1",
+            "targetwordcount": "30",
+            "layout": "vertical",
+            "filesid": 5
+        }
+    ],
+    "files": {
+        "1": {
+            "itemmedia": {
+                "2.png": "QQQQ"
+            }
+        },
+        "3": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ"
+            }
+        },
+        "5": {
+            "itemmedia": {
+                "2_small.png": "QQQQ"
+            }
+        }
+    }
+}

@@ -1,3 +1,7 @@
+
+Version 1.0.94 (Build 2025071300)
+- AI Item Generation -- default templates
+
 Version 1.0.94 (Build 2025062901)
 - AI Item Generation
 

@@ -30,6 +30,14 @@
  * @see upgrade_plugins_modules()
  */
 function xmldb_minilesson_install() {
+    global $DB;
+
+    // Create default templates if they do not exist.
+    $templates = \mod_minilesson\aigen::fetch_lesson_templates();
+    if (!$templates || empty($templates)) {
+        \mod_minilesson\aigen::create_default_templates();
+    }
+    // Add any other post-installation tasks here.
 }
 
 /**
