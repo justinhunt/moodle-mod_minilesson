@@ -18,7 +18,7 @@
                     "mapping": "tts"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_topic",
             "promptfields": [
                 {
                     "name": "language",
@@ -26,21 +26,21 @@
                 },
                 {
                     "name": "level",
-                    "mapping": "target_language"
+                    "mapping": "user_level"
                 },
                 {
                     "name": "topic",
-                    "mapping": "target_language"
+                    "mapping": "user_topic"
                 },
                 {
                     "name": "keywords",
-                    "mapping": "target_language"
+                    "mapping": "user_keywords"
                 }
             ]
         },
         {
             "itemnumber": 1,
-            "prompt": "Find any of the keywords [{keywords}] in the following {language} text. Return the text as a passage with each instance of the keyword surrounded with square brackets, e.g [word].  \n {text}. ",
+            "prompt": "Find any of the keywords [{keywords}] in the following {language} text. Return the text as a passage with each instance of the keyword surrounded with square brackets, e.g [word].  \n {text}",
             "generatemethod": "extract",
             "generatefields": [
                 {
@@ -59,7 +59,7 @@
             "promptfields": [
                 {
                     "name": "keywords",
-                    "mapping": "target_language"
+                    "mapping": "user_keywords"
                 },
                 {
                     "name": "language",
@@ -67,7 +67,7 @@
                 },
                 {
                     "name": "text",
-                    "mapping": "target_language"
+                    "mapping": "item0_tts"
                 }
             ]
         },
@@ -102,7 +102,7 @@
                 },
                 {
                     "name": "text",
-                    "mapping": "target_language"
+                    "mapping": "item0_tts"
                 }
             ]
         },
@@ -131,7 +131,7 @@
                 },
                 {
                     "name": "text",
-                    "mapping": "target_language"
+                    "mapping": "item0_tts"
                 }
             ]
         },
@@ -182,7 +182,7 @@
             "promptfields": [
                 {
                     "name": "level",
-                    "mapping": "target_language"
+                    "mapping": "user_level"
                 },
                 {
                     "name": "language",
@@ -190,7 +190,7 @@
                 },
                 {
                     "name": "topic",
-                    "mapping": "target_language"
+                    "mapping": "user_topic"
                 }
             ]
         }
