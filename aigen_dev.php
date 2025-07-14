@@ -97,6 +97,8 @@ switch($action) {
             $template->id = null; // Reset the ID to create a new record.
             $template->timemodified = time(); // Update the modified time.
             $template->name .= ' (copy)'; // Append '(copy)' to the name
+            $template->uniqueid = uniqid();
+            $template->version = 0;
             $DB->insert_record('minilesson_templates', $template);
             redirect(
                 new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]),
@@ -120,6 +122,21 @@ switch($action) {
         $widgethtml = $aigenform->render();
         break;
     }
+    case 'upload': {
+        $aigenuploadform = new \mod_minilesson\aigen_uploadform();
+        $aigenuploadform->set_data_for_dynamic_submission();
+
+        // If this page is from a form submission, process it.
+        if ($aigenuploadform->is_cancelled()) {
+            // If the form is cancelled, redirect to the module page.
+            redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
+        } else if ($template = $aigenuploadform->process_dynamic_submission()) {
+            redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
+        }
+
+        $widgethtml = $aigenuploadform->render();
+        break;
+    }
     default: {
         $tablefilterset = templates::get_filterset_object()
             ->upsert_filter('cmid', (int) $cm->id);
@@ -130,7 +147,15 @@ switch($action) {
             new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id, 'action' => 'edit']),
             get_string('action:addtemplate', constants::M_COMPONENT)
         );
-        $widgethtml = $renderer->container($renderer->render($addtemplatebtn), 'mb-3 text-right');
+
+        $uploadtemplatebtn = new single_button(
+            new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id, 'action' => 'upload']),
+            get_string('action:uploadtemplate', constants::M_COMPONENT)
+        );
+        $widgethtml = $renderer->container(
+            $renderer->render($uploadtemplatebtn) . ' ' . $renderer->render($addtemplatebtn),
+            'mb-3 text-right'
+        );
         $widgethtml .= $table->render();
         break;
     }

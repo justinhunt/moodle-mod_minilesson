@@ -65,7 +65,6 @@ class aigen_form extends \moodleform
         global $DB, $PAGE;
         $mform = $this->_form;
         $id = $this->get_element_value('id');
-        $templateid = $this->get_element_value('templateid');
         $step1done = $this->get_element_value('step1done');
         $step2done = $this->get_element_value('step2done');
         $step3done = $this->get_element_value('step3done');
@@ -173,7 +172,7 @@ class aigen_form extends \moodleform
         $mform->addElement('header', 'step2', '2. Configure Items');
         $mform->setExpanded('step2');
         $mform->addElement('html', $renderer->render_from_template(constants::M_COMPONENT . '/aigen', $tdata));
-        
+
         // This is where we put the AI generation config.
         $mform->addElement(
             'hidden',
@@ -268,6 +267,20 @@ class aigen_form extends \moodleform
         );
         $mform->setType('lessondescription', PARAM_TEXT);
 
+        $mform->addElement('text', 'uniqueid', get_string('uniqueid', constants::M_COMPONENT), ['size' => 50]);
+        $mform->setType('uniqueid', PARAM_ALPHANUM);
+        if (!empty($this->_customdata['freezeuniqueid'])) {
+            $mform->freeze('freezeuniqueid');
+            $mform->setConstant('uniqueid', $this->_customdata['freezeuniqueid']);
+        } else {
+            $mform->addRule('uniqueid',  get_string('required'), 'required');
+            $mform->applyFilter('uniqueid', 'trim');
+        }
+
+        $mform->addElement('text', 'version', get_string('version', constants::M_COMPONENT));
+        $mform->setType('version', PARAM_INT);
+        $mform->addRule('version',  get_string('required'), 'required');
+
         $mform->addElement('submit', 'savestep4', 'Create JSON Config');
         $mform->setExpanded('step4');
         $mform->addElement('cancel', 'back', get_string('back'));
@@ -280,6 +293,8 @@ class aigen_form extends \moodleform
             'id' => $this->optional_param('id', null, PARAM_INT),
             'templateid' => $this->optional_param('templateid', 0, PARAM_INT),
             'action' => $this->optional_param('action', null, PARAM_ALPHA),
+            'uniqueid' => $this->optional_param('uniqueid', uniqid(), PARAM_ALPHANUM),
+            'version' => $this->optional_param('version', 0, PARAM_ALPHANUM),
         ];
         if ($template = $DB->get_record('minilesson_templates', ['id' => $formdata['templateid']])) {
             $formdata['aigen_config'] = $template->config;
@@ -287,6 +302,12 @@ class aigen_form extends \moodleform
             $formdata['lessontitle'] = $template->name;
             $formdata['lessondescription'] = $template->description;
             $formdata['step1done'] = $formdata['step2done'] = $formdata['step3done'] = 1;
+            $formdata['uniqueid'] = $template->uniqueid;
+            $formdata['version'] = $template->version;
+            if ($DB->record_exists_select('minilesson_templates', 'uniqueid = :uniqueid AND version > :version',
+            ['uniqueid' => $template->uniqueid, 'version' => $template->version])) {
+                $this->_customdata['freezeuniqueid'] = $template->uniqueid;
+            }
             if (empty($formdata['importjson'])) {
                 $draftitemid = file_get_unused_draft_itemid();
                 $usercontext = context_user::instance($USER->id);
@@ -336,11 +357,15 @@ class aigen_form extends \moodleform
             $template->name = $formdata->lessontitle;
             $template->description = $formdata->lessondescription;
             $template->config = $formdata->aigen_config;
+            $template->uniqueid = $formdata->uniqueid;
+            $template->version = $formdata->version;
             $template->template = $this->get_file_content('importjson');
             $jsonconfig = json_decode($template->config);
             if (!json_last_error()) {
                 $jsonconfig->lessonTitle = $template->name;
                 $jsonconfig->lessonDescription = $template->description;
+                $jsonconfig->uniqueid = $template->uniqueid;
+                $jsonconfig->version = $template->version;
                 $availablecontext = self::mappings();
                 $typeoptions = self::type_options();
                 $fielddatas = array_filter((array) $formdata, function ($k) use ($availablecontext) {
@@ -381,7 +406,7 @@ class aigen_form extends \moodleform
                 $template->template = json_encode($jsontemplate, JSON_PRETTY_PRINT);
             }
 
-            // Save the template 
+            // Save the template
             if (!empty($template->id)) {
                 $DB->update_record('minilesson_templates', $template);
             } else {
@@ -397,6 +422,17 @@ class aigen_form extends \moodleform
     {
         $mform = $this->_form;
         return $mform->elementExists($elname) ? $mform->getElement($elname)->getValue() : null;
+    }
+
+    public function validation($data, $files) {
+        global $DB;
+        $errors = parent::validation($data, $files);
+        if ($record = $DB->get_record('minilesson_templates', ['uniqueid' => $data['uniqueid']])) {
+            if ($record->id != $data['templateid']) {
+                $errors['uniqueid'] = get_string('sametemplatefound', constants::M_COMPONENT, ['templatename' => $record->name]);
+            }
+        }
+        return $errors;
     }
 
     public static function mappings()

@@ -656,6 +656,60 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025071300, 'minilesson');
     }
 
+    if ($oldversion < 2025071301) {
+
+        // Define field uniqueid to be added to minilesson_templates.
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('uniqueid', XMLDB_TYPE_CHAR, '250', null, null, null, null, 'template');
+
+        // Conditionally launch add field uniqueid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field version to be added to minilesson_templates.
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('version', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'uniqueid');
+
+        // Conditionally launch add field version.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Changing nullability of field uniqueid on table minilesson_templates to not null.
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('uniqueid', XMLDB_TYPE_CHAR, '250', null, XMLDB_NOTNULL, null, null, 'template');
+
+        // Launch change of nullability for field uniqueid.
+        $dbman->change_field_notnull($table, $field);
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025071301, 'minilesson');
+    }
+
+    if ($oldversion < 2025071302) {
+
+        // Define key uniquniqueid (unique) to be added to minilesson_templates.
+        $table = new xmldb_table('minilesson_templates');
+        $key = new xmldb_key('uniquniqueid', XMLDB_KEY_UNIQUE, ['uniqueid']);
+
+        // Launch add key uniquniqueid.
+        $dbman->add_key($table, $key);
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025071302, 'minilesson');
+    }
+
+    if ($oldversion < 2025071303) {
+
+        $DB->delete_records('minilesson_templates');
+
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025071303, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }
