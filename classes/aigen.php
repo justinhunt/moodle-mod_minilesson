@@ -136,7 +136,10 @@ class aigen
                             );
 
                             $importitemfileareas->{$generatefilearea->name} =
-                                $this->generate_images($importitemfileareas->{$generatefilearea->name}, $importitem->{$generatefilearea->mapping}, $overallimagecontext);
+                                $this->generate_images($importitemfileareas->{$generatefilearea->name},
+                                    $importitem->{$generatefilearea->mapping}, $overallimagecontext,
+                                    $currentitemcount,
+                                    count($aigenconfig->items));
                         }
                     }
 
@@ -206,7 +209,7 @@ class aigen
         return $thereturn;
     }
 
-    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext)
+    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext, $currentitemcount, $totalitems)
     {
         global $USER;
 
@@ -221,6 +224,13 @@ class aigen
                 // this is a problem, we have no context data for this image.
                 continue;
             }
+
+            //update the progress bar
+            $this->update_progress(
+                $currentitemcount,
+                $totalitems,
+                get_string('generatingimagedata', constants::M_COMPONENT, $filename)
+            );
 
             // Add the style and greate context
             $prompt = "Give me a simple cute cartoon image depicting: " . $prompt;
