@@ -108,13 +108,13 @@
         },
         {
             "itemnumber": 3,
-            "prompt": "Create a {language} passage that is a 5 or 6 sentence summarisation of the following text: [{text}]. ",
-            "generatemethod": "extract",
+            "prompt": "",
+            "generatemethod": "reuse",
             "generatefields": [
                 {
                     "name": "passage",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "item0_tts"
                 },
                 {
                     "name": "totalmarks",
@@ -123,17 +123,7 @@
                 }
             ],
             "generatefileareas": [],
-            "overallimagecontext": "--",
-            "promptfields": [
-                {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
-                    "name": "text",
-                    "mapping": "item0_tts"
-                }
-            ]
+            "promptfields": []
         },
         {
             "itemnumber": 4,
