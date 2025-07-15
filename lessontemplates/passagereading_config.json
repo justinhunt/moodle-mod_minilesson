@@ -73,7 +73,7 @@
         },
         {
             "itemnumber": 2,
-            "prompt": "Extract a 1 dimensional array of 4 sentences from the following {language} text: [{text}]. ",
+            "prompt": "Extract a 1 dimensional array of 4 sentences from the following {language} text. Note that the sentences should not be longer than 12 words, so rewrite them if necessary: [{text}]. ",
             "generatemethod": "extract",
             "generatefields": [
                 {
@@ -187,6 +187,8 @@
     ],
     "lessonTitle": "Passage Reading",
     "lessonDescription": "Enter a list of keywords and a topic, AI will prepare a passage of text and some reading and speaking activities based on it.",
+    "uniqueid": "6874e6af39202",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -244,7 +246,5 @@
             "description": "",
             "type": "text"
         }
-    },
-    "uniqueid": "6874e6af39202",
-    "version": "1"
+    }
 }
