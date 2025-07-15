@@ -658,6 +658,9 @@ function xmldb_minilesson_upgrade($oldversion) {
 
     if ($oldversion < 2025071301) {
 
+        // Delete existing templates because we are going to change the structure.
+        $DB->delete_records('minilesson_templates');
+
         // Define field uniqueid to be added to minilesson_templates.
         $table = new xmldb_table('minilesson_templates');
         $field = new xmldb_field('uniqueid', XMLDB_TYPE_CHAR, '250', null, null, null, null, 'template');
@@ -701,8 +704,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025071303) {
-
-        $DB->delete_records('minilesson_templates');
 
         \mod_minilesson\aigen::create_default_templates();
 

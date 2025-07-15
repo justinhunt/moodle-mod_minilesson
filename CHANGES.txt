@@ -1,4 +1,9 @@
 
+Version 1.0.96 (Build 2025071303)
+- Added versioning feature to AIGEN templates
+- Various AIGEN tweaks
+- New YouTube Finale Lesson AIGEN template
+
 Version 1.0.95 (Build 2025071300)
 - AI Item Generation -- default templates
 - Fix for fluency item bug when hide start page enabled

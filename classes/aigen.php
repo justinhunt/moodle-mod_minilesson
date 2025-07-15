@@ -403,27 +403,35 @@ class aigen
         $templates = [];
         // A YouTube Lesson.
         $t1 = new \stdClass();
-        $t1->name = 'A YouTube Lesson';
-        $t1->description = 'Enter a YouTube video id (or URL) and summaries. Poodll will generate a short lesson with multi-choice and speaking activities';
+        $t1->name = get_string('aigentemplatename:ayoutubelesson', constants::M_COMPONENT);
+        $t1->description = get_string('aigentemplatedescription:ayoutubelesson', constants::M_COMPONENT);
         $t1->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_config.json');
         $t1->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_template.json');
         aigen_uploadform::upsert_template($t1);
 
         // Passage Reading.
         $t2 = new \stdClass();
-        $t2->name = 'Passage Reading';
-        $t2->description = 'AI will prepare a passage of text and some reading and speaking activities based on it.';
+        $t2->name =  get_string('aigentemplatename:passagereading', constants::M_COMPONENT);
+        $t2->description = get_string('aigentemplatedescription:passagereading', constants::M_COMPONENT);
         $t2->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_config.json');
         $t2->template =  file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_template.json');
         aigen_uploadform::upsert_template($t2);
 
         // Word Practice.
         $t3 = new \stdClass();
-        $t3->name = 'Word Practice';
-        $t3->description = 'Enter a list of words (5) and Poodll will make a short activity for students to practice those words';
+        $t3->name = get_string('aigentemplatename:wordpractice', constants::M_COMPONENT);
+        $t3->description = get_string('aigentemplatedescription:wordpractice', constants::M_COMPONENT);
         $t3->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_config.json');
         $t3->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_template.json');
         aigen_uploadform::upsert_template($t3);
+
+        // YouTube Finale Lesson
+        $t4 = new \stdClass();
+        $t4->name = get_string('aigentemplatename:youtubefinalelesson', constants::M_COMPONENT);
+        $t4->description = get_string('aigentemplatedescription:youtubefinalelesson', constants::M_COMPONENT);
+        $t4->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinale_config.json');
+        $t4->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinale_template.json');
+        aigen_uploadform::upsert_template($t4);
 
     } //end of create default_templates function
 }

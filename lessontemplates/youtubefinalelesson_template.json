@@ -1,0 +1,136 @@
+{
+    "items": [
+        {
+            "type": "page",
+            "name": "Item: Content Page",
+            "instructions": "Listen to the Story",
+            "text": "Listen to the story and then answer the questions",
+            "tts": "A young man was driving his truck on a mountain road. He had dreadlocks and was eating a chocolate bar. He saw an older man leaning on a red sports car. The young man thought the older man was pushing his car. But this was a mistake. Actually, the old man had just finished jogging. He was tired and resting on his car. The young man decided to help. He stopped his truck, walked over to the man and the sports car, and started to push the car. He pushed the car right over the cliff, and it fell down the mountain. The older man was very surprised. It was a terrible misunderstanding.",
+            "ttsvoice": "Kevin",
+            "ttsoption": "slow",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "filesid": 1
+        },
+        {
+            "type": "passagegapfill",
+            "name": "Item: Passage GapFill",
+            "instructions": "Fill in each of the missing words.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "passage": "A young [man] was driving his [truck] on a mountain [road]. He had [dreadlocks] and he was eating a [chocolate] bar. He saw an older man leaning on a red [sports] car. The young man thought that the older man was pushing his car. But this was a [mistake]. Actually, the old man had just finished jogging. He was tired and resting on his car. The young man decided to help. He stopped his truck, and walked over to the man and the sports car. He started to push the car. He pushed the car right over the [cliff] and it fell down the mountain. The older man was very surprised. It was a terrible misunderstanding..",
+            "promptvoice": "Joey",
+            "penalizehints": "yes",
+            "promptvoiceopt": "normal",
+            "hidestartpage": "yes"
+        },
+        {
+            "type": "multichoice",
+            "name": "Answer the question I (multichoice + image)",
+            "instructions": "Choose the correct answer.",
+            "text": "What did the young man mistakenly think the older man was doing?",
+            "ttsvoice": "Matthew",
+            "ttsdialog": [
+                ""
+            ],
+            "text1": "The young man thought the older man was jogging.",
+            "text2": "The young man thought the older man was eating a chocolate bar.",
+            "text3": "The young man thought the older man was pushing his car.",
+            "text4": "The young man thought the older man was driving a truck.",
+            "promptvoice": "Kendra",
+            "listenorread": "3",
+            "promptvoiceopt": "slow",
+            "correctanswer": "3",
+            "filesid": 3
+        },
+        {
+            "type": "multichoice",
+            "name": "Answer the question II (multichoice)",
+            "text": "What did the young man do after he stopped his truck?",
+            "ttsvoice": "Kevin",
+            "ttsdialog": [
+                ""
+            ],
+            "text1": "He ate a chocolate bar.",
+            "text2": "He started jogging with the older man.",
+            "text3": "He pushed the sports car over the cliff.",
+            "text4": "He drove away without helping.",
+            "promptvoice": "Kevin",
+            "promptvoiceopt": "normal",
+            "correctanswer": "3"
+        },
+        {
+            "type": "listenrepeat",
+            "name": "Say the Sentences (listen and speak)",
+            "instructions": "Listen and respond to the sentences you hear.",
+            "text": "Listen and Repeat",
+            "ttsvoice": "Kevin",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "A young man was driving his truck on a mountain road.",
+                "He had dreadlocks and he was eating a chocolate bar.",
+                "He saw an older man leaning on a red sports car.",
+                "The young man thought that the older man was pushing his car.",
+                "But this was a mistake."
+            ],
+            "alternates": [
+                ""
+            ],
+            "promptvoice": "Justin",
+            "promptvoiceopt": "normal"
+        },
+        {
+            "type": "passagereading",
+            "name": "Item: Passage Reading",
+            "instructions": "Use the microphone to record yourself reading the passage.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "passage": "A young man was driving his truck on a mountain road. He had dreadlocks and he was eating a chocolate bar. He saw an older man leaning on a red sports car. The young man thought that the older man was pushing his car. But this was a mistake. Actually, the old man had just finished jogging. He was tired and resting on his car. The young man decided to help. He stopped his truck, and walked over to the man and the sports car. He started to push the car. He pushed the car right over the cliff and it fell down the mountain. The older man was very surprised. It was a terrible misunderstanding.",
+            "alternates": [
+                ""
+            ],
+            "totalmarks": "10"
+        },
+        {
+            "type": "page",
+            "name": "Watch the Video (content page)",
+            "text": "Good Job!  Now watch the video.",
+            "ttsvoice": "Kendra",
+            "ytid": "https:\/\/youtu.be\/E2RphMjScQM",
+            "ttsdialog": [
+                ""
+            ]
+        }
+    ],
+    "files": {
+        "1": {
+            "itemmedia": {
+                "surprise.png": "QQQQ"
+            }
+        },
+        "3": {
+            "customfile1": {
+                "1.png": "QQQQ"
+            },
+            "customfile2": {
+                "2.png": "QQQQ"
+            },
+            "customfile3": {
+                "3.png": "QQQQ"
+            },
+            "customfile4": {
+                "4.png": "QQQQ"
+            }
+        }
+    }
+}

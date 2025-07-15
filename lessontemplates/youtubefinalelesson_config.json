@@ -2,166 +2,157 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "",
-            "generatemethod": "reuse",
+            "prompt": "Create a transcript to be read by a TTS voice closely based on the following text: [{text}]\n",
+            "generatemethod": "extract",
             "generatefields": [
                 {
                     "name": "text",
                     "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "ytid",
-                    "generate": 1,
-                    "mapping": "user_customdata1"
-                },
-                {
-                    "name": "ytend",
-                    "generate": 0,
-                    "mapping": ""
-                }
-            ],
-            "generatefileareas": [],
-            "promptfields": []
-        },
-        {
-            "itemnumber": 1,
-            "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the students understanding of the youtube video with id: [{ytid} summarised as follows: [{synopsis}]. Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
-            "generatemethod": "generate",
-            "generatefields": [
-                {
-                    "name": "text",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text1",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text2",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text3",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text4",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "correctanswer",
-                    "generate": 1,
-                    "mapping": ""
-                }
-            ],
-            "generatefileareas": [],
-            "overallimagecontext": null,
-            "promptfields": [
-                {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
-                    "name": "level",
-                    "mapping": "user_level"
-                },
-                {
-                    "name": "ytid",
-                    "mapping": "item0_ytid"
-                },
-                {
-                    "name": "synopsis",
-                    "mapping": "user_text"
-                }
-            ]
-        },
-        {
-            "itemnumber": 2,
-            "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the students understanding of the youtube video with id: [{ytid}] summarised as follows: [{synopsis}]. The question should be different to [{previousquestion}]. Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
-            "generatemethod": "generate",
-            "generatefields": [
-                {
-                    "name": "text",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text1",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text2",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text3",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text4",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "correctanswer",
-                    "generate": 1,
-                    "mapping": ""
-                }
-            ],
-            "generatefileareas": [
-                {
-                    "name": "itemmedia",
-                    "generate": 1,
-                    "mapping": "text"
-                }
-            ],
-            "overallimagecontext": "user_topic",
-            "promptfields": [
-                {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
-                    "name": "level",
-                    "mapping": "user_level"
-                },
-                {
-                    "name": "ytid",
-                    "mapping": "item0_ytid"
-                },
-                {
-                    "name": "synopsis",
-                    "mapping": "user_text"
-                },
-                {
-                    "name": "previousquestion",
-                    "mapping": "item1_text"
-                }
-            ]
-        },
-        {
-            "itemnumber": 3,
-            "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the students understanding of the youtube video with id: [{ytid}] summarised as follows: [{synopsis}]. The question should be different to previous questions [{previousquestion1}] and [{previousquestion2}]. Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
-            "generatemethod": "generate",
-            "generatefields": [
-                {
-                    "name": "text",
-                    "generate": 1,
                     "mapping": ""
                 },
                 {
                     "name": "tts",
                     "generate": 1,
                     "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "user_topic"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "text",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "Choose 12 different keywords from the following {language} text. Surround each of the keywords in the passage with square brackets, e.g [word].  \n {text}. ",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "penalizehints",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "hidestartpage",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "text",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 2,
+            "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "text1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "text2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "text3",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "text4",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "listenorread",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 1,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1",
+                    "generate": 1,
+                    "mapping": "text1"
+                },
+                {
+                    "name": "customfile2",
+                    "generate": 1,
+                    "mapping": "text2"
+                },
+                {
+                    "name": "customfile3",
+                    "generate": 1,
+                    "mapping": "text3"
+                },
+                {
+                    "name": "customfile4",
+                    "generate": 1,
+                    "mapping": "text4"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "text",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 3,
+            "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] Also specify the correct answer as a number 1-4 in 'correctanswer'. The question should be different to the previous question: [{previous_question}]",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": ""
                 },
                 {
                     "name": "text1",
@@ -189,14 +180,8 @@
                     "mapping": ""
                 }
             ],
-            "generatefileareas": [
-                {
-                    "name": "itemmedia",
-                    "generate": 1,
-                    "mapping": "text"
-                }
-            ],
-            "overallimagecontext": "user_topic",
+            "generatefileareas": [],
+            "overallimagecontext": "--",
             "promptfields": [
                 {
                     "name": "language",
@@ -207,27 +192,19 @@
                     "mapping": "user_level"
                 },
                 {
-                    "name": "ytid",
-                    "mapping": "item0_ytid"
-                },
-                {
-                    "name": "synopsis",
+                    "name": "text",
                     "mapping": "user_text"
                 },
                 {
-                    "name": "previousquestion1",
-                    "mapping": "item1_text"
-                },
-                {
-                    "name": "previousquestion2",
+                    "name": "previous_question",
                     "mapping": "item2_text"
                 }
             ]
         },
         {
             "itemnumber": 4,
-            "prompt": "Generate a 1 dimensional array of 4 sentences in {language} suitable for {level} level learners describing scenes from the YouTube video: [{ytid}] summarised as follows: [{synopsis}]. The sentences should be between 4 and 8 words in length.",
-            "generatemethod": "generate",
+            "prompt": "Extract a 1 dimensional array of 5 sentences from the following {language} text: [{text}]. ",
+            "generatemethod": "extract",
             "generatefields": [
                 {
                     "name": "text",
@@ -238,30 +215,17 @@
                     "name": "sentences",
                     "generate": 1,
                     "mapping": ""
-                },
-                {
-                    "name": "showtextprompt",
-                    "generate": 0,
-                    "mapping": ""
                 }
             ],
             "generatefileareas": [],
-            "overallimagecontext": null,
+            "overallimagecontext": "--",
             "promptfields": [
                 {
                     "name": "language",
                     "mapping": "target_language"
                 },
                 {
-                    "name": "level",
-                    "mapping": "user_level"
-                },
-                {
-                    "name": "ytid",
-                    "mapping": "item0_ytid"
-                },
-                {
-                    "name": "synopsis",
+                    "name": "text",
                     "mapping": "user_text"
                 }
             ]
@@ -272,14 +236,14 @@
             "generatemethod": "reuse",
             "generatefields": [
                 {
-                    "name": "text",
-                    "generate": 0,
-                    "mapping": ""
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": "user_text"
                 },
                 {
-                    "name": "sentences",
-                    "generate": 1,
-                    "mapping": "item4_sentences"
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
                 }
             ],
             "generatefileareas": [],
@@ -296,22 +260,17 @@
                     "mapping": ""
                 },
                 {
-                    "name": "sentences",
+                    "name": "ytid",
                     "generate": 1,
-                    "mapping": "item4_sentences"
-                },
-                {
-                    "name": "ignorepunc",
-                    "generate": 0,
-                    "mapping": ""
+                    "mapping": "user_customdata1"
                 }
             ],
             "generatefileareas": [],
             "promptfields": []
         }
     ],
-    "lessonTitle": "A YouTube Lesson",
-    "lessonDescription": "Enter a YouTube video id (or URL) and summaries. Poodll will generate a short lesson with multi-choice and speaking activities",
+    "lessonTitle": "YouTube Finale Lesson",
+    "lessonDescription": "This is a lesson based on a YouTube video where the video is not shown until the very end.",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -322,12 +281,12 @@
         "user_topic": {
             "enabled": true,
             "title": "Scene Description",
-            "description": "A brief description of the scene\/situation that will be used to help AI generate consistent images.",
+            "description": "A brief description of the scene to help AI generate consistent images",
             "type": "textarea"
         },
         "user_level": {
             "enabled": true,
-            "title": "User Level",
+            "title": "User's Language Level",
             "description": "",
             "type": "dropdown",
             "options": [
@@ -341,8 +300,8 @@
         },
         "user_text": {
             "enabled": true,
-            "title": "Video Description",
-            "description": "Enter a description of the video in as much detail as you can. It will form the basis of the questions that AI will generate",
+            "title": "Video Story",
+            "description": "Enter the story that the YouTube video tells in text format. It will form the basis of the reading and speaking activities. The YouTube video will be shown to students at the very end",
             "type": "textarea"
         },
         "user_keywords": {
@@ -354,7 +313,7 @@
         "user_customdata1": {
             "enabled": true,
             "title": "YouTube Video ID",
-            "description": "11 character Video ID of YouTube video, or the URL of the YouTube video",
+            "description": "Set the YouTube video id (11 chars) or the YouTube URL of the video",
             "type": "text"
         },
         "user_customdata2": {
@@ -370,6 +329,6 @@
             "type": "text"
         }
     },
-    "uniqueid": "6874e6a65a0ff",
+    "uniqueid": "6874e6axxx999",
     "version": "1"
 }
