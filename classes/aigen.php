@@ -405,33 +405,58 @@ class aigen
         $t1 = new \stdClass();
         $t1->name = get_string('aigentemplatename:ayoutubelesson', constants::M_COMPONENT);
         $t1->description = get_string('aigentemplatedescription:ayoutubelesson', constants::M_COMPONENT);
-        $t1->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_config.json');
-        $t1->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_template.json');
-        aigen_uploadform::upsert_template($t1);
+        // Load the configuration and template files for the aigen template.
+        // These files should be located in the specified directory.
+        // Ensure that the paths are correct and the files exist.
+        // The configuration file should contain the lesson configuration in JSON format.
+        // The template file should contain the lesson template in MiniLesson export/impor JSON format.
+        try {
+            $t1->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_config.json');
+            $t1->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_template.json');
+            aigen_uploadform::upsert_template($t1);
+        } catch (\Exception $e) {
+            // Handle the exception if the file cannot be read.
+            debugging('Error reading YouTube Lesson config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
 
         // Passage Reading.
         $t2 = new \stdClass();
-        $t2->name =  get_string('aigentemplatename:passagereading', constants::M_COMPONENT);
+        $t2->name = get_string('aigentemplatename:passagereading', constants::M_COMPONENT);
         $t2->description = get_string('aigentemplatedescription:passagereading', constants::M_COMPONENT);
-        $t2->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_config.json');
-        $t2->template =  file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_template.json');
-        aigen_uploadform::upsert_template($t2);
+        try {
+            $t2->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_config.json');
+            $t2->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_template.json');
+            aigen_uploadform::upsert_template($t2);
+        } catch (\Exception $e) {
+            // Handle the exception if the file cannot be read.
+            debugging('Error reading passage reading config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
 
         // Word Practice.
         $t3 = new \stdClass();
         $t3->name = get_string('aigentemplatename:wordpractice', constants::M_COMPONENT);
         $t3->description = get_string('aigentemplatedescription:wordpractice', constants::M_COMPONENT);
-        $t3->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_config.json');
-        $t3->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_template.json');
-        aigen_uploadform::upsert_template($t3);
+        try {
+            $t3->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_config.json');
+            $t3->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_template.json');
+            aigen_uploadform::upsert_template($t3);
+        } catch (\Exception $e) {
+            // Handle the exception if the file cannot be read.
+            debugging('Error reading word practice config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
 
         // YouTube Finale Lesson
         $t4 = new \stdClass();
         $t4->name = get_string('aigentemplatename:youtubefinalelesson', constants::M_COMPONENT);
         $t4->description = get_string('aigentemplatedescription:youtubefinalelesson', constants::M_COMPONENT);
-        $t4->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinalelesson_config.json');
-        $t4->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinalelesson_template.json');
-        aigen_uploadform::upsert_template($t4);
+        try {
+            $t4->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinalelesson_config.json');
+            $t4->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinalelesson_template.json');
+            aigen_uploadform::upsert_template($t4);
+        } catch (\Exception $e) {
+            // Handle the exception if the file cannot be read.
+            debugging('Error reading YouTube Finale Lesson config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
 
     } //end of create default_templates function
 }
