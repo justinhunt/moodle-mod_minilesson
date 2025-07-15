@@ -15,7 +15,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
     phonemeErrorThreshold: 70, // Threshold for phoneme error rate
 
     speechConfig: null,
-    //this is just a placeholder for the actualtext which is from the sentences in items
+    //this is just a placeholder for the actual text which is from the sentences in items
     referencetext: 'I met my love by the gas works wall',
     game: {pointer: 0},
     usevoice: '',
@@ -328,7 +328,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       var self = this;
       self.ctrlbtns.prop("disabled", false);
       self.updateProgressDots();
-      var newprompt = $(".fluency_prompt_" + self.game.pointer);
+      var newprompt = self.container.find(".fluency_prompt_" + self.game.pointer);
       anim.do_animate(newprompt, 'zoomIn animate__faster', 'in').then(
           function() {
           }
@@ -361,7 +361,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       code += "<div class='item-feedback-container'></div>";
       
       $("#" + self.itemdata.uniqueid + "_container .question").append(code);
-      var newreply = $(".fluency_reply_" + self.game.pointer);
+      var newreply = self.container.find(".fluency_reply_" + self.game.pointer);
       anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
           function() {
           }
@@ -456,7 +456,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
     do_evaluation_feedback: function (pronunciation_result) {
         var self = this;
         //this is part of the generated html for each sentence in the item, so we need to create a handle each time
-        var itemfeedbackcontainer = $("#" + self.itemdata.uniqueid + "_container .item-feedback-container");
+        var itemfeedbackcontainer = self.container.find(".item-feedback-container");
 
         // Clear previous results
         itemfeedbackcontainer.html("");
@@ -590,7 +590,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       do_evaluation_results: function(pronunciation_result) {
         var self = this;
         //this is part of the generated html for each sentence in the item, so we need to create a handle each time
-        var itemresultscontainer = $("#" + self.itemdata.uniqueid + "_container .item-results-container");
+        var itemresultscontainer = self.container.find(".item-results-container");
 
         // Clear previous results
         itemresultscontainer.html("");

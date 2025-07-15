@@ -41,6 +41,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         forcestreaming: false,
         is_streaming: false,
         using_msspeech: false,
+        msspeech_instance: null,
         strings: {},
 
         //for making multiple instances
@@ -63,7 +64,8 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             this.using_msspeech = this.can_msspeech();
             if(this.using_msspeech){
                 var referencetext = opts['referencetext'];
-                msspeech.init(this.speechtoken, this.region, this.lang, referencetext);
+                this.msspeech_instance = msspeech.clone();
+                this.msspeech_instance.init(this.speechtoken, this.region, this.lang, referencetext);
             }
 
             // Callback: Timer updates.
@@ -224,7 +226,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         update_currentprompt: function(targettext){
             this.currentPrompt = targettext;
             if(this.using_msspeech){
-                msspeech.set_reference_text(targettext);
+                this.msspeech_instance.set_reference_text(targettext);
             }
         },
 
@@ -488,7 +490,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         },
 
         do_msspeech: function(blob, callback) {
-            msspeech.recognize(blob,callback)
+            this.msspeech_instance.recognize(blob,callback)
         },
 
     };//end of return value
