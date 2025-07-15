@@ -126,7 +126,8 @@ class aigen
                     foreach ($configitem->generatefileareas as $generatefilearea) {
                         if (
                             $importitemfileareas && isset($importitemfileareas->{$generatefilearea->name})
-                            && isset($generatefilearea->mapping) && isset($importitem->{$generatefilearea->mapping})
+                            && isset($generatefilearea->mapping) && 
+                            (isset($importitem->{$generatefilearea->mapping}) || isset($contextdata[$generatefilearea->mapping]))
                         ) {
                             // Update the user.
                             $this->update_progress(
@@ -134,9 +135,12 @@ class aigen
                                 count($aigenconfig->items),
                                 get_string('generatingimagedata', constants::M_COMPONENT, $importitem->name)
                             );
-
+                            // Image prompt data - usually mapped from other items (created) but possibly also from context data.
+                            $imagepromptdata = isset($importitem->{$generatefilearea->mapping}) ?
+                                $importitem->{$generatefilearea->mapping} :
+                                (isset($contextdata[$generatefilearea->mapping]) ? $contextdata[$generatefilearea->mapping] : false);
                             $importitemfileareas->{$generatefilearea->name} =
-                                $this->generate_images($importitemfileareas->{$generatefilearea->name}, $importitem->{$generatefilearea->mapping}, $overallimagecontext);
+                                $this->generate_images($importitemfileareas->{$generatefilearea->name}, $imagepromptdata , $overallimagecontext);
                         }
                     }
 
