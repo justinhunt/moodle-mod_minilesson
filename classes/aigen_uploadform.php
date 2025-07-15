@@ -169,8 +169,8 @@ class aigen_uploadform extends moodleform {
         }
 
         // Save the template
-        if ($templates = $DB->get_records('minilesson_templates', ['uniqueid' => $template->uniqueid], 'version DESC')) {
-            foreach($templates as $temp) {
+        if (isset($template->uniqueid) && $templates = $DB->get_records('minilesson_templates', ['uniqueid' => $template->uniqueid], 'version DESC')) {
+            foreach ($templates as $temp) {
                 if ($temp->version == $template->version) {
                     return $temp;// If same version found then no need to update
                 }

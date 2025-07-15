@@ -429,8 +429,8 @@ class aigen
         $t4 = new \stdClass();
         $t4->name = get_string('aigentemplatename:youtubefinalelesson', constants::M_COMPONENT);
         $t4->description = get_string('aigentemplatedescription:youtubefinalelesson', constants::M_COMPONENT);
-        $t4->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinale_config.json');
-        $t4->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinale_template.json');
+        $t4->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinalelesson_config.json');
+        $t4->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinalelesson_template.json');
         aigen_uploadform::upsert_template($t4);
 
     } //end of create default_templates function
