@@ -260,57 +260,6 @@ abstract class item implements templatable, renderable
         return $testitem;
     }
 
-    /*
-    Perform the AI generation and return the updated template and contect data for a single item
-    */
-
-/*
-
-    public static function aigen_generate($itemtemplate, $contextdata, $contextmappings, $generatemethod, $prompt)
-    {
-        if ($generatemethod == 'reuse') {
-            $newcontextdata = [];
-            foreach ($placeholderfields as $field) {
-                if (isset($contextdata[$contextmappings[$field]])) {
-                    $itemtemplate->{$field} = $contextdata[$contextmappings[$field]];
-                    $newcontextdata[$field] = $itemtemplate->{$field};
-                }
-            }
-            return [
-                'itemtemplate' => $itemtemplate,
-                'newcontextdata' => $newcontextdata
-            ];
-        }
-
-        // Merge prompt with the context data
-        foreach ($contextmappings as $key => $value) {
-            $prompt = str_replace('{' . $key . '}', $contextdata[$value], $prompt);
-        }
-        // Call the generation method with the prompt
-        $placeholderfields = $this->aigen_fetch_placeholders($itemtemplate);
-        // Append prompt as response format.
-        $prompt .= ' Response format: ' . json_encode($placeholderfields);
-        // Call the AI generation API
-        $response = \mod_minilesson\utils::call_aigen_api($prompt);
-        // Process the response to fill in the item template
-        if (!empty($response) && is_array($response)) {
-            foreach ($placeholderfields as $field) {
-                if (isset($response[$field])) {
-                    $itemtemplate->{$field} = $response[$field];
-                }
-            }
-        } else {
-            throw new \moodle_exception('aigen:invalidresponse', constants::M_COMPONENT);
-        }
-
-        return [
-            'itemtemplate' => $itemtemplate,
-            'newcontextdata' => $response,
-        ];
-
-    }
-
-    */
 
     /*
     This function return the fileareas that the generate method will put files into
@@ -330,7 +279,7 @@ abstract class item implements templatable, renderable
     }
 
     /*
-    This function return the fields that the generate method will generate 
+     This function return the fields that the generate method will generate 
     */
     public static function aigen_fetch_placeholders($itemtemplate)
     {
@@ -382,8 +331,8 @@ abstract class item implements templatable, renderable
             }
         }
 
-        //At this point we have all the fields that are not the default value.
-        //But most of these are not going to be generated
+        // At this point we have all the fields that are not the default value.
+        // But most of these are not going to be generated.
         /*
         foreach($placeholderfields as $index =>$thefield) {
             switch($thefield) {
@@ -1156,10 +1105,8 @@ abstract class item implements templatable, renderable
 
         }
         return $urls;
-        // return "$this->context->id pp $filearea pp $item->id";
     }
 
-    //public static function update_insert_item($minilesson, $data, $edit, $context, $cm ,$editoroptions, $filemanageroptions) {
     public function update_insert_item()
     {
         global $DB, $USER;
