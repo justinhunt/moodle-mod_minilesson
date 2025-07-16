@@ -33,6 +33,7 @@ class aigen
     private $context = null;
     private $conf = null;
     private $progressbar = null;
+    private $bufferpadding = 4097;
 
     /**
      * aigen constructor.
@@ -52,6 +53,12 @@ class aigen
         $this->course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
         $this->conf = get_config(constants::M_COMPONENT);
         $this->progressbar = $progressbar;
+        // Set our buffer padding.
+         $buffersize = ini_get('output_buffering');
+        if ($buffersize && is_numeric($buffersize)) {
+            // Add 1 to exceed buffer
+            $this->bufferpadding = (int) $buffersize + 1;
+        }
     }
 
     public function make_import_data($aigenconfig, $aigentemplate, $contextdata)
@@ -117,16 +124,18 @@ class aigen
                     // Generate the file areas if needed
                     // First collect overall image context which is just used to encourage AI to make consistent images.
                     $overallimagecontext = false;
-                    if (isset($configitem->overallimagecontext) && $configitem->overallimagecontext !== "--"
+                    if (
+                        isset($configitem->overallimagecontext) && $configitem->overallimagecontext !== "--"
                         && isset($contextdata[$configitem->overallimagecontext])
-                        && !empty($contextdata[$configitem->overallimagecontext])) {
-                            $overallimagecontext = $contextdata[$configitem->overallimagecontext];
+                        && !empty($contextdata[$configitem->overallimagecontext])
+                    ) {
+                        $overallimagecontext = $contextdata[$configitem->overallimagecontext];
                     }
                     // If the filearea is in the template, and the mapping data (topic/sentences etc) is set, generate images.
                     foreach ($configitem->generatefileareas as $generatefilearea) {
                         if (
                             $importitemfileareas && isset($importitemfileareas->{$generatefilearea->name})
-                            && isset($generatefilearea->mapping) && 
+                            && isset($generatefilearea->mapping) &&
                             (isset($importitem->{$generatefilearea->mapping}) || isset($contextdata[$generatefilearea->mapping]))
                         ) {
                             // Update the user.
@@ -140,10 +149,13 @@ class aigen
                                 $importitem->{$generatefilearea->mapping} :
                                 (isset($contextdata[$generatefilearea->mapping]) ? $contextdata[$generatefilearea->mapping] : false);
                             $importitemfileareas->{$generatefilearea->name} =
-                                $this->generate_images($importitemfileareas->{$generatefilearea->name},
-                                    $imagepromptdata, $overallimagecontext,
+                                $this->generate_images(
+                                    $importitemfileareas->{$generatefilearea->name},
+                                    $imagepromptdata,
+                                    $overallimagecontext,
                                     $currentitemcount,
-                                    count($aigenconfig->items));
+                                    count($aigenconfig->items)
+                                );
 
                         }
                     }
@@ -370,10 +382,9 @@ class aigen
     {
         if ($this->progressbar) {
             $this->progressbar->update($taskno, $totaltasks, $message);
-            
-            // Force immediate output to prevent buffering issues.
-            if (ob_get_level()) {
-                ob_flush();
+            // PHP FPM needs this hack because it does not flush output until the script ends.
+            if (function_exists('fastcgi_finish_request')) {
+                echo str_repeat(' ', $this->bufferpadding);
             }
             flush();
         }

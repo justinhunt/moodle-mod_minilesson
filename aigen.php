@@ -91,31 +91,14 @@ $PAGE->set_pagelayout('incourse');
 // This puts all our display logic into the renderer.php files in this plugin.
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 $mode = "aigen";
+
+
 echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('aigen', constants::M_COMPONENT));
 echo $renderer->heading($pagetitle);
 
 switch($action){
 
     case AIGEN_SUBMIT:
-        // Prevent output buffering issues by setting appropriate headers
-        if (!headers_sent()) {
-            header('Content-Type: text/html; charset=utf-8');
-            header('Cache-Control: no-cache, must-revalidate');
-            header('Pragma: no-cache');
-            header('X-Accel-Buffering: no'); // Disable Nginx buffering
-        }
-        
-        // Set up for streaming output
-        if (function_exists('apache_setenv')) {
-            apache_setenv('no-gzip', 1);
-        }
-        ini_set('output_buffering', 'off');
-        ini_set('zlib.output_compression', false);
-        
-        // Clean any existing output buffers
-        while (ob_get_level()) {
-            ob_end_clean();
-        }
         
         if (!array_key_exists($keyname, $lessontemplates)) {
             throw new moodle_exception('Invalid template keyname', constants::M_COMPONENT);
@@ -134,21 +117,10 @@ switch($action){
                 }
             }
         }
-
-        // Ensure immediate output by disabling buffering and flushing
-        if (ob_get_level()) {
-            ob_end_flush();
-        }
-        
+ 
         // Make a progress bar to show the user how the import is going and keep the page session alive.
         $progressbar = new progress_bar('ml_aigen_progressbar', 500);
         $progressbar->create();
-        
-        // Force output to be sent immediately
-        if (ob_get_level()) {
-            ob_flush();
-        }
-        flush();
 
         // Make the AI generator object.
         $aigen = new aigen($cm, $progressbar);
@@ -162,12 +134,6 @@ switch($action){
         // Do the import -- TO DO error checking.
         $insertcount = count($template->items);
         $aigen->update_progress( $insertcount,  $insertcount, get_string('aigenpageimporting', constants::M_COMPONENT));
-        
-        // Force output to be sent immediately after progress update
-        if (ob_get_level()) {
-            ob_flush();
-        }
-        flush();
 
         // Hide output from the import process.
         ob_start();
