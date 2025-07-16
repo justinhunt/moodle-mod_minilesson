@@ -385,8 +385,9 @@ class aigen
             // PHP FPM needs this hack because it does not flush output until the script ends.
             if (function_exists('fastcgi_finish_request')) {
                 echo str_repeat(' ', $this->bufferpadding);
+                session_write_close();
+                flush();
             }
-            flush();
         }
     }
 
