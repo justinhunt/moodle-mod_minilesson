@@ -370,6 +370,12 @@ class aigen
     {
         if ($this->progressbar) {
             $this->progressbar->update($taskno, $totaltasks, $message);
+            
+            // Force immediate output to prevent buffering issues.
+            if (ob_get_level()) {
+                ob_flush();
+            }
+            flush();
         }
     }
 
