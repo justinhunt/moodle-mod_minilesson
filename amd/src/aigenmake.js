@@ -299,7 +299,7 @@ This file contains class and ID definitions.
                             title: Str.get_string('aigenmodaltitle', 'mod_minilesson'),
                             body: self.callAiGenerateContextFormApi(e.target),
                             large: true,
-                            removeOnClose: true
+                            removeOnClose: false
                         }).then(function(modal) {
                             modal.getRoot().on('submit ' + ModalEvents.save, function(e) {
                                 var form = this.querySelector('form');
@@ -311,6 +311,7 @@ This file contains class and ID definitions.
                                     if (html === 'submitted') {
                                         form.setAttribute('data-submitted', 1);
                                         js = '<script>document.getElementById("'+form.getAttribute('id')+'").submit()</script>';
+                                        modal.hide();
                                     }
                                     return [form, js];
                                 }));
