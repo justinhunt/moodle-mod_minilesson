@@ -1097,7 +1097,11 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   text-align: center;
   letter-spacing: 10px;
   border: 1px solid darkgray;
-  margin-bottom: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
 }
 
 .minilesson_star_rating {
@@ -1265,10 +1269,12 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 
 .minilesson_dictate_player_box .dictate_title {
   border: 2px solid darkgray;
-  height: 53px;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
   font-size: 24px;
   font-weight: bold;
 }
@@ -1483,10 +1489,12 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 
 .minilesson_landr_player_box .landr_title {
   border: 2px solid darkgray;
-  height: 53px;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
   font-size: 24px;
   font-weight: bold;
 }
@@ -2302,10 +2310,12 @@ span.mod_minilesson_finishedanswer {
 
 .minilesson_lgapfill_player_box .lgapfill_title {
   border: 2px solid darkgray;
-  height: 53px;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
   font-size: 24px;
   font-weight: bold;
 }
@@ -2461,10 +2471,12 @@ span.mod_minilesson_finishedanswer {
 
 .minilesson_tgapfill_player_box .tgapfill_title {
   border: 2px solid darkgray;
-  height: 53px;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
   font-size: 24px;
   font-weight: bold;
 }
@@ -2620,10 +2632,12 @@ span.mod_minilesson_finishedanswer {
 
 .minilesson_sgapfill_player_box .sgapfill_title {
   border: 2px solid darkgray;
-  height: 53px;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
   font-size: 24px;
   font-weight: bold;
 }
@@ -3210,10 +3224,12 @@ textarea.ml_freewriting_textarea {
 
 .minilesson_fluency_box .fluency_title {
   border: 2px solid darkgray;
-  height: 53px;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
   font-size: 24px;
   font-weight: bold;
 }
@@ -3591,3 +3607,19 @@ div.poodlldictationplayer {
     .mod_minilesson_aigenpageexplanation {
       margin: 10px auto;
     }
+
+@media (max-width: 480px) {
+  .landr_skip_btn .mobileaccesshide,
+  .fluency_skip_btn .mobileaccesshide,
+  .sgapfill_skip_btn .mobileaccesshide {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
