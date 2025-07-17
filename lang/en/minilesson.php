@@ -945,4 +945,4 @@ $string['aigentemplatedescription:passagereading'] = 'Enter a list of keywords a
 $string['aigentemplatedescription:ayoutubelesson'] = 'Enter a YouTube video id (or URL) and summaries. Poodll will generate a short lesson with multi-choice and speaking activities';
 $string['aigentemplatedescription:youtubefinalelesson'] = 'This is a lesson based on a YouTube video where the video is not shown until the very end.';
 $string['aigentemplatedescription:wordpractice'] = 'Enter a list of words (5) and Poodll will make a short activity for students to practice those words';
-$string['generationnotice'] = '<p>NB: After pressing save changes, please be patient. It may take a minuite or two to complete</p>';
+$string['generationnotice'] = '<p>NB: After pressing save changes, please be patient. It may take a minute or two to complete</p>';
