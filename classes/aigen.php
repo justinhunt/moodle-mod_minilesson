@@ -260,12 +260,16 @@ class aigen
                         // If we cannot fetch the image, skip this one.
                         continue;
                     } else {
-                        $base64data = base64_encode($rawdata);
+                        $smallerdata = $this->make_image_smaller($rawdata);
+                        $base64data = base64_encode($smallerdata);
                         $imageurls[$filename] = $base64data;
                     }
                 } else if (isset($ret->payload[0]->b64_json)) {
                     // If the payload has a base64 encoded image, use that.
-                    $base64data = $ret->payload[0]->b64_json;
+                    $rawbase64data = $ret->payload[0]->b64_json;
+                    $rawdata = base64_decode($rawbase64data);
+                    $smallerdata = $this->make_image_smaller($rawdata);
+                    $base64data = base64_encode($smallerdata);
                     $imageurls[$filename] = $base64data;
 
                 } else {
@@ -278,6 +282,36 @@ class aigen
         }
         return $imageurls;
     }
+
+    public function make_image_smaller($imagedata) {
+        global $CFG;
+        require_once($CFG->libdir . '/gdlib.php');
+
+        if (empty($imagedata)) {
+            return $imagedata;
+        }
+
+        // Create temporary files for resizing
+        $randomid = uniqid();
+        $temporiginal = $CFG->tempdir . '/aigen_orig_' . $randomid;
+        file_put_contents($temporiginal, $imagedata);
+
+        // Resize to reasonable dimensions
+        $resizedimagedata = \resize_image($temporiginal,  500, 500, true);
+
+        if (!$resizedimagedata) {
+            // If resizing fails, use the original image data
+            $resizedimagedata = $imagedata;
+        }
+
+        // Clean up temporary file
+        if (file_exists($temporiginal)) {
+            unlink($temporiginal);
+        }
+
+        return $resizedimagedata;
+    }
+
     /**
      * Generates structured data using the CloudPoodll service.
      *
