@@ -57,5 +57,7 @@ class aigen_contextform extends moodleform {
             }
         }
         $mform->disable_form_change_checker();
+
+        $mform->addElement('html', get_string('generationnotice', constants::M_COMPONENT));
     }
 }
