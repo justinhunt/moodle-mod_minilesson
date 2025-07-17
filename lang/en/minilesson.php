@@ -909,6 +909,7 @@ $string['aigenmodaltitle'] = 'Input context data';
 $string['generatingtextdata'] = 'Making text data for: {$a}';
 $string['generatingimagedata'] = 'Making image data for: {$a}';
 $string['aigenpageimporting'] = 'Importing AI generated items';
+$string['aigenpagecomplete'] = 'AI generation complete';
 $string['aigenviewresult'] = 'View AI Generated Items';
 $string['col:templateid'] = 'ID';
 $string['col:name'] = 'Name';

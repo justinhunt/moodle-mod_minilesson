@@ -25,7 +25,7 @@
  */
 define('NO_OUTPUT_BUFFERING', true); // So that we can use the progress bar.
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 use mod_minilesson\constants;
 use mod_minilesson\utils;
@@ -39,18 +39,18 @@ const AIGEN_LIST = 0;
 const AIGEN_SUBMIT = 1;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
+$n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
 $action = optional_param('action', AIGEN_LIST, PARAM_INT);
 $keyname = optional_param('keyname', '', PARAM_TEXT);
 
 if ($id) {
-    $cm         = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $moduleinstance  = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
 } else if ($n) {
-    $moduleinstance  = $DB->get_record(constants::M_TABLE, array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
+    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $n), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
 } else {
     throw new moodle_exception('You must specify a course_module ID or an instance ID', constants::M_COMPONENT);
 }
@@ -82,7 +82,7 @@ $contextdata = [
 
 // Set up the page header.
 $pagetitle = get_string('aigenpage', constants::M_COMPONENT);
-$PAGE->set_title(format_string($moduleinstance->name. ' ' . $pagetitle ));
+$PAGE->set_title(format_string($moduleinstance->name . ' ' . $pagetitle));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 $PAGE->set_pagelayout('incourse');
@@ -93,13 +93,13 @@ $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 $mode = "aigen";
 
 
-echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('aigen', constants::M_COMPONENT));
+$renderer->echoheader($moduleinstance, $cm, $mode, null, get_string('aigen', constants::M_COMPONENT));
 echo $renderer->heading($pagetitle);
 
-switch($action){
+switch ($action) {
 
     case AIGEN_SUBMIT:
-        
+
         if (!array_key_exists($keyname, $lessontemplates)) {
             throw new moodle_exception('Invalid template keyname', constants::M_COMPONENT);
         } else {
@@ -117,7 +117,7 @@ switch($action){
                 }
             }
         }
- 
+
         // Make a progress bar to show the user how the import is going and keep the page session alive.
         $progressbar = new progress_bar('ml_aigen_progressbar', 500);
         $progressbar->create();
@@ -131,9 +131,9 @@ switch($action){
             $contextdata
         );
 
-        // Do the import -- TO DO error checking.
+        // Do the import
         $insertcount = count($template->items);
-        $aigen->update_progress( $insertcount,  $insertcount, get_string('aigenpageimporting', constants::M_COMPONENT));
+        $aigen->update_progress($insertcount, $insertcount, get_string('aigenpageimporting', constants::M_COMPONENT));
 
         // Hide output from the import process.
         ob_start();
@@ -148,24 +148,17 @@ switch($action){
         ob_end_clean();
 
         // Complete Progress bar.
-        $aigen->update_progress( $insertcount,  $insertcount, '');
-        
-        // Force output to be sent immediately after final progress update
-        if (ob_get_level()) {
-            ob_flush();
-        }
-        flush();
-
+        $aigen->update_progress($insertcount, $insertcount, get_string('aigenpagecomplete', constants::M_COMPONENT));
 
         echo $renderer->aigen_complete($cm, $insertcount);
         echo $renderer->footer();
-        
+
         // Final flush before exit
         if (ob_get_level()) {
             ob_flush();
         }
         flush();
-        
+
         die;
         break;
 
