@@ -76,39 +76,6 @@ class renderer extends \plugin_renderer_base
         return $output;
     }
 
-    public function echoheader($moduleinstance, $cm, $currenttab = '', $itemid = null, $extrapagetitle = null)
-    {
-        global $CFG;
-
-        $activityname = format_string($moduleinstance->name, true, $moduleinstance->course);
-        if (empty($extrapagetitle)) {
-            $title = $this->page->course->shortname . ": " . $activityname;
-        } else {
-            $title = $this->page->course->shortname . ": " . $activityname . ": " . $extrapagetitle;
-        }
-
-        // Build the buttons
-        $context = \context_module::instance($cm->id);
-
-        /// Header setup
-        $this->page->set_title($title);
-        $this->page->set_heading($this->page->course->fullname);
-        $output = $this->output->header();
-
-        // show (or not) title
-        $output .= $this->fetch_title($moduleinstance, $activityname);
-
-        echo $output;
-
-        if (has_capability('mod/minilesson:evaluate', $context)) {
-
-
-            if (!empty($currenttab)) {
-                include($CFG->dirroot . '/mod/minilesson/tabs.php');
-            }
-        }
-    }
-
 
     public function fetch_title($moduleinstance, $title)
     {

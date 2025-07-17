@@ -93,7 +93,7 @@ $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 $mode = "aigen";
 
 
-$renderer->echoheader($moduleinstance, $cm, $mode, null, get_string('aigen', constants::M_COMPONENT));
+echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('aigen', constants::M_COMPONENT));
 echo $renderer->heading($pagetitle);
 
 switch ($action) {

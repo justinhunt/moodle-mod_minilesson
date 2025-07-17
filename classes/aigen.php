@@ -33,7 +33,6 @@ class aigen
     private $context = null;
     private $conf = null;
     private $progressbar = null;
-    private $bufferpadding = 4097;
 
     /**
      * aigen constructor.
@@ -53,12 +52,6 @@ class aigen
         $this->course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
         $this->conf = get_config(constants::M_COMPONENT);
         $this->progressbar = $progressbar;
-        // Set our buffer padding.
-         $buffersize = ini_get('output_buffering');
-        if ($buffersize && is_numeric($buffersize)) {
-            // Add 1 to exceed buffer
-            $this->bufferpadding = (int) $buffersize + 1;
-        }
     }
 
     public function make_import_data($aigenconfig, $aigentemplate, $contextdata)
@@ -250,7 +243,7 @@ class aigen
             );
 
             // Add the style and greate context
-            $prompt = "Give me a simple cute cartoon image depicting: " . $prompt;
+            $prompt = "Give me a simple cute cartoon image, with no text on it, depicting: " . $prompt;
             if ($overallimagecontext && !empty($overallimagecontext) && $overallimagecontext !== "--") {
                 $prompt .= PHP_EOL . " in the context of the following topic: " . $overallimagecontext;
             }
@@ -382,12 +375,6 @@ class aigen
     {
         if ($this->progressbar) {
             $this->progressbar->update($taskno, $totaltasks, $message);
-            // PHP FPM needs this hack because it does not flush output until the script ends.
-            if (function_exists('fastcgi_finish_request')) {
-                echo str_repeat(' ', $this->bufferpadding);
-                session_write_close();
-                flush();
-            }
         }
     }
 
