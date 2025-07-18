@@ -2179,6 +2179,7 @@ span.mod_minilesson_finishedanswer {
     width: 26px;
     margin-left: 2px;
     text-align: center;
+    padding: 1px 2px;
 }
 .gapfill-container .form-container input:first-child {
     margin-left: 10px;
@@ -3622,4 +3623,8 @@ div.poodlldictationplayer {
     white-space: nowrap;
     border: 0;
   }
+}
+
+.form-input-phrase-online {
+  text-wrap: nowrap;
 }
