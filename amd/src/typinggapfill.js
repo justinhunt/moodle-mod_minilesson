@@ -338,9 +338,19 @@ define(['jquery',
         nextReply: function() {
             var self = this;
             var code = "<div class='tgapfill_reply tgapfill_reply_" + self.game.pointer + " text-center' style='display:none;'>";
+            var brackets = {started: false, ended: false, index: null};
 
             code += "<div class='form-container'>";
             self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
+                if (brackets.started && !brackets.ended && brackets.index !== data.index) {
+                    brackets.started = brackets.ended = false;
+                    code += '</span>';
+                }
+                if ((data.type === 'input' || data.type === 'mtext') && !brackets.started) {
+                    code += '<span class="form-input-phrase-online" data-mindex="'+data.index+'">';
+                    brackets.started = true;
+                }
+                brackets.index = data.index;
                 if (data.type === 'input') {
                     code += "<input class='single-character' autocomplete='off' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "'>";
                 } else if (data.type === 'mtext') {
@@ -349,6 +359,9 @@ define(['jquery',
                     code += data.character;
                 }
             });
+            if (brackets.started && !brackets.ended) {
+                code += '</span>';
+            }
             code += " <i data-idx='" + self.game.pointer + "' class='tgapfill_feedback'></i></div>";
 
             //hint - image
