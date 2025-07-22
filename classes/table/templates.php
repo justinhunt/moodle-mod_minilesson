@@ -41,7 +41,7 @@ class templates extends dynamictable {
     public function set_filterset(\core_table\local\filter\filterset $filterset): void {
         global $PAGE;
         $cmid = $filterset->get_filter('cmid')->current();
-        $this->cm = get_coursemodule_from_id('minilesson', $cmid);
+        $this->cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid);
         parent::set_filterset($filterset);
 
         $cols['id'] = get_string('col:templateid', constants::M_COMPONENT);
@@ -52,6 +52,11 @@ class templates extends dynamictable {
         $this->define_headers(array_values($cols));
 
         $this->collapsible(false);
+        $this->sortable(true, 'id', SORT_DESC);
+
+        if (AJAX_SCRIPT) {
+            $PAGE->set_context($this->get_context());
+        }
 
         $this->renderer = $PAGE->get_renderer('mod_minilesson');
         $this->strings['edit'] = get_string('action:edittemplate', constants::M_COMPONENT);
@@ -59,9 +64,7 @@ class templates extends dynamictable {
         $this->strings['duplicate'] = get_string('action:duplicatetemplate', constants::M_COMPONENT);
         $this->strings['download'] = get_string('action:downloadtemplate', constants::M_COMPONENT);
 
-
         $this->set_sql('*', '{minilesson_templates}', '1 = 1');
-        $this->sortable(true, 'id', SORT_DESC);
     }
 
     public function guess_base_url(): void {

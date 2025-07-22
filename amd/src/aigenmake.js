@@ -1,6 +1,7 @@
 define(
-    ['jquery','core/log','core/templates','core/fragment','core/modal_factory','core/str','core/config','core/modal_events'],
-    function($,log,templates,Fragment,Modalfactory,Str,Config,ModalEvents) {
+    ['jquery','core/log','core/templates','core/fragment','core/modal_factory',
+        'core/str','core/config','core/modal_events', 'core_table/dynamic', 'core/ajax'],
+    function($,log,templates,Fragment,Modalfactory,Str,Config,ModalEvents, DyanamicTable, Ajax) {
     "use strict"; // jshint ;_;
 
 /*
@@ -210,10 +211,10 @@ This file contains class and ID definitions.
                     //set the prompt
                     var promptTextArea = $(itemcontrol).find('textarea[name="aigenprompt"]');
                     promptTextArea.val(itemdata.prompt);
-                    
+
 
                     var updateTheFields = function() {
-                                            
+
                         //get the generate fields
                         itemdata.generatefields.forEach(function(generateField) {
                             var $generateCheckbox = $(itemcontrol).find('.aigen_fields-to-generate input[type="checkbox"][name="'+generateField.name+'"]');
@@ -260,7 +261,7 @@ This file contains class and ID definitions.
                         log.debug('updating after triggering');
                         updateTheFields();
                     }, 1000);
-                
+
 
                 });
             } catch (error) {
@@ -292,34 +293,33 @@ This file contains class and ID definitions.
             var wrapper = document.querySelector(wrapperselector);
             if (wrapper) {
                 wrapper.addEventListener('submit', function(e) {
-                    if (e.target.elements.hasOwnProperty('keyname')) {
+                    if (e.target.elements.hasOwnProperty('templateid')) {
                         e.preventDefault();
                         Modalfactory.create({
                             type: Modalfactory.types.SAVE_CANCEL,
                             title: Str.get_string('aigenmodaltitle', 'mod_minilesson'),
                             body: self.callAiGenerateContextFormApi(e.target),
                             large: true,
-                            removeOnClose: false
+                            removeOnClose: true
                         }).then(function(modal) {
                             modal.getRoot().on('submit ' + ModalEvents.save, function(e) {
-                                var form = this.querySelector('form');
-                                if (form.getAttribute('data-submitted')) {
-                                    return;
-                                }
                                 e.preventDefault();
+                                var form = this.querySelector('form');
                                 modal.setBody(self.callAiGenerateContextFormApi(form).then(function(html, js) {
                                     if (html === 'submitted') {
-                                        form.setAttribute('data-submitted', 1);
-                                        js = '<script>document.getElementById("'+form.getAttribute('id')+'").submit()</script>';
-                                        modal.hide();
+                                        modal.destroy();
+                                        self.refreshTable(wrapper.dataset.tableuniqueid);
+                                        document.querySelector('#page')?.scrollTo({ top: 0, behavior: 'smooth' });
+                                        return ['', ''];
                                     }
-                                    return [form, js];
+                                    return [html, js];
                                 }));
                             });
                             modal.show();
                         });
                     }
                 });
+                self.checkProgressBar(wrapper.dataset.tableuniqueid);
             }
         },
 
@@ -331,6 +331,73 @@ This file contains class and ID definitions.
                     params: new URLSearchParams(new FormData(form)).toString()
                 }
             );
+        },
+
+        refreshTable: function(tableuniqueid) {
+            var self = this;
+            try {
+                var tableRoot = DyanamicTable.getTableFromId(tableuniqueid);
+                DyanamicTable.refreshTableContent(tableRoot).then(function() {
+                    self.checkProgressBar(tableuniqueid);
+                });
+            } catch(e) {
+                log.debug(e);
+            }
+        },
+
+        checkProgressBar: function(tableuniqueid, pinginterval = 1) {
+            var self = this;
+            try {
+                var tableRoot = DyanamicTable.getTableFromId(tableuniqueid);
+            } catch(e) {
+                log.debug(e);
+            }
+            var table = tableRoot.querySelector('table');
+            if (!table) {
+                return;
+            }
+            var updateinterval = parseInt(table.getAttribute('data-updateinterval'));
+            if (updateinterval > 0) {
+                pinginterval = updateinterval;
+            }
+            if (tableRoot) {
+                var idmap = {};
+                tableRoot.querySelectorAll('[data-region="progressbar"]')
+                    .forEach(function(progressbar) {
+                        var id = parseInt(progressbar.getAttribute('data-id'));
+                        if (id > 0) {
+                            idmap[id] = progressbar;
+                        }
+                    });
+                var ids = Object.keys(idmap).map(parseInt);
+                if (Object.keys(ids).length > 0) {
+                    Ajax.call([{
+                        methodname: 'mod_minilesson_update_progressbars',
+                        args: {
+                            contextid: Config.contextid,
+                            ids: ids
+                        }
+                    }])[0].then(function(response) {
+                        response.forEach(function(line) {
+                            if (ids.indexOf(line.id) > -1) {
+                                var progressbarrow = idmap[line.id].closest('tr');
+                                line.columns.forEach(function(coldata, index) {
+                                    if (coldata.update) {
+                                        var columntd = progressbarrow.querySelector('td.c' + index);
+                                        if (columntd) {
+                                            columntd.innerHTML = coldata.data;
+                                            columntd.dataset.column = coldata.column;
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        setTimeout(function() {
+                            self.checkProgressBar(tableuniqueid);
+                        }, pinginterval * 1000);
+                    });
+                }
+            }
         }
     };//end of return value
 });
