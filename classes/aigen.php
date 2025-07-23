@@ -32,6 +32,8 @@ class aigen
     private $cm = null;
     private $context = null;
     private $conf = null;
+
+    /** @var \core\progress\db_updater */
     private $progressbar = null;
 
     /**
@@ -96,12 +98,9 @@ class aigen
                     // Complete the prompt
                     $useprompt = $useprompt . PHP_EOL . 'Generate the data in this JSON format: ' . $generateformatjson;
 
-                    // Update the user.
-                    $this->update_progress(
-                        $currentitemcount,
-                        count($aigenconfig->items),
-                        get_string('generatingtextdata', constants::M_COMPONENT, $importitem->name)
-                    );
+                    if ($this->progressbar) {
+                        $this->progressbar->start_progress(get_string('generatingtextdata', constants::M_COMPONENT, $importitem->name));
+                    }
 
                     // Generate the data and update the importitem
                     $genresult = $this->generate_data($useprompt);
@@ -132,11 +131,9 @@ class aigen
                             (isset($importitem->{$generatefilearea->mapping}) || isset($contextdata[$generatefilearea->mapping]))
                         ) {
                             // Update the user.
-                            $this->update_progress(
-                                $currentitemcount,
-                                count($aigenconfig->items),
-                                get_string('generatingimagedata', constants::M_COMPONENT, $importitem->name)
-                            );
+                            if ($this->progressbar) {
+                                $this->progressbar->start_progress(get_string('generatingimagedata', constants::M_COMPONENT, $importitem->name));
+                            }
                             // Image prompt data - usually mapped from other items (created) but possibly also from context data.
                             $imagepromptdata = isset($importitem->{$generatefilearea->mapping}) ?
                                 $importitem->{$generatefilearea->mapping} :
@@ -145,12 +142,17 @@ class aigen
                                 $this->generate_images(
                                     $importitemfileareas->{$generatefilearea->name},
                                     $imagepromptdata,
-                                    $overallimagecontext,
-                                    $currentitemcount,
-                                    count($aigenconfig->items)
+                                    $overallimagecontext
                                 );
+                            if ($this->progressbar) {
+                                $this->progressbar->end_progress();
+                            }
 
                         }
+                    }
+
+                    if ($this->progressbar) {
+                        $this->progressbar->end_progress();
                     }
 
                     break;
@@ -212,16 +214,21 @@ class aigen
             if (isset($importitem->filesid)) {
                 $importlessonfiles->{$importitem->filesid} = $importitemfileareas;
             }
+
+            if ($this->progressbar) {
+                $this->progressbar->progress($currentitemcount);
+            }
+
         }
+
         $thereturn = new \stdClass();
         $thereturn->items = $importitems;
         $thereturn->files = $importlessonfiles;
         return $thereturn;
     }
 
-    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext, $currentitemcount, $totalitems)
+    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext)
     {
-        global $USER;
 
         $imagecnt = 0;
         $imageurls = [];
@@ -236,11 +243,9 @@ class aigen
             }
 
             //update the progress bar
-            $this->update_progress(
-                $currentitemcount,
-                $totalitems,
-                get_string('generatingimagedata', constants::M_COMPONENT, $filename)
-            );
+            if ($this->progressbar) {
+                $this->progressbar->start_progress(get_string('generatingimagedata', constants::M_COMPONENT, $filename));
+            }
 
             // Add the style and greate context
             $prompt = "Give me a simple cute cartoon image, with no text on it, depicting: " . $prompt;
@@ -250,6 +255,11 @@ class aigen
 
             // Do the image generation.
             $ret = $this->generate_image($prompt);
+
+            //update the progress bar
+            if ($this->progressbar) {
+                $this->progressbar->end_progress();
+            }
 
             if ($ret && $ret->success) {
 
@@ -402,13 +412,6 @@ class aigen
             return $ret;
         } else {
             return false;
-        }
-    }
-
-    public function update_progress($taskno, $totaltasks, $message)
-    {
-        if ($this->progressbar) {
-            $this->progressbar->update($taskno, $totaltasks, $message);
         }
     }
 

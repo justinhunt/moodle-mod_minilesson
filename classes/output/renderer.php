@@ -24,6 +24,7 @@
 namespace mod_minilesson\output;
 
 use html_writer;
+use mod_minilesson\aigen_contextform;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 use mod_minilesson\comprehensiontest;
@@ -845,12 +846,12 @@ class renderer extends \plugin_renderer_base
         return $ret;
     }
 
-    public function aigen_buttons_menu($cm, $lessontemplates)
+    public function aigen_buttons_menu($cm, $lessontemplates, $tableuniqueid)
     {
 
         // Generate and return menu
         $buttondata = [];
-        foreach ($lessontemplates as $keyname => $lessontemplate) {
+        foreach ($lessontemplates as $templateid => $lessontemplate) {
             $templatecount = count($lessontemplate['template']->items);
             $templatetitle = $lessontemplate['config']->lessonTitle;
             $templatedescription = $lessontemplate['config']->lessonDescription;
@@ -858,12 +859,12 @@ class renderer extends \plugin_renderer_base
             $thebutton = new \single_button(
                 new \moodle_url(
                     constants::M_URL . '/aigen.php',
-                    ['id' => $cm->id, 'action' => 1, 'keyname' => $keyname]
+                    ['id' => $cm->id, 'action' => aigen_contextform::AIGEN_SUBMIT, 'templateid' => $templateid]
                 ),
                 get_string('aigen', constants::M_COMPONENT)
             );
             $buttondata[] = [
-                'keyname' => $keyname,
+                'templateid' => $templateid,
                 'title' => $templatetitle,
                 'description' => $templatedescription,
                 'itemcount' => $templatecount,
@@ -873,7 +874,9 @@ class renderer extends \plugin_renderer_base
         ;
 
 
-        $ret = $this->output->render_from_template(constants::M_COMPONENT . '/aigenbuttonsmenu', ['buttons' => $buttondata]);
+        $ret = $this->output->render_from_template(constants::M_COMPONENT . '/aigenbuttonsmenu', [
+            'buttons' => $buttondata, 'tableuniqueid' => $tableuniqueid
+        ]);
 
         return $ret;
     }
