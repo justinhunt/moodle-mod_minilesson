@@ -88,4 +88,13 @@ $functions = [
             'type'        => 'write',
             'ajax'        => true,
         ),
+
+        'mod_minilesson_update_progressbars' => array(
+            'classname'   => 'mod_minilesson\external\update_progressbars',
+            'methodname'  => 'execute',
+            'description' => 'get progress bar status',
+            'capabilities' => 'mod/minilesson:managetemplate',
+            'type'        => 'read',
+            'ajax'        => true,
+        ),
 ];

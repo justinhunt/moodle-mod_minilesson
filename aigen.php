@@ -27,21 +27,12 @@ define('NO_OUTPUT_BUFFERING', true); // So that we can use the progress bar.
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
-use mod_minilesson\constants;
-use mod_minilesson\utils;
 use mod_minilesson\aigen;
-
-
-/**
- * AIGEN actions
- */
-const AIGEN_LIST = 0;
-const AIGEN_SUBMIT = 1;
+use mod_minilesson\constants;
+use mod_minilesson\table\usages;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
-$action = optional_param('action', AIGEN_LIST, PARAM_INT);
-$keyname = optional_param('keyname', '', PARAM_TEXT);
 
 if ($id) {
     $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
@@ -68,18 +59,6 @@ $config = get_config(constants::M_COMPONENT);
 $lessontemplates = aigen::fetch_lesson_templates();
 $templatecount = count($lessontemplates);
 
-// Sample Data -  will beoverwritten by form submission
-$contextdata = [
-    'target_language' => $moduleinstance->ttslanguage,
-    'user_topic' => 'A dog and a cat',
-    'user_level' => 'CEFR A2',
-    'user_text' => 'On my way to school I met a dog. We became friends. But he met a cat and ran after it. Was he my friend?',
-    'user_keywords' => 'dog' . PHP_EOL . 'cat' . PHP_EOL . ' school',
-    'user_customdata1' => 'French',
-    'user_customdata2' => '',
-    'user_customdata3' => '',
-];
-
 // Set up the page header.
 $pagetitle = get_string('aigenpage', constants::M_COMPONENT);
 $PAGE->set_title(format_string($moduleinstance->name . ' ' . $pagetitle));
@@ -92,87 +71,21 @@ $PAGE->set_pagelayout('incourse');
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 $mode = "aigen";
 
+$table = new usages();
+$filterset = usages::get_filterset_object()
+    ->upsert_filter('cmid', (int) $cm->id);
+$table->set_filterset($filterset);
 
 echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('aigen', constants::M_COMPONENT));
 echo $renderer->heading($pagetitle);
 
-switch ($action) {
-
-    case AIGEN_SUBMIT:
-
-        if (!array_key_exists($keyname, $lessontemplates)) {
-            throw new moodle_exception('Invalid template keyname', constants::M_COMPONENT);
-        } else {
-            $thetemplate = $lessontemplates[$keyname];
-            if (!isset($thetemplate['config']) || !isset($thetemplate['template'])) {
-                throw new moodle_exception('Invalid template structure', constants::M_COMPONENT);
-            }
-            $config = $thetemplate['config'];
-            $template = $thetemplate['template'];
-        }
-        if ($postdata = data_submitted()) {
-            foreach (mod_minilesson\aigen_form::mappings() as $fieldname) {
-                if (isset($postdata->{$fieldname})) {
-                    $contextdata[$fieldname] = $postdata->{$fieldname};
-                }
-            }
-        }
-
-        // Make a progress bar to show the user how the import is going and keep the page session alive.
-        $progressbar = new progress_bar('ml_aigen_progressbar', 500);
-        $progressbar->create();
-
-        // Make the AI generator object.
-        $aigen = new aigen($cm, $progressbar);
-
-        $importdata = $aigen->make_import_data(
-            $config,
-            $template,
-            $contextdata
-        );
-
-        // Do the import
-        $insertcount = count($template->items);
-        $aigen->update_progress($insertcount, $insertcount, get_string('aigenpageimporting', constants::M_COMPONENT));
-
-        // Hide output from the import process.
-        ob_start();
-
-        // Do the import.
-        $theimport = new \mod_minilesson\import($moduleinstance, $modulecontext, $course, $cm);
-        $theimport->set_reader($importdata, true);
-        $theimport->import_process();
-
-        // Open output again
-        $o = ob_get_contents();
-        ob_end_clean();
-
-        // Complete Progress bar.
-        $aigen->update_progress($insertcount, $insertcount, get_string('aigenpagecomplete', constants::M_COMPONENT));
-
-        echo $renderer->aigen_complete($cm, $insertcount);
-        echo $renderer->footer();
-
-        // Final flush before exit
-        if (ob_get_level()) {
-            ob_flush();
-        }
-        flush();
-
-        die;
-        break;
-
-    case AIGEN_LIST:
-    default:
-        break;
-}
+echo $table->render();
 
 // If we get here, we are listing the AIGEN templates.
 echo html_writer::div(get_string('aigenpage_explanation', constants::M_COMPONENT), constants::M_COMPONENT . '_aigenpageexplanation');
 
-
 if ($templatecount > 0) {
-    echo $renderer->aigen_buttons_menu($cm, $lessontemplates);
+    echo $renderer->aigen_buttons_menu($cm, $lessontemplates, $table->uniqueid);
 } else {
     echo html_writer::div(get_string('aigenpage_notemplates', constants::M_COMPONENT, $templatecount), constants::M_COMPONENT . '_clonecount' . ' mb-2');
 }

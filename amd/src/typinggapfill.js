@@ -352,7 +352,7 @@ define(['jquery',
                 }
                 brackets.index = data.index;
                 if (data.type === 'input') {
-                    code += "<input class='single-character' autocomplete='off' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "'>";
+                    code += "<input class='single-character' autocomplete='off' autocapitalize='off' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "'>";
                 } else if (data.type === 'mtext') {
                     code += "<input class='single-character-mtext' type='text' name='readonly" + index + "' maxlength='1' value='" + data.character + "' readonly>";
                 } else {

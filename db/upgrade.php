@@ -711,6 +711,35 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025071303, 'minilesson');
     }
 
+    if ($oldversion < 2025071303.01) {
+
+        // Define table minilesson_template_usages to be created.
+        $table = new xmldb_table('minilesson_template_usages');
+
+        // Adding fields to table minilesson_template_usages.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('minilessonid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('templateid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('contextdata', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('progress', XMLDB_TYPE_NUMBER, '3, 2', null, null, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+
+        // Adding keys to table minilesson_template_usages.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('fkminilessonid', XMLDB_KEY_FOREIGN, ['minilessonid'], 'minilesson', ['id']);
+        $table->add_key('fktemplateid', XMLDB_KEY_FOREIGN, ['templateid'], 'minilesson_templates', ['id']);
+
+        // Conditionally launch create table for minilesson_template_usages.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025071303.01, 'minilesson');
+    }
+
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

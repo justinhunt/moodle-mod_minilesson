@@ -485,9 +485,9 @@ define(['jquery',
                 }
                 brackets.index = data.index;
                 if (data.type === 'input') {
-                    code += "<input class='single-character' type='text' autocomplete='off' name='filltext" + index + "' maxlength='1' data-index='" + index + "'>";
+                    code += "<input class='single-character' type='text' autocomplete='off' autocapitalize='off' name='filltext" + index + "' maxlength='1' data-index='" + index + "'>";
                 } else if (data.type === 'mtext') {
-                    code += "<input class='single-character-mtext' autocomplete='off' type='text' name='readonly" + index + "' maxlength='1' value='" + data.character + "' readonly>";
+                    code += "<input class='single-character-mtext' autocomplete='off' autocapitalize='off' type='text' name='readonly" + index + "' maxlength='1' value='" + data.character + "' readonly>";
                 } else {
                     code += data.character;
                 }

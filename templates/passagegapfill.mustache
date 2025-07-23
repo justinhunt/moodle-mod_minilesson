@@ -12,7 +12,7 @@
       {{#passagedata.chunks}}
         {{#isgap}}
         <span class="pgapfill_gap_wrapper">
-          <input type="text" class="pgapfill_gap_input character-input pgapfull_monospace" data-wordindex="{{wordindex}}"
+          <input type="text" autocapitalize="off" autocorrect="off" spellcheck="false" class="pgapfill_gap_input character-input pgapfull_monospace" data-wordindex="{{wordindex}}"
             placeholder="{{placeholder}}" style="width: {{{ paddedtextlength }}}ch" maxlength="{{{textlength}}}"/>
           <i class="correctIcon fa fa-check"></i>
           <i class="wrongIcon fa fa-times"></i>

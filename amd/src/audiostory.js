@@ -11,7 +11,7 @@ define(['jquery','core/log'], function($,log) {
         pp: 5,//panfactor +, // eg 5
         pm: -5,//panfactor -, eg -5
         maxzoom: 1.2, // zoom will go from maxzoom to 1.0 and back again
-        zoomIn: true, // If true, start zoomed out and zoom in. If false, start zoomed in and zoom out
+        zoomIn: false, // If true, start zoomed out and zoom in. If false, start zoomed in and zoom out
         entryTimes: [],
         controls: {},
         panOptions: null,
@@ -98,6 +98,8 @@ define(['jquery','core/log'], function($,log) {
                         l.animation.direction = 1;
                         l.animation.lastTimestamp = null;
                     });
+                    //Toggle zoom direction 
+                    self.zoomIn = !self.zoomIn; 
                 }
 
                 self.animateCurrentImage(timestamp);

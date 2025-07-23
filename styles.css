@@ -3437,9 +3437,6 @@ div.poodlldictationplayer {
 .pgapfill_gap_wrapper:not(.psg_gapfill_correct) .correctIcon {
   display: none;
 }
-.pgapfill_audio_player {
-  width: 100%;
-}
 .minilesson_pgapfill_box .pgapfill_controls {
   position: relative;
   margin-top: 10px;;

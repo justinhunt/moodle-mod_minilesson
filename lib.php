@@ -998,12 +998,12 @@ function minilesson_output_fragment_aigen_contextform($args) {
     $formurl = new moodle_url($args->url, [
         'id' => $formdata['id'],
         'action' => $formdata['action'],
-        'keyname' => $formdata['keyname']
+        'templateid' => $formdata['templateid']
     ]);
 
     $form = new aigen_contextform($formurl, null, 'post', '', null, true, $formdata);
-    if (!$form->is_cancelled() && $form->is_submitted() && $form->is_validated()) {
-        return 'submitted';
+    if ($response = $form->process_dynamic_submission()) {
+        return $response;
     }
     return $form->render();
 }
