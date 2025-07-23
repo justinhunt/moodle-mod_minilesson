@@ -3628,3 +3628,7 @@ div.poodlldictationplayer {
 .form-input-phrase-online {
   text-wrap: nowrap;
 }
+
+#page-mod-minilesson-aigen .table-dynamic[data-table-handler="usages"][data-table-total-rows="0"] {
+  display: none;
+}
