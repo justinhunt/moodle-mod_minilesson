@@ -137,14 +137,23 @@ class aigen_form extends \moodleform
                     // Extract fields which are words in curly brackets from the prompt.
                     $tdata['items'][$itemnumber]['promptfields' . $method] = utils::extract_curly_fields($theprompt);
                 }
-                // By default we will set prompt fields and generate methds to 'generate'.
+                // By default we will set prompt fields and generate methods to 'generate'.
                 $tdata['items'][$itemnumber]['aigenprompt'] = $tdata['items'][$itemnumber]['aigenpromptgenerate'];
                 $tdata['items'][$itemnumber]['aigenpromptfields'] = $tdata['items'][$itemnumber]['promptfieldsgenerate'];
 
                 // Fetch the placeholders for this item.
+                // The placeholders are the fields in the import JSON that we have the option to replace.
                 $thisplaceholders = $itemclass::aigen_fetch_placeholders($item);
                 $tdata['items'][$itemnumber]['aigenplaceholders'] = $thisplaceholders;
+
+                // Set the available context for this item. This expands as we go through the items.
+                // Because previously generated data is added to it.
                 $tdata['items'][$itemnumber]['availablecontext'] = $availablecontext;
+
+                // Fetch datavars for the item. Datavars are fields that can contain generated data, and used as context later on.
+                // But they don't represent a prompt field or a placeholder specifically. They are just free to use variables.
+                $datavars = ['data1', 'data2', 'data3', 'data4', 'data5'];
+                $tdata['items'][$itemnumber]['datavars'] = $datavars;
 
                 // Fetch the file areas for this item.
                 $thefiles = $theactivity['files'];
@@ -156,7 +165,10 @@ class aigen_form extends \moodleform
                 $thiscontext = array_map(function ($placeholder) use ($itemnumber) {
                     return 'item' . $itemnumber . '_' . $placeholder;
                 }, $thisplaceholders);
-                $availablecontext = array_merge($availablecontext, $thiscontext);
+                $thisdatavars = array_map(function ($datavar) use ($itemnumber) {
+                    return 'item' . $itemnumber . '_' . $datavar;
+                }, $datavars);
+                $availablecontext = array_merge($availablecontext, $thiscontext, $thisdatavars);
 
                 // Update available file areas.
                 $itemfileareas = array_map(function ($filearea) use ($itemnumber) {

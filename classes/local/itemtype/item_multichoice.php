@@ -99,7 +99,7 @@ class item_multichoice extends item
             }
         }
 
-        //multichoice also has a confirm choice option we need to include
+        // Multichoice also has a confirm choice option we need to include.
         $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
 
         return $testitem;
@@ -151,7 +151,7 @@ class item_multichoice extends item
     }
 
      /*
-    * This function return the prompt that the generate method requires for listening gap fill items.
+    * This function return the prompt that the generate method requires for multichoice items.
     */
     public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
         switch($generatemethod) {

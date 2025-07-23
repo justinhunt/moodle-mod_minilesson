@@ -492,6 +492,7 @@ abstract class item implements templatable, renderable
             $testitem->itemttsoption = $itemrecord->{constants::TTSQUESTIONOPTION};
             $testitem->itemttsautoplay = $itemrecord->{constants::TTSAUTOPLAY};
         }
+ 
         //YT Clip
         if (!empty($itemrecord->{constants::YTVIDEOID}) && !empty(trim($itemrecord->{constants::YTVIDEOID}))) {
             $ytvideoid = utils::super_trim($itemrecord->{constants::YTVIDEOID});
@@ -639,7 +640,17 @@ abstract class item implements templatable, renderable
                 }//end of extension switch
             }//end of for each
 
-            //if we have enough data to make an audio story, enable it
+            // If we do not have an audio file, we will not have an audio story.
+            // Its hacky but lets allow users to use the TTS audio file as this.
+            if (empty($testitem->audiostoryaudio) && !empty($itemrecord->{constants::TTSQUESTION}) && !empty(trim($itemrecord->{constants::TTSQUESTION}))) {
+                $testitem->audiostoryaudio = utils::fetch_polly_url($this->token, $this->region, $testitem->itemttsaudio, 
+                        $testitem->itemttsoption, $testitem->itemttsaudiovoice);
+                // Unset the TTS audio as we are using the audio story audio.
+                unset($testitem->itemttsaudio);
+
+            }
+
+            // If we have enough data to make an audio story, enable it
             if (
                 count($testitem->audiostoryimages) > 0
                 && !empty($testitem->audiostoryaudio)

@@ -71,6 +71,8 @@ class aigen
             $importitemfileareas = (isset($importitem->filesid) && isset($aigentemplate->files->{$importitem->filesid})) ?
                 $aigentemplate->files->{$importitem->filesid} :
                 false;
+            //this holds data not in the import item that we generate or use for generation    
+            $dataitem = new \stdClass();
 
             switch ($configitem->generatemethod) {
                 case 'generate':
@@ -86,7 +88,7 @@ class aigen
                     // Prepare the response format (JSON)
                     $generateformat = new \stdClass();
                     foreach ($configitem->generatefields as $generatefield) {
-                        if (isset($importitem->{$generatefield->name}) && isset($generatefield->generate) && $generatefield->generate == 1) {
+                        if (isset($generatefield->generate) && $generatefield->generate == 1) {
                             $generateformat->{$generatefield->name} = $generatefield->name . '_data';
                         }
                     }
@@ -110,10 +112,18 @@ class aigen
                         // Now map the generated data to the importitem
                         foreach ($configitem->generatefields as $generatefield) {
                             if (isset($genpayload->{$generatefield->name})) {
-                                $importitem->{$generatefield->name} = $genpayload->{$generatefield->name};
+                                // Overwrite the field in the import template with the generated data (if it exists).
+                                // It might not exist if its a data field we generated for use elsewhere in the process
+                                if (isset($importitem->{$generatefield->name})) {
+                                    $importitem->{$generatefield->name} = $genpayload->{$generatefield->name};
+                                } else {
+                                    // If the field does not exist in the import item, we can add it to the dataitem.
+                                    $dataitem->{$generatefield->name} = $genpayload->{$generatefield->name};
+                                }
                             }
                         }
                     }
+
                     // Generate the file areas if needed
                     // First collect overall image context which is just used to encourage AI to make consistent images.
                     $overallimagecontext = false;
@@ -129,7 +139,9 @@ class aigen
                         if (
                             $importitemfileareas && isset($importitemfileareas->{$generatefilearea->name})
                             && isset($generatefilearea->mapping) &&
-                            (isset($importitem->{$generatefilearea->mapping}) || isset($contextdata[$generatefilearea->mapping]))
+                            (isset($importitem->{$generatefilearea->mapping}) ||
+                                isset($contextdata[$generatefilearea->mapping]) ||
+                                isset($dataitem->{$generatefilearea->mapping}))
                         ) {
                             // Update the user.
                             $this->update_progress(
@@ -137,10 +149,16 @@ class aigen
                                 count($aigenconfig->items),
                                 get_string('generatingimagedata', constants::M_COMPONENT, $importitem->name)
                             );
-                            // Image prompt data - usually mapped from other items (created) but possibly also from context data.
-                            $imagepromptdata = isset($importitem->{$generatefilearea->mapping}) ?
-                                $importitem->{$generatefilearea->mapping} :
-                                (isset($contextdata[$generatefilearea->mapping]) ? $contextdata[$generatefilearea->mapping] : false);
+                            // Image prompt data - usually mapped from other items (created) but possibly also from context data or dataitem.
+                            $imagepromptdata = false;
+                            if (isset($importitem->{$generatefilearea->mapping})) {
+                                 $imagepromptdata = $importitem->{$generatefilearea->mapping};
+                            } else if (isset($dataitem->{$generatefilearea->mapping})) {
+                                $imagepromptdata = $dataitem->{$generatefilearea->mapping};
+                            } else if (isset($contextdata[$generatefilearea->mapping]) && !empty($contextdata[$generatefilearea->mapping])) {
+                                $imagepromptdata = $contextdata[$generatefilearea->mapping];
+                            }
+
                             $importitemfileareas->{$generatefilearea->name} =
                                 $this->generate_images(
                                     $importitemfileareas->{$generatefilearea->name},
@@ -170,11 +188,17 @@ class aigen
 
             }
 
-            // Update the context data
+            // Update the context data with import item data or dataitem data.
             foreach ($configitem->generatefields as $generatefield) {
-                if ($generatefield->generate == 1 && isset($importitem->{$generatefield->name})) {
-                    $contextdata["item" . $configitem->itemnumber . "_" . $generatefield->name]
-                        = $importitem->{$generatefield->name};
+                if ($generatefield->generate == 1) {
+                    if (isset($importitem->{$generatefield->name})) {
+                        $contextdata["item" . $configitem->itemnumber . "_" . $generatefield->name]
+                            = $importitem->{$generatefield->name};
+                    } else if (isset($dataitem->{$generatefield->name})) {
+                        // If the field does not exist in the import item, we can add it to the dataitem.
+                        $contextdata["item" . $configitem->itemnumber . "_" . $generatefield->name]
+                            = $dataitem->{$generatefield->name};
+                    }
                 }
             }
 
@@ -431,70 +455,34 @@ class aigen
     }//end of fetch_lesson_templates function
 
     /**
-     * Fetches the lesson templates from the lesson templates directory.
+     * Creates default templates for the AI generation.
      *
-     * @return array An associative array of lesson templates, where the key is the template name and the value is an array containing 'config' and 'template' objects.
+     * This function reads predefined template files from the specified directory,
+     * creates a new template object, and uploads it using the aigen_uploadform class.
+     * It handles exceptions if the files cannot be read.
      */
     public static function create_default_templates()
     {
         global $CFG, $DB;
 
-        $templates = [];
-        // A YouTube Lesson.
-        $t1 = new \stdClass();
-        $t1->name = get_string('aigentemplatename:ayoutubelesson', constants::M_COMPONENT);
-        $t1->description = get_string('aigentemplatedescription:ayoutubelesson', constants::M_COMPONENT);
-        // Load the configuration and template files for the aigen template.
-        // These files should be located in the specified directory.
-        // Ensure that the paths are correct and the files exist.
-        // The configuration file should contain the lesson configuration in JSON format.
-        // The template file should contain the lesson template in MiniLesson export/impor JSON format.
-        try {
-            $t1->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_config.json');
-            $t1->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/ayoutubelesson_template.json');
-            aigen_uploadform::upsert_template($t1);
-        } catch (\Exception $e) {
-            // Handle the exception if the file cannot be read.
-            debugging('Error reading YouTube Lesson config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
-        }
-
-        // Passage Reading.
-        $t2 = new \stdClass();
-        $t2->name = get_string('aigentemplatename:passagereading', constants::M_COMPONENT);
-        $t2->description = get_string('aigentemplatedescription:passagereading', constants::M_COMPONENT);
-        try {
-            $t2->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_config.json');
-            $t2->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/passagereading_template.json');
-            aigen_uploadform::upsert_template($t2);
-        } catch (\Exception $e) {
-            // Handle the exception if the file cannot be read.
-            debugging('Error reading passage reading config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
-        }
-
-        // Word Practice.
-        $t3 = new \stdClass();
-        $t3->name = get_string('aigentemplatename:wordpractice', constants::M_COMPONENT);
-        $t3->description = get_string('aigentemplatedescription:wordpractice', constants::M_COMPONENT);
-        try {
-            $t3->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_config.json');
-            $t3->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/wordpractice_template.json');
-            aigen_uploadform::upsert_template($t3);
-        } catch (\Exception $e) {
-            // Handle the exception if the file cannot be read.
-            debugging('Error reading word practice config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
-        }
-
-        // YouTube Finale Lesson
-        $t4 = new \stdClass();
-        $t4->name = get_string('aigentemplatename:youtubefinalelesson', constants::M_COMPONENT);
-        $t4->description = get_string('aigentemplatedescription:youtubefinalelesson', constants::M_COMPONENT);
-        try {
-            $t4->config = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinalelesson_config.json');
-            $t4->template = file_get_contents($CFG->dirroot . '/mod/minilesson/lessontemplates/youtubefinalelesson_template.json');
-            aigen_uploadform::upsert_template($t4);
-        } catch (\Exception $e) {
-            // Handle the exception if the file cannot be read.
-            debugging('Error reading YouTube Finale Lesson config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        $templates = ['ayoutubelesson', 'passagereading', 'wordpractice', 'youtubefinalelesson'];
+        foreach ($templates as $template) {
+            $t = new \stdClass();
+            $t->name = get_string("aigentemplatename:" . $template, constants::M_COMPONENT);
+            $t->description = get_string("aigentemplatedescription:" . $template, constants::M_COMPONENT);
+            // Load the configuration and template files for the aigen template.
+            // These files should be located in the specified directory.
+            // Ensure that the paths are correct and the files exist.
+            // The configuration file should contain the lesson configuration in JSON format.
+            // The template file should contain the lesson template in MiniLesson export/import JSON format.
+            try {
+                $t->config = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" .$template . "_config.json");
+                $t->template = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" .$template . "_template.json");
+                aigen_uploadform::upsert_template($t);
+            } catch (\Exception $e) {
+                // Handle the exception if the file cannot be read.
+                debugging('Error reading $template config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
+            }
         }
 
     } //end of create default_templates function

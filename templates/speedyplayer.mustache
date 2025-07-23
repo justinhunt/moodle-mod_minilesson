@@ -22,20 +22,23 @@
 
 }}
   <div id="{{uniqid}}_speedyplayer_row" class="ml_speedyplayer_row">
-    <button class="speedy_btn ml_speedyplayer_skipback" title="Back 5s">
-      <i class="fa fa-undo"></i>
-    </button>
 
     {{$audioplayer}}<audio id="ml_speedyplayer_audio" controls src="an-audio-file.mp3"></audio>{{/audioplayer}}
+    
+    <div class="ml_speedyplayer_row_buttons">
+        <button class="speedy_btn ml_speedyplayer_skipback" title="Back 5s">
+            <i class="fa fa-undo"></i>
+        </button>
 
-    <button class="speedy_btn ml_speedyplayer_skipforward" title="Forward 5s">
-      <i class="fa fa-repeat"></i>
-    </button>
+        <button class="speedy_btn ml_speedyplayer_skipforward" title="Forward 5s">
+            <i class="fa fa-repeat"></i>
+        </button>
 
-    <button class="speedy_btn ml_speedyplayer_togglespeed" title="Toggle Speed">
-      <i class="fa fa-tachometer"></i>
-      <span class="ml_speedyplayer_label">1x</span>
-    </button>
+        <button class="speedy_btn ml_speedyplayer_togglespeed" title="Toggle Speed">
+            <i class="fa fa-tachometer"></i>
+            <span class="ml_speedyplayer_label">1x</span>
+        </button>
+    </div>
   </div>
 {{^element.frozen}}
 {{#js}}

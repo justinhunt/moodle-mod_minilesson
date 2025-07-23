@@ -3473,13 +3473,13 @@ div.poodlldictationplayer {
   }
 
   .audiostory_audio {
-    width: 80%;
+    /* width: 80%; */
     max-width: 600px;
   }
 
   .audiostory_slideshow_container {
     width: 100%;
-    max-width: 600px;         /* Keeps it nice on larger screens */
+    /* max-width: 600px; */         /* Keeps it nice on larger screens */
     aspect-ratio: 3 / 2; 
     position: relative;
     overflow: hidden;
@@ -3545,6 +3545,8 @@ div.poodlldictationplayer {
 .ml_speedyplayer_row {
       display: flex;
       align-items: center;
+      flex-direction: row;
+      width: auto; /* Or define a specific width for desktop */
       justify-content: center;
       gap: 10px;
       flex-wrap: wrap;
@@ -3553,15 +3555,30 @@ div.poodlldictationplayer {
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
       max-width: 600px;
-      margin: 0 auto;
+      margin: 5px auto;
     }
 
   .ml_speedyplayer_row audio {
-      flex: 1;
-      min-width: 200px;
+      flex: none; /* Prevent shrinking/growing */
+      margin-right: 10px; /* Space to the right of the audio player */
+      margin-bottom: 0; /* Ensure no bottom margin from small screen styles */
+      display: block; /* Ensure it behaves like a block element */
+    }
+
+    div.ml_speedyplayer_row_buttons {
+      display: flex; /* Button container is always a flex container */
+      flex-direction: row; /* Buttons are always in a row */
+      width: auto; /* Or define a specific width for desktop */
+      justify-content: space-around; /* Example: Distribute space among buttons */
+      align-items: center; /* Vertically center buttons within their container */
+      padding: 0; /* Adjust padding as needed */
+      margin: 0; /* Ensure no margin if spacing is handled by button margins */
     }
 
  .ml_speedyplayer_row .speedy_btn {
+      flex: 1; /* Make buttons grow to fill container space equally */
+      margin: 0 5px; /* Add horizontal margin between buttons */
+      width: auto; /* Let flex control width, remove fixed width */
       padding: 8px 12px;
       border: none;
       border-radius: 6px;
@@ -3589,19 +3606,38 @@ div.poodlldictationplayer {
     display: inline-block;
    } 
 
-    @media (max-width: 480px) {
-      .ml_speedyplayer_row {
-        flex-direction: column;
-        align-items: stretch;
+    @media (max-width: 480px) { /* Adjust breakpoint as needed */
+      div.ml_speedyplayer_row {
+        width: 100%; /* Full width on small screens */
+        /* flex-direction is already column, keep it */
+        align-items: center; /* Center content horizontally */
+        padding: 10px; /* Or adjust padding as needed */
+        margin: 5px auto; /* Center the container itself */
       }
 
-      .ml_speedyplayer_row audio {
-        width: 100%;
+      div.ml_speedyplayer_row audio {
+        width: 100%; /* Audio player takes full width */
+        flex: none;
+        margin-bottom: 10px; /* Space below audio */
+        /* Ensure display is block if needed, but flex: none with width 100% is usually sufficient */
+        display: block;
       }
 
-      .ml_speedyplayer_row audio .speedy_btn {
-        width: 100%;
-        justify-content: center;
+      div.ml_speedyplayer_row_buttons {
+        display: flex; /* Make this a flex container for buttons */
+        flex-direction: row; /* Arrange buttons horizontally */
+        width: 100%; /* Button container takes full width */
+        justify-content: space-around; /* Example: Even space around buttons */
+        align-items: center; /* Vertically center buttons */
+        padding: 0; /* Adjust padding as needed */
+        margin-top: 0; /* Remove top margin if any */
+      }
+
+      div.ml_speedyplayer_row_buttons > button {
+        flex: 1; /* Make buttons grow to fill container space equally */
+        margin: 0 5px; /* Horizontal margin between buttons */
+        /* Remove any fixed width if using flex: 1 */
+        width: auto;
       }
     }
 

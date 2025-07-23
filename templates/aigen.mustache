@@ -13,10 +13,10 @@
             </select><br>
             <label>Prompt</label>
             <textarea class="ml_aigen_promptbox" name="aigenprompt" data-generateprompt="{{aigenpromptgenerate}}" data-extractprompt="{{aigenpromptextract}}" data-reuseprompt=""  style="width: 100%; max-width: 1200px;">{{aigenprompt}}</textarea>
-            <div class="ml_aigen_mappings" data-promptfields="" data-generatemethod="generate" data-aigenplaceholders="{{#aigenplaceholders}}{{.}},{{/aigenplaceholders}}" data-availablecontext="{{#availablecontext}}{{.}},{{/availablecontext}}">
+            <div class="ml_aigen_mappings" data-promptfields="" data-generatemethod="generate" data-aigenplaceholders="{{#aigenplaceholders}}{{.}},{{/aigenplaceholders}},{{#datavars}}{{.}},{{/datavars}}," data-availablecontext="{{#availablecontext}}{{.}},{{/availablecontext}}">
                 {{> mod_minilesson/aigenmappings}}
             </div>
-            <div class="ml_aigen_filearea_mappings" data-aigenfileareas="{{#aigenfileareas}}{{.}},{{/aigenfileareas}}" data-aigenplaceholders="{{#aigenplaceholders}}{{.}},{{/aigenplaceholders}}--,{{#availablecontext}}{{.}},{{/availablecontext}}" data-availablecontext="--,{{#availablecontext}}{{.}},{{/availablecontext}}" data-contextfileareas="{{#contextfileareas}}{{.}},{{/contextfileareas}}">
+            <div class="ml_aigen_filearea_mappings" data-aigenfileareas="{{#aigenfileareas}}{{.}},{{/aigenfileareas}}" data-aigenplaceholders="{{#aigenplaceholders}}{{.}},{{/aigenplaceholders}}{{#datavars}}{{.}},{{/datavars}}--,{{#availablecontext}}{{.}},{{/availablecontext}}" data-availablecontext="--,{{#availablecontext}}{{.}},{{/availablecontext}}" data-contextfileareas="{{#contextfileareas}}{{.}},{{/contextfileareas}}">
                 {{> mod_minilesson/aigenfilemappings}}
             </div>
             </fieldset>

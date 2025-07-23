@@ -8,9 +8,10 @@ define(['jquery','core/log'], function($,log) {
         animateFrameId: null,
         currentIndex: -1,
         secondsPerImage:  25, //this is the animation length, before it reverses
-        pp: 10,//panfactor +, // eg 5
-        pm: -10,//panfactor -, eg -5
-        maxzoom: 1.3, // zoom will go from maxzoom to 1.0 and back again
+        pp: 5,//panfactor +, // eg 5
+        pm: -5,//panfactor -, eg -5
+        maxzoom: 1.2, // zoom will go from maxzoom to 1.0 and back again
+        zoomIn: true, // If true, start zoomed out and zoom in. If false, start zoomed in and zoom out
         entryTimes: [],
         controls: {},
         panOptions: null,
@@ -190,10 +191,15 @@ define(['jquery','core/log'], function($,log) {
             animation.lastTimestamp = timestamp;
 
             const easedProgress = 0.5 - 0.5 * Math.cos(Math.PI * animation.progress);
-            //this the zoom scale : 
-            // if maxzoom is 1.3 then at progress 0 zoom is 1.3, at progress 1 zoom is 1.0
-            const scale = self.maxzoom - (self.maxzoom - 1) * easedProgress;
-   
+            // Zoom logic: toggle between zoom in and zoom out based on flag
+            let scale;
+            if (self.zoomIn) {
+                // Start zoomed out, zoom in
+                scale = 1 + (self.maxzoom - 1) * easedProgress;
+            } else {
+                // Start zoomed in, zoom out
+                scale = self.maxzoom - (self.maxzoom - 1) * easedProgress;
+            }
             // from 0 (zoomed out) to 1 (zoomed in)  -  this means we dont pan when zoomed out
             const panFactor = easedProgress; 
             const x = (pan.xStart + (pan.xEnd - pan.xStart) * panFactor);
