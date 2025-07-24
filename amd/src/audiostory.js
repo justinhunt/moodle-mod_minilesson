@@ -7,10 +7,10 @@ define(['jquery','core/log'], function($,log) {
     var audiostoryapp ={
         animateFrameId: null,
         currentIndex: -1,
-        secondsPerImage:  25, //this is the animation length, before it reverses
+        secondsPerImage:  20, //this is the animation length, before it reverses
         pp: 5,//panfactor +, // eg 5
         pm: -5,//panfactor -, eg -5
-        maxzoom: 1.2, // zoom will go from maxzoom to 1.0 and back again
+        maxzoom: 1.1, // zoom will go from maxzoom to 1.0 and back again
         zoomIn: false, // If true, start zoomed out and zoom in. If false, start zoomed in and zoom out
         entryTimes: [],
         controls: {},
