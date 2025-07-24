@@ -853,8 +853,15 @@ class renderer extends \plugin_renderer_base
         $buttondata = [];
         foreach ($lessontemplates as $templateid => $lessontemplate) {
             $templatecount = count($lessontemplate['template']->items);
-            $templatetitle = $lessontemplate['config']->lessonTitle;
-            $templatedescription = $lessontemplate['config']->lessonDescription;
+            // If we have lang strings we use them here
+            if(array_key_exists($lessontemplate['config']->uniqueid,\mod_minilesson\AIGEN::DEFAULTTEMPLATES)){
+                $templateshortname = \mod_minilesson\AIGEN::DEFAULTTEMPLATES[$lessontemplate['config']->uniqueid];
+                $templatetitle = get_string("aigentemplatename:" . $templateshortname, constants::M_COMPONENT);
+                $templatedescription = get_string("aigentemplatedescription:" . $templateshortname, constants::M_COMPONENT);
+            } else {
+                $templatetitle = $lessontemplate['config']->lessonTitle;
+                $templatedescription = $lessontemplate['config']->lessonDescription;
+            }
 
             $thebutton = new \single_button(
                 new \moodle_url(

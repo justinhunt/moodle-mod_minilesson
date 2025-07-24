@@ -26,7 +26,12 @@ namespace mod_minilesson;
 class aigen
 {
 
-
+    public const DEFAULTTEMPLATES = ['6880824450555' => 'audiostory',
+        '6874e6af39202' => 'passagereading',
+        '6874e6ca1c71a' => 'wordpractice',
+        '6874e6a65a0ff' => 'ayoutubelesson',
+        '6874e6axxx999' => 'youtubefinalelesson',
+        ];
     private $moduleinstance = null;
     private $course = null;
     private $cm = null;
@@ -468,19 +473,18 @@ class aigen
     {
         global $CFG, $DB;
 
-        $templates = ['ayoutubelesson', 'passagereading', 'wordpractice', 'youtubefinalelesson', 'audiostory'];
-        foreach ($templates as $template) {
+        foreach (self::DEFAULTTEMPLATES as $uniqueid => $templateshortname) {
             $t = new \stdClass();
-            $t->name = get_string("aigentemplatename:" . $template, constants::M_COMPONENT);
-            $t->description = get_string("aigentemplatedescription:" . $template, constants::M_COMPONENT);
+            $t->name = get_string("aigentemplatename:" . $templateshortname, constants::M_COMPONENT);
+            $t->description = get_string("aigentemplatedescription:" . $templateshortname, constants::M_COMPONENT);
             // Load the configuration and template files for the aigen template.
             // These files should be located in the specified directory.
             // Ensure that the paths are correct and the files exist.
             // The configuration file should contain the lesson configuration in JSON format.
             // The template file should contain the lesson template in MiniLesson export/import JSON format.
             try {
-                $t->config = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" .$template . "_config.json");
-                $t->template = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" .$template . "_template.json");
+                $t->config = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" .$templateshortname . "_config.json");
+                $t->template = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" .$templateshortname . "_template.json");
                 aigen_uploadform::upsert_template($t);
             } catch (\Exception $e) {
                 // Handle the exception if the file cannot be read.

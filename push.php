@@ -157,36 +157,81 @@ if ($action == constants::M_PUSH_ITEMS) {
     // Loop through the activities fetching the items. 
     // If each items type, item order, item name match - and if all the items match, do the update.
     // We really want to avoid somebody doing a nuclear hit by mistake.
+    $minilessons = [];
+    $contexts = [];
     foreach ($activityids as $activityid) {
+        // Get the module instance for the clone activity.
+        $cloneinstance = $DB->get_record(constants::M_TABLE, ['id' => $activityid]);
+        if (!$cloneinstance) {
+            continue;
+        }
+        // Get the module context for the clone activity.
+        $clonecm = get_coursemodule_from_instance('minilesson', $activityid, $cloneinstance->course, false, IGNORE_MISSING);
+        $clonecontext = \context_module::instance($clonecm->id);
+        //Do a preliminary fetch to see if we have items that match
         $cloneitemids = [];
-        foreach ($thisitems as $thisitem) {
+        foreach ($thisitems as $sourceitem) {
             try {
                 $cloneitemid = $DB->get_field(constants::M_QTABLE, 'id',
-                    ['minilesson' => $activityid, 'itemorder' => $thisitem->itemorder, 'type' => $thisitem->type, 'name' => $thisitem->name],
-                      MUST_EXIST);
+                    ['minilesson' => $activityid, 'itemorder' => $sourceitem->itemorder, 'type' => $sourceitem->type, 'name' => $sourceitem->name],
+                    MUST_EXIST);
             } catch (\dml_exception $e) {
                 // If the item does not exist in the clone, we will skip it.
                 continue;
             }
             if ($cloneitemid) {
-                $cloneitemids[$thisitem->itemorder] = $cloneitemid;
+                $cloneitemids[$sourceitem->itemorder] = $cloneitemid;
             }
         }
+        // If we have clone items that match the source items, we can proceed.
         if (count($cloneitemids) == count($thisitems)) {
-            foreach ($thisitems as $thisitem) {
-                $cloneitemid = $cloneitemids[$thisitem->itemorder];
+            foreach ($thisitems as $sourceitem) {
+                $cloneitemid = $cloneitemids[$sourceitem->itemorder];
                 // Update the cloneitem with all the original item data except the id, timemodified and timecreated.
-                $cloneobject = clone($thisitem);
+                $cloneobject = clone($sourceitem);
                 unset($cloneobject->timecreated);
                 $cloneobject->minilesson = $activityid;
                 $cloneobject->timemodified = time();
                 $cloneobject->id = $cloneitemid;
                 $DB->update_record(constants::M_QTABLE, $cloneobject);
-            }
+
+                // Now update the cloneitem with the images from the source item.
+                $cloneitem = utils::fetch_item_from_itemrecord($cloneobject, $cloneinstance);
+                // Get all the file areas
+                $fileareas = [constants::TEXTQUESTION_FILEAREA,constants::MEDIAQUESTION,constants::AUDIOSTORY];
+                for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
+                    $fileareas[] = constants::TEXTANSWER_FILEAREA . $anumber;
+                    $fileareas[] = constants::FILEANSWER . $anumber;
+                    $fileareas[] = constants::FILEANSWER . $anumber . '_image';
+                    $fileareas[] = constants::FILEANSWER . $anumber . '_audio';
+                }
+
+                $fs = get_file_storage();
+                foreach ($fileareas as $filearea) {
+                    //Get the source files
+                    $files = $fs->get_area_files($modulecontext->id, constants::M_COMPONENT, $filearea, $sourceitem->id);
+                    //Delete the old files
+                    $fs->delete_area_files($clonecontext->id, constants::M_COMPONENT, $filearea, $cloneobject->id);
+
+                    // Add each source file to the clone context.
+                    foreach ($files as $file) {
+                        $filename = $file->get_filename();
+                        if ($filename == '.') {
+                            continue;
+                        }
+                        // Create a copy in the new context
+                        $filerecord = new \stdClass();
+                        $filerecord->contextid = $clonecontext->id;
+                        $filerecord->itemid = $cloneobject->id;
+                        $fs->create_file_from_storedfile($filerecord, $file);
+                    }
+                }
+            } //end of items loop
             $updatecount++;
-        }
-    }
+        } //end of if clone items count matches
+    } //end of activities loop
     redirect($PAGE->url, get_string('pushpage_done', constants::M_COMPONENT, $updatecount), delay: 10);
+
 } else {
     // Do the DB updates and then refresh.
     if ($updatefields && count($updatefields) > 0) {

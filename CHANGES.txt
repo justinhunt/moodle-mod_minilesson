@@ -3,6 +3,7 @@ Version 1.0.97 (Build 2025071305)
  - Fixes to responsiveness on gap fill questions
  - Better AIGEN progress tracking
  - Multichoice and Multiaudio item updates
+ - Ability to push files (images and audio) when pushing items to other instances
 
 Version 1.0.96 (Build 2025071303)
 - Added versioning feature to AIGEN templates
