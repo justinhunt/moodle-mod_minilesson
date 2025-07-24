@@ -765,6 +765,9 @@ function xmldb_minilesson_upgrade($oldversion) {
                 }
             }
         }
+        
+        // Update default templates to the new format.
+        \mod_minilesson\aigen::create_default_templates();
 
         // Minilesson savepoint reached.
         upgrade_mod_savepoint(true, 2025071305, 'minilesson');

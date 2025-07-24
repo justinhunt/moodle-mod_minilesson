@@ -161,7 +161,7 @@ class aigen_uploadform extends moodleform {
                     }
                 }
             }
-            // Encod the template
+            // Encode the template
             $template->template = json_encode($jsontemplate, JSON_PRETTY_PRINT);
         }
         if (!isset($template->version)) {
