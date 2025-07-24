@@ -16,9 +16,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
      },
 
     init: function(index, itemdata, quizhelper) {
-      if(itemdata.hasOwnProperty('audiocontent') && itemdata.audiocontent===true) {
-          this.prepare_audio(itemdata);
-      }
+
       this.itemdata = itemdata;
       this.register_events(index, itemdata, quizhelper);
 
@@ -207,14 +205,5 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
           var confirmbutton =$("#" + itemdata.uniqueid + "_container .minilesson_mc_confirmchoice");
           anim.do_animate(confirmbutton,'zoomIn animate__faster','in');
       },
-
-      prepare_audio: function(itemdata) {
-          // debugger;
-          $.each(itemdata.sentences, function(index, sentence) {
-              polly.fetch_polly_url(sentence.sentence, itemdata.voiceoption, itemdata.usevoice).then(function(audiourl) {
-                  $("#" + itemdata.uniqueid + "_audioplayer" + (index+1)).attr("data-src", audiourl);
-              });
-          });
-      }
   };
 });

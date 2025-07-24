@@ -60,15 +60,13 @@ class item_multiaudio extends item
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
-        //sentences
+        // Sentences.
         $sentences = [];
-        for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
-            if (!empty(trim($this->itemrecord->{constants::TEXTANSWER . $anumber}))) {
-                $sentences[] = $this->itemrecord->{constants::TEXTANSWER . $anumber};
-            }
+        if (isset($testitem->customtext1)) {
+            $sentences = explode(PHP_EOL, $testitem->{constants::TEXTANSWER . 1});
         }
 
-        //build sentence objects containing display and phonetic text
+        // Build sentence objects containing display and phonetic text.
         $testitem->phonetic = $this->itemrecord->phonetic;
         if (!empty($testitem->phonetic)) {
             $phonetics = explode(PHP_EOL, $testitem->phonetic);
@@ -105,15 +103,11 @@ class item_multiaudio extends item
     }
 
     /*
-     * Remove any accents and chars that would mess up the transcript//passage matching
+     * Remove any accents and chars that would mess up the transcript/passage matching
      */
     public function deaccent()
     {
         $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1, $this->moduleinstance->ttslanguage);
-        $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1, $this->moduleinstance->ttslanguage);
-        $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1, $this->moduleinstance->ttslanguage);
-        $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1, $this->moduleinstance->ttslanguage);
-
     }
 
     public function update_create_langmodel($olditemrecord)
@@ -124,9 +118,6 @@ class item_multiaudio extends item
         $newitem = $this->itemrecord;
 
         $passage = $newitem->customtext1;
-        $passage .= ' ' . $newitem->customtext2;
-        $passage .= ' ' . $newitem->customtext3;
-        $passage .= ' ' . $newitem->customtext4;
 
         if (utils::needs_lang_model($this->moduleinstance, $passage)) {
             $newpassagehash = utils::fetch_passagehash($this->language, $passage);
@@ -161,57 +152,6 @@ class item_multiaudio extends item
         return false;
     }
 
-    //we want to generate a phonetics if this is phonetic'able
-    public function update_create_phonetic($olditemrecord)
-    {
-        //if we have an old item, set the default return value to the current phonetic value
-        //we will update it if the text has changed
-        $newitem = $this->itemrecord;
-        if ($olditemrecord) {
-            $thephonetics = $olditemrecord->phonetic;
-        } else {
-            $thephonetics = '';
-        }
-
-
-        $newpassage = $newitem->customtext1;
-        $newpassage .= PHP_EOL . $newitem->customtext2;
-        $newpassage .= PHP_EOL . $newitem->customtext3;
-        $newpassage .= PHP_EOL . $newitem->customtext4;
-
-
-        if ($olditemrecord !== false) {
-            $oldpassage = $olditemrecord->customtext1;
-            $oldpassage .= PHP_EOL . $olditemrecord->customtext2;
-            $oldpassage .= PHP_EOL . $olditemrecord->customtext3;
-            $oldpassage .= PHP_EOL . $olditemrecord->customtext4;
-
-        } else {
-            $oldpassage = '';
-        }
-
-        if ($newpassage !== $oldpassage) {
-
-            $segmented = true;
-            $sentences = explode(PHP_EOL, $newpassage);
-            $allphonetics = [];
-            foreach ($sentences as $sentence) {
-                list($thephones) = utils::fetch_phones_and_segments($sentence, $this->language, 'tokyo', $segmented);
-                if (!empty($thephones)) {
-                    $allphonetics[] = $thephones;
-                }
-            }
-
-            //build the final phonetics
-            if (count($allphonetics) > 0) {
-                $thephonetics = implode(PHP_EOL, $allphonetics);
-            }
-        }
-
-        $this->itemrecord->phonetic = $thephonetics;
-        return $thephonetics;
-    }
-
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
      */
@@ -219,6 +159,7 @@ class item_multiaudio extends item
     {
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
+        $keycols['text1'] = ['jsonname' => 'answers', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['int1'] = ['jsonname' => 'showtextprompt', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::SHOWTEXTPROMPT];
@@ -236,11 +177,6 @@ class item_multiaudio extends item
 
         if ($newrecord->customtext1 == '') {
             $error->col = 'customtext1';
-            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
-            return $error;
-        }
-        if ($newrecord->customtext2 == '') {
-            $error->col = 'customtext2';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
@@ -263,7 +199,7 @@ class item_multiaudio extends item
         switch ($generatemethod) {
 
             case 'extract':
-                $prompt = "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] ";
+                $prompt = "Create a multichoice question(text) and a one dimensional array of 4 answers (answers) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] ";
                 $prompt .= "Also specify the correct answer as a number 1-4 in 'correctanswer'. ";
                 break;
 
@@ -275,11 +211,48 @@ class item_multiaudio extends item
 
             case 'generate':
             default:
-                $prompt = "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners on the topic of: [{topic}] ";
+                $prompt = "Create a multichoice question(text) and a one dimensional array of 4 answers (answers) in {language} suitable for {level} level learners on the topic of: [{topic}] ";
                 $prompt .= "Also specify the correct answer as a number 1-4 in 'correctanswer'. ";
                 break;
         }
         return $prompt;
+    }
+
+    public function upgrade_item($oldversion)
+    {
+        global $DB;
+
+        $success = true;
+ 
+        if ($oldversion < 2025071305) {
+
+            // The original multiadio stored each answer in a separate field.
+            // We need to convert that to the new format which is a single field with answers separated
+            // by a newline character.
+            $sentences = [];
+
+            for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
+                // If we have a sentence, we fetch it, and then clear the field.
+                if (!empty(utils::super_trim($this->itemrecord->{constants::TEXTANSWER . $anumber}))) {
+                    $sentences[] = utils::super_trim($this->itemrecord->{constants::TEXTANSWER . $anumber});
+                    if ($anumber > 1) {
+                        // Clear the old field, but it's possible that the format is already correct.
+                        // So we do not want to overwrite field 1 yet.
+                        $this->itemrecord->{constants::TEXTANSWER . $anumber} = '';
+                    }
+                }
+
+            }
+            if (count($sentences) < 2) {
+                // If we have no sentences from the old fields lets not update the record.
+                return true;
+            }
+            $allsentences = implode(PHP_EOL, $sentences);
+            $this->itemrecord->{constants::TEXTANSWER . 1} = $allsentences;
+            $success = $DB->update_record(constants::M_QTABLE, $this->itemrecord);
+        }
+
+        return $success;
     }
 
 }

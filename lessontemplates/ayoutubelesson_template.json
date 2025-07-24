@@ -5,7 +5,8 @@
             "name": "Watch the Video (content page)",
             "text": "Watch the video and be ready to answer questions.",
             "ttsvoice": "Kendra",
-            "ytid": "b0gpqBCi7Q0",
+            "ytid": "E2RphMjScQM",
+            "ytend": "25",
             "ttsdialog": [
                 ""
             ]
@@ -13,15 +14,17 @@
         {
             "type": "multichoice",
             "name": "Answer the question I (multichoice)",
-            "text": "What does Ernie decide to do after Bert tells him not to eat cookies in bed?",
-            "ttsvoice": "auto",
+            "text": "What happens after the young man with dreadlocks sees the big man leaning on the red sports car?",
+            "ttsvoice": "Kevin",
             "ttsdialog": [
                 ""
             ],
-            "text1": "Ernie decides to stop eating cookies altogether.",
-            "text2": "Ernie decides to eat cookies in Bert's bed instead.",
-            "text3": "Ernie decides to eat cookies in the kitchen.",
-            "text4": "Ernie decides to eat cookies in the morning.",
+            "answers": [
+                "He helps the big man by giving him a ride in his truck.",
+                "He mistakenly thinks the big man is trying to push the car off the cliff and helps push it off.",
+                "He calls for help because he thinks the big man is in trouble.",
+                "He ignores the big man and continues driving his truck."
+            ],
             "promptvoice": "Kevin",
             "promptvoiceopt": "normal",
             "correctanswer": "2"
@@ -30,15 +33,17 @@
             "type": "multichoice",
             "name": "Answer the question II (multichoice + image)",
             "instructions": "Choose the correct answer.",
-            "text": "Why does Bert tell Ernie not to eat cookies in bed?",
-            "ttsvoice": "auto",
+            "text": "What does the young man with dreadlocks do after stopping his truck?",
+            "ttsvoice": "Matthew",
             "ttsdialog": [
                 ""
             ],
-            "text1": "Because Ernie might spill milk.",
-            "text2": "Because Ernie might get crumbs in his pajamas and feel itchy.",
-            "text3": "Because Ernie might wake up Bert.",
-            "text4": "Because Ernie might drop the cookies on the floor.",
+            "answers": [
+                "He offers the big man a ride in his truck.",
+                "He helps push the red sports car off the cliff.",
+                "He gives the big man a chocolate bar.",
+                "He calls for help to assist the big man."
+            ],
             "promptvoice": "Kendra",
             "promptvoiceopt": "slow",
             "correctanswer": "2",
@@ -48,16 +53,18 @@
             "type": "multiaudio",
             "name": "Answer the question III (multiaudio)",
             "instructions": "Choose the correct answer. Use the mic to read it aloud.",
-            "text": "What does Ernie do after agreeing not to eat cookies in his own bed?",
-            "tts": "What does Ernie do after agreeing not to eat cookies in his own bed?",
+            "text": "What is the big man's reaction after the car goes off the cliff?",
+            "tts": "What is the big man's reaction after the car goes off the cliff?",
             "ttsvoice": "Salli",
             "ttsdialog": [
                 ""
             ],
-            "text1": "He throws the cookies away.",
-            "text2": "He eats cookies in Bert's bed instead.",
-            "text3": "He goes to the kitchen to eat cookies.",
-            "text4": "He decides to go to sleep without eating cookies.",
+            "answers": [
+                "He laughs and thanks the young man.",
+                "He is surprised and confused.",
+                "He gets angry and shouts at the young man.",
+                "He immediately calls for help."
+            ],
             "promptvoice": "Kendra",
             "promptvoiceopt": "normal",
             "correctanswer": "2",
@@ -73,10 +80,10 @@
                 ""
             ],
             "sentences": [
-                "Ernie and Bert are in bed.\r",
-                "Ernie eats cookies before sleeping.\r",
-                "Bert worries about crumbs in bed.\r",
-                "Ernie moves to Bert's bed to eat."
+                "A big man jogs to his car.",
+                "He leans on it to rest.",
+                "A young man sees and misunderstands.",
+                "The car falls off the cliff."
             ],
             "alternates": [
                 ""
@@ -94,10 +101,10 @@
                 ""
             ],
             "sentences": [
-                "Ernie and Bert are in bed.\r",
-                "Ernie eats cookies before sleeping.\r",
-                "Bert worries about crumbs in bed.\r",
-                "Ernie moves to Bert's bed to eat."
+                "A big man jogs to his car.",
+                "He leans on it to rest.",
+                "A young man sees and misunderstands.",
+                "The car falls off the cliff."
             ]
         },
         {
@@ -109,10 +116,10 @@
                 ""
             ],
             "sentences": [
-                "Ernie and Bert are in bed.\r",
-                "Ernie eats cookies before sleeping.\r",
-                "Bert worries about crumbs in bed.\r",
-                "Ernie moves to Bert's bed to eat."
+                "A big man jogs to his car.",
+                "He leans on it to rest.",
+                "A young man sees and misunderstands.",
+                "The car falls off the cliff."
             ],
             "promptvoice": "Joey",
             "ignorepunc": "yes",

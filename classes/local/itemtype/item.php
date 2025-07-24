@@ -145,6 +145,12 @@ abstract class item implements templatable, renderable
         }
     }
 
+    public function upgrade_item($oldversion){
+        // This is a placeholder for any upgrade logic that might be needed.
+        // Each item will implement its own upgrade logic if needed.
+        return true;
+    }
+
 
     public function set_token($token)
     {
@@ -764,7 +770,7 @@ abstract class item implements templatable, renderable
                 }
                 $filename = $file->get_filename();
                 $filepath = $file->get_filepath();
-                $filename_no_extension = pathinfo($file->get_filename(), PATHINFO_FILENAME);
+                $filenamenoextension = pathinfo($file->get_filename(), PATHINFO_FILENAME);
                 $mediaurl = \moodle_url::make_pluginfile_url(
                     $this->context->id,
                     constants::M_COMPONENT,
@@ -773,7 +779,7 @@ abstract class item implements templatable, renderable
                     $filepath,
                     $filename
                 );
-                $mediaurls[$filename_no_extension] = $mediaurl->__toString();
+                $mediaurls[$filenamenoextension] = $mediaurl->__toString();
             }
         }//end if item id
         return $mediaurls;
@@ -822,10 +828,10 @@ abstract class item implements templatable, renderable
     protected function process_listeninggapfill_sentences($sentences)
     {
         $thesentences = $this->parse_gapfill_sentences($sentences);
-        $custom_sentence_audio = $this->fetch_sentence_media('audio', 1);
+        $customsentenceaudio = $this->fetch_sentence_media('audio', 1);
         foreach ($thesentences as $sentence) {
-            if (isset($custom_sentence_audio[$sentence->indexplusone])) {
-                $sentence->audiourl = $custom_sentence_audio[$sentence->indexplusone];
+            if (isset($customsentenceaudio[$sentence->indexplusone])) {
+                $sentence->audiourl = $customsentenceaudio[$sentence->indexplusone];
             } else {
                 //if we have no custom audio then we use the polly audio
                 $sentence->audiourl = utils::fetch_polly_url(
@@ -846,12 +852,12 @@ abstract class item implements templatable, renderable
     protected function process_speakinggapfill_sentences($sentences)
     {
         $thesentences = $this->parse_gapfill_sentences($sentences);
-        $custom_sentence_audio = $this->fetch_sentence_media('audio', 1);
+        $customsentenceaudio = $this->fetch_sentence_media('audio', 1);
         foreach ($thesentences as $sentence) {
-            if (isset($custom_sentence_audio[$sentence->indexplusone])) {
-                $sentence->audiourl = $custom_sentence_audio[$sentence->indexplusone];
+            if (isset($customsentenceaudio[$sentence->indexplusone])) {
+                $sentence->audiourl = $customsentenceaudio[$sentence->indexplusone];
             } else {
-                //if we have no custom audio then we use the polly audio
+                // If we have no custom audio then we use the polly audio.
                 $sentence->audiourl = utils::fetch_polly_url(
                     $this->token,
                     $this->region,
@@ -951,9 +957,9 @@ abstract class item implements templatable, renderable
         $index = 0;
         $sentenceobjects = [];
 
-        //Prepare sentence media
-        $sentence_images = $this->fetch_sentence_media('image', 1);
-        $sentence_audio = $this->fetch_sentence_media('audio', 1);
+        // Prepare sentence media.
+        $sentenceimages = $this->fetch_sentence_media('image', 1);
+        $sentenceaudio = $this->fetch_sentence_media('audio', 1);
 
         $sentenceindex = 0;
         foreach ($sentences as $sentence) {
@@ -961,7 +967,7 @@ abstract class item implements templatable, renderable
             if (empty($sentence)) {
                 continue;
             }
-            // Sentence index starts at 1 and keys with sentence_audios and sentence_images
+            // Sentence index starts at 1 and keys with sentenceaudios and sentenceimages
             $sentenceindex++;
 
             //build prompt and displayprompt and sentence which could be different
@@ -1004,8 +1010,8 @@ abstract class item implements templatable, renderable
             }
 
             // We prepare the audio url.
-            if (isset($sentence_audio[$sentenceindex])) {
-                $theaudiourl = $sentence_audio[$sentenceindex];
+            if (isset($sentenceaudio[$sentenceindex])) {
+                $theaudiourl = $sentenceaudio[$sentenceindex];
             } else {
                 // If we have no custom audio then we use the polly audio.
                 $theaudiourl = utils::fetch_polly_url(
@@ -1025,7 +1031,7 @@ abstract class item implements templatable, renderable
             $s->prompt = $prompt;
             $s->displayprompt = $displayprompt;
             $s->length = \core_text::strlen($s->sentence);
-            $s->imageurl = isset($sentence_images[$sentenceindex]) ? $sentence_images[$sentenceindex] : false;
+            $s->imageurl = isset($sentenceimages[$sentenceindex]) ? $sentenceimages[$sentenceindex] : false;
             $s->audiourl = $theaudiourl;
 
             // Add phonetics if we have them.
@@ -1298,7 +1304,7 @@ abstract class item implements templatable, renderable
             }
         }
 
-        //Item TTS
+        // Item TTS.
         if (property_exists($data, constants::TTSQUESTION)) {
             $theitem->{constants::TTSQUESTION} = $data->{constants::TTSQUESTION};
             if (property_exists($data, constants::TTSQUESTIONVOICE)) {
@@ -1318,7 +1324,7 @@ abstract class item implements templatable, renderable
             }
         }
 
-        //Item Text Area
+        // Item Text Area.
         $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
         $edoptions['context'] = $this->context;
         if (property_exists($data, constants::QUESTIONTEXTAREA . '_editor')) {
@@ -1337,7 +1343,7 @@ abstract class item implements templatable, renderable
             $theitem->{constants::QUESTIONTEXTAREA} = utils::super_trim($data->{constants::QUESTIONTEXTAREA});
         }
 
-        //Item YT Clip
+        // Item YT Clip.
         if (property_exists($data, constants::YTVIDEOID)) {
             $theitem->{constants::YTVIDEOID} = $data->{constants::YTVIDEOID};
             if (property_exists($data, constants::YTVIDEOSTART)) {
@@ -1348,19 +1354,19 @@ abstract class item implements templatable, renderable
             }
         }
 
-        //TTS Dialog
+        // TTS Dialog.
         if (property_exists($data, constants::TTSDIALOG) && $data->{constants::TTSDIALOG} !== null) {
             $theitem->{constants::TTSDIALOG} = $data->{constants::TTSDIALOG};
             $theitem->{constants::TTSDIALOGOPTS} = utils::pack_ttsdialogopts($data);
         }
 
-        //TTS Passage
+        // TTS Passage.
         if (property_exists($data, constants::TTSPASSAGE) && $data->{constants::TTSPASSAGE} !== null) {
             $theitem->{constants::TTSPASSAGE} = $data->{constants::TTSPASSAGE};
             $theitem->{constants::TTSPASSAGEOPTS} = utils::pack_ttspassageopts($data);
         }
 
-        // Audio Story
+        // Audio Story.
         if (property_exists($data, constants::AUDIOSTORYMETA) && $data->{constants::AUDIOSTORYMETA} !== null) {
             $theitem->{constants::AUDIOSTORYMETA} = $data->{constants::AUDIOSTORYMETA};
         }
@@ -1368,7 +1374,7 @@ abstract class item implements templatable, renderable
             //if this is from an import, it will be an array
             if (is_array($data->{constants::AUDIOSTORY})) {
                 foreach ($data->{constants::AUDIOSTORY} as $filename => $filecontent) {
-                    $filerecord = array(
+                    $filerecord = [
                         'contextid' => $this->context->id,
                         'component' => constants::M_COMPONENT,
                         'filearea' => constants::AUDIOSTORY,
@@ -1376,12 +1382,12 @@ abstract class item implements templatable, renderable
                         'filepath' => '/',
                         'filename' => $filename,
                         'userid' => $USER->id,
-                    );
+                    ];
                     $fs = get_file_storage();
                     $fs->create_file_from_string($filerecord, base64_decode($filecontent));
                 }
             } else {
-                //if this is from a form submission, this will involve draft files
+                // If this is from a form submission, this will involve draft files.
                 $asfilemanageroptions = self::fetch_filemanager_options($this->course, -1);
                 $asfilemanageroptions['accepted_types'] = '*';
                 file_save_draft_area_files(
@@ -1395,12 +1401,7 @@ abstract class item implements templatable, renderable
             }
         }
 
-        //save correct answer if we have one
-        if (property_exists($data, constants::CORRECTANSWER)) {
-            $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER};
-        }
-
-        //save correct answer if we have one
+        // Save correct answer if we have one.
         if (property_exists($data, constants::CORRECTANSWER)) {
             $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER};
         }
@@ -1440,14 +1441,14 @@ abstract class item implements templatable, renderable
             }
         }
 
-        //we might have other customdata
+        // We might have other customdata.
         for ($anumber = 1; $anumber <= constants::MAXCUSTOMDATA; $anumber++) {
             if (property_exists($data, constants::CUSTOMDATA . $anumber)) {
                 $theitem->{constants::CUSTOMDATA . $anumber} = $data->{constants::CUSTOMDATA . $anumber};
             }
         }
 
-        //we might have custom int
+        // We might have custom int.
         for ($anumber = 1; $anumber <= constants::MAXCUSTOMINT; $anumber++) {
             if (property_exists($data, constants::CUSTOMINT . $anumber)) {
                 $theitem->{constants::CUSTOMINT . $anumber} = $data->{constants::CUSTOMINT . $anumber};
@@ -1455,7 +1456,7 @@ abstract class item implements templatable, renderable
         }
 
 
-        //now update the db once we have saved files and stuff
+        // Now update the db once we have saved files and stuff.
         if (!$DB->update_record(constants::M_QTABLE, $theitem)) {
             $ret->error = true;
             $ret->message = "Could not update minilesson item!";
@@ -1464,7 +1465,7 @@ abstract class item implements templatable, renderable
             $ret->item = $theitem;
             return $ret;
         }
-    }//end of edit_insert_question
+    }// End of edit_insert_question.
 
     public static function delete_item($itemid, $context)
     {

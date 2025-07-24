@@ -9,6 +9,31 @@
                     "name": "text",
                     "generate": 1,
                     "mapping": "user_keywords"
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
                 }
             ],
             "generatefileareas": [],
@@ -31,6 +56,31 @@
                 },
                 {
                     "name": "timelimit",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
                     "generate": 0,
                     "mapping": ""
                 }
@@ -77,6 +127,31 @@
                     "name": "timelimit",
                     "generate": 0,
                     "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
                 }
             ],
             "generatefileareas": [
@@ -96,6 +171,31 @@
                 {
                     "name": "sentences",
                     "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
                     "mapping": ""
                 }
             ],
@@ -150,6 +250,31 @@
                     "name": "targetwordcount",
                     "generate": 0,
                     "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
                 }
             ],
             "generatefileareas": [],
@@ -179,7 +304,9 @@
         }
     ],
     "lessonTitle": "Word Practice",
-    "lessonDescription": "Enter a list of words (5)  and Poodll will make a short activity for students to practice those words",
+    "lessonDescription": "Enter a list of words (5) and Poodll will make a short activity for students to practice those words",
+    "uniqueid": "6874e6ca1c71a",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -237,7 +364,5 @@
             "description": "",
             "type": "text"
         }
-    },
-    "uniqueid": "6874e6ca1c71a",
-    "version": 0
+    }
 }

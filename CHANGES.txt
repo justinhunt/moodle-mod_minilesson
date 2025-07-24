@@ -1,3 +1,8 @@
+Version 1.0.97 (Build 2025071305)
+ - New audio story AIGEN template
+ - Fixes to responsiveness on gap fill questions
+ - Better AIGEN progress tracking
+ - Multichoice and Multiaudio item updates
 
 Version 1.0.96 (Build 2025071303)
 - Added versioning feature to AIGEN templates

@@ -2,14 +2,9 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Create a transcript to be read by a TTS voice closely based on the following text: [{text}]\n",
-            "generatemethod": "extract",
+            "prompt": "Generate a short story (tts) in {language} suitable for {level} level learners on the topic of: [{topic}] The short story should take about 1 minute to read aloud. \nThe short story should be interesting and {storystyle} . Also generate a one dimensional array (data1) of scene descriptions  from the story that can be used as image prompts",
+            "generatemethod": "generate",
             "generatefields": [
-                {
-                    "name": "text",
-                    "generate": 0,
-                    "mapping": ""
-                },
                 {
                     "name": "tts",
                     "generate": 1,
@@ -17,7 +12,7 @@
                 },
                 {
                     "name": "data1",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
@@ -43,32 +38,39 @@
             ],
             "generatefileareas": [
                 {
-                    "name": "itemmedia",
+                    "name": "itemaudiostory",
                     "generate": 1,
-                    "mapping": "user_topic"
+                    "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_topic",
             "promptfields": [
                 {
-                    "name": "text",
-                    "mapping": "user_text"
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "storystyle",
+                    "mapping": "user_customdata1"
                 }
             ]
         },
         {
             "itemnumber": 1,
-            "prompt": "Choose 12 different keywords from the following {language} text. Surround each of the keywords in the passage with square brackets, e.g [word].  \n {text}. ",
+            "prompt": "Select at least 10 different keywords from the following {language} text. Return the text as a passage with each instance of the keyword surrounded with square brackets, e.g [word].  \n {text}",
             "generatemethod": "extract",
             "generatefields": [
                 {
                     "name": "passage",
                     "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "penalizehints",
-                    "generate": 0,
                     "mapping": ""
                 },
                 {
@@ -106,38 +108,32 @@
             "overallimagecontext": "--",
             "promptfields": [
                 {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
                     "name": "language",
                     "mapping": "target_language"
                 },
                 {
                     "name": "text",
-                    "mapping": "user_text"
+                    "mapping": "item0_tts"
                 }
             ]
         },
         {
             "itemnumber": 2,
-            "prompt": "Create a multichoice question(text) and 1 dimensional array of 4 answers (answers) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
+            "prompt": "Extract a 1 dimensional array of 4 sentences from the following {language} text. Note that the sentences should not be longer than 12 words, so rewrite them if necessary: [{text}]. ",
             "generatemethod": "extract",
             "generatefields": [
                 {
-                    "name": "text",
+                    "name": "sentences",
                     "generate": 1,
                     "mapping": ""
                 },
                 {
-                    "name": "answers",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "listenorread",
+                    "name": "correctthreshold",
                     "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "correctanswer",
-                    "generate": 1,
                     "mapping": ""
                 },
                 {
@@ -170,7 +166,7 @@
                 {
                     "name": "customfile1_image",
                     "generate": 1,
-                    "mapping": "text"
+                    "mapping": "sentences"
                 }
             ],
             "overallimagecontext": "user_topic",
@@ -180,145 +176,20 @@
                     "mapping": "target_language"
                 },
                 {
-                    "name": "level",
-                    "mapping": "user_level"
-                },
-                {
                     "name": "text",
-                    "mapping": "user_text"
+                    "mapping": "item0_tts"
                 }
             ]
         },
         {
             "itemnumber": 3,
-            "prompt": "Create a multichoice question(text) and 1 dimensional array of 4 answers (answers)  in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] Also specify the correct answer as a number 1-4 in 'correctanswer'. The question should be different to the previous question: [{previous_question}]",
-            "generatemethod": "extract",
-            "generatefields": [
-                {
-                    "name": "text",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "answers",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "correctanswer",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "data1",
-                    "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "data2",
-                    "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "data3",
-                    "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "data4",
-                    "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "data5",
-                    "generate": 0,
-                    "mapping": ""
-                }
-            ],
-            "generatefileareas": [],
-            "overallimagecontext": "--",
-            "promptfields": [
-                {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
-                    "name": "level",
-                    "mapping": "user_level"
-                },
-                {
-                    "name": "text",
-                    "mapping": "user_text"
-                },
-                {
-                    "name": "previous_question",
-                    "mapping": "item2_text"
-                }
-            ]
-        },
-        {
-            "itemnumber": 4,
-            "prompt": "Extract a 1 dimensional array of 5 sentences from the following {language} text: [{text}]. ",
-            "generatemethod": "extract",
-            "generatefields": [
-                {
-                    "name": "text",
-                    "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "sentences",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "data1",
-                    "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "data2",
-                    "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "data3",
-                    "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "data4",
-                    "generate": 0,
-                    "mapping": ""
-                },
-                {
-                    "name": "data5",
-                    "generate": 0,
-                    "mapping": ""
-                }
-            ],
-            "generatefileareas": [],
-            "overallimagecontext": "--",
-            "promptfields": [
-                {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
-                    "name": "text",
-                    "mapping": "user_text"
-                }
-            ]
-        },
-        {
-            "itemnumber": 5,
             "prompt": "",
             "generatemethod": "reuse",
             "generatefields": [
                 {
                     "name": "passage",
                     "generate": 1,
-                    "mapping": "user_text"
+                    "mapping": "item0_tts"
                 },
                 {
                     "name": "totalmarks",
@@ -355,24 +226,39 @@
             "promptfields": []
         },
         {
-            "itemnumber": 6,
-            "prompt": "",
-            "generatemethod": "reuse",
+            "itemnumber": 4,
+            "prompt": "Generate an oral discussion question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] ",
+            "generatemethod": "generate",
             "generatefields": [
                 {
                     "name": "text",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedback",
                     "generate": 0,
                     "mapping": ""
                 },
                 {
-                    "name": "ytid",
-                    "generate": 1,
-                    "mapping": "user_customdata1"
+                    "name": "aigradeinstructions",
+                    "generate": 0,
+                    "mapping": ""
                 },
                 {
-                    "name": "ytend",
-                    "generate": 1,
-                    "mapping": "target_language"
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "relevance",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "targetwordcount",
+                    "generate": 0,
+                    "mapping": ""
                 },
                 {
                     "name": "data1",
@@ -400,14 +286,34 @@
                     "mapping": ""
                 }
             ],
-            "generatefileareas": [],
-            "promptfields": []
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "text"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                }
+            ]
         }
     ],
-    "lessonTitle": "YouTube Finale Lesson",
-    "lessonDescription": "This is a lesson based on a YouTube video where the video is not shown until the very end.",
-    "uniqueid": "6874e6axxx999",
-    "version": "2",
+    "lessonTitle": "Audio Story",
+    "lessonDescription": "Enter a topic, the learners language level, and a type of story.  AI will prepare an audio story (slideshow) and some listening and speaking activities based on it.",
+    "uniqueid": "6880824450555",
+    "version": "100",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -417,13 +323,13 @@
         },
         "user_topic": {
             "enabled": true,
-            "title": "Scene Description",
-            "description": "A brief description of the scene to help AI generate consistent images",
+            "title": "Story\/Article Topic",
+            "description": "Enter a detailed outline  for AI to use to generate a story.",
             "type": "textarea"
         },
         "user_level": {
             "enabled": true,
-            "title": "User's Language Level",
+            "title": "User Language Level",
             "description": "",
             "type": "dropdown",
             "options": [
@@ -436,22 +342,30 @@
             ]
         },
         "user_text": {
-            "enabled": true,
-            "title": "Video Story",
-            "description": "Enter the story that the YouTube video tells in text format. It will form the basis of the reading and speaking activities. The YouTube video will be shown to students at the very end",
-            "type": "textarea"
-        },
-        "user_keywords": {
             "enabled": false,
             "title": "",
             "description": "",
             "type": "text"
         },
+        "user_keywords": {
+            "enabled": false,
+            "title": "Keywords",
+            "description": "",
+            "type": "text"
+        },
         "user_customdata1": {
             "enabled": true,
-            "title": "YouTube Video ID",
-            "description": "Set the YouTube video id (11 chars) or the YouTube URL of the video",
-            "type": "text"
+            "title": "Story Style",
+            "description": "Choose the type of story that AI should generate",
+            "type": "dropdown",
+            "options": [
+                "funny",
+                "scary",
+                "thought provoking",
+                "zany",
+                "romantic",
+                "unbelievable"
+            ]
         },
         "user_customdata2": {
             "enabled": false,

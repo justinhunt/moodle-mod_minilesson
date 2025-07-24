@@ -17,6 +17,31 @@
                 },
                 {
                     "name": "ytend",
+                    "generate": 1,
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
                     "generate": 0,
                     "mapping": ""
                 }
@@ -26,7 +51,7 @@
         },
         {
             "itemnumber": 1,
-            "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the students understanding of the youtube video with id: [{ytid} summarised as follows: [{synopsis}]. Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
+            "prompt": "Create a multichoice question(text) and 1 dimensional array of 4 answers (answers) in {language} suitable for {level} level learners to test the students understanding of the youtube video with id: [{ytid} summarised as follows: [{synopsis}]. Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -35,28 +60,38 @@
                     "mapping": ""
                 },
                 {
-                    "name": "text1",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text2",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text3",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text4",
+                    "name": "answers",
                     "generate": 1,
                     "mapping": ""
                 },
                 {
                     "name": "correctanswer",
                     "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
                     "mapping": ""
                 }
             ],
@@ -83,7 +118,7 @@
         },
         {
             "itemnumber": 2,
-            "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the students understanding of the youtube video with id: [{ytid}] summarised as follows: [{synopsis}]. The question should be different to [{previousquestion}]. Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
+            "prompt": "Create a multichoice question(text) and 1 dimensional array of 4 answers (answers)  in {language} suitable for {level} level learners to test the students understanding of the youtube video with id: [{ytid}] summarised as follows: [{synopsis}]. The question should be different to [{previousquestion}]. Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -92,28 +127,38 @@
                     "mapping": ""
                 },
                 {
-                    "name": "text1",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text2",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text3",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text4",
+                    "name": "answers",
                     "generate": 1,
                     "mapping": ""
                 },
                 {
                     "name": "correctanswer",
                     "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
                     "mapping": ""
                 }
             ],
@@ -150,7 +195,7 @@
         },
         {
             "itemnumber": 3,
-            "prompt": "Create a multichoice question(text) and 4 answers (text1 - text4) in {language} suitable for {level} level learners to test the students understanding of the youtube video with id: [{ytid}] summarised as follows: [{synopsis}]. The question should be different to previous questions [{previousquestion1}] and [{previousquestion2}]. Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
+            "prompt": "Create a multichoice question(text) and 1 dimensional array of 4  answers (answers)  in {language} suitable for {level} level learners to test the students understanding of the youtube video with id: [{ytid}] summarised as follows: [{synopsis}]. The question should be different to previous questions [{previousquestion1}] and [{previousquestion2}]. Also specify the correct answer as a number 1-4 in 'correctanswer'. ",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -164,28 +209,38 @@
                     "mapping": ""
                 },
                 {
-                    "name": "text1",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text2",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text3",
-                    "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "text4",
+                    "name": "answers",
                     "generate": 1,
                     "mapping": ""
                 },
                 {
                     "name": "correctanswer",
                     "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
                     "mapping": ""
                 }
             ],
@@ -243,6 +298,31 @@
                     "name": "showtextprompt",
                     "generate": 0,
                     "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
                 }
             ],
             "generatefileareas": [],
@@ -280,6 +360,31 @@
                     "name": "sentences",
                     "generate": 1,
                     "mapping": "item4_sentences"
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
                 }
             ],
             "generatefileareas": [],
@@ -304,6 +409,31 @@
                     "name": "ignorepunc",
                     "generate": 0,
                     "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
                 }
             ],
             "generatefileareas": [],
@@ -312,6 +442,8 @@
     ],
     "lessonTitle": "A YouTube Lesson",
     "lessonDescription": "Enter a YouTube video id (or URL) and summaries. Poodll will generate a short lesson with multi-choice and speaking activities",
+    "uniqueid": "6874e6a65a0ff",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -369,7 +501,5 @@
             "description": "",
             "type": "text"
         }
-    },
-    "uniqueid": "6874e6a65a0ff",
-    "version": "1"
+    }
 }

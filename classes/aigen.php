@@ -468,7 +468,7 @@ class aigen
     {
         global $CFG, $DB;
 
-        $templates = ['ayoutubelesson', 'passagereading', 'wordpractice', 'youtubefinalelesson'];
+        $templates = ['ayoutubelesson', 'passagereading', 'wordpractice', 'youtubefinalelesson', 'audiostory'];
         foreach ($templates as $template) {
             $t = new \stdClass();
             $t->name = get_string("aigentemplatename:" . $template, constants::M_COMPONENT);

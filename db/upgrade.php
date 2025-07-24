@@ -32,6 +32,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 /**
  * Execute minilesson upgrade from the given old version
@@ -737,6 +738,36 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         // Minilesson savepoint reached.
         upgrade_mod_savepoint(true, 2025071303.01, 'minilesson');
+    }
+
+    if ($oldversion < 2025071305) {
+        global $DB;
+
+        // Fetch all minilesson instances and multichoice/multiaudio items - upgrade to new format
+        $minilessoninstances = $DB->get_records(constants::M_TABLE);
+        if ($minilessoninstances) {
+            foreach ($minilessoninstances as $moduleinstance) {
+                $upgradetypes = [ constants::TYPE_MULTICHOICE, constants::TYPE_MULTIAUDIO];
+                foreach ($upgradetypes as $upgradetype) {
+
+                    // Fetch all item records for the current minilesson instance.
+                    $itemrecords = $DB->get_records(constants::M_QTABLE,
+                    ['minilesson' => $moduleinstance->id, 'type' => $upgradetype]);
+                    if (!$itemrecords) {
+                        continue; // No items to upgrade for this minilesson instance, skip to the next one.
+                    }
+                    foreach ($itemrecords as $itemdata) {
+                        $theitem = utils::fetch_item_from_itemrecord($itemdata, $moduleinstance);
+                        if ($theitem) {
+                            $theitem->upgrade_item($oldversion);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025071305, 'minilesson');
     }
 
 

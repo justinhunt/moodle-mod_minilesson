@@ -2212,6 +2212,51 @@ class utils {
         }
     }
 
+    public static function upgrade_multichoice_item($item) {
+        global $DB;
+        
+        // The original multichoice stored each answer in a separate field.
+        // We need to convert that to the new format which is a single field with answers separated
+        // by a newline character.
+        if ($item->type = constants::TYPE_MULTICHOICE) {
+            
+            $sentences = [];
+            $imagecontent = $item->itemrecord->{constants::LISTENORREAD} == constants::LISTENORREAD_IMAGE;
+            $sentencefieldindex = 1;
+            $mediatype = "image";
+
+            for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
+                // If we have a sentence, we fetch it, and then clear the field.
+                if (!empty(trim($item->{constants::TEXTANSWER . $anumber}))) {
+                    $sentences[] = trim($item->itemrecord->{constants::TEXTANSWER . $anumber});
+                    $item->itemrecord->{constants::TEXTANSWER . $anumber} = '';
+                }
+
+                if ($imagecontent) {
+                    $fs = get_file_storage();
+                    $files = $fs->get_area_files($item->context->id, constants::M_COMPONENT, constants::FILEANSWER . $anumber, $item->itemrecord->id);
+    
+                    foreach ($files as $file) {
+                        $filename = $file->get_filename();
+                        if ($filename == '.') {
+                            continue;
+                        }
+                        $filerecord = new \stdClass();
+                        $filerecord->filearea = constants::FILEANSWER . $sentencefieldindex . '_' . $mediatype;
+                        //replace filename with number, eg banana.jpg becomes 1.jpg
+                        $filerecord->filename = $anumber . '.' . pathinfo($file->get_filename(), PATHINFO_EXTENSION);
+                        $fs->create_file_from_storedfile($filerecord, $file);
+                        break; // we only want the first file
+                    }
+                }
+            }
+            $allsentences = implode("\n", $sentences);
+            $item->itemrecord->{constants::TEXTANSWER . 1} = $allsentences;
+            $DB->update_record(constants::M_QTABLE, $item->itemrecord);
+        }
+        return $item;
+    }
+
     public static function do_mb_str_split($string, $splitlength = 1, $encoding = null) {
         // for greater than PHP 7.4
         if (version_compare(PHP_VERSION, '7.4.0', '>=')) {
