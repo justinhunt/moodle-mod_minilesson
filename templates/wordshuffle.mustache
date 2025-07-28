@@ -1,0 +1,63 @@
+{{> mod_minilesson/questionheader}}
+<div class="minilesson_wordshuffle_player_box">
+    <div style="display:none;" class="wordshuffle_results">{{#str}}wordshuffle_results, mod_minilesson{{/str}}</div>
+
+    <div class="wordshuffle_title text-center">{{#str}}wordshuffle, mod_minilesson{{/str}}</div>
+
+    <div class="wordshuffle_mainmenu">
+        <div class="wordshuffle_loaded" style="display:none;">
+            <button disabled class='btn btn-block btn-primary wordshuffle_start_btn'>
+                <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
+            </button>
+
+        </div>
+        <div class="wordshuffle_not_loaded">
+            <p>{{#str}}loading, mod_minilesson{{/str}}</p>
+        </div>
+    </div>
+
+    {{> mod_minilesson/progresstimer }}
+    {{#audiocontent}}
+    <div style="display:none;" class="wordshuffle_listen_cont">
+        <button class="btn btn-secondary wordshuffle_listen_btn">
+            <i class="fa fa-volume-up"></i>
+        </button>
+    </div>
+    {{/audiocontent}}
+
+    <div style="display:none;" class="question">
+        {{#sentences}}
+            <div class="wordshuffle_wordset_container wordshuffle_wordset_{{index}} text-center" style="display:none;" >
+                <div class="wordshuffle-wordset">{{sentence}}</div>
+
+                {{#imageurl}}
+                <div class='minilesson_sentence_image'>
+                    <div class='minilesson_padded_image'>
+                        <img src='{{{imageurl}}}' alt='Image for wordset' />
+                    </div>
+                </div>
+                {{/imageurl}}
+                {{#hint}}
+                <div class='definition-container'><div class='definition'>
+                    {{hint}}
+                </div>
+                {{/hint}}
+            </div>
+         {{/sentences}}
+    </div>
+
+    <div style="display:none;" class="wordshuffle_controls">
+
+        <button class="btn btn-success wordshuffle_ctrl-btn wordshuffle_check_btn">
+            <i class="fa fa-check"></i> {{#str}}check, mod_minilesson{{/str}}
+        </button>
+
+        <button class="btn btn-danger wordshuffle_ctrl-btn wordshuffle_skip_btn">
+            {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
+        </button>
+
+    </div>
+
+    <div class="wordshuffle_resultscontainer"></div>
+</div>
+{{> mod_minilesson/questionfooter}}

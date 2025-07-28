@@ -205,72 +205,90 @@ abstract class baseform extends \moodleform {
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('smartframe_instructions1', constants::M_COMPONENT));
                         break;
-                    //listening gapfill
+                    // Listening gapfill.
                     case constants::TYPE_LGAPFILL:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('lg_instructions1', constants::M_COMPONENT));
                         break;
-                    //typing gapfill
+                    // Typing gapfill.
                     case constants::TYPE_TGAPFILL:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('tg_instructions1', constants::M_COMPONENT));
                         break;
-                    //speaking gapfill
+                    // Speaking gapfill.
                     case constants::TYPE_SGAPFILL:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('sg_instructions1', constants::M_COMPONENT));
                         break;
-                    //passage gapfill
+                    // Passage gapfill.
                     case constants::TYPE_PGAPFILL:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('pg_instructions1', constants::M_COMPONENT));
                         break;
-                    //comprehension quiz
+                    // Comprehension quiz.
                     case constants::TYPE_COMPQUIZ:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('listeningquiz_instructions1', constants::M_COMPONENT));
                         break;
 
-                    //h5p
+                    // H5P.
                     case constants::TYPE_H5P:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('h5p_instructions1', constants::M_COMPONENT));
                         break;
 
-                    //h5p
+                    // Space Game.
                     case constants::TYPE_SPACEGAME:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('spacegame_instructions1', constants::M_COMPONENT));
                         break;
 
-                    //h5p
+                    // FreeWriting.
                     case constants::TYPE_FREEWRITING:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('freewriting_instructions1', constants::M_COMPONENT));
                         break;
 
-                    //h5p
+                    // Free Speaking.
                     case constants::TYPE_FREESPEAKING:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('freespeaking_instructions1', constants::M_COMPONENT));
                         break;
 
-                    //h5p
+                    // Fluency.
                     case constants::TYPE_FLUENCY:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('fluency_instructions1', constants::M_COMPONENT));
                         break;
 
-                    //h5p
+                    // Passage Reading.
                     case constants::TYPE_PASSAGEREADING:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('passagereading_instructions1', constants::M_COMPONENT));
                         break;
 
-                    //h5p
+                    // Conversation.
                     case constants::TYPE_CONVERSATION:
                         $mform->setDefault(constants::TEXTINSTRUCTIONS,
                             get_string('conversations_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    // AudioChat.
+                    case constants::TYPE_AUDIOCHAT:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('audiochat_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    // Word Shuffle.
+                    case constants::TYPE_WORDSHUFFLE:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('wordshuffle_instructions1', constants::M_COMPONENT));
+                        break;
+
+                    // Scatter.
+                    case constants::TYPE_SCATTER:
+                        $mform->setDefault(constants::TEXTINSTRUCTIONS,
+                            get_string('scatter_instructions1', constants::M_COMPONENT));
                         break;
                 }
 
@@ -962,6 +980,7 @@ abstract class baseform extends \moodleform {
                 $this->_form->setDefault($name, 1);
             }
     }
+
 
     protected final function add_aliencount($name,$label,$default) {
         $alienoptions = [

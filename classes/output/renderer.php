@@ -441,7 +441,9 @@ class renderer extends \plugin_renderer_base
                         $result->hasanswerdetails = false;
                     }
                     break;
-                case constants::TYPE_CONVERSATION:  // TO DO how to handle this?
+                case constants::TYPE_AUDIOCHAT:  // TO DO how to handle this?
+                case constants::TYPE_WORDSHUFFLE:  // TO DO how to handle this?
+                case constants::TYPE_SCATTER:  // TO DO how to handle this?
                 case constants::TYPE_SPACEGAME: // TO DO how to handle this?
                 default:
                     $result->hascorrectanswer = false;

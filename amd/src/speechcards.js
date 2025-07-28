@@ -16,12 +16,10 @@ define(['jquery',
 
   return {
 
-
-
-      //for making multiple instances
-      clone: function () {
-          return $.extend(true, {}, this);
-      },
+    //for making multiple instances
+    clone: function () {
+        return $.extend(true, {}, this);
+    },
 
     init: function(index, itemdata, quizhelper) {
 

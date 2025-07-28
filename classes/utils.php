@@ -2157,6 +2157,12 @@ class utils {
                 return new local\itemtype\item_passagereading($itemrecord, $moduleinstance, $context);
             case constants::TYPE_CONVERSATION:
                 return new local\itemtype\item_conversation($itemrecord, $moduleinstance, $context);
+            case constants::TYPE_AUDIOCHAT:
+                return new local\itemtype\item_audiochat($itemrecord, $moduleinstance, $context);
+            case constants::TYPE_WORDSHUFFLE:
+                return new local\itemtype\item_wordshuffle($itemrecord, $moduleinstance, $context);
+            case constants::TYPE_SCATTER:
+                return new local\itemtype\item_scatter($itemrecord, $moduleinstance, $context);
             default:
         }
     }
@@ -2207,6 +2213,12 @@ class utils {
                 return '\\'. constants::M_COMPONENT . '\local\itemform\passagereadingform';
             case constants::TYPE_CONVERSATION:
                 return '\\'. constants::M_COMPONENT . '\local\itemform\conversationform';
+            case constants::TYPE_AUDIOCHAT:
+                return '\\'. constants::M_COMPONENT . '\local\itemform\audiochatform';
+            case constants::TYPE_WORDSHUFFLE:
+                return '\\'. constants::M_COMPONENT . '\local\itemform\wordshuffleform';
+            case constants::TYPE_SCATTER:
+                return '\\'. constants::M_COMPONENT . '\local\itemform\scatterform';
             default:
                 return false;
         }
