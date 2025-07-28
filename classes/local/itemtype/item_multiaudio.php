@@ -223,7 +223,6 @@ class item_multiaudio extends item
         global $DB;
 
         $success = true;
- 
         if ($oldversion < 2025071305) {
 
             // The original multiadio stored each answer in a separate field.
