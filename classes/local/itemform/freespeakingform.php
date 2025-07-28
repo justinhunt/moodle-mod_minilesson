@@ -37,7 +37,7 @@ class freespeakingform extends baseform {
         $this->add_static_text('instructions', '', get_string('freespeakingdesc', constants::M_COMPONENT));
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
         $mform->setDefault(constants::TOTALMARKS, 5);
-        $this->add_static_text('freespeakingtotalmarks_instructions', '', get_string('fs_totalmarks_instructions', constants::M_COMPONENT));
+        $this->add_static_text('freespeakingtotalmarks_instructions', '', get_string('totalmarks_instructions', constants::M_COMPONENT));
         $this->add_numericboxresponse(constants::TARGETWORDCOUNT, get_string('targetwordcount_title', constants::M_COMPONENT), false);
         $mform->setDefault(constants::TARGETWORDCOUNT, 60);
         $this->add_textarearesponse(constants::AIGRADE_INSTRUCTIONS, get_string('aigrade_instructions', constants::M_COMPONENT), true);

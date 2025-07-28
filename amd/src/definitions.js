@@ -80,6 +80,9 @@ This file contains class and ID definitions.
         qtype_conversation: 'conversation',
         qtype_compquiz: 'compquiz',
         qtype_passagegapfill: 'passagegapfill',
+        qtype_audiochat: 'audiochat',
+        qtype_wordshuffle: 'wordshuffle',
+        qtype_scatter: 'scatter',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_minilesson_grading_maybeselfcorrectedword',

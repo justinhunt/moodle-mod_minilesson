@@ -1,0 +1,13 @@
+{{> mod_minilesson/questionheader}}
+{{> mod_minilesson/progresstimer}}
+<div class="minilesson_audiochat_box">
+     <div class="ml_audiochat_resultsbox"></div>
+     <div class="ml_audiochat_pendingbox hidden"><center><i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i></center></div>
+     <div class="ml_audiochat_actionbox">
+        <div class="ml_audiochat_speakbtncontainer" style="width:246px;margin:auto;">
+                {{> mod_minilesson/ttrecorder}}
+        </div>
+        <div class="timerstatus_{{uniqueid}} ml_audiochat_timerdisplay ml_recsession"></div>
+     </div>
+</div>
+{{> mod_minilesson/questionfooter}}

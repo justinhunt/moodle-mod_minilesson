@@ -743,8 +743,18 @@ function xmldb_minilesson_upgrade($oldversion) {
     if ($oldversion < 2025071305) {
         global $DB;
 
-        // Fetch all minilesson instances and multichoice/multiaudio items - upgrade to new format
-        $minilessoninstances = $DB->get_records(constants::M_TABLE);
+        //Fetch unique minilesson ids for all minilesson items that are of type multichoice or multiaudio
+        $sql = "SELECT DISTINCT minilesson FROM {". constants::M_QTABLE ."} WHERE type IN (:type1, :type2)";
+        $params = [
+            'type1' => constants::TYPE_MULTICHOICE,
+            'type2' => constants::TYPE_MULTIAUDIO
+        ];
+        $minilessonids = $DB->get_fieldset_sql($sql, $params);
+
+        // Fetch all minilesson instances that we are interested in
+        $minilessoninstances = $DB->get_records_list(constants::M_TABLE, 'id', $minilessonids);
+        //$minilessoninstances = $DB->get_records(constants::M_TABLE);
+
         if ($minilessoninstances) {
             foreach ($minilessoninstances as $moduleinstance) {
                 $upgradetypes = [ constants::TYPE_MULTICHOICE, constants::TYPE_MULTIAUDIO];

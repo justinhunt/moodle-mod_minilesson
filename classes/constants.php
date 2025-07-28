@@ -87,6 +87,9 @@ const TYPE_FREESPEAKING = 'freespeaking';
 const TYPE_FLUENCY = 'fluency';
 const TYPE_PASSAGEREADING = 'passagereading';
 const TYPE_CONVERSATION = 'conversation';
+const TYPE_AUDIOCHAT = 'audiochat';
+const TYPE_WORDSHUFFLE = 'wordshuffle';
+const TYPE_SCATTER = 'scatter';
 
 const AUDIOSTORYMETA = 'itemaudiofname';
 const AUDIOPROMPT = 'audioitem';
@@ -131,9 +134,13 @@ const POLLYVOICE = 'customtext5';
 const POLLYOPTION = 'customint4';
 const CONFIRMCHOICE = 'customint3';
 const AIGRADE_INSTRUCTIONS = 'customtext6';
+
 const AIGRADE_FEEDBACK = 'customtext2';
 const AIGRADE_FEEDBACK_LANGUAGE = 'customtext4';
 const AIGRADE_MODELANSWER = 'customtext3';
+const AUDIOCHAT_INSTRUCTIONS = 'customtext6';
+const AUDIOCHAT_ROLE = 'customtext2';
+const AUDIOCHAT_NATIVE_LANGUAGE = 'customtext4';
 const READINGPASSAGE = 'customtext1';
 const PASSAGEGAPFILL_PASSAGE = 'customtext1';
 const PASSAGEGAPFILL_HINTS = 'customint5';
@@ -154,6 +161,8 @@ const SG_INCLUDEMATCHING = 'customint3';
 const SG_ALIENCOUNT_MULTICHOICE = 'customint1';
 const SG_ALIENCOUNT_MATCHING = 'customint2';
 const SG_ALLOWRETRY = 'customint4';
+
+const SCATTER_ALLOWRETRY = 'customint4';
 const MAXANSWERS=4;
 const MAXCUSTOMTEXT=7;
 const MAXCUSTOMDATA=5;

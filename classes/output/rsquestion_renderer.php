@@ -66,6 +66,9 @@ class rsquestion_renderer extends \plugin_renderer_base {
             $qtypes[] = constants::TYPE_COMPQUIZ;
             $qtypes[] = constants::TYPE_CONVERSATION;
             $qtypes[] = constants::TYPE_DICTATIONCHAT;
+            $qtypes[] = constants::TYPE_AUDIOCHAT;
+            $qtypes[] = constants::TYPE_WORDSHUFFLE;
+            $qtypes[] = constants::TYPE_SCATTER;
         }
         //If modaleditform is true adding and editing item types is done in a popup modal. Thats good ...
         // but when there is a lot to be edited , a standalone page is better. The modaleditform flag is acted on on additemlink template and rsquestionmanager js
