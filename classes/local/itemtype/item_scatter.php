@@ -56,7 +56,7 @@ class item_scatter extends item
             $scatteritemobj = new \stdClass();
             $scatteritemobj->term = trim($scatteritem[0]);
             $scatteritemobj->definition = trim(str_replace("\r", "", $scatteritem[1]));
-            $testitem->scatteritems[] = json_encode($scatteritemobj);
+            $testitem->scatteritems[] = $scatteritemobj;
         }
 
         return $testitem;

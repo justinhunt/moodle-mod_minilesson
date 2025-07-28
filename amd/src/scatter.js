@@ -66,6 +66,8 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                 self.scatteritems = itemdata.scatteritems;
                 self.language = itemdata.language;
                 self.itemdata = itemdata;
+                self.index = index;
+                self.quizhelper = quizhelper;
 
                 //anim
                 var animopts = {};
@@ -74,6 +76,7 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
 
                 this.init_controls();
                 this.register_events();
+                this.start();
 
 
             },  //end of init
@@ -82,6 +85,7 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                 var self = this;
 
                 self.controls = {};
+                self.controls.stage = $("#" + self.itemdata.uniqueid + "_container .ml_scatter_stage");
                 self.controls.next_button = $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton");
             },
 
@@ -89,14 +93,14 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                 var self = this;
 
                 var stepdata = {};
-                stepdata.index = index;
+                stepdata.index = self.index;
                 stepdata.hasgrade = true;
                 stepdata.totalitems = self.terms.length;
                 stepdata.correctitems = self.results.filter(function (e) {
                     return e.points > 0;
                 }).length;
                 stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
-                quizhelper.do_next(stepdata);
+                self.quizhelper.do_next(stepdata);
             },
 
             register_events: function () {
@@ -106,5 +110,11 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                     self.next_question();
                 });
             },
+
+            start: function() {
+
+            }
+
+
         }; //end of return
 });

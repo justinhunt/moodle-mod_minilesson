@@ -48,19 +48,14 @@ class item_wordshuffle extends item
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
-        // Word Shuffle may need sentences if we are listening. Its a bit of double up but we do that here.
+        //Do we need audio
+        $testitem->readsentence = constants::READSENTENCE ? true : false;
+
+        // Prepare data arrays
         $testitem->sentences = [];
-        $testitem->imagecontent = false;
-        $testitem->audiocontent = false;
-        switch ($itemrecord->{constants::LISTENORREAD}) {
-            case constants::LISTENORREAD_LISTEN:
-            case constants::LISTENORREAD_LISTENANDREAD:
-                $testitem->audiocontent = true;
-                break;
-            case constants::LISTENORREAD_IMAGE:
-                $testitem->imagecontent = true;
-                break;
-        }
+        $testitem->imagecontent = true;
+        $testitem->audiocontent = $testitem->readsentence ;
+
 
         // Sentences.
         $sentences = [];
@@ -122,6 +117,8 @@ class item_wordshuffle extends item
                 $s->indexplusone = $anumber+1;
                 $s->sentence = $sentence;
                 $s->length = \core_text::strlen($sentence);
+                $s->imageurl = false;
+                $s->audiourl = false;
 
 
                 if (!empty($theimageurl)) {
@@ -136,6 +133,7 @@ class item_wordshuffle extends item
 
         // WordShuffle also has a confirm choice option we need to include.
         $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
+        $testitem->hidestartpage = $itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
 
         return $testitem;
     }
@@ -178,8 +176,9 @@ class item_wordshuffle extends item
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['int3'] = ['jsonname' => 'confirmchoice', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::CONFIRMCHOICE];
-        $keycols['int2'] = ['jsonname' => 'listenorread', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::LISTENORREAD]; //not boolean ..
+        $keycols['int2'] = ['jsonname' => 'readsentence', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE]; //not boolean ..
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
+        $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
  

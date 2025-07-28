@@ -17,14 +17,34 @@
     </div>
 
     {{> mod_minilesson/progresstimer }}
-
+    {{#audiocontent}}
     <div style="display:none;" class="wordshuffle_listen_cont">
         <button class="btn btn-secondary wordshuffle_listen_btn">
             <i class="fa fa-volume-up"></i>
         </button>
     </div>
+    {{/audiocontent}}
 
-    <div style="display:none;" class="question"></div>
+    <div style="display:none;" class="question">
+        {{#sentences}}
+            <div class="wordshuffle_wordset_container wordshuffle_wordset_{{index}} text-center" style="display:none;" >
+                <div class="wordshuffle-wordset">{{sentence}}</div>
+
+                {{#imageurl}}
+                <div class='minilesson_sentence_image'>
+                    <div class='minilesson_padded_image'>
+                        <img src='{{{imageurl}}}' alt='Image for wordset' />
+                    </div>
+                </div>
+                {{/imageurl}}
+                {{#hint}}
+                <div class='definition-container'><div class='definition'>
+                    {{hint}}
+                </div>
+                {{/hint}}
+            </div>
+         {{/sentences}}
+    </div>
 
     <div style="display:none;" class="wordshuffle_controls">
 

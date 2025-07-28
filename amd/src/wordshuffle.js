@@ -35,6 +35,7 @@ define(['jquery',
             self.register_events();
             self.setvoice();
             self.getItems();
+            self.start();
         },
 
         init_controls: function() {
@@ -229,12 +230,15 @@ define(['jquery',
                 return e.target !== "";
             });
 
-            //Prepare audio
-            $.each(self.items, function (index, item) {
-                item.audio = new Audio();
-                item.audio.src = item.audiourl;
-            });
-            self.appReady();
+            if(self.itemdata.audiocontent) {
+                $.each(self.items, function (index, item) {
+                    item.audio = new Audio();
+                    item.audio.src = item.audiourl;
+                });
+                self.appReady();
+            }else{
+                self.appReady();
+            }
 
         },
 
@@ -329,7 +333,7 @@ define(['jquery',
 
             self.updateProgressDots();
 
-            self.nextReply();
+            self.showNextWordSet();
 
             // We autoplay the audio on item entry, if its not a mobile user.
             // If we do not have a start page and its the first item, we play on the item show event
@@ -363,39 +367,20 @@ define(['jquery',
             self.controls.title.html(progress);
         },
 
-        nextReply: function() {
+        showNextWordSet: function() {
             var self = this;
-            var code = "<div class='wordshuffle_reply wordshuffle_reply_" + self.game.pointer + " text-center' style='display:none;'>";
-            var brackets = {started: false, ended: false, index: null};
-
-            code += "<div class='form-container'>";
 
 
-            code += " <i data-idx='" + self.game.pointer + "' class='wordshuffle_feedback'></i></div>";
-
-            //hint - image
-            if( self.items[self.game.pointer].imageurl) {
-                code += "<div class='minilesson_sentence_image'><div class='minilesson_padded_image'><img src='"
-                    + self.items[self.game.pointer].imageurl + "' alt='Image for gap fill' /></div></div>";
-            }
-            //hint - definition
-            if( self.items[self.game.pointer].definition) {
-                code += "<div class='definition-container'><div class='definition'>"
-                    + self.items[self.game.pointer].definition + "</div>";
-            }
-
-            code += "</div>";
-            code += "</div>";
-            self.controls.question.append(code);
-            var newreply = self.controls.container.find('.wordshuffle_reply_' + self.game.pointer);
-
-            anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
+            // Hide previous wordset
+            self.controls.container.find('.wordshuffle_wordset_container').hide();
+            // Show new one
+            var newwordset = self.controls.container.find('.wordshuffle_wordset_' + self.game.pointer);
+            anim.do_animate(newwordset, 'zoomIn animate__faster', 'in').then(
                 function() {
                 }
             );
 
             self.controls.ctrl_btn.prop("disabled", false);
-
 
             self.startTimer();
         },
