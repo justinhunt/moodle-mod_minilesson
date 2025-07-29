@@ -44,6 +44,12 @@ class audiochatform extends baseform {
         $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat_instructions_default', constants::M_COMPONENT));
         $this->add_textarearesponse(constants::AUDIOCHAT_ROLE, get_string('audiochat_role', constants::M_COMPONENT), true);
         $mform->setDefault(constants::AUDIOCHAT_ROLE, get_string('audiochat_role_default', constants::M_COMPONENT));
+        $options = ['alloy' => 'Alloy', 'ash' => 'Ash', 'ballad' => 'Ballad',
+            'coral' => 'Coral', 'echo' => 'Echo', 'sage' => 'Sage', 'shimmer' => 'Shimmer', 'verse' => 'Verse'];
+        $this->add_dropdown(constants::AUDIOCHAT_VOICE,
+            get_string('audiochat_voice',  constants::M_COMPONENT),
+            $options, 'alloy');
+ 
         // Feedback language.
         $this->add_languageselect(constants::AUDIOCHAT_NATIVE_LANGUAGE,
             get_string('audiochat_native_language', constants::M_COMPONENT),

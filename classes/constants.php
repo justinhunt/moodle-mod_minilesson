@@ -180,6 +180,7 @@ class constants
     const AIGRADE_MODELANSWER = 'customtext3';
     const AUDIOCHAT_INSTRUCTIONS = 'customtext6';
     const AUDIOCHAT_ROLE = 'customtext2';
+    const AUDIOCHAT_VOICE = 'customtext3';
     const AUDIOCHAT_NATIVE_LANGUAGE = 'customtext4';
     const READINGPASSAGE = 'customtext1';
     const PASSAGEGAPFILL_PASSAGE = 'customtext1';

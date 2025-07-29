@@ -63,9 +63,13 @@ class item_audiochat extends item {
         }
         // Replace the placeholders with what we know
         $testitem->audiochatinstructions = str_replace(['{airole}', '{nativelanguage}', '{targetlanguage}'],
-            [$this->itemrecord->{constants::AUDIOCHAT_ROLE}, $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE}, $this->language], $testitem->audiochatinstructions);
-        $testitem->audiochatinstructions = str_replace('***ENTER TOPIC***', 'vending machines in high schools', 
-        $testitem->audiochatinstructions);
+            [$this->itemrecord->{constants::AUDIOCHAT_ROLE}, $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE}, 
+            $this->language], $testitem->audiochatinstructions);
+        $testitem->audiochatinstructions = str_replace('***ENTER TOPIC***', 'vending machines in high schools',
+            $testitem->audiochatinstructions);
+
+        // AI Voice 
+        $testitem->audiochat_voice = $this->itemrecord->{constants::AUDIOCHAT_VOICE};
 
 
         $testitem->audiochatnativelanguage = $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE};
@@ -121,6 +125,7 @@ class item_audiochat extends item {
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
         $keycols['text6'] = ['jsonname' => 'audiochatinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_INSTRUCTIONS];
         $keycols['text2'] = ['jsonname' => 'audiochatrole', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_ROLE];
+        $keycols['text3'] = ['jsonname' => 'audiochatvoice', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_VOICE];
         $keycols['text4'] = ['jsonname' => 'audiochatnativelanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AUDIOCHAT_NATIVE_LANGUAGE];
         return $keycols;
     }
