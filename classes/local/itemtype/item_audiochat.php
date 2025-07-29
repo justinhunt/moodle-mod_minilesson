@@ -54,6 +54,21 @@ class item_audiochat extends item {
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->set_layout($testitem);
+
+        // Set up the audiochat instructions
+        $testitem->audiochatinstructions = $this->itemrecord->{constants::AUDIOCHAT_INSTRUCTIONS};
+        // If no topic was set, then we use the default topic.
+        if (empty($testitem->audiochatinstructions )) {
+            $testitem->audiochatinstructions = get_string('audiochat_instructions_default', constants::M_COMPONENT);
+        }
+        // Replace the placeholders with what we know
+        $testitem->audiochatinstructions = str_replace(['{airole}', '{nativelanguage}', '{targetlanguage}'],
+            [$this->itemrecord->{constants::AUDIOCHAT_ROLE}, $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE}, $this->language], $testitem->audiochatinstructions);
+        $testitem->audiochatinstructions = str_replace('***ENTER TOPIC***', 'vending machines in high schools', 
+        $testitem->audiochatinstructions);
+
+
+        $testitem->audiochatnativelanguage = $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE};
         $testitem->totalmarks = $this->itemrecord->{constants::TOTALMARKS};
         if ($this->itemrecord->{constants::TARGETWORDCOUNT} > 0) {
             $testitem->targetwordcount = $this->itemrecord->{constants::TARGETWORDCOUNT};
@@ -62,25 +77,14 @@ class item_audiochat extends item {
             $testitem->countwords = false;
         }
 
-        // We need cmid and itemid to do the AI evaluation by ajax.
+        // We might need cmid and itemid to do the AI evaluation by ajax.
         $testitem->itemid = $this->itemrecord->id;
+        // Not sure if we need this.
+        $testitem->maxtime = $this->itemrecord->timelimit;
 
-        // Do we need a streaming token?
-        /*
-        $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
-        $isenglish = strpos($this->moduleinstance->ttslanguage, 'en') === 0;
-        if ($isenglish) {
-            $testitem->speechtoken = utils::fetch_streaming_token($this->moduleinstance->region);
-            $testitem->speechtokentype = 'assemblyai';
-            if ($alternatestreaming) {
-                $testitem->forcestreaming = true;
-            }
-        }
-        */
-
-         // Cloudpoodll.
-         $maxtime = $this->itemrecord->timelimit;
-         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
+         // If we add a cloud poodll recorder to the page these are also added, but here we just add them manually.
+        $testitem->language = $this->language;
+        $testitem->region = $this->region;
 
         return $testitem;
     }

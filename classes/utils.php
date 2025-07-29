@@ -463,6 +463,36 @@ class utils {
         return $result;
     }
 
+    // We forward an OpenAI RTC offer to the OpenAI API.
+    // This is called from: openairtc.php 
+    // Which is called from the OpenAI RTC client side code in audiochat. 
+    // (in which we dont want to expose our openai key)
+    // It expects an SDP offer in the request body and returns an SDP answer.
+    public static function openai_forward_offer()
+    {
+        global $CFG;
+
+        // Get the secret from config.
+        $apikey = get_config(constants::M_COMPONENT, 'openaikey');
+        if (empty($apikey)) {
+            return false;
+        }
+
+        $offer = file_get_contents("php://input");
+        $model = "gpt-4o-mini-realtime-preview";
+         $serverurl = "https://api.openai.com/v1/realtime?model=" . $model;
+
+        require_once($CFG->libdir . '/filelib.php');
+
+        $curl = new \curl();
+        $curl->setHeader('Authorization: Bearer ' . $apikey);
+        $curl->setHeader(['Content-type: application/sdp']);
+        $result = $curl->post($serverurl, $offer);
+        header("Content-Type: application/sdp");
+        echo $result;
+        die;
+    }
+
     // This is called from the settings page and we do not want to make calls out to cloud.poodll.com on settings
     // page load, for performance and stability issues. So if the cache is empty and/or no token, we just show a
     // "refresh token" links
@@ -752,6 +782,40 @@ class utils {
             }
         }
     }
+
+    // Fetch the streaming token for the region and language
+    public static function fetch_openai_token($region) {
+
+
+         // The REST API we are calling.
+         $functionname = 'local_cpapi_fetch_assemblyai_token';
+
+         // log.debug(params);
+         $params = [];
+
+         $apikey = get_config(constants::M_COMPONENT, 'openaikey');
+         $model = "gpt-4o-mini-realtime-preview";
+         $serverurl = "https://api.openai.com/v1/realtime?model=" . $model;
+         $response = self::curl_fetch($serverurl, $params);
+
+        if (!self::is_json($response)) {
+            return false;
+        } else {
+            $payloadobject = json_decode($response);
+            if ($payloadobject->returnCode == 0 && isset($payloadobject->returnMessage)) {
+                $assemblyaitoken = $payloadobject->returnMessage;
+                // cache the token
+                $tokenobject = new \stdClass();
+                $tokenobject->token = $assemblyaitoken;
+                $tokenobject->validuntil = $now + (30 * MINSECS);
+                $cache->set('assemblyaitoken', $tokenobject);
+                return $assemblyaitoken;
+            } else {
+                return false;
+            }
+        }
+    }   
+
     // Fetch the appropriate azure region for the given poodll region
     public static function fetch_ms_region($poodllregion) {
 
