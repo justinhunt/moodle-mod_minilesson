@@ -35,27 +35,42 @@ class audiochatform extends baseform {
         $this->add_itemsettings_heading();
         $mform = $this->_form;
         $this->add_static_text('instructions', '', get_string('audiochatdesc', constants::M_COMPONENT));
+        
+        // Total marks and target word count
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
         $mform->setDefault(constants::TOTALMARKS, 5);
         $this->add_static_text('totalmarks_instructions', '', get_string('totalmarks_instructions', constants::M_COMPONENT));
         $this->add_numericboxresponse(constants::TARGETWORDCOUNT, get_string('targetwordcount_title', constants::M_COMPONENT), false);
         $mform->setDefault(constants::TARGETWORDCOUNT, 60);
-        $this->add_textarearesponse(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat_instructions', constants::M_COMPONENT), true);
-        $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat_instructions_default', constants::M_COMPONENT));
+
+        // The topic for the audio chat.
+        $this->add_textarearesponse(constants::AUDIOCHAT_TOPIC, get_string('audiochat_topic', constants::M_COMPONENT), true);
+        $mform->setDefault(constants::AUDIOCHAT_TOPIC, get_string('audiochat_topic_default', constants::M_COMPONENT));
+
+        // The role of the AI.
+         $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat_instructions_default', constants::M_COMPONENT));
         $this->add_textarearesponse(constants::AUDIOCHAT_ROLE, get_string('audiochat_role', constants::M_COMPONENT), true);
         $mform->setDefault(constants::AUDIOCHAT_ROLE, get_string('audiochat_role_default', constants::M_COMPONENT));
+
+        // The voice of the AI.
         $options = ['alloy' => 'Alloy', 'ash' => 'Ash', 'ballad' => 'Ballad',
             'coral' => 'Coral', 'echo' => 'Echo', 'sage' => 'Sage', 'shimmer' => 'Shimmer', 'verse' => 'Verse'];
         $this->add_dropdown(constants::AUDIOCHAT_VOICE,
             get_string('audiochat_voice',  constants::M_COMPONENT),
             $options, 'alloy');
- 
-        // Feedback language.
+
+         // Students native language
         $this->add_languageselect(constants::AUDIOCHAT_NATIVE_LANGUAGE,
             get_string('audiochat_native_language', constants::M_COMPONENT),
             constants::M_LANG_ENUS
         );
 
+        // The instructions template for the audio chat
+        $this->add_textarearesponse(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat_instructions', constants::M_COMPONENT), true);
+        $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat_instructions_default', constants::M_COMPONENT));
+        $this->add_static_text('audiochat_instructions_instructions', '', get_string('audiochat_instructions_instructions', constants::M_COMPONENT));
+   
+        // Time limit if we need one
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
     }
 }

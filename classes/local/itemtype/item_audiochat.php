@@ -61,12 +61,25 @@ class item_audiochat extends item {
         if (empty($testitem->audiochatinstructions )) {
             $testitem->audiochatinstructions = get_string('audiochat_instructions_default', constants::M_COMPONENT);
         }
-        // Replace the placeholders with what we know
-        $testitem->audiochatinstructions = str_replace(['{airole}', '{nativelanguage}', '{targetlanguage}'],
-            [$this->itemrecord->{constants::AUDIOCHAT_ROLE}, $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE}, 
-            $this->language], $testitem->audiochatinstructions);
-        $testitem->audiochatinstructions = str_replace('***ENTER TOPIC***', 'vending machines in high schools',
-            $testitem->audiochatinstructions);
+        // Replace the placeholders with what we know, first correcting missine placeholder data
+        if (empty($this->itemrecord->{constants::AUDIOCHAT_ROLE})) {
+            $this->itemrecord->{constants::AUDIOCHAT_ROLE} = get_string('audiochat_role_default', constants::M_COMPONENT);
+        }
+        if (empty($this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE})) {
+            $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE} = constants::M_LANG_ENUS;
+        }
+        if (empty($this->itemrecord->{constants::AUDIOCHAT_TOPIC})) {
+            $this->itemrecord->{constants::AUDIOCHAT_TOPIC} = 'student choice of topic';
+        }
+ 
+        $testitem->audiochatinstructions = str_replace(['{ai role}', '{native language}',
+            '{target language}', '{topic}'],
+            [$this->itemrecord->{constants::AUDIOCHAT_ROLE},
+            $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE},
+            $this->language,
+            $this->itemrecord->{constants::AUDIOCHAT_TOPIC}],
+             $testitem->audiochatinstructions);
+  
 
         // AI Voice 
         $testitem->audiochat_voice = $this->itemrecord->{constants::AUDIOCHAT_VOICE};
