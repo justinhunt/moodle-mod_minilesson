@@ -17,11 +17,12 @@
 namespace mod_minilesson\task;
 
 use context_module;
-use core\progress\db_updater;
 use core\task\adhoc_task;
 use mod_minilesson\aigen;
 use mod_minilesson\constants;
 use mod_minilesson\import;
+use mod_minilesson\local\exception\textgenerationfailed;
+use mod_minilesson\local\progress\db_updater;
 
 /**
  * Class process_aigen
@@ -79,11 +80,19 @@ class process_aigen extends adhoc_task {
             // Make the AI generator object.
             $aigen = new aigen($cm, $progressbar);
 
-            $importdata = $aigen->make_import_data(
-                $config,
-                $template,
-                $contextdata
-            );
+            try {
+                $importdata = $aigen->make_import_data(
+                    $config,
+                    $template,
+                    $contextdata
+                );
+            } catch (textgenerationfailed $e) {
+                $usage->progress = -1;
+                $usage->error = $e->getMessage();
+                mtrace('Error: --> ' . json_encode(get_exception_info($e)));
+                $DB->update_record('minilesson_template_usages', $usage);
+                return;
+            }
 
             // Do the import.
             $theimport = new import($moduleinstance, $modulecontext, $course, $cm);

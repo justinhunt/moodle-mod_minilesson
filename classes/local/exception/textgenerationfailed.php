@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,20 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_minilesson\local\exception;
+
+use mod_minilesson\constants;
+use mod_minilesson\utils;
+use moodle_exception;
 
 /**
- * Defines the version of minilesson
- *
+ * Class textgeneration
  *
  * @package    mod_minilesson
- * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
+ * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class textgenerationfailed extends moodle_exception {
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version   = 2025071305.01;
-$plugin->requires  = 2016052300;      // Requires Moodle 3.1
-$plugin->component = 'mod_minilesson';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Version 1.0.97 (Build 2025071305)';
+    public function __construct(int $itemindex, string $itemtype, string $debug = '') {
+        parent::__construct('textgenerationfailed', constants::M_COMPONENT, '', [
+            'itemindex' => utils::ordinalsuffix($itemindex), 'itemtype' => $itemtype
+        ], $debug);
+    }
+}

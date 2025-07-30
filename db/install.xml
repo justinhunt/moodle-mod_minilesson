@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/minilesson/db" VERSION="20250718" COMMENT="XMLDB file for Moodle mod/minilesson"
+<XMLDB PATH="mod/minilesson/db" VERSION="20250729" COMMENT="XMLDB file for Moodle mod/minilesson"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -167,6 +167,7 @@
               <FIELD NAME="progress" TYPE="number" LENGTH="3" NOTNULL="false" SEQUENCE="false" DECIMALS="2"/>
               <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
               <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+              <FIELD NAME="error" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
           </FIELDS>
           <KEYS>
               <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

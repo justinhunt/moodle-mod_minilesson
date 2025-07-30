@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,20 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
-/**
- * Defines the version of minilesson
- *
- *
- * @package    mod_minilesson
- * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+namespace mod_minilesson;
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2025071305.01;
-$plugin->requires  = 2016052300;      // Requires Moodle 3.1
-$plugin->component = 'mod_minilesson';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Version 1.0.97 (Build 2025071305)';
+global $CFG;
+require_once($CFG->libdir.'/filelib.php');
+
+/**
+ * Class curl
+ *
+ * @package    mod_minilesson
+ * @copyright  2025 YOUR NAME <your@email.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class curl extends \curl {
+
+    public function multirequest($requests, $options = array()) {
+        $options['RETURNTRANSFER'] = true;
+        return $this->multi($requests, $options);
+    }
+
+}

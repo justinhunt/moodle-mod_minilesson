@@ -88,6 +88,9 @@ class usages extends templates {
         if ($record->progress == 1) { // Complete.
             $icon = $this->renderer->render(new pix_icon('i/checked', get_string('successful', constants::M_COMPONENT)));
             $status = html_writer::span($icon, 'action-icon');
+        } else if ($record->progress == -1) {
+            $icon = $this->renderer->render(new pix_icon('i/invalid', get_string('failed', constants::M_COMPONENT)));
+            $status = html_writer::tag('p', html_writer::span($icon, 'action-icon'). $record->error);
         } else {
             $data = [
                 'id' => $record->id, 'width' => floor(100 * $record->progress),

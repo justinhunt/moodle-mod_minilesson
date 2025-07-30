@@ -1732,7 +1732,7 @@ class utils {
             default:
                 $alllang = constants::ALL_VOICES;
         }
-        
+
 
         if(array_key_exists($langcode, $alllang) && !$showall) {
             return $alllang[$langcode];
@@ -2394,4 +2394,38 @@ class utils {
         preg_match_all('/\{(\w+)\}/', $input, $matches);
         return array_unique($matches[1]); // Remove duplicates
     }
+
+    /**
+     * array_key_last polyfill
+     *
+     * @param mixed $arr
+     * @return int|string|null
+     */
+    public static function array_key_last($arr) {
+        if (function_exists('array_key_last')) {
+            return array_key_last($arr);
+        }
+        if (!empty($arr)) {
+            return key(array_slice($arr, -1, 1, true));
+        }
+        return null;
+    }
+
+    /**
+     * Add ordinal suffix like below listed
+     *  1 => 1st
+     *  2 => 2nd
+     *  3 => 3rd
+     * @param int $number
+     * @return string
+     */
+    public static function ordinalsuffix($number): string {
+        $ends = ['th', 'st', 'nd', 'rd'];
+        if ((($number % 100) >= 11) && (($number % 100) <= 13)) {
+            return $number . 'th';
+        } else {
+            return $number . ($ends[$number % 10] ?? $ends[0]);
+        }
+    }
+
 }
