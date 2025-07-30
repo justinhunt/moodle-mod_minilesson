@@ -18,6 +18,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
     pc: null,
     dc: null,
     micStream: null,
+    audiochat_voice: "alloy", //default voice for the AI
 
     //for making multiple instances
       clone: function () {
@@ -30,6 +31,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
       this.quizhelper = quizhelper;
       this.index = index;
       this.init_controls(quizhelper,itemdata);
+      this.init_voice(itemdata.audiochat_voice);
       this.register_events(index, itemdata, quizhelper);
 
     },
@@ -81,6 +83,17 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
         }
       });
 
+    },
+
+    init_voice: function(voice) {
+      var self = this;
+      var voices = ['alloy' , 'ash', 'ballad', 'coral', 'echo', 'sage', 'shimmer', 'verse'];
+      if (voice && voices.includes(voice)) {
+        self.audiochat_voice = voice;
+      } else {
+        self.audiochat_voice = 'alloy'; //default voice
+      }
+      log.debug("AudioChat voice set to:", this.audiochat_voice);
     },
 
     init_controls: function() {
@@ -213,6 +226,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
               model: "whisper-1"//"gpt-4o-mini-transcribe"  // Use a transcription model
             },
             speed: 0.9,
+            voice: self.audiochat_voice,
           }
         });
 
@@ -222,7 +236,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
           response: {
             modalities: ["audio", "text"],
             instructions: "Please introduce yourself to the student and explain todays topic.",
-            audio: { voice: "alloy" }
+            audio: { voice: self.audiochat_voice }
           }
         });
 
@@ -268,7 +282,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
       self.controls.sessionpending.hide();
       self.controls.sessionactive.show();
 
-      // Enable the talk button now that the session is ready
+      // Enable the talk and buttons now that the session is ready
       talkBtn.disabled = false;
       stopBtn.disabled = false;
 
@@ -284,7 +298,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
         type: "response.create",
         response: {
           modalities: ["audio", "text"],
-          audio: { voice: "alloy" }
+          audio: { voice: self.audiochat_voice }
         }
       });
     }
