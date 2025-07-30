@@ -33,6 +33,7 @@ class aigen
         '6874e6ca1c71a' => 'wordpractice',
         '6874e6a65a0ff' => 'ayoutubelesson',
         '6874e6axxx999' => 'youtubefinalelesson',
+        '688244029b789' => 'keywordstogapfillsfluency'
         ];
     private $moduleinstance = null;
     private $course = null;

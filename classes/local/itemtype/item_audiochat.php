@@ -84,8 +84,15 @@ class item_audiochat extends item {
         // AI Voice 
         $testitem->audiochat_voice = $this->itemrecord->{constants::AUDIOCHAT_VOICE};
 
-
+        // Students native language - it is possible to use the one set in wordcards here also, so we check for that
         $testitem->audiochatnativelanguage = $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE};
+        if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
+            $userprefdeflanguage = get_user_preferences('wordcards_deflang');
+            if (!empty($userprefdeflanguage)) {
+                $testitem->audiochatnativelanguage = $userprefdeflanguage;
+            }
+        }
+
         $testitem->totalmarks = $this->itemrecord->{constants::TOTALMARKS};
         if ($this->itemrecord->{constants::TARGETWORDCOUNT} > 0) {
             $testitem->targetwordcount = $this->itemrecord->{constants::TARGETWORDCOUNT};

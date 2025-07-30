@@ -1,3 +1,10 @@
+Version 1.0.98 (Build 2025073000)
+ - Beta version of Audio Chat
+ - Better failure handling for AIGEN
+ - Parallel AIGEN image generation so its faster
+ - Better update code for multichoice and multiaudio
+ - New AIGEN template for Keywords to Fluency / GapFills
+
 Version 1.0.97 (Build 2025071305)
  - New audio story AIGEN template
  - Fixes to responsiveness on gap fill questions
