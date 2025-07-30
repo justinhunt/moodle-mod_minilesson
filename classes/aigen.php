@@ -16,6 +16,8 @@
 
 namespace mod_minilesson;
 
+use mod_minilesson\local\exception\textgenerationfailed;
+
 /**
  * Class aigen
  *
@@ -78,7 +80,7 @@ class aigen
             $importitemfileareas = (isset($importitem->filesid) && isset($aigentemplate->files->{$importitem->filesid})) ?
                 $aigentemplate->files->{$importitem->filesid} :
                 false;
-            //this holds data not in the import item that we generate or use for generation    
+            //this holds data not in the import item that we generate or use for generation
             $dataitem = new \stdClass();
 
             switch ($configitem->generatemethod) {
@@ -126,6 +128,8 @@ class aigen
                                 }
                             }
                         }
+                    } else {
+                        throw new textgenerationfailed($currentitemcount, $importitem->type, $useprompt);
                     }
 
                     // Generate the file areas if needed
@@ -258,9 +262,15 @@ class aigen
 
     public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext)
     {
+        $requests = $filenametrack = $imageurls = [];
+        $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
+        $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
+
+        if (empty($token)) {
+            return [];
+        }
 
         $imagecnt = 0;
-        $imageurls = [];
         foreach ($fileareatemplate as $filename => $filecontent) {
             if (!is_array($imagepromptdata)) {
                 $prompt = $imagepromptdata;
@@ -273,7 +283,7 @@ class aigen
 
             //update the progress bar
             if ($this->progressbar) {
-                $this->progressbar->start_progress(get_string('generatingimagedata', constants::M_COMPONENT, $filename));
+                // $this->progressbar->start_progress(get_string('generatingimagedata', constants::M_COMPONENT, $filename));
             }
 
             // Add the style and greate context
@@ -283,41 +293,42 @@ class aigen
             }
 
             // Do the image generation.
-            $ret = $this->generate_image($prompt);
+            $payload = $this->prepare_generate_image_payload($prompt, $token);
+            if (is_array($payload)) {
+                $requests[] = [
+                    'url' => $url,
+                    'postfields' => format_postdata_for_curlcall($payload)
+                ];
+                $filenametrack[utils::array_key_last($requests)] = $filename;
+            }
 
             //update the progress bar
             if ($this->progressbar) {
-                $this->progressbar->end_progress();
+                // $this->progressbar->end_progress();
             }
 
-            if ($ret && $ret->success) {
-
-                if (isset($ret->payload[0]->url)) {
-                    $url = $ret->payload[0]->url;
-                    $rawdata = file_get_contents($url);
-                    if ($rawdata === false) {
-                        // If we cannot fetch the image, skip this one.
-                        continue;
-                    } else {
-                        $smallerdata = $this->make_image_smaller($rawdata);
-                        $base64data = base64_encode($smallerdata);
-                        $imageurls[$filename] = $base64data;
-                    }
-                } else if (isset($ret->payload[0]->b64_json)) {
-                    // If the payload has a base64 encoded image, use that.
-                    $rawbase64data = $ret->payload[0]->b64_json;
-                    $rawdata = base64_decode($rawbase64data);
-                    $smallerdata = $this->make_image_smaller($rawdata);
-                    $base64data = base64_encode($smallerdata);
-                    $imageurls[$filename] = $base64data;
-
-                } else {
-                    // If no URL is returned, skip this one.
-                    continue;
-                }
-            }
             // Increment file counter
             $imagecnt++;
+        }
+        if (empty($requests)) {
+            return [];
+        }
+
+        $curl = new curl();
+        //update the progress bar
+        if ($this->progressbar) {
+            $this->progressbar->start_progress("Generate images: {".count($requests)."} ");
+        }
+        $responses = $curl->multirequest($requests);
+        foreach($responses as $i => $resp) {
+            $processedimage = $this->process_generate_image_response($resp);
+            if ($processedimage) {
+                $imageurls[$filenametrack[$i]] = $processedimage;
+            }
+        }
+        //update the progress bar
+        if ($this->progressbar) {
+            $this->progressbar->end_progress();
         }
         return $imageurls;
     }
@@ -355,21 +366,31 @@ class aigen
      * Generates structured data using the CloudPoodll service.
      *
      * @param string $prompt The prompt to generate data for.
-     * @return \stdClass|false Returns an object with success status and payload, or false on failure.
+     * @return string|false Returns an object with success status and payload, or false on failure.
      */
     public function generate_image($prompt)
     {
+        $params = $this->prepare_generate_image_payload(($prompt));
+        if ($params) {
+            $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
+            $resp = utils::curl_fetch($url, $params);
+            return $this->process_generate_image_response($resp);
+        } else {
+            return false;
+        }
+    }
+
+    public function prepare_generate_image_payload($prompt, $token = null) {
         global $USER;
 
         if (!empty($this->conf->apiuser) && !empty($this->conf->apisecret)) {
-            $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
-
-
+            if (is_null($token)) {
+                $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
+            }
             if (empty($token)) {
                 return false;
             }
 
-            $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
             $params["wstoken"] = $token;
             $params["wsfunction"] = 'local_cpapi_call_ai';
             $params["moodlewsrestformat"] = 'json';
@@ -381,21 +402,42 @@ class aigen
             $params["region"] = $this->moduleinstance->region;
             $params['owner'] = hash('md5', $USER->username);
 
+            return $params;
 
-            $resp = utils::curl_fetch($url, $params);
-            $respobj = json_decode($resp);
-            $ret = new \stdClass();
-            if (isset($respobj->returnCode)) {
-                $ret->success = $respobj->returnCode == '0' ? true : false;
-                $ret->payload = json_decode($respobj->returnMessage);
-            } else {
-                $ret->success = false;
-                $ret->payload = "unknown problem occurred";
-            }
-            return $ret;
         } else {
             return false;
         }
+    }
+
+    public function process_generate_image_response($resp) {
+        $respobj = json_decode($resp);
+        $ret = new \stdClass();
+        if (isset($respobj->returnCode)) {
+            $ret->success = $respobj->returnCode == '0' ? true : false;
+            $ret->payload = json_decode($respobj->returnMessage);
+        } else {
+            $ret->success = false;
+            $ret->payload = "unknown problem occurred";
+        }
+        if ($ret && $ret->success) {
+            if (isset($ret->payload[0]->url)) {
+                $url = $ret->payload[0]->url;
+                $rawdata = file_get_contents($url);
+                if ($rawdata !== false) {
+                    $smallerdata = $this->make_image_smaller($rawdata);
+                    $base64data = base64_encode($smallerdata);
+                    return $base64data;
+                }
+            } else if (isset($ret->payload[0]->b64_json)) {
+                // If the payload has a base64 encoded image, use that.
+                $rawbase64data = $ret->payload[0]->b64_json;
+                $rawdata = base64_decode($rawbase64data);
+                $smallerdata = $this->make_image_smaller($rawdata);
+                $base64data = base64_encode($smallerdata);
+                return $base64data;
+            }
+        }
+        return null;
     }
 
 

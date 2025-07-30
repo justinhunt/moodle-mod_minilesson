@@ -775,7 +775,7 @@ function xmldb_minilesson_upgrade($oldversion) {
                 }
             }
         }
-        
+
         // Update default templates to the new format.
         \mod_minilesson\aigen::create_default_templates();
 
@@ -783,6 +783,20 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025071305, 'minilesson');
     }
 
+    if ($oldversion < 2025071305.01) {
+
+        // Define field error to be added to minilesson_template_usages.
+        $table = new xmldb_table('minilesson_template_usages');
+        $field = new xmldb_field('error', XMLDB_TYPE_TEXT, null, null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field error.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025071305.01, 'minilesson');
+    }
 
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;

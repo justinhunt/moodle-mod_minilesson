@@ -987,3 +987,5 @@ $string['scatteritems'] ='Scatter Items.';
 $string['enterscatteritems'] = 'Enter the list of items in the text area below. Each item should be on a new line. The format is:<br>Term | Definition<br>e.g Egg|White oval thing';
 $string['openaikey'] ='OpenAI Key';
 $string['openaikey_details'] ='The OpenAI key is used for AudioChat. It is not required for other item types.';
+$string['textgenerationfailed'] = 'Text generation failed when processing {$a->itemindex} {$a->itemtype} ';
+$string['failed'] = 'Failed';
