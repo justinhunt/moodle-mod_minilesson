@@ -949,7 +949,15 @@ class utils {
             $markupdirection = "r2l";
             list($grammarerrors, $grammarmatches, $insertioncount) = self::fetch_grammar_correction_diff($transcript, $aigraderesults->correctedtext, $markupdirection);
             $aigraderesults->markedupcorrections = aitranscriptutils::render_passage($aigraderesults->correctedtext, 'corrections');
-            $aigraderesults->markeduppassage = aitranscriptutils::render_passage($transcript, 'passage');
+            // We also mark up the passage, but in the case of speech, it may have punctuation added to it.
+            // Because chrome transcribes with no punctuatiuon.
+            // In that case, we use the submitted text, which is the original text with punctuation.
+            if ($isspeech && isset($aigraderesults->submittedtext) && !empty($aigraderesults->submittedtext)) {
+                $aigraderesults->markeduppassage = aitranscriptutils::render_passage($aigraderesults->submittedtext, 'passage');
+            }else {
+                $aigraderesults->markeduppassage = aitranscriptutils::render_passage($transcript, 'passage');
+            }
+
             $aigraderesults->grammarerrors = $grammarerrors;
             $aigraderesults->grammarmatches  = $grammarmatches;
             $aigraderesults->insertioncount  = $insertioncount;
