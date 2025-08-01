@@ -133,6 +133,10 @@ class constants
 
     const AUDIOSTORYMETA = 'itemaudiofname';
     const AUDIOSTORYZOOMANDPAN = 'customint10';
+    const ZOOMANDPAN_NONE = 0;
+    const ZOOMANDPAN_LITE = 1;
+    const ZOOMANDPAN_MEDIUM = 2;
+    const ZOOMANDPAN_MORE = 3;
     const AUDIOPROMPT = 'audioitem';
     const AUDIOANSWER = 'audioanswer';
     const AUDIOMODEL = 'audiomodel';

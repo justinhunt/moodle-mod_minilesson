@@ -46,6 +46,34 @@ define(['jquery','core/log'], function($,log) {
             self.controls.playbutton = self.controls.overlay.find('.audiostory_play_button');
             self.controls.layers = [];
             self.controls.entryTimes = [];
+
+            // Set Zoom and Pan scale
+            var zoomandpan  = self.controls.slideshowcontainer.data('zoomandpan');
+            switch(zoomandpan){
+                case 1:
+                    self.zoomAndPan = true;
+                    self.maxzoom = 1.1; 
+                    self.pp = 5; //panfactor +
+                    self.pm = -5; //panfactor -
+                    break;    
+                case 2:
+                    self.zoomAndPan = true;
+                    self.maxzoom = 1.2; 
+                    self.pp = 7; //panfactor +
+                    self.pm = -7; //panfactor -
+                    break;
+                case 3:
+                    self.zoomAndPan = true;
+                    self.maxzoom = 1.3;
+                    self.pp = 10; //panfactor +
+                    self.pm = -10; //panfactor - 
+                    break;
+                case 0:
+                default:
+                    self.zoomAndPan = false;
+            }
+
+            // Set up the layers and entry times
             self.controls.images.each(function(index, element) {
                 var entrytime = element.dataset.entrytime;
                 if(entrytime==''){ return;} // 
@@ -53,6 +81,7 @@ define(['jquery','core/log'], function($,log) {
                 self.controls.layers.push({ element: element, pan });
                 self.controls.entryTimes.push(entrytime);
             });
+
             //add some more information to layers
             self.controls.layers.forEach(layer => {
                 layer.animation = {
@@ -66,11 +95,6 @@ define(['jquery','core/log'], function($,log) {
             if (firstImage) {
                 firstImage.element.style.opacity = '1';
                 firstImage.element.style.transform = 'scale(1) translate(0, 0)';
-            }
-
-            // Disable  Zoom and Pan if required
-            if( self.controls.slideshowcontainer.data('zoomandpan') === false){
-                self.zoomAndPan = false;
             }
 
         },
