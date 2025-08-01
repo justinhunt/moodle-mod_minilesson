@@ -507,7 +507,9 @@ abstract class baseform extends \moodleform {
             array('rows'=>'4', 'columns'=>'140', 'style'=>'width: 600px'));
         $mform->setType(constants::AUDIOSTORYMETA, PARAM_TEXT);
         $mform->setDefault(constants::AUDIOSTORYMETA, '00:00:00');
-
+        $mform->addElement('advcheckbox',constants::AUDIOSTORYZOOMANDPAN,get_string('audiostoryzoomandpan',constants::M_COMPONENT),get_string('audiostoryzoomandpan_desc', constants::M_COMPONENT));
+        $mform->setDefault(constants::AUDIOSTORYZOOMANDPAN, 1);
+        $mform->setType(constants::AUDIOSTORYZOOMANDPAN, PARAM_INT);
         $mform->addElement('html',$fieldsetbottom,[]);
 
 

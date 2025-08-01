@@ -807,6 +807,31 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025073000, 'minilesson');
     }
 
+    if ($oldversion < 2025080100) {
+
+        // Add more customint fields to minilesson question table
+        $table = new xmldb_table(constants::M_QTABLE);
+
+        // Define new custom fields
+        $fields = [];
+
+        $fields[] = new xmldb_field('customint6', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $fields[] = new xmldb_field('customint7', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $fields[] = new xmldb_field('customint8', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $fields[] = new xmldb_field('customint9', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $fields[] = new xmldb_field('customint10', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '1');
+
+        // Add fields.
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025080100, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

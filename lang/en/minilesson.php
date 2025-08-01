@@ -991,3 +991,5 @@ $string['openaikey'] ='OpenAI Key';
 $string['openaikey_details'] ='The OpenAI key is used for AudioChat. It is not required for other item types.';
 $string['textgenerationfailed'] = 'Text generation failed when processing {$a->itemindex} {$a->itemtype} ';
 $string['failed'] = 'Failed';
+$string['audiostoryzoomandpan'] = 'Zoom and Pan Images';
+$string['audiostoryzoomandpan_desc'] = 'By default the story images will zoom and pan slowly. Uncheck this to disable that eg for a slideshow.';

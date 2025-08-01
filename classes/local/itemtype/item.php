@@ -656,6 +656,9 @@ abstract class item implements templatable, renderable
 
             }
 
+            // Set the Zoom and Pan
+            $testitem->audiostoryzoomandpan = $itemrecord->{constants::AUDIOSTORYZOOMANDPAN};
+
             // If we have enough data to make an audio story, enable it
             if (
                 count($testitem->audiostoryimages) > 0
@@ -1369,6 +1372,7 @@ abstract class item implements templatable, renderable
         // Audio Story.
         if (property_exists($data, constants::AUDIOSTORYMETA) && $data->{constants::AUDIOSTORYMETA} !== null) {
             $theitem->{constants::AUDIOSTORYMETA} = $data->{constants::AUDIOSTORYMETA};
+            $theitem->{constants::AUDIOSTORYZOOMANDPAN} = $data->{constants::AUDIOSTORYZOOMANDPAN};
         }
         if (property_exists($data, constants::AUDIOSTORY)) {
             //if this is from an import, it will be an array

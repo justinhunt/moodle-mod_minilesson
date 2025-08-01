@@ -12,6 +12,7 @@ define(['jquery','core/log'], function($,log) {
         pm: -5,//panfactor -, eg -5
         maxzoom: 1.1, // zoom will go from maxzoom to 1.0 and back again
         zoomIn: false, // If true, start zoomed out and zoom in. If false, start zoomed in and zoom out
+        zoomAndPan: true,
         entryTimes: [],
         controls: {},
         panOptions: null,
@@ -65,6 +66,11 @@ define(['jquery','core/log'], function($,log) {
             if (firstImage) {
                 firstImage.element.style.opacity = '1';
                 firstImage.element.style.transform = 'scale(1) translate(0, 0)';
+            }
+
+            // Disable  Zoom and Pan if required
+            if( self.controls.slideshowcontainer.data('zoomandpan') === false){
+                self.zoomAndPan = false;
             }
 
         },
@@ -174,6 +180,12 @@ define(['jquery','core/log'], function($,log) {
 
             const imageObj = layers[self.currentIndex];
             const { element, pan, animation } = imageObj;
+
+            if (!self.zoomAndPan) {
+                // If zoomAndPan is false, reset the transform and skip animation
+                element.style.transform = 'scale(1) translate(0, 0)';
+                return;
+            }
             
 
             if (animation.lastTimestamp != null) {

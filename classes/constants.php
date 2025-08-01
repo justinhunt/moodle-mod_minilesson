@@ -132,6 +132,7 @@ class constants
     const TYPE_SCATTER = 'scatter';
 
     const AUDIOSTORYMETA = 'itemaudiofname';
+    const AUDIOSTORYZOOMANDPAN = 'customint10';
     const AUDIOPROMPT = 'audioitem';
     const AUDIOANSWER = 'audioanswer';
     const AUDIOMODEL = 'audiomodel';
