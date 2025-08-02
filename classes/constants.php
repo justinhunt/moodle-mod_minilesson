@@ -132,7 +132,7 @@ class constants
     const TYPE_SCATTER = 'scatter';
 
     const AUDIOSTORYMETA = 'itemaudiofname';
-    const AUDIOSTORYZOOMANDPAN = 'customint10';
+    const AUDIOSTORYZOOMANDPAN = 'itemaudiostoryzoom';
     const ZOOMANDPAN_NONE = 0;
     const ZOOMANDPAN_LITE = 1;
     const ZOOMANDPAN_MEDIUM = 2;

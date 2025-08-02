@@ -187,6 +187,7 @@ abstract class item implements templatable, renderable
         $keycolumns['ytstart'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'itemytstart'];
         $keycolumns['ytend'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'itemytend'];
         $keycolumns['audiofname'] = ['type' => 'string', 'optional' => true, 'default' => null, 'dbname' => 'itemaudiofname'];
+        $keycolumns['audiostoryzoom'] = ['type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => 'itemaudiostoryzoom'];
         $keycolumns['ttsdialog'] = ['type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'itemttsdialog'];
         $keycolumns['ttsdialogopts'] = ['type' => 'stringjson', 'optional' => true, 'default' => null, 'dbname' => 'itemttsdialogopts'];
         $keycolumns['ttsdialogvoicea'] = ['type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::TTSDIALOGVOICEA];
@@ -218,6 +219,11 @@ abstract class item implements templatable, renderable
         $keycolumns['int3'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint3'];
         $keycolumns['int4'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint4'];
         $keycolumns['int5'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint5'];
+        $keycolumns['int6'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint6'];
+        $keycolumns['int7'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint7'];
+        $keycolumns['int8'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint8'];
+        $keycolumns['int9'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint9'];
+        $keycolumns['int10'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint10'];
         $keycolumns['timelimit'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'timelimit'];
         $keycolumns['layout'] = ['type' => 'layout', 'optional' => true, 'default' => 0, 'dbname' => 'layout'];
         $keycolumns['correctanswer'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'correctanswer'];

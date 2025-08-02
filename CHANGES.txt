@@ -1,5 +1,5 @@
-Version 1.0.99 (Build 2025080100)
- - Added no zoom and pan to audio story
+Version 1.0.99 (Build 2025080102)
+ - Added zoom and pan options to audio story
 
 Version 1.0.98 (Build 2025073000)
  - Beta version of Audio Chat
