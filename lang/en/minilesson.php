@@ -556,7 +556,7 @@ $string['addttspassage'] = "TTS Passage";
 $string['ttspassageinstructions']="Choose the speaker voice and speed, and enter the passage to be read.";
 $string['addttspassage_instructions']="Choose the speaker voice and speed, and enter the passage to be read.";
 $string['addaudiostory'] = 'Audio Story';
-$string['addaudiostory_instructions'] = 'To create an audio story, add an audio file, image files with numerical names (eg 1.png,2.jpg) and an optional subtitle track (.vtt file). Set image entry times (format HH:MM:SS) in the text area.';
+$string['addaudiostory_instructions'] = 'To create an audio story, add an audio file, image files with numerical names (eg 1.png,2.jpg) and an optional subtitle track (.vtt file). Set image entry times (format HH:MM:SS) in the text area. If no audio file is present, and a TTS Audio media prompt has been set, the audio story will use that.';
 $string['audiostorytimes'] = 'Image Entry Times';
 $string['audiostoryfiles'] = 'Audio Story Files';
 

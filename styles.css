@@ -2719,7 +2719,8 @@ body.poodll-minilesson-embed #page {
   text-align: right;
 }
 .ml_mediaprompt_instructions {
-  margin-bottom: 5px;
+  margin-bottom: 30px;
+  margin-left: 25%;
 }
 
 /* H5P */
@@ -3664,4 +3665,7 @@ div.poodlldictationplayer {
 
 #page-mod-minilesson-aigen .table-dynamic[data-table-handler="usages"][data-table-total-rows="0"] {
   display: none;
+}
+.ml_mediaprompt_instructions {
+
 }
