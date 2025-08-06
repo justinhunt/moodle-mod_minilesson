@@ -58,9 +58,11 @@ class rsquestion_renderer extends \plugin_renderer_base {
         $qtypes[]=constants::TYPE_PASSAGEREADING;
         $qtypes[]=constants::TYPE_PGAPFILL;
         $qtypes[]=constants::TYPE_H5P;
-        if($region != "ningxia") {
+        if ($region != "ningxia") {
             $qtypes[] = constants::TYPE_FLUENCY;
-            $qtypes[] = constants::TYPE_AUDIOCHAT;
+            if ($config->openaikey && !empty($config->openaikey)) {
+                $qtypes[] = constants::TYPE_AUDIOCHAT;
+            }
         }
         if (isset($CFG->minilesson_experimental) && $CFG->minilesson_experimental) {
             $qtypes[] = constants::TYPE_SMARTFRAME;
