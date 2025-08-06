@@ -190,9 +190,12 @@ function($, log, def, ttrecorder, templates) {
             self.controls.retrySessionBtn.classList.toggle("hidden", !endScreen);
             self.controls.cancelStartSessionBtn.classList.toggle('hidden', !(self.isLoading && !self.isSessionActive));
             if (self.controls.micSelect) {
+                //how many options are in micselect
+                var mics = self.controls.micSelect.querySelectorAll('option');
+                var noshowmics = mics.length < 2;
                 self.controls.micSelect.parentElement.classList.toggle(
                     'hidden',
-                    self.isSessionStarted || self.isLoading || self.controls.micSelect.disabled
+                    noshowmics || self.isSessionStarted || self.isLoading || self.controls.micSelect.disabled
                 );
             }
 

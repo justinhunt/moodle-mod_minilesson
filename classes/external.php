@@ -154,9 +154,9 @@ class mod_minilesson_external extends external_api {
         }
 
         // similar_percent calc'd by reference but multibyte is weird
-        if($language !== constants::M_LANG_JAJP) {
+        if ($language !== constants::M_LANG_JAJP) {
             similar_text($phonetic, $spokenphonetic, $similarpercent);
-        }else{
+        } else {
             $similarpercent = $phonetic == $spokenphonetic ? 100 : 0;
         }
         return round($similarpercent, 0);

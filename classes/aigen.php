@@ -282,11 +282,6 @@ class aigen
                 continue;
             }
 
-            //update the progress bar
-            if ($this->progressbar) {
-                // $this->progressbar->start_progress(get_string('generatingimagedata', constants::M_COMPONENT, $filename));
-            }
-
             // Add the style and greate context
             $prompt = "Give me a simple cute cartoon image, with no text on it, depicting: " . $prompt;
             if ($overallimagecontext && !empty($overallimagecontext) && $overallimagecontext !== "--") {
@@ -303,11 +298,6 @@ class aigen
                 $filenametrack[utils::array_key_last($requests)] = $filename;
             }
 
-            //update the progress bar
-            if ($this->progressbar) {
-                // $this->progressbar->end_progress();
-            }
-
             // Increment file counter
             $imagecnt++;
         }
@@ -316,18 +306,20 @@ class aigen
         }
 
         $curl = new curl();
-        //update the progress bar
+ 
+        // Update the progress bar.
         if ($this->progressbar) {
             $this->progressbar->start_progress("Generate images: {".count($requests)."} ");
         }
         $responses = $curl->multirequest($requests);
-        foreach($responses as $i => $resp) {
+        foreach ($responses as $i => $resp) {
             $processedimage = $this->process_generate_image_response($resp);
             if ($processedimage) {
                 $imageurls[$filenametrack[$i]] = $processedimage;
             }
         }
-        //update the progress bar
+
+        // Update the progress bar.
         if ($this->progressbar) {
             $this->progressbar->end_progress();
         }

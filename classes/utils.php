@@ -455,9 +455,9 @@ class utils {
         require_once($CFG->libdir.'/filelib.php');
         $curl = new \curl();
 
-        if($method == 'get') {
+        if ($method == 'get') {
             $result = $curl->get($url, $postdata);
-        }else{
+        } else {
             $result = $curl->post($url, $postdata);
         }
         return $result;

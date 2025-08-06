@@ -72,9 +72,10 @@ class item_audiochat extends item {
             $this->itemrecord->{constants::AUDIOCHAT_TOPIC} = 'student choice of topic';
         }
  
-        $testitem->audiochatinstructions = str_replace(['{ai role}', '{native language}',
+        $testitem->audiochatinstructions = str_replace(['{ai role}', '{ai name}', '{native language}',
             '{target language}', '{topic}'],
             [$this->itemrecord->{constants::AUDIOCHAT_ROLE},
+            $this->itemrecord->{constants::AUDIOCHAT_VOICE},
             $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE},
             $this->language,
             $this->itemrecord->{constants::AUDIOCHAT_TOPIC}],

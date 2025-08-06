@@ -3686,7 +3686,7 @@ div.poodlldictationplayer {
 
 .minilesson_audiochat_box .ml_unique_mainwrapper {
   padding: 1rem;
-  min-height: 100vh;
+  min-height: 70vh;
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
 }
