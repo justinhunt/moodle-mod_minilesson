@@ -441,7 +441,16 @@ class renderer extends \plugin_renderer_base
                         $result->hasanswerdetails = false;
                     }
                     break;
-                case constants::TYPE_AUDIOCHAT:  // TO DO how to handle this?
+                case constants::TYPE_AUDIOCHAT:
+                    $result->hascorrectanswer = false;
+                    $result->hasincorrectanswer = false;
+                    if (isset($result->resultsdata)) {
+                        $result->hasanswerdetails = true;
+                        $result->resultsdatajson = json_encode($result->resultsdata, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                    } else {
+                        $result->hasanswerdetails = false;
+                    }
+                    break;
                 case constants::TYPE_WORDSHUFFLE:  // TO DO how to handle this?
                 case constants::TYPE_SCATTER:  // TO DO how to handle this?
                 case constants::TYPE_SPACEGAME: // TO DO how to handle this?

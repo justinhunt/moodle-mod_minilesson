@@ -4255,3 +4255,31 @@ div.poodlldictationplayer {
     max-width: 28rem;
   }
 }
+
+.audiochat-results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 600px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+.audiochat-results-message {
+  padding: 10px 15px;
+  border-radius: 15px;
+  max-width: 70%;
+  word-wrap: break-word;
+}
+
+.audiochat-results-message.user {
+  align-self: flex-end;
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.audiochat-results-message.assistant {
+  align-self: flex-start;
+  background-color: #f8d7da;
+  color: #842029;
+}

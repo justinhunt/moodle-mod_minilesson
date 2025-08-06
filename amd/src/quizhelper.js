@@ -269,6 +269,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_h5p:
               case def.qtype_conversation:
               case def.qtype_compquiz:
+              case def.qtype_audiochat:
               default:
           }//end of nextitem switch
 

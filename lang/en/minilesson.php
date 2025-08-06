@@ -996,3 +996,13 @@ $string['zoomandpannone'] = 'none';
 $string['zoomandpanlite'] = 'slow';
 $string['zoomandpanmedium'] = 'medium';
 $string['zoomandpanmore'] = 'faster';
+$string['audiochatsessionactive'] = 'Chat is Active !!';
+$string['audiochatsessionconnecting'] = 'Starting. It may take 15s to connect.';
+$string['audiochatsessionstart'] = "Start";
+$string['audiochatsessionend'] = "End";
+$string['audiochatsessiontryagain'] = "Try Again";
+$string['audiochatsessionfinished'] = "Finished";
+$string['audiochatcancelconnecting'] = "Cancel";
+
+
+

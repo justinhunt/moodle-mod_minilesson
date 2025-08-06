@@ -50,6 +50,7 @@ function($, log, def, ttrecorder, templates) {
             this.init_controls(quizhelper, itemdata);
             this.init_voice(itemdata.audiochat_voice);
             this.register_events(index, itemdata, quizhelper);
+            this.renderUI();
         },
 
         next_question: function() {
@@ -58,15 +59,52 @@ function($, log, def, ttrecorder, templates) {
             stepdata.index = self.index;
             stepdata.hasgrade = true;
             stepdata.totalitems = self.itemdata.totalmarks;
-            stepdata.correctitems = self.itemdata.totalmarks;
-            stepdata.grade = 1;
-            stepdata.resultsdata = {};
+            stepdata.grade = self.grade_activity(stepdata.correctitems);
+            stepdata.correctitems = Math.round((self.itemdata.totalmarks * stepdata.grade) / 100);
+            stepdata.resultsdata = {'items': Object.values(self.items)};
             self.quizhelper.do_next(stepdata);
+        },
+
+        count_words: function() {
+            var self = this;
+            var userTranscript = [];
+            Object.values(self.items).forEach(item => {
+                if (item.content) {
+                    userTranscript.push(item.content);
+                }
+            });
+            var wordCount = userTranscript.join(' ').split(/\s+/).length;
+            return wordCount;
+        },
+
+        grade_activity: function(wordcount) {
+          //loop through items and form a complete user transcript
+            var self = this;
+            if(self.itemdata.countwords === false || self.itemdata.targetwordcount === 0){
+                return 100;
+            }
+
+            //count words in the transcript
+            var wordcount = self.count_words();
+
+            // Calculate grade based on word count
+            var grade = Math.min(wordcount / self.itemdata.targetwordcount, 1) * 100;
+            return grade;
+
         },
 
         register_events: function(index, itemdata, quizhelper) {
 
             var self = this;
+
+            // Event Listeners
+            self.controls.startSessionBtn.addEventListener("click", self.startSession.bind(this));
+            self.controls.stopSessionBtn.addEventListener("click", self.stopSession.bind(this));
+            self.controls.retrySessionBtn.addEventListener("click", self.resetSession.bind(this));
+            self.controls.cancelStartSessionBtn.addEventListener("click", () => {
+                self.abortcontroller.abort();
+                self.abortcontroller = new AbortController();
+            });
 
             $(self.controls.nextbutton).on('click', function() {
                 self.next_question();
@@ -113,6 +151,7 @@ function($, log, def, ttrecorder, templates) {
                 stopSessionBtn: container.querySelector("#stop-session-btn"),
                 loadingIndicator: container.querySelector("#loading-indicator"),
                 aiAvatarSection: container.querySelector("#ai-avatar-section"),
+                chatActiveMessage: container.querySelector("#chat-active-message"),
                 conversationSection: container.querySelector("#conversation-section"),
                 messagesContainer: container.querySelector("#messages-container"),
                 micButtonContainer: container.querySelector("#mic-button-container"),
@@ -123,22 +162,14 @@ function($, log, def, ttrecorder, templates) {
                 finishMessage: container.querySelector('#finished-message'),
                 retrySessionBtn: container.querySelector('#retry-session-btn'),
                 cancelStartSessionBtn: container.querySelector('#cancel-start-session-btn'),
+                mainWrapper: container.querySelector('.minilesson_audiochat_box .ml_unique_mainwrapper'),
             };
             self.canvasCtx = !self.controls.micWaveformCanvas ? null :
                 self.controls.micWaveformCanvas.getContext("2d");
 
-            // Event Listeners
-            self.controls.startSessionBtn.addEventListener("click", self.startSession.bind(this));
-            self.controls.stopSessionBtn.addEventListener("click", self.stopSession.bind(this));
-            self.controls.retrySessionBtn.addEventListener("click", self.startSession.bind(this));
-            self.controls.cancelStartSessionBtn.addEventListener("click", () => {
-                self.abortcontroller.abort();
-                self.abortcontroller = new AbortController();
-            });
-
             // Initial render
             await self.populateMicList();
-            self.renderUI();
+
         },
 
         scrollToBottom: function() {
@@ -181,8 +212,11 @@ function($, log, def, ttrecorder, templates) {
                 currentItem = previousMap.get(currentItem.id);
             }
 
-            // Main content sections
-            self.controls.aiAvatarSection.classList.toggle("hidden", !self.isSessionStarted);
+            // The cute dog avatar
+            self.controls.aiAvatarSection.classList.toggle("hidden", self.isSessionStarted || self.isSessionActive || self.isSessionStopped);
+            //The chat session is active message
+            self.controls.chatActiveMessage.classList.toggle("hidden", !self.isSessionActive);
+            // The conversation area
             self.controls.conversationSection.classList.toggle("hidden", !(self.isSessionActive || self.isSessionStopped));
 
             // Render messages
@@ -196,18 +230,19 @@ function($, log, def, ttrecorder, templates) {
 
                 var contentDiv = document.createElement("div");
                 contentDiv.className = `max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-            message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
-        } ml_unique_content_${
-            message.usertype === "user" ? "user" : "assistant"
-        }`;
+                        message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+                    } ml_unique_content_${
+                        message.usertype === "user" ? "user" : "assistant"
+                    }`;
 
                 var headerDiv = document.createElement("div");
                 headerDiv.className = "flex items-center text-xs font-medium mb-1 ml_unique_headerdiv";
                 if (message.usertype === "assistant") {
                     var pictureDiv = document.createElement('div');
                     pictureDiv.innerHTML = `
-<img src="${M.cfg.wwwroot}/mod/minilesson/pix/cutepoodll_small.png" alt="AI Assistant" class="mr-2 rounded-circle shadow-lg ml_unique_assistant_img">
-`;
+                        <img src="${M.cfg.wwwroot}/mod/minilesson/pix/cutepoodll_small.png" 
+                        alt="AI Assistant" class="mr-2 rounded-circle shadow-lg ml_unique_assistant_img">
+                        `;
                     headerDiv.appendChild(pictureDiv);
                 }
                 headerDiv.innerHTML += message.usertype === "user" ? "Student" : "AI Assistant";
@@ -258,6 +293,16 @@ function($, log, def, ttrecorder, templates) {
                     ? `<rect id="primary" x="2" y="2" width="20" height="20" rx="2" style="fill: rgb(0, 0, 0);"></rect>` // Mic On icon
                     : `<path id="secondary" d="M12,15h0a4,4,0,0,1-4-4V7a4,4,0,0,1,4-4h0a4,4,0,0,1,4,4v4A4,4,0,0,1,12,15Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"></path><path id="primary" d="M18.24,16A8,8,0,0,1,5.76,16" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary-2" data-name="primary" d="M12,19v2m4-10V7a4,4,0,0,0-4-4h0A4,4,0,0,0,8,7v4a4,4,0,0,0,4,4h0A4,4,0,0,0,16,11Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>`; // Mic Off icon
             }
+        },
+
+        resetSession: function() {
+            log.debug("reset  session");
+            var self = this;
+            self.isLoading = false;
+            self.isSessionActive = false;
+            self.isSessionStopped = false;
+            self.isSessionStarted = false;
+            self.renderUI();
         },
 
         startSession: async function() {
@@ -314,11 +359,13 @@ function($, log, def, ttrecorder, templates) {
                 });
 
                 // Send the first message to tell AI to say something
+                // the response create function overrides the session instructions, so we need to double up here
+                var firstmessageinstructions =  "Please introduce yourself to the student and explain todays topic.";
                 self.sendEvent({
                     type: "response.create",
                     response: {
                         modalities: ["audio", "text"],
-                        instructions: "Please introduce yourself to the student and explain todays topic.",
+                        instructions:  self.itemdata.audiochatinstructions + " " + firstmessageinstructions,
                         voice: self.audiochat_voice
                     }
                 });
@@ -342,6 +389,7 @@ function($, log, def, ttrecorder, templates) {
                 offerToReceiveAudio: true
             });
             await self.pc.setLocalDescription(offer);
+            // Search for server candidates for relaying messages, may take 15s
             await self.waitForIceGathering(self.pc);
 
             try {
@@ -411,22 +459,25 @@ function($, log, def, ttrecorder, templates) {
             log.debug("Session stopped");
         },
 
-        waitForIceGathering: function(pc) {
+        waitForIceGathering: function(pc, timeout = 15000) {
             return new Promise((resolve) => {
-                if (pc.iceGatheringState === "complete") {
-                    resolve();
-                } else {
-                    /**
-                     *
-                     */
-                    function checkState() {
-                        if (pc.iceGatheringState === "complete") {
-                            pc.removeEventListener("icegatheringstatechange", checkState);
-                            resolve();
-                        }
+                let timer;
+
+                function checkState() {
+                    if (pc.iceGatheringState === "complete") {
+                        clearTimeout(timer);
+                        pc.removeEventListener("icegatheringstatechange", checkState);
+                        resolve();
                     }
-                    pc.addEventListener("icegatheringstatechange", checkState);
                 }
+
+                pc.addEventListener("icegatheringstatechange", checkState);
+
+                // Timeout to resolve with current state
+                timer = setTimeout(() => {
+                    pc.removeEventListener("icegatheringstatechange", checkState);
+                    resolve(); // Resolve with as many candidates as gathered so far
+                }, timeout);
             });
         },
 
