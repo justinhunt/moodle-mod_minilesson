@@ -283,10 +283,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         } else {
           //just reload and re-fetch all the data to display
             $(".minilesson_nextbutton").prop("disabled", true);
+            window.location.href=dd.activityurl;
+            /*
             setTimeout(function () {
-               // log.debug("forwarding to finished page");
+                log.debug("forwarding to finished page");
                 window.location.href=dd.activityurl;
             }, 500);
+            */
 
           return;
 
@@ -324,21 +327,21 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         
       },
 
-      report_step_grade: async function(stepdata) {
+      report_step_grade: function(stepdata) {
         var dd = this;
 
         //store results locally
         this.stepresults.push(stepdata);
 
         //push results to server
-        var ret = await Ajax.call([{
+        var isasync = false;
+        var ret = Ajax.call([{
           methodname: 'mod_minilesson_report_step_grade',
           args: {
             cmid: dd.cmid,
             step: JSON.stringify(stepdata),
           },
-          async: false
-        }])[0];
+        }],isasync)[0];
         log.debug("report_step_grade success: " + ret);
 
       },
