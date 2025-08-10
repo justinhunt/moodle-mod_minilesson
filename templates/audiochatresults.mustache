@@ -1,4 +1,17 @@
 <div class="audiochat-results-container">
+    {{#aifeedback}}
+    <div class="audiochat-results-feedback">
+        <h4>{{#str}}feedback, mod_minilesson{{/str}}</h4>
+        {{aifeedback}}
+    </div>
+    {{/aifeedback}}
+    {{#teacherreport}}
+    <div class="audiochat-results-gradeexplanation">
+        <h4>{{#str}}audiochat_gradeexplanation, mod_minilesson{{/str}}</h4>
+        {{gradeexplanation}}
+    </div>
+    {{/teacherreport}}
+    <h4>{{#str}}audiochat_conversation, mod_minilesson{{/str}}</h4>
     {{#items}}
     <div class="audiochat-results-message {{usertype}}">
         {{{content}}}

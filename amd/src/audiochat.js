@@ -1,6 +1,6 @@
 define(['jquery', 'core/log', 'mod_minilesson/definitions',
-        'mod_minilesson/ttrecorder', 'core/templates'],
-function($, log, def, ttrecorder, templates) {
+        'mod_minilesson/ttrecorder', 'core/templates', 'core/str'],
+function($, log, def, ttrecorder, templates, str) {
     "use strict"; // jshint ;_;
 
     /*
@@ -10,7 +10,9 @@ function($, log, def, ttrecorder, templates) {
       log.debug('MiniLesson AudioChat: initialising');
 
     return {
-
+        gradingrequesttag: "gradingrequest", // Tag for the grading request
+        gradingData: false, // Data returne by the grading request
+        strings: {},
         controls: {}, // Controls for the item
         itemdata: {}, // Item data for the item
         index: 0, // Index of the item in the quiz
@@ -47,10 +49,22 @@ function($, log, def, ttrecorder, templates) {
             log.debug('itemdata', itemdata);
             this.quizhelper = quizhelper;
             this.index = index;
+            this.init_strings();
             this.init_controls(quizhelper, itemdata);
             this.init_voice(itemdata.audiochat_voice);
             this.register_events(index, itemdata, quizhelper);
             this.renderUI();
+        },
+
+        init_strings: function() {
+            var self = this;
+            // Set up strings
+            str.get_strings([
+                { "key": "gradebywordcount", "component": "mod_minilesson" },
+            ]).done(function (s) {
+                var i = 0;
+                self.strings.gradebywordcount = s[i++];
+            });
         },
 
         next_question: function() {
@@ -59,9 +73,10 @@ function($, log, def, ttrecorder, templates) {
             stepdata.index = self.index;
             stepdata.hasgrade = true;
             stepdata.totalitems = self.itemdata.totalmarks;
-            stepdata.grade = self.grade_activity(stepdata.correctitems);
-            stepdata.correctitems = Math.round((self.itemdata.totalmarks * stepdata.grade) / 100);
             stepdata.resultsdata = {'items': Object.values(self.items)};
+            // Add grade and other results data
+            stepdata= self.grade_activity(stepdata);
+            stepdata.correctitems = Math.round((self.itemdata.totalmarks * stepdata.grade) / 100);
             self.quizhelper.do_next(stepdata);
         },
 
@@ -77,19 +92,34 @@ function($, log, def, ttrecorder, templates) {
             return wordCount;
         },
 
-        grade_activity: function(wordcount) {
+        grade_activity: function(stepdata) {
           //loop through items and form a complete user transcript
             var self = this;
-            if(self.itemdata.countwords === false || self.itemdata.targetwordcount === 0){
-                return 100;
+
+            if(self.gradingData && self.gradingData.score !== undefined) {
+                log.debug("Using grading data from AI:", self.gradingData);
+                // If grading data is available, use it
+                stepdata.grade = self.gradingData.score;
+                stepdata.resultsdata.aifeedback = self.gradingData.feedback || "";
+                stepdata.resultsdata.gradeexplanation = self.gradingData.gradeexplanation || "";
+
+            } else {
+                //Otherwise we default to counting words
+                stepdata.resultsdata.gradeexplanation = self.strings.gradebywordcount;
+                if(self.itemdata.countwords === false || self.itemdata.targetwordcount === 0){
+                    stepdata.grade =  100;
+                }
+
+                //count words in the transcript
+                var wordcount = self.count_words();
+
+                // Calculate grade based on word count
+                stepdata.grade = Math.min(wordcount / self.itemdata.targetwordcount, 1) * 100;
+
             }
 
-            //count words in the transcript
-            var wordcount = self.count_words();
-
-            // Calculate grade based on word count
-            var grade = Math.min(wordcount / self.itemdata.targetwordcount, 1) * 100;
-            return grade;
+            // return stepdata
+            return stepdata;
 
         },
 
@@ -177,6 +207,12 @@ function($, log, def, ttrecorder, templates) {
             self.controls.conversationSection.firstElementChild.scrollIntoViewIfNeeded();
             self.controls.conversationSection.firstElementChild.scrollTop = self.controls.conversationSection.firstElementChild.scrollHeight;
         },
+
+        scrollMicButtonIntoView: function() {
+            var self = this;
+            if (self.controls.micButtonContainer) {
+                self.controls.micButtonContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
 
         renderUI: function() {
             var self = this;
@@ -275,6 +311,7 @@ function($, log, def, ttrecorder, templates) {
             });
 
             self.scrollToBottom();
+            self.scrollMicButtonIntoView();
 
             // Update mic button container and canvas visibility
             if (self.controls.micButtonContainer) {
@@ -343,6 +380,25 @@ function($, log, def, ttrecorder, templates) {
             };
             self.dc.onopen = () => {
                 log.debug("DataChannel open");
+
+                //Turn detection - semantic is good for native speakers, but awful for language learners
+                // time based we give 1.5s of silence detection before posting
+                var semantic ={
+                    type: "semantic_vad",
+                    eagerness: "low",
+                };
+
+                var timebased =
+                {
+                    "type": "server_vad",
+                    "silence_duration_ms": 3500,
+                    "create_response": true, // only in conversation mode
+                    "interrupt_response": true, // only in conversation mode
+                    "threshold": 0.3, // don't set it - it never works
+                    //  "prefix_padding_ms": 300,
+
+                };
+
                 // Set session-wide instructions
                 self.sendEvent({
                     type: "session.update",
@@ -353,11 +409,10 @@ function($, log, def, ttrecorder, templates) {
                             language: twoletterlang,
                             model: "whisper-1" // "gpt-4o-mini-transcribe"  // Use a transcription model
                         },
-                        turn_detection: {
-                            type: "semantic_vad",
-                        },
+                        turn_detection: timebased,
                         speed: 0.9,
                         voice: self.audiochat_voice,
+                        modalities: ["text", "audio"],
                     }
                 });
 
@@ -440,26 +495,72 @@ function($, log, def, ttrecorder, templates) {
             self.renderUI();
         },
 
+        sendGradingRequest: function() {
+            var self = this;
+            // Send a final message to tell AI to grade the session and give feedback
+            var gradingInstructions = "Please provide a percentage score for the session, an explanation of the score (for teachers), and feedback (for the student). " +
+                 self.itemdata.audiochatgradeinstructions +
+                "Return the response as JSON in the format: {\"score\": \"the score  ( 0-100 ) \", \"gradeexplanation\": \"the explanation\", \"feedback\": \"the feedback\"}.";
+
+            var responsedata = {
+                // The response is out of band and not be added to the default conversation
+                conversation: "none",
+                modalities: ["text"],
+                instructions: gradingInstructions,
+                // Add the gradingrequest tag to make handltertc life easier
+                metadata: { tag: self.gradingrequesttag},
+                max_output_tokens: 500, // Keeps it tight
+                temperature: 0.6, // Optional: makes grading more deterministic
+            };
+
+            //If we wanted to reutrn an audio response (but lets not)
+            //responsedata.voice = self.audiochat_voice;
+
+            self.sendEvent({
+                type: "response.create",
+                response: responsedata,
+            });
+        },
+
         stopSession: function() {
             var self = this;
+
             log.debug("Session stopping...");
             self.isSessionActive = false;
             self.isSessionStopped = true;
             self.loadingMessages.clear();
-            // Close data channel if open
+
+            // Release mic resources when session ends
+            self.releaseMicResources();
+            self.renderUI();
+
+            // request grading information
+            // after that response, we will close the data channel and peer connection
+            //but shut it down after 2s just in case there is an error or something
+            if(self.itemdata.audiochatgradeinstructions && self.itemdata.audiochatgradeinstructions !== "") {
+                self.sendGradingRequest();
+                setTimeout(() => {
+                    log.debug("Closing session resources...");
+                    self.closeDataChannel();
+                }, 2000);
+            }else{
+                log.debug("Closing session resources...");
+                self.closeDataChannel();
+            }
+            log.debug("Session stopped");
+        },
+
+        closeDataChannel: function() {
+            var self = this;
+            // Tidy up the data channel and peer connection
             if (typeof self.dc !== 'undefined' && self.dc) {
                 self.dc.close();
                 self.dc = null;
             }
-            // Close peer connection if open
             if (typeof self.pc !== 'undefined' && self.pc) {
                 self.pc.close();
                 self.pc = null;
             }
-            // Release mic resources when session ends
-            self.releaseMicResources();
-            self.renderUI();
-            log.debug("Session stopped");
         },
 
         waitForIceGathering: function(pc, timeout = 15000) {
@@ -494,6 +595,31 @@ function($, log, def, ttrecorder, templates) {
         handleRTCEvent: function(msg) {
             var self = this;
             log.debug("Received event:");
+
+            // Check if its the final grading message, which we don't want to enter "items"
+            if (msg.type === "response.done" &&
+                msg.response.metadata?.tag === self.gradingrequesttag) {
+                // Check if the response corresponds to the grading event
+                    try {
+                        var jsonresponse = msg.response.output[0].content[0].text;
+                        if(!jsonresponse || jsonresponse === "") {
+                            log.debug("No valid grading data received");
+                            self.closeDataChannel();
+                            return;
+                        }
+
+                        self.gradingData = JSON.parse(jsonresponse);
+                        log.debug("Grading and Feedback:", self.gradingData);
+
+                        // Handle the grading feedback (e.g., display it)
+                        //self.displayGradingFeedback(feedbackData);
+                    } catch (err) {
+                        log.debug("Failed to parse grading feedback:", err);
+                    }
+                    return;
+
+            }
+
             // log.debug(msg);
             var msgresponse_id = msg.response ? msg.response.id : msg.response_id;
             var msgitem_id = msg.item ? msg.item.id : msg.item_id;
@@ -1007,8 +1133,13 @@ function($, log, def, ttrecorder, templates) {
             }
             if (self.mediaStream) {
                 self.mediaStream.getTracks().forEach((track) => {
-                    if (self.pc) {
-                        self.pc.removeTrack(track, self.mediaStream);
+                    if (typeof self.pc !== 'undefined' && self.pc) {
+                        // Find the RTCRtpSender associated with the track
+                        const sender = self.pc.getSenders().find(s => s.track === track);
+                        // Remove the sender if it exists
+                        if (sender) {
+                            self.pc.removeTrack(sender);
+                        }
                     }
                     track.stop();
                 });
@@ -1154,6 +1285,21 @@ function($, log, def, ttrecorder, templates) {
                 log.debug(err);
             }
         },
+
+        // Dummy feedback display code
+        displayGradingFeedback: function(feedbackData) {
+            var self = this;
+
+            // Example: Update the UI with the grade and feedback
+            var feedbackContainer = self.controls.finishMessage;
+            feedbackContainer.innerHTML = `
+                <h3>Session Feedback</h3>
+                <p><strong>Grade:</strong> ${feedbackData.grade}%</p>
+                <p><strong>Explanation:</strong> ${feedbackData.gradeExplanation}</p>
+                <p><strong>Feedback:</strong> ${feedbackData.feedback}</p>
+        `;
+            feedbackContainer.classList.remove("hidden");
+        }
 
     }; // End of return object.
 });

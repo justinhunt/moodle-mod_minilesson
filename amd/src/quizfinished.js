@@ -59,6 +59,9 @@ define(['jquery', 'core/log','core/modal_factory','core/str','core/modal_events'
           var type = $(this).data('type');
           var resultstemplate = $(this).data('resultstemplate');
           var resultsdata = $(this).data('resultsdata');
+          var teacherreport = $(this).data('teacherreport');
+          resultsdata.teacherreport = teacherreport;
+
           var thetarget = $(this).data('target');
           if(thetarget === undefined){return;}
           var resultsbox = $('#' + thetarget);

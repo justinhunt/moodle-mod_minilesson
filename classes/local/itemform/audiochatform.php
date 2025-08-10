@@ -48,7 +48,6 @@ class audiochatform extends baseform {
         $mform->setDefault(constants::AUDIOCHAT_TOPIC, get_string('audiochat_topic_default', constants::M_COMPONENT));
 
         // The role of the AI.
-         $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat_instructions_default', constants::M_COMPONENT));
         $this->add_textarearesponse(constants::AUDIOCHAT_ROLE, get_string('audiochat_role', constants::M_COMPONENT), true);
         $mform->setDefault(constants::AUDIOCHAT_ROLE, get_string('audiochat_role_default', constants::M_COMPONENT));
 
@@ -69,7 +68,18 @@ class audiochatform extends baseform {
         $this->add_textarearesponse(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat_instructions', constants::M_COMPONENT), true);
         $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat_instructions_default', constants::M_COMPONENT));
         $this->add_static_text('audiochat_instructions_instructions', '', get_string('audiochat_instructions_instructions', constants::M_COMPONENT));
-   
+
+        // The instructions for grading the audio chat
+        $this->add_textarearesponse(constants::AUDIOCHAT_GRADEINSTRUCTIONS, get_string('audiochat_gradeinstructions', constants::M_COMPONENT), false);
+        $mform->setDefault(constants::AUDIOCHAT_GRADEINSTRUCTIONS, get_string('audiochat_gradeinstructions_default', constants::M_COMPONENT));
+        $this->add_static_text('audiochat_gradeinstructions_instructions', '', get_string('audiochat_gradeinstructions_instructions', constants::M_COMPONENT));
+
+        // The custom AI data fields
+        $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA1, get_string('audiochat_aidata1', constants::M_COMPONENT), false);
+        $mform->setDefault(constants::AUDIOCHAT_AIDATA1, '');
+        $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
+        $mform->setDefault(constants::AUDIOCHAT_AIDATA2, '');
+
         // Time limit if we need one
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
     }
