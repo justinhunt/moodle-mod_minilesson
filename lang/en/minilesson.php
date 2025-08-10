@@ -975,8 +975,8 @@ $string['mcimageresponses'] = '(optional) Upload image files to be displayed wit
 $string['mcaudioresponses'] = '(optional) Upload audio files to match the answer option. The audio file will be used instead of TTS audio. The audio file name should match the answer number, eg. 1.mp3 or 2.mp3.  Make sure to also choose to use audio in the display options for this question.';
 $string['multiaudioaudioresponses'] = '(optional) Upload audio files to match the answer option. The audio file will be used instead of TTS audio. The audio file name should match the answer number, eg. 1.mp3 or 2.mp3.';
 $string['audiochat_instructions'] = 'Instructions for AI';
-$string['audiochat_instructions_default'] = 'You are {ai role}. Your name is {ai name}. You are teaching {target language}. The student is a native speaker of {native language}. Today the discussion topic is: {topic}. Please discuss it with your student. Speak simply and slowly. Your responses should be brief. Your aim is to give the student opportunity to speak. Explain words and concepts in the student\'s native language if they do not understand. ';
-$string['audiochat_instructions_instructions'] = 'The instructions are a template that combines with the AI role, AI voice, topic and student native language, that you entered above, to create the instructions passed to AI. You can use the following variables in the instructions: {ai role}, {ai name}, {target language}, {native language} and {topic}. The default instructions are usually fine. But you can change them if you have a different use case.';
+$string['audiochat_instructions_default'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. Today the discussion topic is: {topic}. Please discuss it with your student. Speak simply and slowly. Your responses should be brief. Your aim is to give the student opportunity to speak. Explain words and concepts in the student\'s native language if they do not understand. ';
+$string['audiochat_instructions_instructions'] = 'The instructions are a template that combines with the AI role, AI voice, topic, AI custom data 1, AI custom data 2 and student native language to create the instructions passed to AI. You can use the following variables in the instructions: {ai role}, {ai voice}, {target language}, {native language}, {ai data1}, {ai data2} and {topic}. The default instructions are usually fine. But you can change them if you have a different use case.';
 $string['audiochat_role'] = 'AI Role';
 $string['audiochat_voice'] = 'AI Voice';
 $string['audiochat_role_default'] = 'A helpful language teacher';
@@ -1003,6 +1003,14 @@ $string['audiochatsessionend'] = "End";
 $string['audiochatsessiontryagain'] = "Try Again";
 $string['audiochatsessionfinished'] = "Finished";
 $string['audiochatcancelconnecting'] = "Cancel";
+$string['gradebywordcount'] = "This activity was graded based on the number of words spoken in the transcript.";
+$string['audiochat_gradeexplanation'] = 'Grade Explanation';
+$string['audiochat_conversation'] = 'Conversation';
+$string['audiochat_gradeinstructions'] = 'Grading Instructions for AI';
+$string['audiochat_gradeinstructions_default'] = "Consider the following criteria: relevance to topic: '{topic}', fluency, and vocabulary usage. ";
+$string['audiochat_gradeinstructions_instructions'] = 'The grade instructions should tell how to build a score from 0 - 100. They are a template that will be merged with the AI role, AI voice, topic, AI custom data 1, AI custom data 2 and student native language to create the instructions. You can use the following variables in the instructions: {ai role}, {ai voice}, {target language}, {native language}, {ai data1}, {ai data2} and {topic}. If left empty the grade will be calculated using the total words spoken over the target word count.';
+$string['audiochat_aidata1'] = 'Custom AI Data 1';
+$string['audiochat_aidata2'] = 'Custom AI Data 2';
 
 
 

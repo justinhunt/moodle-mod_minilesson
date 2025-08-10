@@ -513,6 +513,7 @@ class renderer extends \plugin_renderer_base
 
         // depending on finish screen settings and if its a teacher report
         if ($teacherreport) {
+            $tdata->teacherreport = true;
             $tdata->showfullresults = true;
             $tdata->results = $useresults;
 
