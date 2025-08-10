@@ -211,8 +211,9 @@ function($, log, def, ttrecorder, templates, str) {
         scrollMicButtonIntoView: function() {
             var self = this;
             if (self.controls.micButtonContainer) {
-                self.controls.micButtonContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+                self.controls.micButtonContainer.scrollIntoView({behavior: "smooth", block: "center"});
             }
+        },
 
         renderUI: function() {
             var self = this;
@@ -311,7 +312,7 @@ function($, log, def, ttrecorder, templates, str) {
             });
 
             self.scrollToBottom();
-            self.scrollMicButtonIntoView();
+           // self.scrollMicButtonIntoView();
 
             // Update mic button container and canvas visibility
             if (self.controls.micButtonContainer) {
