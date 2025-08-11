@@ -10,6 +10,7 @@ function($, log, def, ttrecorder, templates, str) {
       log.debug('MiniLesson AudioChat: initialising');
 
     return {
+        autocreateresponse : false, // If true, the response will be created automatically
         gradingrequesttag: "gradingrequest", // Tag for the grading request
         gradingData: false, // Data returne by the grading request
         strings: {},
@@ -38,6 +39,7 @@ function($, log, def, ttrecorder, templates, str) {
         items: {},
         responses: {},
         abortcontroller: new AbortController(),
+        dataininputbuffer: false,
 
         // For making multiple instances
         clone: function() {
@@ -46,6 +48,7 @@ function($, log, def, ttrecorder, templates, str) {
 
         init: function(index, itemdata, quizhelper) {
             this.itemdata = itemdata;
+           // this.autocreateresponse = itemdata.autocreateresponse || false;
             log.debug('itemdata', itemdata);
             this.quizhelper = quizhelper;
             this.index = index;
@@ -393,7 +396,7 @@ function($, log, def, ttrecorder, templates, str) {
                 {
                     "type": "server_vad",
                     "silence_duration_ms": 3500,
-                    "create_response": true, // only in conversation mode
+                    "create_response": self.autocreateresponse, // true = it will turn on and off the mic and respond
                     "interrupt_response": true, // only in conversation mode
                     "threshold": 0.3, // don't set it - it never works
                     //  "prefix_padding_ms": 300,
@@ -756,18 +759,7 @@ function($, log, def, ttrecorder, templates, str) {
                     self.items[msg.item_id].content += msg.delta;
                     break;
                 }
-                case "input_audio_buffer.speech_started": {
-/*```
-{
-    "type": "input_audio_buffer.speech_started",
-    "event_id": "event_BzbmnzTzta41TdJrqoFvD",
-    "audio_start_ms": 2036,
-    "item_id": "item_Bzbmnc228P1Hck5capBK8"
-}
-```*/
-                    self.items[msg.item_id].events.push(msg);
-                    break;
-                }
+
                 case "output_audio_buffer.cleared": {
 /*```
 {
@@ -952,6 +944,7 @@ function($, log, def, ttrecorder, templates, str) {
     "item_id": "item_BzbmmcBxU60HVn8xvCWA2"
 }
 ```*/
+                    self.dataininputbuffer = true;
                     self.items[msg.item_id].events.push(msg);
                     break;
                 }
@@ -965,8 +958,11 @@ function($, log, def, ttrecorder, templates, str) {
 }
 ```*/
                     if (self.isMicActive) {
-                        self.toggleMute();// Let's disable mic
-                        self.disableMic();
+                        // Only auto-toggle mic if autocreateresponse is true
+                        if (self.autocreateresponse) {
+                            self.toggleMute();
+                            self.disableMic();
+                        }
                     }
                     self.items[msg.item_id].events.push(msg);
                     break;
@@ -980,6 +976,7 @@ function($, log, def, ttrecorder, templates, str) {
     "item_id": "item_BzbmmcBxU60HVn8xvCWA2"
 }
 ```*/
+                    self.dataininputbuffer = false;
                     self.items[msg.item_id].events.push(msg);
                     break;
                 }
@@ -1109,6 +1106,39 @@ function($, log, def, ttrecorder, templates, str) {
                     self.canvasCtx.clearRect(0, 0, self.controls.micWaveformCanvas.width, self.controls.micWaveformCanvas.height); // Clear canvas
                 }
                 self.isMicActive = false;
+
+                // Send response event when mic is disabled and autocreateresponse is false
+                if (!self.autocreateresponse) {
+                    if(!self.dataininputbuffer){
+                        self.sendEvent({
+                            type: "response.create",
+                            response: {
+                                modalities: ["audio", "text"],
+                                instructions: self.itemdata.audiochatinstructions,
+                                voice: self.audiochat_voice
+                            }
+                        });
+                    } else {
+                        //set a recurring 500ms timeout that will send the response.create event if self,.dataininputbuffer is false
+                        log.debug("Waiting for input audio buffer to commit before sending response.create");
+                        let attempts = 0;
+                        const maxAttempts = 3;
+                        const checkInputBuffer = setInterval(() => {
+                            if (!self.dataininputbuffer || attempts >= maxAttempts) {
+                                clearInterval(checkInputBuffer);
+                                self.sendEvent({
+                                    type: "response.create",
+                                    response: {
+                                        modalities: ["audio", "text"],
+                                        instructions: self.itemdata.audiochatinstructions,
+                                        voice: self.audiochat_voice
+                                    }
+                                });
+                            }
+                            attempts++;
+                        }, 500);
+                    }
+                }
             } else {
                 // Unmute mic: Connect source to analyser
                 if (self.sourceNode && self.analyser) {
