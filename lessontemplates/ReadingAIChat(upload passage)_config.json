@@ -1,0 +1,247 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] The passage should take about 1 minute to read aloud. \nThe passage should be engaging and appropriate for the target audience. Also generate a list (not an array) of 4 open short answer questions (data1), suitable for {level} learners of {language}, to check the learners understanding of the passage.",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "ttspassage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "target_language",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                }
+            ]
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": "item0_ttspassage"
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 2,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "textarea",
+                    "generate": 1,
+                    "mapping": "item0_ttspassage"
+                },
+                {
+                    "name": "audiochatrole",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "audiochatvoice",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "audiochattopic",
+                    "generate": 1,
+                    "mapping": "item0_ttspassage"
+                },
+                {
+                    "name": "audiochatinstructions",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "audiochataidata1",
+                    "generate": 1,
+                    "mapping": "item0_data1"
+                },
+                {
+                    "name": "audiochatgradeinstructions",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "targetwordcount",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        }
+    ],
+    "lessonTitle": "Reading + Chat ( Uploaded passage) ",
+    "lessonDescription": "Paste in a reading passage, and 4 short answer questions. These will be used in a passage reading exercise and then an audio chat session",
+    "uniqueid": "68996c17d07f5",
+    "version": "1",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "Reading Passage",
+            "description": "Enter a reading passage that the student will read and anwer questions about.",
+            "type": "textarea"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Questions",
+            "description": "Enter 4 short answer questions to check the students understanding. Each should be on a new line",
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    }
+}
