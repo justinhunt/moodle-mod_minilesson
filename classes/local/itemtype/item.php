@@ -900,10 +900,25 @@ abstract class item implements templatable, renderable
             $parsedstring = [];
             $started = false;
             $words = explode(' ', $sentence);
-            $maskedwords = [];
+            $maskedwords = $gapwords = [];
+            $gaprunning = false;
+            $gapindex = 0;
             foreach ($words as $index => $word) {
                 if (strpos($word, '[') !== false) {
                     $maskedwords[$index] = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $word);
+                }
+                if (strpos($word, '[') !== false || $gaprunning) {
+                    $gaprunning = strpos($word, ']') === false;
+                    $gapwords[] = [
+                        'index' => $gapindex++,
+                        'isgap' => true,
+                        'word' => str_replace(['[', ']', ',', '.'], ['', '', '', ''], $word)
+                    ];
+                } else {
+                    $gapwords[] = [
+                        'isgap' => false,
+                        'word' => $word
+                    ];
                 }
             }
             $enc = mb_detect_encoding($sentence);
@@ -949,6 +964,7 @@ abstract class item implements templatable, renderable
             $s->parsedstring = $parsedstring;
             $s->imageurl = isset($sentenceimages[$s->indexplusone]) ? $sentenceimages[$s->indexplusone] : false;
             $s->words = $maskedwords;
+            $s->gapwords = $gapwords;
 
             $sentenceobjects[] = $s;
         }

@@ -5,7 +5,7 @@ define(['jquery',
     'mod_minilesson/pollyhelper',
     'mod_minilesson/animatecss',
     'mod_minilesson/progresstimer',
-    'core/templates'
+    'core/templates',
 ], function($, log, ajax, def, polly, anim, progresstimer, templates) {
     "use strict"; // jshint ;_;
 
@@ -19,6 +19,8 @@ define(['jquery',
         },
 
         usevoice: 'Amy',
+
+        pointerdiv: null,
 
         init: function(index, itemdata, quizhelper) {
             var self = this;
@@ -40,23 +42,25 @@ define(['jquery',
 
         init_controls: function() {
             var self = this;
+            var container = $("#" + self.itemdata.uniqueid + "_container");
             self.controls = {
-                container: $("#" + self.itemdata.uniqueid + "_container"),
-                listen_cont: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_listen_cont"),
-                nextbutton: $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton"),
-                start_btn: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_start_btn"),
-                skip_btn: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_skip_btn"),
-                ctrl_btn: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_ctrl-btn"),
-                check_btn: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_check_btn"),
-                game: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_game"),
-                controlsbox: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_controls"),
-                resultscontainer: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_resultscontainer"),
-                mainmenu: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_mainmenu"),
-                title: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_title"),
-                progress_container: $("#" + self.itemdata.uniqueid + "_container .progress-container"),
-                progress_bar: $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar"),
-                question: $("#" + self.itemdata.uniqueid + "_container .question"),
-                listen_btn: $("#" + self.itemdata.uniqueid + "_container .wordshuffle_listen_btn"),
+                container: container,
+                listen_cont: container.find(".wordshuffle_listen_cont"),
+                nextbutton: container.find(".minilesson_nextbutton"),
+                start_btn: container.find(".wordshuffle_start_btn"),
+                skip_btn: container.find(".wordshuffle_skip_btn"),
+                ctrl_btn: container.find(".wordshuffle_ctrl-btn"),
+                check_btn: container.find(".wordshuffle_check_btn"),
+                game: container.find(".wordshuffle_game"),
+                controlsbox: container.find(".wordshuffle_controls"),
+                resultscontainer: container.find(".wordshuffle_resultscontainer"),
+                mainmenu: container.find(".wordshuffle_mainmenu"),
+                title: container.find(".wordshuffle_title"),
+                progress_container: container.find(".progress-container"),
+                progress_bar: container.find(".progress-container .progress-bar"),
+                question: container.find(".question"),
+                listen_btn: container.find(".wordshuffle_listen_btn"),
+                retry_btn: container.find(".wordshuffle_retry_btn")
             };
         },
 
@@ -191,7 +195,24 @@ define(['jquery',
 
 
             self.controls.check_btn.on("click", function() {
-                self.check_answer();
+                self.pointerdiv.find(".drop-slot .word").each(function () {
+                    self.placeInBank($(this));
+                });
+                self.clearPerSlotFeedback();
+                self.controls.retry_btn.hide();
+                self.items[self.game.pointer].answered = false;
+                self.items[self.game.pointer].correct = false;
+            });
+
+            self.controls.retry_btn.on("click", function() {
+                self.pointerdiv.find(".drop-slot .word").each(function () {
+                    self.placeInBank($(this));
+                });
+                self.clearPerSlotFeedback();
+                self.controls.retry_btn.hide();
+                self.controls.check_btn.show();
+                self.items[self.game.pointer].answered = false;
+                self.items[self.game.pointer].correct = false;
             });
         },
 
@@ -202,7 +223,13 @@ define(['jquery',
         check_answer: function() {
             var self = this;
 
-
+            // self.evaluateIfComplete();
+            if (self.itemdata.allowretry && !self.items[self.game.pointer].correct) {
+                self.controls.retry_btn.show();
+                self.controls.check_btn.hide();
+            } else {
+                setTimeout(() => self.gotComparison(true), 2000);
+            }
         },
 
         setvoice: function() {
@@ -264,7 +291,7 @@ define(['jquery',
                 //if they cant retry OR the time limit is up, move on
             } else if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')) {
                 log.debug("incorrect");
-                
+
             } else {
                 //it was wrong but they can retry
                 log.debug("incorrect!! retry");
@@ -283,7 +310,6 @@ define(['jquery',
                 self.end();
             }
         },
-        
 
         end: function() {
             var self = this;
@@ -328,6 +354,9 @@ define(['jquery',
         nextPrompt: function() {
 
             var self = this;
+            self.pointerdiv = self.controls.question.find(`.wordshuffle_wordset_container[data-index="${self.game.pointer}"]`);
+            self.controls.retry_btn.hide();
+            self.controls.check_btn.show();
 
             self.controls.ctrl_btn.prop("disabled", false);
 
@@ -383,6 +412,141 @@ define(['jquery',
             self.controls.ctrl_btn.prop("disabled", false);
 
             self.startTimer();
+            self.makeDragZones();
+        },
+
+        getSlotWords: function() {
+            var self = this;
+            return self.pointerdiv.find(".drop-slot").map(function () {
+                const w = $(this).find(".word").first().text().trim();
+                return w || "";
+            }).get();
+        },
+
+        allFilled: function() {
+            var self = this;
+            return self.getSlotWords().every(Boolean);
+        },
+
+        clearPerSlotFeedback: function() {
+            var self = this;
+            self.pointerdiv.find(".drop-slot").removeClass("border-success border-danger")
+                .addClass("border-secondary-subtle");
+            self.pointerdiv.find("[id^='fb-']").each(function () {
+                $(this).removeClass("text-success text-danger").addClass("text-muted").html("&nbsp;");
+            });
+        },
+
+        setPerSlotFeedback: function() {
+            var self = this;
+            const words = self.getSlotWords();
+            const expectedAnswers = self.expectedAnswers();
+            const fullExpected = [...self.fixedWords(), ...expectedAnswers];
+            words.forEach((w, i) => {
+                const ok = w === expectedAnswers[i];
+                const $slot = self.pointerdiv.find(".drop-slot[data-index='" + i + "']");
+                const $fb = self.pointerdiv.find("#fb-" + i);
+
+                $slot.removeClass("border-secondary-subtle border-success border-danger")
+                    .addClass(ok ? "border-success" : "border-danger");
+
+                $fb.removeClass("text-muted text-success text-danger")
+                .addClass(ok ? "text-success" : "text-danger")
+                .text(ok ? "Correct" : "Wrong");
+            });
+            const attempt = [...self.fixedWords(), ...self.getSlotWords()];
+            self.items[self.game.pointer].answered = words.some(Boolean);
+            self.items[self.game.pointer].correct = attempt.join(" ") === fullExpected.join(" ");
+        },
+
+        evaluateIfComplete: function() {
+            var self = this;
+            if (self.allFilled()) {
+                self.controls.check_btn.hide();
+                self.setPerSlotFeedback();
+                self.check_answer();
+            } else {
+                self.controls.check_btn.show();
+                self.clearPerSlotFeedback();
+            }
+        },
+
+        moveToSlot: function($word, $slot) {
+            var self = this;
+            $word.detach()
+                .css({ top: 0, left: 0, position: "relative" })
+                .appendTo($slot);
+            self.evaluateIfComplete();
+        },
+
+        placeInBank: function($word) {
+            var self = this;
+            $word.detach()
+                .css({ top: 0, left: 0, position: "relative" })
+                .appendTo(self.pointerdiv.find("#word-bank"));
+            self.evaluateIfComplete();
+        },
+
+        gapWords: function() {
+            var self = this;
+            return self.itemdata.sentences[self.game.pointer].gapwords;
+        },
+
+        fixedWords: function() {
+            var self = this;
+            return self.gapWords().filter(w => w.isgap === false).map(w => w.word);
+        },
+
+        expectedAnswers: function() {
+            var self = this;
+            return self.gapWords().filter(w => w.isgap === true).map(w => w.word);
+        },
+
+        selectedWord: null,
+
+        makeDragZones: function() {
+            var self = this;
+
+            if (!self.pointerdiv.attr('data-initialized')) {
+                self.pointerdiv.on('click', e => {
+                    const $target = $(e.target);
+                    if ($target.is('.word')) {
+                        if (!self.selectedWord || !self.selectedWord.is($target)) {
+                            self.selectedWord = $target;
+                        } else {
+                            self.selectedWord = null;
+                        }
+                    } else if ($target.is('#word-bank')) {
+                        if (self.selectedWord) {
+                            if (self.selectedWord.parent('.drop-slot')) {
+                                self.placeInBank(self.selectedWord);
+                            }
+                            self.selectedWord = null;
+                        }
+                    } else if ($target.is('.drop-slot')) {
+                        if (self.selectedWord) {
+                            self.moveToSlot(self.selectedWord, $target);
+                            self.selectedWord = null;
+                        }
+                    }
+                    self.highlightDropZones();
+                });
+                self.pointerdiv.attr('data-initialized', 1);
+            }
+        },
+
+        highlightDropZones: function() {
+            var self = this;
+            var dropZones = self.pointerdiv.find('.drop-slot').removeClass('highlight');
+            self.pointerdiv.find('.word').removeClass('highlight');
+            self.pointerdiv.find('#word-bank').removeClass('highlight');
+            if (self.selectedWord) {
+                if (!self.selectedWord.parent('#word-bank').length) {
+                    self.pointerdiv.find('#word-bank').addClass('highlight');
+                }
+                dropZones.filter((_, slot) => !slot.querySelector('.word')).addClass('highlight');
+                self.selectedWord.addClass('highlight');
+            }
         },
 
          startTimer: function(){
