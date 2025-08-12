@@ -1011,6 +1011,10 @@ $string['audiochat_gradeinstructions_default'] = "Consider the following criteri
 $string['audiochat_gradeinstructions_instructions'] = 'The grade instructions should tell how to build a score from 0 - 100. They are a template that will be merged with the AI role, AI voice, topic, AI custom data 1, AI custom data 2 and student native language to create the instructions. You can use the following variables in the instructions: {ai role}, {ai voice}, {target language}, {native language}, {ai data1}, {ai data2} and {topic}. If left empty the grade will be calculated using the total words spoken over the target word count.';
 $string['audiochat_aidata1'] = 'Custom AI Data 1';
 $string['audiochat_aidata2'] = 'Custom AI Data 2';
+$string['audiochat_autosend'] = 'Auto Send';
+$string['audiochat_autosend_desc'] = 'If checked, turn-detection is automatic. The AI will automatically send the student audio when it detects that they have stopped speaking. For young or slower speakers that might be frustrating. If unchecked, audio is submitted when the microphone stop button is pressed. Auto send can also be toggled during the activity.';
+$string['clicktosend'] = 'click to send';
+
 
 
 

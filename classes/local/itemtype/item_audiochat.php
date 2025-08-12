@@ -55,6 +55,8 @@ class item_audiochat extends item {
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->set_layout($testitem);
 
+        //Allow retry
+        $testitem->allowretry = $this->itemrecord->{constants::AUDIOCHAT_ALLOWRETRY} == 1;
 
         // Replace the placeholders with what we know, first correcting missine placeholder data
         if (empty($this->itemrecord->{constants::AUDIOCHAT_ROLE})) {
@@ -100,6 +102,9 @@ class item_audiochat extends item {
                     $this->itemrecord->{constants::AUDIOCHAT_AIDATA2}],
                 $testitem->audiochatgradeinstructions);
         }
+
+        //Set the Auto turn detection to on or off
+        $testitem->audiochat_autoresponse = $this->itemrecord->{constants::AUDIOCHAT_AUTORESPONSE} ? true : false;
 
         // AI Voice 
         $testitem->audiochat_voice = $this->itemrecord->{constants::AUDIOCHAT_VOICE};
@@ -163,6 +168,8 @@ class item_audiochat extends item {
         $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
         $keycols['int2'] = ['jsonname' => 'relevance', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::RELEVANCE];
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
+        $keycols['int4'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_AUTORESPONSE];
+        $keycols['int5'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_ALLOWRETRY];
         $keycols['text5'] = ['jsonname' => 'audiochattopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_TOPIC];
         $keycols['text6'] = ['jsonname' => 'audiochatinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_INSTRUCTIONS];
         $keycols['data3'] = ['jsonname' => 'audiochatgradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_GRADEINSTRUCTIONS];

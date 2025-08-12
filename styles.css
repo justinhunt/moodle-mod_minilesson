@@ -4283,3 +4283,41 @@ div.poodlldictationplayer {
   background-color: #f8d7da;
   color: #842029;
 }
+
+.ml_ac_mic-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.ml_ac_clicktosend {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-align: center;
+}
+
+.ml_ac_flex-row-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 1rem; /* spacing between columns */
+}
+
+/* Dummy flex spacer on left and right */
+.ml_ac_flex-spacer {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+  min-width: 0;
+}
+
+/* Right flex spacer also flex container to align buttons right */
+.ml_ac_flex-right {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.ml_ac_results_content {
+  margin-bottom: 8px;
+}

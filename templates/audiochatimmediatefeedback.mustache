@@ -1,0 +1,24 @@
+<div class='ml-ac-review_feedback'>
+  <h2>
+      <hr />
+      <i class='fa fa-star'></i> {{#str}}score, mod_minilesson{{/str}}: {{grade}}%
+  </h2>
+    <hr/>
+    {{#resultsdata.aifeedback}}
+      <i class='fa fa-comment'></i> {{#str}}feedback, mod_minilesson{{/str}}: {{resultsdata.aifeedback}}
+    {{/resultsdata.aifeedback}}
+</div>
+<p class='show-detailed-feedback'>
+    <a class="btn btn-primary ml-ac-bigbutton" data-toggle="collapse" href="#ml-ac-chatreview-container" role="button" aria-expanded="false" aria-controls="ml-ac-chatreview-container">
+        <i class="fa fa-list"></i> {{#str}}audiochat_conversation, mod_minilesson{{/str}}
+    </a>
+</p>
+<div id="ml-ac-chatreview-container" class="collapse" style='text-align:center;overflow:hidden;'>
+    <div class="ml-ac-detailed_feedback_div position-relative">
+        {{#resultsdata.items}}
+        <div class="audiochat-results-message {{usertype}}">
+            {{{content}}}
+        </div>
+        {{/resultsdata.items}}
+    </div>
+</div>

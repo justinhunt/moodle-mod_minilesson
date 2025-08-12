@@ -74,13 +74,23 @@ class audiochatform extends baseform {
         $mform->setDefault(constants::AUDIOCHAT_GRADEINSTRUCTIONS, get_string('audiochat_gradeinstructions_default', constants::M_COMPONENT));
         $this->add_static_text('audiochat_gradeinstructions_instructions', '', get_string('audiochat_gradeinstructions_instructions', constants::M_COMPONENT));
 
+        // Auto Response
+        $mform->addElement('advcheckbox', constants::AUDIOCHAT_AUTORESPONSE,
+            get_string('audiochat_autosend', constants::M_COMPONENT),
+            get_string('audiochat_autosend_desc', constants::M_COMPONENT), [], [0, 1]);
+        $mform->setDefault(constants::AUDIOCHAT_AUTORESPONSE, 1);
+
+        //Allow Retry
+        $this->add_allowretry(constants::AUDIOCHAT_ALLOWRETRY, get_string('allowretry_desc', constants::M_COMPONENT));
+
+        // Time limit if we need one
+        $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
+
         // The custom AI data fields
         $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA1, get_string('audiochat_aidata1', constants::M_COMPONENT), false);
         $mform->setDefault(constants::AUDIOCHAT_AIDATA1, '');
         $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
         $mform->setDefault(constants::AUDIOCHAT_AIDATA2, '');
 
-        // Time limit if we need one
-        $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
     }
 }

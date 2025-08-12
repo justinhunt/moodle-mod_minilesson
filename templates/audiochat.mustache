@@ -54,28 +54,61 @@
                     </div>
                 </div>
 
-                <!-- Bootom Part -->
-                <div class="flex justify-center items-center mt-4 space-x-4 position-relative ml_unique_buttoncontainer">
-                    <div id="mic-button-container" class="mic-button-container hidden bg-gray-200 text-gray-800 ml-auto position-absolute ml_unique_micbtnwrapper">
-                        <canvas id="mic-waveform-canvas" width="48" height="48" class="mic-waveform-canvas ml_unique_waveformcanvas"></canvas>
-                        <button id="toggle-mic-btn" class="toggle-mic-button ml_unique_togglemic">
-                            <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mic-icon-svg ml_unique_micsvg">
-                                <line x1="2" x2="22" y1="2" y2="22" />
-                                <path d="M10 9v3a4 4 0 0 0 8 0V9" />
-                                <path d="M16 16a4 4 0 0 1-8 0" />
-                                <path d="M12 12V2" />
-                                <path d="M12 22v-4" />
-                            </svg>
+                <!-- Mic and buttons related to session and mic -->
+                <div class="ml_unique_buttoncontainer ml_ac_flex-row-container">
+                    <div class="ml_ac_flex-spacer"></div>
+                    <div class="ml_ac_mic-column flex flex-col items-center">
+                        <div class="mic-wrapper" style="position: relative; width: 48px; height: 48px;">
+                            <div id="mic-button-container"
+                                 class="mic-button-container hidden bg-gray-200 text-gray-800 ml_unique_micbtnwrapper">
+                                <canvas id="mic-waveform-canvas" width="48" height="48"
+                                        class="mic-waveform-canvas ml_unique_waveformcanvas"></canvas>
+                                <button id="toggle-mic-btn" class="toggle-mic-button ml_unique_togglemic">
+                                    <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                         stroke-linecap="round" stroke-linejoin="round"
+                                         class="mic-icon-svg ml_unique_micsvg">
+                                        <line x1="2" x2="22" y1="2" y2="22" />
+                                        <path d="M10 9v3a4 4 0 0 0 8 0V9" />
+                                        <path d="M16 16a4 4 0 0 1-8 0" />
+                                        <path d="M12 12V2" />
+                                        <path d="M12 22v-4" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ml_ac_clicktosend hidden small text-muted mt-2">
+                            {{#str}}clicktosend , mod_minilesson{{/str}}
+                        </div>
+                    </div>
+                    <!-- Right buttons column -->
+                    <div class="ml_ac_flex-spacer ml_ac_flex-right">
+                        <button id="stop-session-btn" class="hidden stop-btn ml_unique_stopbtn">
+                            {{#str}}audiochatsessionend, mod_minilesson{{/str}}
                         </button>
                     </div>
-                    <button id="stop-session-btn" class="hidden px-4 py-3 bg-red-600 text-white rounded-md shadow-md1 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-lg ml-auto ml_unique_stopbtn">
-                        {{#str}}audiochatsessionend, mod_minilesson{{/str}}
-                    </button>
-                    <button id="retry-session-btn" class="hidden px-4 py-3 bg-blue-600 text-white rounded-md shadow-md1 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-lg ml-auto ml_unique_retrybtn">
+                </div>
+                <!-- Toggle button for autosend -->
+                <div class="flex items-center ml_ac_autoresponse-toggle hidden">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox"
+                               id="autoresponse-toggle"
+                               class="ml_ac_autoresponse-checkbox w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                               {{#autocreateresponse}}checked{{/autocreateresponse}}>
+                        <span class="ml-2 text-sm text-gray-900">
+                            {{#str}}audiochat_autosend, mod_minilesson{{/str}}
+                        </span>
+                    </label>
+                </div>
+                <!-- Session Results and Feedback -->
+                <div id="session-results" class="hidden ml_ac_results_container">
+                    <div id="results-content" class="ml_ac_results_content">
+                            <!-- Results will be dynamically inserted here -->
+                    </div>
+                    <button id="retry-session-btn" class="hidden retry-btn ml_ac_retrybtn btn btn-secondary">
                         {{#str}}audiochatsessiontryagain, mod_minilesson{{/str}}
                     </button>
                 </div>
-            </div>
         </div>
         <div class="ml_audiochat_actionbox ml_unique_actionbox">
             <div class="ml_audiochat_speakbtncontainer ml_unique_speakbtncontainer">

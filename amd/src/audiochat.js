@@ -40,6 +40,21 @@ function($, log, def, ttrecorder, templates, str) {
         responses: {},
         abortcontroller: new AbortController(),
         dataininputbuffer: false,
+        //Turn detection - semantic is good for native speakers, but awful for language learners
+        // time based we give 1.5s of silence detection before posting
+        semantic_vad: {
+            type: "semantic_vad",
+            eagerness: "low",
+        },
+
+        timebased_vad: {
+            type: "server_vad",
+            silence_duration_ms: 3500,
+            create_response: true, // true = it will turn on and off the mic and respond
+            interrupt_response: true, // only in conversation mode
+            threshold: 0.3,
+            //  "prefix_padding_ms": 300,
+        },
 
         // For making multiple instances
         clone: function() {
@@ -48,7 +63,7 @@ function($, log, def, ttrecorder, templates, str) {
 
         init: function(index, itemdata, quizhelper) {
             this.itemdata = itemdata;
-           // this.autocreateresponse = itemdata.autocreateresponse || false;
+            this.autocreateresponse = itemdata.audiochat_autoresponse || false;
             log.debug('itemdata', itemdata);
             this.quizhelper = quizhelper;
             this.index = index;
@@ -95,6 +110,19 @@ function($, log, def, ttrecorder, templates, str) {
             return wordCount;
         },
 
+        toggle_autocreate_response: function() {
+            var self = this;
+            self.autocreateresponse = !self.autocreateresponse;
+            self.timebased_vad.create_response = self.autocreateresponse;
+            log.debug("Autocreate response toggled:", self.autocreateresponse);
+            self.dc.send(JSON.stringify({
+                type: "session.update",
+                session: {
+                    turn_detection: self.timebased_vad,
+                }
+            }));
+        },
+
         grade_activity: function(stepdata) {
           //loop through items and form a complete user transcript
             var self = this;
@@ -134,6 +162,7 @@ function($, log, def, ttrecorder, templates, str) {
             self.controls.startSessionBtn.addEventListener("click", self.startSession.bind(this));
             self.controls.stopSessionBtn.addEventListener("click", self.stopSession.bind(this));
             self.controls.retrySessionBtn.addEventListener("click", self.resetSession.bind(this));
+            self.controls.autocreateresponseCheckbox.addEventListener("change", self.toggle_autocreate_response.bind(self));
             self.controls.cancelStartSessionBtn.addEventListener("click", () => {
                 self.abortcontroller.abort();
                 self.abortcontroller = new AbortController();
@@ -193,8 +222,14 @@ function($, log, def, ttrecorder, templates, str) {
                 micWaveformCanvas: container.querySelector("#mic-waveform-canvas"),
                 micSelect: container.querySelector('#micselect'),
                 finishMessage: container.querySelector('#finished-message'),
-                retrySessionBtn: container.querySelector('#retry-session-btn'),
+                retrySessionBtn: container.querySelector('.ml_ac_retrybtn'),
                 cancelStartSessionBtn: container.querySelector('#cancel-start-session-btn'),
+                autocreateresponseCheckbox: container.querySelector('.ml_ac_autoresponse-checkbox'),
+                resultscontainer: container.querySelector('.ml_ac_results_container'),
+                resultscontent: container.querySelector('.ml_ac_results_content'),
+                autocreateresponseToggle: container.querySelector('.ml_ac_autoresponse-toggle'),
+
+                clicktosendlabel: container.querySelector('.ml_ac_clicktosend'),
                 mainWrapper: container.querySelector('.minilesson_audiochat_box .ml_unique_mainwrapper'),
             };
             self.canvasCtx = !self.controls.micWaveformCanvas ? null :
@@ -226,9 +261,11 @@ function($, log, def, ttrecorder, templates, str) {
             self.controls.stopSessionBtn.classList.toggle("hidden", !self.isSessionActive);
             self.controls.micButtonContainer.classList.toggle("hidden", !self.isSessionActive);
             var endScreen = self.isSessionStarted && self.isSessionStopped;
+            self.controls.resultscontainer.classList.toggle("hidden", !endScreen && self.quizhelper.showitemreview);
             self.controls.finishMessage.classList.toggle("hidden", !endScreen);
-            self.controls.retrySessionBtn.classList.toggle("hidden", !endScreen);
+            self.controls.retrySessionBtn.classList.toggle("hidden", !endScreen && self.itemdata.allowretry);
             self.controls.cancelStartSessionBtn.classList.toggle('hidden', !(self.isLoading && !self.isSessionActive));
+            self.controls.autocreateresponseToggle.classList.toggle("hidden", !self.isSessionActive);
             if (self.controls.micSelect) {
                 //how many options are in micselect
                 var mics = self.controls.micSelect.querySelectorAll('option');
@@ -337,6 +374,14 @@ function($, log, def, ttrecorder, templates, str) {
                     ? `<rect id="primary" x="2" y="2" width="20" height="20" rx="2" style="fill: rgb(0, 0, 0);"></rect>` // Mic On icon
                     : `<path id="secondary" d="M12,15h0a4,4,0,0,1-4-4V7a4,4,0,0,1,4-4h0a4,4,0,0,1,4,4v4A4,4,0,0,1,12,15Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"></path><path id="primary" d="M18.24,16A8,8,0,0,1,5.76,16" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary-2" data-name="primary" d="M12,19v2m4-10V7a4,4,0,0,0-4-4h0A4,4,0,0,0,8,7v4a4,4,0,0,0,4,4h0A4,4,0,0,0,16,11Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>`; // Mic Off icon
             }
+
+            //show or not show clicktosendlabel
+            if (self.isMicActive && !self.autocreateresponse) {
+                self.controls.clicktosendlabel.classList.remove("hidden");
+            } else {
+                self.controls.clicktosendlabel.classList.add("hidden");
+            }
+
         },
 
         resetSession: function() {
@@ -387,21 +432,13 @@ function($, log, def, ttrecorder, templates, str) {
 
                 //Turn detection - semantic is good for native speakers, but awful for language learners
                 // time based we give 1.5s of silence detection before posting
-                var semantic ={
+                var semantic_vad ={
                     type: "semantic_vad",
                     eagerness: "low",
                 };
 
-                var timebased =
-                {
-                    "type": "server_vad",
-                    "silence_duration_ms": 3500,
-                    "create_response": self.autocreateresponse, // true = it will turn on and off the mic and respond
-                    "interrupt_response": true, // only in conversation mode
-                    "threshold": 0.3, // don't set it - it never works
-                    //  "prefix_padding_ms": 300,
-
-                };
+                // Set the auto turn detection, or manual submit flag
+                self.timebased_vad.create_response = self.autocreateresponse;
 
                 // Set session-wide instructions
                 self.sendEvent({
@@ -413,7 +450,7 @@ function($, log, def, ttrecorder, templates, str) {
                             language: twoletterlang,
                             model: "whisper-1" // "gpt-4o-mini-transcribe"  // Use a transcription model
                         },
-                        turn_detection: timebased,
+                        turn_detection: self.timebased_vad,
                         speed: 0.9,
                         voice: self.audiochat_voice,
                         modalities: ["text", "audio"],
@@ -543,7 +580,16 @@ function($, log, def, ttrecorder, templates, str) {
             //but shut it down after 2s just in case there is an error or something
             if(self.itemdata.audiochatgradeinstructions && self.itemdata.audiochatgradeinstructions !== "") {
                 self.sendGradingRequest();
+
+                //add a spinner to the results content
+                //if we are not showing item review we do not need this, but in that case it is hidden anyway
+                self.controls.resultscontent.innerHTML = `<i class="fa fa-spinner fa-spin fa-2x"></i>`;
+
                 setTimeout(() => {
+                    //now show the results content if that is what we are doing
+                    if(self.quizhelper.showitemreview) {
+                        self.showResults();
+                    }
                     log.debug("Closing session resources...");
                     self.closeDataChannel();
                 }, 2000);
@@ -565,6 +611,20 @@ function($, log, def, ttrecorder, templates, str) {
                 self.pc.close();
                 self.pc = null;
             }
+        },
+
+        showResults: function(){
+            var self = this;
+            var tdata = {};
+            tdata.resultsdata = {'items': Object.values(self.items)};
+            // Add grade and other results data
+            tdata = self.grade_activity(tdata);
+
+            templates.render('mod_minilesson/audiochatimmediatefeedback', tdata).then(
+                function(html, js) {
+                    self.controls.resultscontent.innerHTML = html;
+                }
+            );
         },
 
         waitForIceGathering: function(pc, timeout = 15000) {
@@ -1126,6 +1186,7 @@ function($, log, def, ttrecorder, templates, str) {
                         const checkInputBuffer = setInterval(() => {
                             if (!self.dataininputbuffer || attempts >= maxAttempts) {
                                 clearInterval(checkInputBuffer);
+                                self.dataininputbuffer = false;
                                 self.sendEvent({
                                     type: "response.create",
                                     response: {
