@@ -18,7 +18,7 @@
 
     {{> mod_minilesson/progresstimer }}
     {{#audiocontent}}
-    <div style="display:none;" class="wordshuffle_listen_cont">
+    <div style="display:none;" class="wordshuffle_listen_cont text-center">
         <button class="btn btn-secondary wordshuffle_listen_btn">
             <i class="fa fa-volume-up"></i>
         </button>
@@ -27,8 +27,28 @@
 
     <div style="display:none;" class="question">
         {{#sentences}}
-            <div class="wordshuffle_wordset_container wordshuffle_wordset_{{index}} text-center" style="display:none;" >
-                <div class="wordshuffle-wordset">{{sentence}}</div>
+            <div class="wordshuffle_wordset_container wordshuffle_wordset_{{index}} text-center" style="display:none;" data-index="{{index}}" >
+                <div class="question-sentence d-flex flex-wrap justify-content-center align-items-start mb-2">
+                    {{#gapwords}}
+                        {{#isgap}}
+                            {{! Slots with per-slot feedback under each  }}
+                            <div class="slot-wrap text-center">
+                                <div class="slot drop-slot border border-2 border-secondary-subtle" data-index="{{{ index }}}" aria-label="Slot 1"></div>
+                                <div id="fb-{{{ index }}}" class="small text-muted mt-1">&nbsp;</div>
+                            </div>
+                        {{/isgap}}
+                        {{^isgap}}
+                            <span class="badge w-auto px-3 slot text-dark" style="background:#fff6bf">{{{ word }}}</span>
+                        {{/isgap}}
+                    {{/gapwords}}
+                </div>
+
+                {{! Word bank  }}
+                <div id="word-bank" class="bank d-flex flex-wrap justify-content-center p-2 mb-3">
+                    {{#randomgaps}}
+                        <div class="word" tabindex="0">{{{ word }}}</div>
+                    {{/randomgaps}}
+                </div>
 
                 {{#imageurl}}
                 <div class='minilesson_sentence_image'>
@@ -40,7 +60,7 @@
                 {{#hint}}
                 <div class='definition-container'><div class='definition'>
                     {{hint}}
-                </div>
+                </div></div>
                 {{/hint}}
             </div>
          {{/sentences}}
@@ -49,8 +69,14 @@
     <div style="display:none;" class="wordshuffle_controls">
 
         <button class="btn btn-success wordshuffle_ctrl-btn wordshuffle_check_btn">
-            <i class="fa fa-check"></i> {{#str}}check, mod_minilesson{{/str}}
+            {{#str}} reset {{/str}}
         </button>
+
+        {{#allowretry}}
+        <button class="btn btn-danger wordshuffle_retry_btn">
+            <i class="fa fa-refresh"></i> {{#str}}tryagain, mod_minilesson{{/str}}
+        </button>
+        {{/allowretry}}
 
         <button class="btn btn-danger wordshuffle_ctrl-btn wordshuffle_skip_btn">
             {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>

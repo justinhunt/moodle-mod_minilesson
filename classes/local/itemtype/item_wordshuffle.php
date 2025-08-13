@@ -49,7 +49,7 @@ class item_wordshuffle extends item
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
         //Do we need audio
-        $testitem->readsentence = constants::READSENTENCE ? true : false;
+        $testitem->readsentence = !empty($itemrecord->{constants::READSENTENCE});
 
         // Prepare data arrays
         $testitem->sentences = [];
@@ -131,9 +131,23 @@ class item_wordshuffle extends item
             }
         }
 
+        $processedsentences = $this->parse_gapfill_sentences($sentences);
+        foreach($processedsentences as $processedsentence) {
+            if (isset($testitem->sentences[$processedsentence->index])) {
+                $testitem->sentences[$processedsentence->index]->gapwords = $processedsentence->gapwords;
+                $testitem->sentences[$processedsentence->index]->hint = $processedsentence->definition;
+                $gaps = array_filter($processedsentence->gapwords, function($gap) {
+                    return !empty($gap['isgap']);
+                });
+                shuffle($gaps);
+                $testitem->sentences[$processedsentence->index]->randomgaps = $gaps;
+            }
+        }
+
         // WordShuffle also has a confirm choice option we need to include.
         $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
         $testitem->hidestartpage = $itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
+        $testitem->allowretry = $itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
 
         return $testitem;
     }
