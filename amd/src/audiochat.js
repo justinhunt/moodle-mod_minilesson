@@ -172,11 +172,12 @@ function($, log, def, ttrecorder, templates, str) {
                 self.next_question();
             });
 
-            $("#" + itemdata.uniqueid + "_container").on('showElement', () => {
+            var container = $(self.controls.container);
+            container.on('showElement', () => {
                 if (itemdata.timelimit > 0) {
-                    $("#" + itemdata.uniqueid + "_container .progress-container").show();
-                    $("#" + itemdata.uniqueid + "_container .progress-container i").show();
-                    $("#" + itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
+                    container.find(".progress-container").show();
+                    container.find(".progress-container i").show();
+                    container.find(".progress-container #progresstimer").progressTimer({
                         height: '5px',
                         timeLimit: itemdata.timelimit,
                         onFinish: function() {
@@ -209,21 +210,21 @@ function($, log, def, ttrecorder, templates, str) {
             self.controls = {
                 hiddenaudio: container.querySelector('.ml_ac_hiddenaudio'),
                 nextbutton: container.querySelector('.minilesson_nextbutton'),
-                startSessionBtn: container.querySelector("#start-session-btn"),
-                stopSessionBtn: container.querySelector("#stop-session-btn"),
-                loadingIndicator: container.querySelector("#loading-indicator"),
-                aiAvatarSection: container.querySelector("#ai-avatar-section"),
-                chatActiveMessage: container.querySelector("#chat-active-message"),
-                conversationSection: container.querySelector("#conversation-section"),
-                messagesContainer: container.querySelector("#messages-container"),
-                micButtonContainer: container.querySelector("#mic-button-container"),
-                toggleMicBtn: container.querySelector("#toggle-mic-btn"),
-                micIcon: container.querySelector("#mic-icon"),
-                micWaveformCanvas: container.querySelector("#mic-waveform-canvas"),
-                micSelect: container.querySelector('#micselect'),
-                finishMessage: container.querySelector('#finished-message'),
+                startSessionBtn: container.querySelector(".ml_ac_start-session-btn"),
+                stopSessionBtn: container.querySelector(".ml_ac_stop-session-btn"),
+                loadingIndicator: container.querySelector(".ml_ac_loading-indicator"),
+                aiAvatarSection: container.querySelector(".ml_ac_ai-avatar-section"),
+                chatActiveMessage: container.querySelector(".ml_ac_chat-active-message"),
+                conversationSection: container.querySelector(".ml_ac_conversation-section"),
+                messagesContainer: container.querySelector(".ml_ac_messages-container"),
+                micButtonContainer: container.querySelector(".mic-button-container"),
+                toggleMicBtn: container.querySelector(".toggle-mic-btn"),
+                micIcon: container.querySelector(".mic-icon"),
+                micWaveformCanvas: container.querySelector(".mic-waveform-canvas"),
+                micSelect: container.querySelector('.ml_ac_micselect'),
+                finishMessage: container.querySelector('.ml_ac_finished-message'),
                 retrySessionBtn: container.querySelector('.ml_ac_retrybtn'),
-                cancelStartSessionBtn: container.querySelector('#cancel-start-session-btn'),
+                cancelStartSessionBtn: container.querySelector('.ml_ac_cancel-start-session-btn'),
                 autocreateresponseCheckbox: container.querySelector('.ml_ac_autoresponse-checkbox'),
                 resultscontainer: container.querySelector('.ml_ac_results_container'),
                 resultscontent: container.querySelector('.ml_ac_results_content'),
@@ -675,8 +676,6 @@ function($, log, def, ttrecorder, templates, str) {
                         self.gradingData = JSON.parse(jsonresponse);
                         log.debug("Grading and Feedback:", self.gradingData);
 
-                        // Handle the grading feedback (e.g., display it)
-                        //self.displayGradingFeedback(feedbackData);
                     } catch (err) {
                         log.debug("Failed to parse grading feedback:", err);
                     }
@@ -1377,21 +1376,6 @@ function($, log, def, ttrecorder, templates, str) {
                 log.debug(err);
             }
         },
-
-        // Dummy feedback display code
-        displayGradingFeedback: function(feedbackData) {
-            var self = this;
-
-            // Example: Update the UI with the grade and feedback
-            var feedbackContainer = self.controls.finishMessage;
-            feedbackContainer.innerHTML = `
-                <h3>Session Feedback</h3>
-                <p><strong>Grade:</strong> ${feedbackData.grade}%</p>
-                <p><strong>Explanation:</strong> ${feedbackData.gradeExplanation}</p>
-                <p><strong>Feedback:</strong> ${feedbackData.feedback}</p>
-        `;
-            feedbackContainer.classList.remove("hidden");
-        }
 
     }; // End of return object.
 });

@@ -10,19 +10,19 @@
                 <div class="text-center ml_unique_sessioncontrols" id="session-controls">
                     <!-- AI Avatar Section - Prominent when no conversation -->
                     <div class="flex justify-center items-center ml_unique_avatarcontainer">
-                        <div id="ai-avatar-section" class="flex flex-col items-center space-y-4 mb-2 ml_unique_avatarblock">
+                        <div id="ai-avatar-section" class=" ml_ac_ai-avatar-section flex flex-col items-center space-y-4 mb-2 ml_unique_avatarblock">
                             <img src="{{{ config.wwwroot }}}/mod/minilesson/pix/cutepoodll_small.png?height=80&width=80" alt="AI Assistant" width="80" height="80" class="rounded-lg shadow-lg1 ml_unique_avatar" />
                             <audio class="ml_ac_hiddenaudio" autoplay></audio>
                         </div>
                         <div class="flex flex-col ml-2 ml_unique_startsessioncontrols">
-                            <button id="start-session-btn" class="px-6 py-3 bg-blue-600 text-white rounded-md shadow-md1 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-lg ml_unique_startbtn">
+                            <button id="start-session-btn" class="ml_ac_start-session-btn px-6 py-3 bg-blue-600 text-white rounded-md shadow-md1 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-lg ml_unique_startbtn">
                                 {{#str}}audiochatsessionstart, mod_minilesson{{/str}}
                             </button>
                             <div class="w-100 text-center hidden ml_unique_micselectbox">
                                 <label for="micselect" class="block text-sm font-medium text-gray-700 mb-1 ml_unique_miclabel">Select Microphone:</label>
-                                <select id="micselect" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ml_unique_micselect"></select>
+                                <select id="micselect" class="ml_ac_micselect px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ml_unique_micselect"></select>
                             </div>
-                            <div id="loading-indicator" class="hidden flex flex-col items-center space-y-4 ml_unique_loading">
+                            <div id="loading-indicator" class="ml_ac_loading-indicator hidden flex flex-col items-center space-y-4 ml_unique_loading">
                                 <div class="flex space-x-1 animate-bounce-custom ml_unique_loadingdots">
                                     <div class="w-2 h-2 bg-blue-500 rounded-full ml_unique_loadingdot"></div>
                                     <div class="w-2 h-2 bg-blue-500 rounded-full ml_unique_loadingdot"></div>
@@ -31,24 +31,24 @@
                                     <div class="w-2 h-2 bg-blue-500 rounded-full ml_unique_loadingdot"></div>
                                 </div>
                                 <p class="text-sm text-gray-600 ml_unique_loadingtext">{{#str}}audiochatsessionconnecting, mod_minilesson{{/str}}</p>
-                                <button id="cancel-start-session-btn" class="hidden px-6 py-3 bg-red-600 text-white rounded-md shadow-md1 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-lg ml_unique_cancelstartbtn">
+                                <button id="cancel-start-session-btn" class="ml_ac_cancel-start-session-btn hidden px-6 py-3 bg-red-600 text-white rounded-md shadow-md1 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 text-lg ml_unique_cancelstartbtn">
                                     {{#str}}audiochatcancelconnecting, mod_minilesson{{/str}}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="chat-active-message" class="ml_audiochat_resultsbox1 flex flex-col items-center space-y-4">
+                <div id="chat-active-message" class="ml_ac_chat-active-message ml_audiochat_resultsbox1 flex flex-col items-center space-y-4">
                     <p class="text-green-600 font-medium ml_unique_readymsg">{{#str}}audiochatsessionactive, mod_minilesson{{/str}}</p>
                 </div>
 
                 <!-- Conversation Transcript - Takes center stage when active -->
-                <div id="conversation-section" class="hidden max-w-3xl mx-auto ml_unique_conversationsection">
+                <div id="conversation-section" class="ml_ac_conversation-section hidden max-w-3xl mx-auto ml_unique_conversationsection">
                     <div class="bg-white rounded-lg shadow-md1 h-96 overflow-y-auto ml_unique_transcriptbox">
-                        <div id="messages-container" class="p-4 space-y-4 ml_unique_messagescontainer">
+                        <div id="messages-container" class="ml_ac_messages-container p-4 space-y-4 ml_unique_messagescontainer">
                             <!-- Messages will be appended here -->
                         </div>
-                        <div id="finished-message" class="hidden text-center bold text-lg ml_unique_finishmessage">
+                        <div id="finished-message" class="ml_ac_finished-message hidden text-center bold text-lg ml_unique_finishmessage">
                             {{#str}}audiochatsessionfinished, mod_minilesson{{/str}}
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                                     <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                          stroke-linecap="round" stroke-linejoin="round"
-                                         class="mic-icon-svg ml_unique_micsvg">
+                                         class="mic-icon mic-icon-svg ml_unique_micsvg">
                                         <line x1="2" x2="22" y1="2" y2="22" />
                                         <path d="M10 9v3a4 4 0 0 0 8 0V9" />
                                         <path d="M16 16a4 4 0 0 1-8 0" />
@@ -83,7 +83,7 @@
                     </div>
                     <!-- Right buttons column -->
                     <div class="ml_ac_flex-spacer ml_ac_flex-right">
-                        <button id="stop-session-btn" class="hidden stop-btn ml_unique_stopbtn">
+                        <button id="stop-session-btn" class="ml_ac_stop-session-btn hidden stop-btn ml_unique_stopbtn">
                             {{#str}}audiochatsessionend, mod_minilesson{{/str}}
                         </button>
                     </div>
@@ -94,7 +94,7 @@
                         <input type="checkbox"
                                id="autoresponse-toggle"
                                class="ml_ac_autoresponse-checkbox w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                               {{#autocreateresponse}}checked{{/autocreateresponse}}>
+                               {{#audiochat_autoresponse}}checked{{/audiochat_autoresponse}}>
                         <span class="ml-2 text-sm text-gray-900">
                             {{#str}}audiochat_autosend, mod_minilesson{{/str}}
                         </span>
@@ -116,6 +116,7 @@
             </div>
             <div class="timerstatus_{{uniqueid}} ml_audiochat_timerdisplay ml_recsession ml_unique_timerdisplay"></div>
         </div>
+      </div>
     </div>
 </div>
 {{> mod_minilesson/questionfooter}}
