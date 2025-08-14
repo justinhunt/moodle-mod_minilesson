@@ -16,6 +16,7 @@
 
 namespace mod_minilesson\local\itemtype;
 
+use html_writer;
 use mod_minilesson\constants;
 
 /**
@@ -47,17 +48,20 @@ class item_scatter extends item
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
-        $testitem->allowretry = $this->itemrecord->{constants::SCATTER_ALLOWRETRY};
+        $testitem->allowretry = !empty($this->itemrecord->{constants::SCATTER_ALLOWRETRY});
 
-        $testitem->scatteritems = [];
+        $testitem->scatteritems = $testitem->shuffleditems = [];
         $scatteritems = explode(PHP_EOL, $testitem->customtext1);
-        foreach ($scatteritems as $scatteritem) {
+        foreach ($scatteritems as $i => $scatteritem) {
             $scatteritem = explode("|", $scatteritem);
             $scatteritemobj = new \stdClass();
             $scatteritemobj->term = trim($scatteritem[0]);
             $scatteritemobj->definition = trim(str_replace("\r", "", $scatteritem[1]));
             $testitem->scatteritems[] = $scatteritemobj;
+            $testitem->shuffleditems[] = ['key' => $i, 'type' => 'term', 'value' => $scatteritemobj->term, 'htmlid' => html_writer::random_id()];
+            $testitem->shuffleditems[] = ['key' => $i, 'type' => 'definition', 'value' => $scatteritemobj->definition, 'htmlid' => html_writer::random_id()];
         }
+        shuffle($testitem->shuffleditems);
 
         return $testitem;
     }
