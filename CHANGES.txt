@@ -1,3 +1,7 @@
+Version 1.1.01 (Build 2025080103)
+ - Added item types Word Shuffle and Scatter
+ - Added AIGEN lesson templates for AI Chat and Word Shuffle and Scatter
+
 Version 1.0.99 (Build 2025080102)
  - Added zoom and pan options to audio story
  - Added AudioChat

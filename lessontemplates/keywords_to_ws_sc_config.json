@@ -53,7 +53,7 @@
         },
         {
             "itemnumber": 1,
-            "prompt": "Create a one dimensional array of 5 grammatically correct sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}]. In each sentence surround all but the first two words with square brackets, e.g [word].   Create a second array (data2) using the same sentences but without the square brackets.",
+            "prompt": "Create a one dimensional array of grammatically correct sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}]. In each sentence surround all but the first two words with square brackets, e.g [word].   Create a second array (data2) using the same sentences but without the square brackets.",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -122,7 +122,7 @@
         },
         {
             "itemnumber": 2,
-            "prompt": "Generate a 1 dimensional array of 5 'sentences' of format 'keyword|keyword definition' in {language} from the following keywords: [{keywords}].\nThe definitions should be brief and in {native_language}.",
+            "prompt": "Generate a 1 dimensional array of 'sentences' of format 'keyword|keyword translation' from the following keywords: [{keywords}].\nThe translations should be in {native_language}.",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -185,7 +185,7 @@
         }
     ],
     "lessonTitle": "Keywords to Word Shuffle and Scatter",
-    "lessonDescription": "",
+    "lessonDescription": "Enter 4 - 10 keywords in the box below. The keywords will be used to generate a word shuffle and scatter activity. The keywords will also be used to generate a picture of each keyword on a blackboard with a cute cat teacher beside it.",
     "uniqueid": "68a036971fe4b",
     "version": "1",
     "fieldmappings": {
