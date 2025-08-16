@@ -279,7 +279,9 @@ function($, log, def, ttrecorder, templates, str) {
             self.controls.resultscontainer.classList.toggle("hidden", !endScreen && self.quizhelper.showitemreview);
             self.controls.finishMessage.classList.toggle("hidden", !endScreen);
             self.controls.retrySessionBtn.classList.toggle("hidden", !endScreen && self.itemdata.allowretry);
-            self.controls.cancelStartSessionBtn.classList.toggle('hidden', !(self.isLoading && !self.isSessionActive));
+            // We no longer show the cancel button. It does not work after changes we made to icegathering.
+            // If we set abortcontroller.signal to work with it will work, but it is complex
+            //self.controls.cancelStartSessionBtn.classList.toggle('hidden', !(self.isLoading && !self.isSessionActive));
             self.controls.autocreateresponseToggle.classList.toggle("hidden", !self.isSessionActive);
             if (self.controls.micSelect) {
                 //how many options are in micselect
