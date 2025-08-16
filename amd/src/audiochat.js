@@ -39,9 +39,10 @@ function($, log, def, ttrecorder, templates, str) {
         items: {},
         responses: {},
         abortcontroller: new AbortController(),
-        dataininputbuffer: false,
+        datainputbuffer: false,
+        inputBufferInterval: null,
         //Turn detection - semantic is good for native speakers, but awful for language learners
-        // time based we give 1.5s of silence detection before posting
+        // time based we give 3.5s of silence detection before posting
         semantic_vad: {
             type: "semantic_vad",
             eagerness: "low",
@@ -399,6 +400,14 @@ function($, log, def, ttrecorder, templates, str) {
 
         },
 
+        //setter for datainputbuffer
+        setDataInputBuffer: function(value, source) {
+            var self = this;
+            self.datainputbuffer = value;
+            log.debug("Data in input buffer set to:", value);
+            log.debug("Data input buffer set source:", source);
+        },
+
         resetSession: function() {
             log.debug("reset  session");
             var self = this;
@@ -432,7 +441,7 @@ function($, log, def, ttrecorder, templates, str) {
             // Handle incoming messages on the DataChannel
             self.dc.onmessage = (e) => {
                 self.eventlogs.push(e.data);
-                log.debug("DataChannel message:", e.data);
+                //log.debug("DataChannel message:", e.data);
                 try {
                     var lines = e.data.split("\n").filter(Boolean);
                     for (var line of lines) {
@@ -643,8 +652,6 @@ function($, log, def, ttrecorder, templates, str) {
             tdata.resultsdata = {'items': Object.values(self.items)};
             // Add grade and other results data
             tdata = self.grade_activity(tdata);
-            log.debug( "tdata 1");
-            log.debug( tdata);
 
             //calculate stars from grade
             const stars = [];
@@ -659,9 +666,6 @@ function($, log, def, ttrecorder, templates, str) {
                 stars.push({ filled: i < filledStars });
             }
             tdata.stars = stars;
-            log.debug(stars);
-             log.debug( "tdata 2");
-            log.debug( tdata);
 
             templates.render('mod_minilesson/audiochatimmediatefeedback', tdata).then(
                 function(html, js) {
@@ -1045,7 +1049,8 @@ function($, log, def, ttrecorder, templates, str) {
     "item_id": "item_BzbmmcBxU60HVn8xvCWA2"
 }
 ```*/
-                    self.dataininputbuffer = true;
+                    log.debug("Input audio buffer speech started");
+                    self.setDataInputBuffer(true, 'audiobufferstarted');
                     self.items[msg.item_id].events.push(msg);
                     break;
                 }
@@ -1076,8 +1081,8 @@ function($, log, def, ttrecorder, templates, str) {
     "previous_item_id": null,
     "item_id": "item_BzbmmcBxU60HVn8xvCWA2"
 }
-```*/
-                    self.dataininputbuffer = false;
+```*/               log.debug("Input audio buffer committed");
+                    self.setDataInputBuffer(false, 'audiobuffercommitted');
                     self.items[msg.item_id].events.push(msg);
                     break;
                 }
@@ -1210,7 +1215,8 @@ function($, log, def, ttrecorder, templates, str) {
 
                 // Send response event when mic is disabled and autocreateresponse is false
                 if (!self.autocreateresponse) {
-                    if(!self.dataininputbuffer){
+                    if(!self.datainputbuffer){
+                        log.debug(" sending response.create");
                         self.sendEvent({
                             type: "response.create",
                             response: {
@@ -1220,14 +1226,20 @@ function($, log, def, ttrecorder, templates, str) {
                             }
                         });
                     } else {
-                        //set a recurring 500ms timeout that will send the response.create event if self,.dataininputbuffer is false
+                        //set a recurring 500ms timeout that will send the response.create event if self.datainputbuffer is false
                         log.debug("Waiting for input audio buffer to commit before sending response.create");
                         let attempts = 0;
+                        if (self.inputBufferInterval) {
+                            clearInterval(self.inputBufferInterval);
+                            self.inputBufferInterval = null;
+                        }
                         const maxAttempts = 3;
-                        const checkInputBuffer = setInterval(() => {
-                            if (!self.dataininputbuffer || attempts >= maxAttempts) {
-                                clearInterval(checkInputBuffer);
-                                self.dataininputbuffer = false;
+                        self.inputBufferInterval = setInterval(() => {
+                            log.debug("Checking input buffer status, attempt:", attempts);
+                            if (!self.datainputbuffer || attempts >= maxAttempts) {
+                                clearInterval(self.inputBufferInterval);
+                                self.setDataInputBuffer(false, 'setInterval:' + attempts);
+                                log.debug(" sending response.create");
                                 self.sendEvent({
                                     type: "response.create",
                                     response: {
@@ -1238,7 +1250,7 @@ function($, log, def, ttrecorder, templates, str) {
                                 });
                             }
                             attempts++;
-                        }, 500);
+                        }, 1500);
                     }
                 }
             } else {

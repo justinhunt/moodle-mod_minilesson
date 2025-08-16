@@ -1,0 +1,89 @@
+{
+    "items": [
+        {
+            "type": "page",
+            "name": "Item: Content Page",
+            "instructions": "Practice New Words",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "int10": "1",
+            "layout": "vertical",
+            "filesid": 1
+        },
+        {
+            "type": "wordshuffle",
+            "name": "Item: WordShuffle",
+            "instructions": "Put the words in the correct order to form a sentence.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "I have [a pen].\r",
+                "I am [happy].\r",
+                "You are [good].\r",
+                "This is [fun].\r",
+                "We are [nice]."
+            ],
+            "promptvoice": "Joey",
+            "confirmchoice": "yes",
+            "promptvoiceopt": "normal",
+            "int10": "1",
+            "filesid": 2
+        },
+        {
+            "type": "scatter",
+            "name": "Item: Scatter",
+            "instructions": "Choose the word pairs",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "egg|igg\r",
+                "cat|kat\r",
+                "dog|dok\r",
+                "mouse|mowse\r",
+                "house|howse"
+            ],
+            "allowretry": "yes",
+            "int10": "1"
+        },
+        {
+            "type": "spacegame",
+            "name": "Item: Space Game",
+            "instructions": "Shoot the aliens by selecting the correct answer.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "house|maison"
+            ],
+            "includematching": "no",
+            "int10": "1"
+        }
+    ],
+    "files": {
+        "1": {
+            "itemmedia": {
+                "1.png": "QQQQ"
+            }
+        },
+        "2": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ"
+            }
+        }
+    }
+}

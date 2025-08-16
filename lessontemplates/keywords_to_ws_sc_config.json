@@ -1,0 +1,249 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Create an image generation prompt (data1) to generate a single picture of each of the following keywords written on a classroom blackboard with a cute poodle teacher beside it: [{keywords}]",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "int10",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "target_language",
+            "promptfields": [
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                }
+            ]
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "Create a one dimensional array of 5 grammatically correct sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}]. In each sentence surround all but the first two words with square brackets, e.g [word].   Create a second array (data2) using the same sentences but without the square brackets.",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "confirmchoice",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "int10",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "data2"
+                }
+            ],
+            "overallimagecontext": "target_language",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                }
+            ]
+        },
+        {
+            "itemnumber": 2,
+            "prompt": "Generate a 1 dimensional array of 5 'sentences' of format 'keyword|keyword definition' in {language} from the following keywords: [{keywords}].\nThe definitions should be brief and in {native_language}.",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "int10",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_customdata1"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Keywords to Word Shuffle and Scatter",
+    "lessonDescription": "",
+    "uniqueid": "68a036971fe4b",
+    "version": "1",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": " A comma separated list of keywords for the activity",
+            "type": "textarea"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Native language",
+            "description": "The language the keyword definitions should be in.",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    }
+}

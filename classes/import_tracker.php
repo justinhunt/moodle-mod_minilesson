@@ -20,11 +20,12 @@ class import_tracker
     /**
      * uu_progress_tracker constructor.
      */
-    public function __construct($keycolumns) {
+    public function __construct($keycolumns)
+    {
 
-        $base_headers = ['id'=>'ID','line'=>'Line','status'=>'Status'];
-        $headers = array_merge($base_headers,$keycolumns );
-        $this->columns= array_keys($headers);
+        $base_headers = ['id' => 'ID', 'line' => 'Line', 'status' => 'Status'];
+        $headers = array_merge($base_headers, $keycolumns);
+        $this->columns = array_keys($headers);
         $this->headers = array_keys($headers);
     }
 
@@ -32,14 +33,15 @@ class import_tracker
      * Print table header.
      * @return void
      */
-    public function start() {
+    public function start()
+    {
         $ci = 0;
-        echo '<table id="iiresults" class="generaltable boxaligncenter flexible-wrap" summary="'.get_string('importitemsresult', constants::M_COMPONENT).'">';
-        echo '<tr class="heading r0">';
+        $this->do_echo('<table id="iiresults" class="generaltable boxaligncenter flexible-wrap" summary="' . get_string('importitemsresult', constants::M_COMPONENT) . '">');
+        $this->do_echo('<tr class="heading r0">');
         foreach ($this->headers as $key => $header) {
-            echo '<th class="header c'.$ci++.'" scope="col">'.$header.'</th>';
+            $this->do_echo('<th class="header c' . $ci++ . '" scope="col">' . $header . '</th>');
         }
-        echo '</tr>';
+        $this->do_echo('</tr>');
         $this->_row = null;
     }
 
@@ -47,37 +49,38 @@ class import_tracker
      * Flush previous line and start a new one.
      * @return void
      */
-    public function flush() {
+    public function flush()
+    {
         if (empty($this->_row) or empty($this->_row['line']['normal'])) {
             // Nothing to print - each line has to have at least number
             $this->_row = array();
             foreach ($this->columns as $col) {
-                $this->_row[$col] = array('normal'=>'', 'info'=>'', 'warning'=>'', 'error'=>'');
+                $this->_row[$col] = array('normal' => '', 'info' => '', 'warning' => '', 'error' => '');
             }
             return;
         }
         $ci = 0;
         $ri = 1;
-        echo '<tr class="r'.$ri.'">';
-        foreach ($this->_row as $key=>$field) {
-            foreach ($field as $type=>$content) {
+        $this->do_echo('<tr class="r' . $ri . '">');
+        foreach ($this->_row as $key => $field) {
+            foreach ($field as $type => $content) {
                 if ($field[$type] !== '') {
-                    $field[$type] = '<span class="ii'.$type.'">'.$field[$type].'</span>';
+                    $field[$type] = '<span class="ii' . $type . '">' . $field[$type] . '</span>';
                 } else {
                     unset($field[$type]);
                 }
             }
-            echo '<td class="cell c'.$ci++.'">';
+            $this->do_echo('<td class="cell c' . $ci++ . '">');
             if (!empty($field)) {
-                echo implode('<br />', $field);
+                $this->do_echo(implode('<br />', $field));
             } else {
-                echo '&nbsp;';
+                $this->do_echo('&nbsp;');
             }
-            echo '</td>';
+            $this->do_echo('</td>');
         }
-        echo '</tr>';
+        $this->do_echo('</tr>');
         foreach ($this->columns as $col) {
-            $this->_row[$col] = array('normal'=>'', 'info'=>'', 'warning'=>'', 'error'=>'');
+            $this->_row[$col] = array('normal' => '', 'info' => '', 'warning' => '', 'error' => '');
         }
     }
 
@@ -89,17 +92,18 @@ class import_tracker
      * @param bool $merge true means add as new line, false means override all previous text of the same type
      * @return void
      */
-    public function track($col, $msg, $level = 'normal', $merge = true) {
+    public function track($col, $msg, $level = 'normal', $merge = true)
+    {
         if (empty($this->_row)) {
             $this->flush(); //init arrays
         }
         if (!in_array($col, $this->columns)) {
-            debugging('Incorrect column:'.$col);
+            debugging('Incorrect column:' . $col);
             return;
         }
         if ($merge) {
             if ($this->_row[$col][$level] != '') {
-                $this->_row[$col][$level] .='<br />';
+                $this->_row[$col][$level] .= '<br />';
             }
             $this->_row[$col][$level] .= $msg;
         } else {
@@ -111,8 +115,19 @@ class import_tracker
      * Print the table end
      * @return void
      */
-    public function close() {
+    public function close()
+    {
         $this->flush();
-        echo '</table>';
+        $this->do_echo('</table>');
+    }
+
+    public function do_echo($text)
+    {
+
+        // If text is empty or this is cli script just return
+        if (empty($text) || defined('CLI_SCRIPT')) {
+            return;
+        }
+        echo $text;
     }
 }//end of class
