@@ -25,6 +25,8 @@ define(['jquery',
         init: function(index, itemdata, quizhelper) {
             var self = this;
             self.itemdata = itemdata;
+            // Default to true, we might implement a start page later.
+            self.itemdata.hidestartpage = true; 
             self.quizhelper = quizhelper;
             self.index = index;
 
@@ -154,14 +156,6 @@ define(['jquery',
                 theaudio.play();
             });
 
-            //toggle audio playback on spacekey press in input boxes
-            self.controls.container.on("keydown", ".single-character", function(e) {
-                if (e.which == 32) {
-                    e.preventDefault();
-                    audioplayerbtn.trigger("click");
-                }
-            });
-
             // On skip button click
             self.controls.skip_btn.on("click", function() {
                 // Disable buttons
@@ -245,7 +239,7 @@ define(['jquery',
 
             self.items = text_items.map(function(target) {
                 return {
-                    target: target.sentence,
+                    target: target.sentenceclean,
                     timer: [],
                     answered: false,
                     correct: false,
@@ -483,7 +477,7 @@ define(['jquery',
             var self = this;
             $word.detach()
                 .css({ top: 0, left: 0, position: "relative" })
-                .appendTo(self.pointerdiv.find("#word-bank"));
+                .appendTo(self.pointerdiv.find(".word-bank"));
             self.evaluateIfComplete();
         },
 
@@ -508,6 +502,7 @@ define(['jquery',
             var self = this;
 
             if (!self.pointerdiv.attr('data-initialized')) {
+                // Click event
                 self.pointerdiv.on('click', e => {
                     const $target = $(e.target);
                     if ($target.is('.word')) {
@@ -516,7 +511,7 @@ define(['jquery',
                         } else {
                             self.selectedWord = null;
                         }
-                    } else if ($target.is('#word-bank')) {
+                    } else if ($target.is('.word-bank')) {
                         if (self.selectedWord) {
                             if (self.selectedWord.parent('.drop-slot')) {
                                 self.placeInBank(self.selectedWord);
@@ -531,21 +526,75 @@ define(['jquery',
                     }
                     self.highlightDropZones();
                 });
+
+                // Spacebar keydown event
+                self.pointerdiv.on('keydown', function(e) {
+                    if (e.key === ' ' || e.key === 'Spacebar') {
+                        const $focused = $(document.activeElement);
+                        if ($focused.is('.word')) {
+                            if (!self.selectedWord || !self.selectedWord.is($focused)) {
+                                self.selectedWord = $focused;
+                            } else {
+                                self.selectedWord = null;
+                            }
+                        } else if ($focused.is('.word-bank')) {
+                            if (self.selectedWord) {
+                                if (self.selectedWord.parent('.drop-slot')) {
+                                    self.placeInBank(self.selectedWord);
+                                }
+                                self.selectedWord = null;
+                            }
+                        } else if ($focused.is('.drop-slot')) {
+                            if (self.selectedWord) {
+                                self.moveToSlot(self.selectedWord, $focused);
+                                self.selectedWord = null;
+                            }
+                        }
+                        self.highlightDropZones();
+                        e.preventDefault();
+                    }
+                });
+
                 self.pointerdiv.attr('data-initialized', 1);
             }
         },
 
         highlightDropZones: function() {
             var self = this;
-            var dropZones = self.pointerdiv.find('.drop-slot').removeClass('highlight');
-            self.pointerdiv.find('.word').removeClass('highlight');
-            self.pointerdiv.find('#word-bank').removeClass('highlight');
+
+            // Remove highlights and tabindex from drop slots, word bank, and words
+            var dropZones = self.pointerdiv.find('.drop-slot')
+                .removeClass('ml_ws_highlight')
+                .removeAttr('tabindex');
+            self.pointerdiv.find('.word').removeClass('ml_ws_highlight');
+            self.pointerdiv.find('.word-bank')
+                .removeClass('ml_ws_highlight')
+                .removeAttr('tabindex');
+
             if (self.selectedWord) {
-                if (!self.selectedWord.parent('#word-bank').length) {
-                    self.pointerdiv.find('#word-bank').addClass('highlight');
+                // If the selected word is not in the word bank, 
+                // It has been selected from a drop slot.
+                // Highlight the word bank and set tabindex to 0.
+                if (!self.selectedWord.parent('.word-bank').length) {
+                    self.pointerdiv.find('.word-bank')
+                        .addClass('ml_ws_highlight')
+                        .attr('tabindex', 0);
                 }
-                dropZones.filter((_, slot) => !slot.querySelector('.word')).addClass('highlight');
-                self.selectedWord.addClass('highlight');
+
+                // Highlight the drop zones that do not contain a word
+                dropZones.filter(function(_, slot) {
+                    // If the slot does not contain a .word element
+                    if (!slot.querySelector('.word')) {
+                        // Add highlight and set tabindex to 0
+                        $(slot).addClass('ml_ws_highlight');
+                        $(slot).attr('tabindex', 0);
+                        return true;
+                    }
+                    return false;
+                });
+
+                // Highlight the selected word
+                self.selectedWord.addClass('ml_ws_highlight');
             }
         },
 

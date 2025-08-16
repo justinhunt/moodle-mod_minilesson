@@ -81,26 +81,29 @@ class item_wordshuffle extends item
             // If we have a sentence, we fetch it.
             if (isset($sentences[$anumber]) && !empty(trim($sentences[$anumber]))) {
                 $sentencetext = trim($sentences[$anumber]);
+                // If there is a pipe (for a hint), only use the part before the pipe
+                $sentenceparts = explode('|', $sentencetext, 2);
+                $sentenceclean = str_replace(['[', ']'], ['', ''], $sentenceparts[0]);
             }
 
             // If we have an image, we fetch it.
             if ($testitem->imagecontent) {
-                if (isset($imageurls[$anumber+1]) && !empty($imageurls[$anumber+1])) {
-                    $theimageurl = $imageurls[$anumber+1];
+                if (isset($imageurls[$anumber + 1]) && !empty($imageurls[$anumber + 1])) {
+                    $theimageurl = $imageurls[$anumber + 1];
                 }
             }
 
             // If we have an audio, we fetch it.
             if ($testitem->audiocontent) {
-                if (isset($audiourls[$anumber+1]) && !empty($audiourls[$anumber+1])) {
-                    $theaudiourl = $audiourls[$anumber+1];
+                if (isset($audiourls[$anumber + 1]) && !empty($audiourls[$anumber + 1])) {
+                    $theaudiourl = $audiourls[$anumber + 1];
                 } else {
                     // If we have no custom audio then we use the polly audio.
                     if (!empty($sentencetext)) {
                         $theaudiourl = utils::fetch_polly_url(
                             $this->token,
                             $this->region,
-                            $sentencetext ,
+                            $sentenceclean,
                             $this->itemrecord->{constants::POLLYOPTION},
                             $this->itemrecord->{constants::POLLYVOICE}
                         );
@@ -114,8 +117,9 @@ class item_wordshuffle extends item
 
                 $s = new \stdClass();
                 $s->index = $anumber;
-                $s->indexplusone = $anumber+1;
+                $s->indexplusone = $anumber + 1;
                 $s->sentence = $sentence;
+                $s->sentenceclean = $sentenceclean;
                 $s->length = \core_text::strlen($sentence);
                 $s->imageurl = false;
                 $s->audiourl = false;
@@ -132,7 +136,7 @@ class item_wordshuffle extends item
         }
 
         $processedsentences = $this->parse_gapfill_sentences($sentences);
-        foreach($processedsentences as $processedsentence) {
+        foreach ($processedsentences as $processedsentence) {
             if (isset($testitem->sentences[$processedsentence->index])) {
                 $testitem->sentences[$processedsentence->index]->gapwords = $processedsentence->gapwords;
                 $testitem->sentences[$processedsentence->index]->hint = $processedsentence->definition;
@@ -146,7 +150,7 @@ class item_wordshuffle extends item
 
         // WordShuffle also has a confirm choice option we need to include.
         $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
-        $testitem->hidestartpage = $itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
+        //$testitem->hidestartpage = $itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
         $testitem->allowretry = $itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
 
         return $testitem;
@@ -192,7 +196,7 @@ class item_wordshuffle extends item
         $keycols['int3'] = ['jsonname' => 'confirmchoice', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::CONFIRMCHOICE];
         $keycols['int2'] = ['jsonname' => 'readsentence', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE]; //not boolean ..
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
-        $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
+        //$keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
  
@@ -208,6 +212,7 @@ class item_wordshuffle extends item
 
             case 'extract':
                 $prompt = "Extract a one dimensional array of 4 short sentences (sentences) in {language} suitable for {level} level learners from the following passage: [{text}] ";
+                $prompt .= "In each sentence surround all but the first two words with square brackets, e.g [word]. ";
                 break;
 
             case 'reuse':
@@ -218,7 +223,8 @@ class item_wordshuffle extends item
 
             case 'generate':
             default:
-                $prompt = "Create a one dimensional array of 4 sentences (sentences), of no more than 7 words per sentence, in {language} suitable for {level} level learners  on the topic of: [{topic}] ";
+                $prompt = "Create a one dimensional array of 4 sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners  on the topic of: [{topic}] ";
+                $prompt .= "In each sentence surround all but the first two words with square brackets, e.g [word]. ";
                 break;
         }
         return $prompt;

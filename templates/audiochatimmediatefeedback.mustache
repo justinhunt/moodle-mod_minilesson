@@ -1,7 +1,9 @@
-<div class='ml-ac-review_feedback'>
+<div class='ml-ac-review_feedback text-center'>
   <h2>
       <hr />
-      <i class='fa fa-star'></i> {{#str}}score, mod_minilesson{{/str}}: {{grade}}%
+      {{#stars}}
+      <i class="fa fa-star{{^filled}}-o{{/filled}} fa-lg"></i>
+    {{/stars}}
   </h2>
     <hr/>
     {{#resultsdata.aifeedback}}

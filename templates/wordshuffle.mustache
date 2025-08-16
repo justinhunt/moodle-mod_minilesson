@@ -18,7 +18,7 @@
 
     {{> mod_minilesson/progresstimer }}
     {{#audiocontent}}
-    <div style="display:none;" class="wordshuffle_listen_cont text-center">
+    <div style="display:none;" class="wordshuffle_listen_cont text-center mb-2">
         <button class="btn btn-secondary wordshuffle_listen_btn">
             <i class="fa fa-volume-up"></i>
         </button>
@@ -44,7 +44,7 @@
                 </div>
 
                 {{! Word bank  }}
-                <div id="word-bank" class="bank d-flex flex-wrap justify-content-center p-2 mb-3">
+                <div id="word-bank" class="word-bank bank d-flex flex-wrap justify-content-center p-2 mb-3">
                     {{#randomgaps}}
                         <div class="word" tabindex="0">{{{ word }}}</div>
                     {{/randomgaps}}
@@ -66,7 +66,7 @@
          {{/sentences}}
     </div>
 
-    <div style="display:none;" class="wordshuffle_controls">
+    <div style="display:none;" class="wordshuffle_controls text-right">
 
         <button class="btn btn-success wordshuffle_ctrl-btn wordshuffle_check_btn">
             {{#str}} reset {{/str}}

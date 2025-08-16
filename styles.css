@@ -4456,19 +4456,19 @@ div.poodlldictationplayer {
     gap: 1rem;
 }
 
-.wordshuffle_wordset_container .drop-slot.highlight {
+.wordshuffle_wordset_container .drop-slot.ml_ws_highlight {
   background-color: #bbf7d0;
   box-shadow: 0 0 0 2px #16a34a;
   cursor: pointer;
 }
 
-.wordshuffle_wordset_container .bank.highlight {
+.wordshuffle_wordset_container .bank.ml_ws_highlight {
   background-color: #f9a8d4;
   border-color: #3b82f6;
   cursor: pointer;
 }
 
-.wordshuffle_wordset_container .word.highlight {
+.wordshuffle_wordset_container .word.ml_ws_highlight {
   box-sizing: border-box;
   border: 2px solid #3b82f6;
   cursor: pointer;
@@ -4691,7 +4691,7 @@ div.poodlldictationplayer {
     justify-content: center;
     text-align: center;
     min-height: 100px;
-    border: 1px solid #eee;
+    border: 2px solid #ddd;
     border-radius: 10px;
     padding: 10px;
     margin-bottom: 0;

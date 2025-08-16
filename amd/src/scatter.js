@@ -86,38 +86,6 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                 self.controls.actionbutton = self.controls.container.find(".minilesson_actionbutton");
                 self.controls.retrybutton = self.controls.container.find(".minilesson-try-again");
 
-                self.controls.stage.on('click', self.check_crosscard.bind(self));
-
-                self.controls.container.on("showElement", () => {
-                    if (self.itemdata.timelimit > 0) {
-                        self.controls.progress_container.show();
-                        self.controls.progress_container.find('i').show();
-                        if (self.progressTimer) {
-                            clearInterval(self.progressTimer);
-                            self.progressTimer = null;
-                        }
-                        self.progressTimer = self.controls.progress_container.find('#progresstimer').progressTimer({
-                            height: '5px',
-                            timeLimit: self.itemdata.timelimit,
-                            onFinish: function() {
-                                self.end();
-                            }
-                        }).attr('timer');
-                    }
-                    self.startTime = Date.now();
-                });
-
-                self.controls.container.on('click', '#minilesson-try-again', () => {
-                    self.startTime = null;
-                    self.markedIndex = [];
-                    self.shuffleItems();
-                    self.controls.container.trigger("showElement");
-                    self.controls.result_container.hide();
-                    self.controls.stage.show();
-                    self.controls.progress_container.find('#progresstimer,i').show();
-                    self.controls.actionbutton.show();
-                });
-
                 const $listItems = self.controls.stage.children('.ml_scatter_listitem');
                 $listItems.each((i, listitem) => {
                     self.itemdata.shuffleditems[i].item = listitem;
@@ -207,8 +175,65 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
             register_events: function () {
                 var self = this;
 
-                self.controls.next_button.click(function () {
+                // Click and space key for scatter stage
+                self.controls.stage.on('click', self.check_crosscard.bind(self));
+                self.controls.stage.on('keydown', function(e) {
+                    if (e.key === ' ' || e.key === 'Spacebar') {
+                        // Only respond if focused on a list item
+                        var $focused = $(document.activeElement);
+                        if ($focused.hasClass('ml_scatter_listitem')) {
+                            self.check_crosscard.call(self, { target: document.activeElement });
+                            e.preventDefault();
+                        }
+                    }
+                });
+
+                self.controls.container.on("showElement", () => {
+                    if (self.itemdata.timelimit > 0) {
+                        self.controls.progress_container.show();
+                        self.controls.progress_container.find('i').show();
+                        if (self.progressTimer) {
+                            clearInterval(self.progressTimer);
+                            self.progressTimer = null;
+                        }
+                        self.progressTimer = self.controls.progress_container.find('#progresstimer').progressTimer({
+                            height: '5px',
+                            timeLimit: self.itemdata.timelimit,
+                            onFinish: function() {
+                                self.end();
+                            }
+                        }).attr('timer');
+                    }
+                    self.startTime = Date.now();
+                });
+
+                // Click and space key for try again button
+                self.controls.container.on('click', '#minilesson-try-again', () => {
+                    self.startTime = null;
+                    self.markedIndex = [];
+                    self.shuffleItems();
+                    self.controls.container.trigger("showElement");
+                    self.controls.result_container.hide();
+                    self.controls.stage.show();
+                    self.controls.progress_container.find('#progresstimer,i').show();
+                    self.controls.actionbutton.show();
+                });
+                self.controls.container.on('keydown', '#minilesson-try-again', function(e) {
+                    if (e.key === ' ' || e.key === 'Spacebar') {
+                        $(this).trigger('click');
+                        e.preventDefault();
+                    }
+                });
+
+                // Click and space key for next button
+                self.controls.next_button.on('click', function () {
                     self.next_question();
+                });
+                self.controls.next_button.on('keydown', function(e) {
+                    if (e.key === ' ' || e.key === 'Spacebar') {
+                        $(this).trigger('click');
+                        e.preventDefault();
+                    }
                 });
             },
 

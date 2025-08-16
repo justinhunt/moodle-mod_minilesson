@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50 (54983) - http://www.bohemiancoding.com/sketch -->
+    <title>36. Group of cards</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="36.-Group-of-cards" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g transform="translate(2.000000, 2.000000)" stroke="#222F3E" stroke-width="4">
+            <polygon id="Layer-1" points="0 0 40 0 40 40 0 40"></polygon>
+            <polygon id="Layer-2" points="56 0 96 0 96 40 56 40"></polygon>
+            <polygon id="Layer-3" points="56 56 96 56 96 96 56 96"></polygon>
+            <polygon id="Layer-4" points="0 56 40 56 40 96 0 96"></polygon>
+        </g>
+    </g>
+</svg>

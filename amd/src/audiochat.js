@@ -124,13 +124,26 @@ function($, log, def, ttrecorder, templates, str) {
         },
 
         grade_activity: function(stepdata) {
-          //loop through items and form a complete user transcript
+            //loop through items and form a complete user transcript
             var self = this;
+
+            //count words in the transcript
+            var wordcount = self.count_words();
 
             if(self.gradingData && self.gradingData.score !== undefined) {
                 log.debug("Using grading data from AI:", self.gradingData);
                 // If grading data is available, use it
                 stepdata.grade = self.gradingData.score;
+
+                //If target word count is greater then 0, we lower the grade if it is lower then that target word count
+                if(typeof stepdata.grade === 'number' && 
+                    typeof wordcount === 'number' &&
+                    self.itemdata.targetwordcount > 0 &&
+                     wordcount < self.itemdata.targetwordcount) {
+                    stepdata.grade = Math.round(stepdata.grade * (wordcount / self.itemdata.targetwordcount));
+                }
+
+
                 stepdata.resultsdata.aifeedback = self.gradingData.feedback || "";
                 stepdata.resultsdata.gradeexplanation = self.gradingData.gradeexplanation || "";
 
@@ -141,8 +154,7 @@ function($, log, def, ttrecorder, templates, str) {
                     stepdata.grade =  100;
                 }
 
-                //count words in the transcript
-                var wordcount = self.count_words();
+                
 
                 // Calculate grade based on word count
                 stepdata.grade = Math.min(wordcount / self.itemdata.targetwordcount, 1) * 100;
@@ -164,6 +176,7 @@ function($, log, def, ttrecorder, templates, str) {
             self.controls.retrySessionBtn.addEventListener("click", self.resetSession.bind(this));
             self.controls.autocreateresponseCheckbox.addEventListener("change", self.toggle_autocreate_response.bind(self));
             self.controls.cancelStartSessionBtn.addEventListener("click", () => {
+                log.debug("Cancelling session start");
                 self.abortcontroller.abort();
                 self.abortcontroller = new AbortController();
             });
@@ -302,6 +315,7 @@ function($, log, def, ttrecorder, templates, str) {
 
             // Render messages
             self.controls.messagesContainer.innerHTML = ""; // Clear existing messages
+            
             orderedItems.forEach((message) => {
                 if (!message.content) {
                     return;
@@ -514,6 +528,15 @@ function($, log, def, ttrecorder, templates, str) {
                 });
                 log.debug("Session started");
             } catch(e) {
+                
+                if (e.name === 'AbortError') {
+                    log.debug("Session start aborted by user.");
+                    // Reset UI and state as needed
+                    self.isLoading = false;
+                    self.renderUI();
+                    return;
+                }
+
                 // Close data channel if open
                 if (self.dc) {
                     self.dc.close();
@@ -620,6 +643,25 @@ function($, log, def, ttrecorder, templates, str) {
             tdata.resultsdata = {'items': Object.values(self.items)};
             // Add grade and other results data
             tdata = self.grade_activity(tdata);
+            log.debug( "tdata 1");
+            log.debug( tdata);
+
+            //calculate stars from grade
+            const stars = [];
+            const maxStars = 5;
+            // if tdata grade is NAn or undefined, set it to 0
+            if (typeof tdata.grade === 'undefined' || isNaN(tdata.grade) || tdata.grade === null || tdata.grade === "") {
+                tdata.grade = 0;
+            }
+           
+            const filledStars = Math.round((tdata.grade / 100) * maxStars);
+            for (let i = 0; i < maxStars; i++) {
+                stars.push({ filled: i < filledStars });
+            }
+            tdata.stars = stars;
+            log.debug(stars);
+             log.debug( "tdata 2");
+            log.debug( tdata);
 
             templates.render('mod_minilesson/audiochatimmediatefeedback', tdata).then(
                 function(html, js) {
