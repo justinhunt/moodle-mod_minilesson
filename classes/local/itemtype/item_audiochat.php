@@ -55,10 +55,18 @@ class item_audiochat extends item {
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->set_layout($testitem);
 
+        // Do we have an OpenAI key? (we need one).
+        $apikey = get_config(constants::M_COMPONENT, 'openaikey');
+        if (empty($apikey)) {
+            $testitem->canchat = false;
+        } else {
+            $testitem->canchat = true;
+        }
+
         //Allow retry
         $testitem->allowretry = $this->itemrecord->{constants::AUDIOCHAT_ALLOWRETRY} == 1;
 
-        // Replace the placeholders with what we know, first correcting missine placeholder data
+        // Replace the placeholders with what we know, first correcting missing placeholder data
         if (empty($this->itemrecord->{constants::AUDIOCHAT_ROLE})) {
             $this->itemrecord->{constants::AUDIOCHAT_ROLE} = get_string('audiochat_role_default', constants::M_COMPONENT);
         }

@@ -20,6 +20,7 @@ function($, log, def, ttrecorder, templates, str) {
         quizhelper: {}, // Quiz helper for the item
         pc: null,
         dc: null,
+        cantChat: false,
         audiochat_voice: "alloy", // Default voice for the AI
         isSessionStarted: false,
         isSessionStopped: false,
@@ -68,6 +69,7 @@ function($, log, def, ttrecorder, templates, str) {
             log.debug('itemdata', itemdata);
             this.quizhelper = quizhelper;
             this.index = index;
+            this.cantChat = !itemdata.canchat;
             this.init_strings();
             this.init_controls(quizhelper, itemdata);
             this.init_voice(itemdata.audiochat_voice);
@@ -224,6 +226,7 @@ function($, log, def, ttrecorder, templates, str) {
             self.controls = {
                 hiddenaudio: container.querySelector('.ml_ac_hiddenaudio'),
                 nextbutton: container.querySelector('.minilesson_nextbutton'),
+                cantChatWarning: container.querySelector(".ml_ac_cantchat"),
                 startSessionBtn: container.querySelector(".ml_ac_start-session-btn"),
                 stopSessionBtn: container.querySelector(".ml_ac_stop-session-btn"),
                 loadingIndicator: container.querySelector(".ml_ac_loading-indicator"),
@@ -271,7 +274,8 @@ function($, log, def, ttrecorder, templates, str) {
         renderUI: function() {
             var self = this;
             // Session Controls
-            self.controls.startSessionBtn.classList.toggle("hidden", self.isSessionActive || self.isLoading || self.isSessionStarted);
+            self.controls.startSessionBtn.classList.toggle("hidden", self.isSessionActive || self.isLoading || self.isSessionStarted || self.cantChat);
+            self.controls.cantChatWarning.classList.toggle("hidden", !self.cantChat);
             self.controls.loadingIndicator.classList.toggle("hidden", !self.isLoading);
             self.controls.stopSessionBtn.classList.toggle("hidden", !self.isSessionActive);
             self.controls.micButtonContainer.classList.toggle("hidden", !self.isSessionActive);

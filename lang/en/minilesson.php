@@ -952,7 +952,7 @@ $string['aigentemplatename:ayoutubelesson'] = 'YouTube Lesson';
 $string['aigentemplatename:youtubefinalelesson'] = 'YouTube Finale Lesson';
 $string['aigentemplatename:wordpractice'] = 'Word Practice';
 $string['aigentemplatename:audiostory'] = 'Audio Story';
-$string['aigentemplatename:reading_aic_passagegen'] = 'Reading + Chat (AI passage)';
+$string['aigentemplatename:reading_aic_passagegen'] = 'Reading + AI Chat (Generated passage)';
 $string['aigentemplatename:reading_aic_passageupload'] = 'Reading + AI Chat (Uploaded passage) ';
 $string['aigentemplatename:keywords_to_ws_sc'] = 'Keywords to Word Shuffle and Scatter';
 $string['aigentemplatename:keywords_to_ws_sc_sg'] = 'Keywords to Word Shuffle and Scatter and Space Game';
@@ -1022,7 +1022,5 @@ $string['audiochat_aidata2'] = 'Custom AI Data 2';
 $string['audiochat_autosend'] = 'Auto Send';
 $string['audiochat_autosend_desc'] = 'If checked, turn-detection is automatic. The AI will automatically send the student audio when it detects that they have stopped speaking. For young or slower speakers that might be frustrating. If unchecked, audio is submitted when the microphone stop button is pressed. Auto send can also be toggled during the activity.';
 $string['clicktosend'] = 'click to send';
-
-
-
+$string['cantchat'] = 'Chat is NOT available. To use this item type you must have a valid OpenAI key set in the MiniLesson activity admin settings.';
 

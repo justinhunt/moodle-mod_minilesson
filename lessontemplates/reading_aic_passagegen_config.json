@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] The passage should take about 1 minute to read aloud. \nThe passage should be engaging and appropriate for the target audience. Also generate a list (not an array) of 4 open short answer questions (data1), suitable for {level} learners of {language}, to check the learners understanding of the passage.",
+            "prompt": "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] The passage should take about 1 minute to read aloud. \nThe passage should be engaging and appropriate for the target audience. Also generate 4 open short answer questions (data1) each on a new line, suitable for {level} learners of {language}, to check the learners understanding of the passage.",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -182,7 +182,7 @@
             "promptfields": []
         }
     ],
-    "lessonTitle": "Reading + Chat ( AI passage)",
+    "lessonTitle": "Reading + Chat (Generated passage)",
     "lessonDescription": "This will take a topic and learner level and generate a reading passage that will be used in a passage reading and then an audio chat session",
     "uniqueid": "6899607f96fb7",
     "version": "2",
