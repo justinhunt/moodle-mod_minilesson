@@ -346,7 +346,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       code += "<div class='fluency_prompt fluency_prompt_" + self.game.pointer + "'>";
       code += self.items[self.game.pointer].displayprompt || self.items[self.game.pointer].prompt;
       code += "</div>";
-     
+      code += "<div class='fluency_prompt_hint'>" + self.items[self.game.pointer].target + "</div>";
+
       //correct or not
       code += " <i data-idx='" + self.game.pointer + "' class='fluency_feedback'></i></div>";
 
@@ -395,10 +396,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       }
 
       //target is the speech we expect
-      var target = self.items[self.game.pointer].target;
+      var prompt = self.items[self.game.pointer].prompt;
       //in some cases ttrecorder wants to know the target
       if(self.quizhelper.use_ttrecorder()) {
-        self.ttrec.update_currentprompt(target);
+        self.ttrec.update_currentprompt(prompt);
       }
     },
 
