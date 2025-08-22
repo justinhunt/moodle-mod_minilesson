@@ -119,6 +119,15 @@ define(['jquery', 'core/log'], function ($, log) {
             };
         },
 
+        updatetoken: function(newtoken) {
+            var that = this;
+            if (that.socket) {
+                that.socket.close();
+            }
+            that.speechtoken = newtoken;
+            that.preparesocket();
+        },
+
         audioprocess: function(stereodata) {
             var that = this;
             const base64data = this.binarytobase64(stereodata[0]);

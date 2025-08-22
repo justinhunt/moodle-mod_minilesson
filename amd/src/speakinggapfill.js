@@ -521,13 +521,16 @@ define(['jquery',
             //correct or not
             code += " <i data-idx='" + self.game.pointer + "' class='dictate_feedback'></i></div>";
 
-            //hint - image
+            //hints
+            // We need to set a higher margin for the image if there is no hint, to stop it being overlapped by the recorder
+            var hasdefinition = self.items[self.game.pointer].definition && self.items[self.game.pointer].definition !== "";
+            var imagebottommargin  = hasdefinition ? "margin-bottom: 5px" : "margin-bottom: 50px";
             if( self.items[self.game.pointer].imageurl) {
-                code += "<div class='minilesson_sentence_image'><div class='minilesson_padded_image'><img src='"
+                code += "<div class='minilesson_sentence_image' style='"+imagebottommargin+"'><div class='minilesson_padded_image'><img src='"
                     + self.items[self.game.pointer].imageurl + "' alt='Image for gap fill' /></div></div>";
             }
             //hint - definition
-            if( self.items[self.game.pointer].definition) {
+            if(hasdefinition ) {
                 code += "<div class='definition-container'><div class='definition'>"
                     + self.items[self.game.pointer].definition + "</div>";
             }

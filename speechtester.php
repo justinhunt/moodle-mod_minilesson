@@ -45,8 +45,10 @@ if ($id) {
     print_error(0, 'You must specify a course_module ID or an instance ID');
 }
 
-$PAGE->set_url(constants::M_URL . '/speechtester.php',
-        ['id' => $cm->id]);
+$PAGE->set_url(
+    constants::M_URL . '/speechtester.php',
+    ['id' => $cm->id]
+);
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
@@ -56,9 +58,9 @@ require_capability('mod/minilesson:manage', $modulecontext);
 $config = get_config(constants::M_COMPONENT);
 
 //recorder parameters
-$forcestreaming  = optional_param('forcestreaming', 0, PARAM_INT);
-$language  = optional_param('language', $moduleinstance->ttslanguage, PARAM_TEXT);
-$stt_guided  = optional_param('stt_guided',  0, PARAM_INT);
+$forcestreaming = optional_param('forcestreaming', 0, PARAM_INT);
+$language = optional_param('language', $moduleinstance->ttslanguage, PARAM_TEXT);
+$stt_guided = optional_param('stt_guided', 0, PARAM_INT);
 
 // get token
 $token = utils::fetch_token($config->apiuser, $config->apisecret);
@@ -68,9 +70,9 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-if($config->enablesetuptab){
+if ($config->enablesetuptab) {
     $PAGE->set_pagelayout('popup');
-}else{
+} else {
     $PAGE->set_pagelayout('incourse');
 }
 
@@ -95,36 +97,45 @@ $tdata['checked_forcestreaming'] = $forcestreaming ? 'checked' : '';
 $tdata['checked_stt_guided'] = $stt_guided ? 'checked' : '';
 $isenglish = strpos($language, 'en') === 0;
 if ($isenglish) {
-    $tdata['speechtoken'] = utils::fetch_streaming_token($moduleinstance->region);
-    $tdata['speechtokentype'] = 'assemblyai';
+    $tokenobject = utils::fetch_streaming_token($moduleinstance->region);
+    if ($tokenobject) {
+        $tdata['speechtoken'] = $tokenobject->token;
+        $tdata['speechtokenvalidseconds'] = $tokenobject->validseconds;
+        $tdata['speechtokentype'] = 'assemblyai';
+    } else {
+        $tdata['speechtoken'] = false;
+        $tdata['speechtokenvalidseconds'] = 0;
+        $tdata['speechtokentype'] = '';
+    }
 }
-if ($stt_guided && $language==$moduleinstance->ttslanguage) {
+
+if ($stt_guided && $language == $moduleinstance->ttslanguage) {
     $items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $moduleinstance->id], 'itemorder ASC');
     $longestitem = null;
     $longesttext = "";
     $longesthash = "";
-    foreach($items as $item){
+    foreach ($items as $item) {
         $itemtext = $item->customtext1;
-        if(core_text::strlen($itemtext) > core_Text::strlen($longesttext) && !empty($item->passagehash)){
+        if (core_text::strlen($itemtext) > core_Text::strlen($longesttext) && !empty($item->passagehash)) {
             $longestitem = $item;
             $longesttext = $itemtext;
             $longesthash = explode('|', $item->passagehash)[1];
         }
     }
-    if($longestitem) {
+    if ($longestitem) {
 
         $tdata['passagehash'] = $longesthash;
         $theitem = utils::fetch_item_from_itemrecord($longestitem, $moduleinstance, $modulecontext);
-        switch($longestitem->type){
+        switch ($longestitem->type) {
             case constants::TYPE_LGAPFILL:
             case constants::TYPE_TGAPFILL:
             case constants::TYPE_SGAPFILL:
                 $sentences = [];
                 $longesttext = "";
-                if(isset($longestitem->customtext1)) {
+                if (isset($longestitem->customtext1)) {
                     $sentences = explode(PHP_EOL, $longestitem->customtext1);
                     $sentencedatas = $theitem->parse_gapfill_sentences($sentences);
-                    foreach($sentencedatas as $sentencedata){
+                    foreach ($sentencedatas as $sentencedata) {
                         $longesttext .= $sentencedata->sentence . '<br/>';
                     }
                 }
@@ -142,14 +153,14 @@ $showall = true;
 
 // tts voices (data for template)
 $ttsvoices = utils::get_tts_voices($moduleinstance->ttslanguage, $showall, $moduleinstance->region);
-$voices = array_map(function($key, $value)  {
+$voices = array_map(function ($key, $value) {
     return ['key' => $key, 'display' => $value];
 }, array_keys($ttsvoices), $ttsvoices);
 $tdata['voices'] = $voices;
 
 // STT languages (data for template)
 $ttslanguages = utils::get_lang_options();
-$languages = array_map(function($key, $value) use ($language) {
+$languages = array_map(function ($key, $value) use ($language) {
     return ['key' => $key, 'display' => $value, 'selected' => $key == $language ? 'selected' : ''];
 }, array_keys($ttslanguages), $ttslanguages);
 $tdata['languages'] = $languages;
@@ -165,7 +176,7 @@ echo $renderer->render_from_template(constants::M_COMPONENT . '/speechtester', $
 $jsonstring = json_encode($tdata);
 $widgetid = constants::M_RECORDERID . '_opts_9999';
 $optshtml =
-        \html_writer::tag('input', '', ['id' => 'amdopts_' . $widgetid, 'type' => 'hidden', 'value' => $jsonstring]);
+    \html_writer::tag('input', '', ['id' => 'amdopts_' . $widgetid, 'type' => 'hidden', 'value' => $jsonstring]);
 $opts = ['widgetid' => $widgetid];
 
 // this inits the model audio helper JS

@@ -3329,8 +3329,10 @@ span.fluencyletterresult.letter_wrong {
 .minilesson_sentence_image {
   max-width:400px;
   width: 75%;
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
+
 .minilesson_padded_image {
   position: relative; /* Needed for padding trick */
   width: 100%;

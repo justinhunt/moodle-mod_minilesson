@@ -597,27 +597,14 @@ class mod_minilesson_external extends external_api {
 
         // Do the token refresh.
         switch($type){
-            case 'cloudpoodll':
-                $siteconfig = get_config(constants::M_COMPONENT);
-                $region = $siteconfig->awsregion;
-                // We fetch the token (just the key) to update cache if needed.
-                $token = utils::fetch_token($siteconfig->apiuser, $siteconfig->apisecret);
-                // We fetch the full token from the cache, it will have "validuntil" set.
-                $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
-                $fulltoken = $cache->get('recentpoodlltoken');
-                break;
-
             case 'msspeech':
                 $fulltoken = utils::fetch_msspeech_token($region);
                 break;
 
-            case 'streaming':
+            case 'assemblyai':
                 $fulltoken = utils::fetch_streaming_token($region);
                 break;
 
-            case 'openai':
-                $fulltoken = utils::fetch_openai_token($region);
-                break;
             default:
                 throw new \moodle_exception('invalidtype', constants::M_COMPONENT);
         }

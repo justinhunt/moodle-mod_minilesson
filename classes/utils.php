@@ -777,7 +777,9 @@ class utils
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
         $tokenobject = $cache->get('assemblyaitoken');
         if ($tokenobject && isset($tokenobject->validuntil) && $tokenobject->validuntil > $now) {
-            return $tokenobject->token;
+            // For js we set the valid number of seconds
+            $tokenobject->validseconds = $tokenobject->validuntil - $now;
+            return $tokenobject;
         }
 
         $cloudpoodlltoken = false;
@@ -813,41 +815,9 @@ class utils
                 $tokenobject->token = $assemblyaitoken;
                 $tokenobject->validuntil = $now + (30 * MINSECS);
                 $cache->set('assemblyaitoken', $tokenobject);
-                return $assemblyaitoken;
-            } else {
-                return false;
-            }
-        }
-    }
-
-    // Fetch the streaming token for the region and language
-    public static function fetch_openai_token($region)
-    {
-
-
-        // The REST API we are calling.
-        $functionname = 'local_cpapi_fetch_assemblyai_token';
-
-        // log.debug(params);
-        $params = [];
-
-        $apikey = get_config(constants::M_COMPONENT, 'openaikey');
-        $model = "gpt-4o-mini-realtime-preview";
-        $serverurl = "https://api.openai.com/v1/realtime?model=" . $model;
-        $response = self::curl_fetch($serverurl, $params);
-
-        if (!self::is_json($response)) {
-            return false;
-        } else {
-            $payloadobject = json_decode($response);
-            if ($payloadobject->returnCode == 0 && isset($payloadobject->returnMessage)) {
-                $assemblyaitoken = $payloadobject->returnMessage;
-                // cache the token
-                $tokenobject = new \stdClass();
-                $tokenobject->token = $assemblyaitoken;
-                $tokenobject->validuntil = $now + (30 * MINSECS);
-                $cache->set('assemblyaitoken', $tokenobject);
-                return $assemblyaitoken;
+                // For js we set the valid number of seconds
+                $tokenobject->validseconds = $tokenobject->validuntil - $now;
+                return $tokenobject;
             } else {
                 return false;
             }
@@ -865,6 +835,7 @@ class utils
             case 'frankfurt':
             case 'london':
             case 'ningxia':
+            case 'westeurope':
                 return 'westeurope';
             case 'tokyo':
             case 'useast1':
@@ -873,6 +844,7 @@ class utils
             case 'singapore':
             case 'mumbai':
             case 'sydney':
+            case 'eastus':
             default:
                 return 'eastus';
         }
@@ -888,7 +860,9 @@ class utils
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
         $tokenobject = $cache->get('msspeechtoken' . '_' . $msregion);
         if ($tokenobject && isset($tokenobject->validuntil) && $tokenobject->validuntil > $now) {
-            return $tokenobject->token;
+            // For js we set the valid number of seconds
+            $tokenobject->validseconds = $tokenobject->validuntil - $now;
+            return $tokenobject;
         }
 
         $cloudpoodlltoken = false;
@@ -922,11 +896,12 @@ class utils
                 $tokenobject = new \stdClass();
                 $tokenobject->token = $msspeechtoken;
                 //ms speech tokens are only valid for 10 minutes
-                //And each user could come in at a different time meaning they get a token that might have only 1 min left
-                //so we just cache for 2 mins - maybe should cache per user ...
-                $tokenobject->validuntil = $now + (2 * MINSECS);
+                //so we just cache for 9 mins
+                $tokenobject->validuntil = $now + (9 * MINSECS);
                 $cache->set('msspeechtoken' . '_' . $msregion, $tokenobject);
-                return $msspeechtoken;
+                // For js we set the valid number of seconds
+                $tokenobject->validseconds = $tokenobject->validuntil - $now;
+                return $tokenobject;
             } else {
                 return false;
             }

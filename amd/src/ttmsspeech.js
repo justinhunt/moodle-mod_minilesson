@@ -39,6 +39,10 @@ define(['jquery',
             }
         },
 
+        updatetoken: function(newtoken) {
+            this.thetoken = newtoken;
+        },
+
         recognize: function(blob, callback) {
             var that = this;
             

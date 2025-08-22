@@ -139,8 +139,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
                       self.gotComparison(comparison, message);
                   }
               );
-               
-    
             } //end of switch message type
           };
 

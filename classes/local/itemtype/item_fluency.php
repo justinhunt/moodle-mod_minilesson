@@ -67,8 +67,17 @@ class item_fluency extends item {
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
 
         // MS token and region.
-        $testitem->speechtoken = utils::fetch_msspeech_token($this->moduleinstance->region);
-        $testitem->speechtokentype = 'msspeech';
+        $tokenobject = utils::fetch_msspeech_token($this->moduleinstance->region);
+        if ($tokenobject) {
+            $testitem->speechtoken = $tokenobject->token;
+            $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
+            $testitem->speechtokentype = 'msspeech';
+        } else {
+            $testitem->speechtoken = false;
+            $testitem->speechtokenvalidseconds = 0;
+            $testitem->speechtokentype = '';
+        }
+
         // We overwrite our regular poodll region with the MS region, eg useast1 becomes eastus, frankfurt becomes westeurope.
         $testitem->region = utils::fetch_ms_region($this->moduleinstance->region);
 

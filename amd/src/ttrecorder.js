@@ -1,6 +1,6 @@
-define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper','mod_minilesson/ttbrowserrec',
+define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/ttaudiohelper','mod_minilesson/ttbrowserrec',
     'core/str','mod_minilesson/timer','mod_minilesson/ttmsspeech'],
-    function ($, log, notification, audioHelper, browserRec, str, timer, msspeech) {
+    function ($, log, notification, ajax, audioHelper, browserRec, str, timer, msspeech) {
     "use strict"; // jshint ;_;
     /*
     *  The TT recorder
@@ -37,6 +37,7 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
         stt_guided: false,
         currentPrompt: false,
         speechtoken: '',
+        speechtokenvalidseconds: '',
         speechtokentype: '',
         forcestreaming: false,
         is_streaming: false,
@@ -208,6 +209,9 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
 
             }//end of setting up recorders
 
+            // Set up token refresh
+            this.init_token_refresh();
+
             // Setting up timer.
             this.timer = timer.clone();
             this.timer.init(this.maxtime, handle_timer_update);
@@ -268,10 +272,64 @@ define(['jquery', 'core/log','core/notification', 'mod_minilesson/ttaudiohelper'
             this.lang=this.controls.recorderbutton.data('lang');
             this.asrurl=this.controls.recorderbutton.data('asrurl');
             this.speechtoken=this.controls.recorderbutton.data('speechtoken');
+            this.speechtokenvalidseconds=this.controls.recorderbutton.data('speechtokenvalidseconds');
             this.speechtokentype=this.controls.recorderbutton.data('speechtokentype');
             this.forcestreaming=this.controls.recorderbutton.data('forcestreaming');
             this.maxtime=this.controls.recorderbutton.data('maxtime');
             this.waveHeight=this.controls.recorderbutton.data('waveheight');
+        },
+
+        init_token_refresh: function() {
+            var that = this;
+            var validsecs = Number(that.speechtokenvalidseconds) || 0;
+            // If we have a token, then we can set up a timer to refresh it
+            if (that.speechtoken && validsecs > 0) {
+                //(valid until seconds - now seconds) => milliseconds
+                var refreshInterval = (validsecs -10) * 1000;
+                log.debug('Refreshing ' + that.speechtokentype +' token after ' + refreshInterval + ' milliseconds');
+                if (refreshInterval > 0) {
+                    setTimeout(function() {
+                        // Refresh the token
+                        log.debug('Refreshing streaming token...');
+                        var ajaxresult =  ajax.call([{
+                            methodname: 'mod_minilesson_refresh_token',
+                            args: {
+                                'type': that.speechtokentype,
+                                'region': that.region
+                            },
+                            async: false
+                        }])[0].then(ajaxresult => {
+                            log.debug('New token ajaxresult:', ajaxresult);
+                            var newtoken = JSON.parse(ajaxresult);
+                            log.debug('New token received:', newtoken);
+                            // Update our internal token
+                            if(newtoken && newtoken.token) {
+                                that.speechtoken = newtoken.token;
+                                that.speechtokenvalidseconds = newtoken.validseconds;
+                                switch (newtoken.type) {
+                                    case 'assemblyai':
+                                        that.helper.streamer.updatetoken(newtoken.token);
+                                        break;
+                                    case 'msspeech':
+                                        that.msspeech_instance.updatetoken(newtoken.token);
+                                        break;
+                                }
+                                log.debug('Streaming token refreshed successfully.');
+                                // Start the countdown all over again
+                                that.init_token_refresh();
+                            } else {
+                                log.debug('New token was not a token.');
+                            }
+                        });
+                        
+                    }, refreshInterval);
+                    
+                } else {
+                    log.debug('Streaming token is already valid, no need to refresh.');
+                }
+            } else {
+                log.debug('No valid streaming token available, skipping refresh setup.');
+            }
         },
 
         silence_detected: function(){

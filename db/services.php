@@ -97,4 +97,13 @@ $functions = [
             'type'        => 'read',
             'ajax'        => true,
         ),
+
+         'mod_minilesson_refresh_token' => array(
+                'classname'   => 'mod_minilesson_external',
+                'methodname'  => 'refresh_token',
+                'description' => 'refreshes the speech recognition token',
+                'capabilities' => 'mod/minilesson:view',
+                'type'        => 'read',
+                'ajax'        => true,
+        ),
 ];
