@@ -1,5 +1,6 @@
-Version 1.1.02 (Build 202508xxxx)
+Version 1.1.02 (Build 2025080104)
 - Added better auto refresh for speech tokens, so long running sessions will still work
+- Added more image generation slots for keyword based templates
 
 Version 1.1.01 (Build 2025080103)
  - Added item types Word Shuffle and Scatter

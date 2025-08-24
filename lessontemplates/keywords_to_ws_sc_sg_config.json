@@ -231,7 +231,7 @@
     "lessonTitle": "Keywords to Word Shuffle and Scatter and Space Game",
     "lessonDescription": "Enter 4 - 10 keywords in the box below. The keywords will be used to generate a word shuffle and scatter activity, and a space game activity. The keywords will also be used to generate a picture of each keyword on a blackboard with a cute poodle teacher beside it.",
     "uniqueid": "68a0422070f05",
-    "version": "0",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

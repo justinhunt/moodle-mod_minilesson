@@ -267,9 +267,9 @@
         }
     ],
     "lessonTitle": "Keywords to gapfills and fluency",
-    "lessonDescription": "Enter a list of words (maximum 10) and Poodll will make a short activity for students to practice those words",
+    "lessonDescription": "Enter a list of words (maximum 30) and Poodll will make a short activity for students to practice those words",
     "uniqueid": "688244029b789",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

@@ -310,16 +310,36 @@ class aigen
         }
 
         $curl = new curl();
+        $curlopts = [];
+        $curlopts['CURLOPT_TIMEOUT'] = 120; // this might be unnecessary or even counter productive
  
         // Update the progress bar.
         if ($this->progressbar) {
             $this->progressbar->start_progress("Generate images: {".count($requests)."} ");
         }
-        $responses = $curl->multirequest($requests);
+
+        $responses = $curl->multirequest($requests, $curlopts);
+        $secondattempt_requests = [];
+        $secondattempt_imagenumbers = [];
         foreach ($responses as $i => $resp) {
             $processedimage = $this->process_generate_image_response($resp);
             if ($processedimage) {
                 $imageurls[$filenametrack[$i]] = $processedimage;
+            } else {
+                $secondattempt_requests[] =  $requests[$i];
+                $secondattempt_imagenumbers[] = $i;
+            }
+        }
+
+        // Second attempt responses
+        if(count($secondattempt_requests) > 0) {
+            $responses = $curl->multirequest($secondattempt_requests);
+            foreach ($responses as $i => $resp) {
+                $imagenumber = $secondattempt_imagenumbers[$i];
+                $processedimage = $this->process_generate_image_response($resp);
+                if ($processedimage) {
+                    $imageurls[$filenametrack[$imagenumber]] = $processedimage;
+                }
             }
         }
 

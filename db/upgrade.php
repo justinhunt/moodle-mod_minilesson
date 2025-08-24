@@ -833,13 +833,13 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025080102, 'minilesson');
     }
 
-    if ($oldversion < 2025080103) {
+    if ($oldversion < 2025080104) {
 
         // Update default templates
         \mod_minilesson\aigen::create_default_templates();
 
         // Minilesson savepoint reached.
-        upgrade_mod_savepoint(true, 2025080103, 'minilesson');
+        upgrade_mod_savepoint(true, 2025080104, 'minilesson');
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.

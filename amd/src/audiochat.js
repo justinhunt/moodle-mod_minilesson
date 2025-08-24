@@ -729,6 +729,7 @@ function($, log, def, ttrecorder, templates, str) {
                         log.debug("Grading and Feedback:", self.gradingData);
 
                     } catch (err) {
+                        self.gradingData = false;
                         log.debug("Failed to parse grading feedback:", err);
                     }
                     return;
