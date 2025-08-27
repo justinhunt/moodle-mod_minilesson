@@ -999,6 +999,7 @@ abstract class item implements templatable, renderable
             // prompt = audio_prompt
             // sentence = target_sentence ie what the student should say (correct response)
             // displayprompt = the text_prompt that we show the student before they speak
+            $hintdisplay = false;
 
             //dottify = if we dont show the text and just show dots ..
             if ($dottify) {
@@ -1010,6 +1011,7 @@ abstract class item implements templatable, renderable
                 //if we have a pipe prompt = array[0] and response = array[1]
                 $sentencebits = explode('|', $sentence);
                 if (count($sentencebits) > 1) {
+                    $hintdisplay = true;
                     $prompt = utils::super_trim($sentencebits[0]);
                     $sentence = utils::super_trim($sentencebits[1]);
                     if (count($sentencebits) > 2) {
@@ -1058,6 +1060,7 @@ abstract class item implements templatable, renderable
             $s->length = \core_text::strlen($s->sentence);
             $s->imageurl = isset($sentenceimages[$sentenceindex]) ? $sentenceimages[$sentenceindex] : false;
             $s->audiourl = $theaudiourl;
+            $s->hintdisplay = $hintdisplay;
 
             // Add phonetics if we have them.
             if (isset($phonetics[$index]) && !empty($phonetics[$index])) {
