@@ -1024,3 +1024,4 @@ $string['audiochat_autosend_desc'] = 'If checked, turn-detection is automatic. T
 $string['clicktosend'] = 'click to send';
 $string['cantchat'] = 'Chat is NOT available. To use this item type you must have a valid OpenAI key set in the MiniLesson activity admin settings. Chat is also not available in China (Ningxia region)';
 
+$string['confirm_desc'] = 'You have not submitted your answer. Are you sure want to go next page?';
