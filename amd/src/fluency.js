@@ -90,7 +90,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             // self.do_evaluation_results(speechresults);
         } //end of switch message type
       };
- 
+
         //init tt recorder
         var opts = {};
         opts.uniqueid = itemdata.uniqueid;
@@ -129,6 +129,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
               audio: null,
               audiourl: target.audiourl ? target.audiourl : "",
               imageurl: target.imageurl,
+              hintdisplay: target.hintdisplay,
           };
       }).filter(function(e) {
           return e.target !== "";
@@ -181,7 +182,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
     },
 
     register_events: function(index, itemdata, quizhelper) {
-      
+
       var self = this;
       // On next button click
       self.smallnextbtn.on('click', function(e) {
@@ -335,7 +336,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       );
       self.nextReply();
   },
-  
+
 
   nextReply: function() {
       var self = this;
@@ -346,7 +347,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       code += "<div class='fluency_prompt fluency_prompt_" + self.game.pointer + "'>";
       code += self.items[self.game.pointer].displayprompt || self.items[self.game.pointer].prompt;
       code += "</div>";
-      code += "<div class='fluency_prompt_hint'>" + self.items[self.game.pointer].target + "</div>";
+      if (self.items[self.game.pointer].hintdisplay) {
+        code += "<div class='fluency_prompt_hint'>" + self.items[self.game.pointer].target + "</div>";
+      }
 
       //correct or not
       code += " <i data-idx='" + self.game.pointer + "' class='fluency_feedback'></i></div>";
@@ -360,7 +363,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       //feedback and results containers
       code += "<div class='item-results-container'></div>";
       code += "<div class='item-feedback-container'></div>";
-      
+
       $("#" + self.itemdata.uniqueid + "_container .question").append(code);
       var newreply = self.container.find(".fluency_reply_" + self.game.pointer);
       anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
@@ -372,7 +375,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       //reset skip/continue button to red
       self.skipbtn.removeClass('btn-success');
       self.skipbtn.addClass('btn-danger');
-    
+
       //Start timer if we have one
       self.startTimer();
 
@@ -468,8 +471,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         }else{
             var words = pronunciation_result.privPronJson.Words;
         }
-      
-      
+
+
         // Render pronunciation feedback for each word
         var lineresulthtml="";
         words.forEach(function (wordobject) {
@@ -486,10 +489,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                         score: syllable.PronunciationAssessment.AccuracyScore,
                     });
                 });
-            //If no syllable data we do our best to simulate it    
+            //If no syllable data we do our best to simulate it
             }else{
-                var adata = self.markuphelper.alignPhonemesToLetters(wordobject.Word, 
-                    wordobject.Phonemes, 
+                var adata = self.markuphelper.alignPhonemesToLetters(wordobject.Word,
+                    wordobject.Phonemes,
                     twoletterlang);
             }
             lineresulthtml += self.markuphelper.renderPronunciationFeedback(adata);
@@ -511,7 +514,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
         //update progress dots
         self.updateProgressDots();
-        
+
         //We no longer do this!!! left in for future ref.
         // If we are correct move to next item
         if(false && self.items[self.game.pointer].correct ){
@@ -560,10 +563,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         // calculate starBandWidth // band 1 = 0-19 / band 2 = 20-39 etc.
         var correctBandwidth = 100 - self.phonemeWarningThreshold;
         var starBandWidth = (100 - correctBandwidth) / 4;
-        
+
         for (var i = 0; i < maxStars; i++) {
             var star = $("<i class='fa'>");
-            if (i <= accuracyScore / starBandWidth ) { 
+            if (i <= accuracyScore / starBandWidth ) {
                 star.addClass("fa-star");
             } else {
                 star.addClass("fa-star-o");
@@ -582,7 +585,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         } else {
             message.text("Keep trying! Focus on the pronunciation of individual words.");
         }
-           
+
         itemstarscontainer.append(message);
          */
     },

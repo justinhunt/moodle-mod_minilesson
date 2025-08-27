@@ -6,12 +6,16 @@ define(['jquery',
     'mod_minilesson/animatecss',
     'mod_minilesson/progresstimer',
     'core/templates',
-], function($, log, ajax, def, polly, anim, progresstimer, templates) {
+    'core/notification',
+    'core/str',
+], function($, log, ajax, def, polly, anim, progresstimer, templates, notification, str) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson wordshuffle: initialising');
 
     return {
+
+        strings: {},
 
         // For making multiple instances
         clone: function() {
@@ -26,7 +30,7 @@ define(['jquery',
             var self = this;
             self.itemdata = itemdata;
             // Default to true, we might implement a start page later.
-            self.itemdata.hidestartpage = true; 
+            self.itemdata.hidestartpage = true;
             self.quizhelper = quizhelper;
             self.index = index;
 
@@ -34,7 +38,7 @@ define(['jquery',
             var animopts = {};
             animopts.useanimatecss = quizhelper.useanimatecss;
             anim.init(animopts);
-
+            self.init_strings();
             self.init_controls();
             self.register_events();
             self.setvoice();
@@ -64,6 +68,22 @@ define(['jquery',
                 listen_btn: container.find(".wordshuffle_listen_btn"),
                 retry_btn: container.find(".wordshuffle_retry_btn")
             };
+        },
+
+        init_strings: function() {
+            var self = this;
+            str.get_strings([
+                { "key": "nextlessonitem", "component": 'mod_minilesson'},
+                { "key": "confirm_desc", "component": 'mod_minilesson'},
+                { "key": "yes", "component": 'moodle'},
+                { "key": "no", "component": 'moodle'},
+            ]).done(function (s) {
+                var i = 0;
+                self.strings.nextlessonitem = s[i++];
+                self.strings.confirm_desc = s[i++];
+                self.strings.yes = s[i++];
+                self.strings.no = s[i++];
+            });
         },
 
         next_question: function() {
@@ -119,7 +139,18 @@ define(['jquery',
             var self = this;
 
             self.controls.nextbutton.on('click', function(e) {
-                self.next_question();
+                if (self.items.some(item => !item.answered)) {
+                    notification.confirm(self.strings.nextlessonitem,
+                        self.strings.confirm_desc,
+                        self.strings.yes,
+                        self.strings.no,
+                        function() {
+                            self.next_question();
+                        }
+                    );
+                } else {
+                    self.next_question();
+                }
             });
 
             self.controls.start_btn.on("click", function() {
@@ -457,8 +488,11 @@ define(['jquery',
             var self = this;
             if (self.allFilled()) {
                 self.controls.check_btn.hide();
+                self.controls.skip_btn.prop("disabled", true);
+                self.controls.retry_btn.prop("disabled", true);
                 self.setPerSlotFeedback();
                 self.check_answer();
+                self.items[self.game.pointer].answered = true;
             } else {
                 self.controls.check_btn.show();
                 self.clearPerSlotFeedback();
@@ -572,7 +606,7 @@ define(['jquery',
                 .removeAttr('tabindex');
 
             if (self.selectedWord) {
-                // If the selected word is not in the word bank, 
+                // If the selected word is not in the word bank,
                 // It has been selected from a drop slot.
                 // Highlight the word bank and set tabindex to 0.
                 if (!self.selectedWord.parent('.word-bank').length) {
