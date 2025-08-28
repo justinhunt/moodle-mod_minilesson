@@ -1039,9 +1039,9 @@ $string['freewriting:feedbackprompt_dec2'] = 'Explain major grammar mistakes sim
 $string['freespeaking:gradingprompt1'] = 'Short Answer - requires the correct answer (ai data1) ';
 $string['freespeaking:gradingprompt2'] = 'Describe the picture - requires a picture description (ai data1) ';
 $string['freespeaking:feedbackprompt1'] = 'Describe the picture';
-$string['freespeaking:gradingprompt_dec1'] = 'Deduct 1 point for each grammar, spelling or punctuation error.';
+$string['freespeaking:gradingprompt_dec1'] = 'Deduct 1 point for each grammar error.';
 $string['freespeaking:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer. 
-Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a broken sentence that has the correct meaning';
+Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a sentence with mistakes that has the correct meaning';
 $string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{ai data1}] 
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
 $string['freespeaking:feedbackprompt_dec1']  = 'Explain each grammar mistake simply. Do not comment on spelling or punctuation.';
@@ -1051,17 +1051,17 @@ $string['audiochat:gradingprompt1'] = 'Open discussion - requires a topic';
 $string['audiochat:gradingprompt2'] = 'Discussing a picture - requires a picture description (topic) and questions (ai data1)';
 $string['audiochat:gradingprompt3'] = 'Discussing a passage - requires a passage (topic) and questions (ai data1)';
 $string['audiochat:gradingprompt_dec1'] = "You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. Today the discussion topic is: {topic}. Please discuss it with your student. Speak simply and slowly. Your responses should be brief. Your aim is to give the student opportunity to speak. Explain words and concepts in the student's native language if they do not understand.";
-$string['audiochat:gradingprompt_dec2'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student is looking at a picture the depicts the folllowing scene: "{topic}" 
+$string['audiochat:gradingprompt_dec2'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student is looking at a picture the depicts the following scene: "{topic}" 
 
-You task is to as the student the following questions, one at a time: {ai data1}
+Your task is to ask the student the following questions, one at a time: {ai data1}
 
 Speak simply and slowly. Your responses should be brief. Do not comment on the content of their response or if it was correct. But help them if they did not understand your question. When the student has answered all the questions, thank them and tell them to "press the end button."';
 $string['audiochat:gradingprompt_dec3'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student has just read the following passage: "{topic}"
 
-You task is to as the student the following questions, one at a time: {ai data1}
+You task is to ask the student the following questions, one at a time: {ai data1}
 
 Speak simply and slowly. Your responses should be brief. Do not comment on the content of their response or if it was correct. But help them if they did not understand your question. When the student has answered all the questions, thank them and tell them to "press the end button."';
 $string['audiochat:feedbackprompt1'] = 'Open Discussion';
 $string['audiochat:feedbackprompt2'] = 'Discussion with questions - requires points and questions (ai data1)';
 $string['audiochat:feedbackprompt_dec1'] = "For the score consider the following criteria: relevance to topic: '{topic}', fluency, and vocabulary usage. For feedback it should be simple, and in the student\'s native language: {native language}.";
-$string['audiochat:feedbackprompt_dec2'] = "Give 25 points for each correct answer to a question that was answered by the student. Give 0 points for incorrect answers. Give the students feedback on their use of language, and on their answers. These are the questions: {ai data1}";
+$string['audiochat:feedbackprompt_dec2'] = "Give 25 points for each correct answer to a question that was answered by the student. Give 0 points for incorrect answers. Give the student feedback on their use of language, and on their answers. These are the questions: {ai data1}";
