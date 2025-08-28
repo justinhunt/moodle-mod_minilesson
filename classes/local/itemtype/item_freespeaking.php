@@ -122,10 +122,15 @@ class item_freespeaking extends item {
         $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
         $keycols['int2'] = ['jsonname' => 'relevance', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::RELEVANCE];
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
+        $keycols['int4'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREESPEAKING_GRADINGSELECTION];
+        $keycols['int5'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREESPEAKING_FEEDBACKSELECTION];
         $keycols['text6'] = ['jsonname' => 'aigradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_INSTRUCTIONS];
         $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
         $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];
         $keycols['text4'] = ['jsonname' => 'aigradefeedbacklanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AIGRADE_FEEDBACK_LANGUAGE];
+        $keycols['text5'] = ['jsonname' => 'freespeakingtopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREESPEAKING_TOPIC];
+        $keycols['data1'] = ['jsonname' => 'freespeakingaidata1', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREESPEAKING_AIDATA1];
+        $keycols['data2'] = ['jsonname' => 'freespeakingaidata2', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREESPEAKING_AIDATA2];
         return $keycols;
     }
 

@@ -1007,3 +1007,13 @@ function minilesson_output_fragment_aigen_contextform($args) {
     }
     return $form->render();
 }
+
+function mod_minilesson_output_fragment_ai_prompt($args) {
+    $args = (object)$args;
+
+    $promptid   = (int) $args->promptid;
+    $prompttype = (string) $args->prompttype;
+    $itemtype = (string) $args->itemtype;
+
+    return get_string($itemtype . ':' . $prompttype . 'prompt_dec' . $promptid, constants::M_COMPONENT);
+}

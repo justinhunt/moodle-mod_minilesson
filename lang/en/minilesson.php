@@ -856,10 +856,6 @@ $string['pushitems'] = 'Lesson Items';
 $string['pushitems_details'] = 'The items in this MiniLesson will be pushed to matching MiniLessons. It will only push to MiniLessons in which every item\'s type, order and name match the items in this MiniLesson. It is intended to overwrite only existing items. It will overwrite text, images and audio in the items, but not the item type or order. It will not add new items to the target MiniLessons.';
 $string['pushconfirm'] = 'You are about to push the setting: <b>{$a->pushthing}</b> to {$a->clonecount} other activities. Are you sure?';
 $string['scopeselector']  = 'Scope: ';
-$string['freespeaking_default_aigrade']  = 'Deduct 1 point for each grammar mistake but do not penalize for spelling or punctuation errors.';
-$string['freespeaking_default_aigradefeedback']  = 'Explain each grammar mistake simply. Do not comment on spelling or punctuation.';
-$string['freewriting_default_aigrade'] = 'Deduct 1 point for each grammar, spelling or punctuation error.';
-$string['freewriting_default_aigradefeedback']  = 'Explain each mistake simply.';
 $string['writehere']  = 'Write here ..';
 $string['submit']='Submit';
 $string['feedback']='Feedback';
@@ -983,7 +979,6 @@ $string['mcimageresponses'] = '(optional) Upload image files to be displayed wit
 $string['mcaudioresponses'] = '(optional) Upload audio files to match the answer option. The audio file will be used instead of TTS audio. The audio file name should match the answer number, eg. 1.mp3 or 2.mp3.  Make sure to also choose to use audio in the display options for this question.';
 $string['multiaudioaudioresponses'] = '(optional) Upload audio files to match the answer option. The audio file will be used instead of TTS audio. The audio file name should match the answer number, eg. 1.mp3 or 2.mp3.';
 $string['audiochat_instructions'] = 'Instructions for AI';
-$string['audiochat_instructions_default'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. Today the discussion topic is: {topic}. Please discuss it with your student. Speak simply and slowly. Your responses should be brief. Your aim is to give the student opportunity to speak. Explain words and concepts in the student\'s native language if they do not understand. ';
 $string['audiochat_instructions_instructions'] = 'The instructions are a template that combines with the AI role, AI voice, topic, AI custom data 1, AI custom data 2 and student native language to create the instructions passed to AI. You can use the following variables in the instructions: {ai role}, {ai voice}, {target language}, {native language}, {ai data1}, {ai data2} and {topic}. The default instructions are usually fine. But you can change them if you have a different use case.';
 $string['audiochat_role'] = 'AI Role';
 $string['audiochat_voice'] = 'AI Voice';
@@ -1015,7 +1010,6 @@ $string['gradebywordcount'] = "This activity was graded based on the number of w
 $string['audiochat_gradeexplanation'] = 'Grade Explanation';
 $string['audiochat_conversation'] = 'Conversation';
 $string['audiochat_gradeinstructions'] = 'Feedback/Scoring Instructions for AI';
-$string['audiochat_gradeinstructions_default'] = "For the score consider the following criteria: relevance to topic: '{topic}', fluency, and vocabulary usage. For feedback it should be simple, and in the student\'s native language: {native language}. ";
 $string['audiochat_gradeinstructions_instructions'] = 'The score/feedback instructions should tell how to build feedback, and a "score" from 0 - 100. They are a template that will be merged with the AI role, AI voice, topic, AI custom data 1, AI custom data 2 and student native language to create the instructions. You can use the following variables in the instructions: {ai role}, {ai voice}, {target language}, {native language}, {ai data1}, {ai data2} and {topic}. If left empty the grade will be calculated using the total words spoken over the target word count.';
 $string['audiochat_aidata1'] = 'Custom AI Data 1';
 $string['audiochat_aidata2'] = 'Custom AI Data 2';
@@ -1025,3 +1019,49 @@ $string['clicktosend'] = 'click to send';
 $string['cantchat'] = 'Chat is NOT available. To use this item type you must have a valid OpenAI key set in the MiniLesson activity admin settings. Chat is also not available in China (Ningxia region)';
 
 $string['confirm_desc'] = 'You have not submitted your answer. Are you sure want to go next page?';
+$string['topic_placeholder'] = 'Topic';
+$string['aidata1_placeholder'] = 'Custom AI Data1';
+$string['aidata2_placeholder'] = 'Custom AI Data2';
+
+$string['instructionprompt'] = 'Instruction ';
+
+$string['freewriting:gradingprompt1'] = 'Short Answer - requires the correct answer (ai data1)';
+$string['freewriting:gradingprompt2'] = 'Describe the picture - requires a picture description (ai data1)';
+$string['freewriting:feedbackprompt1'] = 'Describe the picture ';
+$string['freewriting:gradingprompt_dec1'] = 'Deduct 1 point for each grammar, spelling or punctuation error.';
+$string['freewriting:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer.
+Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a broken sentence that has the correct meaning.';
+$string['freewriting:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{ai data1}] 
+Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
+$string['freewriting:feedbackprompt_dec1'] = 'Explain each mistake simply.';
+$string['freewriting:feedbackprompt_dec2'] = 'Explain major grammar mistakes simply. Suggest any elements of the scene that the student did not describe.';
+
+$string['freespeaking:gradingprompt1'] = 'Short Answer - requires the correct answer (ai data1) ';
+$string['freespeaking:gradingprompt2'] = 'Describe the picture - requires a picture description (ai data1) ';
+$string['freespeaking:feedbackprompt1'] = 'Describe the picture';
+$string['freespeaking:gradingprompt_dec1'] = 'Deduct 1 point for each grammar, spelling or punctuation error.';
+$string['freespeaking:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer. 
+Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a broken sentence that has the correct meaning';
+$string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{ai data1}] 
+Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
+$string['freespeaking:feedbackprompt_dec1']  = 'Explain each grammar mistake simply. Do not comment on spelling or punctuation.';
+$string['freespeaking:feedbackprompt_dec2'] = 'Explain non minor grammar mistakes simply. Do not comment on spelling or punctuation. Suggest any elements of the scene that the student did not describe.';
+
+$string['audiochat:gradingprompt1'] = 'Open discussion - requires a topic';
+$string['audiochat:gradingprompt2'] = 'Discussing a picture - requires a picture description (topic) and questions (ai data1)';
+$string['audiochat:gradingprompt3'] = 'Discussing a passage - requires a passage (topic) and questions (ai data1)';
+$string['audiochat:gradingprompt_dec1'] = "You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. Today the discussion topic is: {topic}. Please discuss it with your student. Speak simply and slowly. Your responses should be brief. Your aim is to give the student opportunity to speak. Explain words and concepts in the student's native language if they do not understand.";
+$string['audiochat:gradingprompt_dec2'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student is looking at a picture the depicts the folllowing scene: "{topic}" 
+
+You task is to as the student the following questions, one at a time: {ai data1}
+
+Speak simply and slowly. Your responses should be brief. Do not comment on the content of their response or if it was correct. But help them if they did not understand your question. When the student has answered all the questions, thank them and tell them to "press the end button."';
+$string['audiochat:gradingprompt_dec3'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student has just read the following passage: "{topic}"
+
+You task is to as the student the following questions, one at a time: {ai data1}
+
+Speak simply and slowly. Your responses should be brief. Do not comment on the content of their response or if it was correct. But help them if they did not understand your question. When the student has answered all the questions, thank them and tell them to "press the end button."';
+$string['audiochat:feedbackprompt1'] = 'Open Discussion';
+$string['audiochat:feedbackprompt2'] = 'Discussion with questions - requires points and questions (ai data1)';
+$string['audiochat:feedbackprompt_dec1'] = "For the score consider the following criteria: relevance to topic: '{topic}', fluency, and vocabulary usage. For feedback it should be simple, and in the student\'s native language: {native language}.";
+$string['audiochat:feedbackprompt_dec2'] = "Give 25 points for each correct answer to a question that was answered by the student. Give 0 points for incorrect answers. Give the students feedback on their use of language, and on their answers. These are the questions: {ai data1}";

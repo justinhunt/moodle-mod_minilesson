@@ -90,7 +90,7 @@ class item_audiochat extends item {
         $testitem->audiochatinstructions = $this->itemrecord->{constants::AUDIOCHAT_INSTRUCTIONS};
         // If no topic was set, then we use the default topic.
         if (empty($testitem->audiochatinstructions )) {
-            $testitem->audiochatinstructions = get_string('audiochat_instructions_default', constants::M_COMPONENT);
+            $testitem->audiochatinstructions = get_string('audiochat:gradingprompt_dec1', constants::M_COMPONENT);
         }
 
         // Replace the placeholders in the audiochat instructions with the actual data.
@@ -179,6 +179,8 @@ class item_audiochat extends item {
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
         $keycols['int4'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_AUTORESPONSE];
         $keycols['int5'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_ALLOWRETRY];
+        $keycols['int6'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_GRADINGSELECTION];
+        $keycols['int7'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_FEEDBACKSELECTION];
         $keycols['text5'] = ['jsonname' => 'audiochattopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_TOPIC];
         $keycols['text6'] = ['jsonname' => 'audiochatinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_INSTRUCTIONS];
         $keycols['data3'] = ['jsonname' => 'audiochatgradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_GRADEINSTRUCTIONS];

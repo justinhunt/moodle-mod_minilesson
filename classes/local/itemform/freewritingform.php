@@ -15,7 +15,7 @@ class freewritingform extends baseform {
     public $type = constants::TYPE_FREEWRITING;
 
     public function custom_definition() {
-        global $CFG;
+        global $CFG, $PAGE;
 
         $this->add_itemsettings_heading();
         $mform = $this->_form;
@@ -25,10 +25,33 @@ class freewritingform extends baseform {
         $this->add_static_text('freewritingtotalmarks_instructions', '', get_string('totalmarks_instructions', constants::M_COMPONENT));
         $this->add_numericboxresponse(constants::TARGETWORDCOUNT, get_string('targetwordcount_title', constants::M_COMPONENT), false);
         $mform->setDefault(constants::TARGETWORDCOUNT, 60);
-        $this->add_textarearesponse(constants::AIGRADE_INSTRUCTIONS, get_string('aigrade_instructions', constants::M_COMPONENT), true);
-        $mform->setDefault(constants::AIGRADE_INSTRUCTIONS, get_string('freewriting_default_aigrade', constants::M_COMPONENT));
+
+        $options = [
+            0 => '--',
+            1 => get_string('default'),
+            2 => get_string('freewriting:gradingprompt1', constants::M_COMPONENT),
+            3 => get_string('freewriting:gradingprompt2', constants::M_COMPONENT),
+        ];
+        $mform->addElement('select', constants::FREEWRITING_GRADINGSELECTION, get_string('aigrade_instructions', constants::M_COMPONENT), $options,
+            ['data-name' => 'gradingaiprompt', 'data-type' => 'freewriting']);
+        $mform->setDefault(constants::FREEWRITING_GRADINGSELECTION, 1);
+
+        $this->add_textarearesponse(constants::AIGRADE_INSTRUCTIONS, '', true);
+        $mform->getElement(constants::AIGRADE_INSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_instructions']);
+        $mform->setDefault(constants::AIGRADE_INSTRUCTIONS, get_string('freewriting:gradingprompt_dec1', constants::M_COMPONENT));
+
+        $options = [
+            0 => '--',
+            1 => get_string('default'),
+            2 => get_string('freewriting:feedbackprompt1', constants::M_COMPONENT),
+        ];
+        $mform->addElement('select', constants::FREEWRITING_FEEDBACKSELECTION, get_string('aigrade_feedback', constants::M_COMPONENT), $options,
+            ['data-name' => 'feedbackaiprompt', 'data-type' => 'freewriting',]);
+        $mform->setDefault(constants::FREEWRITING_FEEDBACKSELECTION, 1);
+
         $this->add_textarearesponse(constants::AIGRADE_FEEDBACK, get_string('aigrade_feedback', constants::M_COMPONENT), true);
-        $mform->setDefault(constants::AIGRADE_FEEDBACK, get_string('freewriting_default_aigradefeedback', constants::M_COMPONENT));
+        $mform->getElement(constants::AIGRADE_FEEDBACK)->updateAttributes(['data-name' => 'aigrade_feedback']);
+        $mform->setDefault(constants::AIGRADE_FEEDBACK, get_string('freewriting:feedbackprompt_dec1', constants::M_COMPONENT));
         // Feedback language.
         $this->add_languageselect(constants::AIGRADE_FEEDBACK_LANGUAGE,
             get_string('aigrade_feedback_language', constants::M_COMPONENT),
@@ -47,5 +70,14 @@ class freewritingform extends baseform {
 
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         $this->add_nopasting(constants::NOPASTING, get_string('nopasting_desc', constants::M_COMPONENT));
+
+        $this->add_textarearesponse(constants::FREEWRITING_TOPIC, get_string('topic_placeholder', constants::M_COMPONENT),  false);
+
+        $this->add_textarearesponse(constants::FREEWRITING_AIDATA1, get_string('aidata1_placeholder', constants::M_COMPONENT), false);
+        $mform->setDefault(constants::FREEWRITING_AIDATA1, '');
+        $this->add_textarearesponse(constants::FREEWRITING_AIDATA2, get_string('aidata2_placeholder', constants::M_COMPONENT), false);
+        $mform->setDefault(constants::FREEWRITING_AIDATA2, '');
+
+        $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/aiprompt', 'init');
     }
 }
