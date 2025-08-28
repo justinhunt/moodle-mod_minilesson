@@ -219,7 +219,7 @@ class constants
     const MAXANSWERS = 4;
     const MAXCUSTOMTEXT = 7;
     const MAXCUSTOMDATA = 5;
-    const MAXCUSTOMINT = 5;
+    const MAXCUSTOMINT = 7;
 
     const ITEMTEXTAREA_EDOPTIONS = array('trusttext' => 0, 'noclean' => 1, 'maxfiles' => 0);
     const READSENTENCE = 'customint2';
@@ -654,4 +654,31 @@ class constants
         constants::M_LANG_VIVN => 'Khi trời nắng, chúng ta hãy đi dạo trong công viên.',
     ];
 
+    const FREESPEAKING_TOPIC = 'customtext5';
+
+    const FREESPEAKING_AIDATA1 = 'customdata1';
+
+    const FREESPEAKING_AIDATA2 = 'customdata2';
+
+    const FREESPEAKING_GRADINGINSTRUCTIONS = 'customtext6';
+
+    const FREESPEAKING_FEEDBACKINSTRUCTIONS = 'customtext2';
+
+    const FREESPEAKING_GRADINGSELECTION = 'customint4';
+
+    const FREESPEAKING_FEEDBACKSELECTION = 'customint5';
+
+    const FREEWRITING_TOPIC = 'customtext5';
+
+    const FREEWRITING_AIDATA1 = 'customdata1';
+
+    const FREEWRITING_AIDATA2 = 'customdata2';
+
+    const FREEWRITING_GRADINGSELECTION = 'customint5';
+
+    const FREEWRITING_FEEDBACKSELECTION = 'customint6';
+
+    const AUDIOCHAT_GRADINGSELECTION = 'customint6';
+
+    const AUDIOCHAT_FEEDBACKSELECTION = 'customint7';
 }

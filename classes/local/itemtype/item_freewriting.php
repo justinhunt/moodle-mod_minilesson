@@ -96,10 +96,15 @@ class item_freewriting extends item {
         $keycols['int2'] = ['jsonname' => 'relevance', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::RELEVANCE];
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
         $keycols['int4'] = ['jsonname' => 'nopasting', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::NOPASTING];
+        $keycols['int5'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREEWRITING_GRADINGSELECTION];
+        $keycols['int6'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREEWRITING_FEEDBACKSELECTION];
         $keycols['text6'] = ['jsonname' => 'aigradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_INSTRUCTIONS];
         $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
         $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];
         $keycols['text4'] = ['jsonname' => 'aigradefeedbacklanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AIGRADE_FEEDBACK_LANGUAGE];
+        $keycols['text5'] = ['jsonname' => 'freewritingtopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREEWRITING_TOPIC];
+        $keycols['data1'] = ['jsonname' => 'freewritingaidata1', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREEWRITING_AIDATA1];
+        $keycols['data2'] = ['jsonname' => 'freewritingaidata2', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREEWRITING_AIDATA2];
         return $keycols;
     }
 

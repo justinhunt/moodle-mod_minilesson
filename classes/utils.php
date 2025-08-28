@@ -956,6 +956,35 @@ class utils
         $instructions->maxmarks = $maxmarks;
         $instructions->questiontext = strip_tags($item->itemtext);
         $instructions->modeltext = $item->{constants::AIGRADE_MODELANSWER};
+        $search = ['{topic}', '{ai data1}', '{ai data2}'];
+        $replace = [];
+        switch ($item->type) {
+            case constants::TYPE_FREEWRITING:
+                $replace = [
+                    $item->{constants::FREEWRITING_TOPIC},
+                    $item->{constants::FREEWRITING_AIDATA1},
+                    $item->{constants::FREEWRITING_AIDATA2}
+                ];
+                break;
+            case constants::TYPE_FREESPEAKING:
+                $replace = [
+                    $item->{constants::FREESPEAKING_TOPIC},
+                    $item->{constants::FREESPEAKING_AIDATA1},
+                    $item->{constants::FREESPEAKING_AIDATA2}
+                ];
+                break;
+            case constants::TYPE_AUDIOCHAT:
+                $replace = [
+                    $item->{constants::AUDIOCHAT_TOPIC},
+                    $item->{constants::AUDIOCHAT_AIDATA1},
+                    $item->{constants::AUDIOCHAT_AIDATA2}
+                ];
+                break;
+        }
+        if (!empty($replace)) {
+            $instructions->feedbackscheme = str_replace($search,$replace,(string)$instructions->feedbackscheme);
+            $instructions->markscheme = str_replace($search,$replace,(string)$instructions->markscheme);
+        }
         $aigraderesults = self::fetch_ai_grade(
             $token,
             $moduleinstance->region,
