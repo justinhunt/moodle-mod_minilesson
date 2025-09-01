@@ -67,12 +67,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
     },
 
     register_events: function(index, itemdata, quizhelper) {
-      
+
       var self = this;
       self.index = index;
       self.quizhelper = quizhelper;
       var nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
-      
+
       nextbutton.on('click', function(e) {
         self.next_question();
       });
@@ -122,7 +122,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
             var wordcount = self.quizhelper.count_words(speechtext);
             self.wordcount.text(wordcount);
 
-            self.do_evaluation(speechtext);    
+            self.do_evaluation(speechtext);
         } //end of switch message type
       };
 
@@ -139,7 +139,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
     do_corrections_markup: function(grammarerrors,grammarmatches,insertioncount) {
       var self = this;
       //corrected text container is created at runtime, so it wont exist at init_components time
-      //thats we find it here 
+      //thats we find it here
        var correctionscontainer = self.resultsbox.find('.mlfsr_correctedtext');
        correctionsmarkup.init({ "correctionscontainer": correctionscontainer,
             "grammarerrors": grammarerrors,
@@ -154,16 +154,21 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
       self.resultsbox.hide();
       self.actionbox.hide();
       self.pendingbox.show();
-      
+
       //do evaluation
       this.quizhelper.evaluateTranscript(speechtext,this.itemdata.itemid).then(function(ajaxresult) {
         var transcript_evaluation = JSON.parse(ajaxresult);
         if (transcript_evaluation) {
+          transcript_evaluation.reviewsettings = self.itemdata.reviewsettings;
           //calculate raw score and percent score
           transcript_evaluation.rawscore = self.calculate_score(transcript_evaluation);
           self.rawscore = self.calculate_score(transcript_evaluation);
+          self.percentscore = 0;
           if(self.itemdata.totalmarks > 0){
             self.percentscore = Math.round((self.rawscore / self.itemdata.totalmarks) * 100);
+          }
+          if (isNaN(self.percentscore)) {
+            self.percentscore = 0;
           }
           //add raw and percent score to trancript_evaluation for mustache
           transcript_evaluation.rawscore = self.rawscore;
@@ -171,6 +176,28 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
           transcript_evaluation.rawspeech = speechtext;
           transcript_evaluation.maxscore = self.itemdata.totalmarks;
           self.transcript_evaluation = transcript_evaluation;
+
+          var ystarcnt = 0;
+          var gstarcnt;
+          if (transcript_evaluation.reviewsettings.showscorestarrating) {
+              if (self.percentscore == 0) {
+                ystarcnt = 0;
+              } else if (self.percentscore < 19) {
+                ystarcnt = 1;
+              } else if (self.percentscore < 39) {
+                ystarcnt = 2;
+              } else if (self.percentscore < 59) {
+                ystarcnt = 3;
+              } else if (self.percentscore < 79) {
+                ystarcnt = 4;
+              } else {
+                ystarcnt = 5;
+              }
+
+              gstarcnt = 5 - ystarcnt;
+              self.transcript_evaluation.yellowstars = new Array(ystarcnt).fill(M.cfg, 0, ystarcnt);
+              self.transcript_evaluation.graystars = new Array(gstarcnt).fill(M.cfg, 0, gstarcnt);
+          }
 
           log.debug(transcript_evaluation);
           //display results or move next if not show item review
@@ -207,7 +234,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
           self.pendingbox.hide();
           self.actionbox.show();
         }
-      }); 
+      });
     },
   };
 });

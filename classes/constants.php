@@ -219,7 +219,7 @@ class constants
     const MAXANSWERS = 4;
     const MAXCUSTOMTEXT = 7;
     const MAXCUSTOMDATA = 5;
-    const MAXCUSTOMINT = 7;
+    const MAXCUSTOMINT = 9;
 
     const ITEMTEXTAREA_EDOPTIONS = array('trusttext' => 0, 'noclean' => 1, 'maxfiles' => 0);
     const READSENTENCE = 'customint2';
@@ -668,6 +668,12 @@ class constants
 
     const FREESPEAKING_FEEDBACKSELECTION = 'customint5';
 
+    const FREESPEAKING_HIDECORRECTION = 'customint6';
+
+    const FREESPEAKING_SHOWGRADE = 'customint7';
+
+    const FREESPEAKING_SHOWRESULT = 'customint8';
+
     const FREEWRITING_TOPIC = 'customtext5';
 
     const FREEWRITING_AIDATA1 = 'customdata1';
@@ -677,6 +683,12 @@ class constants
     const FREEWRITING_GRADINGSELECTION = 'customint5';
 
     const FREEWRITING_FEEDBACKSELECTION = 'customint6';
+
+    const FREEWRITING_HIDECORRECTION = 'customint7';
+
+    const FREEWRITING_SHOWGRADE = 'customint8';
+
+    const FREEWRITING_SHOWRESULT = 'customint9';
 
     const AUDIOCHAT_GRADINGSELECTION = 'customint6';
 
