@@ -102,7 +102,7 @@ class audiochatform extends baseform {
         $mform->setDefault(constants::AUDIOCHAT_AUTORESPONSE, 1);
 
         //Allow Retry
-        $this->add_allowretry(constants::AUDIOCHAT_ALLOWRETRY, get_string('allowretry_desc', constants::M_COMPONENT));
+        $this->add_allowretry(constants::AUDIOCHAT_ALLOWRETRY, get_string('audiochatretry_desc', constants::M_COMPONENT));
 
         // Time limit if we need one
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
