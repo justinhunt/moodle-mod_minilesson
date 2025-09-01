@@ -58,6 +58,16 @@ class item_freewriting extends item {
         // We need cmid and itemid to do the AI evaluation by ajax.
         $testitem->itemid = $this->itemrecord->id;
 
+        $testitem->reviewsettings['hidecorrections'] = !empty($this->itemrecord->{constants::FREEWRITING_HIDECORRECTION});
+        $testitem->reviewsettings['showreviewdetailed'] = empty($this->itemrecord->{constants::FREEWRITING_SHOWRESULT}) ||
+            $this->itemrecord->{constants::FREEWRITING_SHOWRESULT} == 1;
+        $testitem->reviewsettings['showreviewbasic'] = !empty($this->itemrecord->{constants::FREEWRITING_SHOWRESULT}) &&
+            $this->itemrecord->{constants::FREEWRITING_SHOWRESULT} == 2;
+        $testitem->reviewsettings['showscorestarrating'] = empty($this->itemrecord->{constants::FREEWRITING_SHOWGRADE}) ||
+            $this->itemrecord->{constants::FREEWRITING_SHOWGRADE} == 1;
+        $testitem->reviewsettings['showscorepercentage'] = !empty($this->itemrecord->{constants::FREEWRITING_SHOWGRADE}) &&
+            $this->itemrecord->{constants::FREEWRITING_SHOWGRADE} == 2;
+
         // Cloudpoodll.
         $maxtime = $this->itemrecord->timelimit;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
@@ -98,6 +108,9 @@ class item_freewriting extends item {
         $keycols['int4'] = ['jsonname' => 'nopasting', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::NOPASTING];
         $keycols['int5'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREEWRITING_GRADINGSELECTION];
         $keycols['int6'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREEWRITING_FEEDBACKSELECTION];
+        $keycols['int7'] = ['jsonname' => 'hidecorrection', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREEWRITING_HIDECORRECTION];
+        $keycols['int8'] = ['jsonname' => 'showgrade', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::FREEWRITING_SHOWGRADE];
+        $keycols['int9'] = ['jsonname' => 'showresult', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::FREEWRITING_SHOWRESULT];
         $keycols['text6'] = ['jsonname' => 'aigradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_INSTRUCTIONS];
         $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
         $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];
