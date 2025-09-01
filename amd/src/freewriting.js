@@ -182,11 +182,16 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
           this.quizhelper.evaluateTranscript(speechtext,this.itemdata.itemid).then(function(ajaxresult) {
             var transcript_evaluation = JSON.parse(ajaxresult);
             if (transcript_evaluation) {
+              transcript_evaluation.reviewsettings = self.itemdata.reviewsettings;
               //calculate raw score and percent score
               transcript_evaluation.rawscore = self.calculate_score(transcript_evaluation);
               self.rawscore = self.calculate_score(transcript_evaluation);
+              self.percentscore = 0;
               if(self.itemdata.totalmarks > 0){
                 self.percentscore = Math.round((self.rawscore / self.itemdata.totalmarks) * 100);
+              }
+              if (isNaN(self.percentscore)) {
+                self.percentscore = 0;
               }
               //add raw and percent score to trancript_evaluation for mustache
               transcript_evaluation.rawscore = self.rawscore;
@@ -194,6 +199,28 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
               transcript_evaluation.rawspeech = speechtext;
               transcript_evaluation.maxscore = self.itemdata.totalmarks;
               self.transcript_evaluation = transcript_evaluation;
+
+              var ystarcnt = 0;
+              var gstarcnt;
+              if (transcript_evaluation.reviewsettings.showscorestarrating) {
+                  if (self.percentscore == 0) {
+                    ystarcnt = 0;
+                  } else if (self.percentscore < 19) {
+                    ystarcnt = 1;
+                  } else if (self.percentscore < 39) {
+                    ystarcnt = 2;
+                  } else if (self.percentscore < 59) {
+                    ystarcnt = 3;
+                  } else if (self.percentscore < 79) {
+                    ystarcnt = 4;
+                  } else {
+                    ystarcnt = 5;
+                  }
+
+                  gstarcnt = 5 - ystarcnt;
+                  self.transcript_evaluation.yellowstars = new Array(ystarcnt).fill(M.cfg, 0, ystarcnt);
+                  self.transcript_evaluation.graystars = new Array(gstarcnt).fill(M.cfg, 0, gstarcnt);
+              }
 
               log.debug(transcript_evaluation);
 

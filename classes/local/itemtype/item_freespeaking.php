@@ -85,6 +85,16 @@ class item_freespeaking extends item {
             }
         }
 
+        $testitem->reviewsettings['hidecorrections'] = !empty($this->itemrecord->{constants::FREESPEAKING_HIDECORRECTION});
+        $testitem->reviewsettings['showreviewdetailed'] = empty($this->itemrecord->{constants::FREESPEAKING_SHOWRESULT}) ||
+            $this->itemrecord->{constants::FREESPEAKING_SHOWRESULT} == 1;
+        $testitem->reviewsettings['showreviewbasic'] = !empty($this->itemrecord->{constants::FREESPEAKING_SHOWRESULT}) &&
+            $this->itemrecord->{constants::FREESPEAKING_SHOWRESULT} == 2;
+        $testitem->reviewsettings['showscorestarrating'] = empty($this->itemrecord->{constants::FREESPEAKING_SHOWGRADE}) ||
+            $this->itemrecord->{constants::FREESPEAKING_SHOWGRADE} == 1;
+        $testitem->reviewsettings['showscorepercentage'] = !empty($this->itemrecord->{constants::FREESPEAKING_SHOWGRADE}) &&
+            $this->itemrecord->{constants::FREESPEAKING_SHOWGRADE} == 2;
+
          // Cloudpoodll.
          $maxtime = $this->itemrecord->timelimit;
          $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
@@ -124,6 +134,9 @@ class item_freespeaking extends item {
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
         $keycols['int4'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREESPEAKING_GRADINGSELECTION];
         $keycols['int5'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREESPEAKING_FEEDBACKSELECTION];
+        $keycols['int6'] = ['jsonname' => 'hidecorrections', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FREESPEAKING_HIDECORRECTION];
+        $keycols['int7'] = ['jsonname' => 'showgrade', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::FREESPEAKING_SHOWGRADE];
+        $keycols['int8'] = ['jsonname' => 'showresult', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::FREESPEAKING_SHOWRESULT];
         $keycols['text6'] = ['jsonname' => 'aigradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_INSTRUCTIONS];
         $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
         $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];

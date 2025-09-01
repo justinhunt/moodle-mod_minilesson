@@ -78,6 +78,20 @@ class freewritingform extends baseform {
         $this->add_textarearesponse(constants::FREEWRITING_AIDATA2, get_string('aidata2_placeholder', constants::M_COMPONENT), false);
         $mform->setDefault(constants::FREEWRITING_AIDATA2, '');
 
+        $this->add_checkbox(constants::FREEWRITING_HIDECORRECTION, get_string('hidecorrection', constants::M_COMPONENT), null, 0);
+
+        $options  = [
+            1 => get_string('starrating', constants::M_COMPONENT),
+            2 => get_string('percentagescore', constants::M_COMPONENT)
+        ];
+        $this->add_dropdown(constants::FREEWRITING_SHOWGRADE, get_string('showgrade', constants::M_COMPONENT), $options, 1);
+
+        $options  = [
+            1 => get_string('detailedresults', constants::M_COMPONENT),
+            2 => get_string('basciresult', constants::M_COMPONENT)
+        ];
+        $this->add_dropdown(constants::FREEWRITING_SHOWRESULT, get_string('showresult', constants::M_COMPONENT), $options, 1);
+
         $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/aiprompt', 'init');
     }
 }
