@@ -106,7 +106,7 @@ class item_audiochat extends item {
              $testitem->audiochatinstructions);
 
         // Set up the audiochat grade instructions
-        $testitem->audiochatgradeinstructions = $this->itemrecord->{constants::AUDIOCHAT_GRADEINSTRUCTIONS};
+        $testitem->audiochatgradeinstructions = $this->itemrecord->{constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS};
         if(!empty($testitem->audiochatgradeinstructions )) {
             $testitem->audiochatgradeinstructions = str_replace(['{ai role}', '{ai voice}', '{native language}',
                 '{target language}', '{topic}', '{ai data1}', '{ai data2}'],
@@ -179,11 +179,11 @@ class item_audiochat extends item {
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
         $keycols['int4'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_AUTORESPONSE];
         $keycols['int5'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_ALLOWRETRY];
-        $keycols['int6'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_GRADINGSELECTION];
+        $keycols['int6'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_INSTRUCTIONSSELECTION];
         $keycols['int7'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_FEEDBACKSELECTION];
         $keycols['text5'] = ['jsonname' => 'audiochattopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_TOPIC];
         $keycols['text6'] = ['jsonname' => 'audiochatinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_INSTRUCTIONS];
-        $keycols['data3'] = ['jsonname' => 'audiochatgradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_GRADEINSTRUCTIONS];
+        $keycols['data3'] = ['jsonname' => 'audiochatgradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS];
         $keycols['data1'] = ['jsonname' => 'audiochataidata1', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_AIDATA1];
         $keycols['data2'] = ['jsonname' => 'audiochataidata2', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_AIDATA2];
         $keycols['text2'] = ['jsonname' => 'audiochatrole', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_ROLE];

@@ -1014,6 +1014,6 @@ function mod_minilesson_output_fragment_ai_prompt($args) {
     $promptid   = (int) $args->promptid;
     $prompttype = (string) $args->prompttype;
     $itemtype = (string) $args->itemtype;
-
-    return get_string($itemtype . ':' . $prompttype . 'prompt_dec' . $promptid, constants::M_COMPONENT);
+    $configname = $itemtype . '_' . $prompttype . 'prompt_' . $promptid;
+    return get_config(constants::M_COMPONENT, $configname);
 }

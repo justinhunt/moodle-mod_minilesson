@@ -184,7 +184,7 @@ class constants
     const AIGRADE_FEEDBACK_LANGUAGE = 'customtext4';
     const AIGRADE_MODELANSWER = 'customtext3';
     const AUDIOCHAT_INSTRUCTIONS = 'customtext6';
-    const AUDIOCHAT_GRADEINSTRUCTIONS = 'customdata3';
+    const AUDIOCHAT_FEEDBACKINSTRUCTIONS = 'customdata3';
     const AUDIOCHAT_ROLE = 'customtext2';
     const AUDIOCHAT_VOICE = 'customtext3';
     const AUDIOCHAT_NATIVE_LANGUAGE = 'customtext4';
@@ -690,7 +690,9 @@ class constants
 
     const FREEWRITING_SHOWRESULT = 'customint9';
 
-    const AUDIOCHAT_GRADINGSELECTION = 'customint6';
+    const AUDIOCHAT_INSTRUCTIONSSELECTION = 'customint6';
 
     const AUDIOCHAT_FEEDBACKSELECTION = 'customint7';
+
+    const MAX_AI_PROMPTS = 6;
 }

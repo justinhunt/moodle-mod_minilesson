@@ -24,6 +24,7 @@ $string['activitylink_help'] = 'To provide a link after the attempt to another a
 $string['activitylinkname'] = 'Continue to next activity: {$a}';
 $string['pluginadministration'] = 'Mini Lesson Administration';
 $string['pluginname'] = 'Poodll MiniLesson';
+$string['promptsettings'] = 'Prompt Settings';
 //$string['someadminsetting'] = 'Some Admin Setting';
 //$string['someadminsetting_details'] = 'More info about Some Admin Setting';
 //$string['someinstancesetting'] = 'Some Instance Setting';
@@ -811,10 +812,16 @@ $string['hidestartpage'] = 'Hide start page';
 $string['hidestartpage_desc'] = 'If checked the activity item begins as soon as it has loaded.';
 $string['aigrade_modelanswer'] = 'Model answer';
 $string['relevancetype'] = 'Relevance type';
-$string['relevancetype_desc'] = 'AI will penalize answers of low relevance. Choose the type of relevance to use.';
+$string['relevancetype_desc'] = 'AI can penalize answers of low relevance. Choose the type of relevance to use.';
+$string['relevancetype_help'] = 'AI can penalize answers of low relevance. Choose the type of relevance to use. If you choose relevance to the question, the AI will check if the answer is on topic. If you choose relevance to a model answer, the AI will check if the answer is similar in content to the model answer you provide.';
 $string['aigrade_instructions'] = 'Grading Instructions for AI';
+$string['aigrade_instructions_desc'] = 'The instructions tell AI how to generate a "score" between 0 and the total marks for this item. They are a template that will be merged with the AI topic, AI data 1, AI data 2 to create the instructions. You can use the following variables in the instructions: {topic}, {ai data1}, {ai data2}. The resulting AI grade will be multiplied by the total words spoken over the target word count, so that answers that are too brief are penalized. Set target word count to 0 if that is not desireable.';
+$string['aigrade_instructions_help'] = 'The instructions tell AI how to generate a "score" between 0 and the total marks for this item. They are a template that will be merged with the AI topic, AI data 1, AI data 2 to create the instructions. You can use the following variables in the instructions: {topic}, {ai data1}, {ai data2}. The resulting AI grade will be multiplied by the total words spoken over the target word count, so that answers that are too brief are penalized. Set target word count to 0 if that is not desireable.';
 $string['aigrade_feedback'] = 'Feedback Instructions for AI';
+$string['aigrade_feedback_desc'] = 'The feedback instructions tell AI how to give feedback to the student on their response. They are a template that will be merged with the AI topic, AI data 1, AI data 2 to create the instructions. You can use the following variables in the instructions: {topic}, {ai data1}, {ai data2}.';
+$string['aigrade_feedback_help'] = 'The feedback instructions tell AI how to give feedback to the student on their response. They are a template that will be merged with the AI topic, AI data 1, AI data 2 to create the instructions. You can use the following variables in the instructions: {topic}, {ai data1}, {ai data2}.';
 $string['aigrade_feedback_language'] = 'AI Feedback Language';
+$string['aigrade_instructions_preset'] = 'Select a preset from the list to load ready made instructions into the text area below. You can modify the instructions as you wish.';
 $string['targetwordcount_title'] = 'Target Word Count';
 $string['totalmarks'] = 'Total Marks';
 $string['relevancetype_none'] = 'Relevance not considered';
@@ -1020,51 +1027,65 @@ $string['clicktosend'] = 'click to send';
 $string['cantchat'] = 'Chat is NOT available. To use this item type you must have a valid OpenAI key set in the MiniLesson activity admin settings. Chat is also not available in China (Ningxia region)';
 
 $string['confirm_desc'] = 'You have not submitted your answer. Are you sure want to go next page?';
-$string['topic_placeholder'] = 'Topic';
-$string['aidata1_placeholder'] = 'Custom AI Data1';
-$string['aidata2_placeholder'] = 'Custom AI Data2';
+
+$string['ai_topic'] = 'Topic';
+$string['ai_data1'] = 'AI Data1';
+$string['ai_data2'] = 'AI Data2';
+$string['ai_topic_help'] = 'Topic is an optional field {topic} that can be merged with the grading or feedback instructions to provide context for the AI.';
+$string['ai_data1_help'] = 'AI Data2 is an optional field {ai data1} that can be merged with the grading or feedback instructions to provide context for the AI.';
+$string['ai_data2_help'] = 'Topic is an optional field {ai data2} that can be merged with the grading or feedback instructions to provide context for the AI.';
 
 $string['instructionprompt'] = 'Instruction ';
 
-$string['freewriting:gradingprompt1'] = 'Short Answer - requires the correct answer (ai data1)';
-$string['freewriting:gradingprompt2'] = 'Describe the picture - requires a picture description (ai data1)';
-$string['freewriting:feedbackprompt1'] = 'Describe the picture ';
+$string['freewriting:gradingprompt1'] = 'Default';
+$string['freewriting:gradingprompt2'] = 'Short Answer - requires the correct answer (ai data1)';
+$string['freewriting:gradingprompt3'] = 'Describe the picture - requires a picture description (ai data1)';
 $string['freewriting:gradingprompt_dec1'] = 'Deduct 1 point for each grammar, spelling or punctuation error.';
 $string['freewriting:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer.
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a broken sentence that has the correct meaning.';
 $string['freewriting:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{ai data1}] 
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
+$string['freewriting:feedbackprompt1'] = 'Default';
+$string['freewriting:feedbackprompt2'] = 'Describe the picture ';
 $string['freewriting:feedbackprompt_dec1'] = 'Explain each mistake simply.';
 $string['freewriting:feedbackprompt_dec2'] = 'Explain major grammar mistakes simply. Suggest any elements of the scene that the student did not describe.';
 
-$string['freespeaking:gradingprompt1'] = 'Short Answer - requires the correct answer (ai data1) ';
-$string['freespeaking:gradingprompt2'] = 'Describe the picture - requires a picture description (ai data1) ';
-$string['freespeaking:feedbackprompt1'] = 'Describe the picture';
+$string['freespeaking:gradingprompt1'] = 'Default';
+$string['freespeaking:gradingprompt2'] = 'Short Answer - requires the correct answer (ai data1) ';
+$string['freespeaking:gradingprompt3'] = 'Describe the picture - requires a picture description (ai data1) ';
 $string['freespeaking:gradingprompt_dec1'] = 'Deduct 1 point for each grammar error.';
 $string['freespeaking:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer. 
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a sentence with mistakes that has the correct meaning';
 $string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{ai data1}] 
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
+$string['freespeaking:feedbackprompt1'] = 'Default';
+$string['freespeaking:feedbackprompt2'] = 'Describe the picture';
 $string['freespeaking:feedbackprompt_dec1']  = 'Explain each grammar mistake simply. Do not comment on spelling or punctuation.';
 $string['freespeaking:feedbackprompt_dec2'] = 'Explain non minor grammar mistakes simply. Do not comment on spelling or punctuation. Suggest any elements of the scene that the student did not describe.';
+$string['instructionsprompt_header'] = 'Instructions Prompt Header';
+$string['instructionsprompt'] = 'Instructions Prompt';
+$string['gradingprompt_header'] = 'Grading Prompt Header';
+$string['gradingprompt'] = 'Grading Prompt';
+$string['feedbackprompt_header'] = 'Feedback Prompt Header';
+$string['feedbackprompt'] = 'Feedback Prompt';
 
-$string['audiochat:gradingprompt1'] = 'Open discussion - requires a topic';
-$string['audiochat:gradingprompt2'] = 'Discussing a picture - requires a picture description (topic) and questions (ai data1)';
-$string['audiochat:gradingprompt3'] = 'Discussing a passage - requires a passage (topic) and questions (ai data1)';
-$string['audiochat:gradingprompt_dec1'] = "You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. Today the discussion topic is: {topic}. Please discuss it with your student. Speak simply and slowly. Your responses should be brief. Your aim is to give the student opportunity to speak. Explain words and concepts in the student's native language if they do not understand.";
-$string['audiochat:gradingprompt_dec2'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student is looking at a picture the depicts the following scene: "{topic}" 
+$string['audiochat:instructionsprompt1'] = 'Open discussion - requires a topic';
+$string['audiochat:instructionsprompt2'] = 'Discussing a picture - requires a picture description (topic) and questions (ai data1)';
+$string['audiochat:instructionsprompt3'] = 'Discussing a passage - requires a passage (topic) and questions (ai data1)';
+$string['audiochat:instructionsprompt_dec1'] = "You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. Today the discussion topic is: {topic}. Please discuss it with your student. Speak simply and slowly. Your responses should be brief. Your aim is to give the student opportunity to speak. Explain words and concepts in the student's native language if they do not understand.";
+$string['audiochat:instructionsprompt_dec2'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student is looking at a picture the depicts the following scene: "{topic}" 
 
 Your task is to ask the student the following questions, one at a time: {ai data1}
 
 Speak simply and slowly. Your responses should be brief. Do not comment on the content of their response or if it was correct. But help them if they did not understand your question. When the student has answered all the questions, thank them and tell them to "press the end button."';
-$string['audiochat:gradingprompt_dec3'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student has just read the following passage: "{topic}"
+$string['audiochat:instructionsprompt_dec3'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student has just read the following passage: "{topic}"
 
 You task is to ask the student the following questions, one at a time: {ai data1}
 
 Speak simply and slowly. Your responses should be brief. Do not comment on the content of their response or if it was correct. But help them if they did not understand your question. When the student has answered all the questions, thank them and tell them to "press the end button."';
 $string['audiochat:feedbackprompt1'] = 'Open Discussion';
 $string['audiochat:feedbackprompt2'] = 'Discussion with questions - requires points and questions (ai data1)';
-$string['audiochat:feedbackprompt_dec1'] = "For the score consider the following criteria: relevance to topic: '{topic}', fluency, and vocabulary usage. For feedback it should be simple, and in the student\'s native language: {native language}.";
+$string['audiochat:feedbackprompt_dec1'] = "For the score consider the following criteria: relevance to topic: '{topic}', fluency, and vocabulary usage. For feedback it should be simple, and in the student native language: {native language}.";
 $string['audiochat:feedbackprompt_dec2'] = "Give 25 points for each correct answer to a question that was answered by the student. Give 0 points for incorrect answers. Give the student feedback on their use of language, and on their answers. These are the questions: {ai data1}";
 
 $string['hidecorrection'] = 'Hide corrections';
@@ -1074,3 +1095,5 @@ $string['percentagescore'] = "Percentage Score";
 $string['detailedresults'] = 'Detailed Results - default';
 $string['basciresult'] = 'Basic Results';
 $string['showresult'] = 'Show Result';
+$string['aigradingandfeedback'] = 'AI Grading and Feedback';
+$string['resultsdisplay'] = 'Results Display';

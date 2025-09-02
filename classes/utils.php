@@ -1402,6 +1402,40 @@ class utils
         ];
     }
 
+    public static function get_aiprompt_options($promptfield)
+    {
+        $maxprompts = constants::MAX_AI_PROMPTS;
+        switch($promptfield){
+            case 'FREESPEAKING_GRADINGSELECTION':
+                $configstring = 'freespeaking_gradingpromptheading_';
+                break;
+            case 'FREESPEAKING_FEEDBACKSELECTION':
+                $configstring = 'freespeaking_feedbackpromptheading_';
+                break;
+            case 'FREEWRITING_GRADINGSELECTION':
+                $configstring = 'freewriting_gradingpromptheading_';
+                break;
+            case 'FREEWRITING_FEEDBACKSELECTION':
+                $configstring = 'freewriting_feedbackpromptheading_';
+                break;
+            case 'AUDIOCHAT_INSTRUCTIONSSELECTION':
+                $configstring = 'audiochat_instructionspromptheading_';
+                break;
+            case 'AUDIOCHAT_FEEDBACKSELECTION':
+                $configstring = 'audiochat_feedbackpromptheading_';
+                break;
+        }
+        $ret = [];
+        $ret[0] = '--';
+        for ($i = 1; $i <= $maxprompts; $i++) {
+            $heading = get_config(constants::M_COMPONENT, $configstring . $i);
+            if (!empty($heading)) {
+                $ret[$i] = $heading;
+            }
+        }
+        return $ret;
+    }
+
     // Insert spaces in between segments in order to create "words"
     public static function segment_japanese($passage)
     {

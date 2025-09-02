@@ -24,6 +24,7 @@
 namespace mod_minilesson\local\itemform;
 
 use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 class audiochatform extends baseform {
 
@@ -64,35 +65,31 @@ class audiochatform extends baseform {
             constants::M_LANG_ENUS
         );
 
-        $options = [
-            0 => '--',
-            1 => get_string('audiochat:gradingprompt1', constants::M_COMPONENT),
-            2 => get_string('audiochat:gradingprompt2', constants::M_COMPONENT),
-            3 => get_string('audiochat:gradingprompt3', constants::M_COMPONENT),
-        ];
-        $mform->addElement('select', constants::AUDIOCHAT_GRADINGSELECTION, get_string('audiochat_instructions', constants::M_COMPONENT), $options,
-            ['data-name' => 'gradingaiprompt', 'data-type' => 'audiochat']);
-        $mform->setDefault(constants::AUDIOCHAT_GRADINGSELECTION, 1);
+        $options = utils::get_aiprompt_options('AUDIOCHAT_INSTRUCTIONSSELECTION');
+        $mform->addElement('select', constants::AUDIOCHAT_INSTRUCTIONSSELECTION, get_string('audiochat_instructions', constants::M_COMPONENT), $options,
+            ['data-name' => 'instructionsaiprompt', 'data-type' => 'audiochat']);
+        $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONSSELECTION, 0);
+        $this->add_static_text('preset_instructions1', '', get_string('aigrade_instructions_preset', constants::M_COMPONENT));
 
         // The instructions template for the audio chat
         $this->add_textarearesponse(constants::AUDIOCHAT_INSTRUCTIONS, '', true);
         $mform->getElement(constants::AUDIOCHAT_INSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_instructions']);
-        $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONS, get_string('audiochat:gradingprompt_dec1', constants::M_COMPONENT));
+        $default = get_config(constants::M_COMPONENT, 'audiochat_instructionsprompt_1');
+        $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONS, $default);
         $this->add_static_text('audiochat_instructions_instructions', '', get_string('audiochat_instructions_instructions', constants::M_COMPONENT));
 
-        $options = [
-            0 => '--',
-            1 => get_string('audiochat:feedbackprompt1', constants::M_COMPONENT),
-            2 => get_string('audiochat:feedbackprompt2', constants::M_COMPONENT),
-        ];
+        // The grading/feedback template for the audio chat
+        $options = utils::get_aiprompt_options('AUDIOCHAT_FEEDBACKSELECTION');
         $mform->addElement('select', constants::AUDIOCHAT_FEEDBACKSELECTION, get_string('aigrade_feedback', constants::M_COMPONENT), $options,
             ['data-name' => 'feedbackaiprompt', 'data-type' => 'audiochat',]);
-        $mform->setDefault(constants::AUDIOCHAT_FEEDBACKSELECTION, 1);
+        $mform->setDefault(constants::AUDIOCHAT_FEEDBACKSELECTION, 0);
+        $this->add_static_text('preset_instructions2', '', get_string('aigrade_instructions_preset', constants::M_COMPONENT));
 
         // The instructions for grading the audio chat
-        $this->add_textarearesponse(constants::AUDIOCHAT_GRADEINSTRUCTIONS, '', false);
-        $mform->getElement(constants::AUDIOCHAT_GRADEINSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_feedback']);
-        $mform->setDefault(constants::AUDIOCHAT_GRADEINSTRUCTIONS, get_string('audiochat:feedbackprompt_dec1', constants::M_COMPONENT));
+        $this->add_textarearesponse(constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS, '', false);
+        $mform->getElement(constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_feedback']);
+        $default = get_config(constants::M_COMPONENT, 'audiochat_feedbackprompt_1');
+        $mform->setDefault(constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS, $default);
         $this->add_static_text('audiochat_gradeinstructions_instructions', '', get_string('audiochat_gradeinstructions_instructions', constants::M_COMPONENT));
 
         // Auto Response
