@@ -1,3 +1,7 @@
+Version 1.1.03 (Build 2025090100)
+- Added prompt presets for Free Speaking, Free Writing and Audio Chat
+- Added settings for better control of free speaking and free writing results
+
 Version 1.1.02 (Build 2025080104)
 - Added better auto refresh for speech tokens, so long running sessions will still work
 - Added more image generation slots for keyword based templates
