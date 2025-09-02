@@ -38,7 +38,7 @@ class freewritingform extends baseform {
         $this->add_static_text('preset_instructions1', '', get_string('aigrade_instructions_preset', constants::M_COMPONENT));
         $this->add_textarearesponse(constants::AIGRADE_INSTRUCTIONS, '', true);
         $this->add_static_text('aigrade_instructions_desc', '', get_string('aigrade_instructions_desc', constants::M_COMPONENT));
-        $mform->getElement(constants::AIGRADE_INSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_instructions']);
+        $mform->getElement(constants::AIGRADE_INSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_grade']);
         $default = get_config(constants::M_COMPONENT, 'freewriting_gradingprompt_1');
         $mform->setDefault(constants::AIGRADE_INSTRUCTIONS, $default);
 
