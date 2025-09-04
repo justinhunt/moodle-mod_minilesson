@@ -46,31 +46,32 @@ use mod_minilesson\utils;
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */
-function minilesson_supports($feature) {
-    switch($feature) {
+function minilesson_supports($feature)
+{
+    switch ($feature) {
         case FEATURE_MOD_INTRO:
-return true;
+            return true;
         case FEATURE_SHOW_DESCRIPTION:
-return true;
+            return true;
         case FEATURE_COMPLETION_HAS_RULES:
-return true;
+            return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
-return true;
+            return true;
         case FEATURE_GRADE_HAS_GRADE:
-return true;
+            return true;
         case FEATURE_GRADE_OUTCOMES:
-return true;
+            return true;
         case FEATURE_BACKUP_MOODLE2:
-return true;
+            return true;
         case FEATURE_GROUPINGS:
-return false;
+            return false;
         case FEATURE_GROUPS:
-return true;
+            return true;
         default:
             // cute hack to work on M4.0 and above
-            if(defined('FEATURE_MOD_PURPOSE') && defined('MOD_PURPOSE_ASSESSMENT') && $feature == 'mod_purpose'){
+            if (defined('FEATURE_MOD_PURPOSE') && defined('MOD_PURPOSE_ASSESSMENT') && $feature == 'mod_purpose') {
                 return "assessment";
-            }else{
+            } else {
                 return null;
             }
     }
@@ -82,9 +83,10 @@ return true;
  *
  * @param $mform form passed by reference
  */
-function minilesson_reset_course_form_definition(&$mform) {
+function minilesson_reset_course_form_definition(&$mform)
+{
     $mform->addElement('header', constants::M_MODNAME . 'header', get_string('modulenameplural', constants::M_COMPONENT));
-    $mform->addElement('advcheckbox', 'reset_' . constants::M_MODNAME , get_string('deletealluserdata', constants::M_COMPONENT));
+    $mform->addElement('advcheckbox', 'reset_' . constants::M_MODNAME, get_string('deletealluserdata', constants::M_COMPONENT));
 }
 
 /**
@@ -92,22 +94,35 @@ function minilesson_reset_course_form_definition(&$mform) {
  * @param object $course
  * @return array
  */
-function minilesson_reset_course_form_defaults($course) {
+function minilesson_reset_course_form_defaults($course)
+{
     return ['reset_' . constants::M_MODNAME => 1];
 }
 
 
-function minilesson_editor_with_files_options($context) {
-    return ['maxfiles' => EDITOR_UNLIMITED_FILES,
-               'noclean' => true, 'context' => $context, 'subdirs' => true];
+function minilesson_editor_with_files_options($context)
+{
+    return [
+        'maxfiles' => EDITOR_UNLIMITED_FILES,
+        'noclean' => true,
+        'context' => $context,
+        'subdirs' => true
+    ];
 }
 
-function minilesson_editor_no_files_options($context) {
+function minilesson_editor_no_files_options($context)
+{
     return ['maxfiles' => 0, 'noclean' => true, 'context' => $context];
 }
-function minilesson_picturefile_options($context) {
-    return ['maxfiles' => EDITOR_UNLIMITED_FILES,
-        'noclean' => true, 'context' => $context, 'subdirs' => true, 'accepted_types' => ['image']];
+function minilesson_picturefile_options($context)
+{
+    return [
+        'maxfiles' => EDITOR_UNLIMITED_FILES,
+        'noclean' => true,
+        'context' => $context,
+        'subdirs' => true,
+        'accepted_types' => ['image']
+    ];
 }
 
 /**
@@ -118,7 +133,8 @@ function minilesson_picturefile_options($context) {
  * @param int $courseid
  * @param string optional type
  */
-function minilesson_reset_gradebook($courseid, $type='') {
+function minilesson_reset_gradebook($courseid, $type = '')
+{
     global $CFG, $DB;
 
     $sql = "SELECT l.*, cm.idnumber as cmidnumber, l.course as courseid
@@ -141,7 +157,8 @@ function minilesson_reset_gradebook($courseid, $type='') {
  * @param object $data the data submitted from the reset course.
  * @return array status array
  */
-function minilesson_reset_userdata($data) {
+function minilesson_reset_userdata($data)
+{
     global $CFG, $DB;
 
     $componentstr = get_string('modulenameplural', constants::M_COMPONENT);
@@ -149,7 +166,7 @@ function minilesson_reset_userdata($data) {
 
     if (!empty($data->{'reset_' . constants::M_MODNAME})) {
         $sql = "SELECT l.id
-                         FROM {".constants::M_TABLE."} l
+                         FROM {" . constants::M_TABLE . "} l
                         WHERE l.course=:course";
 
         $params = ["course" => $data->courseid];
@@ -183,10 +200,11 @@ function minilesson_reset_userdata($data) {
  * @param array|object $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
  * @return int 0 if ok, error code otherwise
  */
-function minilesson_grade_item_update($moduleinstance, $grades=null) {
+function minilesson_grade_item_update($moduleinstance, $grades = null)
+{
     global $CFG;
     if (!function_exists('grade_update')) { // workaround for buggy PHP versions
-        require_once($CFG->libdir.'/gradelib.php');
+        require_once($CFG->libdir . '/gradelib.php');
     }
 
     if (array_key_exists('cmidnumber', (array) $moduleinstance)) { // it may not be always present
@@ -196,12 +214,12 @@ function minilesson_grade_item_update($moduleinstance, $grades=null) {
     }
 
     if ($moduleinstance->grade > 0) {
-        $params['gradetype']  = GRADE_TYPE_VALUE;
-        $params['grademax']   = $moduleinstance->grade;
-        $params['grademin']   = 0;
+        $params['gradetype'] = GRADE_TYPE_VALUE;
+        $params['grademax'] = $moduleinstance->grade;
+        $params['grademin'] = 0;
     } else if ($moduleinstance->grade < 0) {
-        $params['gradetype']  = GRADE_TYPE_SCALE;
-        $params['scaleid']   = -$moduleinstance->grade;
+        $params['gradetype'] = GRADE_TYPE_SCALE;
+        $params['scaleid'] = -$moduleinstance->grade;
 
         // Make sure current grade fetched correctly from $grades
         $currentgrade = null;
@@ -215,12 +233,17 @@ function minilesson_grade_item_update($moduleinstance, $grades=null) {
 
         // When converting a score to a scale, use scale's grade maximum to calculate it.
         if (!empty($currentgrade) && $currentgrade->rawgrade !== null) {
-            $grade = grade_get_grades($moduleinstance->course, 'mod',
-                    constants::M_MODNAME, $moduleinstance->id, $currentgrade->userid);
-            $params['grademax']   = reset($grade->items)->grademax;
+            $grade = grade_get_grades(
+                $moduleinstance->course,
+                'mod',
+                constants::M_MODNAME,
+                $moduleinstance->id,
+                $currentgrade->userid
+            );
+            $params['grademax'] = reset($grade->items)->grademax;
         }
     } else {
-        $params['gradetype']  = GRADE_TYPE_NONE;
+        $params['gradetype'] = GRADE_TYPE_NONE;
     }
 
     if ($grades === 'reset') {
@@ -247,8 +270,16 @@ function minilesson_grade_item_update($moduleinstance, $grades=null) {
         }
     }
 
-    return grade_update('mod/' . constants::M_MODNAME,
-            $moduleinstance->course, 'mod', constants::M_MODNAME, $moduleinstance->id, 0, $grades, $params);
+    return grade_update(
+        'mod/' . constants::M_MODNAME,
+        $moduleinstance->course,
+        'mod',
+        constants::M_MODNAME,
+        $moduleinstance->id,
+        0,
+        $grades,
+        $params
+    );
 }
 
 /**
@@ -259,9 +290,10 @@ function minilesson_grade_item_update($moduleinstance, $grades=null) {
  * @param int $userid specific user only, 0 means all
  * @param bool $nullifnone
  */
-function minilesson_update_grades($moduleinstance, $userid=0, $nullifnone=true) {
+function minilesson_update_grades($moduleinstance, $userid = 0, $nullifnone = true)
+{
     global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    require_once($CFG->libdir . '/gradelib.php');
 
     if ($moduleinstance->grade == 0) {
         minilesson_grade_item_update($moduleinstance);
@@ -271,7 +303,7 @@ function minilesson_update_grades($moduleinstance, $userid=0, $nullifnone=true) 
 
     } else if ($userid and $nullifnone) {
         $grade = new stdClass();
-        $grade->userid   = $userid;
+        $grade->userid = $userid;
         $grade->rawgrade = null;
         minilesson_grade_item_update($moduleinstance, $grade);
 
@@ -289,7 +321,8 @@ function minilesson_update_grades($moduleinstance, $userid=0, $nullifnone=true) 
  * @param int $userid optional user id, 0 means all users
  * @return array array of grades, false if none
  */
-function minilesson_get_user_grades($moduleinstance, $userid=0) {
+function minilesson_get_user_grades($moduleinstance, $userid = 0)
+{
     global $CFG, $DB;
 
     $params = ["moduleid" => $moduleinstance->id];
@@ -298,62 +331,63 @@ function minilesson_get_user_grades($moduleinstance, $userid=0) {
     if (!empty($userid)) {
         $params["userid"] = $userid;
         $user = "AND u.id = :userid";
-    }
-    else {
+    } else {
         $user = "";
 
     }
 
     // human_sql
     $humansql = "SELECT u.id, u.id AS userid, a.sessionscore AS rawgrade
-                      FROM {user} u, {". constants::M_ATTEMPTSTABLE ."} a
-                     WHERE a.id= (SELECT max(id) FROM {". constants::M_ATTEMPTSTABLE ."} ia WHERE ia.userid=u.id AND ia.moduleid = a.moduleid AND ia.status = " . constants::M_STATE_COMPLETE . ") ".
-                     " AND u.id = a.userid AND a.moduleid = :moduleid 
+                      FROM {user} u, {" . constants::M_ATTEMPTSTABLE . "} a
+                     WHERE a.id= (SELECT max(id) FROM {" . constants::M_ATTEMPTSTABLE . "} ia WHERE ia.userid=u.id AND ia.moduleid = a.moduleid AND ia.status = " . constants::M_STATE_COMPLETE . ") " .
+        " AND u.id = a.userid AND a.moduleid = :moduleid 
                            $user
                   GROUP BY u.id, a.sessionscore";
 
-     $results = $DB->get_records_sql($humansql, $params);
+    $results = $DB->get_records_sql($humansql, $params);
 
     // return results
     return $results;
 }
 
 
-function minilesson_get_completion_state($course, $cm, $userid, $type) {
+function minilesson_get_completion_state($course, $cm, $userid, $type)
+{
     return minilesson_is_complete($course, $cm, $userid, $type);
 }
 
 
 // this is called internally only
-function minilesson_is_complete($course, $cm, $userid, $type) {
-    global $CFG, $DB;
+function minilesson_is_complete($course, $cm, $userid, $type)
+{
 
     global $CFG, $DB;
 
-    // Get module object
-    if(!($moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance]))) {
+    // Get module object.
+    if (!($moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance]))) {
         throw new Exception("Can't find module with cmid: {$cm->instance}");
     }
 
-    // check if the min grade condition is enabled
-    if($moduleinstance->mingrade == 0){
+    // Check if the min grade condition is enabled.
+    if ($moduleinstance->mingrade == 0) {
         return $type;
     }
 
     $params = ['moduleid' => $moduleinstance->id, 'userid' => $userid];
     $sql = "SELECT  MAX( sessionscore  ) AS grade
-                      FROM {". constants::M_ATTEMPTSTABLE ."}
+                      FROM {" . constants::M_ATTEMPTSTABLE . "}
                      WHERE userid = :userid AND moduleid = :moduleid" .
-                     " AND status=" .constants::M_STATE_COMPLETE;
+        " AND status=" . constants::M_STATE_COMPLETE;
     $result = $DB->get_field_sql($sql, $params);
-    if($result === false){return false;
+    if ($result === false) {
+        return false;
     }
 
-    // check completion reqs against satisfied conditions
-    switch ($type){
+    // Check completion reqs against satisfied conditions.
+    switch ($type) {
         case COMPLETION_AND:
             $success = $result >= $moduleinstance->mingrade;
-      break;
+            break;
         case COMPLETION_OR:
             $success = $result >= $moduleinstance->mingrade;
     }
@@ -368,11 +402,13 @@ function minilesson_is_complete($course, $cm, $userid, $type) {
  * @param progress_trace trace object
  *
  */
-function minilesson_dotask(progress_trace $trace) {
+function minilesson_dotask(progress_trace $trace)
+{
     $trace->output('executing dotask');
 }
 
-function minilesson_get_editornames() {
+function minilesson_get_editornames()
+{
     // return array('welcome');
     return [];
 }
@@ -389,14 +425,15 @@ function minilesson_get_editornames() {
  * @param mod_minilesson_mod_form $mform
  * @return int The id of the newly inserted minilesson record
  */
-function minilesson_add_instance(stdClass $minilesson,?mod_minilesson_mod_form $mform = null) {
+function minilesson_add_instance(stdClass $minilesson, ?mod_minilesson_mod_form $mform = null)
+{
     global $DB;
 
     $minilesson->timecreated = time();
     $minilesson = minilesson_process_files($minilesson, $mform);
     $minilesson->id = $DB->insert_record(constants::M_TABLE, $minilesson);
 
-    if(!isset($minilesson->cmidnumber)){
+    if (!isset($minilesson->cmidnumber)) {
         $minilesson->cmidnumber = null;
     }
     minilesson_grade_item_update($minilesson);
@@ -404,22 +441,27 @@ function minilesson_add_instance(stdClass $minilesson,?mod_minilesson_mod_form $
     // add expected completion date
     if (class_exists('\core_completion\api')) {
         $completionexpected = (empty($minilesson->completionexpected) ? null : $minilesson->completionexpected);
-        \core_completion\api::update_completion_date_event($minilesson->coursemodule, 'minilesson', $minilesson->id,
-            $completionexpected);
+        \core_completion\api::update_completion_date_event(
+            $minilesson->coursemodule,
+            'minilesson',
+            $minilesson->id,
+            $completionexpected
+        );
     }
-    return  $minilesson->id;
+    return $minilesson->id;
 }
 
 
-function minilesson_process_files(stdClass $minilesson,?mod_minilesson_mod_form $mform = null) {
+function minilesson_process_files(stdClass $minilesson, ?mod_minilesson_mod_form $mform = null)
+{
     global $DB;
     $cmid = $minilesson->coursemodule;
     $context = context_module::instance($cmid);
     $editors = minilesson_get_editornames();
     $itemid = 0;
     $edoptions = minilesson_editor_no_files_options($context);
-    foreach($editors as $editor){
-        $minilesson = file_postupdate_standard_editor( $minilesson, $editor, $edoptions, $context, constants::M_COMPONENT, $editor, $itemid);
+    foreach ($editors as $editor) {
+        $minilesson = file_postupdate_standard_editor($minilesson, $editor, $edoptions, $context, constants::M_COMPONENT, $editor, $itemid);
     }
 
     return $minilesson;
@@ -436,7 +478,8 @@ function minilesson_process_files(stdClass $minilesson,?mod_minilesson_mod_form 
  * @param mod_minilesson_mod_form $mform
  * @return boolean Success/Fail
  */
-function minilesson_update_instance(stdClass $minilesson,?mod_minilesson_mod_form $mform = null) {
+function minilesson_update_instance(stdClass $minilesson, ?mod_minilesson_mod_form $mform = null)
+{
 
     global $DB;
 
@@ -449,7 +492,7 @@ function minilesson_update_instance(stdClass $minilesson,?mod_minilesson_mod_for
     // if region has changed we will need a new scorer. So lets flag that if necessary
     $oldrecord = $DB->get_record(constants::M_TABLE, ['id' => $minilesson->id]);
     $needsnewlangmodels = false;
-    if($minilesson->region != $oldrecord->region) {
+    if ($minilesson->region != $oldrecord->region) {
         $needsnewlangmodels = true;
     }
 
@@ -457,11 +500,11 @@ function minilesson_update_instance(stdClass $minilesson,?mod_minilesson_mod_for
     $success = $DB->update_record(constants::M_TABLE, $minilesson);
 
     // update lang models if required
-    if($needsnewlangmodels) {
+    if ($needsnewlangmodels) {
         \mod_minilesson\local\itemform\helper::update_all_langmodels($minilesson);
     }
 
-    if(!isset($minilesson->cmidnumber)){
+    if (!isset($minilesson->cmidnumber)) {
         $minilesson->cmidnumber = null;
     }
     minilesson_grade_item_update($minilesson);
@@ -473,8 +516,12 @@ function minilesson_update_instance(stdClass $minilesson,?mod_minilesson_mod_for
     // update expected completion date
     if (class_exists('\core_completion\api')) {
         $completionexpected = (empty($minilesson->completionexpected) ? null : $minilesson->completionexpected);
-        \core_completion\api::update_completion_date_event($minilesson->coursemodule, 'minilesson', $minilesson->id,
-            $completionexpected);
+        \core_completion\api::update_completion_date_event(
+            $minilesson->coursemodule,
+            'minilesson',
+            $minilesson->id,
+            $completionexpected
+        );
     }
 
     return $success;
@@ -490,10 +537,11 @@ function minilesson_update_instance(stdClass $minilesson,?mod_minilesson_mod_for
  * @param int $id Id of the module instance
  * @return boolean Success/Failure
  */
-function minilesson_delete_instance($id) {
+function minilesson_delete_instance($id)
+{
     global $DB;
 
-    if (! $minilesson = $DB->get_record(constants::M_TABLE, ['id' => $id])) {
+    if (!$minilesson = $DB->get_record(constants::M_TABLE, ['id' => $id])) {
         return false;
     }
 
@@ -513,7 +561,8 @@ function minilesson_delete_instance($id) {
  *
  * @return stdClass|null
  */
-function minilesson_user_outline($course, $user, $mod, $minilesson) {
+function minilesson_user_outline($course, $user, $mod, $minilesson)
+{
 
     $return = new stdClass();
     $return->time = 0;
@@ -531,7 +580,8 @@ function minilesson_user_outline($course, $user, $mod, $minilesson) {
  * @param stdClass $minilesson the module instance record
  * @return void, is supposed to echp directly
  */
-function minilesson_user_complete($course, $user, $mod, $minilesson) {
+function minilesson_user_complete($course, $user, $mod, $minilesson)
+{
 }
 
 /**
@@ -541,7 +591,8 @@ function minilesson_user_complete($course, $user, $mod, $minilesson) {
  *
  * @return boolean
  */
-function minilesson_print_recent_activity($course, $viewfullnames, $timestart) {
+function minilesson_print_recent_activity($course, $viewfullnames, $timestart)
+{
     return false;  // True if anything was printed, otherwise false
 }
 
@@ -561,7 +612,8 @@ function minilesson_print_recent_activity($course, $viewfullnames, $timestart) {
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  * @return void adds items into $activities and increases $index
  */
-function minilesson_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
+function minilesson_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0)
+{
 }
 
 /**
@@ -569,7 +621,8 @@ function minilesson_get_recent_mod_activity(&$activities, &$index, $timestart, $
 
  * @return void
  */
-function minilesson_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+function minilesson_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames)
+{
 }
 
 /**
@@ -580,7 +633,8 @@ function minilesson_print_recent_mod_activity($activity, $courseid, $detail, $mo
  * @return boolean
  * @todo Finish documenting this function
  **/
-function minilesson_cron () {
+function minilesson_cron()
+{
     return true;
 }
 
@@ -590,7 +644,8 @@ function minilesson_cron () {
  * @example return array('moodle/site:accessallgroups');
  * @return array
  */
-function minilesson_get_extra_capabilities() {
+function minilesson_get_extra_capabilities()
+{
     return [];
 }
 
@@ -609,7 +664,8 @@ function minilesson_get_extra_capabilities() {
  * @param int $moduleid ID of an instance of this module
  * @return bool true if the scale is used by the given minilesson instance
  */
-function minilesson_scale_used($moduleid, $scaleid) {
+function minilesson_scale_used($moduleid, $scaleid)
+{
     global $DB;
 
     /** @example */
@@ -628,7 +684,8 @@ function minilesson_scale_used($moduleid, $scaleid) {
  * @param $scaleid int
  * @return boolean true if the scale is used by any minilesson instance
  */
-function minilesson_scale_used_anywhere($scaleid) {
+function minilesson_scale_used_anywhere($scaleid)
+{
     global $DB;
 
     /** @example */
@@ -656,7 +713,8 @@ function minilesson_scale_used_anywhere($scaleid) {
  * @param stdClass $context
  * @return array of [(string)filearea] => (string)description
  */
-function minilesson_get_file_areas($course, $cm, $context) {
+function minilesson_get_file_areas($course, $cm, $context)
+{
     return minilesson_get_editornames();
 }
 
@@ -677,7 +735,8 @@ function minilesson_get_file_areas($course, $cm, $context) {
  * @param string $filename
  * @return file_info instance or null if not found
  */
-function minilesson_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
+function minilesson_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename)
+{
     return null;
 }
 
@@ -695,8 +754,9 @@ function minilesson_get_file_info($browser, $areas, $course, $cm, $context, $fil
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
  */
-function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options=[]) {
-       global $DB, $CFG;
+function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = [])
+{
+    global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
         send_file_not_found();
@@ -704,7 +764,7 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
 
     require_login($course, true, $cm);
 
-    $itemid = (int)array_shift($args);
+    $itemid = (int) array_shift($args);
 
     require_course_login($course, true, $cm);
 
@@ -717,18 +777,18 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
         require_login($course, false, $cm);
         require_capability('mod/minilesson:export', $context);
 
-        if(!$moduleinstance  = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST)){
+        if (!$moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST)) {
             return false;
         }
         $name = $moduleinstance->name;
         // make a nice filename
-        $filename = clean_filename(strip_tags(format_string($name)).'.json');
+        $filename = clean_filename(strip_tags(format_string($name)) . '.json');
         $filename = preg_replace('/\s+/', '_', $filename);
         $theimport = new \mod_minilesson\import($moduleinstance, $context, $course, $cm);
         $jsondata = $theimport->export_items();
         // return to the browser that called us
         send_file($jsondata, $filename, 0, 0, true, true);
-    }else{
+    } else {
         // files uploaded into activity
         $fs = get_file_storage();
         $relativepath = implode('/', $args);
@@ -751,18 +811,20 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
  *
  * @return bool True if the activity is branded, false otherwise.
  */
-function minilesson_is_branded(){
+function minilesson_is_branded()
+{
     return true;
 }
 
-function minilesson_output_fragment_preview($args) {
+function minilesson_output_fragment_preview($args)
+{
     global $DB, $PAGE;
     $args = (object) $args;
     $context = $args->context;
 
-    $cm         = get_coursemodule_from_id('minilesson', $context->instanceid, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
-    $moduleinstance  = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
+    $cm = get_coursemodule_from_id('minilesson', $context->instanceid, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
 
     $renderer = $PAGE->get_renderer('mod_minilesson');
     $comptest = new \mod_minilesson\comprehensiontest($cm);
@@ -771,7 +833,8 @@ function minilesson_output_fragment_preview($args) {
     return $ret;
 }
 
-function minilesson_output_fragment_mform($args) {
+function minilesson_output_fragment_mform($args)
+{
     global $CFG, $PAGE, $DB;
 
     $args = (object) $args;
@@ -792,108 +855,135 @@ function minilesson_output_fragment_mform($args) {
     $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
 
     $item = false;
-    if($args->itemid){
-        $item = $DB->get_record(constants::M_QTABLE, ['id' => $args->itemid, constants::M_MODNAME => $cm->instance],
-                '*', MUST_EXIST);
-        if($item) {
+    if ($args->itemid) {
+        $item = $DB->get_record(
+            constants::M_QTABLE,
+            ['id' => $args->itemid, constants::M_MODNAME => $cm->instance],
+            '*',
+            MUST_EXIST
+        );
+        if ($item) {
             $data = $item;
             $data->itemid = $item->id;
             $data->id = $cm->id;
 
             // If rich text, use editor otherwise use filepicker
-            if($moduleinstance->richtextprompt == constants::M_PROMPT_RICHTEXT) {
+            if ($moduleinstance->richtextprompt == constants::M_PROMPT_RICHTEXT) {
                 // init our editor field
-                $data = file_prepare_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context,
-                        constants::M_COMPONENT,
-                        constants::TEXTQUESTION_FILEAREA, $data->itemid);
-            }else{
+                $data = file_prepare_standard_editor(
+                    $data,
+                    constants::TEXTQUESTION,
+                    $editoroptions,
+                    $context,
+                    constants::M_COMPONENT,
+                    constants::TEXTQUESTION_FILEAREA,
+                    $data->itemid
+                );
+            } else {
 
                 // make sure the media upload fields are in the correct state
                 $fs = get_file_storage();
-                $files = $fs->get_area_files( $context->id,  constants::M_COMPONENT, constants::MEDIAQUESTION, $data->itemid);
-                if($files){
+                $files = $fs->get_area_files($context->id, constants::M_COMPONENT, constants::MEDIAQUESTION, $data->itemid);
+                if ($files) {
                     $data->addmedia = 1;
-                }else{
+                } else {
                     $data->addmedia = 0;
                 }
-                if(!empty($data->{constants::TTSQUESTION})){
+                if (!empty($data->{constants::TTSQUESTION})) {
                     $data->addttsaudio = 1;
-                }else{
+                } else {
                     $data->addttsaudio = 0;
                 }
-                if(!empty($data->{constants::MEDIAIFRAME})){
+                if (!empty($data->{constants::MEDIAIFRAME})) {
                     $data->addiframe = 1;
-                }else{
+                } else {
                     $data->addiframe = 0;
                 }
-                if(!empty($data->{constants::YTVIDEOID})){
+                if (!empty($data->{constants::YTVIDEOID})) {
                     $data->addyoutubeclip = 1;
-                }else{
+                } else {
                     $data->addyoutubeclip = 0;
                 }
-                if(!empty($data->{constants::QUESTIONTEXTAREA})){
+                if (!empty($data->{constants::QUESTIONTEXTAREA})) {
                     $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
                     $edoptions['context'] = $context;
-                    $data->{constants::QUESTIONTEXTAREA. 'format'} = FORMAT_HTML;
-                    $data = file_prepare_standard_editor($data, constants::QUESTIONTEXTAREA, $edoptions, $context, constants::M_COMPONENT,
-                            constants::TEXTQUESTION_FILEAREA, $data->itemid);
+                    $data->{constants::QUESTIONTEXTAREA . 'format'} = FORMAT_HTML;
+                    $data = file_prepare_standard_editor(
+                        $data,
+                        constants::QUESTIONTEXTAREA,
+                        $edoptions,
+                        $context,
+                        constants::M_COMPONENT,
+                        constants::TEXTQUESTION_FILEAREA,
+                        $data->itemid
+                    );
                     $data->addtextarea = 1;
-                }else{
+                } else {
                     $data->addtextarea = 0;
                 }
-                if(!empty($data->{constants::TTSDIALOG})){
+                if (!empty($data->{constants::TTSDIALOG})) {
                     $data->addttsdialog = 1;
                     // expand opts
                     $data = utils::unpack_ttsdialogopts($data);
-                }else{
+                } else {
                     $data->addttsdialog = 0;
                 }
-                if(!empty($data->{constants::TTSPASSAGE})){
+                if (!empty($data->{constants::TTSPASSAGE})) {
                     $data->addttspassage = 1;
                     // expand opts
                     $data = utils::unpack_ttspassageopts($data);
-                }else{
+                } else {
                     $data->addttspassage = 0;
                 }
 
                 // init our itemmedia field
                 $draftitemid = file_get_submitted_draft_itemid(constants::MEDIAQUESTION);
-                file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,
-                        constants::MEDIAQUESTION, $data->itemid,
-                        $filemanageroptions);
+                file_prepare_draft_area(
+                    $draftitemid,
+                    $context->id,
+                    constants::M_COMPONENT,
+                    constants::MEDIAQUESTION,
+                    $data->itemid,
+                    $filemanageroptions
+                );
                 $data->{constants::MEDIAQUESTION} = $draftitemid;
 
                 // show the fields by default if they have some content
-                $visibility = ['addmedia' => $data->addmedia,
-                'addiframe' => $data->addiframe,
-                'addttsaudio' => $data->addttsaudio,
-                'addtextarea' => $data->addtextarea,
-                'addyoutubeclip' => $data->addyoutubeclip,
-                'addttsdialog' => $data->addttsdialog,
-                'addttspassage' => $data->addttspassage];
+                $visibility = [
+                    'addmedia' => $data->addmedia,
+                    'addiframe' => $data->addiframe,
+                    'addttsaudio' => $data->addttsaudio,
+                    'addtextarea' => $data->addtextarea,
+                    'addyoutubeclip' => $data->addyoutubeclip,
+                    'addttsdialog' => $data->addttsdialog,
+                    'addttspassage' => $data->addttspassage
+                ];
                 $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/mediaprompts', 'init', [$visibility]);
 
             }
         }
     }
 
-    $itemformclass  = utils::fetch_itemform_classname($formname);
-    if(!$itemformclass){
+    $itemformclass = utils::fetch_itemform_classname($formname);
+    if (!$itemformclass) {
         print_error('No item type specified');
         return 0;
     }
-    $mform = new $itemformclass(null,
-        ['editoroptions' => $editoroptions,
+    $mform = new $itemformclass(
+        null,
+        [
+            'editoroptions' => $editoroptions,
             'filemanageroptions' => $filemanageroptions,
-            'moduleinstance' => $moduleinstance]
+            'moduleinstance' => $moduleinstance
+        ]
     );
 
     // if we have item data set it
-    if($item){
+    if ($item) {
         $mform->set_data($data);
     }
 
-    if(!empty($mform)) {
+    if (!empty($mform)) {
         ob_start();
         $mform->display();
         $o .= ob_get_contents();
@@ -917,7 +1007,8 @@ function minilesson_output_fragment_mform($args) {
  * @param stdClass $module
  * @param cm_info $cm
  */
-function minilesson_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
+function minilesson_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm)
+{
 }
 
 /**
@@ -929,10 +1020,12 @@ function minilesson_extend_navigation(navigation_node $navref, stdclass $course,
  * @param settings_navigation $settingsnav {@link settings_navigation}
  * @param navigation_node $minilessonnode {@link navigation_node}
  */
-function minilesson_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $minilessonnode = null) {
+function minilesson_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $minilessonnode = null)
+{
 }
 
-function mod_minilesson_get_fontawesome_icon_map() {
+function mod_minilesson_get_fontawesome_icon_map()
+{
     return [
         'mod_minilesson:print' => 'fa-print',
         'mod_minilesson:volume-up' => 'fa-volume-up',
@@ -940,35 +1033,38 @@ function mod_minilesson_get_fontawesome_icon_map() {
     ];
 }
 
-function mod_minilesson_cm_info_dynamic(cm_info $cm) {
+function mod_minilesson_cm_info_dynamic(cm_info $cm)
+{
     global $USER, $DB;
 
-         $moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
-    if(method_exists($cm, 'override_customdata')) {
+    $moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
+    if (method_exists($cm, 'override_customdata')) {
         $cm->override_customdata('duedate', $moduleinstance->viewend);
         $cm->override_customdata('allowsubmissionsfromdate', $moduleinstance->viewstart);
     }
 
 }
-function minilesson_get_coursemodule_info($coursemodule) {
+function minilesson_get_coursemodule_info($coursemodule)
+{
     global $DB;
 
-    if(!$moduleinstance = $DB->get_record('minilesson', ['id' => $coursemodule->instance], '*')){
+    if (!$moduleinstance = $DB->get_record('minilesson', ['id' => $coursemodule->instance], '*')) {
         return false;
     }
-        $result = new cached_cm_info();
+    $result = new cached_cm_info();
     if ($coursemodule->showdescription) {
         if (time() > $moduleinstance->viewstart) {
             $result->content = format_module_intro('minilesson', $moduleinstance, $coursemodule->id, false);
         }
     }
-        $result->name = $moduleinstance->name;
-        $result->customdata['duedate'] = $moduleinstance->viewend;
-        $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;
-        return $result;
+    $result->name = $moduleinstance->name;
+    $result->customdata['duedate'] = $moduleinstance->viewend;
+    $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;
+    return $result;
 }
 
-function minilesson_output_fragment_ttsaudioelement($args) {
+function minilesson_output_fragment_ttsaudioelement($args)
+{
     $formdata = [];
     $args = (object) $args;
     parse_str($args->formdata, $formdata);
@@ -985,7 +1081,8 @@ function minilesson_output_fragment_ttsaudioelement($args) {
     return $formrenderer->toHtml();
 }
 
-function minilesson_output_fragment_aigen_contextform($args) {
+function minilesson_output_fragment_aigen_contextform($args)
+{
     global $CFG;
     require_once($CFG->libdir . '/externallib.php');
 
@@ -1008,10 +1105,11 @@ function minilesson_output_fragment_aigen_contextform($args) {
     return $form->render();
 }
 
-function mod_minilesson_output_fragment_ai_prompt($args) {
-    $args = (object)$args;
+function mod_minilesson_output_fragment_ai_prompt($args)
+{
+    $args = (object) $args;
 
-    $promptid   = (int) $args->promptid;
+    $promptid = (int) $args->promptid;
     $prompttype = (string) $args->prompttype;
     $itemtype = (string) $args->itemtype;
     $configname = $itemtype . '_' . $prompttype . 'prompt_' . $promptid;

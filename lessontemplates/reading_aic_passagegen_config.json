@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] The passage should take about 1 minute to read aloud. \nThe passage should be engaging and appropriate for the target audience. Also generate 4 open short answer questions (data1) each on a new line, suitable for {level} learners of {language}, to check the learners understanding of the passage.",
+            "prompt": "Generate a passage of text (ttspassage) in {language} suitable for {level} level learners on the topic of: [{topic}] The passage should take about 1 minute to read aloud. \nThe passage should be engaging and appropriate for the target audience. Also generate a short title for the text (data1). Also generate 4 open short answer questions (data2) each on a new line, suitable for {level} learners of {language}, to check the learners understanding of the passage.",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -17,7 +17,7 @@
                 },
                 {
                     "name": "data2",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
@@ -37,7 +37,7 @@
                 }
             ],
             "generatefileareas": [],
-            "overallimagecontext": "target_language",
+            "overallimagecontext": "--",
             "promptfields": [
                 {
                     "name": "language",
@@ -60,8 +60,8 @@
             "generatefields": [
                 {
                     "name": "text",
-                    "generate": 0,
-                    "mapping": ""
+                    "generate": 1,
+                    "mapping": "item0_data1"
                 },
                 {
                     "name": "passage",
@@ -135,7 +135,7 @@
                 {
                     "name": "audiochataidata1",
                     "generate": 1,
-                    "mapping": "item0_data1"
+                    "mapping": "item0_data2"
                 },
                 {
                     "name": "audiochatgradeinstructions",
@@ -182,10 +182,10 @@
             "promptfields": []
         }
     ],
-    "lessonTitle": "Reading + Chat (Generated passage)",
+    "lessonTitle": "Reading + Chat (AI passage)",
     "lessonDescription": "This will take a topic and learner level and generate a reading passage that will be used in a passage reading and then an audio chat session",
     "uniqueid": "6899607f96fb7",
-    "version": "3",
+    "version": "4",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

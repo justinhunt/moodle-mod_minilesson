@@ -1043,7 +1043,7 @@ $string['freewriting:gradingprompt3'] = 'Describe the picture - requires a pictu
 $string['freewriting:gradingprompt_dec1'] = 'Deduct 1 point for each grammar, spelling or punctuation error.';
 $string['freewriting:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer.
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a broken sentence that has the correct meaning.';
-$string['freewriting:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{ai data1}] 
+$string['freewriting:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}] 
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
 $string['freewriting:feedbackprompt1'] = 'Default';
 $string['freewriting:feedbackprompt2'] = 'Describe the picture ';
@@ -1056,7 +1056,7 @@ $string['freespeaking:gradingprompt3'] = 'Describe the picture - requires a pict
 $string['freespeaking:gradingprompt_dec1'] = 'Deduct 1 point for each grammar error.';
 $string['freespeaking:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer. 
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a sentence with mistakes that has the correct meaning';
-$string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{ai data1}] 
+$string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}] 
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
 $string['freespeaking:feedbackprompt1'] = 'Default';
 $string['freespeaking:feedbackprompt2'] = 'Describe the picture';
