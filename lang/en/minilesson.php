@@ -1097,3 +1097,6 @@ $string['basciresult'] = 'Basic Results';
 $string['showresult'] = 'Show Result';
 $string['aigradingandfeedback'] = 'AI Grading and Feedback';
 $string['resultsdisplay'] = 'Results Display';
+
+$string['manageminilessonitem'] = 'Manage Lesson Items';
+$string['successfullyupdated'] = 'Successfully updated';

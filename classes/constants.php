@@ -695,4 +695,31 @@ class constants
     const AUDIOCHAT_FEEDBACKSELECTION = 'customint7';
 
     const MAX_AI_PROMPTS = 6;
+
+    const ITEMTYPES = [
+        constants::TYPE_PAGE,
+        constants::TYPE_MULTICHOICE,
+        constants::TYPE_DICTATION,
+        constants::TYPE_SPEECHCARDS,
+        constants::TYPE_LISTENREPEAT,
+        constants::TYPE_MULTIAUDIO,
+        constants::TYPE_SHORTANSWER,
+        constants::TYPE_LGAPFILL,
+        constants::TYPE_TGAPFILL,
+        constants::TYPE_SGAPFILL,
+        constants::TYPE_SPACEGAME,
+        constants::TYPE_FREESPEAKING,
+        constants::TYPE_FREEWRITING,
+        constants::TYPE_PASSAGEREADING,
+        constants::TYPE_PGAPFILL,
+        constants::TYPE_H5P,
+        constants::TYPE_WORDSHUFFLE,
+        constants::TYPE_SCATTER,
+        constants::TYPE_FLUENCY,
+        constants::TYPE_AUDIOCHAT,
+        constants::TYPE_SMARTFRAME,
+        constants::TYPE_COMPQUIZ,
+        constants::TYPE_CONVERSATION,
+        constants::TYPE_DICTATIONCHAT,
+    ];
 }

@@ -842,6 +842,13 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025080104, 'minilesson');
     }
 
+    if ($oldversion < 2025090100.01) {
+        $qtypes = constants::ITEMTYPES;
+        set_config('enableditems', implode(',', $qtypes), 'minilesson');
+        upgrade_mod_savepoint(true, 2025090100.01, 'minilesson');
+    }
+
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }
