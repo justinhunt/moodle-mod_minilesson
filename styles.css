@@ -4715,3 +4715,8 @@ div.poodlldictationplayer {
 .ml_scatter_stage .ml_scatter_listitem.invisible {
     display: none;
 }
+
+#page-mod-minilesson-itemtypes .itemimg{
+  width: 30px;
+  height: auto;
+}

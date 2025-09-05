@@ -344,5 +344,12 @@ if ($hassiteconfig) {
 
     //add prompt settings page to minilesson category
     $ADMIN->add('modsettingsminilessoncat', $freewritingsettings);
+
+    $proxieslink = new admin_externalpage(
+        'manageminilessonitem',
+        get_string('manageminilessonitem', 'mod_minilesson'),
+        new moodle_url('/mod/minilesson/itemtypes.php')
+    );
+    $ADMIN->add('modsettingsminilessoncat', $proxieslink);
 }
 $settings = null; // We do not want standard settings link.
