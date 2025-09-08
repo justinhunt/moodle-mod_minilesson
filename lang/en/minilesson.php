@@ -1100,3 +1100,4 @@ $string['resultsdisplay'] = 'Results Display';
 
 $string['manageminilessonitem'] = 'Manage Lesson Items';
 $string['successfullyupdated'] = 'Successfully updated';
+$string['manageminilessonitems_explanation'] = 'Here you can set the visibility of items in the "Add new item" dialog. Toggling hide and show here will not affect the items that have already been created.';

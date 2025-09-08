@@ -49,16 +49,16 @@ if ($hassiteconfig) {
     $cloudpoodllapiuser = get_config(constants::M_COMPONENT, 'apiuser');
     $cloudpoodllapisecret = get_config(constants::M_COMPONENT, 'apisecret');
     $showbelowapisecret = '';
-    // if we have an API user and secret we fetch token
-    if(!empty($cloudpoodllapiuser) && !empty($cloudpoodllapisecret)) {
+    // If we have an API user and secret we fetch token.
+    if (!empty($cloudpoodllapiuser) && !empty($cloudpoodllapisecret)) {
         $tokeninfo = utils::fetch_token_for_display($cloudpoodllapiuser, $cloudpoodllapisecret);
         $showbelowapisecret = $tokeninfo;
         // if we have no API user and secret we show a "fetch from elsewhere on site" or "take a free trial" link
-    }else{
+    } else {
         $amddata = ['apppath' => $CFG->wwwroot . '/' .constants::M_URL];
         $cpcomponents = ['filter_poodll', 'qtype_cloudpoodll', 'mod_readaloud', 'mod_wordcards', 'mod_solo', 'mod_englishcentral', 'mod_pchat',
             'atto_cloudpoodll', 'tinymce_cloudpoodll', 'assignsubmission_cloudpoodll', 'assignfeedback_cloudpoodll'];
-        foreach($cpcomponents as $cpcomponent){
+        foreach ($cpcomponents as $cpcomponent) {
             switch($cpcomponent){
                 case 'filter_poodll':
                     $apiusersetting = 'cpapiuser';
@@ -73,9 +73,9 @@ if ($hassiteconfig) {
                     $apisecretsetting = 'apisecret';
             }
             $cloudpoodllapiuser = get_config($cpcomponent, $apiusersetting);
-            if(!empty($cloudpoodllapiuser)){
+            if (!empty($cloudpoodllapiuser)) {
                 $cloudpoodllapisecret = get_config($cpcomponent, $apisecretsetting);
-                if(!empty($cloudpoodllapisecret)){
+                if (!empty($cloudpoodllapisecret)) {
                     $amddata['apiuser'] = $cloudpoodllapiuser;
                     $amddata['apisecret'] = $cloudpoodllapisecret;
                     break;
@@ -212,8 +212,16 @@ if ($hassiteconfig) {
     $mainsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
         $label, $details, $default, PARAM_RAW));
 
-    //add main settings page to minilesson category
+    // Add main settings page to minilesson category.
     $ADMIN->add('modsettingsminilessoncat', $mainsettings);
+
+    // Manage Items Page.
+    $manageitemspage = new admin_externalpage(
+        'manageminilessonitem',
+        get_string('manageminilessonitem', 'mod_minilesson'),
+        new moodle_url('/mod/minilesson/itemtypes.php')
+    );
+    $ADMIN->add('modsettingsminilessoncat', $manageitemspage);
 
     //create audio chat settings page
     $pagetitle = get_string('audiochat', constants::M_COMPONENT);
@@ -231,7 +239,7 @@ if ($hassiteconfig) {
 
     // Audio Chat Prompts
     $maxprompts = constants::MAX_AI_PROMPTS;
-    for($i=0;$i<$maxprompts;$i++) {
+    for ($i = 0; $i < $maxprompts; $i++) {
         //Audio Chat instructions prompt
         $defaults = 3;
         $name = 'audiochat_instructionspromptheading_' . ($i + 1);
@@ -246,7 +254,7 @@ if ($hassiteconfig) {
         $audiochatsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
             $label, $details, $default, PARAM_RAW));
     }
-    for($i=0;$i<$maxprompts;$i++) {
+    for ($i = 0; $i < $maxprompts; $i++) {
         //Audio Chat feedback prompt
         $defaults = 2;
         $name = 'audiochat_feedbackpromptheading_' . ($i + 1);
@@ -272,7 +280,7 @@ if ($hassiteconfig) {
     $freespeakingsettings->add(new admin_setting_heading(constants::M_COMPONENT . '/freespeaking', get_string('freespeaking', constants::M_COMPONENT), ''));
     $maxprompts = constants::MAX_AI_PROMPTS;
 
-    for($i=0;$i<$maxprompts;$i++) {
+    for ($i = 0; $i < $maxprompts; $i++) {
         //Free Speaking instructions prompt
         $defaults = 3;
         $name = 'freespeaking_gradingpromptheading_' . ($i + 1);
@@ -287,7 +295,7 @@ if ($hassiteconfig) {
         $freespeakingsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
             $label, $details, $default, PARAM_RAW));
     }
-    for($i=0;$i<$maxprompts;$i++) {
+    for ($i = 0; $i < $maxprompts; $i++) {
         //Free Speaking Feedback Prompt
         $defaults = 2;
         $name = 'freespeaking_feedbackpromptheading_' . ($i + 1);
@@ -302,7 +310,7 @@ if ($hassiteconfig) {
         $freespeakingsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
             $label, $details, $default, PARAM_RAW));
     }
-    //add free speaking settings page to minilesson category
+    // Add free speaking settings page to minilesson category.
     $ADMIN->add('modsettingsminilessoncat', $freespeakingsettings);
 
     // Free Writing settings.
@@ -311,7 +319,7 @@ if ($hassiteconfig) {
     $freewritingsettings->add(new admin_setting_heading(constants::M_COMPONENT . '/freewriting', get_string('freewriting', constants::M_COMPONENT), ''));
     $maxprompts = constants::MAX_AI_PROMPTS;
 
-    for($i=0;$i<$maxprompts;$i++) {
+    for ($i = 0; $i < $maxprompts; $i++) {
         //Free Writing instructions prompt
         $defaults = 3;
         $name = 'freewriting_gradingpromptheading_' . ($i + 1);
@@ -326,7 +334,7 @@ if ($hassiteconfig) {
         $freewritingsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
             $label, $details, $default, PARAM_RAW));
     }
-    for($i=0;$i<$maxprompts;$i++) {
+    for ($i = 0; $i < $maxprompts; $i++) {
         //Free Writing Feedback Prompt
         $defaults = 2;
         $name = 'freewriting_feedbackpromptheading_' . ($i + 1);
@@ -342,14 +350,8 @@ if ($hassiteconfig) {
             $label, $details, $default, PARAM_RAW));
     }
 
-    //add prompt settings page to minilesson category
+    // Add prompt settings page to minilesson category.
     $ADMIN->add('modsettingsminilessoncat', $freewritingsettings);
 
-    $proxieslink = new admin_externalpage(
-        'manageminilessonitem',
-        get_string('manageminilessonitem', 'mod_minilesson'),
-        new moodle_url('/mod/minilesson/itemtypes.php')
-    );
-    $ADMIN->add('modsettingsminilessoncat', $proxieslink);
 }
 $settings = null; // We do not want standard settings link.
