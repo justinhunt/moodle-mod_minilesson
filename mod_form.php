@@ -103,20 +103,32 @@ class mod_minilesson_mod_form extends moodleform_mod {
 	 * See lib.php minilesson_get_completion_state()
      */
 	 function add_completion_rules() {
-		$mform =& $this->_form;  
-		$config = get_config(constants::M_COMPONENT);
-    
-		//timer options
-        //Add a place to set a mimumum time after which the activity is recorded complete
-       $mform->addElement('static', 'mingradedetails', '',get_string('mingradedetails', constants::M_COMPONENT));
-       $options= array(0=>get_string('none'),20=>'20%',30=>'30%',40=>'40%',50=>'50%',60=>'60%',70=>'70%',80=>'80%',90=>'90%',100=>'40%');
-       $mform->addElement('select', 'mingrade', get_string('mingrade', constants::M_COMPONENT), $options);
-	   
-		return array('mingrade');
+		$mform =& $this->_form;
+         $suffixedfields=[];
+
+         // Completion when finished
+         $finishedfield = $this->get_suffixed_name('completionwhenfinished');
+         $mform->addElement('advcheckbox', $finishedfield, '', get_string('completionwhenfinished', constants::M_COMPONENT));
+         $suffixedfields[] = $finishedfield;
+
+         // Min Grade
+         $options= array(0=>get_string('none'),10=>'10%',20=>'20%',30=>'30%',40=>'40%',50=>'50%',60=>'60%',70=>'70%',80=>'80%',90=>'90%',100=>'100%');
+         $mingradefield = $this->get_suffixed_name('mingrade');
+         $mform->addElement('select', $mingradefield, get_string('mingrade', constants::M_COMPONENT), $options);
+         $mform->addHelpButton($mingradefield, 'mingrade', constants::M_COMPONENT);
+         $suffixedfields[] = $mingradefield;
+
+
+		return $suffixedfields;
 	}
 	
 	function completion_rule_enabled($data) {
-		return ($data['mingrade']>0);
+        global $CFG;
+        $completionfields=['completionwhenfinished','mingrade'];
+        foreach($completionfields as $field){
+            if(!empty($data[$this->get_suffixed_name($field)])){return true;}
+        }
+        return false;
 	}
 	
 	public function data_preprocessing(&$form_data) {
@@ -126,19 +138,25 @@ class mod_minilesson_mod_form extends moodleform_mod {
 		}
 	}
 
-public function validation($data, $files) {
-        $errors = parent::validation($data, $files);
-         
-          if (!empty($data['viewend'])) {
-            if ($data['viewend'] < $data['viewstart']) {
-                $errors['viewend'] = "End date should be after Start Date";
+    public function validation($data, $files) {
+            $errors = parent::validation($data, $files);
+
+              if (!empty($data['viewend'])) {
+                if ($data['viewend'] < $data['viewstart']) {
+                    $errors['viewend'] = "End date should be after Start Date";
+                }
             }
-        }
 
 
 
-        return $errors;
+            return $errors;
+     }
+
+    private function get_suffixed_name($completionfieldname){
+        global $CFG;
+        $m43 = $CFG->version >= 2023100900;
+        $suffix = $m43 ? $this->get_suffix() : '';
+        return $suffix . $completionfieldname;
     }
-    
 
 }

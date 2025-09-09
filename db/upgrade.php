@@ -848,6 +848,19 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025090100.01, 'minilesson');
     }
 
+    if ($oldversion < 2025090100.02) {
+        $activitytable = new xmldb_table(constants::M_TABLE);
+        // Define field completionwhenfinished  to be added to minilesson.
+        $completionwhenfinished = new xmldb_field('completionwhenfinished', XMLDB_TYPE_INTEGER, '2', XMLDB_UNSIGNED, XMLDB_NOTNULL, null, '0');
+
+        // add completionwhenfinished field to minilesson table
+        if (!$dbman->field_exists($activitytable, $completionwhenfinished)) {
+            $dbman->add_field($activitytable, $completionwhenfinished);
+        }
+        upgrade_mod_savepoint(true, 2025090100.02, 'minilesson');
+    }
+
+
 
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;

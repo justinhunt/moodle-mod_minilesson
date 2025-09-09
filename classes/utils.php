@@ -2351,6 +2351,37 @@ class utils
         }
     }
 
+    public static function is_complete($rule, $moduleinstance, $userid){
+        global $DB;
+        $status = false;
+        switch ($rule) {
+            case 'completionwhenfinished':
+                $params = ['moduleid' => $moduleinstance->id, 'userid' => $userid];
+                $sql = "SELECT  COUNT( id ) AS count
+                      FROM {" . constants::M_ATTEMPTSTABLE . "}
+                     WHERE userid = :userid AND moduleid = :moduleid" .
+                    " AND status=" . constants::M_STATE_COMPLETE;
+                $result = $DB->get_field_sql($sql, $params);
+                if ($result) {
+                    $status = $result > 0;
+                }
+                break;
+
+            case 'mingrade':
+                $params = ['moduleid' => $moduleinstance->id, 'userid' => $userid];
+                $sql = "SELECT  MAX( sessionscore  ) AS grade
+                      FROM {" . constants::M_ATTEMPTSTABLE . "}
+                     WHERE userid = :userid AND moduleid = :moduleid" .
+                    " AND status=" . constants::M_STATE_COMPLETE;
+                $result = $DB->get_field_sql($sql, $params);
+                if ($result) {
+                    $status = $result >= $moduleinstance->mingrade;
+                }
+                break;
+        }
+        return $status;
+    }
+
     public static function fetch_item_from_itemrecord($itemrecord, $moduleinstance, $context = false)
     {
         // Set up the item type specific parts of the form data

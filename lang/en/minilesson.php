@@ -76,8 +76,7 @@ $string['basicreport_explanation']='A Basic Report';
 $string['returntoreports']='Return to Reports';
 $string['returntogradinghome']='Return to Grades Top';
 $string['exportexcel']='Export to CSV';
-$string['mingradedetails'] = 'The minimum grade required to "complete" this activity.';
-$string['mingrade'] = 'Minimum Grade';
+
 $string['deletealluserdata'] = 'Delete all user data';
 $string['maxattempts'] ='Max. Attempts';
 $string['maxattempts_details'] ='Maximum number of attempts allowed in this activity.';
@@ -1101,3 +1100,10 @@ $string['resultsdisplay'] = 'Results Display';
 $string['manageminilessonitem'] = 'Manage Lesson Items';
 $string['successfullyupdated'] = 'Successfully updated';
 $string['manageminilessonitems_explanation'] = 'Here you can set the visibility of items in the "Add new item" dialog. Toggling hide and show here will not affect the items that have already been created.';
+
+$string['completionwhenfinished'] = 'The student has finished the activity.';
+$string['completionwhenfinisheddesc'] = 'Complete all the activity steps.';
+$string['completiondetail:finished'] = 'Finish all steps in the activity';
+$string['completiondetail:mingrade'] = 'Receive a grade of {$a}% or higher';
+$string['mingrade_help'] = 'The minimum grade required to "complete" this activity.';
+$string['mingrade'] = 'Minimum Grade';

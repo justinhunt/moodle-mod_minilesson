@@ -361,38 +361,42 @@ function minilesson_get_completion_state($course, $cm, $userid, $type)
 function minilesson_is_complete($course, $cm, $userid, $type)
 {
 
-    global $CFG, $DB;
+    global $DB;
 
     // Get module object.
     if (!($moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance]))) {
         throw new Exception("Can't find module with cmid: {$cm->instance}");
     }
 
-    // Check if the min grade condition is enabled.
-    if ($moduleinstance->mingrade == 0) {
+    // Check if conditional completion is enabled.
+    $onfinished = !empty($moduleinstance->completionwhenfinished) ;
+    $onmingrade = !empty($moduleinstance->mingrade);
+    $completionenabled = $onfinished || $onmingrade;
+    if (!$completionenabled) {
         return $type;
-    }
-
-    $params = ['moduleid' => $moduleinstance->id, 'userid' => $userid];
-    $sql = "SELECT  MAX( sessionscore  ) AS grade
-                      FROM {" . constants::M_ATTEMPTSTABLE . "}
-                     WHERE userid = :userid AND moduleid = :moduleid" .
-        " AND status=" . constants::M_STATE_COMPLETE;
-    $result = $DB->get_field_sql($sql, $params);
-    if ($result === false) {
-        return false;
     }
 
     // Check completion reqs against satisfied conditions.
     switch ($type) {
         case COMPLETION_AND:
-            $success = $result >= $moduleinstance->mingrade;
+            if ($onfinished && $onmingrade) {
+                return utils::is_complete('completionwhenfinished', $moduleinstance, $userid) &&
+                    utils::is_complete('mingrade', $moduleinstance, $userid);
+            } else if ($onfinished) {
+                return utils::is_complete('completionwhenfinished', $moduleinstance, $userid);
+            } else if ($onmingrade) {
+                return utils::is_complete('mingrade', $moduleinstance, $userid);
+            }
             break;
+
         case COMPLETION_OR:
-            $success = $result >= $moduleinstance->mingrade;
+            if ($onfinished || $onmingrade ) {
+                return utils::is_complete('completionwhenfinished', $moduleinstance, $userid) ||
+                    utils::is_complete('mingrade', $moduleinstance, $userid);
+            }
     }
-    // return our success flag
-    return $success;
+    // Completion option is not enabled, we must return $type.
+    return $type;
 }
 
 
@@ -1058,6 +1062,13 @@ function minilesson_get_coursemodule_info($coursemodule)
         }
     }
     $result->name = $moduleinstance->name;
+
+    // Populate the custom completion rules as key => value pairs, but only if the completion mode is 'automatic'.
+    if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
+        $result->customdata['customcompletionrules']['completionwhenfinished'] = $moduleinstance->completionwhenfinished;
+        $result->customdata['customcompletionrules']['mingrade'] = $moduleinstance->mingrade;
+    }
+
     $result->customdata['duedate'] = $moduleinstance->viewend;
     $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;
     return $result;
