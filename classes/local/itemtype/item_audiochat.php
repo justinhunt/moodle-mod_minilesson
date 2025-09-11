@@ -178,7 +178,7 @@ class item_audiochat extends item {
         $keycols['int2'] = ['jsonname' => 'relevance', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::RELEVANCE];
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
         $keycols['int4'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_AUTORESPONSE];
-        $keycols['int5'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_ALLOWRETRY];
+        $keycols['int5'] = ['jsonname' => 'allowretry', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_ALLOWRETRY];
         $keycols['int6'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_INSTRUCTIONSSELECTION];
         $keycols['int7'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_FEEDBACKSELECTION];
         $keycols['text5'] = ['jsonname' => 'audiochattopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_TOPIC];

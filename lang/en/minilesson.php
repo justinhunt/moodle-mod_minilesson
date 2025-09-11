@@ -1085,7 +1085,7 @@ Speak simply and slowly. Your responses should be brief. Do not comment on the c
 $string['audiochat:feedbackprompt1'] = 'Open Discussion';
 $string['audiochat:feedbackprompt2'] = 'Discussion with questions - requires points and questions (ai data1)';
 $string['audiochat:feedbackprompt_dec1'] = "For the score consider the following criteria: relevance to topic: '{topic}', fluency, and vocabulary usage. For feedback it should be simple, and in the student native language: {native language}.";
-$string['audiochat:feedbackprompt_dec2'] = "Give 25 points for each correct answer to a question that was answered by the student. Give 0 points for incorrect answers. Give the student feedback on their use of language, and on their answers. These are the questions: {ai data1}";
+$string['audiochat:feedbackprompt_dec2'] = "Give 25 points for each correct answer to a question that was answered by the student. Give 0 points for incorrect answers. Give the student feedback on their use of language, and on their answers. Give feedback in the student native language: {native language}. These are the questions: {ai data1}";
 
 $string['hidecorrection'] = 'Hide corrections';
 $string['showgrade'] = "Show Grade";
