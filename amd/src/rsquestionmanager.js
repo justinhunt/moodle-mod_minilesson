@@ -1,8 +1,8 @@
 /* jshint ignore:start */
 define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_minilesson/modalformhelper',
         'mod_minilesson/modaldeletehelper','mod_minilesson/moveitemhelper','mod_minilesson/modalpreviewhelper',
-        'mod_minilesson/duplicateitemhelper','mod_minilesson/datatables'],
-    function($,  log, templates, def, mfh, mdh, mih, mph,dplh, datatables) {
+        'mod_minilesson/duplicateitemhelper','mod_minilesson/datatables', 'core/modal_factory', 'core/modal_events'],
+    function($,  log, templates, def, mfh, mdh, mih, mph,dplh, datatables, ModalFactory, ModalEvents) {
 
     "use strict"; // jshint ;_;
 
@@ -23,7 +23,9 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             dd.modaleditform = props.modaleditform;
             dd.cmid = props.cmid;
             dd.wwwroot = props.wwwroot;
+            dd.lessonitems = props.lessonitems;
 
+            dd.modalshow();
             dd.register_events();
             dd.process_html();
             dd.collate_rowids();
@@ -207,7 +209,73 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             mph.init('.' + def.itemrow + '_previewlink', dd.contextid, after_questionpreview);
             //duplicate item helper
             dplh.init('.' + def.itemrow + '_duplicatelink', dd.contextid, after_questionduplicate);
-        }
+        },
+
+            modalshow: function() {
+                var dd = this;
+                var context = {
+                    lessonitems: dd.lessonitems,
+                };
+                $('#additembtn').on('click', function() {
+                    ModalFactory.create({
+                        type: ModalFactory.types.CANCEL,
+                        body: templates.render('mod_minilesson/lessonitem', context),
+                    }).then(function (modal) {
+                        dd.modal = modal;
+                        dd.modal.setLarge();
+                        dd.modal.show();
+                        dd.modal.getRoot().find('.modal-header, .modal-footer').hide();
+                        dd.modal.getRoot().addClass('lessonitem-modal');
+
+                        dd.modal.getRoot().find('.lessonitem-description').each(function() {
+                            $(this).removeData('bs.collapse');
+                            $(this).collapse({ toggle: false });
+                        });
+
+                        dd.videocontroller(dd.modal.getRoot());
+
+                        dd.modal.getRoot().on(ModalEvents.hidden, function() {
+                            $(this).find('video').each(function() {
+                                this.pause();
+                                this.currentTime = 0;
+                                dd.modal.destroy();
+                            });
+                        });
+                        return dd.modal;
+                    });
+                });
+            },
+
+
+            videocontroller: function(rootel) {
+                $(rootel).on('shown.bs.collapse', '.lessonitem-description', function() {
+                    var video = $(this).find('video').get(0);
+                    if (video) {
+                        var source = $(video).find('source');
+                        if (source.length && source.attr('data-src') && !source.attr('src')) {
+                            source.attr('src', source.attr('data-src'));
+                            video.load();
+                        }
+                        video.play();
+                    }
+                });
+                $(rootel).on('click', '.lessonitem-link', function (e) {
+                    var $target = $($(this).attr('href'));
+
+                    if ($target.hasClass('show')) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+                });
+
+                $(rootel).on('hide.bs.collapse', '.lessonitem-description', function() {
+                    var video = $(this).find('video').get(0);
+                    if (video) {
+                        video.pause();
+                        video.currentTime = 0;
+                    }
+                });
+            }
 
     };//end of returned object
 });//total end

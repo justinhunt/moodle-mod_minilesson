@@ -4720,3 +4720,266 @@ div.poodlldictationplayer {
   width: 30px;
   height: auto;
 }
+
+#page-mod-minilesson-rsquestion-rsquestions .additembutton {
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 18px;
+  background-color: #506DFF;
+}
+#page-mod-minilesson-rsquestion-rsquestions .additembutton:hover,
+#page-mod-minilesson-rsquestion-rsquestions .additembutton:active {
+  background-color: #2642CD;
+}
+
+
+#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td .itemname {
+  color: #1F2334;
+  font-weight: 500;
+  line-height: 100%;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td .itemtype {
+  color: #5C669A;
+  border-left: 1px solid #5C669AC2;
+}
+
+#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td.itemaction {
+  border-left: 1px solid #E9ECFB;
+  vertical-align: middle;
+}
+
+#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td.itemaction .icon {
+  color: #5C669A;
+}
+
+#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td.itemaction .mod_minilesson_item_row_deletelink .icon {
+  color: #FF4747;
+}
+
+#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td .itemicon,
+.lessonitem-container .lessonitem-list .lessonitem-link .itemicon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.lessonitem-container {
+  display: flex;
+}
+
+.lessonitem-container .lessonitem-list {
+  width: 40%;
+  border-right: 1px solid #E9ECFB;
+  background: #F7F7FD;
+  padding: 20px;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+}
+.lessonitem-container .lessonitem-list .lessonitem-list-block {
+  overflow: auto;
+  max-height: 450px;
+}
+
+
+.lessonitem-container .lessonitem-list .lessonitem-link[aria-expanded="true"] {
+  background-color: #FFFFFF;
+  border-radius: 5px;
+}
+
+.lessonitem-container .lessonitem-list .lessonitem-link {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+  margin: 5px;
+}
+.lessonitem-container .lessonitem-list .lessonitem-link:focus {
+  box-shadow: none;
+}
+
+.lessonitem-container .lessonitem-list .lessonitem-link .itemname {
+  text-align: left;
+  color: #414C81;
+}
+
+.lessonitem-container .lessonitem-description {
+  padding: 2rem 2.5rem 2.5rem 2.5rem;
+}
+
+.lessonitem-modal .modal-body {
+    max-height: 550px;
+    padding: 0;
+}
+
+.lessonitem-modal .modal-content {
+  border-radius: 16px;
+  box-shadow: 0 2px 20px 0 #00000026;
+}
+
+.lessonitem-container .lessonditem-description-block{
+  width: 60%;
+}
+
+.lessonitem-container .lessonditem-description-block .collapsing {
+  display: none;
+}
+
+.lessonitem-modal .modal-dialog:focus{
+  box-shadow: none !important;
+}
+
+.lessonitem-modal .lessonitem-container .itemheading {
+  color: #56619C;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 100%;
+}
+
+.lessonitem-modal .lessonitem-container .lessonditem-description-block .lessonditem-description-heading {
+  color: #343f74;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 100%;
+  letter-spacing: 0;
+}
+.mod_minilesson_qpanel .tblheader .theadselectall {
+  display: flex;
+  align-items: center;
+  padding-left: 15px;
+}
+
+.mod_minilesson_qpanel .tblheader .selectalllabel {
+  margin-left: 5px !important;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 100%;
+  letter-spacing: 0;
+}
+
+.mod_minilesson_qpanel .tblheader th {
+  color: #000000;
+}
+
+.lessonitem-modal .lessonitem-container .lessonditem-description-block .lessonditem-description-desc {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0;
+  color: #141C43;
+  margin-top: 25px;
+}
+.lessonitem-modal .lessonitem-container .lessonditem-description-block .addbtn {
+  background-color: #506DFF;
+  color: white;
+  width: 72px;
+  height: 38px;
+  border-radius: 5px;
+}
+.lessonitem-modal .lessonitem-container .lessonditem-description-block .addbtn:hover{
+  background-color: #2642CD;
+}
+
+
+.mod_minilesson_qpanel {
+  border-collapse: separate !important;
+  border-spacing: 0 15px !important;
+  width: 100% !important;
+  border-bottom: 0 !important;
+}
+
+.mod_minilesson_qpanel thead tr th {
+  border: 0 !important;
+}
+
+.mod_minilesson_qpanel td {
+  background: #FBFBFE;
+  border-top: 1px solid #E9ECFB;
+  border-bottom: 1px solid #E9ECFB;
+  padding: 12px 16px;
+}
+
+.mod_minilesson_qpanel tr td:first-child,
+.mod_minilesson_qpanel tr th:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-left: 1px solid #E9ECFB;
+  width: 81%;
+}
+
+.mod_minilesson_qpanel tr td:last-child,
+.mod_minilesson_qpanel tr th:last-child {
+  border-top-right-radius: 8px;
+  border-right: 1px solid #E9ECFB;
+  border-bottom-right-radius: 8px;
+  text-align: right;
+  width: 11%;
+  min-width: 110px;
+  max-width: 130px;
+}
+
+.mod_minilesson_qpanel tr th:last-child {
+  text-align: right;
+  padding-right: 30px !important;
+}
+
+.mod_minilesson_qpanel .mod_minilesson_item_row td.c2,
+.mod_minilesson_qpanel .mod_minilesson_item_row th.c2 {
+  width: 8%;
+}
+
+.mod_minilesson_qpanel thead tr th {
+  padding: 0 !important;
+}
+
+.mod_minilesson_qpanel .tblbody .mod_minilesson_item_row .itemdate .icon {
+  color: #5C669A;
+}
+
+.mod_minilesson_qpanel .tblbody .mod_minilesson_item_row .itemtypelabel{
+  font-size: 11px;
+}
+
+.mod_minilesson_qpanel .tblbody .dataTables_empty {
+  height: 150px;
+}
+
+.mod_minilesson_qpanel .tblbody .dataTables_empty .noitemyet {
+  margin-top: 45px;
+  font-size: 15px;
+  font-weight: 600;
+  font-style: italic;
+  color: #202438D9;
+  line-height: 100%;
+  letter-spacing: 0;
+}
+.mod_minilesson_qpanel .tblbody .dataTables_empty {
+  color: #202438;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 15px;
+  line-height: 100%;
+  letter-spacing: 0;
+}
+
+.lessonitem-list-block::-webkit-scrollbar {
+  width: 6px;
+}
+
+.lessonitem-list-block::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.lessonitem-list-block::-webkit-scrollbar-thumb {
+  background-color: #5C669A;
+  border-radius: 4px;
+}
+
+.mod_minilesson_qpanel .tblbody td input[data-togglegroup="delete-question"],
+.mod_minilesson_qpanel .tblheader th input[data-togglegroup="delete-question"]{
+  width: 17px;
+  height: 17px;
+}

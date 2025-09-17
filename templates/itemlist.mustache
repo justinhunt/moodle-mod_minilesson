@@ -9,25 +9,28 @@
         </div>
     <table class="generaltable mod_minilesson_qpanel" id="{{tableid}}">
         <thead>
-        <tr>
-                <th class="header c0" scope="col">
-                    <input id="select-all-question" name="select-all-question" type="checkbox" value="" data-action="toggle" data-toggle="master" data-togglegroup="delete-question" data-toggle-selectall="{{#str}} selectall {{/str}}" data-toggle-deselectall="{{#str}} deselectall {{/str}}">
-                    <label for="select-all-question" class="">{{#str}} selectall {{/str}}</label>
+        <tr class="tblheader">
+                <th class="header c0 " scope="col">
+                    <div class="theadselectall">
+                        <input id="select-all-question" name="select-all-question" type="checkbox" value="" data-action="toggle" data-toggle="master" data-togglegroup="delete-question" data-toggle-selectall="{{#str}} selectall {{/str}}" data-toggle-deselectall="{{#str}} deselectall {{/str}}">
+                        <label for="select-all-question" class="mb-0 selectalllabel">{{#str}} selectall {{/str}}</label>
+                    </div>
                 </th>
-                <th class="header c1 number" style="" scope="col">#</th>
-                <th class="header c2 name" style="" scope="col">{{#str}}itemname, mod_minilesson{{/str}}</th>
-                <th class="header c3 type" style="" scope="col">{{#str}}itemtype, mod_minilesson{{/str}}</th>
-                <th class="header c4 date" style="" scope="col">{{#str}}order, mod_minilesson{{/str}}</th>
-                <th class="header c5 action" style="" scope="col">{{#str}}action, mod_minilesson{{/str}}</th>
+                <th class="header c1 number d-none" style="" scope="col">#</th>
+                <th class="header c2 date" style="" scope="col">{{#str}}reorder, mod_minilesson{{/str}}</th>
+                <th class="header c3 action" style="" scope="col">{{#str}}actions, mod_minilesson{{/str}}</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="tblbody">
         {{#items}}
             {{> mod_minilesson/itemlistitem}}
         {{/items}}
         </tbody>
     </table>
     </form>
+</div>
+<div class="text-center">
+    <button class="additembutton btn btn-primary" id="additembtn"> + {{#str}}addnewitem, mod_minilesson{{/str}}</button>
 </div>
 {{#js}}
 require(['core/checkbox-toggleall', 'mod_minilesson/bulkselect'], function(ToggleAll) {

@@ -83,7 +83,7 @@ class renderer extends \plugin_renderer_base
         $displaytext = '';
         // dont show the heading in an iframe, it will be outside this anyway
         if (!$moduleinstance->foriframe && $moduleinstance->pagelayout !== 'embedded') {
-            $thetitle = $this->output->heading($title, 3, 'main');
+            $thetitle = $this->output->heading($title, 3, 'main bold');
             $displaytext = \html_writer::div($thetitle, constants::M_CLASS . '_center');
         }
         return $displaytext;
