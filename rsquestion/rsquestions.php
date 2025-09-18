@@ -101,6 +101,5 @@ echo $renderer->header($minilesson, $cm, $mode, null, get_string('rsquestions', 
 //if we have items, show em
 $itemsvisible = $items && count($items);
 echo $rsquestion_renderer->show_items_list($items,$minilesson,$cm, $itemsvisible);
-echo $rsquestion_renderer->show_noitems_message($items,$minilesson,$cm, $itemsvisible);
 
 echo $renderer->footer();

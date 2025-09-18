@@ -1,17 +1,26 @@
 <tr id="mod_minilesson_item_row_{{id}}" class="mod_minilesson_item_row" data-id="{{id}}">
     <td class="cell c0">
-    <label><input name="deletequestionid[]" type="checkbox" value="{{id}}" data-action="toggle" data-toggle="slave" data-togglegroup="delete-question"></label>
+        <div class="d-flex align-items-center">
+            <label class="mb-0 ml-1 align-self-end">
+                <input name="deletequestionid[]" type="checkbox" value="{{id}}" data-action="toggle" data-toggle="slave" data-togglegroup="delete-question">
+            </label>
+            <div class="ml-3"><img class="itemicon" src="{{icon}}" alt="imgicon"></div>
+            <div class="itemname ml-2">{{name}}</div>
+            <p class="ml-2 itemtype mb-0"> <span class="ml-2 itemtypelabel">{{typelabel}}</span></p>
+
+        </div>
     </td>
-    <td class="itemnumber cell c1" style="">{{index}}</td>
-    <td class="itemid cell c2" style="">{{name}}</td>
-    <td class="itemname cell c3" style="">{{typelabel}}</td>
-    <td class="itemdate cell c4" style="">
+    <td class="itemdates cell c1 d-none" style="" data-index="{{index}}">
+        {{index}}
+    </td>
+    <td class="itemdate cell c2" style="" data-index="{{index}}">
         <a href="#" class="mod_minilesson_item_move" data-id="{{id}}" data-direction="up">{{#pix}}{{up.key}},{{up.component}},{{up.title}}{{/pix}}</a>
         <a href="#" class="mod_minilesson_item_move" data-id="{{id}}" data-direction="down">{{#pix}}{{down.key}},{{down.component}},{{down.title}}{{/pix}}</a>
     </td>
-    <td class="itemaction cell c5" style=""><a href="#" class="mod_minilesson_item_row_editlink" data-id="{{id}}" data-qtype='{{type}}' data-type="edit" alt="{{#str}}edititem, mod_minilesson{{/str}}">{{#pix}}i/edit{{/pix}}</a>
+    <td class="itemaction cell c3" style="">
         <a href="#" class="mod_minilesson_item_row_previewlink" data-id="{{id}}" data-name="{{name}}" data-type="preview" alt="{{#str}}previewitem, mod_minilesson{{/str}}">{{#pix}}i/preview{{/pix}}</a>
-        <a href="#" class="mod_minilesson_item_row_duplicatelink" data-id="{{id}}" data-name="{{name}}" data-type="duplicate" alt="{{#str}}duplicateitem, mod_minilesson{{/str}}">{{#pix}}t/copy{{/pix}}</a>
-        <a href="#" class="mod_minilesson_item_row_deletelink" data-id="{{id}}" data-name="{{name}}" data-type="delete" alt="{{#str}}deleteitem, mod_minilesson{{/str}}">{{#pix}}i/delete{{/pix}}</a>
+        <a href="#" class="mod_minilesson_item_row_editlink" data-id="{{id}}" data-qtype='{{type}}' data-type="edit" alt="{{#str}}edititem, mod_minilesson{{/str}}">{{#pix}}i/edit{{/pix}}</a>
+        <a href="#" class="mod_minilesson_item_row_duplicatelink" data-id="{{id}}" data-name="{{name}}" data-type="duplicate" alt="{{#str}}duplicateitem, mod_minilesson{{/str}}"><i class="icon fa fa-clone fa-fw "></i></a>
+        <a href="#" class="mod_minilesson_item_row_deletelink" data-id="{{id}}" data-name="{{name}}" data-type="delete" alt="{{#str}}deleteitem, mod_minilesson{{/str}}"><i class="icon fa fa-trash-o fa-fw "></i></a>
     </td>
 </tr>

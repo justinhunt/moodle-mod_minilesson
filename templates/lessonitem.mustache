@@ -1,0 +1,36 @@
+<div class="lessonitem-container" id="lessonAccordion">
+    <div class="lessonitem-list">
+        <h5 class="ml-3 mt-2 mb-3 itemheading">{{#str}}chooseitem,mod_minilesson{{/str}}</h5>
+        <div class="lessonitem-list-block">
+            {{#lessonitems}}
+                <a class="lessonitem-link" data-toggle="collapse" href="#item-{{type}}" role="button"
+                   aria-expanded="{{#first}}true{{/first}}{{^first}}false{{/first}}"
+                   aria-controls="item-{{type}}" data-parent="#lessonAccordion">
+                    <img class="itemicon" src="{{wwwroot}}/mod/minilesson/pix/{{type}}.png{{{imgrev}}}" alt="test">
+                    <span class="itemname ml-2">{{label}}</span>
+                </a>
+            {{/lessonitems}}
+        </div>
+    </div>
+
+    <div class="lessonditem-description-block">
+        {{#lessonitems}}
+            <div class="lessonitem-description collapse {{#first}}show{{/first}}"
+                 id="item-{{type}}" data-parent="#lessonAccordion">
+                <h3 class="lessonditem-description-heading mb-3">{{label}}</h3>
+                <p class="lessonditem-description-desc">{{description}}</p>
+
+                {{#videourl}}
+                    <video class="lessonitemvideo mt-3" preload="metadata" loop {{#first}}autoplay{{/first}}{{^first}} notfirst {{/first}} width="400" height="230" playsinline>
+                        <source {{#first}}src="{{.}}"{{/first}} data-src="{{.}}" type="video/mp4">
+                    </video>
+                {{/videourl}}
+
+                <div class="text-center mt-4">
+                    <a class="addbtn btn" href="{{{addurl}}}">{{#str}}add{{/str}}</a>
+                </div>
+            </div>
+        {{/lessonitems}}
+    </div>
+</div>
+

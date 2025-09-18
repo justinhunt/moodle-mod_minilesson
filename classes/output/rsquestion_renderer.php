@@ -2,6 +2,9 @@
 
 namespace mod_minilesson\output;
 
+use html_writer;
+use moodle_url;
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -91,7 +94,13 @@ class rsquestion_renderer extends \plugin_renderer_base
         //If modaleditform is true adding and editing item types is done in a popup modal. Thats good ...
         // but when there is a lot to be edited , a standalone page is better. The modaleditform flag is acted on on additemlink template and rsquestionmanager js
         $modaleditform = $config->modaleditform == "1";
+        $allitems = [];
+        $i = 0;
         foreach ($availableitems as $qtype) {
+            $i++;
+            $videourl = new moodle_url('/mod/minilesson/video/'.$qtype.'.mp4');
+            $addurl = new moodle_url('/mod/minilesson/rsquestion/managersquestions.php',
+                ['id' => $this->page->cm->id, 'type' => $qtype]);
             $data = [
                 'wwwroot' => $CFG->wwwroot,
                 'type' => $qtype,
@@ -99,15 +108,19 @@ class rsquestion_renderer extends \plugin_renderer_base
                 'cmid' => $this->page->cm->id,
                 'label' => get_string('add' . $qtype . 'item', constants::M_COMPONENT),
                 'modaleditform' => $modaleditform,
-                'imgrev' => '?ver=' . $CFG->themerev
+                'imgrev' => '?ver=' . $CFG->themerev,
+                'description' => get_string("item_{$qtype}_desc", 'mod_minilesson'),
+                'videourl' => $videourl->out(false),
+                'addurl' => $addurl->out(false),
+                'first' => $i == 1 ? true : false,
             ];
             $links[] = $this->render_from_template('mod_minilesson/additemlink', $data);
+            $allitems[] = $data;
         }
 
-        $props = array('contextid' => $context->id, 'tableid' => $tableid, 'modaleditform' => $modaleditform, 'wwwroot' => $CFG->wwwroot, 'cmid' => $this->page->cm->id, );
+        $props = array('contextid' => $context->id, 'tableid' => $tableid, 'modaleditform' => $modaleditform, 'wwwroot' => $CFG->wwwroot, 'cmid' => $this->page->cm->id, 'lessonitems' => $allitems);
         $this->page->requires->js_call_amd(constants::M_COMPONENT . '/rsquestionmanager', 'init', array($props));
-
-        return $this->output->box($output . implode("", $links), 'generalbox firstpageoptions mod_minilesson_link_box_container');
+        return $this->output->box($output . implode("", $links), 'd-none generalbox firstpageoptions mod_minilesson_link_box_container');
 
     }
 
@@ -122,16 +135,22 @@ class rsquestion_renderer extends \plugin_renderer_base
         $columns[1] = array('orderable' => false);
         $columns[2] = array('orderable' => false);
         $columns[3] = array('orderable' => false);
-        $columns[4] = array('orderable' => false);
-        $columns[5] = array('orderable' => false);
         $tableprops['columns'] = $columns;
         $tableprops['dom'] = 'lBfrtip';
+
+        $noitemyet = html_writer::tag('p', get_string('noitemyet', 'mod_minilesson'),
+                    ['class' => 'noitemyet']);
+        $addingcontent = html_writer::tag('p', get_string('addingcontent', 'mod_minilesson'),
+                                ['class' => 'addingcontent']);
 
 
         //default ordering
         $order = array();
         $order[0] = array(1, "asc");
         $tableprops['order'] = $order;
+        $tableprops['language'] = [
+            'emptyTable' => "$noitemyet$addingcontent",
+        ];
 
         //here we set up any info we need to pass into javascript
         $opts = array();
@@ -160,16 +179,17 @@ class rsquestion_renderer extends \plugin_renderer_base
      */
     function show_items_list($items, $minilesson, $cm, $visible)
     {
-
+        global $CFG;
         //new code
         $data = [];
         $data['tableid'] = constants::M_ITEMS_TABLE;
-        $data['display'] = $visible ? 'block' : 'none';
+        $data['display'] = 'block';
         $items_array = [];
         foreach (array_values($items) as $i => $item) {
             $arrayitem = (Array) $item;
             $arrayitem['index'] = ($i + 1);
-            $arrayitem['typelabel'] = get_string($arrayitem['type'], constants::M_COMPONENT);
+            $arrayitem['typelabel'] = strtoupper(get_string($arrayitem['type'], constants::M_COMPONENT));
+            $arrayitem['icon'] = new \moodle_url('/mod/minilesson/pix/' . $arrayitem['type'] . '.png', ['ver' => $CFG->themerev]);
             $items_array[] = $arrayitem;
         }
         $data['items'] = $items_array;
