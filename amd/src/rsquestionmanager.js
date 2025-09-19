@@ -264,6 +264,18 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                             }
                         });
 
+                        // If they click the add button , lets turn it into a spinner
+                        modalRoot.on('click', 'a.addbtn', function (e) {
+
+                            const addbtn = $(this);
+                            if (addbtn.hasClass('ml_loading')) {
+                                // Already loading, do nothing.
+                                return;
+                            }
+                            addbtn.addClass('ml_loading');
+                            addbtn.html("<i class='icon fa fa-spinner fa-pulse fa-fw ' aria-hidden='true'></i> ");
+                        });
+
                         dd.videocontroller(dd.modal.getRoot());
 
                         dd.modal.getRoot().on(ModalEvents.hidden, function() {
