@@ -1,7 +1,7 @@
 define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/pollyhelper',
     'mod_minilesson/ttrecorder', 'mod_minilesson/animatecss',
-    'mod_minilesson/progresstimer', 'core/templates', 'core/chartjs', 'core/str'],
-    function($, log, def,polly, ttrecorder,anim, progresstimer, templates, chartjs, str) {
+    'mod_minilesson/progresstimer', 'core/templates', 'core/chartjs', 'core/str', 'core/notification'],
+    function($, log, def,polly, ttrecorder,anim, progresstimer, templates, chartjs, str, notification) {
   "use strict"; // jshint ;_;
 
   /*
@@ -32,6 +32,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       this.quizhelper = quizhelper;
       this.index = index;
       this.init_components(quizhelper, itemdata);
+      this.init_strings();
 
       //correct threshold
       this.phonemeWarningThreshold = itemdata.correctthreshold || this.phonemeWarningThreshold;
