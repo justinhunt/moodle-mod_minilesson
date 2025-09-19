@@ -210,6 +210,9 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
             }//end of setting up recorders
 
             // Set up token refresh
+            log.debug('original speechtoken - ' + this.speechtoken);
+            log.debug('speechtokentype - ' + this.speechtokentype);
+            log.debug('speechtokenvalidseconds - ' + this.speechtokenvalidseconds);
             this.init_token_refresh();
 
             // Setting up timer.
@@ -285,7 +288,7 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
             // If we have a token, then we can set up a timer to refresh it
             if (that.speechtoken && validsecs > 0) {
                 //(valid until seconds - now seconds) => milliseconds
-                var refreshInterval = (validsecs -10) * 1000;
+                var refreshInterval = validsecs * 1000;
                 log.debug('Refreshing ' + that.speechtokentype +' token after ' + refreshInterval + ' milliseconds');
                 if (refreshInterval > 0) {
                     setTimeout(function() {
@@ -306,7 +309,7 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
                             if(newtoken && newtoken.token) {
                                 that.speechtoken = newtoken.token;
                                 that.speechtokenvalidseconds = newtoken.validseconds;
-                                switch (newtoken.type) {
+                                switch (that.speechtokentype) {
                                     case 'assemblyai':
                                         that.helper.streamer.updatetoken(newtoken.token);
                                         break;
@@ -325,7 +328,7 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
                     }, refreshInterval);
                     
                 } else {
-                    log.debug('Streaming token is already valid, no need to refresh.');
+                    log.debug('Refresh interval is 0. Not refreshing token.');
                 }
             } else {
                 log.debug('No valid streaming token available, skipping refresh setup.');

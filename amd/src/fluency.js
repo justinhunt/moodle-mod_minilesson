@@ -1,7 +1,7 @@
 define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/pollyhelper',
     'mod_minilesson/ttrecorder', 'mod_minilesson/animatecss',
-    'mod_minilesson/progresstimer', 'core/templates', 'core/chartjs'],
-    function($, log, def,polly, ttrecorder,anim, progresstimer, templates, chartjs) {
+    'mod_minilesson/progresstimer', 'core/templates', 'core/chartjs', 'core/str'],
+    function($, log, def,polly, ttrecorder,anim, progresstimer, templates, chartjs, str) {
   "use strict"; // jshint ;_;
 
   /*
@@ -20,9 +20,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
     game: {pointer: 0},
     usevoice: '',
     items: null,
+    strings: {},
 
     //for making multiple instances
-      clone: function () {
+    clone: function () {
           return $.extend(true, {}, this);
      },
 
@@ -157,6 +158,22 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       }
   },
 
+  init_strings: function() {
+        var self = this;
+        str.get_strings([
+            { "key": "nextlessonitem", "component": 'mod_minilesson'},
+            { "key": "confirm_desc", "component": 'mod_minilesson'},
+            { "key": "yes", "component": 'moodle'},
+            { "key": "no", "component": 'moodle'},
+        ]).done(function (s) {
+            var i = 0;
+            self.strings.nextlessonitem = s[i++];
+            self.strings.confirm_desc = s[i++];
+            self.strings.yes = s[i++];
+            self.strings.no = s[i++];
+        });
+    },
+
     next_question: function() {
       var self = this;
       var stepdata = {};
@@ -186,7 +203,18 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       var self = this;
       // On next button click
       self.smallnextbtn.on('click', function(e) {
-          self.next_question();
+            if (self.items.some(item => !item.answered)) {
+                notification.confirm(self.strings.nextlessonitem,
+                    self.strings.confirm_desc,
+                    self.strings.yes,
+                    self.strings.no,
+                    function() {
+                        self.next_question();
+                    }
+                );
+            } else {
+                self.next_question();
+            }
       });
 
       // On start button click
@@ -234,12 +262,24 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
           self.stopTimer(self.items[self.game.pointer].timer);
 
           if (self.game.pointer < self.items.length - 1) {
+              // Disable button and show spinner in place of text or arrow
+              self.skipbtn.prop("disabled", true);
+              self.skipbtn.children('.fa').removeClass('fa-arrow-right');
+              self.skipbtn.children('.fa').addClass('fa-spinner fa-spin');
+
+
               // Move on after short time to next prompt
               setTimeout(function() {
+                // Re enable button and reset icons and text.
+                  self.skipbtn.children('.fa').removeClass('fa-spinner fa-spin');
+                  self.skipbtn.children('.fa').addClass('fa-arrow-right'); 
+                  self.skipbtn.prop("disabled", false);
+                
+                  // Move to next item.
                   self.container.find(".fluency_reply_" + self.game.pointer).hide();
                   self.game.pointer++;
                   self.nextPrompt();
-              }, 2000);
+              }, 1500);
               // End question
           } else {
               self.end();

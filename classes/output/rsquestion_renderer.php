@@ -48,14 +48,14 @@ class rsquestion_renderer extends \plugin_renderer_base
         $config = get_config(constants::M_COMPONENT);
 
         $output = $this->output->heading(get_string("whatdonow", "minilesson"), 3);
-        $links = array();
+        $links = [];
 
         $qtypes = [
             constants::TYPE_PAGE,
             constants::TYPE_MULTICHOICE,
             constants::TYPE_DICTATION,
             constants::TYPE_SPEECHCARDS,
-            constants::TYPE_LISTENREPEAT
+            constants::TYPE_LISTENREPEAT,
         ];
         $qtypes[] = constants::TYPE_MULTIAUDIO;
         $qtypes[] = constants::TYPE_SHORTANSWER;
@@ -98,9 +98,11 @@ class rsquestion_renderer extends \plugin_renderer_base
         $i = 0;
         foreach ($availableitems as $qtype) {
             $i++;
-            $videourl = new moodle_url('/mod/minilesson/video/'.$qtype.'.mp4');
-            $addurl = new moodle_url('/mod/minilesson/rsquestion/managersquestions.php',
-                ['id' => $this->page->cm->id, 'type' => $qtype]);
+            $videourl = new moodle_url('/mod/minilesson/video/' . $qtype . '.mp4');
+            $addurl = new moodle_url(
+                '/mod/minilesson/rsquestion/managersquestions.php',
+                ['id' => $this->page->cm->id, 'type' => $qtype]
+            );
             $data = [
                 'wwwroot' => $CFG->wwwroot,
                 'type' => $qtype,
@@ -118,9 +120,18 @@ class rsquestion_renderer extends \plugin_renderer_base
             $allitems[] = $data;
         }
 
-        $props = array('contextid' => $context->id, 'tableid' => $tableid, 'modaleditform' => $modaleditform, 'wwwroot' => $CFG->wwwroot, 'cmid' => $this->page->cm->id, 'lessonitems' => $allitems);
-        $this->page->requires->js_call_amd(constants::M_COMPONENT . '/rsquestionmanager', 'init', array($props));
-        return $this->output->box($output . implode("", $links), 'd-none generalbox firstpageoptions mod_minilesson_link_box_container');
+        // Pass all lesson items to javascript via a hidden input field
+        // It is too much data for js init call. It would complain about the size.
+        // So we json encode it and pass the id of the hidden field
+        // to js which will then fetch the data from the hidden field and parse it.
+        $datatagid = 'lessonitems' . rand(1000, 9999);
+        $datatag = html_writer::tag('input', '',
+        ['id' => $datatagid, 'type' => 'hidden', 'name' => 'lessonitems', 'value' => json_encode($allitems)]);
+
+        $props = ['contextid' => $context->id, 'tableid' => $tableid, 'modaleditform' => $modaleditform,
+        'wwwroot' => $CFG->wwwroot, 'cmid' => $this->page->cm->id, 'lessonitems' => $datatagid];
+                $this->page->requires->js_call_amd(constants::M_COMPONENT . '/rsquestionmanager', 'init', [$props]);
+        return $this->output->box($output . $datatag . implode("", $links), 'd-none generalbox firstpageoptions mod_minilesson_link_box_container');
 
     }
 
@@ -138,10 +149,16 @@ class rsquestion_renderer extends \plugin_renderer_base
         $tableprops['columns'] = $columns;
         $tableprops['dom'] = 'lBfrtip';
 
-        $noitemyet = html_writer::tag('p', get_string('noitemyet', 'mod_minilesson'),
-                    ['class' => 'noitemyet']);
-        $addingcontent = html_writer::tag('p', get_string('addingcontent', 'mod_minilesson'),
-                                ['class' => 'addingcontent']);
+        $noitemyet = html_writer::tag(
+            'p',
+            get_string('noitemyet', 'mod_minilesson'),
+            ['class' => 'noitemyet']
+        );
+        $addingcontent = html_writer::tag(
+            'p',
+            get_string('addingcontent', 'mod_minilesson'),
+            ['class' => 'addingcontent']
+        );
 
 
         //default ordering
@@ -189,7 +206,7 @@ class rsquestion_renderer extends \plugin_renderer_base
             $arrayitem = (Array) $item;
             $arrayitem['index'] = ($i + 1);
             $arrayitem['typelabel'] = strtoupper(get_string($arrayitem['type'], constants::M_COMPONENT));
-            $arrayitem['icon'] = new \moodle_url('/mod/minilesson/pix/' . $arrayitem['type'] . '.png', ['ver' => $CFG->themerev]);
+            $arrayitem['icon'] = new moodle_url('/mod/minilesson/pix/' . $arrayitem['type'] . '.png', ['ver' => $CFG->themerev]);
             $items_array[] = $arrayitem;
         }
         $data['items'] = $items_array;

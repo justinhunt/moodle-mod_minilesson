@@ -23,7 +23,11 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             dd.modaleditform = props.modaleditform;
             dd.cmid = props.cmid;
             dd.wwwroot = props.wwwroot;
-            dd.lessonitems = props.lessonitems;
+
+            //fetch lesson items from hidden input
+            var datatag = $('#' + props.lessonitems);
+            dd.lessonitems = JSON.parse(datatag.val());
+            datatag.remove(); //we dont need it any more
 
             dd.modalshow();
             dd.register_events();
@@ -150,6 +154,7 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                 item.id = ret.newitemid;
                 item.name = decodeURIComponent(ret.newitemname);
                 item.type = ret.type;
+                item.icon = ret.icon;
                 item.typelabel = decodeURIComponent(ret.typelabel);
                 item.index = dd.controls.questionstable.data().length+1;
                 item.up = {'key': 't/up','component': 'moodle','title': 'up'};
@@ -227,9 +232,36 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                         dd.modal.getRoot().find('.modal-header, .modal-footer').hide();
                         dd.modal.getRoot().addClass('lessonitem-modal');
 
-                        dd.modal.getRoot().find('.lessonitem-description').each(function() {
-                            $(this).removeData('bs.collapse');
-                            $(this).collapse({ toggle: false });
+                        // on click of a lesson item link, show the relevant description panel, hide the others
+                        var modalRoot = dd.modal.getRoot();
+                        modalRoot.on('click', 'a.lessonitem-link', function (e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (e.stopImmediatePropagation) { e.stopImmediatePropagation(); }
+
+                            const selector = this.getAttribute('data-toggletarget');
+                            const allpanels = modalRoot.find('.lessonitem-description');
+                            if (!selector) { 
+                                log.debug('No toggle target specified');
+                                return;
+                             }
+                            const target = modalRoot.find(selector);
+                            if (!target) {
+                                log.debug('No target found for selector ' + selector);
+                                return;
+                            }
+
+                            if (target.hasClass('show')) {
+                                log.debug('already visible do nothing ');
+                                // Already shown, do nothing.
+                                return;
+                            } else {
+                                log.debug('not visible, showing now');
+                                // Hide all others.
+                                allpanels.removeClass('show').trigger('lessonitem:hidden');
+                                // Not shown, show it.
+                                target.addClass('show').trigger('lessonitem:shown');
+                            }
                         });
 
                         dd.videocontroller(dd.modal.getRoot());
@@ -241,6 +273,8 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                                 dd.modal.destroy();
                             });
                         });
+
+
                         return dd.modal;
                     });
                 });
@@ -248,7 +282,7 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
 
 
             videocontroller: function(rootel) {
-                $(rootel).on('shown.bs.collapse', '.lessonitem-description', function() {
+                $(rootel).on('shown.bs.collapse lessonitem:shown', '.lessonitem-description', function() {
                     var video = $(this).find('video').get(0);
                     if (video) {
                         var source = $(video).find('source');
@@ -259,16 +293,9 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                         video.play();
                     }
                 });
-                $(rootel).on('click', '.lessonitem-link', function (e) {
-                    var $target = $($(this).attr('href'));
+            
 
-                    if ($target.hasClass('show')) {
-                        e.stopPropagation();
-                        e.preventDefault();
-                    }
-                });
-
-                $(rootel).on('hide.bs.collapse', '.lessonitem-description', function() {
+                $(rootel).on('hide.bs.collapse lessonitem:hidden', '.lessonitem-description', function() {
                     var video = $(this).find('video').get(0);
                     if (video) {
                         video.pause();

@@ -3,9 +3,9 @@
         <h5 class="ml-3 mt-2 mb-3 itemheading">{{#str}}chooseitem,mod_minilesson{{/str}}</h5>
         <div class="lessonitem-list-block">
             {{#lessonitems}}
-                <a class="lessonitem-link" data-toggle="collapse" href="#item-{{type}}" role="button"
+                <a class="lessonitem-link" data-toggletarget="#item-{{type}}" role="button"
                    aria-expanded="{{#first}}true{{/first}}{{^first}}false{{/first}}"
-                   aria-controls="item-{{type}}" data-parent="#lessonAccordion">
+                   aria-controls="item-{{type}}">
                     <img class="itemicon" src="{{wwwroot}}/mod/minilesson/pix/{{type}}.png{{{imgrev}}}" alt="test">
                     <span class="itemname ml-2">{{label}}</span>
                 </a>
@@ -16,7 +16,7 @@
     <div class="lessonditem-description-block">
         {{#lessonitems}}
             <div class="lessonitem-description collapse {{#first}}show{{/first}}"
-                 id="item-{{type}}" data-parent="#lessonAccordion">
+                 id="item-{{type}}" >
                 <h3 class="lessonditem-description-heading mb-3">{{label}}</h3>
                 <p class="lessonditem-description-desc">{{description}}</p>
 

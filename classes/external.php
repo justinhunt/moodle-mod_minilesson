@@ -528,11 +528,12 @@ class mod_minilesson_external extends external_api {
         $cm = get_coursemodule_from_id('', $context->instanceid, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
         list($newitemid, $newitemname, $type, $typelabel) = \mod_minilesson\local\itemform\helper::duplicate_item($moduleinstance, $context, $itemid);
-
+        $iconurl = new moodle_url('/mod/minilesson/pix/' . $type . '.png', ['ver' => $CFG->themerev]);
         $ret = new \stdClass();
         $ret->olditemid = $itemid;
         $ret->newitemid = $newitemid;
         $ret->newitemname = $newitemname;
+        $ret->icon = $iconurl->out();
         $ret->type = $type;
         $ret->typelabel = $typelabel;
         $ret->error = false;
