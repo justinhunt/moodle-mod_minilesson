@@ -241,7 +241,8 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
 
                             const selector = this.getAttribute('data-toggletarget');
                             const allpanels = modalRoot.find('.lessonitem-description');
-                            if (!selector) { 
+                            const alllinks = modalRoot.find('.lessonitem-link');
+                            if (!selector) {
                                 log.debug('No toggle target specified');
                                 return;
                              }
@@ -251,6 +252,7 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                                 return;
                             }
 
+                            // Show the correct panel and hide the others.
                             if (target.hasClass('show')) {
                                 log.debug('already visible do nothing ');
                                 // Already shown, do nothing.
@@ -261,6 +263,11 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                                 allpanels.removeClass('show').trigger('lessonitem:hidden');
                                 // Not shown, show it.
                                 target.addClass('show').trigger('lessonitem:shown');
+                                
+                                // Set all other links to aria-expanded false
+                                alllinks.attr('aria-expanded', 'false');
+                                // Show this one.
+                                this.setAttribute('aria-expanded', 'true');
                             }
                         });
 
