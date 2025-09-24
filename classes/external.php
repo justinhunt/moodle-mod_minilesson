@@ -232,21 +232,19 @@ class mod_minilesson_external extends external_api {
         // we also want to fetch the alternatives for the number_words in passage (though we expect number_digits there)
         $alternatives .= PHP_EOL . alphabetconverter::fetch_numerical_alternates($shortlang);  // "four|for|4";
 
-        // If this is Japanese, and the passage has been segmented, we want to segment it into "words"
-        /*
+        // If this is Japanese, we want to segment it into "words"
+        // Actually in most cases it will be, but speaking gap fill is an outlier, it sends just the words
+        // and they are not segmented because it is very hard to do that with the processing needed to make gaps
+        // and the phonetic will be the full sentence phonetic so here we get just the words phonetic
+        // So ... we need to segment here just in case its from speaking gap fill. To Do
+        //
         if($language == constants::M_LANG_JAJP) {
-            $transcript = utils::segment_japanese($transcript);
-            $passage = utils::segment_japanese($passage);
-            $segmented=true;
-            $transcript_phonetic = utils::convert_to_phonetic($transcript,constants::M_LANG_JAJP,$region,$segmented);
-        }else{
-            $transcript_phonetic ='';
+            list($phonetic, $passage) = utils::fetch_phones_and_segments($passage, $language, $region);
         }
-        */
+
 
         // turn the passage and transcript into an array of words
         $passagebits = diff::fetchWordArray($passage);
-
         $alternatives = diff::fetchAlternativesArray($alternatives);
         $transcriptbits = diff::fetchWordArray($transcript);
         $transcriptphoneticbits = diff::fetchWordArray($transcriptphonetic);

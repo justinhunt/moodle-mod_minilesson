@@ -1,3 +1,7 @@
+Version 1.1.06 (Build 2025092400)
+- Fixes for sometimes failing Japanese on speaking gapfill
+- Small changes for new item chooser
+
 Version 1.1.05 (Build 2025091900)
 - Fixes for token refresh (fluency item)
 - New item chooser

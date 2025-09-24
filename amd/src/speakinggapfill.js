@@ -247,6 +247,7 @@ define(['jquery',
             self.items = text_items.map(function(target) {
                 return {
                     target: target.sentence,
+                    segmentedsentence: target.segmentedsentence,
                     prompt: target.prompt,
                     parsedstring: target.parsedstring,
                     displayprompt: target.displayprompt,
@@ -384,7 +385,7 @@ define(['jquery',
                     self.items[self.game.pointer].correct = false;
                     self.items[self.game.pointer].typed = typed;
 
-                    $self.controls.ctrl_btn.prop("disabled", true);
+                    self.controls.ctrl_btn.prop("disabled", true);
 
                     self.stopTimer(self.items[self.game.pointer].timer);
 

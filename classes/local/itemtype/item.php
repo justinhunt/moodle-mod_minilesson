@@ -860,9 +860,16 @@ abstract class item implements templatable, renderable
      */
     protected function process_speakinggapfill_sentences($sentences)
     {
+
         $thesentences = $this->parse_gapfill_sentences($sentences);
+        $phoneticstring = $this->itemrecord->phonetic;
+        $phonetics = false;
+        if(!empty($phoneticstring)){
+            $phonetics = explode(PHP_EOL, $phoneticstring);
+        }
         $customsentenceaudio = $this->fetch_sentence_media('audio', 1);
-        foreach ($thesentences as $sentence) {
+        foreach ($thesentences as $i => $sentence) {
+            // Get audio url
             if (isset($customsentenceaudio[$sentence->indexplusone])) {
                 $sentence->audiourl = $customsentenceaudio[$sentence->indexplusone];
             } else {
@@ -875,7 +882,24 @@ abstract class item implements templatable, renderable
                     $this->itemrecord->{constants::POLLYVOICE}
                 );
             }
+
+            //get phonetics for each sentence
+            if($phonetics && array_key_exists($i, $phonetics)){
+                $ps = utils::super_trim($phonetics[$i]);
+                $psarray = explode('|#', $ps);
+                $sentence->phonetic = array_key_exists(0, $psarray) ? utils::super_trim($psarray[0]) : '';
+                $sentence->segmentedsentence = array_key_exists(1, $psarray) ? utils::super_trim($psarray[1]) : '';
+                if(empty($sentence->segmentedsentence)){
+                    list($phones, $segmentedsentence) = utils::fetch_phones_and_segments($sentence->sentence,
+                        $this->moduleinstance->ttslanguage,
+                        $this->moduleinstance->region);
+                    $sentence->segmentedsentence = $segmentedsentence;
+                }
+            }
         }
+
+
+
         return $thesentences;
     }
 
@@ -1033,7 +1057,11 @@ abstract class item implements templatable, renderable
             }
 
             if ($this->language == constants::M_LANG_JAJP) {
-                $sentence = $this->process_japanese_phonetics($sentence);
+                $thephonetics = false;
+                if(isset($phonetics[$index]) && !empty($phonetics[$index])){
+                    $thephonetics = utils::super_trim($phonetics[$index]);
+                }
+                $sentence = $this->process_japanese_phonetics($sentence, $thephonetics);
             }
 
             // We prepare the audio url.
@@ -1064,7 +1092,9 @@ abstract class item implements templatable, renderable
 
             // Add phonetics if we have them.
             if (isset($phonetics[$index]) && !empty($phonetics[$index])) {
-                $s->phonetic = $phonetics[$index];
+                $ps = utils::super_trim($phonetics[$index]);
+                $psarray = explode('|', $ps);
+                $s->phonetic = array_key_exists(0, $psarray) ? utils::super_trim($psarray[0]) : '';
             } else {
                 $s->phonetic = '';
             }
@@ -1076,7 +1106,7 @@ abstract class item implements templatable, renderable
     }
 
     //by default we do nothing, but for japanese listen_and_speak, dictation chat and shortanswer, this is overrridden
-    protected function process_japanese_phonetics($sentence)
+    protected function process_japanese_phonetics($sentence, $thephonetics = false)
     {
         return $sentence;
     }
@@ -1654,9 +1684,9 @@ abstract class item implements templatable, renderable
                 $sentences = explode(PHP_EOL, $newpassage);
                 $allphonetics = [];
                 foreach ($sentences as $sentence) {
-                    list($thephones) = utils::fetch_phones_and_segments($sentence, $this->language, 'tokyo', $segmented);
+                    list($thephones, $thesegments) = utils::fetch_phones_and_segments($sentence, $this->language, 'tokyo', $segmented);
                     if (!empty($thephones)) {
-                        $allphonetics[] = $thephones;
+                        $allphonetics[] = $thephones . '|#' . $thesegments;
                     }
                 }
 

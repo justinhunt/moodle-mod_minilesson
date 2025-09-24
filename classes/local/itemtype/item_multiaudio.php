@@ -104,7 +104,7 @@ class item_multiaudio extends item
 
     //overriding to get jp phonemes.
     // This is just zenkaku to hankaku for comparison of numbers
-    protected function process_japanese_phonetics($sentence)
+    protected function process_japanese_phonetics($sentence, $thephonetic = false)
     {
         $sentence = mb_convert_kana($sentence, "n");
         return $sentence;

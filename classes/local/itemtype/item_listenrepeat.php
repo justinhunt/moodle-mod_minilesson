@@ -100,21 +100,31 @@ class item_listenrepeat extends item {
         return $testitem;
     }
 
-    // overriding to get jp phonemes
-    // If this is Japanese and a'chat' activity, the display sentence will be read as is
-    // but the sentence we show on screen as the students entry needs to be broken into "words"
-    // so we process it. In listen and speak it still shows the target, so its word'ified.
-    // speechcards we do not give word level feedback. so we do nothing special
-    // key point is to pass unwordified passage to compare_passage_transcipt ajax.
-    protected function process_japanese_phonetics($sentence) {
+    /* We need to get segmented sentences for Japanese text, ie it has to be wordified.
+    * This is because we get it back from transcription wordified so we can mark up "correct" and "incorrect" words
+    * We only do this for Japanese as it is the only language we support that does not use spaces to separate words
+    * (sorry Korean and Chinese speakers :) )
+    * We store the segmented sentence in the phonetic field, separated by || from the phonetic text. But previously
+    * we fetched it at runtime so we look out for data that has not been updated to store the segmented text
+    */
+    protected function process_japanese_phonetics($sentence, $thephonetics = false) {
+        // We have a local segmentation algorythm utils:segment_japanese but
         // sadly this segmentation algorithm mismatches with server based one we need for phonetics
-        // so we are not using it. We ought to save the segment rather than call each time
+        // so we are not using it. It looks like this
         // 初めまして =>(1) はじめまし て　＆　(2) はじめま　して
         // はなしてください=>(1)はな　して　く　だ　さい & (2)はな　して　ください
-        // $sentence = utils::segment_japanese($sentence);
-        // TO DO save segments and not collect them at runtime
+        if($thephonetics) {
+            $psarray = explode('|#', $thephonetics);
+            $segmentedsentence = array_key_exists(1, $psarray) ? utils::super_trim($psarray[1]) : '';
+            if (!empty($segmentedsentence)) {
+                return $segmentedsentence;
+            }
+        }
+
+        // Oh well, lets just fetch the segments now since we could not get the saved ones
         list($phones, $sentence) = utils::fetch_phones_and_segments($sentence, $this->moduleinstance->ttslanguage, $this->moduleinstance->region);
         return $sentence;
+
     }
 
     public static function validate_import($newrecord, $cm) {
