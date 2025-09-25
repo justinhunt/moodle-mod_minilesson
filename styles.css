@@ -3604,7 +3604,18 @@ div.poodlldictationplayer {
     line-height: 1;
     vertical-align: middle;
     display: inline-block;
-   } 
+   }
+    .fluencyaudiobox .minilesson_fluency_box .fluency_mainstage .fluency_controls .fluency_skip_btn .mobileaccesshide {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+     }
 
     @media (max-width: 480px) { /* Adjust breakpoint as needed */
       div.ml_speedyplayer_row {
@@ -4982,4 +4993,19 @@ div.poodlldictationplayer {
 .mod_minilesson_qpanel .tblheader th input[data-togglegroup="delete-question"]{
   width: 17px;
   height: 17px;
+}
+
+.minilesson_questioncontainer .shortanswer_check_btn {
+  border-radius: 5px;
+}
+.minilesson_questioncontainer .textinput_responsetype{
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+}
+.minilesson_questioncontainer .textinput_success {
+  background-color: lightgreen;
 }

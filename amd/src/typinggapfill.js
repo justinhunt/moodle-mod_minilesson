@@ -4,8 +4,10 @@ define(['jquery',
     'mod_minilesson/definitions',
     'mod_minilesson/animatecss',
     'mod_minilesson/progresstimer',
-    'core/templates'
-], function($, log, ajax, def, anim, progresstimer, templates) {
+    'core/templates',
+    'core/str',
+    'core/notification'
+], function($, log, ajax, def, anim, progresstimer, templates,str,notification) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson typing gap fill: initialising');
@@ -22,12 +24,14 @@ define(['jquery',
             self.itemdata = itemdata;
             self.quizhelper = quizhelper;
             self.index = index;
+            self.strings = {};
 
             var animopts = {};
             animopts.useanimatecss = quizhelper.useanimatecss;
             anim.init(animopts);
 
             self.init_controls();
+            self.init_strings();
             self.register_events();
             self.getItems();
             self.appReady();
@@ -52,6 +56,22 @@ define(['jquery',
                 progress_bar: $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar"),
                 question: $("#" + self.itemdata.uniqueid + "_container .question")
             };
+        },
+
+        init_strings: function() {
+            var self = this;
+            str.get_strings([
+                { "key": "nextlessonitem", "component": 'mod_minilesson'},
+                { "key": "confirm_desc", "component": 'mod_minilesson'},
+                { "key": "yes", "component": 'moodle'},
+                { "key": "no", "component": 'moodle'},
+            ]).done(function (s) {
+                var i = 0;
+                self.strings.nextlessonitem = s[i++];
+                self.strings.confirm_desc = s[i++];
+                self.strings.yes = s[i++];
+                self.strings.no = s[i++];
+            });
         },
 
         next_question: function() {
@@ -104,7 +124,18 @@ define(['jquery',
 
             // Next page button.
             self.controls.nextbutton.on('click', function(e) {
-                self.next_question();
+                if (self.items.some(item => !item.answered)) {
+                    notification.confirm(self.strings.nextlessonitem,
+                        self.strings.confirm_desc,
+                        self.strings.yes,
+                        self.strings.no,
+                        function() {
+                            self.next_question();
+                        }
+                    );
+                } else {
+                    self.next_question();
+                }
             });
 
             // Start button.
@@ -124,7 +155,13 @@ define(['jquery',
 
                 // Move on after short time, to next prompt, or next question.
                 if (self.game.pointer < self.items.length - 1) {
+                    self.controls.skip_btn.prop("disabled", true);
+                    self.controls.skip_btn.children('.fa').removeClass('fa-arrow-right');
+                    self.controls.skip_btn.children('.fa').addClass('fa-spinner fa-spin');
                     setTimeout(function() {
+                        self.controls.skip_btn.children('.fa').removeClass('fa-spinner fa-spin');
+                        self.controls.skip_btn.children('.fa').addClass('fa-arrow-right');
+                        self.controls.skip_btn.prop("disabled", false);
                         self.controls.container.find('.tgapfill_reply_' + self.game.pointer).hide();
                         self.game.pointer++;
                         self.nextPrompt();

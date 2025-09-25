@@ -1138,3 +1138,9 @@ $string['item_dictationchat_desc'] = 'The Dictation Chat item presents a series 
 
 $string['noitemyet'] = "No items yet ";
 $string['addingcontent'] = "Click on ‘Add new item’ to start adding content";
+
+$string['responsetype'] = 'Response Type';
+$string['audiorecorder'] = 'Audio Recorder';
+$string['textinput'] = 'Text Input';
+$string['partiallycorrectresponses'] = 'Partially Correct Answers';
+$string['partiallycorrectmarks'] = 'Partially Correct Marks';

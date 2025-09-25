@@ -722,4 +722,14 @@ class constants
         constants::TYPE_CONVERSATION,
         constants::TYPE_DICTATIONCHAT,
     ];
+
+    const SHORTANSWER_PARTIALLYRESPONSE = 'customtext3';
+    const SHORTANSWER_TOTALMARKS = 'customint1';
+    const SHORTANSWER_PARTIALLYMARKS = 'customint2';
+    const SHORTANSWER_RESPONSETYPE = 'customint3';
+
+    const RESPONSE_TYPE = [
+        'audiorecorder' => 1,
+        'text' => 2
+    ];
 }
