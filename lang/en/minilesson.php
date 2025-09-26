@@ -1135,8 +1135,12 @@ $string['item_smartframe_desc'] = 'The SmartFrame item is a placeholder for an i
 $string['item_comprehensionquiz_desc'] = 'The Comprehension Quiz item is a placeholder for an item type that has not been developed yet.';
 $string['item_conversation_desc'] = 'The Conversation item is a placeholder for an item type that has not been developed yet.';
 $string['item_dictationchat_desc'] = 'The Dictation Chat item presents a series of audio prompts to which the student must type a response. Mostly used for dictation activities.';
-
 $string['noitemyet'] = "No items yet ";
 $string['addingcontent'] = "Click on ‘Add new item’ to start adding content";
 $string['hidewarning'] = "Hide fair results";
 $string['hidewarning_details'] = "Only show correct (green) and incorrect (red). ie Don't show almost correct (orange)";
+$string['responsetype'] = 'Response Type';
+$string['audiorecorder'] = 'Audio Recorder';
+$string['textinput'] = 'Text Input';
+$string['partiallycorrectresponses'] = 'Partially Correct Answers';
+$string['partiallycorrectmarks'] = 'Partially Correct Marks';
