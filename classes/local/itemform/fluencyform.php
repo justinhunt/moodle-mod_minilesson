@@ -47,7 +47,7 @@ class fluencyform extends baseform {
         $this->add_sentenceaudio(1, null, false);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         $this->add_numericboxresponse(constants::FLUENCYCORRECTTHRESHOLD, get_string('correctthreshold', constants::M_COMPONENT));
-        $mform->setDefault(constants::FLUENCYCORRECTTHRESHOLD, 90);
+        $mform->setDefault(constants::FLUENCYCORRECTTHRESHOLD, 85);
         $this->add_checkbox(constants::FLUENCY_HIDEWARNING,
             get_string('hidewarning', constants::M_COMPONENT),
             get_string('hidewarning_details', constants::M_COMPONENT), 0);

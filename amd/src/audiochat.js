@@ -717,10 +717,12 @@ function($, log, def, ttrecorder, templates, str) {
             if (msg.type === "response.done" &&
                 msg.response.metadata?.tag === self.gradingrequesttag) {
                 // Check if the response corresponds to the grading event
+                log.debug("It is a grading event:");
                     try {
                         var jsonresponse = msg.response.output[0].content[0].text;
                         if(!jsonresponse || jsonresponse === "") {
-                            log.debug("No valid grading data received");
+                            log.debug("No valid grading data received .. msg is ..");
+                            log.debug(msg);
                             self.closeDataChannel();
                             return;
                         }
