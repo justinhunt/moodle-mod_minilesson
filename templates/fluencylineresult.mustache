@@ -1,0 +1,14 @@
+{{#wordresults}}
+<div class='fluencywordresult'>
+    {{#alignmentdata}}
+        <span class='fluencyletterresult {{scoreclass}}' title='{{phoneme}}, {{score}}'>
+            {{letter}}
+        </span>
+    {{/alignmentdata}}
+    <div class="ml_fluencyphonemesbar">
+        {{#wordphonemes}}
+            <span class='fluencyphoneme {{.}}'></span>
+        {{/wordphonemes}}
+    </div>
+</div>
+{{/wordresults}}

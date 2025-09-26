@@ -208,6 +208,7 @@ class constants
     const TIMELIMIT = 'timelimit';
     const GAPFILLALLOWRETRY = 'customint3';
     const FLUENCYCORRECTTHRESHOLD = 'customint3';
+    const FLUENCY_HIDEWARNING = 'customint6';
     const NOPASTING = 'customint4';
     const GAPFILLHIDESTARTPAGE = 'customint5';
     const SG_INCLUDEMATCHING = 'customint3';

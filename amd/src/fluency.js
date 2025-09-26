@@ -11,9 +11,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
   log.debug('MiniLesson Fluency: initialising');
 
   var thefluencyitem = {
-    phonemeWarningThreshold: 90, // Threshold for phoneme error rate
-    phonemeErrorThreshold: 70, // Threshold for phoneme error rate
-
+    phonemeWarningThreshold: 90, // Upper threshold for phoneme warning rate
+    phonemeErrorThreshold: 70, // Upper threshold for phoneme error rate
+    hidewarning: false, // Whether to hide the orange and just show red
     speechConfig: null,
     //this is just a placeholder for the actual text which is from the sentences in items
     referencetext: 'I met my love by the gas works wall',
@@ -39,6 +39,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       if(this.phonemeErrorThreshold >= this.phonemeWarningThreshold) {
           this.phonemeErrorThreshold = Math.max(this.phonemeWarningThreshold - 25, 1);
       }
+
+      //Hide warning
+      this.hidewarning = itemdata.hidewarning === 1;
 
       // Anim
       var animopts = {};
@@ -502,6 +505,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         var self = this;
         //this is part of the generated html for each sentence in the item, so we need to create a handle each time
         var itemfeedbackcontainer = self.container.find(".item-feedback-container");
+        // line result html (display results)
+        var lineresulthtml = "";
 
         // Clear previous results
         itemfeedbackcontainer.html("");
@@ -515,13 +520,30 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
 
         // Render pronunciation feedback for each word
-        var lineresulthtml="";
+        var wordresults= [];
         words.forEach(function (wordobject) {
+
+            //For the bar beneath the word we need an array of phoneme scores
+            // If we have syllables we use those, oddly syllables and phoneme scores are often different
+            // so if we always used phonemes, the text markup and bar markup would be visibly different
+            var word_phoneme_score_classes = [];
+
+
+            // For the word/character markup we need to map phonemes or syllables to characters
+            // we call this adata (alignment data)
             //MS Returns syllables, at least for English, and these have a grapheme so its the best data
             //for some words e.g "didn't" sometimes the grapheme is missing. duh
             //so we send it down the no grapheme path
             var have_graphemes = wordobject.Syllables && wordobject.Syllables.length > 0 && wordobject.Syllables[0].Grapheme;
             if(have_graphemes){
+                //build our phonemes bar data
+                wordobject.Syllables.forEach(function(syllable){
+                    word_phoneme_score_classes.push(
+                        self.scoreToColorClass(syllable.PronunciationAssessment.AccuracyScore)
+                    );
+                });
+
+                //Build alignment data
                 var adata =[];
                 wordobject.Syllables.forEach(function(syllable){
                     adata.push({
@@ -532,44 +554,68 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 });
             //If no syllable data we do our best to simulate it
             }else{
-                var adata = self.markuphelper.alignPhonemesToLetters(wordobject.Word,
-                    wordobject.Phonemes,
-                    twoletterlang);
+
+                //build our phonemes bar data
+                //No syllables so use phonemes for our phonemes bar
+                if(wordobject.Phonemes && wordobject.Phonemes.length > 0){
+                    wordobject.Phonemes.forEach(function(phoneme){
+                        word_phoneme_score_classes.push(
+                            self.scoreToColorClass(phoneme.PronunciationAssessment.AccuracyScore)
+                        );
+                    });
+                }
+
+                //Build alignment data
+                // It turns out most msspeech langs will not have phoneme names which makes mapping hard(impossible)
+                // but if we have them we can try to map them to letters.
+                var have_phoneme_names = wordobject.Phonemes && wordobject.Phonemes.length > 0 && wordobject.Phonemes[0].Phoneme !== "";
+                if(have_phoneme_names) {
+                    var adata = self.markuphelper.alignPhonemesToLetters(wordobject.Word,
+                        wordobject.Phonemes,
+                        twoletterlang);
+                // if we have no phoneme names or graphemes we just show the word as is with its score. This is awful
+                // we just call the text 'phoneme' here but it means the word chunk and its score.
+                // And the word chunk is the whole word
+                }else{
+                    var adata = [];
+                    adata.push({
+                        letter: wordobject.Word,
+                        phoneme: wordobject.Word,
+                        score: wordobject.PronunciationAssessment.AccuracyScore,
+                    })
+                }
             }
-            lineresulthtml += self.markuphelper.renderPronunciationFeedback(adata);
+
+            //assign css color classes to each item in alignment data based on its score and the item's warning threshold
+            adata.forEach(function(a){
+                a.scoreclass = self.scoreToColorClass(a.score);
+            });
+
+            // Store the results for this word
+            wordresults.push({alignmentdata: adata, wordphonemes: word_phoneme_score_classes});
+
         });
 
-        //Display result
-        itemfeedbackcontainer.html(lineresulthtml);
+        //Display result of all words, with phoneme bars per word if we have them
+        templates.render('mod_minilesson/fluencylineresult', {wordresults: wordresults}).then(
+            function(html, js) {
+                // Add result html to feedback container
+                itemfeedbackcontainer.html(html);
+                //store results for later use
+                self.items[self.game.pointer].pronunciation_result = pronunciation_result;
+                self.items[self.game.pointer].answered = true;
+                self.items[self.game.pointer].correct = pronunciation_result.privPronJson.PronunciationAssessment.AccuracyScore >= self.phonemeWarningThreshold;
+                self.items[self.game.pointer].audioself = new Audio();
+                self.items[self.game.pointer].audioself.src = URL.createObjectURL(self.ttrec.audio.blob);
+                self.items[self.game.pointer].lineresulthtml = html;
 
-        //store results for later use
-        self.items[self.game.pointer].pronunciation_result = pronunciation_result;
-        self.items[self.game.pointer].answered = true;
-        self.items[self.game.pointer].correct = pronunciation_result.privPronJson.PronunciationAssessment.AccuracyScore >= self.phonemeWarningThreshold;
-        self.items[self.game.pointer].audioself = new Audio();
-        self.items[self.game.pointer].audioself.src = URL.createObjectURL(self.ttrec.audio.blob);
-        self.items[self.game.pointer].lineresulthtml = lineresulthtml;
+                //since we now have audio, show the self audio player button
+                self.audioplayerbtn_audioself.show();
 
-        //since we now have audio, show the self audio player button
-        self.audioplayerbtn_audioself.show();
-
-        //update progress dots
-        self.updateProgressDots();
-
-        //We no longer do this!!! left in for future ref.
-        // If we are correct move to next item
-        if(false && self.items[self.game.pointer].correct ){
-            if ((self.game.pointer < self.items.length - 1)) {
-                log.debug('moving to next prompt B');
-                setTimeout(function() {
-                    $("#" + self.itemdata.uniqueid + "_container .fluency_reply_" + self.game.pointer).hide();
-                    self.game.pointer++;
-                    self.nextReply();
-                }, 2000);
-            } else {
-                self.end();
+                //update progress dots
+                self.updateProgressDots();
             }
-        }
+        );
     },
 
     do_recolor_continue_button: function(pronunciation_result) {
@@ -714,6 +760,20 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
               };
           });
     },
+
+    scoreToColorClass: function(score)
+      {
+          if (score === null) return "letter_missing"; //grey
+          if (score >= this.phonemeWarningThreshold) return "letter_good"; //green
+          if (score >= this.phonemeErrorThreshold){
+              if(this.hidewarning) {
+                  return "letter_wrong"; // red
+              }else{
+                  return "letter_fair"; // orange
+              }
+          }
+          return "letter_wrong"; //red
+     },
 
     //Marking up graphemes letters and phonemes is a dark art, we do that in this object
     markuphelper: {
@@ -921,34 +981,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             return result;
         },
 
-        scoreToColorClass: function(score)
-        {
-            if (score === null) return "letter_missing"; //grey
-            if (score >= thefluencyitem.phonemeWarningThreshold) return "letter_good"; //green
-            if (score >= thefluencyitem.phonemeErrorThreshold) return "letter_fair"; //orange
-            return "letter_wrong"; //red
-        },
-
-        renderPronunciationFeedback: function( alignmentData) {
-            var mhelper = this;
-
-            const $wrapper = $("<div class='fluencywordresult'>");
-
-            alignmentData.forEach(({letter, phoneme, score}) => {
-                var resultcolorclass = mhelper.scoreToColorClass(score);
-                const $span = $("<span class='fluencyletterresult " + resultcolorclass + "'>")
-                    .text(letter);
-
-                // Tooltip
-                const tooltipText = score === null
-                    ? "No phoneme matched"
-                    : `Phoneme: ${phoneme}, Score: ${score}`;
-                $span.attr("title", tooltipText);
-                $wrapper.append($span);
-            });
-
-            return $wrapper.prop('outerHTML');
-        } //end of renderPronunciationFeedback
     }//end of markup helper
 
 

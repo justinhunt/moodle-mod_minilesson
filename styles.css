@@ -1381,6 +1381,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   flex-grow: 1;
   font-size: 1rem;
   color: #333;
+  align-items: self-end;
 }
 
 .landr_word_input {
@@ -4982,4 +4983,33 @@ div.poodlldictationplayer {
 .mod_minilesson_qpanel .tblheader th input[data-togglegroup="delete-question"]{
   width: 17px;
   height: 17px;
+}
+
+.ml_fluencyphonemesbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10px;
+  margin-top: 5px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+}
+
+.ml_fluencyphonemesbar span {
+  flex-grow: 1;
+  height: 100%;
+  margin: 0 0px; /* Add spacing between spans */
+}
+
+span.fluencyphoneme.letter_missing {
+  background-color: gray;
+}
+span.fluencyphoneme.letter_fair {
+  background-color: orange;
+}
+span.fluencyphoneme.letter_good {
+  background-color: green;
+}
+span.fluencyphoneme.letter_wrong {
+  background-color: red;
 }

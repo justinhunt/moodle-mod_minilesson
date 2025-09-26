@@ -56,14 +56,17 @@ define(['jquery',
           //need to pass this in, better
           var referencetext = that.thereferencetext;
 
-          // create pronunciation assessment config, set grading system, granularity and if enable miscue based on your requirement.
-          const pronunciationAssessmentConfig = new that.speechsdk.PronunciationAssessmentConfig(
-              referencetext,
-              that.speechsdk.PronunciationAssessmentGradingSystem.HundredMark,
-              that.speechsdk.PronunciationAssessmentGranularity.Phoneme,
-              true
-          );
-          pronunciationAssessmentConfig.enableProsodyAssessment = true;
+          // create pronunciation assessment config, set grading system, granularity
+          var paconfig = {};
+          paconfig.referenceText = referencetext;
+          paconfig.gradingSystem = "HundredMark";
+          paconfig.granularity = "Phoneme";
+          paconfig.phonemeAlphabet = "IPA";
+          paconfig.enableProsodyAssessment = true;
+          paconfig.showPhonemeLevelResult = true;
+          paconfig.enableMiscue = true;
+          const pronunciationAssessmentConfig = that.speechsdk.PronunciationAssessmentConfig.fromJSON(JSON.stringify(paconfig));
+
 
           // create the speech recognizer.
           var reco = new that.speechsdk.SpeechRecognizer(speechConfig, audioConfig);

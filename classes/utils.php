@@ -1582,6 +1582,10 @@ class utils
                                 } else if ($analysis[1] == '数') {
                                     // numbers dont get phoneticized
                                     $katakanaarray[] = $words[$nodeindex];
+                                } else {
+                                    // if we don't have a reading, we just use the word katakanified, fingers crossed
+                                    // this occurs for hiragana that does not look like anything e.g びよういんえ
+                                    $katakanaarray[] = mb_convert_kana($words[$nodeindex], "C");
                                 }
                                 $segmentarray[] = $words[$nodeindex];
                         }

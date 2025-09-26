@@ -62,6 +62,9 @@ class item_fluency extends item {
         // Correct threshold.
         $testitem->correctthreshold = (int) $this->itemrecord->{constants::FLUENCYCORRECTTHRESHOLD};
 
+        //Hide Warning
+        $testitem->hidewarning = (int) $this->itemrecord->{constants::FLUENCY_HIDEWARNING};
+
         // Cloud Poodll.
         $maxtime = 0;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
@@ -119,6 +122,7 @@ class item_fluency extends item {
         $keycols['int3'] = ['jsonname' => 'correctthreshold', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::FLUENCYCORRECTTHRESHOLD];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
+        $keycols['int6'] = ['jsonname' => 'hidewarning', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::FLUENCY_HIDEWARNING];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         return $keycols;
