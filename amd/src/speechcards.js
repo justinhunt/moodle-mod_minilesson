@@ -5,7 +5,9 @@ define(['jquery',
     'mod_minilesson/pollyhelper',
     'mod_minilesson/ttrecorder',
     'mod_minilesson/animatecss',
-], function($,  log, Ajax, def, polly, ttrecorder, anim) {
+    'core/str',
+    'core/notification'
+], function($,  log, Ajax, def, polly, ttrecorder, anim,str,notification) {
   "use strict"; // jshint ;_;
 
   /*
@@ -43,6 +45,7 @@ define(['jquery',
         results: [],
         controls: {},
         ttrec: null, //a handle on the tt recorder
+        strings: {},
 
         init: function() {
 
@@ -60,6 +63,7 @@ define(['jquery',
           anim.init(animopts);
 
           this.init_controls();
+          this.init_strings();
           this.initComponents();
           this.register_events();
         },
@@ -69,6 +73,21 @@ define(['jquery',
           app.controls.star_rating = $("#" + itemdata.uniqueid + "_container .minilesson_star_rating");
           app.controls.next_button = $("#" + itemdata.uniqueid + "_container .minilesson-speechcards_nextbutton");
           app.controls.slider = $("#" + itemdata.uniqueid + "_container .minilesson_speechcards_target_phrase");
+        },
+        init_strings: function() {
+            var app = this;
+            str.get_strings([
+                { "key": "nextlessonitem", "component": 'mod_minilesson'},
+                { "key": "confirm_desc", "component": 'mod_minilesson'},
+                { "key": "yes", "component": 'moodle'},
+                { "key": "no", "component": 'moodle'},
+            ]).done(function (s) {
+                var i = 0;
+                app.strings.nextlessonitem = s[i++];
+                app.strings.confirm_desc = s[i++];
+                app.strings.yes = s[i++];
+                app.strings.no = s[i++];
+            });
         },
         next_question: function() {
           var stepdata = {};
@@ -82,7 +101,18 @@ define(['jquery',
         register_events: function() {
 
           $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
-            app.next_question();
+            if (app.results.length <= app.terms.length) {
+              notification.confirm(app.strings.nextlessonitem,
+                  app.strings.confirm_desc,
+                  app.strings.yes,
+                  app.strings.no,
+                  function() {
+                      app.next_question();
+                  }
+              );
+            } else {
+                app.next_question();
+            }
           });
 
           app.controls.next_button.click(function() {
@@ -95,7 +125,13 @@ define(['jquery',
                 app.do_end();
               }, 200);
             } else {
+              app.controls.next_button.prop("disabled", true);
+              app.controls.next_button.children('.fa').removeClass('fa-times');
+              app.controls.next_button.children('.fa').addClass('fa-spinner fa-spin');
               setTimeout(function() {
+                app.controls.next_button.children('.fa').removeClass('fa-spinner fa-spin');
+                app.controls.next_button.children('.fa').addClass('fa-times');
+                app.controls.next_button.prop("disabled", false);
                 app.do_next();
               }, 200);
             }

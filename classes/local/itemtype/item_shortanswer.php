@@ -60,11 +60,22 @@ class item_shortanswer extends item
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
         $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
+        $responsetype = $this->itemrecord->{constants::SHORTANSWER_RESPONSETYPE};
+        $testitem->audiorecorder = $responsetype == constants::RESPONSE_TYPE['audiorecorder'];
+        $testitem->textinput = $responsetype == constants::RESPONSE_TYPE['text'];
+        $testitem->correctmarks = $this->itemrecord->{constants::SHORTANSWER_TOTALMARKS};
+        $testitem->partialmarks = $this->itemrecord->{constants::SHORTANSWER_PARTIALLYMARKS};
 
         //sentences
         $sentences = [];
         if (isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
+        }
+
+        //partial answers
+        $partialresponses = [];
+        if (isset($testitem->{constants::SHORTANSWER_PARTIALLYRESPONSE})) {
+            $partialresponses = explode(PHP_EOL, $testitem->{constants::SHORTANSWER_PARTIALLYRESPONSE});
         }
         //build sentence objects containing display and phonetic text
         $testitem->phonetic = $this->itemrecord->phonetic;
@@ -76,6 +87,7 @@ class item_shortanswer extends item
         $is_ssml = $testitem->voiceoption == constants::TTS_SSML;
         $dottify = false;
         $testitem->sentences = $this->process_spoken_sentences($sentences, $phonetics, $dottify, $is_ssml);
+        $testitem->partialresponses = $this->process_spoken_sentences($partialresponses, [], $dottify, $is_ssml);
 
         // Do we need a streaming token?
         $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
@@ -126,6 +138,10 @@ class item_shortanswer extends item
         $keycols = parent::get_keycolumns();
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
+        $keycols['text3'] = ['jsonname' => 'partiallycorrectanswer', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::SHORTANSWER_PARTIALLYRESPONSE];
+        $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => false, 'default' => 0, 'dbname' => constants::SHORTANSWER_TOTALMARKS];
+        $keycols['int2'] = ['jsonname' => 'partiallymarks', 'type' => 'int', 'optional' => false, 'default' => 0, 'dbname' => constants::SHORTANSWER_PARTIALLYMARKS];
+        $keycols['int3'] = ['jsonname' => 'responsetype', 'type' => 'int', 'optional' => false, 'default' => constants::RESPONSE_TYPE['audiorecorder'], 'dbname' => constants::SHORTANSWER_RESPONSETYPE];
         return $keycols;
     }
 

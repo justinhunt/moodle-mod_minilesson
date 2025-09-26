@@ -5,8 +5,10 @@ define(['jquery',
       'mod_minilesson/pollyhelper',
       'mod_minilesson/ttrecorder',
       'mod_minilesson/animatecss',
-      'core/templates'
-    ], function($, log, ajax, def, polly, ttrecorder, anim, templates) {
+      'core/templates',
+      'core/str',
+      'core/notification'
+    ], function($, log, ajax, def, polly, ttrecorder, anim, templates,str,notification) {
   "use strict"; // jshint ;_;
 
   log.debug('MiniLesson listen and repeat: initialising');
@@ -62,6 +64,7 @@ define(['jquery',
       self.itemdata = itemdata;
       self.quizhelper = quizhelper;
       self.index = index;
+      self.strings = {};
 
       //anim
       var animopts = {};
@@ -69,6 +72,7 @@ define(['jquery',
       anim.init(animopts);
 
       self.init_controls();
+      self.init_strings();
       self.register_events();
       self.setvoice();
       self.getItems();
@@ -97,6 +101,22 @@ define(['jquery',
         landr_listen_btn: $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn"),
         progress_container: $("#" + self.itemdata.uniqueid + "_container .progress-container"),
       };
+    },
+
+    init_strings: function() {
+        var self = this;
+        str.get_strings([
+            { "key": "nextlessonitem", "component": 'mod_minilesson'},
+            { "key": "confirm_desc", "component": 'mod_minilesson'},
+            { "key": "yes", "component": 'moodle'},
+            { "key": "no", "component": 'moodle'},
+        ]).done(function (s) {
+            var i = 0;
+            self.strings.nextlessonitem = s[i++];
+            self.strings.confirm_desc = s[i++];
+            self.strings.yes = s[i++];
+            self.strings.no = s[i++];
+        });
     },
 
     next_question: function (percent) {
@@ -152,7 +172,18 @@ define(['jquery',
       var self = this;
       //on next button click
       self.controls.nextbutton.on('click', function (e) {
-        self.next_question();
+        if (self.items.some(item => !item.answered)) {
+            notification.confirm(self.strings.nextlessonitem,
+                self.strings.confirm_desc,
+                self.strings.yes,
+                self.strings.no,
+                function() {
+                    self.next_question();
+                }
+            );
+        } else {
+            self.next_question();
+        }
       });
       //on start button click
       self.controls.start_btn.on("click", function () {
@@ -211,8 +242,14 @@ define(['jquery',
 
         //next prompt or end
         if (self.game.pointer < self.items.length - 1) {
+          self.controls.skip_btn.prop("disabled", true);
+          self.controls.skip_btn.children('.fa').removeClass('fa-arrow-right');
+          self.controls.skip_btn.children('.fa').addClass('fa-spinner fa-spin');
           //move on after short time to next prompt
           setTimeout(function () {
+            self.controls.skip_btn.children('.fa').removeClass('fa-spinner fa-spin');
+            self.controls.skip_btn.children('.fa').addClass('fa-arrow-right');
+            self.controls.skip_btn.prop("disabled", false);
             self.game.pointer++;
             self.nextPrompt();
           }, 2200);
