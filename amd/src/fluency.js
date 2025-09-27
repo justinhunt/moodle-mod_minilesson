@@ -505,8 +505,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         var self = this;
         //this is part of the generated html for each sentence in the item, so we need to create a handle each time
         var itemfeedbackcontainer = self.container.find(".item-feedback-container");
-        // line result html (display results)
-        var lineresulthtml = "";
 
         // Clear previous results
         itemfeedbackcontainer.html("");
@@ -523,6 +521,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
         var wordresults= [];
         words.forEach(function (wordobject) {
 
+            // We are going to skip insertions, because MS Speech in Japanese especially seems to hallucinate them
+            if(wordobject.PronunciationAssessment?.ErrorType === "Insertion"){
+                log.debug("Skipping insertion word: ", wordobject.Word);
+                return; // Skip this word
+            }
+
             //For the bar beneath the word we need an array of phoneme scores
             // If we have syllables we use those, oddly syllables and phoneme scores are often different
             // so if we always used phonemes, the text markup and bar markup would be visibly different
@@ -538,18 +542,22 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             if(have_graphemes){
                 //build our phonemes bar data
                 wordobject.Syllables.forEach(function(syllable){
+                    //If errortype =omission there will be no score, we use null to flag that
+                    var thescore = syllable.PronunciationAssessment?.AccuracyScore || null;
                     word_phoneme_score_classes.push(
-                        self.scoreToColorClass(syllable.PronunciationAssessment.AccuracyScore)
+                        self.scoreToColorClass(thescore)
                     );
                 });
 
                 //Build alignment data
                 var adata =[];
+                //If errortype =omission there will be no score, we use null to flag that
+                var thescore = wordobject.PronunciationAssessment?.AccuracyScore || null;
                 wordobject.Syllables.forEach(function(syllable){
                     adata.push({
                         letter: syllable.Grapheme,
                         phoneme: syllable.Syllable,
-                        score: syllable.PronunciationAssessment.AccuracyScore,
+                        score: thescore,
                     });
                 });
             //If no syllable data we do our best to simulate it
@@ -559,8 +567,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 //No syllables so use phonemes for our phonemes bar
                 if(wordobject.Phonemes && wordobject.Phonemes.length > 0){
                     wordobject.Phonemes.forEach(function(phoneme){
+                        //If errortype =omission there will be no score, we use null to flag that
+                        var thescore = phoneme.PronunciationAssessment?.AccuracyScore || null;
                         word_phoneme_score_classes.push(
-                            self.scoreToColorClass(phoneme.PronunciationAssessment.AccuracyScore)
+                            self.scoreToColorClass(thescore)
                         );
                     });
                 }
@@ -578,10 +588,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 // And the word chunk is the whole word
                 }else{
                     var adata = [];
+                    //If errortype =omission there will be no score, we use null to flag that
+                    var thescore = wordobject.PronunciationAssessment?.AccuracyScore || null;
                     adata.push({
                         letter: wordobject.Word,
                         phoneme: wordobject.Word,
-                        score: wordobject.PronunciationAssessment.AccuracyScore,
+                        score: thescore,
                     })
                 }
             }

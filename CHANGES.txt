@@ -1,3 +1,6 @@
+Version 1.1.08 (Build 2025092601)
+- tweaks to fluency results markup
+
 Version 1.1.07 (Build 2025092600)
 - Improvements to Short Answer item type
 - Improvements to navigation
