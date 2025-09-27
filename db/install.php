@@ -15,12 +15,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use mod_minilesson\constants;
+
 /**
  * This file replaces the legacy STATEMENTS section in db/install.xml,
  * lib.php/modulename_install() post installation hook and partially defaults.php
  *
  * @package    mod_minilesson
- * @copyright  2015 Justin Hunt (poodllsupport@gmail.com) <your@email.adress>
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -38,6 +40,13 @@ function xmldb_minilesson_install() {
         \mod_minilesson\aigen::create_default_templates();
     }
     // Add any other post-installation tasks here.
+    $qtypes = constants::ITEMTYPES;
+    //remove dictation chat
+    $key = array_search('dictationchat', $qtypes);
+    if ($key !== false) {
+        unset($qtypes[$key]);
+    }
+    set_config('enableditems', implode(',', $qtypes), 'minilesson');
 }
 
 /**

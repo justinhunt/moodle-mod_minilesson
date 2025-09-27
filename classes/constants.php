@@ -718,10 +718,10 @@ class constants
         constants::TYPE_SCATTER,
         constants::TYPE_FLUENCY,
         constants::TYPE_AUDIOCHAT,
-        constants::TYPE_SMARTFRAME,
-        constants::TYPE_COMPQUIZ,
-        constants::TYPE_CONVERSATION,
         constants::TYPE_DICTATIONCHAT,
+      // constants::TYPE_SMARTFRAME,
+      // constants::TYPE_COMPQUIZ,
+      // constants::TYPE_CONVERSATION,
     ];
 
     const SHORTANSWER_PARTIALLYRESPONSE = 'customtext3';

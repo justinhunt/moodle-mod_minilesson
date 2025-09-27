@@ -1,7 +1,7 @@
 Version 1.1.07 (Build 2025092600)
 - Improvements to Short Answer item type
 - Improvements to navigation
-- More accurate feedback on flueny item type
+- More accurate feedback on fluency item type
 
 Version 1.1.06 (Build 2025092400)
 - Fixes for sometimes failing Japanese on speaking gapfill

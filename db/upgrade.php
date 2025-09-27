@@ -844,6 +844,11 @@ function xmldb_minilesson_upgrade($oldversion) {
 
     if ($oldversion < 2025090100.01) {
         $qtypes = constants::ITEMTYPES;
+        //remove dictation chat
+        $key = array_search('dictationchat', $qtypes);
+        if ($key !== false) {
+            unset($qtypes[$key]);
+        }
         set_config('enableditems', implode(',', $qtypes), 'minilesson');
         upgrade_mod_savepoint(true, 2025090100.01, 'minilesson');
     }
