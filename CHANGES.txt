@@ -1,3 +1,6 @@
+Version 1.1.09 (Build 2025092700)
+- Fixed bug that saw no items available in the new item chooser (ouch)
+
 Version 1.1.08 (Build 2025092601)
 - tweaks to fluency results markup
 
