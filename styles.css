@@ -4753,7 +4753,7 @@ div.poodlldictationplayer {
   letter-spacing: 0;
 }
 
-#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td .itemtype {
+#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td .itemtype:not(.mobileviewtype) {
   color: #5C669A;
   border-left: 1px solid #5C669AC2;
 }
@@ -4919,7 +4919,8 @@ div.poodlldictationplayer {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
   border-left: 1px solid #E9ECFB;
-  width: 81%;
+  width: 88%;
+  vertical-align: middle;
 }
 
 .mod_minilesson_qpanel tr td:last-child,
@@ -4928,7 +4929,7 @@ div.poodlldictationplayer {
   border-right: 1px solid #E9ECFB;
   border-bottom-right-radius: 8px;
   text-align: right;
-  width: 11%;
+  width: 5%;
   min-width: 110px;
   max-width: 130px;
 }
@@ -4940,7 +4941,8 @@ div.poodlldictationplayer {
 
 .mod_minilesson_qpanel .mod_minilesson_item_row td.c2,
 .mod_minilesson_qpanel .mod_minilesson_item_row th.c2 {
-  width: 8%;
+  width: 11%;
+  text-align: right;
 }
 
 .mod_minilesson_qpanel thead tr th {
@@ -4953,6 +4955,7 @@ div.poodlldictationplayer {
 
 .mod_minilesson_qpanel .tblbody .mod_minilesson_item_row .itemtypelabel{
   font-size: 11px;
+  display: inline-block;
 }
 
 .mod_minilesson_qpanel .tblbody .dataTables_empty {
@@ -5037,4 +5040,39 @@ span.fluencyphoneme.letter_wrong {
 }
 .minilesson_questioncontainer .textinput_success {
   background-color: lightgreen;
+}
+
+.mod_minilesson_qpanel .mobileviewtype {
+  display: none;
+}
+
+.mod_minilesson_item_row .mod_minilesson_item_row_previewlink .icon,
+.mod_minilesson_item_row .mod_minilesson_item_row_duplicatelink .icon,
+.mod_minilesson_item_row .mod_minilesson_item_row_deletelink .icon,
+.mod_minilesson_item_row .mod_minilesson_item_row_editlink .icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+}
+
+.mod_minilesson_item_row .mod_minilesson_item_move .icon {
+  font-size: 25px;
+  width: 25px;
+  height: 25px;
+}
+
+
+.mod_minilesson_qpanel .tblheader th[aria-label="Reorder"] {
+  text-align: right;
+  padding-right: 20px !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .mod_minilesson_qpanel .mobileviewtype {
+    display: block;
+    color: #5C669A;
+  }
+  .mod_minilesson_qpanel .itemtypename {
+    display: none;
+  }
 }

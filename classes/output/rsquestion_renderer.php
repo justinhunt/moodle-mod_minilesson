@@ -103,6 +103,7 @@ class rsquestion_renderer extends \plugin_renderer_base
                 '/mod/minilesson/rsquestion/managersquestions.php',
                 ['id' => $this->page->cm->id, 'type' => $qtype]
             );
+            $imgsrc = new moodle_url("/mod/minilesson/pix/{$qtype}.svg", ['ver' => $CFG->themerev]);
             $data = [
                 'wwwroot' => $CFG->wwwroot,
                 'type' => $qtype,
@@ -111,6 +112,7 @@ class rsquestion_renderer extends \plugin_renderer_base
                 'label' => get_string('add' . $qtype . 'item', constants::M_COMPONENT),
                 'modaleditform' => $modaleditform,
                 'imgrev' => '?ver=' . $CFG->themerev,
+                'imgsrc' => $imgsrc->out(false),
                 'description' => get_string("item_{$qtype}_desc", 'mod_minilesson'),
                 'videourl' => $videourl->out(false),
                 'addurl' => $addurl->out(false),
@@ -206,9 +208,14 @@ class rsquestion_renderer extends \plugin_renderer_base
             $arrayitem = (Array) $item;
             $arrayitem['index'] = ($i + 1);
             $arrayitem['typelabel'] = strtoupper(get_string($arrayitem['type'], constants::M_COMPONENT));
-            $arrayitem['icon'] = new moodle_url('/mod/minilesson/pix/' . $arrayitem['type'] . '.png', ['ver' => $CFG->themerev]);
+            $arrayitem['icon'] = new moodle_url("/mod/minilesson/pix/{$arrayitem['type']}.svg", ['ver' => $CFG->themerev]);
             $items_array[] = $arrayitem;
         }
+
+        foreach (['arrowup', 'arrowdown','edit','copy', 'zoom', 'trash'] as $actionicon) {
+            $data[$actionicon] = new moodle_url('/mod/minilesson/pix/'.$actionicon.'.svg', ['ver' => $CFG->themerev]);
+        }
+
         $data['items'] = $items_array;
 
         $up_pix = new \pix_icon('t/up', get_string('up'));
