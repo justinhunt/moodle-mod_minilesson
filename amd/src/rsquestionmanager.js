@@ -232,6 +232,10 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                         dd.modal.getRoot().find('.modal-header, .modal-footer').hide();
                         dd.modal.getRoot().addClass('lessonitem-modal');
 
+                        dd.modal.getRoot().on(ModalEvents.shown, function() {
+                            modal.getRoot().find('.modal-dialog').addClass('modal-dialog-centered');
+                        });
+
                         // on click of a lesson item link, show the relevant description panel, hide the others
                         var modalRoot = dd.modal.getRoot();
                         modalRoot.on('click', 'a.lessonitem-link', function (e) {
