@@ -152,6 +152,7 @@ function($, log, def, ttrecorder, templates, str) {
 
             } else {
                 //Otherwise we default to counting words
+                log.debug("No grading data from AI: counting words", self.gradingData);
                 stepdata.resultsdata.gradeexplanation = self.strings.gradebywordcount;
                 if(self.itemdata.countwords === false || self.itemdata.targetwordcount === 0){
                     stepdata.grade =  100;
@@ -631,7 +632,7 @@ function($, log, def, ttrecorder, templates, str) {
                     }
                     log.debug("Closing session resources...");
                     self.closeDataChannel();
-                }, 2000);
+                }, 7000);
             }else{
                 log.debug("Closing session resources...");
                 self.closeDataChannel();
