@@ -1,5 +1,6 @@
-Version 1.1.10 (Build 20250930xx)
+Version 1.1.10 (Build 2025100500)
 - Fix for failing grade and feedback on AI Chat
+- Improvements for new activity chooser (Moodle 5.1)
 
 Version 1.1.09 (Build 2025092700)
 - Fixed bug that saw no items available in the new item chooser (ouch)

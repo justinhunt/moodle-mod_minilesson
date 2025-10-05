@@ -56,8 +56,20 @@ if ($hassiteconfig) {
         // if we have no API user and secret we show a "fetch from elsewhere on site" or "take a free trial" link
     } else {
         $amddata = ['apppath' => $CFG->wwwroot . '/' .constants::M_URL];
-        $cpcomponents = ['filter_poodll', 'qtype_cloudpoodll', 'mod_readaloud', 'mod_wordcards', 'mod_solo', 'mod_englishcentral', 'mod_pchat',
-            'atto_cloudpoodll', 'tinymce_cloudpoodll', 'assignsubmission_cloudpoodll', 'assignfeedback_cloudpoodll'];
+        $cpcomponents = ['filter_poodll',
+        'qtype_cloudpoodll',
+        'mod_readaloud',
+        'mod_wordcards',
+        'mod_solo',
+        'mod_englishcentral',
+        'mod_pchat',
+        'atto_cloudpoodll',
+        'tinymce_cloudpoodll',
+        'tiny_poodll',
+        'assignsubmission_cloudpoodll',
+        'assignfeedback_cloudpoodll',
+        ];
+
         foreach ($cpcomponents as $cpcomponent) {
             switch($cpcomponent){
                 case 'filter_poodll':

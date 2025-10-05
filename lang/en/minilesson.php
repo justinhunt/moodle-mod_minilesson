@@ -14,10 +14,29 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['modulename'] = 'Poodll MiniLesson';
 $string['modulenameplural'] = 'Poodll MiniLessons';
-$string['modulename_help'] = 'MiniLesson combines several auto-graded language learning activities into a simple self guided online lesson.';
-//$string['minilessonfieldset'] = 'Custom example fieldset';
+$string['modulename_help'] = 'Poodll MiniLesson combines several language learning activities into a simple, self-guided online lesson.
+A MiniLesson activity is comprised of a sequence of lesson items. Item types include:
+
+* Multichoice
+
+
+* Listen and Speak
+
+
+* Typing / Speaking / Listening GapFill
+
+
+* Passage GapFill
+
+
+* Audio Chat
+
+
+* Free Speaking / Free Writing';
+
+
 $string['minilessonname'] = 'Poodll MiniLesson';
-$string['minilessonname_help'] = 'This is the content of the help tooltip associated with the Mini Lesson name field. Markdown syntax is supported.';
+$string['minilessonname_help'] = 'MiniLesson Name';
 $string['minilesson'] = 'Poodll MiniLesson';
 $string['activitylink'] = 'Link to next activity';
 $string['activitylink_help'] = 'To provide a link after the attempt to another activity in the course, select the activity from the dropdown list.';

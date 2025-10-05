@@ -67,13 +67,23 @@ function minilesson_supports($feature)
             return false;
         case FEATURE_GROUPS:
             return true;
-        default:
-            // cute hack to work on M4.0 and above
-            if (defined('FEATURE_MOD_PURPOSE') && defined('MOD_PURPOSE_ASSESSMENT') && $feature == 'mod_purpose') {
+
+        // FEATURE_MOD_PURPOSE  - wont be defined for < 4.0. so we hard code it.
+        case "mod_purpose":
+            if (defined('MOD_PURPOSE_INTERACTIVECONTENT')) {
+                return "interactivecontent";
+            } else if (defined('MOD_PURPOSE_ASSESSMENT')) {
                 return "assessment";
             } else {
                 return null;
             }
+        // FEATURE_MOD_OTHERPURPOSE  - wont be defined for < 5.1. so we hard code it. 
+        // If it is defined then interactivecontent  and assessment will also be  defined.   
+        case "mod_otherpurpose":
+            return "assessment";
+
+        default:
+            return null;
     }
 }
 
@@ -369,7 +379,7 @@ function minilesson_is_complete($course, $cm, $userid, $type)
     }
 
     // Check if conditional completion is enabled.
-    $onfinished = !empty($moduleinstance->completionwhenfinished) ;
+    $onfinished = !empty($moduleinstance->completionwhenfinished);
     $onmingrade = !empty($moduleinstance->mingrade);
     $completionenabled = $onfinished || $onmingrade;
     if (!$completionenabled) {
@@ -390,7 +400,7 @@ function minilesson_is_complete($course, $cm, $userid, $type)
             break;
 
         case COMPLETION_OR:
-            if ($onfinished || $onmingrade ) {
+            if ($onfinished || $onmingrade) {
                 return utils::is_complete('completionwhenfinished', $moduleinstance, $userid) ||
                     utils::is_complete('mingrade', $moduleinstance, $userid);
             }
