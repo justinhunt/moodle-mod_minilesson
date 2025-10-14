@@ -65,6 +65,10 @@ if ($data = $form->get_data()) {
         $errormessage = '';
         $content = $form->get_file_content('importfile');
         $theimport = new \mod_minilesson\import($moduleinstance,$modulecontext,$course,$cm);
+
+        //temporarily raise memory limit
+        raise_memory_limit(MEMORY_HUGE);
+
         $isjson=utils::is_json($content);
         if($isjson){
             if(!utils::is_json($content)){
