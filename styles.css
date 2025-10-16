@@ -5067,6 +5067,62 @@ span.fluencyphoneme.letter_wrong {
   padding-right: 20px !important;
 }
 
+#page-mod-minilesson-lessonbank #fgroup_id_searchgroup {
+  background-color: #eee;
+  padding: 15px;
+  margin: 0;
+}
+#page-mod-minilesson-lessonbank #advancesearch {
+  padding: 15px;
+  background-color: #eee;
+}
+#page-mod-minilesson-lessonbank #advancesearch #fitem_id_level{
+  padding: 0 15px;
+}
+#page-mod-minilesson-lessonbank #fgroup_id_searchgroup .col-md-3,
+#page-mod-minilesson-lessonbank #advancesearch #fitem_id_level .col-md-3 {
+  max-width: 100px;
+}
+
+#page-mod-minilesson-lessonbank .searchbox .itemcontainer {
+  padding: 10px 0;
+  margin: 0;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  flex: 1;
+}
+
+#page-mod-minilesson-lessonbank [data-region="cards-container"] {
+  min-height: 100px;
+}
+
+#page-mod-minilesson-lessonbank [data-region="cards-container"] p {
+  margin-bottom: 0.2rem;
+}
+
+#page-mod-minilesson-lessonbank [data-region="cards-container"] [data-action="showtext"] {
+  background-color: transparent;
+  border: none;
+  color: #1177d1;
+  box-shadow: none;
+}
+
+#page-mod-minilesson-lessonbank .searchbox  [data-region="itemcard"] {
+  max-width: calc(50% - 2px);
+  margin-top: 2px;
+  margin-bottom: 2px;
+  display: flex;
+  flex-direction: column;
+}
+
+#page-mod-minilesson-lessonbank .searchbox  [data-region="itemcard"] [data-region="image"] {
+  gap: 3px;
+}
+
+#page-mod-minilesson-lessonbank [data-for="page-activity-header"] {
+  display: none;
+}
+
 @media only screen and (max-width: 768px) {
   .mod_minilesson_qpanel .mobileviewtype {
     display: block;

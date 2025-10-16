@@ -106,4 +106,12 @@ $functions = [
                 'type'        => 'read',
                 'ajax'        => true,
         ),
+        'mod_minilesson_lessonbank' => array(
+                'classname' => 'mod_minilesson_external',
+                'methodname'  => 'lessonbank',
+                'description' => 'Lesson bank',
+                'capabilities' => 'mod/minilesson:manage',
+                'type'        => 'read',
+                'ajax'        => true,
+        ),
 ];
