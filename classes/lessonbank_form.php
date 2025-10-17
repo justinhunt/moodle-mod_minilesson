@@ -25,8 +25,10 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class lessonbank_form extends moodleform {
-    protected function definition() {
+class lessonbank_form extends moodleform
+{
+    protected function definition()
+    {
 
         $form = $this->_form;
 
@@ -35,11 +37,13 @@ class lessonbank_form extends moodleform {
         $grouparray = [];
         $grouparray[] = $form->createElement('select', 'language', get_string('language'), $languages);
         $grouparray[] = $form->createElement('text', 'keyword', get_string('keyword', constants::M_COMPONENT), 'size="40" 
-                placeholder="'.get_string('keyword', constants::M_COMPONENT).'"');
+                placeholder="' . get_string('keyword', constants::M_COMPONENT) . '"');
         $grouparray[] = $form->createElement('submit', 'search', get_string('search'));
         $grouparray[] = $form->createElement('html', '<a class="btn text-primary" href="#advancesearch" data-toggle="collapse" data-bs-toggle="collapse" 
             role="button" aria-expanded="false" aria-controls="advancesearch">' .
             get_string('showadvanced', constants::M_COMPONENT) . '</a>');
+
+        $form->setType('searchgroup[keyword]', PARAM_RAW);
         $form->addGroup($grouparray, 'searchgroup', get_string('language'), '', true);
 
         $levels = [

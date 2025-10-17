@@ -89,7 +89,7 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-// Get an admin settings.
+// Get admin settings.
 $config = get_config(constants::M_COMPONENT);
 
 // We want minilesson to embed nicely, or display according to layout settings.

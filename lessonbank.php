@@ -33,13 +33,13 @@ $id = required_param('id', PARAM_INT);
 $restore = optional_param('restore', 0, PARAM_INT);
 
 if ($id) {
-    $cm         = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $moduleinstance  = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-} elseif ($n) {
-    $moduleinstance  = $DB->get_record(constants::M_TABLE, array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
-    $cm         = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
+    $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
+} else if ($n) {
+    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $n), '*', MUST_EXIST);
+    $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
+    $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
 } else {
     print_error('You must specify a course_module ID or an instance ID');
 }
@@ -50,19 +50,22 @@ $modulecontext = context_module::instance($cm->id);
 
 require_capability('mod/minilesson:manage', $modulecontext);
 
-if (!get_config('mod_minilesson', 'setlessonbank')) {
+// Get admin settings.
+$config = get_config(constants::M_COMPONENT);
+
+if (!$config->setlessonbank) {
     redirect(new moodle_url('/mod/minilesson/view.php', ['id' => $id]));
 }
 
 $url = new moodle_url('/mod/minilesson/lessonbank.php', ['id' => $id]);
 $PAGE->set_url($url);
 $PAGE->set_context($modulecontext);
-$PAGE->set_title(get_string('lessonbank', 'mod_minilesson'));
-$PAGE->set_heading(get_string('lessonbank', 'mod_minilesson'));
+$PAGE->set_title(get_string('lessonbank', constants::M_COMPONENT));
+$PAGE->set_heading(get_string('lessonbank', constants::M_COMPONENT));
 
 if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded') {
     $PAGE->set_pagelayout('embedded');
-} elseif ($config->enablesetuptab  || $moduleinstance->pagelayout == 'popup') {
+} else if ($config->enablesetuptab || $moduleinstance->pagelayout == 'popup') {
     $PAGE->set_pagelayout('popup');
 } else {
     $PAGE->set_pagelayout('incourse');
@@ -84,7 +87,7 @@ if ($restore && confirm_sesskey()) {
 
         $result = core_external::call_external_function($function, $params);
     } else {
-        redirect($url, get_string('error:functionnotfound', constants::M_COMPONENT), null , 'warning');
+        redirect($url, get_string('error:functionnotfound', constants::M_COMPONENT), null, 'warning');
     }
 
     if (empty($result['error'])) {
@@ -114,21 +117,21 @@ $PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter');
 
 echo $renderer->header($moduleinstance, $cm, 'lessonbank', null, get_string('lessonbank', constants::M_COMPONENT));
 
-if (get_config('mod_minilesson', 'lessonbankurl')) {
+if ($config->lessonbankurl) {
 
-echo html_writer::tag('p', get_string('lessonbank:desc', 'minilesson'));
+    echo html_writer::tag('p', get_string('lessonbank:desc', 'minilesson'));
 
-$searchform->display();
+    $searchform->display();
 
-echo html_writer::div(
-    '',
-    'position-relative',
-    ['data-region' => 'cards-container']
-);
+    echo html_writer::div(
+        '',
+        'position-relative',
+        ['data-region' => 'cards-container']
+    );
 
 } else {
 
-echo $OUTPUT->notification(get_string('notconfigured', 'mod_minilesson'), 'warning');
+    echo $OUTPUT->notification(get_string('notconfigured', constants::M_COMPONENT), 'warning');
 
 }
 
