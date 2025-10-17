@@ -625,7 +625,7 @@ class mod_minilesson_external extends external_api {
     public static function lessonbank_parameters() {
         return new external_function_parameters([
             'function' => new external_value(PARAM_TEXT),
-            'args' => new external_value(PARAM_TEXT, VALUE_DEFAULT, ''),
+            'args' => new external_value(PARAM_TEXT, '', VALUE_DEFAULT, ''),
         ]);
     }
 
