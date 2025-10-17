@@ -16,6 +16,7 @@
 
 namespace mod_minilesson;
 
+use mod_minilesson_external;
 use moodleform;
 require_once($CFG->libdir . '/formslib.php');
 /**
@@ -46,18 +47,15 @@ class lessonbank_form extends moodleform
         $form->setType('searchgroup[keyword]', PARAM_RAW);
         $form->addGroup($grouparray, 'searchgroup', get_string('language'), '', true);
 
-        $levels = [
-            "CEFR A1" => 'CEFR A1',
-            "CEFR A2" => 'CEFR A2',
-            "CEFR B1" => "CEFR B1",
-            "CEFR B2" => "CEFR B2",
-            "CEFR C1" => "CEFR C1",
-            "CEFR C2" => "CEFR C2"
-        ];
-        $form->addElement('html', '<div class="collapse w-100" id="advancesearch">');
-        $form->addElement('autocomplete', 'level', get_string('level', constants::M_COMPONENT), $levels, 'multiple');
-        $form->setType('level', PARAM_INT);
-        $form->addElement('html', '</div>');
+        $t = mod_minilesson_external::lessonbank('local_lessonbank_fetch_langlevels');
+        if (!empty($t->data)) {
+            $jsonoptions = json_decode($t->data);
+            $levels = array_column($jsonoptions, 'text', 'value');
+            $form->addElement('html', '<div class="collapse w-100" id="advancesearch">');
+            $form->addElement('autocomplete', 'level', get_string('level', constants::M_COMPONENT), $levels, 'multiple');
+            $form->setType('level', PARAM_INT);
+            $form->addElement('html', '</div>');
+        }
     }
 
 }

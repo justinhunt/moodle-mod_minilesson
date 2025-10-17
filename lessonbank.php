@@ -80,18 +80,14 @@ if ($restore && confirm_sesskey()) {
             'function' => 'local_lessonbank_fetch_minilesson',
             'args' => "id={$restore}",
         ];
-        $params = core_external::validate_parameters(
-            $externalfunctioninfo->parameters_desc,
-            $params
-        );
 
-        $result = core_external::call_external_function($function, $params);
+        $result = mod_minilesson_external::lessonbank($params['function'], $params['args']);
     } else {
         redirect($url, get_string('error:functionnotfound', constants::M_COMPONENT), null, 'warning');
     }
 
-    if (empty($result['error'])) {
-        $jsondata = json_decode($result['data']);
+    if (empty($result->error)) {
+        $jsondata = json_decode($result->data);
         $importdata = json_decode($jsondata->json);
         $theimport = new \mod_minilesson\import($moduleinstance, $modulecontext, $course, $cm);
         $errormessage = '';
@@ -112,6 +108,7 @@ if ($restore && confirm_sesskey()) {
 
 
 $searchform = new lessonbank_form($url, [], 'post', '', ['id' => 'lessonbank_filters']);
+$searchform->set_data(['searchgroup[language]' => $moduleinstance->ttslanguage]);
 
 $PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter');
 
