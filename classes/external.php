@@ -625,11 +625,11 @@ class mod_minilesson_external extends external_api {
     public static function lessonbank_parameters() {
         return new external_function_parameters([
             'function' => new external_value(PARAM_TEXT),
-            'args' => new external_value(PARAM_TEXT),
+            'args' => new external_value(PARAM_TEXT, VALUE_DEFAULT, ''),
         ]);
     }
 
-    public static function lessonbank($function, $args) {
+    public static function lessonbank($function, $args = '') {
         $params = self::validate_parameters(self::lessonbank_parameters(), [
             'function' => $function,
             'args' => $args,
@@ -654,11 +654,10 @@ class mod_minilesson_external extends external_api {
         $ret = new \stdClass();
         if ($result === null || json_last_error()) {
             $ret->error = true;
-            $ret->data = null;
         } else {
             $ret1 = $result[0];
             if (empty($ret1['error'])) {
-                $ret = json_encode($ret1['data']);
+                $ret->data = json_encode($ret1['data']);
             } else {
                 $ret->erorr = true;
             }
@@ -667,6 +666,9 @@ class mod_minilesson_external extends external_api {
     }
 
     public static function lessonbank_returns() {
-        return new external_value(PARAM_RAW, 'Returns error status and data from lessonbank');
+        return new external_single_structure([
+            'error' => new external_value(PARAM_BOOL, 'has error', VALUE_DEFAULT, false),
+            'data' => new external_value(PARAM_RAW, 'json encoded data', VALUE_DEFAULT)
+        ]);
     }
 }

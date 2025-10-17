@@ -23,7 +23,6 @@
 import Ajax from 'core/ajax';
 import * as Notification from 'core/notification';
 import Templates from 'core/templates';
-// import loading from 'core/loadingicon';
 
 
 const component = 'mod_minilesson';
@@ -55,8 +54,7 @@ export const registerFilter = () => {
             methodname: `${component}_lessonbank`,
             args: args,
         }])[0].then(items => {
-            items = JSON.parse(items);
-            window.console.log(items);
+            items = JSON.parse(items.data);
             Templates.render(`${component}/lessonbankitems`, {items})
             .then((html, js) => {
                 return Templates.replaceNodeContents(cardsContainer, html, js);
