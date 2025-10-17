@@ -166,8 +166,8 @@ abstract class item implements templatable, renderable
         $keycolumns = [];
         $keycolumns['type'] = ['type' => 'string', 'optional' => false, 'default' => '', 'dbname' => 'type'];
 
-        //this is a special case. We don't store the media file(s) in the db or even the draft id. We just put it in the files area.
-        //there could be more than one. ie an audio, a video and a picture.
+        // This is a special case. We don't store the media file(s) in the db or even the draft id. We just put it in the files area.
+        // There could be more than one. ie an audio, a video and a picture.
         $keycolumns[constants::MEDIAQUESTION] = ['type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycolumns[constants::AUDIOSTORY] = ['type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
 

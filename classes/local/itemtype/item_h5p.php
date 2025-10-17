@@ -80,11 +80,13 @@ class item_h5p extends item {
     public static function get_keycolumns() {
         // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
+        $keycols[constants::H5PFILE] = ['jsonname' => constants::H5PFILE, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+
         return $keycols;
     }
 
     /*
-   This function return the prompt that the generate method requires. 
+   This function returns the prompt that the generate method requires. 
    */
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
