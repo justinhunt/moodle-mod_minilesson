@@ -38,6 +38,7 @@ use mod_minilesson\constants;
 use mod_minilesson\diff;
 use mod_minilesson\alphabetconverter;
 use mod_minilesson\local\itemtype\item;
+use mod_minilesson\curl;
 
 /**
  * External class.
@@ -621,4 +622,51 @@ class mod_minilesson_external extends external_api {
         return new external_value(PARAM_RAW);
     }
 
+    public static function lessonbank_parameters() {
+        return new external_function_parameters([
+            'function' => new external_value(PARAM_TEXT),
+            'args' => new external_value(PARAM_TEXT),
+        ]);
+    }
+
+    public static function lessonbank($function, $args) {
+        $params = self::validate_parameters(self::lessonbank_parameters(), [
+            'function' => $function,
+            'args' => $args,
+        ]);
+
+        parse_str($args, $json);
+
+        $lessonbankurl = get_config('mod_minilesson', 'lessonbankurl');
+        $url = "{$lessonbankurl}/lib/ajax/service-nologin.php";
+        $info = [
+            [
+                'methodname' => $function,
+                'args' => $json,
+            ]
+        ];
+
+        $curl = new curl();
+        $curl->setHeader(['Content-Type: application/json']);
+        $response = $curl->post($url, json_encode($info));
+        $result = json_decode($response, true);
+
+        $ret = new \stdClass();
+        if ($result === null || json_last_error()) {
+            $ret->error = true;
+            $ret->data = null;
+        } else {
+            $ret1 = $result[0];
+            if (empty($ret1['error'])) {
+                $ret = json_encode($ret1['data']);
+            } else {
+                $ret->erorr = true;
+            }
+        }
+        return $ret;
+    }
+
+    public static function lessonbank_returns() {
+        return new external_value(PARAM_RAW, 'Returns error status and data from lessonbank');
+    }
 }

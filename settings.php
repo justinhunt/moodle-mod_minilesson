@@ -362,6 +362,18 @@ if ($hassiteconfig) {
             $label, $details, $default, PARAM_RAW));
     }
 
+    $mainsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/setlessonbank',
+        get_string('enablelessonbank', constants::M_COMPONENT),
+        get_string('enablelessonbank_details', constants::M_COMPONENT),
+        0
+    ));
+
+    $mainsettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/lessonbankurl',
+        get_string('lessonbankurl', constants::M_COMPONENT),
+            get_string('lessonbankurl_details', constants::M_COMPONENT),
+            ''));
+
     // Add prompt settings page to minilesson category.
     $ADMIN->add('modsettingsminilessoncat', $freewritingsettings);
 
