@@ -85,6 +85,15 @@ if (has_capability('mod/minilesson:canuseaigen', $context)) {
     );
 }
 
+if (has_capability('mod/minilesson:manage', $context) && get_config('mod_minilesson', 'setlessonbank')) {
+    $row[] = new tabobject(
+        'lessonbank',
+        "$CFG->wwwroot/mod/minilesson/lessonbank.php?id=$cm->id",
+        get_string('lessonbank', constants::M_COMPONENT),
+        get_string('lessonbank', constants::M_COMPONENT)
+    );
+}
+
 
 if (has_capability('mod/minilesson:push', $context) && $config->enablepushtab) {
     $row[] = new tabobject(
