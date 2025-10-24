@@ -733,4 +733,5 @@ class constants
         'audiorecorder' => 1,
         'text' => 2
     ];
+    const MULTICHOICE_SHUFFLEANSWER = 'customint5';
 }

@@ -140,7 +140,7 @@ class item_multichoice extends item
 
         // Multichoice also has a confirm choice option we need to include.
         $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
-
+        $testitem->shuffleanswers = !empty($itemrecord->{constants::MULTICHOICE_SHUFFLEANSWER});
         return $testitem;
     }
 
@@ -186,7 +186,7 @@ class item_multichoice extends item
         $keycols['text1'] = ['jsonname' => 'answers', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
- 
+        $keycols['int5'] = ['jsonname' => 'shuffleanswer', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => constants::MULTICHOICE_SHUFFLEANSWER];
         return $keycols;
     }
 
@@ -222,7 +222,7 @@ class item_multichoice extends item
         global $DB;
 
         $success = true;
- 
+
         if ($oldversion < 2025071305) {
 
             // The original multichoice stored each answer in a separate field.

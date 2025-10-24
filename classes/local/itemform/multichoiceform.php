@@ -59,6 +59,8 @@ class multichoiceform extends baseform
         $this->add_sentenceaudio(1, get_string('multichoiceansweraudios', constants::M_COMPONENT), false);
 
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
+
+        $this->add_checkbox(constants::MULTICHOICE_SHUFFLEANSWER, get_string('shuffleanswer', constants::M_COMPONENT));
     }
 
 }
