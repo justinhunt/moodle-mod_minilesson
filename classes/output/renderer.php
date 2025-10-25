@@ -347,18 +347,17 @@ class renderer extends \plugin_renderer_base
                     $correctanswers = [];
                     $incorrectanswers = [];
                     $correctindex = $quizdata[$result->index]->correctanswer;
-                    for ($i = 1; $i < 5; $i++) {
-                        if (!isset($quizdata[$result->index]->{"customtext" . $i})) {
-                            continue;
-                        }
-                        if ($i == $correctindex) {
-                            $correctanswers[] = ['sentence' => $quizdata[$result->index]->{"customtext" . $i}];
+
+                    foreach ($quizdata[$result->index]->sentences as $sentance) {
+                        if ($correctindex == $sentance->indexplusone) {
+                            $correctanswers[] = $sentance->sentence;
                         } else {
-                            $incorrectanswers[] = ['sentence' => $quizdata[$result->index]->{"customtext" . $i}];
+                            $incorrectanswers[] = $sentance->sentence;
                         }
                     }
-                    $result->correctans = $correctanswers;
-                    $result->incorrectans = $incorrectanswers;
+
+                    $result->correctans = ['sentence' => join(' ', $correctanswers)];
+                    $result->incorrectans = ['sentence' => join( '<br> ', $incorrectanswers)];
                     break;
 
                 case constants::TYPE_PGAPFILL:

@@ -54,6 +54,17 @@ define(['jquery', 'core/log','core/modal_factory','core/str','core/modal_events'
             });
       });
 
+    var showbutton = document.querySelector('.itemscoresbutton');
+    $('#itemscores').on('hidden.bs.collapse shown.bs.collapse', function (e) {
+        if (e.target.id === 'itemscores' && showbutton) {
+            if (e.type === 'shown') {
+                showbutton.textContent = showbutton.dataset.hideText;
+            } else {
+                showbutton.textContent = showbutton.dataset.showText;
+            }
+        }
+    })
+
       $('body').on('click','.mod_minilesson_finishedanswerdetailslink',function(e) {
           e.preventDefault();
           var type = $(this).data('type');

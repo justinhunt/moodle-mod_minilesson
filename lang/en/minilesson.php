@@ -1180,3 +1180,6 @@ $string['enablelessonbank_details'] = 'Enable Lesson Bank';
 $string['lessonbankurl'] = 'Lesson Bank URL';
 $string['lessonbankurl_details'] = 'Lesson Bank URL';
 $string['notconfigured'] = 'Lesson Bank URL not configured';
+
+$string['hideitemscores'] = 'Hide All Results';
+$string['shuffleanswer'] = 'Shuffle Answer';

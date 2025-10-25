@@ -39,7 +39,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
     },
 
     register_events: function(index, itemdata, quizhelper) {
-      
+
       var self = this;
       self.index = index;
       self.quizhelper = quizhelper;
@@ -51,6 +51,22 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
       var resultspanelswish = $("#" + itemdata.uniqueid + "_container .minilesson_resultspanel_swish");
       var resultspanelstars = $("#" + itemdata.uniqueid + "_container .minilesson_swishstars");
       var resultspanelscore = $("#" + itemdata.uniqueid + "_container .minilesson_swishscore");
+
+      if (itemdata.shuffleanswers) {
+        var $choicewrapper = $("#" + itemdata.uniqueid + "_container .mcchoiceswrapper");
+        $choicewrapper.each(function() {
+            var $parent = $(this);
+            var $children = $parent.children();
+
+            // Sort the children randomly
+            $children.sort(function() {
+                return 0.5 - Math.random();
+            });
+
+            // Empty the parent and append the shuffled children
+            $parent.empty().append($children);
+        });
+      }
 
       nextbutton.on('click', function(e) {
         self.next_question(0);
@@ -204,6 +220,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/poll
       showConfirmButton: function(itemdata) {
           var confirmbutton =$("#" + itemdata.uniqueid + "_container .minilesson_mc_confirmchoice");
           anim.do_animate(confirmbutton,'zoomIn animate__faster','in');
-      },
+      }
   };
 });
