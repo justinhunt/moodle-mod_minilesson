@@ -1,0 +1,22 @@
+{{> mod_minilesson/questionheader}}
+{{> mod_minilesson/progresstimer}}
+
+<div class="minilesson-slides-container">
+      <div class="reveal">
+          <div class="slides">
+            <section data-markdown>
+<textarea data-template>
+{{{slidesmarkdown}}}
+</textarea>
+            </section>
+          </div>
+      </div>
+    </div>
+{{> mod_minilesson/questionfooter}}
+{{^element.frozen}}
+{{#js}}
+    require(['jquery', 'core/notification', 'core/log', 'mod_minilesson/reveal'], function($, notification, log, reveal) {
+        reveal.init({});
+    });
+{{/js}}
+{{/element.frozen}}
