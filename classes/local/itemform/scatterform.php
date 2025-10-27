@@ -20,12 +20,9 @@ class scatterform extends baseform
 
         //add a heading for this form
         $this->add_itemsettings_heading();
-        $this->add_static_text('enterscatteritems', '', 
-        get_string('enterscatteritems', constants::M_COMPONENT));
-        $this->add_textarearesponse(1, get_string('scatteritems',  constants::M_COMPONENT), true);
-        $this->add_allowretry(constants::SCATTER_ALLOWRETRY, '', 1);
-
-        $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
+        $this->add_static_text('enterslidesmarkdown', '', 
+        get_string('enterslidesmarkdown', constants::M_COMPONENT));
+        $this->add_textarearesponse(1, get_string('slidesmarkdown',  constants::M_COMPONENT), true);
     }
 
 }

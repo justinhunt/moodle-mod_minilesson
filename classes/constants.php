@@ -130,6 +130,7 @@ class constants
     const TYPE_AUDIOCHAT = 'audiochat';
     const TYPE_WORDSHUFFLE = 'wordshuffle';
     const TYPE_SCATTER = 'scatter';
+    const TYPE_SLIDES = 'slides';
 
     const AUDIOSTORYMETA = 'itemaudiofname';
     const AUDIOSTORYZOOMANDPAN = 'itemaudiostoryzoom';
@@ -193,6 +194,7 @@ class constants
     const AUDIOCHAT_AIDATA2  = 'customdata2';
     const AUDIOCHAT_AUTORESPONSE = 'customint4';
 
+    const SLIDES_MARKDOWN = 'customtext1';
     const AUDIOCHAT_ALLOWRETRY  = 'customint5';
     const READINGPASSAGE = 'customtext1';
     const PASSAGEGAPFILL_PASSAGE = 'customtext1';
@@ -719,6 +721,7 @@ class constants
         constants::TYPE_FLUENCY,
         constants::TYPE_AUDIOCHAT,
         constants::TYPE_DICTATIONCHAT,
+        constants::TYPE_SLIDES,
       // constants::TYPE_SMARTFRAME,
       // constants::TYPE_COMPQUIZ,
       // constants::TYPE_CONVERSATION,

@@ -5132,3 +5132,26 @@ span.fluencyphoneme.letter_wrong {
     display: none;
   }
 }
+
+/* Container for the embedded slideshow */
+.minilesson-slides-container {
+  position: relative;
+  width: 80%;
+  max-width: 800px;
+  height: 450px;
+  margin: 30px auto;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+	
+.minilesson-slides-container .reveal {
+  font-size: 2em;   /* increase from default 1em to 2em */
+  line-height: 1.4;   /* optional: increase line spacing for readability */
+  height: 100%;
+}
+
+/* Only capture pointer events on slides */
+.minilesson-slides-container .reveal .slides {
+  pointer-events: auto;
+}

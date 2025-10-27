@@ -70,6 +70,7 @@ class rsquestion_renderer extends \plugin_renderer_base
         $qtypes[] = constants::TYPE_H5P;
         $qtypes[] = constants::TYPE_WORDSHUFFLE;
         $qtypes[] = constants::TYPE_SCATTER;
+        $qtypes[] = constants::TYPE_SLIDES;
         if ($region != "ningxia") {
             $qtypes[] = constants::TYPE_FLUENCY;
             if ($config->openaikey && !empty($config->openaikey)) {

@@ -416,6 +416,7 @@ $string['addconversationitem']='Conversation';
 $string['addaudiochatitem']='Audio Chat';
 $string['addwordshuffleitem']='Word Shuffle';
 $string['addscatteritem']='Scatter';
+$string['addslidesitem']='Slides';
 
 $string['multichoice'] = 'Multi Choice';
 $string['multiaudio'] = 'MC Audio';
@@ -440,6 +441,7 @@ $string['conversation']='Conversation';
 $string['audiochat']='Audio Chat';
 $string['scatter']='Scatter';
 $string['wordshuffle'] ='WordShuffle';
+$string['slides'] ='Slides';
 
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';
@@ -495,6 +497,7 @@ $string['conversation_instructions1'] = 'replace these instructions.';
 $string['audiochat_instructions1'] = 'Practice speaking with your AI partner about the topic.';
 $string['wordshuffle_instructions1'] = 'Put the words in the correct order to form a sentence.';
 $string['scatter_instructions1'] = 'Choose the word pairs';
+$string['slides_instructions1'] = 'Review the slides and click > or < to go forward or backward.';
 
 $string['choosevoice'] = "Choose the prompt speaker's voice";
 $string['choosemultiaudiovoice'] = "Choose the answer reader's voice";
@@ -1154,6 +1157,8 @@ $string['item_smartframe_desc'] = 'The SmartFrame item is a placeholder for an i
 $string['item_comprehensionquiz_desc'] = 'The Comprehension Quiz item is a placeholder for an item type that has not been developed yet.';
 $string['item_conversation_desc'] = 'The Conversation item is a placeholder for an item type that has not been developed yet.';
 $string['item_dictationchat_desc'] = 'The Dictation Chat item presents a series of audio prompts to which the student must type a response. Mostly used for dictation activities.';
+$string['item_slides_desc'] = 'The Slides item allows the author to create a series of slides. The slides can be used to create a learning presentation.';
+
 $string['noitemyet'] = "No items yet ";
 $string['addingcontent'] = "Click on ‘Add new item’ to start adding content";
 $string['hidewarning'] = "Hide fair results";
@@ -1183,3 +1188,6 @@ $string['notconfigured'] = 'Lesson Bank URL not configured';
 
 $string['hideitemscores'] = 'Hide All Results';
 $string['shuffleanswer'] = 'Shuffle Answer';
+$string['enterslidesmarkdown'] = 'Enter Slides Markdown';
+$string['slidesmarkdown'] = 'Slides Markdown';
+

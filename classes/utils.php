@@ -2438,6 +2438,8 @@ class utils
                 return new local\itemtype\item_wordshuffle($itemrecord, $moduleinstance, $context);
             case constants::TYPE_SCATTER:
                 return new local\itemtype\item_scatter($itemrecord, $moduleinstance, $context);
+            case constants::TYPE_SLIDES:
+                return new local\itemtype\item_slides($itemrecord, $moduleinstance, $context);
             default:
         }
     }
@@ -2495,6 +2497,8 @@ class utils
                 return '\\' . constants::M_COMPONENT . '\local\itemform\wordshuffleform';
             case constants::TYPE_SCATTER:
                 return '\\' . constants::M_COMPONENT . '\local\itemform\scatterform';
+            case constants::TYPE_SLIDES:
+                return '\\' . constants::M_COMPONENT . '\local\itemform\slidesform';
             default:
                 return false;
         }

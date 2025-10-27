@@ -83,6 +83,7 @@ This file contains class and ID definitions.
         qtype_audiochat: 'audiochat',
         qtype_wordshuffle: 'wordshuffle',
         qtype_scatter: 'scatter',
+        qtype_slides: 'slides',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_minilesson_grading_maybeselfcorrectedword',

@@ -346,6 +346,14 @@ abstract class baseform extends \moodleform
                             get_string('scatter_instructions1', constants::M_COMPONENT)
                         );
                         break;
+
+                    // Slides.
+                    case constants::TYPE_SLIDES:
+                        $mform->setDefault(
+                            constants::TEXTINSTRUCTIONS,
+                            get_string('slides_instructions1', constants::M_COMPONENT)
+                        );
+                        break;    
                 }
 
                 //add the media prompts chooser and fields
