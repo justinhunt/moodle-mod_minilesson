@@ -136,12 +136,6 @@ if ($config->animations == constants::M_ANIM_FANCY) {
     $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
 }
 
-$use_revealjs = true;
-if($use_revealjs){
-  $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css'));
-  $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/white.css'));
-}
-
 // If we need a non standard font we can do that from here.
 if (!empty($moduleinstance->lessonfont)) {
     if (!in_array($moduleinstance->lessonfont, constants::M_STANDARD_FONTS)) {

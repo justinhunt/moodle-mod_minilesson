@@ -5144,9 +5144,15 @@ span.fluencyphoneme.letter_wrong {
   border-radius: 8px;
   overflow: hidden;
 }
-	
+
+.minilesson-slides-preview-modal .minilesson-slides-container {
+  width: 100%;
+  max-width: unset;
+  margin: 0;
+}
+
 .minilesson-slides-container .reveal {
-  font-size: 2em;   /* increase from default 1em to 2em */
+  /* font-size: 2em; */   /* increase from default 1em to 2em */
   line-height: 1.4;   /* optional: increase line spacing for readability */
   height: 100%;
 }

@@ -737,4 +737,7 @@ class constants
         'text' => 2
     ];
     const MULTICHOICE_SHUFFLEANSWER = 'customint5';
+
+    const SLIDETHEME = 'customtext2';
+    const SLIDEFONTSIZE = 'customtext3';
 }

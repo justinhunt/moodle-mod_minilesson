@@ -1191,3 +1191,13 @@ $string['shuffleanswer'] = 'Shuffle Answer';
 $string['enterslidesmarkdown'] = 'Enter Slides Markdown';
 $string['slidesmarkdown'] = 'Slides Markdown';
 
+$string['slides:attachments'] = 'Attachments';
+$string['slides:theme'] = 'Theme';
+$string['slides:fontsize'] = 'Fontsize';
+$string['slides:fontsmall'] = 'Small';
+$string['slides:fontsmaller'] = 'Smaller';
+$string['slides:fontstandard'] = 'Standard';
+$string['slides:fontlarger'] = 'Larger';
+$string['slides:fontlarge'] = 'Large';
+$string['slides:preview'] = 'Preview';
+$string['slides:previewmodaltitle'] = 'Preview';

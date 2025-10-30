@@ -18,6 +18,7 @@ namespace mod_minilesson\local\itemtype;
 
 use mod_minilesson\constants;
 use mod_minilesson\utils;
+use moodle_url;
 use templatable;
 use renderable;
 
@@ -32,7 +33,12 @@ class item_slides extends item {
 
     //the item type
     public const ITEMTYPE = constants::TYPE_SLIDES;
-    
+
+    public function from_record($itemrecord, $moduleinstance = false, $context = false) {
+        parent::from_record($itemrecord, $moduleinstance, $context);
+        $this->filemanageroptions['maxfiles'] = -1;
+    }
+
      /**
      * Export the data for the mustache template.
      *
@@ -47,7 +53,38 @@ class item_slides extends item {
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
-        $testitem->slidesmarkdown = $this->itemrecord->{constants::SLIDES_MARKDOWN};
+
+        $imageserveurl = moodle_url::make_pluginfile_url(
+            $this->context->id,
+            'mod_minilesson',
+            constants::FILEANSWER . '1',
+            $this->itemrecord->id,
+            '/',
+            '{filename}'
+        );
+
+        $testitem->slidesmarkdown = preg_replace_callback(
+            '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
+            function ($matches) use ($imageserveurl) {
+                $filename = trim($matches['filename']);
+
+                // Skip if it's already a full URL (http/https)
+                if (preg_match('/^https?:\/\//', $filename)) {
+                    return $matches[0];
+                }
+
+                // Add base path (and escape spaces if needed)
+                $new_src = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
+
+                // Replace only the filename part
+                return str_replace($filename, $new_src, $matches[0]);
+            },
+            $this->itemrecord->{constants::SLIDES_MARKDOWN}
+        );
+
+        $testitem->selectedtheme = $this->itemrecord->{constants::SLIDETHEME};
+        $testitem->selectedfontsize = $this->itemrecord->{constants::SLIDEFONTSIZE};
+
         return $testitem;
     }
 
@@ -74,6 +111,8 @@ class item_slides extends item {
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['text1'] = ['jsonname' => 'slidesmarkdown', 'type' => 'string', 'optional' => false, 'default' => [], 'dbname' => constants::SLIDES_MARKDOWN];
+        $keycols['text2'] = ['jsonname' => 'slidestheme', 'type' => 'string', 'optional' => false, 'default' => 'black', 'dbname' => constants::SLIDETHEME];
+        $keycols['text3'] = ['jsonname' => 'slidesfontsize', 'type' => 'string', 'optional' => false, 'default' => '32.00', 'dbname' => constants::SLIDEFONTSIZE];
         return $keycols;
     }
 
