@@ -56,20 +56,42 @@ class item_slides extends item {
 
         $imageserveurl = moodle_url::make_pluginfile_url(
             $this->context->id,
-            'mod_minilesson',
+            constants::M_COMPONENT,
             constants::FILEANSWER . '1',
             $this->itemrecord->id,
             '/',
             '{filename}'
         );
 
+        // Fetch all filenames in file area.
+        $fs = get_file_storage();
+
+        // Get all files in that file area.
+        $files = $fs->get_area_files($this->context->id, 
+        constants::M_COMPONENT,
+        constants::FILEANSWER . '1',
+        $this->itemrecord->id,
+        'filepath, filename',
+        false);
+
+        // Extract the filenames into an array.
+        $filenames = [];
+        foreach ($files as $file) {
+            $filenames[] = $file->get_filename();
+        }
+
         $testitem->slidesmarkdown = preg_replace_callback(
             '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
-            function ($matches) use ($imageserveurl) {
+            function ($matches) use ($imageserveurl, $filenames) {
                 $filename = trim($matches['filename']);
 
-                // Skip if it's already a full URL (http/https)
+                // Skip if it's already a full URL (http/https).
                 if (preg_match('/^https?:\/\//', $filename)) {
+                    return $matches[0];
+                }
+
+                // Skip if the file does not exist in the file area.
+                if (!in_array($filename, $filenames)) {
                     return $matches[0];
                 }
 

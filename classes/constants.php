@@ -195,6 +195,7 @@ class constants
     const AUDIOCHAT_AUTORESPONSE = 'customint4';
 
     const SLIDES_MARKDOWN = 'customtext1';
+    const SLIDES_MARKDOWN_DEFAULT = "# Slide 1 Title\n\nYour content here. Use markdown syntax to format text and add images.\n\n---\n\n# Slide 2 Title\n\nMore content here. You can add as many slides as you need.\n";
     const AUDIOCHAT_ALLOWRETRY  = 'customint5';
     const READINGPASSAGE = 'customtext1';
     const PASSAGEGAPFILL_PASSAGE = 'customtext1';

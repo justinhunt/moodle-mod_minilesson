@@ -497,7 +497,7 @@ $string['conversation_instructions1'] = 'replace these instructions.';
 $string['audiochat_instructions1'] = 'Practice speaking with your AI partner about the topic.';
 $string['wordshuffle_instructions1'] = 'Put the words in the correct order to form a sentence.';
 $string['scatter_instructions1'] = 'Choose the word pairs';
-$string['slides_instructions1'] = 'Review the slides and click > or < to go forward or backward.';
+$string['slides_instructions1'] = 'Click > or < to go forward or backward through the slides.';
 
 $string['choosevoice'] = "Choose the prompt speaker's voice";
 $string['choosemultiaudiovoice'] = "Choose the answer reader's voice";
@@ -1157,8 +1157,7 @@ $string['item_smartframe_desc'] = 'The SmartFrame item is a placeholder for an i
 $string['item_comprehensionquiz_desc'] = 'The Comprehension Quiz item is a placeholder for an item type that has not been developed yet.';
 $string['item_conversation_desc'] = 'The Conversation item is a placeholder for an item type that has not been developed yet.';
 $string['item_dictationchat_desc'] = 'The Dictation Chat item presents a series of audio prompts to which the student must type a response. Mostly used for dictation activities.';
-$string['item_slides_desc'] = 'The Slides item allows the author to create a series of slides. The slides can be used to create a learning presentation.';
-
+$string['item_slides_desc'] = 'The Slides item allows the author to create a series of slides. The slides can be used to deliver a learning presentation. Slides are authored using markdown syntax, so this is a feature for advanced users.';
 $string['noitemyet'] = "No items yet ";
 $string['addingcontent'] = "Click on ‘Add new item’ to start adding content";
 $string['hidewarning'] = "Hide fair results";
@@ -1188,9 +1187,8 @@ $string['notconfigured'] = 'Lesson Bank URL not configured';
 
 $string['hideitemscores'] = 'Hide All Results';
 $string['shuffleanswer'] = 'Shuffle Answer';
-$string['enterslidesmarkdown'] = 'Enter Slides Markdown';
+$string['enterslidesmarkdown'] = 'Enter Slides Markdown. Markdown is a sort of shorthand syntax for creating HTML. See the <a href="https://poodll.freshdesk.com/a/solutions/articles/19000169462" target="_blank">Slides Markdown Guide</a> for details.';
 $string['slidesmarkdown'] = 'Slides Markdown';
-
 $string['slides:attachments'] = 'Attachments';
 $string['slides:theme'] = 'Theme';
 $string['slides:fontsize'] = 'Fontsize';
