@@ -57,7 +57,7 @@ class item_slides extends item {
         $imageserveurl = moodle_url::make_pluginfile_url(
             $this->context->id,
             constants::M_COMPONENT,
-            constants::FILEANSWER . '1',
+            constants::SLIDESFILES,
             $this->itemrecord->id,
             '/',
             '{filename}'
@@ -69,7 +69,7 @@ class item_slides extends item {
         // Get all files in that file area.
         $files = $fs->get_area_files($this->context->id, 
         constants::M_COMPONENT,
-        constants::FILEANSWER . '1',
+        constants::SLIDESFILES,
         $this->itemrecord->id,
         'filepath, filename',
         false);
@@ -96,10 +96,10 @@ class item_slides extends item {
                 }
 
                 // Add base path (and escape spaces if needed)
-                $new_src = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
+                $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
 
                 // Replace only the filename part
-                return str_replace($filename, $new_src, $matches[0]);
+                return str_replace($filename, $newsrc, $matches[0]);
             },
             $this->itemrecord->{constants::SLIDES_MARKDOWN}
         );
@@ -134,7 +134,9 @@ class item_slides extends item {
         $keycols = parent::get_keycolumns();
         $keycols['text1'] = ['jsonname' => 'slidesmarkdown', 'type' => 'string', 'optional' => false, 'default' => [], 'dbname' => constants::SLIDES_MARKDOWN];
         $keycols['text2'] = ['jsonname' => 'slidestheme', 'type' => 'string', 'optional' => false, 'default' => 'black', 'dbname' => constants::SLIDETHEME];
-        $keycols['text3'] = ['jsonname' => 'slidesfontsize', 'type' => 'string', 'optional' => false, 'default' => '32.00', 'dbname' => constants::SLIDEFONTSIZE];
+        $keycols['text3'] = ['jsonname' => 'slidesfontsize', 'type' => 'string', 'optional' => false, 'default' => '32', 'dbname' => constants::SLIDEFONTSIZE];
+        $keycols[constants::SLIDESFILES] = ['jsonname' => constants::SLIDESFILES, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+
         return $keycols;
     }
 
@@ -146,7 +148,7 @@ class item_slides extends item {
         switch ($generatemethod) {
 
             case 'extract':
-                $promot = "Create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}]";
+                $prompt = "Create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}]";
                 break;
 
             case 'reuse':

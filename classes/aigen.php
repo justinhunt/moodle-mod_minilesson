@@ -36,6 +36,7 @@ class aigen
         '688244029b789' => 'keywordstogapfillsfluency',
         '6899607f96fb7' => 'reading_aic_passagegen',
         '68996c17d07f5' => 'reading_aic_passageupload',
+        '69076f35b4c3b' => 'set_of_slides',
         '68a036971fe4b' => 'keywords_to_ws_sc',
         '68a0422070f05' => 'keywords_to_ws_sc_sg',
         ];

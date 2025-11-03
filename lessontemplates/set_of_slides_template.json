@@ -1,0 +1,29 @@
+{
+    "items": [
+        {
+            "type": "slides",
+            "name": "Item: Slides",
+            "instructions": "Click > or < to go forward or backward through the slides.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "slidesmarkdown": "# Slide 1 Title\r\n\r\nYour content here. Use markdown syntax to format text and add images.\r\n\r\n---\r\n\r\n# Slide 2 Title\r\n\r\nMore content here. You can add as many slides as you need.",
+            "slidestheme": "beige",
+            "slidesfontsize": "32",
+            "filesid": 1
+        }
+    ],
+    "files": {
+        "1": {
+            "customfile1": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ"
+            }
+        }
+    }
+}

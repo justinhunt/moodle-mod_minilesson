@@ -1,0 +1,114 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}]\nSlides should be a combination of text, appropriate emojis. and images. Not every slide requires an image. You may include up to 5 images (name and path \"1.png\" \"2.png\" etc. in the reveal,js markdown.) There is never more than 1 image per slide. Each image should match the content of the current slide. Generate a one dimensional array (data1) of image descriptions that can be used as image generation prompts.",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "text",
+                    "mapping": "user_text"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Set of Slides",
+    "lessonDescription": "This template will create a tutorial slides that are based on a description of what you want to teach.",
+    "uniqueid": "69076f35b4c3b",
+    "version": "17",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "Target language",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "The Slides Topic",
+            "description": "",
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    }
+}

@@ -5161,3 +5161,7 @@ span.fluencyphoneme.letter_wrong {
 .minilesson-slides-container .reveal .slides {
   pointer-events: auto;
 }
+
+.minilesson-slides-container .reveal .slides img {
+  max-height: 60vh;
+}

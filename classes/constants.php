@@ -174,6 +174,7 @@ class constants
     const TEXTANSWER = 'customtext';
     const FILEANSWER = 'customfile';
     const H5PFILE = 'customfile1';
+    const SLIDESFILES = 'customfile1';
     const CUSTOMDATA = 'customdata';
     const CUSTOMINT = 'customint';
     const POLLYVOICE = 'customtext5';
