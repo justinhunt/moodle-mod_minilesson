@@ -37,6 +37,7 @@ class aigen
         '6899607f96fb7' => 'reading_aic_passagegen',
         '68996c17d07f5' => 'reading_aic_passageupload',
         '69076f35b4c3b' => 'set_of_slides',
+        '69095a6426664' => 'set_of_slides_nopics',
         '68a036971fe4b' => 'keywords_to_ws_sc',
         '68a0422070f05' => 'keywords_to_ws_sc_sg',
         ];
@@ -287,8 +288,21 @@ class aigen
                 continue;
             }
 
-            // Add the style and greate context
-            $prompt = "Give me a simple cute cartoon image, with no text on it, depicting: " . $prompt;
+            // Add the style and create context
+            // If the style of the prompt is specified in the prompt then use it as is, if not add a little style instruction
+            // Does the prompt contain style keywords? - cartoon, illustration, photo, painting, sketch, drawing, realistic
+            $stylekeywords = ['cartoon', 'illustration', 'photo', 'painting', 'sketch', 'drawing', 'realistic', 'infographic', '3D'];
+            $stylefound = false;
+            foreach ($stylekeywords as $stylekeyword) {
+                if (stripos(mb_strtolower($prompt), strtolower($stylekeyword)) !== false) {
+                    $stylefound = true;
+                    break;
+                }
+            }
+            if(!$stylefound){
+                $prompt = "Give me a simple cute cartoon image, with no text on it, depicting: " . $prompt;
+            }
+
             if ($overallimagecontext && !empty($overallimagecontext) && $overallimagecontext !== "--") {
                 $prompt .= PHP_EOL . " in the context of the following topic: " . $overallimagecontext;
             }

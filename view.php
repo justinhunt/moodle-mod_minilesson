@@ -143,6 +143,23 @@ if (!empty($moduleinstance->lessonfont)) {
     }
 }
 
+// Get item information
+$comptest = new \mod_minilesson\comprehensiontest($cm);
+$itemcount = $comptest->fetch_item_count();
+
+// If we have slides, load the CSS
+if ($comptest->has_slides_items()) {
+    switch($moduleinstance->region) {
+        case 'ningxia':
+            // If Ningxia region, load CSS from different CDN
+            $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
+            break;
+        default:
+            $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.min.css'));
+            break;
+    }
+}
+
 // From here we actually display the page.
 // If we are teacher we see tabs. If student we just see the quiz.
 // In mobile no tabs are shown.
@@ -152,8 +169,6 @@ if (has_capability('mod/minilesson:evaluate', $modulecontext) && $embed != 2) {
     echo $renderer->notabsheader($moduleinstance, $embed);
 }
 
-$comptest = new \mod_minilesson\comprehensiontest($cm);
-$itemcount = $comptest->fetch_item_count();
 
 // Show open close dates.
 $hasopenclosedates = $moduleinstance->viewend > 0 || $moduleinstance->viewstart > 0;

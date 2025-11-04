@@ -45,10 +45,10 @@ define([
                 });
                 $("#" + itemdata.uniqueid + "_container").on("showElement", async (e) => {
                     if (!self.instance) {
-                        self.instance = await RevealImplement.init(e.target.querySelector('.reveal'));
+                        self.instance = await RevealImplement.init(e.target.querySelector('.reveal'), itemdata.region, itemdata.selectedtheme);
                         self.instance.initialize();
                     }
-                    RevealImplement.setTheme(self.itemdata.selectedtheme);
+
                     if (itemdata.timelimit > 0) {
                         $("#" + itemdata.uniqueid + "_container .progress-container").show();
                         $("#" + itemdata.uniqueid + "_container .progress-container i").show();

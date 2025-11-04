@@ -53,6 +53,7 @@ class item_slides extends item {
         $testitem = $this->get_text_answer_elements($testitem);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
+        $testitem->region = $this->region;
 
         $imageserveurl = moodle_url::make_pluginfile_url(
             $this->context->id,

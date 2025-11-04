@@ -1,6 +1,7 @@
-Version 1.1.11 (Build 202510XX00)
+Version 1.1.11 (Build 2025110302)
 - fix for broken refresh token link
 - increase memory limit during import
+- added slides item type
 
 Version 1.1.10 (Build 2025100500)
 - Fix for failing grade and feedback on AI Chat

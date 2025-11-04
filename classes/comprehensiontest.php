@@ -65,6 +65,11 @@ class comprehensiontest {
         }
     }
 
+    public function has_slides_items() {
+        global $DB;
+        return $DB->count_records(constants::M_QTABLE, ['minilesson' => $this->mod->id, 'type' => constants::TYPE_SLIDES]) > 0;
+    }
+
     public function fetch_latest_attempt($userid) {
         global $DB;
 
