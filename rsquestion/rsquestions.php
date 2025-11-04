@@ -39,6 +39,19 @@ $minilesson = $DB->get_record('minilesson', array('id' => $cm->instance), '*', M
 $comprehensiontest = new \mod_minilesson\comprehensiontest($cm);
 $items = $comprehensiontest->fetch_items();
 
+// If we have slides, load the CSS
+if ($comprehensiontest->has_slides_items()) {
+    switch($minilesson->region) {
+        case 'ningxia':
+            // If Ningxia region, load CSS from different CDN
+            $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
+            break;
+        default:
+            $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.min.css'));
+            break;
+    }
+}
+
 //mode is necessary for tabs
 $mode='rsquestions';
 //Set page url before require login, so post login will return here

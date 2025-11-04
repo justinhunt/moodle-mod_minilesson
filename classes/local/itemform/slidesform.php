@@ -69,11 +69,13 @@ class slidesform extends baseform
         $previewbtn = $mform->addElement('submit', 'previewbutton', get_string('slides:preview', constants::M_COMPONENT));
         $previewbtn->_generateId();
         $previewbtn->updateAttributes(['id' => $previewbtn->getAttribute('id') . '_' . random_string()]);
+        // There is an issue because the region by default may not work in China (slides is not properly init with region here).
+        // So preview may not work in China region unless we load from different CDN. TBD.
         $PAGE->requires->js_call_amd(
             constants::M_COMPONENT . '/slides',
             'register_previewbutton',
             [
-                $previewbtn->getAttribute('id'),
+                $previewbtn->getAttribute('id')
             ]
         );
     }

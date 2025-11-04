@@ -49,6 +49,18 @@ require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/minilesson:itemedit', $context);
 
+// Load the slides CSS
+switch($minilesson->region) {
+    case 'ningxia':
+        // If Ningxia region, load CSS from different CDN
+        $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
+        break;
+    default:
+        $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.min.css'));
+        break;
+}
+
+
 // set up the page object
 $PAGE->set_url('/mod/minilesson/rsquestion/managersquestions.php', ['itemid' => $itemid, 'id' => $id, 'type' => $type]);
 $PAGE->set_title(format_string($minilesson->name));

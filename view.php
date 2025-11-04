@@ -153,9 +153,11 @@ if ($comptest->has_slides_items()) {
         case 'ningxia':
             // If Ningxia region, load CSS from different CDN
             $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
+            //$PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/theme/beige.min.css'));
             break;
         default:
             $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.min.css'));
+            //$PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/dist/theme/beige.min.css'));
             break;
     }
 }

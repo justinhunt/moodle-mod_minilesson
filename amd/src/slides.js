@@ -63,7 +63,7 @@ define([
                 });
             },
 
-            register_previewbutton: function (buttonid) {
+            register_previewbutton: function (buttonid, region = 'default') {
                 var previewbtn = document.getElementById(buttonid);
                 if (!previewbtn) {
                     return;
