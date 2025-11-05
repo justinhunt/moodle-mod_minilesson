@@ -743,11 +743,11 @@ function xmldb_minilesson_upgrade($oldversion) {
     if ($oldversion < 2025071305) {
         global $DB;
 
-        //Fetch unique minilesson ids for all minilesson items that are of type multichoice or multiaudio
+        // Fetch unique minilesson ids for all minilesson items that are of type multichoice or multiaudio.
         $sql = "SELECT DISTINCT minilesson FROM {". constants::M_QTABLE ."} WHERE type IN (:type1, :type2)";
         $params = [
             'type1' => constants::TYPE_MULTICHOICE,
-            'type2' => constants::TYPE_MULTIAUDIO
+            'type2' => constants::TYPE_MULTIAUDIO,
         ];
         $minilessonids = $DB->get_fieldset_sql($sql, $params);
 

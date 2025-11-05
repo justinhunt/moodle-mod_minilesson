@@ -88,11 +88,11 @@ class aigen_contextform extends moodleform {
                 // Sample Data -  will beoverwritten by form submission
                 $contextdata = [
                     'target_language' => $moduleinstance->ttslanguage,
-                    'user_topic' => 'A dog and a cat',
-                    'user_level' => 'CEFR A2',
-                    'user_text' => 'On my way to school I met a dog. We became friends. But he met a cat and ran after it. Was he my friend?',
-                    'user_keywords' => 'dog' . PHP_EOL . 'cat' . PHP_EOL . ' school',
-                    'user_customdata1' => 'French',
+                    'user_topic' => '',
+                    'user_level' => '',
+                    'user_text' => '',
+                    'user_keywords' => '',
+                    'user_customdata1' => '',
                     'user_customdata2' => '',
                     'user_customdata3' => '',
                 ];
