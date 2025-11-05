@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Create an image generation prompt (data1) to generate a single picture of each of the following keywords written on a classroom blackboard with a cute cat teacher beside it: [{keywords}]",
+            "prompt": "Create an image generation prompt (data1) to generate a single picture of each of the following keywords written on a classroom blackboard: [{keywords}]",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -269,7 +269,7 @@
     "lessonTitle": "Keywords to gapfills and fluency",
     "lessonDescription": "Enter a list of words (maximum 30) and Poodll will make a short activity for students to practice those words",
     "uniqueid": "688244029b789",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

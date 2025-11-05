@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Create an image generation prompt (data1) to generate a single picture of each of the following keywords written on a classroom blackboard with a cute poodle teacher beside it: [{keywords}]",
+            "prompt": "Create an image generation prompt (data1) to generate a single picture of each of the following keywords written on a classroom blackboard: [{keywords}]",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -187,7 +187,7 @@
     "lessonTitle": "Keywords to Word Shuffle and Scatter",
     "lessonDescription": "Enter 4 - 10 keywords in the box below. The keywords will be used to generate a word shuffle and scatter activity. The keywords will also be used to generate a picture of each keyword on a blackboard with a cute cat teacher beside it.",
     "uniqueid": "68a036971fe4b",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
