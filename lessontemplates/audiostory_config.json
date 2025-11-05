@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Generate a short story (tts) in {language} suitable for {level} level learners on the topic of: [{topic}] The short story should take about 1 minute to read aloud. \nThe short story should be interesting and {storystyle} . Also generate a one dimensional array (data1) of scene descriptions  from the story that can be used as image prompts",
+            "prompt": "Generate a short story (tts) in {language} suitable for {level} level learners on the topic of: [{topic}] The short story should take about 1 minute to read aloud. \nThe short story should be interesting and {storystyle} . Also generate a one dimensional array (data1) of descriptions of key scenes from the story that can be used as image prompts. The image style should be specified in each prompt as {image_style}. There should be no more than 4 images.",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -60,6 +60,10 @@
                 {
                     "name": "storystyle",
                     "mapping": "user_customdata1"
+                },
+                {
+                    "name": "image_style",
+                    "mapping": "user_customdata2"
                 }
             ]
         },
@@ -107,10 +111,6 @@
             "generatefileareas": [],
             "overallimagecontext": "--",
             "promptfields": [
-                {
-                    "name": "keywords",
-                    "mapping": "user_keywords"
-                },
                 {
                     "name": "language",
                     "mapping": "target_language"
@@ -311,9 +311,9 @@
         }
     ],
     "lessonTitle": "Audio Story",
-    "lessonDescription": "Enter a topic, the learners language level, and a type of story.  AI will prepare an audio story (slideshow) and some listening and speaking activities based on it.",
+    "lessonDescription": "Enter a topic, the learners language level, image style and a type of story. AI will prepare an audio story with listening and speaking activities.",
     "uniqueid": "6880824450555",
-    "version": "100",
+    "version": "103",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -368,10 +368,19 @@
             ]
         },
         "user_customdata2": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata3": {
             "enabled": false,

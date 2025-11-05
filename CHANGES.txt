@@ -1,3 +1,6 @@
+Version 1.1.12 (Build 2025110401)
+- Small changes to AI generate template to remove stray cats and dogs
+
 Version 1.1.11 (Build 2025110302)
 - fix for broken refresh token link
 - increase memory limit during import

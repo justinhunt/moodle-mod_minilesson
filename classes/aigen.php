@@ -291,10 +291,10 @@ class aigen
             // Add the style and create context
             // If the style of the prompt is specified in the prompt then use it as is, if not add a little style instruction
             // Does the prompt contain style keywords? - cartoon, illustration, photo, painting, sketch, drawing, realistic
-            $stylekeywords = ['cartoon', 'illustration', 'photo', 'painting', 'sketch', 'drawing', 'realistic', 'infographic', '3D'];
+            $stylekeywords = ['flat vector illustration', 'cartoon', 'illustration', 'photorealistic', 'digital painting', 'sketch', 'line drawing', 'realistic', 'infographic', '3d render'];
             $stylefound = false;
             foreach ($stylekeywords as $stylekeyword) {
-                if (stripos(mb_strtolower($prompt), strtolower($stylekeyword)) !== false) {
+                if (stripos(mb_strtolower($prompt), $stylekeyword) !== false) {
                     $stylefound = true;
                     break;
                 }
