@@ -28,7 +28,8 @@ use mod_minilesson\local\exception\textgenerationfailed;
 class aigen
 {
 
-    public const DEFAULTTEMPLATES = ['6880824450555' => 'audiostory',
+    public const DEFAULTTEMPLATES = [
+        '6880824450555' => 'audiostory',
         '6874e6af39202' => 'passagereading',
         '6874e6ca1c71a' => 'wordpractice',
         '6874e6a65a0ff' => 'ayoutubelesson',
@@ -40,7 +41,9 @@ class aigen
         '69095a6426664' => 'set_of_slides_nopics',
         '68a036971fe4b' => 'keywords_to_ws_sc',
         '68a0422070f05' => 'keywords_to_ws_sc_sg',
-        ];
+        '690b33f83d02f' => 'dialog_multichoice',
+        '690b5e695b235' => 'image_slides',
+    ];
     private $moduleinstance = null;
     private $course = null;
     private $cm = null;
@@ -108,10 +111,9 @@ class aigen
                             $generateformat->{$generatefield->name} = $generatefield->name . '_data';
                         }
                     }
-
                     $generateformatjson = json_encode($generateformat);
 
-                    // Complete the prompt
+                    // Complete the prompt.
                     $useprompt = $useprompt . PHP_EOL . 'Generate the data in this JSON format: ' . $generateformatjson;
 
                     if ($this->progressbar) {
@@ -165,7 +167,7 @@ class aigen
                             // Image prompt data - usually mapped from other items (created) but possibly also from context data or dataitem.
                             $imagepromptdata = false;
                             if (isset($importitem->{$generatefilearea->mapping})) {
-                                 $imagepromptdata = $importitem->{$generatefilearea->mapping};
+                                $imagepromptdata = $importitem->{$generatefilearea->mapping};
                             } else if (isset($dataitem->{$generatefilearea->mapping})) {
                                 $imagepromptdata = $dataitem->{$generatefilearea->mapping};
                             } else if (isset($contextdata[$generatefilearea->mapping]) && !empty($contextdata[$generatefilearea->mapping])) {
@@ -299,7 +301,7 @@ class aigen
                     break;
                 }
             }
-            if(!$stylefound){
+            if (!$stylefound) {
                 $prompt = "Give me a simple cute cartoon image, with no text on it, depicting: " . $prompt;
             }
 
@@ -327,10 +329,10 @@ class aigen
         $curl = new curl();
         $curlopts = [];
         $curlopts['CURLOPT_TIMEOUT'] = 120; // this might be unnecessary or even counter productive
- 
+
         // Update the progress bar.
         if ($this->progressbar) {
-            $this->progressbar->start_progress("Generate images: {".count($requests)."} ");
+            $this->progressbar->start_progress("Generate images: {" . count($requests) . "} ");
         }
 
         $responses = $curl->multirequest($requests, $curlopts);
@@ -341,13 +343,13 @@ class aigen
             if ($processedimage) {
                 $imageurls[$filenametrack[$i]] = $processedimage;
             } else {
-                $secondattempt_requests[] =  $requests[$i];
+                $secondattempt_requests[] = $requests[$i];
                 $secondattempt_imagenumbers[] = $i;
             }
         }
 
         // Second attempt responses
-        if(count($secondattempt_requests) > 0) {
+        if (count($secondattempt_requests) > 0) {
             $responses = $curl->multirequest($secondattempt_requests);
             foreach ($responses as $i => $resp) {
                 $imagenumber = $secondattempt_imagenumbers[$i];
@@ -365,7 +367,8 @@ class aigen
         return $imageurls;
     }
 
-    public function make_image_smaller($imagedata) {
+    public function make_image_smaller($imagedata)
+    {
         global $CFG;
         require_once($CFG->libdir . '/gdlib.php');
 
@@ -379,7 +382,7 @@ class aigen
         file_put_contents($temporiginal, $imagedata);
 
         // Resize to reasonable dimensions
-        $resizedimagedata = \resize_image($temporiginal,  500, 500, true);
+        $resizedimagedata = \resize_image($temporiginal, 500, 500, true);
 
         if (!$resizedimagedata) {
             // If resizing fails, use the original image data
@@ -412,7 +415,8 @@ class aigen
         }
     }
 
-    public function prepare_generate_image_payload($prompt, $token = null) {
+    public function prepare_generate_image_payload($prompt, $token = null)
+    {
         global $USER;
 
         if (!empty($this->conf->apiuser) && !empty($this->conf->apisecret)) {
@@ -441,7 +445,8 @@ class aigen
         }
     }
 
-    public function process_generate_image_response($resp) {
+    public function process_generate_image_response($resp)
+    {
         $respobj = json_decode($resp);
         $ret = new \stdClass();
         if (isset($respobj->returnCode)) {
@@ -557,8 +562,8 @@ class aigen
             // The configuration file should contain the lesson configuration in JSON format.
             // The template file should contain the lesson template in MiniLesson export/import JSON format.
             try {
-                $t->config = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" .$templateshortname . "_config.json");
-                $t->template = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" .$templateshortname . "_template.json");
+                $t->config = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" . $templateshortname . "_config.json");
+                $t->template = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" . $templateshortname . "_template.json");
                 aigen_uploadform::upsert_template($t);
             } catch (\Exception $e) {
                 // Handle the exception if the file cannot be read.

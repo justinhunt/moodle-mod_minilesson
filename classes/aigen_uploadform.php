@@ -20,11 +20,13 @@ use context_user;
 use moodleform;
 use stdClass;
 
-require_once($CFG->libdir . '/formslib.php');
+require_once $CFG->libdir . '/formslib.php';
 
-class aigen_uploadform extends moodleform {
+class aigen_uploadform extends moodleform
+{
 
-    public function definition() {
+    public function definition()
+    {
         $mform = $this->_form;
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -32,7 +34,9 @@ class aigen_uploadform extends moodleform {
         $mform->addElement('hidden', 'action');
         $mform->setType('action', PARAM_ALPHA);
 
-        $mform->addElement('filemanager', 'templates',
+        $mform->addElement(
+            'filemanager',
+            'templates',
             get_string('uploadtemplate', constants::M_COMPONENT),
             ['subdirs' => 0, 'maxfiles' => 2, 'accepted_types' => 'json']
         );
@@ -62,7 +66,7 @@ class aigen_uploadform extends moodleform {
 
             $fs = get_file_storage();
             $uploadedfiles = $fs->get_area_files($context->id, 'user', 'draft', $formdata->templates, 'id DESC', false);
-            foreach($uploadedfiles as $uploadedfile) {
+            foreach ($uploadedfiles as $uploadedfile) {
                 if (strpos($uploadedfile->get_filename(), '_template') !== false) {
                     $template->template = $uploadedfile->get_content();
                 }
@@ -76,7 +80,8 @@ class aigen_uploadform extends moodleform {
         return false;
     }
 
-    public function validation($data, $files) {
+    public function validation($data, $files)
+    {
         global $USER;
         $context = context_user::instance($USER->id);
         $errors = parent::validation($data, $files);
@@ -87,7 +92,7 @@ class aigen_uploadform extends moodleform {
             $errors['templates'] = get_string('error:atleast2jsonfiles', constants::M_COMPONENT);
         } else {
             $templatejsonfile = $configjsonfile = false;
-            foreach($uploadedfiles as $uploadedfile) {
+            foreach ($uploadedfiles as $uploadedfile) {
                 if (strpos($uploadedfile->get_filename(), '_template') !== false) {
                     $templatejsonfile = $uploadedfile;
                 }
@@ -129,7 +134,8 @@ class aigen_uploadform extends moodleform {
         return $errors;
     }
 
-    public static function upsert_template(stdClass $template) {
+    public static function upsert_template(stdClass $template)
+    {
         global $DB;
         $jsonconfig = json_decode($template->config);
         if (!json_last_error()) {

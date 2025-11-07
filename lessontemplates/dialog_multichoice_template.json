@@ -1,0 +1,168 @@
+{
+    "items": [
+        {
+            "type": "multichoice",
+            "name": "Item: Multi Choice (1)",
+            "instructions": "Choose the correct answer.",
+            "ttsvoice": "Mathieu",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                "A) Salut, comment \u00e7a va aujourd\u2019hui ?\r",
+                "B) \u00c7a va bien, merci ! Et toi ?\r",
+                "A) Pas mal. Tu vas au cin\u00e9ma ce soir ?\r",
+                "B) Oui, j\u2019y vais avec des amis. Tu veux venir ?\r",
+                "A) Bonne id\u00e9e, \u00e0 quelle heure ?\r",
+                "B) \u00c0 huit heures. On se retrouve devant le cin\u00e9ma !\r",
+                ""
+            ],
+            "ttsdialogvoicea": "Remi",
+            "ttsdialogvoiceb": "Lea",
+            "ttsdialogvoicec": "Mathieu",
+            "answers": [
+                "\r",
+                "\r",
+                "\r",
+                "\r"
+            ],
+            "promptvoice": "Joey",
+            "listenorread": "3",
+            "promptvoiceopt": "normal",
+            "shuffleanswer": "1",
+            "correctanswer": "1",
+            "filesid": 1
+        },
+        {
+            "type": "multichoice",
+            "name": "Item: Multi Choice (2)",
+            "instructions": "Choose the correct answer.",
+            "ttsvoice": "Mathieu",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                "Got it! Here\u2019s a short French dialog in that format:\r",
+                "\r",
+                "A) Salut, comment \u00e7a va aujourd\u2019hui ?\r",
+                "B) \u00c7a va bien, merci ! Et toi ?\r",
+                "A) Pas mal. Tu vas au cin\u00e9ma ce soir ?\r",
+                "B) Oui, j\u2019y vais avec des amis. Tu veux venir ?\r",
+                "A) Bonne id\u00e9e, \u00e0 quelle heure ?\r",
+                "B) \u00c0 huit heures. On se retrouve devant le cin\u00e9ma !\r",
+                ""
+            ],
+            "ttsdialogvoicea": "Remi",
+            "ttsdialogvoiceb": "Lea",
+            "ttsdialogvoicec": "Mathieu",
+            "answers": [
+                "",
+                "",
+                "",
+                ""
+            ],
+            "promptvoice": "Joey",
+            "listenorread": "3",
+            "promptvoiceopt": "normal",
+            "shuffleanswer": "1",
+            "correctanswer": "2",
+            "filesid": 2
+        },
+        {
+            "type": "multichoice",
+            "name": "Item: Multi Choice (3)",
+            "instructions": "Choose the correct answer.",
+            "ttsvoice": "Mathieu",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                "Got it! Here\u2019s a short French dialog in that format:\r",
+                "\r",
+                "A) Salut, comment \u00e7a va aujourd\u2019hui ?\r",
+                "B) \u00c7a va bien, merci ! Et toi ?\r",
+                "A) Pas mal. Tu vas au cin\u00e9ma ce soir ?\r",
+                "B) Oui, j\u2019y vais avec des amis. Tu veux venir ?\r",
+                "A) Bonne id\u00e9e, \u00e0 quelle heure ?\r",
+                "B) \u00c0 huit heures. On se retrouve devant le cin\u00e9ma !\r",
+                ""
+            ],
+            "ttsdialogvoicea": "Remi",
+            "ttsdialogvoiceb": "Lea",
+            "ttsdialogvoicec": "Mathieu",
+            "answers": [
+                "",
+                "",
+                "",
+                ""
+            ],
+            "promptvoice": "Joey",
+            "listenorread": "3",
+            "promptvoiceopt": "normal",
+            "shuffleanswer": "1",
+            "correctanswer": "3",
+            "filesid": 3
+        },
+        {
+            "type": "multichoice",
+            "name": "Item: Multi Choice (4)",
+            "instructions": "Choose the correct answer.",
+            "ttsvoice": "Mathieu",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                "Got it! Here\u2019s a short French dialog in that format:\r",
+                "\r",
+                "A) Salut, comment \u00e7a va aujourd\u2019hui ?\r",
+                "B) \u00c7a va bien, merci ! Et toi ?\r",
+                "A) Pas mal. Tu vas au cin\u00e9ma ce soir ?\r",
+                "B) Oui, j\u2019y vais avec des amis. Tu veux venir ?\r",
+                "A) Bonne id\u00e9e, \u00e0 quelle heure ?\r",
+                "B) \u00c0 huit heures. On se retrouve devant le cin\u00e9ma !\r",
+                ""
+            ],
+            "ttsdialogvoicea": "Remi",
+            "ttsdialogvoiceb": "Lea",
+            "ttsdialogvoicec": "Mathieu",
+            "answers": [
+                "",
+                "",
+                "",
+                ""
+            ],
+            "promptvoice": "Joey",
+            "listenorread": "3",
+            "promptvoiceopt": "normal",
+            "shuffleanswer": "1",
+            "correctanswer": "4",
+            "filesid": 4
+        }
+    ],
+    "files": {
+        "1": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ"
+            }
+        },
+        "2": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ"
+            }
+        },
+        "3": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ"
+            }
+        },
+        "4": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ"
+            }
+        }
+    }
+}

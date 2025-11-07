@@ -1,0 +1,29 @@
+{
+    "items": [
+        {
+            "type": "slides",
+            "name": "Item: Slides",
+            "instructions": "Click > or < to go forward or backward through the slides.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "slidesmarkdown": "# Slide 1",
+            "slidestheme": "beige",
+            "slidesfontsize": "40",
+            "filesid": 1
+        }
+    ],
+    "files": {
+        "1": {
+            "customfile1": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ"
+            }
+        }
+    }
+}

@@ -85,17 +85,10 @@ class aigen_contextform extends moodleform {
             }
 
             if ($action == self::AIGEN_SUBMIT && !empty($moduleinstance)) {
-                // Sample Data -  will beoverwritten by form submission
-                $contextdata = [
-                    'target_language' => $moduleinstance->ttslanguage,
-                    'user_topic' => '',
-                    'user_level' => '',
-                    'user_text' => '',
-                    'user_keywords' => '',
-                    'user_customdata1' => '',
-                    'user_customdata2' => '',
-                    'user_customdata3' => '',
-                ];
+                // User custom data.
+                // Fields like user_topic, user_level, user_text, user_keywords, user_customdata1...n
+                // These are the fields that the user will type into the form and later we include in the prompt
+                $contextdata = utils::fetch_usercontext_fields($moduleinstance->ttslanguage);
 
                 foreach (aigen_form::mappings() as $fieldname) {
                     if (isset($formdata->{$fieldname})) {

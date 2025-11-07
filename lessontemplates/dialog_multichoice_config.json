@@ -2,72 +2,108 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Create an image generation prompt (data1) to generate a single picture of each of the following keywords written on a classroom blackboard: [{keywords}]",
+            "prompt": "Create a one dimensional array (data5) containing 4 detailed image prompts, each prompt should be based on one of the 4 dialogs that follow. Each image prompt should specify the image style as \"{imagestyle}\" and that the dialog participants are a man and a women. The images should not contain any text, speech bubbles, titles or captions. Create a 4 x one dimensional array of strings, and set them to: ttsdialog, data2, data3 and data 4. Each array is made by splitting the value of one of the dialogs on a new line character. The dialogs are: {dialog1: \"{dialog1}\", dialog2: \"{dialog2}\", dialog3: \"{dialog3}\", dialog4: \"{dialog4}\"}",
             "generatemethod": "generate",
             "generatefields": [
                 {
-                    "name": "int10",
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "listenorread",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
                     "generate": 0,
                     "mapping": ""
                 },
                 {
                     "name": "data1",
-                    "generate": 1,
+                    "generate": 0,
                     "mapping": ""
                 },
                 {
                     "name": "data2",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
                     "name": "data3",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
                     "name": "data4",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
                     "name": "data5",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 }
             ],
             "generatefileareas": [
                 {
-                    "name": "itemmedia",
+                    "name": "customfile1_image",
                     "generate": 1,
-                    "mapping": "data1"
+                    "mapping": "data5"
                 }
             ],
-            "overallimagecontext": "target_language",
+            "overallimagecontext": "--",
             "promptfields": [
                 {
-                    "name": "keywords",
-                    "mapping": "user_keywords"
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "dialog1",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "dialog2",
+                    "mapping": "user_customdata2"
+                },
+                {
+                    "name": "dialog3",
+                    "mapping": "user_customdata3"
+                },
+                {
+                    "name": "dialog4",
+                    "mapping": "user_text"
                 }
             ]
         },
         {
             "itemnumber": 1,
-            "prompt": "Create a one dimensional array of grammatically correcct sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}]. In each sentence surround all but the first two words with square brackets, e.g [word].  Create a second array (data2) using the same sentences but without the square brackets.",
-            "generatemethod": "generate",
+            "prompt": "",
+            "generatemethod": "reuse",
             "generatefields": [
                 {
-                    "name": "sentences",
+                    "name": "ttsdialog",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "item0_data2"
                 },
                 {
-                    "name": "confirmchoice",
+                    "name": "listenorread",
                     "generate": 0,
                     "mapping": ""
                 },
                 {
-                    "name": "int10",
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
                     "generate": 0,
                     "mapping": ""
                 },
@@ -101,42 +137,33 @@
                 {
                     "name": "customfile1_image",
                     "generate": 1,
-                    "mapping": "data2"
+                    "mapping": "item0_customfile1_image"
                 }
             ],
-            "overallimagecontext": "target_language",
-            "promptfields": [
-                {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
-                    "name": "level",
-                    "mapping": "user_level"
-                },
-                {
-                    "name": "keywords",
-                    "mapping": "user_keywords"
-                }
-            ]
+            "promptfields": []
         },
         {
             "itemnumber": 2,
-            "prompt": "Generate a 1 dimensional array of 'sentences' of format 'keyword|keyword translation' from the following keywords: [{keywords}].\nThe translations should be in {native_language}.",
-            "generatemethod": "generate",
+            "prompt": "",
+            "generatemethod": "reuse",
             "generatefields": [
                 {
-                    "name": "sentences",
+                    "name": "ttsdialog",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "item0_data3"
                 },
                 {
-                    "name": "allowretry",
+                    "name": "listenorread",
                     "generate": 0,
                     "mapping": ""
                 },
                 {
-                    "name": "int10",
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
                     "generate": 0,
                     "mapping": ""
                 },
@@ -166,22 +193,14 @@
                     "mapping": ""
                 }
             ],
-            "generatefileareas": [],
-            "overallimagecontext": "--",
-            "promptfields": [
+            "generatefileareas": [
                 {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
-                    "name": "keywords",
-                    "mapping": "user_keywords"
-                },
-                {
-                    "name": "native_language",
-                    "mapping": "user_customdata1"
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "item0_customfile1_image"
                 }
-            ]
+            ],
+            "promptfields": []
         },
         {
             "itemnumber": 3,
@@ -189,12 +208,22 @@
             "generatemethod": "reuse",
             "generatefields": [
                 {
-                    "name": "sentences",
+                    "name": "ttsdialog",
                     "generate": 1,
-                    "mapping": "item2_sentences"
+                    "mapping": "item0_data4"
                 },
                 {
-                    "name": "int10",
+                    "name": "listenorread",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
                     "generate": 0,
                     "mapping": ""
                 },
@@ -224,14 +253,20 @@
                     "mapping": ""
                 }
             ],
-            "generatefileareas": [],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "item0_customfile1_image"
+                }
+            ],
             "promptfields": []
         }
     ],
-    "lessonTitle": "Keywords to Word Shuffle and Scatter and Space Game",
-    "lessonDescription": "Enter 4 - 10 keywords. The keywords will be used to generate a word shuffle and scatter activity, and a space game activity. The keywords will also be used to generate a picture of each keyword on a blackboard.",
-    "uniqueid": "68a0422070f05",
-    "version": "3",
+    "lessonTitle": "Dialog MultiChoice",
+    "lessonDescription": "Enter 4 dialogs in TTS Dialog format. They will form 4 multi choice questions where the choice of answer is an image representing the currently playing TTS Dialog.",
+    "uniqueid": "690b33f83d02f",
+    "version": "6",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -240,54 +275,55 @@
             "type": "text"
         },
         "user_topic": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
-        },
-        "user_level": {
             "enabled": true,
-            "title": "Language Level",
-            "description": "",
+            "title": "Image Style",
+            "description": "The style that the generated images should be in.",
             "type": "dropdown",
             "options": [
-                "CEFR A1",
-                "CEFR A2",
-                "CEFR B1",
-                "CEFR B2",
-                "CEFR C1",
-                "CEFR C2"
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
             ]
         },
-        "user_text": {
+        "user_level": {
             "enabled": false,
             "title": "",
             "description": "",
             "type": "text"
         },
-        "user_keywords": {
+        "user_text": {
             "enabled": true,
-            "title": "Keywords",
-            "description": " A comma separated list of keywords for the activity",
+            "title": "Dialog 1",
+            "description": "Dialog in TTS Dialog format.",
             "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
         },
         "user_customdata1": {
             "enabled": true,
-            "title": "Native language",
-            "description": "The language the keyword definitions should be in.",
-            "type": "text"
+            "title": "Dialog 2",
+            "description": "Dialog in TTS Dialog format.",
+            "type": "textarea"
         },
         "user_customdata2": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Dialog 3",
+            "description": "Dialog in TTS Dialog format.",
+            "type": "textarea"
         },
         "user_customdata3": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Dialog 4",
+            "description": "Dialog in TTS Dialog format.",
+            "type": "textarea"
         },
         "user_customdata4": {
             "enabled": false,

@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "You are an expert educational content designer who creates engaging reveal.js presentations in markdown format. \nYour task is to create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}] \nSlides can include text, appropriate emojis, data in tables, and images.\n\nFollow these exact rules:\n1. The output must include:\n   - A markdown reveal.js presentation (slidesmarkdown)\n   - A 1 dimensional array (data1) containing individual image descriptions.\n2. Slides with an image include **only a heading and an image**.\n3. There ia a minimum of 0 and a maximum of 5 slides with an image.\n4. Image filenames must be numbered sequentially: \"1.png\", \"2.png\", etc.\n5. There is never more than one image per slide.\n6. Not every slide needs an image.\n7. The image style should be: {imagestyle}\n8. The presentation should be clear, engaging, and concise\u2014suitable for teaching or explaining.\n9. The image prompts in data1 must be **independent**:\n   - Each describes only one image.\n   - Does not describe the presentation as a whole.\n   - Assume each image will be generated separately by another system.\n",
+            "prompt": "You are an expert educational content designer who creates engaging reveal.js presentations in markdown format. \nYour task is to create a reveal.js presentation in markdown format with 5 slides.\n\nFollow these exact rules:\n1. The output must include:\n   - A markdown reveal.js presentation (slidesmarkdown)\n   - A 1 dimensional array (data1) containing individual image descriptions that will be used to generate images. The array is made from the following data: {img_desc1: \"{img_desc1}\", img_desc2: \"{img_desc2}\", img_desc3: \"{img_desc3}\", img_desc4: \"{img_desc4}\", img_desc5: \"{img_desc5}\"} \n2. Each slide includes **only a title and an image**.\n4. Image filenames must be numbered sequentially: \"1.png\", \"2.png\", etc.\n5. There is never more than one image per slide.\n7. The image style should be: {imagestyle}.\n8. Choose an appropriate slide title based on the image description \n",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -12,6 +12,11 @@
                 },
                 {
                     "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "slidesfontsize",
                     "generate": 0,
                     "mapping": ""
                 },
@@ -48,27 +53,43 @@
                     "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "user_topic",
+            "overallimagecontext": "--",
             "promptfields": [
                 {
-                    "name": "text",
+                    "name": "img_desc1",
                     "mapping": "user_text"
                 },
                 {
-                    "name": "imagestyle",
+                    "name": "img_desc2",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "img_desc3",
                     "mapping": "user_customdata1"
+                },
+                {
+                    "name": "img_desc4",
+                    "mapping": "user_customdata2"
+                },
+                {
+                    "name": "img_desc5",
+                    "mapping": "user_customdata3"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_level"
                 }
             ]
         }
     ],
-    "lessonTitle": "Set of Slides",
-    "lessonDescription": "This template will create a tutorial slides that are based on a description of what you want to teach.",
-    "uniqueid": "69076f35b4c3b",
-    "version": "27",
+    "lessonTitle": "Image Slides (5)",
+    "lessonDescription": "Enter 5 image descriptions and an image style to get 5 image slides",
+    "uniqueid": "690b5e695b235",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
-            "title": "Target language",
+            "title": "",
             "description": "",
             "type": "text"
         },
@@ -79,24 +100,6 @@
             "type": "text"
         },
         "user_level": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
-        },
-        "user_text": {
-            "enabled": true,
-            "title": "The Slides Topic",
-            "description": "",
-            "type": "textarea"
-        },
-        "user_keywords": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
-        },
-        "user_customdata1": {
             "enabled": true,
             "title": "Image Style",
             "description": "",
@@ -111,17 +114,35 @@
                 "3D Render"
             ]
         },
-        "user_customdata2": {
-            "enabled": false,
-            "title": "",
+        "user_text": {
+            "enabled": true,
+            "title": "Image description 1",
             "description": "",
-            "type": "text"
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Image description 2",
+            "description": "",
+            "type": "textarea"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Image description 3",
+            "description": "",
+            "type": "textarea"
+        },
+        "user_customdata2": {
+            "enabled": true,
+            "title": "Image description 4",
+            "description": "",
+            "type": "textarea"
         },
         "user_customdata3": {
-            "enabled": false,
-            "title": "",
+            "enabled": true,
+            "title": "Image description 5",
             "description": "",
-            "type": "text"
+            "type": "textarea"
         },
         "user_customdata4": {
             "enabled": false,

@@ -110,13 +110,13 @@ export async function init(element, awsregion,  themename = undefined) {
             35: null   // end
         },
         embedded: true,
-        // Disable touch events for the entire document
+        // Enable touch events for the entire document
         touch: true,
         // Disable overview mode
         overview: false,
-        // Don't show controls
+        // Show controls
         controls: true,
-        // Don't show progress bar
+        // Show progress bar
         progress: true
     });
     instance.on('ready', function() {

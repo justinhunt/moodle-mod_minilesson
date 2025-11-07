@@ -2608,6 +2608,23 @@ class utils
         return $moduledata->coursemodule;
     }//end of function
 
+    // Fetch user context fields for AIGEN processing
+    public static function fetch_usercontext_fields($ttslanguage='en-US'): array
+    {
+        $customdatacount = 10;
+        $contextdata = [
+            'target_language' => $ttslanguage,
+            'user_topic' => '',
+            'user_level' => '',
+            'user_text' => '',
+            'user_keywords' => '',
+        ];
+        for ($i = 1; $i <= $customdatacount; $i++) {
+            $contextdata["user_customdata{$i}"] = '';
+        }
+        return $contextdata;
+    }
+
     // Extracts fields from a string that are enclosed in curly braces.
     public static function extract_curly_fields(string $input): array
     {
