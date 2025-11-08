@@ -54,7 +54,7 @@ class item_wordshuffle extends item
         // Prepare data arrays
         $testitem->sentences = [];
         $testitem->imagecontent = true;
-        $testitem->audiocontent = $testitem->readsentence ;
+        $testitem->audiocontent = $testitem->readsentence;
 
 
         // Sentences.
@@ -140,11 +140,16 @@ class item_wordshuffle extends item
             if (isset($testitem->sentences[$processedsentence->index])) {
                 $testitem->sentences[$processedsentence->index]->gapwords = $processedsentence->gapwords;
                 $testitem->sentences[$processedsentence->index]->hint = $processedsentence->definition;
-                $gaps = array_filter($processedsentence->gapwords, function($gap) {
+                $gaps = array_filter($processedsentence->gapwords,
+                function($gap) {
                     return !empty($gap['isgap']);
                 });
-                shuffle($gaps);
-                $testitem->sentences[$processedsentence->index]->randomgaps = $gaps;
+                $gapsanddistractors = $gaps;
+                foreach ($processedsentence->extrawords as $extraword) {
+                    $gapsanddistractors[] = ['word' => $extraword, 'isgap' => true, 'gapindex' => 9999];
+                }
+                shuffle($gapsanddistractors );
+                $testitem->sentences[$processedsentence->index]->randomgaps = $gapsanddistractors;
             }
         }
 

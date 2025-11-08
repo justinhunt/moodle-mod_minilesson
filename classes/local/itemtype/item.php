@@ -917,6 +917,7 @@ abstract class item implements templatable, renderable
             $arr = explode('|', utils::super_trim($sentence));
             $sentence = utils::super_trim($arr[0] ?? '');
             $definition = utils::super_trim($arr[1] ?? '');
+            $extra = utils::super_trim($arr[2] ?? '');
             if (empty($sentence)) {
                 continue;
             }
@@ -924,6 +925,7 @@ abstract class item implements templatable, renderable
             $parsedstring = [];
             $started = false;
             $words = explode(' ', $sentence);
+            $extrawords = explode(' ', $extra);
             $maskedwords = $gapwords = [];
             $gaprunning = false;
             $gapindex = 0;
@@ -936,12 +938,12 @@ abstract class item implements templatable, renderable
                     $gapwords[] = [
                         'index' => $gapindex++,
                         'isgap' => true,
-                        'word' => str_replace(['[', ']', ',', '.'], ['', '', '', ''], $word)
+                        'word' => str_replace(['[', ']', ',', '.'], ['', '', '', ''], $word),
                     ];
                 } else {
                     $gapwords[] = [
                         'isgap' => false,
-                        'word' => $word
+                        'word' => $word,
                     ];
                 }
             }
@@ -989,6 +991,7 @@ abstract class item implements templatable, renderable
             $s->imageurl = isset($sentenceimages[$s->indexplusone]) ? $sentenceimages[$s->indexplusone] : false;
             $s->words = $maskedwords;
             $s->gapwords = $gapwords;
+            $s->extrawords = $extrawords;
 
             $sentenceobjects[] = $s;
         }

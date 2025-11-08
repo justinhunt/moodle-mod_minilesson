@@ -5165,3 +5165,10 @@ span.fluencyphoneme.letter_wrong {
 .minilesson-slides-container .reveal .slides img {
   max-height: 60vh;
 }
+
+/* This prevents 2 short widthlists from being displayed in columns */
+.minilesson-slides-container .reveal section > ul,
+.minilesson-slides-container .reveal section > ol {
+  display: block;
+  width: 100%;
+}
