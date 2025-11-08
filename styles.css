@@ -4489,6 +4489,25 @@ div.poodlldictationplayer {
   cursor: pointer;
 }
 
+/* Subtle drag feedback for words being dragged */
+.wordshuffle_wordset_container .word[draggable="true"] {
+  cursor: grab;
+}
+.wordshuffle_wordset_container .word.ml_ws_dragging {
+  cursor: grabbing;
+  opacity: 0.85;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transform: translateZ(0); /* promote layer for smoother dragging */
+}
+
+/* Keyboard focus outline for interactive areas */
+.wordshuffle_wordset_container .drop-slot:focus,
+.wordshuffle_wordset_container .bank:focus,
+.wordshuffle_wordset_container .word:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
 @keyframes shake-horizontal {
     2% {
         transform: translate(8px, 0) rotate(0)
@@ -5171,4 +5190,13 @@ span.fluencyphoneme.letter_wrong {
 .minilesson-slides-container .reveal section > ol {
   display: block;
   width: 100%;
+}
+
+/* Interaction lock styling for wordshuffle: fade and disable pointer events */
+.wordshuffle_wordset_container.ml-ws-locked .word,
+.wordshuffle_wordset_container.ml-ws-locked .drop-slot,
+.wordshuffle_wordset_container.ml-ws-locked .word-bank {
+  pointer-events: none !important;
+  opacity: 0.6;
+  transition: opacity 0.2s ease-in-out;
 }

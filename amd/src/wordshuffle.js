@@ -77,12 +77,20 @@ define(['jquery',
                 { "key": "confirm_desc", "component": 'mod_minilesson'},
                 { "key": "yes", "component": 'moodle'},
                 { "key": "no", "component": 'moodle'},
+                { "key": "wordshuffle_wordbank_label", "component": 'mod_minilesson'},
+                { "key": "wordshuffle_drop_slot_label", "component": 'mod_minilesson'},
+                { "key": "wordshuffle_a11y_returned_to_bank", "component": 'mod_minilesson'},
+                { "key": "wordshuffle_a11y_placed_in_slot", "component": 'mod_minilesson'},
             ]).done(function (s) {
                 var i = 0;
                 self.strings.nextlessonitem = s[i++];
                 self.strings.confirm_desc = s[i++];
                 self.strings.yes = s[i++];
                 self.strings.no = s[i++];
+                self.strings.wordbank_label = s[i++];
+                self.strings.drop_slot_label = s[i++];
+                self.strings.a11y_returned_to_bank = s[i++];
+                self.strings.a11y_placed_in_slot = s[i++];
             });
         },
 
@@ -208,6 +216,8 @@ define(['jquery',
 
                 // Move on after short time, to next prompt, or next question
                 if (self.game.pointer < self.items.length - 1) {
+                    // Prevent any more interactions during the transition delay
+                    self.interactionLocked = true;
                     setTimeout(function() {
                         self.controls.container.find('.wordshuffle_reply_' + self.game.pointer).hide();
                         self.game.pointer++;
@@ -253,6 +263,8 @@ define(['jquery',
                 self.controls.retry_btn.show();
                 self.controls.check_btn.hide();
             } else {
+                // Prevent any more interactions during the pre-comparison delay
+                self.interactionLocked = true;
                 setTimeout(() => self.gotComparison(true), 2000);
             }
         },
@@ -326,6 +338,8 @@ define(['jquery',
             self.stopTimer(self.items[self.game.pointer].timer);
 
             if (self.game.pointer < self.items.length - 1) {
+                // Prevent interactions while we wait to advance to the next prompt
+                self.interactionLocked = true;
                 setTimeout(function() {
                     self.controls.container.find('.wordshuffle_reply_' + self.game.pointer).hide();
                     self.game.pointer++;
@@ -344,6 +358,8 @@ define(['jquery',
             self.updateProgressDots();
 
             //disable the buttons and go to next question or review
+            // Also lock interactions during this final transition
+            self.interactionLocked = true;
             setTimeout(function() {
                 self.controls.nextbutton.prop("disabled",false);
                 if(self.quizhelper.showitemreview){
@@ -380,6 +396,8 @@ define(['jquery',
 
             var self = this;
             self.pointerdiv = self.controls.question.find(`.wordshuffle_wordset_container[data-index="${self.game.pointer}"]`);
+            // Unlock interactions for the new prompt
+            self.interactionLocked = false;
             self.controls.retry_btn.hide();
             self.controls.check_btn.show();
 
@@ -501,6 +519,13 @@ define(['jquery',
 
         moveToSlot: function($word, $slot) {
             var self = this;
+
+            // Ensure only one word per slot: if target slot already has a word, move it back to bank first.
+            var $existing = $slot.find('.word').first();
+            if ($existing.length && !$existing.is($word)) {
+                self.placeInBank($existing);
+            }
+
             $word.detach()
                 .css({ top: 0, left: 0, position: "relative" })
                 .appendTo($slot);
@@ -531,61 +556,196 @@ define(['jquery',
         },
 
         selectedWord: null,
+        // Interaction lock to block user actions during short transitions
+        interactionLocked: false,
 
         makeDragZones: function() {
             var self = this;
 
             if (!self.pointerdiv.attr('data-initialized')) {
-                // Click event
+                // Accessibility: roles and live region
+                // Create a polite live region to announce moves for screen readers.
+                if (!self.pointerdiv.find('.ml-ws-live').length) {
+                    self.pointerdiv.append('<div class="ml-ws-live sr-only" aria-live="polite" aria-atomic="true"></div>');
+                }
+                self.a11yAnnounce = function(msg){
+                    var $live = self.pointerdiv.find('.ml-ws-live');
+                    // Clear then set to force announcement across ATs.
+                    $live.text('');
+                    setTimeout(function(){ $live.text(msg); }, 10);
+                };
+
+                // Add roles/labels to containers if present.
+                var $bank = self.pointerdiv.find('.word-bank');
+                var bankLabel = (self.strings && self.strings.wordbank_label) ? self.strings.wordbank_label : 'Word bank';
+                $bank.attr({ role: 'list', 'aria-label': bankLabel });
+                self.pointerdiv.find('.drop-slot').each(function(i){
+                    var slotLabelTmpl = (self.strings && self.strings.drop_slot_label) ? self.strings.drop_slot_label : 'Drop slot {$a}';
+                    var slotLabel = slotLabelTmpl.replace('{$a}', (i+1));
+                    $(this).attr({ role: 'button', 'aria-label': slotLabel });
+                });
+
+                // Click-to-select and click-to-drop support 
                 self.pointerdiv.on('click', e => {
+                    if (self.interactionLocked) { return; }
                     const $target = $(e.target);
                     if ($target.is('.word')) {
                         if (!self.selectedWord || !self.selectedWord.is($target)) {
                             self.selectedWord = $target;
+                            self.selectedWord.attr('aria-grabbed', 'true');
                         } else {
+                            self.selectedWord.attr('aria-grabbed', 'false');
                             self.selectedWord = null;
                         }
                     } else if ($target.is('.word-bank')) {
                         if (self.selectedWord) {
                             if (self.selectedWord.parent('.drop-slot')) {
                                 self.placeInBank(self.selectedWord);
+                                var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
+                                self.a11yAnnounce(tmpl.replace('{$a}', self.selectedWord.text().trim()));
                             }
+                            if (self.selectedWord) { self.selectedWord.attr('aria-grabbed', 'false'); }
                             self.selectedWord = null;
                         }
                     } else if ($target.is('.drop-slot')) {
                         if (self.selectedWord) {
                             self.moveToSlot(self.selectedWord, $target);
+                            var tmpl2 = (self.strings && self.strings.a11y_placed_in_slot) ? self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
+                            self.a11yAnnounce(tmpl2.replace('{$a}', self.selectedWord.text().trim()));
+                            if (self.selectedWord) { self.selectedWord.attr('aria-grabbed', 'false'); }
                             self.selectedWord = null;
                         }
                     }
                     self.highlightDropZones();
                 });
 
-                // Spacebar keydown event
+                // Keyboard support via Spacebar 
                 self.pointerdiv.on('keydown', function(e) {
+                    if (self.interactionLocked) { e.preventDefault(); return; }
                     if (e.key === ' ' || e.key === 'Spacebar') {
                         const $focused = $(document.activeElement);
                         if ($focused.is('.word')) {
                             if (!self.selectedWord || !self.selectedWord.is($focused)) {
                                 self.selectedWord = $focused;
+                                self.selectedWord.attr('aria-grabbed', 'true');
                             } else {
+                                self.selectedWord.attr('aria-grabbed', 'false');
                                 self.selectedWord = null;
                             }
                         } else if ($focused.is('.word-bank')) {
                             if (self.selectedWord) {
                                 if (self.selectedWord.parent('.drop-slot')) {
                                     self.placeInBank(self.selectedWord);
+                                    var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
+                                    self.a11yAnnounce(tmpl.replace('{$a}', self.selectedWord.text().trim()));
                                 }
+                                if (self.selectedWord) { self.selectedWord.attr('aria-grabbed', 'false'); }
                                 self.selectedWord = null;
                             }
                         } else if ($focused.is('.drop-slot')) {
                             if (self.selectedWord) {
                                 self.moveToSlot(self.selectedWord, $focused);
+                                var tmpl2 = (self.strings && self.strings.a11y_placed_in_slot) ? self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
+                                self.a11yAnnounce(tmpl2.replace('{$a}', self.selectedWord.text().trim()));
+                                if (self.selectedWord) { self.selectedWord.attr('aria-grabbed', 'false'); }
                                 self.selectedWord = null;
                             }
                         }
                         self.highlightDropZones();
                         e.preventDefault();
+                    }
+                });
+
+                // ========== HTML5 Drag & Drop support ==========
+                // Mark words as draggable
+                self.pointerdiv.find('.word').attr({ draggable: true, role: 'button', tabindex: 0, 'aria-grabbed': 'false' });
+
+                // Re-mark words as draggable if DOM changes (e.g., after moves)
+                // Using a delegated handler when a word is added to DOM under pointerdiv
+                self.pointerdiv.on('DOMNodeInserted', function(e) {
+                    var $t = $(e.target);
+                    if ($t.hasClass('word')) {
+                        $t.attr({ draggable: true, role: 'button', tabindex: 0, 'aria-grabbed': 'false' });
+                    } else {
+                        $t.find('.word').attr({ draggable: true, role: 'button', tabindex: 0, 'aria-grabbed': 'false' });
+                    }
+                });
+
+                // Track the word being dragged
+                self.draggedWord = null;
+
+                // dragstart on a word
+                self.pointerdiv.on('dragstart', '.word', function(ev) {
+                    if (self.interactionLocked) { ev.preventDefault(); return false; }
+                    var e = ev.originalEvent || ev;
+                    self.draggedWord = $(this);
+                    self.selectedWord = self.draggedWord; // reuse existing highlight logic
+                    self.draggedWord.attr('aria-grabbed', 'true');
+                    try {
+                        // Set dummy data to make Firefox happy
+                        e.dataTransfer.setData('text/plain', 'move');
+                        e.dataTransfer.effectAllowed = 'move';
+                    } catch (ex) {}
+                    self.highlightDropZones();
+                    $(this).addClass('ml_ws_dragging');
+                });
+
+                // dragend cleanup
+                self.pointerdiv.on('dragend', '.word', function() {
+                    $(this).removeClass('ml_ws_dragging');
+                    $(this).attr('aria-grabbed', 'false');
+                    self.draggedWord = null;
+                    self.selectedWord = null;
+                    self.highlightDropZones();
+                });
+
+                // Allow drop on slots and bank
+                self.pointerdiv.on('dragover', '.drop-slot, .word-bank', function(ev) {
+                    if (self.interactionLocked) { return; }
+                    var e = ev.originalEvent || ev;
+                    e.preventDefault();
+                    if (e.dataTransfer) { e.dataTransfer.dropEffect = 'move'; }
+                });
+
+                // Visual cue on enter/leave
+                self.pointerdiv.on('dragenter', '.drop-slot, .word-bank', function() {
+                    $(this).addClass('ml_ws_highlight');
+                });
+                self.pointerdiv.on('dragleave', '.drop-slot, .word-bank', function() {
+                    $(this).removeClass('ml_ws_highlight');
+                });
+
+                // Drop into a slot
+                self.pointerdiv.on('drop', '.drop-slot', function(ev) {
+                    if (self.interactionLocked) { return; }
+                    var e = ev.originalEvent || ev;
+                    e.preventDefault();
+                    $(this).removeClass('ml_ws_highlight');
+                    if (self.draggedWord) {
+                        self.moveToSlot(self.draggedWord, $(this));
+                        var tmpl = (self.strings && self.strings.a11y_placed_in_slot) ? self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
+                        self.a11yAnnounce(tmpl.replace('{$a}', self.draggedWord.text().trim()));
+                        self.draggedWord.attr('aria-grabbed', 'false');
+                        self.draggedWord = null;
+                        self.selectedWord = null;
+                        self.highlightDropZones();
+                    }
+                });
+
+                // Drop back into the bank
+                self.pointerdiv.on('drop', '.word-bank', function(ev) {
+                    if (self.interactionLocked) { return; }
+                    var e = ev.originalEvent || ev;
+                    e.preventDefault();
+                    $(this).removeClass('ml_ws_highlight');
+                    if (self.draggedWord) {
+                        self.placeInBank(self.draggedWord);
+                        var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
+                        self.a11yAnnounce(tmpl.replace('{$a}', self.draggedWord.text().trim()));
+                        self.draggedWord.attr('aria-grabbed', 'false');
+                        self.draggedWord = null;
+                        self.selectedWord = null;
+                        self.highlightDropZones();
                     }
                 });
 
