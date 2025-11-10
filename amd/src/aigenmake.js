@@ -12,6 +12,8 @@ This file contains class and ID definitions.
 
     return{
         controls: {},
+        itemdatas: [],
+        itemcontrols: [],
         //pass in config, amd set up table
         init: function(uniqid){
             //pick up opts from html
@@ -198,6 +200,56 @@ This file contains class and ID definitions.
             });
 
         },  // end of register_events
+
+        regenerate_item_form: function(selectgenerateelement) {
+            var self = this;
+            //get the value of the select
+            var selectedValue = $(selectgenerateelement).val();
+            //log the value
+            log.debug('Selected generate method: ' + selectedValue);
+            //the prompt text area
+            var promptTextArea = $(selectgenerateelement).closest('.ml_aigen_item').find('textarea[name="aigenprompt"]');
+            var newprompt = promptTextArea.data(selectedValue + 'prompt');
+            promptTextArea.val(newprompt);
+            //If this is a reuse generate method the text area should be readonly
+            if (selectedValue === 'reuse') {
+                promptTextArea.attr('readonly', true);
+            } else {
+                promptTextArea.removeAttr('readonly');
+            }
+
+            //update the mappings div
+            var mappingsDiv = $(selectgenerateelement).closest('.ml_aigen_item').find('.ml_aigen_mappings');
+            mappingsDiv.data('promptfields',self.extractFieldsFromString(newprompt).join(','));
+            var mappingsdata = {
+                methodreuse: selectedValue==='reuse',
+                aigenplaceholders: mappingsDiv.data('aigenplaceholders').split(',').filter(element => element.trim() !== ""),
+                availablecontext: mappingsDiv.data('availablecontext').split(',').filter(element => element.trim() !== ""),
+                aigenpromptfields: mappingsDiv.data('promptfields').split(',').filter(element => element.trim() !== ""),
+            };
+            templates.render('mod_minilesson/aigenmappings',mappingsdata).then(
+                function(html,js){
+                    log.debug('redoing mappingsdiv: ');
+                    mappingsDiv.html(html);
+                }
+            );// End of templates
+
+            //Update the files areas div
+            var fileareasDiv = $(selectgenerateelement).closest('.ml_aigen_item').find('.ml_aigen_filearea_mappings');
+            var fileareasData = {
+                methodreuse: selectedValue==='reuse',
+                aigenplaceholders: self.splitDataField(fileareasDiv.data('aigenplaceholders')),
+                contextfileareas: self.splitDataField(fileareasDiv.data('contextfileareas')),
+                aigenfileareas: self.splitDataField(fileareasDiv.data('aigenfileareas')),
+                availablecontext: self.splitDataField(fileareasDiv.data('availablecontext')),
+            };
+            templates.render('mod_minilesson/aigenfilemappings',fileareasData).then(
+                function(html,js){
+                    log.debug('redoing fileareadata: ');
+                    fileareasDiv.html(html);
+                }
+            );// End of templates
+        },
 
         set_data: function(){
             //set up the controls
