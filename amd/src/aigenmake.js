@@ -213,37 +213,37 @@ This file contains class and ID definitions.
                     promptTextArea.val(itemdata.prompt);
 
 
-                    var updateTheFields = function() {
+                    var updateTheFields = function(theitemdata, theitemcontrol) {
 
                         //get the generate fields
-                        itemdata.generatefields.forEach(function(generateField) {
-                            var $generateCheckbox = $(itemcontrol).find('.aigen_fields-to-generate input[type="checkbox"][name="'+generateField.name+'"]');
+                        theitemdata.generatefields.forEach(function(generateField) {
+                            var $generateCheckbox = $(theitemcontrol).find('.aigen_fields-to-generate input[type="checkbox"][name="'+generateField.name+'"]');
                             $generateCheckbox.prop('checked', generateField.generate);
                             if (generateField.generate) {
-                                if (itemdata.generatemethod=="reuse") {
-                                    var $mappingSelect = $(itemcontrol).find('select[name="' + generateField.name + '_mapping"]');
+                                if (theitemdata.generatemethod=="reuse") {
+                                    var $mappingSelect = $(theitemcontrol).find('select[name="' + generateField.name + '_mapping"]');
                                     $mappingSelect.val(generateField.mapping);
                                 }
                             }
                         });
 
                         //set the file areas
-                        itemdata.generatefileareas.forEach(function(generateFilearea) {
-                            var $generateFileareasCheckbox = $(itemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"][name="'+generateFilearea.name+'"]');
+                        theitemdata.generatefileareas.forEach(function(generateFilearea) {
+                            var $generateFileareasCheckbox = $(theitemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"][name="'+generateFilearea.name+'"]');
                             $generateFileareasCheckbox.prop('checked', generateFilearea.generate);
                             if(generateFilearea.generate) {
-                                var $mappingSelect = $(itemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]');
+                                var $mappingSelect = $(theitemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]');
                                 $mappingSelect.val(generateFilearea.mapping);
                             }
                         });
 
                         //set the overall image context
-                        var overallimagecontext = $(itemcontrol).find('select[name="overall_image_context"]');
-                        overallimagecontext.val(itemdata.overallimagecontext);
+                        var overallimagecontext = $(theitemcontrol).find('select[name="overall_image_context"]');
+                        overallimagecontext.val(theitemdata.overallimagecontext);
 
                         //set the prompt field mappings div
-                        itemdata.promptfields.forEach(function(promptField) {
-                            var $mappingsSelect= $(itemcontrol).find('.aigen_promptfield-mappings select[data-name="'+promptField.name+'"]');
+                        theitemdata.promptfields.forEach(function(promptField) {
+                            var $mappingsSelect= $(theitemcontrol).find('.aigen_promptfield-mappings select[data-name="'+promptField.name+'"]');
                             $mappingsSelect.val(promptField.mapping);
                         });
                     }
@@ -257,10 +257,10 @@ This file contains class and ID definitions.
                     log.debug('triggering');
                     generateMethodSelect.trigger('change');
                     //wait a second for the change to take effect
-                    setTimeout(function() {
+                    setTimeout((function(theitemdata, theitemcontrol) {
                         log.debug('updating after triggering');
-                        updateTheFields();
-                    }, 1000);
+                        updateTheFields(theitemdata, theitemcontrol);
+                    })(itemdata, itemcontrol), 1000);
 
 
                 });
