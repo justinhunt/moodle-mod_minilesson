@@ -149,59 +149,12 @@ This file contains class and ID definitions.
 
             //On change of the select, update the config
             self.controls.selectgenerate.on('change', function() {
-                //get the value of the select
-                var selectedValue = $(this).val();
-                //log the value
-                log.debug('Selected generate method: ' + selectedValue);
-                //the prompt text area
-                var promptTextArea = $(this).closest('.ml_aigen_item').find('textarea[name="aigenprompt"]');
-                var newprompt = promptTextArea.data(selectedValue + 'prompt');
-                promptTextArea.val(newprompt);
-                //If this is a reuse generate method the text area should be readonly
-                if (selectedValue === 'reuse') {
-                    promptTextArea.attr('readonly', true);
-                } else {
-                    promptTextArea.removeAttr('readonly');
-                }
-
-                //update the mappings div
-                var mappingsDiv = $(this).closest('.ml_aigen_item').find('.ml_aigen_mappings');
-                mappingsDiv.data('promptfields',self.extractFieldsFromString(newprompt).join(','));
-                var mappingsdata = {
-                    methodreuse: selectedValue=='reuse',
-                    aigenplaceholders: mappingsDiv.data('aigenplaceholders').split(',').filter(element => element.trim() !== ""),
-                    availablecontext: mappingsDiv.data('availablecontext').split(',').filter(element => element.trim() !== ""),
-                    aigenpromptfields: mappingsDiv.data('promptfields').split(',').filter(element => element.trim() !== ""),
-                };
-                templates.render('mod_minilesson/aigenmappings',mappingsdata).then(
-                    function(html,js){
-                        log.debug('redoing mappingsdiv: ');
-                        mappingsDiv.html(html);
-                    }
-                );// End of templates
-
-                //Update the files areas div
-                var fileareasDiv = $(this).closest('.ml_aigen_item').find('.ml_aigen_filearea_mappings');
-                var fileareasData = {
-                    methodreuse: selectedValue=='reuse',
-                    aigenplaceholders: self.splitDataField(fileareasDiv.data('aigenplaceholders')),
-                    contextfileareas: self.splitDataField(fileareasDiv.data('contextfileareas')),
-                    aigenfileareas: self.splitDataField(fileareasDiv.data('aigenfileareas')),
-                    availablecontext: self.splitDataField(fileareasDiv.data('availablecontext')),
-                };
-                templates.render('mod_minilesson/aigenfilemappings',fileareasData).then(
-                    function(html,js){
-                        log.debug('redoing fileareadata: ');
-                        fileareasDiv.html(html);
-                    }
-                );// End of templates
-
-
+                self.regenerate_item_form(this);
             });
 
         },  // end of register_events
 
-        regenerate_item_form: function(selectgenerateelement) {
+        regenerate_item_form: function(selectgenerateelement, itemdata = null, itemcontrol = null) {
             var self = this;
             //get the value of the select
             var selectedValue = $(selectgenerateelement).val();
@@ -218,7 +171,7 @@ This file contains class and ID definitions.
                 promptTextArea.removeAttr('readonly');
             }
 
-            //update the mappings div
+            //prepare the mappings div data
             var mappingsDiv = $(selectgenerateelement).closest('.ml_aigen_item').find('.ml_aigen_mappings');
             mappingsDiv.data('promptfields',self.extractFieldsFromString(newprompt).join(','));
             var mappingsdata = {
@@ -227,14 +180,8 @@ This file contains class and ID definitions.
                 availablecontext: mappingsDiv.data('availablecontext').split(',').filter(element => element.trim() !== ""),
                 aigenpromptfields: mappingsDiv.data('promptfields').split(',').filter(element => element.trim() !== ""),
             };
-            templates.render('mod_minilesson/aigenmappings',mappingsdata).then(
-                function(html,js){
-                    log.debug('redoing mappingsdiv: ');
-                    mappingsDiv.html(html);
-                }
-            );// End of templates
 
-            //Update the files areas div
+            //prepare the files areas div data
             var fileareasDiv = $(selectgenerateelement).closest('.ml_aigen_item').find('.ml_aigen_filearea_mappings');
             var fileareasData = {
                 methodreuse: selectedValue==='reuse',
@@ -243,12 +190,60 @@ This file contains class and ID definitions.
                 aigenfileareas: self.splitDataField(fileareasDiv.data('aigenfileareas')),
                 availablecontext: self.splitDataField(fileareasDiv.data('availablecontext')),
             };
-            templates.render('mod_minilesson/aigenfilemappings',fileareasData).then(
-                function(html,js){
+
+            // Render mappings first, then render file areas after mappings has finished.
+            templates.render('mod_minilesson/aigenmappings', mappingsdata)
+                .then(function(html, js) {
+                    log.debug('redoing mappingsdiv: ');
+                    mappingsDiv.html(html);
+                    // Chain the second render so it runs after the first is done
+                    return templates.render('mod_minilesson/aigenfilemappings', fileareasData);
+                })
+                .then(function(html, js) {
                     log.debug('redoing fileareadata: ');
                     fileareasDiv.html(html);
+                }).then(function(){
+                    // If we have itemdata, set the fields accordingly
+                    if(itemdata && itemcontrol) {
+                        log.debug('updating after regenerating form');
+                        self.updateTheFields(itemdata, itemcontrol);
+                    }
+                });
+        },
+
+        updateTheFields: function(theitemdata, theitemcontrol) {
+
+            //get the generate fields
+            theitemdata.generatefields.forEach(function(generateField) {
+                var $generateCheckbox = $(theitemcontrol).find('.aigen_fields-to-generate input[type="checkbox"][name="'+generateField.name+'"]');
+                $generateCheckbox.prop('checked', generateField.generate);
+                if (generateField.generate) {
+                    if (theitemdata.generatemethod=="reuse") {
+                        var $mappingSelect = $(theitemcontrol).find('select[name="' + generateField.name + '_mapping"]');
+                        $mappingSelect.val(generateField.mapping);
+                    }
                 }
-            );// End of templates
+            });
+
+            //set the file areas
+            theitemdata.generatefileareas.forEach(function(generateFilearea) {
+                var $generateFileareasCheckbox = $(theitemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"][name="'+generateFilearea.name+'"]');
+                $generateFileareasCheckbox.prop('checked', generateFilearea.generate);
+                if(generateFilearea.generate) {
+                    var $mappingSelect = $(theitemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]');
+                    $mappingSelect.val(generateFilearea.mapping);
+                }
+            });
+
+            //set the overall image context
+            var overallimagecontext = $(theitemcontrol).find('select[name="overall_image_context"]');
+            overallimagecontext.val(theitemdata.overallimagecontext);
+
+            //set the prompt field mappings div
+            theitemdata.promptfields.forEach(function(promptField) {
+                var $mappingsSelect= $(theitemcontrol).find('.aigen_promptfield-mappings select[data-name="'+promptField.name+'"]');
+                $mappingsSelect.val(promptField.mapping);
+            });
         },
 
         set_data: function(){
@@ -264,42 +259,6 @@ This file contains class and ID definitions.
                     var promptTextArea = $(itemcontrol).find('textarea[name="aigenprompt"]');
                     promptTextArea.val(itemdata.prompt);
 
-
-                    var updateTheFields = function(theitemdata, theitemcontrol) {
-
-                        //get the generate fields
-                        theitemdata.generatefields.forEach(function(generateField) {
-                            var $generateCheckbox = $(theitemcontrol).find('.aigen_fields-to-generate input[type="checkbox"][name="'+generateField.name+'"]');
-                            $generateCheckbox.prop('checked', generateField.generate);
-                            if (generateField.generate) {
-                                if (theitemdata.generatemethod=="reuse") {
-                                    var $mappingSelect = $(theitemcontrol).find('select[name="' + generateField.name + '_mapping"]');
-                                    $mappingSelect.val(generateField.mapping);
-                                }
-                            }
-                        });
-
-                        //set the file areas
-                        theitemdata.generatefileareas.forEach(function(generateFilearea) {
-                            var $generateFileareasCheckbox = $(theitemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"][name="'+generateFilearea.name+'"]');
-                            $generateFileareasCheckbox.prop('checked', generateFilearea.generate);
-                            if(generateFilearea.generate) {
-                                var $mappingSelect = $(theitemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]');
-                                $mappingSelect.val(generateFilearea.mapping);
-                            }
-                        });
-
-                        //set the overall image context
-                        var overallimagecontext = $(theitemcontrol).find('select[name="overall_image_context"]');
-                        overallimagecontext.val(theitemdata.overallimagecontext);
-
-                        //set the prompt field mappings div
-                        theitemdata.promptfields.forEach(function(promptField) {
-                            var $mappingsSelect= $(theitemcontrol).find('.aigen_promptfield-mappings select[data-name="'+promptField.name+'"]');
-                            $mappingsSelect.val(promptField.mapping);
-                        });
-                    }
-
                     //set the generate method
                     var generateMethodSelect = $(itemcontrol).find('select[name="generatemethod"]');
                     generateMethodSelect.val(itemdata.generatemethod);
@@ -307,13 +266,9 @@ This file contains class and ID definitions.
                     log.debug('Setting generate method to: ' + itemdata.generatemethod);
                     // We need to do this to make sure the correct fields are on the page, before we set data to them.
                     log.debug('triggering');
-                    generateMethodSelect.trigger('change');
-                    //wait a second for the change to take effect
-                    setTimeout((function(theitemdata, theitemcontrol) {
-                        log.debug('updating after triggering');
-                        updateTheFields(theitemdata, theitemcontrol);
-                    })(itemdata, itemcontrol), 1000);
-
+                    
+                    // Regenerate the form and, once both renders finish, set the values for this item
+                    self.regenerate_item_form(generateMethodSelect[0], itemdata, itemcontrol);
 
                 });
             } catch (error) {
