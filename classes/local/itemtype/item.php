@@ -925,8 +925,10 @@ abstract class item implements templatable, renderable
             $parsedstring = [];
             $started = false;
             $words = explode(' ', $sentence);
-            $extrawords = explode(' ', $extra);
-            $maskedwords = $gapwords = [];
+            $maskedwords = $gapwords = $extrawords = [];
+            if (utils::super_trim($extra) !== '') {
+                $extrawords = explode(' ', $extra);
+            }
             $gaprunning = false;
             $gapindex = 0;
             foreach ($words as $index => $word) {
