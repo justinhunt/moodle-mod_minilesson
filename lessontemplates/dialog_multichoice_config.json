@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Create a one dimensional array (data5) containing 4 detailed image prompts, each prompt should be based on one of the 4 dialogs that follow. Each image prompt should specify the image style as \"{imagestyle}\" and that the dialog participants are a man and a women. The images should not contain any text, speech bubbles, titles or captions. Create a 4 x one dimensional array of strings, and set them to: ttsdialog, data2, data3 and data 4. Each array is made by splitting the value of one of the dialogs on a new line character. The dialogs are: {dialog1: \"{dialog1}\", dialog2: \"{dialog2}\", dialog3: \"{dialog3}\", dialog4: \"{dialog4}\"}",
+            "prompt": "Create a one dimensional array (data5) containing 4 detailed image prompts, each prompt should be based on one of the 4 dialogs that follow. Each image prompt should specify the image style as \"{imagestyle}\" and that the dialog participants are a man and a women. The images should not contain any text, speech bubbles, titles or captions. Create 4  one dimensional arrays of strings, and set them to: ttsdialog, data2, data3 and data 4. Each array is made by splitting the value of one of the dialogs on new line characters. The dialogs are: {dialog1: \"{dialog1}\", dialog2: \"{dialog2}\", dialog3: \"{dialog3}\", dialog4: \"{dialog4}\"}",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -263,10 +263,10 @@
             "promptfields": []
         }
     ],
-    "lessonTitle": "Dialog MultiChoice",
-    "lessonDescription": "Enter 4 dialogs in TTS Dialog format. They will form 4 multi choice questions where the choice of answer is an image representing the currently playing TTS Dialog.",
+    "lessonTitle": "Listen to 4 conversations",
+    "lessonDescription": "Enter 4 dialogs. They will form 4 multi choice questions where the choice of answer is an image representing the currently playing Dialog. The dialogs are in TTS Dialog format. e.g A) I like toast. [new line]  B) Me too.",
     "uniqueid": "690b33f83d02f",
-    "version": "6",
+    "version": "8",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -367,5 +367,8 @@
             "description": "",
             "type": "text"
         }
-    }
+    },
+    "tags": [
+        "Listening"
+    ]
 }

@@ -306,7 +306,7 @@
     "lessonTitle": "Word Practice",
     "lessonDescription": "Enter a list of words (5) and Poodll will make a short activity for students to practice those words",
     "uniqueid": "6874e6ca1c71a",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -364,5 +364,8 @@
             "description": "",
             "type": "text"
         }
-    }
+    }, 
+    "tags": [
+        "Vocabulary Practice"
+    ]
 }

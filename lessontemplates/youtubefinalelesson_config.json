@@ -407,7 +407,7 @@
     "lessonTitle": "YouTube Finale Lesson",
     "lessonDescription": "This is a lesson based on a YouTube video where the video is not shown until the very end.",
     "uniqueid": "6874e6axxx999",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -465,5 +465,9 @@
             "description": "",
             "type": "text"
         }
-    }
+    }, 
+    "tags": [
+        "Speaking",
+        "Video"
+    ]
 }

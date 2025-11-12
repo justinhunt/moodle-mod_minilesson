@@ -59,7 +59,7 @@
     "lessonTitle": "Set of Slides (no images)",
     "lessonDescription": "Enter a description of the tutorial that you would like AI to generate, and it will generate a set of slides for you to use.",
     "uniqueid": "69095a6426664",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -109,5 +109,8 @@
             "description": "",
             "type": "text"
         }
-    }
+    }, 
+    "tags": [
+        "Grammar Instruction"
+    ]
 }

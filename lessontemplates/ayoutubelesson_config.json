@@ -443,7 +443,7 @@
     "lessonTitle": "A YouTube Lesson",
     "lessonDescription": "Enter a YouTube video id (or URL) and summaries. Poodll will generate a short lesson with multi-choice and speaking activities",
     "uniqueid": "6874e6a65a0ff",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -501,5 +501,9 @@
             "description": "",
             "type": "text"
         }
-    }
+    }, 
+    "tags": [
+        "Speaking",
+        "Video"
+    ]
 }

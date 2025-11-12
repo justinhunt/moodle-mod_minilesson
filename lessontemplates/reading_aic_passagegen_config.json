@@ -185,7 +185,7 @@
     "lessonTitle": "Reading + Chat (AI passage)",
     "lessonDescription": "This will take a topic and learner level and generate a reading passage that will be used in a passage reading and then an audio chat session",
     "uniqueid": "6899607f96fb7",
-    "version": "4",
+    "version": "5",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -243,5 +243,8 @@
             "description": "",
             "type": "text"
         }
-    }
+    }, 
+    "tags": [
+        "Speaking"
+    ]
 }

@@ -1116,7 +1116,7 @@ function minilesson_output_fragment_aigen_contextform($args)
     $formurl = new moodle_url($args->url, [
         'id' => $formdata['id'],
         'action' => $formdata['action'],
-        'templateid' => $formdata['templateid']
+        'templateid' => $formdata['templateid'],
     ]);
 
     $form = new aigen_contextform($formurl, null, 'post', '', null, true, $formdata);

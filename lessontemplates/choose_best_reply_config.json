@@ -1,0 +1,1485 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_customdata1",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item0_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item0_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 2,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data2"
+                }
+            ],
+            "overallimagecontext": "user_customdata2",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata2"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 3,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item2_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item2_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 4,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_customdata3",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata3"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 5,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item4_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item4_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 6,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_customdata4",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata4"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 7,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item6_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item6_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 8,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_customdata5",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata5"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 9,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item8_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item8_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 10,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_customdata6",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata6"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 11,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item10_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item10_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 12,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_customdata7",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata7"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 13,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item12_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item12_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 14,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_customdata8",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata8"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 15,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item14_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item14_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 16,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_customdata9",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata9"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 17,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item16_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item16_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 18,
+            "prompt": "You are an expert language teacher. You teach {target_language}. Today you are creating a multichoice listening question based on a conversation. The location\/situation of the conversation is: {location_situation}. The target language level is: {language_level}.The question has the following elements\n\n* a short conversation (ttsdialog) between two speakers (A and B), with the final response of the second speaker omitted . The conversation should be formatted as a one dimensional array of strings, like this: [\"A) Can we take the bus from here to the park?\", \"B) Yes, it takes 10 minutes.\", \"A) Where do we get off?\",\">>announce\"]. The final element of the array \">>announce\" is a sound effect and should not change.\n* a set of 3 possible next responses to the conversation (answers) . Only the first response is plausible. The other two responses are understandale but are not plausible in the context. The conversation should be formatted as a one dimensional array of strings, like this: [\"It costs seven dollars.\", \"I live on that street\", \"At the second stop\"]\n* an image creation prompt (data1) to help the student understand the context of the conversation. The image prompt should specify the style \"{imagestyle}\" and that the image should contain no text, captions or speech bubbles.\n\n\nEach question also requires a short question review document (data2) in markdown format. The document should contain:\n\n* the conversation\n* the answers. the correct answer has a green check mark.\n* a {native_language} translation of the conversation\n* a {native_language} translation of the answers. the correct answer has a green check mark.\n\nThis question review document should be formatted like this example for an English conversation with a Japanese translation :\n- \ud83d\udfe0Can we take the bus from here to the park?\n- \ud83d\udfe4Yes, it takes 10 minutes.\n- \ud83d\udfe0Where do we get off?\n\n1. It costs 7 dollars.\n2. I live on that street.\n3. \u2705At the second shop.\n\n***\n\n- \ud83d\udfe0\u3053\u3053\u304b\u3089\u516c\u5712\u307e\u3067\u30d0\u30b9\u3067\u884c\u3051\u307e\u3059\u304b\uff1f\n- \ud83d\udfe4\u306f\u3044\u300110\u5206\u304b\u304b\u308a\u307e\u3059\u3002\n- \ud83d\udfe0\u3069\u3053\u3067\u964d\u308a\u307e\u3059\u304b\uff1f\n\n1. 7\u30c9\u30eb\u304b\u304b\u308a\u307e\u3059\u3002\n2. \u79c1\u306f\u305d\u306e\u901a\u308a\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002\n3. \u27052\u756a\u76ee\u306e\u5e97\u3067\u964d\u308a\u307e\u3059\u3002\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_customdata10",
+            "promptfields": [
+                {
+                    "name": "target_language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "location_situation",
+                    "mapping": "user_customdata10"
+                },
+                {
+                    "name": "language_level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 19,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": "item18_ttsdialog"
+                },
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": "item18_data2"
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        }
+    ],
+    "lessonTitle": "Choose the correct reply.",
+    "lessonDescription": "Student hears 10 short conversations and must choose the best next reply from the 3 options offered. Each question has a picture. It is based on the Eiken Level 3 English test listening section. You need to enter the  location and situation (usually a problem) for each conversation. eg \"two friends at the beach and one has lost their wallet\"",
+    "uniqueid": "690eb6a91c972",
+    "version": "2",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "Image Style",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "Language Level",
+            "description": "Enter an approximate target language level of the learner.",
+            "type": "dropdown",
+            "options": [
+                "Step Eiken 4",
+                "Step Eiken 3",
+                "Step Eiken Pre 2",
+                "Step Eiken 2",
+                "Step Eiken 1",
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Native Language",
+            "description": "Enter the native language of the learner, so a translation of the conversation can be shown,",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Q1 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        },
+        "user_customdata2": {
+            "enabled": true,
+            "title": "Q2 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        },
+        "user_customdata3": {
+            "enabled": true,
+            "title": "Q3 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        },
+        "user_customdata4": {
+            "enabled": true,
+            "title": "Q4 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        },
+        "user_customdata5": {
+            "enabled": true,
+            "title": "Q5 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        },
+        "user_customdata6": {
+            "enabled": true,
+            "title": "Q6 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        },
+        "user_customdata7": {
+            "enabled": true,
+            "title": "Q7 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        },
+        "user_customdata8": {
+            "enabled": true,
+            "title": "Q8 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        },
+        "user_customdata9": {
+            "enabled": true,
+            "title": "Q9 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        },
+        "user_customdata10": {
+            "enabled": true,
+            "title": "Q10 Location \/ Situation",
+            "description": "Enter the location and situation  (usually a problem) that will help the AI to generate a short conversation.",
+            "type": "textarea"
+        }
+    },
+    "tags": [
+        "Listening"
+    ]
+}

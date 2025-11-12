@@ -43,6 +43,7 @@ class aigen
         '68a0422070f05' => 'keywords_to_ws_sc_sg',
         '690b33f83d02f' => 'dialog_multichoice',
         '690b5e695b235' => 'image_slides',
+        '690eb6a91c972' => 'choose_best_reply',
     ];
     private $moduleinstance = null;
     private $course = null;

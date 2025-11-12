@@ -185,7 +185,7 @@
     "lessonTitle": "Reading + Chat ( Uploaded passage) ",
     "lessonDescription": "Paste in a reading passage, and 4 short answer questions. These will be used in a passage reading exercise and then an audio chat session",
     "uniqueid": "68996c17d07f5",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -243,5 +243,8 @@
             "description": "",
             "type": "text"
         }
-    }
+    }, 
+    "tags": [
+        "Speaking"
+    ]
 }

@@ -64,7 +64,7 @@
     "lessonTitle": "Set of Slides",
     "lessonDescription": "This template will create a tutorial slides that are based on a description of what you want to teach.",
     "uniqueid": "69076f35b4c3b",
-    "version": "27",
+    "version": "28",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -165,5 +165,8 @@
             "description": "",
             "type": "text"
         }
-    }
+    }, 
+    "tags": [
+        "Grammar Instruction"
+    ]
 }

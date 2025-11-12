@@ -1,3 +1,6 @@
+Version 1.1.13 (Build 2025110402)
+- Changes to WordShuffle and AI Generate templates
+
 Version 1.1.12 (Build 2025110401)
 - Small changes to AI generate template to remove stray cats and dogs
 

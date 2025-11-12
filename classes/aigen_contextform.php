@@ -43,6 +43,13 @@ class aigen_contextform extends moodleform {
         if (!isset($thetemplate['config']) || !isset($thetemplate['config']->fieldmappings)) {
             throw new moodle_exception('Invalid template structure', constants::M_COMPONENT);
         }
+
+        // Add the template introduction.
+        if (!empty($thetemplate['description'])) {
+            $mform->addElement('static', 'template_intro', '', format_text($thetemplate['description']));
+        }
+
+        // Add fields based on template config.
         $mappings = $thetemplate['config']->fieldmappings;
         foreach($mappings as $fieldname => $fieldmapping) {
             if (!empty($fieldmapping->enabled)) {

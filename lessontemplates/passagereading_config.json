@@ -313,7 +313,7 @@
     "lessonTitle": "Passage Reading",
     "lessonDescription": "Enter a list of keywords and a topic, AI will prepare a passage of text and some reading and speaking activities based on it.",
     "uniqueid": "6874e6af39202",
-    "version": "3",
+    "version": "4",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -371,5 +371,8 @@
             "description": "",
             "type": "text"
         }
-    }
+    },
+    "tags": [
+        "Speaking"
+    ]
 }
