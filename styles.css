@@ -4508,6 +4508,10 @@ div.poodlldictationplayer {
   outline-offset: 2px;
 }
 
+.wordshuffle_wordset_container .badge {
+    font-size: 100%;
+}
+
 @keyframes shake-horizontal {
     2% {
         transform: translate(8px, 0) rotate(0)
