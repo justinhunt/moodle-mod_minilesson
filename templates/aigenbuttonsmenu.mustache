@@ -1,19 +1,37 @@
 <div id="mod_minilesson_aigenerate_container-{{uniqid}}" class="mod_minilesson_manybuttonsmenu_container" data-tableuniqueid="{{{tableuniqueid}}}">
-{{#buttons}}
-<div class="mod_minilesson_manybuttonsmenu_item card">
-    <div class="card-body">
-        <h5 class="mod_minilesson_rm_card-title">{{title}}</h5>
-        <div class="mod_minilesson_rm_description card-text">{{description}}</div>
-        <div class="mod_minilesson_rm_content">
-           {{#str}} itemcount, mod_minilesson {{/str}} {{itemcount}}
+    <div class="row minilesson_aigenerate_templates bg-gray">
+        <div class="col-md-3 minilesson_templates_tags p-1">
+            <div class="card">
+                <div class="card-title bg-primary p-2 mb-0"><h4 class="pl-2 text-white mb-0">{{#str}}filter{{/str}}</h4> </div>
+                <div class="card-body d-flex flex-column p-2">
+                    <div class="form-check">
+                        <input class="form-check-input minilesson_template_tag_all" type="checkbox" value="all" id="minilesson_template_tag_all">
+                        <label class="form-check-label" for="minilesson_template_tag_all">
+                            {{#str}}all{{/str}}
+                        </label>
+                    </div>
+                    {{#tags}}
+                        <div class="form-check">
+                            <input class="form-check-input minilesson_template_tag_others" type="checkbox" value="{{.}}" id="minilesson_template_tag_{{.}}">
+                            <label class="form-check-label" for="minilesson_template_tag_{{.}}">
+                                {{.}}
+                            </label>
+                        </div>
+                    {{/tags}}
+                </div>
+            </div>
         </div>
-        {{{thebutton}}}
-    </div >
-</div>
-{{/buttons}}
-</div>
+        <div class="col-md-9 minilesson_templates">
+            <div class="row" data-region="mod_minilesson_aigentemplates">
+                {{#aigentemplates}}
+                    {{> mod_minilesson/aigentemplates }}
+                {{/aigentemplates}}
+            </div>
+        </div>
+    </div>
 {{#js}}
     require(['mod_minilesson/aigenmake'], function(amd) {
         amd.registerAiGenerateAction('#mod_minilesson_aigenerate_container-{{uniqid}}');
+        amd.manageFilter();
     });
 {{/js}}

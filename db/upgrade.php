@@ -881,6 +881,44 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025110401, 'minilesson');
     }
 
+    if ($oldversion < 2025110401.01) {
+
+        // Define table minilesson_template_tags to be created.
+        $table = new xmldb_table('minilesson_template_tags');
+
+        // Adding fields to table minilesson_template_tags.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('templateid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('tagname', XMLDB_TYPE_CHAR, '700', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('type', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+
+        // Adding keys to table minilesson_template_tags.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('fktemplateid', XMLDB_KEY_FOREIGN, ['templateid'], 'minilesson_templates', ['id']);
+
+        // Conditionally launch create table for minilesson_template_tags.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025110401.01, 'minilesson');
+    }
+
+
+    if ($oldversion < 2025110401.04) {
+
+        // Store current template tags.
+        $records = $DB->get_records('minilesson_templates');
+        foreach($records as $record) {
+            mod_minilesson\template_tag_manager::store_template_tags($record);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025110401.04, 'minilesson');
+    }
 
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;

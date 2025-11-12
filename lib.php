@@ -1177,3 +1177,15 @@ function minilesson_output_fragment_preview_slides($args)
 
     return $OUTPUT->render_from_template(constants::M_COMPONENT . '/slidesinner', $testitem);
 }
+
+function minilesson_output_fragment_templates($args)
+{
+    global $DB, $OUTPUT;
+    $args = (object) $args;
+    require_capability('mod/minilesson:canuseaigen', $args->context);
+    $cm = $DB->get_record('course_modules', ['id' => $args->context->instanceid], '*', MUST_EXIST);
+    $filters = !empty($args->filters) ? json_decode($args->filters, true): [];
+    $renderable = new mod_minilesson\output\aigentemplates($cm, $filters);
+    return $OUTPUT->render($renderable);
+}
+

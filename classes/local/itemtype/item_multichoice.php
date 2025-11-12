@@ -52,6 +52,14 @@ class item_multichoice extends item
         $testitem->sentences = [];
         $testitem->imagecontent = false;
         $testitem->audiocontent = false;
+        $testitem->hideanswertext = !empty($itemrecord->{constants::MULTICHOICE_HIDEANSWERTEXT});
+        $testitem->answerlayout = $itemrecord->{constants::MULTICHOICE_ANSWERLAYOUT};
+
+        $testitem->layoutclassname = '';
+        if ($itemrecord->{constants::LISTENORREAD} != constants::LISTENORREAD_IMAGE && $testitem->answerlayout == constants::MULTICHOICE_ANSWERLAYOUT_TWOCOLUMN) {
+            $testitem->layoutclassname = "multichoice_twocolumnlayout";
+        }
+
         switch ($itemrecord->{constants::LISTENORREAD}) {
             case constants::LISTENORREAD_LISTEN:
             case constants::LISTENORREAD_LISTENANDREAD:
@@ -127,6 +135,11 @@ class item_multichoice extends item
                     $s->prompt = $this->dottify_text($sentence);
                 } else {
                     $s->prompt = $sentence;
+                    if ($itemrecord->{constants::LISTENORREAD} == constants::LISTENORREAD_LISTENANDREAD || $itemrecord->{constants::LISTENORREAD} == constants::LISTENORREAD_IMAGE) {
+                        if (!empty($testitem->hideanswertext)) {
+                            $s->prompt = '';
+                        }
+                    }
                 }
                 if (!empty($theimageurl)) {
                     $s->imageurl = $theimageurl;
@@ -187,6 +200,8 @@ class item_multichoice extends item
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['int5'] = ['jsonname' => 'shuffleanswer', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => constants::MULTICHOICE_SHUFFLEANSWER];
+        $keycols['int6'] = ['jsonname' => 'hideanswertext', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => constants::MULTICHOICE_HIDEANSWERTEXT];
+        $keycols['int7'] = ['jsonname' => 'answerlayout', 'type' => 'int', 'optional' => true, 'default' => constants::MULTICHOICE_ANSWERLAYOUT_DEFAULT, 'dbname' => constants::MULTICHOICE_HIDEANSWERTEXT];
         return $keycols;
     }
 

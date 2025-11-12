@@ -289,6 +289,16 @@ class aigen_form extends \moodleform
             $mform->applyFilter('uniqueid', 'trim');
         }
 
+        $predefinedoptions = template_tag_manager::get_predefined_tags();
+        $predefinedoptions = array_combine($predefinedoptions, $predefinedoptions);
+        $mform->addElement(
+            'autocomplete',
+            'tags',
+            get_string('templatetags', constants::M_COMPONENT),
+            $predefinedoptions,
+            'multiple'
+        );
+
         $mform->addElement('text', 'version', get_string('version', constants::M_COMPONENT));
         $mform->setType('version', PARAM_INT);
         $mform->addRule('version',  get_string('required'), 'required');
@@ -350,6 +360,9 @@ class aigen_form extends \moodleform
                     ];
                 }
             }
+
+            $tabobjects = template_tag_manager::get_current_tags($template->id);
+            $formdata['tags'] = array_column($tabobjects, 'tagname');
         }
         $this->set_data($formdata);
     }
@@ -359,6 +372,7 @@ class aigen_form extends \moodleform
         global $DB;
         if (!$this->is_cancelled() && $this->is_submitted() && $this->is_validated()) {
             $formdata = $this->get_data();
+            $tags = !empty($formdata->tags) ? $formdata->tags: [];
 
             $template = $DB->get_record('minilesson_templates', ['id' => $formdata->templateid]);
             if (!$template) {
@@ -426,6 +440,8 @@ class aigen_form extends \moodleform
             } else {
                 $template->id = $DB->insert_record('minilesson_templates', $template);
             }
+
+            template_tag_manager::store_template_tags($template, $tags);
 
             return $template;
         }

@@ -61,6 +61,14 @@ class multichoiceform extends baseform
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
 
         $this->add_checkbox(constants::MULTICHOICE_SHUFFLEANSWER, get_string('shuffleanswer', constants::M_COMPONENT));
+
+        $this->add_checkbox(constants::MULTICHOICE_HIDEANSWERTEXT, get_string('hideanswertext', constants::M_COMPONENT) , get_string('hideanswertext_detail', constants::M_COMPONENT));
+
+        $layoutoptions = [
+            constants::MULTICHOICE_ANSWERLAYOUT_DEFAULT => get_string('default'),
+            constants::MULTICHOICE_ANSWERLAYOUT_TWOCOLUMN => get_string('twocolumn', constants::M_COMPONENT),
+        ];
+        $this->add_dropdown(constants::MULTICHOICE_ANSWERLAYOUT,get_string('answerlayout', constants::M_COMPONENT), $layoutoptions, constants::MULTICHOICE_ANSWERLAYOUT_DEFAULT);
     }
 
 }
