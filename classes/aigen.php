@@ -528,11 +528,31 @@ class aigen
      *
      * @return array An associative array of lesson templates, where the key is the template name and the value is an array containing 'config' and 'template' objects.
      */
-    public static function fetch_lesson_templates()
+    public static function fetch_lesson_templates($filtertags = [])
     {
         global $DB;
 
-        $templates = $DB->get_records('minilesson_templates');
+        $fields = 't.*';
+        $from = '{minilesson_templates} t';
+        $where = '1 = 1';
+        $groupby = 't.id';
+        $orderby = 't.id';
+        $params = [];
+
+        $predefined_tags = template_tag_manager::get_predefined_tags();
+        $singleormulti_tags = template_tag_manager::get_singleormulti_tags();
+        $itemtype_tags = template_tag_manager::get_itemtype_tags();
+        $tags = array_merge($predefined_tags, $singleormulti_tags, $itemtype_tags);
+        $filtertags = array_intersect($filtertags, $tags);
+        if ($filtertags) {
+            list($in, $inparams) = $DB->get_in_or_equal($filtertags, SQL_PARAMS_NAMED);
+            $from .= ' JOIN {' . template_tag_manager::DBTABLE . '} tt ON tt.templateid = t.id ';
+            $where .= " AND tt.tagname {$in}";
+            $params += $inparams;
+        }
+
+        $sql = "SELECT {$fields} FROM {$from} WHERE {$where} GROUP BY {$groupby} ORDER BY {$orderby}";
+        $templates = $DB->get_records_sql($sql, $params);
         foreach ($templates as $i => $template) {
             $template->config = json_decode($template->config);
             $template->template = json_decode($template->template);

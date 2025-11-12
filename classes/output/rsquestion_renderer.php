@@ -223,6 +223,7 @@ class rsquestion_renderer extends \plugin_renderer_base
         $down_pix = new \pix_icon('t/down', get_string('down'));
         $data['up'] = $up_pix->export_for_pix();
         $data['down'] = $down_pix->export_for_pix();
+        $data['hasitems'] = count($items_array) > 0 ? true : false;
 
         return $this->render_from_template('mod_minilesson/itemlist', $data);
 

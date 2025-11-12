@@ -55,10 +55,6 @@ require_capability('mod/minilesson:canuseaigen', $modulecontext);
 // Get an admin settings.
 $config = get_config(constants::M_COMPONENT);
 
-// Fetch templates.
-$lessontemplates = aigen::fetch_lesson_templates();
-$templatecount = count($lessontemplates);
-
 // Set up the page header.
 $pagetitle = get_string('aigenpage', constants::M_COMPONENT);
 $PAGE->set_title(format_string($moduleinstance->name . ' ' . $pagetitle));
@@ -84,11 +80,7 @@ echo $table->render();
 // If we get here, we are listing the AIGEN templates.
 echo html_writer::div(get_string('aigenpage_explanation', constants::M_COMPONENT), constants::M_COMPONENT . '_aigenpageexplanation');
 
-if ($templatecount > 0) {
-    echo $renderer->aigen_buttons_menu($cm, $lessontemplates, $table->uniqueid);
-} else {
-    echo html_writer::div(get_string('aigenpage_notemplates', constants::M_COMPONENT, $templatecount), constants::M_COMPONENT . '_clonecount' . ' mb-2');
-}
+echo $renderer->aigen_buttons_menu($cm, $table->uniqueid);
 
 echo $renderer->footer();
 return;

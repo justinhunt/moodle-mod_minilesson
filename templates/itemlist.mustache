@@ -7,6 +7,7 @@
                     <span>{{#str}}bulkdelete, mod_minilesson{{/str}}</span>
             </button>
         </div>
+    {{#hasitems}}
     <table class="generaltable mod_minilesson_qpanel" id="{{tableid}}">
         <thead>
         <tr class="tblheader">
@@ -27,6 +28,12 @@
         {{/items}}
         </tbody>
     </table>
+    {{/hasitems}}
+    {{^hasitems}}
+        <div class="noitemyet text-center">
+            <h5>{{#str}}noitemyet, mod_minilesson{{/str}}</h5>
+        </div>
+    {{/hasitems}}
     </form>
 </div>
 <div class="text-center">

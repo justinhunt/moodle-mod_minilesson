@@ -1211,3 +1211,12 @@ $string['slides:fontlarger'] = 'Larger';
 $string['slides:fontlarge'] = 'Large';
 $string['slides:preview'] = 'Preview';
 $string['slides:previewmodaltitle'] = 'Preview';
+
+$string['templatetags'] = 'Template tags';
+
+$string['hideanswertext'] = 'Hide Answer Text';
+$string['hideanswertext_detail'] = 'When using images or audio as answers, check this option to hide the answer text from the
+student. The answer text will be used when displaying results';
+
+$string['answerlayout'] = "Answer Layout";
+$string['twocolumn'] = "2 Column";

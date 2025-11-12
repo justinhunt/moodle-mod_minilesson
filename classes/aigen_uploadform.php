@@ -196,6 +196,13 @@ class aigen_uploadform extends moodleform
             $template->id = $DB->insert_record('minilesson_templates', $template);
         }
 
+        $tags = [];
+        $config_object = json_decode($template->config);
+        if (!json_last_error()) {
+            $tags = !empty($config_object->tags) ? $config_object->tags: $tags;
+        }
+        template_tag_manager::store_template_tags($template, $tags);
+
         return $template;
     }
 

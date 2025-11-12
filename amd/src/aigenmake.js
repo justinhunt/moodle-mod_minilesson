@@ -405,6 +405,41 @@ This file contains class and ID definitions.
                     });
                 }
             }
+        },
+
+        manageFilter: function() {
+            var self = this;
+            var allcheckbox = document.querySelector('.minilesson_template_tag_all');
+            var othercheckbox = document.querySelectorAll('.minilesson_template_tag_others');
+            var allChecks = [].concat(allcheckbox, Array.from(othercheckbox));
+
+            allcheckbox.addEventListener('change', function() {
+                othercheckbox.forEach(function(cb) {
+                    cb.disabled = allcheckbox.checked;
+                });
+            });
+
+            document.addEventListener('change', e => {
+                if (allChecks.includes(e.target)) {
+                    const filters = allChecks.filter(function(cb) {
+                        return cb.checked && !cb.disabled;
+                    }).map(function(cb) {
+                        return cb.value;
+                    });
+                    self.loadContents(filters);
+                }
+            });
+        },
+
+        loadContents: function(filters) {
+            var rootelement = document.querySelector('[data-region="mod_minilesson_aigentemplates"]');
+            Fragment.loadFragment(
+                'mod_minilesson', 'templates', M.cfg.contextid, {
+                    filters: JSON.stringify(filters),
+                }
+            ).then(function(html, js) {
+                templates.replaceNodeContents(rootelement, html, js);
+            });
         }
     };//end of return value
 });

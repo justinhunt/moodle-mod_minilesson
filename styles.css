@@ -5200,3 +5200,14 @@ span.fluencyphoneme.letter_wrong {
   opacity: 0.6;
   transition: opacity 0.2s ease-in-out;
 }
+
+.mcchoiceswrapper.multichoice_twocolumnlayout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.multichoice_twocolumnlayout .mcplayrow {
+  margin-bottom: 0;
+}

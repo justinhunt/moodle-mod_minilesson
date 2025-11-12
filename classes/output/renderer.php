@@ -23,6 +23,7 @@
 
 namespace mod_minilesson\output;
 
+use core_collator;
 use html_writer;
 use mod_minilesson\aigen_contextform;
 use mod_minilesson\constants;
@@ -355,6 +356,14 @@ class renderer extends \plugin_renderer_base
                             $incorrectanswers[] = $sentance->sentence;
                         }
                     }
+
+                    if (count($correctanswers) == 0) {
+                        $result->hascorrectanswer = false;
+                    }
+                    if (count($incorrectanswers) == 0) {
+                        $result->hasincorrectanswer = false;
+                    }
+
 
                     $result->correctans = ['sentence' => join(' ', $correctanswers)];
                     $result->incorrectans = ['sentence' => join( '<br> ', $incorrectanswers)];
@@ -857,44 +866,23 @@ class renderer extends \plugin_renderer_base
         return $ret;
     }
 
-    public function aigen_buttons_menu($cm, $lessontemplates, $tableuniqueid)
+    public function aigen_buttons_menu($cm, $tableuniqueid, $filtertags = [])
     {
 
-        // Generate and return menu
-        $buttondata = [];
-        foreach ($lessontemplates as $templateid => $lessontemplate) {
-            $templatecount = count($lessontemplate['template']->items);
-            // If we have lang strings we use them here
-            if(array_key_exists($lessontemplate['config']->uniqueid,\mod_minilesson\AIGEN::DEFAULTTEMPLATES)){
-                $templateshortname = \mod_minilesson\AIGEN::DEFAULTTEMPLATES[$lessontemplate['config']->uniqueid];
-                $templatetitle = get_string("aigentemplatename:" . $templateshortname, constants::M_COMPONENT);
-                $templatedescription = get_string("aigentemplatedescription:" . $templateshortname, constants::M_COMPONENT);
-            } else {
-                $templatetitle = $lessontemplate['config']->lessonTitle;
-                $templatedescription = $lessontemplate['config']->lessonDescription;
-            }
+        $tags = aigentemplates::get_alltags();
 
-            $thebutton = new \single_button(
-                new \moodle_url(
-                    constants::M_URL . '/aigen.php',
-                    ['id' => $cm->id, 'action' => aigen_contextform::AIGEN_SUBMIT, 'templateid' => $templateid]
-                ),
-                get_string('aigen', constants::M_COMPONENT)
-            );
-            $buttondata[] = [
-                'templateid' => $templateid,
-                'title' => $templatetitle,
-                'description' => $templatedescription,
-                'itemcount' => $templatecount,
-                'thebutton' => $this->render($thebutton)
-            ];
-        }
-        ;
+        core_collator::asort($tags);
+        $tags = array_values($tags);
 
+        $renderable = new aigentemplates($cm, $filtertags);
 
-        $ret = $this->output->render_from_template(constants::M_COMPONENT . '/aigenbuttonsmenu', [
-            'buttons' => $buttondata, 'tableuniqueid' => $tableuniqueid
-        ]);
+        $templatecontext = [
+            'tableuniqueid' => $tableuniqueid,
+            'tags' => $tags,
+            'aigentemplates' => $renderable->export_for_template($this)
+        ];
+
+        $ret = $this->output->render_from_template(constants::M_COMPONENT . '/aigenbuttonsmenu', $templatecontext);
 
         return $ret;
     }

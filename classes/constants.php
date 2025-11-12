@@ -742,4 +742,12 @@ class constants
 
     const SLIDETHEME = 'customtext2';
     const SLIDEFONTSIZE = 'customtext3';
+
+    const MULTICHOICE_HIDEANSWERTEXT = 'customint6';
+
+    const MULTICHOICE_ANSWERLAYOUT = 'customint7';
+
+    const MULTICHOICE_ANSWERLAYOUT_DEFAULT = 1;
+
+    const MULTICHOICE_ANSWERLAYOUT_TWOCOLUMN = 2;
 }
