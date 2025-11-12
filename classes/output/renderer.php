@@ -869,10 +869,11 @@ class renderer extends \plugin_renderer_base
     public function aigen_buttons_menu($cm, $tableuniqueid, $filtertags = [])
     {
 
-        $tags = aigentemplates::get_alltags();
+        $withlabels = true;
+        $tags = aigentemplates::get_alltags($withlabels);
 
-        core_collator::asort($tags);
-        $tags = array_values($tags);
+       // core_collator::asort($tags);
+       // $tags = array_values($tags);
 
         $renderable = new aigentemplates($cm, $filtertags);
 

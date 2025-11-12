@@ -56,7 +56,7 @@ class template_tag_manager {
             'Listening',
             'Vocabulary Practice',
             'Video',
-            'Grammer Instruction',
+            'Grammar Instruction',
         ];
     }
 
@@ -82,20 +82,20 @@ class template_tag_manager {
             constants::TYPE_SPEECHCARDS,
             constants::TYPE_LISTENREPEAT,
             constants::TYPE_PAGE,
-            constants::TYPE_SMARTFRAME,
+         /*   constants::TYPE_SMARTFRAME, */
             constants::TYPE_SHORTANSWER,
             constants::TYPE_SGAPFILL,
             constants::TYPE_LGAPFILL,
             constants::TYPE_TGAPFILL,
             constants::TYPE_PGAPFILL,
-            constants::TYPE_COMPQUIZ,
-            constants::TYPE_H5P,
+        /*    constants::TYPE_COMPQUIZ, */
+        /*    constants::TYPE_H5P, */
             constants::TYPE_SPACEGAME,
             constants::TYPE_FREEWRITING,
             constants::TYPE_FREESPEAKING,
             constants::TYPE_FLUENCY,
             constants::TYPE_PASSAGEREADING,
-            constants::TYPE_CONVERSATION,
+        /*    constants::TYPE_CONVERSATION, */
             constants::TYPE_AUDIOCHAT,
             constants::TYPE_WORDSHUFFLE,
             constants::TYPE_SCATTER,

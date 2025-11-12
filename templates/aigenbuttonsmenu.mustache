@@ -5,16 +5,16 @@
                 <div class="card-title bg-primary p-2 mb-0"><h4 class="pl-2 text-white mb-0">{{#str}}filter{{/str}}</h4> </div>
                 <div class="card-body d-flex flex-column p-2">
                     <div class="form-check">
-                        <input class="form-check-input minilesson_template_tag_all" type="checkbox" value="all" id="minilesson_template_tag_all">
+                        <input class="form-check-input minilesson_template_tag_all" type="checkbox" value="all" id="minilesson_template_tag_all" />
                         <label class="form-check-label" for="minilesson_template_tag_all">
                             {{#str}}all{{/str}}
                         </label>
                     </div>
                     {{#tags}}
                         <div class="form-check">
-                            <input class="form-check-input minilesson_template_tag_others" type="checkbox" value="{{.}}" id="minilesson_template_tag_{{.}}">
-                            <label class="form-check-label" for="minilesson_template_tag_{{.}}">
-                                {{.}}
+                            <input class="form-check-input minilesson_template_tag_others" type="checkbox" value="{{tag}}" id="minilesson_template_tag_{{tag}}" />
+                            <label class="form-check-label" for="minilesson_template_tag_{{tag}}">
+                                {{label}}
                             </label>
                         </div>
                     {{/tags}}

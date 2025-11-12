@@ -97,10 +97,43 @@ class aigentemplates implements renderable,templatable {
         ];
     }
 
-    public static function get_alltags() {
-        $predefined_tags = template_tag_manager::get_predefined_tags();
-        $singleormulti_tags = template_tag_manager::get_singleormulti_tags();
-        $itemtype_tags = template_tag_manager::get_itemtype_tags();
+    public static function get_alltags($withlabels = false) {
+        // Predefined tags
+        if ($withlabels) {
+            $predefined_tags = [];
+            $tagsonly = template_tag_manager::get_predefined_tags();
+            foreach($tagsonly as $tag) {
+                $taglabel = $tag; //get_string($tag, constants::M_COMPONENT);
+                $predefined_tags[] = ['tag' => $tag, 'label' => $taglabel];
+            }
+        } else {
+            $predefined_tags = template_tag_manager::get_predefined_tags();
+        }
+
+        // Single or multi item tags
+        if ($withlabels) {
+            $singleormulti_tags =[];
+            $tagsonly = template_tag_manager::get_singleormulti_tags();
+            foreach($tagsonly as $tag) {
+                $taglabel = $tag; //get_string($tag, constants::M_COMPONENT);
+                $singleormulti_tags[] =  ['tag' => $tag, 'label' => $taglabel];
+            }
+        } else {
+            $singleormulti_tags = template_tag_manager::get_singleormulti_tags();
+        }
+
+        //Item type tags
+        if ($withlabels) {
+            $tagsonly = template_tag_manager::get_itemtype_tags();
+            $itemtype_tags = [];
+            foreach($tagsonly as $tag) {
+                $taglabel = get_string($tag, constants::M_COMPONENT);
+                $itemtype_tags[] =  ['tag' => $tag, 'label' => $taglabel];
+            }
+        } else {
+            $itemtype_tags = template_tag_manager::get_itemtype_tags();
+        }
+
         $tags = array_merge($predefined_tags, $singleormulti_tags, $itemtype_tags);
         return $tags;
     }
