@@ -261,6 +261,8 @@ define(['jquery',
             // self.evaluateIfComplete();
             if (self.itemdata.allowretry && !self.items[self.game.pointer].correct) {
                 self.controls.retry_btn.show();
+                self.controls.retry_btn.prop("disabled", false);
+                self.controls.skip_btn.prop("disabled", false);
                 self.controls.check_btn.hide();
             } else {
                 // Prevent any more interactions during the pre-comparison delay
