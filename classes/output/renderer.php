@@ -594,13 +594,13 @@ class renderer extends \plugin_renderer_base
             // $this->page->requires->js_call_amd(constants::M_COMPONENT . '/' . $item->type, 'init', array($item));
         }
 
-        $finisheddiv = \html_writer::div(
+        $finisheddiv = html_writer::div(
             "",
             constants::M_QUIZ_FINISHED,
             ['id' => constants::M_QUIZ_FINISHED]
         );
 
-        $placeholderdiv = \html_writer::div(
+        $placeholderdiv = html_writer::div(
             '',
             constants::M_QUIZ_PLACEHOLDER . ' ' . constants::M_QUIZ_SKELETONBOX,
             ['id' => constants::M_QUIZ_PLACEHOLDER]
@@ -611,7 +611,7 @@ class renderer extends \plugin_renderer_base
         if (!empty($moduleinstance->lessonfont)) {
             $quizattributes['style'] = "font-family: '$moduleinstance->lessonfont', serif;";
         }
-        $quizdiv = \html_writer::div($finisheddiv . implode('', $itemshtml), $quizclass, $quizattributes);
+        $quizdiv = html_writer::div($finisheddiv . implode('', $itemshtml), $quizclass, $quizattributes);
 
         $ret = $placeholderdiv . $quizdiv;
         return $ret;
@@ -632,7 +632,7 @@ class renderer extends \plugin_renderer_base
             }
         }
 
-        $quizdiv = \html_writer::div(
+        $quizdiv = html_writer::div(
             implode('', $itemshtml),
             constants::M_QUIZ_CONTAINER,
             ['id' => constants::M_QUIZ_CONTAINER]
@@ -647,10 +647,10 @@ class renderer extends \plugin_renderer_base
      */
     public function show_progress($minilesson, $cm)
     {
-        $hider = \html_writer::div('', constants::M_HIDER, ['id' => constants::M_HIDER]);
-        $message = \html_writer::tag('h4', get_string('processing', constants::M_COMPONENT), []);
-        $spinner = \html_writer::tag('i', '', ['class' => 'fa fa-spinner fa-5x fa-spin']);
-        $progressdiv = \html_writer::div(
+        $hider = html_writer::div('', constants::M_HIDER, ['id' => constants::M_HIDER]);
+        $message = html_writer::tag('h4', get_string('processing', constants::M_COMPONENT), []);
+        $spinner = html_writer::tag('i', '', ['class' => 'fa fa-spinner fa-5x fa-spin']);
+        $progressdiv = html_writer::div(
             $message . $spinner,
             constants::M_PROGRESS_CONTAINER,
             ['id' => constants::M_PROGRESS_CONTAINER]
@@ -832,7 +832,7 @@ class renderer extends \plugin_renderer_base
         global $DB;
         $cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
-        $comptest = new \mod_minilesson\comprehensiontest($cm);
+        $comptest = new comprehensiontest($cm);
         $previewid = 0;
         $embed = 1;
         $canattempt = true;
@@ -880,7 +880,7 @@ class renderer extends \plugin_renderer_base
         $templatecontext = [
             'tableuniqueid' => $tableuniqueid,
             'tags' => $tags,
-            'aigentemplates' => $renderable->export_for_template($this)
+            'aigentemplates' => $renderable->export_for_template($this),
         ];
 
         $ret = $this->output->render_from_template(constants::M_COMPONENT . '/aigenbuttonsmenu', $templatecontext);
@@ -962,7 +962,7 @@ class renderer extends \plugin_renderer_base
             $templateitems[] = [
                 'title' => get_string($pushthing, constants::M_COMPONENT),
                 'description' => get_string($pushthing . '_details', constants::M_COMPONENT),
-                'content' => $this->render($thepushbutton)
+                'content' => $this->render($thepushbutton),
             ];
         }
 

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * TODO describe file lessonbank
+ * The Lesson Bank.
  *
  * @package    mod_minilesson
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
@@ -32,17 +32,13 @@ require_once($CFG->libdir . '/external/externallib.php');
 $id = required_param('id', PARAM_INT);
 $restore = optional_param('restore', 0, PARAM_INT);
 
-if ($id) {
-    $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-} else if ($n) {
-    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $n), '*', MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
-} else {
-    print_error('You must specify a course_module ID or an instance ID');
+
+$cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
+if (!$cm) {
+    throw new \moodle_exception('invalidcoursemodule');
 }
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+$moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
 
 
 require_login($course, true, $cm);

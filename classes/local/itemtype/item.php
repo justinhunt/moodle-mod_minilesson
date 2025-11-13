@@ -767,7 +767,7 @@ abstract class item implements templatable, renderable
     {
         global $DB;
         $mediaurls = [];
-        //file area to fetch from, eg "customfile2_image" or "fileanswer1_audio"
+        // File area to fetch from, eg "customfile2_image" or "fileanswer1_audio".
         $filearea = constants::FILEANSWER . $sentencefieldindex . '_' . $mediatype;
         if (isset($this->itemrecord->id) && !empty($this->itemrecord->id)) {
             $itemid = $this->itemrecord->id;
@@ -842,7 +842,7 @@ abstract class item implements templatable, renderable
             if (isset($customsentenceaudio[$sentence->indexplusone])) {
                 $sentence->audiourl = $customsentenceaudio[$sentence->indexplusone];
             } else {
-                //if we have no custom audio then we use the polly audio
+                // If we have no custom audio then we use the polly audio.
                 $sentence->audiourl = utils::fetch_polly_url(
                     $this->token,
                     $this->region,

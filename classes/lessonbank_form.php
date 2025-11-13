@@ -16,6 +16,8 @@
 
 namespace mod_minilesson;
 
+defined('MOODLE_INTERNAL') || die();
+
 use mod_minilesson_external;
 use moodleform;
 require_once($CFG->libdir . '/formslib.php');
