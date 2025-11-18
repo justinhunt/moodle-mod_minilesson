@@ -1,3 +1,6 @@
+Version 1.1.14 (Build 2025111800)
+- More changes to WordShuffle and AI Generate templates
+
 Version 1.1.13 (Build 2025110402)
 - Changes to WordShuffle and AI Generate templates
 

@@ -28,16 +28,18 @@ use renderable;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_audiochat extends item {
+class item_audiochat extends item
+{
 
     // The item type.
     public const ITEMTYPE = constants::TYPE_AUDIOCHAT;
 
-     /**
+    /**
      * The class constructor.
      *
      */
-    public function __construct($itemrecord, $moduleinstance=false, $context = false) {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false)
+    {
         parent::__construct($itemrecord, $moduleinstance, $context);
         $this->needs_speechrec = true;
     }
@@ -48,7 +50,8 @@ class item_audiochat extends item {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(\renderer_base $output)
+    {
 
         $testitem = new \stdClass();
         $testitem = $this->get_common_elements($testitem);
@@ -89,35 +92,57 @@ class item_audiochat extends item {
         // Set up the audiochat instructions
         $testitem->audiochatinstructions = $this->itemrecord->{constants::AUDIOCHAT_INSTRUCTIONS};
         // If no topic was set, then we use the default topic.
-        if (empty($testitem->audiochatinstructions )) {
+        if (empty($testitem->audiochatinstructions)) {
             $testitem->audiochatinstructions = get_string('audiochat:gradingprompt_dec1', constants::M_COMPONENT);
         }
 
         // Replace the placeholders in the audiochat instructions with the actual data.
-        $testitem->audiochatinstructions = str_replace(['{ai role}', '{ai voice}', '{native language}',
-            '{target language}', '{topic}', '{ai data1}', '{ai data2}'],
-            [$this->itemrecord->{constants::AUDIOCHAT_ROLE},
-            $this->itemrecord->{constants::AUDIOCHAT_VOICE},
-            $testitem->audiochatnativelanguage,
-            $this->language,
-            $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
-            $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
-            $this->itemrecord->{constants::AUDIOCHAT_AIDATA2}],
-             $testitem->audiochatinstructions);
+        $testitem->audiochatinstructions = str_replace(
+            [
+                '{ai role}',
+                '{ai voice}',
+                '{native language}',
+                '{target language}',
+                '{topic}',
+                '{ai data1}',
+                '{ai data2}'
+            ],
+            [
+                $this->itemrecord->{constants::AUDIOCHAT_ROLE},
+                $this->itemrecord->{constants::AUDIOCHAT_VOICE},
+                $testitem->audiochatnativelanguage,
+                $this->language,
+                $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
+                $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
+                $this->itemrecord->{constants::AUDIOCHAT_AIDATA2}
+            ],
+            $testitem->audiochatinstructions
+        );
 
         // Set up the audiochat grade instructions
         $testitem->audiochatgradeinstructions = $this->itemrecord->{constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS};
-        if(!empty($testitem->audiochatgradeinstructions )) {
-            $testitem->audiochatgradeinstructions = str_replace(['{ai role}', '{ai voice}', '{native language}',
-                '{target language}', '{topic}', '{ai data1}', '{ai data2}'],
-                [$this->itemrecord->{constants::AUDIOCHAT_ROLE},
+        if (!empty($testitem->audiochatgradeinstructions)) {
+            $testitem->audiochatgradeinstructions = str_replace(
+                [
+                    '{ai role}',
+                    '{ai voice}',
+                    '{native language}',
+                    '{target language}',
+                    '{topic}',
+                    '{ai data1}',
+                    '{ai data2}'
+                ],
+                [
+                    $this->itemrecord->{constants::AUDIOCHAT_ROLE},
                     $this->itemrecord->{constants::AUDIOCHAT_VOICE},
                     $testitem->audiochatnativelanguage,
                     $this->language,
                     $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
                     $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
-                    $this->itemrecord->{constants::AUDIOCHAT_AIDATA2}],
-                $testitem->audiochatgradeinstructions);
+                    $this->itemrecord->{constants::AUDIOCHAT_AIDATA2}
+                ],
+                $testitem->audiochatgradeinstructions
+            );
         }
 
         //Set the Auto turn detection to on or off
@@ -135,19 +160,29 @@ class item_audiochat extends item {
             $testitem->countwords = false;
         }
 
+        // Replace any template variables in the question text.
+        $search = ['{topic}', '{ai data1}', '{ai data2}'];
+        $replace = [
+            $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
+            $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
+            $this->itemrecord->{constants::AUDIOCHAT_AIDATA2},
+        ];
+        $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
+
         // We might need cmid and itemid to do the AI evaluation by ajax.
         $testitem->itemid = $this->itemrecord->id;
         // Not sure if we need this.
         $testitem->maxtime = $this->itemrecord->timelimit;
 
-         // If we add a cloud poodll recorder to the page these are also added, but here we just add them manually.
+        // If we add a cloud poodll recorder to the page these are also added, but here we just add them manually.
         $testitem->language = $this->language;
         $testitem->region = $this->region;
 
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm) {
+    public static function validate_import($newrecord, $cm)
+    {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -169,9 +204,10 @@ class item_audiochat extends item {
     }
 
     /*
-    * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
-    */
-    public static function get_keycolumns() {
+     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+     */
+    public static function get_keycolumns()
+    {
         // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
@@ -192,11 +228,12 @@ class item_audiochat extends item {
         return $keycols;
     }
 
-      /*
-    This function return the prompt that the generate method requires. 
-    */
-    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
-        switch($generatemethod) {
+    /*
+  This function return the prompt that the generate method requires. 
+  */
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
+    {
+        switch ($generatemethod) {
 
             case 'extract':
                 $prompt = "Create an oral discussion topic(text) suitable for {level} level learners of {language} as a follow up activity on the following reading: [{text}] ";

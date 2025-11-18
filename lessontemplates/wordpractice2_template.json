@@ -1,0 +1,105 @@
+{
+    "items": [
+        {
+            "type": "scatter",
+            "name": "Item: Scatter",
+            "instructions": "Choose the word pairs",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "A|aaay\r",
+                "B|beee\r",
+                "C|ceee\r",
+                "D|deee\r",
+                "F|ffffffff"
+            ]
+        },
+        {
+            "type": "wordshuffle",
+            "name": "Item: WordShuffle",
+            "instructions": "Put the words in the correct order to form a sentence.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "This is my d[og].|hint DOG| cat bat ant fig\r",
+                "This is my c[at].|hint CAT|dog bat ant fig\r",
+                "This is my b[at].|hint BAT|dog cat ant fig\r",
+                "This is my a[nt].|hint ANT|dog cat bat fig\r",
+                "This is my f[ig].|hint FIG|dog cat bat ant"
+            ],
+            "promptvoice": "Joey",
+            "promptvoiceopt": "normal",
+            "filesid": 2
+        },
+        {
+            "type": "typinggapfill",
+            "name": "Item: Typing GapFill",
+            "instructions": "Fill in the missing words or letters",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "This is my d[og].|hint DOG\r",
+                "This is my c[at].|hint CAT\r",
+                "This is my b[at].|hint BAT\r",
+                "This is my a[nt].|hint ANT\r",
+                "This is my f[ig].|hint FIG"
+            ],
+            "filesid": 3
+        },
+        {
+            "type": "freewriting",
+            "name": "Item: Free Writing",
+            "instructions": "Type your answer to the question in the text area below.",
+            "text": "Write one original example sentence for each of the following words.\r\n{ai data1}",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "aigradefeedback": "Explain each mistake simply.",
+            "aigradefeedbacklanguage": "ja-JP",
+            "freewritingtopic": "",
+            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 2 marks if a sentence is in the previously studied sentences (because it is not original).  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \r\nTarget word\/phrases: \r\n{ai data1}\r\n\r\nPreviously studied sentences:\r\n{ai data2}",
+            "freewritingaidata1": "endanger, enrich, enjoy, enlarge, encircle",
+            "freewritingaidata2": "Modern cities endanger the environment.\r\nUnderstanding languages enriches your travel experiences.\r\nChildren enjoy playing games.\r\nThe sahara desert is enlarging quickly.\r\nThe red army encircled the blue army. ",
+            "totalmarks": "15"
+        }
+    ],
+    "files": {
+        "2": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ"
+            }
+        },
+        "3": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ"
+            }
+        }
+    }
+}

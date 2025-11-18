@@ -4466,7 +4466,16 @@ div.poodlldictationplayer {
 .wordshuffle_wordset_container .slot-wrap {
     width: 130px;
 }
-.wordshuffle_wordset_container .question-sentence,
+.wordshuffle_wordset_container .word-text {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.15rem;
+    line-height: 2.5rem;
+    font-size: 1rem;
+}
+.wordshuffle_wordset_container .question-sentence {
+    gap: 0.25rem;
+}
 .wordshuffle_wordset_container .bank {
     gap: 1rem;
 }

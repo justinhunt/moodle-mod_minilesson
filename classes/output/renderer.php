@@ -320,7 +320,38 @@ class renderer extends \plugin_renderer_base
                 $items->id
             );
             $itemtext = format_text($itemtext, FORMAT_MOODLE, ['context' => $context]);
+
+            // We need to replace within itemtext for these items too
+            $search = ['{topic}', '{ai data1}', '{ai data2}'];
+            $replace = [];
+            switch ($items->type) {
+                case constants::TYPE_FREEWRITING:
+                    $replace = [
+                        $items->{constants::FREEWRITING_TOPIC},
+                        $items->{constants::FREEWRITING_AIDATA1},
+                        $items->{constants::FREEWRITING_AIDATA2},
+                    ];
+                    break;
+                case constants::TYPE_FREESPEAKING:
+                    $replace = [
+                        $items->{constants::FREESPEAKING_TOPIC},
+                        $items->{constants::FREESPEAKING_AIDATA1},
+                        $items->{constants::FREESPEAKING_AIDATA2},
+                    ];
+                    break;
+                case constants::TYPE_AUDIOCHAT:
+                    $replace = [
+                        $items->{constants::AUDIOCHAT_TOPIC},
+                        $items->{constants::AUDIOCHAT_AIDATA1},
+                        $items->{constants::AUDIOCHAT_AIDATA2},
+                    ];
+                    break;
+            }
+            if (!empty($replace)) {
+                $itemtext = str_replace($search, $replace, $itemtext);
+            }
             $result->questext = $itemtext;
+
             $result->itemtype = $quizdata[$result->index]->type;
             $result->resultstemplate = $result->itemtype . 'results';
 

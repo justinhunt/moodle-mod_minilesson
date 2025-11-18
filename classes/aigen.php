@@ -44,6 +44,7 @@ class aigen
         '690b33f83d02f' => 'dialog_multichoice',
         '690b5e695b235' => 'image_slides',
         '690eb6a91c972' => 'choose_best_reply',
+        '691ad9a15f203' => 'wordpractice2',
     ];
     private $moduleinstance = null;
     private $course = null;
