@@ -29,17 +29,19 @@ use renderable;
  * @copyright  2023 Your Name <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_slides extends item {
+class item_slides extends item
+{
 
     //the item type
     public const ITEMTYPE = constants::TYPE_SLIDES;
 
-    public function from_record($itemrecord, $moduleinstance = false, $context = false) {
+    public function from_record($itemrecord, $moduleinstance = false, $context = false)
+    {
         parent::from_record($itemrecord, $moduleinstance, $context);
         $this->filemanageroptions['maxfiles'] = -1;
     }
 
-     /**
+    /**
      * Export the data for the mustache template.
      *
      * @param \renderer_base $output renderer to be used to render the action bar elements.
@@ -68,12 +70,14 @@ class item_slides extends item {
         $fs = get_file_storage();
 
         // Get all files in that file area.
-        $files = $fs->get_area_files($this->context->id, 
-        constants::M_COMPONENT,
-        constants::SLIDESFILES,
-        $this->itemrecord->id,
-        'filepath, filename',
-        false);
+        $files = $fs->get_area_files(
+            $this->context->id,
+            constants::M_COMPONENT,
+            constants::SLIDESFILES,
+            $this->itemrecord->id,
+            'filepath, filename',
+            false
+        );
 
         // Extract the filenames into an array.
         $filenames = [];
@@ -81,7 +85,8 @@ class item_slides extends item {
             $filenames[] = $file->get_filename();
         }
 
-        $testitem->slidesmarkdown = preg_replace_callback(
+        // Process markdown for files in files area.
+        $slidesmarkdown = preg_replace_callback(
             '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
             function ($matches) use ($imageserveurl, $filenames) {
                 $filename = trim($matches['filename']);
@@ -105,10 +110,31 @@ class item_slides extends item {
             $this->itemrecord->{constants::SLIDES_MARKDOWN}
         );
 
+        // Weird characters can break things like tables, so clean it a bit.
+        $slidesmarkdown = $this->sanitize_markdown($slidesmarkdown);
+
+        // Set it to output.
+        $testitem->slidesmarkdown = $slidesmarkdown;
+
         $testitem->selectedtheme = $this->itemrecord->{constants::SLIDETHEME};
         $testitem->selectedfontsize = $this->itemrecord->{constants::SLIDEFONTSIZE};
 
         return $testitem;
+    }
+
+    public function sanitize_markdown($md)
+    {
+
+        // Remove zero-width chars.
+        $md = preg_replace('/[\x{200B}\x{200C}\x{200D}\x{FEFF}]/u', '', $md);
+
+        // Replace NBSP with normal space.
+        $md = str_replace(["\xC2\xA0", "\xE2\x80\xAF"], " ", $md);
+
+        // Trim weird whitespace.
+        $md = preg_replace('/\s+$/m', '', $md);
+
+        return $md;
     }
 
     public static function validate_import($newrecord, $cm)

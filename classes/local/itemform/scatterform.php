@@ -8,7 +8,7 @@
 
 namespace mod_minilesson\local\itemform;
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 class scatterform extends baseform
 {
@@ -20,7 +20,7 @@ class scatterform extends baseform
 
         //add a heading for this form
         $this->add_itemsettings_heading();
-        $this->add_static_text('enterscatteritems', '', 
+        $this->add_static_text('enterscatteritems', '',
         get_string('enterscatteritems', constants::M_COMPONENT));
         $this->add_textarearesponse(1, get_string('scatteritems',  constants::M_COMPONENT), true);
     }

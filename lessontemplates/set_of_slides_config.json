@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "You are an expert educational content designer who creates engaging reveal.js presentations in markdown format. \nYour task is to create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}] \nSlides can include text, appropriate emojis, data in tables, and images.\n\nFollow these exact rules:\n1. The output must include:\n   - A markdown reveal.js presentation (slidesmarkdown)\n   - A 1 dimensional array (data1) containing individual image descriptions.\n2. Slides with an image include **only a heading and an image**.\n3. There ia a minimum of 0 and a maximum of 5 slides with an image.\n4. Image filenames must be numbered sequentially: \"1.png\", \"2.png\", etc.\n5. There is never more than one image per slide.\n6. Not every slide needs an image.\n7. The image style should be: {imagestyle}\n8. The presentation should be clear, engaging, and concise\u2014suitable for teaching or explaining.\n9. The image prompts in data1 must be **independent**:\n   - Each describes only one image.\n   - Does not describe the presentation as a whole.\n   - Assume each image will be generated separately by another system.\n",
+            "prompt": "You are an expert educational content designer who creates engaging reveal.js presentations in markdown format. \nYour task is to create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}] \nSlides can include text, appropriate emojis, data in tables, and images.\n\nFollow these exact rules:\n1. The output must include:\n   - A markdown reveal.js presentation (slidesmarkdown)\n   - A 1 dimensional array (data1) containing individual image descriptions.\n2. Slides with an image include **only a heading and an image**.\n3. There ia a minimum of 0 and a maximum of 5 slides with an image.\n4. Image filenames must be numbered sequentially, like this: \"1.png\", \"2.png\", \"3.png\", \"4.png\", \"5.png\" \n5. There is never more than one image per slide.\n6. Not every slide needs an image.\n7. The image style should be: {imagestyle}\n8. The presentation should be clear, engaging, and concise\u2014suitable for teaching or explaining.\n9. The image prompts in data1 must be **independent**:\n   - Each describes only one image.\n   - Does not describe the presentation as a whole.\n   - Assume each image will be generated separately by another system.\n",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -64,7 +64,7 @@
     "lessonTitle": "Set of Slides",
     "lessonDescription": "This template will create a tutorial slides that are based on a description of what you want to teach.",
     "uniqueid": "69076f35b4c3b",
-    "version": "28",
+    "version": "29",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -165,7 +165,7 @@
             "description": "",
             "type": "text"
         }
-    }, 
+    },
     "tags": [
         "Grammar Instruction"
     ]
