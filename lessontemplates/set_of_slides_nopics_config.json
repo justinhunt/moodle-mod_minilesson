@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "You are an expert educational content designer who creates engaging reveal.js presentations in markdown format. \nYour task is to create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}] \nSlides can include text, appropriate emojis, data in tables. Slides must not include images.",
+            "prompt": "You are an expert educational content designer who creates engaging reveal.js presentations in markdown format. \nYour task is to create a reveal.js presentation in markdown format (slidesmarkdown) to summarize and explain the following topic: [{text}] \nSlides can include text, appropriate emojis, data in tables. Slides must not include images. \nThe presentation must NOT start with '---'. The first line of slidesmarkdown must be the heading of Slide 1.",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -59,7 +59,7 @@
     "lessonTitle": "Set of Slides (no images)",
     "lessonDescription": "Enter a description of the tutorial that you would like AI to generate, and it will generate a set of slides for you to use.",
     "uniqueid": "69095a6426664",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -108,8 +108,50 @@
             "title": "",
             "description": "",
             "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
         }
-    }, 
+    },
     "tags": [
         "Grammar Instruction"
     ]

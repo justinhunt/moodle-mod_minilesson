@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "You are an expert educational content designer who creates engaging reveal.js presentations in markdown format. \nYour task is to create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}] \nSlides can include text, appropriate emojis, data in tables, and images.\n\nFollow these exact rules:\n1. The output must include:\n   - A markdown reveal.js presentation (slidesmarkdown)\n   - A 1 dimensional array (data1) containing individual image descriptions.\n2. Slides with an image include **only a heading and an image**.\n3. There ia a minimum of 0 and a maximum of 5 slides with an image.\n4. Image filenames must be numbered sequentially, like this: \"1.png\", \"2.png\", \"3.png\", \"4.png\", \"5.png\" \n5. There is never more than one image per slide.\n6. Not every slide needs an image.\n7. The image style should be: {imagestyle}\n8. The presentation should be clear, engaging, and concise\u2014suitable for teaching or explaining.\n9. The image prompts in data1 must be **independent**:\n   - Each describes only one image.\n   - Does not describe the presentation as a whole.\n   - Assume each image will be generated separately by another system.\n",
+            "prompt": "You are an expert educational content designer who creates engaging Reveal.js presentations in markdown format.\n\nYour task is to create a Reveal.js presentation in markdown format to summarize and explain the following topic:\n[{text}]\n\nYour output must include two top-level keys:\n1. slidesmarkdown \u2014 the Reveal.js markdown presentation\n2. data1 \u2014 a 1-dimensional array of individual image descriptions\n\nFollow these rules:\n\nPresentation Rules:\n- The presentation should be clear, engaging, concise, and suitable for teaching or explaining.\n- Slides may include text, emojis, tables, or images.\n- Not every slide requires an image.\n- The presentation must NOT start with '---'.  \n  The first line of slidesmarkdown must be the heading of Slide 1.\n\nImage Slide Rules (consolidated):\n- Minimum 0 and maximum 5 image slides.\n- Each image slide contains ONLY a heading and ONE image.\n- Image slide headings must NOT include the words \u201cImage\u201d, \u201cPicture\u201d, \u201cPhoto\u201d, or similar.  \n  Use a clean descriptive heading only (e.g., \u201cWord Map\u201d, \u201cDiscovering Ideas\u201d).\n- Image filenames must be sequential: \"1.png\", \"2.png\", \"3.png\", \"4.png\", \"5.png\".\n- Image slides must appear immediately before or immediately after the content slide they illustrate (choose whichever is clearer).\n- Image slides must never be grouped together at the end.\n- Use the following image style: {imagestyle}\n- Each entry in data1 must be an independent image description and must not reference the slideshow as a whole.\n\nOutput Format Requirements:\n- slidesmarkdown: valid Reveal.js markdown.\n- slidesmarkdown must begin with a slide heading, not a slide separator.\n- data1: an array of image descriptions in filename order.\n",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -64,7 +64,7 @@
     "lessonTitle": "Set of Slides",
     "lessonDescription": "This template will create a tutorial slides that are based on a description of what you want to teach.",
     "uniqueid": "69076f35b4c3b",
-    "version": "29",
+    "version": "30",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

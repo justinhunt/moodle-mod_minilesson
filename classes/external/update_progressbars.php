@@ -44,20 +44,34 @@ class update_progressbars extends external_api {
 
     public static function execute($contextid, $ids) {
         $params = self::validate_parameters(self::execute_parameters(), ['contextid' => $contextid, 'ids' => $ids]);
-
         $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
 
         require_capability('mod/minilesson:managetemplate', $context);
+        
+        // Default return.
+        $responserows = [];
+
+        // Check for bad ids.
+        if (!$ids || count($ids) == 0) {
+            return $responserows;
+        }
+
+        // Remove any null ids, probably from a failed cron or something
+        $goodids = array_filter($ids, function($v) {
+            return $v !== null;
+        });
+        $goodids = array_values($goodids);
+
 
         $table = new usages();
         $filterset = usages::get_filterset_object()
             ->upsert_filter('cmid', (int) $context->instanceid)
-            ->upsert_filter('ids', $params['ids']);
+            ->upsert_filter('ids', $goodids);
         $table->set_filterset($filterset);
         $table->setup();
         $table->query_db(0);
-        $responserows = [];
+        
         foreach($table->rawdata as $row) {
             $formattedrow = $table->format_row($row);
             $responserow = [];

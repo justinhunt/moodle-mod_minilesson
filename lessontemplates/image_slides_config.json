@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "You are an expert educational content designer who creates engaging reveal.js presentations in markdown format. \nYour task is to create a reveal.js presentation in markdown format with 5 slides.\n\nFollow these exact rules:\n1. The output must include:\n   - A markdown reveal.js presentation (slidesmarkdown)\n   - A 1 dimensional array (data1) containing individual image descriptions that will be used to generate images. The array is made from the following data: {img_desc1: \"{img_desc1}\", img_desc2: \"{img_desc2}\", img_desc3: \"{img_desc3}\", img_desc4: \"{img_desc4}\", img_desc5: \"{img_desc5}\"} \n2. Each slide includes **only a title and an image**.\n4. Image filenames must be numbered sequentially: \"1.png\", \"2.png\", etc.\n5. There is never more than one image per slide.\n7. The image style should be: {imagestyle}.\n8. Choose an appropriate slide title based on the image description \n",
+            "prompt": "You are an expert educational content designer who creates engaging Reveal.js presentations in markdown format. \nYour task is to create a Reveal.js presentation in markdown format with between 1 and 5 slides.\n\nFollow these exact rules:\n\n1. The output must include:\n   - slidesmarkdown \u2014 a Reveal.js markdown presentation\n   - data1 \u2014 a 1-dimensional array of individual image descriptions that will be used to generate images.  \n\n2. Each slide includes **only a title and one image**.  \n   - Choose a short, clear slide title based on the image description.  \n   - Image filenames must be numbered sequentially: \"1.png\", \"2.png\", etc.  \n   - Never include more than one image per slide.  \n   - The presentation must NOT start with '---'. The first line of slidesmarkdown must be the heading of Slide 1.\n\n3. Build `data1` from the following five image description variables:  \n   `{\"{img_desc1}\", \"{img_desc2}\", \"{img_desc3}\", \"{img_desc4}\", \"{img_desc5}\"}`  \n   - Prepend each with `({imagestyle}) `.  \n   - **If any image description is empty, do NOT include it in `data1`.** and do NOT make a slide for it\n   - The order in `data1` should correspond to the slide numbers (first non-empty description \u2192 1.png, second non-empty \u2192 2.png, etc.).\n\n\n",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -85,7 +85,7 @@
     "lessonTitle": "Image Slides (5)",
     "lessonDescription": "Enter 5 image descriptions and an image style to get 5 image slides",
     "uniqueid": "690b5e695b235",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -186,5 +186,6 @@
             "description": "",
             "type": "text"
         }
-    }
+    },
+    "tags": []
 }
