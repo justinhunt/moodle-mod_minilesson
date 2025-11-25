@@ -99,13 +99,15 @@ class item_freespeaking extends item
             $this->itemrecord->{constants::FREESPEAKING_SHOWGRADE} == 2;
 
         // Replace any template variables in the question text.
-        $search = ['{topic}', '{ai data1}', '{ai data2}'];
-        $replace = [
-            $this->itemrecord->{constants::FREESPEAKING_TOPIC},
-            $this->itemrecord->{constants::FREESPEAKING_AIDATA1},
-            $this->itemrecord->{constants::FREESPEAKING_AIDATA2},
-        ];
-        $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
+        if(!empty($testitem->itemtext)){
+            $search = ['{topic}', '{ai data1}', '{ai data2}'];
+            $replace = [
+                $this->itemrecord->{constants::FREESPEAKING_TOPIC},
+                $this->itemrecord->{constants::FREESPEAKING_AIDATA1},
+                $this->itemrecord->{constants::FREESPEAKING_AIDATA2},
+            ];
+            $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
+        }
 
         // Cloudpoodll.
         $maxtime = $this->itemrecord->timelimit;

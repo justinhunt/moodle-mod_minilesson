@@ -867,9 +867,11 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   0% {
     opacity: 0;
   }
+
   70% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -888,150 +890,199 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   2% {
     transform: translate(0, 0) rotate(-4.5deg);
   }
+
   4% {
     transform: translate(0, 0) rotate(-1.5deg);
   }
+
   6% {
     transform: translate(0, 0) rotate(-6.5deg);
   }
+
   8% {
     transform: translate(0, 0) rotate(2.5deg);
   }
+
   10% {
     transform: translate(0, 0) rotate(6.5deg);
   }
+
   12% {
     transform: translate(0, 0) rotate(-3.5deg);
   }
+
   14% {
     transform: translate(0, 0) rotate(7.5deg);
   }
+
   16% {
     transform: translate(0, 0) rotate(2.5deg);
   }
+
   18% {
     transform: translate(0, 0) rotate(7.5deg);
   }
+
   20% {
     transform: translate(0, 0) rotate(3.5deg);
   }
+
   22% {
     transform: translate(0, 0) rotate(1.5deg);
   }
+
   24% {
     transform: translate(0, 0) rotate(1.5deg);
   }
+
   26% {
     transform: translate(0, 0) rotate(0.5deg);
   }
+
   28% {
     transform: translate(0, 0) rotate(6.5deg);
   }
+
   30% {
     transform: translate(0, 0) rotate(-1.5deg);
   }
+
   32% {
     transform: translate(0, 0) rotate(-1.5deg);
   }
+
   34% {
     transform: translate(0, 0) rotate(2.5deg);
   }
+
   36% {
     transform: translate(0, 0) rotate(-2.5deg);
   }
+
   38% {
     transform: translate(0, 0) rotate(1.5deg);
   }
+
   40% {
     transform: translate(0, 0) rotate(7.5deg);
   }
+
   42% {
     transform: translate(0, 0) rotate(-2.5deg);
   }
+
   44% {
     transform: translate(0, 0) rotate(-0.5deg);
   }
+
   46% {
     transform: translate(0, 0) rotate(-6.5deg);
   }
+
   48% {
     transform: translate(0, 0) rotate(0.5deg);
   }
+
   50% {
     transform: translate(0, 0) rotate(1.5deg);
   }
+
   52% {
     transform: translate(0, 0) rotate(1.5deg);
   }
+
   54% {
     transform: translate(0, 0) rotate(4.5deg);
   }
+
   56% {
     transform: translate(0, 0) rotate(-4.5deg);
   }
+
   58% {
     transform: translate(0, 0) rotate(5.5deg);
   }
+
   60% {
     transform: translate(0, 0) rotate(-3.5deg);
   }
+
   62% {
     transform: translate(0, 0) rotate(-0.5deg);
   }
+
   64% {
     transform: translate(0, 0) rotate(7.5deg);
   }
+
   66% {
     transform: translate(0, 0) rotate(6.5deg);
   }
+
   68% {
     transform: translate(0, 0) rotate(-6.5deg);
   }
+
   70% {
     transform: translate(0, 0) rotate(-4.5deg);
   }
+
   72% {
     transform: translate(0, 0) rotate(3.5deg);
   }
+
   74% {
     transform: translate(0, 0) rotate(-2.5deg);
   }
+
   76% {
     transform: translate(0, 0) rotate(-4.5deg);
   }
+
   78% {
     transform: translate(0, 0) rotate(1.5deg);
   }
+
   80% {
     transform: translate(0, 0) rotate(1.5deg);
   }
+
   82% {
     transform: translate(0, 0) rotate(-2.5deg);
   }
+
   84% {
     transform: translate(0, 0) rotate(-3.5deg);
   }
+
   86% {
     transform: translate(0, 0) rotate(-6.5deg);
   }
+
   88% {
     transform: translate(0, 0) rotate(-0.5deg);
   }
+
   90% {
     transform: translate(0, 0) rotate(5.5deg);
   }
+
   92% {
     transform: translate(0, 0) rotate(4.5deg);
   }
+
   94% {
     transform: translate(0, 0) rotate(-1.5deg);
   }
+
   96% {
     transform: translate(0, 0) rotate(1.5deg);
   }
+
   98% {
     transform: translate(0, 0) rotate(-3.5deg);
   }
+
   0%,
   100% {
     transform: translate(0, 0) rotate(0);
@@ -1208,7 +1259,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   padding: 20px;
 }
 
-.minilesson_dictate_player_box  .dictate_right {
+.minilesson_dictate_player_box .dictate_right {
   background-color: white;
 }
 
@@ -1307,7 +1358,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   z-index: 999;
 }
 
-.minilesson_dictate_player_box  .dictate_correct {
+.minilesson_dictate_player_box .dictate_correct {
   background-color: lightgreen;
 }
 
@@ -1321,7 +1372,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   margin: 5px;
 }
 
-.minilesson_dictate_player_box  .dictate_ctrl-btn {
+.minilesson_dictate_player_box .dictate_ctrl-btn {
   width: 33.33%;
   float: left;
 }
@@ -1343,7 +1394,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   gap: 1rem;
   padding: 0.75rem;
   border-radius: 0.5rem;
-  background-color: #f9f9f9; /* subtle background */
+  background-color: #f9f9f9;
+  /* subtle background */
   max-width: 600px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -1403,6 +1455,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   font-size: 0.9rem;
   color: #999;
 }
+
 .minilesson_landr_player_box .minilesson_sentence_image {
   margin-bottom: 8px;
 }
@@ -1429,7 +1482,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   padding: 20px;
 }
 
-.minilesson_landr_player_box  .landr_right {
+.minilesson_landr_player_box .landr_right {
   background-color: white;
 }
 
@@ -1507,8 +1560,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .minilesson_landr_player_box .landr_skip_btn {
-    position: absolute;
-    right: 10px;
+  position: absolute;
+  right: 10px;
 }
 
 .minilesson_landr_player_box .landr_speakbtncontainer {
@@ -1585,7 +1638,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .mod_minilesson_result_title {
-  position:inherit;
+  position: inherit;
   top: 0;
   right: 9px;
   left: 29px;
@@ -1771,6 +1824,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   background: grey;
   box-shadow: none;
 }
+
 .mod_minilesson_ttrec_waveButtonContainer .mod_minilesson_ttrec_waveForm.ttrec_waiting {
   display: none;
 }
@@ -1782,6 +1836,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .mod_minilesson_quiz_reattempt {
   margin: 10px;
 }
+
 .mod_minilesson_iteminstructions {
   width: 100%;
   max-width: 600px;
@@ -1791,6 +1846,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   font-style: italic;
   padding-top: 5px;
 }
+
 .mod_minilesson_itemtext {
   width: 100%;
   max-width: 600px;
@@ -1799,6 +1855,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   font-size: 1.3em;
   padding-top: 5px;
 }
+
 .mod_minilesson_itemtextarea {
   width: 100%;
   max-width: 600px;
@@ -1811,20 +1868,24 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   max-width: 400px;
   margin: auto;
 }
+
 .mod_minilesson_itemvideo {
   width: 100%;
   max-width: 400px;
   margin: auto;
 }
+
 .mod_minilesson_itemimage {
   width: 100%;
   max-width: 400px;
   margin: auto;
 }
+
 .minilesson_questionheader_contents {
   margin-bottom: 10px;
   margin-top: 10px;
 }
+
 .mod_minilesson_itemimage_cont,
 .mod_minilesson_itemvideo_cont,
 .mod_minilesson_itemaudio_cont,
@@ -1836,12 +1897,15 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   margin-top: 10px;
   text-align: center;
 }
+
 .mod_minilesson_itemimage_cont.mod_minilesson_magazine {
   max-width: 250px;
   float: left;
   padding: 5px;
 }
-.mod_minilesson_itemtextarea_cont, .mod_minilesson_itemttspassage_cont {
+
+.mod_minilesson_itemtextarea_cont,
+.mod_minilesson_itemttspassage_cont {
   width: 100%;
   margin-top: 10px;
   padding: 5px;
@@ -1849,10 +1913,10 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .mod_minilesson_iframe_responsive {
-  overflow:hidden;
-  padding-bottom:56.25%;
-  position:relative;
-  height:0;
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  position: relative;
+  height: 0;
   margin: auto;
 }
 
@@ -1869,10 +1933,10 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .mod_minilesson_iframe_responsive iframe {
-  left:0;
-  top:0;
-  height:100%;
-  width:100%;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
   position: absolute;
   max-width: 560px;
   max-height: 315px;
@@ -1889,12 +1953,12 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   text-align: center;
 }
 
-.minilesson_landr_player_box  .landr_start_btn,
-.minilesson_dictate_player_box  .dictate_start_btn,
-.minilesson_fluency_box  .fluency_start_btn,
-.minilesson_tgapfill_player_box  .tgapfill_start_btn ,
-.minilesson_lgapfill_player_box  .lgapfill_start_btn,
-.minilesson_sgapfill_player_box  .sgapfill_start_btn {
+.minilesson_landr_player_box .landr_start_btn,
+.minilesson_dictate_player_box .dictate_start_btn,
+.minilesson_fluency_box .fluency_start_btn,
+.minilesson_tgapfill_player_box .tgapfill_start_btn,
+.minilesson_lgapfill_player_box .lgapfill_start_btn,
+.minilesson_sgapfill_player_box .sgapfill_start_btn {
   /* position: absolute; */
   /* bottom: 0; */
   margin-left: auto;
@@ -1914,6 +1978,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   overflow: auto;
   margin-bottom: 5px;
 }
+
 .minilesson_mc_confirmchoice {
   text-align: center;
   background-color: blue;
@@ -1937,6 +2002,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .minilesson_mc_selected {
   background-color: lightblue;
 }
+
 .minilesson_mc_disabled {
   pointer-events: none;
 }
@@ -1944,15 +2010,19 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .minilesson_mc_disabled {
   pointer-events: none;
 }
+
 .minilesson_mc_right {
   color: green;
 }
+
 .minilesson_mc_wrong {
   color: red;
 }
+
 .minilesson_mc_unanswered {
   color: black;
 }
+
 .minilesson_mc_playstate {
   float: right;
 }
@@ -1968,13 +2038,14 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   margin: 10px;
 }
 
-.minilesson_reportsmenu_itembutton button{
+.minilesson_reportsmenu_itembutton button {
   height: 80px;
   width: 150px;
 }
+
 .mod_minilesson_spokenandcorrect {
   text-align: center;
-  margin-left:auto;
+  margin-left: auto;
   margin-right: auto;
   margin-top: 5px;
   margin-bottom: 8px;
@@ -1993,16 +2064,20 @@ ul.minilesson_result {
   padding-left: 0;
   justify-content: space-between;
 }
+
 ul.minilesson_result li:nth-child(1) {
   margin-left: 0;
 }
+
 ul.minilesson_result li {
   margin: 0 20px;
 }
+
 #itemscores .panel.panel-default {
   box-shadow: 0 0 8px rgb(0 0 0 / 32%);
   margin-left: 46px;
 }
+
 #itemscores #accordion .panel-body {
   box-shadow: 0 0 8px rgb(0 0 0 / 32%);
   padding: 11px;
@@ -2010,30 +2085,37 @@ ul.minilesson_result li {
   text-align: left;
 
 }
+
 a.accordion-toggle.mod_minilesson_result_title {
   text-decoration: none;
 }
+
 .minilessonname {
   background: #ccc;
   padding: 10px;
   font-size: 19px;
 }
+
 .mod_minilesson_quiz_finished {
   border: solid 1px #ccc;
 
 }
+
 .mod_minilesson_quiz_finished h1 {
   margin-top: 43px;
   font-size: 26px;
   font-weight: 500;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
+
 div#itemscores {
   margin: 0 20px;
 }
+
 .quizrating {
   margin-bottom: 31px;
 }
+
 .mod_minilesson_result_div .panel-group .panel-heading a:after {
   content: '-';
   float: right;
@@ -2044,10 +2126,11 @@ div#itemscores {
   content: '+' !important;
 }
 
-@media screen and (max-width:922px){
+@media screen and (max-width:922px) {
   .mod_minilesson_result_rating img {
     max-width: 16px;
   }
+
   ul.minilesson_result li {
     margin: 0px 8px;
     width: 20%;
@@ -2075,33 +2158,42 @@ div#itemscores {
     max-width: 100%;
   }
 }
+
 span.mod_minilesson_finishedanswer {
   display: block;
 }
+
 .mod_minilesson_placeholder {
   width: 100%;
   max-width: 400px;
   height: 300px;
   margin: auto;
 }
+
 .mod_minilesson_skeleton_box {
   background-color: #DDDBDD;
   color: grey;
-  -webkit-mask: linear-gradient(-60deg,#000 30%,#0005,#000 70%) right/300% 100%;
+  -webkit-mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
   background-repeat: no-repeat;
   animation: minilessonshimmer 2.5s infinite;
 
 }
+
 @keyframes minilessonshimmer {
-  100% {-webkit-mask-position:left}
+  100% {
+    -webkit-mask-position: left
+  }
 }
+
 .mod_minilesson_spokenandcorrect.minilesson_success {
   background-color: lightgreen;
 }
+
 .ttsdialog_actorplusline {
   border: 1px solid darkgray;
   background-color: white;
 }
+
 .ttsdialog_text {
   background-color: white;
   min-height: 30px;
@@ -2113,20 +2205,24 @@ span.mod_minilesson_finishedanswer {
   margin: auto;
   text-align: center;
 }
+
 .ttsdialog_actor.rolea {
   color: blue;
 }
+
 .ttsdialog_actor.roleb {
   color: green;
 }
+
 .ttsdialog_actor.rolec {
   color: orange;
 }
+
 .ttsdialog_actor.rolenone {
   opacity: 0;
 }
 
-.mod_minilesson_itemttspassage_cont button.passage-audio-player{
+.mod_minilesson_itemttspassage_cont button.passage-audio-player {
   border: none;
   color: #fff;
   width: 50%;
@@ -2145,7 +2241,7 @@ span.mod_minilesson_finishedanswer {
 }
 
 .mform [data-root="elementwrapper"] [data-fieldtype="ttsaudio"] button.roundmini-audio-player,
-.ttsaudio.container button.roundmini-audio-player{
+.ttsaudio.container button.roundmini-audio-player {
   border: solid 1px green;
   border-radius: 50%;
   color: green;
@@ -2158,59 +2254,69 @@ span.mod_minilesson_finishedanswer {
   margin-bottom: 3px;
   margin-top: 3px;
 }
+
 .mform [data-root="elementwrapper"] .felement[data-fieldtype="ttsaudio"] .col-form-label {
-    padding-left: 0;
+  padding-left: 0;
 }
+
 .mform [data-root="elementwrapper"] [data-fieldtype="ttsaudio"] .samplettsaudio {
-    margin-left: 10px;
-    margin-top: auto;
+  margin-left: 10px;
+  margin-top: auto;
 }
+
 .mform [data-root="elementwrapper"] [data-fieldtype="ttsaudio"] button.roundmini-audio-player {
-    height: auto;
-    width: auto;
-    padding: 0.375rem 0.675rem;
+  height: auto;
+  width: auto;
+  padding: 0.375rem 0.675rem;
 }
+
 .mform [data-root="elementwrapper"] [data-fieldtype="ttsaudio"] .form-group {
-    flex-direction: column;
-    align-items: start;
+  flex-direction: column;
+  align-items: start;
 }
 
 .gapfill-container input.single-character,
 .gapfill-container input.single-character-mtext {
-    width: 26px;
-    margin-left: 2px;
-    text-align: center;
-    padding: 1px 2px;
+  width: 26px;
+  margin-left: 2px;
+  text-align: center;
+  padding: 1px 2px;
 }
+
 .gapfill-container .form-container input:first-child {
-    margin-left: 10px;
+  margin-left: 10px;
 }
-.gapfill-container .form-container input:last-child{
-    margin-right: 10px;
+
+.gapfill-container .form-container input:last-child {
+  margin-right: 10px;
 }
+
 .gapfill-container .single-character-mtext {
-    color: #0c5460;
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
+  color: #0c5460;
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
 }
+
 .gapfill-container .definition-container {
-    display: flex;
-    background-color: #eee;
-    height: 100px;
-    margin-bottom: 50px;
+  display: flex;
+  background-color: #eee;
+  height: 100px;
+  margin-bottom: 50px;
 }
+
 .gapfill-container .form-container {
-    margin: 20px auto 22px;
-    min-height: 100px;
+  margin: 20px auto 22px;
+  min-height: 100px;
 }
+
 .gapfill-container .definition {
-    align-self: center;
-    width: 80%;
-    margin: auto;
-    border: 1px solid #ccc;
-    background-color: white;
-    border-radius: 10px;
-    padding: 6px;
+  align-self: center;
+  width: 80%;
+  margin: auto;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 10px;
+  padding: 6px;
 }
 
 /* Listening Gapfill */
@@ -2251,7 +2357,7 @@ span.mod_minilesson_finishedanswer {
   padding: 20px;
 }
 
-.minilesson_lgapfill_player_box  .lgapfill_right {
+.minilesson_lgapfill_player_box .lgapfill_right {
   background-color: white;
 }
 
@@ -2346,7 +2452,7 @@ span.mod_minilesson_finishedanswer {
   z-index: 999;
 }
 
-.minilesson_lgapfill_player_box  .lgapfill_correct {
+.minilesson_lgapfill_player_box .lgapfill_correct {
   background-color: lightgreen;
 }
 
@@ -2360,11 +2466,11 @@ span.mod_minilesson_finishedanswer {
   margin: 5px;
 }
 
-.minilesson_lgapfill_player_box  .lgapfill_check_btn {
+.minilesson_lgapfill_player_box .lgapfill_check_btn {
   width: 33.33%;
 }
 
-.minilesson_lgapfill_player_box  .lgapfill_skip_btn {
+.minilesson_lgapfill_player_box .lgapfill_skip_btn {
   position: absolute;
   right: 10px;
 }
@@ -2412,7 +2518,7 @@ span.mod_minilesson_finishedanswer {
   padding: 20px;
 }
 
-.minilesson_tgapfill_player_box  .tgapfill_right {
+.minilesson_tgapfill_player_box .tgapfill_right {
   background-color: white;
 }
 
@@ -2507,7 +2613,7 @@ span.mod_minilesson_finishedanswer {
   z-index: 999;
 }
 
-.minilesson_tgapfill_player_box  .tgapfill_correct {
+.minilesson_tgapfill_player_box .tgapfill_correct {
   background-color: lightgreen;
 }
 
@@ -2521,11 +2627,11 @@ span.mod_minilesson_finishedanswer {
   margin: 5px;
 }
 
-.minilesson_tgapfill_player_box  .tgapfill_check_btn {
+.minilesson_tgapfill_player_box .tgapfill_check_btn {
   width: 33.33%;
 }
 
-.minilesson_tgapfill_player_box  .tgapfill_skip_btn {
+.minilesson_tgapfill_player_box .tgapfill_skip_btn {
   position: absolute;
   right: 10px;
 }
@@ -2573,7 +2679,7 @@ span.mod_minilesson_finishedanswer {
   padding: 20px;
 }
 
-.minilesson_sgapfill_player_box  .sgapfill_right {
+.minilesson_sgapfill_player_box .sgapfill_right {
   background-color: white;
 }
 
@@ -2657,7 +2763,7 @@ span.mod_minilesson_finishedanswer {
 
 .minilesson_sgapfill_player_box .sgapfill_controls .sgapfill_ctrl-btn {
   /*width: 50%;*/
- /* float: left; */
+  /* float: left; */
 }
 
 .minilesson_sgapfill_player_box .sgapfill_speakbtncontainer {
@@ -2703,7 +2809,8 @@ span.mod_minilesson_finishedanswer {
   border-radius: 5px;
   margin: 5px;
 }
-.minilesson_sgapfill_player_box  .sgapfill_skip_btn {
+
+.minilesson_sgapfill_player_box .sgapfill_skip_btn {
   position: absolute;
   right: 10px;
 }
@@ -2712,13 +2819,16 @@ span.mod_minilesson_finishedanswer {
 .ml_gapfill_char_correct {
   background-color: palegreen;
 }
+
 body.poodll-minilesson-embed #page {
   margin-top: 5px;
 }
+
 .mod_minilesson_rtl {
   direction: rtl;
   text-align: right;
 }
+
 .ml_mediaprompt_instructions {
   margin-bottom: 30px;
   margin-left: 25%;
@@ -2746,6 +2856,7 @@ body.poodll-minilesson-embed #page {
   font-size: 1.33em;
   overflow: auto;
 }
+
 .minilesson_bq_confirmchoice {
   text-align: center;
   background-color: blue;
@@ -2761,6 +2872,7 @@ body.poodll-minilesson-embed #page {
 .minilesson_bq_selected {
   background-color: lightblue;
 }
+
 .minilesson_bq_disabled {
   pointer-events: none;
 }
@@ -2768,15 +2880,19 @@ body.poodll-minilesson-embed #page {
 .minilesson_bq_disabled {
   pointer-events: none;
 }
+
 .minilesson_bq_right {
   color: green;
 }
+
 .minilesson_bq_wrong {
   color: red;
 }
+
 .minilesson_bq_unanswered {
   color: black;
 }
+
 .minilesson_bq_playstate {
   float: right;
 }
@@ -2858,8 +2974,8 @@ body.poodll-minilesson-embed #page {
 }
 
 .ml-spacegame-bigbutton {
-  width:50%;
-  margin:auto;
+  width: 50%;
+  margin: auto;
 }
 
 .mlfsr_correctedtext_container,
@@ -2947,7 +3063,7 @@ body.poodll-minilesson-embed #page {
 }
 
 .mod_minilesson_mu_passage_space {
- /* padding: 2px; */
+  /* padding: 2px; */
 }
 
 div.mod_minilesson_postattempt .mod_minilesson_grading_unreadword {
@@ -2961,17 +3077,18 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 }
 
 .mod_minilesson_grading_unreadword {
-color: #F13B3B;
-font-weight: 700;
+  color: #F13B3B;
+  font-weight: 700;
 }
 
 .mod_minilesson_mu_passage_word.mod_minilesson_aicorrected,
 .mod_minilesson_mu_passage_space.mod_minilesson_aicorrected {
-background-color: lightpink;
+  background-color: lightpink;
 }
 
-.mod_minilesson_mu_passage_word.asf_cp_aiomitted, .mod_minilesson_mu_passage_space.asf_cp_aiomitted {
-text-decoration: line-through;
+.mod_minilesson_mu_passage_word.asf_cp_aiomitted,
+.mod_minilesson_mu_passage_space.asf_cp_aiomitted {
+  text-decoration: line-through;
 }
 
 .mod_minilesson_mu_passage_word.mod_minilesson_aiunmatched {
@@ -2985,33 +3102,35 @@ text-decoration: line-through;
 }
 
 .mod_minilesson_corrections {
-	text-align: left;
-	font-style: normal;
+  text-align: left;
+  font-style: normal;
 }
 
 /* delete? */
 span.mod_minilesson_corrections_suggestedword {
-	font-weight: bold;
-	background-color: lightgreen;
+  font-weight: bold;
+  background-color: lightgreen;
 }
 
 span.mod_minilesson_corrections_insertionword {
-	font-weight: bold;
-	background-color: lightgreen;
+  font-weight: bold;
+  background-color: lightgreen;
 }
 
 span.mod_minilesson_corrections_omittedword {
-	font-weight: bold;
-	background-color: lightgreen;
-	word-spacing: 5px;
+  font-weight: bold;
+  background-color: lightgreen;
+  word-spacing: 5px;
 }
-span.mod_minilesson_mu_original_preword,span.mod_minilesson_mu_original_postword {
-	font-weight: 500;
-	background-color: antiquewhite;
+
+span.mod_minilesson_mu_original_preword,
+span.mod_minilesson_mu_original_postword {
+  font-weight: 500;
+  background-color: antiquewhite;
 }
 
 .mod_minilesson_overflow_auto {
-overflow: auto;
+  overflow: auto;
 }
 
 .ml_listitem_result {
@@ -3019,16 +3138,19 @@ overflow: auto;
   align-items: center;
   justify-content: space-between;
 }
+
 .ml_listitem_result .ml_li_resultitem {
   display: flex;
   flex-grow: 1;
   margin-left: 3px;
   margin-right: 3px;
 }
+
 .ml_listitem_result .ml_li_resultaudio,
 .ml_listitem_result .ml_li_resultstatus {
   flex-shrink: 0;
 }
+
 .ml_listitem_result .ml_li_resultstatus {
   border: 1px solid grey;
   padding: 3px;
@@ -3037,39 +3159,49 @@ overflow: auto;
   text-align: center;
   border-radius: 5px;
 }
+
 .ml_listitem_result .ml_li_resultstatus.ml_correct {
   background-color: lightgreen;
 }
+
 .ml_listitem_result .ml_li_resultstatus.ml_incorrect {
   background-color: lightcoral;
 }
+
 .ml_listitem_results_header h3 {
   text-align: center;
   padding-top: 7px;
 }
+
 .minilesson_resultspanel_swish {
   text-align: center;
   font-size: x-large;
 }
+
 .ml_freewriting_submitbutton {
   margin: auto;
   width: 80%;
 }
+
 textarea.ml_freewriting_textarea {
   width: 100%;
 }
+
 .ml_freewriting_actionbox {
   text-align: center;
 }
+
 .ml_qf_itemresults {
   max-width: 80%;
   margin: auto;
 }
 
 .minilesson_mc_image {
-  position: relative; /* Needed for padding trick */
+  position: relative;
+  /* Needed for padding trick */
   width: 100%;
-  padding-bottom: 75%; /* Example aspect ratio (4:3). Adjust as needed */
+  padding-bottom: 75%;
+  /* Example aspect ratio (4:3). Adjust as needed */
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -3082,11 +3214,12 @@ textarea.ml_freewriting_textarea {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: scale-down; /* or contain */
+  object-fit: scale-down;
+  /* or contain */
 }
 
 /* Fluency */
-.minilesson_fluency_box .item-feedback-container  {
+.minilesson_fluency_box .item-feedback-container {
   display: flex;
   background-color: #eee;
   height: 50px;
@@ -3115,6 +3248,7 @@ textarea.ml_freewriting_textarea {
   margin: 20px auto 22px;
   min-height: 50px;
 }
+
 .minilesson_fluency_box .item-results {
   align-self: center;
   width: 80%;
@@ -3166,7 +3300,7 @@ textarea.ml_freewriting_textarea {
   padding: 20px;
 }
 
-.minilesson_fluency_box  .fluency_right {
+.minilesson_fluency_box .fluency_right {
   background-color: white;
 }
 
@@ -3281,7 +3415,8 @@ textarea.ml_freewriting_textarea {
   border-radius: 5px;
   margin: 5px;
 }
-.minilesson_fluency_box  .fluency_skip_btn {
+
+.minilesson_fluency_box .fluency_skip_btn {
   position: absolute;
   right: 10px;
 }
@@ -3297,47 +3432,55 @@ textarea.ml_freewriting_textarea {
 }
 
 div.fluencywordresult {
- /* display: flex; */
+  /* display: flex; */
   flex-wrap: nowrap;
   gap: 3px;
- /* margin-top: 10px; */
+  /* margin-top: 10px; */
   margin-right: 10px;
 }
+
 span.fluencyletterresult {
-    /* padding: 2px 4px; */
-    border-radius: 4px;
-    border: 1px solid transparent;
-    background-color: #f9f9f9;
-    cursor: default;
+  /* padding: 2px 4px; */
+  border-radius: 4px;
+  border: 1px solid transparent;
+  background-color: #f9f9f9;
+  cursor: default;
 }
 
 span.fluencyletterresult.letter_missing {
   color: gray;
 }
+
 span.fluencyletterresult.letter_fair {
   color: orange;
 }
+
 span.fluencyletterresult.letter_good {
   color: green;
 }
+
 span.fluencyletterresult.letter_wrong {
   color: red;
 }
+
 .btn.ml_li_resultaudioself,
 .btn.fluency_listen_btn.audioself {
   color: deeppink;
 }
+
 .minilesson_sentence_image {
-  max-width:400px;
+  max-width: 400px;
   width: 75%;
   margin-left: auto;
   margin-right: auto;
 }
 
 .minilesson_padded_image {
-  position: relative; /* Needed for padding trick */
+  position: relative;
+  /* Needed for padding trick */
   width: 100%;
-  padding-bottom: 75%; /* Example aspect ratio (4:3). Adjust as needed */
+  padding-bottom: 75%;
+  /* Example aspect ratio (4:3). Adjust as needed */
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -3350,7 +3493,8 @@ span.fluencyletterresult.letter_wrong {
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: scale-down; /* or contain */
+  object-fit: scale-down;
+  /* or contain */
 }
 
 
@@ -3368,18 +3512,22 @@ span.fluencyletterresult.letter_wrong {
   padding: 0.5rem;
   width: 100%;
 }
+
 .element-sentenceprompt-container .sentenceprompt__lines {
   border-right: 1px solid rgb(203, 213, 225);
   padding: 0.5rem;
   text-align: right;
   overflow: hidden;
 }
+
 .element-sentenceprompt-container .sentenceprompt__textarea:focus {
   box-shadow: none;
 }
+
 div.mcaudiotranscript {
   flex-grow: 1;
 }
+
 div.mcaudioplayer,
 div.poodlldictationplayer {
   position: relative;
@@ -3387,8 +3535,9 @@ div.poodlldictationplayer {
 }
 
 .poodlldictationinput {
-  flex-grow:  1;
+  flex-grow: 1;
 }
+
 .poodlldictationstatus {
   text-align: center;
   position: relative;
@@ -3414,43 +3563,51 @@ div.poodlldictationplayer {
 }
 
 .pgapfill_gap_wrapper .character-input {
-    display: inline-block;
-    border: 1px inset #767676;
-    /* vertical-align: middle; */
-    line-height: initial !important;
-    height: auto;
-    padding: 6px 4px;
-    border: 1px inset rgb(118, 118, 118);
+  display: inline-block;
+  border: 1px inset #767676;
+  /* vertical-align: middle; */
+  line-height: initial !important;
+  height: auto;
+  padding: 6px 4px;
+  border: 1px inset rgb(118, 118, 118);
 }
+
 .pgapfill_gap_wrapper .character-input:placeholder-shown {
   /*
     letter-spacing: 0.25rem;
     */
 }
+
 .pgapfill_gap_wrapper.pgapfill_gap_reviewing .pgapfill_gap_input,
 .pgapfill_gap_wrapper.psg_gapfill_correct .pgapfill_gap_input {
   background-color: lightgreen;
 }
+
 .pgapfill_gap_wrapper.psg_gapfill_correct .correctIcon {
   color: green;
 }
+
 .pgapfill_gap_wrapper.psg_gapfill_wrong .wrongIcon {
   color: red;
 }
+
 .pgapfill_gap_wrapper:not(.psg_gapfill_wrong) .wrongIcon,
 .pgapfill_gap_wrapper:not(.psg_gapfill_correct) .correctIcon {
   display: none;
 }
+
 .minilesson_pgapfill_box .pgapfill_controls {
   position: relative;
-  margin-top: 10px;;
+  margin-top: 10px;
+  ;
   height: 35px;
   background-color: white;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.minilesson_pgapfill_box  .pgapfill_hint_btn {
+
+.minilesson_pgapfill_box .pgapfill_hint_btn {
   position: absolute;
   right: 0;
   top: 50%;
@@ -3458,49 +3615,53 @@ div.poodlldictationplayer {
 }
 
 .audiostoryplayer {
-   margin: 0;
-    padding: 20px;
-    background: #111;
-    font-family: sans-serif;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  margin: 0;
+  padding: 20px;
+  background: #111;
+  font-family: sans-serif;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 .mod_minilesson_audiostory_cont {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .audiostory_audio {
-    /* width: 80%; */
-    max-width: 600px;
-  }
+.audiostory_audio {
+  /* width: 80%; */
+  max-width: 600px;
+}
 
-  .audiostory_slideshow_container {
-    width: 100%;
-    /* max-width: 600px; */         /* Keeps it nice on larger screens */
-    aspect-ratio: 3 / 2; 
-    position: relative;
-    overflow: hidden;
-    background: #000;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(255,255,255,0.1);
-  }
+.audiostory_slideshow_container {
+  width: 100%;
+  /* max-width: 600px; */
+  /* Keeps it nice on larger screens */
+  aspect-ratio: 3 / 2;
+  position: relative;
+  overflow: hidden;
+  background: #000;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
 
-  .audiostory_image_container {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-size: 110%;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 0;
-    transform: scale(1.3) translate(0, 0);
-    transition: opacity 1s ease-in-out; /* 👈 Crossfade transition */
-  }
-  .audiostory_image_container img {
+.audiostory_image_container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: 110%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.3) translate(0, 0);
+  transition: opacity 1s ease-in-out;
+  /* 👈 Crossfade transition */
+}
+
+.audiostory_image_container img {
   height: auto;
   object-fit: cover;
   width: 120%;
@@ -3509,12 +3670,14 @@ div.poodlldictationplayer {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
 .audiostory_overlay {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -3528,7 +3691,7 @@ div.poodlldictationplayer {
   padding: 1em 2em;
   border-radius: 1em;
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .audiostory_caption {
@@ -3538,126 +3701,162 @@ div.poodlldictationplayer {
 .progress-container {
   padding: 5px 8px;
 }
+
 .progress-container .progress.active {
   margin-top: 8px;
   margin-right: 3px;
 }
+
 /* Speedy Audio Player */
 .ml_speedyplayer_row {
-      display: flex;
-      align-items: center;
-      flex-direction: row;
-      width: auto; /* Or define a specific width for desktop */
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      background: #fff;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      max-width: 600px;
-      margin: 5px auto;
-    }
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: auto;
+  /* Or define a specific width for desktop */
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 5px auto;
+}
 
-  .ml_speedyplayer_row audio {
-      flex: none; /* Prevent shrinking/growing */
-      margin-right: 10px; /* Space to the right of the audio player */
-      margin-bottom: 0; /* Ensure no bottom margin from small screen styles */
-      display: block; /* Ensure it behaves like a block element */
-    }
+.ml_speedyplayer_row audio {
+  flex: none;
+  /* Prevent shrinking/growing */
+  margin-right: 10px;
+  /* Space to the right of the audio player */
+  margin-bottom: 0;
+  /* Ensure no bottom margin from small screen styles */
+  display: block;
+  /* Ensure it behaves like a block element */
+}
 
-    div.ml_speedyplayer_row_buttons {
-      display: flex; /* Button container is always a flex container */
-      flex-direction: row; /* Buttons are always in a row */
-      width: auto; /* Or define a specific width for desktop */
-      justify-content: space-around; /* Example: Distribute space among buttons */
-      align-items: center; /* Vertically center buttons within their container */
-      padding: 0; /* Adjust padding as needed */
-      margin: 0; /* Ensure no margin if spacing is handled by button margins */
-    }
+div.ml_speedyplayer_row_buttons {
+  display: flex;
+  /* Button container is always a flex container */
+  flex-direction: row;
+  /* Buttons are always in a row */
+  width: auto;
+  /* Or define a specific width for desktop */
+  justify-content: space-around;
+  /* Example: Distribute space among buttons */
+  align-items: center;
+  /* Vertically center buttons within their container */
+  padding: 0;
+  /* Adjust padding as needed */
+  margin: 0;
+  /* Ensure no margin if spacing is handled by button margins */
+}
 
- .ml_speedyplayer_row .speedy_btn {
-      flex: 1; /* Make buttons grow to fill container space equally */
-      margin: 0 5px; /* Add horizontal margin between buttons */
-      width: auto; /* Let flex control width, remove fixed width */
-      padding: 8px 12px;
-      border: none;
-      border-radius: 6px;
-      background: #4a90e2;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.ml_speedyplayer_row .speedy_btn {
+  flex: 1;
+  /* Make buttons grow to fill container space equally */
+  margin: 0 5px;
+  /* Add horizontal margin between buttons */
+  width: auto;
+  /* Let flex control width, remove fixed width */
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #4a90e2;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-  .ml_speedyplayer_row .speedy_btn:hover {
-      background: #357ab8;
-    }
+.ml_speedyplayer_row .speedy_btn:hover {
+  background: #357ab8;
+}
 
-  .ml_speedyplayer_row .speedy_btn {
-      gap: 6px;
-    }
+.ml_speedyplayer_row .speedy_btn {
+  gap: 6px;
+}
 
-   .ml_speedyplayer_label {
-    line-height: 1;
-    vertical-align: middle;
-    display: inline-block;
-   }
-    .fluencyaudiobox .minilesson_fluency_box .fluency_mainstage .fluency_controls .fluency_skip_btn .mobileaccesshide {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        padding: 0;
-        margin: -1px;
-        overflow: hidden;
-        clip: rect(0, 0, 0, 0);
-        white-space: nowrap;
-        border: 0;
-     }
+.ml_speedyplayer_label {
+  line-height: 1;
+  vertical-align: middle;
+  display: inline-block;
+}
 
-    @media (max-width: 480px) { /* Adjust breakpoint as needed */
-      div.ml_speedyplayer_row {
-        width: 100%; /* Full width on small screens */
-        /* flex-direction is already column, keep it */
-        align-items: center; /* Center content horizontally */
-        padding: 10px; /* Or adjust padding as needed */
-        margin: 5px auto; /* Center the container itself */
-      }
-
-      div.ml_speedyplayer_row audio {
-        width: 100%; /* Audio player takes full width */
-        flex: none;
-        margin-bottom: 10px; /* Space below audio */
-        /* Ensure display is block if needed, but flex: none with width 100% is usually sufficient */
-        display: block;
-      }
-
-      div.ml_speedyplayer_row_buttons {
-        display: flex; /* Make this a flex container for buttons */
-        flex-direction: row; /* Arrange buttons horizontally */
-        width: 100%; /* Button container takes full width */
-        justify-content: space-around; /* Example: Even space around buttons */
-        align-items: center; /* Vertically center buttons */
-        padding: 0; /* Adjust padding as needed */
-        margin-top: 0; /* Remove top margin if any */
-      }
-
-      div.ml_speedyplayer_row_buttons > button {
-        flex: 1; /* Make buttons grow to fill container space equally */
-        margin: 0 5px; /* Horizontal margin between buttons */
-        /* Remove any fixed width if using flex: 1 */
-        width: auto;
-      }
-    }
-
-    .mod_minilesson_aigenpageexplanation {
-      margin: 10px auto;
-    }
+.fluencyaudiobox .minilesson_fluency_box .fluency_mainstage .fluency_controls .fluency_skip_btn .mobileaccesshide {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
 @media (max-width: 480px) {
+
+  /* Adjust breakpoint as needed */
+  div.ml_speedyplayer_row {
+    width: 100%;
+    /* Full width on small screens */
+    /* flex-direction is already column, keep it */
+    align-items: center;
+    /* Center content horizontally */
+    padding: 10px;
+    /* Or adjust padding as needed */
+    margin: 5px auto;
+    /* Center the container itself */
+  }
+
+  div.ml_speedyplayer_row audio {
+    width: 100%;
+    /* Audio player takes full width */
+    flex: none;
+    margin-bottom: 10px;
+    /* Space below audio */
+    /* Ensure display is block if needed, but flex: none with width 100% is usually sufficient */
+    display: block;
+  }
+
+  div.ml_speedyplayer_row_buttons {
+    display: flex;
+    /* Make this a flex container for buttons */
+    flex-direction: row;
+    /* Arrange buttons horizontally */
+    width: 100%;
+    /* Button container takes full width */
+    justify-content: space-around;
+    /* Example: Even space around buttons */
+    align-items: center;
+    /* Vertically center buttons */
+    padding: 0;
+    /* Adjust padding as needed */
+    margin-top: 0;
+    /* Remove top margin if any */
+  }
+
+  div.ml_speedyplayer_row_buttons>button {
+    flex: 1;
+    /* Make buttons grow to fill container space equally */
+    margin: 0 5px;
+    /* Horizontal margin between buttons */
+    /* Remove any fixed width if using flex: 1 */
+    width: auto;
+  }
+}
+
+.mod_minilesson_aigenpageexplanation {
+  margin: 10px auto;
+}
+
+@media (max-width: 480px) {
+
   .landr_skip_btn .mobileaccesshide,
   .fluency_skip_btn .mobileaccesshide,
   .sgapfill_skip_btn .mobileaccesshide {
@@ -3680,15 +3879,23 @@ div.poodlldictationplayer {
 #page-mod-minilesson-aigen .table-dynamic[data-table-handler="usages"][data-table-total-rows="0"] {
   display: none;
 }
-.ml_mediaprompt_instructions {
 
-}
+.ml_mediaprompt_instructions {}
 
 /* Ai Chat */
 
 @keyframes minilesson_bounce {
-  0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(0.8, 0, 1, 1); }
-  50% { transform: translateY(0); animation-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+
+  0%,
+  100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
 }
 
 .minilesson_audiochat_box * {
@@ -3711,11 +3918,11 @@ div.poodlldictationplayer {
   margin-right: auto;
 }
 
-.minilesson_audiochat_box .ml_unique_loading > :not([hidden])~ :not([hidden]),
-.minilesson_audiochat_box .ml_unique_avatarsection > :not([hidden])~ :not([hidden]),
-.minilesson_audiochat_box .ml_unique_avatarblock > :not([hidden])~ :not([hidden]),
-.minilesson_audiochat_box .ml_unique_maincontent > :not([hidden])~ :not([hidden]),
-.minilesson_audiochat_box .ml_unique_messagescontainer > :not([hidden])~ :not([hidden]) {
+.minilesson_audiochat_box .ml_unique_loading> :not([hidden])~ :not([hidden]),
+.minilesson_audiochat_box .ml_unique_avatarsection> :not([hidden])~ :not([hidden]),
+.minilesson_audiochat_box .ml_unique_avatarblock> :not([hidden])~ :not([hidden]),
+.minilesson_audiochat_box .ml_unique_maincontent> :not([hidden])~ :not([hidden]),
+.minilesson_audiochat_box .ml_unique_messagescontainer> :not([hidden])~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.5rem * var(--tw-space-y-reverse))
@@ -3848,23 +4055,23 @@ div.poodlldictationplayer {
   display: flex;
 }
 
-.minilesson_audiochat_box .ml_unique_loadingdots > .ml_unique_loadingdot {
+.minilesson_audiochat_box .ml_unique_loadingdots>.ml_unique_loadingdot {
   animation: minilesson_bounce 1s infinite;
 }
 
-.minilesson_audiochat_box .ml_unique_loadingdots > .ml_unique_loadingdot:nth-child(2) {
+.minilesson_audiochat_box .ml_unique_loadingdots>.ml_unique_loadingdot:nth-child(2) {
   animation-delay: 0.1s;
 }
 
-.minilesson_audiochat_box .ml_unique_loadingdots > .ml_unique_loadingdot:nth-child(3) {
+.minilesson_audiochat_box .ml_unique_loadingdots>.ml_unique_loadingdot:nth-child(3) {
   animation-delay: 0.2s;
 }
 
-.minilesson_audiochat_box .ml_unique_loadingdots > .ml_unique_loadingdot:nth-child(4) {
+.minilesson_audiochat_box .ml_unique_loadingdots>.ml_unique_loadingdot:nth-child(4) {
   animation-delay: 0.3s;
 }
 
-.minilesson_audiochat_box .ml_unique_loadingdots > .ml_unique_loadingdot:nth-child(5) {
+.minilesson_audiochat_box .ml_unique_loadingdots>.ml_unique_loadingdot:nth-child(5) {
   animation-delay: 0.4s;
 }
 
@@ -3895,7 +4102,7 @@ div.poodlldictationplayer {
   border-radius: 0.375rem;
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow:  0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -4132,6 +4339,7 @@ div.poodlldictationplayer {
 .minilesson_audiochat_box .ml_unique_speakbtncontainer {
   margin: auto;
 }
+
 .minilesson_audiochat_box .ml_unique_avatarcontainer {
   display: flex;
   justify-content: center;
@@ -4205,8 +4413,8 @@ div.poodlldictationplayer {
   display: flex;
 }
 
-.minilesson_audiochat_box .ml_unique_loadingmessage > :not([hidden])~ :not([hidden]),
-.minilesson_audiochat_box .ml_unique_loader > :not([hidden])~ :not([hidden]) {
+.minilesson_audiochat_box .ml_unique_loadingmessage> :not([hidden])~ :not([hidden]),
+.minilesson_audiochat_box .ml_unique_loader> :not([hidden])~ :not([hidden]) {
   --tw-space-x-reverse: 0;
   margin-right: calc(0.25rem * var(--tw-space-x-reverse));
   margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
@@ -4265,6 +4473,7 @@ div.poodlldictationplayer {
 }
 
 @media (min-width: 1024px) {
+
   .minilesson_audiochat_box .ml_unique_content_user,
   .minilesson_audiochat_box .ml_unique_content_assistant {
     max-width: 28rem;
@@ -4316,7 +4525,8 @@ div.poodlldictationplayer {
   display: flex;
   align-items: center;
   width: 100%;
-  gap: 1rem; /* spacing between columns */
+  gap: 1rem;
+  /* spacing between columns */
 }
 
 /* Dummy flex spacer on left and right */
@@ -4333,33 +4543,34 @@ div.poodlldictationplayer {
   justify-content: flex-end;
   gap: 0.5rem;
 }
+
 .ml_ac_results_content {
   margin-bottom: 8px;
 }
 
 .wordshuffle_wordset_container .definition-container {
-    display: flex;
-    background-color: #eee;
-    height: 100px;
-    margin-bottom: 50px;
+  display: flex;
+  background-color: #eee;
+  height: 100px;
+  margin-bottom: 50px;
 }
 
 .wordshuffle_wordset_container .definition {
-    align-self: center;
-    width: 80%;
-    margin: auto;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 6px;
+  align-self: center;
+  width: 80%;
+  margin: auto;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 6px;
 }
 
 .wordshuffle_wordset_container .question-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
 
 .wordshuffle_wordset_container .gapword-box {
@@ -4415,69 +4626,80 @@ div.poodlldictationplayer {
   outline: 3px solid #a78bfa;
   outline-offset: 0;
 }
+
 .wordshuffle_wordset_container .ui-droppable-hover.answer-container {
   outline: 3px solid #34d399;
 }
 
 .wordshuffle_wordset_container {
-    --slot-bg: #eaf9ee;
-    --word-bg: #ffe3ea;
-    --word-text: #0e7490;
-    --fixed-bg: #fff6bf;
-    --border: #e5e7eb;
-    --hover: #a78bfa;
-    --bank: #34d399;
+  --slot-bg: #eaf9ee;
+  --word-bg: #ffe3ea;
+  --word-text: #0e7490;
+  --fixed-bg: #fff6bf;
+  --border: #e5e7eb;
+  --hover: #a78bfa;
+  --bank: #34d399;
 }
+
 .wordshuffle_wordset_container .slot {
-    width: 130px;
-    height: 46px;
-    background: var(--slot-bg);
-    border-radius: .75rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 130px;
+  height: 46px;
+  background: var(--slot-bg);
+  border-radius: .75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 .wordshuffle_wordset_container .word {
-    background: var(--word-bg);
-    color: var(--word-text);
-    padding: .5rem 1rem;
-    border-radius: .75rem;
-    font-weight: 700;
-    user-select: none;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 1px 0 rgba(0,0,0,.06);
+  background: var(--word-bg);
+  color: var(--word-text);
+  padding: .5rem 1rem;
+  border-radius: .75rem;
+  font-weight: 700;
+  user-select: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .06);
 }
+
 .wordshuffle_wordset_container .ui-droppable-hover.slot {
-    outline: 3px solid var(--hover);
+  outline: 3px solid var(--hover);
 }
+
 .wordshuffle_wordset_container .ui-droppable-hover.bank {
-    outline: 3px solid var(--bank);
+  outline: 3px solid var(--bank);
 }
+
 .wordshuffle_wordset_container .bank {
-    border: 1px dashed var(--border);
-    border-radius: .75rem;
+  border: 1px dashed var(--border);
+  border-radius: .75rem;
 }
+
 .wordshuffle_wordset_container .assembled {
-    min-height: 24px;
+  min-height: 24px;
 }
+
 .wordshuffle_wordset_container .slot-wrap {
-    width: 130px;
+  width: 130px;
 }
+
 .wordshuffle_wordset_container .word-text {
-    display: inline-flex;
-    align-items: center;
-    padding: 0 0.15rem;
-    line-height: 2.5rem;
-    font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.15rem;
+  line-height: 2.5rem;
+  font-size: 1rem;
 }
+
 .wordshuffle_wordset_container .question-sentence {
-    gap: 0.25rem;
+  gap: 0.25rem;
 }
+
 .wordshuffle_wordset_container .bank {
-    gap: 1rem;
+  gap: 1rem;
 }
 
 .wordshuffle_wordset_container .drop-slot.ml_ws_highlight {
@@ -4502,11 +4724,13 @@ div.poodlldictationplayer {
 .wordshuffle_wordset_container .word[draggable="true"] {
   cursor: grab;
 }
+
 .wordshuffle_wordset_container .word.ml_ws_dragging {
   cursor: grabbing;
   opacity: 0.85;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  transform: translateZ(0); /* promote layer for smoother dragging */
+  transform: translateZ(0);
+  /* promote layer for smoother dragging */
 }
 
 /* Keyboard focus outline for interactive areas */
@@ -4518,249 +4742,275 @@ div.poodlldictationplayer {
 }
 
 .wordshuffle_wordset_container .badge {
-    font-size: 100%;
+  font-size: 100%;
 }
 
 @keyframes shake-horizontal {
-    2% {
-        transform: translate(8px, 0) rotate(0)
-    }
+  2% {
+    transform: translate(8px, 0) rotate(0)
+  }
 
-    4% {
-        transform: translate(7px, 0) rotate(0)
-    }
+  4% {
+    transform: translate(7px, 0) rotate(0)
+  }
 
-    6% {
-        transform: translate(-3px, 0) rotate(0)
-    }
+  6% {
+    transform: translate(-3px, 0) rotate(0)
+  }
 
-    8% {
-        transform: translate(-1px, 0) rotate(0)
-    }
+  8% {
+    transform: translate(-1px, 0) rotate(0)
+  }
 
-    10% {
-        transform: translate(2px, 0) rotate(0)
-    }
+  10% {
+    transform: translate(2px, 0) rotate(0)
+  }
 
-    12% {
-        transform: translate(8px, 0) rotate(0)
-    }
+  12% {
+    transform: translate(8px, 0) rotate(0)
+  }
 
-    14% {
-        transform: translate(4px, 0) rotate(0)
-    }
+  14% {
+    transform: translate(4px, 0) rotate(0)
+  }
 
-    16% {
-        transform: translate(-8px, 0) rotate(0)
-    }
+  16% {
+    transform: translate(-8px, 0) rotate(0)
+  }
 
-    18% {
-        transform: translate(-2px, 0) rotate(0)
-    }
+  18% {
+    transform: translate(-2px, 0) rotate(0)
+  }
 
-    20% {
-        transform: translate(0px, 0) rotate(0)
-    }
+  20% {
+    transform: translate(0px, 0) rotate(0)
+  }
 
-    22% {
-        transform: translate(-9px, 0) rotate(0)
-    }
+  22% {
+    transform: translate(-9px, 0) rotate(0)
+  }
 
-    24% {
-        transform: translate(-9px, 0) rotate(0)
-    }
+  24% {
+    transform: translate(-9px, 0) rotate(0)
+  }
 
-    26% {
-        transform: translate(10px, 0) rotate(0)
-    }
+  26% {
+    transform: translate(10px, 0) rotate(0)
+  }
 
-    28% {
-        transform: translate(7px, 0) rotate(0)
-    }
+  28% {
+    transform: translate(7px, 0) rotate(0)
+  }
 
-    30% {
-        transform: translate(9px, 0) rotate(0)
-    }
+  30% {
+    transform: translate(9px, 0) rotate(0)
+  }
 
-    32% {
-        transform: translate(2px, 0) rotate(0)
-    }
+  32% {
+    transform: translate(2px, 0) rotate(0)
+  }
 
-    34% {
-        transform: translate(5px, 0) rotate(0)
-    }
+  34% {
+    transform: translate(5px, 0) rotate(0)
+  }
 
-    36% {
-        transform: translate(-2px, 0) rotate(0)
-    }
+  36% {
+    transform: translate(-2px, 0) rotate(0)
+  }
 
-    38% {
-        transform: translate(5px, 0) rotate(0)
-    }
+  38% {
+    transform: translate(5px, 0) rotate(0)
+  }
 
-    40% {
-        transform: translate(-4px, 0) rotate(0)
-    }
+  40% {
+    transform: translate(-4px, 0) rotate(0)
+  }
 
-    42% {
-        transform: translate(8px, 0) rotate(0)
-    }
+  42% {
+    transform: translate(8px, 0) rotate(0)
+  }
 
-    44% {
-        transform: translate(0px, 0) rotate(0)
-    }
+  44% {
+    transform: translate(0px, 0) rotate(0)
+  }
 
-    46% {
-        transform: translate(3px, 0) rotate(0)
-    }
+  46% {
+    transform: translate(3px, 0) rotate(0)
+  }
 
-    48% {
-        transform: translate(0px, 0) rotate(0)
-    }
+  48% {
+    transform: translate(0px, 0) rotate(0)
+  }
 
-    50% {
-        transform: translate(-2px, 0) rotate(0)
-    }
+  50% {
+    transform: translate(-2px, 0) rotate(0)
+  }
 
-    52% {
-        transform: translate(-6px, 0) rotate(0)
-    }
+  52% {
+    transform: translate(-6px, 0) rotate(0)
+  }
 
-    54% {
-        transform: translate(-6px, 0) rotate(0)
-    }
+  54% {
+    transform: translate(-6px, 0) rotate(0)
+  }
 
-    56% {
-        transform: translate(3px, 0) rotate(0)
-    }
+  56% {
+    transform: translate(3px, 0) rotate(0)
+  }
 
-    58% {
-        transform: translate(-5px, 0) rotate(0)
-    }
+  58% {
+    transform: translate(-5px, 0) rotate(0)
+  }
 
-    60% {
-        transform: translate(-8px, 0) rotate(0)
-    }
+  60% {
+    transform: translate(-8px, 0) rotate(0)
+  }
 
-    62% {
-        transform: translate(-7px, 0) rotate(0)
-    }
+  62% {
+    transform: translate(-7px, 0) rotate(0)
+  }
 
-    64% {
-        transform: translate(-1px, 0) rotate(0)
-    }
+  64% {
+    transform: translate(-1px, 0) rotate(0)
+  }
 
-    66% {
-        transform: translate(-6px, 0) rotate(0)
-    }
+  66% {
+    transform: translate(-6px, 0) rotate(0)
+  }
 
-    68% {
-        transform: translate(10px, 0) rotate(0)
-    }
+  68% {
+    transform: translate(10px, 0) rotate(0)
+  }
 
-    70% {
-        transform: translate(-6px, 0) rotate(0)
-    }
+  70% {
+    transform: translate(-6px, 0) rotate(0)
+  }
 
-    72% {
-        transform: translate(8px, 0) rotate(0)
-    }
+  72% {
+    transform: translate(8px, 0) rotate(0)
+  }
 
-    74% {
-        transform: translate(2px, 0) rotate(0)
-    }
+  74% {
+    transform: translate(2px, 0) rotate(0)
+  }
 
-    76% {
-        transform: translate(8px, 0) rotate(0)
-    }
+  76% {
+    transform: translate(8px, 0) rotate(0)
+  }
 
-    78% {
-        transform: translate(-4px, 0) rotate(0)
-    }
+  78% {
+    transform: translate(-4px, 0) rotate(0)
+  }
 
-    80% {
-        transform: translate(-6px, 0) rotate(0)
-    }
+  80% {
+    transform: translate(-6px, 0) rotate(0)
+  }
 
-    82% {
-        transform: translate(0px, 0) rotate(0)
-    }
+  82% {
+    transform: translate(0px, 0) rotate(0)
+  }
 
-    84% {
-        transform: translate(10px, 0) rotate(0)
-    }
+  84% {
+    transform: translate(10px, 0) rotate(0)
+  }
 
-    86% {
-        transform: translate(0px, 0) rotate(0)
-    }
+  86% {
+    transform: translate(0px, 0) rotate(0)
+  }
 
-    88% {
-        transform: translate(-6px, 0) rotate(0)
-    }
+  88% {
+    transform: translate(-6px, 0) rotate(0)
+  }
 
-    90% {
-        transform: translate(4px, 0) rotate(0)
-    }
+  90% {
+    transform: translate(4px, 0) rotate(0)
+  }
 
-    92% {
-        transform: translate(-6px, 0) rotate(0)
-    }
+  92% {
+    transform: translate(-6px, 0) rotate(0)
+  }
 
-    94% {
-        transform: translate(-1px, 0) rotate(0)
-    }
+  94% {
+    transform: translate(-1px, 0) rotate(0)
+  }
 
-    96% {
-        transform: translate(8px, 0) rotate(0)
-    }
+  96% {
+    transform: translate(8px, 0) rotate(0)
+  }
 
-    98% {
-        transform: translate(-8px, 0) rotate(0)
-    }
+  98% {
+    transform: translate(-8px, 0) rotate(0)
+  }
 
-    0%,
-    100% {
-        transform: translate(0, 0) rotate(0)
-    }
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0)
+  }
 }
 
 .ml_scatter_stage {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
 }
 
 .ml_scatter_stage .ml_scatter_listitem {
-    width: 174px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    min-height: 100px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 0;
+  width: 174px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 100px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 0;
 }
 
 .ml_scatter_stage .ml_scatter_listitem.shake-constant {
-    animation-name: shake-horizontal;
-    animation-duration: 50ms;
-    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    animation-iteration-count: 2;
+  animation-name: shake-horizontal;
+  animation-duration: 50ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-iteration-count: 2;
+}
+
+@keyframes ml_scatter_disappear {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.ml_scatter_stage .ml_scatter_listitem.ml_scatter_anim_correct {
+  animation-name: ml_scatter_disappear;
+  animation-duration: 500ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.ml_scatter_stage .ml_scatter_listitem.ml_scatter_anim_incorrect {
+  animation-name: shake-horizontal;
+  animation-duration: 100ms;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 5;
 }
 
 .ml_scatter_stage .ml_scatter_listitem:active,
 .ml_scatter_stage .ml_scatter_listitem.borderblue {
-    border: 1px solid blue;
+  border: 1px solid blue;
 }
 
 .ml_scatter_stage .ml_scatter_listitem.invisible {
-    display: none;
+  display: none;
 }
 
-#page-mod-minilesson-itemtypes .itemimg{
+#page-mod-minilesson-itemtypes .itemimg {
   width: 30px;
   height: auto;
 }
@@ -4771,6 +5021,7 @@ div.poodlldictationplayer {
   font-size: 18px;
   background-color: #506DFF;
 }
+
 #page-mod-minilesson-rsquestion-rsquestions .additembutton:hover,
 #page-mod-minilesson-rsquestion-rsquestions .additembutton:active {
   background-color: #2642CD;
@@ -4805,9 +5056,9 @@ div.poodlldictationplayer {
 
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td .itemicon,
 .lessonitem-container .lessonitem-list .lessonitem-link .itemicon {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
 }
 
 .lessonitem-container {
@@ -4822,6 +5073,7 @@ div.poodlldictationplayer {
   border-top-left-radius: 16px;
   border-bottom-left-radius: 16px;
 }
+
 .lessonitem-container .lessonitem-list .lessonitem-list-block {
   overflow: auto;
   max-height: 450px;
@@ -4841,6 +5093,7 @@ div.poodlldictationplayer {
   color: black;
   margin: 5px;
 }
+
 .lessonitem-container .lessonitem-list .lessonitem-link:focus {
   box-shadow: none;
 }
@@ -4855,8 +5108,8 @@ div.poodlldictationplayer {
 }
 
 .lessonitem-modal .modal-body {
-    max-height: 550px;
-    padding: 0;
+  max-height: 550px;
+  padding: 0;
 }
 
 .lessonitem-modal .modal-content {
@@ -4864,7 +5117,7 @@ div.poodlldictationplayer {
   box-shadow: 0 2px 20px 0 #00000026;
 }
 
-.lessonitem-container .lessonditem-description-block{
+.lessonitem-container .lessonditem-description-block {
   width: 60%;
 }
 
@@ -4872,7 +5125,7 @@ div.poodlldictationplayer {
   display: none;
 }
 
-.lessonitem-modal .modal-dialog:focus{
+.lessonitem-modal .modal-dialog:focus {
   box-shadow: none !important;
 }
 
@@ -4890,6 +5143,7 @@ div.poodlldictationplayer {
   line-height: 100%;
   letter-spacing: 0;
 }
+
 .mod_minilesson_qpanel .tblheader .theadselectall {
   display: flex;
   align-items: center;
@@ -4916,6 +5170,7 @@ div.poodlldictationplayer {
   color: #141C43;
   margin-top: 25px;
 }
+
 .lessonitem-modal .lessonitem-container .lessonditem-description-block .addbtn {
   background-color: #506DFF;
   color: white;
@@ -4923,7 +5178,8 @@ div.poodlldictationplayer {
   height: 38px;
   border-radius: 5px;
 }
-.lessonitem-modal .lessonitem-container .lessonditem-description-block .addbtn:hover{
+
+.lessonitem-modal .lessonitem-container .lessonditem-description-block .addbtn:hover {
   background-color: #2642CD;
 }
 
@@ -4985,7 +5241,7 @@ div.poodlldictationplayer {
   color: #5C669A;
 }
 
-.mod_minilesson_qpanel .tblbody .mod_minilesson_item_row .itemtypelabel{
+.mod_minilesson_qpanel .tblbody .mod_minilesson_item_row .itemtypelabel {
   font-size: 11px;
   display: inline-block;
 }
@@ -5003,6 +5259,7 @@ div.poodlldictationplayer {
   line-height: 100%;
   letter-spacing: 0;
 }
+
 .mod_minilesson_qpanel .tblbody .dataTables_empty {
   color: #202438;
   font-weight: 400;
@@ -5026,7 +5283,7 @@ div.poodlldictationplayer {
 }
 
 .mod_minilesson_qpanel .tblbody td input[data-togglegroup="delete-question"],
-.mod_minilesson_qpanel .tblheader th input[data-togglegroup="delete-question"]{
+.mod_minilesson_qpanel .tblheader th input[data-togglegroup="delete-question"] {
   width: 17px;
   height: 17px;
 }
@@ -5044,25 +5301,31 @@ div.poodlldictationplayer {
 .ml_fluencyphonemesbar span {
   flex-grow: 1;
   height: 100%;
-  margin: 0 0px; /* Add spacing between spans */
+  margin: 0 0px;
+  /* Add spacing between spans */
 }
 
 span.fluencyphoneme.letter_missing {
   background-color: gray;
 }
+
 span.fluencyphoneme.letter_fair {
   background-color: orange;
 }
+
 span.fluencyphoneme.letter_good {
   background-color: green;
 }
+
 span.fluencyphoneme.letter_wrong {
   background-color: red;
 }
+
 .minilesson_questioncontainer .shortanswer_check_btn {
   border-radius: 5px;
 }
-.minilesson_questioncontainer .textinput_responsetype{
+
+.minilesson_questioncontainer .textinput_responsetype {
   width: 100%;
   max-width: 400px;
   box-sizing: border-box;
@@ -5070,6 +5333,7 @@ span.fluencyphoneme.letter_wrong {
   border-radius: 4px;
   padding: 5px;
 }
+
 .minilesson_questioncontainer .textinput_success {
   background-color: lightgreen;
 }
@@ -5104,13 +5368,16 @@ span.fluencyphoneme.letter_wrong {
   padding: 15px;
   margin: 0;
 }
+
 #page-mod-minilesson-lessonbank #advancesearch {
   padding: 15px;
   background-color: #eee;
 }
-#page-mod-minilesson-lessonbank #advancesearch #fitem_id_level{
+
+#page-mod-minilesson-lessonbank #advancesearch #fitem_id_level {
   padding: 0 15px;
 }
+
 #page-mod-minilesson-lessonbank #fgroup_id_searchgroup .col-md-3,
 #page-mod-minilesson-lessonbank #advancesearch #fitem_id_level .col-md-3 {
   max-width: 100px;
@@ -5139,7 +5406,7 @@ span.fluencyphoneme.letter_wrong {
   box-shadow: none;
 }
 
-#page-mod-minilesson-lessonbank .searchbox  [data-region="itemcard"] {
+#page-mod-minilesson-lessonbank .searchbox [data-region="itemcard"] {
   max-width: calc(50% - 2px);
   margin-top: 2px;
   margin-bottom: 2px;
@@ -5147,7 +5414,7 @@ span.fluencyphoneme.letter_wrong {
   flex-direction: column;
 }
 
-#page-mod-minilesson-lessonbank .searchbox  [data-region="itemcard"] [data-region="image"] {
+#page-mod-minilesson-lessonbank .searchbox [data-region="itemcard"] [data-region="image"] {
   gap: 3px;
 }
 
@@ -5160,6 +5427,7 @@ span.fluencyphoneme.letter_wrong {
     display: block;
     color: #5C669A;
   }
+
   .mod_minilesson_qpanel .itemtypename {
     display: none;
   }
@@ -5184,8 +5452,10 @@ span.fluencyphoneme.letter_wrong {
 }
 
 .minilesson-slides-container .reveal {
-  /* font-size: 2em; */   /* increase from default 1em to 2em */
-  line-height: 1.4;   /* optional: increase line spacing for readability */
+  /* font-size: 2em; */
+  /* increase from default 1em to 2em */
+  line-height: 1.4;
+  /* optional: increase line spacing for readability */
   height: 100%;
 }
 
@@ -5199,8 +5469,8 @@ span.fluencyphoneme.letter_wrong {
 }
 
 /* This prevents 2 short widthlists from being displayed in columns */
-.minilesson-slides-container .reveal section > ul,
-.minilesson-slides-container .reveal section > ol {
+.minilesson-slides-container .reveal section>ul,
+.minilesson-slides-container .reveal section>ol {
   display: block;
   width: 100%;
 }

@@ -161,13 +161,15 @@ class item_audiochat extends item
         }
 
         // Replace any template variables in the question text.
-        $search = ['{topic}', '{ai data1}', '{ai data2}'];
-        $replace = [
-            $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
-            $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
-            $this->itemrecord->{constants::AUDIOCHAT_AIDATA2},
-        ];
-        $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
+        if(!empty($testitem->itemtext)){
+            $search = ['{topic}', '{ai data1}', '{ai data2}'];
+            $replace = [
+                $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
+                $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
+                $this->itemrecord->{constants::AUDIOCHAT_AIDATA2},
+            ];
+            $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
+        }
 
         // We might need cmid and itemid to do the AI evaluation by ajax.
         $testitem->itemid = $this->itemrecord->id;

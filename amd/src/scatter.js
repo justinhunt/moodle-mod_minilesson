@@ -22,16 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates','mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame'],
-    function($, notification, def, log, templates, anim,  Ajax, str, spacegame) {
+define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates', 'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame'],
+    function ($, notification, def, log, templates, anim, Ajax, str, spacegame) {
 
-  "use strict"; // jshint ;_;
+        "use strict"; // jshint ;_;
 
-  /*
-  This file is to manage the Space Game item type.
-   */
+        /*
+        This file is to manage the Space Game item type.
+         */
 
-  log.debug('MiniLesson Scatter: initialising');
+        log.debug('MiniLesson Scatter: initialising');
 
         return {
 
@@ -92,7 +92,7 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                 });
             },
 
-            shuffleItems: function() {
+            shuffleItems: function () {
                 var self = this;
                 let array = Array.from(self.itemdata.shuffleditems);
                 let currentIndex = array.length, randomIndex;
@@ -101,17 +101,17 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                     randomIndex = Math.floor(Math.random() * currentIndex);
                     currentIndex--;
                     [array[currentIndex], array[randomIndex]] = [
-                    array[randomIndex], array[currentIndex]];
+                        array[randomIndex], array[currentIndex]];
                 }
                 self.itemdata.shuffleditems = array;
                 self.itemdata.shuffleditems.forEach(shuffleitem => {
-                    shuffleitem.item.classList.remove('borderblue','border', 'border-success',
-                        'border-warning','shake-constant','invisible');
+                    shuffleitem.item.classList.remove('borderblue', 'border', 'border-success',
+                        'border-warning', 'shake-constant', 'invisible');
                     self.controls.stage.append(shuffleitem.item);
                 });
             },
 
-            check_crosscard: function(e) {
+            check_crosscard: function (e) {
                 var self = this;
                 const $target = $(e.target);
                 const $listItems = self.controls.stage.children('.ml_scatter_listitem');
@@ -135,20 +135,23 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                     if (lastItem.key === currentItem.key) {
                         //Correct Choice
                         self.itemdata.scatteritems[currentItem.key].correct = true;
-                        $listItems.eq(lastIndex).addClass('border border-success');
-                        $listItems.eq(currentIndex).addClass('border border-success');
-                        // setTimeout(function() {
+                        $listItems.eq(lastIndex).addClass('border border-success ml_scatter_anim_correct');
+                        $listItems.eq(currentIndex).addClass('border border-success ml_scatter_anim_correct');
+                        setTimeout(function () {
                             $listItems.eq(lastIndex).addClass('invisible');
                             $listItems.eq(currentIndex).addClass('invisible');
-                        // }, 300);
+                            if (!$listItems.filter(':not(.invisible)').length) {
+                                self.end();
+                            }
+                        }, 500);
                     } else {
                         self.itemdata.scatteritems[currentItem.key].correct = false;
-                        $listItems.eq(lastIndex).addClass('border border-warning shake-constant');
-                        $listItems.eq(currentIndex).addClass('border border-warning shake-constant');
-                        // setTimeout(function() {
-                            $listItems.eq(lastIndex).removeClass('border border-warning');
-                            $listItems.eq(currentIndex).removeClass('border border-warning');
-                        // }, 300);
+                        $listItems.eq(lastIndex).addClass('border border-warning ml_scatter_anim_incorrect');
+                        $listItems.eq(currentIndex).addClass('border border-warning ml_scatter_anim_incorrect');
+                        setTimeout(function () {
+                            $listItems.eq(lastIndex).removeClass('border border-warning ml_scatter_anim_incorrect');
+                            $listItems.eq(currentIndex).removeClass('border border-warning ml_scatter_anim_incorrect');
+                        }, 500);
                     }
                     self.markedIndex = [];
                 }
@@ -177,7 +180,7 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
 
                 // Click and space key for scatter stage
                 self.controls.stage.on('click', self.check_crosscard.bind(self));
-                self.controls.stage.on('keydown', function(e) {
+                self.controls.stage.on('keydown', function (e) {
                     if (e.key === ' ' || e.key === 'Spacebar') {
                         // Only respond if focused on a list item
                         var $focused = $(document.activeElement);
@@ -199,7 +202,7 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                         self.progressTimer = self.controls.progress_container.find('#progresstimer').progressTimer({
                             height: '5px',
                             timeLimit: self.itemdata.timelimit,
-                            onFinish: function() {
+                            onFinish: function () {
                                 self.end();
                             }
                         }).attr('timer');
@@ -218,7 +221,7 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                     self.controls.progress_container.find('#progresstimer,i').show();
                     self.controls.actionbutton.show();
                 });
-                self.controls.container.on('keydown', '#minilesson-try-again', function(e) {
+                self.controls.container.on('keydown', '#minilesson-try-again', function (e) {
                     if (e.key === ' ' || e.key === 'Spacebar') {
                         $(this).trigger('click');
                         e.preventDefault();
@@ -229,7 +232,7 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                 self.controls.next_button.on('click', function () {
                     self.next_question();
                 });
-                self.controls.next_button.on('keydown', function(e) {
+                self.controls.next_button.on('keydown', function (e) {
                     if (e.key === ' ' || e.key === 'Spacebar') {
                         $(this).trigger('click');
                         e.preventDefault();
@@ -237,11 +240,11 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                 });
             },
 
-            start: function() {
+            start: function () {
 
             },
 
-            end: function() {
+            end: function () {
                 var self = this;
                 var tdata = {
                     prettytime: '00:00',
@@ -274,7 +277,7 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                     self.progressTimer = null;
                 }
                 templates.render('mod_minilesson/scatter_feedback', tdata).then(
-                    function(html, js) {
+                    function (html, js) {
                         self.controls.result_container.html(html);
                         templates.runTemplateJS(js || '');
                     }
@@ -283,4 +286,4 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
 
 
         }; //end of return
-});
+    });
