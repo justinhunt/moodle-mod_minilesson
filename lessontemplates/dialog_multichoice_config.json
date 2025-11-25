@@ -2,11 +2,16 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Create a one dimensional array (data5) containing 4 detailed image prompts, each prompt should be based on one of the 4 dialogs that follow. Each image prompt should specify the image style as \"{imagestyle}\" and that the dialog participants are a man and a women. The images should not contain any text, speech bubbles, titles or captions. Create 4  one dimensional arrays of strings, and set them to: ttsdialog, data2, data3 and data 4. Each array is made by splitting the value of one of the dialogs on new line characters. The dialogs are: {dialog1: \"{dialog1}\", dialog2: \"{dialog2}\", dialog3: \"{dialog3}\", dialog4: \"{dialog4}\"}",
+            "prompt": "Create the following outputs based on the 4 dialogs and their matching situations:\n\n1. data5 \u2014 a 1-dimensional array of 4 detailed image prompts.  \n   - Each prompt must be based on one dialog and its situation.  \n   - Each prompt must specify the image style \"{imagestyle}\".  \n   - Each image must depict a man and a woman.  \n   - Images must contain no text, captions, titles, or speech bubbles.\n\n2. ttsdialog, data2, data3, data4 \u2014 four 1-dimensional string arrays.  \n   - To create each array split one dialog on newline characters into an array of strings.  \n   - Assign dialog1's array \u2192 ttsdialog, dialog2's array \u2192 data2, dialog3's array \u2192 data3, dialog4's array \u2192 data4.\n\n3. answers \u2014 a 1-dimensional string array containing the 4 situations in order.\n -Assign situation1  \u2192 answers[0] , situation2  \u2192 answers[1] , situation3  \u2192 answers[2] , situation4  \u2192 answers[3] \n\nInput:\nDialogs:\n- dialog1: \"{dialog1}\"\n- dialog2: \"{dialog2}\"\n- dialog3: \"{dialog3}\"\n- dialog4: \"{dialog4}\"\n\nSituations:\n- situation1: \"{situation1}\"\n- situation2: \"{situation2}\"\n- situation3: \"{situation3}\"\n- situation4: \"{situation4}\"\n",
             "generatemethod": "generate",
             "generatefields": [
                 {
                     "name": "ttsdialog",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
                     "generate": 1,
                     "mapping": ""
                 },
@@ -66,19 +71,35 @@
                 },
                 {
                     "name": "dialog1",
-                    "mapping": "user_customdata1"
-                },
-                {
-                    "name": "dialog2",
                     "mapping": "user_customdata2"
                 },
                 {
+                    "name": "dialog2",
+                    "mapping": "user_customdata4"
+                },
+                {
                     "name": "dialog3",
-                    "mapping": "user_customdata3"
+                    "mapping": "user_customdata6"
                 },
                 {
                     "name": "dialog4",
-                    "mapping": "user_text"
+                    "mapping": "user_customdata8"
+                },
+                {
+                    "name": "situation1",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "situation2",
+                    "mapping": "user_customdata3"
+                },
+                {
+                    "name": "situation3",
+                    "mapping": "user_customdata5"
+                },
+                {
+                    "name": "situation4",
+                    "mapping": "user_customdata7"
                 }
             ]
         },
@@ -91,6 +112,11 @@
                     "name": "ttsdialog",
                     "generate": 1,
                     "mapping": "item0_data2"
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": "item0_answers"
                 },
                 {
                     "name": "listenorread",
@@ -153,6 +179,11 @@
                     "mapping": "item0_data3"
                 },
                 {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": "item0_answers"
+                },
+                {
                     "name": "listenorread",
                     "generate": 0,
                     "mapping": ""
@@ -213,6 +244,11 @@
                     "mapping": "item0_data4"
                 },
                 {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": "item0_answers"
+                },
+                {
                     "name": "listenorread",
                     "generate": 0,
                     "mapping": ""
@@ -263,10 +299,10 @@
             "promptfields": []
         }
     ],
-    "lessonTitle": "Listen to 4 conversations",
-    "lessonDescription": "Enter 4 dialogs. They will form 4 multi choice questions where the choice of answer is an image representing the currently playing Dialog. The dialogs are in TTS Dialog format. e.g A) I like toast. [new line]  B) Me too.",
+    "lessonTitle": "Listen to 4 Conversations",
+    "lessonDescription": "Students choose the picture that best represents the currently playing dialog. To create, enter 4 dialogs. They will form 4 multi-choice questions where the choice of answer is an image representing the currently playing dialog. The dialogs are in TTS Dialog format. e.g A) I like toast. [new line]  B) Me too.",
     "uniqueid": "690b33f83d02f",
-    "version": "8",
+    "version": "10",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -296,10 +332,10 @@
             "type": "text"
         },
         "user_text": {
-            "enabled": true,
-            "title": "Dialog 1",
-            "description": "Dialog in TTS Dialog format.",
-            "type": "textarea"
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
         },
         "user_keywords": {
             "enabled": false,
@@ -309,51 +345,51 @@
         },
         "user_customdata1": {
             "enabled": true,
-            "title": "Dialog 2",
-            "description": "Dialog in TTS Dialog format.",
-            "type": "textarea"
+            "title": "Situation 1",
+            "description": "Location and extra information for image generation",
+            "type": "text"
         },
         "user_customdata2": {
             "enabled": true,
-            "title": "Dialog 3",
+            "title": "Dialog 1",
             "description": "Dialog in TTS Dialog format.",
             "type": "textarea"
         },
         "user_customdata3": {
             "enabled": true,
-            "title": "Dialog 4",
+            "title": "Situation 2",
+            "description": "Location and extra information for image generation",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": true,
+            "title": "Dialog 2",
             "description": "Dialog in TTS Dialog format.",
             "type": "textarea"
         },
-        "user_customdata4": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
-        },
         "user_customdata5": {
-            "enabled": false,
-            "title": "",
-            "description": "",
+            "enabled": true,
+            "title": "Situation 3",
+            "description": "Location and extra information for image generation",
             "type": "text"
         },
         "user_customdata6": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Dialog 3",
+            "description": "Dialog in TTS Dialog format.",
+            "type": "textarea"
         },
         "user_customdata7": {
-            "enabled": false,
-            "title": "",
-            "description": "",
+            "enabled": true,
+            "title": "Situation 4",
+            "description": "Location and extra information for image generation",
             "type": "text"
         },
         "user_customdata8": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Dialog 4",
+            "description": "Dialog in TTS Dialog format.",
+            "type": "textarea"
         },
         "user_customdata9": {
             "enabled": false,
