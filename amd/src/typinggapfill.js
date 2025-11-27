@@ -7,7 +7,7 @@ define(['jquery',
     'core/templates',
     'core/str',
     'core/notification'
-], function($, log, ajax, def, anim, progresstimer, templates,str,notification) {
+], function ($, log, ajax, def, anim, progresstimer, templates, str, notification) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson typing gap fill: initialising');
@@ -15,11 +15,11 @@ define(['jquery',
     return {
 
         // For making multiple instances
-        clone: function() {
+        clone: function () {
             return $.extend(true, {}, this);
         },
 
-        init: function(index, itemdata, quizhelper) {
+        init: function (index, itemdata, quizhelper) {
             var self = this;
             self.itemdata = itemdata;
             self.quizhelper = quizhelper;
@@ -37,7 +37,7 @@ define(['jquery',
             self.appReady();
         },
 
-        init_controls: function() {
+        init_controls: function () {
             var self = this;
             self.controls = {
                 container: $("#" + self.itemdata.uniqueid + "_container"),
@@ -58,13 +58,13 @@ define(['jquery',
             };
         },
 
-        init_strings: function() {
+        init_strings: function () {
             var self = this;
             str.get_strings([
-                { "key": "nextlessonitem", "component": 'mod_minilesson'},
-                { "key": "confirm_desc", "component": 'mod_minilesson'},
-                { "key": "yes", "component": 'moodle'},
-                { "key": "no", "component": 'moodle'},
+                { "key": "nextlessonitem", "component": 'mod_minilesson' },
+                { "key": "confirm_desc", "component": 'mod_minilesson' },
+                { "key": "yes", "component": 'moodle' },
+                { "key": "no", "component": 'moodle' },
             ]).done(function (s) {
                 var i = 0;
                 self.strings.nextlessonitem = s[i++];
@@ -74,25 +74,25 @@ define(['jquery',
             });
         },
 
-        next_question: function() {
+        next_question: function () {
             var self = this;
             var stepdata = {};
             stepdata.index = self.index;
             stepdata.hasgrade = true;
             stepdata.totalitems = self.items.length;
-            stepdata.correctitems = self.items.filter(function(e) {
+            stepdata.correctitems = self.items.filter(function (e) {
                 return e.correct;
             }).length;
             stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
             self.quizhelper.do_next(stepdata);
         },
 
-        show_item_review:function(){
-            var self=this;
+        show_item_review: function () {
+            var self = this;
             var review_data = {};
             review_data.items = self.items;
-            review_data.totalitems=self.items.length;
-            review_data.correctitems=self.items.filter(function(e) {return e.correct;}).length;
+            review_data.totalitems = self.items.length;
+            review_data.correctitems = self.items.filter(function (e) { return e.correct; }).length;
 
             //Get controls
             var listencont = self.controls.listen_cont;
@@ -102,34 +102,34 @@ define(['jquery',
             var resultsbox = self.controls.resultscontainer;
 
             //display results
-            templates.render('mod_minilesson/listitemresults',review_data).then(
-              function(html,js){
-                  resultsbox.html(html);
-                  //show and hide
-                  resultsbox.show();
-                  gamebox.hide();
-                  controlsbox.hide();
-                  listencont.hide();
-                  qbox.hide();
-                  //recorderbox.hide();
-                  // Run js for audio player events
-                  templates.runTemplateJS(js);
-              }
+            templates.render('mod_minilesson/listitemresults', review_data).then(
+                function (html, js) {
+                    resultsbox.html(html);
+                    //show and hide
+                    resultsbox.show();
+                    gamebox.hide();
+                    controlsbox.hide();
+                    listencont.hide();
+                    qbox.hide();
+                    //recorderbox.hide();
+                    // Run js for audio player events
+                    templates.runTemplateJS(js);
+                }
             );// End of templates
         },
 
-        register_events: function() {
+        register_events: function () {
 
             var self = this;
 
             // Next page button.
-            self.controls.nextbutton.on('click', function(e) {
+            self.controls.nextbutton.on('click', function (e) {
                 if (self.items.some(item => !item.answered)) {
                     notification.confirm(self.strings.nextlessonitem,
                         self.strings.confirm_desc,
                         self.strings.yes,
                         self.strings.no,
-                        function() {
+                        function () {
                             self.next_question();
                         }
                     );
@@ -139,12 +139,12 @@ define(['jquery',
             });
 
             // Start button.
-            self.controls.start_btn.on("click", function() {
+            self.controls.start_btn.on("click", function () {
                 self.start();
             });
 
             // Skip.
-            self.controls.skip_btn.on("click", function() {
+            self.controls.skip_btn.on("click", function () {
                 $(this).prop("disabled", true);
                 self.controls.check_btn.prop("disabled", true);
                 self.stopTimer(self.items[self.game.pointer].timer);
@@ -158,7 +158,7 @@ define(['jquery',
                     self.controls.skip_btn.prop("disabled", true);
                     self.controls.skip_btn.children('.fa').removeClass('fa-arrow-right');
                     self.controls.skip_btn.children('.fa').addClass('fa-spinner fa-spin');
-                    setTimeout(function() {
+                    setTimeout(function () {
                         self.controls.skip_btn.children('.fa').removeClass('fa-spinner fa-spin');
                         self.controls.skip_btn.children('.fa').addClass('fa-arrow-right');
                         self.controls.skip_btn.prop("disabled", false);
@@ -172,12 +172,12 @@ define(['jquery',
             });
 
             // Check.
-            self.controls.check_btn.on("click", function() {
+            self.controls.check_btn.on("click", function () {
                 self.check_answer();
             });
 
             // Listen for enter key on input boxes
-            self.controls.container.on("keydown", ".single-character", function(e) {
+            self.controls.container.on("keydown", ".single-character", function (e) {
                 if (e.which == 13) {
                     self.check_answer();
                 }
@@ -188,13 +188,13 @@ define(['jquery',
             pointer: 0
         },
 
-        check_answer: function() {
+        check_answer: function () {
             var self = this;
             var passage = self.items[self.game.pointer].parsedstring;
             var characterunputs = self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character');
             var transcript = [];
 
-            characterunputs.each(function() {
+            characterunputs.each(function () {
                 var index = $(this).data('index');
                 var value = $(this).val();
                 transcript.push = ({
@@ -203,16 +203,16 @@ define(['jquery',
                 });
             });
 
-            self.getComparison(passage, transcript, function(comparison) {
+            self.getComparison(passage, transcript, function (comparison) {
                 self.gotComparison(comparison);
             });
         },
 
-        getItems: function() {
+        getItems: function () {
             var self = this;
             var text_items = self.itemdata.sentences;
 
-            self.items = text_items.map(function(target) {
+            self.items = text_items.map(function (target) {
                 return {
                     target: target.sentence,
                     prompt: target.prompt,
@@ -225,26 +225,26 @@ define(['jquery',
                     audio: null,
                     imageurl: target.imageurl,
                 };
-            }).filter(function(e) {
+            }).filter(function (e) {
                 return e.target !== "";
             });
         },
 
-        appReady: function() {
+        appReady: function () {
             var self = this;
             self.controls.container.find('.tgapfill_not_loaded').hide();
             self.controls.container.find('.tgapfill_loaded').show();
-            if(self.itemdata.hidestartpage){
+            if (self.itemdata.hidestartpage) {
                 self.start();
-            }else{
+            } else {
                 self.controls.start_btn.prop("disabled", false);
             }
         },
 
-        gotComparison: function(comparison) {
+        gotComparison: function (comparison) {
             var self = this;
             var timelimit_progressbar = self.controls.progress_bar;
-            if (comparison) {
+            if (comparison.allcorrect) {
                 self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' .tgapfill_feedback[data-idx="' + self.game.pointer + '"]').addClass("fa fa-check");
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = true;
@@ -252,17 +252,24 @@ define(['jquery',
                 //make the input boxes green and move forward
                 self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input').addClass("ml_gapfill_char_correct");
 
-            //if they cant retry OR the time limit is up, move on
-            } else if(!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')) {
+                //if they cant retry OR the time limit is up, move on
+            } else if (!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')) {
                 self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' .tgapfill_feedback[data-idx="' + self.game.pointer + '"]').addClass("fa fa-times");
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = false;
                 self.items[self.game.pointer].typed = false;
             } else {
                 //it was wrong but they can retry
+                //mark the correct characters
+                comparison.charscorrect.forEach(function (iscorrect, index) {
+                    if (iscorrect) {
+                        self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character[data-index="' + index + '"]').addClass("ml_gapfill_char_correct");
+                    }
+                });
+
                 var thereply = self.controls.container.find('.tgapfill_reply_' + self.game.pointer);
                 anim.do_animate(thereply, 'shakeX animate__faster').then(
-                    function() {
+                    function () {
                         self.controls.ctrl_btn.prop("disabled", false);
                     }
                 );
@@ -272,7 +279,7 @@ define(['jquery',
             self.stopTimer(self.items[self.game.pointer].timer);
 
             if (self.game.pointer < self.items.length - 1) {
-                setTimeout(function() {
+                setTimeout(function () {
                     self.controls.container.find(".tgapfill_reply_" + self.game.pointer).hide();
                     self.game.pointer++;
                     self.nextPrompt();
@@ -282,54 +289,62 @@ define(['jquery',
             }
         },
 
-        getComparison: function(passage, transcript, callback) {
+        getComparison: function (passage, transcript, callback) {
             var self = this;
 
             self.controls.ctrl_btn.prop("disabled", true);
 
             var correctanswer = true;
+            var charscorrect = [];
 
-            passage.forEach(function(data, index) {
+            passage.forEach(function (data, index) {
                 var char = '';
 
                 if (data.type === 'input') {
-                    if (correctanswer === true) {
-                        char = self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character[data-index="' + index + '"]').val();
-                        if (char == '') {
-                            correctanswer = false;
-                        } else if (char != data.character) {
-                            correctanswer = false;
-                        }
+                    char = self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character[data-index="' + index + '"]').val();
+                    if (char == '') {
+                        correctanswer = false;
+                        charscorrect[index] = false;
+                    } else if (char != data.character) {
+                        correctanswer = false;
+                        charscorrect[index] = false;
+                    } else {
+                        charscorrect[index] = true;
                     }
                 }
             });
 
-            callback(correctanswer);
+            var comparison = {
+                allcorrect: correctanswer,
+                charscorrect: charscorrect
+            };
+
+            callback(comparison);
         },
 
-        end: function() {
+        end: function () {
             var self = this;
             self.controls.nextbutton.prop("disabled", true);
 
             //progress dots are updated on next_item. The last item has no next item, so we update from here
             self.updateProgressDots();
 
-            setTimeout(function() {
-                self.controls.nextbutton.prop("disabled",false);
-                if(self.quizhelper.showitemreview){
+            setTimeout(function () {
+                self.controls.nextbutton.prop("disabled", false);
+                if (self.quizhelper.showitemreview) {
                     self.show_item_review();
-                }else{
+                } else {
                     self.next_question();
                 }
             }, 2000);
         },
 
-        start: function() {
+        start: function () {
             var self = this;
 
             self.controls.ctrl_btn.prop("disabled", true);
 
-            self.items.forEach(function(item) {
+            self.items.forEach(function (item) {
                 item.spoken = "";
                 item.answered = false;
                 item.correct = false;
@@ -346,7 +361,7 @@ define(['jquery',
 
         },
 
-        nextPrompt: function() {
+        nextPrompt: function () {
 
             var self = this;
 
@@ -357,34 +372,34 @@ define(['jquery',
             self.nextReply();
         },
 
-        updateProgressDots: function() {
+        updateProgressDots: function () {
             var self = this;
             var color;
-            var progress = self.items.map(function(item, idx) {
-              color = "gray";
-              if (self.items[idx].answered && self.items[idx].correct) {
-                color = "green";
-              } else if (self.items[idx].answered && !self.items[idx].correct) {
-                color = "red";
-              }
-              return "<i style='color:" + color + "' class='fa fa-circle'></i>";
+            var progress = self.items.map(function (item, idx) {
+                color = "gray";
+                if (self.items[idx].answered && self.items[idx].correct) {
+                    color = "green";
+                } else if (self.items[idx].answered && !self.items[idx].correct) {
+                    color = "red";
+                }
+                return "<i style='color:" + color + "' class='fa fa-circle'></i>";
             }).join(" ");
             self.controls.title.html(progress);
         },
 
-        nextReply: function() {
+        nextReply: function () {
             var self = this;
             var code = "<div class='tgapfill_reply tgapfill_reply_" + self.game.pointer + " text-center' style='display:none;'>";
-            var brackets = {started: false, ended: false, index: null};
+            var brackets = { started: false, ended: false, index: null };
 
             code += "<div class='form-container'>";
-            self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
+            self.items[self.game.pointer].parsedstring.forEach(function (data, index) {
                 if (brackets.started && !brackets.ended && brackets.index !== data.index) {
                     brackets.started = brackets.ended = false;
                     code += '</span>';
                 }
                 if ((data.type === 'input' || data.type === 'mtext') && !brackets.started) {
-                    code += '<span class="form-input-phrase-online" data-mindex="'+data.index+'">';
+                    code += '<span class="form-input-phrase-online" data-mindex="' + data.index + '">';
                     brackets.started = true;
                 }
                 brackets.index = data.index;
@@ -402,20 +417,20 @@ define(['jquery',
             code += " <i data-idx='" + self.game.pointer + "' class='tgapfill_feedback'></i></div>";
 
             //hint - image
-            if( self.items[self.game.pointer].imageurl) {
+            if (self.items[self.game.pointer].imageurl) {
                 code += "<div class='minilesson_sentence_image'><div class='minilesson_padded_image'><img src='"
                     + self.items[self.game.pointer].imageurl + "' alt='Image for gap fill' /></div></div>";
             }
             //hint - definition
-            if( self.items[self.game.pointer].definition) {
+            if (self.items[self.game.pointer].definition) {
                 code += "<div class='definition-container'><div class='definition'>"
                     + self.items[self.game.pointer].definition + "</div>";
-            }            code += "</div>";
+            } code += "</div>";
             self.controls.question.append(code);
             var newreply = self.controls.container.find('.tgapfill_reply_' + self.game.pointer);
 
             anim.do_animate(newreply, 'zoomIn animate__faster', 'in').then(
-                function() {
+                function () {
                 }
             );
 
@@ -429,58 +444,93 @@ define(['jquery',
             self.startTimer();
         },
 
-        startTimer: function(){
+        startTimer: function () {
             var self = this;
             // If we have a time limit, set up the timer, otherwise return
             if (self.itemdata.timelimit > 0) {
-               // This is a function to start the timer (we call it conditionally below)
-                var doStartTimer = function() {
-                     // This shows progress bar
+                // This is a function to start the timer (we call it conditionally below)
+                var doStartTimer = function () {
+                    // This shows progress bar
                     self.controls.progress_container.show();
                     self.controls.progress_container.find('i').show();
                     var progresbar = self.controls.progress_container.find('#progresstimer').progressTimer({
                         height: '5px',
                         timeLimit: self.itemdata.timelimit,
-                        onFinish: function() {
+                        onFinish: function () {
                             self.controls.skip_btn.trigger('click');
                         }
                     });
-                    progresbar.each(function() {
+                    progresbar.each(function () {
                         self.items[self.game.pointer].timer.push($(this).attr('timer'));
                     });
                 }
 
                 // This adds the timer and starts it. But if we dont have a start page and its the first item
                 // we need to defer the timer start until the item is shown
-                if(self.itemdata.hidestartpage && self.game.pointer === 0){
+                if (self.itemdata.hidestartpage && self.game.pointer === 0) {
                     self.controls.container.on("showElement", () => {
                         doStartTimer();
                     });
-                }else{
+                } else {
                     doStartTimer();
                 }
             }
         },
 
-        stopTimer: function(timers) {
+        stopTimer: function (timers) {
             if (timers.length) {
-                timers.forEach(function(timer) {
+                timers.forEach(function (timer) {
                     clearInterval(timer);
                 });
             }
         },
 
-        formReady: function(inputElements) {
-            inputElements.forEach(function(ele, index) {
-                ele.addEventListener("keydown", function(e) {
-                    // If the keycode is backspace & the current field is empty
-                    // focus the input before the current. Then the event happens
-                    // which will clear the "before" input box.
-                    if (e.keyCode === 8 && e.target.value === "") {
-                     inputElements[Math.max(0, index - 1)].focus();
+        formReady: function (inputElements) {
+            inputElements.forEach(function (ele, index) {
+                ele.addEventListener("keydown", function (e) {
+                    switch (e.keyCode) {
+                        case 8:
+                            // If the keycode is backspace & the current field is empty
+                            // focus the input before the current. Then the event happens
+                            // which will clear the "before" input box.
+                            if (e.target.value === "") {
+                                inputElements[Math.max(0, index - 1)].focus();
+                            } else {
+                                // Remove class "ml_gapfill_char_correct" from the current element
+                                e.target.classList.remove("ml_gapfill_char_correct");
+                            }
+                            break;
+                        case 39:
+                            // If the keycode is right arrow & the current field is not empty
+                            // focus the input after the current. 
+                            //if (e.target.value !== "") {
+                            if (true) {
+                                e.preventDefault();
+                                inputElements[Math.min(inputElements.length - 1, index + 1)].focus();
+                            }
+                            break;
+                        case 37:
+                            // If the keycode is left arrow & the current field is not empty
+                            // focus the input before the current. 
+                            //if (e.target.value !== "") {
+                            if (true) {
+                                e.preventDefault();
+                                inputElements[Math.max(0, index - 1)].focus();
+                            }
+                            break;
+                        default:
+                            // If the current field is not empty AND new value is not shift/enter/control etc   
+                            // replace the current value with the newly typed value
+                            if (e.target.value !== "" && e.key.length === 1) {
+                                e.target.value = e.target.value.replace(e.target.value, e.key);
+                                // Remove class "ml_gapfill_char_correct" from the current element
+                                e.target.classList.remove("ml_gapfill_char_correct");
+                                e.target.dispatchEvent(new Event("input"));
+                            }
+                            break;
                     }
                 });
-                ele.addEventListener("input", function(e) {
+                ele.addEventListener("input", function (e) {
                     // Take the first character of the input
                     // this actually breaks if you input an emoji like 👨‍👩‍👧‍👦....
                     // but I'm willing to overlook insane security code practices.
@@ -491,8 +541,10 @@ define(['jquery',
                     if (didInsertContent && !lastInputBox) {
                         // Continue to input the rest of the string
                         inputElements[index + 1].focus();
-                        inputElements[index + 1].value = rest.join("");
-                        inputElements[index + 1].dispatchEvent(new Event("input"));
+                        if (rest.length > 0) {
+                            inputElements[index + 1].value = rest.join("");
+                            inputElements[index + 1].dispatchEvent(new Event("input"));
+                        }
                     }
                 });
             });

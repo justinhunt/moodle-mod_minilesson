@@ -71,11 +71,9 @@ class rsquestion_renderer extends \plugin_renderer_base
         $qtypes[] = constants::TYPE_WORDSHUFFLE;
         $qtypes[] = constants::TYPE_SCATTER;
         $qtypes[] = constants::TYPE_SLIDES;
-        if ($region != "ningxia") {
-            $qtypes[] = constants::TYPE_FLUENCY;
-            if ($config->openaikey && !empty($config->openaikey)) {
-                $qtypes[] = constants::TYPE_AUDIOCHAT;
-            }
+        $qtypes[] = constants::TYPE_FLUENCY;
+        if ($config->openaikey && !empty($config->openaikey)) {
+            $qtypes[] = constants::TYPE_AUDIOCHAT;
         }
         if (isset($CFG->minilesson_experimental) && $CFG->minilesson_experimental) {
             $qtypes[] = constants::TYPE_SMARTFRAME;
