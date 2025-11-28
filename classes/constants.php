@@ -249,6 +249,7 @@ class constants
     const TTS_SLOW = 1;
     const TTS_VERYSLOW = 2;
     const TTS_SSML = 3;
+    const TTS_NOTTS = 4;
 
     const ALL_VOICES_NINGXIA = array(
         constants::M_LANG_ARAE => ['Hala' => 'Hala', 'Zayd' => 'Zayd'],

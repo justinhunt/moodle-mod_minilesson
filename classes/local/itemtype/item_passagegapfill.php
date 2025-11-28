@@ -107,9 +107,18 @@ class  item_passagegapfill extends item {
         $testitem->passagedata = $passagedata;
 
         //Item audio
-        $testitem->passageaudio = utils::fetch_polly_url($this->token, $this->region,
-            $plaintext, $this->itemrecord->{constants::POLLYOPTION},
-            $this->itemrecord->{constants::POLLYVOICE});
+        if( $this->itemrecord->{constants::POLLYOPTION} != constants::TTS_NOTTS){
+            $testitem->passageaudio = utils::fetch_polly_url($this->token, $this->region,
+                $plaintext, $this->itemrecord->{constants::POLLYOPTION},
+                $this->itemrecord->{constants::POLLYVOICE});
+        } else {
+            $custompassageaudio = $this->fetch_sentence_media('audio', 1);
+            if ($custompassageaudio && count($custompassageaudio) > 0) {
+                $testitem->passageaudio = array_shift($custompassageaudio); 
+            } else  {
+                $testitem->passageaudio = false;   
+            }
+        }
 
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
@@ -145,7 +154,8 @@ class  item_passagegapfill extends item {
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['text1'] = ['jsonname' => 'passage', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::PASSAGEGAPFILL_PASSAGE];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PASSAGEGAPFILL_HINTS];
-         $keycols['int2'] = ['jsonname' => 'penalizehints', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PENALIZEHINTS];
+        $keycols['int2'] = ['jsonname' => 'penalizehints', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PENALIZEHINTS];
+        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         return $keycols;
     }
 

@@ -588,7 +588,7 @@ $string['audiostoryfiles'] = 'Audio Story Files';
 
 //showtextprompt
 $string['enablesetuptab']="Enable setup tab";
-$string['enablesetuptab_details']="Probably don't check this. It will show a tab containing the activity instance settings to admins. This is for a special use case and minilesson pages will show without headers,footers or blocks.";
+$string['enablesetuptab_details']="Don't check this. It will show a tab containing the activity instance settings to admins. This is for a special use case and minilesson pages will show without headers,footers or blocks.";
 $string['setup']="Setup";
 
 //TTS options
@@ -596,8 +596,10 @@ $string['ttsnormal']='Normal';
 $string['ttsslow']='Slow';
 $string['ttsveryslow']='Very Slow';
 $string['ttsssml']='SSML';
+$string['tts_notts']='No TTS';
 $string['choosevoiceoption']='TTS prompt options';
 $string['autoplay']='Autoplay';
+$string['customaudio'] = 'Custom Audio';
 
 $string['reportsmenutoptext'] = "Review grade and attempts details using the report buttons below.";
 

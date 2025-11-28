@@ -722,7 +722,7 @@ abstract class baseform extends \moodleform
         }
     }
 
-    protected final function add_sentenceaudio($name_or_count, $label = null, $required = false)
+    protected final function add_sentenceaudio($name_or_count, $label = null, $required = false, $maxfiles = -1)
     {
         if ($label === null) {
             $label = get_string('sentenceaudio', constants::M_COMPONENT);
@@ -737,7 +737,7 @@ abstract class baseform extends \moodleform
 
         $filemanageroptions = $this->filemanageroptions;
         $filemanageroptions['accepted_types'] = 'audio';
-        $filemanageroptions['maxfiles'] = -1;
+        $filemanageroptions['maxfiles'] = $maxfiles;
         $this->_form->addElement('filemanager', "{$element}_audio", $label, [], $filemanageroptions);
         $this->_form->addHelpButton("{$element}_audio", 'sentenceaudio', constants::M_COMPONENT);
         if ($required) {
@@ -960,10 +960,10 @@ abstract class baseform extends \moodleform
      * @param string $label, null means default
      * @return void
      */
-    protected final function add_voiceoptions($name, $label = null, $hideif_field = false, $hideif_values = [], $no_ssml = false)
+    protected final function add_voiceoptions($name, $label = null, $hideif_field = false, $hideif_values = [], $no_ssml = false, $nottsoption = false)
     {
         global $CFG;
-        $voiceoptions = utils::get_tts_options($no_ssml);
+        $voiceoptions = utils::get_tts_options($no_ssml, $nottsoption);
         $this->add_dropdown($name, $label, $voiceoptions);
         $m35 = $CFG->version >= 2018051700;
         if ($hideif_field !== false && !empty($hideif_values)) {

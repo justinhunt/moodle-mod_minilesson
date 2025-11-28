@@ -17,13 +17,24 @@ class passagegapfillform extends baseform {
     public function custom_definition() {
         $this->add_itemsettings_heading();
         $this->add_static_text('instructions', '', get_string('passagegapfilldesc', constants::M_COMPONENT));
-        //voice
-        $this->add_ttsaudioselect(constants::POLLYVOICE, get_string('choosevoice', constants::M_COMPONENT));
+        
+        // Audio TTS or Custom
         $nossml = true;
-        $hideiffield = false;
+        $hideiffield = false;   
         $hideifvalue = false;
+        $nottsoption = true;
+        // Audio options
         $this->add_voiceoptions(constants::POLLYOPTION, get_string('choosevoiceoption', constants::M_COMPONENT),
-            $hideiffield, $hideifvalue, $nossml);
+            $hideiffield, $hideifvalue, $nossml, $nottsoption);
+        //TTS audio
+        $this->add_ttsaudioselect(constants::POLLYVOICE, get_string('choosevoice', constants::M_COMPONENT));
+        $this->_form->hideIf(constants::POLLYVOICE, constants::POLLYOPTION, 'eq', constants::TTS_NOTTS);
+        
+        //Custom  audio
+        $customaudiolabel = get_string('customaudio', constants::M_COMPONENT);  
+        $this->add_sentenceaudio(1, $customaudiolabel, false, 1);
+        $this->_form->hideIf(constants::FILEANSWER.'1_audio', constants::POLLYOPTION, 'neq', constants::TTS_NOTTS);
+        
         //passage
         $this->add_textarearesponse(constants::PASSAGEGAPFILL_PASSAGE, get_string('passagewithgaps', constants::M_COMPONENT), true);
 

@@ -1852,7 +1852,7 @@ class utils
         return $ret;
     }
 
-    public static function get_tts_options($nossml = false)
+    public static function get_tts_options($nossml = false, $nottsoption = false)
     {
         $ret = [
             constants::TTS_NORMAL => get_string('ttsnormal', constants::M_COMPONENT),
@@ -1861,6 +1861,9 @@ class utils
         ];
         if (!$nossml) {
             $ret += [constants::TTS_SSML => get_string('ttsssml', constants::M_COMPONENT)];
+        }   
+        if ($nottsoption) {
+            $ret += [constants::TTS_NOTTS => get_string('tts_notts', constants::M_COMPONENT)];
         }
         return $ret;
     }
