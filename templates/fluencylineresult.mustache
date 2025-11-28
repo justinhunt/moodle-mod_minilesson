@@ -5,7 +5,7 @@
             {{letter}}
         </span>
     {{/alignmentdata}}
-    <div class="ml_fluencyphonemesbar">
+    <div class="ml_fluencyphonemesbar" {{^wordphonemes}} style="display:none;" {{/wordphonemes}}>
         {{#wordphonemes}}
             <span class='fluencyphoneme {{.}}'></span>
         {{/wordphonemes}}

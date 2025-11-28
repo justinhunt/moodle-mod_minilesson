@@ -18,8 +18,6 @@ namespace mod_minilesson\local\itemtype;
 
 use mod_minilesson\constants;
 use mod_minilesson\utils;
-use templatable;
-use renderable;
 
 /**
  * Renderable class for a speakinggapfill item in a minilesson activity.
@@ -50,9 +48,7 @@ class item_speakinggapfill extends item {
      */
     public function export_for_template(\renderer_base $output) {
 
-        $testitem = new \stdClass();
-        $testitem = $this->get_common_elements($testitem);
-        $testitem = $this->get_text_answer_elements($testitem);
+        $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
         $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
@@ -89,7 +85,7 @@ class item_speakinggapfill extends item {
 
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
-
+        $testitem->newui = true;
         return $testitem;
     }
 

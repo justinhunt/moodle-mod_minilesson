@@ -1,13 +1,21 @@
 {{> mod_minilesson/questionheader}}
-<div class="minilesson_fluency_box">
+<div class="minilesson_fluency_box mt-5">
     <div style="display:none;" class="fluency_results">{{#str}}fluencyresults, mod_minilesson{{/str}}</div>
 
-    <div class="fluency_title text-center">{{#str}}fluency, mod_minilesson{{/str}}</div>
+    <div class="fluency_maintitle" style="display: none">{{iteminstructions}}</div>
 
-    <div class="fluency_mainmenu">
+    <div class="fluency_image_container text-center pt-5">
+        <img class="fluency_image" src="{{{itemimageurl}}}" alt="{{#str}}fluency, mod_minilesson{{/str}}">
+    </div>
+
+    <div class="fluency_title text-center mt-3">{{#str}}fluency, mod_minilesson{{/str}}</div>
+
+    <div class="fluency_description mt-3 text-center">{{iteminstructions}}</div>
+
+    <div class="fluency_mainmenu mt-3 pb-5">
         <div class="fluency_loaded" style="display:none;">
-            <button disabled class='btn btn-block btn-primary fluency_start_btn'>
-                <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
+            <button disabled class='btn btn-block fluency_start_btn'>
+                {{#str}}start, mod_minilesson{{/str}}  <i class='fa fa-play ml-1'></i>
             </button>
         </div>
         <div class="fluency_not_loaded">
@@ -18,21 +26,21 @@
         {{> mod_minilesson/progresstimer }}
 
         <div style="display:none;" class="fluency_listen_cont">
-            <button class="btn btn-secondary fluency_listen_btn audiomodel">
-                <i class="fa fa-play"></i>
+            <button class="btn  fluency_listen_btn audiomodel">
+                <i class="fa fa-volume-up"></i>
             </button>
-            <button class="btn btn-secondary fluency_listen_btn audioself" style="display: none">
+            <button class="btn  fluency_listen_btn audioself ml-3" style="display: none">
                 <i class="fa fa-play"></i>
             </button>
         </div>
 
         <div style="display:none;" class="question"></div>
         <div class="ml_fluency_pendingbox hidden"><center><i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i></center></div>
-        <div style="display:none;" class="fluency_controls">
-            <div class="ml_fluency_speakbtncontainer" style="width:246px;margin:auto;position: absolute;left: 0px;right: 0px;bottom: 0px;display: block;">
+        <div style="display:none;" class="fluency_controls pb-2">
+            <div class="ml_fluency_speakbtncontainer">
                     {{> mod_minilesson/ttrecorder}}
             </div>
-            <button class="btn btn-danger fluency_ctrl_btn fluency_skip_btn">
+            <button class="btn fluency_ctrl_btn fluency_skip_btn my-4">
                 <span class="skip_btn_label mobileaccesshide">{{#str}}skip-fluency, mod_minilesson{{/str}}</span> <i class="fa fa-arrow-right"></i>
             </button>
         </div>

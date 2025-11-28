@@ -4,8 +4,10 @@
   <!-- @@CLOUDPOODLLTOKEN@@ -->
   <!-- title + instructions -->
     {{#title}}<div class="minilesson_questionheader"><b>{{{title}}}</b></div>{{/title}}
+    {{^newui}}
     {{#iteminstructions}}<div class="mod_minilesson_iteminstructions">{{iteminstructions}}</div>{{/iteminstructions}}
     {{#itemtext}}<div class="mod_minilesson_itemtext {{rtl}}">{{{itemtext}}}</div>{{/itemtext}}
+    {{/newui}}
     {{#itemttsaudio}}<div class="mod_minilesson_itemttsaudio_cont">{{> mod_minilesson/ttsaudio}}</div>{{/itemttsaudio}}
     {{#horizontal}}
     <div class="row" style="margin-top: 20px;">
