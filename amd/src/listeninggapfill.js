@@ -60,6 +60,9 @@ define(['jquery',
                 progress_bar: $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar"),
                 question: $("#" + self.itemdata.uniqueid + "_container .question"),
                 listen_btn: $("#" + self.itemdata.uniqueid + "_container .lgapfill_listen_btn"),
+                description: $("#" + self.itemdata.uniqueid + "_container .lgapfill_description"),
+                image: $("#" + self.itemdata.uniqueid + "_container .lgapfill_image_container"),
+                maintitle: $("#" + self.itemdata.uniqueid + "_container .lgapfill_maintitle"),
             };
         },
 
@@ -100,6 +103,20 @@ define(['jquery',
             var self=this;
             var review_data = {};
             review_data.items = self.items;
+            self.items.forEach(function(item){
+                var itemwordlist = [];
+                item.parsedstring.forEach(function(data) {
+                    if (data.type === 'input' || data.type === 'mtext') {
+                        itemwordlist.push(data.character);
+                    }
+                });
+                var wordmatch = itemwordlist.join("");
+                var regex = new RegExp(wordmatch, "gi");
+                var answerclass = item.correct ? 'correctitem' : 'wrongitem';
+                var result = item.target.replace(regex, ` <span class="${answerclass}">${wordmatch}</span>`);
+                item.target = result;
+            });
+
             review_data.totalitems=self.items.length;
             review_data.correctitems=self.items.filter(function(e) {return e.correct;}).length;
 
@@ -159,20 +176,17 @@ define(['jquery',
                 if(!theaudio.paused){
                     theaudio.pause();
                     theaudio.currentTime=0;
-                    $(audioplayerbtn).children('.fa').removeClass('fa-stop');
-                    $(audioplayerbtn).children('.fa').addClass('fa-volume-up');
+                    $(audioplayerbtn).removeClass('activeanimation');
                     return;
                 }
 
                 //change icon to indicate playing state
                 theaudio.addEventListener('ended', function(){
-                    $(audioplayerbtn).children('.fa').removeClass('fa-stop');
-                    $(audioplayerbtn).children('.fa').addClass('fa-volume-up');
+                    $(audioplayerbtn).removeClass('activeanimation');
                 });
 
                 theaudio.addEventListener('play', function(){
-                    $(audioplayerbtn).children('.fa').removeClass('fa-volume-up');
-                    $(audioplayerbtn).children('.fa').addClass('fa-stop');
+                    $(audioplayerbtn).addClass('activeanimation');
                 });
 
                 theaudio.load();
@@ -433,6 +447,9 @@ define(['jquery',
             setTimeout(function() {
                 self.controls.nextbutton.prop("disabled",false);
                 if(self.quizhelper.showitemreview){
+                    self.controls.progress_container.removeClass('d-flex');
+                    self.controls.progress_container.hide();
+                    self.controls.title.hide();
                     self.show_item_review();
                 }else{
                     self.next_question();
@@ -456,6 +473,9 @@ define(['jquery',
             self.controls.question.show();
             self.controls.game.show();
             self.controls.start_btn.hide();
+            self.controls.description.hide();
+            self.controls.image.hide();
+            self.controls.maintitle.show();
             self.controls.mainmenu.hide();
             self.controls.controlsbox.show();
 
@@ -492,14 +512,18 @@ define(['jquery',
         updateProgressDots: function() {
             var self = this;
             var color;
+            var icon;
             var progress = self.items.map(function(item, idx) {
-              color = "gray";
+              color = "#E6E9FD";
+              icon = "fa fa-square";
               if (self.items[idx].answered && self.items[idx].correct) {
-                color = "green";
+                color = "#74DC72";
+                icon = "fa fa-check-square";
               } else if (self.items[idx].answered && !self.items[idx].correct) {
-                color = "red";
+                color = "#FB6363";
+                icon = "fa fa-window-close";
               }
-              return "<i style='color:" + color + "' class='fa fa-circle'></i>";
+              return "<i style='color:" + color + "' class='"+ icon +" pl-1'></i>";
             }).join(" ");
             self.controls.title.html(progress);
         },
@@ -541,6 +565,8 @@ define(['jquery',
             //hint - definition
             if( self.items[self.game.pointer].definition) {
                 code += "<div class='definition-container'><div class='definition'>"
+                    + "<div class='hinticon-container'><i class='fa fa-lightbulb-o hinticon'></i></div>"
+                    + "<h4 class='hint-title'>Hint</h4>"
                     + self.items[self.game.pointer].definition + "</div>";
             }
 
@@ -571,6 +597,7 @@ define(['jquery',
                 var doStartTimer = function() {
                      // This shows progress bar
                     self.controls.progress_container.show();
+                    self.controls.progress_container.addClass('d-flex align-items-center');
                     self.controls.progress_container.find('i').show();
                     var progresbar = self.controls.progress_container.find('#progresstimer').progressTimer({
                         height: '5px',

@@ -31,6 +31,9 @@ use renderable;
 abstract class item implements templatable, renderable
 {
 
+    //the item type
+    public const ITEMTYPE = '';
+
     /** @var boolean force titles */
     protected $forcetitles;
 
@@ -264,10 +267,9 @@ abstract class item implements templatable, renderable
     public function export_for_template(\renderer_base $output)
     {
         $testitem = new \stdClass();
+        $testitem->itemimageurl = (string) $output->image_url(static::ITEMTYPE, constants::M_COMPONENT);
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
-        $testitem = $this->get_polly_options($testitem);
-        $testitem = $this->set_layout($testitem);
 
         return $testitem;
     }

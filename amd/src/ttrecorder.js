@@ -372,19 +372,28 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
                 }
                 //the color
                 //we no longer swap out colors for waiting .. its too fast and a bit jarring
-                if(that.audio.isRecognizing || that.audio.isRecording || that.audio.isWaiting){
+                if(that.audio.isRecognizing || that.audio.isWaiting){
                     this.controls.recorderbutton.removeClass('ttrec_ready');
                     this.controls.recorderbutton.removeClass('ttrec_waiting');
                     this.controls.waveform.removeClass('ttrec_waiting');
+                    this.controls.recorderbutton.removeClass('ttrec_isrecording');
                     this.controls.recorderbutton.addClass('ttrec_engaged');
+                } else if (that.audio.isRecording) {
+                    this.controls.recorderbutton.removeClass('ttrec_ready');
+                    this.controls.waveform.removeClass('ttrec_waiting');
+                    this.controls.recorderbutton.removeClass('ttrec_waiting');
+                    this.controls.recorderbutton.removeClass('ttrec_engaged');
+                    this.controls.recorderbutton.addClass('ttrec_isrecording');
                 }else if (that.audio.isWaiting && false) {
                     this.controls.recorderbutton.removeClass('ttrec_engaged');
                     this.controls.recorderbutton.removeClass('ttrec_ready');
+                    this.controls.recorderbutton.removeClass('ttrec_isrecording');
                     this.controls.recorderbutton.addClass('ttrec_waiting');
                     this.controls.waveform.addClass('ttrec_waiting');
                 }else{
                     this.controls.recorderbutton.removeClass('ttrec_engaged');
                     this.controls.recorderbutton.removeClass('ttrec_waiting');
+                    this.controls.recorderbutton.removeClass('ttrec_isrecording');
                     this.controls.waveform.removeClass('ttrec_waiting');
                     this.controls.recorderbutton.addClass('ttrec_ready');
                 }

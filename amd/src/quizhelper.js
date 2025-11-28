@@ -198,11 +198,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
         if(total<6) {
             var slice = array.slice(0, 5);
-            var linestyles = "width: " + (100 - 100 / slice.length) + "%; margin-left: auto; margin-right: auto";
-            var html = "<div class='minilesson_quiz_progress_line' style='" + linestyles + "'></div>";
-
+            var slicelength = slice.length > 1 ? (slice.length - 1) : slice.length;
+            var itemWidth = 100 / slicelength;
+            var innerclass,innerhtml,html = "";
             slice.forEach(function (i) {
-                html += "<div class='minilesson_quiz_progress_item " + (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " + (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
+                innerclass = i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
+                innerhtml = (i !== (slice.length-1)) ? "<div class='" + innerclass + "' style='width: "+ itemWidth +"%; '></div>" : "";
+                html += "<div class='minilesson_quiz_progress_item " +
+                (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " +
+                (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" +
+                (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>" + innerhtml;
             });
         }else {
              if(current > total-6){
@@ -210,16 +215,15 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
              }else{
                  var slice = array.slice(current, current + 4);
              }
-
-              //if first item is visible then no line trailing left of item 1
-              if(current==0){
-                  var linestyles = "width: 80%; margin-left: auto; margin-right: auto";
-              }else {
-                  var linestyles = "width: " + (100 - 100 / (2 *slice.length)) + "%; margin-left: 0";
-              }
-            var html = "<div class='minilesson_quiz_progress_line' style='" + linestyles + "'></div>";
+            var slicelength = slice.length > 1 ? (slice.length - 1) : slice.length;
+            var itemWidth = 100 / slicelength;
+            var html = "",innerhtml,innerclass;
+            var lastvalue = slice[slice.length - 1];
               slice.forEach(function (i) {
-                  html += "<div class='minilesson_quiz_progress_item " + (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " + (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" + (i + 1) + "</div>";
+              html += "<div class='minilesson_quiz_progress_item " + (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " + (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" + (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>";
+              innerclass = (i === lastvalue && i < total - 2) ? "minilesson_quiz_progress_dashedline" : i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
+              innerhtml = "<div class='" + innerclass + "' style='width: "+ itemWidth +"%; '></div>";
+              html += innerhtml;
               });
               //end marker
             html += "<div class='minilesson_quiz_progress_finalitem'>" + (total) + "</div>";

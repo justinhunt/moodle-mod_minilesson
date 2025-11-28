@@ -239,7 +239,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
             var width = this.canvas.width() * 2;
             this.listener.getByteTimeDomainData(this.analyserData);
 
-            this.canvasCtx.fillStyle = 'white';
+            this.canvasCtx.fillStyle = '#F5F5FE';
             this.canvasCtx.fillRect(0, 0, width, this.waveHeight*2);
 
             this.canvasCtx.lineWidth = 5;
