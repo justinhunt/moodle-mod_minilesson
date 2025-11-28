@@ -1,11 +1,20 @@
 {{> mod_minilesson/questionheader}}
-<div class="minilesson_tgapfill_player_box gapfill-container">
-    <div class="tgapfill_title text-center">{{#str}}typinggapfill, mod_minilesson{{/str}}</div>
+<div class="minilesson_tgapfill_player_box gapfill-container mt-5">
 
-    <div class="tgapfill_mainmenu">
+    <div class="tgapfill_maintitle" style="display: none">{{iteminstructions}}</div>
+
+    <div class="tgapfill_image_container text-center pt-5">
+        <img class="tgapfill_image" src="{{{itemimageurl}}}" alt="{{#str}}tgapfill, mod_minilesson{{/str}}">
+    </div>
+
+    <div class="tgapfill_title text-center mt-3">{{#str}}typinggapfill, mod_minilesson{{/str}}</div>
+
+    <div class="tgapfill_description mt-3 text-center">{{iteminstructions}}</div>
+
+    <div class="tgapfill_mainmenu mt-3 pb-5">
         <div class="tgapfill_loaded" style="display:none;">
             <button disabled class='btn btn-block btn-primary tgapfill_start_btn'>
-                <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
+                {{#str}}start, mod_minilesson{{/str}} <i class='fa fa-play ml-1'></i>
             </button>
         </div>
         <div class="tgapfill_not_loaded">
@@ -17,12 +26,12 @@
 
     <div style="display:none;" class="question"></div>
 
-    <div style="display:none;" class="tgapfill_controls">
-        <button class="btn btn-success tgapfill_ctrl-btn tgapfill_check_btn">
+    <div style="display:none;" class="tgapfill_controls pb-3">
+        <button class="btn tgapfill_ctrl-btn tgapfill_check_btn">
             <i class="fa fa-check"></i> {{#str}}check, mod_minilesson{{/str}}
         </button>
 
-        <button class="btn btn-danger tgapfill_ctrl-btn tgapfill_skip_btn">
+        <button class="btn tgapfill_ctrl-btn tgapfill_skip_btn">
             {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
         </button>
     </div>

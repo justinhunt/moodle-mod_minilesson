@@ -1,9 +1,15 @@
-<div id="{{uniqid}}" class="ml_listitem_results">
-  <div class="ml_listitem_results_header">
-    <h3><i class="fa fa-trophy"></i> {{correctitems}}/{{totalitems}} {{#str}}correct , mod_minilesson{{/str}}</h3>
-    <hr />
+<div id="{{uniqid}}" class="ml_listitem_results p-md-5 p-3">
+  <div class="d-flex align-items-center justify-content-center">
+    <div class="result-container text-center position-relative">
+      <div class="star-container position-absolute d-flex align-items-center justify-content-center p-2">
+        <i class="fa fa-star"></i>
+      </div>
+      <h2 class="result-font"><span class="bigger-font">{{correctitems}}/</span>{{totalitems}}</h2>
+      <p class="correct-text"><i>{{#str}}correct , mod_minilesson{{/str}}</i></p>
+    </div>
   </div>
   <audio class="ml_listitem_resultsplayer"></audio>
+  <div class="ml_listitem-container mt-4 p-3">
   {{#items}}
     <div class="ml_listitem_result">
       {{#audio}}
@@ -27,6 +33,7 @@
       {{/correct}}
     </div>
   {{/items}}
+</div>
 </div>
 {{^element.frozen}}
 {{#js}}

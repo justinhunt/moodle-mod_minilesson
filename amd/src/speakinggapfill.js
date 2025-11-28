@@ -102,6 +102,9 @@ define(['jquery',
                 progress_bar: $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar"),
                 question: $("#" + self.itemdata.uniqueid + "_container .question"),
                 listen_btn: $("#" + self.itemdata.uniqueid + "_container .sgapfill_listen_btn"),
+                description: $("#" + self.itemdata.uniqueid + "_container .sgapfill_description"),
+                image: $("#" + self.itemdata.uniqueid + "_container .sgapfill_image_container"),
+                maintitle: $("#" + self.itemdata.uniqueid + "_container .sgapfill_maintitle"),
             };
         },
 
@@ -141,6 +144,21 @@ define(['jquery',
         show_item_review: function () {
             var self = this;
             var review_data = {};
+
+            self.items.forEach(function(item){
+                var itemwordlist = [];
+                item.parsedstring.forEach(function(data) {
+                    if (data.type === 'input' || data.type === 'mtext') {
+                        itemwordlist.push(data.character);
+                    }
+                });
+                var wordmatch = itemwordlist.join("");
+                var regex = new RegExp(wordmatch, "gi");
+                var answerclass = item.correct ? 'correctitem' : 'wrongitem';
+                var result = item.target.replace(regex, ` <span class="${answerclass}">${wordmatch}</span>`);
+                item.target = result;
+            });
+
             review_data.items = self.items;
             review_data.totalitems = self.items.length;
             review_data.correctitems = self.items.filter(function (e) { return e.correct; }).length;
@@ -340,11 +358,11 @@ define(['jquery',
             log.debug('allcorrect=' + allCorrect);
 
             if (allCorrect && comparison && comparison.length > 0) {
-
-                self.items[self.game.pointer].parsedstring.forEach(function (data, index) {
-                    var characterinput = self.controls.container.find('.sgapfill_reply_' + self.game.pointer + ' input.single-character[data-index="' + index + '"]');
-                    if (data.type === 'input') {
-                        characterinput.val(data.character);
+                // Fill in all the correct words
+                self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
+                    var characterinput = self.controls.container.find('.sgapfill_reply_' + self.game.pointer + ' .sgapfill_missing_input[data-index="' + index + '"]');
+                    if (characterinput && data.type === 'input') {
+                        characterinput.text(data.character);
                     }
                 });
 
@@ -352,7 +370,7 @@ define(['jquery',
                 feedback.addClass("fa fa-check");
                 //make the input boxes green and move forward
                 log.debug('applying correct class to input boxes');
-                self.controls.container.find('.sgapfill_reply_' + self.game.pointer + " input").addClass("ml_gapfill_char_correct");
+                self.controls.container.find('.sgapfill_reply_' + self.game.pointer + " .sgapfill_missing_input").addClass("ml_gapfill_char_correct");
 
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = true;
@@ -465,9 +483,12 @@ define(['jquery',
             //progress dots are updated on next_item. The last item has no next item, so we update from here
             self.updateProgressDots();
 
-            setTimeout(function () {
-                $(".minilesson_nextbutton").prop("disabled", false);
-                if (self.quizhelper.showitemreview) {
+            setTimeout(function() {
+                $(".minilesson_nextbutton").prop("disabled",false);
+                if(self.quizhelper.showitemreview){
+                    self.controls.progress_container.removeClass('d-flex');
+                    self.controls.progress_container.hide();
+                    self.controls.title.hide();
                     self.show_item_review();
                 } else {
                     self.next_question();
@@ -497,21 +518,27 @@ define(['jquery',
             self.controls.start_btn.hide();
             self.controls.mainmenu.hide();
             self.controls.controlsbox.show();
+            self.controls.maintitle.show();
+            self.controls.description.hide();
+            self.controls.image.hide();
 
             self.nextPrompt();
         },
 
         updateProgressDots: function () {
             var self = this;
-            var color;
-            var progress = self.items.map(function (item, idx) {
-                color = "gray";
+            var color,icon;
+            var progress = self.items.map(function(item, idx) {
+                color = "#E6E9FD";
+                icon = 'fa fa-square';
                 if (self.items[idx].answered && self.items[idx].correct) {
-                    color = "green";
+                    color = "#74DC72";
+                    icon = 'fa fa-check-square';
                 } else if (self.items[idx].answered && !self.items[idx].correct) {
-                    color = "red";
+                    color = "#FB6363";
+                    icon = 'fa fa-window-close';
                 }
-                return "<i style='color:" + color + "' class='fa fa-circle'></i>";
+                return "<i style='color:" + color + "' class='" + icon + " pl-1'></i>";
             }).join(" ");
             self.controls.title.html(progress);
         },
@@ -547,9 +574,9 @@ define(['jquery',
                 }
                 brackets.index = data.index;
                 if (data.type === 'input') {
-                    code += "<input class='single-character' autocomplete='off' type='text' name='filltext" + index + "' maxlength='1' data-index='" + index + "' readonly>";
+                    code += "<span class='sgapfill_missing_input' data-index='" + index + "'></span>";
                 } else if (data.type === 'mtext') {
-                    code += "<input class='single-character-mtext' type='text' name='readonly" + index + "' maxlength='1' value='" + data.character + "' readonly>";
+                    code += "<span class='sgapfill_missing_inputmtext'>"+ data.character +"</span>";
                 } else {
                     code += data.character;
                 }
@@ -571,6 +598,7 @@ define(['jquery',
             //hint - definition
             if (hasdefinition) {
                 code += "<div class='definition-container'><div class='definition'>"
+                    + "<div class='hinticon-container'><i class='fa fa-lightbulb-o hinticon'></i></div>"
                     + self.items[self.game.pointer].definition + "</div>";
             }
 
@@ -630,6 +658,7 @@ define(['jquery',
                 var doStartTimer = function () {
                     // This shows progress bar
                     self.controls.progress_container.show();
+                    self.controls.progress_container.addClass('d-flex align-items-center');
                     self.controls.progress_container.find('i').show();
                     var progresbar = self.controls.progress_container.find('#progresstimer').progressTimer({
                         height: '5px',

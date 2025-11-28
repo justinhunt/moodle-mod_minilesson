@@ -54,7 +54,10 @@ define(['jquery',
                 title: $("#" + self.itemdata.uniqueid + "_container .tgapfill_title"),
                 progress_container: $("#" + self.itemdata.uniqueid + "_container .progress-container"),
                 progress_bar: $("#" + self.itemdata.uniqueid + "_container .progress-container .progress-bar"),
-                question: $("#" + self.itemdata.uniqueid + "_container .question")
+                question: $("#" + self.itemdata.uniqueid + "_container .question"),
+                description: $("#" + self.itemdata.uniqueid + "_container .tgapfill_description"),
+                image: $("#" + self.itemdata.uniqueid + "_container .tgapfill_image_container"),
+                maintitle: $("#" + self.itemdata.uniqueid + "_container .tgapfill_maintitle"),
             };
         },
 
@@ -90,6 +93,21 @@ define(['jquery',
         show_item_review: function () {
             var self = this;
             var review_data = {};
+
+            self.items.forEach(function(item){
+                var itemwordlist = [];
+                item.parsedstring.forEach(function(data) {
+                    if (data.type === 'input' || data.type === 'mtext') {
+                        itemwordlist.push(data.character);
+                    }
+                });
+                var wordmatch = itemwordlist.join("");
+                var regex = new RegExp(wordmatch, "gi");
+                var answerclass = item.correct ? 'correctitem' : 'wrongitem';
+                var result = item.target.replace(regex, ` <span class="${answerclass}">${wordmatch}</span>`);
+                item.target = result;
+            });
+
             review_data.items = self.items;
             review_data.totalitems = self.items.length;
             review_data.correctitems = self.items.filter(function (e) { return e.correct; }).length;
@@ -329,9 +347,12 @@ define(['jquery',
             //progress dots are updated on next_item. The last item has no next item, so we update from here
             self.updateProgressDots();
 
-            setTimeout(function () {
-                self.controls.nextbutton.prop("disabled", false);
-                if (self.quizhelper.showitemreview) {
+            setTimeout(function() {
+                self.controls.nextbutton.prop("disabled",false);
+                if(self.quizhelper.showitemreview){
+                    self.controls.progress_container.removeClass('d-flex');
+                    self.controls.progress_container.hide();
+                    self.controls.title.hide();
                     self.show_item_review();
                 } else {
                     self.next_question();
@@ -355,6 +376,9 @@ define(['jquery',
             self.controls.question.show();
             self.controls.start_btn.hide();
             self.controls.mainmenu.hide();
+            self.controls.maintitle.show();
+            self.controls.description.hide();
+            self.controls.image.hide();
             self.controls.controlsbox.show();
 
             self.nextPrompt();
@@ -374,15 +398,18 @@ define(['jquery',
 
         updateProgressDots: function () {
             var self = this;
-            var color;
-            var progress = self.items.map(function (item, idx) {
-                color = "gray";
-                if (self.items[idx].answered && self.items[idx].correct) {
-                    color = "green";
-                } else if (self.items[idx].answered && !self.items[idx].correct) {
-                    color = "red";
-                }
-                return "<i style='color:" + color + "' class='fa fa-circle'></i>";
+            var color,icon;
+            var progress = self.items.map(function(item, idx) {
+              color = "#E6E9FD";
+              icon = "fa fa-square";
+              if (self.items[idx].answered && self.items[idx].correct) {
+                color = "#74DC72";
+                icon = "fa fa-check-square";
+              } else if (self.items[idx].answered && !self.items[idx].correct) {
+                color = "#FB6363";
+                icon = "fa fa-window-close";
+              }
+              return "<i style='color:" + color + "' class='" + icon + " pl-1'></i>";
             }).join(" ");
             self.controls.title.html(progress);
         },
@@ -424,6 +451,7 @@ define(['jquery',
             //hint - definition
             if (self.items[self.game.pointer].definition) {
                 code += "<div class='definition-container'><div class='definition'>"
+                    + "<div class='hinticon-container'><i class='fa fa-lightbulb-o hinticon'></i></div>"
                     + self.items[self.game.pointer].definition + "</div>";
             } code += "</div>";
             self.controls.question.append(code);
@@ -452,6 +480,7 @@ define(['jquery',
                 var doStartTimer = function () {
                     // This shows progress bar
                     self.controls.progress_container.show();
+                    self.controls.progress_container.addClass('d-flex align-items-center');
                     self.controls.progress_container.find('i').show();
                     var progresbar = self.controls.progress_container.find('#progresstimer').progressTimer({
                         height: '5px',
@@ -532,8 +561,6 @@ define(['jquery',
                 });
                 ele.addEventListener("input", function (e) {
                     // Take the first character of the input
-                    // this actually breaks if you input an emoji like 👨‍👩‍👧‍👦....
-                    // but I'm willing to overlook insane security code practices.
                     const [first, ...rest] = e.target.value;
                     e.target.value = first ?? ""; // First will be undefined when backspace was entered, so set the input to ""
                     const lastInputBox = index === inputElements.length - 1;

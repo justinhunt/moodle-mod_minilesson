@@ -193,7 +193,7 @@ define(['jquery', 'core/log'], function ($, log) {
             var width = this.canvas.width() * 2;
             var bufferLength=4096;
 
-            this.canvasCtx.fillStyle = 'white';
+            this.canvasCtx.fillStyle = '#F5F5FE';
             this.canvasCtx.fillRect(0, 0, width, this.waveHeight*2);
 
             this.canvasCtx.lineWidth = 5;

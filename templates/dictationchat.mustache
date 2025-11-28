@@ -1,13 +1,21 @@
 {{> mod_minilesson/questionheader}}
-  <div class="minilesson_dictate_player_box">
+  <div class="minilesson_dictate_player_box mt-5">
     <div style="display:none;" class="dictate_results">{{#str}}dc_results, mod_minilesson{{/str}}</div>
 
-    <div class="dictate_title text-center" style="display: none">{{#str}}listenandtype, mod_minilesson{{/str}}</div>
+    <div class="dictate_maintitle" style="display: none">{{iteminstructions}}</div>
 
-    <div class="dictate_mainmenu">
+    <div class="dictate_image_container text-center pt-5">
+        <img class="dictate_image" src="{{{itemimageurl}}}" alt="{{#str}}dictationchat, mod_minilesson{{/str}}">
+    </div>
+
+    <div class="dictate_title text-center mt-3">{{#str}}dictationchat, mod_minilesson{{/str}}</div>
+
+    <div class="dictate_description mt-3 text-center">{{iteminstructions}}</div>
+
+    <div class="dictate_mainmenu mt-3 pb-5">
       <div class="dictate_loaded" style="display:none;">
         <button disabled class='btn btn-block btn-primary dictate_start_btn'>
-              <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
+              {{#str}}start, mod_minilesson{{/str}} <i class='fa fa-play ml-1'></i>
         </button>
 
       </div>
@@ -16,20 +24,22 @@
       </div>
     </div>
 
+    <div class="dictate_listen_controler text-center my-3" style="display:none;">
+      <button class="btn dictate_ctrl-btn dictate_listen_btn">
+          <i class="fa fa-volume-up"></i>
+        </button>
+    </div>
+
     <div style="display:none;" class="dictate_game {{rtl}}"></div>
 
-    <div style="display:none;" class="dictate_controls">
+    <div style="display:none;" class="dictate_controls text-center p-4">
 
-      <button class="btn btn-secondary dictate_ctrl-btn dictate_listen_btn">
-            <i class="fa fa-volume-up"></i> {{#str}}listen, mod_minilesson{{/str}}
-        </button>
-
-      <button class="btn btn-success dictate_ctrl-btn dictate_check_btn">
+      <button class="btn dictate_ctrl-btn dictate_check_btn">
             <i class="fa fa-check"></i> {{#str}}check, mod_minilesson{{/str}}
         </button>
 
 
-      <button class="btn btn-danger dictate_ctrl-btn dictate_skip_btn">
+      <button class="btn dictate_ctrl-btn dictate_skip_btn">
             {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
         </button>
 

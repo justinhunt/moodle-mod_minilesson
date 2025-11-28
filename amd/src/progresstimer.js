@@ -78,9 +78,9 @@
         timeLimit: 60,// Total number of seconds
         warningThreshold: 5,// Seconds remaining triggering switch to warning color
         onFinish: function() {},// Invoked once the timer expires
-        baseStyle: 'bg-danger progress-bar progress-bar-animated',// Bootstrap progress bar style at the beginning of the timer
-        warningStyle: 'bg-danger progress-bar progress-bar-animated', // Bootstrap progress bar style in the warning phase
-        completeStyle: 'bg-danger progress-bar progress-bar-animated progress-bar-complete'// Bootstrap progress bar style at completion of timer
+        baseStyle: 'progressbar_basestyle progress-bar progress-bar-animated',// Bootstrap progress bar style at the beginning of the timer
+        warningStyle: 'progressbar_basestyle progress-bar progress-bar-animated', // Bootstrap progress bar style in the warning phase
+        completeStyle: 'progresstimer progress-bar progress-bar-animated progress-bar-complete'// Bootstrap progress bar style at completion of timer
     };
 }));
 /* jshint ignore:end */

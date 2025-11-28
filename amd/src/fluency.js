@@ -78,6 +78,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.mainstage = $("#" + self.itemdata.uniqueid + "_container .fluency_mainstage");
       self.controls = $("#" + self.itemdata.uniqueid + "_container .fluency_controls");
       self.progresscont = $("#" + self.itemdata.uniqueid + "_container .progress-container");
+      self.description = $("#" + self.itemdata.uniqueid + "_container .fluency_description");
+      self.image = $("#" + self.itemdata.uniqueid + "_container .fluency_image_container");
+      self.maintitle = $("#" + self.itemdata.uniqueid + "_container .fluency_maintitle");
+      self.title = $("#" + self.itemdata.uniqueid + "_container .fluency_title");
 
       // Callback: Recorder updates.
       var recorderCallback = function(message) {
@@ -230,29 +234,51 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       // On listen button click
       self.audioplayerbtn.on("click", function () {
         const $button = $(this);  // capture the button
+        var theaudioaudioself, theaudio;
         if($button.hasClass('audioself')) {
-          var theaudio = self.items[self.game.pointer].audioself;
+          theaudioaudioself = self.items[self.game.pointer].audioself;
         }else{
-          var theaudio = self.items[self.game.pointer].audio;
+          theaudio = self.items[self.game.pointer].audio;
         }
 
-        //if we are already playing stop playing
+        if (theaudioaudioself) {
+            if(!theaudioaudioself.paused){
+                theaudioaudioself.pause();
+                theaudioaudioself.currentTime=0;
+                $button.children('.fa').removeClass('fa-stop');
+                $button.children('.fa').addClass('fa-play');
+                return;
+        }
+
+            theaudioaudioself.addEventListener('ended', function () {
+                $button.children('.fa').removeClass('fa-stop');
+                $button.children('.fa').addClass('fa-play');
+            });
+
+            theaudioaudioself.addEventListener('play', function () {
+                $button.children('.fa').removeClass('fa-play');
+                $button.children('.fa').addClass('fa-stop');
+            });
+            theaudioaudioself.load();
+            theaudioaudioself.play();
+        }
+
         if(!theaudio.paused){
             theaudio.pause();
             theaudio.currentTime=0;
             $button.children('.fa').removeClass('fa-stop');
-            $button.children('.fa').addClass('fa-play');
+            $button.children('.fa').addClass('fa-volume-up');
             return;
         }
 
         //change icon to indicate playing state
         theaudio.addEventListener('ended', function () {
             $button.children('.fa').removeClass('fa-stop');
-            $button.children('.fa').addClass('fa-play');
+            $button.children('.fa').addClass('fa-volume-up');
         });
 
         theaudio.addEventListener('play', function () {
-            $button.children('.fa').removeClass('fa-play');
+            $button.children('.fa').removeClass('fa-volume-up');
             $button.children('.fa').addClass('fa-stop');
         });
         theaudio.load();
@@ -301,6 +327,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       setTimeout(function() {
           self.smallnextbtn.prop("disabled",false);
           if(self.quizhelper.showitemreview){
+               self.title.hide();
               self.show_item_review();
           }else{
               self.next_question();
@@ -327,6 +354,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.listencont.show();
       self.startbtn.hide();
       self.mainmenu.hide();
+      self.description.hide();
+      self.image.hide();
+      self.maintitle.show();
       self.controls.show();
 
       self.nextPrompt();
@@ -339,7 +369,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       review_data.correctitems = self.items.filter(function(e) {return e.correct;}).length;
       review_data.totalitems = self.items.length;
       var includeaudioself = true;
-      review_data.items = self.items_for_results_display(includeaudioself);
+      review_data.items = self.items_for_results_display(includeaudioself, true);
 
       //display results
       templates.render('mod_minilesson/listitemresults',review_data).then(
@@ -356,15 +386,18 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
   updateProgressDots: function(){
       var self = this;
-      var color;
+      var color,icon;
       var progress = self.items.map(function(item, idx) {
-          color = "gray";
+          color = "#E6E9FD";
+          icon = "fa fa-square";
           if (self.items[idx].answered && self.items[idx].correct) {
-              color = "green";
+              color = "#74DC72";
+              icon = 'fa fa-check-square';
           } else if (self.items[idx].answered && !self.items[idx].correct) {
-              color = "red";
+              color = "#FB6363";
+              icon = "fa fa-window-close";
           }
-          return "<i style='color:" + color + "' class='fa fa-circle'></i>";
+          return "<i style='color:" + color + "' class='"+ icon +" pl-1'></i>";
       }).join(" ");
       $("#" + self.itemdata.uniqueid + "_container .fluency_title").html(progress);
   },
@@ -406,7 +439,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
       //feedback and results containers
       code += "<div class='item-results-container'></div>";
-      code += "<div class='item-feedback-container'></div>";
+      code += "<div class='item-feedback-container my-4'></div>";
 
       $("#" + self.itemdata.uniqueid + "_container .question").append(code);
       var newreply = self.container.find(".fluency_reply_" + self.game.pointer);
@@ -415,10 +448,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
           }
       );
       self.ctrlbtns.prop("disabled", false);
-
-      //reset skip/continue button to red
-      self.skipbtn.removeClass('btn-success');
-      self.skipbtn.addClass('btn-danger');
 
       //Start timer if we have one
       self.startTimer();
@@ -458,6 +487,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             var doStartTimer = function() {
                     // This shows progress bar
                 self.progresscont.show();
+                self.progresscont.addClass('d-flex align-items-center');
                 self.progresscont.find('i').show();
                 var progresbar = self.progresscont.find('#progresstimer').progressTimer({
                     height: '5px',
@@ -469,7 +499,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 progresbar.each(function() {
                     self.items[self.game.pointer].timer.push($(this).attr('timer'));
                 });
-            }
+            };
 
             // This adds the timer and starts it. But if we dont have a start page and its the first item
             // we need to defer the timer start until the item is shown
@@ -501,7 +531,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
           }
       },
 
-    do_evaluation_feedback: function (pronunciation_result) {
+    do_evaluation_feedback: function (pronunciation_result, isReview) {
         var self = this;
         //this is part of the generated html for each sentence in the item, so we need to create a handle each time
         var itemfeedbackcontainer = self.container.find(".item-feedback-container");
@@ -594,7 +624,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                         letter: wordobject.Word,
                         phoneme: wordobject.Word,
                         score: thescore,
-                    })
+                    });
                 }
             }
 
@@ -603,8 +633,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 a.scoreclass = self.scoreToColorClass(a.score);
             });
 
-            // Store the results for this word
+            // Store the results for this word, excluding phoneme bars if in review mode
+            if (isReview) {
+                wordresults.push({alignmentdata: adata});
+            } else {
             wordresults.push({alignmentdata: adata, wordphonemes: word_phoneme_score_classes});
+            }
 
         });
 
@@ -621,6 +655,20 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 self.items[self.game.pointer].audioself.src = URL.createObjectURL(self.ttrec.audio.blob);
                 self.items[self.game.pointer].lineresulthtml = html;
 
+                // Also store a review version without phoneme bars if not already in review mode
+                if (!isReview) {
+                    // Generate review version without phoneme bars
+                    var wordresults_review = [];
+                    wordresults.forEach(function(wr) {
+                        wordresults_review.push({alignmentdata: wr.alignmentdata});
+                    });
+                    templates.render('mod_minilesson/fluencylineresult', {wordresults: wordresults_review}).then(
+                        function(reviewhtml, reviewjs) {
+                            self.items[self.game.pointer].lineresulthtml_review = reviewhtml;
+                        }
+                    );
+                }
+
                 //since we now have audio, show the self audio player button
                 self.audioplayerbtn_audioself.show();
 
@@ -635,16 +683,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
         var accuracyScore = pronunciation_result.accuracyScore;
         var warningthreshold = self.phonemeWarningThreshold;
-
-        if(accuracyScore >= warningthreshold) {
-            // If the pronunciation is good, make button green
-            self.skipbtn.removeClass('btn-danger');
-            self.skipbtn.addClass('btn-success');
-        }else{
-            // If the pronunciation is not good,
-            self.skipbtn.removeClass('btn-success');
-            self.skipbtn.addClass('btn-danger');
-        }
     },
 
     do_evaluation_stars: function(pronunciation_result) {
@@ -759,11 +797,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
     },
 
     //Prepare items for display in the listitemresults template (here and letter in finished review)
-    items_for_results_display: function(includeaudioself) {
+    items_for_results_display: function(includeaudioself, isReview) {
           var self = this;
           return self.items.map(function(target) {
+              var resulthtml = target.answered ? (isReview && target.lineresulthtml_review ? target.lineresulthtml_review : target.lineresulthtml) : target.target;
               return {
-                  target: target.answered ? target.lineresulthtml : target.target,
+                  target: resulthtml,
                   pronunciation_result: target.pronunciation_result,
                   answered: target.answered,
                   correct: target.correct,

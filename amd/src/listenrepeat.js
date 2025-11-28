@@ -100,6 +100,9 @@ define(['jquery',
         landr_feedback: $("#" + self.itemdata.uniqueid + "_container .landr_feedback"),
         landr_listen_btn: $("#" + self.itemdata.uniqueid + "_container .landr_listen_btn"),
         progress_container: $("#" + self.itemdata.uniqueid + "_container .progress-container"),
+        description: $("#" + self.itemdata.uniqueid + "_container .landr_description"),
+        image: $("#" + self.itemdata.uniqueid + "_container .landr_image_container"),
+        maintitle: $("#" + self.itemdata.uniqueid + "_container .landr_maintitle"),
       };
     },
 
@@ -139,6 +142,21 @@ define(['jquery',
 
     show_item_review: function () {
       var self = this;
+
+      self.items.forEach(function(item){
+          var itemwordlist = [];
+          item.landr_targetWords.forEach(function(data) {
+              if (data !== '') {
+                  itemwordlist.push(data);
+              }
+          });
+          var wordmatch = itemwordlist.join("");
+          var regex = new RegExp(wordmatch, "gi");
+          var answerclass = item.correct ? 'correctitem' : 'wrongitem';
+          var result = item.target.replace(regex, ` <span class="${answerclass}">${wordmatch}</span>`);
+          item.target = result;
+      });
+
       var review_data = {};
       review_data.items = self.items;
       review_data.totalitems = self.items.length;
@@ -161,6 +179,8 @@ define(['jquery',
             controlsbox.hide();
             recorderbox.hide();
             audioplayerbtn.hide();
+            self.controls.progress_container.hide();
+            self.controls.title.hide();
             // Run js for audio player events
             templates.runTemplateJS(js);
           }
@@ -448,6 +468,9 @@ define(['jquery',
 
       self.controls.game.show();
       self.controls.start_btn.hide();
+      self.controls.description.hide();
+      self.controls.image.hide();
+      self.controls.maintitle.show();
       self.controls.container.find('.landr_listen_cont').show();
       self.controls.mainmenu.hide();
       self.controls.controlsbox.show();
@@ -493,15 +516,18 @@ define(['jquery',
 
     updateProgressDots: function () {
       var self = this;
-      var color;
+      var color,icon;
       var progress = self.items.map(function (item, idx) {
-        color = "gray";
+        color = "#E6E9FD";
+        icon = "fa fa-square";
         if (self.items[idx].answered && self.items[idx].correct) {
-          color = "green";
+          color = "#74DC72";
+          icon = 'fa fa-check-square';
         } else if (self.items[idx].answered && !self.items[idx].correct) {
-          color = "red";
+          color = "#FB6363";
+          icon = "fa fa-window-close";
         }
-        return "<i style='color:" + color + "' class='fa fa-circle'></i>";
+        return "<i style='color:" + color + "' class='"+ icon +" pl-1'></i>";
       }).join(" ");
       self.controls.title.html(progress);
     },

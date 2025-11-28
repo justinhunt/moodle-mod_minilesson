@@ -53,6 +53,22 @@ define(['jquery',
 
     show_item_review:function(){
       var self=this;
+
+      self.items.forEach(function(item){
+          var itemwordlist = [];
+
+          item.dictate_targetWords.forEach(function(data) {
+              if (data !== '') {
+                  itemwordlist.push(data);
+              }
+          });
+          var wordmatch = itemwordlist.join("");
+          var regex = new RegExp(wordmatch, "gi");
+          var answerclass = item.correct ? 'correctitem' : 'wrongitem';
+          var result = item.target.replace(regex, ` <span class="${answerclass}">${wordmatch}</span>`);
+          item.target = result;
+      });
+
       var review_data = {};
       review_data.items = self.items;
       review_data.totalitems=self.items.length;
@@ -63,6 +79,9 @@ define(['jquery',
       var controlsbox = $("#" + self.itemdata.uniqueid + "_container .dictate_controls");
       var recorderbox = $("#" + self.itemdata.uniqueid + "_container .dictate_speakbtncontainer");
       var resultsbox = $("#" + self.itemdata.uniqueid + "_container .dictate_resultscontainer");
+      var resultsbox = $("#" + self.itemdata.uniqueid + "_container .dictate_resultscontainer");
+      var title = $("#" + self.itemdata.uniqueid + "_container .dictate_title");
+      var listencontroler = $("#" + self.itemdata.uniqueid + "_container .dictate_listen_controler");
       templates.render('mod_minilesson/listitemresults',review_data).then(
         function(html,js){
             resultsbox.html(html);
@@ -71,6 +90,8 @@ define(['jquery',
             gamebox.hide();
             controlsbox.hide();
             recorderbox.hide();
+            title.hide();
+            listencontroler.hide();
             // Run js for audio player events
             templates.runTemplateJS(js);
         }
@@ -89,9 +110,29 @@ define(['jquery',
         self.start();
       });
 
-      $("#" + self.itemdata.uniqueid + "_container .dictate_listen_btn").on("click", function() {
-        self.items[self.game.pointer].audio.load();
-        self.items[self.game.pointer].audio.play();
+      var audioplayerbtn = $("#" + self.itemdata.uniqueid + "_container .dictate_listen_btn");
+      audioplayerbtn.on("click", function() {
+        var theaudio = self.items[self.game.pointer].audio;
+        if(!theaudio.paused){
+          theaudio.pause();
+          theaudio.currentTime=0;
+          audioplayerbtn.children('.fa').removeClass('fa-stop');
+          audioplayerbtn.children('.fa').addClass('fa-volume-up');
+          return;
+        }
+
+        theaudio.addEventListener('ended', function () {
+          audioplayerbtn.children('.fa').removeClass('fa-stop');
+          audioplayerbtn.children('.fa').addClass('fa-volume-up');
+        });
+
+        theaudio.addEventListener('play', function () {
+          audioplayerbtn.children('.fa').removeClass('fa-volume-up');
+          audioplayerbtn.children('.fa').addClass('fa-stop');
+        });
+
+        theaudio.load();
+        theaudio.play();
       });
 
       //on skip button click
@@ -372,6 +413,10 @@ define(['jquery',
       $("#" + self.itemdata.uniqueid + "_container .dictate_start_btn").hide();
       $("#" + self.itemdata.uniqueid + "_container .dictate_mainmenu").hide();
       $("#" + self.itemdata.uniqueid + "_container .dictate_controls").show();
+      $("#" + self.itemdata.uniqueid + "_container .dictate_image_container").hide();
+      $("#" + self.itemdata.uniqueid + "_container .dictate_description").hide();
+      $("#" + self.itemdata.uniqueid + "_container .dictate_maintitle").show();
+      $("#" + self.itemdata.uniqueid + "_container .dictate_listen_controler").show();
 
       self.nextPrompt();
 
@@ -414,15 +459,18 @@ define(['jquery',
 
     updateProgressDots: function() {
       var self = this;
-      var color;
+      var color,icon;
       var progress = self.items.map(function(item, idx) {
-        color = "gray";
+        color = "#E6E9FD";
+        icon = "fa fa-square";
         if (self.items[idx].answered && self.items[idx].correct) {
-          color = "green";
+          color = "#74DC72";
+          icon = 'fa fa-check-square';
         } else if (self.items[idx].answered && !self.items[idx].correct) {
-          color = "red";
+          color = "#FB6363";
+          icon = "fa fa-window-close";
         }
-        return "<i style='color:" + color + "' class='fa fa-circle'></i>";
+        return "<i style='color:" + color + "' class='"+ icon +" pl-1'></i>";
       }).join(" ");
       $("#" + self.itemdata.uniqueid + "_container .dictate_title").html(progress);
     },

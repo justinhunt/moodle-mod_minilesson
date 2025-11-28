@@ -42,9 +42,7 @@ class item_spacegame extends item
     public function export_for_template(\renderer_base $output)
     {
 
-        $testitem = new \stdClass();
-        $testitem = $this->get_common_elements($testitem);
-        $testitem = $this->get_text_answer_elements($testitem);
+        $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
         $testitem->allowretry = $this->itemrecord->{constants::SG_ALLOWRETRY};
