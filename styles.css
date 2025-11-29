@@ -1141,6 +1141,18 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   background-color: green;
 }
 
+.minilesson-speechcards_button.minilesson-speechcards_nextbutton,
+.minilesson-speechcards_button.minilesson-speechcards_nextbutton:hover,
+.minilesson-speechcards_button.minilesson-speechcards_nextbutton:active,
+.minilesson-speechcards_button.minilesson-speechcards_nextbutton:focus {
+  background: #fff;
+  border-color: #5067ff;
+  border-radius: 10px;
+  color: #5067ff;
+  margin-left: 10px;
+}
+
+
 /* PROGRESS DOTS */
 
 .minilesson_progress_dots {
@@ -3971,6 +3983,30 @@ div.poodlldictationplayer {
   transform: translateY(-50%);
 }
 
+.minilesson_pgapfill_box .pgapfill_finish_btn,
+.minilesson_pgapfill_box .pgapfill_finish_btn:hover,
+.minilesson_pgapfill_box .pgapfill_finish_btn:focus,
+.minilesson_pgapfill_box .pgapfill_finish_btn:active {
+  width: 96px;
+  height: 36px;
+  border-radius: 8px;
+  background: #5067FF;
+  color: #FFFFFF;
+}
+
+
+.minilesson_pgapfill_box .pgapfill_hint_btn,
+.minilesson_pgapfill_box .pgapfill_hint_btn:hover,
+.minilesson_pgapfill_box .pgapfill_hint_btn:active,
+.minilesson_pgapfill_box .pgapfill_hint_btn:focus {
+  background: #fff;
+  border-color: #5067ff;
+  border-radius: 10px;
+  color: #5067ff;
+  margin-left: 10px;
+}
+
+
 .audiostoryplayer {
   margin: 0;
   padding: 20px;
@@ -6096,6 +6132,17 @@ span.wrongitem {
   margin-left: 2px;
   margin-right: 2px;
   border-radius: 5px;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_retry_btn,
+.minilesson_wordshuffle_player_box .wordshuffle_retry_btn:hover,
+.minilesson_wordshuffle_player_box .wordshuffle_retry_btn:focus,
+.minilesson_wordshuffle_player_box .wordshuffle_retry_btn:active {
+  width: 128px;
+  height: 36px;
+  border-radius: 8px;
+  background: #5067FF;
+  color: #FFFFFF;
 }
 
 .minilesson_wordshuffle_player_box .wordshuffle_check_btn,

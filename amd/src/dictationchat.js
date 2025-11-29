@@ -416,6 +416,7 @@ define(['jquery',
       $("#" + self.itemdata.uniqueid + "_container .dictate_image_container").hide();
       $("#" + self.itemdata.uniqueid + "_container .dictate_description").hide();
       $("#" + self.itemdata.uniqueid + "_container .dictate_maintitle").show();
+      $("#" + self.itemdata.uniqueid + "_container .dictate_itemtext").show();
       $("#" + self.itemdata.uniqueid + "_container .dictate_listen_controler").show();
 
       self.nextPrompt();

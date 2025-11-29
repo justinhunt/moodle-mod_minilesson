@@ -1,3 +1,8 @@
+Version 1.1.15 (Build 2025112900)
+ - UI Update - quite a big open
+ - Partial correct feedback on gapfills
+ - Custom audio support for Passage Gap fill
+ 
 Version 1.1.14 (Build 2025111800)
 - More changes to WordShuffle and AI Generate templates
 

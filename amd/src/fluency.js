@@ -81,6 +81,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.description = $("#" + self.itemdata.uniqueid + "_container .fluency_description");
       self.image = $("#" + self.itemdata.uniqueid + "_container .fluency_image_container");
       self.maintitle = $("#" + self.itemdata.uniqueid + "_container .fluency_maintitle");
+      self.itemquestion = $("#" + self.itemdata.uniqueid + "_container .fluency_itemtext");
       self.title = $("#" + self.itemdata.uniqueid + "_container .fluency_title");
 
       // Callback: Recorder updates.
@@ -357,6 +358,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       self.description.hide();
       self.image.hide();
       self.maintitle.show();
+      self.itemquestion.show();
       self.controls.show();
 
       self.nextPrompt();

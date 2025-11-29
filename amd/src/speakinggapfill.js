@@ -105,6 +105,7 @@ define(['jquery',
                 description: $("#" + self.itemdata.uniqueid + "_container .sgapfill_description"),
                 image: $("#" + self.itemdata.uniqueid + "_container .sgapfill_image_container"),
                 maintitle: $("#" + self.itemdata.uniqueid + "_container .sgapfill_maintitle"),
+                itemquestion: $("#" + self.itemdata.uniqueid + "_container .sgapfill_itemtext"),
             };
         },
 
@@ -519,6 +520,7 @@ define(['jquery',
             self.controls.mainmenu.hide();
             self.controls.controlsbox.show();
             self.controls.maintitle.show();
+            self.controls.itemquestion.show();
             self.controls.description.hide();
             self.controls.image.hide();
 

@@ -103,6 +103,7 @@ define(['jquery',
         description: $("#" + self.itemdata.uniqueid + "_container .landr_description"),
         image: $("#" + self.itemdata.uniqueid + "_container .landr_image_container"),
         maintitle: $("#" + self.itemdata.uniqueid + "_container .landr_maintitle"),
+        itemquestion: $("#" + self.itemdata.uniqueid + "_container .landr_itemtext"),
       };
     },
 
@@ -471,12 +472,11 @@ define(['jquery',
       self.controls.description.hide();
       self.controls.image.hide();
       self.controls.maintitle.show();
+      self.controls.itemquestion.show();
       self.controls.container.find('.landr_listen_cont').show();
       self.controls.mainmenu.hide();
       self.controls.controlsbox.show();
-
       self.nextPrompt();
-
     },
 
     nextPrompt: function () {

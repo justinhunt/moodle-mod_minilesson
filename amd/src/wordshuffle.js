@@ -66,7 +66,8 @@ define(['jquery',
                 retry_btn: container.find(".wordshuffle_retry_btn"),
                 description: container.find(".wordshuffle_description"),
                 image: container.find(".wordshuffle_image_container"),
-                maintitle: container.find(".wordshuffle_maintitle")
+                maintitle: container.find(".wordshuffle_maintitle"),
+                itemquestion: container.find(".wordshuffle_itemtext"),
             };
         },
 
@@ -387,6 +388,7 @@ define(['jquery',
             self.controls.start_btn.hide();
             self.controls.mainmenu.hide();
             self.controls.maintitle.show();
+            self.controls.itemquestion.show();
             self.controls.description.hide();
             self.controls.image.hide();
             self.controls.controlsbox.show();
