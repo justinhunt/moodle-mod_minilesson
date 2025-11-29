@@ -1147,7 +1147,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   font-size: 40px;
   text-align: center;
   letter-spacing: 10px;
-  border: 1px solid darkgray;
+  /* border: 1px solid darkgray; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1339,13 +1339,13 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .minilesson_dictate_player_box .dictate_start_btn {
-    background-color: #506dff;
-    margin-top: 0;
-    width: 96px;
-    height: 36px;
-    border-radius: 8px;
-    color: #fff;
-    border-color: #506dff;
+  background-color: #506dff;
+  margin-top: 0;
+  width: 96px;
+  height: 36px;
+  border-radius: 8px;
+  color: #fff;
+  border-color: #506dff;
 }
 
 .minilesson_dictate_player_box .dictate_start_btn:hover,
@@ -1411,7 +1411,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   margin: 5px;
 }
 
-.minilesson_dictate_player_box  .dictate_ctrl-btn.dictate_check_btn {
+.minilesson_dictate_player_box .dictate_ctrl-btn.dictate_check_btn {
   width: 96px;
   height: 36px;
   background-color: #506dff;
@@ -2068,7 +2068,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .minilesson_fluency_box .fluency_start_btn,
 .minilesson_tgapfill_player_box .tgapfill_start_btn,
 .minilesson_lgapfill_player_box .lgapfill_start_btn,
-.minilesson_sgapfill_player_box .sgapfill_start_btn {
+.minilesson_sgapfill_player_box .sgapfill_start_btn,
+.minilesson_wordshuffle_player_box .wordshuffle_start_btn {
   /* position: absolute; */
   /* bottom: 0; */
   margin-left: auto;
@@ -2388,14 +2389,14 @@ span.mod_minilesson_finishedanswer {
   width: 26px;
   margin-left: 2px;
   text-align: center;
-    background: #F3F4FD9C;
-    border: 1px solid #B0B8DC;
-    border-radius: 5px;
-    padding: 5px 5px;
-    font-size: 15px;
-    font-weight: 500;
-    line-height: 21px;
-    letter-spacing: 0;
+  background: #F3F4FD9C;
+  border: 1px solid #B0B8DC;
+  border-radius: 5px;
+  padding: 5px 5px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 21px;
+  letter-spacing: 0;
 }
 
 .gapfill-container .form-container input:first-child {
@@ -2414,10 +2415,10 @@ span.mod_minilesson_finishedanswer {
 
 .gapfill-container .definition-container {
   display: flex;
-    min-height: 100px;
-    height: auto;
+  min-height: 100px;
+  height: auto;
   margin-bottom: 50px;
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .gapfill-container .form-container {
@@ -2426,15 +2427,15 @@ span.mod_minilesson_finishedanswer {
 
 .gapfill-container .definition {
   align-self: center;
-    width: 50%;
-    height: auto;
-    min-height: 50px;
+  width: 50%;
+  height: auto;
+  min-height: 50px;
   margin: auto;
-    background-color: #F2F2FD;
+  background-color: #F2F2FD;
   border-radius: 10px;
   padding: 6px;
-    position: relative;
-    border-radius: 8px;
+  position: relative;
+  border-radius: 8px;
 }
 
 .gapfill-container .definition .hinticon-container {
@@ -2462,11 +2463,11 @@ span.mod_minilesson_finishedanswer {
   border-radius: 8px;
 }
 
-.minilesson_lgapfill_player_box .lgapfill_title{
+.minilesson_lgapfill_player_box .lgapfill_title {
   color: #414C81;
 }
 
-.minilesson_lgapfill_player_box .lgapfill_start_btn{
+.minilesson_lgapfill_player_box .lgapfill_start_btn {
   background-color: #506dff;
   margin-top: 0;
   width: 96px;
@@ -2625,10 +2626,10 @@ span.mod_minilesson_finishedanswer {
   margin: 5px;
 }
 
-.minilesson_lgapfill_player_box  .lgapfill_check_btn,
-.minilesson_lgapfill_player_box  .lgapfill_check_btn:hover,
-.minilesson_lgapfill_player_box  .lgapfill_check_btn:focus,
-.minilesson_lgapfill_player_box  .lgapfill_check_btn:active {
+.minilesson_lgapfill_player_box .lgapfill_check_btn,
+.minilesson_lgapfill_player_box .lgapfill_check_btn:hover,
+.minilesson_lgapfill_player_box .lgapfill_check_btn:focus,
+.minilesson_lgapfill_player_box .lgapfill_check_btn:active {
   width: 96px;
   height: 36px;
   border-radius: 8px;
@@ -2636,10 +2637,10 @@ span.mod_minilesson_finishedanswer {
   color: #FFFFFF;
 }
 
-.minilesson_lgapfill_player_box  .lgapfill_skip_btn,
-.minilesson_lgapfill_player_box  .lgapfill_skip_btn:hover,
-.minilesson_lgapfill_player_box  .lgapfill_skip_btn:active,
-.minilesson_lgapfill_player_box  .lgapfill_skip_btn:focus {
+.minilesson_lgapfill_player_box .lgapfill_skip_btn,
+.minilesson_lgapfill_player_box .lgapfill_skip_btn:hover,
+.minilesson_lgapfill_player_box .lgapfill_skip_btn:active,
+.minilesson_lgapfill_player_box .lgapfill_skip_btn:focus {
   background: #ffffff;
   border-color: #5067FF;
   border-radius: 10px;
@@ -2834,10 +2835,10 @@ span.mod_minilesson_finishedanswer {
   margin: 5px;
 }
 
-.minilesson_tgapfill_player_box  .tgapfill_skip_btn,
-.minilesson_tgapfill_player_box  .tgapfill_skip_btn:hover,
-.minilesson_tgapfill_player_box  .tgapfill_skip_btn:active,
-.minilesson_tgapfill_player_box  .tgapfill_skip_btn:focus {
+.minilesson_tgapfill_player_box .tgapfill_skip_btn,
+.minilesson_tgapfill_player_box .tgapfill_skip_btn:hover,
+.minilesson_tgapfill_player_box .tgapfill_skip_btn:active,
+.minilesson_tgapfill_player_box .tgapfill_skip_btn:focus {
   background: #fff;
   border-color: #5067ff;
   border-radius: 10px;
@@ -3041,10 +3042,10 @@ span.mod_minilesson_finishedanswer {
   margin: 5px;
 }
 
-.minilesson_sgapfill_player_box  .sgapfill_skip_btn,
-.minilesson_sgapfill_player_box  .sgapfill_skip_btn:hover,
-.minilesson_sgapfill_player_box  .sgapfill_skip_btn:active,
-.minilesson_sgapfill_player_box  .sgapfill_skip_btn:focus {
+.minilesson_sgapfill_player_box .sgapfill_skip_btn,
+.minilesson_sgapfill_player_box .sgapfill_skip_btn:hover,
+.minilesson_sgapfill_player_box .sgapfill_skip_btn:active,
+.minilesson_sgapfill_player_box .sgapfill_skip_btn:focus {
   border: 1px;
   border-style: solid;
   border-color: #506dff;
@@ -3058,6 +3059,16 @@ span.mod_minilesson_finishedanswer {
 
 /* the background color of gapfill words char inputs when marked correct */
 .gapfill-container input.single-character.ml_gapfill_char_correct {
+  background-color: palegreen;
+}
+
+/* the background color of gapfill words char inputs when marked correct */
+.gapfill-container .ml_gapfill_char_correct {
+  background-color: palegreen;
+}
+
+/* the background color of gapfill words char inputs when marked correct */
+.gapfill-container sgapfill_missing_input.ml_gapfill_char_correct {
   background-color: palegreen;
 }
 
@@ -3394,6 +3405,7 @@ span.mod_minilesson_mu_original_postword {
   flex-shrink: 0;
 
 }
+
 .ml_listitem_result .ml_li_resultaudio {
   color: #D0CED7;
 }
@@ -3521,12 +3533,14 @@ textarea.ml_freewriting_textarea {
   border-radius: 8px;
   background-color: #FFFFFF;
 }
+
 .minilesson_fluency_box .fluency_description,
 .minilesson_sgapfill_player_box .sgapfill_description,
 .minilesson_tgapfill_player_box .tgapfill_description,
 .minilesson_lgapfill_player_box .lgapfill_description,
 .minilesson_dictate_player_box .dictate_description,
-.minilesson_landr_player_box .landr_description {
+.minilesson_landr_player_box .landr_description,
+.minilesson_wordshuffle_player_box .wordshuffle_description {
   color: #1F2334;
   font-weight: 400;
   font-size: 15px;
@@ -3538,9 +3552,9 @@ textarea.ml_freewriting_textarea {
 }
 
 .minilesson_fluency_box .fluency_image {
-    padding: 20px;
-    border-radius: 100%;
-    background: #F3ECFC;
+  padding: 20px;
+  border-radius: 100%;
+  background: #F3ECFC;
 }
 
 .minilesson_fluency_box .fluency_start_btn {
@@ -3665,7 +3679,8 @@ textarea.ml_freewriting_textarea {
 .minilesson_sgapfill_player_box .sgapfill_maintitle,
 .minilesson_landr_player_box .landr_maintitle,
 .minilesson_dictate_player_box .dictate_maintitle,
-.minilesson_tgapfill_player_box .tgapfill_maintitle {
+.minilesson_tgapfill_player_box .tgapfill_maintitle,
+.minilesson_wordshuffle_player_box .wordshuffle_maintitle {
   border-bottom: 1px solid #e6e9fd;
   padding: 24px;
   text-align: center;
@@ -3727,10 +3742,11 @@ textarea.ml_freewriting_textarea {
   border-radius: 5px;
   margin: 5px;
 }
-.minilesson_fluency_box  .fluency_skip_btn,
-.minilesson_fluency_box  .fluency_skip_btn:hover,
-.minilesson_fluency_box  .fluency_skip_btn:active,
-.minilesson_fluency_box  .fluency_skip_btn:focus {
+
+.minilesson_fluency_box .fluency_skip_btn,
+.minilesson_fluency_box .fluency_skip_btn:hover,
+.minilesson_fluency_box .fluency_skip_btn:active,
+.minilesson_fluency_box .fluency_skip_btn:focus {
   border: 1px;
   border-style: solid;
   border-color: #506dff;
@@ -3761,8 +3777,8 @@ div.fluencywordresult {
 }
 
 span.fluencyletterresult {
-    padding: 3px 5px;
-    border-radius: 5px;
+  padding: 3px 5px;
+  border-radius: 5px;
   border: 1px solid transparent;
   background-color: #f9f9f9;
   cursor: default;
@@ -4038,6 +4054,7 @@ div.poodlldictationplayer {
 .audiostory_caption {
   min-height: 45px;
 }
+
 .progress-container .progress {
   background-color: #E6E9FD;
   border-radius: 8px;
@@ -4896,19 +4913,36 @@ div.ml_speedyplayer_row_buttons {
 
 .wordshuffle_wordset_container .definition-container {
   display: flex;
-  background-color: #eee;
-  height: 100px;
+  min-height: 100px;
+  height: auto;
   margin-bottom: 50px;
+  margin-top: 10px;
 }
 
 .wordshuffle_wordset_container .definition {
   align-self: center;
   width: 80%;
   margin: auto;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  border-radius: 10px;
+  background-color: #F2F2FD;
+  border-radius: 8px;
   padding: 6px;
+  position: relative;
+  min-height: 50px;
+}
+
+.wordshuffle_wordset_container .definition .hinticon-container {
+  float: left;
+  background-color: #5067FF;
+  color: #FFF;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  left: 10px;
+  border-radius: 0px 0px 5px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.07);
 }
 
 .wordshuffle_wordset_container .question-container {
@@ -5089,6 +5123,17 @@ div.ml_speedyplayer_row_buttons {
 
 .wordshuffle_wordset_container .badge {
   font-size: 100%;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_skip_btn,
+.minilesson_wordshuffle_player_box .wordshuffle_skip_btn:hover,
+.minilesson_wordshuffle_player_box .wordshuffle_skip_btn:active,
+.minilesson_wordshuffle_player_box .wordshuffle_skip_btn:focus {
+  background: #fff;
+  border-color: #5067ff;
+  border-radius: 10px;
+  color: #5067ff;
+  margin-left: 10px;
 }
 
 @keyframes shake-horizontal {
@@ -5920,6 +5965,7 @@ span.fluencyphoneme.letter_wrong {
   font-size: 24px;
   background-color: #FFF;
 }
+
 .result-font {
   color: #57578F;
   font-size: 18px;
@@ -6050,4 +6096,106 @@ span.wrongitem {
   margin-left: 2px;
   margin-right: 2px;
   border-radius: 5px;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_check_btn,
+.minilesson_wordshuffle_player_box .wordshuffle_check_btn:hover,
+.minilesson_wordshuffle_player_box .wordshuffle_check_btn:focus,
+.minilesson_wordshuffle_player_box .wordshuffle_check_btn:active {
+  width: 96px;
+  height: 36px;
+  border-radius: 8px;
+  background: #5067FF;
+  color: #FFFFFF;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_skip_btn:focus {
+  background: #ffffff;
+  border-color: #5067FF;
+  border-radius: 10px;
+  color: #5067FF;
+  margin-left: 10px;
+}
+
+.minilesson_wordshuffle_player_box {
+  position: relative;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
+  background: #FFFFFF;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_image {
+  padding: 20px;
+  border-radius: 100%;
+  background: #f3ecfc;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_game {
+  min-height: 250px;
+  padding: 10px;
+  border-top: 1px solid darkgray;
+  border-bottom: 1px solid darkgray;
+  background-color: rgba(98, 135, 182, 1);
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_mainmenu {
+  font-size: 20px;
+  padding: 10px;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_title {
+  color: #414C81;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_start_btn {
+  margin-top: 0;
+  width: 96px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: #506DFF;
+  border-color: #506DFF;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_start_btn:hover,
+.minilesson_wordshuffle_player_box .wordshuffle_start_btn:active,
+.minilesson_wordshuffle_player_box .wordshuffle_start_btn:focus {
+  background-color: #2642CD;
+  border-color: #2642CD;
+  outline: 0;
+  box-shadow: unset;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_title {
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_controls {
+  margin-top: 5px;
+  background-color: white;
+  text-align: center;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_results {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 75px;
+  background-color: rgba(98, 135, 182, 1);
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  z-index: 999;
 }

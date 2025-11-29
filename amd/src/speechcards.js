@@ -1,13 +1,13 @@
 define(['jquery',
-    'core/log',
-    'core/ajax',
-    'mod_minilesson/definitions',
-    'mod_minilesson/pollyhelper',
-    'mod_minilesson/ttrecorder',
-    'mod_minilesson/animatecss',
-    'core/str',
-    'core/notification'
-], function($,  log, Ajax, def, polly, ttrecorder, anim,str,notification) {
+  'core/log',
+  'core/ajax',
+  'mod_minilesson/definitions',
+  'mod_minilesson/pollyhelper',
+  'mod_minilesson/ttrecorder',
+  'mod_minilesson/animatecss',
+  'core/str',
+  'core/notification'
+], function ($, log, Ajax, def, polly, ttrecorder, anim, str, notification) {
   "use strict"; // jshint ;_;
 
   /*
@@ -20,15 +20,15 @@ define(['jquery',
 
     //for making multiple instances
     clone: function () {
-        return $.extend(true, {}, this);
+      return $.extend(true, {}, this);
     },
 
-    init: function(index, itemdata, quizhelper) {
+    init: function (index, itemdata, quizhelper) {
 
       this.init_app(index, itemdata, quizhelper);
     },
 
-    init_app: function(index, itemdata, quizhelper) {
+    init_app: function (index, itemdata, quizhelper) {
 
       console.log(itemdata);
 
@@ -47,7 +47,7 @@ define(['jquery',
         ttrec: null, //a handle on the tt recorder
         strings: {},
 
-        init: function() {
+        init: function () {
 
           //init terms
           for (var i = 0; i < itemdata.sentences.length; i++) {
@@ -57,9 +57,9 @@ define(['jquery',
           }
           app.language = itemdata.language;
 
-         //anim
+          //anim
           var animopts = {};
-          animopts.useanimatecss=quizhelper.useanimatecss;
+          animopts.useanimatecss = quizhelper.useanimatecss;
           anim.init(animopts);
 
           this.init_controls();
@@ -68,67 +68,67 @@ define(['jquery',
           this.register_events();
         },
 
-        init_controls: function() {
+        init_controls: function () {
           app.controls = {};
           app.controls.star_rating = $("#" + itemdata.uniqueid + "_container .minilesson_star_rating");
           app.controls.next_button = $("#" + itemdata.uniqueid + "_container .minilesson-speechcards_nextbutton");
           app.controls.slider = $("#" + itemdata.uniqueid + "_container .minilesson_speechcards_target_phrase");
         },
-        init_strings: function() {
-            var app = this;
-            str.get_strings([
-                { "key": "nextlessonitem", "component": 'mod_minilesson'},
-                { "key": "confirm_desc", "component": 'mod_minilesson'},
-                { "key": "yes", "component": 'moodle'},
-                { "key": "no", "component": 'moodle'},
-            ]).done(function (s) {
-                var i = 0;
-                app.strings.nextlessonitem = s[i++];
-                app.strings.confirm_desc = s[i++];
-                app.strings.yes = s[i++];
-                app.strings.no = s[i++];
-            });
+        init_strings: function () {
+          var app = this;
+          str.get_strings([
+            { "key": "nextlessonitem", "component": 'mod_minilesson' },
+            { "key": "confirm_desc", "component": 'mod_minilesson' },
+            { "key": "yes", "component": 'moodle' },
+            { "key": "no", "component": 'moodle' },
+          ]).done(function (s) {
+            var i = 0;
+            app.strings.nextlessonitem = s[i++];
+            app.strings.confirm_desc = s[i++];
+            app.strings.yes = s[i++];
+            app.strings.no = s[i++];
+          });
         },
-        next_question: function() {
+        next_question: function () {
           var stepdata = {};
           stepdata.index = index;
           stepdata.hasgrade = true;
           stepdata.totalitems = app.terms.length;
-          stepdata.correctitems = app.results.filter(function(e){return e.points>0;}).length;
-          stepdata.grade = Math.round((stepdata.correctitems/stepdata.totalitems)*100);
+          stepdata.correctitems = app.results.filter(function (e) { return e.points > 0; }).length;
+          stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
           quizhelper.do_next(stepdata);
         },
-        register_events: function() {
+        register_events: function () {
 
-          $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
+          $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function (e) {
             if (app.results.length <= app.terms.length) {
               notification.confirm(app.strings.nextlessonitem,
-                  app.strings.confirm_desc,
-                  app.strings.yes,
-                  app.strings.no,
-                  function() {
-                      app.next_question();
-                  }
+                app.strings.confirm_desc,
+                app.strings.yes,
+                app.strings.no,
+                function () {
+                  app.next_question();
+                }
               );
             } else {
-                app.next_question();
+              app.next_question();
             }
           });
 
-          app.controls.next_button.click(function() {
+          app.controls.next_button.click(function () {
             //user has given up ,update word as failed
             app.check(false);
 
             //transition if required
             if (app.is_end()) {
-              setTimeout(function() {
+              setTimeout(function () {
                 app.do_end();
               }, 200);
             } else {
               app.controls.next_button.prop("disabled", true);
               app.controls.next_button.children('.fa').removeClass('fa-times');
               app.controls.next_button.children('.fa').addClass('fa-spinner fa-spin');
-              setTimeout(function() {
+              setTimeout(function () {
                 app.controls.next_button.children('.fa').removeClass('fa-spinner fa-spin');
                 app.controls.next_button.children('.fa').addClass('fa-times');
                 app.controls.next_button.prop("disabled", false);
@@ -139,114 +139,114 @@ define(['jquery',
           });
         },
 
-        initComponents: function() {
+        initComponents: function () {
 
-              var theCallback = function(message) {
+          var theCallback = function (message) {
 
-                switch (message.type) {
-                  case 'recording':
+            switch (message.type) {
+              case 'recording':
 
-                    break;
+                break;
 
-                  case 'speech':
-                    log.debug("speech at speechcards");
-                    var speechtext = message.capturedspeech;
-                    var spoken_clean  = quizhelper.cleanText(speechtext);
-                    var correct_clean = quizhelper.cleanText(app.terms[app.pointer - 1]);
-                    var correctphonetic = app.phonetics[app.pointer - 1];
-        log.debug('speechtext:',speechtext);
-        log.debug('spoken:',spoken_clean);
-        log.debug('correct:',correct_clean);
-                    //Similarity check by character matching
-                    var similarity_js = quizhelper.similarity(spoken_clean, correct_clean);
-                    log.debug('JS similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_js);
+              case 'speech':
+                log.debug("speech at speechcards");
+                var speechtext = message.capturedspeech;
+                var spoken_clean = quizhelper.cleanText(speechtext);
+                var correct_clean = quizhelper.cleanText(app.terms[app.pointer - 1]);
+                var correctphonetic = app.phonetics[app.pointer - 1];
+                log.debug('speechtext:', speechtext);
+                log.debug('spoken:', spoken_clean);
+                log.debug('correct:', correct_clean);
+                //Similarity check by character matching
+                var similarity_js = quizhelper.similarity(spoken_clean, correct_clean);
+                log.debug('JS similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_js);
 
-                    //Similarity check by direct-match/acceptable-mistranscription
-                    if (similarity_js >= app.passmark ||
-                      app.wordsDoMatch(spoken_clean, correct_clean)) {
-                      log.debug('local match:' + ':' + spoken_clean + ':' + correct_clean);
-                      app.showStarRating(100);
+                //Similarity check by direct-match/acceptable-mistranscription
+                if (similarity_js >= app.passmark ||
+                  app.wordsDoMatch(spoken_clean, correct_clean)) {
+                  log.debug('local match:' + ':' + spoken_clean + ':' + correct_clean);
+                  app.showStarRating(100);
+                  app.flagCorrectAndTransition();
+                  return;
+                }
+
+                //Similarity check by phonetics(ajax)
+                quizhelper.checkByPhonetic(correct_clean, spoken_clean, correctphonetic, app.language).then(function (similarity_php) {
+                  if (similarity_php === false) {
+                    return $.Deferred().reject();
+                  } else {
+                    log.debug('PHP similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_php);
+
+                    if (similarity_php >= app.passmark) {
+                      app.showStarRating(similarity_php);
                       app.flagCorrectAndTransition();
-                      return;
+                    } else {
+                      //show the greater of the ratings
+                      app.showStarRating(Math.max(similarity_js, similarity_php));
                     }
+                  } //end of if check_by_phonetic result
+                }); //end of check by phonetic
 
-                    //Similarity check by phonetics(ajax)
-                    quizhelper.checkByPhonetic(correct_clean, spoken_clean, correctphonetic, app.language).then(function(similarity_php) {
-                      if (similarity_php === false) {
-                        return $.Deferred().reject();
-                      } else {
-                        log.debug('PHP similarity: ' + spoken_clean + ':' + correct_clean + ':' + similarity_php);
+            } //end of switch message type
+          };
 
-                        if (similarity_php >= app.passmark) {
-                            app.showStarRating(similarity_php);
-                            app.flagCorrectAndTransition();
-                        }else{
-                            //show the greater of the ratings
-                            app.showStarRating(Math.max(similarity_js,similarity_php));
-                        }
-                      } //end of if check_by_phonetic result
-                    }); //end of check by phonetic
+          //init tt recorder
+          var opts = {};
+          opts.uniqueid = itemdata.uniqueid;
+          opts.callback = theCallback;
+          opts.stt_guided = quizhelper.is_stt_guided();
+          app.ttrec = ttrecorder.clone();
+          app.ttrec.init(opts);
+          //init prompt for first card
+          //in some cases ttrecorder wants to know the target
+          app.ttrec.currentPrompt = app.displayterms[app.pointer - 1];
 
-                } //end of switch message type
-              };
+          //init progress dots
+          app.progress_dots(app.results, app.terms);
 
-              //init tt recorder
-              var opts = {};
-              opts.uniqueid = itemdata.uniqueid;
-              opts.callback = theCallback;
-              opts.stt_guided=quizhelper.is_stt_guided();
-              app.ttrec = ttrecorder.clone();
-              app.ttrec.init(opts);
-              //init prompt for first card
-              //in some cases ttrecorder wants to know the target
-              app.ttrec.currentPrompt=app.displayterms[app.pointer - 1];
-
-              //init progress dots
-              app.progress_dots(app.results, app.terms);
-
-              app.initSlider();
+          app.initSlider();
 
 
         },
 
-        initSlider: function() {
+        initSlider: function () {
           app.controls.slider.text(app.displayterms[app.pointer - 1]);
           app.controls.slider.show();
         },
 
-        writeCurrentTerm: function() {
-            /*
-            app.controls.slider.toggle("slide",{direction:"left"});
-            app.controls.slider.text(app.displayterms[app.pointer - 1]);
-            app.controls.slider.toggle("slide",{direction:"right"})
-             */
-            anim.do_animate(app.controls.slider,'zoomOut animate__faster','out').then(
-                function(){
-                    app.controls.slider.text(app.displayterms[app.pointer - 1]);
-                    anim.do_animate(app.controls.slider,'zoomIn animate__faster','in');
-                }
-            );
+        writeCurrentTerm: function () {
+          /*
+          app.controls.slider.toggle("slide",{direction:"left"});
+          app.controls.slider.text(app.displayterms[app.pointer - 1]);
+          app.controls.slider.toggle("slide",{direction:"right"})
+           */
+          anim.do_animate(app.controls.slider, 'zoomOut animate__faster', 'out').then(
+            function () {
+              app.controls.slider.text(app.displayterms[app.pointer - 1]);
+              anim.do_animate(app.controls.slider, 'zoomIn animate__faster', 'in');
+            }
+          );
         },
 
-        flagCorrectAndTransition: function() {
+        flagCorrectAndTransition: function () {
 
           //update students word log if matched
           app.check(true);
 
           //transition if required
           if (app.is_end()) {
-            setTimeout(function() {
+            setTimeout(function () {
               app.do_end();
             }, 700);
           } else {
-            setTimeout(function() {
+            setTimeout(function () {
               app.do_next();
             }, 700);
           }
 
         },
 
-        wordsDoMatch: function(phraseheard, currentphrase) {
+        wordsDoMatch: function (phraseheard, currentphrase) {
           //lets lower case everything
           phraseheard = quizhelper.cleanText(phraseheard);
           currentphrase = quizhelper.cleanText(currentphrase);
@@ -257,7 +257,7 @@ define(['jquery',
         },
 
 
-        showStarRating: function(similarity) {
+        showStarRating: function (similarity) {
           //how many stars code
           var stars = [true, true, true];
           if (similarity < app.passmark) {
@@ -272,7 +272,7 @@ define(['jquery',
 
           //prepare stars html
           var code = "";
-          stars.forEach(function(star) {
+          stars.forEach(function (star) {
             if (star === true) {
               code += '<i class="fa fa-star"></i>';
             } else {
@@ -283,7 +283,7 @@ define(['jquery',
           app.controls.star_rating.html(code);
         },
 
-        check: function(correct) {
+        check: function (correct) {
           var points = 1;
           if (correct == true) {
             points = 1;
@@ -296,15 +296,15 @@ define(['jquery',
           app.results.push(result);
         },
 
-        do_next: function() {
+        do_next: function () {
           app.pointer++;
           app.progress_dots(app.results, app.terms);
           app.clearStarRating();
           if (!app.is_end()) {
             app.writeCurrentTerm();
             //in some cases ttrecorder wants to know the target
-            if(quizhelper.use_ttrecorder()) {
-                app.ttrec.currentPrompt=app.displayterms[app.pointer - 1];
+            if (quizhelper.use_ttrecorder()) {
+              app.ttrec.currentPrompt = app.displayterms[app.pointer - 1];
             }
 
           } else {
@@ -312,15 +312,15 @@ define(['jquery',
           }
         },
 
-        clearStarRating: function() {
+        clearStarRating: function () {
           app.controls.star_rating.html('· · ·');
         },
 
-        do_end: function() {
+        do_end: function () {
           app.next_question();
         },
 
-        is_end: function() {
+        is_end: function () {
           //pointer is 1 based but array is, of course, 0 based
           if (app.pointer <= app.terms.length) {
             return false;
@@ -329,20 +329,23 @@ define(['jquery',
           }
         },
 
-        progress_dots: function(results, terms) {
+        progress_dots: function (results, terms) {
 
           var code = "";
           var color = "";
-          terms.forEach(function(o, i) {
-            color = "darkgray";
+          terms.forEach(function (o, i) {
+            color = "#E6E9FD";
+            var icon = "fa fa-square";
             if (results[i] !== undefined) {
               if (results[i].points) {
-                color = "green";
+                color = "#74DC72";
+                icon = "fa fa-check-square";
               } else {
-                color = "red";
+                color = "#FB6363";
+                icon = "fa fa-window-close";
               }
             }
-            code += '<i style="color:' + color + ';" class="fa fa-circle"></i>';
+            code += '<i style="color:' + color + ';" class="' + icon + ' pl-1"></i>';
           });
 
           $("#" + itemdata.uniqueid + "_container .minilesson_progress_dots").html(code);

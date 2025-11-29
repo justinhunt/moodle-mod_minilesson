@@ -1,15 +1,22 @@
 {{> mod_minilesson/questionheader}}
-<div class="minilesson_wordshuffle_player_box">
+<div class="minilesson_wordshuffle_player_box gapfill-container mt-5">
     <div style="display:none;" class="wordshuffle_results">{{#str}}wordshuffle_results, mod_minilesson{{/str}}</div>
 
-    <div class="wordshuffle_title text-center">{{#str}}wordshuffle, mod_minilesson{{/str}}</div>
+    <div class="wordshuffle_maintitle" style="display: none">{{iteminstructions}}</div>
 
-    <div class="wordshuffle_mainmenu">
+    <div class="wordshuffle_image_container text-center pt-5">
+        <img class="wordshuffle_image" src="{{{itemimageurl}}}" alt="{{#str}}wordshuffle, mod_minilesson{{/str}}">
+    </div>
+
+    <div class="wordshuffle_title text-center mt-3">{{#str}}wordshuffle, mod_minilesson{{/str}}</div>
+
+    <div class="wordshuffle_description mt-3 text-center">{{iteminstructions}}</div>
+
+    <div class="wordshuffle_mainmenu mt-3 pb-5">
         <div class="wordshuffle_loaded" style="display:none;">
             <button disabled class='btn btn-block btn-primary wordshuffle_start_btn'>
-                <i class='fa fa-play'></i> {{#str}}start, mod_minilesson{{/str}}
+                {{#str}}start, mod_minilesson{{/str}} <i class='fa fa-play ml-1'></i>
             </button>
-
         </div>
         <div class="wordshuffle_not_loaded">
             <p>{{#str}}loading, mod_minilesson{{/str}}</p>
@@ -19,8 +26,14 @@
     {{> mod_minilesson/progresstimer }}
     {{#audiocontent}}
     <div style="display:none;" class="wordshuffle_listen_cont text-center mb-2">
-        <button class="btn btn-secondary wordshuffle_listen_btn">
-            <i class="fa fa-volume-up"></i>
+        <button class="btn animatesoundbtn position-relative wordshuffle_listen_btn">
+            <div class='soundWave'>
+                <div class='bar'></div>
+                <div class='bar'></div>
+                <div class='bar'></div>
+                <div class='bar'></div>
+                <div class='bar'></div>
+            </div>
         </button>
     </div>
     {{/audiocontent}}
@@ -59,6 +72,7 @@
                 {{/imageurl}}
                 {{#hint}}
                 <div class='definition-container'><div class='definition'>
+                    <div class='hinticon-container'><i class='fa fa-lightbulb-o hinticon'></i></div>
                     {{hint}}
                 </div></div>
                 {{/hint}}
@@ -66,10 +80,10 @@
          {{/sentences}}
     </div>
 
-    <div style="display:none;" class="wordshuffle_controls text-right">
+    <div style="display:none;" class="wordshuffle_controls text-center">
 
-        <button class="btn btn-success wordshuffle_ctrl-btn wordshuffle_check_btn">
-            {{#str}} reset {{/str}}
+        <button class="btn wordshuffle_ctrl-btn wordshuffle_check_btn">
+             <i class="fa fa-refresh"></i> {{#str}} reset {{/str}}
         </button>
 
         {{#allowretry}}
@@ -78,7 +92,7 @@
         </button>
         {{/allowretry}}
 
-        <button class="btn btn-danger wordshuffle_ctrl-btn wordshuffle_skip_btn">
+        <button class="btn wordshuffle_ctrl-btn wordshuffle_skip_btn">
             {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
         </button>
 

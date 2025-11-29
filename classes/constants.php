@@ -215,6 +215,7 @@ class constants
     const FLUENCY_HIDEWARNING = 'customint6';
     const NOPASTING = 'customint4';
     const GAPFILLHIDESTARTPAGE = 'customint5';
+    const WORDSHUFFLEHIDESTARTPAGE = 'customint5';
     const SG_INCLUDEMATCHING = 'customint3';
     const SG_ALIENCOUNT_MULTICHOICE = 'customint1';
     const SG_ALIENCOUNT_MATCHING = 'customint2';

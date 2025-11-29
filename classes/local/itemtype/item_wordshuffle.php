@@ -151,9 +151,9 @@ class item_wordshuffle extends item
 
         // WordShuffle also has a confirm choice option we need to include.
         $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
-        //$testitem->hidestartpage = $itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
+        $testitem->hidestartpage = $itemrecord->{constants::WORDSHUFFLEHIDESTARTPAGE} == 1;
         $testitem->allowretry = $itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
-
+        $testitem->newui = true;
         return $testitem;
     }
 
@@ -197,7 +197,7 @@ class item_wordshuffle extends item
         $keycols['int3'] = ['jsonname' => 'confirmchoice', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::CONFIRMCHOICE];
         $keycols['int2'] = ['jsonname' => 'readsentence', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE]; //not boolean ..
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
-        //$keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
+        $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::WORDSHUFFLEHIDESTARTPAGE];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
  
