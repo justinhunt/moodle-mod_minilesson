@@ -2361,14 +2361,19 @@ span.mod_minilesson_finishedanswer {
   /* font-weight: bold; */
 }
 
+
 .mform [data-root="elementwrapper"] [data-fieldtype="ttsaudio"] button.roundmini-audio-player,
 .ttsaudio.container button.roundmini-audio-player {
-  border: solid 1px green;
-  border-radius: 50%;
-  color: green;
+  background: #5067ff;
+  border-radius: 8px;
+  border: 1.5px solid #fff;
+  color: #fff;
+  border-color: #5067ff;
+  box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.22);
+  outline: 0;
+
   width: 50px;
   height: 50px;
-  /* background-color: green; */
   display: block;
   margin-left: auto;
   margin-right: auto;
