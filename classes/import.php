@@ -405,7 +405,34 @@ class import
         return $newrecord;
     }
 
-    public function export_items()
+    public function call_translate($itemsjson, $fromlang, $tolang){
+        $aigen = new aigen($this->cm);
+        $prompt = "Translate any instances of language: $fromlang , into language: $tolang in the following JSON string." . PHP_EOL;
+        $prompt .= "Return results in the format: {translatedjson: thetranslation}" . PHP_EOL;
+        $prompt .= $itemsjson;
+        
+        $ret = $aigen->generate_data($prompt);
+        if ($ret->success) {
+            return json_encode($ret->payload->translatedjson);
+        }
+        return '{}';
+    }
+
+    public function translate_items($fromlang, $tolang) {
+        $jsonformat = false;
+        $exportobj = $this->export_items($jsonformat);
+        $itemsjson = json_encode($exportobj->items);
+        $translateitemsjson = $this->call_translate($itemsjson, $fromlang, $tolang);
+        if ($translateitemsjson && utils::is_json($translateitemsjson)) {
+            $translateditems = json_decode($translateitemsjson);
+            $exportobj->items = $translateditems;
+            return json_encode($exportobj);
+        } else {
+            return false;
+        }
+    }
+
+    public function export_items($jsonformat = true)
     {
         global $DB;
         $allitems = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->moduleinstance->id], 'itemorder ASC');
@@ -418,19 +445,25 @@ class import
                 $i++;
                 $itemobj = $this->export_item_as_jsonobj($theitem);
                 if ($itemobj) {
-                    // Do a files check .. if so move them to the final files obj at end of json file and set an id in the item
+                    // Do a files check .. if so move them to the final files obj at end of json file and set an id in the item.
                     if (count($itemobj->files) > 0) {
                         $itemobj->filesid = $i;
                         // add the files to the export obj
                         $exportobj->files[$i] = $itemobj->files;
                     }
                     unset($itemobj->files);
-                    // add the item to the items array
+                    // Add the item to the items array.
                     $exportobj->items[] = $itemobj;
                 }
             }
         }
-        return json_encode($exportobj);
+
+        // Depending on export format return JSON or an object. (Translate prefers an object).
+        if ($jsonformat) {
+            return json_encode($exportobj);
+        } else {
+            return $exportobj;
+        }
     }
 
     public function export_item_as_jsonobj($itemrecord)

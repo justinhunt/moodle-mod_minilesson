@@ -786,8 +786,10 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
         return false;
     }
 
-    if (strpos($filearea, 'export') !== false) {
-        // exporting the items as JSON
+    $isexport = strpos($filearea, 'export') !== false ;
+    $istranslate = strpos($filearea, 'translate') !== false;
+    if ($isexport || $istranslate) {
+        // Exporting the items as JSON.
         require_login($course, false, $cm);
         require_capability('mod/minilesson:export', $context);
 
@@ -795,12 +797,35 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
             return false;
         }
         $name = $moduleinstance->name;
-        // make a nice filename
-        $filename = clean_filename(strip_tags(format_string($name)) . '.json');
+        if ($istranslate) {
+            $alllangs = utils::get_lang_options();
+            if (count($args) > 1) {
+                $fromlang = array_key_exists($args[0], $alllangs) ? $args[0] : 'empty';
+                $tolang = array_key_exists($args[1], $alllangs) ? $args[1] : 'empty';
+            } else {
+                $fromlang = "empty";
+                $tolang = "empty";
+            }
+            if ($fromlang == "empty" || $tolang == "empty") {
+                return false;
+            }
+        }
+        // Make a nice filename.
+        $cleanfilename = strip_tags(format_string($name));
+        if ($istranslate) {
+            $cleanfilename .= '_' . $tolang;
+        }
+
+        $filename = clean_filename($cleanfilename . '.json');
         $filename = preg_replace('/\s+/', '_', $filename);
         $theimport = new \mod_minilesson\import($moduleinstance, $context, $course, $cm);
-        $jsondata = $theimport->export_items();
-        // return to the browser that called us
+        if ($istranslate) {
+            $jsondata = $theimport->translate_items($fromlang, $tolang);
+        } else {
+            $jsondata = $theimport->export_items();
+        }
+
+        // Return to the browser that called us.
         send_file($jsondata, $filename, 0, 0, true, true);
     } else {
         // files uploaded into activity
@@ -1184,7 +1209,7 @@ function minilesson_output_fragment_templates($args)
     $args = (object) $args;
     require_capability('mod/minilesson:canuseaigen', $args->context);
     $cm = $DB->get_record('course_modules', ['id' => $args->context->instanceid], '*', MUST_EXIST);
-    $filters = !empty($args->filters) ? json_decode($args->filters, true): [];
+    $filters = !empty($args->filters) ? json_decode($args->filters, true) : [];
     $renderable = new mod_minilesson\output\aigentemplates($cm, $filters);
     return $OUTPUT->render($renderable);
 }

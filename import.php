@@ -6,9 +6,9 @@
  * @author  Justin Hunt - poodll.com
  */
 
-use \mod_minilesson\constants;
-use \mod_minilesson\utils;
-use \mod_minilesson\local\importform\baseimportform;
+use mod_minilesson\constants;
+use mod_minilesson\utils;
+use mod_minilesson\local\importform\baseimportform;
 
 
 require_once(__DIR__ . '/../../config.php');
@@ -19,13 +19,15 @@ $n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
 $leftover_rows = optional_param('leftover_rows', '', PARAM_TEXT);
 $action = optional_param('action', null, PARAM_ALPHA);
 $iid = optional_param('iid', '', PARAM_INT);
+$fromlang = optional_param('fromlang', '', PARAM_TEXT);
+$tolang = optional_param('tolang', '', PARAM_TEXT);
 
 
 if ($cmid) {
     $cm = get_coursemodule_from_id('minilesson', $cmid, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $moduleinstance = $DB->get_record('minilesson', array('id' => $cm->instance), '*', MUST_EXIST);
-} elseif ($n) {
+} else if ($n) {
     $moduleinstance = $DB->get_record('minilesson', array('id' => $n), '*', MUST_EXIST);
     $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('minilesson', $moduleinstance->id, $course->id, false, MUST_EXIST);
@@ -40,7 +42,7 @@ require_capability('mod/minilesson:manage', $modulecontext);
 
 $pagetitle = format_string($moduleinstance->name, true, $course->id);
 $pagetitle .= ': ' . get_string('import', constants::M_COMPONENT);
-$baseurl = new moodle_url('/mod/minilesson/import.php', ['id' => $cmid]);
+$baseurl = new moodle_url('/mod/minilesson/import.php', ['id' => $cmid, 'fromlang' => $fromlang, 'tolang' => $tolang]);
 $formurl = new moodle_url($baseurl);
 $term = null;
 
@@ -123,7 +125,7 @@ echo $renderer->box(
 );
 $form->display();
 
-//Export form and instructions
+// Export form and instructions.
 echo $renderer->heading(get_string('exportheading', constants::M_COMPONENT), 4);
 echo $renderer->box(
     get_string('exportinstructions', constants::M_COMPONENT),
@@ -132,4 +134,37 @@ echo $renderer->box(
 );
 $exporturl = moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'exportjson', 0, "/", 'exportitems.json', true);
 echo html_writer::link($exporturl, get_string('exportitems', constants::M_COMPONENT), ["class" => "btn btn-primary"]);
+
+// If experimental flag is set add an export and translate section to the page.
+if (isset($CFG->minilesson_experimental) && $CFG->minilesson_experimental) {
+    echo $renderer->heading(get_string('exportandtranslateheading', constants::M_COMPONENT), 4);
+    echo $renderer->box(
+        get_string('exportandtranslateinstructions', constants::M_COMPONENT),
+        'generalbox minilesson_importintro',
+        'intro'
+    );
+    $allangs = utils::get_lang_options();
+
+    // Langs Select.
+    // From Lang.
+    $actionurl = new moodle_url($PAGE->url, ['sesskey' => sesskey()]);
+    $fromlangselect = new single_select($actionurl, 'fromlang', $allangs, $fromlang, ['' => get_string('adddots')], 'fromlang');
+    $fromlangselect->set_label(get_string('fromlang', constants::M_COMPONENT), []);
+    echo $OUTPUT->render($fromlangselect);
+
+    // To Lang.
+    $actionurl = new moodle_url($PAGE->url, ['sesskey' => sesskey()]);
+    $tolangselect = new single_select($actionurl, 'tolang', $allangs, $tolang, ['' => get_string('adddots')], 'tolang');
+    $tolangselect->set_label(get_string('tolang', constants::M_COMPONENT), []);
+    echo $OUTPUT->render($tolangselect);
+
+    if ((!empty($fromlang) && array_key_exists($fromlang, $allangs)) &&
+        (!empty($tolang) && array_key_exists($tolang, $allangs))) {
+        $exporturl = moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'translatejson', 0, "/$fromlang/$tolang/", 'exportitems.json', true);
+        echo html_writer::link($exporturl, get_string('exportandtranslateitems', constants::M_COMPONENT), ["class" => "btn btn-primary"]);
+    }
+
+}
+
+
 echo $renderer->footer();
