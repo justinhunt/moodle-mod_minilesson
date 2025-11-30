@@ -410,12 +410,13 @@ class import
         $prompt = "Translate any instances of language: $fromlang , into language: $tolang in the following JSON string." . PHP_EOL;
         $prompt .= "Return results in the format: {translatedjson: thetranslation}" . PHP_EOL;
         $prompt .= $itemsjson;
-        
+
         $ret = $aigen->generate_data($prompt);
         if ($ret->success) {
             return json_encode($ret->payload->translatedjson);
+        } else {
+            return false;
         }
-        return '{}';
     }
 
     public function translate_items($fromlang, $tolang) {

@@ -150,13 +150,13 @@ if (isset($CFG->minilesson_experimental) && $CFG->minilesson_experimental) {
     $actionurl = new moodle_url($PAGE->url, ['sesskey' => sesskey()]);
     $fromlangselect = new single_select($actionurl, 'fromlang', $allangs, $fromlang, ['' => get_string('adddots')], 'fromlang');
     $fromlangselect->set_label(get_string('fromlang', constants::M_COMPONENT), []);
-    echo $OUTPUT->render($fromlangselect);
+    echo html_writer::div($OUTPUT->render($fromlangselect), 'ml_import_lang mb-2');
 
     // To Lang.
     $actionurl = new moodle_url($PAGE->url, ['sesskey' => sesskey()]);
     $tolangselect = new single_select($actionurl, 'tolang', $allangs, $tolang, ['' => get_string('adddots')], 'tolang');
     $tolangselect->set_label(get_string('tolang', constants::M_COMPONENT), []);
-    echo $OUTPUT->render($tolangselect);
+    echo html_writer::div($OUTPUT->render($tolangselect), 'ml_import_lang mb-2');
 
     if ((!empty($fromlang) && array_key_exists($fromlang, $allangs)) &&
         (!empty($tolang) && array_key_exists($tolang, $allangs))) {
