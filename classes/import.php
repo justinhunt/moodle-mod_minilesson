@@ -422,12 +422,12 @@ class import
     public function translate_items($fromlang, $tolang) {
         $jsonformat = false;
         $exportobj = $this->export_items($jsonformat);
-        $itemsjson = json_encode($exportobj->items);
+        $itemsjson = json_encode($exportobj->items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         $translateitemsjson = $this->call_translate($itemsjson, $fromlang, $tolang);
         if ($translateitemsjson && utils::is_json($translateitemsjson)) {
             $translateditems = json_decode($translateitemsjson);
             $exportobj->items = $translateditems;
-            return json_encode($exportobj);
+            return json_encode($exportobj, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {
             return false;
         }
@@ -461,7 +461,7 @@ class import
 
         // Depending on export format return JSON or an object. (Translate prefers an object).
         if ($jsonformat) {
-            return json_encode($exportobj);
+            return json_encode($exportobj, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {
             return $exportobj;
         }

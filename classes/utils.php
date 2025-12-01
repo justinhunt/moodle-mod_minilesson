@@ -402,8 +402,12 @@ class utils
                 $penalty += $result->penalty;
             }
         }
-        $totalpercent = round(($correctitems / $totalitems) * 100, 0);
-        $totalpercent -= $penalty;
+        if ($totalitems == 0) {
+            $totalpercent = 0;
+        } else {
+            $totalpercent = round(($correctitems / $totalitems) * 100, 0);
+            $totalpercent -= $penalty;
+        }
         return max(0, $totalpercent);
     }
 
