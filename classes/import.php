@@ -413,7 +413,8 @@ class import
 
         $ret = $aigen->generate_data($prompt);
         if ($ret->success) {
-            return json_encode($ret->payload->translatedjson);
+            // The JSON will have been decoded into items in the transferall process, no need to decode again.
+            return $ret->payload->translatedjson;
         } else {
             return false;
         }
@@ -423,9 +424,15 @@ class import
         $jsonformat = false;
         $exportobj = $this->export_items($jsonformat);
         $itemsjson = json_encode($exportobj->items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        $translateitemsjson = $this->call_translate($itemsjson, $fromlang, $tolang);
-        if ($translateitemsjson && utils::is_json($translateitemsjson)) {
-            $translateditems = json_decode($translateitemsjson);
+        $translateditems = $this->call_translate($itemsjson, $fromlang, $tolang);
+
+        // AI sometimes returns from AI here as json and sometimes it arrives already decoded as array.
+        // So we make sure its an array as best we can
+        if ($translateditems && !is_array($translateditems) && utils::is_json($translateditems)) {
+            $translateditems = json_decode($translateditems);
+        }
+
+        if ($translateditems && is_array($translateditems)) {
             $exportobj->items = $translateditems;
             return json_encode($exportobj, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {

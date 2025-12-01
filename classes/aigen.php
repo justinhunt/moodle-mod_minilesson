@@ -509,7 +509,7 @@ class aigen
             $params['owner'] = hash('md5', $USER->username);
             $params["subject"] = 'none';
 
-            $resp = utils::curl_fetch($url, $params);
+            $resp = utils::curl_fetch($url, $params, 'post');
             $respobj = json_decode($resp);
             $ret = new \stdClass();
             if (isset($respobj->returnCode)) {

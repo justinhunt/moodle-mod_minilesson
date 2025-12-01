@@ -44,7 +44,7 @@ class  item_typinggapfill extends item {
 
         // Sentences.
         $sentences = [];
-        if(isset($testitem->customtext1)) {
+        if (isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
 
