@@ -136,35 +136,30 @@ $exporturl = moodle_url::make_pluginfile_url($modulecontext->id, constants::M_CO
 echo html_writer::link($exporturl, get_string('exportitems', constants::M_COMPONENT), ["class" => "btn btn-primary"]);
 
 // If experimental flag is set add an export and translate section to the page.
-if (isset($CFG->minilesson_experimental) && $CFG->minilesson_experimental) {
-    echo $renderer->heading(get_string('exportandtranslateheading', constants::M_COMPONENT), 4);
-    echo $renderer->box(
-        get_string('exportandtranslateinstructions', constants::M_COMPONENT),
-        'generalbox minilesson_importintro',
-        'intro'
-    );
-    $allangs = utils::get_lang_options();
+echo $renderer->heading(get_string('exportandtranslateheading', constants::M_COMPONENT), 4);
+echo $renderer->box(
+    get_string('exportandtranslateinstructions', constants::M_COMPONENT),
+    'generalbox minilesson_importintro',
+    'intro'
+);
+$allangs = utils::get_lang_options();
 
-    // Langs Select.
-    // From Lang.
-    $actionurl = new moodle_url($PAGE->url, ['sesskey' => sesskey()]);
-    $fromlangselect = new single_select($actionurl, 'fromlang', $allangs, $fromlang, ['' => get_string('adddots')], 'fromlang');
-    $fromlangselect->set_label(get_string('fromlang', constants::M_COMPONENT), []);
-    echo html_writer::div($OUTPUT->render($fromlangselect), 'ml_import_lang mb-2');
+// Langs Select.
+// From Lang.
+$actionurl = new moodle_url($PAGE->url, ['sesskey' => sesskey()]);
+$fromlangselect = new single_select($actionurl, 'fromlang', $allangs, $fromlang, ['' => get_string('adddots')], 'fromlang');
+$fromlangselect->set_label(get_string('fromlang', constants::M_COMPONENT), []);
+echo html_writer::div($OUTPUT->render($fromlangselect), 'ml_import_lang mb-2');
 
-    // To Lang.
-    $actionurl = new moodle_url($PAGE->url, ['sesskey' => sesskey()]);
-    $tolangselect = new single_select($actionurl, 'tolang', $allangs, $tolang, ['' => get_string('adddots')], 'tolang');
-    $tolangselect->set_label(get_string('tolang', constants::M_COMPONENT), []);
-    echo html_writer::div($OUTPUT->render($tolangselect), 'ml_import_lang mb-2');
+// To Lang.
+$actionurl = new moodle_url($PAGE->url, ['sesskey' => sesskey()]);
+$tolangselect = new single_select($actionurl, 'tolang', $allangs, $tolang, ['' => get_string('adddots')], 'tolang');
+$tolangselect->set_label(get_string('tolang', constants::M_COMPONENT), []);
+echo html_writer::div($OUTPUT->render($tolangselect), 'ml_import_lang mb-2');
 
-    if ((!empty($fromlang) && array_key_exists($fromlang, $allangs)) &&
-        (!empty($tolang) && array_key_exists($tolang, $allangs))) {
-        $exporturl = moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'translatejson', 0, "/$fromlang/$tolang/", 'exportitems.json', true);
-        echo html_writer::link($exporturl, get_string('exportandtranslateitems', constants::M_COMPONENT), ["class" => "btn btn-primary"]);
-    }
-
+if ((!empty($fromlang) && array_key_exists($fromlang, $allangs)) &&
+    (!empty($tolang) && array_key_exists($tolang, $allangs))) {
+    $exporturl = moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'translatejson', 0, "/$fromlang/$tolang/", 'exportitems.json', true);
+    echo html_writer::link($exporturl, get_string('exportandtranslateitems', constants::M_COMPONENT), ["class" => "btn btn-primary"]);
 }
-
-
 echo $renderer->footer();

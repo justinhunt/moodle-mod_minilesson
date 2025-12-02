@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Generate a 1 dimensional array of {language} 'sentences' of format 'keyword|keyword translation' from the keywords. The translation of the keyword should match the meaning sense of the word as it is used in its example sentence. Also put the value of: \"3 * number of keywords\" into (data1). Also put the most likely full BCP 47 language code in the format {language}-{REGION} for the native language: {native_language} into (data2)\nKeywords: [{keywords}]\nExample sentences: [{examplesentences}]\nThe translations should be in {native_language}.",
+            "prompt": "Generate a 1 dimensional array of {language} 'sentences' of format 'keyword|keyword translation' from the keywords. The translation of the keyword should match the meaning sense of the word as it is used in its example sentence. Also put the value of: \"3 * number of keywords\" into (data1). Also put the most likely full BCP 47 language code in the format: language-REGION for the native language: {native_language} into (data2). Put the first of the keywords into (data3). Put the second of the keywords into (data4). Put the last of the keywords into (data5).\nKeywords: [{keywords}]\nExample sentences: [{examplesentences}]\nThe translations should be in {native_language}.",
             "generatemethod": "generate",
             "generatefields": [
                 {
@@ -22,17 +22,17 @@
                 },
                 {
                     "name": "data3",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
                     "name": "data4",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
                     "name": "data5",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 }
             ],
@@ -59,12 +59,17 @@
         },
         {
             "itemnumber": 1,
-            "prompt": "Extract a one dimensional array of sentences (sentences) from the text passage. In each sentence surround each instance of a keyword with square brackets, e.g [word]. Following each sentence put a pipe character, a {native_language} translation of the sentence, a pipe character and a list of any keywords that were not found in the sentence. \nThe complete sentence format would be: \na sentence with a [keyword]|translation of sentence|other-keyword other-keyword other-keyword\nAlso create a 1 dimensional array of image generation prompts (data2) to generate one image for each of the sentences.\nkeywords: {keywords}\ntext passage {textpassage}",
+            "prompt": "Extract a one dimensional array of sentences (sentences) from the text passage. If there are fewer than 9 sentences create and add additional example sentences to the array of sentences. Each additional sentence should contain one of the keywords and be of a similar length and difficulty to the original sentences. There should be a total of 9 sentences in the array. In each sentence surround each instance of a keyword with square brackets, e.g [word]. Following each sentence put a pipe character, a {native_language} translation of the sentence, a pipe character and a list of any keywords that were not found in the sentence. \nThe complete sentence format would be: \na sentence with a [keyword]|translation of sentence|other-keyword other-keyword other-keyword\nAlso create a 1 dimensional array of image generation prompts (data2) to generate one image for each of the sentences.\nkeywords: {keywords}\ntext passage: {textpassage}",
             "generatemethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
                     "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "confirmchoice",
+                    "generate": 0,
                     "mapping": ""
                 },
                 {
@@ -125,6 +130,11 @@
                     "name": "sentences",
                     "generate": 1,
                     "mapping": "item1_sentences"
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
                 },
                 {
                     "name": "data1",
@@ -189,7 +199,7 @@
                 {
                     "name": "freewritingaidata1",
                     "generate": 1,
-                    "mapping": "user_keywords"
+                    "mapping": "item0_data3"
                 },
                 {
                     "name": "freewritingaidata2",
@@ -198,8 +208,146 @@
                 },
                 {
                     "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 4,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedback",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedbacklanguage",
                     "generate": 1,
-                    "mapping": "item0_data1"
+                    "mapping": "item0_data2"
+                },
+                {
+                    "name": "aigradeinstructions",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "freewritingaidata1",
+                    "generate": 1,
+                    "mapping": "item0_data4"
+                },
+                {
+                    "name": "freewritingaidata2",
+                    "generate": 1,
+                    "mapping": "user_customdata2"
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 5,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedback",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedbacklanguage",
+                    "generate": 1,
+                    "mapping": "item0_data2"
+                },
+                {
+                    "name": "aigradeinstructions",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "freewritingaidata1",
+                    "generate": 1,
+                    "mapping": "item0_data5"
+                },
+                {
+                    "name": "freewritingaidata2",
+                    "generate": 1,
+                    "mapping": "user_customdata2"
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
                 },
                 {
                     "name": "data1",
@@ -234,7 +382,7 @@
     "lessonTitle": "Word Practice 2",
     "lessonDescription": "Given a list of words, example sentences and the students native language, this template will generate a set of practice activities with images and native language hints. You can use up to 9 words.",
     "uniqueid": "691ad9a15f203",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

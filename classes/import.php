@@ -127,7 +127,14 @@ class import
         foreach ($keycolumns as $colname => $coldef) {
             if (isset($itemdata->{$coldef['jsonname']})) {
                 if ($coldef['type'] == 'stringarray') {
-                    $line[] = join(PHP_EOL, $itemdata->{$coldef['jsonname']});
+                    if (!is_array($itemdata->{$coldef['jsonname']})) {
+                        // If generation failed for some reason, fall back (so we dont lose it all)
+                        // Which fallback is better?
+                        $line[] = $itemdata->{$coldef['jsonname']};
+                        // $line[] = join(PHP_EOL, $coldef['default']);
+                    } else {
+                        $line[] = join(PHP_EOL, $itemdata->{$coldef['jsonname']});
+                    }
                 } else {
                     $line[] = $itemdata->{$coldef['jsonname']};
                 }

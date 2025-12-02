@@ -10,11 +10,9 @@
                 ""
             ],
             "sentences": [
-                "A|aaay\r",
-                "B|beee\r",
-                "C|ceee\r",
-                "D|deee\r",
-                "F|ffffffff"
+                "much|\u3042\u307e\u308a",
+                "many|\u305f\u304f\u3055\u3093",
+                "a lot of|\u305f\u304f\u3055\u3093\u306e"
             ]
         },
         {
@@ -27,13 +25,15 @@
                 ""
             ],
             "sentences": [
-                "This is my d[og].|hint DOG| cat bat ant fig\r",
-                "This is my c[at].|hint CAT|dog bat ant fig\r",
-                "This is my b[at].|hint BAT|dog cat ant fig\r",
-                "This is my a[nt].|hint ANT|dog cat bat fig\r",
-                "This is my f[ig].|hint FIG|dog cat bat ant"
+                "I do not have [much] money.|\u79c1\u306f\u3042\u307e\u308a\u304a\u91d1\u3092\u6301\u3063\u3066\u3044\u307e\u305b\u3093\u3002|many lot\r",
+                "There are [many] apples in the box.|\u7bb1\u306e\u4e2d\u306b\u305f\u304f\u3055\u3093\u306e\u30ea\u30f3\u30b4\u304c\u3042\u308a\u307e\u3059\u3002|much lot\r",
+                "I have a [lot] of time to study this weekend.|\u4eca\u9031\u672b\u306f\u52c9\u5f37\u3059\u308b\u6642\u9593\u304c\u305f\u304f\u3055\u3093\u3042\u308a\u307e\u3059\u3002|much many.\r",
+                "I have a [lot] of friends.|\u79c1\u306f\u305f\u304f\u3055\u3093\u304a\u53cb\u9054\u304c\u3044\u308b\u3002| much many\r",
+                "She has [many] pencils.|\u5f7c\u5973\u306f\u305f\u304f\u3055\u3093\u925b\u7b46\u3092\u3082\u3063\u3066\u3044\u308b\u3002| much lot\r",
+                "There is [much] milk in the fridge.|\u51b7\u8535\u5eab\u306b\u725b\u4e73\u306f\u3044\u3063\u3071\u3044\u3042\u308a\u307e\u3059\u3002|many lot"
             ],
             "promptvoice": "Joey",
+            "confirmchoice": "yes",
             "promptvoiceopt": "normal",
             "filesid": 2
         },
@@ -47,19 +47,39 @@
                 ""
             ],
             "sentences": [
-                "This is my d[og].|hint DOG\r",
-                "This is my c[at].|hint CAT\r",
-                "This is my b[at].|hint BAT\r",
-                "This is my a[nt].|hint ANT\r",
-                "This is my f[ig].|hint FIG"
+                "I do not have [much] money.|\u79c1\u306f\u3042\u307e\u308a\u304a\u91d1\u3092\u6301\u3063\u3066\u3044\u307e\u305b\u3093\u3002|many lot\r",
+                "There are [many] apples in the box.|\u7bb1\u306e\u4e2d\u306b\u305f\u304f\u3055\u3093\u306e\u30ea\u30f3\u30b4\u304c\u3042\u308a\u307e\u3059\u3002|much lot\r",
+                "I have a [lot] of time to study this weekend.|\u4eca\u9031\u672b\u306f\u52c9\u5f37\u3059\u308b\u6642\u9593\u304c\u305f\u304f\u3055\u3093\u3042\u308a\u307e\u3059\u3002|much many.\r",
+                "I have a [lot] of friends.|\u79c1\u306f\u305f\u304f\u3055\u3093\u304a\u53cb\u9054\u304c\u3044\u308b\u3002| much many\r",
+                "She has [many] pencils.|\u5f7c\u5973\u306f\u305f\u304f\u3055\u3093\u925b\u7b46\u3092\u3082\u3063\u3066\u3044\u308b\u3002| much lot\r",
+                "There is much milk in the fridge.|\u51b7\u8535\u5eab\u306b\u725b\u4e73\u306f\u3044\u3063\u3071\u3044\u3042\u308a\u307e\u3059\u3002|many lot"
             ],
+            "allowretry": "yes",
             "filesid": 3
         },
         {
             "type": "freewriting",
-            "name": "Item: Free Writing",
+            "name": "Item: Free Writing (1)",
             "instructions": "Type your answer to the question in the text area below.",
-            "text": "Write one original example sentence for each of the following words.\r\n{ai data1}",
+            "text": "Write one original example sentence that contains following word(s): <br \/>\r\n<b>{ai data1}<\/b>\r\n",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "aigradefeedback": "Explain each mistake simply.",
+            "aigradefeedbacklanguage": "ar-AE",
+            "freewritingtopic": "",
+            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 2 marks if a sentence is exactly the same as a previously studied sentence.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \r\nTarget word\/phrases: \r\n{ai data1}\r\n\r\nPreviously studied sentences:\r\n{ai data2}",
+            "freewritingaidata1": "much",
+            "freewritingaidata2": "I do not have much money.\r\nThere is much milk in the fridge.",
+            "totalmarks": "3"
+        },
+        {
+            "type": "freewriting",
+            "name": "Item: Free Writing (2)",
+            "instructions": "Type your answer to the question in the text area below.",
+            "text": "Write one original example sentence that contains following phrase: <br \/>\n<b>{ai data1}<\/b>",
             "ttsvoice": "Joey",
             "audiofname": "00:00:00",
             "ttsdialog": [
@@ -68,10 +88,28 @@
             "aigradefeedback": "Explain each mistake simply.",
             "aigradefeedbacklanguage": "ja-JP",
             "freewritingtopic": "",
-            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 2 marks if a sentence is in the previously studied sentences (because it is not original).  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \r\nTarget word\/phrases: \r\n{ai data1}\r\n\r\nPreviously studied sentences:\r\n{ai data2}",
-            "freewritingaidata1": "endanger, enrich, enjoy, enlarge, encircle",
-            "freewritingaidata2": "Modern cities endanger the environment.\r\nUnderstanding languages enriches your travel experiences.\r\nChildren enjoy playing games.\r\nThe sahara desert is enlarging quickly.\r\nThe red army encircled the blue army. ",
-            "totalmarks": "15"
+            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 2 marks if a sentence is exactly the same as a previously studied sentence.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \nTarget word\/phrases: \n{ai data1}\n\nPreviously studied sentences:\n{ai data2}",
+            "freewritingaidata1": "a lot of",
+            "freewritingaidata2": "I have a lot of time to study this weekend.\nI have a lot of friends.",
+            "totalmarks": "3"
+        },
+        {
+            "type": "freewriting",
+            "name": "Item: Free Writing (3)",
+            "instructions": "Type your answer to the question in the text area below.",
+            "text": "Write one original example sentence that contains following word(s): <br \/>\n<b>{ai data1}<\/b>",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "aigradefeedback": "Explain each mistake simply.",
+            "aigradefeedbacklanguage": "ja-JP",
+            "freewritingtopic": "",
+            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 2 marks if a sentence is exactly the same as a previously studied sentence.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \nTarget word\/phrases: \n{ai data1}\n\nPreviously studied sentences:\n{ai data2}",
+            "freewritingaidata1": "many",
+            "freewritingaidata2": "There are many apples in the box.\nShe has many pencils.",
+            "totalmarks": "3"
         }
     ],
     "files": {
