@@ -62,7 +62,7 @@
                     "mapping": ""
                 },
                 {
-                    "name": "confirmchoice",
+                    "name": "allowretry",
                     "generate": 0,
                     "mapping": ""
                 },
@@ -187,7 +187,7 @@
     "lessonTitle": "Keywords to Word Shuffle and Scatter",
     "lessonDescription": "Enter 4 - 10 keywords. The keywords will be used to generate a word shuffle and scatter activity. The keywords will also be used to generate a picture of each keyword on a blackboard.",
     "uniqueid": "68a036971fe4b",
-    "version": "5",
+    "version": "6",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

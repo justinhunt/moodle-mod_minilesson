@@ -33,7 +33,7 @@
                 "There is [much] milk in the fridge.|\u51b7\u8535\u5eab\u306b\u725b\u4e73\u306f\u3044\u3063\u3071\u3044\u3042\u308a\u307e\u3059\u3002|many lot"
             ],
             "promptvoice": "Joey",
-            "confirmchoice": "yes",
+            "allowretry": "yes",
             "promptvoiceopt": "normal",
             "filesid": 2
         },

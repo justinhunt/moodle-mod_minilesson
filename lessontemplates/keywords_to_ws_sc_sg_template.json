@@ -30,7 +30,7 @@
                 "We are [nice]."
             ],
             "promptvoice": "Joey",
-            "confirmchoice": "yes",
+            "allowretry": "yes",
             "promptvoiceopt": "normal",
             "int10": "1",
             "filesid": 2

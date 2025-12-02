@@ -68,7 +68,7 @@
                     "mapping": ""
                 },
                 {
-                    "name": "confirmchoice",
+                    "name": "allowretry",
                     "generate": 0,
                     "mapping": ""
                 },
