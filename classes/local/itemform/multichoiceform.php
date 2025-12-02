@@ -33,6 +33,7 @@ class multichoiceform extends baseform
 
     public function custom_definition()
     {
+        $mform = $this->_form;
         // add a heading for this form
         $this->add_itemsettings_heading();
         $this->add_showlistorreadoptions(constants::LISTENORREAD, get_string('listenorread', constants::M_COMPONENT), constants::LISTENORREAD_READ);
@@ -69,6 +70,11 @@ class multichoiceform extends baseform
             constants::MULTICHOICE_ANSWERLAYOUT_TWOCOLUMN => get_string('twocolumn', constants::M_COMPONENT),
         ];
         $this->add_dropdown(constants::MULTICHOICE_ANSWERLAYOUT,get_string('answerlayout', constants::M_COMPONENT), $layoutoptions, constants::MULTICHOICE_ANSWERLAYOUT_DEFAULT);
+
+         // Question text.
+         $this->add_static_text('instructionscorrectfeedback', '', get_string('correctfeedbackinstructions', constants::M_COMPONENT));
+        $mform->addElement('textarea', constants::MULTICHOICE_CORRECTFEEDBACK, get_string('correctfeedback', constants::M_COMPONENT), ['wrap' => 'virtual', 'style' => 'width: 100%;']);
+        $mform->setType(constants::MULTICHOICE_CORRECTFEEDBACK, PARAM_RAW);
     }
 
 }

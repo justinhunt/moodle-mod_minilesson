@@ -3,5 +3,10 @@
         <div class="minilesson_resultspanel_swish" data-possible="0" data-achieved="0">
             <span class="minilesson_swishstars"></span><span class="minilesson_swishscore"></span>
         </div>
+        {{#correctfeedback}}
+            <div class="ml_mc_correctfeedback text-center m-2 p-2 bg-light">
+                {{{correctfeedback}}}
+            </div>
+        {{/correctfeedback}}
     </div>
 </div>

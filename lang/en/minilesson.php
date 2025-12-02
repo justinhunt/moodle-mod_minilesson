@@ -1230,3 +1230,5 @@ student. The answer text will be used when displaying results';
 
 $string['answerlayout'] = "Answer Layout";
 $string['twocolumn'] = "2 Column";
+$string['correctfeedback'] = "Correct Feedback";
+$string['correctfeedbackinstructions'] = "Feedback to be shown that explains the correct answer. (optional)";

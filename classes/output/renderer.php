@@ -375,7 +375,13 @@ class renderer extends \plugin_renderer_base
                 case constants::TYPE_COMPQUIZ:
                     $result->hascorrectanswer = true;
                     $result->hasincorrectanswer = true;
-                    $result->hasanswerdetails = false;
+                    if (!empty($quizdata[$result->index]->correctfeedback)) {
+                        $result->hasanswerdetails = true;
+                        $result->resultsdatajson = json_encode(['correctfeedback' => $quizdata[$result->index]->correctfeedback]);
+                        $result->resultstemplate = 'multichoiceresults';
+                    } else {
+                        $result->hasanswerdetails = false;
+                    }
                     $correctanswers = [];
                     $incorrectanswers = [];
                     $correctindex = $quizdata[$result->index]->correctanswer;

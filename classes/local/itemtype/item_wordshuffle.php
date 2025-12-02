@@ -149,8 +149,7 @@ class item_wordshuffle extends item
             }
         }
 
-        // WordShuffle also has a confirm choice option we need to include.
-        $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
+        // WordShuffle also has hide startpage and allow retry
         $testitem->hidestartpage = $itemrecord->{constants::WORDSHUFFLEHIDESTARTPAGE} == 1;
         $testitem->allowretry = $itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
         $testitem->newui = true;
@@ -194,7 +193,7 @@ class item_wordshuffle extends item
         $keycols = parent::get_keycolumns();
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
-        $keycols['int3'] = ['jsonname' => 'confirmchoice', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::CONFIRMCHOICE];
+        $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
         $keycols['int2'] = ['jsonname' => 'readsentence', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE]; //not boolean ..
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::WORDSHUFFLEHIDESTARTPAGE];
