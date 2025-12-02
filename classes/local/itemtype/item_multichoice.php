@@ -196,7 +196,7 @@ class item_multichoice extends item
         $keycols['int3'] = ['jsonname' => 'confirmchoice', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::CONFIRMCHOICE];
         $keycols['int2'] = ['jsonname' => 'listenorread', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::LISTENORREAD]; //not boolean ..
         $keycols['text1'] = ['jsonname' => 'answers', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
-        $keycols['text6'] = ['jsonname' => 'questionpoint', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::MULTICHOICE_CORRECTFEEDBACK];
+        $keycols['text6'] = ['jsonname' => 'correctfeedback', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::MULTICHOICE_CORRECTFEEDBACK];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['int5'] = ['jsonname' => 'shuffleanswer', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => constants::MULTICHOICE_SHUFFLEANSWER];
