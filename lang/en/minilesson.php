@@ -742,6 +742,10 @@ $string['examplecsv'] = 'Example csv/text file';
 $string['examplecsv_help'] = 'To use the example csv file, download it then open it with a text or spreadsheet editor. Leave the first line unchanged, then edit the following lines (records) and add your Minilesson item data, adding more lines as necessary. Save the file as CSV then upload it.';
 $string['examplejson'] = 'Example json file';
 $string['examplejson_help'] = 'To use the example json file, download it then open it with a text or spreadsheet editor. Edit and re-use items in the items array where they match the item type you need, and remove items you don\'t need. Save the file as JSON then upload.';
+$string['importdotranslate'] = 'Translate items during import';
+$string['importdotranslate_help'] = 'When enabled, JSON items are translated from the selected source language to the chosen target language before being imported.';
+$string['importfromlang'] = 'Translate from language';
+$string['importtolang'] = 'Translate to language';
 
 $string['error:emptyfield'] = 'CANNOT BE EMPTY';
 $string['error:failed'] = 'FAILED';

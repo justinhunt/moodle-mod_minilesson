@@ -427,7 +427,7 @@ class import
         }
     }
 
-    public function translate_items($fromlang, $tolang) {
+    public function translate_and_export_items($fromlang, $tolang) {
         $jsonformat = false;
         $exportobj = $this->export_items($jsonformat);
         $itemsjson = json_encode($exportobj->items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

@@ -65,6 +65,9 @@ $form = new baseimportform($formurl->out(false), ['leftover_rows' => $leftover_r
 
 if ($data = $form->get_data()) {
     $errormessage = '';
+    $shouldtranslate = !empty($data->dotranslate);
+    $importfromlang = trim((string)($data->fromlang ?? ''));
+    $importtolang = trim((string)($data->tolang ?? ''));
     $content = $form->get_file_content('importfile');
     $theimport = new \mod_minilesson\import($moduleinstance, $modulecontext, $course, $cm);
 
@@ -80,6 +83,16 @@ if ($data = $form->get_data()) {
             if (!isset($importdata->items)) {
                 $errormessage = get_string('error:noitemsinjson', constants::M_COMPONENT);
             } else {
+                // Optionally translate JSON payloads before importing.
+                if ($shouldtranslate && $importfromlang !== '' && $importtolang !== '') {
+                    $itemsjson = json_encode($importdata->items);
+                    $translateditems = $theimport->call_translate($itemsjson, $importfromlang, $importtolang);
+                    if (is_array($translateditems)) {
+                        $importdata->items = $translateditems;
+                    } else if ($translateditems && utils::is_json($translateditems)) {
+                        $importdata->items = json_decode($translateditems);
+                    }
+                }
                 $theimport->set_reader($importdata, $isjson);
             }
         }
@@ -135,7 +148,7 @@ echo $renderer->box(
 $exporturl = moodle_url::make_pluginfile_url($modulecontext->id, constants::M_COMPONENT, 'exportjson', 0, "/", 'exportitems.json', true);
 echo html_writer::link($exporturl, get_string('exportitems', constants::M_COMPONENT), ["class" => "btn btn-primary"]);
 
-// If experimental flag is set add an export and translate section to the page.
+// Add an export and translate section to the page.
 echo $renderer->heading(get_string('exportandtranslateheading', constants::M_COMPONENT), 4);
 echo $renderer->box(
     get_string('exportandtranslateinstructions', constants::M_COMPONENT),

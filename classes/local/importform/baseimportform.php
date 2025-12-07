@@ -15,6 +15,7 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/formslib.php');
 
 use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 /**
  * Helper class.
@@ -86,6 +87,32 @@ class baseimportform extends \moodleform {
        $file_options['accepted_types'] = array('.csv', '.txt','.json');
        $mform->addElement('filepicker', 'importfile', get_string('file'), 'size="40"', $file_options);
        $mform->addRule('importfile', null, 'required');
+
+       // Optional translation controls.
+       $mform->addElement('advcheckbox', 'dotranslate', get_string('importdotranslate', constants::M_COMPONENT));
+       $mform->addHelpButton('dotranslate', 'importdotranslate', constants::M_COMPONENT);
+       $mform->setType('dotranslate', PARAM_BOOL);
+
+       $langoptions = utils::get_lang_options();
+       $selectoptions = array_merge(['' => get_string('choosedots')], $langoptions);
+       $mform->addElement('select', 'fromlang', get_string('importfromlang', constants::M_COMPONENT), $selectoptions);
+       $mform->setType('fromlang', PARAM_ALPHANUMEXT);
+       $mform->addElement('select', 'tolang', get_string('importtolang', constants::M_COMPONENT), $selectoptions);
+       $mform->setType('tolang', PARAM_ALPHANUMEXT);
+
+       if ($m35) {
+           $mform->hideIf('dotranslate', 'importformat', 'neq', 'json');
+           $mform->hideIf('fromlang', 'importformat', 'neq', 'json');
+           $mform->hideIf('tolang', 'importformat', 'neq', 'json');
+           $mform->hideIf('fromlang', 'dotranslate', 'notchecked');
+           $mform->hideIf('tolang', 'dotranslate', 'notchecked');
+       } else {
+           $mform->disabledIf('dotranslate', 'importformat', 'neq', 'json');
+           $mform->disabledIf('fromlang', 'importformat', 'neq', 'json');
+           $mform->disabledIf('tolang', 'importformat', 'neq', 'json');
+           $mform->disabledIf('fromlang', 'dotranslate', 'notchecked');
+           $mform->disabledIf('tolang', 'dotranslate', 'notchecked');
+       }
 
         $this->add_action_buttons(false);
     }

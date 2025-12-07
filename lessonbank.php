@@ -90,6 +90,8 @@ if ($restore && confirm_sesskey()) {
         if (empty($importdata->items)) {
             $errormessage = get_string('error:noitemsinjson', constants::M_COMPONENT);
         } else {
+            // TO DO: Implement translation option here if needed.
+            // See [minilesson]/import.php for call_translate example.
             $theimport->set_reader($importdata, true);
         }
         if (empty($errormessage)) {

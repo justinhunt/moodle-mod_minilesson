@@ -820,7 +820,7 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
         $filename = preg_replace('/\s+/', '_', $filename);
         $theimport = new \mod_minilesson\import($moduleinstance, $context, $course, $cm);
         if ($istranslate) {
-            $jsondata = $theimport->translate_items($fromlang, $tolang);
+            $jsondata = $theimport->translate_and_export_items($fromlang, $tolang);
         } else {
             $jsondata = $theimport->export_items();
         }
