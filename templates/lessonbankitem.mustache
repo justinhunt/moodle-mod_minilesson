@@ -34,6 +34,9 @@
             <div class="d-flex">
                 <p>{{language}}</p>
                 <p class="ml-2">{{languagelevel}}</p>
+                {{#nativelanguage}}
+                    <p class="ml-auto">{{#str}}nativelang, mod_minilesson{{/str}} : {{{.}}} </p>
+                {{/nativelanguage}}
             </div>
             <div class="d-flex">
                 <p><b class="mr-2">{{#str}}keywordcolon, mod_minilesson{{/str}}</b>{{keywords}}</p>
@@ -48,6 +51,11 @@
                 <p><b class="mr-2">{{#str}}itemscolon, mod_minilesson{{/str}}</b>{{#itemtypes}}{{{text}}}{{^islast}},{{/islast}}{{/itemtypes}}</p>
             </div>
             <div class="d-flex mt-auto">
+                {{#nativelanguage}}
+                    <a data-translateimportid="{{id}}" data-sourcelanguage="{{{nativelanguage}}}" data-action="translate" class="btn btn-primary text-white rounded ml-auto">
+                        {{#str}}translatetoimport, mod_minilesson{{/str}}
+                    </a>
+                {{/nativelanguage}}
                 <a data-id="{{id}}" data-action="download" data-download="{{name}}" class="btn btn-primary text-white rounded ml-auto">
                     {{#str}}import{{/str}}
                 </a>

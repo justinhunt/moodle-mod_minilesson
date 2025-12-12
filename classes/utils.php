@@ -495,8 +495,8 @@ class utils
     }
 
     // We forward an OpenAI RTC offer to the OpenAI API.
-    // This is called from: openairtc.php 
-    // Which is called from the OpenAI RTC client side code in audiochat. 
+    // This is called from: openairtc.php
+    // Which is called from the OpenAI RTC client side code in audiochat.
     // (in which we dont want to expose our openai key)
     // It expects an SDP offer in the request body and returns an SDP answer.
     public static function openai_forward_offer()
@@ -1865,7 +1865,7 @@ class utils
         ];
         if (!$nossml) {
             $ret += [constants::TTS_SSML => get_string('ttsssml', constants::M_COMPONENT)];
-        }   
+        }
         if ($nottsoption) {
             $ret += [constants::TTS_NOTTS => get_string('tts_notts', constants::M_COMPONENT)];
         }
@@ -2150,6 +2150,10 @@ class utils
         $mform->addElement('select', 'richtextprompt', get_string('prompttype', constants::M_COMPONENT), $prompttypes);
         $mform->addHelpButton('richtextprompt', 'prompttype', constants::M_COMPONENT);
         $mform->setDefault('richtextprompt', $config->prompttype);
+
+        $langoptions = [0 => '--'] + self::get_lang_options();
+        $mform->addElement('select', 'nativelang', get_string('nativelang', constants::M_COMPONENT), $langoptions);
+        $mform->setType('nativelang', PARAM_TEXT);
 
         // advanced
         $name = 'advanced';
@@ -2674,4 +2678,47 @@ class utils
         }
     }
 
+    public static function get_lesson_items($lessonid, $itemid) {
+        global $DB;
+
+        if (empty($lessonid)) {
+            return [];
+        }
+
+        if (empty($itemid)) {
+            $itemorder = $DB->get_field(constants::M_QTABLE, 'MAX(itemorder)', ['minilesson' => $lessonid]);
+        } else {
+            $itemorder = $DB->get_field(constants::M_QTABLE, 'itemorder', ['id' => $itemid]);
+        }
+
+        [$in, $params] = $DB->get_in_or_equal(
+            [constants::TYPE_FREEWRITING, constants::TYPE_FREESPEAKING],
+            SQL_PARAMS_NAMED
+        );
+        $params['minilessonid'] = $lessonid;
+        $params['itemorder'] = $itemorder > 0 ? $itemorder : 0;
+        $alllessonitems = $DB->get_records_select(
+            constants::M_QTABLE,
+            "minilesson = :minilessonid AND type {$in} AND itemorder < :itemorder",
+            $params
+        );
+
+        return $alllessonitems;
+    }
+
+    public static function latest_attempt($courseid, $lessonid) {
+        global $USER,$DB;
+
+        if (empty($lessonid) || empty($courseid)) {
+            return [];
+        }
+
+        $attemptrec = $DB->get_records(constants::M_ATTEMPTSTABLE, [
+            'courseid' => $courseid,
+            'moduleid' => $lessonid,
+            'userid' => $USER->id
+        ], 'id DESC', '*', 0, 1);
+
+        return $attemptrec;
+    }
 }

@@ -33,6 +33,8 @@ defined('MOODLE_INTERNAL') || die();
 use mod_minilesson\aigen_contextform;
 use mod_minilesson\constants;
 use mod_minilesson\local\formelement\ttsaudio;
+use mod_minilesson\local\itemtype\item_audiochat;
+use mod_minilesson\translate_form;
 use mod_minilesson\utils;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -77,8 +79,8 @@ function minilesson_supports($feature)
             } else {
                 return null;
             }
-        // FEATURE_MOD_OTHERPURPOSE  - wont be defined for < 5.1. so we hard code it. 
-        // If it is defined then interactivecontent  and assessment will also be  defined.   
+        // FEATURE_MOD_OTHERPURPOSE  - wont be defined for < 5.1. so we hard code it.
+        // If it is defined then interactivecontent  and assessment will also be  defined.
         case "mod_otherpurpose":
             return "assessment";
 
@@ -1213,4 +1215,42 @@ function minilesson_output_fragment_templates($args)
     $renderable = new mod_minilesson\output\aigentemplates($cm, $filters);
     return $OUTPUT->render($renderable);
 }
+
+function minilesson_output_fragment_audiochat_instruction($args) {
+    global $DB;
+    $args = (object) $args;
+    $cm = $DB->get_record('course_modules', ['id' => $args->context->instanceid], '*', MUST_EXIST);
+    $minilesson = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
+    $itemrecord = $DB->get_record(constants::M_QTABLE, ['id' => $args->itemid]);
+
+    $itemtype = new item_audiochat($itemrecord, $minilesson, $args->context);
+    $audiochatinstruction = $itemtype->replace_student_submission(
+        $args->instructions
+    );
+
+    return $audiochatinstruction;
+}
+
+function minilesson_output_fragment_translatetoimport($args) {
+    global $CFG;
+    require_once($CFG->libdir . '/externallib.php');
+
+    $formdata = [];
+    $args = (object) $args;
+    parse_str($args->params, $formdata);
+    $formdata['id'] = $args->context->instanceid;
+
+    require_capability('mod/minilesson:canuseaigen', $args->context);
+
+    $formurl = new moodle_url('/mod/minilesson/lessonbank.php');
+
+    $form = new translate_form($formurl, null, 'post', '', null, true, $formdata);
+    $form->set_data($formdata);
+    if ($response = $form->process_dynamic_submission()) {
+        return json_encode($response);
+    }
+    return json_encode(['html' => $form->render()]);
+}
+
+
 

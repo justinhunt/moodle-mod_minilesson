@@ -11,9 +11,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
 
   return {
 
-     transcript_evaluation: null,
-     rawscore: 0,
-     percentscore: 0,
+    transcript_evaluation: null,
+    rawscore: 0,
+    percentscore: 0,
+    autosubmitmode: false,
 
     //for making multiple instances
       clone: function () {
@@ -34,6 +35,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
       var stepdata = {};
       stepdata.index = self.index;
       stepdata.hasgrade = true;
+      stepdata.lessonitemid = self.itemdata.id;
       stepdata.totalitems = self.itemdata.totalmarks;
       stepdata.correctitems = self.rawscore > 0 ? self.rawscore : 0;
       stepdata.grade = self.percentscore;
@@ -85,12 +87,33 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
                 height: '5px',
                 timeLimit: itemdata.timelimit,
                 onFinish: function() {
-                    nextbutton.trigger('click');
+                  self.ontimelimitreached();
                 }
             });
         }
       });
 
+    },
+
+    ontimelimitreached: function() {
+      var self = this;
+      if (self.ttrec && self.ttrec.audio && (self.ttrec.audio.isRecording || self.ttrec.audio.transcript)) {
+        if (self.ttrec.audio.isRecording) {
+          self.autosubmitmode = true;
+
+          if (self.ttrec.usebrowserrec) {
+            self.ttrec.browserrec.stop();
+          } else {
+            self.ttrec.audiohelper.stop();
+          }
+        } else if (self.ttrec.audio.transcript && !self.transcript_evaluation) {
+          self.autosubmitmode = true;
+          self.do_evaluation(self.ttrec.audio.transcript);
+        }
+      } else if (!self.transcript_evaluation) {
+        var nextbutton = $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton");
+        nextbutton.trigger('click');
+      }
     },
 
     init_components: function(quizhelper,itemdata){
@@ -201,7 +224,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
 
           log.debug(transcript_evaluation);
           //display results or move next if not show item review
-          if(!self.quizhelper.showitemreview){
+          if(!self.quizhelper.showitemreview && !self.autosubmitmode){
             self.next_question();
           }else{
             //display results
@@ -222,11 +245,19 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
                   templates.runTemplateJS(js);
                   //reset timer and wordcount on this page, in case reattempt
                   self.wordcount.text('0');
+                  self.ttrec.timer.stop();
                   self.ttrec.timer.reset();
                   var displaytime = self.ttrec.timer.fetch_display_time();
                   self.timerdisplay.html(displaytime);
               }
             );// End of templates
+            if (self.itemdata.timelimit > 0) {
+              var timerelement = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer");
+              var timerinterval = timerelement.attr('timer');
+              if (timerinterval) {
+                clearInterval(timerinterval);
+              }
+            }
           } //end of if show item review
         } else {
           log.debug('transcript_evaluation: oh no it failed');

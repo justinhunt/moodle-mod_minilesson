@@ -1236,3 +1236,10 @@ $string['answerlayout'] = "Answer Layout";
 $string['twocolumn'] = "2 Column";
 $string['correctfeedback'] = "Correct Feedback";
 $string['correctfeedbackinstructions'] = "Feedback to be shown that explains the correct answer. (optional)";
+
+$string['audiochat_student_submission'] = 'Student Submission';
+
+$string['translatetoimport'] = 'Translate to import';
+$string['nativelang'] = 'Native Language';
+
+$string['audioavatar'] = 'Audio Avatar';

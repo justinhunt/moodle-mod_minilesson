@@ -753,4 +753,8 @@ class constants
     const MULTICHOICE_ANSWERLAYOUT_DEFAULT = 1;
 
     const MULTICHOICE_ANSWERLAYOUT_TWOCOLUMN = 2;
+
+    const AUDIOCHAT_STUDENT_SUBMISSION = 'customint8';
+
+    const AUDIOCHAT_AUDIOAVATAR = 'customtext7';
 }

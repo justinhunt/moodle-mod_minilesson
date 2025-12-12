@@ -6251,3 +6251,33 @@ span.wrongitem {
   text-align: center;
   z-index: 999;
 }
+
+.audiochatavtarimage-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.audiochatavtarimage-container .avatar-image-check .form-check-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.audiochatavtarimage-container .avatar-image-check .avatar-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  cursor: pointer;
+  border: 2px solid lightgray;
+}
+
+.audiochatavtarimage-container .avatar-image-check .form-check-input:checked + .avatar-img {
+  border: 2px solid #1177d1;
+}
