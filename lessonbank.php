@@ -22,16 +22,16 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use core\notification;
 use mod_minilesson\constants;
 use mod_minilesson\lessonbank_form;
+use mod_minilesson\utils;
 
 require('../../config.php');
 require_once($CFG->libdir . '/external/externallib.php');
 
 $id = required_param('id', PARAM_INT);
 $restore = optional_param('restore', 0, PARAM_INT);
-
+$translateimportid = optional_param('translateimportid', 0, PARAM_INT);
 
 $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
 if (!$cm) {
@@ -69,12 +69,12 @@ if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded'
 
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 
-if ($restore && confirm_sesskey()) {
+if (!empty($translateimportid) || ($restore && confirm_sesskey())) {
     $function = 'mod_minilesson_lessonbank';
     if ($externalfunctioninfo = core_external::external_function_info($function)) {
         $params = [
             'function' => 'local_lessonbank_fetch_minilesson',
-            'args' => "id={$restore}",
+            'args' => !empty($translateimportid) ? "id={$translateimportid}" : "id={$restore}",
         ];
 
         $result = mod_minilesson_external::lessonbank($params['function'], $params['args']);
@@ -90,8 +90,17 @@ if ($restore && confirm_sesskey()) {
         if (empty($importdata->items)) {
             $errormessage = get_string('error:noitemsinjson', constants::M_COMPONENT);
         } else {
-            // TO DO: Implement translation option here if needed.
-            // See [minilesson]/import.php for call_translate example.
+            if (!empty($translateimportid)) {
+                $importfromlang = required_param('sourcelanguage', PARAM_TEXT);
+                $importtolang = required_param('targetlanguage', PARAM_TEXT);
+                $itemsjson = json_encode($importdata->items);
+                $translateditems = $theimport->call_translate($itemsjson, $importfromlang, $importtolang);
+                if (is_array($translateditems)) {
+                    $importdata->items = $translateditems;
+                } else if ($translateditems && utils::is_json($translateditems)) {
+                    $importdata->items = json_decode($translateditems);
+                }
+            }
             $theimport->set_reader($importdata, true);
         }
         if (empty($errormessage)) {
@@ -100,7 +109,7 @@ if ($restore && confirm_sesskey()) {
         }
         redirect($url, $errormessage, null, 'warning');
     } else {
-        redirect($url, $result['error'], null, 'warning');
+        redirect($url, $result->error, null, 'warning');
     }
 }
 

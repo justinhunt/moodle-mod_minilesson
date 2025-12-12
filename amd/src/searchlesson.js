@@ -23,6 +23,10 @@
 import Ajax from 'core/ajax';
 import * as Notification from 'core/notification';
 import Templates from 'core/templates';
+import ModalFactory from 'core/modal_factory';
+import ModalEvents from 'core/modal_events';
+import * as Str from 'core/str';
+import Fragment from 'core/fragment';
 
 
 const component = 'mod_minilesson';
@@ -89,6 +93,56 @@ export const registerFilter = () => {
             const wrapper = showtextbtn.parentElement;
             const titlehtml = wrapper.firstElementChild.cloneNode(true).outerHTML;
             wrapper.innerHTML = titlehtml + wrapper.dataset.text;
+        }
+    });
+    cardsContainer.addEventListener('click', e => {
+        if (e.target.href) {
+            return;
+        }
+        e.preventDefault();
+        const translatebtn = e.target.closest('[data-action="translate"]');
+        if (translatebtn) {
+            const callFragment = data => {
+                return Fragment.loadFragment(component, 'translatetoimport', M.cfg.contextid, {
+                    params: data
+                })
+                .then((response, js) => new Promise(resolve => {
+                    response = JSON.parse(response);
+                    return resolve(
+                        response,
+                        js
+                    );
+                }));
+            };
+            ModalFactory.create({
+                type: ModalFactory.types.DEFAULT,
+                large: false,
+                removeOnClose: true,
+                title: Str.get_string('translatetoimport', component),
+                body: callFragment(
+                    new URLSearchParams([...Object.entries(translatebtn.dataset)]).toString()
+                ).then((response, js) => new Promise(resolve => resolve(
+                    response.html, js
+                )))
+            }).then(function (modal) {
+                modal.hideFooter();
+                modal.getRoot().on('submit ' + ModalEvents.save, function(e) {
+                    e.preventDefault();
+                    var form = this.querySelector('form');
+                    modal.setBody(
+                        callFragment(new URLSearchParams(new FormData(form)).toString())
+                        .then((response, js) => new Promise(resolve => {
+                            if (response.redirecturl) {
+                                location.href = response.redirecturl;
+                                resolve('', js);
+                                return;
+                            }
+                            resolve(response.html, js);
+                        }))
+                    );
+                });
+                modal.show();
+            });
         }
     });
     form?.addEventListener('submit', e => {

@@ -947,6 +947,21 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025112901, 'minilesson');
     }
 
+    if ($oldversion < 2025112901.01) {
+
+        // Define field nativelang to be added to minilesson.
+        $table = new xmldb_table('minilesson');
+        $field = new xmldb_field('nativelang', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'viewend');
+
+        // Conditionally launch add field nativelang.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2025112901.01, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

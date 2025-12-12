@@ -17,6 +17,8 @@
 namespace mod_minilesson\local\itemtype;
 
 use mod_minilesson\constants;
+use mod_minilesson\utils;
+use moodle_url;
 
 /**
  * Renderable class for an audiochat item in a minilesson activity.
@@ -30,6 +32,9 @@ class item_audiochat extends item
 
     // The item type.
     public const ITEMTYPE = constants::TYPE_AUDIOCHAT;
+
+    /** Default image avatar */
+    public const DEFAULT_AVATAR = 'cutepoodll_small.png';
 
     /**
      * The class constructor.
@@ -100,7 +105,7 @@ class item_audiochat extends item
                 '{target language}',
                 '{topic}',
                 '{ai data1}',
-                '{ai data2}'
+                '{ai data2}',
             ],
             [
                 $this->itemrecord->{constants::AUDIOCHAT_ROLE},
@@ -109,12 +114,12 @@ class item_audiochat extends item
                 $this->language,
                 $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
                 $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
-                $this->itemrecord->{constants::AUDIOCHAT_AIDATA2}
+                $this->itemrecord->{constants::AUDIOCHAT_AIDATA2},
             ],
             $testitem->audiochatinstructions
         );
 
-        // Set up the audiochat grade instructions
+        // Set up the audiochat grade instructions.
         $testitem->audiochatgradeinstructions = $this->itemrecord->{constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS};
         if (!empty($testitem->audiochatgradeinstructions)) {
             $testitem->audiochatgradeinstructions = str_replace(
@@ -140,10 +145,10 @@ class item_audiochat extends item
             );
         }
 
-        //Set the Auto turn detection to on or off
+        // Set the Auto turn detection to on or off.
         $testitem->audiochat_autoresponse = $this->itemrecord->{constants::AUDIOCHAT_AUTORESPONSE} ? true : false;
 
-        // AI Voice 
+        // AI Voice.
         $testitem->audiochat_voice = $this->itemrecord->{constants::AUDIOCHAT_VOICE};
 
 
@@ -174,6 +179,12 @@ class item_audiochat extends item
         // If we add a cloud poodll recorder to the page these are also added, but here we just add them manually.
         $testitem->language = $this->language;
         $testitem->region = $this->region;
+
+        $imgaudioavatar = $this->itemrecord->{constants::AUDIOCHAT_AUDIOAVATAR} ?
+            $this->itemrecord->{constants::AUDIOCHAT_AUDIOAVATAR} :
+            self::DEFAULT_AVATAR;
+        $avatarimage = new moodle_url("/mod/minilesson/pix/{$imgaudioavatar}");
+        $testitem->avatarimage = $avatarimage->out(false);
 
         return $testitem;
     }
@@ -222,11 +233,13 @@ class item_audiochat extends item
         $keycols['text2'] = ['jsonname' => 'audiochatrole', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_ROLE];
         $keycols['text3'] = ['jsonname' => 'audiochatvoice', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_VOICE];
         $keycols['text4'] = ['jsonname' => 'audiochatnativelanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AUDIOCHAT_NATIVE_LANGUAGE];
+        $keycols['int8'] = ['jsonname' => 'studentsubmission', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::AUDIOCHAT_STUDENT_SUBMISSION];
+        $keycols['text7'] = ['jsonname' => 'audioavatar', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AUDIOCHAT_AUDIOAVATAR];
         return $keycols;
     }
 
     /*
-  This function return the prompt that the generate method requires. 
+  This function return the prompt that the generate method requires.
   */
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
@@ -248,6 +261,41 @@ class item_audiochat extends item
                 break;
         }
         return $prompt;
+    }
+
+    public function replace_student_submission($instruction) {
+        if (empty($instruction)) {
+            return false;
+        }
+
+        $submission = $this->itemrecord;
+        if (!empty($submission)) {
+            $submissionid = $submission->{constants::AUDIOCHAT_STUDENT_SUBMISSION};
+            $attemptrec = utils::latest_attempt(
+                $this->moduleinstance->course,
+                $this->moduleinstance->id
+            );
+            $attemptrec = reset($attemptrec);
+            $sessiondatas = json_decode($attemptrec->sessiondata);
+
+            $studentsubmission = '';
+            if (!empty($sessiondatas)) {
+                foreach ($sessiondatas->steps as $sessiondata) {
+                    if ($submissionid == $sessiondata->lessonitemid && !empty($sessiondata->resultsdata)) {
+                        $studentsubmission = $sessiondata->resultsdata->rawspeech;
+                        break;
+                    }
+                }
+            }
+
+            $audiochatinstruction = str_replace(
+                ['{studentsubmission}'],
+                [$studentsubmission],
+                $instruction
+            );
+            return $audiochatinstruction;
+        }
+        return false;
     }
 
 }

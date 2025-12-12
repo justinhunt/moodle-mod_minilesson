@@ -23,20 +23,25 @@
 
 namespace mod_minilesson\local\itemform;
 
+use html_writer;
 use mod_minilesson\constants;
+use mod_minilesson\local\itemtype\item_audiochat;
 use mod_minilesson\utils;
+use moodle_url;
 
 class audiochatform extends baseform {
 
     public $type = constants::TYPE_AUDIOCHAT;
 
     public function custom_definition() {
-        global $CFG, $PAGE;
+        global $CFG, $PAGE, $DB;
 
         $this->add_itemsettings_heading();
         $mform = $this->_form;
+        $itemid = $this->optional_param('itemid', 0, PARAM_INT);
+        $moduleinstance = $this->_customdata['moduleinstance'];
         $this->add_static_text('instructions', '', get_string('audiochatdesc', constants::M_COMPONENT));
-        
+
         // Total marks and target word count
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
         $mform->setDefault(constants::TOTALMARKS, 5);
@@ -64,6 +69,20 @@ class audiochatform extends baseform {
             get_string('audiochat_native_language', constants::M_COMPONENT),
             constants::M_LANG_ENUS
         );
+
+        // Student submission.
+        if ($moduleinstance) {
+            $submissionoptions = [0 => get_string('choose')];
+            $lessons = utils::get_lesson_items($moduleinstance->id, $itemid);
+            foreach ($lessons as $item) {
+                $submissionoptions[$item->id] = $item->name;
+            }
+            $this->add_dropdown(
+                constants::AUDIOCHAT_STUDENT_SUBMISSION,
+                get_string('audiochat_student_submission', constants::M_COMPONENT),
+                $submissionoptions
+            );
+        }
 
         $options = utils::get_aiprompt_options('AUDIOCHAT_INSTRUCTIONSSELECTION');
         $mform->addElement('select', constants::AUDIOCHAT_INSTRUCTIONSSELECTION, get_string('audiochat_instructions', constants::M_COMPONENT), $options,
@@ -109,6 +128,49 @@ class audiochatform extends baseform {
         $mform->setDefault(constants::AUDIOCHAT_AIDATA1, '');
         $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
         $mform->setDefault(constants::AUDIOCHAT_AIDATA2, '');
+
+        $imagefiles = glob($CFG->dirroot . '/mod/minilesson/pix/audiochatavatar*.{jpg,jpeg,png}', GLOB_BRACE);
+        if (!empty($imagefiles)) {
+            foreach ($imagefiles as $imagefilepath) {
+                if (file_exists($imagefilepath)) {
+                    if (empty($groupelements)) {
+                        $defaultimagepath = str_replace(basename($imagefilepath), item_audiochat::DEFAULT_AVATAR, $imagefilepath);
+                        $groupelements[] = $mform->createElement('html', '<div class="audiochatavtarimage-container">');
+                        $groupelements[] = $mform->createElement(
+                            'radio',
+                            constants::AUDIOCHAT_AUDIOAVATAR,
+                            null,
+                            html_writer::img(
+                                new moodle_url(str_replace($CFG->dirroot, '', $defaultimagepath), ['themerev' => $CFG->themerev]),
+                                basename($defaultimagepath),
+                                ['class' => 'avatar-img']
+                            ),
+                            basename($defaultimagepath),
+                            ['class' => 'avatar-image-check']
+                        );
+
+                        $mform->setDefault(constants::AUDIOCHAT_AUDIOAVATAR, basename($defaultimagepath));
+                    }
+                    $groupelements[] = $mform->createElement(
+                        'radio',
+                        constants::AUDIOCHAT_AUDIOAVATAR,
+                        null,
+                        html_writer::img(
+                            new moodle_url(str_replace($CFG->dirroot, '', $imagefilepath), ['themerev' => $CFG->themerev]),
+                            basename($imagefilepath),
+                            ['class' => 'avatar-img']
+                        ),
+                        basename($imagefilepath),
+                        ['class' => 'avatar-image-check']
+                    );
+                }
+            }
+
+            if (!empty($groupelements)) {
+                $groupelements[] = $mform->createElement('html', '</div>');
+                $mform->addGroup($groupelements, 'avatargroup', get_string('audioavatar', constants::M_COMPONENT), '<!--br-->', false);
+            }
+        }
 
         $PAGE->requires->js_call_amd(constants::M_COMPONENT.'/aiprompt', 'init');
     }

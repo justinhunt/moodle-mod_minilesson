@@ -1,6 +1,6 @@
 define(['jquery', 'core/log', 'mod_minilesson/definitions',
-        'mod_minilesson/ttrecorder', 'core/templates', 'core/str'],
-function($, log, def, ttrecorder, templates, str) {
+        'mod_minilesson/ttrecorder', 'core/templates', 'core/str', 'core/fragment'],
+function($, log, def, ttrecorder, templates, str, Fragment) {
     "use strict"; // jshint ;_;
 
     /*
@@ -93,6 +93,7 @@ function($, log, def, ttrecorder, templates, str) {
             var stepdata = {};
             stepdata.index = self.index;
             stepdata.hasgrade = true;
+            stepdata.lessonitemid = self.itemdata.id;
             stepdata.totalitems = self.itemdata.totalmarks;
             stepdata.resultsdata = {'items': Object.values(self.items)};
             // Add grade and other results data
@@ -139,7 +140,7 @@ function($, log, def, ttrecorder, templates, str) {
                 stepdata.grade = self.gradingData.score;
 
                 //If target word count is greater then 0, we lower the grade if it is lower then that target word count
-                if(typeof stepdata.grade === 'number' && 
+                if(typeof stepdata.grade === 'number' &&
                     typeof wordcount === 'number' &&
                     self.itemdata.targetwordcount > 0 &&
                      wordcount < self.itemdata.targetwordcount) {
@@ -158,7 +159,7 @@ function($, log, def, ttrecorder, templates, str) {
                     stepdata.grade =  100;
                 }
 
-                
+
 
                 // Calculate grade based on word count
                 stepdata.grade = Math.min(wordcount / self.itemdata.targetwordcount, 1) * 100;
@@ -323,7 +324,7 @@ function($, log, def, ttrecorder, templates, str) {
 
             // Render messages
             self.controls.messagesContainer.innerHTML = ""; // Clear existing messages
-            
+
             orderedItems.forEach((message) => {
                 if (!message.content) {
                     return;
@@ -343,7 +344,7 @@ function($, log, def, ttrecorder, templates, str) {
                 if (message.usertype === "assistant") {
                     var pictureDiv = document.createElement('div');
                     pictureDiv.innerHTML = `
-                        <img src="${M.cfg.wwwroot}/mod/minilesson/pix/cutepoodll_small.png" 
+                        <img src="${self.itemdata.avatarimage}?themerev=${M.cfg.themerev}" 
                         alt="AI Assistant" class="mr-2 rounded-circle shadow-lg ml_unique_assistant_img">
                         `;
                     headerDiv.appendChild(pictureDiv);
@@ -471,35 +472,48 @@ function($, log, def, ttrecorder, templates, str) {
                 // Set the auto turn detection, or manual submit flag
                 self.timebased_vad.create_response = self.autocreateresponse;
 
-                // Set session-wide instructions
-                self.sendEvent({
-                    type: "session.update",
-                    session: {
-                        instructions: self.itemdata.audiochatinstructions,
-                        input_audio_format: "pcm16", // Ensure correct audio encoding
-                        input_audio_transcription: {
-                            language: twoletterlang,
-                            model: "whisper-1" // "gpt-4o-mini-transcribe"  // Use a transcription model
-                        },
-                        turn_detection: self.timebased_vad,
-                        speed: 0.9,
-                        voice: self.audiochat_voice,
-                        modalities: ["text", "audio"],
+                log.debug(self.itemdata.audiochatinstructions);
+                var updateinstructions = self.itemdata.audiochatinstructions;
+                Fragment.loadFragment(
+                    'mod_minilesson',
+                    'audiochat_instruction',
+                    M.cfg.contextid,
+                    {
+                        itemid: self.itemdata.id,
+                        instructions: updateinstructions,
                     }
-                });
+                ).done(function(text) {
+                    log.debug("Loaded audio chat instructions:", text);
+                    updateinstructions = text;
 
-                // Send the first message to tell AI to say something
-                // the response create function overrides the session instructions, so we need to double up here
-                var firstmessageinstructions =  "Please introduce yourself to the student and explain todays topic.";
-                self.sendEvent({
-                    type: "response.create",
-                    response: {
-                        modalities: ["audio", "text"],
-                        instructions:  self.itemdata.audiochatinstructions + " " + firstmessageinstructions,
-                        voice: self.audiochat_voice
-                    }
-                });
+                    self.sendEvent({
+                        type: "session.update",
+                        session: {
+                            instructions: updateinstructions,
+                            input_audio_format: "pcm16", // Ensure correct audio encoding
+                            input_audio_transcription: {
+                                language: twoletterlang,
+                                model: "whisper-1" // "gpt-4o-mini-transcribe"  // Use a transcription model
+                            },
+                            turn_detection: self.timebased_vad,
+                            speed: 0.9,
+                            voice: self.audiochat_voice,
+                            modalities: ["text", "audio"],
+                        }
+                    });
 
+                    // Send the first message to tell AI to say something
+                    // the response create function overrides the session instructions, so we need to double up here
+                    var firstmessageinstructions =  "Please introduce yourself to the student and explain todays topic.";
+                        self.sendEvent({
+                        type: "response.create",
+                        response: {
+                            modalities: ["audio", "text"],
+                            instructions:  updateinstructions + " " + firstmessageinstructions,
+                            voice: self.audiochat_voice
+                        }
+                    });
+                });
             };
 
             // Set up the audio element to play incoming audio.
@@ -544,7 +558,7 @@ function($, log, def, ttrecorder, templates, str) {
                 });
                 log.debug("Session started");
             } catch(e) {
-                
+
                 if (e.name === 'AbortError') {
                     log.debug("Session start aborted by user.");
                     // Reset UI and state as needed
@@ -667,7 +681,7 @@ function($, log, def, ttrecorder, templates, str) {
             if (typeof tdata.grade === 'undefined' || isNaN(tdata.grade) || tdata.grade === null || tdata.grade === "") {
                 tdata.grade = 0;
             }
-           
+
             const filledStars = Math.round((tdata.grade / 100) * maxStars);
             for (let i = 0; i < maxStars; i++) {
                 stars.push({ filled: i < filledStars });

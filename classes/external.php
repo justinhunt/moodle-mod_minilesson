@@ -658,8 +658,10 @@ class mod_minilesson_external extends external_api {
             $ret1 = $result[0];
             if (empty($ret1['error'])) {
                 $ret->data = json_encode($ret1['data']);
+            } else if (!empty($ret1['exception'])) {
+                $ret->error = $ret1['exception']['message'];
             } else {
-                $ret->erorr = true;
+                $ret->error = true;
             }
         }
         return $ret;

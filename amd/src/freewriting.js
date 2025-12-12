@@ -51,6 +51,7 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
           stepdata.index = self.index;
           stepdata.hasgrade = true;
           stepdata.totalitems = self.itemdata.totalmarks;
+          stepdata.lessonitemid = self.itemdata.id;
           stepdata.correctitems = self.rawscore > 0 ? self.rawscore : 0;
           stepdata.grade = self.percentscore;
           stepdata.resultsdata = self.transcript_evaluation;
@@ -137,12 +138,23 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
                     height: '5px',
                     timeLimit: itemdata.timelimit,
                     onFinish: function() {
-                        self.nextbutton.trigger('click');
+                        self.ontimelimitreached();
                     }
                 });
               }
           });
 
+        },
+
+        ontimelimitreached: function(){
+          var self = this;
+          var submitted = self.transcript_evaluation !== null;
+          var wordcount = self.quizhelper.count_words(self.thetextarea.val());
+          if (wordcount == 0) {
+            self.next_question();
+          } else if (!submitted) {
+            self.submitbutton.click();
+          }
         },
 
         init_components: function(quizhelper,itemdata){
@@ -250,6 +262,14 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
                       self.timerdisplay.html(displaytime);
                     }
                 );// End of templates
+                // progresstimer clear interval when submitted and timelimit not finished
+                if (self.itemdata.timelimit > 0) {
+                  var timerelement = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer");
+                  var timerinterval = timerelement.attr('timer');
+                  if (timerinterval) {
+                    clearInterval(timerinterval);
+                  }
+                }
               }//end of show item review or not
             } else {
               log.debug('transcript_evaluation: oh no it failed');
