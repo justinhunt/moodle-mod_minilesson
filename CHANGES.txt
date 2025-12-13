@@ -1,4 +1,8 @@
 Version 1.1.16 (Build 2025121300)
+ - Added student submission feature to Audio Chat
+ - Fixed time limit behaviour on free writing and free speaking
+ - Added a learner native language admin and instance setting
+ - Added choice of avatar images for Audio Chat
 
 Version 1.1.15 (Build 2025112901)
  - UI Update - quite a big one
