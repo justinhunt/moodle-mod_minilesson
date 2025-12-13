@@ -788,7 +788,7 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
         return false;
     }
 
-    $isexport = strpos($filearea, 'export') !== false ;
+    $isexport = strpos($filearea, 'export') !== false;
     $istranslate = strpos($filearea, 'translate') !== false;
     if ($isexport || $istranslate) {
         // Exporting the items as JSON.
@@ -1216,22 +1216,24 @@ function minilesson_output_fragment_templates($args)
     return $OUTPUT->render($renderable);
 }
 
-function minilesson_output_fragment_audiochat_instruction($args) {
+// Fetches a student's submission in a previous freeewriting or freespeaking in the current attempt
+// for passing into an audiochat session. This must be done via AJAX because its not available until
+// after the attempt has started.
+function minilesson_output_fragment_audiochat_fetchstudentsubmission($args)
+{
     global $DB;
     $args = (object) $args;
     $cm = $DB->get_record('course_modules', ['id' => $args->context->instanceid], '*', MUST_EXIST);
     $minilesson = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
     $itemrecord = $DB->get_record(constants::M_QTABLE, ['id' => $args->itemid]);
 
-    $itemtype = new item_audiochat($itemrecord, $minilesson, $args->context);
-    $audiochatinstruction = $itemtype->replace_student_submission(
-        $args->instructions
-    );
-
-    return $audiochatinstruction;
+    $theaudiochat = new item_audiochat($itemrecord, $minilesson, $args->context);
+    $studentsubmission = $theaudiochat->fetch_student_submission();
+    return $studentsubmission;
 }
 
-function minilesson_output_fragment_translatetoimport($args) {
+function minilesson_output_fragment_translatetoimport($args)
+{
     global $CFG;
     require_once($CFG->libdir . '/externallib.php');
 

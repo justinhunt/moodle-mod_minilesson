@@ -103,14 +103,25 @@ if ($hassiteconfig) {
         get_string('apisecret', constants::M_COMPONENT), $showbelowapisecret, '', PARAM_TEXT));
 
 
-    $regions = \mod_minilesson\utils::get_region_options();
+    $regions = utils::get_region_options();
     $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/awsregion',
             get_string('awsregion', constants::M_COMPONENT), '', 'useast1', $regions));
 
 
-    $langoptions = \mod_minilesson\utils::get_lang_options();
+    // Default target language.
+    $langoptions = utils::get_lang_options();
     $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/ttslanguage',
              get_string('ttslanguage', constants::M_COMPONENT), '', 'en-US', $langoptions));
+
+    // Default learners native language.    
+    $nativelangoptions = [0 => '--'] + utils::get_lang_options();
+    $shortlangcodes = utils::get_shortlang_options();
+    // Use the site default language as default native language or if that is not available use '--'.
+    $nativelangdefault = $CFG->lang && array_key_exists($CFG->lang, $shortlangcodes) ? $shortlangcodes[$CFG->lang] : 0;
+    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/nativelang',
+             get_string('nativelang', constants::M_COMPONENT), '', $nativelangdefault, $nativelangoptions));
+
+
 
     // Cloud Poodll Server.
     $mainsettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/cloudpoodllserver',

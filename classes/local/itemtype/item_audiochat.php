@@ -96,7 +96,7 @@ class item_audiochat extends item
             $testitem->audiochatinstructions = get_string('audiochat:gradingprompt_dec1', constants::M_COMPONENT);
         }
 
-        // Replace the placeholders in the audiochat instructions with the actual data.
+        // Replace the placeholders in the audiochat instructions with the actual data
         $testitem->audiochatinstructions = str_replace(
             [
                 '{ai role}',
@@ -130,7 +130,7 @@ class item_audiochat extends item
                     '{target language}',
                     '{topic}',
                     '{ai data1}',
-                    '{ai data2}'
+                    '{ai data2}',
                 ],
                 [
                     $this->itemrecord->{constants::AUDIOCHAT_ROLE},
@@ -139,7 +139,7 @@ class item_audiochat extends item
                     $this->language,
                     $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
                     $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
-                    $this->itemrecord->{constants::AUDIOCHAT_AIDATA2}
+                    $this->itemrecord->{constants::AUDIOCHAT_AIDATA2},
                 ],
                 $testitem->audiochatgradeinstructions
             );
@@ -150,7 +150,6 @@ class item_audiochat extends item
 
         // AI Voice.
         $testitem->audiochat_voice = $this->itemrecord->{constants::AUDIOCHAT_VOICE};
-
 
         $testitem->totalmarks = $this->itemrecord->{constants::TOTALMARKS};
         if ($this->itemrecord->{constants::TARGETWORDCOUNT} > 0) {
@@ -264,13 +263,28 @@ class item_audiochat extends item
     }
 
     public function replace_student_submission($instruction) {
+
         if (empty($instruction)) {
             return false;
         }
 
+        $studentsubmission = $this->fetch_student_submission();
+        if ($studentsubmission && !empty($studentsubmission)) {
+            $audiochatinstruction = str_replace(
+                ['{student submission}'],
+                [$studentsubmission],
+                $instruction
+            );
+            return $audiochatinstruction;
+        }
+        return false;
+    }
+
+    public function fetch_student_submission() {
+
         $submission = $this->itemrecord;
         if (!empty($submission)) {
-            $submissionid = $submission->{constants::AUDIOCHAT_STUDENT_SUBMISSION};
+            $studentsubmissionitemid = $submission->{constants::AUDIOCHAT_STUDENT_SUBMISSION};
             $attemptrec = utils::latest_attempt(
                 $this->moduleinstance->course,
                 $this->moduleinstance->id
@@ -281,19 +295,13 @@ class item_audiochat extends item
             $studentsubmission = '';
             if (!empty($sessiondatas)) {
                 foreach ($sessiondatas->steps as $sessiondata) {
-                    if ($submissionid == $sessiondata->lessonitemid && !empty($sessiondata->resultsdata)) {
+                    if ($studentsubmissionitemid == $sessiondata->lessonitemid && !empty($sessiondata->resultsdata)) {
                         $studentsubmission = $sessiondata->resultsdata->rawspeech;
                         break;
                     }
                 }
             }
-
-            $audiochatinstruction = str_replace(
-                ['{studentsubmission}'],
-                [$studentsubmission],
-                $instruction
-            );
-            return $audiochatinstruction;
+            return $studentsubmission;
         }
         return false;
     }

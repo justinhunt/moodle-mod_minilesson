@@ -148,7 +148,8 @@ abstract class item implements templatable, renderable
         }
     }
 
-    public function upgrade_item($oldversion){
+    public function upgrade_item($oldversion)
+    {
         // This is a placeholder for any upgrade logic that might be needed.
         // Each item will implement its own upgrade logic if needed.
         return true;
@@ -506,7 +507,7 @@ abstract class item implements templatable, renderable
             $testitem->itemttsoption = $itemrecord->{constants::TTSQUESTIONOPTION};
             $testitem->itemttsautoplay = $itemrecord->{constants::TTSAUTOPLAY};
         }
- 
+
         //YT Clip
         if (!empty($itemrecord->{constants::YTVIDEOID}) && !empty(trim($itemrecord->{constants::YTVIDEOID}))) {
             $ytvideoid = utils::super_trim($itemrecord->{constants::YTVIDEOID});
@@ -657,8 +658,13 @@ abstract class item implements templatable, renderable
             // If we do not have an audio file, we will not have an audio story.
             // Its hacky but lets allow users to use the TTS audio file as this.
             if (empty($testitem->audiostoryaudio) && !empty($itemrecord->{constants::TTSQUESTION}) && !empty(trim($itemrecord->{constants::TTSQUESTION}))) {
-                $testitem->audiostoryaudio = utils::fetch_polly_url($this->token, $this->region, $testitem->itemttsaudio, 
-                        $testitem->itemttsoption, $testitem->itemttsaudiovoice);
+                $testitem->audiostoryaudio = utils::fetch_polly_url(
+                    $this->token,
+                    $this->region,
+                    $testitem->itemttsaudio,
+                    $testitem->itemttsoption,
+                    $testitem->itemttsaudiovoice
+                );
                 // Unset the TTS audio as we are using the audio story audio.
                 unset($testitem->itemttsaudio);
 
@@ -866,7 +872,7 @@ abstract class item implements templatable, renderable
         $thesentences = $this->parse_gapfill_sentences($sentences);
         $phoneticstring = $this->itemrecord->phonetic;
         $phonetics = false;
-        if(!empty($phoneticstring)){
+        if (!empty($phoneticstring)) {
             $phonetics = explode(PHP_EOL, $phoneticstring);
         }
         $customsentenceaudio = $this->fetch_sentence_media('audio', 1);
@@ -886,15 +892,17 @@ abstract class item implements templatable, renderable
             }
 
             //get phonetics for each sentence
-            if($phonetics && array_key_exists($i, $phonetics)){
+            if ($phonetics && array_key_exists($i, $phonetics)) {
                 $ps = utils::super_trim($phonetics[$i]);
                 $psarray = explode('|#', $ps);
                 $sentence->phonetic = array_key_exists(0, $psarray) ? utils::super_trim($psarray[0]) : '';
                 $sentence->segmentedsentence = array_key_exists(1, $psarray) ? utils::super_trim($psarray[1]) : '';
-                if(empty($sentence->segmentedsentence)){
-                    list($phones, $segmentedsentence) = utils::fetch_phones_and_segments($sentence->sentence,
+                if (empty($sentence->segmentedsentence)) {
+                    list($phones, $segmentedsentence) = utils::fetch_phones_and_segments(
+                        $sentence->sentence,
                         $this->moduleinstance->ttslanguage,
-                        $this->moduleinstance->region);
+                        $this->moduleinstance->region
+                    );
                     $sentence->segmentedsentence = $segmentedsentence;
                 }
             }
@@ -1065,7 +1073,7 @@ abstract class item implements templatable, renderable
 
             if ($this->language == constants::M_LANG_JAJP) {
                 $thephonetics = false;
-                if(isset($phonetics[$index]) && !empty($phonetics[$index])){
+                if (isset($phonetics[$index]) && !empty($phonetics[$index])) {
                     $thephonetics = utils::super_trim($phonetics[$index]);
                 }
                 $sentence = $this->process_japanese_phonetics($sentence, $thephonetics);

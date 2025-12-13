@@ -476,15 +476,23 @@ function($, log, def, ttrecorder, templates, str, Fragment) {
                 var updateinstructions = self.itemdata.audiochatinstructions;
                 Fragment.loadFragment(
                     'mod_minilesson',
-                    'audiochat_instruction',
+                    'audiochat_fetchstudentsubmission',
                     M.cfg.contextid,
                     {
-                        itemid: self.itemdata.id,
-                        instructions: updateinstructions,
+                        itemid: self.itemdata.id
                     }
-                ).done(function(text) {
-                    log.debug("Loaded audio chat instructions:", text);
-                    updateinstructions = text;
+                ).done(function(studentsubmission) {
+                    log.debug("Loaded audio chat studentsubmission:", studentsubmission);
+                    if(studentsubmission) {
+                        // Replace "{student submission}" placeholder with actual submission
+                        updateinstructions = updateinstructions.replace('{student submission}', studentsubmission);
+                        
+                        // Replace student submission in grade instructions too
+                        self.itemdata.audiochatgradeinstructions = self.itemdata.audiochatgradeinstructions.replace('{student submission}', studentsubmission);
+
+                        // Save student submission in itemdata for later use
+                        self.itemdata.studentsubmission = studentsubmission;
+                    }
 
                     self.sendEvent({
                         type: "session.update",

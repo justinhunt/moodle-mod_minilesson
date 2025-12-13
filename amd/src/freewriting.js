@@ -257,9 +257,9 @@ define(['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/def
                       templates.runTemplateJS(js);
                       //reset timer and wordcount on this page, in case reattempt
                       self.wordcount.text('0');
-                      self.ttrec.timer.reset();
-                      var displaytime = self.ttrec.timer.fetch_display_time();
-                      self.timerdisplay.html(displaytime);
+                      //self.ttrec.timer.reset();
+                      //var displaytime = self.ttrec.timer.fetch_display_time();
+                      //self.timerdisplay.html(displaytime);
                     }
                 );// End of templates
                 // progresstimer clear interval when submitted and timelimit not finished

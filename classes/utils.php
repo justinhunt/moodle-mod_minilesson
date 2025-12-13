@@ -967,21 +967,28 @@ class utils
                 $replace = [
                     $item->{constants::FREEWRITING_TOPIC},
                     $item->{constants::FREEWRITING_AIDATA1},
-                    $item->{constants::FREEWRITING_AIDATA2}
+                    $item->{constants::FREEWRITING_AIDATA2},
                 ];
                 break;
             case constants::TYPE_FREESPEAKING:
                 $replace = [
                     $item->{constants::FREESPEAKING_TOPIC},
                     $item->{constants::FREESPEAKING_AIDATA1},
-                    $item->{constants::FREESPEAKING_AIDATA2}
+                    $item->{constants::FREESPEAKING_AIDATA2},
                 ];
                 break;
             case constants::TYPE_AUDIOCHAT:
+                // Audio Chat probably never arrives here. It works internally with the RTC streaming API.
+                // Leaving this code here, but probably dead.
+                $search[] = '{student submission}';
+                // Fetch item class instance from item db record.
+                $audiochatinstance = new local\itemtype\item_audiochat($item, $moduleinstance, $cm);
+                $studentsubmission = $audiochatinstance->fetch_student_submission();
                 $replace = [
                     $item->{constants::AUDIOCHAT_TOPIC},
                     $item->{constants::AUDIOCHAT_AIDATA1},
-                    $item->{constants::AUDIOCHAT_AIDATA2}
+                    $item->{constants::AUDIOCHAT_AIDATA2},
+                    $studentsubmission ? $studentsubmission : '',
                 ];
                 break;
         }
@@ -1041,6 +1048,11 @@ class utils
             $userlanguage,
             $targettopic
         );
+        // If aigraderesults is null, make it an object so we can add stats to it.
+        // Maybe that is not the best way to go about it ...
+        if (!$aigraderesults) {
+            $aigraderesults = new \stdClass();
+        }
         $aigraderesults->stats = $textanalyser->process_some_stats($targetwords);
 
         return $aigraderesults;
@@ -2009,6 +2021,48 @@ class utils
         ];
     }
 
+    public static function get_shortlang_options() {
+        // return an array of short language codes and the most common 4 letter lang codes for each
+        // we need this mainly for matching moodle lang codes to minilesson lang codes
+        return [
+            'ar' => constants::M_LANG_ARAE,
+            'eu' => constants::M_LANG_EUES,
+            'bg' => constants::M_LANG_BGBG,
+            'hr' => constants::M_LANG_HRHR,
+            'zh' => constants::M_LANG_ZHCN,
+            'cs' => constants::M_LANG_CSCZ,
+            'da' => constants::M_LANG_DADK,
+            'nl' => constants::M_LANG_NLNL,
+            'en' => constants::M_LANG_ENUS,
+            'fi' => constants::M_LANG_FIFI,
+            'fr' => constants::M_LANG_FRFR,
+            'de' => constants::M_LANG_DEDE,
+            'hi' => constants::M_LANG_HIIN,
+            'el' => constants::M_LANG_ELGR,
+            'he' => constants::M_LANG_HEIL,
+            'hu' => constants::M_LANG_HUHU,
+            'id' => constants::M_LANG_IDID,
+            'is' => constants::M_LANG_ISIS,
+            'it' => constants::M_LANG_ITIT,
+            'ja' => constants::M_LANG_JAJP,
+            'ko' => constants::M_LANG_KOKR,
+            'lt' => constants::M_LANG_LTLT,
+            'lv' => constants::M_LANG_LVLV,
+            'ms' => constants::M_LANG_MSMY,
+            'mk' => constants::M_LANG_MKMK,
+            'no' => constants::M_LANG_NONO,
+            'pl' => constants::M_LANG_PLPL,
+            'pt' => constants::M_LANG_PTBR,
+            'ro' => constants::M_LANG_RORO,
+            'ru' => constants::M_LANG_RURU,
+            'es' => constants::M_LANG_ESES,
+            'sv' => constants::M_LANG_SVSE,
+            'tr' => constants::M_LANG_TRTR,
+            'vi' => constants::M_LANG_VIVN,
+            'uk' => constants::M_LANG_UKUA,
+        ];
+    }
+
     public static function get_prompttype_options()
     {
         return [
@@ -2130,7 +2184,7 @@ class utils
         $mform->addElement('select', 'ttslanguage', get_string('ttslanguage', constants::M_COMPONENT), $langoptions);
         $mform->setDefault('ttslanguage', $config->ttslanguage);
 
-        // transcriber
+        // Transcriber.
         $toptions = self::fetch_options_transcribers();
         $mform->addElement(
             'select',
@@ -2140,22 +2194,24 @@ class utils
             $config->transcriber
         );
 
-        // region
+        // Region.
         $regionoptions = self::get_region_options();
         $mform->addElement('select', 'region', get_string('awsregion', constants::M_COMPONENT), $regionoptions);
         $mform->setDefault('region', $config->awsregion);
 
-        // prompt types
+        // Prompt types.
         $prompttypes = self::get_prompttype_options();
         $mform->addElement('select', 'richtextprompt', get_string('prompttype', constants::M_COMPONENT), $prompttypes);
         $mform->addHelpButton('richtextprompt', 'prompttype', constants::M_COMPONENT);
         $mform->setDefault('richtextprompt', $config->prompttype);
 
+        // Native lang options.
         $langoptions = [0 => '--'] + self::get_lang_options();
         $mform->addElement('select', 'nativelang', get_string('nativelang', constants::M_COMPONENT), $langoptions);
         $mform->setType('nativelang', PARAM_TEXT);
+        $mform->setDefault('nativelang', $config->nativelang);
 
-        // advanced
+        // Advanced
         $name = 'advanced';
         $label = get_string($name, 'minilesson');
         $mform->addElement('header', $name, $label);
@@ -2707,7 +2763,7 @@ class utils
     }
 
     public static function latest_attempt($courseid, $lessonid) {
-        global $USER,$DB;
+        global $USER, $DB;
 
         if (empty($lessonid) || empty($courseid)) {
             return [];

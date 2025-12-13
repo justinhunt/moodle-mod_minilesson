@@ -64,25 +64,13 @@ class audiochatform extends baseform {
             get_string('audiochat_voice',  constants::M_COMPONENT),
             $options, 'alloy');
 
-         // Students native language
+        // Students native language.
+        $defaultfeedbacklang = $this->moduleinstance->nativelang ?
+                    $this->moduleinstance->nativelang : $this->moduleinstance->ttslanguage;
         $this->add_languageselect(constants::AUDIOCHAT_NATIVE_LANGUAGE,
             get_string('audiochat_native_language', constants::M_COMPONENT),
-            constants::M_LANG_ENUS
+            $defaultfeedbacklang
         );
-
-        // Student submission.
-        if ($moduleinstance) {
-            $submissionoptions = [0 => get_string('choose')];
-            $lessons = utils::get_lesson_items($moduleinstance->id, $itemid);
-            foreach ($lessons as $item) {
-                $submissionoptions[$item->id] = $item->name;
-            }
-            $this->add_dropdown(
-                constants::AUDIOCHAT_STUDENT_SUBMISSION,
-                get_string('audiochat_student_submission', constants::M_COMPONENT),
-                $submissionoptions
-            );
-        }
 
         $options = utils::get_aiprompt_options('AUDIOCHAT_INSTRUCTIONSSELECTION');
         $mform->addElement('select', constants::AUDIOCHAT_INSTRUCTIONSSELECTION, get_string('audiochat_instructions', constants::M_COMPONENT), $options,
@@ -124,6 +112,22 @@ class audiochatform extends baseform {
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
 
         // The custom AI data fields
+        // Student submission.
+        if ($moduleinstance) {
+            $submissionoptions = [0 => get_string('choose')];
+            $lessons = utils::get_lesson_items($moduleinstance->id, $itemid);
+            foreach ($lessons as $item) {
+                $submissionoptions[$item->id] = $item->name;
+            }
+            $this->add_dropdown(
+                constants::AUDIOCHAT_STUDENT_SUBMISSION,
+                get_string('audiochat_student_submission', constants::M_COMPONENT),
+                $submissionoptions
+            );
+            $this->add_static_text('audiochat_student_submission_instructions', '', get_string('audiochat_student_submission_instructions', constants::M_COMPONENT));
+
+        }
+        // AI Data 1 and 2
         $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA1, get_string('audiochat_aidata1', constants::M_COMPONENT), false);
         $mform->setDefault(constants::AUDIOCHAT_AIDATA1, '');
         $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
