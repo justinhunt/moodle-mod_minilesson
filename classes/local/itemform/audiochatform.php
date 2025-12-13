@@ -164,8 +164,8 @@ class audiochatform extends baseform {
         // Student submission.
         if ($moduleinstance) {
             $submissionoptions = [0 => get_string('choose')];
-            $lessons = utils::get_lesson_items($moduleinstance->id, $itemid);
-            foreach ($lessons as $item) {
+            $lessonitems = utils::get_lesson_items($moduleinstance->id, $itemid);
+            foreach ($lessonitems as $item) {
                 $submissionoptions[$item->id] = $item->name;
             }
             $this->add_dropdown(

@@ -2741,8 +2741,11 @@ class utils
             return [];
         }
 
+        // If we are adding an item, itemid will be 0
         if (empty($itemid)) {
             $itemorder = $DB->get_field(constants::M_QTABLE, 'MAX(itemorder)', ['minilesson' => $lessonid]);
+            // The predicted itemid of this new item will be max+1
+            $itemorder++;
         } else {
             $itemorder = $DB->get_field(constants::M_QTABLE, 'itemorder', ['id' => $itemid]);
         }
