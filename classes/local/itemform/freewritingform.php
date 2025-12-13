@@ -101,18 +101,9 @@ class freewritingform extends baseform
             $mform->disabledIf(constants::AIGRADE_MODELANSWER, constants::RELEVANCE, 'neq', constants::RELEVANCETYPE_MODELANSWER);
         }
 
-        // AI Topic and additional AI Data to be used as context in prompts
-        $this->add_textarearesponse(constants::FREEWRITING_TOPIC, get_string('ai_topic', constants::M_COMPONENT), false);
-        $mform->addHelpButton(constants::FREEWRITING_TOPIC, 'ai_topic', constants::M_COMPONENT);
-        $this->add_textarearesponse(constants::FREEWRITING_AIDATA1, get_string('ai_data1', constants::M_COMPONENT), false);
-        $mform->setDefault(constants::FREEWRITING_AIDATA1, '');
-        $mform->addHelpButton(constants::FREEWRITING_AIDATA1, 'ai_data1', constants::M_COMPONENT);
-        $this->add_textarearesponse(constants::FREEWRITING_AIDATA2, get_string('ai_data2', constants::M_COMPONENT), false);
-        $mform->setDefault(constants::FREEWRITING_AIDATA2, '');
-        $mform->addHelpButton(constants::FREEWRITING_AIDATA2, 'ai_data2', constants::M_COMPONENT);
-
         // Add the "Results Display" fieldset
         $mform->addElement('header', 'resultsdisplay', get_string('resultsdisplay', constants::M_COMPONENT));
+        $mform->setExpanded('resultsdisplay');
 
         $options = [
             1 => get_string('starrating', constants::M_COMPONENT),
@@ -127,6 +118,23 @@ class freewritingform extends baseform
         ];
         $this->add_dropdown(constants::FREEWRITING_SHOWRESULT, get_string('showresult', constants::M_COMPONENT), $options, 1);
         $this->add_checkbox(constants::FREEWRITING_HIDECORRECTION, get_string('hidecorrection', constants::M_COMPONENT), null, 0);
+
+
+        // The custom AI data fields
+        $mform->addElement('header', 'aicontextheading', get_string('aicontextheading', constants::M_COMPONENT));
+        $mform->setExpanded('aicontextheading');
+        $this->add_static_text('aicontext_instructions', '', get_string('aicontext_instructions', constants::M_COMPONENT));
+
+        // AI Topic and additional AI Data to be used as context in prompts
+        $this->add_textarearesponse(constants::FREEWRITING_TOPIC, get_string('ai_topic', constants::M_COMPONENT), false);
+        $mform->addHelpButton(constants::FREEWRITING_TOPIC, 'ai_topic', constants::M_COMPONENT);
+        $this->add_textarearesponse(constants::FREEWRITING_AIDATA1, get_string('ai_data1', constants::M_COMPONENT), false);
+        $mform->setDefault(constants::FREEWRITING_AIDATA1, '');
+        $mform->addHelpButton(constants::FREEWRITING_AIDATA1, 'ai_data1', constants::M_COMPONENT);
+        $this->add_textarearesponse(constants::FREEWRITING_AIDATA2, get_string('ai_data2', constants::M_COMPONENT), false);
+        $mform->setDefault(constants::FREEWRITING_AIDATA2, '');
+        $mform->addHelpButton(constants::FREEWRITING_AIDATA2, 'ai_data2', constants::M_COMPONENT);
+
 
         // JS for the AI Prompt Preset Dropdown fields
         $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/aiprompt', 'init');

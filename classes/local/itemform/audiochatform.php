@@ -111,28 +111,7 @@ class audiochatform extends baseform {
         // Time limit if we need one
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
 
-        // The custom AI data fields
-        // Student submission.
-        if ($moduleinstance) {
-            $submissionoptions = [0 => get_string('choose')];
-            $lessons = utils::get_lesson_items($moduleinstance->id, $itemid);
-            foreach ($lessons as $item) {
-                $submissionoptions[$item->id] = $item->name;
-            }
-            $this->add_dropdown(
-                constants::AUDIOCHAT_STUDENT_SUBMISSION,
-                get_string('audiochat_student_submission', constants::M_COMPONENT),
-                $submissionoptions
-            );
-            $this->add_static_text('audiochat_student_submission_instructions', '', get_string('audiochat_student_submission_instructions', constants::M_COMPONENT));
-
-        }
-        // AI Data 1 and 2
-        $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA1, get_string('audiochat_aidata1', constants::M_COMPONENT), false);
-        $mform->setDefault(constants::AUDIOCHAT_AIDATA1, '');
-        $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
-        $mform->setDefault(constants::AUDIOCHAT_AIDATA2, '');
-
+        // Avatar image selection.
         $imagefiles = glob($CFG->dirroot . '/mod/minilesson/pix/audiochatavatar*.{jpg,jpeg,png}', GLOB_BRACE);
         if (!empty($imagefiles)) {
             foreach ($imagefiles as $imagefilepath) {
@@ -175,6 +154,33 @@ class audiochatform extends baseform {
                 $mform->addGroup($groupelements, 'avatargroup', get_string('audioavatar', constants::M_COMPONENT), '<!--br-->', false);
             }
         }
+
+        // The custom AI data fields
+        $mform->addElement('header', 'aicontextheading', get_string('aicontextheading', constants::M_COMPONENT));
+        $mform->setExpanded('aicontextheading');
+        $this->add_static_text('aicontext_instructions', '', get_string('aicontext_instructions', constants::M_COMPONENT));
+
+
+        // Student submission.
+        if ($moduleinstance) {
+            $submissionoptions = [0 => get_string('choose')];
+            $lessons = utils::get_lesson_items($moduleinstance->id, $itemid);
+            foreach ($lessons as $item) {
+                $submissionoptions[$item->id] = $item->name;
+            }
+            $this->add_dropdown(
+                constants::AUDIOCHAT_STUDENT_SUBMISSION,
+                get_string('audiochat_student_submission', constants::M_COMPONENT),
+                $submissionoptions
+            );
+            $this->add_static_text('audiochat_student_submission_instructions', '', get_string('audiochat_student_submission_instructions', constants::M_COMPONENT));
+
+        }
+        // AI Data 1 and 2
+        $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA1, get_string('audiochat_aidata1', constants::M_COMPONENT), false);
+        $mform->setDefault(constants::AUDIOCHAT_AIDATA1, '');
+        $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
+        $mform->setDefault(constants::AUDIOCHAT_AIDATA2, '');
 
         $PAGE->requires->js_call_amd(constants::M_COMPONENT.'/aiprompt', 'init');
     }

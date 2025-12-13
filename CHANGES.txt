@@ -1,3 +1,5 @@
+Version 1.1.16 (Build 2025121300)
+
 Version 1.1.15 (Build 2025112901)
  - UI Update - quite a big one
  - Partial correct feedback on gapfills

@@ -1242,4 +1242,6 @@ $string['audiochat_student_submission'] = 'Student Submission';
 $string['translatetoimport'] = 'Translate to import';
 $string['nativelang'] = 'Learner\'s Native Language';
 $string['audioavatar'] = 'Audio Avatar';
-$string['audiochat_student_submission_instructions'] = 'If applicable set a Free Writing or Free Speaking item from earlier in the lesson. The transcript of the students submission can be passed into the AI prompt. ';
+$string['audiochat_student_submission_instructions'] = 'If applicable set a Free Writing or Free Speaking item from earlier in the lesson. The transcript of the students submission can be passed into the AI prompt as context variable {student submission}. ';
+$string['aicontextheading'] = 'AI Context Data';
+$string['aicontext_instructions'] = 'The fields that follow are optional. They can be used to provide additional context (information in the prompt) to the AI when generating the lesson items. The fields can be referenced in the AI prompt using variables like: {ai data1}, {ai data2}.';
