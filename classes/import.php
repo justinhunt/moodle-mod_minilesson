@@ -414,13 +414,25 @@ class import
 
     public function call_translate($itemsjson, $fromlang, $tolang){
         $aigen = new aigen($this->cm);
-        $prompt = "Translate any instances of language: $fromlang , into language: $tolang in the following JSON string." . PHP_EOL;
-        $prompt .= "Return results in the format: {translatedjson: thetranslation}" . PHP_EOL;
+        $prompt = "Translate any instances of language: $fromlang , into language: $tolang in the JSON string that follows." . PHP_EOL;
+        $prompt .= "Return results in the format: {translatedjson: thetranslatedjson}" . PHP_EOL;
+        // Markdown generation throws off the AI and it adds line breaks, but these break JSON..
+        $prompt .= 'CRITICAL: The output must be valid, minified JSON. Do NOT render Markdown formatting. All newlines inside strings MUST be escaped as \n. Do not use physical line breaks. ' . PHP_EOL;
         $prompt .= $itemsjson;
 
         $ret = $aigen->generate_data($prompt);
         if ($ret->success) {
-            // The JSON will have been decoded into items in the transferall process, no need to decode again.
+            // The JSON should have been decoded into items in the transferall process.
+            // And no need to decode again ... but markdown and JSON seem to throw it off
+            // So we check and attampt to decode if needed.
+
+            // If its not an object, try to decode it.
+            if (!is_object($ret->payload->translatedjson)) {
+                if (utils::is_json($ret->payload->translatedjson)) {
+                    $ret->payload->translatedjson = json_decode($ret->payload->translatedjson);
+                }
+            }
+
             return $ret->payload->translatedjson;
         } else {
             return false;

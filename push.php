@@ -139,13 +139,17 @@ switch($action){
         $updatefields = [];
 }
 
-//Items are a special case
+// PUSH_ITEMS is a special case.
 if ($action == constants::M_PUSH_ITEMS) {
     $updatecount = 0;
     $activityids = $DB->get_fieldset_select(constants::M_TABLE, 'id', $whereclause);
     if (empty($activityids)) {
         redirect($PAGE->url, get_string('pushpage_noactivities', constants::M_COMPONENT, $updatecount), 10);
     }
+
+    // Reset the source order of items in the current activity.
+    utils::reset_item_order($moduleinstance->id);
+
     $comptest = new comprehensiontest($cm);
     $thisitems = $comptest->fetch_items();
 
@@ -154,7 +158,7 @@ if ($action == constants::M_PUSH_ITEMS) {
         redirect($PAGE->url, get_string('pushpage_noitems', constants::M_COMPONENT, $updatecount), 10);
     }
 
-    // Loop through the activities fetching the items. 
+    // Loop through the activities fetching the items.
     // If each items type, item order, item name match - and if all the items match, do the update.
     // We really want to avoid somebody doing a nuclear hit by mistake.
     $minilessons = [];
@@ -165,10 +169,15 @@ if ($action == constants::M_PUSH_ITEMS) {
         if (!$cloneinstance) {
             continue;
         }
+
+        // Reset the item order. Because it can get out of sync if items are added/deleted in the source activity.
+        // That is, the sequence of itemorders may be correct but there may be gaps in itemorder numbers.
+        utils::reset_item_order($activityid);
+
         // Get the module context for the clone activity.
         $clonecm = get_coursemodule_from_instance('minilesson', $activityid, $cloneinstance->course, false, IGNORE_MISSING);
         $clonecontext = \context_module::instance($clonecm->id);
-        //Do a preliminary fetch to see if we have items that match
+        // Do a preliminary fetch to see if we have items that match.
         $cloneitemids = [];
         foreach ($thisitems as $sourceitem) {
             try {
@@ -198,7 +207,7 @@ if ($action == constants::M_PUSH_ITEMS) {
                 // Now update the cloneitem with the images from the source item.
                 $cloneitem = utils::fetch_item_from_itemrecord($cloneobject, $cloneinstance);
                 // Get all the file areas
-                $fileareas = [constants::TEXTQUESTION_FILEAREA,constants::MEDIAQUESTION,constants::AUDIOSTORY];
+                $fileareas = [constants::TEXTQUESTION_FILEAREA, constants::MEDIAQUESTION, constants::AUDIOSTORY];
                 for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
                     $fileareas[] = constants::TEXTANSWER_FILEAREA . $anumber;
                     $fileareas[] = constants::FILEANSWER . $anumber;

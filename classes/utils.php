@@ -230,7 +230,7 @@ class utils
         }
     }
 
-    // reset the item order for a minilesson
+    // Reset the item order for a minilesson. (gaps may have appeared after deletions/insertions).
     public static function reset_item_order($minilessonid)
     {
         global $DB;

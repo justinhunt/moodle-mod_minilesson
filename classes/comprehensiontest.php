@@ -46,9 +46,9 @@ class comprehensiontest {
         if (!$this->items) {
             $this->items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->mod->id], 'itemorder ASC');
         }
-        if($this->items){
+        if ($this->items) {
             return count($this->items);
-        }else{
+        } else {
             return 0;
         }
     }
@@ -58,9 +58,9 @@ class comprehensiontest {
         if (!$this->items) {
             $this->items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->mod->id], 'itemorder ASC');
         }
-        if($this->items){
+        if ($this->items) {
             return $this->items;
-        }else{
+        } else {
             return [];
         }
     }
