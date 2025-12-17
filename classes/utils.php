@@ -465,12 +465,14 @@ class utils
     }
 
     // see if this is truly json or some error
-    public static function is_json($string)
-    {
+    public static function is_json($string) {
         if (!$string) {
             return false;
         }
         if (empty($string)) {
+            return false;
+        }
+        if (is_array($string) || is_object($string)) {
             return false;
         }
         json_decode($string);
@@ -479,8 +481,7 @@ class utils
 
     // we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
     // this is our helper
-    public static function curl_fetch($url, $postdata = false, $method = 'get')
-    {
+    public static function curl_fetch($url, $postdata = false, $method = 'get'){
         global $CFG;
 
         require_once($CFG->libdir . '/filelib.php');
