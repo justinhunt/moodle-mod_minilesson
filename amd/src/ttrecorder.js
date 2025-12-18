@@ -64,28 +64,28 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
             this.register_events();
 
             //init media uploader
+            log.debug('ttr uploader savemedia: ' + this.savemedia);
             if(this.savemedia) {
                 log.debug('ttr uploader creating: ');
-                var uploader = mediauploader.clone();
+                that.uploader = mediauploader.clone();
                 var uconfig = {};
                 uconfig.wstoken = that.wstoken;
                 uconfig.moodlewsrestformat = "";
                 uconfig.mediatype = that.mediatype;
-                uconfig.parent = that.parent;
+                uconfig.parent = that.wwwroot;
                 uconfig.appid = that.appid;
                 uconfig.owner = that.owner;
-                uconfig.region = that.region;
+                uconfig.region = that.savemediaregion;
                 uconfig.expiredays = that.expiredays;
-                uconfig.transcode = that.transcode;
+                uconfig.transcode = that.transcode ? 1 : 0;
                 uconfig.cloudpoodllurl = that.cloudpoodllurl;
-                uconfig.transcoder = "";
-                uconfig.transcribe = "";
-                uconfig.subtitle = "";
+                uconfig.transcoder = "default";
+                uconfig.transcribe = 0;
+                uconfig.subtitle = 0;
                 uconfig.language = that.lang;
-                uconfig.transcribevocab = "";
-                uconfig.notificationurl = "";
-                log.debug('ttr uploader: initing');
-                uploader.init(uconfig);
+                uconfig.transcribevocab = "none";
+                uconfig.notificationurl = "none";
+                that.uploader.init(uconfig);
             }
 
             //token check
@@ -170,17 +170,13 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
 
                     // If we have a blob and we need to upload it, do so
                     if (that.savemedia) {
-                        log.debug('ttr uploader: uploadBlob');
                         that.uploader.uploadBlob(that.audio.blob, 'audio/wav');
                         var message = {};
                         message.type = 'mediasaved';
-                        message.mediaurl = that.uploader.config.s3filename;
+                        message.mediaurl = that.uploader.config.s3root + that.uploader.config.s3filename;
                         log.debug('ttr uploader: callback mediasaved');
                         log.debug(message);
                         that.callback(message);
-                        // Probably need to funk around with timing here
-                        log.debug('ttr uploader: fetch new upload details');
-                        that.uploader.fetchNewUploadDetails(); // Prepare for next upload.
                     }
                 }
 
@@ -217,6 +213,7 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
                 that.browserrec.oninterimspeechcapture=function(speechtext){
                     that.gotInterimRecognition(speechtext);
                 };
+
 
             //If we have a streaming token
             }else if( this.can_stream() && !this.stt_guided ) {
@@ -323,12 +320,15 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
             this.maxtime=this.controls.recorderbutton.data('maxtime');
             this.waveHeight=this.controls.recorderbutton.data('waveheight');
             // Whether to save media and related
-            this.savemedia = this.controls.recorderbutton.data('savemedia') === "1";
+            this.savemedia = this.controls.recorderbutton.data('savemedia') === 1;
+            this.savemediaregion = this.controls.recorderbutton.data('savemediaregion');
             this.wstoken = this.controls.recorderbutton.data('wstoken');
-            this.parent = this.controls.recorderbutton.data('wwwroot');
+            this.wwwroot = this.controls.recorderbutton.data('wwwroot');
             this.appid = this.controls.recorderbutton.data('appid');
-            this.transcode = this.controls.recorderbutton.data('transcode') === "1";
+            this.owner = this.controls.recorderbutton.data('owner');
+            this.transcode = this.controls.recorderbutton.data('transcode') === 1;
             this.expiredays = this.controls.recorderbutton.data('expiredays');
+            this.mediatype = this.controls.recorderbutton.data('mediatype');
             this.cloudpoodllurl = this.controls.recorderbutton.data('cloudpoodllurl');
 
         },
@@ -535,6 +535,7 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
                     that.update_audio('isRecording',false);
                     that.update_audio('isRecognizing',true);
                     this.browserrec.stop();
+
                 //If using upload_transcriber or streaming
                 }else{
                     this.update_audio('isRecognizing',true);

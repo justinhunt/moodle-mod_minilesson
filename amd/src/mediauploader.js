@@ -16,6 +16,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
         init: function (config) {
             this.config = config;
+            this.config.sourcemimetype = 'audio/wav';
             this.registerEvents();
             this.fetchNewUploadDetails();
         },
@@ -91,13 +92,11 @@ define(['jquery', 'core/log'], function ($, log) {
                 + '&transcribevocab=' + this.config.transcribevocab
                 + '&notificationurl=' + this.config.notificationurl
                 + '&sourcemimetype=' + this.config.sourcemimetype;
-            log.debug('mediauploader: xhrparams=' + xhrparams);
 
             var serverurl = this.config.cloudpoodllurl + "/webservice/rest/server.php";
             xhr.open("POST", serverurl, true);
             xhr.setRequestHeader("Cache-Control", "no-cache");
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            log.debug('mediauploader: sending fetchNewUploadDetails request');
             xhr.send(xhrparams);
         },
 
@@ -198,9 +197,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
         doUploadCompleteCallback: function (uploader, filename) {
 
-            log.debug('mediauploader: douploadcompletecallback');
             filename = uploader.config.s3root + uploader.config.s3filename;
-
 
             //For callbackjs and for postmessage we need an array of stuff
             var callbackObject = [];
@@ -210,17 +207,11 @@ define(['jquery', 'core/log'], function ($, log) {
             callbackObject[3] = uploader.config.updatecontrol;
             callbackObject[4] = uploader.config.s3filename;
 
-            //alert the skin that we were successful
-            this.upskin.showMessage(M.util.get_string('recui_uploadsuccess', 'filter_poodll'), 'recui_uploadsuccess');
-
-            //invoke callbackjs if we have one, otherwise just update the control(default behav.)
+            //invoke callbackjs if we have one
             if (uploader.config.callbackjs && uploader.config.callbackjs !== '') {
                 if (typeof(uploader.config.callbackjs) === 'function') {
                     uploader.config.callbackjs(callbackObject);
                 }
-            } else {
-                //by default we just poke the filename
-                uploader.pokeFilename(filename, uploader);
             }
 
         },
@@ -241,6 +232,10 @@ define(['jquery', 'core/log'], function ($, log) {
                     }
                     //Alert any listeners about the upload complete
                     this.doUploadCompleteCallback(uploader, filename);
+
+                    //Fetch new upload details for next time
+                    this.fetchNewUploadDetails(); // Prepare for next upload.
+
                 } else {
                     log.debug('upload failed #3');
                     log.debug(xhr);
@@ -268,27 +263,16 @@ define(['jquery', 'core/log'], function ($, log) {
             uploader.config.sourcefilename = uploader.config.s3filename;
 
             xhr.onreadystatechange = function (e) {
-                log.debug('mediauploader: statschange');
                 if (using_s3 && this.readyState === 4) {
-                    log.debug('mediauploader:update filenames');
                    uploader.update_filenames(uploader, sourceext);
                 }
-                log.debug('mediauploader: postprocessupload');
                 uploader.postProcessUpload(e, uploader);
 
             };
-            log.debug('mediauploader: sending file/blob');
+
             xhr.open("put", config.posturl, true);
             xhr.setRequestHeader("Content-Type", 'application/octet-stream');
             xhr.send(filedata);
-
-            //now we post a message that an upload has begun
-            var messageObject = {};
-            messageObject.type = "uploadcommenced";
-            messageObject.sourcefilename = this.config.sourcefilename;
-            messageObject.sourcemimetype = this.config.sourcemimetype;
-            messageObject.id = this.config.id;
-            this.message(messageObject);
 
         },
 

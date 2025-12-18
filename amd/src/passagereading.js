@@ -138,7 +138,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
                   function(comparison) {
                       self.gotComparison(comparison, message);
                   }
-              );
+                );
+                break;
+              case 'mediasaved':
+                log.debug('Mediaurl saved at passage reading: ' + message.mediaurl);
+                break;
+
             } //end of switch message type
           };
 

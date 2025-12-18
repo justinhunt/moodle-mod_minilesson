@@ -65,6 +65,11 @@ class item_fluency extends item {
         $maxtime = 0;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
 
+        //add a few things to enable the saving of uploaded audio (on S3)
+        $testitem->savemedia = 1;
+        $testitem->transcode = 1;
+        $testitem->expiredays = 365;
+
         // MS token and region.
         $tokenobject = utils::fetch_msspeech_token($this->moduleinstance->region);
         if ($tokenobject) {
@@ -79,6 +84,7 @@ class item_fluency extends item {
 
         // We overwrite our regular poodll region with the MS region, eg useast1 becomes eastus, frankfurt becomes westeurope.
         $testitem->region = utils::fetch_ms_region($this->moduleinstance->region);
+        $testitem->savemediaregion = $this->moduleinstance->region;
 
         // Build sentence objects.
         /* We do this right now so we get character level arrays. So  we can match mspeech per char results

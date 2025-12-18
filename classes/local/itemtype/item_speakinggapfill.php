@@ -83,8 +83,9 @@ class item_speakinggapfill extends item {
             }
         }
 
-        //add a few things to trigger upload
-        $testitem->savemedia = 1;
+        //add a few things to enable the saving of uploaded audio (on S3)
+        $testitem->savemedia = 0; // For now this is disabled
+        $testitem->savemediaregion = $this->moduleinstance->region;
         $testitem->transcode = 1;
         $testitem->expiredays = 365;
 

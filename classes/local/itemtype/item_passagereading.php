@@ -74,6 +74,12 @@ class item_passagereading extends item {
             }
         }
 
+        //add a few things to enable the saving of uploaded audio (on S3)
+        $testitem->savemedia = 1; // For now this is disabled
+        $testitem->savemediaregion = $this->moduleinstance->region;
+        $testitem->transcode = 1;
+        $testitem->expiredays = 365;
+
         // Cloudpoodll.
         $maxtime = $this->itemrecord->timelimit;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);

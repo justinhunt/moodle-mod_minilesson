@@ -98,6 +98,16 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
             self.do_evaluation_stars(speechresults);
             self.do_recolor_continue_button(speechresults);
             // self.do_evaluation_results(speechresults);
+            break;
+
+            case 'mediasaved':
+                // Save the returned media URL with the current item
+              　// There is a potential race condition here, since audio is set from blob in do_evaluation_feedback if not here.
+                self.items[self.game.pointer].audioself = new Audio();
+                self.items[self.game.pointer].audioself.src = message.mediaurl;
+                log.debug('Media saved at fluency: ' + self.mediaurl);
+                break;
+
         } //end of switch message type
       };
 
@@ -201,7 +211,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
       var results_data = {};
       results_data.correctitems = self.items.filter(function(e) {return e.correct;}).length;
       results_data.totalitems = self.items.length;
-      var includeaudioself = false;
+      var includeaudioself = self.itemdata.savemedia === 1; // if false only get current session audio, not saved on s3 for later
       results_data.items = self.items_for_results_display(includeaudioself);
       stepdata.resultsdata = results_data;
       self.quizhelper.do_next(stepdata);
@@ -653,8 +663,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
                 self.items[self.game.pointer].pronunciation_result = pronunciation_result;
                 self.items[self.game.pointer].answered = true;
                 self.items[self.game.pointer].correct = pronunciation_result.privPronJson.PronunciationAssessment.AccuracyScore >= self.phonemeWarningThreshold;
-                self.items[self.game.pointer].audioself = new Audio();
-                self.items[self.game.pointer].audioself.src = URL.createObjectURL(self.ttrec.audio.blob);
+                // Store audio blob url for playback later.
+                // But if savemedia is set this will already (probably) be an s3 url.
+                // If this causes issues, replace this if with: if (self.itemdata.savemedia !== 1) {
+                if(!self.items[self.game.pointer].audioself) {
+                    self.items[self.game.pointer].audioself = new Audio();
+                    self.items[self.game.pointer].audioself.src = URL.createObjectURL(self.ttrec.audio.blob);
+                }
                 self.items[self.game.pointer].lineresulthtml = html;
 
                 // Also store a review version without phoneme bars if not already in review mode
