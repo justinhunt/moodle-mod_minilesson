@@ -427,7 +427,7 @@ class import
             // So we check and attampt to decode if needed.
 
             // If its not an object, try to decode it.
-            if (!is_object($ret->payload->translatedjson)) {
+            if (!is_object($ret->payload->translatedjson) && !is_array($ret->payload->translatedjson)) {
                 if (utils::is_json($ret->payload->translatedjson)) {
                     $ret->payload->translatedjson = json_decode($ret->payload->translatedjson);
                 }

@@ -471,7 +471,7 @@ abstract class baseform extends \moodleform
             'addyoutubeclip' => constants::YTVIDEOID,
             'addttsdialog' => constants::TTSDIALOG,
             'addttspassage' => constants::TTSPASSAGE,
-            'addaudiostory' => constants::AUDIOSTORY
+            'addaudiostory' => constants::AUDIOSTORY,
         ];
         $fulloptions = [];
         $fieldsettops = [];
