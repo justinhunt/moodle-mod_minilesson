@@ -53,6 +53,11 @@ define(['jquery',
                         );
                         break;
 
+                    case 'mediasaved':
+                        self.mediaurl = message.mediaurl;
+                        log.debug('Media saved at speaking gap fill: ' + self.mediaurl);
+                        break;
+
                 }
 
             };

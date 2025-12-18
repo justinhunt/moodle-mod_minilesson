@@ -146,14 +146,20 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
             self.wordcount.text(wordcount);
 
             self.do_evaluation(speechtext);
+
+          case 'mediasaved':
+            self.mediaurl = message.mediaurl;
+            break;
         } //end of switch message type
       };
+
+
 
       //init tt recorder
       var opts = {};
       opts.uniqueid = itemdata.uniqueid;
       opts.callback = recorderCallback;
-      opts.stt_guided=false;
+      opts.stt_guided = false
       self.ttrec = ttrecorder.clone();
       self.ttrec.init(opts);
 

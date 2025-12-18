@@ -1,6 +1,6 @@
 define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/ttaudiohelper','mod_minilesson/ttbrowserrec',
-    'core/str','mod_minilesson/timer','mod_minilesson/ttmsspeech'],
-    function ($, log, notification, ajax, audioHelper, browserRec, str, timer, msspeech) {
+    'core/str','mod_minilesson/timer','mod_minilesson/ttmsspeech', 'mod_minilesson/mediauploader'],
+    function ($, log, notification, ajax, audioHelper, browserRec, str, timer, msspeech, mediauploader) {
     "use strict"; // jshint ;_;
     /*
     *  The TT recorder
@@ -43,6 +43,8 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
         is_streaming: false,
         using_msspeech: false,
         msspeech_instance: null,
+        savemedia: false,
+        uploader: null,
         strings: {},
 
         //for making multiple instances
@@ -60,6 +62,31 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
             this.prepare_html();
             this.controls.recordercontainer.show();
             this.register_events();
+
+            //init media uploader
+            if(this.savemedia) {
+                log.debug('ttr uploader creating: ');
+                var uploader = mediauploader.clone();
+                var uconfig = {};
+                uconfig.wstoken = that.wstoken;
+                uconfig.moodlewsrestformat = "";
+                uconfig.mediatype = that.mediatype;
+                uconfig.parent = that.parent;
+                uconfig.appid = that.appid;
+                uconfig.owner = that.owner;
+                uconfig.region = that.region;
+                uconfig.expiredays = that.expiredays;
+                uconfig.transcode = that.transcode;
+                uconfig.cloudpoodllurl = that.cloudpoodllurl;
+                uconfig.transcoder = "";
+                uconfig.transcribe = "";
+                uconfig.subtitle = "";
+                uconfig.language = that.lang;
+                uconfig.transcribevocab = "";
+                uconfig.notificationurl = "";
+                log.debug('ttr uploader: initing');
+                uploader.init(uconfig);
+            }
 
             //token check
             this.using_msspeech = this.can_msspeech();
@@ -139,6 +166,21 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
                             }
                             that.update_audio('isRecognizing',false);
                         });
+                    }
+
+                    // If we have a blob and we need to upload it, do so
+                    if (that.savemedia) {
+                        log.debug('ttr uploader: uploadBlob');
+                        that.uploader.uploadBlob(that.audio.blob, 'audio/wav');
+                        var message = {};
+                        message.type = 'mediasaved';
+                        message.mediaurl = that.uploader.config.s3filename;
+                        log.debug('ttr uploader: callback mediasaved');
+                        log.debug(message);
+                        that.callback(message);
+                        // Probably need to funk around with timing here
+                        log.debug('ttr uploader: fetch new upload details');
+                        that.uploader.fetchNewUploadDetails(); // Prepare for next upload.
                     }
                 }
 
@@ -280,6 +322,15 @@ define(['jquery', 'core/log','core/notification', 'core/ajax', 'mod_minilesson/t
             this.forcestreaming=this.controls.recorderbutton.data('forcestreaming');
             this.maxtime=this.controls.recorderbutton.data('maxtime');
             this.waveHeight=this.controls.recorderbutton.data('waveheight');
+            // Whether to save media and related
+            this.savemedia = this.controls.recorderbutton.data('savemedia') === "1";
+            this.wstoken = this.controls.recorderbutton.data('wstoken');
+            this.parent = this.controls.recorderbutton.data('wwwroot');
+            this.appid = this.controls.recorderbutton.data('appid');
+            this.transcode = this.controls.recorderbutton.data('transcode') === "1";
+            this.expiredays = this.controls.recorderbutton.data('expiredays');
+            this.cloudpoodllurl = this.controls.recorderbutton.data('cloudpoodllurl');
+
         },
 
         init_token_refresh: function() {

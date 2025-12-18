@@ -83,6 +83,11 @@ class item_speakinggapfill extends item {
             }
         }
 
+        //add a few things to trigger upload
+        $testitem->savemedia = 1;
+        $testitem->transcode = 1;
+        $testitem->expiredays = 365;
+
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
         $testitem->newui = true;

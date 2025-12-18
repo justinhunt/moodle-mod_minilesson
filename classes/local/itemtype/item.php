@@ -1136,9 +1136,11 @@ abstract class item implements templatable, renderable
         $testitem->wwwroot = $CFG->wwwroot;
         $testitem->language = $this->language;
         $testitem->hints = '';
+        $testitem->appid = constants::M_COMPONENT;
         $testitem->owner = hash('md5', $USER->username);
         $testitem->usevoice = $itemrecord->{constants::POLLYVOICE};
         $testitem->voiceoption = $itemrecord->{constants::POLLYOPTION};
+        $testitem->cloudpoodllurl = utils::get_cloud_poodll_server();
 
         //TT Recorder stuff
         $testitem->waveheight = 75;
