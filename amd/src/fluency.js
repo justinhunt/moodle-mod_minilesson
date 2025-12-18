@@ -102,7 +102,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
 
             case 'mediasaved':
                 // Save the returned media URL with the current item
-              　// There is a potential race condition here, since audio is set from blob in do_evaluation_feedback if not here.
+                // There is a potential race condition here, since audio is set from blob in do_evaluation_feedback if not here.
                 self.items[self.game.pointer].audioself = new Audio();
                 self.items[self.game.pointer].audioself.src = message.mediaurl;
                 log.debug('Media saved at fluency: ' + self.mediaurl);

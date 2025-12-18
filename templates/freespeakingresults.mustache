@@ -32,6 +32,14 @@
     {{>mod_minilesson/summary_togglecorrections}}
   </div>
 {{/reviewsettings.hidecorrections}}
+{{#mediaurl}}
+  <div class="ml_freespeaking_results_finalaudio">
+    <audio controls>
+      <source src="{{mediaurl}}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+{{/mediaurl}}
 <div class="ml_freespeaking_results_summaries">
   <!-- not needed currently
   <div class="ml_fs_results_summary">

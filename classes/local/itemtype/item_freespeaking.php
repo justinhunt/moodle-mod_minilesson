@@ -105,6 +105,12 @@ class item_freespeaking extends item
             $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
         }
 
+        //add a few things to enable the saving of uploaded audio (on S3)
+        $testitem->savemedia = 1;
+        $testitem->transcode = 1;
+        $testitem->expiredays = 365;
+        $testitem->savemediaregion = $this->moduleinstance->region;
+
         // Cloudpoodll.
         $maxtime = $this->itemrecord->timelimit;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
