@@ -60,12 +60,14 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
           } else {
             stepdata.totalitems = self.allwords.length;
             stepdata.correctitems = self.totals.correct;
-          }
+          } 
         }
 
         stepdata.grade = percent;
         //Add media url to "totals" before we save it
-        self.totals.mediaurl = self.mediaurl;
+        if(self.totals && self.mediaurl){
+          self.totals.mediaurl = self.mediaurl;
+        }
         stepdata.resultsdata = self.totals;
         this.quizhelper.do_next(stepdata);
       },
@@ -117,7 +119,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
         self.allspaces = $("#" + self.itemdata.uniqueid + "_container .mod_minilesson_mu_passage_space");
         self.recordercontainer = $("#" + self.itemdata.uniqueid + "_container .ml_passagereading_speakbtncontainer");
         self.reattemptcontainer = $("#" + self.itemdata.uniqueid + "_container .ml_passagereading_reattemptcontainer");
-        self.resultscontainer = $("#" + self.itemdata.uniqueid + "_container .ml_passagereading_resultscontainer");
+        self.resultscontainer = $("#" + self.itemdata.uniqueid + "_container .ml_passagereading_allresultscontainer");
         self.reattemptbutton = self.reattemptcontainer.find(".ml_reattemptbutton");
         self.nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
 

@@ -1,3 +1,6 @@
+Version 1.1.17 (Build 20251219XX)
+ - Added playback of audio recording to results on free speaking / passage reading / fluency
+
 Version 1.1.16 (Build 2025121300)
  - Added student submission feature to Audio Chat
  - Fixed time limit behaviour on free writing and free speaking

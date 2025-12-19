@@ -1,4 +1,4 @@
-
+<div class="ml_passagereading_resultscontainer">
   <div class="ml_rp_resultcell">
     <span class="ml_rp_resultcell_title">
         {{#str}}rp_result_read, mod_minilesson{{/str}}
@@ -52,11 +52,12 @@
         {{score}}%
     </span>
   </div>
-  {{#mediaurl}}
-    <div class="ml_passagereading_results_finalaudio">
-      <audio controls>
-        <source src="{{mediaurl}}" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio>
-    </div>
-  {{/mediaurl}}
+</div>
+{{#mediaurl}}
+  <div class="ml_passagereading_results_finalaudio">
+    <audio controls class="w-100">
+      <source src="{{mediaurl}}" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+{{/mediaurl}}

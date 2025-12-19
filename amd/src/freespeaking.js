@@ -16,6 +16,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
       percentscore: 0,
       autosubmitmode: false,
       mediaurl: false,
+      bloburl: false,
 
       //for making multiple instances
       clone: function () {
@@ -41,7 +42,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
         stepdata.correctitems = self.rawscore > 0 ? self.rawscore : 0;
         stepdata.grade = self.percentscore;
         //Add media url to transcript evaluation before we save it
-        self.transcript_evaluation.mediaurl = self.mediaurl;
+        if (self.transcript_evaluation && self.mediaurl) {
+          self.transcript_evaluation.mediaurl = self.mediaurl;
+        }
         stepdata.resultsdata = self.transcript_evaluation;
         self.quizhelper.do_next(stepdata);
       },
@@ -153,6 +156,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
             case 'mediasaved':
               log.debug('Mediaurl saved at passage reading: ' + message.mediaurl);
               self.mediaurl = message.mediaurl;
+              self.bloburl = message.bloburl;
               break;
 
           } //end of switch message type
@@ -213,7 +217,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
             transcript_evaluation.maxscore = self.itemdata.totalmarks;
 
             // If we have a media url from our recording lets use it
-            transcript_evaluation.mediaurl = self.mediaurl;
+            // We will just use the blob version here (its local and s3/mp3 may not be ready)
+            if (self.bloburl) {
+              transcript_evaluation.mediaurl = self.bloburl;
+            }
 
             // And save it upstairs
             self.transcript_evaluation = transcript_evaluation;
