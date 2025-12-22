@@ -594,15 +594,25 @@ abstract class item implements templatable, renderable
         if (!empty($itemrecord->{constants::TTSPASSAGE}) && !empty(trim($itemrecord->{constants::TTSPASSAGE}))) {
             $itemrecord = utils::unpack_ttspassageopts($itemrecord);
             $testitem->itemttspassage = true;
-            $textlines = utils::split_into_sentences($itemrecord->{constants::TTSPASSAGE});
+            $withlinebreaks = true;
+            $textlines = utils::split_into_sentences($itemrecord->{constants::TTSPASSAGE}, $withlinebreaks);
             $voice = $itemrecord->{constants::TTSPASSAGEVOICE};
             $voiceoptions = $itemrecord->{constants::TTSPASSAGESPEED};
             $linedatas = [];
             foreach ($textlines as $theline) {
                 if (!empty(utils::super_trim($theline))) {
                     $linedata = new \stdClass();
+                    $linedata->linebreak = false;
                     $linedata->sentence = $theline;
                     $linedata->audiourl = utils::fetch_polly_url($this->token, $this->region, $theline, $voiceoptions, $voice);
+                    $linedatas[] = $linedata;
+                } else {
+                    // If it is not a sentence it is a line break. We add an empty line with no audio.
+                    // In mustache we will and line break
+                    $linedata = new \stdClass();
+                    $linedata->linebreak = true;
+                    $linedata->sentence = "";
+                    $linedata->audiourl = false;
                     $linedatas[] = $linedata;
                 }
             }

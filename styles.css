@@ -2360,7 +2360,10 @@ span.mod_minilesson_finishedanswer {
   background: #c5efcf;
   /* font-weight: bold; */
 }
-
+.mod_minilesson_itemttspassage_cont .passageplayer_linebreak {
+    height: 1em;
+    display: block;
+}
 
 .mform [data-root="elementwrapper"] [data-fieldtype="ttsaudio"] button.roundmini-audio-player,
 .ttsaudio.container button.roundmini-audio-player {
@@ -3281,7 +3284,8 @@ body.poodll-minilesson-embed #page {
 
 .ml_passagereading_passage {
   border: 1px solid grey;
-  padding: 6px;
+  border-radius: 0.5em;
+  padding: 8px;
   font-size: large;
   margin-bottom: 15px;
 }

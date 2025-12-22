@@ -1812,15 +1812,28 @@ class utils
         return explode(' ', $thetext);
     }
 
-    public static function split_into_sentences($thetext)
-    {
-        $thetext = preg_replace('/\s+/', ' ', self::super_trim($thetext));
-        if ($thetext == '') {
-            return [];
-        }
-        preg_match_all('/([^\.!\?]+[\.!\?"\']+)|([^\.!\?"\']+$)/', $thetext, $matches);
-        return $matches[0];
-    }
+   public static function split_into_sentences($thetext, $withlinebreaks = false)
+   {
+
+       // In TTS passage and maybe other places we want to keep the line breaks.
+       if ($withlinebreaks) {
+           $thetext = preg_replace('/[^\S\r\n]+/', ' ', self::super_trim($thetext));
+           if ($thetext == '') {
+               return [];
+           }
+           preg_match_all('/([^\r\n\.!\?]+[\.!\?"\']+)|([^\r\n\.!\?"\']+$)|([\r\n]+)/', $thetext, $matches);
+           return $matches[0];
+       } else {
+           $thetext = preg_replace('/\s+/', ' ', self::super_trim($thetext));
+           if ($thetext == '') {
+               return [];
+           }
+           preg_match_all('/([^\.!\?]+[\.!\?"\']+)|([^\.!\?"\']+$)/', $thetext, $matches);
+           return array_filter($matches[0], function ($sentence) {
+               return trim($sentence) !== '';
+           });
+       }
+   }
 
     public static function fetch_auto_voice($langcode)
     {
