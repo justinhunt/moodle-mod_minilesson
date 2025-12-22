@@ -2026,13 +2026,22 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   padding: 5px;
 }
 
-.mod_minilesson_itemtextarea_cont,
-.mod_minilesson_itemttspassage_cont {
+.mod_minilesson_itemtextarea_cont {
   width: 100%;
   margin-top: 10px;
   padding: 5px;
-  /* border: 1px solid grey; */
 }
+
+.mod_minilesson_itemttspassage_cont {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  font-size: large;
+  border: 1px solid grey;
+  border-radius: 0.5em;
+}
+
+
 
 .mod_minilesson_iframe_responsive {
   overflow: hidden;
