@@ -102,7 +102,6 @@ if ($hassiteconfig) {
     $mainsettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/apisecret',
         get_string('apisecret', constants::M_COMPONENT), $showbelowapisecret, '', PARAM_TEXT));
 
-
     $regions = utils::get_region_options();
     $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/awsregion',
             get_string('awsregion', constants::M_COMPONENT), '', 'useast1', $regions));
@@ -246,24 +245,35 @@ if ($hassiteconfig) {
     );
     $ADMIN->add('modsettingsminilessoncat', $manageitemspage);
 
+         // Other API Keys (BYOK)
+    $pagetitle = get_string('otherapikeys', constants::M_COMPONENT);
+    $otherapikeysettings = new admin_settingpage('modsettingminilessonotherapikeys', $pagetitle, 'moodle/site:config');
+    // Azure  API key
+    $otherapikeysettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/azureapikey',
+        get_string('azureapikey', constants::M_COMPONENT), get_string('azureapikeydesc', constants::M_COMPONENT), '', PARAM_TEXT));
+
+     // The OpenAI APIKEY.
+    $name = 'openaikey';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = '';
+    $otherapikeysettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, PARAM_TEXT));
+
+    //add other API keys settings page to minilesson category
+    $ADMIN->add('modsettingsminilessoncat', $otherapikeysettings);
+
     //create audio chat settings page
     $pagetitle = get_string('audiochat', constants::M_COMPONENT);
     $audiochatsettings = new admin_settingpage('modsettingminilessonaudiochat', $pagetitle, 'moodle/site:config');
 
     // Audio chat settings.
     $audiochatsettings->add(new admin_setting_heading(constants::M_COMPONENT . '/audiochat', get_string('audiochat', constants::M_COMPONENT), ''));
-    // The OpenAI APIKEY.
-    $name = 'openaikey';
-    $label = get_string($name, constants::M_COMPONENT);
-    $details = get_string($name . '_details', constants::M_COMPONENT);
-    $default = '';
-    $audiochatsettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, PARAM_TEXT));
 
     // Audio Chat Prompts
     $maxprompts = constants::MAX_AI_PROMPTS;
     for ($i = 0; $i < $maxprompts; $i++) {
-        //Audio Chat instructions prompt
+        // Audio Chat instructions prompt
         $defaults = 3;
         $name = 'audiochat_instructionspromptheading_' . ($i + 1);
         $label = get_string('instructionsprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
@@ -294,7 +304,6 @@ if ($hassiteconfig) {
     }
     //add audiochat settings page to minilesson category
     $ADMIN->add('modsettingsminilessoncat', $audiochatsettings);
-
 
     // Free speaking settings.
     $pagetitle = get_string('freespeaking', constants::M_COMPONENT);
@@ -358,7 +367,7 @@ if ($hassiteconfig) {
             $label, $details, $default, PARAM_RAW));
     }
     for ($i = 0; $i < $maxprompts; $i++) {
-        //Free Writing Feedback Prompt
+        // Free Writing Feedback Prompt.
         $defaults = 2;
         $name = 'freewriting_feedbackpromptheading_' . ($i + 1);
         $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);

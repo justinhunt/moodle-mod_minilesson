@@ -83,7 +83,7 @@ class item_fluency extends item {
         }
 
         // We overwrite our regular poodll region with the MS region, eg useast1 becomes eastus, frankfurt becomes westeurope.
-        $testitem->region = utils::fetch_ms_region($this->moduleinstance->region);
+        $testitem->region = $tokenobject->tokenregion;
         $testitem->savemediaregion = $this->moduleinstance->region;
 
         // Build sentence objects.

@@ -1,5 +1,7 @@
-Version 1.1.17 (Build 20251219XX)
+Version 1.1.17 (Build 2025122400)
  - Added playback of audio recording to results on free speaking / passage reading / fluency
+ - Added support for bring-your-own-key for Azure speech in China
+ - Upgraded AssemblyAI to use newer universal streaming
 
 Version 1.1.16 (Build 2025121300)
  - Added student submission feature to Audio Chat

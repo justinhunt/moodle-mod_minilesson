@@ -269,7 +269,7 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
             },
 
             can_stream: function () {
-                return (this.speechtoken && this.speechtoken !== 'false' && this.speechtokentype === 'assemblyai' && !this.stt_guided);
+                return (this.speechtoken && this.speechtoken !== 'false' && (this.speechtokentype === 'assemblyai' || this.speechtokentype === 'iflytek' || this.speechtokentype === 'azure') && !this.stt_guided);
             },
 
             can_msspeech: function () {
@@ -369,6 +369,12 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
                                     that.speechtokenvalidseconds = newtoken.validseconds;
                                     switch (that.speechtokentype) {
                                         case 'assemblyai':
+                                            that.helper.streamer.updatetoken(newtoken.token);
+                                            break;
+                                        case 'iflytek':
+                                            that.helper.streamer.updatetoken(newtoken.token);
+                                            break;
+                                        case 'azure':
                                             that.helper.streamer.updatetoken(newtoken.token);
                                             break;
                                         case 'msspeech':

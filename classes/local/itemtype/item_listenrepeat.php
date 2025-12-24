@@ -79,7 +79,7 @@ class item_listenrepeat extends item {
             if ($tokenobject) {
                 $testitem->speechtoken = $tokenobject->token;
                 $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
-                $testitem->speechtokentype = 'assemblyai';
+                 $testitem->speechtokentype = $tokenobject->tokentype;
             } else {
                 $testitem->speechtoken = false;
                 $testitem->speechtokenvalidseconds = 0;

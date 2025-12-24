@@ -157,7 +157,9 @@ $string['apiuser']='Poodll API User ';
 $string['apiuser_details']='The Poodll account username that authorises Poodll on this site.';
 $string['apisecret']='Poodll API Secret ';
 $string['apisecret_details']='The Poodll API secret. See <a href= "https://support.poodll.com/support/solutions/articles/19000083076-cloud-poodll-api-secret">here</a> for more details';
-
+$string['azureapikey']='Azure API Key';
+$string['azureapikeydesc']='The Azure API key. This will use your Azure account for speech services with minilesson. This is primarily for use by our users in Mainland China (Ningxia region). See <a href= "https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/overview">here</a> for more details.';
+$string['otherapikeys'] = 'Other API Keys (BYOK)';
 
 
 $string['useast1'] = 'US East';
@@ -1046,7 +1048,7 @@ $string['wordshuffle_results'] ='WordShuffle Results.';
 $string['scatteritems'] ='Scatter Items.';
 $string['enterscatteritems'] = 'Enter the list of items in the text area below. Each item should be on a new line. The format is:<br>Term | Definition<br>e.g Egg|White oval thing';
 $string['openaikey'] ='OpenAI Key';
-$string['openaikey_details'] ='The OpenAI key is used for AudioChat. It is not required for other item types.';
+$string['openaikey_details'] ='The OpenAI key is used for AudioChat. It is not required or used currently for other item types.';
 $string['textgenerationfailed'] = 'Text generation failed when processing {$a->itemindex} {$a->itemtype} ';
 $string['failed'] = 'Failed';
 $string['audiostoryzoomandpan'] = 'Zoom and Pan';

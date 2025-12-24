@@ -465,7 +465,8 @@ class utils
     }
 
     // see if this is truly json or some error
-    public static function is_json($string) {
+    public static function is_json($string)
+    {
         if (!$string) {
             return false;
         }
@@ -481,7 +482,8 @@ class utils
 
     // we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
     // this is our helper
-    public static function curl_fetch($url, $postdata = false, $method = 'get'){
+    public static function curl_fetch($url, $postdata = false, $method = 'get')
+    {
         global $CFG;
 
         require_once($CFG->libdir . '/filelib.php');
@@ -773,14 +775,165 @@ class utils
         }
     }
 
-    // Fetch the streaming token for the region and language
-    public static function fetch_streaming_token($region)
+    /**
+     * Generates a signed iFLYTEK WebSocket URL for Real-time ASR
+     * We need to return the full URL + token because the date stamp encoded in the signature and as param must match
+     * * @param string $appId     Your iFLYTEK AppID
+     * @param string $apiKey    Your iFLYTEK APIKey
+     * @param string $apiSecret Your iFLYTEK APISecret
+     * @return object           The full token
+     */
+    public static function get_iflytek_token($appId, $apiKey, $apiSecret)
     {
+
+        $host = "ist-api-sg.xf-yun.com";
+        $path = "/v2/ist";
+
+        // 1. Generate RFC1123 Date (Must be in UTC/GMT)
+        // Example: Mon, 22 Dec 2025 14:00:00 GMT
+        $date = gmdate('D, d M Y H:i:s') . ' GMT';
+
+        // 2. Build the Signature Origin string
+        // IMPORTANT: The order and line breaks (\n) must be exact
+        $signature_origin = "host: " . $host . "\n";
+        $signature_origin .= "date: " . $date . "\n";
+        $signature_origin .= "GET " . $path . " HTTP/1.1";
+
+        // 3. Generate HMAC-SHA256 Signature
+        $signature_sha = hash_hmac('sha256', $signature_origin, $apiSecret, true);
+        $signature = base64_encode($signature_sha);
+
+        // 4. Build the Authorization Header string
+        $auth_origin = sprintf(
+            'api_key="%s", algorithm="%s", headers="%s", signature="%s"',
+            $apiKey,
+            "hmac-sha256",
+            "host date request-line",
+            $signature
+        );
+        $authorization = base64_encode($auth_origin);
+
+        // 5. Construct the Final URL
+        $params = [
+            'authorization' => $authorization,
+            'date' => $date,
+            'host' => $host
+        ];
+
+        $thetoken = "wss://" . $host . $path . "?" . http_build_query($params);
+
+        // cache the token
+        $now = time();
+        $tokenobject = new \stdClass();
+        $tokenobject->tokentype = 'iflytek';
+        $tokenobject->token = $thetoken;
+        $tokenobject->validuntil = $now + (30 * MINSECS);
+
+        // For js we set the valid number of seconds
+        $tokenobject->validseconds = $tokenobject->validuntil - $now;
+        return $tokenobject;
+    }
+
+    // Fetch the azure streaming token (locally .. not from cloudpoodll)
+    public static function fetch_azure_token($region)
+    {
+        $conf = get_config(constants::M_COMPONENT);
+        $msregion = self::fetch_ms_region($region);
 
         // if we already have a token just use that
         $now = time();
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
-        $tokenobject = $cache->get('assemblyaitoken');
+        $tokenobject = $cache->get('azuretoken'. '_' . $msregion);
+        if ($tokenobject && isset($tokenobject->validuntil) && $tokenobject->validuntil > $now) {
+            // For js we set the valid number of seconds.
+            $tokenobject->validseconds = $tokenobject->validuntil - $now;
+            return $tokenobject;
+        }
+
+        $apikey = $conf->azureapikey;
+        if (empty($apikey)) {
+            return false;
+        }
+
+        // The REST API we are calling.
+        // We need to get the ms region from the poodll region.
+        $apidomain = 'microsoft.com';
+        if ($msregion == 'chinaeast2' || $msregion == 'chinanorth2') {
+            $apidomain = 'azure.cn';
+        }
+        $fetchurl = 'https://' . $msregion . '.api.cognitive.' . $apidomain . '/sts/v1.0/issueToken';
+        $c = new \curl();
+        $options = [
+            'CURLOPT_HTTPHEADER' => [
+                'Ocp-Apim-Subscription-Key: ' . $apikey,
+                'Content-Length: 0',
+            ],
+            'CURLOPT_POSTFIELDS' => '',
+            'CURLOPT_POST' => true,
+        ];
+
+        $response = $c->post($fetchurl, '', $options);
+
+        if (!$response) {
+            return false;
+        } else {
+            $azuretoken = $response;
+            // Cache the token.
+            $tokenobject = new \stdClass();
+            $tokenobject->token = $azuretoken;
+            $tokenobject->tokentype = 'azure';
+            $tokenobject->tokenregion = $msregion;
+            // Azure tokens are valid for 10 minutes (600 seconds).
+            $tokenobject->validuntil = $now + (9 * MINSECS);
+            $cache->set('azuretoken' . '_' . $msregion, $tokenobject);
+            // For js we set the valid number of seconds.
+            $tokenobject->validseconds = $tokenobject->validuntil - $now;
+            return $tokenobject;
+        }
+    }
+
+
+    // Fetch the streaming token for the region and language
+    public static function fetch_streaming_token($poodllregion)
+    {
+        global $CFG;
+
+        // Where token can be fetched from cloudpoodll we do that.
+        // BYOT (bring your own tokens)have a separate implementation   .
+        // Currently that is decided here by region: china is real, africa is testing.
+        $token = false;
+        switch ($poodllregion) {
+            case 'ningxia-iflytek':
+                // Iflytek was never completely implemented/tested. But the code is here for future use if needed.
+                $tokentype = 'iflytek';
+                if (isset($CFG->iflytek_appid) && isset($CFG->iflytek_apikey) && isset($CFG->iflytek_apisecret)) {
+                    $token = self::get_iflytek_token($CFG->iflytek_appid, $CFG->iflytek_apikey, $CFG->iflytek_apisecret);
+                }
+                break;
+            case 'capetown': // Capetown just for testing
+            case 'ningxia':
+                $tokentype = 'azure';
+                $token = self::fetch_azure_token($poodllregion);
+                break;
+
+            // Poodll provided tokens come in here.
+            default:
+                $tokentype = 'assemblyai';
+                $token = false;
+                break;
+        }
+
+        // If the token was set, return it. Else lets fall back to assemblyai.
+        if ($token) {
+            return $token;
+        } else {
+            $tokentype = 'assemblyai';
+        }
+
+        // If we already have a token just use that.
+        $now = time();
+        $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
+        $tokenobject = $cache->get($tokentype . 'token' . '_' . $poodllregion);
         if ($tokenobject && isset($tokenobject->validuntil) && $tokenobject->validuntil > $now) {
             // For js we set the valid number of seconds
             $tokenobject->validseconds = $tokenobject->validuntil - $now;
@@ -797,29 +950,32 @@ class utils
         }
 
         // The REST API we are calling.
-        $functionname = 'local_cpapi_fetch_assemblyai_token';
+        $functionname = 'local_cpapi_fetch_some_token';
 
         // log.debug(params);
         $params = [];
         $params['wstoken'] = $cloudpoodlltoken;
         $params['wsfunction'] = $functionname;
         $params['moodlewsrestformat'] = 'json';
-        $params['region'] = $region;
-        // $params['language'] = $language;
+        $params['region'] = $poodllregion;
+        $params['tokentype'] = $tokentype;
 
         $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
+
         if (!self::is_json($response)) {
             return false;
         } else {
             $payloadobject = json_decode($response);
-            if ($payloadobject->returnCode == 0 && isset($payloadobject->returnMessage)) {
-                $assemblyaitoken = $payloadobject->returnMessage;
+            if (isset($payloadobject->returnCode) && $payloadobject->returnCode == 0 && isset($payloadobject->returnMessage)) {
+                $thetoken = $payloadobject->returnMessage;
                 // cache the token
                 $tokenobject = new \stdClass();
-                $tokenobject->token = $assemblyaitoken;
-                $tokenobject->validuntil = $now + (30 * MINSECS);
-                $cache->set('assemblyaitoken', $tokenobject);
+                $tokenobject->tokentype = $tokentype;
+                $tokenobject->token = $thetoken;
+                $tokenobject->region = $poodllregion;
+                $tokenobject->validuntil = $now + (10 * MINSECS);
+                $cache->set($tokentype . 'token' . '_' . $poodllregion, $tokenobject);
                 // For js we set the valid number of seconds
                 $tokenobject->validseconds = $tokenobject->validuntil - $now;
                 return $tokenobject;
@@ -834,14 +990,21 @@ class utils
     {
 
         switch ($poodllregion) {
+            case 'ningxia':
+            case 'chinaeast2':
+                return 'chinaeast2';
+
             case 'capetown':
+            case 'southafricanorth': 
+                return 'southafricanorth';
+
             case 'bahrain':
             case 'dublin':
             case 'frankfurt':
             case 'london':
-            case 'ningxia':
             case 'westeurope':
                 return 'westeurope';
+
             case 'tokyo':
             case 'useast1':
             case 'ottawa':
@@ -856,12 +1019,32 @@ class utils
     }
 
     // Fetch the streaming token for the region and language
+    // MSSpeech is just for fluency. It is an Azure Speech key but its for backwards compat.
+    // Notably it serves cloud hosted tokens which currently do not support ningxia/chinaeast2 region.
     public static function fetch_msspeech_token($poodllregion)
     {
+        // If we have our own azure key use that. (otherwise we get it from cloudpoodll).
+        // It maye be safer from China to use cloudpoodll because the speech assessment SDK may not be in China.
+        $conf = get_config(constants::M_COMPONENT);
+        $apikey = $conf->azureapikey;
+        $tokenobject = false;
+        if (!empty($apikey)) {
+            $tokenobject = self::fetch_azure_token($poodllregion);
+        }
+        if ($tokenobject) {
+            return $tokenobject;
+        }
 
-        // if we already have a token just use that
+        // if we have a cached token just use that
         $now = time();
         $msregion = self::fetch_ms_region($poodllregion);
+        // fetch_msspeech_token does not have a ningxia region so it returns a global key.(24/12/2025)
+        // so we need to change the region from chinaeast2 to eastus here. Otherwise in js it will use the wrong endpoint for the token.
+        // later we will switch to the fetch_azure_key and do away with this.
+        if ($msregion == 'chinaeast2') {
+            $msregion = 'eastus';
+        }
+
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
         $tokenobject = $cache->get('msspeechtoken' . '_' . $msregion);
         if ($tokenobject && isset($tokenobject->validuntil) && $tokenobject->validuntil > $now) {
@@ -887,7 +1070,7 @@ class utils
         $params['wstoken'] = $cloudpoodlltoken;
         $params['wsfunction'] = $functionname;
         $params['moodlewsrestformat'] = 'json';
-        $params['region'] = self::fetch_ms_region($poodllregion);
+        $params['region'] = $msregion;
 
         $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);
@@ -900,8 +1083,10 @@ class utils
                 // cache the token
                 $tokenobject = new \stdClass();
                 $tokenobject->token = $msspeechtoken;
-                //ms speech tokens are only valid for 10 minutes
-                //so we just cache for 9 mins
+                $tokenobject->tokentype = 'msspeech';
+                $tokenobject->tokenregion = $msregion;
+                // MS speech tokens are only valid for 10 minutes.
+                // So we just cache for 9 mins.
                 $tokenobject->validuntil = $now + (9 * MINSECS);
                 $cache->set('msspeechtoken' . '_' . $msregion, $tokenobject);
                 // For js we set the valid number of seconds
@@ -994,8 +1179,8 @@ class utils
                 break;
         }
         if (!empty($replace)) {
-            $instructions->feedbackscheme = str_replace($search,$replace,(string)$instructions->feedbackscheme);
-            $instructions->markscheme = str_replace($search,$replace,(string)$instructions->markscheme);
+            $instructions->feedbackscheme = str_replace($search, $replace, (string) $instructions->feedbackscheme);
+            $instructions->markscheme = str_replace($search, $replace, (string) $instructions->markscheme);
         }
         $aigraderesults = self::fetch_ai_grade(
             $token,
@@ -1422,7 +1607,7 @@ class utils
     public static function get_aiprompt_options($promptfield)
     {
         $maxprompts = constants::MAX_AI_PROMPTS;
-        switch($promptfield){
+        switch ($promptfield) {
             case 'FREESPEAKING_GRADINGSELECTION':
                 $configstring = 'freespeaking_gradingpromptheading_';
                 break;
@@ -1812,28 +1997,28 @@ class utils
         return explode(' ', $thetext);
     }
 
-   public static function split_into_sentences($thetext, $withlinebreaks = false)
-   {
+    public static function split_into_sentences($thetext, $withlinebreaks = false)
+    {
 
-       // In TTS passage and maybe other places we want to keep the line breaks.
-       if ($withlinebreaks) {
-           $thetext = preg_replace('/[^\S\r\n]+/', ' ', self::super_trim($thetext));
-           if ($thetext == '') {
-               return [];
-           }
-           preg_match_all('/([^\r\n\.!\?]+[\.!\?"\']+)|([^\r\n\.!\?"\']+$)|([\r\n]+)/', $thetext, $matches);
-           return $matches[0];
-       } else {
-           $thetext = preg_replace('/\s+/', ' ', self::super_trim($thetext));
-           if ($thetext == '') {
-               return [];
-           }
-           preg_match_all('/([^\.!\?]+[\.!\?"\']+)|([^\.!\?"\']+$)/', $thetext, $matches);
-           return array_filter($matches[0], function ($sentence) {
-               return trim($sentence) !== '';
-           });
-       }
-   }
+        // In TTS passage and maybe other places we want to keep the line breaks.
+        if ($withlinebreaks) {
+            $thetext = preg_replace('/[^\S\r\n]+/', ' ', self::super_trim($thetext));
+            if ($thetext == '') {
+                return [];
+            }
+            preg_match_all('/([^\r\n\.!\?]+[\.!\?"\']+)|([^\r\n\.!\?"\']+$)|([\r\n]+)/', $thetext, $matches);
+            return $matches[0];
+        } else {
+            $thetext = preg_replace('/\s+/', ' ', self::super_trim($thetext));
+            if ($thetext == '') {
+                return [];
+            }
+            preg_match_all('/([^\.!\?]+[\.!\?"\']+)|([^\.!\?"\']+$)/', $thetext, $matches);
+            return array_filter($matches[0], function ($sentence) {
+                return trim($sentence) !== '';
+            });
+        }
+    }
 
     public static function fetch_auto_voice($langcode)
     {
@@ -2035,7 +2220,8 @@ class utils
         ];
     }
 
-    public static function get_shortlang_options() {
+    public static function get_shortlang_options()
+    {
         // return an array of short language codes and the most common 4 letter lang codes for each
         // we need this mainly for matching moodle lang codes to minilesson lang codes
         return [
@@ -2436,7 +2622,8 @@ class utils
         }
     }
 
-    public static function is_complete($rule, $moduleinstance, $userid){
+    public static function is_complete($rule, $moduleinstance, $userid)
+    {
         global $DB;
         $status = false;
         switch ($rule) {
@@ -2690,7 +2877,7 @@ class utils
     }//end of function
 
     // Fetch user context fields for AIGEN processing
-    public static function fetch_usercontext_fields($ttslanguage='en-US'): array
+    public static function fetch_usercontext_fields($ttslanguage = 'en-US'): array
     {
         $customdatacount = 10;
         $contextdata = [
@@ -2748,7 +2935,8 @@ class utils
         }
     }
 
-    public static function get_lesson_items($lessonid, $itemid) {
+    public static function get_lesson_items($lessonid, $itemid)
+    {
         global $DB;
 
         if (empty($lessonid)) {
@@ -2779,7 +2967,8 @@ class utils
         return $alllessonitems;
     }
 
-    public static function latest_attempt($courseid, $lessonid) {
+    public static function latest_attempt($courseid, $lessonid)
+    {
         global $USER, $DB;
 
         if (empty($lessonid) || empty($courseid)) {

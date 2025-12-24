@@ -60,15 +60,15 @@ class item_passagereading extends item {
         $isenglish = strpos($this->moduleinstance->ttslanguage, 'en') === 0;
         if ($isenglish) {
             $tokenobject = utils::fetch_streaming_token($this->moduleinstance->region);
-            if ($tokenobject) {
-                $testitem->speechtoken = $tokenobject->token;
-                $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
-                $testitem->speechtokentype = 'assemblyai';
-            } else {
-                $testitem->speechtoken = false;
-                $testitem->speechtokenvalidseconds = 0;
-                $testitem->speechtokentype = '';
-            }
+                if ($tokenobject) {
+                    $testitem->speechtoken = $tokenobject->token;
+                    $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
+                    $testitem->speechtokentype = $tokenobject->tokentype;
+                } else {
+                    $testitem->speechtoken = false;
+                    $testitem->speechtokenvalidseconds = 0;
+                    $testitem->speechtokentype = '';
+                }
             if ($alternatestreaming) {
                 $testitem->forcestreaming = true;
             }

@@ -597,16 +597,18 @@ class mod_minilesson_external extends external_api {
 
         // Do the token refresh.
         switch($type){
+            // Ms Speech gets its own token type - it uses speech assessment SDK so its not plain transcription
             case 'msspeech':
                 $fulltoken = utils::fetch_msspeech_token($region);
                 break;
 
             case 'assemblyai':
-                $fulltoken = utils::fetch_streaming_token($region);
-                break;
-
+            case 'iflytek':
+            case 'azure':
             default:
-                throw new \moodle_exception('invalidtype', constants::M_COMPONENT);
+                // The token type that will be fetched isdetermined by the region (and other config settings).
+                // As long as its not msspeech .. it comes in here.
+                $fulltoken = utils::fetch_streaming_token($region);
         }
         return json_encode($fulltoken);
     }

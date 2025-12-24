@@ -13,6 +13,7 @@ define(['jquery',
 
         thetoken: null,
         theregion: null,
+        theapidomain: null,
         thelanguage: null,
         thereferencetext: null,
         speechsdk: null,
@@ -29,9 +30,20 @@ define(['jquery',
             this.thelanguage = mslanguage;
             this.thereferencetext = referencetext;
             log.debug('MS Speech init');
-            if(!window.hasOwnProperty('SpeechSDK')){ 
-                log.debug('MS Speech loading');
-                $.getScript('https://aka.ms/csspeech/jsbrowserpackageraw', function(){
+            if (!window.hasOwnProperty('SpeechSDK')) {
+                var sdkurl;
+                switch ((msregion || '').toLowerCase()) {
+                    case 'chinaeast2':
+                    case 'chinanorth2':
+                        // AI gave me this url, but it 404s, and I could find no other reference to it.
+                       // sdkurl = 'https://csspeech.blob.core.chinacloudapi.cn/csspeech/jsbrowserpackageraw.js';
+                       // break;
+                    default:
+                        sdkurl = 'https://aka.ms/csspeech/jsbrowserpackageraw';
+                        break;
+                }
+                log.debug('MS Speech loading from ' + sdkurl);
+                $.getScript(sdkurl, function () {
                     log.debug('MS Speech loaded');
                     that.speechsdk = window.SpeechSDK;
                     log.debug(that.speechsdk);
