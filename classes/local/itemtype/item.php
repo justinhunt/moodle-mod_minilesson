@@ -947,7 +947,9 @@ abstract class item implements templatable, renderable
 
             $maskedwords = $gapwords = $extrawords = [];
             if (utils::super_trim($extra) !== '') {
-                $extrawords = explode(' ', $extra);
+                // If extra contains a comma, split on commas, otherwise split on spaces.
+                $extrawordsseperator = (strpos($extra, ',') !== false) ? ',' : ' ';
+                $extrawords = explode($extrawordsseperator, $extra);
             }
 
             $words = preg_split('/(\[[^\]]+\]|\s+)/', $sentence, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
