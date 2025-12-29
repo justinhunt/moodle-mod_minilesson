@@ -944,13 +944,36 @@ abstract class item implements templatable, renderable
 
             $parsedstring = [];
             $started = false;
-            $words = explode(' ', $sentence);
+
             $maskedwords = $gapwords = $extrawords = [];
             if (utils::super_trim($extra) !== '') {
                 $extrawords = explode(' ', $extra);
             }
+
+            $words = preg_split('/(\[[^\]]+\]|\s+)/', $sentence, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+            foreach ($words as $index => $word) {
+                // Check if the word is a gap (enclosed in square brackets).
+                if (preg_match('/^\[.*\]$/', $word)) {
+                    $cleanedWord = str_replace(['[', ']'], '', $word);
+                    $maskedwords[$index] = $cleanedWord; // Add to maskedwords array.
+                    $gapwords[] = [
+                        'index' => count($gapwords),
+                        'isgap' => true,
+                        'word' => $cleanedWord,
+                    ];
+                } else {
+                    // Treat as a normal word.
+                    $gapwords[] = [
+                        'isgap' => false,
+                        'word' => $word,
+                    ];
+                }
+            }
+            /*
+             * TO DO Previous code that did not support multi word gaps .. delete once sure its stable
             $gaprunning = false;
             $gapindex = 0;
+            $words = explode(' ', $sentence);
             foreach ($words as $index => $word) {
                 if (strpos($word, '[') !== false) {
                     $maskedwords[$index] = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $word);
@@ -969,6 +992,7 @@ abstract class item implements templatable, renderable
                     ];
                 }
             }
+            */
             $enc = mb_detect_encoding($sentence);
             $characters = utils::do_mb_str_split($sentence, 1, $enc);
             //encoding parameter is required for < PHP 8.0
