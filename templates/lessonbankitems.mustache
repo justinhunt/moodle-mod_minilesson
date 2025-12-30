@@ -24,7 +24,23 @@
     }
 }}
 <div class="searchbox row no-gutters justify-content-between">
-    {{#items}}
-        {{> mod_minilesson/lessonbankitem}}
-    {{/items}}
+    {{#islistlayot}}
+        {{> mod_minilesson/lessonbanklistitem}}
+    {{/islistlayot}}
+    {{^islistlayot}}
+        {{#lessonitems}}
+            {{> mod_minilesson/lessonbankitem}}
+        {{/lessonitems}}
+        {{^lessonitems}}
+            <p class="bg-secondary p-3 text-center w-100"><b>{{#str}}nolessonitemfound, mod_minilesson{{/str}}</b></p>
+        {{/lessonitems}}
+    {{/islistlayot}}
+    <div class="d-flex p-0 justify-content-between mt-1 w-100">
+        {{#haspreviousbutton}}
+            <button data-action="previousbtn" data-perpage="{{perpage}}" data-page="{{page}}" class="previouspagebtn btn btn-primary mr-auto"><i class="fa fa-arrow-left"></i> {{#str}}previous{{/str}}</button>
+        {{/haspreviousbutton}}
+        {{#hasnextbutton}}
+            <button data-action="nextbtn" data-perpage="{{perpage}}" data-page="{{page}}" class="nextpagebtn btn btn-primary ml-auto">{{#str}}next{{/str}} <i class="fa fa-arrow-right"></i></button>
+        {{/hasnextbutton}}
+    </div>
 </div>

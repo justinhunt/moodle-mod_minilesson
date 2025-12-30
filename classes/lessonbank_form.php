@@ -30,6 +30,8 @@ require_once($CFG->libdir . '/formslib.php');
  */
 class lessonbank_form extends moodleform
 {
+    const PERPAGE = 10;
+
     protected function definition()
     {
 
@@ -58,6 +60,14 @@ class lessonbank_form extends moodleform
             $form->setType('level', PARAM_INT);
             $form->addElement('html', '</div>');
         }
+
+        $form->addElement('hidden', 'page');
+        $form->setType('page', PARAM_INT);
+        $form->setDefault('page', 1);
+
+        $form->addElement('hidden', 'perpage');
+        $form->setType('perpage', PARAM_INT);
+        $form->setDefault('perpage', self::PERPAGE);
     }
 
 }
