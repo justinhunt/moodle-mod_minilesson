@@ -1,3 +1,8 @@
+Version 1.1.18 (Build 2025123000)
+- Added support for multi-word words/distractors in Word Shuffle. 
+- Added list view options and paging to Lesson Bank results
+- Fixed case where imported stringarrays sometimes were not turned into arrays
+
 Version 1.1.17 (Build 2025122400)
  - Added playback of audio recording to results on free speaking / passage reading / fluency
  - Added support for bring-your-own-key for Azure speech in China

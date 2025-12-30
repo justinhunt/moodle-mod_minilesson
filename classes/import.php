@@ -128,11 +128,17 @@ class import
             if (isset($itemdata->{$coldef['jsonname']})) {
                 if ($coldef['type'] == 'stringarray') {
                     if (!is_array($itemdata->{$coldef['jsonname']})) {
-                        // If generation failed for some reason, fall back (so we dont lose it all)
-                        // Which fallback is better?
-                        $line[] = $itemdata->{$coldef['jsonname']};
-                        // $line[] = join(PHP_EOL, $coldef['default']);
+                        // If generation failed for some reason, fall back (so we dont lose it all).
+                        // First lets see if its array-like string (eg "line1,line2,line3") because it happens.
+                        $commacount = substr_count($itemdata->{$coldef['jsonname']}, ',');
+                        if ($commacount > 2) {
+                            $line[] = str_replace(',', PHP_EOL, $itemdata->{$coldef['jsonname']});
+                        } else {
+                            // If its hopeless just put the string in one line and hope the teacher can fix it up.
+                            $line[] = $itemdata->{$coldef['jsonname']};
+                        }
                     } else {
+                        // This is the normal case. Just join the array into lines. That is how we store stringarrays in CSV.
                         $line[] = join(PHP_EOL, $itemdata->{$coldef['jsonname']});
                     }
                 } else {
