@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -35,17 +34,17 @@ global $DB;
 
 
 // Course module ID.
-$id = optional_param('id',0, PARAM_INT); // course_module ID, or
-$n  = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
+$id = optional_param('id', 0, PARAM_INT); // Course_module ID, or.
+$n  = optional_param('n', 0, PARAM_INT);  // Minilesson instance ID.
 
 // Course and course module data.
 if ($id) {
     $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-} elseif ($n) {
-    $moduleinstance  = $DB->get_record(constants::M_MODNAME, array('id' => $n), '*', MUST_EXIST);
-    $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
+    $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+    $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
+} else if ($n) {
+    $moduleinstance  = $DB->get_record(constants::M_MODNAME, ['id' => $n], '*', MUST_EXIST);
+    $course     = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
     $id = $cm->id;
 } else {
@@ -55,11 +54,11 @@ if ($id) {
 $modulecontext = context_module::instance($cm->id);
 require_capability('mod/minilesson:manage', $modulecontext);
 
-//Get an admin settings
+// Get an admin settings.
 $config = get_config(constants::M_COMPONENT);
 
 // Set page login data.
-$PAGE->set_url(constants::M_URL . '/setup.php',array('id'=>$id));
+$PAGE->set_url(constants::M_URL . '/setup.php', ['id' => $id]);
 require_login($course, true, $cm);
 
 // Set page meta data.
@@ -67,11 +66,11 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-if($moduleinstance->foriframe==1 || $moduleinstance->pagelayout=='embedded') {
+if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded') {
     $PAGE->set_pagelayout('embedded');
-}elseif($config->enablesetuptab  || $moduleinstance->pagelayout=='popup'){
+} else if ($config->enablesetuptab  || $moduleinstance->pagelayout == 'popup') {
     $PAGE->set_pagelayout('popup');
-}else{
+} else {
     $PAGE->set_pagelayout('incourse');
 }
 
@@ -80,30 +79,30 @@ if($moduleinstance->foriframe==1 || $moduleinstance->pagelayout=='embedded') {
 // Render template and display page.
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 
-$mform = new \mod_minilesson\setupform(null,['context'=>$modulecontext, 'cmid'=>$cm->id]);
+$mform = new \mod_minilesson\setupform(null, ['context' => $modulecontext, 'cmid' => $cm->id]);
 
-$redirecturl = new moodle_url('/mod/minilesson/view.php', array('id'=>$cm->id));
-//if the cancel button was pressed, we are out of here
+$redirecturl = new moodle_url('/mod/minilesson/view.php', ['id' => $cm->id]);
+// If the cancel button was pressed, we are out of here.
 if ($mform->is_cancelled()) {
     redirect($redirecturl);
     exit;
-}else if ($data = $mform->get_data()) {
+} else if ($data = $mform->get_data()) {
     $data->timemodified = time();
     $data->id = $data->n;
     $data->coursemodule = $cm->id;
     $data = minilesson_process_files($data);
 
-    //now update the db once we have saved files and stuff
+    // Now update the db once we have saved files and stuff.
     if ($DB->update_record(constants::M_TABLE, $data)) {
         redirect($redirecturl);
         exit;
     }
 }
 
-//if we got here we is loading up dat form
-$moduleinstance = utils::prepare_file_and_json_stuff($moduleinstance,$modulecontext);
+// If we got here we is loading up dat form.
+$moduleinstance = utils::prepare_file_and_json_stuff($moduleinstance, $modulecontext);
 
-$moduleinstance->n =$moduleinstance->id;
+$moduleinstance->n = $moduleinstance->id;
 $mform->set_data((array)$moduleinstance);
 
 echo $renderer->header($moduleinstance, $cm, "setup");

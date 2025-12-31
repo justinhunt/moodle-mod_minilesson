@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<libraries>
+  <library>
+    <location>classes/jp</location>
+    <name>Jpnforphp</name>
+    <license>MIT</license>
+  </library>
+</libraries>

@@ -16,14 +16,25 @@
 
 namespace mod_minilesson\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use context_module;
 use mod_minilesson\mobile_auth;
 use mod_minilesson\constants;
 
+/**
+ * Setup Tab for Poodll minilesson
+ *
+ * @package    mod_minilesson
+ * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mobile {
-
+    /**
+     * Returns the mobile view for the minilesson activity.
+     *
+     * @param array $args
+     * @return array
+     * @throws \dml_exception
+     */
     public static function mobile_course_view($args) {
         global $DB, $CFG, $OUTPUT, $USER;
 
@@ -35,14 +46,14 @@ class mobile {
             } else {
                 $template = 'mod_minilesson/mobile_contact_siteadmin';
             }
-            return array(
-                'templates' => array(
-                    array(
+            return [
+                'templates' => [
+                    [
                         'id' => 'noiframeembedding',
-                        'html' => $OUTPUT->render_from_template($template, [])
-                    )
-                )
-            );
+                        'html' => $OUTPUT->render_from_template($template, []),
+                    ],
+                ],
+            ];
         }
 
         // Verify course context.
@@ -50,7 +61,7 @@ class mobile {
         if (!$cm) {
             print_error('invalidcoursemodule');
         }
-        $course = $DB->get_record('course', array('id' => $cm->course));
+        $course = $DB->get_record('course', ['id' => $cm->course]);
         if (!$course) {
             print_error('coursemisconf');
         }
@@ -58,43 +69,41 @@ class mobile {
         $context = context_module::instance($cm->id);
         require_capability('mod/minilesson:view', $context);
 
-        list($token, $secret) = mobile_auth::create_embed_auth_token();
+        [$token, $secret] = mobile_auth::create_embed_auth_token();
 
         // Store secret in database.
-        $auth             = $DB->get_record(constants::M_AUTHTABLE, array(
+        $auth = $DB->get_record(constants::M_AUTHTABLE, [
             'user_id' => $USER->id,
-        ));
+        ]);
         $currenttimestamp = time();
         if ($auth) {
-            $DB->update_record(constants::M_AUTHTABLE, array(
+            $DB->update_record(constants::M_AUTHTABLE, (object)[
                 'id'         => $auth->id,
                 'secret'     => $token,
                 'created_at' => $currenttimestamp,
-            ));
+            ]);
         } else {
-            $DB->insert_record(constants::M_AUTHTABLE, array(
+            $DB->insert_record(constants::M_AUTHTABLE, (object)[
                 'user_id'    => $USER->id,
                 'secret'     => $token,
-                'created_at' => $currenttimestamp
-            ));
+                'created_at' => $currenttimestamp,
+            ]);
         }
-
 
         $data = [
             'cmid'    => $cmid,
             'wwwroot' => $CFG->wwwroot,
             'user_id' => $USER->id,
-            'secret'  => urlencode($secret)
+            'secret'  => urlencode($secret),
         ];
 
-        return array(
-            'templates'  => array(
-                array(
+        return [
+            'templates'  => [
+                [
                     'id'   => 'main',
                     'html' => $OUTPUT->render_from_template('mod_minilesson/mobile_view_page', $data),
-                ),
-            ),
-            //'javascript' => file_get_contents($CFG->dirroot . '/mod/minilesson/library/js/h5p-resizer.js'),
-        );
+                ],
+            ],
+        ];
     }
 }

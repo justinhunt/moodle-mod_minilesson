@@ -23,9 +23,8 @@
  */
 
 namespace mod_minilesson\event;
-defined('MOODLE_INTERNAL') || die();
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 /**
  * The mod_minilesson course module viewed event class.
@@ -36,7 +35,6 @@ use \mod_minilesson\constants;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class course_module_viewed extends \core\event\course_module_viewed {
-
     /**
      * Init method.
      */
@@ -45,13 +43,19 @@ class course_module_viewed extends \core\event\course_module_viewed {
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = constants::M_TABLE;
     }
+    /**
+     * get objectid mapping
+     * @return array
+     */
     public static function get_objectid_mapping() {
-        return array('db' => constants::M_TABLE, 'restore' => 'minilesson');
+        return ['db' => constants::M_TABLE, 'restore' => 'minilesson'];
     }
+    /**
+     * get other field mapping
+     * @return bool
+     */
     public static function get_other_mapping() {
         // Nothing to map.
         return false;
     }
-
 }
-

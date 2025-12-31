@@ -21,12 +21,9 @@
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- namespace mod_minilesson;
+namespace mod_minilesson;
 
-defined('MOODLE_INTERNAL') || die();
-
-use \mod_minilesson\constants;
-
+use mod_minilesson\constants;
 
 /**
  * Event observer for mod_minilesson
@@ -35,8 +32,7 @@ use \mod_minilesson\constants;
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class event_observer{
-
+class event_observer {
     /**
      * Triggered via course_deleted event.
      *
@@ -44,11 +40,13 @@ class event_observer{
      * @return bool true on success
      */
     public static function course_deleted(\core\event\course_deleted $event) {
-       global $DB;
-		//constants::M_TABLE should be deleted elsewhere
-        $ret = $DB->delete_records(constants::M_ATTEMPTSTABLE,array('courseid'=>$event->objectid));
-        $ret = $DB->delete_records_select(constants::M_QTABLE, "minilesson IN (SELECT id from {" . constants::M_TABLE . "} WHERE course = :course)",
-                array('course'=>$event->objectid));
-		return $ret;
-	}
+        global $DB;
+        $ret = $DB->delete_records(constants::M_ATTEMPTSTABLE, ['courseid' => $event->objectid]);
+        $ret = $DB->delete_records_select(
+            constants::M_QTABLE,
+            "minilesson IN (SELECT id from {" . constants::M_TABLE . "} WHERE course = :course)",
+            ['course' => $event->objectid]
+        );
+        return $ret;
+    }
 }

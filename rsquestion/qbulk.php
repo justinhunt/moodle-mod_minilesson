@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -24,9 +23,9 @@
  **/
 
 require_once('../../../config.php');
-require_once($CFG->dirroot.'/mod/minilesson/lib.php');
+require_once($CFG->dirroot . '/mod/minilesson/lib.php');
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 /*
  * READ ME
  * When this page runs it will seek to update all the lang models
@@ -39,30 +38,27 @@ use \mod_minilesson\constants;
 $id = required_param('id', PARAM_INT);
 
 $cm = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-//$minilesson = new minilesson($DB->get_record('minilesson', array('id' => $cm->instance), '*', MUST_EXIST));
-$minilesson = $DB->get_record('minilesson', array('id' => $cm->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+$minilesson = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
 
-//mode is necessary for tabs
-$mode='rsquestions';
-//Set page url before require login, so post login will return here
-$PAGE->set_url('/mod/minilesson/rsquestion/rsquestions.php', array('id'=>$cm->id,'mode'=>$mode));
+// Mode is necessary for tabs.
+$mode = 'rsquestions';
+// Set page url before require login, so post login will return here.
+$PAGE->set_url('/mod/minilesson/rsquestion/rsquestions.php', ['id' => $cm->id, 'mode' => $mode]);
 
-//require login for this page
+// Require login for this page.
 require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 
 $mis = $DB->get_records('minilesson');
 $updates = 0;
-foreach($mis as $moduleinstance){
-
-
-    $itemrecords = $DB->get_records(constants:: M_QTABLE,array('minilesson'=>$moduleinstance->id));
-    foreach($itemrecords as $itemrecord) {
-        $theitem =  \mod_minilesson\utils::fetch_item_from_itemrecord($itemrecord,$moduleinstance);
-        $olditemrecord=false;
+foreach ($mis as $moduleinstance) {
+    $itemrecords = $DB->get_records(constants::M_QTABLE, ['minilesson' => $moduleinstance->id]);
+    foreach ($itemrecords as $itemrecord) {
+        $theitem = \mod_minilesson\utils::fetch_item_from_itemrecord($itemrecord, $moduleinstance);
+        $olditemrecord = false;
         $updated = $theitem->update_create_langmodel($olditemrecord);
-        if($updated) {
+        if ($updated) {
             $theitem->update_insert_item();
             sleep(7);
         }
