@@ -35,7 +35,6 @@ use core\activity_dates;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class dates extends activity_dates {
-
     /**
      * Returns a list of important dates in mod_assign
      *
@@ -51,8 +50,6 @@ class dates extends activity_dates {
         $timedue = $this->cm->customdata['duedate'] ?? null;
 
         $activitygroup = groups_get_activity_group($this->cm, true);
-        
-
         $now = time();
         $dates = [];
 
@@ -62,7 +59,7 @@ class dates extends activity_dates {
                 'label' => get_string($openlabelid, 'mod_minilesson'),
                 'timestamp' => (int) $timeopen,
             ];
-            if ($course->relativedatesmode ) {
+            if ($course->relativedatesmode) {
                 $date['relativeto'] = $course->startdate;
             }
             $dates[] = $date;
@@ -73,7 +70,7 @@ class dates extends activity_dates {
                 'label' => get_string('activitydate:submissionsdue', 'mod_minilesson'),
                 'timestamp' => (int) $timedue,
             ];
-            if ($course->relativedatesmode ) {
+            if ($course->relativedatesmode) {
                 $date['relativeto'] = $course->startdate;
             }
             $dates[] = $date;

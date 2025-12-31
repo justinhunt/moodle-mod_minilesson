@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -24,26 +23,25 @@
  **/
 
 require_once('../../../config.php');
-require_once($CFG->dirroot.'/mod/minilesson/lib.php');
+require_once($CFG->dirroot . '/mod/minilesson/lib.php');
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 $id = required_param('id', PARAM_INT);
 $action = optional_param('action', null, PARAM_ALPHA);
 
 $cm = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-//$minilesson = new minilesson($DB->get_record('minilesson', array('id' => $cm->instance), '*', MUST_EXIST));
-$minilesson = $DB->get_record('minilesson', array('id' => $cm->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+$minilesson = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
 
 $comprehensiontest = new \mod_minilesson\comprehensiontest($cm);
 $items = $comprehensiontest->fetch_items();
 
-// If we have slides, load the CSS
+// If we have slides, load the CSS.
 if ($comprehensiontest->has_slides_items()) {
-    switch($minilesson->region) {
+    switch ($minilesson->region) {
         case 'ningxia':
-            // If Ningxia region, load CSS from different CDN
+            // If Ningxia region, load CSS from different CDN.
             $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
             break;
         default:
@@ -52,35 +50,35 @@ if ($comprehensiontest->has_slides_items()) {
     }
 }
 
-//mode is necessary for tabs
-$mode='rsquestions';
-//Set page url before require login, so post login will return here
-$PAGE->set_url('/mod/minilesson/rsquestion/rsquestions.php', array('id'=>$cm->id,'mode'=>$mode));
+// Mode is necessary for tabs.
+$mode = 'rsquestions';
+// Set page url before require login, so post login will return here.
+$PAGE->set_url('/mod/minilesson/rsquestion/rsquestions.php', ['id' => $cm->id, 'mode' => $mode]);
 
 
-//require login for this page
+// Require login for this page.
 require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 
-//Get an admin settings
+// Get an admin settings.
 $config = get_config(constants::M_COMPONENT);
 
-if($minilesson->foriframe==1  || $minilesson->pagelayout=='embedded') {
+if ($minilesson->foriframe == 1  || $minilesson->pagelayout == 'embedded') {
     $PAGE->set_pagelayout('embedded');
-}elseif($config->enablesetuptab  || $minilesson->pagelayout=='popup'){
+} else if ($config->enablesetuptab  || $minilesson->pagelayout == 'popup') {
     $PAGE->set_pagelayout('popup');
-}else{
+} else {
     $PAGE->set_pagelayout('incourse');
 }
 
 
-//Not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN
-if($config->animations==constants::M_ANIM_FANCY) {
-    $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
+// Not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN.
+if ($config->animations == constants::M_ANIM_FANCY) {
+    $PAGE->requires->css(new moodle_url('https:// cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
 }
 
 $renderer = $PAGE->get_renderer('mod_minilesson');
-$rsquestion_renderer = $PAGE->get_renderer('mod_minilesson','rsquestion');
+$rsquestionrenderer = $PAGE->get_renderer('mod_minilesson', 'rsquestion');
 
 if ($action === 'bulkdelete') {
     confirm_sesskey();
@@ -94,25 +92,24 @@ if ($action === 'bulkdelete') {
     }
 }
 
-//if we have items, Data tables will make them pretty
-//Prepare datatable(before header printed)
-$tableid =  constants::M_ITEMS_TABLE;
-$rsquestion_renderer->setup_datatables($tableid);
+// If we have items, Data tables will make them pretty.
+// Prepare datatable(before header printed).
+$tableid = constants::M_ITEMS_TABLE;
+$rsquestionrenderer->setup_datatables($tableid);
 
 $PAGE->navbar->add(get_string('rsquestions', 'minilesson'));
 echo $renderer->header($minilesson, $cm, $mode, null, get_string('rsquestions', 'minilesson'));
 
+// We need view permission to be here.
+require_capability('mod/minilesson:itemview', $context);
 
-    // We need view permission to be here
-    require_capability('mod/minilesson:itemview', $context);
-    
-    //if have edit permission, show edit buttons
-    if(has_capability('mod/minilesson:itemview', $context)){
-    	echo $rsquestion_renderer ->add_edit_page_links($context,$tableid, $minilesson->region);
-    }
+// If have edit permission, show edit buttons.
+if (has_capability('mod/minilesson:itemview', $context)) {
+    echo $rsquestionrenderer->add_edit_page_links($context, $tableid, $minilesson->region);
+}
 
-//if we have items, show em
+// If we have items, show em.
 $itemsvisible = $items && count($items);
-echo $rsquestion_renderer->show_items_list($items,$minilesson,$cm, $itemsvisible);
+echo $rsquestionrenderer->show_items_list($items, $minilesson, $cm, $itemsvisible);
 
 echo $renderer->footer();

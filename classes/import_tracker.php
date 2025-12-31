@@ -1,11 +1,29 @@
 <?php
-
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_minilesson;
 
-
-class import_tracker
-{
+/**
+ * Class import_tracker
+ *
+ * @package    mod_minilesson
+ * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class import_tracker {
     /** @var array */
     protected $_row;
 
@@ -20,11 +38,9 @@ class import_tracker
     /**
      * uu_progress_tracker constructor.
      */
-    public function __construct($keycolumns)
-    {
-
-        $base_headers = ['id' => 'ID', 'line' => 'Line', 'status' => 'Status'];
-        $headers = array_merge($base_headers, $keycolumns);
+    public function __construct($keycolumns) {
+        $baseheaders = ['id' => 'ID', 'line' => 'Line', 'status' => 'Status'];
+        $headers = array_merge($baseheaders, $keycolumns);
         $this->columns = array_keys($headers);
         $this->headers = array_keys($headers);
     }
@@ -33,10 +49,12 @@ class import_tracker
      * Print table header.
      * @return void
      */
-    public function start()
-    {
+    public function start() {
         $ci = 0;
-        $this->do_echo('<table id="iiresults" class="generaltable boxaligncenter flexible-wrap" summary="' . get_string('importitemsresult', constants::M_COMPONENT) . '">');
+        $this->do_echo(
+            '<table id="iiresults" class="generaltable boxaligncenter flexible-wrap" summary="' .
+                get_string('importitemsresult', constants::M_COMPONENT) . '">'
+        );
         $this->do_echo('<tr class="heading r0">');
         foreach ($this->headers as $key => $header) {
             $this->do_echo('<th class="header c' . $ci++ . '" scope="col">' . $header . '</th>');
@@ -49,13 +67,12 @@ class import_tracker
      * Flush previous line and start a new one.
      * @return void
      */
-    public function flush()
-    {
-        if (empty($this->_row) or empty($this->_row['line']['normal'])) {
-            // Nothing to print - each line has to have at least number
-            $this->_row = array();
+    public function flush() {
+        if (empty($this->_row) || empty($this->_row['line']['normal'])) {
+            // Nothing to print - each line has to have at least number.
+            $this->_row = [];
             foreach ($this->columns as $col) {
-                $this->_row[$col] = array('normal' => '', 'info' => '', 'warning' => '', 'error' => '');
+                $this->_row[$col] = ['normal' => '', 'info' => '', 'warning' => '', 'error' => ''];
             }
             return;
         }
@@ -80,7 +97,7 @@ class import_tracker
         }
         $this->do_echo('</tr>');
         foreach ($this->columns as $col) {
-            $this->_row[$col] = array('normal' => '', 'info' => '', 'warning' => '', 'error' => '');
+            $this->_row[$col] = ['normal' => '', 'info' => '', 'warning' => '', 'error' => ''];
         }
     }
 
@@ -92,10 +109,9 @@ class import_tracker
      * @param bool $merge true means add as new line, false means override all previous text of the same type
      * @return void
      */
-    public function track($col, $msg, $level = 'normal', $merge = true)
-    {
+    public function track($col, $msg, $level = 'normal', $merge = true) {
         if (empty($this->_row)) {
-            $this->flush(); //init arrays
+            $this->flush(); // Init arrays.
         }
         if (!in_array($col, $this->columns)) {
             debugging('Incorrect column:' . $col);
@@ -115,19 +131,21 @@ class import_tracker
      * Print the table end
      * @return void
      */
-    public function close()
-    {
+    public function close() {
         $this->flush();
         $this->do_echo('</table>');
     }
 
-    public function do_echo($text)
-    {
-
-        // If text is empty or this is cli script just return
+    /**
+     * Echo text if not empty and not cli script
+     * @param string $text
+     * @return void
+     */
+    public function do_echo($text) {
+        // If text is empty or this is cli script just return.
         if (empty($text) || defined('CLI_SCRIPT')) {
             return;
         }
         echo $text;
     }
-}//end of class
+}

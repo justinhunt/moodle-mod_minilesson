@@ -24,9 +24,7 @@
 
 namespace mod_minilesson\event;
 
-defined('MOODLE_INTERNAL') || die();
-
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 /**
  * The mod_minilesson assessable submitted event class.
@@ -43,7 +41,6 @@ use \mod_minilesson\constants;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class attempt_submitted extends \core\event\base {
-
     /**
      * Create instance of event.
      *
@@ -54,22 +51,21 @@ class attempt_submitted extends \core\event\base {
      * @param $editable
      * @return attempt_submitted
      */
-    public static function create_from_attempt($attempt,$modulecontext) {
+    public static function create_from_attempt($attempt, $modulecontext) {
         global $USER;
 
-        $data = array(
+        $data = [
             'context' => $modulecontext,
             'objectid' => $attempt->id,
             'userid' => $USER->id,
             'relateduserid' => $USER->id,
-            'other' => ['submitterid'=>$USER->id],
-        );
+            'other' => ['submitterid' => $USER->id],
+        ];
         if (!empty($attempt->userid) && ($attempt->userid != $USER->id)) {
             $data['relateduserid'] = $attempt->userid;
         }
         /** @var attempt_submitted $event */
-        $event =  self::create($data);
-        //$event->set_attempt($attempt);
+        $event = self::create($data);
         $event->add_record_snapshot(constants::M_ATTEMPTSTABLE, $attempt);
         return $event;
     }
@@ -109,9 +105,14 @@ class attempt_submitted extends \core\event\base {
      * @return \moodle_url
      */
     public function get_url() {
-
-        return new \moodle_url('/mod/minilesson/reports.php',
-            array('report'=>'attemptresults','attemptid' => $this->objectid, 'id'=>$this->contextinstanceid));
+        return new \moodle_url(
+            '/mod/minilesson/reports.php',
+            [
+                'report' => 'attemptresults',
+                'attemptid' => $this->objectid,
+                'id' => $this->contextinstanceid,
+            ]
+        );
     }
 
     /**
@@ -132,14 +133,24 @@ class attempt_submitted extends \core\event\base {
         }
     }
 
+    /**
+     * Returns the mapping for 'objectid'.
+     *
+     * @return array
+     */
     public static function get_objectid_mapping() {
-        return array('db' => constants::M_ATTEMPTSTABLE, 'restore' => 'attempt');
+        return ['db' => constants::M_ATTEMPTSTABLE, 'restore' => 'attempt'];
     }
 
+    /**
+     * Returns the mapping for 'other' data.
+     *
+     * @return array
+     */
     public static function get_other_mapping() {
-        $othermapped = array();
-        $othermapped['submitterid'] = array('db' => 'user', 'restore' => 'user');
-        $othermapped['moduleid'] = array('db' => constants::M_TABLE, 'restore' => constants::M_MODNAME);
+        $othermapped = [];
+        $othermapped['submitterid'] = ['db' => 'user', 'restore' => 'user'];
+        $othermapped['moduleid'] = ['db' => constants::M_TABLE, 'restore' => constants::M_MODNAME];
 
         return $othermapped;
     }

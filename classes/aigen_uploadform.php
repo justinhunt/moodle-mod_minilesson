@@ -14,19 +14,33 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Setup Tab for Poodll minilesson
+ *
+ * @package    mod_minilesson
+ * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_minilesson;
 
 use context_user;
 use moodleform;
 use stdClass;
 
-require_once $CFG->libdir . '/formslib.php';
+defined('MOODLE_INTERNAL') || die();
 
-class aigen_uploadform extends moodleform
-{
+require_once($CFG->libdir . '/formslib.php');
 
-    public function definition()
-    {
+/**
+ * Class AI gen upload fom
+ */
+class aigen_uploadform extends moodleform {
+    /**
+     * from element definition
+     * @return void
+     */
+    public function definition() {
         $mform = $this->_form;
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -46,8 +60,11 @@ class aigen_uploadform extends moodleform
         $this->add_action_buttons(true, get_string('upload'));
     }
 
-    public function set_data_for_dynamic_submission()
-    {
+    /**
+     * Set form data element
+     * @return void
+     */
+    public function set_data_for_dynamic_submission() {
         $formdata = [
             'id' => $this->optional_param('id', null, PARAM_INT),
             'action' => $this->optional_param('action', null, PARAM_ALPHA),
@@ -55,14 +72,15 @@ class aigen_uploadform extends moodleform
         $this->set_data($formdata);
     }
 
-    public function process_dynamic_submission()
-    {
+    /**
+     * process form form element submission
+     */
+    public function process_dynamic_submission() {
         global $DB, $USER;
         if (!$this->is_cancelled() && $this->is_submitted() && $this->is_validated()) {
-
             $formdata = $this->get_data();
             $context = context_user::instance($USER->id);
-            $template = new stdClass;
+            $template = new stdClass();
 
             $fs = get_file_storage();
             $uploadedfiles = $fs->get_area_files($context->id, 'user', 'draft', $formdata->templates, 'id DESC', false);
@@ -80,8 +98,13 @@ class aigen_uploadform extends moodleform
         return false;
     }
 
-    public function validation($data, $files)
-    {
+    /**
+     * Validate form element
+     * @param array $data
+     * @param array $files
+     * @return array
+     */
+    public function validation($data, $files) {
         global $USER;
         $context = context_user::instance($USER->id);
         $errors = parent::validation($data, $files);
@@ -105,7 +128,11 @@ class aigen_uploadform extends moodleform
             } else {
                 $templatejson = json_decode($templatejsonfile->get_content());
                 if (json_last_error()) {
-                    $errors['templates'][] = get_string('error:templatefilejsonparsingfailed', constants::M_COMPONENT, $templatejsonfile->get_filename());
+                    $errors['templates'][] = get_string(
+                        'error:templatefilejsonparsingfailed',
+                        constants::M_COMPONENT,
+                        $templatejsonfile->get_filename()
+                    );
                 }
             }
             if (!$configjsonfile) {
@@ -113,7 +140,11 @@ class aigen_uploadform extends moodleform
             } else {
                 $configjson = json_decode($configjsonfile->get_content());
                 if (json_last_error()) {
-                    $errors['templates'][] = get_string('error:configfilejsonparsingfailed', constants::M_COMPONENT, $configjsonfile->get_filename());
+                    $errors['templates'][] = get_string(
+                        'error:configfilejsonparsingfailed',
+                        constants::M_COMPONENT,
+                        $configjsonfile->get_filename()
+                    );
                 } else {
                     if (empty($configjson->uniqueid)) {
                         $errors['templates'][] = get_string('error:configfile:uniqueidmissing', constants::M_COMPONENT);
@@ -134,8 +165,12 @@ class aigen_uploadform extends moodleform
         return $errors;
     }
 
-    public static function upsert_template(stdClass $template)
-    {
+    /**
+     * Template insert ot update
+     * @param stdClass $template
+     * @return mixed
+     */
+    public static function upsert_template(stdClass $template) {
         global $DB;
         $jsonconfig = json_decode($template->config);
         if (!json_last_error()) {
@@ -154,7 +189,7 @@ class aigen_uploadform extends moodleform
         if (!json_last_error() && !empty($jsontemplate->files)) {
             // Files will be an array of fileareas each containing of files: filename = file content.
             // We don't want the file content in the template because its saved in DB, so we replace it with a placeholder'QQQQ'.
-            // Test case: we want to translate an existing activity (and keep the images)
+            // Test case: we want to translate an existing activity (and keep the images).
             $clearfiles = true;
             // If template name contains 'translate' we assume we want to keep the files.
             if (stripos($template->name, 'translate') !== false) {
@@ -167,18 +202,25 @@ class aigen_uploadform extends moodleform
                     }
                 }
             }
-            // Encode the template
+            // Encode the template.
             $template->template = json_encode($jsontemplate, JSON_PRETTY_PRINT);
         }
         if (!isset($template->version)) {
             $template->version = 0;
         }
 
-        // Save the template
-        if (isset($template->uniqueid) && $templates = $DB->get_records('minilesson_templates', ['uniqueid' => $template->uniqueid], 'version DESC')) {
+        // Save the template.
+        if (
+            isset($template->uniqueid) &&
+            $templates = $DB->get_records(
+                'minilesson_templates',
+                ['uniqueid' => $template->uniqueid],
+                'version DESC'
+            )
+        ) {
             foreach ($templates as $temp) {
                 if ($temp->version == $template->version) {
-                    return $temp;// If same version found then no need to update
+                    return $temp;// If same version found then no need to update.
                 }
                 $temp->config = $template->config;
                 $temp->template = $template->template;
@@ -197,13 +239,12 @@ class aigen_uploadform extends moodleform
         }
 
         $tags = [];
-        $config_object = json_decode($template->config);
+        $configobject = json_decode($template->config);
         if (!json_last_error()) {
-            $tags = !empty($config_object->tags) ? $config_object->tags: $tags;
+            $tags = !empty($configobject->tags) ? $configobject->tags : $tags;
         }
         template_tag_manager::store_template_tags($template, $tags);
 
         return $template;
     }
-
 }

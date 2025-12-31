@@ -26,7 +26,6 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class template_tag_manager {
-
     /**
      * @var string Template tag table name
      */
@@ -48,6 +47,7 @@ class template_tag_manager {
     const TYPE_PREDEFINED = 3;
 
     /**
+     * get predefined tags
      * @return array
      */
     public static function get_predefined_tags() {
@@ -61,6 +61,7 @@ class template_tag_manager {
     }
 
     /**
+     * get single or multiple tags
      * @return array
      */
     public static function get_singleormulti_tags() {
@@ -71,6 +72,7 @@ class template_tag_manager {
     }
 
     /**
+     * get itrmtype tags
      * @return array
      */
     public static function get_itemtype_tags() {
@@ -82,20 +84,16 @@ class template_tag_manager {
             constants::TYPE_SPEECHCARDS,
             constants::TYPE_LISTENREPEAT,
             constants::TYPE_PAGE,
-         /*   constants::TYPE_SMARTFRAME, */
             constants::TYPE_SHORTANSWER,
             constants::TYPE_SGAPFILL,
             constants::TYPE_LGAPFILL,
             constants::TYPE_TGAPFILL,
             constants::TYPE_PGAPFILL,
-        /*    constants::TYPE_COMPQUIZ, */
-        /*    constants::TYPE_H5P, */
             constants::TYPE_SPACEGAME,
             constants::TYPE_FREEWRITING,
             constants::TYPE_FREESPEAKING,
             constants::TYPE_FLUENCY,
             constants::TYPE_PASSAGEREADING,
-        /*    constants::TYPE_CONVERSATION, */
             constants::TYPE_AUDIOCHAT,
             constants::TYPE_WORDSHUFFLE,
             constants::TYPE_SCATTER,
@@ -104,21 +102,23 @@ class template_tag_manager {
     }
 
     /**
+     * store template tags
      * @param object $template The record of template
-     * @param array $predefinedtags The list of tags selected from predefined tags {@see template_tag_manager::get_predefined_tags()}
+     * @param array $predefinedtags The list of tags
+     *  selected from predefined tags {@see template_tag_manager::get_predefined_tags()}
      * @return void
      */
     public static function store_template_tags(stdClass $template, array $predefinedtags = []) {
         global $DB;
 
         if (!empty($template->id)) {
-            $template_object = json_decode($template->template);
+            $templateobject = json_decode($template->template);
             $tags = self::get_singleormulti_tags();
             if (!json_last_error()) {
                 $deleterecords = [];
 
                 // Process single/multi item tag.
-                $tagtype = count($template_object->items) > 1 ? $tags[1]: $tags[0];
+                $tagtype = count($templateobject->items) > 1 ? $tags[1] : $tags[0];
                 $tagrecordparams = ['templateid' => $template->id, 'type' => self::TYPE_SINGLEORMULTI];
                 $tagrecord = $DB->get_record(self::DBTABLE, $tagrecordparams);
                 if (!$tagrecord) {
@@ -133,12 +133,12 @@ class template_tag_manager {
                 }
 
                 // Process item type tag.
-                $templateitemtypes = array_column($template_object->items, 'type', 'type');
+                $templateitemtypes = array_column($templateobject->items, 'type', 'type');
                 $templateitemtypes = array_intersect($templateitemtypes, self::get_itemtype_tags());
 
                 $tagrecordparams = ['templateid' => $template->id, 'type' => self::TYPE_ITEMTYPE];
                 $records = $DB->get_records(self::DBTABLE, $tagrecordparams);
-                foreach($records as $record) {
+                foreach ($records as $record) {
                     if (in_array($record->tagname, $templateitemtypes)) {
                         unset($templateitemtypes[$record->tagname]);
                     } else {
@@ -146,7 +146,7 @@ class template_tag_manager {
                     }
                 }
 
-                foreach($templateitemtypes as $itemtype) {
+                foreach ($templateitemtypes as $itemtype) {
                     $tagrecord = (object) $tagrecordparams;
                     $tagrecord->timecreated = time();
                     $tagrecord->tagname = $itemtype;
@@ -158,7 +158,7 @@ class template_tag_manager {
                 $predefinedtags = array_intersect($predefinedtags, self::get_predefined_tags());
                 $tagrecordparams = ['templateid' => $template->id, 'type' => self::TYPE_PREDEFINED];
                 $records = $DB->get_records(self::DBTABLE, $tagrecordparams);
-                foreach($records as $record) {
+                foreach ($records as $record) {
                     if (in_array($record->tagname, $predefinedtags)) {
                         unset($predefinedtags[$record->tagname]);
                     } else {
@@ -166,32 +166,33 @@ class template_tag_manager {
                     }
                 }
 
-                foreach($predefinedtags as $itemtype) {
+                foreach ($predefinedtags as $itemtype) {
                     $tagrecord = (object) $tagrecordparams;
                     $tagrecord->timecreated = time();
                     $tagrecord->tagname = $itemtype;
                     $tagrecord->id = $DB->insert_record(self::DBTABLE, $tagrecord);
                 }
 
-                foreach($deleterecords as $deleterecord) {
+                foreach ($deleterecords as $deleterecord) {
                     $DB->delete_records(self::DBTABLE, ['id' => $deleterecord->id]);
                 }
             }
-            $config_object = json_decode($template->config);
+            $configobject = json_decode($template->config);
             if (!json_last_error()) {
                 $tabobjects = self::get_current_tags($template->id);
                 if (!empty($tabobjects)) {
-                    $config_object->tags = array_column($tabobjects, 'tagname');
+                    $configobject->tags = array_column($tabobjects, 'tagname');
                 } else {
-                    $config_object->tags = [];
+                    $configobject->tags = [];
                 }
-                $template->config = json_encode($config_object, JSON_PRETTY_PRINT);
+                $template->config = json_encode($configobject, JSON_PRETTY_PRINT);
                 $DB->update_record('minilesson_templates', $template);
             }
         }
     }
 
     /**
+     * get current tags
      * @param int $templateid The template id
      * @param int $type The tag type
      * @return string[] Array of tag objects
@@ -204,5 +205,4 @@ class template_tag_manager {
             ['templateid' => $templateid, 'type' => $type]
         );
     }
-
 }
