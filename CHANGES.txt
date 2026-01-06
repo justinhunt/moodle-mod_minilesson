@@ -1,3 +1,6 @@
+Version 1.1.19 (Build 2026010600)
+- Fixed broken images in MiniLesson (since v1.1.18)
+
 Version 1.1.18 (Build 2025123000)
 - Added support for multi-word words/distractors in Word Shuffle. 
 - Added list view options and paging to Lesson Bank results

@@ -833,7 +833,8 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
         $relativepath = implode('/', $args);
         $fullpath = "/$context->id/mod_minilesson/$filearea/$itemid/$relativepath";
 
-        if (!$file = $fs->get_file_by_hash(sha1($fullpath)) || $file->is_directory()) {
+        $file = $fs->get_file_by_hash(sha1($fullpath));
+        if (!$file || $file->is_directory()) {
             return false;
         }
 
