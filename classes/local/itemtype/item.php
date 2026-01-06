@@ -950,6 +950,7 @@ abstract class item implements templatable, renderable
                 $extrawords = explode(' ', $extra);
             }
 
+            // Split on spaces and gaps (enclosed in square brackets).
             $words = preg_split('/(\[[^\]]+\]|\s+)/', $sentence, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
             foreach ($words as $index => $word) {
                 // Check if the word is a gap (enclosed in square brackets).
