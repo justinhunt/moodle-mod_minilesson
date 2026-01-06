@@ -28,23 +28,31 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class lessonbank_form extends moodleform
-{
-    protected function definition()
-    {
+class lessonbank_form extends moodleform {
+    /**
+     * Lessons per page
+     */
+    const PERPAGE = 10;
 
+    /**
+     * Form definition
+     */
+    protected function definition() {
         $form = $this->_form;
 
         $languages = ['' => get_string('choose')] + utils::get_lang_options();
 
         $grouparray = [];
         $grouparray[] = $form->createElement('select', 'language', get_string('language'), $languages);
-        $grouparray[] = $form->createElement('text', 'keyword', get_string('keyword', constants::M_COMPONENT), 'size="40" 
+        $grouparray[] = $form->createElement('text', 'keyword', get_string('keyword', constants::M_COMPONENT), 'size="40"
                 placeholder="' . get_string('keyword', constants::M_COMPONENT) . '"');
         $grouparray[] = $form->createElement('submit', 'search', get_string('search'));
-        $grouparray[] = $form->createElement('html', '<a class="btn text-primary" href="#advancesearch" data-toggle="collapse" data-bs-toggle="collapse" 
+        $grouparray[] = $form->createElement(
+            'html',
+            '<a class="btn text-primary" href="#advancesearch" data-toggle="collapse" data-bs-toggle="collapse"
             role="button" aria-expanded="false" aria-controls="advancesearch">' .
-            get_string('showadvanced', constants::M_COMPONENT) . '</a>');
+            get_string('showadvanced', constants::M_COMPONENT) . '</a>'
+        );
 
         $form->setType('searchgroup[keyword]', PARAM_RAW);
         $form->addGroup($grouparray, 'searchgroup', get_string('language'), '', true);
@@ -58,6 +66,13 @@ class lessonbank_form extends moodleform
             $form->setType('level', PARAM_INT);
             $form->addElement('html', '</div>');
         }
-    }
 
+        $form->addElement('hidden', 'page');
+        $form->setType('page', PARAM_INT);
+        $form->setDefault('page', 1);
+
+        $form->addElement('hidden', 'perpage');
+        $form->setType('perpage', PARAM_INT);
+        $form->setDefault('perpage', self::PERPAGE);
+    }
 }

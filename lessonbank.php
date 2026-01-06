@@ -118,6 +118,10 @@ $searchform = new lessonbank_form($url, [], 'post', '', ['id' => 'lessonbank_fil
 $searchform->set_data(['searchgroup[language]' => $moduleinstance->ttslanguage]);
 
 $PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter');
+$lessonbankcontrolsdata = [
+    'lessonbankitemcount' => get_string('foundlessons', constants::M_COMPONENT, 0),
+    'paginationoptions' => [10, 25, 50, 100]
+];
 
 echo $renderer->header($moduleinstance, $cm, 'lessonbank', null, get_string('lessonbank', constants::M_COMPONENT));
 
@@ -125,7 +129,9 @@ if ($config->lessonbankurl) {
 
     echo html_writer::tag('p', get_string('lessonbank:desc', 'minilesson'));
 
-    $searchform->display();
+    echo $searchform->render();
+
+    echo $OUTPUT->render_from_template('mod_minilesson/lessonbankcontrols', $lessonbankcontrolsdata);
 
     echo html_writer::div(
         '',

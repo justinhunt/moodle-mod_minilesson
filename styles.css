@@ -5869,6 +5869,67 @@ span.fluencyphoneme.letter_wrong {
   display: none;
 }
 
+#page-mod-minilesson-lessonbank .lessonbanklayoutbox {
+  border: 1px solid #ced4da;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#page-mod-minilesson-lessonbank .listlayoutbtn,
+#page-mod-minilesson-lessonbank .gridlayoutbtn {
+  border: 0;
+}
+
+#page-mod-minilesson-lessonbank .gridlayoutbtn:focus,
+#page-mod-minilesson-lessonbank .listlayoutbtn:focus{
+  box-shadow: unset;
+  outline: none;
+}
+
+#page-mod-minilesson-lessonbank .gridlayoutbtn.active,
+#page-mod-minilesson-lessonbank .listlayoutbtn.active,
+#page-mod-minilesson-lessonbank .listlayoutbtn.active:focus,
+#page-mod-minilesson-lessonbank .gridlayoutbtn.active:focus {
+  background-color: #1177d1;
+  color: white;
+  border: 1px solid #1177d1;
+  box-shadow: unset;
+}
+
+#page-mod-minilesson-lessonbank .listlayout .listtable .imgcolumn {
+  width: 200px;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+#page-mod-minilesson-lessonbank .listlayout .listtable .imgcolumn img.searchimg {
+  width: 100%;
+  height: auto;
+}
+
+#page-mod-minilesson-lessonbank .listlayout .listtable tr td,
+#page-mod-minilesson-lessonbank .listlayout .listtable tr th {
+  vertical-align: middle;
+}
+
+#page-mod-minilesson-lessonbank .listlayout .listtable th:last-child,
+#page-mod-minilesson-lessonbank .listlayout .listtable td:last-child {
+  width: 200px;
+  white-space: nowrap;
+}
+
+#page-mod-minilesson-lessonbank .listlayout .listtable .listdescription {
+  width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#page-mod-minilesson-lessonbank .listlayout .listtable .levelcolumn,
+#page-mod-minilesson-lessonbank .listlayout .listtable .langcolumn {
+  white-space: nowrap;
+}
+
 @media only screen and (max-width: 768px) {
   .mod_minilesson_qpanel .mobileviewtype {
     display: block;

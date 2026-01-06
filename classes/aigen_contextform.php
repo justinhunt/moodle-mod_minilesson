@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Setup Tab for Poodll minilesson
+ *
+ * @package    mod_minilesson
+ * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 namespace mod_minilesson;
 
 use core\task\manager;
@@ -21,16 +28,23 @@ use moodle_exception;
 use moodleform;
 use stdClass;
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->libdir . '/formslib.php');
 
+/**
+ * Class AI gen context form
+ */
 class aigen_contextform extends moodleform {
-
-    /**
-        * AIGEN actions
-    */
+    /**  AIGEN actions @var int */
     const AIGEN_LIST = 0;
+    /** @var int */
     const AIGEN_SUBMIT = 1;
 
+    /**
+     * form element definition
+     * @return void
+     */
     public function definition() {
         $mform = $this->_form;
         $templateid = $this->optional_param('templateid', null, PARAM_INT);
@@ -51,11 +65,11 @@ class aigen_contextform extends moodleform {
 
         // Add fields based on template config.
         $mappings = $thetemplate['config']->fieldmappings;
-        foreach($mappings as $fieldname => $fieldmapping) {
+        foreach ($mappings as $fieldname => $fieldmapping) {
             if (!empty($fieldmapping->enabled)) {
-                switch($fieldmapping->type) {
+                switch ($fieldmapping->type) {
                     case 'dropdown':
-                        $options = array_combine($fieldmapping->options, $fieldmapping->options) ;
+                        $options = array_combine($fieldmapping->options, $fieldmapping->options);
                         $mform->addElement('select', $fieldname, $fieldmapping->title, $options);
                         break;
                     case 'textarea':
@@ -76,8 +90,11 @@ class aigen_contextform extends moodleform {
         $mform->addElement('html', get_string('generationnotice', constants::M_COMPONENT));
     }
 
-    public function process_dynamic_submission()
-    {
+    /**
+     * process form submission
+     * @return bool|string
+     */
+    public function process_dynamic_submission() {
         global $DB, $USER;
         if (!$this->is_cancelled() && $this->is_submitted() && $this->is_validated()) {
             $formdata = $this->get_data();
@@ -94,7 +111,7 @@ class aigen_contextform extends moodleform {
             if ($action == self::AIGEN_SUBMIT && !empty($moduleinstance)) {
                 // User custom data.
                 // Fields like user_topic, user_level, user_text, user_keywords, user_customdata1...n
-                // These are the fields that the user will type into the form and later we include in the prompt
+                // These are the fields that the user will type into the form and later we include in the prompt.
                 $contextdata = utils::fetch_usercontext_fields($moduleinstance->ttslanguage);
 
                 foreach (aigen_form::mappings() as $fieldname) {
@@ -103,14 +120,14 @@ class aigen_contextform extends moodleform {
                     }
                 }
 
-                $record = new stdClass;
+                $record = new stdClass();
                 $record->minilessonid = $moduleinstance->id;
                 $record->templateid = $templateid;
                 $record->contextdata = json_encode($contextdata);
                 $record->timecreated = time();
                 $record->id = $DB->insert_record('minilesson_template_usages', $record);
 
-                $task = new task\process_aigen;
+                $task = new task\process_aigen();
                 $task->set_component(constants::M_COMPONENT);
                 $task->set_custom_data(['usageid' => $record->id]);
                 $task->set_userid($USER->id);
@@ -121,5 +138,4 @@ class aigen_contextform extends moodleform {
         }
         return false;
     }
-
 }

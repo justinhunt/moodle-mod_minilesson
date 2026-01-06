@@ -25,9 +25,8 @@ use mod_minilesson\local\exception\textgenerationfailed;
  * @copyright  2025 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class aigen
-{
-
+class aigen {
+    /** @var array */
     public const DEFAULTTEMPLATES = [
         '6880824450555' => 'audiostory',
         '6874e6af39202' => 'passagereading',
@@ -46,10 +45,15 @@ class aigen
         '690eb6a91c972' => 'choose_best_reply',
         '691ad9a15f203' => 'wordpractice2',
     ];
+    /** @var \stdClass|null */
     private $moduleinstance = null;
+    /** @var \stdClass|null */
     private $course = null;
+    /** @var \stdClass|null */
     private $cm = null;
+    /** @var \stdClass|null */
     private $context = null;
+    /** @var \stdClass|null */
     private $conf = null;
 
     /** @var \core\progress\db_updater */
@@ -62,8 +66,7 @@ class aigen
      * @param \stdClass|null $course The course object, if available.
      * @param \stdClass|null $cm The course module object, if available.
      */
-    public function __construct($cm, $progressbar = null)
-    {
+    public function __construct($cm, $progressbar = null) {
         global $PAGE, $OUTPUT;
 
         global $DB;
@@ -75,8 +78,16 @@ class aigen
         $this->progressbar = $progressbar;
     }
 
-    public function make_import_data($aigenconfig, $aigentemplate, $contextdata)
-    {
+    /**
+     * Makes import data for the minilesson based on the AI generation configuration and template.
+     *
+     * @param \stdClass $aigenconfig The AI generation configuration object.
+     * @param \stdClass $aigentemplate The AI generation template object.
+     * @param array $contextdata The context data for prompt generation.
+     * @return \stdClass An object containing the generated import items and lesson files.
+     * @throws textgenerationfailed If text generation fails for any item.
+     */
+    public function make_import_data($aigenconfig, $aigentemplate, $contextdata) {
         $contextfileareas = [];
         $importitems = [];
         $importlessonfiles = new \stdClass();
@@ -92,7 +103,7 @@ class aigen
             $importitemfileareas = (isset($importitem->filesid) && isset($aigentemplate->files->{$importitem->filesid})) ?
                 $aigentemplate->files->{$importitem->filesid} :
                 false;
-            //this holds data not in the import item that we generate or use for generation
+            // This holds data not in the import item that we generate or use for generation.
             $dataitem = new \stdClass();
 
             switch ($configitem->generatemethod) {
@@ -102,11 +113,15 @@ class aigen
                     $useprompt = $configitem->prompt;
                     foreach ($configitem->promptfields as $promptfield) {
                         if (isset($contextdata[$promptfield->mapping])) {
-                            $useprompt = str_replace('{' . $promptfield->name . '}', $contextdata[$promptfield->mapping], $useprompt);
+                            $useprompt = str_replace(
+                                '{' . $promptfield->name . '}',
+                                $contextdata[$promptfield->mapping],
+                                $useprompt
+                            );
                         }
                     }
 
-                    // Prepare the response format (JSON)
+                    // Prepare the response format (JSON).
                     $generateformat = new \stdClass();
                     foreach ($configitem->generatefields as $generatefield) {
                         if (isset($generatefield->generate) && $generatefield->generate == 1) {
@@ -119,18 +134,20 @@ class aigen
                     $useprompt = $useprompt . PHP_EOL . 'Generate the data in this JSON format: ' . $generateformatjson;
 
                     if ($this->progressbar) {
-                        $this->progressbar->start_progress(get_string('generatingtextdata', constants::M_COMPONENT, $importitem->name));
+                        $this->progressbar->start_progress(
+                            get_string('generatingtextdata', constants::M_COMPONENT, $importitem->name)
+                        );
                     }
 
-                    // Generate the data and update the importitem
+                    // Generate the data and update the importitem.
                     $genresult = $this->generate_data($useprompt);
                     if ($genresult && $genresult->success) {
                         $genpayload = $genresult->payload;
-                        // Now map the generated data to the importitem
+                        // Now map the generated data to the importitem.
                         foreach ($configitem->generatefields as $generatefield) {
                             if (isset($genpayload->{$generatefield->name})) {
                                 // Overwrite the field in the import template with the generated data (if it exists).
-                                // It might not exist if its a data field we generated for use elsewhere in the process
+                                // It might not exist if its a data field we generated for use elsewhere in the process.
                                 if (isset($importitem->{$generatefield->name})) {
                                     $importitem->{$generatefield->name} = $genpayload->{$generatefield->name};
                                 } else {
@@ -156,23 +173,32 @@ class aigen
                     // If the filearea is in the template, and the mapping data (topic/sentences etc) is set, generate images.
                     foreach ($configitem->generatefileareas as $generatefilearea) {
                         if (
-                            $importitemfileareas && isset($importitemfileareas->{$generatefilearea->name})
-                            && isset($generatefilearea->mapping) &&
-                            (isset($importitem->{$generatefilearea->mapping}) ||
+                            $importitemfileareas &&
+                            isset($importitemfileareas->{$generatefilearea->name}) &&
+                            isset($generatefilearea->mapping) &&
+                            (
+                                isset($importitem->{$generatefilearea->mapping}) ||
                                 isset($contextdata[$generatefilearea->mapping]) ||
-                                isset($dataitem->{$generatefilearea->mapping}))
+                                isset($dataitem->{$generatefilearea->mapping})
+                            )
                         ) {
                             // Update the user.
                             if ($this->progressbar) {
-                                $this->progressbar->start_progress(get_string('generatingimagedata', constants::M_COMPONENT, $importitem->name));
+                                $this->progressbar->start_progress(
+                                    get_string('generatingimagedata', constants::M_COMPONENT, $importitem->name)
+                                );
                             }
-                            // Image prompt data - usually mapped from other items (created) but possibly also from context data or dataitem.
+                            // Image prompt data - usually mapped from other items (created)
+                            // but possibly also from context data or dataitem.
                             $imagepromptdata = false;
                             if (isset($importitem->{$generatefilearea->mapping})) {
                                 $imagepromptdata = $importitem->{$generatefilearea->mapping};
                             } else if (isset($dataitem->{$generatefilearea->mapping})) {
                                 $imagepromptdata = $dataitem->{$generatefilearea->mapping};
-                            } else if (isset($contextdata[$generatefilearea->mapping]) && !empty($contextdata[$generatefilearea->mapping])) {
+                            } else if (
+                                isset($contextdata[$generatefilearea->mapping]) &&
+                                !empty($contextdata[$generatefilearea->mapping])
+                            ) {
                                 $imagepromptdata = $contextdata[$generatefilearea->mapping];
                             }
 
@@ -185,7 +211,6 @@ class aigen
                             if ($this->progressbar) {
                                 $this->progressbar->end_progress();
                             }
-
                         }
                     }
 
@@ -197,17 +222,23 @@ class aigen
 
                 case 'reuse':
                     foreach ($configitem->generatefields as $generatefield) {
-                        if (isset($importitem->{$generatefield->name}) && !empty($generatefield->mapping && isset($contextdata[$generatefield->mapping]))) {
+                        if (
+                            isset($importitem->{$generatefield->name}) &&
+                            !empty($generatefield->mapping && isset($contextdata[$generatefield->mapping]))
+                        ) {
                             $importitem->{$generatefield->name} = $contextdata[$generatefield->mapping];
                         }
                     }
 
                     foreach ($configitem->generatefileareas as $generatefilearea) {
-                        if ($importitemfileareas && isset($importitemfileareas->{$generatefilearea->name}) && !empty($generatefilearea->mapping && isset($contextfileareas[$generatefilearea->mapping]))) {
+                        if (
+                            $importitemfileareas &&
+                            isset($importitemfileareas->{$generatefilearea->name}) &&
+                            !empty($generatefilearea->mapping && isset($contextfileareas[$generatefilearea->mapping]))
+                        ) {
                             $importitemfileareas->{$generatefilearea->name} = $contextfileareas[$generatefilearea->mapping];
                         }
                     }
-
             }
 
             // Update the context data with import item data or dataitem data.
@@ -224,7 +255,7 @@ class aigen
                 }
             }
 
-            // Update the filearea data
+            // Update the filearea data.
             foreach ($configitem->generatefileareas as $generatefilearea) {
                 if ($importitemfileareas && $generatefilearea->generate == 1) {
                     $contextfileareas["item" . $configitem->itemnumber . "_" . $generatefilearea->name]
@@ -234,7 +265,7 @@ class aigen
 
             // Voices - these are a special case and we may ultimately do this in a different way.
             // If the itemtemplate has set a voice field, and the template language is different from the module language
-            // We need a voice in the module language
+            // We need a voice in the module language.
             $itemtype = $importitem->type;
             $itemclass = '\\mod_minilesson\\local\\itemtype\\item_' . $itemtype;
 
@@ -262,7 +293,6 @@ class aigen
             if ($this->progressbar) {
                 $this->progressbar->progress($currentitemcount);
             }
-
         }
 
         $thereturn = new \stdClass();
@@ -271,8 +301,15 @@ class aigen
         return $thereturn;
     }
 
-    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext)
-    {
+    /**
+     * Generates images using the CloudPoodll service.
+     *
+     * @param array $fileareatemplate An associative array where keys are filenames and values are file contents.
+     * @param string|array $imagepromptdata The prompt or array of prompts to generate images for.
+     * @param string|false $overallimagecontext Overall context to guide image generation.
+     * @return array An associative array where keys are filenames and values are base64 encoded image data.
+     */
+    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext) {
         $requests = $filenametrack = $imageurls = [];
         $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
         $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
@@ -288,14 +325,25 @@ class aigen
             } else if (array_key_exists($imagecnt, $imagepromptdata)) {
                 $prompt = $imagepromptdata[$imagecnt];
             } else {
-                // this is a problem, we have no context data for this image.
+                // This is a problem, we have no context data for this image.
                 continue;
             }
 
             // Add the style and create context
             // If the style of the prompt is specified in the prompt then use it as is, if not add a little style instruction
-            // Does the prompt contain style keywords? - cartoon, illustration, photo, painting, sketch, drawing, realistic
-            $stylekeywords = ['flat vector illustration', 'cartoon', 'illustration', 'photorealistic', 'digital painting', 'sketch', 'line drawing', 'realistic', 'infographic', '3d render'];
+            // Does the prompt contain style keywords? - cartoon, illustration, photo, painting, sketch, drawing, realistic.
+            $stylekeywords = [
+                'flat vector illustration',
+                'cartoon',
+                'illustration',
+                'photorealistic',
+                'digital painting',
+                'sketch',
+                'line drawing',
+                'realistic',
+                'infographic',
+                '3d render',
+            ];
             $stylefound = false;
             foreach ($stylekeywords as $stylekeyword) {
                 if (stripos(mb_strtolower($prompt), $stylekeyword) !== false) {
@@ -316,12 +364,12 @@ class aigen
             if (is_array($payload)) {
                 $requests[] = [
                     'url' => $url,
-                    'postfields' => format_postdata_for_curlcall($payload)
+                    'postfields' => format_postdata_for_curlcall($payload),
                 ];
                 $filenametrack[utils::array_key_last($requests)] = $filename;
             }
 
-            // Increment file counter
+            // Increment file counter.
             $imagecnt++;
         }
         if (empty($requests)) {
@@ -330,7 +378,7 @@ class aigen
 
         $curl = new curl();
         $curlopts = [];
-        $curlopts['CURLOPT_TIMEOUT'] = 120; // this might be unnecessary or even counter productive
+        $curlopts['CURLOPT_TIMEOUT'] = 120; // This might be unnecessary or even counter productive.
 
         // Update the progress bar.
         if ($this->progressbar) {
@@ -338,23 +386,23 @@ class aigen
         }
 
         $responses = $curl->multirequest($requests, $curlopts);
-        $secondattempt_requests = [];
-        $secondattempt_imagenumbers = [];
+        $secondattemptrequests = [];
+        $secondattemptimagenumbers = [];
         foreach ($responses as $i => $resp) {
             $processedimage = $this->process_generate_image_response($resp);
             if ($processedimage) {
                 $imageurls[$filenametrack[$i]] = $processedimage;
             } else {
-                $secondattempt_requests[] = $requests[$i];
-                $secondattempt_imagenumbers[] = $i;
+                $secondattemptrequests[] = $requests[$i];
+                $secondattemptimagenumbers[] = $i;
             }
         }
 
-        // Second attempt responses
-        if (count($secondattempt_requests) > 0) {
-            $responses = $curl->multirequest($secondattempt_requests);
+        // Second attempt responses.
+        if (count($secondattemptrequests) > 0) {
+            $responses = $curl->multirequest($secondattemptrequests);
             foreach ($responses as $i => $resp) {
-                $imagenumber = $secondattempt_imagenumbers[$i];
+                $imagenumber = $secondattemptimagenumbers[$i];
                 $processedimage = $this->process_generate_image_response($resp);
                 if ($processedimage) {
                     $imageurls[$filenametrack[$imagenumber]] = $processedimage;
@@ -368,9 +416,13 @@ class aigen
         }
         return $imageurls;
     }
-
-    public function make_image_smaller($imagedata)
-    {
+    /**
+     * Resizes image data to smaller dimensions.
+     *
+     * @param string $imagedata The raw image data.
+     * @return string The resized image data.
+     */
+    public function make_image_smaller($imagedata) {
         global $CFG;
         require_once($CFG->libdir . '/gdlib.php');
 
@@ -378,20 +430,20 @@ class aigen
             return $imagedata;
         }
 
-        // Create temporary files for resizing
+        // Create temporary files for resizing.
         $randomid = uniqid();
         $temporiginal = $CFG->tempdir . '/aigen_orig_' . $randomid;
         file_put_contents($temporiginal, $imagedata);
 
-        // Resize to reasonable dimensions
+        // Resize to reasonable dimensions.
         $resizedimagedata = \resize_image($temporiginal, 500, 500, true);
 
         if (!$resizedimagedata) {
-            // If resizing fails, use the original image data
+            // If resizing fails, use the original image data.
             $resizedimagedata = $imagedata;
         }
 
-        // Clean up temporary file
+        // Clean up temporary file.
         if (file_exists($temporiginal)) {
             unlink($temporiginal);
         }
@@ -405,8 +457,7 @@ class aigen
      * @param string $prompt The prompt to generate data for.
      * @return string|false Returns an object with success status and payload, or false on failure.
      */
-    public function generate_image($prompt)
-    {
+    public function generate_image($prompt) {
         $params = $this->prepare_generate_image_payload(($prompt));
         if ($params) {
             $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
@@ -417,8 +468,14 @@ class aigen
         }
     }
 
-    public function prepare_generate_image_payload($prompt, $token = null)
-    {
+    /**
+     * Prepares the payload for the image generation API.
+     *
+     * @param string $prompt The prompt to generate an image for.
+     * @param string|null $token The authentication token, if available.
+     * @return array|false Returns the payload array or false on failure.
+     */
+    public function prepare_generate_image_payload($prompt, $token = null) {
         global $USER;
 
         if (!empty($this->conf->apiuser) && !empty($this->conf->apisecret)) {
@@ -441,14 +498,18 @@ class aigen
             $params['owner'] = hash('md5', $USER->username);
 
             return $params;
-
         } else {
             return false;
         }
     }
 
-    public function process_generate_image_response($resp)
-    {
+    /**
+     * Processes the response from the image generation API.
+     *
+     * @param string $resp The response from the API.
+     * @return string|null Returns the base64 encoded image data or null on failure.
+     */
+    public function process_generate_image_response($resp) {
         $respobj = json_decode($resp);
         $ret = new \stdClass();
         if (isset($respobj->returnCode)) {
@@ -486,13 +547,11 @@ class aigen
      * @param string $prompt The prompt to generate data for.
      * @return \stdClass|false Returns an object with success status and payload, or false on failure.
      */
-    public function generate_data($prompt)
-    {
+    public function generate_data($prompt) {
         global $USER;
 
         if (!empty($this->conf->apiuser) && !empty($this->conf->apisecret)) {
             $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
-
 
             if (empty($token)) {
                 return false;
@@ -528,10 +587,10 @@ class aigen
     /**
      * Fetches the lesson templates from the lesson templates directory.
      *
-     * @return array An associative array of lesson templates, where the key is the template name and the value is an array containing 'config' and 'template' objects.
+     * @return array An associative array of lesson templates,
+     *  where the key is the template name and the value is an array containing 'config' and 'template' objects.
      */
-    public static function fetch_lesson_templates($filtertags = [])
-    {
+    public static function fetch_lesson_templates($filtertags = []) {
         global $DB;
 
         $fields = 't.*';
@@ -541,13 +600,13 @@ class aigen
         $orderby = 't.id';
         $params = [];
 
-        $predefined_tags = template_tag_manager::get_predefined_tags();
-        $singleormulti_tags = template_tag_manager::get_singleormulti_tags();
-        $itemtype_tags = template_tag_manager::get_itemtype_tags();
-        $tags = array_merge($predefined_tags, $singleormulti_tags, $itemtype_tags);
+        $predefinedtags = template_tag_manager::get_predefined_tags();
+        $singleormultitags = template_tag_manager::get_singleormulti_tags();
+        $itemtypetags = template_tag_manager::get_itemtype_tags();
+        $tags = array_merge($predefinedtags, $singleormultitags, $itemtypetags);
         $filtertags = array_intersect($filtertags, $tags);
         if ($filtertags) {
-            list($in, $inparams) = $DB->get_in_or_equal($filtertags, SQL_PARAMS_NAMED);
+            [$in, $inparams] = $DB->get_in_or_equal($filtertags, SQL_PARAMS_NAMED);
             $from .= ' JOIN {' . template_tag_manager::DBTABLE . '} tt ON tt.templateid = t.id ';
             $where .= " AND tt.tagname {$in}";
             $params += $inparams;
@@ -561,7 +620,7 @@ class aigen
             $templates[$i] = (array) $template;
         }
         return $templates;
-    }//end of fetch_lesson_templates function
+    }
 
     /**
      * Creates default templates for the AI generation.
@@ -570,8 +629,7 @@ class aigen
      * creates a new template object, and uploads it using the aigen_uploadform class.
      * It handles exceptions if the files cannot be read.
      */
-    public static function create_default_templates()
-    {
+    public static function create_default_templates() {
         global $CFG, $DB;
 
         foreach (self::DEFAULTTEMPLATES as $uniqueid => $templateshortname) {
@@ -584,14 +642,17 @@ class aigen
             // The configuration file should contain the lesson configuration in JSON format.
             // The template file should contain the lesson template in MiniLesson export/import JSON format.
             try {
-                $t->config = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" . $templateshortname . "_config.json");
-                $t->template = file_get_contents($CFG->dirroot . "/mod/minilesson/lessontemplates/" . $templateshortname . "_template.json");
+                $t->config = file_get_contents(
+                    $CFG->dirroot . "/mod/minilesson/lessontemplates/" . $templateshortname . "_config.json"
+                );
+                $t->template = file_get_contents(
+                    $CFG->dirroot . "/mod/minilesson/lessontemplates/" . $templateshortname . "_template.json"
+                );
                 aigen_uploadform::upsert_template($t);
             } catch (\Exception $e) {
                 // Handle the exception if the file cannot be read.
                 debugging('Error reading $template config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
             }
         }
-
-    } //end of create default_templates function
+    }
 }

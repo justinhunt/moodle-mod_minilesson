@@ -34,6 +34,27 @@ const component = 'mod_minilesson';
 export const registerFilter = () => {
     const form = document.querySelector('#lessonbank_filters');
     const cardsContainer = document.querySelector('[data-region="cards-container"]');
+    const gridlayoutbtn = document.querySelector('.gridlayoutbtn');
+    const listlayoutbtn = document.querySelector('.listlayoutbtn');
+    const countcontainer = document.querySelector('.countcontainer');
+    const pagination = document.querySelector('[name="perpageselection"]');
+
+    gridlayoutbtn?.addEventListener('click', e => {
+        e.preventDefault();
+        cardsContainer.classList.remove('listlayout');
+        gridlayoutbtn.classList.add('active');
+        listlayoutbtn.classList.remove('active');
+        searchFilter(form);
+    });
+
+    listlayoutbtn?.addEventListener('click', e => {
+        e.preventDefault();
+        cardsContainer.classList.add('listlayout');
+        listlayoutbtn.classList.add('active');
+        gridlayoutbtn.classList.remove('active');
+        searchFilter(form);
+    });
+
     const searchFilter = form => {
 
         const functionname = 'local_lessonbank_list_minilessons';
@@ -50,6 +71,12 @@ export const registerFilter = () => {
                 params.append(`level[${index}]`, option.value);
             });
         }
+        if (form.elements.page) {
+            params.append('page', form.elements.page.value);
+        }
+        if (form.elements.perpage) {
+            params.append('perpage', form.elements.perpage.value);
+        }
         const args = {
             function: functionname,
             args: params.toString(),
@@ -59,7 +86,13 @@ export const registerFilter = () => {
             args: args,
         }])[0].then(items => {
             items = JSON.parse(items.data);
-            Templates.render(`${component}/lessonbankitems`, {items})
+            items.islistlayot = cardsContainer.classList.contains('listlayout') ? true : false;
+            if (countcontainer) {
+                Str.get_string('foundlessons', 'mod_minilesson', items.totalitems).then((langstr) => {
+                    countcontainer.textContent = langstr;
+                });
+            }
+            Templates.render(`${component}/lessonbankitems`, items)
             .then((html, js) => {
                 return Templates.replaceNodeContents(cardsContainer, html, js);
             }).then(() => {
@@ -77,6 +110,17 @@ export const registerFilter = () => {
             return;
         }
         e.preventDefault();
+       const dirbtn = e.target.closest('[data-action="previousbtn"],[data-action="nextbtn"]');
+        if (dirbtn) {
+            const pageno = dirbtn.getAttribute('data-page');
+            const perpage = dirbtn.getAttribute('data-perpage');
+            const pagevalue = parseInt(pageno, 10) + (dirbtn.dataset.action === 'previousbtn' ? -1: 1);
+            if (form) {
+                form.elements.page.value = pagevalue;
+                form.elements.perpage.value = perpage;
+                searchFilter(form);
+            }
+        }
         const downloadbtn = e.target.closest('[data-action="download"]');
         if (downloadbtn) {
             if (!downloadbtn.dataset.id) {
@@ -145,8 +189,19 @@ export const registerFilter = () => {
             });
         }
     });
+    if (pagination) {
+        pagination.addEventListener('change', e => {
+            const perpagevalue = e.target.value;
+            if (form) {
+                form.elements.page.value = 1;
+                form.elements.perpage.value = perpagevalue;
+                searchFilter(form);
+            }
+        });
+    }
     form?.addEventListener('submit', e => {
         e.preventDefault();
+        form.querySelector('[name="page"]').value = 1;
         searchFilter(form);
     });
     if (form) {
