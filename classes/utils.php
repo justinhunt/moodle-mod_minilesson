@@ -514,6 +514,7 @@ class utils
 
         $offer = file_get_contents("php://input");
         $model = "gpt-4o-mini-realtime-preview";
+       // $model = "gpt-realtime";
         $serverurl = "https://api.openai.com/v1/realtime?model=" . $model;
 
         require_once($CFG->libdir . '/filelib.php');

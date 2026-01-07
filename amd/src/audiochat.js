@@ -213,7 +213,7 @@ function($, log, def, ttrecorder, templates, str, Fragment) {
 
         init_voice: function(voice) {
             var self = this;
-            var voices = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'sage', 'shimmer', 'verse'];
+            var voices = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'sage', 'shimmer', 'verse', 'marin', 'cedar'];
             if (voice && voices.includes(voice)) {
                 self.audiochat_voice = voice;
             } else {
