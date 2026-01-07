@@ -59,7 +59,7 @@ class audiochatform extends baseform {
 
         // The voice of the AI.
         $options = ['alloy' => 'Alloy', 'ash' => 'Ash', 'ballad' => 'Ballad',
-            'coral' => 'Coral', 'echo' => 'Echo', 'sage' => 'Sage', 'shimmer' => 'Shimmer', 'verse' => 'Verse'];
+            'coral' => 'Coral', 'echo' => 'Echo', 'sage' => 'Sage', 'shimmer' => 'Shimmer', 'verse' => 'Verse', 'marin' => 'Marin', 'cedar' => 'Cedar'];
         $this->add_dropdown(constants::AUDIOCHAT_VOICE,
             get_string('audiochat_voice',  constants::M_COMPONENT),
             $options, 'alloy');
