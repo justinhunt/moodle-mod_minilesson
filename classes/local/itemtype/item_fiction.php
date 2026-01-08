@@ -17,25 +17,30 @@
 namespace mod_minilesson\local\itemtype;
 
 use mod_minilesson\constants;
-use moodle_url;
+use mod_minilesson\utils;
 
 /**
- * Renderable class for a slides item in a minilesson activity.
+ * Renderable class for a fiction item in a minilesson activity.
  *
  * @package    mod_minilesson
- * @copyright  2023 Your Name <your@email.com>
+ * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_slides extends item
+class item_fiction extends item
 {
 
     //the item type
-    public const ITEMTYPE = constants::TYPE_SLIDES;
+    public const ITEMTYPE = constants::TYPE_FICTION;
 
-    public function from_record($itemrecord, $moduleinstance = false, $context = false)
+
+    /**
+     * The class constructor.
+     *
+     */
+    public function __construct($itemrecord, $moduleinstance = false, $context = false)
     {
-        parent::from_record($itemrecord, $moduleinstance, $context);
-        $this->filemanageroptions['maxfiles'] = -1;
+        parent::__construct($itemrecord, $moduleinstance, $context);
+        $this->needs_speechrec = true;
     }
 
     /**
@@ -50,12 +55,12 @@ class item_slides extends item
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
-        $testitem->region = $this->region;
+                $testitem->region = $this->region;
 
-        $imageserveurl = moodle_url::make_pluginfile_url(
+        $imageserveurl = \moodle_url::make_pluginfile_url(
             $this->context->id,
             constants::M_COMPONENT,
-            constants::SLIDESFILES,
+            constants::FICTIONFILES,
             $this->itemrecord->id,
             '/',
             '{filename}'
@@ -68,7 +73,7 @@ class item_slides extends item
         $files = $fs->get_area_files(
             $this->context->id,
             constants::M_COMPONENT,
-            constants::SLIDESFILES,
+            constants::FICTIONFILES,
             $this->itemrecord->id,
             'filepath, filename',
             false
@@ -81,7 +86,7 @@ class item_slides extends item
         }
 
         // Process markdown for files in files area.
-        $slidesmarkdown = preg_replace_callback(
+        $fictionyarn = preg_replace_callback(
             '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
             function ($matches) use ($imageserveurl, $filenames) {
                 $filename = trim($matches['filename']);
@@ -102,34 +107,58 @@ class item_slides extends item
                 // Replace only the filename part
                 return str_replace($filename, $newsrc, $matches[0]);
             },
-            $this->itemrecord->{constants::SLIDES_MARKDOWN}
+            $this->itemrecord->{constants::FICTION_YARN}
         );
 
         // Weird characters can break things like tables, so clean it a bit.
-        $slidesmarkdown = $this->sanitize_markdown($slidesmarkdown);
+        $fictionyarn = $this->sanitize_yarn($fictionyarn);
 
         // Set it to output.
-        $testitem->slidesmarkdown = $slidesmarkdown;
+        $testitem->fictionyarn = $fictionyarn;
 
-        $testitem->selectedtheme = $this->itemrecord->{constants::SLIDETHEME};
-        $testitem->selectedfontsize = $this->itemrecord->{constants::SLIDEFONTSIZE};
+        // Do we need a streaming token?
+        $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
+        $isenglish = strpos($this->moduleinstance->ttslanguage, 'en') === 0;
+        if ($isenglish) {
+            $tokenobject = utils::fetch_streaming_token($this->moduleinstance->region);
+            if ($tokenobject) {
+                $testitem->speechtoken = $tokenobject->token;
+                $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
+                 $testitem->speechtokentype = $tokenobject->tokentype;
+            } else {
+                $testitem->speechtoken = false;
+                $testitem->speechtokenvalidseconds = 0;
+                $testitem->speechtokentype = '';
+            }
+            if ($alternatestreaming) {
+                $testitem->forcestreaming = true;
+            }
+        }
 
+        // Cloudpoodll.
+        $testitem = $this->set_cloudpoodll_details($testitem);
         return $testitem;
     }
 
-    public function sanitize_markdown($md)
+    /**
+     * Sanitize yarn markdown to remove problematic characters.
+     *
+     * @param string $yarn The yarn to sanitize.
+     * @return string The sanitized yarn.
+     */
+    public function sanitize_yarn($yarn)
     {
 
         // Remove zero-width chars.
-        $md = preg_replace('/[\x{200B}\x{200C}\x{200D}\x{FEFF}]/u', '', $md);
+        $yarn = preg_replace('/[\x{200B}\x{200C}\x{200D}\x{FEFF}]/u', '', $yarn);
 
         // Replace NBSP with normal space.
-        $md = str_replace(["\xC2\xA0", "\xE2\x80\xAF"], " ", $md);
+        $yarn = str_replace(["\xC2\xA0", "\xE2\x80\xAF"], " ", $yarn);
 
         // Trim weird whitespace.
-        $md = preg_replace('/\s+$/m', '', $md);
+        $yarn = preg_replace('/\s+$/m', '', $yarn);
 
-        return $md;
+        return $yarn;
     }
 
     public static function validate_import($newrecord, $cm)
@@ -138,8 +167,8 @@ class item_slides extends item
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{constants::SLIDES_MARKDOWN} == '') {
-            $error->col = constants::SLIDES_MARKDOWN;
+        if ($newrecord->{constants::FICTION_YARN} == '') {
+            $error->col = constants::FICTION_YARN;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
@@ -148,29 +177,26 @@ class item_slides extends item
         return false;
     }
     /*
-     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type.
      */
     public static function get_keycolumns()
     {
         // Get the basic key columns and customize a little for instances of this item type.
         $keycols = parent::get_keycolumns();
-        $keycols['text1'] = ['jsonname' => 'slidesmarkdown', 'type' => 'string', 'optional' => false, 'default' => [], 'dbname' => constants::SLIDES_MARKDOWN];
-        $keycols['text2'] = ['jsonname' => 'slidestheme', 'type' => 'string', 'optional' => false, 'default' => 'black', 'dbname' => constants::SLIDETHEME];
-        $keycols['text3'] = ['jsonname' => 'slidesfontsize', 'type' => 'string', 'optional' => false, 'default' => '32', 'dbname' => constants::SLIDEFONTSIZE];
-        $keycols[constants::SLIDESFILES] = ['jsonname' => constants::SLIDESFILES, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+        $keycols['text1'] = ['jsonname' => 'fictionyarn', 'type' => 'string', 'optional' => false, 'default' => [], 'dbname' => constants::FICTION_YARN];
+        $keycols[constants::FICTIONFILES] = ['jsonname' => constants::FICTIONFILES, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
 
         return $keycols;
     }
 
     /*
-  This function return the prompt that the generate method requires.
-  */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
-        switch ($generatemethod) {
+    This function return the prompt that the generate method requires.
+    */
+    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
+        switch($generatemethod) {
 
             case 'extract':
-                $prompt = "Create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}]";
+                $prompt = "Create an adventure fiction story in yarn format on the topic of: [{topic}] ";
                 break;
 
             case 'reuse':
@@ -181,9 +207,10 @@ class item_slides extends item
 
             case 'generate':
             default:
-                $prompt = "Create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}]";
+                $prompt = "Create an adventure fiction story in yarn format on the topic of: [{topic}] ";
                 break;
         }
         return $prompt;
     }
+
 }

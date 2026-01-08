@@ -131,7 +131,7 @@ class constants
     const TYPE_WORDSHUFFLE = 'wordshuffle';
     const TYPE_SCATTER = 'scatter';
     const TYPE_SLIDES = 'slides';
-
+    const TYPE_FICTION = 'fiction';
     const AUDIOSTORYMETA = 'itemaudiofname';
     const AUDIOSTORYZOOMANDPAN = 'itemaudiostoryzoom';
     const ZOOMANDPAN_NONE = 0;
@@ -175,6 +175,7 @@ class constants
     const FILEANSWER = 'customfile';
     const H5PFILE = 'customfile1';
     const SLIDESFILES = 'customfile1';
+    const FICTIONFILES = 'customfile1';
     const CUSTOMDATA = 'customdata';
     const CUSTOMINT = 'customint';
     const POLLYVOICE = 'customtext5';
@@ -197,6 +198,8 @@ class constants
 
     const SLIDES_MARKDOWN = 'customtext1';
     const SLIDES_MARKDOWN_DEFAULT = "# Slide 1 Title\n\nYour content here. Use markdown syntax to format text and add images.\n\n---\n\n# Slide 2 Title\n\nMore content here. You can add as many slides as you need.\n";
+    const FICTION_YARN = 'customtext1';
+    const FICTION_YARN_DEFAULT = "title: Adventure\n\n---\nNarrator: We're going to go on an adventure!\n===\n\n\n\ntitle: Cave\n\n---\nNarrator: Let's look inside the spooky cave...\n===";
     const AUDIOCHAT_ALLOWRETRY  = 'customint5';
     const READINGPASSAGE = 'customtext1';
     const PASSAGEGAPFILL_PASSAGE = 'customtext1';
@@ -726,6 +729,7 @@ class constants
         constants::TYPE_AUDIOCHAT,
         constants::TYPE_DICTATIONCHAT,
         constants::TYPE_SLIDES,
+        constants::TYPE_FICTION,
       // constants::TYPE_SMARTFRAME,
       // constants::TYPE_COMPQUIZ,
       // constants::TYPE_CONVERSATION,

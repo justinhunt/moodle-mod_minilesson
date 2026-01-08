@@ -68,6 +68,7 @@ class rsquestion_renderer extends \plugin_renderer_base {
             $qtypes[] = constants::TYPE_AUDIOCHAT;
         }
         if (isset($CFG->minilesson_experimental) && $CFG->minilesson_experimental) {
+            $qtypes[] = constants::TYPE_FICTION;
             $qtypes[] = constants::TYPE_SMARTFRAME;
             $qtypes[] = constants::TYPE_COMPQUIZ;
             $qtypes[] = constants::TYPE_CONVERSATION;

@@ -98,6 +98,7 @@ class template_tag_manager {
             constants::TYPE_WORDSHUFFLE,
             constants::TYPE_SCATTER,
             constants::TYPE_SLIDES,
+            constants::TYPE_FICTION,
         ];
     }
 

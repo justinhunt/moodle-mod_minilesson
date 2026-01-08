@@ -353,24 +353,32 @@ abstract class baseform extends \moodleform
                             constants::TEXTINSTRUCTIONS,
                             get_string('slides_instructions1', constants::M_COMPONENT)
                         );
-                        break;    
+                        break;
+
+                    // Slides.
+                    case constants::TYPE_FICTION:
+                        $mform->setDefault(
+                            constants::TEXTINSTRUCTIONS,
+                            get_string('fiction_instructions1', constants::M_COMPONENT)
+                        );
+                        break;
                 }
 
-                //add the media prompts chooser and fields
+                // Add the media prompts chooser and fields.
                 $mform->addElement('header', 'mediapromptsheading', get_string('mediaprompts', constants::M_COMPONENT));
                 $this->add_media_prompts();
                 $mform->setExpanded('mediapromptsheading', true);
-            }//end of if richtextprompt or not
-        }//end of if standard = true
+            }// End of if richtextprompt or not.
+        }// End of if standard = true.
 
-        //visibility
-        //$mform->addElement('selectyesno', 'visible', get_string('visible'));
+        // Visibility.
+        // $mform->addElement('selectyesno', 'visible', get_string('visible'));
         $mform->addElement('hidden', 'visible', 1);
         $mform->setType('visible', PARAM_INT);
 
         $this->custom_definition();
 
-        //add the action buttons
+        // Add the action buttons.
         $mform->closeHeaderBefore('cancel');
         $this->add_action_buttons(get_string('cancel'), get_string('saveitem', constants::M_COMPONENT));
 

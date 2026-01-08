@@ -80,10 +80,10 @@ class item_shortanswer extends item
         } else {
             $phonetics = [];
         }
-        $is_ssml = $testitem->voiceoption == constants::TTS_SSML;
+        $isssml = $testitem->voiceoption == constants::TTS_SSML;
         $dottify = false;
-        $testitem->sentences = $this->process_spoken_sentences($sentences, $phonetics, $dottify, $is_ssml);
-        $testitem->partialresponses = $this->process_spoken_sentences($partialresponses, [], $dottify, $is_ssml);
+        $testitem->sentences = $this->process_spoken_sentences($sentences, $phonetics, $dottify, $isssml);
+        $testitem->partialresponses = $this->process_spoken_sentences($partialresponses, [], $dottify, $isssml);
 
         // Do we need a streaming token?
         $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
@@ -104,7 +104,7 @@ class item_shortanswer extends item
             }
         }
 
-        //cloudpoodll
+        // Cloudpoodll.
         $testitem = $this->set_cloudpoodll_details($testitem);
         return $testitem;
     }

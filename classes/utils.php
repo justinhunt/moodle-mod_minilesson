@@ -2709,6 +2709,8 @@ class utils
                 return new local\itemtype\item_scatter($itemrecord, $moduleinstance, $context);
             case constants::TYPE_SLIDES:
                 return new local\itemtype\item_slides($itemrecord, $moduleinstance, $context);
+            case constants::TYPE_FICTION:
+                return new local\itemtype\item_fiction($itemrecord, $moduleinstance, $context);    
             default:
         }
     }
@@ -2768,6 +2770,8 @@ class utils
                 return '\\' . constants::M_COMPONENT . '\local\itemform\scatterform';
             case constants::TYPE_SLIDES:
                 return '\\' . constants::M_COMPONENT . '\local\itemform\slidesform';
+            case constants::TYPE_FICTION:
+                return '\\' . constants::M_COMPONENT . '\local\itemform\fictionform';    
             default:
                 return false;
         }
