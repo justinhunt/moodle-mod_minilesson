@@ -1,0 +1,21 @@
+{
+    "items": [
+        {
+            "type": "fiction",
+            "name": "Item: Fiction",
+            "instructions": "Follow the instructions and make good choices. Good luck.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "fictionyarn": "title: Start\r\n---\r\n\r\n<<picture 02.png>>\r\n\r\nPlayer: Soon I will be finished my homework.\r\nPlayer: I can go and play outside then.\r\nPlayer: I wonder what I will be in the future? \r\n\r\n-> A big lady\r\n    <<jump BigLady>>\r\n-> An office man\r\n    <<jump OfficeMan>>\r\n\r\n===\r\ntitle: BigLady\r\n---\r\n<<picture 04.png>>\r\nBig Lady: Wow I am a big lady.\r\n<<jump TheEnd>>\r\n===\r\ntitle: OfficeMan\r\n---\r\n<<picture 07.png>>\r\n\r\nOffice Man: look at me I am an office man\r\nOffice Man: What shall I pick up?\r\n\r\n-> A dirty cup\r\n   <<picture 09.png>>\r\n-> Pencils\r\n   <<picture 10.png>>\r\n<<jump TheEnd>>\r\n===\r\n\r\ntitle: TheEnd\r\n---\r\n\r\nNarrator: THE END\r\n===",
+            "filesid": 1
+        }
+    ],
+    "files": {
+        "1": {
+            "customfile1": []
+        }
+    }
+}

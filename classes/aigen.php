@@ -44,6 +44,8 @@ class aigen {
         '690b5e695b235' => 'image_slides',
         '690eb6a91c972' => 'choose_best_reply',
         '691ad9a15f203' => 'wordpractice2',
+        '6960baa71fa35' => 'fiction_withpics',
+        '696105abf2b2a' => 'fiction_nopics',
     ];
     /** @var \stdClass|null */
     private $moduleinstance = null;

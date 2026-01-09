@@ -1,0 +1,183 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "You are writer who writes simple and interesting stories for second language learners.\n\nCreate a first person interactive fiction story (fictionyarn) in yarn 2.0 format using the following outline: [{topic}]. At relevant points in the story insert pictures with the following command syntax: <<picture 1.png>>\n\nPicture Instructions\nFor each picture command also generate an image description that will be used to generate the picture. The image descriptions should be placed in a one dimensional array (data1).\nThe filename of the pictures should be numerical from 01 to 20.\nThere should be no more than 20 images.\nThe images should be of style: {imagestyle}\nThe pictures should be specifically about the stage of the story it is shown in.\nThe pictures should not represent a summary of the whole story.\nEach story node should have an image. \nDramatic points in the story may also have an image.\n\nStory instructions.\nThe story should include dialogs between characters, and options that the reader must choose from. \nOptions may jump to different nodes of the story . \nIn an option set there must be more than 1 option and no more than 4 options.\nThe language of the story should be: {language}\nThe story vocabulary should be of difficulty that is comprehensible for learners at language level: {languagelevel}\nThere should be more then 10 and fewer than 21 story nodes.\nNode titles must contain no spaces and be in English.\nThe title of the first node must be: Start\nCharacter names should have no spaces.\nThe story should be written in Yarn version 2.0 . \n\nExtra Yarn Instructions\nGenerate Yarn Spinner 2.0 code that is compatible with bondage.js.\n* Do not use +=, -=, *=, \/= anywhere\n* Use only <<set $var = expression>> assignments\n* Do not use English keywords (to) in set commands\n* Close <<if>> conditions with <<endif>>\n* Prefer underscores over hyphens in identifiers\nThe following text is an example of valid Yarn 2.0 for bondage.js\n\ntitle: Start\n---\n<<declare $suspicion = 0>>\n<<declare $trust = 0>>\n<<picture 02.png>>\n\nPlayer: Soon I will be finished my homework.\nPlayer: I can go and play outside then.\nPlayer: I wonder what I will be in the future? \n\n-> A big lady\n    <<set $suspicion = $suspicion + 1>>\n    <<jump BigLady>>\n-> An office man\n    <<jump OfficeMan>>\n\n===\ntitle: BigLady\n---\n<<picture 04.png>>\nBig Lady: Wow I am a big lady.\n<<jump TheEnd>>\n===\ntitle: OfficeMan\n---\n<<picture 07.png>>\n\nOffice Man: look at me I am an office man\nOffice Man: What shall I pick up?\n\n-> A dirty cup <<if $suspicion > 0>>\n   <<picture 05.png>>\n-> Pencils <<if $suspicion > 0>>\n   <<picture 06.png>>\n<<jump TheEnd>>\n===\n\ntitle: TheEnd\n---\n\nNarrator: THE END\n===\n \nOutput Instructions\nYour output must include two top-level keys:\n1. fictionyarn \u2014 the yarn v2.0 format story\n2. data1 \u2014 a 1-dimensional array of individual image descriptions\n\n\n",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "fictionyarn",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "languagelevel",
+                    "mapping": "user_level"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Interactive Story (with pics)",
+    "lessonDescription": "An interactive story with pics",
+    "uniqueid": "6960baa71fa35",
+    "version": "1",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "The story outline",
+            "description": "Enter a detailed outline of the story you want to generate.",
+            "type": "textarea"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Image Style",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Vocabulary Practice"
+    ]
+}
