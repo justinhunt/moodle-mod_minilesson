@@ -1,0 +1,11 @@
+{{#md.character}}
+<div class="my-4">
+    <div class="h6 border-bottom pb-1 font-weight-bold text-primary" style="min-height: 1.5em;">
+        {{md.character.name}}
+    </div>
+    <div class="fs-4 pt-2">{{text}}</div>
+</div>
+{{/md.character}}
+{{^md.character}}
+  <div class="fs-4 pt-2 m-2 rounded p-3 border">{{text}}</div>
+{{/md.character}}

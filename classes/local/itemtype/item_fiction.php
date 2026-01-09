@@ -32,6 +32,12 @@ class item_fiction extends item
     //the item type
     public const ITEMTYPE = constants::TYPE_FICTION;
 
+    public function from_record($itemrecord, $moduleinstance = false, $context = false)
+    {
+        parent::from_record($itemrecord, $moduleinstance, $context);
+        $this->filemanageroptions['maxfiles'] = -1;
+    }
+
 
     /**
      * The class constructor.
@@ -85,9 +91,9 @@ class item_fiction extends item
             $filenames[] = $file->get_filename();
         }
 
-        // Process markdown for files in files area.
+        // Process yarn text for files in files area.
         $fictionyarn = preg_replace_callback(
-            '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
+            '/<<picture\s+(?<filename>[^>]+)>>/',
             function ($matches) use ($imageserveurl, $filenames) {
                 $filename = trim($matches['filename']);
 

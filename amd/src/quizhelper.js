@@ -7,13 +7,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
         'mod_minilesson/freewriting','mod_minilesson/passagereading','mod_minilesson/h5p',
         'mod_minilesson/conversation','mod_minilesson/compquiz','mod_minilesson/passagegapfill',
         'mod_minilesson/audiochat','mod_minilesson/wordshuffle','mod_minilesson/scatter',
-        'mod_minilesson/slides', 'mod_minilesson/progresstimer'],
+        'mod_minilesson/slides', 'mod_minilesson/fiction', 'mod_minilesson/progresstimer'],
   function($, log, def, templates, Ajax, dictation, dictationchat, multichoice, multiaudio,
            speechcards, listenrepeat, page, smartframe, shortanswer,
            listeninggapfill,typinggapfill, speakinggapfill,
            spacegame,fluency, freespeaking,freewriting,
            passagereading,h5p,conversation,compquiz,passagegapfill,
-           audiochat,wordshuffle,scatter, slides, progresstimer) {
+           audiochat,wordshuffle,scatter, slides, fiction, progresstimer) {
     "use strict"; // jshint ;_;
 
     /*
@@ -166,6 +166,10 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_slides:
                   slides.clone().init(index, item, dd);
                   break;
+
+              case def.qtype_fiction:
+                  fiction.clone().init(index, item, dd);
+                  break;     
           }
 
         });
@@ -278,6 +282,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_conversation:
               case def.qtype_compquiz:
               case def.qtype_audiochat:
+              case def.qtype_slides:
+              case def.qtype_fiction:
               default:
           }//end of nextitem switch
 

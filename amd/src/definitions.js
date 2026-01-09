@@ -84,6 +84,7 @@ This file contains class and ID definitions.
         qtype_wordshuffle: 'wordshuffle',
         qtype_scatter: 'scatter',
         qtype_slides: 'slides',
+        qtype_fiction: 'fiction',
 
         //running records features
         maybeselfcorrectedwordclass: 'mod_minilesson_grading_maybeselfcorrectedword',
