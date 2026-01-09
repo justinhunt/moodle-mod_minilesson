@@ -79,7 +79,7 @@ define([
                         that.controls.yarnoptions.html('');
                     });
                     // Enable the continue button
-                    this.controls.yarncontinuebutton.prop("disabled", false);
+                    this.can_continuebutton(true);
 
                 } else if(currentResult instanceof YarnBound.OptionsResult) {
                     // Render the options
@@ -101,7 +101,7 @@ define([
 
 
                     // Disable the continue button, because they need to select an option
-                    this.controls.yarncontinuebutton.prop("disabled", true);
+                    that.can_continuebutton(false);
 
                 } else if (currentResult instanceof YarnBound.CommandResult) {
                     // Process the command string a little. so we have command name and args
@@ -133,15 +133,46 @@ define([
                     // In all cases just do command and then jump to next line
                     if(!currentResult.isDialogueEnd) {
                         // Just skip through for now
-                        that.runner.advance();
+                        that.do_runner_advance();
                         that.do_render();
-                        return;
-                    } else {
                         return;
                     }
                 } else {
                     log.debug('MiniLesson Fiction: unknown yarn result type');
                 }
+
+                 // In all cases on dialog end there is no continue
+                if(currentResult.isDialogueEnd) {
+                    that.can_continuebutton(false);
+                    return;
+                }
+            },
+
+            do_runner_advance: function (steps) {
+                try {
+                    if(steps !== null){
+                        this.runner.advance(steps);
+                    } else {
+                        this.runner.advance();
+                    }
+                } catch (e) {
+                    var userFriendlyError = "Yarn Parse Error: " + e.message;
+                    this.controls.yarncontainer.html(
+                        `<div class="alert alert-danger">${userFriendlyError}</div>`
+                    );
+                    log.error("Full Yarn Error:");
+                    log.error(e);
+                }
+            },
+
+            can_continuebutton: function (cancontinue) {
+                this.controls.yarncontinuebutton.prop("disabled", !cancontinue);
+                if (cancontinue){
+                    this.controls.yarncontinuebutton.show();
+                } else {
+                    this.controls.yarncontinuebutton.hide();
+                }
+               
             },
 
             register_events: function (index, itemdata, quizhelper) {
@@ -179,7 +210,7 @@ define([
                 this.controls.yarncontinuebutton.on('click', function (e) {
                     log.debug('MiniLesson Fiction: yarn continue button clicked');
                     e.preventDefault();
-                    self.runner.advance();
+                    self.do_runner_advance();
                     self.do_render();
                 });
 
@@ -190,7 +221,7 @@ define([
 
                     var buttons = self.controls.yarncontainer.find('.minilesson_fiction_optionbutton');
                     var optionindex = buttons.index(this); // 0-based position in the rendered list
-                    self.runner.advance(optionindex);
+                    self.do_runner_advance(optionindex);
                     self.do_render();
                 });
             },
