@@ -1,6 +1,17 @@
 {
     "items": [
         {
+            "type": "page",
+            "name": "Item: Content Page",
+            "instructions": "An Adventure",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "filesid": 1
+        },
+        {
             "type": "fiction",
             "name": "Item: Fiction",
             "instructions": "Follow the instructions and make good choices. Good luck.",
@@ -9,13 +20,14 @@
             "ttsdialog": [
                 ""
             ],
-            "fictionyarn": "title: Start\r\n---\r\n\r\n<<picture 02.png>>\r\n\r\nPlayer: Soon I will be finished my homework.\r\nPlayer: I can go and play outside then.\r\nPlayer: I wonder what I will be in the future? \r\n\r\n-> A big lady\r\n    <<jump BigLady>>\r\n-> An office man\r\n    <<jump OfficeMan>>\r\n\r\n===\r\ntitle: BigLady\r\n---\r\n<<picture 04.png>>\r\nBig Lady: Wow I am a big lady.\r\n<<jump TheEnd>>\r\n===\r\ntitle: OfficeMan\r\n---\r\n<<picture 07.png>>\r\n\r\nOffice Man: look at me I am an office man\r\nOffice Man: What shall I pick up?\r\n\r\n-> A dirty cup\r\n   <<picture 09.png>>\r\n-> Pencils\r\n   <<picture 10.png>>\r\n<<jump TheEnd>>\r\n===\r\n\r\ntitle: TheEnd\r\n---\r\n\r\nNarrator: THE END\r\n===",
-            "filesid": 1
+            "fictionyarn": "title: Start\n---\n<<declare $found_cat = false>>\n<<declare $talked_to_tree = false>>\n<<declare $talked_to_frog = false>>\n<<declare $talked_to_soldier = false>>\n\nPlayer: My name is Aria. I am a young wizard with short black hair and blue eyes.\nPlayer: My white cat, Snowball, has run into the forest.\nPlayer: I must find her!\n\n-> Go into the forest\n    <<jump ForestEntrance>>\n\n===\ntitle: ForestEntrance\n---\nPlayer: I am at the entrance of the forest. It is dark and mysterious.\n\n-> Call for Snowball\n    <<jump CallForSnowball>>\n-> Walk deeper into the forest\n    <<jump DeeperIntoForest>>\n\n===\ntitle: CallForSnowball\n---\nPlayer: \"Snowball! Where are you?\"\nNarrator: You hear a rustling in the trees.\n\n-> Investigate the sound\n    <<jump TalkingTree>>\n-> Ignore it and walk deeper\n    <<jump DeeperIntoForest>>\n\n===\ntitle: DeeperIntoForest\n---\nPlayer: I walk deeper into the forest. It is quiet.\n\n-> Look around\n    <<jump LookAround>>\n-> Keep walking\n    <<jump FrogPrince>>\n\n===\ntitle: TalkingTree\n---\n<<set $talked_to_tree = true>>\nTree: Hello, young wizard. I am a talking tree.\nPlayer: Have you seen my cat, Snowball?\nTree: I saw a white cat running towards the pond.\n\n-> Thank the tree and go to the pond\n    <<jump Pond>>\n-> Ask more questions\n    <<jump AskTreeQuestions>>\n\n===\ntitle: AskTreeQuestions\n---\nPlayer: Do you know anything else about the forest?\nTree: Be careful of the frog prince. He likes to play tricks.\n\n-> Thank the tree and go to the pond\n    <<jump Pond>>\n-> Go back to the forest entrance\n    <<jump ForestEntrance>>\n\n===\ntitle: LookAround\n---\nNarrator: You see a frog sitting on a rock.\n\n-> Talk to the frog\n    <<jump FrogPrince>>\n-> Ignore the frog and keep walking\n    <<jump SoldierEncounter>>\n\n===\ntitle: FrogPrince\n---\n<<set $talked_to_frog = true>>\nFrog: Hello, I am a frog prince.\nPlayer: Have you seen my cat, Snowball?\nFrog: I saw her near the pond, trying to catch fish.\n\n-> Thank the frog and go to the pond\n    <<jump Pond>>\n-> Ask the frog about his story\n    <<jump FrogStory>>\n\n===\ntitle: FrogStory\n---\nPlayer: How did you become a frog?\nFrog: A witch turned me into a frog. I need a kiss to become a prince again.\n\n-> Offer to help\n    <<jump OfferHelpFrog>>\n-> Go to the pond\n    <<jump Pond>>\n\n===\ntitle: OfferHelpFrog\n---\nPlayer: I will help you, but first I must find my cat.\nFrog: Thank you, young wizard.\n\n-> Go to the pond\n    <<jump Pond>>\n\n===\ntitle: SoldierEncounter\n---\n<<set $talked_to_soldier = true>>\nSoldier: Halt! Who goes there?\nPlayer: I am Aria, looking for my cat.\nSoldier: I saw a white cat near the pond.\n\n-> Thank the soldier and go to the pond\n    <<jump Pond>>\n-> Ask the soldier about the forest\n    <<jump AskSoldierQuestions>>\n\n===\ntitle: AskSoldierQuestions\n---\nPlayer: Is there anything I should know about the forest?\nSoldier: Beware of the talking tree. It likes to confuse travelers.\n\n-> Thank the soldier and go to the pond\n    <<jump Pond>>\n-> Go back to the forest entrance\n    <<jump ForestEntrance>>\n\n===\ntitle: Pond\n---\nNarrator: You arrive at the pond. You see Snowball trying to catch fish.\nPlayer: \"Snowball! There you are!\"\n<<set $found_cat = true>>\n\n-> Pick up Snowball and go home\n    <<jump TheEnd>>\n-> Watch Snowball for a moment\n    <<jump WatchSnowball>>\n\n===\ntitle: WatchSnowball\n---\nPlayer: I watch Snowball play. She is so happy.\n\n-> Pick up Snowball and go home\n    <<jump TheEnd>>\n\n===\ntitle: TheEnd\n---\nNarrator: You found Snowball and returned home safely.\nPlayer: I am glad to have you back, Snowball.\nNarrator: THE END\n\n==="
         }
     ],
     "files": {
         "1": {
-            "customfile1": []
+            "itemmedia": {
+                "2kids_and_witch.png": "QQQQ"
+            }
         }
     }
 }

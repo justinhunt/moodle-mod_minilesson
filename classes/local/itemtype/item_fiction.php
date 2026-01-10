@@ -90,6 +90,7 @@ class item_fiction extends item
         foreach ($files as $file) {
             $filenames[] = $file->get_filename();
         }
+        $testitem->hasimages = !empty($filenames);
 
         // Process yarn text for files in files area.
         $fictionyarn = preg_replace_callback(
