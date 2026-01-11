@@ -90,11 +90,11 @@ class item_fiction extends item
         foreach ($files as $file) {
             $filenames[] = $file->get_filename();
         }
-        $testitem->hasimages = !empty($filenames);
+        $testitem->hasmedia = !empty($filenames);
 
         // Process yarn text for files in files area.
         $fictionyarn = preg_replace_callback(
-            '/<<picture\s+(?<filename>[^>]+)>>/',
+            '/<<(?:picture|audio|video)\s+(?<filename>[^>]+)>>/',
             function ($matches) use ($imageserveurl, $filenames) {
                 $filename = trim($matches['filename']);
 

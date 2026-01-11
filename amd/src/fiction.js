@@ -50,7 +50,7 @@ define([
             prepare_html: function (itemdata) {
                 this.controls.yarncontainer = $("#" + itemdata.uniqueid + "_container .minilesson_fiction_yarncontainer");
                 this.controls.yarntext = this.controls.yarncontainer.find('.minilesson_fiction_yarntext');
-                this.controls.yarnimage = this.controls.yarncontainer.find('.minilesson_fiction_yarnimage');
+                this.controls.yarnmedia = this.controls.yarncontainer.find('.minilesson_fiction_yarnmedia');
                 this.controls.yarnoptions = this.controls.yarncontainer.find('.minilesson_fiction_yarnoptions');
                 this.controls.yarncontinuebutton = $("#" + itemdata.uniqueid + "_container .minilesson_fiction_continuebutton");
 
@@ -60,8 +60,7 @@ define([
                 var that = this;
                 var yarncontent = {
                     'yarntext': false,
-                    'yarnoptions': false,
-                    'yarnimage': false,
+                    'yarnoptions': false
                 };
 
                 var currentResult = this.runner.currentResult;
@@ -108,7 +107,7 @@ define([
                     //eg "picture 1.png"
                     var rawCommand = currentResult.command; 
                     var parts = rawCommand.split(' ');
-                    var commandName = parts[0]; // "picture"
+                    var commandName = parts[0]; // "picture" "audio etc"
                     var args = parts.slice(1); // ["1.png"]
 
 
@@ -118,12 +117,30 @@ define([
                             const imageURL = args[0]; // "picture https://blahblah"
                             Templates.render('mod_minilesson/fictionyarnimage', {"imageurl": imageURL}).then(
                             function (html, js) {
-                                that.controls.yarnimage.html(html);
+                                that.controls.yarnmedia.html(html);
                             });
                             break;
 
+                        case 'audio':
+                            log.debug('got audio command')
+                            const audioURL = args[0]; // "audio https://blahblah"
+                            Templates.render('mod_minilesson/fictionyarnaudio', {"audiourl": audioURL}).then(
+                            function (html, js) {
+                                that.controls.yarnmedia.html(html);
+                            });
+                            break;
+                            
+                        case 'video':
+                            log.debug('got video command')
+                            const videoURL = args[0]; // "video https://blahblah"
+                            Templates.render('mod_minilesson/fictionyarnvideo', {"videourl": videoURL}).then(
+                            function (html, js) {
+                                that.controls.yarnmedia.html(html);
+                            });
+                            break;    
+
                         case 'clearpicture': 
-                            that.controls.yarnimage.html('');
+                            that.controls.yarnmedia.html('');
                             break;
 
                         case 'blahblah':

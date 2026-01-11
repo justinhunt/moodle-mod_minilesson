@@ -30,7 +30,7 @@ class fictionform extends baseform
         $mform->setDefault(constants::FICTION_YARN, constants::FICTION_YARN_DEFAULT);
 
         // Files upload area.
-        $this->add_media_upload(constants::FILEANSWER . '1', get_string('fiction:attachments', constants::M_COMPONENT), false, 'image', -1);
+        $this->add_media_upload(constants::FILEANSWER . '1', get_string('fiction:attachments', constants::M_COMPONENT), false, 'image,audio,video', -1);
 
         /*
         $mform->registerNoSubmitButton('previewbutton');
