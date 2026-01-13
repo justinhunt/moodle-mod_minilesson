@@ -1239,7 +1239,7 @@ $string['slides:previewmodaltitle'] = 'Preview';
 $string['fiction:preview'] = 'Preview';
 $string['fiction:previewmodaltitle'] = 'Preview';
 $string['fiction:attachments'] = 'Attachments';
-$string['enterfictionyarn'] = 'Enter the story in Yarn format. Yarn format is a sort of shorthand syntax for creating interactive stories. See the <a href="https://docs.yarnspinner.dev/beginners-guide" target="_blank">Yarn Guide</a> for details.';
+$string['enterfictionyarn'] = 'Enter the story in Yarn format. Yarn format is a sort of shorthand syntax for creating interactive stories. See the <a href="https://docs.yarnspinner.dev/beginners-guide" target="_blank">Yarn Guide</a> for details. Also see the <a href="https://support.poodll.com/en/support/solutions/articles/19000171644-item-type-fiction" target="_blank">Poodll documentation.</a>';
 $string['fictionyarn'] = 'Fiction Yarn';
 $string['templatetags'] = 'Template tags';
 

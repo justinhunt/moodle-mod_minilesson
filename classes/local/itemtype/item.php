@@ -953,19 +953,18 @@ abstract class item implements templatable, renderable
             }
 
             // Split on spaces and gaps (enclosed in square brackets).
-            $words = preg_split('/(\[[^\]]+\]|\s+)/', $sentence, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+            $words = preg_split('/\s+(?![^\[]*\])/', $sentence, -1, PREG_SPLIT_NO_EMPTY);
+
             foreach ($words as $index => $word) {
-                // Check if the word is a gap (enclosed in square brackets).
                 if (preg_match('/^\[.*\]$/', $word)) {
                     $cleanedWord = str_replace(['[', ']'], '', $word);
-                    $maskedwords[$index] = $cleanedWord; // Add to maskedwords array.
+                    $maskedwords[$index] = $cleanedWord;
                     $gapwords[] = [
                         'index' => count($gapwords),
                         'isgap' => true,
                         'word' => $cleanedWord,
                     ];
                 } else {
-                    // Treat as a normal word.
                     $gapwords[] = [
                         'isgap' => false,
                         'word' => $word,
