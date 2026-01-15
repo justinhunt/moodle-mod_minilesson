@@ -33,9 +33,8 @@ define(['jquery',
             if (!window.hasOwnProperty('SpeechSDK')) {
                 var sdkurl;
                 if(msregion.startsWith('china')) {
-                    // AI gave me this url, but it 404s, and I could find no other reference to it.
-                    // sdkurl = 'https://csspeech.blob.core.chinacloudapi.cn/csspeech/jsbrowserpackageraw.js';
-                    sdkurl = 'https://aka.ms/csspeech/jsbrowserpackageraw';
+                    // We host the file on S3 in China as CDN is not reliable there
+                    sdkurl = 'https://poodll-assets.s3.cn-northwest-1.amazonaws.com.cn/ms-speech-sdk/microsoft.cognitiveservices.speech.sdk.bundle.js';
                 } else {
                     sdkurl = 'https://aka.ms/csspeech/jsbrowserpackageraw';
                 }

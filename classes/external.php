@@ -793,7 +793,6 @@ class mod_minilesson_external extends external_api {
                 break;
 
             case 'assemblyai':
-            case 'iflytek':
             case 'azure':
             default:
                 // The token type that will be fetched isdetermined by the region (and other config settings).

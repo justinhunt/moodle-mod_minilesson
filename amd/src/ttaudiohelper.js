@@ -1,5 +1,5 @@
-define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/ttstreamer', 'mod_minilesson/ttiflytek', 'mod_minilesson/ttazure'],
-    function ($, log, wavencoder, audiostreamer, iflytekstreamer, azurestreamer) {
+define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/ttstreamer', 'mod_minilesson/ttazure'],
+    function ($, log, wavencoder, audiostreamer, azurestreamer) {
         "use strict"; // jshint ;_;
         /*
         This file is the engine that drives audio rec and canvas drawing. TT Recorder is the just the glory kid
@@ -121,9 +121,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
 
                     //if we have a streaming transcriber we need to initialize it
                     if (that.therecorder.is_streaming) {
-                        if (that.therecorder.speechtokentype === 'iflytek') {
-                            that.streamer = iflytekstreamer.clone();
-                        } else if (that.therecorder.speechtokentype === 'azure') {
+                        if (that.therecorder.speechtokentype === 'azure') {
                             that.streamer = azurestreamer.clone();
                         } else {
                             that.streamer = audiostreamer.clone();

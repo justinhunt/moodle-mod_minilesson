@@ -34,6 +34,8 @@ define(['jquery', 'core/log'], function ($, log) {
             // If region starts with "china" set aipdomain to azure.cn
             if(this.region.startsWith('china')) {
                 this.apidomain = 'azure.cn';
+            } else if (this.region.startsWith('usgov')) {
+                this.apidomain = 'azure.us';
             } else {
                 this.apidomain = 'microsoft.com';
             }

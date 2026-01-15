@@ -482,12 +482,15 @@ class utils
 
     // we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
     // this is our helper
-    public static function curl_fetch($url, $postdata = false, $method = 'get')
+    public static function curl_fetch($url, $postdata = false, $method = 'get', $timeout = false)
     {
         global $CFG;
 
         require_once($CFG->libdir . '/filelib.php');
         $curl = new \curl();
+        if($timeout){
+            $curl->setopt(['CURLOPT_TIMEOUT' => $timeout]);
+        }
 
         if ($method == 'get') {
             $result = $curl->get($url, $postdata);
@@ -766,73 +769,14 @@ class utils
         $payloadobject = json_decode($response);
 
         // returnCode > 0  indicates an error
-        if ($payloadobject->returnCode > 0) {
+        if (isset($payloadobject->returnCode) && $payloadobject->returnCode > 0) {
             return false;
             // if all good, then lets just return true
-        } else if ($payloadobject->returnCode === 0) {
+        } else if (isset($payloadobject->returnCode) && $payloadobject->returnCode === 0) {
             return true;
         } else {
             return false;
         }
-    }
-
-    /**
-     * Generates a signed iFLYTEK WebSocket URL for Real-time ASR
-     * We need to return the full URL + token because the date stamp encoded in the signature and as param must match
-     * * @param string $appId     Your iFLYTEK AppID
-     * @param string $apiKey    Your iFLYTEK APIKey
-     * @param string $apiSecret Your iFLYTEK APISecret
-     * @return object           The full token
-     */
-    public static function get_iflytek_token($appId, $apiKey, $apiSecret)
-    {
-
-        $host = "ist-api-sg.xf-yun.com";
-        $path = "/v2/ist";
-
-        // 1. Generate RFC1123 Date (Must be in UTC/GMT)
-        // Example: Mon, 22 Dec 2025 14:00:00 GMT
-        $date = gmdate('D, d M Y H:i:s') . ' GMT';
-
-        // 2. Build the Signature Origin string
-        // IMPORTANT: The order and line breaks (\n) must be exact
-        $signature_origin = "host: " . $host . "\n";
-        $signature_origin .= "date: " . $date . "\n";
-        $signature_origin .= "GET " . $path . " HTTP/1.1";
-
-        // 3. Generate HMAC-SHA256 Signature
-        $signature_sha = hash_hmac('sha256', $signature_origin, $apiSecret, true);
-        $signature = base64_encode($signature_sha);
-
-        // 4. Build the Authorization Header string
-        $auth_origin = sprintf(
-            'api_key="%s", algorithm="%s", headers="%s", signature="%s"',
-            $apiKey,
-            "hmac-sha256",
-            "host date request-line",
-            $signature
-        );
-        $authorization = base64_encode($auth_origin);
-
-        // 5. Construct the Final URL
-        $params = [
-            'authorization' => $authorization,
-            'date' => $date,
-            'host' => $host
-        ];
-
-        $thetoken = "wss://" . $host . $path . "?" . http_build_query($params);
-
-        // cache the token
-        $now = time();
-        $tokenobject = new \stdClass();
-        $tokenobject->tokentype = 'iflytek';
-        $tokenobject->token = $thetoken;
-        $tokenobject->validuntil = $now + (30 * MINSECS);
-
-        // For js we set the valid number of seconds
-        $tokenobject->validseconds = $tokenobject->validuntil - $now;
-        return $tokenobject;
     }
 
     public static function fetch_regions_azure() {
@@ -911,8 +855,10 @@ class utils
         // The REST API we are calling.
         // We need to get the ms region from the poodll region.
         $apidomain = 'microsoft.com';
-        if (strpos($apiregion,'china') == 0) {
+        if (strpos($apiregion,'china') === 0) {
             $apidomain = 'azure.cn';
+        } elseif (strpos($apiregion,'usgov') === 0) {
+            $apidomain = 'azure.us';
         }
         $fetchurl = 'https://' . $apiregion . '.api.cognitive.' . $apidomain . '/sts/v1.0/issueToken';
         $c = new \curl();
@@ -952,29 +898,12 @@ class utils
         global $CFG;
 
         // Where token can be fetched from cloudpoodll we do that.
-        // BYOT (bring your own tokens)have a separate implementation   .
-        // Currently that is decided here by region: china is real, africa is testing.
-        $token = false;
-        switch ($poodllregion) {
-            case 'ningxia-iflytek':
-                // Iflytek was never completely implemented/tested. But the code is here for future use if needed.
-                $tokentype = 'iflytek';
-                if (isset($CFG->iflytek_appid) && isset($CFG->iflytek_apikey) && isset($CFG->iflytek_apisecret)) {
-                    $token = self::get_iflytek_token($CFG->iflytek_appid, $CFG->iflytek_apikey, $CFG->iflytek_apisecret);
-                }
-                break;
-            case 'capetown': // Capetown just for testing
-            case 'ningxia':
-                $tokentype = 'azure';
-                $token = self::fetch_azure_token();
-                break;
+        // BYOT ala azure (bring your own tokens)have a separate implementation .
 
-            // Poodll provided tokens come in here.
-            default:
-                $tokentype = 'assemblyai';
-                $token = false;
-                break;
-        }
+        $token = false;
+        //try for an azure token
+        $token = self::fetch_azure_token();
+
 
         // If the token was set, return it. Else lets fall back to assemblyai.
         if ($token) {
@@ -1139,7 +1068,7 @@ class utils
                 $tokenobject = new \stdClass();
                 $tokenobject->token = $msspeechtoken;
                 $tokenobject->tokentype = 'msspeech';
-                $tokenobject->tokenregion = $msregion;
+                $tokenobject->region = $msregion;
                 // MS speech tokens are only valid for 10 minutes.
                 // So we just cache for 9 mins.
                 $tokenobject->validuntil = $now + (9 * MINSECS);
