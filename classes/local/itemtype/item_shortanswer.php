@@ -92,6 +92,7 @@ class item_shortanswer extends item
             $tokenobject = utils::fetch_streaming_token($this->moduleinstance->region);
             if ($tokenobject) {
                 $testitem->speechtoken = $tokenobject->token;
+                $testitem->speechtokenregion = '';
                 $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
                  $testitem->speechtokentype = $tokenobject->tokentype;
             } else {

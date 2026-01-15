@@ -32,16 +32,14 @@ define(['jquery',
             log.debug('MS Speech init');
             if (!window.hasOwnProperty('SpeechSDK')) {
                 var sdkurl;
-                switch ((msregion || '').toLowerCase()) {
-                    case 'chinaeast2':
-                    case 'chinanorth2':
-                        // AI gave me this url, but it 404s, and I could find no other reference to it.
-                       // sdkurl = 'https://csspeech.blob.core.chinacloudapi.cn/csspeech/jsbrowserpackageraw.js';
-                       // break;
-                    default:
-                        sdkurl = 'https://aka.ms/csspeech/jsbrowserpackageraw';
-                        break;
+                if(msregion.startsWith('china')) {
+                    // AI gave me this url, but it 404s, and I could find no other reference to it.
+                    // sdkurl = 'https://csspeech.blob.core.chinacloudapi.cn/csspeech/jsbrowserpackageraw.js';
+                    sdkurl = 'https://aka.ms/csspeech/jsbrowserpackageraw';
+                } else {
+                    sdkurl = 'https://aka.ms/csspeech/jsbrowserpackageraw';
                 }
+
                 log.debug('MS Speech loading from ' + sdkurl);
                 $.getScript(sdkurl, function () {
                     log.debug('MS Speech loaded');

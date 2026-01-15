@@ -835,34 +835,86 @@ class utils
         return $tokenobject;
     }
 
+    public static function fetch_regions_azure() {
+        return [
+            'australiacentral' => 'Australia Central',
+            'australiaeast' => 'Australia East',
+            'australiasoutheast' => 'Australia Southeast',
+            'brazilsouth' => 'Brazil South',
+            'brazilsoutheast' => 'Brazil Southeast',
+            'canadacentral' => 'Canada Central',
+            'canadaeast' => 'Canada East',
+            'centralindia' => 'Central India',
+            'centralus' => 'Central US',
+            'chinaeast' => 'China East',
+            'chinaeast2' => 'China East 2',
+            'chinaeast3' => 'China East 3',
+            'chinanorth' => 'China North',
+            'chinanorth2' => 'China North 2',
+            'chinanorth3' => 'China North 3',
+            'eastasia' => 'East Asia',
+            'eastus' => 'East US',
+            'eastus2' => 'East US 2',
+            'francecentral' => 'France Central',
+            'germanywestcentral' => 'Germany West Central',
+            'israelcentral' => 'Israel Central',
+            'italynorth' => 'Italy North',
+            'japaneast' => 'Japan East',
+            'japanwest' => 'Japan West',
+            'koreacentral' => 'Korea Central',
+            'mexicocentral' => 'Mexico Central',
+            'newzealandnorth' => 'New Zealand North',
+            'northcentralus' => 'North Central US',
+            'northeurope' => 'North Europe',
+            'polandcentral' => 'Poland Central',
+            'qatarcentral' => 'Qatar Central',
+            'southafricanorth' => 'South Africa North',
+            'southcentralus' => 'South Central US',
+            'southeastasia' => 'Southeast Asia',
+            'southindia' => 'South India',
+            'spaincentral' => 'Spain Central',
+            'swedencentral' => 'Sweden Central',
+            'switzerlandnorth' => 'Switzerland North',
+            'uaenorth' => 'UAE North',
+            'uksouth' => 'UK South',
+            'ukwest' => 'UK West',
+            'westcentralus' => 'West Central US',
+            'westeurope' => 'West Europe',
+            'westus2' => 'West US 2',
+            'westus3' => 'West US 3',
+        ];
+    }
+
     // Fetch the azure streaming token (locally .. not from cloudpoodll)
-    public static function fetch_azure_token($region)
+    public static function fetch_azure_token()
     {
         $conf = get_config(constants::M_COMPONENT);
-        $msregion = self::fetch_ms_region($region);
+
+        $apikey = $conf->azureapikey;
+        $apiregion = $conf->azureapiregion;
+        if (empty($apikey) || empty($apiregion)) {
+            return false;
+        }
 
         // if we already have a token just use that
         $now = time();
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
-        $tokenobject = $cache->get('azuretoken'. '_' . $msregion);
+        $tokenobject = $cache->get('azuretoken'. '_' . $apiregion);
         if ($tokenobject && isset($tokenobject->validuntil) && $tokenobject->validuntil > $now) {
             // For js we set the valid number of seconds.
             $tokenobject->validseconds = $tokenobject->validuntil - $now;
             return $tokenobject;
         }
 
-        $apikey = $conf->azureapikey;
-        if (empty($apikey)) {
-            return false;
-        }
+
 
         // The REST API we are calling.
         // We need to get the ms region from the poodll region.
         $apidomain = 'microsoft.com';
-        if ($msregion == 'chinaeast2' || $msregion == 'chinanorth2') {
+        if (strpos($apiregion,'china') == 0) {
             $apidomain = 'azure.cn';
         }
-        $fetchurl = 'https://' . $msregion . '.api.cognitive.' . $apidomain . '/sts/v1.0/issueToken';
+        $fetchurl = 'https://' . $apiregion . '.api.cognitive.' . $apidomain . '/sts/v1.0/issueToken';
         $c = new \curl();
         $options = [
             'CURLOPT_HTTPHEADER' => [
@@ -883,10 +935,10 @@ class utils
             $tokenobject = new \stdClass();
             $tokenobject->token = $azuretoken;
             $tokenobject->tokentype = 'azure';
-            $tokenobject->tokenregion = $msregion;
+            $tokenobject->region = $apiregion;
             // Azure tokens are valid for 10 minutes (600 seconds).
             $tokenobject->validuntil = $now + (9 * MINSECS);
-            $cache->set('azuretoken' . '_' . $msregion, $tokenobject);
+            $cache->set('azuretoken' . '_' . $apiregion, $tokenobject);
             // For js we set the valid number of seconds.
             $tokenobject->validseconds = $tokenobject->validuntil - $now;
             return $tokenobject;
@@ -914,7 +966,7 @@ class utils
             case 'capetown': // Capetown just for testing
             case 'ningxia':
                 $tokentype = 'azure';
-                $token = self::fetch_azure_token($poodllregion);
+                $token = self::fetch_azure_token();
                 break;
 
             // Poodll provided tokens come in here.
@@ -1028,14 +1080,16 @@ class utils
         // It maye be safer from China to use cloudpoodll because the speech assessment SDK may not be in China.
         $conf = get_config(constants::M_COMPONENT);
         $apikey = $conf->azureapikey;
+        $apiregion = $conf->azureapiregion;
         $tokenobject = false;
-        if (!empty($apikey)) {
-            $tokenobject = self::fetch_azure_token($poodllregion);
+        if (!empty($apikey) && !empty($apiregion)) {
+            $tokenobject = self::fetch_azure_token();
         }
         if ($tokenobject) {
             return $tokenobject;
         }
 
+        // Users in China with no Azure key, should use the global endpoint though it might fail, because its better than nothing
         // if we have a cached token just use that
         $now = time();
         $msregion = self::fetch_ms_region($poodllregion);

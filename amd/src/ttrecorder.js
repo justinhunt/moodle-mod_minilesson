@@ -37,6 +37,7 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
             stt_guided: false,
             currentPrompt: false,
             speechtoken: '',
+            speechtokenregion: '',
             speechtokenvalidseconds: '',
             speechtokentype: '',
             forcestreaming: false,
@@ -93,7 +94,7 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
                 if (this.using_msspeech) {
                     var referencetext = opts['referencetext'];
                     this.msspeech_instance = msspeech.clone();
-                    this.msspeech_instance.init(this.speechtoken, this.region, this.lang, referencetext);
+                    this.msspeech_instance.init(this.speechtoken, this.speechtokenregion, this.lang, referencetext);
                 }
 
                 // Callback: Timer updates.
@@ -257,6 +258,7 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
 
                 // Set up token refresh
                 log.debug('original speechtoken - ' + this.speechtoken);
+                log.debug('original speechtokenregion - ' + this.speechtokenregion);
                 log.debug('speechtokentype - ' + this.speechtokentype);
                 log.debug('speechtokenvalidseconds - ' + this.speechtokenvalidseconds);
                 this.init_token_refresh();
@@ -321,6 +323,7 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
                 this.lang = this.controls.recorderbutton.data('lang');
                 this.asrurl = this.controls.recorderbutton.data('asrurl');
                 this.speechtoken = this.controls.recorderbutton.data('speechtoken');
+                this.speechtokenregion = this.controls.recorderbutton.data('speechtokenregion');
                 this.speechtokenvalidseconds = this.controls.recorderbutton.data('speechtokenvalidseconds');
                 this.speechtokentype = this.controls.recorderbutton.data('speechtokentype');
                 this.forcestreaming = this.controls.recorderbutton.data('forcestreaming');

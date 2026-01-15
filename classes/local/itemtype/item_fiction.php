@@ -130,10 +130,12 @@ class item_fiction extends item
             $tokenobject = utils::fetch_streaming_token($this->moduleinstance->region);
             if ($tokenobject) {
                 $testitem->speechtoken = $tokenobject->token;
+                $testitem->speechtokenregion = $tokenobject->region;
                 $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
                  $testitem->speechtokentype = $tokenobject->tokentype;
             } else {
                 $testitem->speechtoken = false;
+                $testitem->speechtokenregion = '';
                 $testitem->speechtokenvalidseconds = 0;
                 $testitem->speechtokentype = '';
             }
