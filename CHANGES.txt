@@ -1,3 +1,7 @@
+Version 1.1.21 (Build 2026013001)
+- Added better support for long running AIGEN
+- Added settings field and supporting code for Azure region
+
 Version 1.1.20 (Build 2026013000)
 - Fixed broken gaps in gap fill exercises (since v1.1.18)
 
