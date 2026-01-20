@@ -65,7 +65,7 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
             $content = new action_link(
                 url: $url,
                 text: $this->stringmanager->get_string('view', 'mod_minilesson'),
-                attributes: ['class' => button::BODY_OUTLINE->classes()],
+                attributes: ['class' => button::SECONDARY_OUTLINE->classes()],
             );
 
             return new overviewitem(
