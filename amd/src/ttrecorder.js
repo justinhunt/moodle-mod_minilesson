@@ -374,10 +374,10 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
                                     that.speechtokenvalidseconds = newtoken.validseconds;
                                     switch (that.speechtokentype) {
                                         case 'assemblyai':
-                                            that.helper.streamer.updatetoken(newtoken.token);
-                                            break;
                                         case 'azure':
-                                            that.helper.streamer.updatetoken(newtoken.token);
+                                            if(that.audiohelper && that.audiohelper.streamer) {
+                                                that.audiohelper.streamer.updatetoken(newtoken.token);
+                                            }
                                             break;
                                         case 'msspeech':
                                             that.msspeech_instance.updatetoken(newtoken.token);
