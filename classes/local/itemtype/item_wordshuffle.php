@@ -131,7 +131,7 @@ class item_wordshuffle extends item
             }
         }
 
-        $processedsentences = $this->parse_gapfill_sentences($sentences);
+        $processedsentences = $this->parse_gapfill_sentences($sentences, true);
         foreach ($processedsentences as $processedsentence) {
             if (isset($testitem->sentences[$processedsentence->index])) {
                 $testitem->sentences[$processedsentence->index]->gapwords = $processedsentence->gapwords;
