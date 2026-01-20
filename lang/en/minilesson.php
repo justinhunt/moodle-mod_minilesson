@@ -358,6 +358,7 @@ $string['itemname'] = 'Item Name';
 $string['itemorder'] = 'Item Order';
 $string['correct'] = 'Correct';
 $string['itemtype'] = 'Item Type';
+$string['itemtypes'] = 'Item Types';
 $string['actions'] = 'Actions';
 $string['edititem'] = 'Edit item';
 $string['previewitem'] = 'Preview item';
