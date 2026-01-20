@@ -159,7 +159,8 @@ class aigen {
                             }
                         }
                     } else {
-                        throw new textgenerationfailed($currentitemcount, $importitem->type, $useprompt);
+                        //throw new textgenerationfailed($currentitemcount, $importitem->type, $useprompt);
+                        throw new textgenerationfailed($currentitemcount, $importitem->type, $useprompt . ' | Error: ' . $genresult->payload);
                     }
 
                     // Generate the file areas if needed
@@ -380,7 +381,7 @@ class aigen {
 
         $curl = new curl();
         $curlopts = [];
-        $curlopts['CURLOPT_TIMEOUT'] = 120; // This might be unnecessary or even counter productive.
+        $curlopts['CURLOPT_TIMEOUT'] = 240; // This might be unnecessary or even counter productive.
 
         // Update the progress bar.
         if ($this->progressbar) {
@@ -570,7 +571,7 @@ class aigen {
             $params['owner'] = hash('md5', $USER->username);
             $params["subject"] = 'none';
 
-            $resp = utils::curl_fetch($url, $params, 'post');
+            $resp = utils::curl_fetch($url, $params, 'post',180);
             $respobj = json_decode($resp);
             $ret = new \stdClass();
             if (isset($respobj->returnCode)) {
@@ -578,7 +579,7 @@ class aigen {
                 $ret->payload = json_decode($respobj->returnMessage);
             } else {
                 $ret->success = false;
-                $ret->payload = "unknown problem occurred";
+                $ret->payload = $resp;
             }
             return $ret;
         } else {

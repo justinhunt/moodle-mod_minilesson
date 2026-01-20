@@ -245,12 +245,27 @@ if ($hassiteconfig) {
     );
     $ADMIN->add('modsettingsminilessoncat', $manageitemspage);
 
-         // Other API Keys (BYOK)
+    // Other API Keys (BYOK)
     $pagetitle = get_string('otherapikeys', constants::M_COMPONENT);
     $otherapikeysettings = new admin_settingpage('modsettingminilessonotherapikeys', $pagetitle, 'moodle/site:config');
-    // Azure  API key
-    $otherapikeysettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/azureapikey',
-        get_string('azureapikey', constants::M_COMPONENT), get_string('azureapikeydesc', constants::M_COMPONENT), '', PARAM_TEXT));
+
+    // Azure API key
+    $name = 'azureapikey';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = '';
+    $otherapikeysettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, PARAM_TEXT));
+
+    // Azure API region
+    $name = 'azureapiregion';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = 'eastus';
+    $options = utils::fetch_regions_azure();
+    $otherapikeysettings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
+        $label, $details, $default, $options));
+
 
      // The OpenAI APIKEY.
     $name = 'openaikey';

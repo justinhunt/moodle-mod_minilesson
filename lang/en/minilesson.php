@@ -158,7 +158,10 @@ $string['apiuser_details'] = 'The Poodll account username that authorises Poodll
 $string['apisecret'] = 'Poodll API Secret ';
 $string['apisecret_details'] = 'The Poodll API secret. See <a href= "https://support.poodll.com/support/solutions/articles/19000083076-cloud-poodll-api-secret">here</a> for more details';
 $string['azureapikey'] = 'Azure API Key';
-$string['azureapikeydesc'] = 'The Azure API key. This will use your Azure account for speech services with minilesson. This is primarily for use by our users in Mainland China (Ningxia region). See <a href= "https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/overview">here</a> for more details.';
+$string['azureapikey_details'] = 'The Azure API key. This will use your Azure account for speech services with Minilesson. It is optional This is primarily for use by our users in Mainland China (Ningxia region). See <a href= "https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/overview">here</a> for more details.';
+$string['azureapiregion'] = 'Azure Region';
+$string['azureapiregion_details'] = 'The Azure region for which the Azure API key was generated.';
+
 $string['otherapikeys'] = 'Other API Keys (BYOK)';
 
 
@@ -1240,7 +1243,7 @@ $string['slides:previewmodaltitle'] = 'Preview';
 $string['fiction:preview'] = 'Preview';
 $string['fiction:previewmodaltitle'] = 'Preview';
 $string['fiction:attachments'] = 'Attachments';
-$string['enterfictionyarn'] = 'Enter the story in Yarn format. Yarn format is a sort of shorthand syntax for creating interactive stories. See the <a href="https://docs.yarnspinner.dev/beginners-guide" target="_blank">Yarn Guide</a> for details.';
+$string['enterfictionyarn'] = 'Enter the story in Yarn format. Yarn format is a sort of shorthand syntax for creating interactive stories. See the <a href="https://docs.yarnspinner.dev/beginners-guide" target="_blank">Yarn Guide</a> for details. Also see the <a href="https://support.poodll.com/en/support/solutions/articles/19000171644-item-type-fiction" target="_blank">Poodll documentation.</a>';
 $string['fictionyarn'] = 'Fiction Yarn';
 $string['templatetags'] = 'Template tags';
 

@@ -926,7 +926,7 @@ abstract class item implements templatable, renderable
     /*
      * Processes listening gap fill sentences
      */
-    public function parse_gapfill_sentences($sentences)
+    public function parse_gapfill_sentences($sentences, $allowmultiwordgaps = false)
     {
 
         $sentenceobjects = [];
@@ -952,41 +952,41 @@ abstract class item implements templatable, renderable
                 $extrawords = explode($extrawordsseperator, $extra);
             }
 
-            // Split on spaces and gaps (enclosed in square brackets).
-            $words = preg_split('/(\[[^\]]+\]|\s+)/', $sentence, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+            // Split tokens while preserving bracketed gaps. We are not separating gapwords yet
+            // This will turn "The [quick brown] fox" into ["The", "[quick brown]", "fox"].
+            if (preg_match_all('/\[[^\]]+\]|[^\s]+/', $sentence, $matches)) {
+                $words = $matches[0];
+            } else {
+                $words = [];
+            }
+ 
+            // If allowmultiwordgaps is false, we need to further split any gaps that contain spaces into multiple gaps.
+            // This will turn ["The", "[quick brown]", "fox"] into ["The", "[quick]", "[brown]", "fox"].
+            if (!$allowmultiwordgaps) {
+                $expandedwords = [];
+                foreach ($words as $word) {
+                    if (preg_match('/^\[.*\]$/', $word)) {
+                        $cleanedword = str_replace(['[', ']'], '', $word);
+                        $subwords = explode(' ', $cleanedword);
+                        foreach ($subwords as $subword) {
+                            $expandedwords[] = '[' . $subword . ']';
+                        }
+                    } else {
+                        $expandedwords[] = $word;
+                    }
+                }
+                $words = $expandedwords;
+            }
+
+            // Remove the brackets from gap words and build maskedwords and gapwords arrays.
             foreach ($words as $index => $word) {
-                // Check if the word is a gap (enclosed in square brackets).
                 if (preg_match('/^\[.*\]$/', $word)) {
-                    $cleanedWord = str_replace(['[', ']'], '', $word);
-                    $maskedwords[$index] = $cleanedWord; // Add to maskedwords array.
+                    $cleanedword = str_replace(['[', ']'], '', $word);
+                    $maskedwords[$index] = $cleanedword;
                     $gapwords[] = [
                         'index' => count($gapwords),
                         'isgap' => true,
-                        'word' => $cleanedWord,
-                    ];
-                } else {
-                    // Treat as a normal word.
-                    $gapwords[] = [
-                        'isgap' => false,
-                        'word' => $word,
-                    ];
-                }
-            }
-            /*
-             * TO DO Previous code that did not support multi word gaps .. delete once sure its stable
-            $gaprunning = false;
-            $gapindex = 0;
-            $words = explode(' ', $sentence);
-            foreach ($words as $index => $word) {
-                if (strpos($word, '[') !== false) {
-                    $maskedwords[$index] = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $word);
-                }
-                if (strpos($word, '[') !== false || $gaprunning) {
-                    $gaprunning = strpos($word, ']') === false;
-                    $gapwords[] = [
-                        'index' => $gapindex++,
-                        'isgap' => true,
-                        'word' => str_replace(['[', ']', ',', '.'], ['', '', '', ''], $word),
+                        'word' => $cleanedword,
                     ];
                 } else {
                     $gapwords[] = [
@@ -995,12 +995,13 @@ abstract class item implements templatable, renderable
                     ];
                 }
             }
-            */
+
+ 
             $enc = mb_detect_encoding($sentence);
             $characters = utils::do_mb_str_split($sentence, 1, $enc);
-            //encoding parameter is required for < PHP 8.0
-            //    $characters=str_split($sentence); //DEBUG ONLY - fails on multibyte characters
-            //     $characters=mb_str_split($sentence); //DEBUG ONLY - - only exists on 7.4 and greater .. ie NOT for 7.3
+            // Encoding parameter is required for < PHP 8.0.
+            // $characters=str_split($sentence); //DEBUG ONLY - fails on multibyte characters.
+            // $characters=mb_str_split($sentence); //DEBUG ONLY - - only exists on 7.4 and greater .. ie NOT for 7.3.
 
             $wordindex = 0;
             foreach ($characters as $character) {

@@ -25,50 +25,20 @@ define(['jquery', 'core/log'], function ($, log) {
             return $.extend(true, {}, this);
         },
 
-        init: function (speechtoken, theaudiohelper) {
+        init: function (speechtoken, speechregion, theaudiohelper) {
             this.speechtoken = speechtoken;
+            this.region = speechregion;
             this.audiohelper = theaudiohelper;
             this.lang = theaudiohelper.therecorder.lang;
             this.sentHeader = false; // Track if WAV header was sent
-            switch (theaudiohelper.region) {
-                case 'capetown':
-                    this.region = 'southafricanorth';
-                    this.apidomain = 'microsoft.com';
-                    break;
-
-                case 'ningxia':
-                    this.region = 'chinaeast2';
-                    this.apidomain = 'azure.cn';
-                    break;
-
-                case 'beijing':
-                    this.region = 'chinanorth2';
-                    this.apidomain = 'azure.cn';
-                    break;
-
-                case 'bahrain':
-                case 'dublin':
-                case 'frankfurt':
-                case 'london':
-                case 'westeurope':    
-                    this.region = 'westeurope';
-                    this.apidomain = 'microsoft.com';
-                    break;
-
-                case 'tokyo':
-                case 'useast1':
-                case 'ottawa':
-                case 'saopaulo':
-                case 'singapore':
-                case 'mumbai':
-                case 'sydney':
-                case 'eastus':
-                default:
-                    this.region = 'eastus';
-                    this.apidomain = 'microsoft.com';
-                    break;
+            // If region starts with "china" set aipdomain to azure.cn
+            if(this.region.startsWith('china')) {
+                this.apidomain = 'azure.cn';
+            } else if (this.region.startsWith('usgov')) {
+                this.apidomain = 'azure.us';
+            } else {
+                this.apidomain = 'microsoft.com';
             }
-           
             this.preparesocket();
         },
 

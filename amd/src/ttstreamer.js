@@ -22,7 +22,7 @@ define(['jquery', 'core/log'], function ($, log) {
             return $.extend(true, {}, this);
         },
 
-        init: function (speechtoken, theaudiohelper) {
+        init: function (speechtoken, speechregion, theaudiohelper) {
             this.speechtoken = speechtoken;
             this.audiohelper = theaudiohelper;
             this.lang = theaudiohelper.therecorder.lang;

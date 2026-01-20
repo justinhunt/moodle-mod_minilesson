@@ -67,14 +67,16 @@ class item_speakinggapfill extends item {
         // Do we need a streaming token?
         $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
         $isenglish = strpos($this->moduleinstance->ttslanguage, 'en') === 0;
-        if ($isenglish) {
+        if ($isenglish || true) {
             $tokenobject = utils::fetch_streaming_token($this->moduleinstance->region);
             if ($tokenobject) {
                 $testitem->speechtoken = $tokenobject->token;
+                $testitem->speechtokenregion = $tokenobject->region;
                 $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
                  $testitem->speechtokentype = $tokenobject->tokentype;
             } else {
                 $testitem->speechtoken = false;
+                $testitem->speechtokenregion = '';
                 $testitem->speechtokenvalidseconds = 0;
                 $testitem->speechtokentype = '';
             }
