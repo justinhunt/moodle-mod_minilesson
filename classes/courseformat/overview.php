@@ -61,7 +61,7 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
         #[\Override]
         public function get_actions_overview(): ?overviewitem {
             $url = new url('/mod/minilesson/view.php', ['id' => $this->cm->id]);
-            
+
             $content = new action_link(
                 url: $url,
                 text: $this->stringmanager->get_string('view', 'mod_minilesson'),
@@ -79,10 +79,10 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
         #[\Override]
         public function get_extra_overview_items(): array {
             global $DB;
-            
+
             $items = [];
 
-            // 1. Target Language (ttslanguage)
+            // Target Language (ttslanguage)
             if (!empty($this->minilesson->ttslanguage)) {
                 $items['targetlanguage'] = new overviewitem(
                     name: $this->stringmanager->get_string('ttslanguage', 'mod_minilesson'),
@@ -91,7 +91,7 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
                 );
             }
 
-            // 2. Total items
+            // Total items.
             $totalitems = $DB->count_records('minilesson_rsquestions', ['minilesson' => $this->minilesson->id]);
             $items['totalitems'] = new overviewitem(
                 name: $this->stringmanager->get_string('itemcount', 'mod_minilesson'),
@@ -99,33 +99,34 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
                 content: $totalitems,
             );
 
-            // 3. Item types list
-            $sql = "SELECT type, count(id) as count FROM {minilesson_rsquestions} WHERE minilesson = :minilesson GROUP BY type";
-            $type_records = $DB->get_records_sql($sql, ['minilesson' => $this->minilesson->id]);
-            
-            $typestrings = [];
-            foreach ($type_records as $record) {
-                $typename = $this->stringmanager->get_string($record->type, 'mod_minilesson');
-                // Fallback if string not found, just use type
-                if (empty($typename)) {
-                    $typename = $record->type;
+            // Item types list.
+            if (has_capability('mod/minilesson:manage', $this->context)) {
+                $sql = "SELECT type, count(id) as count FROM {minilesson_rsquestions} WHERE minilesson = :minilesson GROUP BY type";
+                $typerecords = $DB->get_records_sql($sql, ['minilesson' => $this->minilesson->id]);
+                $typestrings = [];
+                foreach ($typerecords as $record) {
+                    $typename = $this->stringmanager->get_string($record->type, 'mod_minilesson');
+                    // Fallback if string not found, just use type
+                    if (empty($typename)) {
+                        $typename = $record->type;
+                    }
+                    $typestrings[] = "{$typename} ({$record->count})";
                 }
-                $typestrings[] = "{$typename} ({$record->count})";
-            }
-            
-            if (!empty($typestrings)) {
-                $items['itemtypes'] = new overviewitem(
-                    name: $this->stringmanager->get_string('itemtypes', 'mod_minilesson'),
-                    value: implode(', ', $typestrings),
-                    content: implode(', ', $typestrings),
-                );
+
+                if (!empty($typestrings)) {
+                    $items['itemtypes'] = new overviewitem(
+                        name: $this->stringmanager->get_string('itemtypes', 'mod_minilesson'),
+                        value: implode(', ', $typestrings),
+                        content: implode(', ', $typestrings),
+                    );
+                }
             }
 
-            // 4. Total Attempts (Unique Students) - Only if manage capability
+            // Total Attempts.
             if (has_capability('mod/minilesson:manage', $this->context)) {
                 $sql = "SELECT COUNT(DISTINCT userid) FROM {minilesson_attempt} WHERE moduleid = :moduleid";
                 $studentcount = $DB->count_records_sql($sql, ['moduleid' => $this->minilesson->id]);
-                
+ 
                 $items['totalattempts'] = new overviewitem(
                     name: $this->stringmanager->get_string('totalattempts', 'mod_minilesson'),
                     value: $studentcount,
