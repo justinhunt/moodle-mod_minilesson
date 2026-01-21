@@ -1,3 +1,8 @@
+Version 1.1.22 (Build 2026013002)
+- More tweaks to make gapfill parsing work with different scenarios
+- Added courseformat/overview page
+- Fixes for refresh tokens for streaming transcription under certain scenarios
+
 Version 1.1.21 (Build 2026013001)
 - Added better support for long running AIGEN
 - Added settings field and supporting code for Azure region
