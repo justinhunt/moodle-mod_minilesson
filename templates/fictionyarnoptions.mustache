@@ -1,5 +1,18 @@
-
-{{#options}}
-    <button class="minilesson_fiction_optionbutton m-1 p-3" type="button">{{text}}</button>
-{{/options}}
+{{#presention_mobilechat}}
+    {{#yarnoptions}}
+        {{#options}}
+            <div class="option_container">
+                <div class="optiontext">{{text}}</div>
+                <button class="minilesson_fiction_optionbutton" type="button">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </div>
+        {{/options}}
+    {{/yarnoptions}}
+{{/presention_mobilechat}}
+{{^presention_mobilechat}}
+    {{#options}}
+        <button class="minilesson_fiction_optionbutton" type="button">{{text}}</button>
+    {{/options}}
+{{/presention_mobilechat}}
 

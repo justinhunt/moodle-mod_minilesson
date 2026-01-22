@@ -1269,3 +1269,7 @@ $string['perpage'] = 'Perpage';
 $string['foundlessons'] = 'Found {$a} lessons';
 $string['targetlang'] = 'Target Lang';
 $string['nolessonitemfound'] = 'No item found';
+
+$string['presentationmode'] = 'Presentation Mode';
+$string['presentationmode_plain'] = 'Plain';
+$string['presentationmode_mobile_chat'] = 'Mobile Chat';

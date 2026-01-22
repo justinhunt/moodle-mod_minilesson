@@ -47,6 +47,10 @@ class fictionform extends baseform
             ]
         );
         */
-    }
 
+        $this->add_dropdown(constants::FICTION_PRESENTATION_MODE, get_string('presentationmode', constants::M_COMPONENT), [
+            0 => get_string('presentationmode_plain', constants::M_COMPONENT),
+            1 => get_string('presentationmode_mobile_chat', constants::M_COMPONENT)
+        ], true);
+    }
 }
