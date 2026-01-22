@@ -6355,3 +6355,236 @@ span.wrongitem {
 .audiochatavtarimage-container .avatar-image-check .form-check-input:checked + .avatar-img {
   border: 2px solid #1177d1;
 }
+
+.minilesson_fiction_yarncontainer .minilesson_fiction_yarnmedia {
+  min-width: 300px;
+  max-width: 300px;
+  min-height: 300px;
+  background-color: lightgray;
+}
+.minilesson_fiction_yarncontainer .minilesson_fiction_yarnoptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.minilesson_fiction_yarncontainer:not(.mobilechat) .minilesson_fiction_optionbutton {
+  padding: 1rem;
+}
+
+.minilesson_fiction_yarncontainer .minilesson_fiction_yarnmedia video,
+.minilesson_fiction_yarncontainer .minilesson_fiction_yarnmedia img {
+  max-width: 300px;
+}
+
+.minilesson_fiction_yarncontainer .fiction-character-name {
+  min-height: 1.5em
+}
+
+.minilesson_fiction_yarncontainer .fiction-message-container {
+  --my-gutter-height: 1.5rem;
+  margin-top: var(--my-gutter-height);
+  margin-bottom: var(--my-gutter-height)
+}
+
+@media screen and (max-width: 576px) {
+  .minilesson_fiction_yarncontainer .fiction-message-container {
+    --my-gutter-height: .8rem
+  }
+}
+
+.minilesson_fiction_yarncontainer .fiction-message-video,
+.minilesson_fiction_yarncontainer .fiction-message-audio,
+.minilesson_fiction_yarncontainer .fiction-message-image {
+  max-width: 100%;
+  width: 100%;
+}
+
+@media screen and (max-width: 576px) {
+  .minilesson_fiction_yarncontainer .fiction-message-video,
+  .minilesson_fiction_yarncontainer .fiction-message-audio,
+  .minilesson_fiction_yarncontainer .fiction-message-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.minilesson_fiction_yarncontainer.mobilechat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #ece5dd;
+  position: relative;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper {
+  overflow-y: auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 450px;
+  position: relative;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: fit-content;
+  background: #ffffff;
+  padding: 10px 14px;
+  border-radius: 0 12px 12px 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.4;
+  padding-top: 0;
+  position: relative;
+  margin-left: 10px;
+}
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer:not(.hasmedia) {
+  max-width: 70%;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .charactername {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .mediacontainer {
+  margin: 8px 0;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .mediacontainer video,
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .mediacontainer img {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .playercontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .playercontainer .playertext:not(:empty) {
+  background-color: #dcf8c6;
+  padding: 10px 14px;
+  border-radius: 12px 0 12px 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 70%;
+  word-wrap: break-word;
+  display: inline-block;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .optionscontainer {
+  padding: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_yarnoptions:not(:empty) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_optionbutton {
+  background-color: #fff;
+  cursor: pointer;
+  border: 1px solid gray;
+  height: max-content;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_continuebutton {
+  background-color: #fff;
+  border: 1px solid gray;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .option_container {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+  border-radius: 25px;
+  padding: 10px 20px;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .option_container:has(button[style*="display: none"]),
+.minilesson_fiction_yarncontainer.mobilechat .option_container:has(button.hidden) {
+  display: none;
+}
+
+#scrolldownbtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  border-width: 0 10px 10px 0;
+  border-style: solid;
+  border-color: transparent white transparent transparent;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .playercontainer::before {
+  content: "";
+  position: absolute;
+  right: 6px;
+  border-width: 0px 0 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent transparent #dcf8c6;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat #scroll-bottom-btn {
+  position: absolute;
+  right: 30px;
+  display: none;
+  padding: 5px 8px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background-color: white;
+  z-index: 10;
+  bottom: 30px;
+}
+
+
+.minilesson_fiction_yarncontainer.mobilechat .character_profile_icon-image {
+  height: 30px;
+  width: 30px;
+  border-radius: 100%;
+}
+
+@keyframes l3 {
+  20% {
+    background-position: 0% 0%, 50% 50%, 100% 50%;
+  }
+
+  40% {
+    background-position: 0% 100%, 50% 0%, 100% 50%;
+  }
+
+  60% {
+    background-position: 0% 50%, 50% 100%, 100% 0%;
+  }
+
+  80% {
+    background-position: 0% 50%, 50% 50%, 100% 100%;
+  }
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-loader {
+  --loadercolor: #eee;
+  width: 40px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, var(--loadercolor) 90%, var(--loadercolor));
+  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+  background-size: 25% 50%;
+  animation: l3 1s infinite linear;
+}

@@ -26,14 +26,19 @@ use mod_minilesson\utils;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_fiction extends item
-{
-
-    //the item type
+class item_fiction extends item {
+    /** @var string */
     public const ITEMTYPE = constants::TYPE_FICTION;
 
-    public function from_record($itemrecord, $moduleinstance = false, $context = false)
-    {
+    /**
+     * Load data from record.
+     *
+     * @param object $itemrecord The item record from the database.
+     * @param object|false $moduleinstance The module instance record.
+     * @param object|false $context The context object.
+     * @return void
+     */
+    public function from_record($itemrecord, $moduleinstance = false, $context = false) {
         parent::from_record($itemrecord, $moduleinstance, $context);
         $this->filemanageroptions['maxfiles'] = -1;
     }
@@ -41,10 +46,12 @@ class item_fiction extends item
 
     /**
      * The class constructor.
-     *
+     * @param object $itemrecord The item record from the database.
+     * @param object|false $moduleinstance The module instance record.
+     * @param object|false $context The context object.
+     * @return void
      */
-    public function __construct($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
         $this->needs_speechrec = true;
     }
@@ -55,22 +62,20 @@ class item_fiction extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
-
+    public function export_for_template(\renderer_base $output) {
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
-                $testitem->region = $this->region;
+        $testitem->region = $this->region;
 
-        $imageserveurl = \moodle_url::make_pluginfile_url(
+        $imageserveurl = urldecode(\moodle_url::make_pluginfile_url(
             $this->context->id,
             constants::M_COMPONENT,
             constants::FICTIONFILES,
             $this->itemrecord->id,
             '/',
             '{filename}'
-        );
+        ));
 
         // Fetch all filenames in file area.
         $fs = get_file_storage();
@@ -91,6 +96,16 @@ class item_fiction extends item
             $filenames[] = $file->get_filename();
         }
         $testitem->hasmedia = !empty($filenames);
+        $testitem->filenamesmap = [];
+        foreach ($files as $file) {
+            if ($file->is_valid_image()) {
+                $filename = $file->get_filename();
+                $testitem->filenamesmap[] = [
+                    'filekey' => strtolower(str_replace(' ', '_', pathinfo($filename, PATHINFO_FILENAME))),
+                    'fileurl' => str_replace('{filename}', rawurlencode($filename), $imageserveurl),
+                ];
+            }
+        }
 
         // Process yarn text for files in files area.
         $fictionyarn = preg_replace_callback(
@@ -108,10 +123,10 @@ class item_fiction extends item
                     return $matches[0];
                 }
 
-                // Add base path (and escape spaces if needed)
-                $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
+                // Add base path (and escape spaces if needed).
+                $newsrc = str_replace('{filename}', rawurlencode($filename), $imageserveurl);
 
-                // Replace only the filename part
+                // Replace only the filename part.
                 return str_replace($filename, $newsrc, $matches[0]);
             },
             $this->itemrecord->{constants::FICTION_YARN}
@@ -146,6 +161,8 @@ class item_fiction extends item
 
         // Cloudpoodll.
         $testitem = $this->set_cloudpoodll_details($testitem);
+        $testitem->presention_plain = empty($this->itemrecord->{constants::FICTION_PRESENTATION_MODE});
+        $testitem->presention_mobilechat = !empty($this->itemrecord->{constants::FICTION_PRESENTATION_MODE});
         return $testitem;
     }
 
@@ -155,9 +172,7 @@ class item_fiction extends item
      * @param string $yarn The yarn to sanitize.
      * @return string The sanitized yarn.
      */
-    public function sanitize_yarn($yarn)
-    {
-
+    public function sanitize_yarn($yarn) {
         // Remove zero-width chars.
         $yarn = preg_replace('/[\x{200B}\x{200C}\x{200D}\x{FEFF}]/u', '', $yarn);
 
@@ -170,8 +185,14 @@ class item_fiction extends item
         return $yarn;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    /**
+     * Validate import data for this item type.
+     *
+     * @param object $newrecord The new record being imported.
+     * @param object $cm The course module object.
+     * @return \stdClass|false An error object if validation fails, or false if no error.
+     */
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -185,22 +206,44 @@ class item_fiction extends item
         // Return false to indicate no error.
         return false;
     }
-    /*
+    /**
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type.
+     * @return array
      */
-    public static function get_keycolumns()
-    {
+    public static function get_keycolumns() {
         // Get the basic key columns and customize a little for instances of this item type.
         $keycols = parent::get_keycolumns();
-        $keycols['text1'] = ['jsonname' => 'fictionyarn', 'type' => 'string', 'optional' => false, 'default' => [], 'dbname' => constants::FICTION_YARN];
-        $keycols[constants::FICTIONFILES] = ['jsonname' => constants::FICTIONFILES, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+        $keycols['text1'] = [
+            'jsonname' => 'fictionyarn',
+            'type' => 'string',
+            'optional' => false,
+            'default' => [],
+            'dbname' => constants::FICTION_YARN,
+        ];
+        $keycols['int1'] = [
+            'jsonname' => 'presentationmode',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => constants::FICTION_PRESENTATION_MODE
+        ];
+        $keycols[constants::FICTIONFILES] = [
+            'jsonname' => constants::FICTIONFILES,
+            'type' => 'anonymousfile',
+            'optional' => true,
+            'default' => null,
+            'dbname' => false,
+        ];
 
         return $keycols;
     }
 
-    /*
-    This function return the prompt that the generate method requires.
-    */
+    /**
+     * This function return the prompt that the generate method requires.
+     * @param string $itemtemplate The item template being used.
+     * @param string $generatemethod The method of generation.
+     * @return string The prompt to be used.
+     */
     public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
         switch($generatemethod) {
 
@@ -221,5 +264,4 @@ class item_fiction extends item
         }
         return $prompt;
     }
-
 }
