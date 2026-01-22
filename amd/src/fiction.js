@@ -54,8 +54,10 @@ define([
                 this.controls.yarnoptions = this.controls.yarncontainer.find('.minilesson_fiction_yarnoptions');
                 this.controls.yarncontinuebutton = $("#" + itemdata.uniqueid + "_container .minilesson_fiction_continuebutton");
                 this.controls.chatwrapper = $("#" + itemdata.uniqueid + "_container .mobilechat .chat-wrapper");
+                // To speed up rendering later prefetch some templates
+                Templates.prefetchTemplates(['mod_minilesson/fiction_playermessage']);
             },
-
+/*
             do_render: function () {
                 var that = this;
                 var yarncontent = {
@@ -260,6 +262,282 @@ define([
                     return;
                 }
             },
+            */
+
+            do_render: function () {
+                var currentResult = this.runner.currentResult;
+                currentResult = this.add_metadata(currentResult);
+                log.debug('MiniLesson Fiction: doing render of currentResult');
+                log.debug(currentResult);
+
+                if (this.itemdata.presention_mobilechat) {
+                    this.do_render_mobilechat(currentResult);
+                } else {
+                    this.do_render_plain(currentResult);
+                }
+
+                // In all cases on dialog end there is no continue
+                if (currentResult.isDialogueEnd) {
+                    this.can_continuebutton(false);
+                }
+            },
+
+            do_render_mobilechat: function (currentResult) {
+                var that = this;
+                var yarncontent = {
+                    'yarntext': false,
+                    'yarnoptions': false
+                };
+
+                if (currentResult instanceof YarnBound.TextResult) {
+                    yarncontent.yarntext = currentResult;
+                    this.can_continuebutton(false);
+                    this.mobilechatdata.picturesrc = yarncontent.yarntext.md?.character?.picturesrc;
+                    this.mobilechatdata.charactername = yarncontent.yarntext.md?.character?.name;
+                    this.mobilechatdata.charactertext = yarncontent.yarntext.text;
+
+                    Templates.render('mod_minilesson/fiction_charactermessage', {
+                        charactermedia: '<div class="chat-loader"></div>'
+                    }).then(function (html, js) {
+                        Templates.appendNodeContents(that.controls.chatwrapper, html, js);
+                        that.scrolltobottom();
+                        setTimeout(() => {
+                            Templates.render('mod_minilesson/fiction_charactermessage', that.mobilechatdata).then(
+                                function (html, js) {
+                                    Templates.replaceNode(
+                                        that.controls.chatwrapper.find('> .chat-window').last(),
+                                        html,
+                                        js
+                                    );
+                                    that.scrolltobottom();
+                                    const oldcharactermedia = that.mobilechatdata.charactermedia;
+                                    that.reset_mobilechat_data();
+ //                                   that.mobilechatdata.charactermedia = oldcharactermedia;
+                                    if (!currentResult.isDialogueEnd) {
+                                        that.can_continuebutton(true);
+                                    }
+                                }
+                            );
+                        }, 2000);
+                    });
+                    that.controls.yarnoptions.html('');
+                } else if (currentResult instanceof YarnBound.OptionsResult) {
+                    yarncontent.yarnoptions = currentResult;
+                    var mobilechatdata = {
+                        'yarnoptions': currentResult,
+                        'presention_mobilechat': true,
+                    };
+                    that.controls.yarnoptions.html('');
+                    Templates.render('mod_minilesson/fictionyarnoptions', mobilechatdata).then(
+                        function (html, js) {
+                            setTimeout(() => {
+                                that.controls.yarnoptions.html(html);
+                                Templates.runTemplateJS(js);
+                            }, 2000);
+                        });
+
+                    if ('text' in yarncontent.yarnoptions) {
+                        that.mobilechatdata.picturesrc = yarncontent.yarnoptions.md?.character?.picturesrc;
+                        that.mobilechatdata.charactername = yarncontent.yarnoptions.md?.character?.name;
+                        that.mobilechatdata.charactertext = yarncontent.yarnoptions.text;
+
+                        Templates.render('mod_minilesson/fiction_charactermessage', {
+                            charactermedia: '<div class="chat-loader"></div>'
+                        }).then(function (html, js) {
+                            Templates.appendNodeContents(that.controls.chatwrapper, html, js);
+                            that.scrolltobottom();
+                            setTimeout(() => {
+                                Templates.render('mod_minilesson/fiction_charactermessage', that.mobilechatdata).then(
+                                    function (html, js) {
+                                        Templates.replaceNode(
+                                            that.controls.chatwrapper.find('> .chat-window').last(),
+                                            html,
+                                            js
+                                        );
+                                        that.scrolltobottom();
+                                        const oldcharactermedia = that.mobilechatdata.charactermedia;
+                                        that.reset_mobilechat_data();
+ //                                       that.mobilechatdata.charactermedia = oldcharactermedia;
+                                    }
+                                );
+                            }, 2000);
+                        });
+                    } else {
+                        that.controls.yarntext.html('');
+                    }
+                    that.can_continuebutton(false);
+
+                } else if (currentResult instanceof YarnBound.CommandResult) {
+                    // Process the command string a little. so we have command name and args
+                    //eg "picture 1.png"
+                    var rawCommand = currentResult.command;
+                    var parts = rawCommand.split(' ');
+                    var commandName = parts[0]; // "picture" "audio etc"
+                    var args = parts.slice(1); // ["1.png"]
+                    let promise = null;
+
+
+                    switch(commandName) {
+                        case 'picture': {
+                            log.debug('got picture command');
+                            const imageURL = args[0]; // "picture https://blahblah"
+                            promise = Templates.render('mod_minilesson/fictionyarnimage', {"imageurl": imageURL}).then(
+                                function (html, js) {
+                                    that.controls.yarnmedia.html(html);
+                                    that.mobilechatdata.charactermedia = html;
+                                    that.mobilechatdata.classname = 'hasmedia';
+                                    Templates.runTemplateJS(js);
+                                });
+                            break;
+                        }
+                        case 'audio': {
+                            log.debug('got audio command');
+                            const audioURL = args[0]; // "audio https://blahblah"
+                            promise = Templates.render('mod_minilesson/fictionyarnaudio', {"audiourl": audioURL}).then(
+                                function (html, js) {
+                                    that.mobilechatdata.charactermedia = html;
+                                    that.mobilechatdata.classname = 'hasmedia';
+                                    that.controls.yarnmedia.html(html);
+                                    Templates.runTemplateJS(js);
+                                });
+                            break;
+                        }
+                        case 'video': {
+                            log.debug('got video command');
+                            const videoURL = args[0]; // "video https://blahblah"
+                            promise = Templates.render('mod_minilesson/fictionyarnvideo', {"videourl": videoURL}).then(
+                                function (html, js) {
+                                    that.mobilechatdata.charactermedia = html;
+                                    that.mobilechatdata.classname = 'hasmedia';
+                                    that.controls.yarnmedia.html(html);
+                                    Templates.runTemplateJS(js);
+                                });
+                            break;
+                        }
+                        case 'clearpicture': {
+                            that.controls.yarnmedia.html('');
+                            break;
+                        }
+                        case 'blahblah':
+                        default:
+                    }
+                    // In all cases just do command and then jump to next line
+                    if(!currentResult.isDialogueEnd) {
+                        // Just skip through for now
+                        if (promise) {
+                            promise.then(() => {
+                                that.do_runner_advance();
+                                that.do_render();
+                            });
+                        } else {
+                            that.do_runner_advance();
+                            that.do_render();
+                        }
+                    }
+                } else {
+                    log.debug('MiniLesson Fiction: unknown yarn result type');
+                }
+            },
+
+            do_render_plain: function (currentResult) {
+                var that = this;
+                var yarncontent = {
+                    'yarntext': false,
+                    'yarnoptions': false
+                };
+
+                if (currentResult instanceof YarnBound.TextResult) {
+                    yarncontent.yarntext = currentResult;
+                    Templates.render('mod_minilesson/fictionyarntext', yarncontent.yarntext).then(
+                        function (html, js) {
+                            that.controls.yarntext.html(html);
+                            that.controls.yarnoptions.html('');
+                            Templates.runTemplateJS(js);
+                        });
+                    this.can_continuebutton(true);
+                } else if (currentResult instanceof YarnBound.OptionsResult) {
+                    yarncontent.yarnoptions = currentResult;
+                    Templates.render('mod_minilesson/fictionyarnoptions', yarncontent.yarnoptions).then(
+                        function (html, js) {
+                            that.controls.yarnoptions.html(html);
+                            Templates.runTemplateJS(js);
+                        });
+
+                    if ('text' in yarncontent.yarnoptions) {
+                        Templates.render('mod_minilesson/fictionyarntext', yarncontent.yarnoptions).then(
+                            function (html, js) {
+                                that.controls.yarntext.html(html);
+                                Templates.runTemplateJS(js);
+                            });
+                    } else {
+                        that.controls.yarntext.html('');
+                    }
+                    that.can_continuebutton(false);
+                } else if (currentResult instanceof YarnBound.CommandResult) {
+                    // Process the command string a little. so we have command name and args
+                    //eg "picture 1.png"
+                    var rawCommand = currentResult.command;
+                    var parts = rawCommand.split(' ');
+                    var commandName = parts[0]; // "picture" "audio etc"
+                    var args = parts.slice(1); // ["1.png"]
+                    let promise = null;
+
+
+                    switch(commandName) {
+                        case 'picture': {
+                            log.debug('got picture command');
+                            const imageURL = args[0]; // "picture https://blahblah"
+                            promise = Templates.render('mod_minilesson/fictionyarnimage', {"imageurl": imageURL}).then(
+                                function (html, js) {
+                                    that.controls.yarnmedia.html(html);
+                                    Templates.runTemplateJS(js);
+                                });
+                            break;
+                        }
+                        case 'audio': {
+                            log.debug('got audio command');
+                            const audioURL = args[0]; // "audio https://blahblah"
+                            promise = Templates.render('mod_minilesson/fictionyarnaudio', {"audiourl": audioURL}).then(
+                                function (html, js) {
+                                    that.controls.yarnmedia.html(html);
+                                    Templates.runTemplateJS(js);
+                                });
+                            break;
+                        }
+                        case 'video': {
+                            log.debug('got video command');
+                            const videoURL = args[0]; // "video https://blahblah"
+                            promise = Templates.render('mod_minilesson/fictionyarnvideo', {"videourl": videoURL}).then(
+                                function (html, js) {
+                                    that.controls.yarnmedia.html(html);
+                                    Templates.runTemplateJS(js);
+                                });
+                            break;
+                        }
+                        case 'clearpicture': {
+                            that.controls.yarnmedia.html('');
+                            break;
+                        }
+                        case 'blahblah':
+                        default:
+                    }
+                    // In all cases just do command and then jump to next line
+                    if(!currentResult.isDialogueEnd) {
+                        // Just skip through for now
+                        if (promise) {
+                            promise.then(() => {
+                                that.do_runner_advance();
+                                that.do_render();
+                            });
+                        } else {
+                            that.do_runner_advance();
+                            that.do_render();
+                        }
+                    }
+                } else {
+                    log.debug('MiniLesson Fiction: unknown yarn result type');
+                }
+            },
 
             do_runner_advance: function (steps) {
                 try {
@@ -323,7 +601,7 @@ define([
                     log.debug('MiniLesson Fiction: yarn continue button clicked');
                     e.preventDefault();
                     if (self.itemdata.presention_mobilechat) {
-                        const playertext = $(this).siblings('.optiontext').text().trim();
+                        const playertext = $(this).text().trim();
                         Templates.render('mod_minilesson/fiction_playermessage', {playertext: playertext}).then(
                             function (html, js) {
                                 Templates.appendNodeContents(self.controls.chatwrapper, html, js);
@@ -334,7 +612,7 @@ define([
                     self.do_render();
                 });
 
-                // add an event listener for option buttons that handles option buttons added at runtim
+                // add an event listener for option buttons that handles option buttons added at runtime
                 this.controls.yarncontainer.on('click', '.minilesson_fiction_optionbutton', function (e) {
                     log.debug('MiniLesson Fiction: yarn option button clicked');
                     e.preventDefault();
@@ -343,7 +621,8 @@ define([
                     var optionindex = buttons.index(this); // 0-based position in the rendered list
 
                     if (self.itemdata.presention_mobilechat) {
-                        const playertext = $(this).siblings('.optiontext').text().trim();
+                        //const playertext = $(this).siblings('.optiontext').text().trim();
+                        const playertext = $(this).text().trim();
                         Templates.render('mod_minilesson/fiction_playermessage', {playertext: playertext}).then(
                             function (html, js) {
                                 Templates.appendNodeContents(self.controls.chatwrapper, html, js);

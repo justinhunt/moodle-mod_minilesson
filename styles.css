@@ -6445,6 +6445,9 @@ span.wrongitem {
 .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer:not(.hasmedia) {
   max-width: 70%;
 }
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer.hasmedia {
+  max-width: 50%;
+}
 
 .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .charactername {
   font-weight: bold;
@@ -6494,13 +6497,12 @@ span.wrongitem {
 .minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_optionbutton {
   background-color: #fff;
   cursor: pointer;
-  border: 1px solid gray;
   height: max-content;
 }
 
 .minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_continuebutton {
   background-color: #fff;
-  border: 1px solid gray;
+  cursor: pointer;
 }
 
 .minilesson_fiction_yarncontainer.mobilechat .option_container {
