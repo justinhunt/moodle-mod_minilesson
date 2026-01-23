@@ -1,3 +1,6 @@
+Version 1.1.23 (Build 2026013003)
+- Improvements to Fiction item types an AIGEN
+
 Version 1.1.22 (Build 2026013002)
 - More tweaks to make gapfill parsing work with different scenarios
 - Added courseformat/overview page
