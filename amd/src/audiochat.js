@@ -332,7 +332,7 @@ define(
                     messageDiv.className = `flex ${message.usertype === "user" ? "justify-end" : "justify-start"} ml_unique_ordered_message_${message.usertype === "user" ? "user" : "assistant"}`;
 
                     var contentDiv = document.createElement("div");
-                    contentDiv.className = `max - w - xs lg:max - w - md px - 4 py - 2 rounded - lg ${
+                    contentDiv.className = `max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
                             message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
                     } ml_unique_content_${
                         message.usertype === "user" ? "user" : "assistant"
@@ -343,8 +343,8 @@ define(
                     if (message.usertype === "assistant") {
                         var pictureDiv = document.createElement('div');
                         pictureDiv.innerHTML = `
-                            < img src = "${self.itemdata.avatarimage}?themerev=${M.cfg.themerev}"
-                            alt = "AI Assistant" class = "mr-2 rounded-circle shadow-lg ml_unique_assistant_img" >
+                            <img src="${self.itemdata.avatarimage}?themerev=${M.cfg.themerev}"
+                            alt="AI Assistant" class="mr-2 rounded-circle shadow-lg ml_unique_assistant_img">
                             `;
                         headerDiv.appendChild(pictureDiv);
                     }
@@ -360,12 +360,12 @@ define(
                         var loaderDiv = document.createElement("div");
                         loaderDiv.className = "flex items-center space-x-1 py-1 message-loader ml_unique_loadingmessage";
                         loaderDiv.innerHTML = `
-                            < div class = "flex space-x-1 ml_unique_loader" >
-                                < div class = "w-2 h-2 bg-current rounded-full ml_unique_loader_dot" > < / div >
-                                < div class = "w-2 h-2 bg-current rounded-full ml_unique_loader_dot" > < / div >
-                                < div class = "w-2 h-2 bg-current rounded-full ml_unique_loader_dot" > < / div >
-                            <  / div >
-                            < span class = "text-xs opacity-70 ml_unique_loader_text" > AI is thinking... < / span >
+                            <div class="flex space-x-1 ml_unique_loader">
+                                <div class="w-2 h-2 bg-current rounded-full ml_unique_loader_dot"></div>
+                                <div class="w-2 h-2 bg-current rounded-full ml_unique_loader_dot"></div>
+                                <div class="w-2 h-2 bg-current rounded-full ml_unique_loader_dot"></div>
+                            </div>
+                            <span class="text-xs opacity-70 ml_unique_loader_text">AI is thinking...</span>
                         `;
                         contentDiv.appendChild(loaderDiv);
                     }
@@ -394,8 +394,8 @@ define(
                 if (self.controls.micIcon) {
                     // Set icon based on mic state
                     self.controls.micIcon.innerHTML = self.isMicActive
-                        ? ` < rect id = "primary" x = "2" y = "2" width = "20" height = "20" rx = "2" style = "fill: rgb(0, 0, 0);" > < / rect > ` // Mic On icon
-                        : ` < path id = "secondary" d = "M12,15h0a4,4,0,0,1-4-4V7a4,4,0,0,1,4-4h0a4,4,0,0,1,4,4v4A4,4,0,0,1,12,15Z" style = "fill: rgb(44, 169, 188); stroke-width: 2;" > < / path > < path id = "primary" d = "M18.24,16A8,8,0,0,1,5.76,16" style = "fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;" > < / path > < path id = "primary-2" data - name = "primary" d = "M12,19v2m4-10V7a4,4,0,0,0-4-4h0A4,4,0,0,0,8,7v4a4,4,0,0,0,4,4h0A4,4,0,0,0,16,11Z" style = "fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;" > < / path > `; // Mic Off icon
+                    ? `<rect id="primary" x="2" y="2" width="20" height="20" rx="2" style="fill: rgb(0, 0, 0);"></rect>` // Mic On icon
+                    : `<path id="secondary" d="M12,15h0a4,4,0,0,1-4-4V7a4,4,0,0,1,4-4h0a4,4,0,0,1,4,4v4A4,4,0,0,1,12,15Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"></path><path id="primary" d="M18.24,16A8,8,0,0,1,5.76,16" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary-2" data-name="primary" d="M12,19v2m4-10V7a4,4,0,0,0-4-4h0A4,4,0,0,0,8,7v4a4,4,0,0,0,4,4h0A4,4,0,0,0,16,11Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>`; // Mic Off icon
                 }
 
                 //show or not show clicktosendlabel
@@ -643,7 +643,7 @@ define(
 
                     //add a spinner to the results content
                     //if we are not showing item review we do not need this, but in that case it is hidden anyway
-                    self.controls.resultscontent.innerHTML = ` < i class = "fa fa-spinner fa-spin fa-2x" > < / i > `;
+                    self.controls.resultscontent.innerHTML = `<i class ="fa fa-spinner fa-spin fa-2x"></i>`;
 
                     setTimeout(() => {
                         //now show the results content if that is what we are doing
