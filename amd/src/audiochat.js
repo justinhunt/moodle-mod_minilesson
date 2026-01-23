@@ -170,7 +170,7 @@ define(
 
             },
 
-            register_events: function (index, itemdata, quizhelper) {
+            register_events: function (index, itemdata) {
 
                 var self = this;
 
@@ -198,7 +198,7 @@ define(
                             height: '5px',
                             timeLimit: itemdata.timelimit,
                             onFinish: function () {
-                                nextbutton.trigger('click');
+                                self.controls.nextbutton.trigger('click');
                             }
                         });
                     }
@@ -206,7 +206,7 @@ define(
 
 
                 if (self.controls.toggleMicBtn) {
-                    self.controls.toggleMicBtn.addEventListener("click", self.toggleMute.bind(self))
+                    self.controls.toggleMicBtn.addEventListener("click", self.toggleMute.bind(self));
                 }
             },
 
@@ -409,7 +409,7 @@ define(
 
             //setter for datainputbuffer
             setDataInputBuffer: function (value, source) {
-                var self = this;
+                var self=this;
                 self.datainputbuffer = value;
                 log.debug("Data in input buffer set to:", value);
                 log.debug("Data input buffer set source:", source);
@@ -455,7 +455,8 @@ define(
                             self.handleRTCEvent.call(self, JSON.parse(line));
                         }
                     } catch (err) {
-                        log.debug("Failed to parse", err);
+                        log.debug("Failed to parse");
+                        log.debug(err);
                     }
                 };
                 self.dc.onopen = () => {
@@ -463,10 +464,10 @@ define(
 
                     //Turn detection - semantic is good for native speakers, but awful for language learners
                     // time based we give 1.5s of silence detection before posting
-                    var semantic_vad = {
-                        type: "semantic_vad",
-                        eagerness: "low",
-                    };
+                    // var semantic_vad = {
+                    //     type: "semantic_vad",
+                    //     eagerness: "low",
+                    // };
 
                     // Set the auto turn detection, or manual submit flag
                     self.timebased_vad.create_response = self.autocreateresponse;
@@ -496,30 +497,40 @@ define(
                         self.sendEvent({
                             type: "session.update",
                             session: {
+                                type: 'realtime',
                                 instructions: updateinstructions,
-                                input_audio_format: "pcm16", // Ensure correct audio encoding
-                                input_audio_transcription: {
-                                    language: twoletterlang,
-                                    model: "whisper-1" // "gpt-4o-mini-transcribe"  // Use a transcription model
+                                audio: {
+                                    input: {
+                                        transcription: {
+                                            language: twoletterlang,
+                                            model: "whisper-1" // "gpt-4o-mini-transcribe"  // Use a transcription model
+                                        },
+                                        turn_detection: self.timebased_vad,
+                                    },
+                                    output: {
+                                        speed: 0.9,
+                                        voice: self.audiochat_voice,
+                                    }
                                 },
-                                turn_detection: self.timebased_vad,
-                                speed: 0.9,
-                                voice: self.audiochat_voice,
-                                modalities: ["text", "audio"],
+                                output_modalities: ["audio"],
                             }
                         });
 
                         // Send the first message to tell AI to say something
                         // the response create function overrides the session instructions, so we need to double up here
                         var firstmessageinstructions =  "Please introduce yourself to the student and explain todays topic.";
-                            self.sendEvent({
-                                type: "response.create",
-                                response: {
-                                    modalities: ["audio", "text"],
-                                    instructions:  updateinstructions + " " + firstmessageinstructions,
-                                    voice: self.audiochat_voice
-                                }
-                            });
+                        self.sendEvent({
+                            type: "response.create",
+                            response: {
+                                output_modalities: ["audio"],
+                                instructions:  updateinstructions + " " + firstmessageinstructions,
+                                audio: {
+                                    output: {
+                                        voice: self.audiochat_voice,
+                                    },
+                                },
+                            }
+                        });
                     });
                 };
 
@@ -565,6 +576,7 @@ define(
                     });
                     log.debug("Session started");
                 } catch (e) {
+                    log.debug(e, 'connect error');
                     if (e.name === 'AbortError') {
                         log.debug("Session start aborted by user.");
                         // Reset UI and state as needed
@@ -697,6 +709,7 @@ define(
                 templates.render('mod_minilesson/audiochatimmediatefeedback', tdata).then(
                     function (html, js) {
                         self.controls.resultscontent.innerHTML = html;
+                        templates.runTemplateJS(js);
                     }
                 );
             },
@@ -734,6 +747,7 @@ define(
             handleRTCEvent: function (msg) {
                 var self = this;
                 log.debug("Received event:");
+                log.debug(msg);
 
                 // Check if its the final grading message, which we don't want to enter "items"
                 if (msg.type === "response.done" &&
@@ -835,6 +849,7 @@ define(
                         self.responses[msg.response_id].stack.push(msg);
                         break;
                     }
+                    case "conversation.item.added":
                     case "conversation.item.created": {
         /*```
     {
@@ -878,6 +893,7 @@ define(
                         self.responses[msg.response_id].stack.push(msg);
                         break;
                     }
+                    case "response.output_audio_transcript.delta":
                     case "response.audio_transcript.delta": {
         /*```
     {
@@ -906,6 +922,7 @@ define(
                         self.responses[msg.response_id].stack.push(msg);
                         break;
                     }
+                    case "response.output_audio.done":
                     case "response.audio.done": {
         /*```
     {
@@ -920,6 +937,7 @@ define(
                         self.responses[msg.response_id].stack.push(msg);
                         break;
                     }
+                    case "response.output_audio_transcript.done":
                     case "response.audio_transcript.done": {
         /*```
     {
@@ -1053,7 +1071,7 @@ define(
                         if (!self.isMicActive) {
                             self.toggleMute();
                         }
-                        self.responses[msg.response.id].stack.push(msg);
+                        self.responses[msg.response_id].stack.push(msg);
                         break;
                     }
                     case "conversation.item.truncated": {
@@ -1114,30 +1132,6 @@ define(
         ```*/               log.debug("Input audio buffer committed");
                         self.setDataInputBuffer(false, 'audiobuffercommitted');
                         self.items[msg.item_id].events.push(msg);
-                        break;
-                    }
-                    case "conversation.item.created": {
-        /*```
-    {
-    "type": "conversation.item.created",
-    "event_id": "event_BzbmmiskBBbCkRSHvUVrL",
-    "previous_item_id": null,
-    "item": {
-        "id": "item_BzbmmcBxU60HVn8xvCWA2",
-        "object": "realtime.item",
-        "type": "message",
-        "status": "completed",
-        "role": "user",
-        "content": [
-            {
-                "type": "input_audio",
-                "transcript": null
-            }
-        ]
-    }
-    }
-        ```*/
-                        self.items[msg.item.id].events.push(msg);
                         break;
                     }
                     case "conversation.item.input_audio_transcription.delta": {
@@ -1250,9 +1244,13 @@ define(
                             self.sendEvent({
                                 type: "response.create",
                                 response: {
-                                    modalities: ["audio", "text"],
+                                    output_modalities: ["audio"],
                                     instructions: self.itemdata.audiochatinstructions,
-                                    voice: self.audiochat_voice
+                                    audio: {
+                                        output: {
+                                            voice: self.audiochat_voice,
+                                        },
+                                    },
                                 }
                             });
                         } else {
@@ -1273,9 +1271,13 @@ define(
                                     self.sendEvent({
                                         type: "response.create",
                                         response: {
-                                            modalities: ["audio", "text"],
+                                            output_modalities: ["audio"],
                                             instructions: self.itemdata.audiochatinstructions,
-                                            voice: self.audiochat_voice
+                                            audio: {
+                                                output: {
+                                                    voice: self.audiochat_voice,
+                                                },
+                                            },
                                         }
                                     });
                                 }
