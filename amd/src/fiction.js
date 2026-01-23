@@ -337,9 +337,9 @@ define([
             var stepdata = {};
             stepdata.index = self.index;
             stepdata.hasgrade = true;
-            stepdata.totalitems = 0;
-            stepdata.correctitems = 0;
-            stepdata.grade = 1;
+            stepdata.totalitems = 1;
+            stepdata.correctitems = 1;
+            stepdata.grade = 100;
             self.quizhelper.do_next(stepdata);
         },
 
