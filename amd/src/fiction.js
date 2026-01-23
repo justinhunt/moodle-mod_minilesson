@@ -336,7 +336,7 @@ define([
             var self = this;
             var stepdata = {};
             stepdata.index = self.index;
-            stepdata.hasgrade = false;
+            stepdata.hasgrade = true;
             stepdata.totalitems = 0;
             stepdata.correctitems = 0;
             stepdata.grade = 1;
