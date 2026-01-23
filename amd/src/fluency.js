@@ -567,7 +567,7 @@ define(
                 words.forEach(function (wordobject) {
 
                       // We are going to skip insertions, because MS Speech in Japanese especially seems to hallucinate them
-                    if (wordobject.PronunciationAssessment ? .ErrorType === "Insertion") {
+                    if (wordobject.PronunciationAssessment?.ErrorType === "Insertion") {
                         log.debug("Skipping insertion word: ", wordobject.Word);
                         return; // Skip this word
                     }
@@ -588,7 +588,7 @@ define(
                 //build our phonemes bar data
                         wordobject.Syllables.forEach(function (syllable) {
                             //If errortype =omission there will be no score, we use null to flag that
-                            var thescore = syllable.PronunciationAssessment ? .AccuracyScore || null;
+                            var thescore = syllable.PronunciationAssessment?.AccuracyScore || null;
                             word_phoneme_score_classes.push(
                                 self.scoreToColorClass(thescore)
                             );
@@ -597,7 +597,7 @@ define(
                 //Build alignment data
                         var adata = [];
                 //If errortype =omission there will be no score, we use null to flag that
-                        var thescore = wordobject.PronunciationAssessment ? .AccuracyScore || null;
+                        var thescore = wordobject.PronunciationAssessment?.AccuracyScore || null;
                         wordobject.Syllables.forEach(function (syllable) {
                             adata.push({
                                 letter: syllable.Grapheme,
@@ -612,7 +612,7 @@ define(
                         if (wordobject.Phonemes && wordobject.Phonemes.length > 0) {
                                     wordobject.Phonemes.forEach(function (phoneme) {
                                         //If errortype =omission there will be no score, we use null to flag that
-                                        var thescore = phoneme.PronunciationAssessment ? .AccuracyScore || null;
+                                        var thescore = phoneme.PronunciationAssessment?.AccuracyScore || null;
                                         word_phoneme_score_classes.push(
                                             self.scoreToColorClass(thescore)
                                         );
@@ -635,7 +635,7 @@ define(
                         } else {
                             var adata = [];
                         //If errortype =omission there will be no score, we use null to flag that
-                            var thescore = wordobject.PronunciationAssessment ? .AccuracyScore || null;
+                            var thescore = wordobject.PronunciationAssessment?.AccuracyScore || null;
                             adata.push({
                                 letter: wordobject.Word,
                                 phoneme: wordobject.Word,

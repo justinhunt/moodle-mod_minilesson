@@ -316,7 +316,7 @@ define(
                                         if (html === 'submitted') {
                                             modal.destroy();
                                             self.refreshTable(wrapper.dataset.tableuniqueid);
-                                            document.querySelector('#page') ? .scrollTo({ top : 0, behavior : 'smooth' });
+                                            document.querySelector('#page')?.scrollTo({ top : 0, behavior : 'smooth' });
                                             return ['', ''];
                                         }
                                         return [html, js];

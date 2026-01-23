@@ -135,8 +135,8 @@ define([
             if (currentResult instanceof YarnBound.TextResult) {
                 yarncontent.yarntext = currentResult;
                 this.can_continuebutton(false);
-                this.chatdata.picturesrc = yarncontent.yarntext.md ? .character ? .picturesrc;
-                this.chatdata.charactername = yarncontent.yarntext.md ? .character ? .name;
+                this.chatdata.picturesrc = yarncontent.yarntext.md?.character?.picturesrc;
+                this.chatdata.charactername = yarncontent.yarntext.md?.character?.name;
                 this.chatdata.charactertext = yarncontent.yarntext.text;
 
                 Templates.render('mod_minilesson/fiction_charactermessage', {
@@ -180,8 +180,8 @@ define([
                 );
 
                 if ('text' in yarncontent.yarnoptions) {
-                    that.chatdata.picturesrc = yarncontent.yarnoptions.md ? .character ? .picturesrc;
-                    that.chatdata.charactername = yarncontent.yarnoptions.md ? .character ? .name;
+                    that.chatdata.picturesrc = yarncontent.yarnoptions.md?.character?.picturesrc;
+                    that.chatdata.charactername = yarncontent.yarnoptions.md?.character?.name;
                     that.chatdata.charactertext = yarncontent.yarnoptions.text;
 
                     Templates.render('mod_minilesson/fiction_charactermessage', {
@@ -339,7 +339,7 @@ define([
             stepdata.hasgrade = false;
             stepdata.totalitems = 0;
             stepdata.correctitems = 0;
-            stepdata.grade = 0;
+            stepdata.grade = 1;
             self.quizhelper.do_next(stepdata);
         },
 
@@ -457,10 +457,10 @@ define([
                         currentthing.md[entry.name] = entry.properties;
                     }
                 });
-                if (currentthing.md.character ? .name) {
+                if (currentthing.md.character?.name) {
                     const charname = currentthing.md.character.name.toLowerCase();
                     currentthing.md.character.picturesrc = this.itemdata.filenamesmap
-                        .find(fileinfo => fileinfo.filekey === charname) ? .fileurl || null;
+                        .find(fileinfo => fileinfo.filekey === charname)?.fileurl || null;
                 }
             }
             return currentthing;

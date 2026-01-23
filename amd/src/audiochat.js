@@ -737,7 +737,7 @@ define(
 
                 // Check if its the final grading message, which we don't want to enter "items"
                 if (msg.type === "response.done" &&
-                    msg.response.metadata ? .tag === self.gradingrequesttag) {
+                    msg.response.metadata?.tag === self.gradingrequesttag) {
                     // Check if the response corresponds to the grading event
                     log.debug("It is a grading event:");
                     try {

@@ -566,7 +566,7 @@ define(['jquery',
                 ele.addEventListener("input", function (e) {
                     // Take the first character of the input
                     const [first, ...rest] = e.target.value;
-                    e.target.value = first ?  ? ""; // First will be undefined when backspace was entered, so set the input to ""
+                    e.target.value = first ?? ""; // First will be undefined when backspace was entered, so set the input to ""
                     const lastInputBox = index === inputElements.length - 1;
                     const didInsertContent = first !== undefined;
                     if (didInsertContent && !lastInputBox) {

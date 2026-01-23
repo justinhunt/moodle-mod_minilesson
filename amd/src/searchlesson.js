@@ -39,7 +39,7 @@ export const registerFilter = () => {
     const countcontainer = document.querySelector('.countcontainer');
     const pagination = document.querySelector('[name="perpageselection"]');
 
-    gridlayoutbtn ? .addEventListener('click', e => {
+    gridlayoutbtn?.addEventListener('click', e => {
         e.preventDefault();
         cardsContainer.classList.remove('listlayout');
         gridlayoutbtn.classList.add('active');
@@ -47,7 +47,7 @@ export const registerFilter = () => {
         searchFilter(form);
     });
 
-    listlayoutbtn ? .addEventListener('click', e => {
+    listlayoutbtn?.addEventListener('click', e => {
         e.preventDefault();
         cardsContainer.classList.add('listlayout');
         listlayoutbtn.classList.add('active');
@@ -92,11 +92,11 @@ export const registerFilter = () => {
                     countcontainer.textContent = langstr;
                 });
             }
-            Templates.render(`${component} / lessonbankitems`, items)
+            Templates.render(`${component}/lessonbankitems`, items)
             .then((html, js) => {
                 return Templates.replaceNodeContents(cardsContainer, html, js);
             }).then(() => {
-                document.querySelector('#region-main') ? .scrollIntoView({
+                document.querySelector('#region-main')?.scrollIntoView({
                     behavior: "smooth",
                     block: "start"
                 });
@@ -200,7 +200,7 @@ if (pagination) {
         }
         });
 }
-    form ? .addEventListener('submit', e => {
+    form?.addEventListener('submit', e => {
         e.preventDefault();
         form.querySelector('[name="page"]').value = 1;
         searchFilter(form);
