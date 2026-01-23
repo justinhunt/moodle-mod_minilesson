@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -19,7 +20,7 @@ namespace mod_minilesson;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->libdir.'/filelib.php');
+require_once($CFG->libdir . '/filelib.php');
 
 /**
  * Class curl
@@ -28,11 +29,11 @@ require_once($CFG->libdir.'/filelib.php');
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class curl extends \curl {
-
-    public function multirequest($requests, $options = array()) {
+class curl extends \curl
+{
+    public function multirequest($requests, $options = array())
+    {
         $options['RETURNTRANSFER'] = true;
         return $this->multi($requests, $options);
     }
-
 }

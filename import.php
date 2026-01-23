@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -42,7 +43,7 @@ if ($cmid) {
     $cm = get_coursemodule_from_id('minilesson', $cmid, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
     $moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
-} else if ($n) {
+} elseif ($n) {
     $moduleinstance = $DB->get_record('minilesson', ['id' => $n], '*', MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('minilesson', $moduleinstance->id, $course->id, false, MUST_EXIST);
@@ -104,7 +105,7 @@ if ($data = $form->get_data()) {
                     $translateditems = $theimport->call_translate($itemsjson, $importfromlang, $importtolang);
                     if (is_array($translateditems)) {
                         $importdata->items = $translateditems;
-                    } else if ($translateditems && utils::is_json($translateditems)) {
+                    } elseif ($translateditems && utils::is_json($translateditems)) {
                         $importdata->items = json_decode($translateditems);
                     }
                 }

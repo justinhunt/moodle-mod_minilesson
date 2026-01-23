@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,7 +29,6 @@ use mod_minilesson\utils;
  */
 class item_shortanswer extends item
 {
-
     //the item type
     public const ITEMTYPE = constants::TYPE_SHORTANSWER;
 
@@ -143,11 +143,11 @@ class item_shortanswer extends item
     }
 
     /*
-    This function return the prompt that the generate method requires. 
+    This function return the prompt that the generate method requires.
     */
-    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
-        switch($generatemethod) {
-
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
+    {
+        switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create a closed question (text) and a 1 dimensional array of  grammatically correct answers (sentences) to test the learners understanding of the following passage: [{text}] ";
                 $prompt .= "The question and answers should be in {language} and suitable for {level} level learners. ";
@@ -167,5 +167,4 @@ class item_shortanswer extends item
         }
         return $prompt;
     }
-
 }

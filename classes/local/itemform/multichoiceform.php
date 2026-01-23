@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,8 +28,6 @@ use mod_minilesson\constants;
 
 class multichoiceform extends baseform
 {
-
-
     public $type = constants::TYPE_MULTICHOICE;
 
     public function custom_definition()
@@ -63,18 +62,17 @@ class multichoiceform extends baseform
 
         $this->add_checkbox(constants::MULTICHOICE_SHUFFLEANSWER, get_string('shuffleanswer', constants::M_COMPONENT));
 
-        $this->add_checkbox(constants::MULTICHOICE_HIDEANSWERTEXT, get_string('hideanswertext', constants::M_COMPONENT) , get_string('hideanswertext_detail', constants::M_COMPONENT));
+        $this->add_checkbox(constants::MULTICHOICE_HIDEANSWERTEXT, get_string('hideanswertext', constants::M_COMPONENT), get_string('hideanswertext_detail', constants::M_COMPONENT));
 
         $layoutoptions = [
             constants::MULTICHOICE_ANSWERLAYOUT_DEFAULT => get_string('default'),
             constants::MULTICHOICE_ANSWERLAYOUT_TWOCOLUMN => get_string('twocolumn', constants::M_COMPONENT),
         ];
-        $this->add_dropdown(constants::MULTICHOICE_ANSWERLAYOUT,get_string('answerlayout', constants::M_COMPONENT), $layoutoptions, constants::MULTICHOICE_ANSWERLAYOUT_DEFAULT);
+        $this->add_dropdown(constants::MULTICHOICE_ANSWERLAYOUT, get_string('answerlayout', constants::M_COMPONENT), $layoutoptions, constants::MULTICHOICE_ANSWERLAYOUT_DEFAULT);
 
          // Question text.
          $this->add_static_text('instructionscorrectfeedback', '', get_string('correctfeedbackinstructions', constants::M_COMPONENT));
         $mform->addElement('textarea', constants::MULTICHOICE_CORRECTFEEDBACK, get_string('correctfeedback', constants::M_COMPONENT), ['wrap' => 'virtual', 'style' => 'width: 100%;']);
         $mform->setType(constants::MULTICHOICE_CORRECTFEEDBACK, PARAM_RAW);
     }
-
 }

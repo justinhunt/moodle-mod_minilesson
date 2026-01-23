@@ -1,4 +1,5 @@
-define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/ttaudiohelper', 'mod_minilesson/ttbrowserrec',
+define(
+    ['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/ttaudiohelper', 'mod_minilesson/ttbrowserrec',
     'core/str', 'mod_minilesson/timer', 'mod_minilesson/ttmsspeech', 'mod_minilesson/mediauploader'],
     function ($, log, notification, ajax, audioHelper, browserRec, str, timer, msspeech, mediauploader) {
         "use strict"; // jshint ;_;
@@ -253,7 +254,6 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
                     that.audiohelper.onError = on_error;
                     that.audiohelper.onStop = on_stopped;
                     that.audiohelper.onStream = on_gotstream;
-
                 }//end of setting up recorders
 
                 // Set up token refresh
@@ -375,7 +375,7 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
                                     switch (that.speechtokentype) {
                                         case 'assemblyai':
                                         case 'azure':
-                                            if(that.audiohelper && that.audiohelper.streamer) {
+                                            if (that.audiohelper && that.audiohelper.streamer) {
                                                 that.audiohelper.streamer.updatetoken(newtoken.token);
                                             }
                                             break;
@@ -392,7 +392,6 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
                             });
 
                         }, refreshInterval);
-
                     } else {
                         log.debug('Refresh interval is 0. Not refreshing token.');
                     }
@@ -497,7 +496,8 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
 
             gotRecognition: function (transcript) {
                 log.debug('transcript:' + transcript);
-                if (transcript.trim() == '') { return; }
+                if (transcript.trim() == '') {
+                    return; }
                 var message = {};
                 message.type = 'speech';
                 message.capturedspeech = transcript;
@@ -519,13 +519,10 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
             recordBtnContent: function () {
 
                 if (!this.audio.isRecognizing) {
-
                     if (this.audio.isRecording) {
                         return '<i class="fa fa-stop">';
-
                     } else if (this.audio.isWaiting) {
                         return '<i class="fa fa-solid fa-cog fa-spin">';
-
                     } else {
                         return '<i class="fa fa-microphone">';
                     }
@@ -632,4 +629,5 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
 
         };//end of return value
 
-    });
+    }
+);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -18,8 +19,8 @@ namespace mod_minilesson\jp;
  */
 
 
-class Analyzer {
-
+class Analyzer
+{
     /**
      * Get string length.
      *
@@ -30,7 +31,8 @@ class Analyzer {
      *
      * @see mb_strlen()
      */
-    public static function length($str) {
+    public static function length($str)
+    {
         return mb_strlen($str, 'UTF-8');
     }
 
@@ -50,7 +52,8 @@ class Analyzer {
      * @see countHiragana()
      * @see countKatakana()
      */
-    public static function inspect($str) {
+    public static function inspect($str)
+    {
         $result = array(
                 'length' => 0,
                 'kanji' => 0,
@@ -74,7 +77,8 @@ class Analyzer {
      *
      * @return integer Returns the number of kanji.
      */
-    public static function countKanji($str, $extended = false) {
+    public static function countKanji($str, $extended = false)
+    {
         $matches = array();
 
         if ($extended) {
@@ -91,7 +95,8 @@ class Analyzer {
      *
      * @return integer Returns the number of hiragana.
      */
-    public static function countHiragana($str) {
+    public static function countHiragana($str)
+    {
         $matches = array();
 
         return preg_match_all(Helper::PREG_PATTERN_HIRAGANA, $str, $matches);
@@ -105,7 +110,8 @@ class Analyzer {
      *
      * @return integer Returns the number of katakana
      */
-    public static function countKatakana($str) {
+    public static function countKatakana($str)
+    {
         $matches = array();
 
         return preg_match_all(Helper::PREG_PATTERN_KATAKANA, $str, $matches);
@@ -119,7 +125,8 @@ class Analyzer {
      *
      * @return bool TRUE if it contains at least one kanji, otherwise FALSE.
      */
-    public static function hasKanji($str, $extended = false) {
+    public static function hasKanji($str, $extended = false)
+    {
         if ($extended) {
             return preg_match(Helper::PREG_PATTERN_KANJI_EXTENDED, $str, $matches) > 0;
         } else {
@@ -135,7 +142,8 @@ class Analyzer {
      * @return boolean TRUE if it contains at least one hiragana, otherwise
      * FALSE.
      */
-    public static function hasHiragana($str) {
+    public static function hasHiragana($str)
+    {
         return preg_match(Helper::PREG_PATTERN_HIRAGANA, $str) > 0;
     }
 
@@ -147,7 +155,8 @@ class Analyzer {
      * @return boolean TRUE if it contains at least one katakana, otherwise
      * FALSE.
      */
-    public static function hasKatakana($str) {
+    public static function hasKatakana($str)
+    {
         return preg_match(Helper::PREG_PATTERN_KATAKANA, $str) > 0;
     }
 
@@ -161,7 +170,8 @@ class Analyzer {
      * @see hasHiragana()
      * @see hasKatakana()
      */
-    public static function hasKana($str) {
+    public static function hasKana($str)
+    {
         return self::hasHiragana($str) || self::hasKatakana($str);
     }
 
@@ -178,7 +188,8 @@ class Analyzer {
      * @see hasHiragana()
      * @see hasKatakana()
      */
-    public static function hasJapaneseLetters($str) {
+    public static function hasJapaneseLetters($str)
+    {
         return self::hasKanji($str) || self::hasHiragana($str) || self::hasKatakana($str);
     }
 
@@ -190,7 +201,8 @@ class Analyzer {
      * @return boolean TRUE if it contains Japanese punctuation marks, otherwise
      * FALSE.
      */
-    public static function hasJapanesePunctuationMarks($str) {
+    public static function hasJapanesePunctuationMarks($str)
+    {
         return preg_match(Helper::PREG_PATTERN_PUNCTUATION_MARKS, $str) > 0;
     }
 
@@ -207,7 +219,8 @@ class Analyzer {
      * @see hasHiragana()
      * @see hasKatakana()
      */
-    public static function hasJapaneseWritings($str) {
+    public static function hasJapaneseWritings($str)
+    {
         return self::hasKanji($str) || self::hasHiragana($str) || self::hasKatakana($str) ||
                 self::hasJapanesePunctuationMarks($str);
     }
@@ -220,7 +233,8 @@ class Analyzer {
      * @return boolean TRUE if it contains Japanese numerals, otherwise
      * FALSE.
      */
-    public static function hasJapaneseNumerals($str) {
+    public static function hasJapaneseNumerals($str)
+    {
         return preg_match(Helper::PREG_PATTERN_JAPANESE_NUMERAL, $str) > 0;
     }
 
@@ -232,7 +246,8 @@ class Analyzer {
      * @return boolean TRUE if it contains Western numerals, otherwise
      * FALSE.
      */
-    public static function hasWesternNumerals($str) {
+    public static function hasWesternNumerals($str)
+    {
         return preg_match(Helper::PREG_PATTERN_WESTERN_NUMERAL, $str) > 0;
     }
 
@@ -244,7 +259,8 @@ class Analyzer {
      * @return boolean TRUE if it contains latin letters, otherwise
      * FALSE.
      */
-    public static function hasLatinLetters($str) {
+    public static function hasLatinLetters($str)
+    {
         return preg_match(Helper::PREG_PATTERN_LATIN, $str) > 0;
     }
 
@@ -254,7 +270,8 @@ class Analyzer {
      * @param string $str The string to segment
      * @return array Segments parts of the given string
      */
-    public static function segment($str) {
+    public static function segment($str)
+    {
         $segmenter = new TinySegmenter();
         return $segmenter->segment($str);
     }

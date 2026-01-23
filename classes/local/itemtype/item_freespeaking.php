@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,7 +29,6 @@ use mod_minilesson\utils;
  */
 class item_freespeaking extends item
 {
-
     // The item type.
     public const ITEMTYPE = constants::TYPE_FREESPEAKING;
 
@@ -97,7 +97,7 @@ class item_freespeaking extends item
             $this->itemrecord->{constants::FREESPEAKING_SHOWGRADE} == 2;
 
         // Replace any template variables in the question text.
-        if(!empty($testitem->itemtext)){
+        if (!empty($testitem->itemtext)) {
             $search = ['{topic}', '{ai data1}', '{ai data2}'];
             $replace = [
                 $this->itemrecord->{constants::FREESPEAKING_TOPIC},
@@ -168,12 +168,11 @@ class item_freespeaking extends item
     }
 
     /*
-  This function return the prompt that the generate method requires. 
+  This function return the prompt that the generate method requires.
   */
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
         switch ($generatemethod) {
-
             case 'extract':
                 $prompt = "Create an oral discussion question(text) suitable for {level} level learners of {language} as a follow up activity on the following reading: [{text}] ";
                 break;
@@ -191,5 +190,4 @@ class item_freespeaking extends item
         }
         return $prompt;
     }
-
 }

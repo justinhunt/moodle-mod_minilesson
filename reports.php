@@ -24,11 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-
-use \mod_minilesson\constants;
-use \mod_minilesson\utils;
+use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
@@ -40,9 +39,9 @@ $attemptid = optional_param('attemptid', 0, PARAM_INT); // report type
 
 //paging details
 $paging = new stdClass();
-$paging->perpage = optional_param('perpage',-1, PARAM_INT);
-$paging->pageno = optional_param('pageno',0, PARAM_INT);
-$paging->sort  = optional_param('sort','iddsc', PARAM_TEXT);
+$paging->perpage = optional_param('perpage', -1, PARAM_INT);
+$paging->pageno = optional_param('pageno', 0, PARAM_INT);
+$paging->sort  = optional_param('sort', 'iddsc', PARAM_TEXT);
 
 
 if ($id) {
@@ -57,19 +56,21 @@ if ($id) {
     error('You must specify a course_module ID or an instance ID');
 }
 
-$PAGE->set_url(constants::M_URL . '/reports.php',
-	array('id' => $cm->id,'report'=>$showreport,'format'=>$format,'userid'=>$userid,'attemptid'=>$attemptid));
+$PAGE->set_url(
+    constants::M_URL . '/reports.php',
+    array('id' => $cm->id,'report' => $showreport,'format' => $format,'userid' => $userid,'attemptid' => $attemptid)
+);
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
 require_capability('mod/minilesson:evaluate', $modulecontext);
 
-//Get an admin settings 
+//Get an admin settings
 $config = get_config(constants::M_COMPONENT);
 
 //set per page according to admin setting
-if($paging->perpage==-1){
-		$paging->perpage = $config->itemsperpage;
+if ($paging->perpage == -1) {
+        $paging->perpage = $config->itemsperpage;
 }
 
 
@@ -90,11 +91,11 @@ $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-if($moduleinstance->foriframe==1 || $moduleinstance->pagelayout=='embedded') {
+if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded') {
     $PAGE->set_pagelayout('embedded');
-}elseif($config->enablesetuptab  || $moduleinstance->pagelayout=='popup'){
+} elseif ($config->enablesetuptab  || $moduleinstance->pagelayout == 'popup') {
     $PAGE->set_pagelayout('popup');
-}else{
+} else {
     $PAGE->set_pagelayout('incourse');
 }
 
@@ -104,34 +105,33 @@ if($moduleinstance->foriframe==1 || $moduleinstance->pagelayout=='embedded') {
 
 //This puts all our display logic into the renderer.php files in this plugin
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
-$reportrenderer = $PAGE->get_renderer(constants::M_COMPONENT,'report');
+$reportrenderer = $PAGE->get_renderer(constants::M_COMPONENT, 'report');
 
 //From here we actually display the page.
 //this is core renderer stuff
 $mode = "reports";
-$extraheader="";
-switch ($showreport){
+$extraheader = "";
+switch ($showreport) {
+    //not a true report, separate implementation in renderer
+    case 'menu':
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
+        echo $reportrenderer->render_reportmenu($moduleinstance, $cm);
 
-	//not a true report, separate implementation in renderer
-	case 'menu':
-		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
-		echo $reportrenderer->render_reportmenu($moduleinstance,$cm);
-
-		//show backtotop button in most cases
-        if(!$config->enablesetuptab) {
+        //show backtotop button in most cases
+        if (!$config->enablesetuptab) {
             echo $renderer->backtotopbutton($course->id);
         }
 
         // Finish the page
-		echo $renderer->footer();
-		return;
+        echo $renderer->footer();
+        return;
 
-	case 'basic':
-		$report = new \mod_minilesson\report\basic();
-		//formdata should only have simple values, not objects
-		//later it gets turned into urls for the export buttons
-		$formdata = new stdClass();
-		break;
+    case 'basic':
+        $report = new \mod_minilesson\report\basic();
+        //formdata should only have simple values, not objects
+        //later it gets turned into urls for the export buttons
+        $formdata = new stdClass();
+        break;
 
     //list view of attempts and grades and action links
     case 'attempts':
@@ -174,13 +174,13 @@ switch ($showreport){
 
     //list view of attempts and grades and action links
     //same as "grading" mainly. Just for report not action purposes
-	case 'gradereport':
-		$report = new \mod_minilesson\report\gradereport();
-		$formdata = new stdClass();
-		$formdata->moduleid = $moduleinstance->id;
-		$formdata->modulecontextid = $modulecontext->id;
+    case 'gradereport':
+        $report = new \mod_minilesson\report\gradereport();
+        $formdata = new stdClass();
+        $formdata->moduleid = $moduleinstance->id;
+        $formdata->modulecontextid = $modulecontext->id;
         $formdata->groupmenu = true;
-		break;
+        break;
 
     //list view of attempts and grades and action links
     case 'grading':
@@ -195,8 +195,8 @@ switch ($showreport){
 
     //Show a single attempt, basically the students finished view of the attempt for the teacher
     case 'viewattempt':
-        $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE,array('id'=>$attemptid));
-        if($attempt) {
+        $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE, array('id' => $attemptid));
+        if ($attempt) {
             if ($attempt->userid === $USER->id || has_capability('mod/minilesson:canmanageattempts', $modulecontext)) {
                 $comptest = new \mod_minilesson\comprehensiontest($cm);
                 echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
@@ -211,14 +211,14 @@ switch ($showreport){
             }
         }
         break;
-		
-	default:
-		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
-		echo "unknown report type.";
+
+    default:
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
+        echo "unknown report type.";
         //backtotop
         echo $renderer->backtotopbutton($course->id);
-		echo $renderer->footer();
-		return;
+        echo $renderer->footer();
+        return;
 }
 
 /*
@@ -228,46 +228,50 @@ switch ($showreport){
 5) call $reportrenderer->render_section_html($sectiontitle, $report->name, $report->get_head, $rows, $report->fields);
 */
 $groupmenu = '';
-if(isset($formdata->groupmenu)){
+if (isset($formdata->groupmenu)) {
     // fetch groupmode/menu/id for this activity
     if ($groupmode = groups_get_activity_groupmode($cm)) {
         $groupmenu = groups_print_activity_menu($cm, $PAGE->url, true);
         $groupmenu .= ' ';
         $formdata->groupid = groups_get_activity_group($cm);
-    }else{
+    } else {
         $formdata->groupid  = 0;
     }
-}else{
+} else {
     $formdata->groupid  = 0;
 }
 
 $report->process_raw_data($formdata);
 $reportheading = $report->fetch_formatted_heading();
 
-switch($format){
-	case 'csv':
-		$reportrows = $report->fetch_formatted_rows(false);
-		$reporttitle = $reportheading . '_' . $course->shortname . '_' . $moduleinstance->name . '_' . date(DATE_ATOM);
-		$reportrenderer->render_section_csv($reporttitle, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
-		exit;
-	default:
-
-        if($config->reportstable == constants::M_USE_DATATABLES){
-            $pagetitle =get_string('reports', constants::M_COMPONENT);
+switch ($format) {
+    case 'csv':
+        $reportrows = $report->fetch_formatted_rows(false);
+        $reporttitle = $reportheading . '_' . $course->shortname . '_' . $moduleinstance->name . '_' . date(DATE_ATOM);
+        $reportrenderer->render_section_csv($reporttitle, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
+        exit;
+    default:
+        if ($config->reportstable == constants::M_USE_DATATABLES) {
+            $pagetitle = get_string('reports', constants::M_COMPONENT);
             $reportrows = $report->fetch_formatted_rows(true);
             $allrowscount = $report->fetch_all_rows_count();
 
             //css must be required before header sent out
-            $PAGE->requires->css( new \moodle_url('https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css'));
+            $PAGE->requires->css(new \moodle_url('https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css'));
             echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
             //echo $renderer->heading($pagetitle);
             //echo $renderer->navigation($moduleinstance, 'reports');
             echo $extraheader;
             echo $groupmenu;
-            echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows,
-                $report->fetch_fields());
-        }else{
-            $pagetitle =get_string('reports', constants::M_COMPONENT);
+            echo $reportrenderer->render_section_html(
+                $reportheading,
+                $report->fetch_name(),
+                $report->fetch_head(),
+                $reportrows,
+                $report->fetch_fields()
+            );
+        } else {
+            $pagetitle = get_string('reports', constants::M_COMPONENT);
             $reportrows = $report->fetch_formatted_rows(true, $paging);
             $allrowscount = $report->fetch_all_rows_count();
 
@@ -278,31 +282,36 @@ switch($format){
             echo $extraheader;
             echo $groupmenu;
             echo $pagingbar;
-            echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows,
-                $report->fetch_fields());
+            echo $reportrenderer->render_section_html(
+                $reportheading,
+                $report->fetch_name(),
+                $report->fetch_head(),
+                $reportrows,
+                $report->fetch_fields()
+            );
             echo $pagingbar;
         }
+        echo $reportrenderer->show_reports_footer($moduleinstance, $cm, $formdata, $showreport);
+        //back to course button if not in frame
+        if (!$config->enablesetuptab) {
+            echo $renderer->backtotopbutton($course->id);
+        }
+        echo $renderer->footer();
+        /*
+        $reportrows = $report->fetch_formatted_rows(true,$paging);
+        $allrowscount = $report->fetch_all_rows_count();
+        $pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging,$PAGE->url);
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
+        echo $extraheader;
+        echo $groupmenu;
+        echo $pagingbar;
+        echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
+        echo $pagingbar;
         echo $reportrenderer->show_reports_footer($moduleinstance,$cm,$formdata,$showreport);
         //back to course button if not in frame
         if(!$config->enablesetuptab) {
             echo $renderer->backtotopbutton($course->id);
         }
         echo $renderer->footer();
-	    /*
-		$reportrows = $report->fetch_formatted_rows(true,$paging);
-		$allrowscount = $report->fetch_all_rows_count();
-		$pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging,$PAGE->url);
-		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
-		echo $extraheader;
-        echo $groupmenu;
-		echo $pagingbar;
-		echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
-		echo $pagingbar;
-		echo $reportrenderer->show_reports_footer($moduleinstance,$cm,$formdata,$showreport);
-        //back to course button if not in frame
-		if(!$config->enablesetuptab) {
-            echo $renderer->backtotopbutton($course->id);
-        }
-		echo $renderer->footer();
-	    */
+        */
 }

@@ -1,4 +1,4 @@
-define(['jquery','core/log'], function($,log) {
+define(['jquery','core/log'], function ($,log) {
     "use strict"; // jshint ;_;
 
 
@@ -6,15 +6,15 @@ define(['jquery','core/log'], function($,log) {
 
     return{
 
-        initVideo: function(container) {
+        initVideo: function (container) {
             var that = this;
             if (typeof(YT) == 'undefined' || typeof(YT.Player) == 'undefined') {
                 if (typeof(window.deferredYTClips) == 'undefined') {
-                    window.deferredYTClips=[];
+                    window.deferredYTClips = [];
                 }
                 window.deferredYTClips.push(container);
-                window.onYouTubeIframeAPIReady = function() {
-                    for(var i=0;i<window.deferredYTClips.length && i>-1;i++){
+                window.onYouTubeIframeAPIReady = function () {
+                    for (var i = 0; i < window.deferredYTClips.length && i > -1; i++) {
                         that.loadPlayer(window.deferredYTClips[i]);
                     }
                 };
@@ -25,7 +25,7 @@ define(['jquery','core/log'], function($,log) {
             }
         }, //end of init video
 
-        loadPlayer: function(container) {
+        loadPlayer: function (container) {
             var that = this;
             var theDiv = $("#" + container);
             var startSeconds = theDiv.data('start');
@@ -45,16 +45,17 @@ define(['jquery','core/log'], function($,log) {
                 events: {
                     onReady: function (e) {
                         var videocue = {videoId: theDiv.data('video')};
-                        if(!isNaN(startSeconds) && startSeconds > 0){
+                        if (!isNaN(startSeconds) && startSeconds > 0) {
                             videocue.startSeconds = startSeconds
-                        }else{
+                        } else {
                             startSeconds = 0;
                         }
-                        if(!isNaN(endSeconds) && endSeconds > 0){videocue.endSeconds = endSeconds;}
+                        if (!isNaN(endSeconds) && endSeconds > 0) {
+                            videocue.endSeconds = endSeconds;}
                         e.target.cueVideoById(videocue);
                     },
                     onStateChange: function (e) {
-                        switch(e.data) {
+                        switch (e.data) {
                             case YT.PlayerState.ENDED:
                                 thePlayer.seekTo(startSeconds);
                                 thePlayer.pauseVideo();
@@ -62,7 +63,6 @@ define(['jquery','core/log'], function($,log) {
                             case YT.PlayerState.PAUSED:
                             case YT.PlayerState.PLAYING:
                             default:
-
                         }
                     },
                 },

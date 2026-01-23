@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,9 +28,10 @@ use moodle_exception;
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class textgenerationfailed extends moodle_exception {
-
-    public function __construct(int $itemindex, string $itemtype, string $debug = '') {
+class textgenerationfailed extends moodle_exception
+{
+    public function __construct(int $itemindex, string $itemtype, string $debug = '')
+    {
         parent::__construct('textgenerationfailed', constants::M_COMPONENT, '', [
             'itemindex' => utils::ordinalsuffix($itemindex), 'itemtype' => $itemtype
         ], $debug);

@@ -1,4 +1,4 @@
-define(['jquery','core/log'], function($,log) {
+define(['jquery','core/log'], function ($,log) {
     "use strict"; // jshint ;_;
 
 /*
@@ -9,9 +9,9 @@ This file contains class and ID definitions.
 
     return{
         //pass in config, amd set up table
-        init: function(props){
+        init: function (props) {
             //pick up opts from html
-            var that=this;
+            var that = this;
 
         },
 

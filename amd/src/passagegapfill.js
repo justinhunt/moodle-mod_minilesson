@@ -6,7 +6,7 @@ define(['jquery',
     'mod_minilesson/animatecss',
     'mod_minilesson/progresstimer',
     'core/templates'
-], function($, log, ajax, def, polly, anim, progresstimer, templates) {
+], function ($, log, ajax, def, polly, anim, progresstimer, templates) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson passage gap fill: initialising');
@@ -14,7 +14,7 @@ define(['jquery',
     return {
 
         // For making multiple instances
-        clone: function() {
+        clone: function () {
             return $.extend(true, {hintsused: 0}, this);
         },
 
@@ -24,7 +24,7 @@ define(['jquery',
         hintsused: 0,
         penalizehints: false,
 
-        init: function(index, itemdata, quizhelper) {
+        init: function (index, itemdata, quizhelper) {
             var self = this;
             self.itemdata = itemdata;
             self.penalizehints = itemdata.penalizehints || false; // Default to penalizing hints
@@ -42,37 +42,40 @@ define(['jquery',
             self.getGapItems();
         },
 
-        register_controls: function() {
+        register_controls: function () {
             var self = this;
             self.controls.rootelement = document.querySelector(`#${self.itemdata.uniqueid}_container`);
-            self.controls.audioplayer =$("#" + self.itemdata.uniqueid + "_container .pgapfill_audio_player");
+            self.controls.audioplayer = $("#" + self.itemdata.uniqueid + "_container .pgapfill_audio_player");
             self.controls.resultsbox = $("#" + self.itemdata.uniqueid + "_container .passage_gapfill_results_actions");
             self.controls.finishbtn = $("#" + self.itemdata.uniqueid + "_container .pgapfill_finish_btn");
             self.controls.hintbtn = $("#" + self.itemdata.uniqueid + "_container .pgapfill_hint_btn");
             self.controls.nextbtn = $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton");
         },
 
-        prepare_audio: function() {
+        prepare_audio: function () {
             var self = this;
-            polly.fetch_polly_url(self.itemdata.passagedata.plaintext, self.itemdata.voiceoption,
-                self.itemdata.usevoice).then(function(audiourl) {
-                self.controls.audioplayer.attr("src", audiourl);
+            polly.fetch_polly_url(
+                self.itemdata.passagedata.plaintext,
+                self.itemdata.voiceoption,
+                self.itemdata.usevoice
+            ).then(function (audiourl) {
+                    self.controls.audioplayer.attr("src", audiourl);
             });
         },
 
-        next_question: function() {
+        next_question: function () {
             var self = this;
             var stepdata = self.get_stepdata();
             self.quizhelper.do_next(stepdata);
         },
 
-        submit_grade: function() {
+        submit_grade: function () {
             var self = this;
             var stepdata = self.get_stepdata();
             self.quizhelper.report_step_grade(stepdata);
         },
 
-        get_stepdata: function() {
+        get_stepdata: function () {
             var self = this;
             var stepdata = {};
             stepdata.index = self.index;
@@ -84,44 +87,44 @@ define(['jquery',
             // If the user has used hints, we need to adjust the grade - its a bit yuk
             var hintspenalty = self.penalizehints ? totalhints / 3 : 0;
             stepdata.grade = Math.round(((stepdata.correctitems - hintspenalty) / stepdata.totalitems) * 100);
-            if(hintspenalty >0){
+            if (hintspenalty > 0) {
                 stepdata.correctitems = Math.round(stepdata.correctitems - hintspenalty);
             }
             return stepdata;
         },
 
-        show_item_review:function(){
-            var self=this;
+        show_item_review:function () {
+            var self = this;
             var review_data = self.get_stepdata();
             var resultsbox = self.controls.resultsbox;
             review_data.items = self.items;
 
             //display results
             templates.render('mod_minilesson/passagegapfillresults',review_data).then(
-              function(html,js){
-                  resultsbox.html(html);
+                function (html,js) {
+                    resultsbox.html(html);
 
-                  // Run js for audio player events
-                  templates.runTemplateJS(js);
-              }
+                    // Run js for audio player events
+                    templates.runTemplateJS(js);
+                }
             );// End of templates
         },
 
-        register_events: function() {
+        register_events: function () {
 
             var self = this;
 
-            self.controls.nextbtn.on('click', function() {
+            self.controls.nextbtn.on('click', function () {
                 self.next_question();
             });
 
 
-            self.controls.hintbtn.on("click", function(e) {
+            self.controls.hintbtn.on("click", function (e) {
                 e.preventDefault();
                 self.give_hint();
             });
 
-            self.controls.finishbtn.on("click", function(e) {
+            self.controls.finishbtn.on("click", function (e) {
                 e.preventDefault();
                 self.check_answer([], true, true);
                 // Prevent submit grade when finishing.
@@ -147,7 +150,7 @@ define(['jquery',
                     $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer").progressTimer({
                         height: '5px',
                         timeLimit: self.itemdata.timelimit,
-                        onFinish: function() {
+                        onFinish: function () {
                             self.controls.nextbtn.trigger('click');
                         }
                     });
@@ -158,7 +161,7 @@ define(['jquery',
         },
 
 
-        check_answer: function(items = null, displaywrong = true, readonly = false) {
+        check_answer: function (items = null, displaywrong = true, readonly = false) {
             var self = this;
             items = [].concat(items);
             if (items.length === 0) {
@@ -194,7 +197,7 @@ define(['jquery',
             });
         },
 
-        give_hint: function() {
+        give_hint: function () {
             var self = this;
             var anyhintdisplayed = false;
             self.items.forEach(element => {
@@ -204,7 +207,7 @@ define(['jquery',
                 }
                 //update the placeholder text
                 const placeholder = inputelement.placeholder;
-                const replaceposition = self.hintsused === 1 ? 1: element.placeholder.length - 1;
+                const replaceposition = self.hintsused === 1 ? 1 : element.placeholder.length - 1;
                 inputelement.placeholder = placeholder.slice(0, replaceposition) +
                     element.text[replaceposition] + placeholder.slice(replaceposition + 1);
                 inputelement.setAttribute('placeholder', inputelement.placeholder);
@@ -229,10 +232,10 @@ define(['jquery',
 
 
 
-        getGapItems: function() {
+        getGapItems: function () {
             //TO DO implement this
             // This function prepares the gap items from the passage data.
-           log.debug("getting gap items");
+            log.debug("getting gap items");
 
             var self = this;
             var passagedata = self.itemdata.passagedata;
@@ -247,40 +250,40 @@ define(['jquery',
             }));
             self.items = self.gapitems.filter(gapitem => gapitem.isgap).map(item => {
                 item.inputelement = self.controls.rootelement
-                    .querySelector(`.pgapfill_gap_input[data-wordindex="${item.wordindex}"]`);
+                    .querySelector(`.pgapfill_gap_input[data - wordindex = "${item.wordindex}"]`);
                 return item;
             });
         },
 
-        appReady: function() {
+        appReady: function () {
             var self = this;
             self.start();
         },
 
 
-        end: function() {
+        end: function () {
             var self = this;
             $(".minilesson_nextbutton").prop("disabled", true);
 
             //disable the buttons and go to next question or review
-            setTimeout(function() {
+            setTimeout(function () {
                 $(".minilesson_nextbutton").prop("disabled",false);
-                if(self.quizhelper.showitemreview){
+                if (self.quizhelper.showitemreview) {
                     self.show_item_review();
-                }else{
+                } else {
                     self.next_question();
                 }
             }, 2000);
         },
 
-        start: function() {
+        start: function () {
             var self = this;
             self.controls.question.show();
 
         },
 
 
-        stopTimer: function(timer) {
+        stopTimer: function (timer) {
             if (timer) {
                     clearInterval(timer);
             }

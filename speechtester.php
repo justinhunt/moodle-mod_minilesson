@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -37,7 +38,7 @@ if ($id) {
     $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
     $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
-} else if ($n) {
+} elseif ($n) {
     $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $n], '*', MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
@@ -123,7 +124,6 @@ if ($stt_guided && $language == $moduleinstance->ttslanguage) {
         }
     }
     if ($longestitem) {
-
         $tdata['passagehash'] = $longesthash;
         $theitem = utils::fetch_item_from_itemrecord($longestitem, $moduleinstance, $modulecontext);
         switch ($longestitem->type) {

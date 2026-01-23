@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,8 +27,8 @@ use mod_minilesson\utils;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_speakinggapfill extends item {
-
+class item_speakinggapfill extends item
+{
     //the item type
     public const ITEMTYPE = constants::TYPE_SGAPFILL;
 
@@ -35,9 +36,10 @@ class item_speakinggapfill extends item {
      * The class constructor.
      *
      */
-    public function __construct($itemrecord, $moduleinstance=false, $context=false){
+    public function __construct($itemrecord, $moduleinstance = false, $context = false)
+    {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec=true;
+        $this->needs_speechrec = true;
     }
 
     /**
@@ -46,7 +48,8 @@ class item_speakinggapfill extends item {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(\renderer_base $output)
+    {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
@@ -104,13 +107,14 @@ class item_speakinggapfill extends item {
     * We store the segmented sentence in the phonetic field, separated by || from the phonetic text. But previously
     * we fetched it at runtime so we look out for data that has not been updated to store the segmented text
     */
-    protected function process_japanese_phonetics($sentence, $thephonetics = false) {
+    protected function process_japanese_phonetics($sentence, $thephonetics = false)
+    {
         // We have a local segmentation algorythm utils:segment_japanese but
         // sadly this segmentation algorithm mismatches with server based one we need for phonetics
         // so we are not using it. It looks like this
         // 初めまして =>(1) はじめまし て　＆　(2) はじめま　して
         // はなしてください=>(1)はな　して　く　だ　さい & (2)はな　して　ください
-        if($thephonetics) {
+        if ($thephonetics) {
             $psarray = explode('|#', $thephonetics);
             $segmentedsentence = array_key_exists(1, $psarray) ? utils::super_trim($psarray[1]) : '';
             if (!empty($segmentedsentence)) {
@@ -121,15 +125,15 @@ class item_speakinggapfill extends item {
         // Oh well, lets just fetch the segments now since we could not get the saved ones
         list($phones, $sentence) = utils::fetch_phones_and_segments($sentence, $this->moduleinstance->ttslanguage, $this->moduleinstance->region);
         return $sentence;
-
     }
 
-    public static function validate_import($newrecord,$cm){
+    public static function validate_import($newrecord, $cm)
+    {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if($newrecord->customtext1 == ''){
+        if ($newrecord->customtext1 == '') {
             $error->col = 'customtext1';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
@@ -152,12 +156,13 @@ class item_speakinggapfill extends item {
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
         $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
-        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
-        $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+        $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         return $keycols;
     }
 
-    public function update_create_langmodel($olditemrecord) {
+    public function update_create_langmodel($olditemrecord)
+    {
         // If we need to generate a DeepSpeech model for this, then lets do that now.
         // We want to process the hashcode and lang model if it makes sense.
 
@@ -165,7 +170,7 @@ class item_speakinggapfill extends item {
 
         // Sentences
         $sentences = [];
-        if(isset($this->itemrecord->customtext1)) {
+        if (isset($this->itemrecord->customtext1)) {
             $sentences = explode(PHP_EOL, $this->itemrecord->customtext1);
         }
         $sentencedata = $this->parse_gapfill_sentences($sentences);
@@ -178,7 +183,6 @@ class item_speakinggapfill extends item {
             if ($newpassagehash) {
                 //check if it has changed, if its a brand new one, if so register a langmodel
                 if (!$olditemrecord || $olditemrecord->passagehash != ($this->region . '|' . $newpassagehash)) {
-
                     //build a lang model
                     $ret = utils::fetch_lang_model($passage, $this->language, $this->region);
 
@@ -193,15 +197,15 @@ class item_speakinggapfill extends item {
                 }
             }
             //if we get here just set the new passage hash to the existing one
-            if($olditemrecord) {
+            if ($olditemrecord) {
                 $this->itemrecord->passagehash = $olditemrecord->passagehash;
             } else {
                 //This would happen if the user changed region, forcing an update, but there was no valid cloud poodll token
                 $this->itemrecord->passagehash = '';
             }
-        }else{
+        } else {
             //I think this will never get here
-            $this->itemrecord->passagehash ='';
+            $this->itemrecord->passagehash = '';
         }
         return false;
     }
@@ -209,13 +213,13 @@ class item_speakinggapfill extends item {
     /*
     * This function return the prompt that the generate method requires for listening gap fill items.
     */
-    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
-        switch($generatemethod) {
-
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
+    {
+        switch ($generatemethod) {
             case 'extract':
                 $prompt = "Extract a 1 dimensional array of 4 sentences from the following {language} text: [{text}]. ";
                 $prompt .= "In each sentence surround one keyword with square brackets, e.g [word]. ";
-                    break;
+                break;
 
             case 'reuse':
                 // This is a special case where we reuse the existing data, so we do not need a prompt.
@@ -227,9 +231,8 @@ class item_speakinggapfill extends item {
             default:
                 $prompt = "Generate a 1 dimensional array of 4 sentences in {language} suitable for {level} level learners on the topic of: [{topic}] ";
                 $prompt .= "In each sentence surround one keyword with square brackets, e.g [word]. ";
-                    break;
+                break;
         }
         return $prompt;
     }
-
 }

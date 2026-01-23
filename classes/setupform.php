@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -31,7 +32,8 @@ use mod_minilesson\utils;
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class setupform extends \moodleform {
+class setupform extends \moodleform
+{
     /**
      * This is used to identify this itemtype.
      * @var string
@@ -70,7 +72,8 @@ class setupform extends \moodleform {
      * This method adds the basic elements to the form including title and contents
      * and then calls custom_definition();
      */
-    public final function definition() {
+    final public function definition()
+    {
         global $CFG;
 
         $mform = $this->_form;
@@ -91,7 +94,8 @@ class setupform extends \moodleform {
      * @param bool $required
      * @return void
      */
-    protected final function add_media_upload($name, $count = -1, $label = null, $required = false) {
+    final protected function add_media_upload($name, $count = -1, $label = null, $required = false)
+    {
         if ($count > -1) {
             $name = $name . $count;
         }
@@ -112,7 +116,8 @@ class setupform extends \moodleform {
      * @param bool $required
      * @return void
      */
-    protected final function add_media_prompt_upload($label = null, $required = false) {
+    final protected function add_media_prompt_upload($label = null, $required = false)
+    {
         return $this->add_media_upload(constants::AUDIOPROMPT, -1, $label, $required);
     }
 
@@ -124,7 +129,8 @@ class setupform extends \moodleform {
      * @param bool $required
      * @return void
      */
-    protected final function add_editorarearesponse($count, $label = null, $required = false) {
+    final protected function add_editorarearesponse($count, $label = null, $required = false)
+    {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
@@ -156,7 +162,8 @@ class setupform extends \moodleform {
      * @param array $files
      * @return array
      */
-    public function validation($data, $files) {
+    public function validation($data, $files)
+    {
         $errors = parent::validation($data, $files);
         if (!empty($data['viewend'])) {
             if ($data['viewend'] < $data['viewstart']) {

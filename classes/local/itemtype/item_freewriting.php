@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,7 +28,6 @@ use mod_minilesson\constants;
  */
 class item_freewriting extends item
 {
-
     //the item type
     public const ITEMTYPE = constants::TYPE_FREEWRITING;
 
@@ -66,7 +66,7 @@ class item_freewriting extends item
             $this->itemrecord->{constants::FREEWRITING_SHOWGRADE} == 2;
 
         // Replace any template variables in the question text.
-        if(!empty($testitem->itemtext)){
+        if (!empty($testitem->itemtext)) {
             $search = ['{topic}', '{ai data1}', '{ai data2}'];
             $replace = [
                 $this->itemrecord->{constants::FREEWRITING_TOPIC},
@@ -74,7 +74,7 @@ class item_freewriting extends item
                 $this->itemrecord->{constants::FREEWRITING_AIDATA2},
             ];
             $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
-        }   
+        }
         // Cloudpoodll.
         $maxtime = $this->itemrecord->timelimit;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
@@ -131,12 +131,11 @@ class item_freewriting extends item
     }
 
     /*
- This function return the prompt that the generate method requires. 
+ This function return the prompt that the generate method requires.
  */
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
         switch ($generatemethod) {
-
             case 'extract':
                 $prompt = "Create a writing question(text) suitable for {level} level learners of {language} as a follow up activity on the following reading: [{text}] ";
                 break;
@@ -154,5 +153,4 @@ class item_freewriting extends item
         }
         return $prompt;
     }
-
 }

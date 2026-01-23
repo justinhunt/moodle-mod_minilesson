@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,11 +30,12 @@ use mod_minilesson\local\itemtype\item_audiochat;
 use mod_minilesson\utils;
 use moodle_url;
 
-class audiochatform extends baseform {
-
+class audiochatform extends baseform
+{
     public $type = constants::TYPE_AUDIOCHAT;
 
-    public function custom_definition() {
+    public function custom_definition()
+    {
         global $CFG, $PAGE, $DB;
 
         $this->add_itemsettings_heading();
@@ -60,21 +62,30 @@ class audiochatform extends baseform {
         // The voice of the AI.
         $options = ['alloy' => 'Alloy', 'ash' => 'Ash', 'ballad' => 'Ballad',
             'coral' => 'Coral', 'echo' => 'Echo', 'sage' => 'Sage', 'shimmer' => 'Shimmer', 'verse' => 'Verse', 'marin' => 'Marin', 'cedar' => 'Cedar'];
-        $this->add_dropdown(constants::AUDIOCHAT_VOICE,
-            get_string('audiochat_voice',  constants::M_COMPONENT),
-            $options, 'alloy');
+        $this->add_dropdown(
+            constants::AUDIOCHAT_VOICE,
+            get_string('audiochat_voice', constants::M_COMPONENT),
+            $options,
+            'alloy'
+        );
 
         // Students native language.
         $defaultfeedbacklang = $this->moduleinstance->nativelang ?
                     $this->moduleinstance->nativelang : $this->moduleinstance->ttslanguage;
-        $this->add_languageselect(constants::AUDIOCHAT_NATIVE_LANGUAGE,
+        $this->add_languageselect(
+            constants::AUDIOCHAT_NATIVE_LANGUAGE,
             get_string('audiochat_native_language', constants::M_COMPONENT),
             $defaultfeedbacklang
         );
 
         $options = utils::get_aiprompt_options('AUDIOCHAT_INSTRUCTIONSSELECTION');
-        $mform->addElement('select', constants::AUDIOCHAT_INSTRUCTIONSSELECTION, get_string('audiochat_instructions', constants::M_COMPONENT), $options,
-            ['data-name' => 'instructionsaiprompt', 'data-type' => 'audiochat']);
+        $mform->addElement(
+            'select',
+            constants::AUDIOCHAT_INSTRUCTIONSSELECTION,
+            get_string('audiochat_instructions', constants::M_COMPONENT),
+            $options,
+            ['data-name' => 'instructionsaiprompt', 'data-type' => 'audiochat']
+        );
         $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONSSELECTION, 0);
         $this->add_static_text('preset_instructions1', '', get_string('aigrade_instructions_preset', constants::M_COMPONENT));
 
@@ -87,8 +98,13 @@ class audiochatform extends baseform {
 
         // The grading/feedback template for the audio chat
         $options = utils::get_aiprompt_options('AUDIOCHAT_FEEDBACKSELECTION');
-        $mform->addElement('select', constants::AUDIOCHAT_FEEDBACKSELECTION, get_string('aigrade_feedback', constants::M_COMPONENT), $options,
-            ['data-name' => 'feedbackaiprompt', 'data-type' => 'audiochat',]);
+        $mform->addElement(
+            'select',
+            constants::AUDIOCHAT_FEEDBACKSELECTION,
+            get_string('aigrade_feedback', constants::M_COMPONENT),
+            $options,
+            ['data-name' => 'feedbackaiprompt', 'data-type' => 'audiochat',]
+        );
         $mform->setDefault(constants::AUDIOCHAT_FEEDBACKSELECTION, 0);
         $this->add_static_text('preset_instructions2', '', get_string('aigrade_instructions_preset', constants::M_COMPONENT));
 
@@ -100,9 +116,14 @@ class audiochatform extends baseform {
         $this->add_static_text('audiochat_gradeinstructions_instructions', '', get_string('audiochat_gradeinstructions_instructions', constants::M_COMPONENT));
 
         // Auto Response
-        $mform->addElement('advcheckbox', constants::AUDIOCHAT_AUTORESPONSE,
+        $mform->addElement(
+            'advcheckbox',
+            constants::AUDIOCHAT_AUTORESPONSE,
             get_string('audiochat_autosend', constants::M_COMPONENT),
-            get_string('audiochat_autosend_desc', constants::M_COMPONENT), [], [0, 1]);
+            get_string('audiochat_autosend_desc', constants::M_COMPONENT),
+            [],
+            [0, 1]
+        );
         $mform->setDefault(constants::AUDIOCHAT_AUTORESPONSE, 1);
 
         //Allow Retry
@@ -174,7 +195,6 @@ class audiochatform extends baseform {
                 $submissionoptions
             );
             $this->add_static_text('audiochat_student_submission_instructions', '', get_string('audiochat_student_submission_instructions', constants::M_COMPONENT));
-
         }
         // AI Data 1 and 2
         $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA1, get_string('audiochat_aidata1', constants::M_COMPONENT), false);
@@ -182,6 +202,6 @@ class audiochatform extends baseform {
         $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
         $mform->setDefault(constants::AUDIOCHAT_AIDATA2, '');
 
-        $PAGE->requires->js_call_amd(constants::M_COMPONENT.'/aiprompt', 'init');
+        $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/aiprompt', 'init');
     }
 }

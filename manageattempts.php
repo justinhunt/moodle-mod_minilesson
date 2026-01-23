@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,14 +23,14 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 use mod_minilesson\constants;
 
 global $USER, $DB;
 
 // first get the info passed in to set up the page
-$attemptid = optional_param('attemptid', 0 , PARAM_INT);
+$attemptid = optional_param('attemptid', 0, PARAM_INT);
 $source = optional_param('source', 'attempts', PARAM_TEXT);
 $n     = required_param('n', PARAM_INT);         // instance ID
 $action = required_param('action', PARAM_TEXT);
@@ -61,7 +62,7 @@ if ($action == 'delete' && $attemptid > 0) {
 }
 
 // we always head back to the minilesson attempts page
-switch($source){
+switch ($source) {
     case 'attempts':
         $redirecturl = new moodle_url('/mod/minilesson/reports.php', ['report' => 'attempts', 'id' => $cm->id, 'n' => $n]);
         break;
@@ -76,18 +77,16 @@ switch($source){
         break;
 }
 // handle delete actions
-switch($action){
-
+switch ($action) {
     /////// Delete attempt NOW////////
     case 'delete':
-
         require_sesskey();
 
         // Check user has group access.
         $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE, ['id' => $attemptid, 'moduleid' => $cm->instance], '*', MUST_EXIST);
         if (!groups_user_groups_visible($course, $attempt->userid, $cm)) {
             print_error("You do not have permssion to delete this user");
-        } else if ($DB->delete_records(constants::M_ATTEMPTSTABLE, ['id' => $attemptid])) {
+        } elseif ($DB->delete_records(constants::M_ATTEMPTSTABLE, ['id' => $attemptid])) {
             if ($attempt) {
                 minilesson_update_grades($moduleinstance, $attempt->userid, true);
             }
@@ -101,7 +100,6 @@ switch($action){
 
     // Delete ALL attempts ////////
     case 'deleteall':
-
         require_sesskey();
 
         $groupsmode = groups_get_activity_groupmode($cm, $course);
@@ -110,7 +108,7 @@ switch($action){
         $result = false;
 
         // if no groups, or can see all groups then the SQL is simple
-        if($supergrouper || $groupsmode != SEPARATEGROUPS) {
+        if ($supergrouper || $groupsmode != SEPARATEGROUPS) {
             $result = $DB->delete_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $moduleinstance->id]);
         }
 
@@ -121,7 +119,6 @@ switch($action){
         }
         redirect($redirecturl);
         return;
-
 }
 
 // we should never get here

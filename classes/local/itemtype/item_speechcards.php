@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,7 +28,6 @@ use mod_minilesson\constants;
  */
 class item_speechcards extends item
 {
-
     //the item type
     public const ITEMTYPE = constants::TYPE_SPEECHCARDS;
 
@@ -105,12 +105,11 @@ class item_speechcards extends item
     }
 
     /*
-   This function return the prompt that the generate method requires. 
+   This function return the prompt that the generate method requires.
    */
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
         switch ($generatemethod) {
-
             case 'extract':
                 $prompt = "Extract a 1 dimensional array of 4 sentences from the following {language} text: [{text}]. ";
                 break;
@@ -128,5 +127,4 @@ class item_speechcards extends item
         }
         return $prompt;
     }
-
 }

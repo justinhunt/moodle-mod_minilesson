@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -35,12 +36,14 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Class AI gen upload fom
  */
-class aigen_uploadform extends moodleform {
+class aigen_uploadform extends moodleform
+{
     /**
      * from element definition
      * @return void
      */
-    public function definition() {
+    public function definition()
+    {
         $mform = $this->_form;
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -64,7 +67,8 @@ class aigen_uploadform extends moodleform {
      * Set form data element
      * @return void
      */
-    public function set_data_for_dynamic_submission() {
+    public function set_data_for_dynamic_submission()
+    {
         $formdata = [
             'id' => $this->optional_param('id', null, PARAM_INT),
             'action' => $this->optional_param('action', null, PARAM_ALPHA),
@@ -75,7 +79,8 @@ class aigen_uploadform extends moodleform {
     /**
      * process form form element submission
      */
-    public function process_dynamic_submission() {
+    public function process_dynamic_submission()
+    {
         global $DB, $USER;
         if (!$this->is_cancelled() && $this->is_submitted() && $this->is_validated()) {
             $formdata = $this->get_data();
@@ -104,7 +109,8 @@ class aigen_uploadform extends moodleform {
      * @param array $files
      * @return array
      */
-    public function validation($data, $files) {
+    public function validation($data, $files)
+    {
         global $USER;
         $context = context_user::instance($USER->id);
         $errors = parent::validation($data, $files);
@@ -170,7 +176,8 @@ class aigen_uploadform extends moodleform {
      * @param stdClass $template
      * @return mixed
      */
-    public static function upsert_template(stdClass $template) {
+    public static function upsert_template(stdClass $template)
+    {
         global $DB;
         $jsonconfig = json_decode($template->config);
         if (!json_last_error()) {

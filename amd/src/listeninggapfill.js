@@ -104,9 +104,9 @@ define(['jquery',
             var self = this;
             var review_data = {};
             review_data.items = self.items;
-            self.items.forEach(function(item){
+            self.items.forEach(function (item) {
                 var itemwordlist = [];
-                item.parsedstring.forEach(function(data) {
+                item.parsedstring.forEach(function (data) {
                     if (data.type === 'input' || data.type === 'mtext') {
                         itemwordlist.push(data.character);
                     }
@@ -114,12 +114,13 @@ define(['jquery',
                 var wordmatch = itemwordlist.join("");
                 var regex = new RegExp(wordmatch, "gi");
                 var answerclass = item.correct ? 'correctitem' : 'wrongitem';
-                var result = item.target.replace(regex, ` <span class="${answerclass}">${wordmatch}</span>`);
+                var result = item.target.replace(regex, ` < span class = "${answerclass}" > ${wordmatch} < / span > `);
                 item.target = result;
             });
 
-            review_data.totalitems=self.items.length;
-            review_data.correctitems=self.items.filter(function(e) {return e.correct;}).length;
+            review_data.totalitems = self.items.length;
+            review_data.correctitems = self.items.filter(function (e) {
+                return e.correct;}).length;
 
             //Get controls
             var listencont = self.controls.listen_cont;
@@ -150,7 +151,8 @@ define(['jquery',
             var self = this;
             self.controls.nextbutton.on('click', function (e) {
                 if (self.items.some(item => !item.answered)) {
-                    notification.confirm(self.strings.nextlessonitem,
+                    notification.confirm(
+                        self.strings.nextlessonitem,
                         self.strings.confirm_desc,
                         self.strings.yes,
                         self.strings.no,
@@ -176,17 +178,17 @@ define(['jquery',
                 //if we are already playing stop playing
                 if (!theaudio.paused) {
                     theaudio.pause();
-                    theaudio.currentTime=0;
+                    theaudio.currentTime = 0;
                     $(audioplayerbtn).removeClass('activeanimation');
                     return;
                 }
 
                 //change icon to indicate playing state
-                theaudio.addEventListener('ended', function(){
+                theaudio.addEventListener('ended', function () {
                     $(audioplayerbtn).removeClass('activeanimation');
                 });
 
-                theaudio.addEventListener('play', function(){
+                theaudio.addEventListener('play', function () {
                     $(audioplayerbtn).addClass('activeanimation');
                 });
 
@@ -461,9 +463,9 @@ define(['jquery',
             self.updateProgressDots();
 
             //disable the buttons and go to next question or review
-            setTimeout(function() {
+            setTimeout(function () {
                 self.controls.nextbutton.prop("disabled",false);
-                if(self.quizhelper.showitemreview){
+                if (self.quizhelper.showitemreview) {
                     self.controls.progress_container.removeClass('d-flex');
                     self.controls.progress_container.hide();
                     self.controls.title.hide();
@@ -531,17 +533,17 @@ define(['jquery',
             var self = this;
             var color;
             var icon;
-            var progress = self.items.map(function(item, idx) {
-              color = "#E6E9FD";
-              icon = "fa fa-square";
-              if (self.items[idx].answered && self.items[idx].correct) {
-                color = "#74DC72";
-                icon = "fa fa-check-square";
-              } else if (self.items[idx].answered && !self.items[idx].correct) {
-                color = "#FB6363";
-                icon = "fa fa-window-close";
-              }
-              return "<i style='color:" + color + "' class='"+ icon +" pl-1'></i>";
+            var progress = self.items.map(function (item, idx) {
+                color = "#E6E9FD";
+                icon = "fa fa-square";
+                if (self.items[idx].answered && self.items[idx].correct) {
+                    color = "#74DC72";
+                    icon = "fa fa-check-square";
+                } else if (self.items[idx].answered && !self.items[idx].correct) {
+                    color = "#FB6363";
+                    icon = "fa fa-window-close";
+                }
+                return "<i style='color:" + color + "' class='" + icon + " pl-1'></i>";
             }).join(" ");
             self.controls.title.html(progress);
         },
@@ -706,7 +708,7 @@ define(['jquery',
                 ele.addEventListener("input", function (e) {
                     // Take the first character of the input
                     const [first, ...rest] = e.target.value;
-                    e.target.value = first ?? ""; // First will be undefined when backspace was entered, so set the input to ""
+                    e.target.value = first ?  ? ""; // First will be undefined when backspace was entered, so set the input to ""
                     const lastInputBox = index === inputElements.length - 1;
                     const didInsertContent = first !== undefined;
                     if (didInsertContent && !lastInputBox) {

@@ -3,7 +3,7 @@ import Config from "core/config";
 import Fragment from "core/fragment";
 import Templates from "core/templates";
 
-const regionSelector = regionname => `[data-region="${regionname}"]`;
+const regionSelector = regionname => `[data - region = "${regionname}"]`;
 
 export const registerElement = ({component, fragmentcallback, elementid}) => {
     const element = document.getElementById(elementid);
@@ -23,9 +23,9 @@ export const registerElement = ({component, fragmentcallback, elementid}) => {
                 }
             });
             params.formdata = new URLSearchParams([...formdata.entries()]).toString();
-            if (loaderElement) {
-                loaderElement.classList.remove('hidden');
-            }
+        if (loaderElement) {
+            loaderElement.classList.remove('hidden');
+        }
             Fragment.loadFragment(component, fragmentcallback, Config.contextid, params)
             .then((html, js) => {
                 Templates.replaceNode(rootelement, html, js);

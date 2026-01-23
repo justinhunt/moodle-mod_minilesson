@@ -48,7 +48,7 @@ define(['jquery', 'core/log'], function ($, log) {
             // Assembly AI is english or autodetect ... urgh
             var themodel = "universal-streaming-english";
             var shortlang = this.lang.slice(0, 2);
-            switch(shortlang){
+            switch (shortlang) {
                 case "en":
                     themodel = "universal-streaming-english";
                     break;
@@ -58,7 +58,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
             var query = 'sample_rate=16000&encoding=pcm_s16le&speech_model=' + themodel + '&token=' + this.speechtoken;
             //encodeURIComponent(this.speechtoken);
-            var url = `${basehost}/v3/ws?${query}`;
+            var url = `${basehost} / v3 / ws ? ${query}`;
             this.ready = false;
             this.socket = new WebSocket(url);
             log.debug('TT Streamer socket prepared');
@@ -137,7 +137,6 @@ define(['jquery', 'core/log'], function ($, log) {
                 //clear earlyaudio and send the audio we just got
                 this.earlyaudio = [];
                 this.sendaudio(int16data);
-
             } else {
                 //just send the audio we got
                 // log.debug('TT Streamer sending current audiodata');
@@ -202,7 +201,7 @@ define(['jquery', 'core/log'], function ($, log) {
             this.cancel();
         },
 
-        doclosesocket: function (){
+        doclosesocket: function () {
               var that = this;
              // Close WebSocket connection if it's open
             if (that.socket && [WebSocket.OPEN, WebSocket.CONNECTING].includes(that.socket.readyState)) {
@@ -211,7 +210,7 @@ define(['jquery', 'core/log'], function ($, log) {
                     if (that.socket.readyState === WebSocket.OPEN) {
                         const terminateMessage = { type: "Terminate" };
                         console.log(
-                        `Sending termination message: ${JSON.stringify(terminateMessage)}`
+                            `Sending termination message: ${JSON.stringify(terminateMessage)}`
                         );
                         that.socket.send(JSON.stringify(terminateMessage));
                     }

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,7 +26,8 @@ use mod_minilesson\local\exception\textgenerationfailed;
  * @copyright  2025 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class aigen {
+class aigen
+{
     /** @var array */
     public const DEFAULTTEMPLATES = [
         '6880824450555' => 'audiostory',
@@ -68,7 +70,8 @@ class aigen {
      * @param \stdClass|null $course The course object, if available.
      * @param \stdClass|null $cm The course module object, if available.
      */
-    public function __construct($cm, $progressbar = null) {
+    public function __construct($cm, $progressbar = null)
+    {
         global $PAGE, $OUTPUT;
 
         global $DB;
@@ -89,7 +92,8 @@ class aigen {
      * @return \stdClass An object containing the generated import items and lesson files.
      * @throws textgenerationfailed If text generation fails for any item.
      */
-    public function make_import_data($aigenconfig, $aigentemplate, $contextdata) {
+    public function make_import_data($aigenconfig, $aigentemplate, $contextdata)
+    {
         $contextfileareas = [];
         $importitems = [];
         $importlessonfiles = new \stdClass();
@@ -196,9 +200,9 @@ class aigen {
                             $imagepromptdata = false;
                             if (isset($importitem->{$generatefilearea->mapping})) {
                                 $imagepromptdata = $importitem->{$generatefilearea->mapping};
-                            } else if (isset($dataitem->{$generatefilearea->mapping})) {
+                            } elseif (isset($dataitem->{$generatefilearea->mapping})) {
                                 $imagepromptdata = $dataitem->{$generatefilearea->mapping};
-                            } else if (
+                            } elseif (
                                 isset($contextdata[$generatefilearea->mapping]) &&
                                 !empty($contextdata[$generatefilearea->mapping])
                             ) {
@@ -250,7 +254,7 @@ class aigen {
                     if (isset($importitem->{$generatefield->name})) {
                         $contextdata["item" . $configitem->itemnumber . "_" . $generatefield->name]
                             = $importitem->{$generatefield->name};
-                    } else if (isset($dataitem->{$generatefield->name})) {
+                    } elseif (isset($dataitem->{$generatefield->name})) {
                         // If the field does not exist in the import item, we can add it to the dataitem.
                         $contextdata["item" . $configitem->itemnumber . "_" . $generatefield->name]
                             = $dataitem->{$generatefield->name};
@@ -312,7 +316,8 @@ class aigen {
      * @param string|false $overallimagecontext Overall context to guide image generation.
      * @return array An associative array where keys are filenames and values are base64 encoded image data.
      */
-    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext) {
+    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext)
+    {
         $requests = $filenametrack = $imageurls = [];
         $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
         $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
@@ -325,7 +330,7 @@ class aigen {
         foreach ($fileareatemplate as $filename => $filecontent) {
             if (!is_array($imagepromptdata)) {
                 $prompt = $imagepromptdata;
-            } else if (array_key_exists($imagecnt, $imagepromptdata)) {
+            } elseif (array_key_exists($imagecnt, $imagepromptdata)) {
                 $prompt = $imagepromptdata[$imagecnt];
             } else {
                 // This is a problem, we have no context data for this image.
@@ -425,7 +430,8 @@ class aigen {
      * @param string $imagedata The raw image data.
      * @return string The resized image data.
      */
-    public function make_image_smaller($imagedata) {
+    public function make_image_smaller($imagedata)
+    {
         global $CFG;
         require_once($CFG->libdir . '/gdlib.php');
 
@@ -460,7 +466,8 @@ class aigen {
      * @param string $prompt The prompt to generate data for.
      * @return string|false Returns an object with success status and payload, or false on failure.
      */
-    public function generate_image($prompt) {
+    public function generate_image($prompt)
+    {
         $params = $this->prepare_generate_image_payload(($prompt));
         if ($params) {
             $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
@@ -478,7 +485,8 @@ class aigen {
      * @param string|null $token The authentication token, if available.
      * @return array|false Returns the payload array or false on failure.
      */
-    public function prepare_generate_image_payload($prompt, $token = null) {
+    public function prepare_generate_image_payload($prompt, $token = null)
+    {
         global $USER;
 
         if (!empty($this->conf->apiuser) && !empty($this->conf->apisecret)) {
@@ -512,7 +520,8 @@ class aigen {
      * @param string $resp The response from the API.
      * @return string|null Returns the base64 encoded image data or null on failure.
      */
-    public function process_generate_image_response($resp) {
+    public function process_generate_image_response($resp)
+    {
         $respobj = json_decode($resp);
         $ret = new \stdClass();
         if (isset($respobj->returnCode)) {
@@ -531,7 +540,7 @@ class aigen {
                     $base64data = base64_encode($smallerdata);
                     return $base64data;
                 }
-            } else if (isset($ret->payload[0]->b64_json)) {
+            } elseif (isset($ret->payload[0]->b64_json)) {
                 // If the payload has a base64 encoded image, use that.
                 $rawbase64data = $ret->payload[0]->b64_json;
                 $rawdata = base64_decode($rawbase64data);
@@ -550,7 +559,8 @@ class aigen {
      * @param string $prompt The prompt to generate data for.
      * @return \stdClass|false Returns an object with success status and payload, or false on failure.
      */
-    public function generate_data($prompt) {
+    public function generate_data($prompt)
+    {
         global $USER;
 
         if (!empty($this->conf->apiuser) && !empty($this->conf->apisecret)) {
@@ -571,7 +581,7 @@ class aigen {
             $params['owner'] = hash('md5', $USER->username);
             $params["subject"] = 'none';
 
-            $resp = utils::curl_fetch($url, $params, 'post',180);
+            $resp = utils::curl_fetch($url, $params, 'post', 180);
             $respobj = json_decode($resp);
             $ret = new \stdClass();
             if (isset($respobj->returnCode)) {
@@ -593,7 +603,8 @@ class aigen {
      * @return array An associative array of lesson templates,
      *  where the key is the template name and the value is an array containing 'config' and 'template' objects.
      */
-    public static function fetch_lesson_templates($filtertags = []) {
+    public static function fetch_lesson_templates($filtertags = [])
+    {
         global $DB;
 
         $fields = 't.*';
@@ -632,7 +643,8 @@ class aigen {
      * creates a new template object, and uploads it using the aigen_uploadform class.
      * It handles exceptions if the files cannot be read.
      */
-    public static function create_default_templates() {
+    public static function create_default_templates()
+    {
         global $CFG, $DB;
 
         foreach (self::DEFAULTTEMPLATES as $uniqueid => $templateshortname) {

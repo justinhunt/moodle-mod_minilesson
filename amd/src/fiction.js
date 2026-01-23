@@ -135,8 +135,8 @@ define([
             if (currentResult instanceof YarnBound.TextResult) {
                 yarncontent.yarntext = currentResult;
                 this.can_continuebutton(false);
-                this.chatdata.picturesrc = yarncontent.yarntext.md?.character?.picturesrc;
-                this.chatdata.charactername = yarncontent.yarntext.md?.character?.name;
+                this.chatdata.picturesrc = yarncontent.yarntext.md ? .character ? .picturesrc;
+                this.chatdata.charactername = yarncontent.yarntext.md ? .character ? .name;
                 this.chatdata.charactertext = yarncontent.yarntext.text;
 
                 Templates.render('mod_minilesson/fiction_charactermessage', {
@@ -176,11 +176,12 @@ define([
                             that.controls.yarnoptions.html(html);
                             Templates.runTemplateJS(js);
                         }, 2000);
-                    });
+                    }
+                );
 
                 if ('text' in yarncontent.yarnoptions) {
-                    that.chatdata.picturesrc = yarncontent.yarnoptions.md?.character?.picturesrc;
-                    that.chatdata.charactername = yarncontent.yarnoptions.md?.character?.name;
+                    that.chatdata.picturesrc = yarncontent.yarnoptions.md ? .character ? .picturesrc;
+                    that.chatdata.charactername = yarncontent.yarnoptions.md ? .character ? .name;
                     that.chatdata.charactertext = yarncontent.yarnoptions.text;
 
                     Templates.render('mod_minilesson/fiction_charactermessage', {
@@ -206,7 +207,6 @@ define([
                     that.controls.yarntext.html('');
                 }
                 that.can_continuebutton(false);
-
             } else if (currentResult instanceof YarnBound.CommandResult) {
                 // Process the command string a little. so we have command name and args
                 // eg "picture 1.png"
@@ -228,7 +228,8 @@ define([
                                 that.chatdata.charactermedia = html;
                                 that.chatdata.classname = 'hasmedia';
                                 Templates.runTemplateJS(js);
-                            });
+                            }
+                        );
                         break;
                     }
                     case 'audio': {
@@ -242,7 +243,8 @@ define([
                                 that.chatdata.classname = 'hasmedia';
                                 that.controls.yarnmedia.html(html);
                                 Templates.runTemplateJS(js);
-                            });
+                            }
+                        );
                         break;
                     }
                     case 'video': {
@@ -256,7 +258,8 @@ define([
                                 that.chatdata.classname = 'hasmedia';
                                 that.controls.yarnmedia.html(html);
                                 Templates.runTemplateJS(js);
-                            });
+                            }
+                        );
                         break;
                     }
                     case 'clearpicture': {
@@ -352,7 +355,8 @@ define([
             // When click next button, report and leave it up to parent to deal with it.
             $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function () {
                 if (!self.storycomplete) {
-                    notification.confirm(self.strings.nextlessonitem,
+                    notification.confirm(
+                        self.strings.nextlessonitem,
                         self.strings.confirm_desc,
                         self.strings.yes,
                         self.strings.no,
@@ -364,7 +368,7 @@ define([
                     self.next_question();
                 }
             });
-            $("#" + itemdata.uniqueid + "_container").on("showElement", async () => {
+            $("#" + itemdata.uniqueid + "_container").on("showElement", async() => {
                 if (!self.instance) {
                     // Maybe init yarn-bound here
                     // this.do_render();
@@ -453,10 +457,10 @@ define([
                         currentthing.md[entry.name] = entry.properties;
                     }
                 });
-                if (currentthing.md.character?.name) {
+                if (currentthing.md.character ? .name) {
                     const charname = currentthing.md.character.name.toLowerCase();
                     currentthing.md.character.picturesrc = this.itemdata.filenamesmap
-                        .find(fileinfo => fileinfo.filekey === charname)?.fileurl || null;
+                        .find(fileinfo => fileinfo.filekey === charname) ? .fileurl || null;
                 }
             }
             return currentthing;

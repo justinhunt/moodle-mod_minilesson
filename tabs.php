@@ -27,7 +27,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 /// This file to be included so we can assume config.php has already been included.
 global $DB;

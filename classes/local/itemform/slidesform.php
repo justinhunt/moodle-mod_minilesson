@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Form for creating/editing a slides item in a MiniLesson activity.
  *

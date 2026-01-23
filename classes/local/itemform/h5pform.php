@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -8,14 +9,14 @@
 
 namespace mod_minilesson\local\itemform;
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 class h5pform extends baseform
 {
-
     public $type = constants::TYPE_H5P;
 
-    public function custom_definition() {
+    public function custom_definition()
+    {
         global $OUTPUT;
 
         $this->add_itemsettings_heading();

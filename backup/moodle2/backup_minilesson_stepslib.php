@@ -26,20 +26,21 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 /**
  * Defines the complete webquest structure for backup, with file and id annotations
  *
  */
-class backup_minilesson_activity_structure_step extends backup_activity_structure_step {
-
+class backup_minilesson_activity_structure_step extends backup_activity_structure_step
+{
     /**
      * Defines the structure of the minilesson element inside the webquest.xml file
      *
      * @return backup_nested_element
      */
-    protected function define_structure() {
+    protected function define_structure()
+    {
 
         // are we including userinfo?
         $userinfo = $this->get_setting_value('userinfo');
@@ -56,22 +57,22 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
             'ttslanguage','transcriber','region','activitylink','pagelayout','showqtitles','showitemreview','foriframe',
             'lessonkey','csskey','containerwidth','lessonfont','timecreated','timemodified','viewstart','viewend','finishscreen','finishscreencustom',
             'completionwhenfinished', 'nativelang',
-			));
+            ));
 
-		
-		//attempts
+
+        //attempts
         $attempts = new backup_nested_element('attempts');
-        $attempt = new backup_nested_element('attempt', array('id'),array(
-			"moduleid","courseid","userid","status",
-			"sessionscore","sessiontime","sessiondata","sessionend","errorcount",
+        $attempt = new backup_nested_element('attempt', array('id'), array(
+            "moduleid","courseid","userid","status",
+            "sessionscore","sessiontime","sessiondata","sessionend","errorcount",
             "notes","qtextanswer1","qtextscore1","timecreated","timemodified"
-		));
+        ));
 
 
 
         // rsquestion
         $rsquestions = new backup_nested_element('rsquestions');
-        $rsquestion = new backup_nested_element('rsquestion', array('id'),array(
+        $rsquestion = new backup_nested_element('rsquestion', array('id'), array(
             constants::M_MODNAME, 'name','itemorder', 'type','visible','iteminstructions','itemtext', 'itemtextformat','itemtts','itemttsvoice','itemttsoption',
             'itemytid','itemytstart','itemytend',
             'itemttsautoplay', 'itemaudiofname','itemtextarea','itemttsdialog', 'itemttsdialogopts','itemttspassage','itemttspassageopts', 'customtext1', 'customtext1format','customtext2', 'customtext2format','customtext3',
@@ -81,8 +82,8 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
                 'customint6','customint7', 'customint8','customint9', 'customint10','layout','correctanswer','timelimit','itemaudiostoryzoom',
             'timemodified','rsquestionkey','passagehash','alternatives','phonetic','createdby','modifiedby'));
 
-		
-		// Build the tree.
+
+        // Build the tree.
         $oneactivity->add_child($attempts);
         $attempts->add_child($attempt);
 
@@ -93,14 +94,17 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
 
         // Define sources.
         $oneactivity->set_source_table(constants::M_TABLE, array('id' => backup::VAR_ACTIVITYID));
-        $rsquestion->set_source_table(constants::M_QTABLE,
-            array(constants::M_MODNAME => backup::VAR_PARENTID));
+        $rsquestion->set_source_table(
+            constants::M_QTABLE,
+            array(constants::M_MODNAME => backup::VAR_PARENTID)
+        );
 
         //sources if including user info
         if ($userinfo) {
-			$attempt->set_source_table(constants::M_ATTEMPTSTABLE,
-											array('moduleid' => backup::VAR_PARENTID));
-
+            $attempt->set_source_table(
+                constants::M_ATTEMPTSTABLE,
+                array('moduleid' => backup::VAR_PARENTID)
+            );
         }
 
         // Define id annotations.
@@ -110,9 +114,9 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
         // Define file annotations.
         // intro file area has 0 itemid.
         $oneactivity->annotate_files(constants::M_COMPONENT, 'intro', null);
-		//$oneactivity->annotate_files(constants::M_COMPONENT, 'welcome', null);
+        //$oneactivity->annotate_files(constants::M_COMPONENT, 'welcome', null);
 
-		//question stuff
+        //question stuff
         $rsquestion->annotate_files(constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, 'id');
         $rsquestion->annotate_files(constants::M_COMPONENT, constants::MEDIAQUESTION, 'id');
         $rsquestion->annotate_files(constants::M_COMPONENT, constants::AUDIOSTORY, 'id');
@@ -123,15 +127,13 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
             $rsquestion->annotate_files(constants::M_COMPONENT, constants::FILEANSWER . $anumber . '_image', 'id');
             $rsquestion->annotate_files(constants::M_COMPONENT, constants::FILEANSWER . $anumber . '_audio', 'id');
         }
-		
-		//file annotation if including user info
+
+        //file annotation if including user info
         if ($userinfo) {
-			//$attempt->annotate_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, 'id');
+            //$attempt->annotate_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, 'id');
         }
-		
+
         // Return the root element, wrapped into standard activity structure.
         return $this->prepare_activity_structure($oneactivity);
-		
-
     }
 }

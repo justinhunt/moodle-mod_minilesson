@@ -32,8 +32,8 @@ defined('MOODLE_INTERNAL') || die();
 global $DB;
 
 $logs = array(
-    array('module'=>'minilesson', 'action'=>'add', 'mtable'=>'minilesson', 'field'=>'name'),
-    array('module'=>'minilesson', 'action'=>'update', 'mtable'=>'minilesson', 'field'=>'name'),
-    array('module'=>'minilesson', 'action'=>'view', 'mtable'=>'minilesson', 'field'=>'name'),
-    array('module'=>'minilesson', 'action'=>'view all', 'mtable'=>'minilesson', 'field'=>'name')
+    array('module' => 'minilesson', 'action' => 'add', 'mtable' => 'minilesson', 'field' => 'name'),
+    array('module' => 'minilesson', 'action' => 'update', 'mtable' => 'minilesson', 'field' => 'name'),
+    array('module' => 'minilesson', 'action' => 'view', 'mtable' => 'minilesson', 'field' => 'name'),
+    array('module' => 'minilesson', 'action' => 'view all', 'mtable' => 'minilesson', 'field' => 'name')
 );

@@ -2,8 +2,8 @@
 
 require('../../config.php');
 
-$qtype   = required_param('qtype',PARAM_TEXT);
-$action = required_param('action',PARAM_ALPHANUMEXT);
+$qtype   = required_param('qtype', PARAM_TEXT);
+$action = required_param('action', PARAM_ALPHANUMEXT);
 
 require_login();
 
@@ -18,7 +18,7 @@ if (empty($enabledplugin)) {
 } else {
     $enableditems = explode(',', $enabledplugin);
 }
-switch($action){
+switch ($action) {
     case 'enable':
         if (!in_array($qtype, $enableditems)) {
             $enableditems[] = $qtype;

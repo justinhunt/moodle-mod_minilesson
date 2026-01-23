@@ -32,7 +32,7 @@ define(['jquery', 'core/log'], function ($, log) {
             this.lang = theaudiohelper.therecorder.lang;
             this.sentHeader = false; // Track if WAV header was sent
             // If region starts with "china" set aipdomain to azure.cn
-            if(this.region.startsWith('china')) {
+            if (this.region.startsWith('china')) {
                 this.apidomain = 'azure.cn';
             } else if (this.region.startsWith('usgov')) {
                 this.apidomain = 'azure.us';
@@ -45,9 +45,9 @@ define(['jquery', 'core/log'], function ($, log) {
         preparesocket: async function () {
             var that = this;
             var url = `wss://${this.region}.stt.speech.${this.apidomain}/speech/recognition/conversation/cognitiveservices/v1?language=${this.lang}`;
-            url += `&format=simple`;
+            url += ` & format = simple`;
             // Using the token as a query param is the only easy way without headers
-            url += `&Authorization=Bearer ${this.speechtoken}`;
+            url += ` & Authorization = Bearer ${this.speechtoken}`;
 
             this.socket = new WebSocket(url);
 
@@ -65,7 +65,9 @@ define(['jquery', 'core/log'], function ($, log) {
                     try {
                         // 1. Find the start of the JSON body (after the headers)
                         const bodyStartIndex = message.data.indexOf('{');
-                        if (bodyStartIndex === -1) return; // Not a JSON message (e.g., turn.start)
+                        if (bodyStartIndex === -1) {
+                            return; // Not a JSON message (e.g., turn.start)
+                        }
 
                         // 2. Extract headers to check the Path
                         const headerSection = message.data.substring(0, bodyStartIndex);
@@ -78,8 +80,7 @@ define(['jquery', 'core/log'], function ($, log) {
                         if (headerSection.includes('Path:speech.hypothesis')) {
                             let msg = res.Text;
                             that.audiohelper.oninterimspeechcapture(that.finaltext + ' ' + msg);
-                        }
-                        else if (headerSection.includes('Path:speech.phrase')) {
+                        } else if (headerSection.includes('Path:speech.phrase')) {
                             if (res.RecognitionStatus === 'Success') {
                                 let msg = res.DisplayText;
                                 that.finaltext += ' ' + msg;

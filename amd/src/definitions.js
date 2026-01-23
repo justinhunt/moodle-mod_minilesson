@@ -1,4 +1,4 @@
-define(['jquery','core/log'], function($,log) {
+define(['jquery','core/log'], function ($,log) {
     "use strict"; // jshint ;_;
 
 /*

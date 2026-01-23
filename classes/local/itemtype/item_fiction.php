@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,7 +27,8 @@ use mod_minilesson\utils;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_fiction extends item {
+class item_fiction extends item
+{
     /** @var string */
     public const ITEMTYPE = constants::TYPE_FICTION;
 
@@ -38,7 +40,8 @@ class item_fiction extends item {
      * @param object|false $context The context object.
      * @return void
      */
-    public function from_record($itemrecord, $moduleinstance = false, $context = false) {
+    public function from_record($itemrecord, $moduleinstance = false, $context = false)
+    {
         parent::from_record($itemrecord, $moduleinstance, $context);
         $this->filemanageroptions['maxfiles'] = -1;
     }
@@ -51,7 +54,8 @@ class item_fiction extends item {
      * @param object|false $context The context object.
      * @return void
      */
-    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false)
+    {
         parent::__construct($itemrecord, $moduleinstance, $context);
         $this->needs_speechrec = true;
     }
@@ -62,7 +66,8 @@ class item_fiction extends item {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(\renderer_base $output)
+    {
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
@@ -172,7 +177,8 @@ class item_fiction extends item {
      * @param string $yarn The yarn to sanitize.
      * @return string The sanitized yarn.
      */
-    public function sanitize_yarn($yarn) {
+    public function sanitize_yarn($yarn)
+    {
         // Remove zero-width chars.
         $yarn = preg_replace('/[\x{200B}\x{200C}\x{200D}\x{FEFF}]/u', '', $yarn);
 
@@ -192,7 +198,8 @@ class item_fiction extends item {
      * @param object $cm The course module object.
      * @return \stdClass|false An error object if validation fails, or false if no error.
      */
-    public static function validate_import($newrecord, $cm) {
+    public static function validate_import($newrecord, $cm)
+    {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -210,7 +217,8 @@ class item_fiction extends item {
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type.
      * @return array
      */
-    public static function get_keycolumns() {
+    public static function get_keycolumns()
+    {
         // Get the basic key columns and customize a little for instances of this item type.
         $keycols = parent::get_keycolumns();
         $keycols['text1'] = [
@@ -244,9 +252,9 @@ class item_fiction extends item {
      * @param string $generatemethod The method of generation.
      * @return string The prompt to be used.
      */
-    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
-        switch($generatemethod) {
-
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
+    {
+        switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create an adventure fiction story in yarn format on the topic of: [{topic}] ";
                 break;

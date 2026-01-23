@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -61,7 +62,7 @@ $PAGE->set_heading(get_string('lessonbank', constants::M_COMPONENT));
 
 if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded') {
     $PAGE->set_pagelayout('embedded');
-} else if ($config->enablesetuptab || $moduleinstance->pagelayout == 'popup') {
+} elseif ($config->enablesetuptab || $moduleinstance->pagelayout == 'popup') {
     $PAGE->set_pagelayout('popup');
 } else {
     $PAGE->set_pagelayout('incourse');
@@ -97,7 +98,7 @@ if (!empty($translateimportid) || ($restore && confirm_sesskey())) {
                 $translateditems = $theimport->call_translate($itemsjson, $importfromlang, $importtolang);
                 if (is_array($translateditems)) {
                     $importdata->items = $translateditems;
-                } else if ($translateditems && utils::is_json($translateditems)) {
+                } elseif ($translateditems && utils::is_json($translateditems)) {
                     $importdata->items = json_decode($translateditems);
                 }
             }
@@ -126,7 +127,6 @@ $lessonbankcontrolsdata = [
 echo $renderer->header($moduleinstance, $cm, 'lessonbank', null, get_string('lessonbank', constants::M_COMPONENT));
 
 if ($config->lessonbankurl) {
-
     echo html_writer::tag('p', get_string('lessonbank:desc', 'minilesson'));
 
     echo $searchform->render();
@@ -138,11 +138,8 @@ if ($config->lessonbankurl) {
         'position-relative',
         ['data-region' => 'cards-container']
     );
-
 } else {
-
     echo $OUTPUT->notification(get_string('notconfigured', constants::M_COMPONENT), 'warning');
-
 }
 
 echo $renderer->footer();

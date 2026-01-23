@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,7 +23,6 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
 namespace mod_minilesson;
 
 /**
@@ -33,7 +33,6 @@ namespace mod_minilesson;
  */
 class import
 {
-
     private $itemsfromjson = false;
     private $cir;
     private $isjson = false;
@@ -70,7 +69,6 @@ class import
         // Keep timestamp consistent.
         $today = time();
         $today = make_timestamp(date('Y', $today), date('m', $today), date('d', $today), 0, 0, 0);
-
     }
 
     public function set_reader($reader, $isjson = false)
@@ -91,7 +89,6 @@ class import
         $this->upt->start(); // Start table.
 
         if ($this->isjson) {
-
             $linenum = 0;
             foreach ($this->itemsfromjson as $item) {
                 $linenum++;
@@ -271,7 +268,6 @@ class import
 
         return true;
         // Do what we have to do
-
     }
 
     public function perform_import_validation($newrecord, $cm)
@@ -295,7 +291,6 @@ class import
         $newrecord = [];
 
         foreach ($line as $keynum => $value) {
-
             // CSV files have the field name in the top line of the file = current header
             // but JSON files its in the json per item (which we stripped away to make CSV like data duh ..)
             // so we need to get the field name from the keycolumns array
@@ -335,7 +330,7 @@ class import
                     } else {
                         if (array_key_exists(strtolower($value), $this->allvoices)) {
                             $value = $this->allvoices[strtolower($value)];
-                        } else if (in_array(strtolower($value) . '_g', $this->allvoices)) {
+                        } elseif (in_array(strtolower($value) . '_g', $this->allvoices)) {
                             $value = $this->allvoices[strtolower($value) . '_g'];
                         } else {
                             // not sure how to get this to user
@@ -418,7 +413,8 @@ class import
         return $newrecord;
     }
 
-    public function call_translate($itemsjson, $fromlang, $tolang){
+    public function call_translate($itemsjson, $fromlang, $tolang)
+    {
         $aigen = new aigen($this->cm);
         $prompt = "Translate any instances of language: $fromlang , into language: $tolang in the JSON string that follows." . PHP_EOL;
         $prompt .= "Return results in the format: {translatedjson: thetranslatedjson}" . PHP_EOL;
@@ -445,7 +441,8 @@ class import
         }
     }
 
-    public function translate_and_export_items($fromlang, $tolang) {
+    public function translate_and_export_items($fromlang, $tolang)
+    {
         $jsonformat = false;
         $exportobj = $this->export_items($jsonformat);
         $itemsjson = json_encode($exportobj->items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -562,10 +559,9 @@ class import
                     break;
 
                 case 'voice':
-
                     if (array_key_exists(strtolower($fieldvalue), $this->allvoices)) {
                         $jsonvalue = $this->allvoices[strtolower($fieldvalue)];
-                    } else if (in_array(strtolower($fieldvalue) . '_g', $this->allvoices)) {
+                    } elseif (in_array(strtolower($fieldvalue) . '_g', $this->allvoices)) {
                         $jsonvalue = $this->allvoices[strtolower($fieldvalue) . '_g'];
                     } else {
                         $jsonvalue = 'auto';
@@ -675,5 +671,4 @@ class import
 
         return $itemobj;
     }//end of export item function
-
 }

@@ -1,12 +1,12 @@
 /* jshint ignore:start */
 // Uses CommonJS, AMD or browser globals to create a jQuery plugin.
-(function(factory) {
+(function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(['jquery'], factory);
     } else if (typeof module === 'object' && module.exports) {
         // Node/CommonJS
-        module.exports = function(root, jQuery) {
+        module.exports = function (root, jQuery) {
             if (jQuery === undefined) {
                 // require('jQuery') returns a factory that requires window to
                 // build a jQuery instance, we normalize how we use modules
@@ -14,8 +14,7 @@
                 // if it's defined (how jquery works)
                 if (typeof window !== 'undefined') {
                     jQuery = require('jquery');
-                }
-                else {
+                } else {
                     jQuery = require('jquery')(root);
                 }
             }
@@ -77,7 +76,7 @@
         height: '5px',
         timeLimit: 60,// Total number of seconds
         warningThreshold: 5,// Seconds remaining triggering switch to warning color
-        onFinish: function() {},// Invoked once the timer expires
+        onFinish: function () {},// Invoked once the timer expires
         baseStyle: 'progressbar_basestyle progress-bar progress-bar-animated',// Bootstrap progress bar style at the beginning of the timer
         warningStyle: 'progressbar_basestyle progress-bar progress-bar-animated', // Bootstrap progress bar style in the warning phase
         completeStyle: 'progresstimer progress-bar progress-bar-animated progress-bar-complete'// Bootstrap progress bar style at completion of timer

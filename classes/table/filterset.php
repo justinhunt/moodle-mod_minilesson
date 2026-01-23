@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,13 +24,13 @@ namespace mod_minilesson\table;
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class filterset extends \core_table\local\filter\filterset {
-
-    public function upsert_filter($name, $values, $jointype = self::JOINTYPE_DEFAULT) {
+class filterset extends \core_table\local\filter\filterset
+{
+    public function upsert_filter($name, $values, $jointype = self::JOINTYPE_DEFAULT)
+    {
         if (array_key_exists($name, $this->filters)) {
             unset($this->filters[$name]);
         }
         return $this->add_filter_from_params($name, $jointype, (array) $values);
     }
-
 }

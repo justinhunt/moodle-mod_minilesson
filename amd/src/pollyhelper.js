@@ -12,25 +12,25 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
         owner: '',
         cloudpoodllurl: '',
 
-        init: function(token, region, owner, cloudpoodllurl){
-            this.token =token;
-            this.region=region;
-            this.owner=owner;
+        init: function (token, region, owner, cloudpoodllurl) {
+            this.token = token;
+            this.region = region;
+            this.owner = owner;
             this.cloudpoodllurl = cloudpoodllurl;
         },
 
-        clean_ssml_chars: function(speaktext){
+        clean_ssml_chars: function (speaktext) {
             //deal with SSML reserved characters
             speaktext =  speaktext.replace(/&/g,'&amp;');
             speaktext = speaktext.replace(/'/g,'&apos;');
-            speaktext= speaktext.replace(/"/g,'&quot;');
+            speaktext = speaktext.replace(/"/g,'&quot;');
             speaktext = speaktext.replace(/</g,'&lt;');
             speaktext =  speaktext.replace(/>/g,'&gt;');
             return speaktext;
         },
 
-        can_speak_neural: function(voice,region){
-            switch(region){
+        can_speak_neural: function (voice,region) {
+            switch (region) {
                 case "useast1":
                 case "tokyo":
                 case "sydney":
@@ -47,17 +47,17 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
             }
 
             //check if the voice is supported
-            if(def.neural_voices.indexOf(voice) !== -1){
+            if (def.neural_voices.indexOf(voice) !== -1) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
 
         },
 
-        fetch_polly_url: function(speaktext,voiceoption, voice) {
+        fetch_polly_url: function (speaktext,voiceoption, voice) {
             var that = this;
-            return new Promise(function(resolve,reject){
+            return new Promise(function (resolve,reject) {
                 //The REST API we are calling
                 var functionname = 'local_cpapi_fetch_polly_url';
 
@@ -69,7 +69,6 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                 xhr.onreadystatechange = function (e) {
                     if (this.readyState === 4) {
                         if (xhr.status == 200) {
-
                             //get a yes or forgetit or tryagain
                             var payload = xhr.responseText;
                             var payloadobject = JSON.parse(payload);
@@ -80,7 +79,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                                     log.debug(payloadobject.returnMessage);
                                     return false;
                                     //if all good, then lets do the embed
-                                } else if (payloadobject.returnCode === 0){
+                                } else if (payloadobject.returnCode === 0) {
                                     var pollyurl = payloadobject.returnMessage;
                                     resolve(pollyurl);
                                 } else {
@@ -98,27 +97,26 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                         }
                     }
                 };
-                var texttype='ssml';
+                var texttype = 'ssml';
 
-                switch(parseInt(voiceoption)){
-
+                switch (parseInt(voiceoption)) {
                     //slow
                     case 1:
                         //fetch slightly slower version of speech
                         //rate = 'slow' or 'x-slow' or 'medium'
-                        speaktext =that.clean_ssml_chars(speaktext);
+                        speaktext = that.clean_ssml_chars(speaktext);
                         speaktext = '<speak><break time="1000ms"></break><prosody rate="slow">' + speaktext + '</prosody></speak>';
                         break;
                     //veryslow
                     case 2:
                         //fetch slightly slower version of speech
                         //rate = 'slow' or 'x-slow' or 'medium'
-                        speaktext =that.clean_ssml_chars(speaktext);
+                        speaktext = that.clean_ssml_chars(speaktext);
                         speaktext = '<speak><break time="1000ms"></break><prosody rate="x-slow">' + speaktext + '</prosody></speak>';
                         break;
                     //ssml
                     case 3:
-                        speaktext='<speak>' + speaktext + '</speak>';
+                        speaktext = '<speak>' + speaktext + '</speak>';
                         break;
 
                     //normal
@@ -126,14 +124,13 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                     default:
                         //fetch slightly slower version of speech
                         //rate = 'slow' or 'x-slow' or 'medium'
-                        speaktext =that.clean_ssml_chars(speaktext);
+                        speaktext = that.clean_ssml_chars(speaktext);
                         speaktext = '<speak><break time="1000ms"></break>' + speaktext + '</speak>';
                         break;
-
                 }
 
                 //to use the neural or standard synthesis engine
-                var engine = that.can_speak_neural(voice,that.region) ?'neural' : 'standard';
+                var engine = that.can_speak_neural(voice,that.region) ? 'neural' : 'standard';
 
                 //log.debug(params);
                 var xhrparams = "wstoken=" + that.token

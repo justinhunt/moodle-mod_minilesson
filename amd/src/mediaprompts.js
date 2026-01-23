@@ -1,4 +1,4 @@
-define(['jquery','core/log','core/notification','core/str'], function($,log,notification,str) {
+define(['jquery','core/log','core/notification','core/str'], function ($,log,notification,str) {
     "use strict"; // jshint ;_;
 
 /*
@@ -13,17 +13,17 @@ This file contains functions for media prompts on the mform
         strings: {},
 
         //init the media prompts
-        init: function(opts){
+        init: function (opts) {
             var that = this;
             this.init_strings();
             this.init_controls();
             this.register_events();
 
             //init the visibility of the fieldsets
-            $.each(opts, function(key, value){
-                log.debug('key: '+key+' value: '+value);
-                if(value===1){
-                    var thefieldset=$('#ml_mediaprompt_panel_'+key);
+            $.each(opts, function (key, value) {
+                log.debug('key: ' + key + ' value: ' + value);
+                if (value === 1) {
+                    var thefieldset = $('#ml_mediaprompt_panel_' + key);
                     thefieldset.show();
                     //disable the option in the dropdown
                     that.controls.select.find('option[value="' + key + '"]').prop('disabled', true);
@@ -36,7 +36,7 @@ This file contains functions for media prompts on the mform
         },
 
          // Set up strings
-        init_strings: function(){
+        init_strings: function () {
             var that = this;
             str.get_strings([
                 { "key": "reallydeletemediaprompt", "component": 'mod_minilesson' },
@@ -55,23 +55,23 @@ This file contains functions for media prompts on the mform
         },
 
         //get handles on all the page elements we will refer to
-        init_controls: function(){
+        init_controls: function () {
             //the media prompt select dropdown
             this.controls.select = $('#id_mediaprompts');
             this.controls.selectcontainer = $('#fitem_id_mediaprompts');
         },
 
         //register events on select and fieldsets etc
-        register_events: function(){
-            var that=this;
+        register_events: function () {
+            var that = this;
             log.debug("register events");
             //on select change add the fieldset
-            this.controls.select.on('change',function(){
+            this.controls.select.on('change',function () {
                 log.debug("changed");
                 var mediaprompt = $(this).val();
                 var thefieldset = $('#ml_mediaprompt_panel_' + mediaprompt);
               //tinymce breaks if we move it arround the DOM .. so we dont insertAfter for textarea
-                if(mediaprompt !== 'addtextarea') {
+                if (mediaprompt !== 'addtextarea') {
                     thefieldset.insertAfter(that.controls.selectcontainer);
                 }
                 thefieldset.fadeIn(500); //thefieldset.show();
@@ -84,7 +84,7 @@ This file contains functions for media prompts on the mform
 
             //close the fieldset on button click
             var fieldset_close = $('.ml_mediaprompt_panel button.close');
-            fieldset_close.on('click',function(){
+            fieldset_close.on('click',function () {
                 var thefieldset = $(this).closest('fieldset');
                 var keyfieldname = thefieldset.data('keyfield');
                 var mediaprompt = thefieldset.data('mediaprompt');
@@ -93,22 +93,22 @@ This file contains functions for media prompts on the mform
                     case 'itemttsdialog':
                     case 'itemttspassage':
                     case 'itemtts':
-                        var keyfield = thefieldset.find("textarea[name='"+keyfieldname +"']");
+                        var keyfield = thefieldset.find("textarea[name='" + keyfieldname + "']");
                         break;
                     case 'itemaudiostory':
                         var keyfield = thefieldset.find("textarea[name='itemaudiofname[text]']");
                         break;
                     default:
-                        var keyfield = thefieldset.find("input[name='"+keyfieldname +"']");
+                        var keyfield = thefieldset.find("input[name='" + keyfieldname + "']");
                 }
 
                 //fetch the legend text
                 var legend = thefieldset.find("legend:first").text();
 
                 //function to delete the fieldset .. we may seek confirmation first, or not, depending on if the keyfield has data
-                var dodelete=function(){
+                var dodelete = function () {
                     //clear the data
-                    if(keyfield){
+                    if (keyfield) {
                         keyfield.val('');
                     }
                     //hide the fieldset
@@ -118,34 +118,48 @@ This file contains functions for media prompts on the mform
                     that.controls.select.find('option[value="' + mediaprompt + '"]').prop('disabled', false);
                 }
 
-                switch(keyfieldname){
+                switch (keyfieldname) {
                     case 'itemmedia':
                         //item media is inaccessible, and hard to clear data so we confirm with a specific message
-                        notification.confirm(that.strings.deletemediaprompt,
-                                that.strings.deletefilesfirst + ' '+ that.strings.reallydeletemediaprompt + legend + '?',
-                                that.strings.delete,'',
-                                dodelete);
+                        notification.confirm(
+                            that.strings.deletemediaprompt,
+                            that.strings.deletefilesfirst + ' ' + that.strings.reallydeletemediaprompt + legend + '?',
+                            that.strings.delete,
+                            '',
+                            dodelete
+                        );
                         break;
                     case 'itemaudiostory':
                         //item media is inaccessible, and hard to clear data so we confirm with a specific message
-                        notification.confirm(that.strings.deletemediaprompt,
-                                that.strings.deletefilesfirst + ' '+ that.strings.reallydeletemediaprompt + legend + '?',
-                                that.strings.delete,'',
-                                dodelete);
+                        notification.confirm(
+                            that.strings.deletemediaprompt,
+                            that.strings.deletefilesfirst + ' ' + that.strings.reallydeletemediaprompt + legend + '?',
+                            that.strings.delete,
+                            '',
+                            dodelete
+                        );
                         break;
                     case 'itemtextarea':
                         //item text area is hard to check, and hard to clear data so we confirm with a specific message
-                        notification.confirm(that.strings.deletemediaprompt,
-                            that.strings.cleartextfirst + ' '+  that.strings.reallydeletemediaprompt + legend + '?',
-                            that.strings.delete,'',
-                            dodelete);
+                        notification.confirm(
+                            that.strings.deletemediaprompt,
+                            that.strings.cleartextfirst + ' ' +  that.strings.reallydeletemediaprompt + legend + '?',
+                            that.strings.delete,
+                            '',
+                            dodelete
+                        );
                         break;
                     default:
                         //if we have data confirm deletion, then delete
-                        if(keyfield.length>0 && keyfield.val()!=''){
-                            notification.confirm(that.strings.deletemediaprompt, that.strings.reallydeletemediaprompt + legend + '?',
-                                that.strings.delete,'',dodelete);
-                        }else{
+                        if (keyfield.length > 0 && keyfield.val() != '') {
+                            notification.confirm(
+                                that.strings.deletemediaprompt,
+                                that.strings.reallydeletemediaprompt + legend + '?',
+                                that.strings.delete,
+                                '',
+                                dodelete
+                            );
+                        } else {
                             dodelete();
                         }
                 }

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,7 +31,6 @@ use renderable;
  */
 abstract class item implements templatable, renderable
 {
-
     //the item type
     public const ITEMTYPE = '';
 
@@ -294,7 +294,7 @@ abstract class item implements templatable, renderable
     }
 
     /*
-     This function return the fields that the generate method will generate 
+     This function return the fields that the generate method will generate
     */
     public static function aigen_fetch_placeholders($itemtemplate)
     {
@@ -357,7 +357,7 @@ abstract class item implements templatable, renderable
                 case 'ttspassagespeed':
                     break;
 
-                case 'audiofname':     
+                case 'audiofname':
                     break;
 
                 case 'type':
@@ -390,12 +390,11 @@ abstract class item implements templatable, renderable
     }
 
     /*
-    This function return the prompt that the generate method requires. 
+    This function return the prompt that the generate method requires.
     */
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
         switch ($generatemethod) {
-
             case 'extract':
                 $prompt = "Extract 4 sentences from the following {language} text: [{text}]. " . PHP_EOL .
                     "The sentences should be suitable for {level} level learners. ";
@@ -566,7 +565,6 @@ abstract class item implements templatable, renderable
                                 $speaker = "a";
                             }
                             $thetext = $theline;
-
                     }
                     if (empty(trim($thetext))) {
                         continue;
@@ -582,12 +580,9 @@ abstract class item implements templatable, renderable
                         $lineset->audiourl = utils::fetch_polly_url($this->token, $this->region, $thetext, $voiceoptions, $voice);
                     }
                     $linesdata[] = $lineset;
-
                 }
-
             }
             $testitem->ttsdialoglines = $linesdata;
-
         }// end of tts dialog
 
         //TTS Passage
@@ -677,7 +672,6 @@ abstract class item implements templatable, renderable
                 );
                 // Unset the TTS audio as we are using the audio story audio.
                 unset($testitem->itemttsaudio);
-
             }
 
             // Set the Zoom and Pan
@@ -959,7 +953,7 @@ abstract class item implements templatable, renderable
             } else {
                 $words = [];
             }
- 
+
             // If allowmultiwordgaps is false, we need to further split any gaps that contain spaces into multiple gaps.
             // This will turn ["The", "[quick brown]", "fox"] into ["The", "[quick]", "[brown]", "fox"].
             if (!$allowmultiwordgaps) {
@@ -996,7 +990,7 @@ abstract class item implements templatable, renderable
                 }
             }
 
- 
+
             $enc = mb_detect_encoding($sentence);
             $characters = utils::do_mb_str_split($sentence, 1, $enc);
             // Encoding parameter is required for < PHP 8.0.
@@ -1082,9 +1076,7 @@ abstract class item implements templatable, renderable
             if ($dottify) {
                 $prompt = $this->dottify_text($sentence);
                 $displayprompt = $prompt;
-
             } else {
-
                 //if we have a pipe prompt = array[0] and response = array[1]
                 $sentencebits = explode('|', $sentence);
                 if (count($sentencebits) > 1) {
@@ -1232,7 +1224,6 @@ abstract class item implements templatable, renderable
                 $filename
             );
             $urls[] = $mediaurl->__toString();
-
         }
         return $urls;
     }
@@ -1241,13 +1232,13 @@ abstract class item implements templatable, renderable
     {
         global $DB, $USER;
 
-        $ret = new \stdClass;
+        $ret = new \stdClass();
         $ret->error = false;
         $ret->message = '';
         $ret->payload = null;
         $data = $this->itemrecord;
 
-        $theitem = new \stdClass;
+        $theitem = new \stdClass();
         $theitem->minilesson = $this->moduleinstance->id;
         if (!isset($theitem->id) && isset($data->itemid)) {
             $theitem->id = $data->itemid;
@@ -1264,7 +1255,6 @@ abstract class item implements templatable, renderable
         //first insert a new item if we need to
         //that will give us a itemid, we need that for saving files
         if (empty($data->itemid)) {
-
             $theitem->{constants::TEXTQUESTION} = '';
             $theitem->timecreated = time();
             $theitem->createdby = $USER->id;
@@ -1298,7 +1288,7 @@ abstract class item implements templatable, renderable
             $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION};
             $theitem->{constants::TEXTQUESTION_FORMAT} = $data->{constants::TEXTQUESTION_FORMAT};
             //if its a text area field, do this
-        } else if (property_exists($data, constants::TEXTQUESTION)) {
+        } elseif (property_exists($data, constants::TEXTQUESTION)) {
             $theitem->{constants::TEXTQUESTION} = $data->{constants::TEXTQUESTION};
         }
 
@@ -1537,7 +1527,7 @@ abstract class item implements templatable, renderable
                 $theitem->{constants::TEXTANSWER . $anumber} = $data->{'customtext' . $anumber};
                 $theitem->{constants::TEXTANSWER . $anumber . 'format'} = $data->{constants::TEXTANSWER . $anumber . 'format'};
                 //if its a text field, do this
-            } else if (property_exists($data, constants::TEXTANSWER . $anumber)) {
+            } elseif (property_exists($data, constants::TEXTANSWER . $anumber)) {
                 $thetext = utils::super_trim($data->{constants::TEXTANSWER . $anumber});
                 //segment the text if it is japanese and not already segmented
                 //TO DO: remove this
@@ -1676,7 +1666,6 @@ abstract class item implements templatable, renderable
         $newitem = $this->itemrecord;
         $passage = isset($newitem->customtext1) ? $newitem->customtext1 : '';
         if ($this->needs_speechrec && !empty($passage)) {
-
             if (utils::needs_lang_model($this->moduleinstance, $passage)) {
                 //lets assign a default passage hash
                 if ($olditemrecord) {
@@ -1690,7 +1679,6 @@ abstract class item implements templatable, renderable
                 if ($newpassagehash) {
                     //check if it has changed, if its a brand new one, if so register a langmodel
                     if (!$olditemrecord || $olditemrecord->passagehash != ($this->region . '|' . $newpassagehash)) {
-
                         //build a lang model
                         $ret = utils::fetch_lang_model($passage, $this->language, $this->region);
 
@@ -1726,7 +1714,6 @@ abstract class item implements templatable, renderable
         }
         $newpassage = isset($newitem->customtext1) ? $newitem->customtext1 : '';
         if ($this->needs_speechrec && !empty($newpassage)) {
-
             if ($olditemrecord !== false) {
                 $oldpassage = $olditemrecord->customtext1;
             } else {
@@ -1734,7 +1721,6 @@ abstract class item implements templatable, renderable
             }
 
             if ($newpassage !== $oldpassage) {
-
                 $segmented = true;
                 $sentences = explode(PHP_EOL, $newpassage);
                 $allphonetics = [];
@@ -1750,7 +1736,6 @@ abstract class item implements templatable, renderable
                     $thephonetics = implode(PHP_EOL, $allphonetics);
                 }
             }
-
         }
         $this->itemrecord->phonetic = $thephonetics;
         return $thephonetics;
@@ -1770,5 +1755,4 @@ abstract class item implements templatable, renderable
         }
         return false; // Malformed string
     }
-
 }

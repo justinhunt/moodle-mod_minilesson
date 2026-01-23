@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,8 +26,8 @@ use mod_minilesson\constants;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_smartframe extends item {
-
+class item_smartframe extends item
+{
     //the item type
     public const ITEMTYPE = constants::TYPE_SMARTFRAME;
 
@@ -36,26 +37,26 @@ class item_smartframe extends item {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output){
+    public function export_for_template(\renderer_base $output)
+    {
         global $USER;
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
-        $testitem->smartframehost='';
-        if(!empty($testitem->customtext1)) {
+        $testitem->smartframehost = '';
+        if (!empty($testitem->customtext1)) {
             $hostbits = parse_url($testitem->customtext1);
-            if($hostbits) {
+            if ($hostbits) {
                 $testitem->smartframehost = $hostbits['scheme'] . "://" . $hostbits['host'];
             }
             //if username is requested, could set it here, any -usersname- in iframe url will be replaced with url encoded name
             //as test use this url in smartframe instance  [site root]/mod/minilesson/framemessagetest.html?someid=1234&usersname=-usersname-
             $users_name = fullname($USER);
-            $testitem->customtext1 = str_replace('-usersname-',urlencode($users_name),$testitem->customtext1);
+            $testitem->customtext1 = str_replace('-usersname-', urlencode($users_name), $testitem->customtext1);
         }
 
         return $testitem;
     }
-
 }

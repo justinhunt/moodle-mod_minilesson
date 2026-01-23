@@ -26,25 +26,27 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 require_once($CFG->dirroot . '/mod/minilesson/backup/moodle2/backup_minilesson_stepslib.php');
 
 /**
  * Provides all the settings and steps to perform one complete backup of minilesson activity
  */
-class backup_minilesson_activity_task extends backup_activity_task {
-
+class backup_minilesson_activity_task extends backup_activity_task
+{
     /**
      * No specific settings for this activity
      */
-    protected function define_my_settings() {
+    protected function define_my_settings()
+    {
     }
 
     /**
      * Defines a backup step to store the instance data in the englishcentral.xml file
      */
-    protected function define_my_steps() {
+    protected function define_my_steps()
+    {
         $this->add_step(new backup_minilesson_activity_structure_step('minilesson_structure', 'minilesson.xml'));
     }
 
@@ -54,10 +56,11 @@ class backup_minilesson_activity_task extends backup_activity_task {
      * @param string $content some HTML text that eventually contains URLs to the activity instance scripts
      * @return string the content with the URLs encoded
      */
-    static public function encode_content_links($content) {
+    public static function encode_content_links($content)
+    {
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot,"/");
+        $base = preg_quote($CFG->wwwroot, "/");
 
         // Link to the list of modules
         $search = "/(" . $base . "\/mod\/minilesson\/index.php\?id\=)([0-9]+)/";
@@ -65,7 +68,7 @@ class backup_minilesson_activity_task extends backup_activity_task {
 
         //Link to view.pphp by moduleid
         $search = "/(" . $base . "\/mod\/minilesson\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@MINILESSONVIEWBYID*$2@$', $content);
+        $content = preg_replace($search, '$@MINILESSONVIEWBYID*$2@$', $content);
 
         return $content;
     }

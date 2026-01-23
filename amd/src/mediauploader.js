@@ -40,7 +40,6 @@ define(['jquery', 'core/log'], function ($, log) {
             xhr.onreadystatechange = function (e) {
                 if (this.readyState === 4) {
                     if (xhr.status === 200) {
-
                         // Get a yes or forget-it or try-again.
                         var payload = xhr.responseText;
                         var payloadobject = JSON.parse(payload);
@@ -121,7 +120,7 @@ define(['jquery', 'core/log'], function ($, log) {
             var ext = "";
             //in the case of a string like this:
             // "audio/webm;codecs=opus" we do not the codecs
-            if(filetype.indexOf(';')>0){
+            if (filetype.indexOf(';') > 0) {
                 filetype = filetype.split(';')[0];
             }
             switch (filetype) {
@@ -185,10 +184,10 @@ define(['jquery', 'core/log'], function ($, log) {
                     break;
             }
             //if we get here we have an unknown mime type, just guess based on the mediatype
-            if(ext===""){
-                if(filetype.indexOf('video')>-1){
+            if (ext === "") {
+                if (filetype.indexOf('video') > -1) {
                     ext = "mp4";
-                }else{
+                } else {
                     ext = "mp3";
                 }
             }
@@ -235,7 +234,6 @@ define(['jquery', 'core/log'], function ($, log) {
 
                     //Fetch new upload details for next time
                     this.fetchNewUploadDetails(); // Prepare for next upload.
-
                 } else {
                     log.debug('upload failed #3');
                     log.debug(xhr);
@@ -264,7 +262,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
             xhr.onreadystatechange = function (e) {
                 if (using_s3 && this.readyState === 4) {
-                   uploader.update_filenames(uploader, sourceext);
+                    uploader.update_filenames(uploader, sourceext);
                 }
                 uploader.postProcessUpload(e, uploader);
 
@@ -314,7 +312,7 @@ define(['jquery', 'core/log'], function ($, log) {
             return new Blob([ab], {type: mimetype});
         },//end of dataURItoBlob
 
-        message : function(messageobject){
+        message : function (messageobject) {
             log.debug('Media Uploader Message: ' + messageobject.code + ' : ' + messageobject.message);
         }
 

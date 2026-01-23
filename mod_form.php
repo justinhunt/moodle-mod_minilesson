@@ -39,7 +39,6 @@ use mod_minilesson\utils;
  */
 class mod_minilesson_mod_form extends moodleform_mod
 {
-
     public function __construct($current, $section, $cm, $course, $ajaxformdata = null, $customdata = null)
     {
         global $CFG;
@@ -142,7 +141,6 @@ class mod_minilesson_mod_form extends moodleform_mod
     {
         if ($this->current->instance) {
             $formdata = utils::prepare_file_and_json_stuff($formdata, $this->context);
-
         }
     }
 
@@ -168,5 +166,4 @@ class mod_minilesson_mod_form extends moodleform_mod
         $suffix = $m43 ? $this->get_suffix() : '';
         return $suffix . $completionfieldname;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -8,12 +9,11 @@
 
 namespace mod_minilesson\report;
 
-use \mod_minilesson\constants;
-use \mod_minilesson\utils;
+use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 class grading extends basereport
 {
-
     protected $report = "grading";
     protected $fields = array('id', 'username', 'totalattempts',  'grade_p','timecreated', 'view', 'deletenow');
     protected $headingdata = null;
@@ -34,8 +34,10 @@ class grading extends basereport
                 $user = $this->fetch_cache('user', $record->userid);
                 $ret = fullname($user);
                 if ($withlinks) {
-                    $link = new \moodle_url(constants::M_URL . '/grading.php',
-                        array('action' => 'gradingbyuser', 'n' => $record->moduleid, 'userid' => $record->userid));
+                    $link = new \moodle_url(
+                        constants::M_URL . '/grading.php',
+                        array('action' => 'gradingbyuser', 'n' => $record->moduleid, 'userid' => $record->userid)
+                    );
                     $ret = \html_writer::link($link, $ret);
                 }
                 break;
@@ -43,8 +45,10 @@ class grading extends basereport
             case 'totalattempts':
                 $ret = $record->totalattempts;
                 if ($withlinks) {
-                    $link = new \moodle_url(constants::M_URL . '/grading.php',
-                        array('action' => 'gradingbyuser', 'n' => $record->moduleid, 'userid' => $record->userid));
+                    $link = new \moodle_url(
+                        constants::M_URL . '/grading.php',
+                        array('action' => 'gradingbyuser', 'n' => $record->moduleid, 'userid' => $record->userid)
+                    );
                     $ret = \html_writer::link($link, $ret);
                 }
                 break;
@@ -52,11 +56,12 @@ class grading extends basereport
 
              //grade could hold either human or ai data
             case 'grade_p':
-
                 $ret = $record->sessionscore;
                 if ($withlinks) {
-                    $link = new \moodle_url(constants::M_URL . '/reports.php',
-                            array('report' => 'attemptresults', 'n' => $record->moduleid, 'attemptid' => $record->id));
+                    $link = new \moodle_url(
+                        constants::M_URL . '/reports.php',
+                        array('report' => 'attemptresults', 'n' => $record->moduleid, 'attemptid' => $record->id)
+                    );
                     $ret = \html_writer::link($link, $ret);
                 }
 
@@ -64,8 +69,10 @@ class grading extends basereport
 
             case 'view':
                 if ($withlinks) {
-                    $url = new \moodle_url(constants::M_URL . '/reports.php',
-                        array('report' => 'viewattempt', 'n' => $record->moduleid, 'attemptid' => $record->id));
+                    $url = new \moodle_url(
+                        constants::M_URL . '/reports.php',
+                        array('report' => 'viewattempt', 'n' => $record->moduleid, 'attemptid' => $record->id)
+                    );
                     $btn = new \single_button($url, get_string('view'), 'post');
                     $ret = $OUTPUT->render($btn);
                 } else {
@@ -80,8 +87,10 @@ class grading extends basereport
 
             case 'deletenow':
                 if ($withlinks) {
-                    $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                        array('action' => 'delete', 'n' => $record->moduleid, 'attemptid' => $record->id, 'source' => $this->report));
+                    $url = new \moodle_url(
+                        constants::M_URL . '/manageattempts.php',
+                        array('action' => 'delete', 'n' => $record->moduleid, 'attemptid' => $record->id, 'source' => $this->report)
+                    );
                     $btn = new \single_button($url, get_string('delete'), 'post');
                     $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_COMPONENT));
                     $ret = $OUTPUT->render($btn);
@@ -98,7 +107,6 @@ class grading extends basereport
                 }
         }
         return $ret;
-
     } //end of function
 
 
@@ -111,7 +119,6 @@ class grading extends basereport
         }
         //$ec = $this->fetch_cache(constants::M_TABLE,$record->englishcentralid);
         return get_string('gradingheading', constants::M_COMPONENT);
-
     }//end of function
 
     public function process_raw_data($formdata)
@@ -125,47 +132,41 @@ class grading extends basereport
         $user_attempt_totals = array();
 
         //groupsmode
-        $moduleinstance = $DB->get_record(constants::M_TABLE,array('id'=>$formdata->moduleid), '*', MUST_EXIST);
+        $moduleinstance = $DB->get_record(constants::M_TABLE, array('id' => $formdata->moduleid), '*', MUST_EXIST);
         $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
 
-        $groupsmode = groups_get_activity_groupmode($cm,$course);
+        $groupsmode = groups_get_activity_groupmode($cm, $course);
         $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
         $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
 
 
 
         //if we need to show just one group
-        if($formdata->groupid > 0){
-
+        if ($formdata->groupid > 0) {
             list($groupswhere, $allparams) = $DB->get_in_or_equal($formdata->groupid);
 
-            $allsql ="SELECT tu.* FROM {".constants::M_ATTEMPTSTABLE ."} tu " .
+            $allsql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu " .
                     "INNER JOIN {groups_members} gm ON tu.userid=gm.userid " .
                     "INNER JOIN {user} u ON tu.userid=u.id " .
                     "WHERE gm.groupid $groupswhere AND tu.moduleid = ? " .
                     "ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
-            $allparams[]=$formdata->moduleid;
+            $allparams[] = $formdata->moduleid;
             $alldata = $DB->get_records_sql($allsql, $allparams);
 
             //if no groups, or can see all groups then the SQL is simple
-        }else{
-
-
+        } else {
                 $the_sql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu INNER JOIN {user} u ON tu.userid=u.id " .
                         " WHERE tu.moduleid=? AND tu.status=" . constants::M_STATE_COMPLETE .
                         " ORDER BY u.lastnamephonetic,u.firstnamephonetic,u.lastname,u.firstname,u.middlename,u.alternatename,tu.id DESC";
 
-                $alldata =$DB->get_records_sql($the_sql, array($formdata->moduleid));
-
+                $alldata = $DB->get_records_sql($the_sql, array($formdata->moduleid));
         }
 
 
         //loop through data getting most recent attempt
         if ($alldata) {
-
             foreach ($alldata as $thedata) {
-
                 //we ony take the most recent attempt
                 if (array_key_exists($thedata->userid, $user_attempt_totals)) {
                     $user_attempt_totals[$thedata->userid] = $user_attempt_totals[$thedata->userid] + 1;

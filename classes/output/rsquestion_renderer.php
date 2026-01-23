@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,14 +28,16 @@ use mod_minilesson\constants;
  * @copyright COPYRIGHTNOTICE
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class rsquestion_renderer extends \plugin_renderer_base {
+class rsquestion_renderer extends \plugin_renderer_base
+{
     /**
      * Return HTML to display add first page links
      * @param \context $context
      * @param int $tableid
      * @return string
      */
-    public function add_edit_page_links($context, $tableid, $region) {
+    public function add_edit_page_links($context, $tableid, $region)
+    {
         global $CFG;
         $itemid = 0;
         $config = get_config(constants::M_COMPONENT);
@@ -143,7 +146,8 @@ class rsquestion_renderer extends \plugin_renderer_base {
      * Setup datatables for the items list
      * @param string $tableid
      */
-    public function setup_datatables($tableid) {
+    public function setup_datatables($tableid)
+    {
         global $USER;
 
         $tableprops = [];
@@ -190,7 +194,8 @@ class rsquestion_renderer extends \plugin_renderer_base {
      * @param boolean $itemsvisible
      * @return string
      */
-    public function show_noitems_message($itemsvisible) {
+    public function show_noitems_message($itemsvisible)
+    {
         $message = $this->output->heading(get_string('noitems', constants::M_COMPONENT), 3, 'main');
         $displayvalue = $itemsvisible ? 'none' : 'block';
         $ret = \html_writer::div(
@@ -210,7 +215,8 @@ class rsquestion_renderer extends \plugin_renderer_base {
      * @param integer $courseid
      * @return string html of table
      */
-    public function show_items_list($items, $minilesson, $cm, $visible) {
+    public function show_items_list($items, $minilesson, $cm, $visible)
+    {
         global $CFG;
         // New code.
         $data = [];

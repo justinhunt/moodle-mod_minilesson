@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -34,13 +35,15 @@ use core\activity_dates;
  * @copyright 2022 Justin Hunt <justin@poodll.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class dates extends activity_dates {
+class dates extends activity_dates
+{
     /**
      * Returns a list of important dates in mod_assign
      *
      * @return array
      */
-    protected function get_dates(): array {
+    protected function get_dates(): array
+    {
         global $CFG;
 
         $course = get_course($this->cm->course);

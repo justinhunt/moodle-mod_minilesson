@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,8 +24,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-use \mod_minilesson\constants;
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+use mod_minilesson\constants;
 
 
 $id = required_param('id', PARAM_INT);          // Course module ID
@@ -36,8 +37,8 @@ $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST)
 $module = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
 require_login($course, false, $cm);
 
-if(has_capability('mod/minilesson:canmanageattempts',context_module::instance($cm->id))){
-    redirect('grading.php?id='.$id);
-}else{
-    redirect('view.php?id='.$id);
+if (has_capability('mod/minilesson:canmanageattempts', context_module::instance($cm->id))) {
+    redirect('grading.php?id=' . $id);
+} else {
+    redirect('view.php?id=' . $id);
 }

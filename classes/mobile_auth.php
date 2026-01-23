@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,11 +28,11 @@ namespace mod_minilesson;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_minilesson\constants;
-use \mod_minilesson\utils;
+use mod_minilesson\constants;
+use mod_minilesson\utils;
 
-class mobile_auth {
-
+class mobile_auth
+{
     const VALID_TIME = 60;
 
     /**
@@ -43,7 +44,8 @@ class mobile_auth {
      * @return array Login token and secret
      * @throws \Exception
      */
-    public static function create_embed_auth_token($secret = null, $validfor = null) {
+    public static function create_embed_auth_token($secret = null, $validfor = null)
+    {
         if (!$validfor) {
             $validfor = self::get_time_factor();
         }
@@ -51,7 +53,7 @@ class mobile_auth {
         if (empty($secret)) {
             if (function_exists('random_bytes')) {
                 $secret = base64_encode(random_bytes(15));
-            } else if (function_exists('openssl_random_pseudo_bytes')) {
+            } elseif (function_exists('openssl_random_pseudo_bytes')) {
                 $secret = base64_encode(openssl_random_pseudo_bytes(15));
             } else {
                 $secret = uniqid('', true);
@@ -73,7 +75,8 @@ class mobile_auth {
      * @return bool True if valid token was supplied
      * @throws \Exception
      */
-    public static function validate_embed_auth_token($token, $secret) {
+    public static function validate_embed_auth_token($token, $secret)
+    {
         $timefactor = self::get_time_factor();
         // Splitting into two halves and allowing both allows for fractions roundup in the time factor.
         list($generatedtoken) = self::create_embed_auth_token($secret, $timefactor);
@@ -90,7 +93,8 @@ class mobile_auth {
      * @return bool True if token and user_id is valid
      * @throws \dml_exception
      */
-    public static function has_valid_token($userid, $secret) {
+    public static function has_valid_token($userid, $secret)
+    {
         global $DB;
 
         if (!$userid || !$secret) {
@@ -121,7 +125,8 @@ class mobile_auth {
      *
      * @return float
      */
-    public static function get_time_factor() {
+    public static function get_time_factor()
+    {
         return ceil(time() / self::VALID_TIME);
     }
 }

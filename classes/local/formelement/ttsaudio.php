@@ -11,8 +11,8 @@ global $CFG;
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/form/group.php');
 
-class ttsaudio extends MoodleQuickForm_group {
-
+class ttsaudio extends MoodleQuickForm_group
+{
     const ELNAME = 'ttsaudio';
 
     protected $_options = ['region' => null, 'langcode' => null];
@@ -25,7 +25,8 @@ class ttsaudio extends MoodleQuickForm_group {
 
     protected $selectedvoice;
 
-    public function __construct($elementName = null, $elementLabel = null, $options = [], $attributes = null) {
+    public function __construct($elementName = null, $elementLabel = null, $options = [], $attributes = null)
+    {
         parent::__construct($elementName, $elementLabel, $attributes);
         $this->_persistantFreeze = true;
         $this->_appendName = true;
@@ -45,12 +46,13 @@ class ttsaudio extends MoodleQuickForm_group {
         }
     }
 
-    function _createElements() {
+    function _createElements()
+    {
         $attributes = $this->getAttributes();
         if (is_null($attributes)) {
             $attributes = [];
         }
-        switch($this->_options['region']) {
+        switch ($this->_options['region']) {
             case 'ningxia':
                 $alllang = constants::ALL_VOICES_NINGXIA;
                 break;
@@ -58,14 +60,14 @@ class ttsaudio extends MoodleQuickForm_group {
                 $alllang = constants::ALL_VOICES;
                 break;
         }
-        $this->langoptions = array_reduce(array_keys($alllang), function($a, $langcode) {
+        $this->langoptions = array_reduce(array_keys($alllang), function ($a, $langcode) {
             $a[$langcode] = get_string(strtolower($langcode), constants::M_COMPONENT);
             return $a;
         }, []);
 
-        $this->voiceoptions = array_reduce(array_keys($alllang), function($a, $langcode) use ($alllang) {
+        $this->voiceoptions = array_reduce(array_keys($alllang), function ($a, $langcode) use ($alllang) {
             $inneroptions = [];
-            foreach($alllang[$langcode] as $key => $option) {
+            foreach ($alllang[$langcode] as $key => $option) {
                 if (utils::can_speak_neural($key, $this->_options['region'])) {
                     $option .= ' (+)';
                 }
@@ -77,19 +79,30 @@ class ttsaudio extends MoodleQuickForm_group {
 
         $this->_elements = [];
 
-        $langselect = $this->createFormElement('select', 'language',
-                get_string('language', constants::M_COMPONENT), $this->langoptions, $attributes);
+        $langselect = $this->createFormElement(
+            'select',
+            'language',
+            get_string('language', constants::M_COMPONENT),
+            $this->langoptions,
+            $attributes
+        );
         $this->_elements[] = $langselect;
 
         $voiceoptions = array_key_exists($this->_options['langcode'], $this->voiceoptions) ?
             $this->voiceoptions[$this->_options['langcode']] : [];
 
-        $voiceselect = $this->createFormElement('select', 'voice',
-                get_string('voice', constants::M_COMPONENT), $voiceoptions, $attributes);
+        $voiceselect = $this->createFormElement(
+            'select',
+            'voice',
+            get_string('voice', constants::M_COMPONENT),
+            $voiceoptions,
+            $attributes
+        );
         $this->_elements[] = $voiceselect;
     }
 
-    public function onQuickFormEvent($event, $arg, &$caller) {
+    public function onQuickFormEvent($event, $arg, &$caller)
+    {
         $this->setMoodleForm($caller);
         switch ($event) {
             case 'updateValue':
@@ -102,13 +115,13 @@ class ttsaudio extends MoodleQuickForm_group {
                     }
                 }
                 $finalvalue = null;
-                if (null !== $value){
+                if (null !== $value) {
                     $this->_createElementsIfNotExist();
                     if (!is_array($value)) {
                         $value = ['voice' => $value];
                     }
                     if (!isset($value['language'])) {
-                        foreach($this->voiceoptions as $langcode => $voicearr) {
+                        foreach ($this->voiceoptions as $langcode => $voicearr) {
                             foreach (array_keys($voicearr) as $k) {
                                 if ($k === $value['voice']) {
                                     $finalvalue = ['language' => $langcode, 'voice' => $k];
@@ -119,7 +132,7 @@ class ttsaudio extends MoodleQuickForm_group {
                                 }
                             }
                         }
-                    } else if (array_key_exists($value['language'], $this->voiceoptions)) {
+                    } elseif (array_key_exists($value['language'], $this->voiceoptions)) {
                         $finalvalue = $value;
                         $voiceoptions = $this->voiceoptions[$value['language']];
                         $this->_elements[1]->removeOptions();
@@ -145,7 +158,8 @@ class ttsaudio extends MoodleQuickForm_group {
         }
     }
 
-    public function exportValue(&$submitValues, $assoc = false) {
+    public function exportValue(&$submitValues, $assoc = false)
+    {
         $valuearray = [];
         foreach ($this->_elements as $element) {
             $thisexport = $element->exportValue($submitValues[$this->getName()], true);
@@ -160,7 +174,8 @@ class ttsaudio extends MoodleQuickForm_group {
         return $this->_prepareValue($valuearray['voice'], $assoc);
     }
 
-    public function accept(&$renderer, $required = false, $error = null) {
+    public function accept(&$renderer, $required = false, $error = null)
+    {
         global $CFG, $OUTPUT;
         $this->_createElementsIfNotExist();
 
@@ -214,12 +229,15 @@ class ttsaudio extends MoodleQuickForm_group {
 
         // first confirm we are authorised before we try to get the token
         $config = get_config(constants::M_COMPONENT);
-        if(empty($config->apiuser) || empty($config->apisecret)){
-            $errormessage = get_string('nocredentials', constants::M_COMPONENT,
-                    $CFG->wwwroot . constants::M_PLUGINSETTINGS);
+        if (empty($config->apiuser) || empty($config->apisecret)) {
+            $errormessage = get_string(
+                'nocredentials',
+                constants::M_COMPONENT,
+                $CFG->wwwroot . constants::M_PLUGINSETTINGS
+            );
             // return error?
             $token = false;
-        }else {
+        } else {
             // fetch token
             $token = utils::fetch_token($config->apiuser, $config->apisecret);
 
@@ -233,20 +251,29 @@ class ttsaudio extends MoodleQuickForm_group {
             $btncontext['ttsoption'] = 0;
             $btncontext['ttsaudio'] = constants::M_LANG_SAMPLES[$this->selectedlang];
             $btncontext['ttsaudiovoice'] = $this->selectedvoice;
-            $btncontext['audiosrc'] = utils::fetch_polly_url($token, $this->_options['region'],
-                $btncontext['ttsaudio'], $btncontext['ttsoption'], $btncontext['ttsaudiovoice']);
+            $btncontext['audiosrc'] = utils::fetch_polly_url(
+                $token,
+                $this->_options['region'],
+                $btncontext['ttsaudio'],
+                $btncontext['ttsoption'],
+                $btncontext['ttsaudiovoice']
+            );
             $audiobtn = $OUTPUT->render_from_template(
-                constants::M_COMPONENT . '/samplettsaudio', $btncontext);
+                constants::M_COMPONENT . '/samplettsaudio',
+                $btncontext
+            );
             $context['element']['elements'][] = ['html' => $audiobtn];
         }
 
         $renderer->_html .= $OUTPUT->render_from_template(
-            constants::M_COMPONENT . '/form/element-' . $this->getType(), $context);
+            constants::M_COMPONENT . '/form/element-' . $this->getType(),
+            $context
+        );
         $renderer->finishGroup($this);
     }
 
-    public static function register() {
+    public static function register()
+    {
         MoodleQuickForm::registerElementType(static::ELNAME, __FILE__, __CLASS__);
     }
-
 }

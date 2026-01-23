@@ -24,8 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 use mod_minilesson\constants;
 use mod_minilesson\utils;
@@ -46,7 +45,7 @@ if ($id) {
     $cm         = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $moduleinstance  = $DB->get_record(constants::M_TABLE, array('id' => $cm->instance), '*', MUST_EXIST);
-} else if ($n) {
+} elseif ($n) {
     $moduleinstance  = $DB->get_record(constants::M_TABLE, array('id' => $n), '*', MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
@@ -69,7 +68,7 @@ if (!$config->enablepushtab) {
 
 // Fetch the likely number of affected records.
 $cloneconditions = [];
-switch($scope){
+switch ($scope) {
     case CONSTANTS::PUSHMODE_MODULENAME:
         $cloneconditions['name'] = $moduleinstance->name;
         break;
@@ -93,7 +92,7 @@ $clones = $DB->get_records_select(constants::M_TABLE, $whereclause);
 $clonecount = count($clones);
 //$clonecount = $DB->count_records_select(constants::M_TABLE, $whereclause);
 
-switch($action){
+switch ($action) {
     case constants::M_PUSH_TRANSCRIBER:
         $updatefields = ['transcriber'];
         break;
@@ -181,9 +180,12 @@ if ($action == constants::M_PUSH_ITEMS) {
         $cloneitemids = [];
         foreach ($thisitems as $sourceitem) {
             try {
-                $cloneitemid = $DB->get_field(constants::M_QTABLE, 'id',
+                $cloneitemid = $DB->get_field(
+                    constants::M_QTABLE,
+                    'id',
                     ['minilesson' => $activityid, 'itemorder' => $sourceitem->itemorder, 'type' => $sourceitem->type, 'name' => $sourceitem->name],
-                    MUST_EXIST);
+                    MUST_EXIST
+                );
             } catch (\dml_exception $e) {
                 // If the item does not exist in the clone, we will skip it.
                 continue;
@@ -240,7 +242,6 @@ if ($action == constants::M_PUSH_ITEMS) {
         } //end of if clone items count matches
     } //end of activities loop
     redirect($PAGE->url, get_string('pushpage_done', constants::M_COMPONENT, $updatecount), delay: 10);
-
 } else {
     // Do the DB updates and then refresh.
     if ($updatefields && count($updatefields) > 0) {
@@ -253,7 +254,7 @@ if ($action == constants::M_PUSH_ITEMS) {
 
 // Set up the page header.
 $pagetitle = get_string('pushpage', constants::M_COMPONENT);
-$PAGE->set_title(format_string($moduleinstance->name. ' ' . $pagetitle ));
+$PAGE->set_title(format_string($moduleinstance->name . ' ' . $pagetitle));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 $PAGE->set_pagelayout('incourse');

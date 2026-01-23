@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,8 +27,8 @@ use mod_minilesson\utils;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_passagereading extends item {
-
+class item_passagereading extends item
+{
     // The item type.
     public const ITEMTYPE = constants::TYPE_PASSAGEREADING;
 
@@ -35,7 +36,8 @@ class item_passagereading extends item {
       * The class constructor.
       *
       */
-    public function __construct($itemrecord, $moduleinstance=false, $context = false) {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false)
+    {
         parent::__construct($itemrecord, $moduleinstance, $context);
         $this->needs_speechrec = true;
     }
@@ -47,7 +49,8 @@ class item_passagereading extends item {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(\renderer_base $output)
+    {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->set_layout($testitem);
@@ -60,17 +63,17 @@ class item_passagereading extends item {
         $isenglish = strpos($this->moduleinstance->ttslanguage, 'en') === 0;
         if ($isenglish || true) {
             $tokenobject = utils::fetch_streaming_token($this->moduleinstance->region);
-                if ($tokenobject) {
-                    $testitem->speechtoken = $tokenobject->token;
-                    $testitem->speechtokenregion = $tokenobject->region;
-                    $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
-                    $testitem->speechtokentype = $tokenobject->tokentype;
-                } else {
-                    $testitem->speechtoken = false;
-                    $testitem->speechtokenregion = '';
-                    $testitem->speechtokenvalidseconds = 0;
-                    $testitem->speechtokentype = '';
-                }
+            if ($tokenobject) {
+                $testitem->speechtoken = $tokenobject->token;
+                $testitem->speechtokenregion = $tokenobject->region;
+                $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
+                $testitem->speechtokentype = $tokenobject->tokentype;
+            } else {
+                $testitem->speechtoken = false;
+                $testitem->speechtokenregion = '';
+                $testitem->speechtokenvalidseconds = 0;
+                $testitem->speechtokentype = '';
+            }
             if ($alternatestreaming) {
                 $testitem->forcestreaming = true;
             }
@@ -89,7 +92,8 @@ class item_passagereading extends item {
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm) {
+    public static function validate_import($newrecord, $cm)
+    {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -107,7 +111,8 @@ class item_passagereading extends item {
     /*
     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
     */
-    public static function get_keycolumns() {
+    public static function get_keycolumns()
+    {
         // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
@@ -117,11 +122,11 @@ class item_passagereading extends item {
     }
 
     /*
-    This function return the prompt that the generate method requires. 
+    This function return the prompt that the generate method requires.
     */
-    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
-        switch($generatemethod) {
-
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
+    {
+        switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create a {language} passage that is a 5 or 6 sentence summarisation of the following text: [{text}]. ";
                 break;
@@ -140,5 +145,4 @@ class item_passagereading extends item {
         }
         return $prompt;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,11 +30,12 @@ use stdClass;
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class usages extends templates {
-
+class usages extends templates
+{
     protected $templates;
 
-    public function set_filterset(\core_table\local\filter\filterset $filterset): void {
+    public function set_filterset(\core_table\local\filter\filterset $filterset): void
+    {
         global $DB, $PAGE;
         $cmid = $filterset->get_filter('cmid')->current();
         $this->cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid);
@@ -73,24 +75,27 @@ class usages extends templates {
         $this->set_attribute('data-updateinterval', 2);
     }
 
-    public function col_name(stdClass $record) {
+    public function col_name(stdClass $record)
+    {
         if (array_key_exists($record->templateid, $this->templates)) {
             return $this->templates[$record->templateid]['name'];
         }
         return '';
     }
 
-    public function col_timecreated(stdClass $record) {
-        return $record->timecreated > 0 ? userdate($record->timecreated): '';
+    public function col_timecreated(stdClass $record)
+    {
+        return $record->timecreated > 0 ? userdate($record->timecreated) : '';
     }
 
-    public function col_progress(stdClass $record) {
+    public function col_progress(stdClass $record)
+    {
         if ($record->progress == 1) { // Complete.
             $icon = $this->renderer->render(new pix_icon('i/checked', get_string('successful', constants::M_COMPONENT)));
             $status = html_writer::span($icon, 'action-icon');
-        } else if ($record->progress == -1) {
+        } elseif ($record->progress == -1) {
             $icon = $this->renderer->render(new pix_icon('i/invalid', get_string('failed', constants::M_COMPONENT)));
-            $status = html_writer::tag('p', html_writer::span($icon, 'action-icon'). $record->error);
+            $status = html_writer::tag('p', html_writer::span($icon, 'action-icon') . $record->error);
         } else {
             $data = [
                 'id' => $record->id, 'width' => floor(100 * $record->progress),
@@ -101,8 +106,8 @@ class usages extends templates {
         return $status;
     }
 
-    public function needs_update(string $column) {
+    public function needs_update(string $column)
+    {
         return in_array($column, ['timemodified', 'progress']);
     }
-
 }

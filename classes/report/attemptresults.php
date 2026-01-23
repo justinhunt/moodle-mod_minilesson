@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -8,31 +9,32 @@
 
 namespace mod_minilesson\report;
 
-use \mod_minilesson\constants;
-use \mod_minilesson\utils;
+use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 class attemptresults extends basereport
 {
-
-    protected $report="attemptresults";
+    protected $report = "attemptresults";
     protected $fields = array('qnumber','type','title','result','grade_p');
     protected $headingdata = null;
-    protected $qcache=array();
-    protected $ucache=array();
+    protected $qcache = array();
+    protected $ucache = array();
 
 
 
-    public function fetch_formatted_heading(){
+    public function fetch_formatted_heading()
+    {
         $record = $this->headingdata;
-        if(!$record){return '';}
-        $user = $this->fetch_cache('user',$record->userid);
+        if (!$record) {
+            return '';
+        }
+        $user = $this->fetch_cache('user', $record->userid);
         $a = new \stdClass();
         $a->username = fullname($user);
         $a->date = date("Y-m-d H:i:s", $record->timecreated);
         $a->attemptid = $record->id;
         $a->sessionscore = $record->sessionscore;
-        return get_string('attemptresultsheading',constants::M_COMPONENT,$a);
-
+        return get_string('attemptresultsheading', constants::M_COMPONENT, $a);
     }
 
     public function fetch_formatted_field($field, $record, $withlinks)
@@ -71,7 +73,6 @@ class attemptresults extends basereport
                 }
         }
         return $ret;
-
     } //end of function
 
 
@@ -91,52 +92,53 @@ class attemptresults extends basereport
 
 
         //groupsmode
-        $groupsmode = groups_get_activity_groupmode($cm,$course);
+        $groupsmode = groups_get_activity_groupmode($cm, $course);
         $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
         $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
 
-        if($formdata->groupid > 0){
-
+        if ($formdata->groupid > 0) {
             list($groupswhere, $allparams) = $DB->get_in_or_equal($formdata->groupid);
 
-            $allsql ="SELECT tu.* FROM {".constants::M_ATTEMPTSTABLE ."} tu " .
+            $allsql = "SELECT tu.* FROM {" . constants::M_ATTEMPTSTABLE . "} tu " .
                     " INNER JOIN {groups_members} gm ON tu.userid=gm.userid " .
                     " WHERE gm.groupid $groupswhere AND tu.moduleid = ? AND tu.id= ?" .
                     " ORDER BY tu.id DESC";
-            $allparams[]=$formdata->moduleid;
-            $allparams[]=$formdata->attemptid;
+            $allparams[] = $formdata->moduleid;
+            $allparams[] = $formdata->attemptid;
             $records  = $DB->get_records_sql($allsql, $allparams);
-            if($records){
+            if ($records) {
                 $record = array_shift($records);
-            }else{
-                $record =false;
+            } else {
+                $record = false;
             }
-        }else{
+        } else {
             //we just need the  individual recoen
-            $record =$DB->get_record(constants::M_ATTEMPTSTABLE,
-                    array('id'=>$formdata->attemptid,'moduleid'=>$formdata->moduleid));
-
+            $record = $DB->get_record(
+                constants::M_ATTEMPTSTABLE,
+                array('id' => $formdata->attemptid,'moduleid' => $formdata->moduleid)
+            );
         }
 
         if ($record) {
                 //heading data
-                $this->headingdata= $record;
+                $this->headingdata = $record;
 
                 $steps = json_decode($record->sessiondata)->steps;
-                if(is_object($steps)){
-                    $steps = get_object_vars($steps);
-                }
-                $results = array_filter($steps, function($step){return $step->hasgrade;});
-                foreach($results as $result){
-                    $result->title=$quizdata[$result->index]->name;
-                    $result->type=get_string($quizdata[$result->index]->type,constants::M_COMPONENT);
-                    $result->index++;
-                }
+            if (is_object($steps)) {
+                $steps = get_object_vars($steps);
+            }
+                $results = array_filter($steps, function ($step) {
+                    return $step->hasgrade;
+                });
+            foreach ($results as $result) {
+                $result->title = $quizdata[$result->index]->name;
+                $result->type = get_string($quizdata[$result->index]->type, constants::M_COMPONENT);
+                $result->index++;
+            }
                 $this->rawdata = $results;
-
         } else {
             //heading data
-            $this->headingdata= false;
+            $this->headingdata = false;
             $this->rawdata = $emptydata;
         }
         return true;

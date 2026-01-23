@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,7 +23,6 @@
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 use mod_minilesson\constants;
@@ -51,7 +51,7 @@ if ($id) {
     $cm = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
     $moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
-} else if ($n) {
+} elseif ($n) {
     $moduleinstance = $DB->get_record('minilesson', ['id' => $n], '*', MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('minilesson', $moduleinstance->id, $course->id, false, MUST_EXIST);
@@ -95,7 +95,7 @@ $config = get_config(constants::M_COMPONENT);
 // We want minilesson to embed nicely, or display according to layout settings.
 if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded' || $embed == 1) {
     $PAGE->set_pagelayout('embedded');
-} else if ($config->enablesetuptab || $moduleinstance->pagelayout == 'popup' || $embed == 2) {
+} elseif ($config->enablesetuptab || $moduleinstance->pagelayout == 'popup' || $embed == 2) {
     $PAGE->set_pagelayout('popup');
     $PAGE->add_body_class('poodll-minilesson-embed');
 } else {
@@ -149,7 +149,7 @@ $itemcount = $comptest->fetch_item_count();
 
 // If we have slides, load the CSS
 if ($comptest->has_slides_items()) {
-    switch($moduleinstance->region) {
+    switch ($moduleinstance->region) {
         case 'ningxia':
             // If Ningxia region, load CSS from different CDN
             $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
@@ -182,7 +182,7 @@ if ($hasopenclosedates) {
     if ($currenttime > $moduleinstance->viewend && $moduleinstance->viewend > 0) {
         echo get_string('activityisclosed', constants::M_COMPONENT);
         $closed = true;
-    } else if ($currenttime < $moduleinstance->viewstart) {
+    } elseif ($currenttime < $moduleinstance->viewstart) {
         echo get_string('activityisnotopenyet', constants::M_COMPONENT);
         $closed = true;
     }
@@ -204,7 +204,7 @@ if ($CFG->version < 2022041900) {
 if ($latestattempt->status == constants::M_STATE_COMPLETE) {
     $teacherreport = false;
     echo $renderer->show_finished_results($comptest, $latestattempt, $cm, $canattempt, $embed, $teacherreport);
-} else if ($itemcount > 0) {
+} elseif ($itemcount > 0) {
     echo $renderer->show_quiz($comptest, $moduleinstance);
     $previewid = 0;
     echo $renderer->fetch_activity_amd($comptest, $cm, $moduleinstance, $previewid, $canattempt, $embed);

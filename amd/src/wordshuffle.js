@@ -117,7 +117,8 @@ define(['jquery',
             var review_data = {};
             review_data.items = self.items;
             review_data.totalitems = self.items.length;
-            review_data.correctitems = self.items.filter(function (e) { return e.correct; }).length;
+            review_data.correctitems = self.items.filter(function (e) {
+                return e.correct; }).length;
 
             //Get controls
             var listencont = self.controls.listen_cont;
@@ -149,7 +150,8 @@ define(['jquery',
 
             self.controls.nextbutton.on('click', function (e) {
                 if (self.items.some(item => !item.answered)) {
-                    notification.confirm(self.strings.nextlessonitem,
+                    notification.confirm(
+                        self.strings.nextlessonitem,
                         self.strings.confirm_desc,
                         self.strings.yes,
                         self.strings.no,
@@ -328,7 +330,6 @@ define(['jquery',
                 //if they cant retry OR the time limit is up, move on
             } else if (!self.itemdata.allowretry || timelimit_progressbar.hasClass('progress-bar-complete')) {
                 log.debug("incorrect");
-
             } else {
                 //it was wrong but they can retry
                 log.debug("incorrect!! retry");
@@ -399,7 +400,7 @@ define(['jquery',
         nextPrompt: function () {
 
             var self = this;
-            self.pointerdiv = self.controls.question.find(`.wordshuffle_wordset_container[data-index="${self.game.pointer}"]`);
+            self.pointerdiv = self.controls.question.find(`.wordshuffle_wordset_container[data - index = "${self.game.pointer}"]`);
             // Unlock interactions for the new prompt
             self.interactionLocked = false;
             self.controls.retry_btn.hide();
@@ -579,7 +580,8 @@ define(['jquery',
                     var $live = self.pointerdiv.find('.ml-ws-live');
                     // Clear then set to force announcement across ATs.
                     $live.text('');
-                    setTimeout(function () { $live.text(msg); }, 10);
+                    setTimeout(function () {
+                        $live.text(msg); }, 10);
                 };
 
                 // Add roles/labels to containers if present.
@@ -594,7 +596,8 @@ define(['jquery',
 
                 // Click-to-select and click-to-drop support
                 self.pointerdiv.on('click', e => {
-                    if (self.interactionLocked) { return; }
+                    if (self.interactionLocked) {
+                        return; }
                     const $target = $(e.target);
                     if ($target.is('.word')) {
                         if (!self.selectedWord || !self.selectedWord.is($target)) {
@@ -611,7 +614,8 @@ define(['jquery',
                                 var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
                                 self.a11yAnnounce(tmpl.replace('{$a}', self.selectedWord.text().trim()));
                             }
-                            if (self.selectedWord) { self.selectedWord.attr('aria-grabbed', 'false'); }
+                            if (self.selectedWord) {
+                                self.selectedWord.attr('aria-grabbed', 'false'); }
                             self.selectedWord = null;
                         }
                     } else if ($target.is('.drop-slot')) {
@@ -619,7 +623,8 @@ define(['jquery',
                             self.moveToSlot(self.selectedWord, $target);
                             var tmpl2 = (self.strings && self.strings.a11y_placed_in_slot) ? self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
                             self.a11yAnnounce(tmpl2.replace('{$a}', self.selectedWord.text().trim()));
-                            if (self.selectedWord) { self.selectedWord.attr('aria-grabbed', 'false'); }
+                            if (self.selectedWord) {
+                                self.selectedWord.attr('aria-grabbed', 'false'); }
                             self.selectedWord = null;
                         }
                     }
@@ -628,7 +633,8 @@ define(['jquery',
 
                 // Keyboard support via Spacebar
                 self.pointerdiv.on('keydown', function (e) {
-                    if (self.interactionLocked) { e.preventDefault(); return; }
+                    if (self.interactionLocked) {
+                        e.preventDefault(); return; }
                     if (e.key === ' ' || e.key === 'Spacebar') {
                         const $focused = $(document.activeElement);
                         if ($focused.is('.word')) {
@@ -646,7 +652,8 @@ define(['jquery',
                                     var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
                                     self.a11yAnnounce(tmpl.replace('{$a}', self.selectedWord.text().trim()));
                                 }
-                                if (self.selectedWord) { self.selectedWord.attr('aria-grabbed', 'false'); }
+                                if (self.selectedWord) {
+                                    self.selectedWord.attr('aria-grabbed', 'false'); }
                                 self.selectedWord = null;
                             }
                         } else if ($focused.is('.drop-slot')) {
@@ -654,7 +661,8 @@ define(['jquery',
                                 self.moveToSlot(self.selectedWord, $focused);
                                 var tmpl2 = (self.strings && self.strings.a11y_placed_in_slot) ? self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
                                 self.a11yAnnounce(tmpl2.replace('{$a}', self.selectedWord.text().trim()));
-                                if (self.selectedWord) { self.selectedWord.attr('aria-grabbed', 'false'); }
+                                if (self.selectedWord) {
+                                    self.selectedWord.attr('aria-grabbed', 'false'); }
                                 self.selectedWord = null;
                             }
                         }
@@ -683,7 +691,8 @@ define(['jquery',
 
                 // dragstart on a word
                 self.pointerdiv.on('dragstart', '.word', function (ev) {
-                    if (self.interactionLocked) { ev.preventDefault(); return false; }
+                    if (self.interactionLocked) {
+                        ev.preventDefault(); return false; }
                     var e = ev.originalEvent || ev;
                     self.draggedWord = $(this);
                     self.selectedWord = self.draggedWord; // reuse existing highlight logic
@@ -692,7 +701,8 @@ define(['jquery',
                         // Set dummy data to make Firefox happy
                         e.dataTransfer.setData('text/plain', 'move');
                         e.dataTransfer.effectAllowed = 'move';
-                    } catch (ex) { }
+                    } catch (ex) {
+                    }
                     self.highlightDropZones();
                     $(this).addClass('ml_ws_dragging');
                 });
@@ -708,10 +718,12 @@ define(['jquery',
 
                 // Allow drop on slots and bank
                 self.pointerdiv.on('dragover', '.drop-slot, .word-bank', function (ev) {
-                    if (self.interactionLocked) { return; }
+                    if (self.interactionLocked) {
+                        return; }
                     var e = ev.originalEvent || ev;
                     e.preventDefault();
-                    if (e.dataTransfer) { e.dataTransfer.dropEffect = 'move'; }
+                    if (e.dataTransfer) {
+                        e.dataTransfer.dropEffect = 'move'; }
                 });
 
                 // Visual cue on enter/leave
@@ -724,7 +736,8 @@ define(['jquery',
 
                 // Drop into a slot
                 self.pointerdiv.on('drop', '.drop-slot', function (ev) {
-                    if (self.interactionLocked) { return; }
+                    if (self.interactionLocked) {
+                        return; }
                     var e = ev.originalEvent || ev;
                     e.preventDefault();
                     $(this).removeClass('ml_ws_highlight');
@@ -741,7 +754,8 @@ define(['jquery',
 
                 // Drop back into the bank
                 self.pointerdiv.on('drop', '.word-bank', function (ev) {
-                    if (self.interactionLocked) { return; }
+                    if (self.interactionLocked) {
+                        return; }
                     var e = ev.originalEvent || ev;
                     e.preventDefault();
                     $(this).removeClass('ml_ws_highlight');

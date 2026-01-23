@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,11 +26,12 @@ namespace mod_minilesson\local\itemform;
 
 use mod_minilesson\constants;
 
-class passagereadingform extends baseform {
-
+class passagereadingform extends baseform
+{
     public $type = constants::TYPE_PASSAGEREADING;
 
-    public function custom_definition() {
+    public function custom_definition()
+    {
         $this->add_itemsettings_heading();
         $mform = $this->_form;
         $this->add_static_text('instructions', '', get_string('passagereadingdesc', constants::M_COMPONENT));
