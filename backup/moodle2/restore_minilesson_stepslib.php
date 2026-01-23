@@ -21,7 +21,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 /**
  * Define all the restore steps that will be used by the restore_minilesson_activity_task
@@ -30,9 +30,10 @@ use \mod_minilesson\constants;
 /**
  * Structure step to restore one minilesson activity
  */
-class restore_minilesson_activity_structure_step extends restore_activity_structure_step {
-
-    protected function define_structure() {
+class restore_minilesson_activity_structure_step extends restore_activity_structure_step
+{
+    protected function define_structure()
+    {
 
         $paths = array();
 
@@ -47,11 +48,13 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
         $paths[] = $oneactivity;
 
         //rsquestions
-        $rsquestions = new restore_path_element(constants::M_QTABLE,
-            '/activity/minilesson/rsquestions/rsquestion');
+        $rsquestions = new restore_path_element(
+            constants::M_QTABLE,
+            '/activity/minilesson/rsquestions/rsquestion'
+        );
         $paths[] = $rsquestions;
 
-		
+
 
         // End here if no-user data has been selected
         if (!$userinfo) {
@@ -61,17 +64,20 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
         ////////////////////////////////////////////////////////////////////////
         // XML interesting paths - user data
         ////////////////////////////////////////////////////////////////////////
-		//attempts
-		 $attempts= new restore_path_element(constants::M_ATTEMPTSTABLE,
-                                            '/activity/minilesson/attempts/attempt');
-		$paths[] = $attempts;
+        //attempts
+         $attempts = new restore_path_element(
+             constants::M_ATTEMPTSTABLE,
+             '/activity/minilesson/attempts/attempt'
+         );
+        $paths[] = $attempts;
 
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function process_minilesson($data) {
+    protected function process_minilesson($data)
+    {
         global $DB;
 
         $data = (object)$data;
@@ -87,7 +93,8 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
         $this->apply_activity_instance($newitemid);
     }
 
-    protected function process_minilesson_rsquestions($data) {
+    protected function process_minilesson_rsquestions($data)
+    {
         global $DB;
 
         $data = (object)$data;
@@ -101,8 +108,9 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
         $this->set_mapping(constants::M_QTABLE, $oldid, $newquestionid, true); // Mapping with files
     }
 
-	
-	protected function process_minilesson_attempt($data) {
+
+    protected function process_minilesson_attempt($data)
+    {
         global $DB;
 
         $data = (object)$data;
@@ -113,20 +121,21 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
         $data->timecreated = $this->apply_date_offset($data->timecreated);
         $data->moduleid = $this->get_new_parentid(constants::M_MODNAME);
         $newitemid = $DB->insert_record(constants::M_ATTEMPTSTABLE, $data);
-		
-		// Mapping without files
-		//here we set the table name as the "key" to the mapping, but its actually arbitrary
-		//'we would need to use the "key" later when calling add_related_files for the itemid in the moodle files area
-		//IF we had files for this set of data. )
-       $this->set_mapping(constants::M_ATTEMPTSTABLE, $oldid, $newitemid, true);
+
+        // Mapping without files
+        //here we set the table name as the "key" to the mapping, but its actually arbitrary
+        //'we would need to use the "key" later when calling add_related_files for the itemid in the moodle files area
+        //IF we had files for this set of data. )
+        $this->set_mapping(constants::M_ATTEMPTSTABLE, $oldid, $newitemid, true);
     }
 
-    protected function after_execute() {
+    protected function after_execute()
+    {
         // Add module related files, no need to match by itemname (just internally handled context)
         $this->add_related_files(constants::M_COMPONENT, 'intro', null);
-/*		$this->add_related_files(constants::M_COMPONENT, 'welcome', null); */
+/*      $this->add_related_files(constants::M_COMPONENT, 'welcome', null); */
 
-		//question stuff
+        //question stuff
         //do question areas
         $this->add_related_files(constants::M_COMPONENT, constants::TEXTQUESTION_FILEAREA, constants::M_QTABLE);
         $this->add_related_files(constants::M_COMPONENT, constants::MEDIAQUESTION, constants::M_QTABLE);
@@ -134,17 +143,16 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
 
 
         //do answer areas
-        for($anumber=1;$anumber<=constants::MAXANSWERS;$anumber++) {
+        for ($anumber = 1; $anumber <= constants::MAXANSWERS; $anumber++) {
             $this->add_related_files(constants::M_COMPONENT, constants::TEXTANSWER_FILEAREA . $anumber, constants::M_QTABLE);
             $this->add_related_files(constants::M_COMPONENT, constants::FILEANSWER . $anumber, constants::M_QTABLE);
             $this->add_related_files(constants::M_COMPONENT, constants::FILEANSWER . $anumber . '_image', constants::M_QTABLE);
             $this->add_related_files(constants::M_COMPONENT, constants::FILEANSWER . $anumber . '_audio', constants::M_QTABLE);
         }
-		
-		 $userinfo = $this->get_setting_value('userinfo'); // are we including userinfo?
-		 if($userinfo){
-			$this->add_related_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, constants::M_ATTEMPTSTABLE);
 
-         }
+         $userinfo = $this->get_setting_value('userinfo'); // are we including userinfo?
+        if ($userinfo) {
+            $this->add_related_files(constants::M_COMPONENT, constants::M_FILEAREA_SUBMISSIONS, constants::M_ATTEMPTSTABLE);
+        }
     }
 }

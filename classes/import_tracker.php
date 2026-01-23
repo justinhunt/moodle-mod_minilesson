@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,22 +24,23 @@ namespace mod_minilesson;
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class import_tracker {
+class import_tracker
+{
     /** @var array */
     protected $_row;
-
-    /**
+/**
      * The columns shown on the table.
      * @var array
      */
     public $columns = [];
-    /** @var array column headers */
+/** @var array column headers */
     protected $headers = [];
 
     /**
      * uu_progress_tracker constructor.
      */
-    public function __construct($keycolumns) {
+    public function __construct($keycolumns)
+    {
         $baseheaders = ['id' => 'ID', 'line' => 'Line', 'status' => 'Status'];
         $headers = array_merge($baseheaders, $keycolumns);
         $this->columns = array_keys($headers);
@@ -49,12 +51,11 @@ class import_tracker {
      * Print table header.
      * @return void
      */
-    public function start() {
+    public function start()
+    {
         $ci = 0;
-        $this->do_echo(
-            '<table id="iiresults" class="generaltable boxaligncenter flexible-wrap" summary="' .
-                get_string('importitemsresult', constants::M_COMPONENT) . '">'
-        );
+        $this->do_echo('<table id="iiresults" class="generaltable boxaligncenter flexible-wrap" summary="' .
+                get_string('importitemsresult', constants::M_COMPONENT) . '">');
         $this->do_echo('<tr class="heading r0">');
         foreach ($this->headers as $key => $header) {
             $this->do_echo('<th class="header c' . $ci++ . '" scope="col">' . $header . '</th>');
@@ -67,9 +68,10 @@ class import_tracker {
      * Flush previous line and start a new one.
      * @return void
      */
-    public function flush() {
+    public function flush()
+    {
         if (empty($this->_row) || empty($this->_row['line']['normal'])) {
-            // Nothing to print - each line has to have at least number.
+// Nothing to print - each line has to have at least number.
             $this->_row = [];
             foreach ($this->columns as $col) {
                 $this->_row[$col] = ['normal' => '', 'info' => '', 'warning' => '', 'error' => ''];
@@ -109,9 +111,11 @@ class import_tracker {
      * @param bool $merge true means add as new line, false means override all previous text of the same type
      * @return void
      */
-    public function track($col, $msg, $level = 'normal', $merge = true) {
+    public function track($col, $msg, $level = 'normal', $merge = true)
+    {
         if (empty($this->_row)) {
-            $this->flush(); // Init arrays.
+            $this->flush();
+// Init arrays.
         }
         if (!in_array($col, $this->columns)) {
             debugging('Incorrect column:' . $col);
@@ -131,7 +135,8 @@ class import_tracker {
      * Print the table end
      * @return void
      */
-    public function close() {
+    public function close()
+    {
         $this->flush();
         $this->do_echo('</table>');
     }
@@ -141,7 +146,8 @@ class import_tracker {
      * @param string $text
      * @return void
      */
-    public function do_echo($text) {
+    public function do_echo($text)
+    {
         // If text is empty or this is cli script just return.
         if (empty($text) || defined('CLI_SCRIPT')) {
             return;

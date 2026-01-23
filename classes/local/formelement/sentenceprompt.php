@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -32,14 +33,15 @@ global $CFG;
 require_once($CFG->libdir . '/formslib.php');
 require_once($CFG->libdir . '/form/editor.php');
 
-class sentenceprompt extends MoodleQuickForm_editor {
-
+class sentenceprompt extends MoodleQuickForm_editor
+{
     const ELNAME = 'sentenceprompt';
 
     /** @var string defines the type of editor */
     public $_type = sentenceprompt::ELNAME;
 
-    function toHtml() {
+    function toHtml()
+    {
         global $OUTPUT;
 
         if ($this->_flagFrozen) {
@@ -47,7 +49,7 @@ class sentenceprompt extends MoodleQuickForm_editor {
         }
 
         if (empty($this->_values['itemid'])) {
-            $this->setValue(['itemid'=> file_get_unused_draft_itemid()]);
+            $this->setValue(['itemid' => file_get_unused_draft_itemid()]);
         }
 
         $str = $this->_getTabs();
@@ -77,7 +79,8 @@ class sentenceprompt extends MoodleQuickForm_editor {
         return $str;
     }
 
-    public function exportValue(&$submitValues, $assoc = false) {
+    public function exportValue(&$submitValues, $assoc = false)
+    {
         $valuearray = $this->_findValue($submitValues);
         if (empty($valuearray)) {
             return null;
@@ -85,7 +88,8 @@ class sentenceprompt extends MoodleQuickForm_editor {
         return $this->_prepareValue($valuearray['text'], $assoc);
     }
 
-    public function onQuickFormEvent($event, $arg, &$caller) {
+    public function onQuickFormEvent($event, $arg, &$caller)
+    {
         switch ($event) {
             case 'updateValue':
                 $value = $this->_findValue($caller->_constantValues);
@@ -97,7 +101,7 @@ class sentenceprompt extends MoodleQuickForm_editor {
                     }
                 }
                 $finalvalue = null;
-                if (null !== $value){
+                if (null !== $value) {
                     if (!is_array($value)) {
                         $finalvalue = ['text' => $value];
                     } else {
@@ -113,7 +117,8 @@ class sentenceprompt extends MoodleQuickForm_editor {
         }
     }
 
-    public function accept(&$renderer, $required = false, $error = null) {
+    public function accept(&$renderer, $required = false, $error = null)
+    {
         global $OUTPUT;
 
         $uniqid = random_string();
@@ -142,11 +147,13 @@ class sentenceprompt extends MoodleQuickForm_editor {
         }
 
         $renderer->_html .= $OUTPUT->render_from_template(
-            constants::M_COMPONENT . '/form/element-' . $this->getType(), $context);
+            constants::M_COMPONENT . '/form/element-' . $this->getType(),
+            $context
+        );
     }
 
-    public static function register() {
+    public static function register()
+    {
         MoodleQuickForm::registerElementType(static::ELNAME, __FILE__, __CLASS__);
     }
-
 }

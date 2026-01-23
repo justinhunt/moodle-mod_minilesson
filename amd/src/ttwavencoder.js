@@ -14,16 +14,16 @@ define(['jquery', 'core/log'], function ($, log) {
             return $.extend(true, {}, this);
         },
 
-        init: function(sampleRate, numChannels) {
+        init: function (sampleRate, numChannels) {
             this.sampleRate = sampleRate;
             this.numChannels = numChannels;
             this.numSamples = 0;
             this.dataViews = [];
         },
 
-        audioprocess: function(buffer) {
+        audioprocess: function (buffer) {
             //this would be an event that occurs after recorder has stopped lets just ignore it
-            if(this.dataViews===undefined){
+            if (this.dataViews === undefined) {
                 return;
             }
 
@@ -42,17 +42,17 @@ define(['jquery', 'core/log'], function ($, log) {
             this.numSamples += len;
         },
 
-        setString: function(view, offset, str) {
+        setString: function (view, offset, str) {
             var len = str.length;
             for (var i = 0; i < len; ++i) {
                 view.setUint8(offset + i, str.charCodeAt(i));
             }
         },
 
-        finish: function(mimeType) {
+        finish: function (mimeType) {
 
             //this would be an event that occurs after recorder has stopped lets just ignore it
-            if(this.dataViews===undefined){
+            if (this.dataViews === undefined) {
                 return;
             }
 
@@ -77,14 +77,14 @@ define(['jquery', 'core/log'], function ($, log) {
             return blob;
         },
 
-        cancel: function() {
+        cancel: function () {
             delete this.dataViews;
         },
 
-        cleanup: function() {
+        cleanup: function () {
             this.cancel();
         }
 
-     };//end of return value
+    };//end of return value
 
 });

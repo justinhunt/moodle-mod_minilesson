@@ -1,7 +1,7 @@
-define(['jquery', 'core/fragment'], function($, Fragment) {
+define(['jquery', 'core/fragment'], function ($, Fragment) {
     return {
-        init: function() {
-            $('select[data-name="instructionsaiprompt"]').on('change', function() {
+        init: function () {
+            $('select[data-name="instructionsaiprompt"]').on('change', function () {
                 const val = $(this).val();
                 const itemtype = $(this).data('type') || '';
                 const textarea = $('textarea[data-name="aigrade_instructions"]');
@@ -13,12 +13,12 @@ define(['jquery', 'core/fragment'], function($, Fragment) {
                     'ai_prompt',
                     M.cfg.contextid,
                     { promptid: val, prompttype: 'instructions', itemtype: itemtype }
-                ).done(function(text) {
+                ).done(function (text) {
                     textarea.val(text);
                 });
             });
 
-            $('select[data-name="gradingaiprompt"]').on('change', function() {
+            $('select[data-name="gradingaiprompt"]').on('change', function () {
                 const val = $(this).val();
                 const itemtype = $(this).data('type') || '';
                 const textarea = $('textarea[data-name="aigrade_grade"]');
@@ -30,12 +30,12 @@ define(['jquery', 'core/fragment'], function($, Fragment) {
                     'ai_prompt',
                     M.cfg.contextid,
                     { promptid: val, prompttype: 'grading', itemtype: itemtype }
-                ).done(function(text) {
+                ).done(function (text) {
                     textarea.val(text);
                 });
             });
 
-            $('select[data-name="feedbackaiprompt"]').on('change', function() {
+            $('select[data-name="feedbackaiprompt"]').on('change', function () {
                 const val = $(this).val();
                 const itemtype = $(this).data('type') || '';
                 const textarea = $('textarea[data-name="aigrade_feedback"]');
@@ -47,7 +47,7 @@ define(['jquery', 'core/fragment'], function($, Fragment) {
                     'ai_prompt',
                     M.cfg.contextid,
                     { promptid: val, prompttype: 'feedback', itemtype: itemtype }
-                ).done(function(text) {
+                ).done(function (text) {
                     textarea.val(text);
                 });
             });

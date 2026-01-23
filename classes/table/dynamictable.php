@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,9 +30,10 @@ require_once($CFG->libdir . '/tablelib.php');
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class dynamictable extends table_sql implements dynamic {
-
-    public function __construct($uniqueid = null) {
+abstract class dynamictable extends table_sql implements dynamic
+{
+    public function __construct($uniqueid = null)
+    {
         if (is_null($uniqueid)) {
             $classparts = explode('\\', get_class($this));
             $uniqueid = html_writer::random_id(end($classparts));
@@ -39,16 +41,19 @@ abstract class dynamictable extends table_sql implements dynamic {
         parent::__construct($uniqueid);
     }
 
-    public static function get_filterset_object(): filterset {
+    public static function get_filterset_object(): filterset
+    {
         $filterclass = static::get_filterset_class();
-        return new $filterclass;
+        return new $filterclass();
     }
 
-    public static function get_filterset_class(): string {
+    public static function get_filterset_class(): string
+    {
         return static::class . '_filterset';
     }
 
-    public function render($pagesize = 30, $useinitialsbar = false, $downloadhelpbutton=''): string {
+    public function render($pagesize = 30, $useinitialsbar = false, $downloadhelpbutton = ''): string
+    {
         ob_start();
         $this->out($pagesize, $useinitialsbar, $downloadhelpbutton);
         $out = ob_get_contents();
@@ -57,5 +62,4 @@ abstract class dynamictable extends table_sql implements dynamic {
     }
 
     abstract public function has_capability(): bool;
-
 }

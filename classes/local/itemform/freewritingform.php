@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -8,12 +9,11 @@
 
 namespace mod_minilesson\local\itemform;
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 use mod_minilesson\utils;
 
 class freewritingform extends baseform
 {
-
     public $type = constants::TYPE_FREEWRITING;
 
     public function custom_definition()

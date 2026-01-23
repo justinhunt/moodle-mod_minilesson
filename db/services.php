@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Services definition.
  *
@@ -105,7 +106,7 @@ $functions = [
                 'capabilities' => 'mod/minilesson:view',
                 'type'        => 'read',
                 'ajax'        => true,
-        ),
+         ),
         'mod_minilesson_lessonbank' => array(
                 'classname' => 'mod_minilesson_external',
                 'methodname'  => 'lessonbank',

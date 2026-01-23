@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -12,17 +13,19 @@ use mod_minilesson\constants;
 
 class scatterform extends baseform
 {
-
     public $type = constants::TYPE_SCATTER;
 
-    public function custom_definition() {
+    public function custom_definition()
+    {
         global $CFG;
 
         //add a heading for this form
         $this->add_itemsettings_heading();
-        $this->add_static_text('enterscatteritems', '',
-        get_string('enterscatteritems', constants::M_COMPONENT));
-        $this->add_textarearesponse(1, get_string('scatteritems',  constants::M_COMPONENT), true);
+        $this->add_static_text(
+            'enterscatteritems',
+            '',
+            get_string('enterscatteritems', constants::M_COMPONENT)
+        );
+        $this->add_textarearesponse(1, get_string('scatteritems', constants::M_COMPONENT), true);
     }
-
 }

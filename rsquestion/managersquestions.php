@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,13 +29,13 @@ use mod_minilesson\utils;
 use mod_minilesson\local\itemtype\item;
 
 require_once("../../../config.php");
-require_once($CFG->dirroot.'/mod/minilesson/lib.php');
+require_once($CFG->dirroot . '/mod/minilesson/lib.php');
 
 
 global $USER, $DB;
 
 // First get the nfo passed in to set up the page.
-$itemid = optional_param('itemid', 0 , PARAM_INT);
+$itemid = optional_param('itemid', 0, PARAM_INT);
 $id     = required_param('id', PARAM_INT);         // Course Module ID.
 $type  = optional_param('type', constants::NONE, PARAM_TEXT);
 $action = optional_param('action', 'edit', PARAM_TEXT);
@@ -50,7 +51,7 @@ $context = context_module::instance($cm->id);
 require_capability('mod/minilesson:itemedit', $context);
 
 // Load the slides CSS.
-switch($minilesson->region) {
+switch ($minilesson->region) {
     case 'ningxia':
         // If Ningxia region, load CSS from different CDN.
         $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
@@ -71,7 +72,7 @@ $PAGE->set_pagelayout('incourse');
 // Are we in new or edit mode?
 if ($itemid) {
     $item = $DB->get_record(constants::M_QTABLE, ['id' => $itemid, constants::M_MODNAME => $cm->instance], '*', MUST_EXIST);
-    if(!$item){
+    if (!$item) {
         print_error('could not find item of id:' . $itemid);
     }
     $type = $item->type;
@@ -84,28 +85,30 @@ if ($itemid) {
 $redirecturl = new moodle_url('/mod/minilesson/rsquestion/rsquestions.php', ['id' => $cm->id]);
 
     // Handle delete actions.
-if($action == 'confirmdelete'){
+if ($action == 'confirmdelete') {
     // TODO more intelligent detection of question usage.
-    $usecount = $DB->count_records(constants::M_ATTEMPTSTABLE, [constants::M_MODNAME .'id' => $cm->instance]);
-    if($usecount > 0){
+    $usecount = $DB->count_records(constants::M_ATTEMPTSTABLE, [constants::M_MODNAME . 'id' => $cm->instance]);
+    if ($usecount > 0) {
          redirect($redirecturl, get_string('iteminuse', constants::M_COMPONENT), 10);
     }
 
         $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
         $rsquestionrenderer = $PAGE->get_renderer(constants::M_COMPONENT, 'rsquestion');
         echo $renderer->header($minilesson, $cm, 'rsquestions', null, get_string('confirmitemdeletetitle', constants::M_COMPONENT));
-        echo $rsquestionrenderer->confirm(get_string("confirmitemdelete", constants::M_COMPONENT, $item->name),
-        new moodle_url('/mod/minilesson/rsquestion/managersquestions.php', ['action' => 'delete', 'id' => $cm->id, 'itemid' => $itemid]),
-        $redirecturl);
+        echo $rsquestionrenderer->confirm(
+            get_string("confirmitemdelete", constants::M_COMPONENT, $item->name),
+            new moodle_url('/mod/minilesson/rsquestion/managersquestions.php', ['action' => 'delete', 'id' => $cm->id, 'itemid' => $itemid]),
+            $redirecturl
+        );
     echo $renderer->footer();
     return;
 
     // Delete item NOW.
-}else if ($action == 'delete'){
+} elseif ($action == 'delete') {
     require_sesskey();
     $success = \mod_minilesson\local\itemtype\item::delete_item($itemid, $context);
     redirect($redirecturl);
-}else if($action == "up" || $action == "down"){
+} elseif ($action == "up" || $action == "down") {
     \mod_minilesson\local\itemform\helper::move_item($minilesson, $itemid, $action);
     redirect($redirecturl);
 }
@@ -117,11 +120,12 @@ $editoroptions = \mod_minilesson\local\itemtype\item::fetch_editor_options($cour
 $filemanageroptions = \mod_minilesson\local\itemtype\item::fetch_filemanager_options($course, 3);
 
 $itemformclass  = utils::fetch_itemform_classname($type);
-if(!$itemformclass){
+if (!$itemformclass) {
     print_error('No item type specified');
     return 0;
 }
-$mform = new $itemformclass(null,
+$mform = new $itemformclass(
+    null,
     ['editoroptions' => $editoroptions,
         'filemanageroptions' => $filemanageroptions,
         'moduleinstance' => $minilesson]
@@ -139,10 +143,10 @@ if ($data = $mform->get_data()) {
     require_sesskey();
         $data->type = $type;
 
-    if($edit){
+    if ($edit) {
         $theitem = utils::fetch_item_from_itemrecord($data, $minilesson);
         $olditem = $item;
-    }else{
+    } else {
         $theitem = utils::fetch_item_from_itemrecord($data, $minilesson);
         $olditem = false;
     }
@@ -152,11 +156,10 @@ if ($data = $mform->get_data()) {
     $theitem->update_create_phonetic($olditem);
 
     $result = $theitem->update_insert_item();
-    if($result->error == true){
+    if ($result->error == true) {
         print_error($result->message);
         redirect($redirecturl);
-
-    }else{
+    } else {
         $theitem = $result->item;
     }
 
@@ -172,89 +175,111 @@ if ($edit) {
     $data->itemid = $item->id;
 
     // If rich text, use editor otherwise use filepicker.
-    if($minilesson->richtextprompt == constants::M_PROMPT_RICHTEXT) {
+    if ($minilesson->richtextprompt == constants::M_PROMPT_RICHTEXT) {
         // Init our editor.
-        $data = file_prepare_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context, constants::M_COMPONENT,
-                constants::TEXTQUESTION_FILEAREA, $data->itemid);
-
-    }else {
-
+        $data = file_prepare_standard_editor(
+            $data,
+            constants::TEXTQUESTION,
+            $editoroptions,
+            $context,
+            constants::M_COMPONENT,
+            constants::TEXTQUESTION_FILEAREA,
+            $data->itemid
+        );
+    } else {
         // Make sure the media upload fields are in the correct state.
         $fs = get_file_storage();
-        $files = $fs->get_area_files( $context->id,  constants::M_COMPONENT, constants::MEDIAQUESTION, $data->itemid);
-        if($files){
+        $files = $fs->get_area_files($context->id, constants::M_COMPONENT, constants::MEDIAQUESTION, $data->itemid);
+        if ($files) {
             $data->addmedia = 1;
-        }else{
+        } else {
             $data->addmedia = 0;
         }
         //TTS Question.
-        if(!empty($data->{constants::TTSQUESTION})){
+        if (!empty($data->{constants::TTSQUESTION})) {
             $data->addttsaudio = 1;
-        }else{
+        } else {
             $data->addttsaudio = 0;
         }
         // Iframe.
-        if(!empty($data->{constants::MEDIAIFRAME})){
+        if (!empty($data->{constants::MEDIAIFRAME})) {
             $data->addiframe = 1;
-        }else{
+        } else {
             $data->addiframe = 0;
         }
         // Youtube clip.
-        if(!empty($data->{constants::YTVIDEOID})){
+        if (!empty($data->{constants::YTVIDEOID})) {
             $data->addyoutubeclip = 1;
-        }else{
+        } else {
             $data->addyoutubeclip = 0;
         }
         // Textarea.
-        if(!empty($data->{constants::QUESTIONTEXTAREA})){
+        if (!empty($data->{constants::QUESTIONTEXTAREA})) {
             $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
             $edoptions['context'] = $context;
-            $data->{constants::QUESTIONTEXTAREA. 'format'} = FORMAT_HTML;
-            $data = file_prepare_standard_editor($data, constants::QUESTIONTEXTAREA, $edoptions, $context, constants::M_COMPONENT,
-                    constants::TEXTQUESTION_FILEAREA, $data->itemid);
+            $data->{constants::QUESTIONTEXTAREA . 'format'} = FORMAT_HTML;
+            $data = file_prepare_standard_editor(
+                $data,
+                constants::QUESTIONTEXTAREA,
+                $edoptions,
+                $context,
+                constants::M_COMPONENT,
+                constants::TEXTQUESTION_FILEAREA,
+                $data->itemid
+            );
             $data->addtextarea = 1;
-        }else{
+        } else {
             $data->addtextarea = 0;
         }
         // TTS Dialog.
-        if(!empty($data->{constants::TTSDIALOG})){
+        if (!empty($data->{constants::TTSDIALOG})) {
             $data->addttsdialog = 1;
             // Expand opts.
             $data = utils::unpack_ttsdialogopts($data);
-        }else{
+        } else {
             $data->addttsdialog = 0;
         }
         // TTS Passage.
-        if(!empty($data->{constants::TTSPASSAGE})){
+        if (!empty($data->{constants::TTSPASSAGE})) {
             $data->addttspassage = 1;
             // Expand opts.
             $data = utils::unpack_ttspassageopts($data);
-        }else{
+        } else {
             $data->addttspassage = 0;
         }
 
         // Audio Story.
-        $audiostoryfiles = $fs->get_area_files( $context->id,  constants::M_COMPONENT, constants::AUDIOSTORY, $data->itemid);
-        if($audiostoryfiles){
+        $audiostoryfiles = $fs->get_area_files($context->id, constants::M_COMPONENT, constants::AUDIOSTORY, $data->itemid);
+        if ($audiostoryfiles) {
             $data->addaudiostory = 1;
-        }else{
+        } else {
             $data->addaudiostory = 0;
         }
 
         // Init our itemmedia upload file field.
         $draftitemid = file_get_submitted_draft_itemid(constants::MEDIAQUESTION);
-        file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,
-                constants::MEDIAQUESTION, $data->itemid,
-                $filemanageroptions);
+        file_prepare_draft_area(
+            $draftitemid,
+            $context->id,
+            constants::M_COMPONENT,
+            constants::MEDIAQUESTION,
+            $data->itemid,
+            $filemanageroptions
+        );
         $data->{constants::MEDIAQUESTION} = $draftitemid;
 
         // Init our audio story upload file field.
         $draftitemid = file_get_submitted_draft_itemid(constants::AUDIOSTORY);
         $asfilemanageroptions = \mod_minilesson\local\itemtype\item::fetch_filemanager_options($course, -1);
         $asfilemanageroptions['accepted_types'] = '*';
-        file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,
-                constants::AUDIOSTORY, $data->itemid,
-                $asfilemanageroptions);
+        file_prepare_draft_area(
+            $draftitemid,
+            $context->id,
+            constants::M_COMPONENT,
+            constants::AUDIOSTORY,
+            $data->itemid,
+            $asfilemanageroptions
+        );
         $data->{constants::AUDIOSTORY} = $draftitemid;
 
         // Show the fields by default if they have some content.
@@ -268,51 +293,57 @@ if ($edit) {
         'addaudiostory' => $data->addaudiostory];
 
         // Init file upload areas for item answers.
-        for ($i = 1; $i <= constants::MAXANSWERS; $i++){
+        for ($i = 1; $i <= constants::MAXANSWERS; $i++) {
             //Multichoice, sentence audio, and sentence image areas.
             $fileareas = [constants::FILEANSWER . $i, constants::FILEANSWER . $i . '_audio', constants::FILEANSWER . $i . '_image'];
-            foreach($fileareas as $filearea) {
+            foreach ($fileareas as $filearea) {
                 $draftitemid = file_get_submitted_draft_itemid($filearea);
                 //File manager is different depending on the filearea.
-                switch($filearea){
+                switch ($filearea) {
                     case constants::FILEANSWER . $i . '_audio':
-                        $fm = array_merge( $filemanageroptions, ['accepted_types' => 'audio', 'maxfiles' => -1]);
+                        $fm = array_merge($filemanageroptions, ['accepted_types' => 'audio', 'maxfiles' => -1]);
                         break;
                     case constants::FILEANSWER . $i . '_image':
-                        $fm = array_merge( $filemanageroptions, ['accepted_types' => 'image', 'maxfiles' => -1]);
+                        $fm = array_merge($filemanageroptions, ['accepted_types' => 'image', 'maxfiles' => -1]);
                         break;
                     case constants::FILEANSWER . $i:
                     default:
                         $fm = $filemanageroptions;
                 }
                 //Now we can prepare draft area.
-                file_prepare_draft_area($draftitemid, $context->id, constants::M_COMPONENT,
-                        $filearea, $data->itemid,
-                        $filemanageroptions);
+                file_prepare_draft_area(
+                    $draftitemid,
+                    $context->id,
+                    constants::M_COMPONENT,
+                    $filearea,
+                    $data->itemid,
+                    $filemanageroptions
+                );
                 $data->{$filearea} = $draftitemid;
             }
         }
 
         $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/mediaprompts', 'init', [$visibility]);
-
     }
-
-
 } else {
-
-    $data = new stdClass;
+    $data = new stdClass();
     $data->itemid = null;
     $data->visible = 1;
     $data->type = $type;
 
     // If rich text, use editor otherwise use filepicker.
-    if($minilesson->richtextprompt == constants::M_PROMPT_RICHTEXT) {
+    if ($minilesson->richtextprompt == constants::M_PROMPT_RICHTEXT) {
         // Init our editor.
-        $data = file_prepare_standard_editor($data, constants::TEXTQUESTION, $editoroptions, $context, constants::M_COMPONENT,
-                constants::TEXTQUESTION_FILEAREA, $data->itemid);
-
-    }else {
-
+        $data = file_prepare_standard_editor(
+            $data,
+            constants::TEXTQUESTION,
+            $editoroptions,
+            $context,
+            constants::M_COMPONENT,
+            constants::TEXTQUESTION_FILEAREA,
+            $data->itemid
+        );
+    } else {
         // Init media prompts - all hidden initiall.
         $visibility = ['addmedia' => 0,
             'addiframe' => 0,
@@ -334,9 +365,9 @@ if ($edit) {
     $renderer = $PAGE->get_renderer('mod_minilesson');
     $mode = 'rsquestions';
     echo $renderer->header($minilesson, $cm, $mode, null, get_string('edit', constants::M_COMPONENT));
-if($edit){
+if ($edit) {
        echo $renderer->heading(get_string('editingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
-}else{
+} else {
     echo $renderer->heading(get_string('addingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
 }
     $mform->display();

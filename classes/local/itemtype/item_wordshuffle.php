@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,7 +29,6 @@ use mod_minilesson\utils;
  */
 class item_wordshuffle extends item
 {
-
     //the item type
     public const ITEMTYPE = constants::TYPE_WORDSHUFFLE;
 
@@ -136,15 +136,17 @@ class item_wordshuffle extends item
             if (isset($testitem->sentences[$processedsentence->index])) {
                 $testitem->sentences[$processedsentence->index]->gapwords = $processedsentence->gapwords;
                 $testitem->sentences[$processedsentence->index]->hint = $processedsentence->definition;
-                $gaps = array_filter($processedsentence->gapwords,
-                function($gap) {
-                    return !empty($gap['isgap']);
-                });
+                $gaps = array_filter(
+                    $processedsentence->gapwords,
+                    function ($gap) {
+                        return !empty($gap['isgap']);
+                    }
+                );
                 $gapsanddistractors = $gaps;
                 foreach ($processedsentence->extrawords as $extraword) {
                     $gapsanddistractors[] = ['word' => $extraword, 'isgap' => true, 'gapindex' => 9999];
                 }
-                shuffle($gapsanddistractors );
+                shuffle($gapsanddistractors);
                 $testitem->sentences[$processedsentence->index]->randomgaps = $gapsanddistractors;
             }
         }
@@ -197,9 +199,9 @@ class item_wordshuffle extends item
         $keycols['int2'] = ['jsonname' => 'readsentence', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE]; //not boolean ..
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::WORDSHUFFLEHIDESTARTPAGE];
-        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
-        $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
- 
+        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+        $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+
         return $keycols;
     }
 
@@ -209,7 +211,6 @@ class item_wordshuffle extends item
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
         switch ($generatemethod) {
-
             case 'extract':
                 $prompt = "Extract a one dimensional array of 4 short sentences (sentences) in {language} suitable for {level} level learners from the following passage: [{text}] ";
                 $prompt .= "In each sentence surround all but the first two words with square brackets, e.g [word]. ";

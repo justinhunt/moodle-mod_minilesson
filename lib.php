@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -42,7 +43,8 @@ use mod_minilesson\utils;
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */
-function minilesson_supports($feature) {
+function minilesson_supports($feature)
+{
     switch ($feature) {
         case FEATURE_MOD_INTRO:
             return true;
@@ -67,7 +69,7 @@ function minilesson_supports($feature) {
         case "mod_purpose":
             if (defined('MOD_PURPOSE_INTERACTIVECONTENT')) {
                 return "interactivecontent";
-            } else if (defined('MOD_PURPOSE_ASSESSMENT')) {
+            } elseif (defined('MOD_PURPOSE_ASSESSMENT')) {
                 return "assessment";
             } else {
                 return null;
@@ -88,7 +90,8 @@ function minilesson_supports($feature) {
  *
  * @param $mform form passed by reference
  */
-function minilesson_reset_course_form_definition(&$mform) {
+function minilesson_reset_course_form_definition(&$mform)
+{
     $mform->addElement('header', constants::M_MODNAME . 'header', get_string('modulenameplural', constants::M_COMPONENT));
     $mform->addElement('advcheckbox', 'reset_' . constants::M_MODNAME, get_string('deletealluserdata', constants::M_COMPONENT));
 }
@@ -98,7 +101,8 @@ function minilesson_reset_course_form_definition(&$mform) {
  * @param object $course
  * @return array
  */
-function minilesson_reset_course_form_defaults($course) {
+function minilesson_reset_course_form_defaults($course)
+{
     return ['reset_' . constants::M_MODNAME => 1];
 }
 /**
@@ -107,7 +111,8 @@ function minilesson_reset_course_form_defaults($course) {
  * @param context $context
  * @return array
  */
-function minilesson_editor_with_files_options($context) {
+function minilesson_editor_with_files_options($context)
+{
     return [
         'maxfiles' => EDITOR_UNLIMITED_FILES,
         'noclean' => true,
@@ -121,7 +126,8 @@ function minilesson_editor_with_files_options($context) {
  * @param context $context
  * @return array
  */
-function minilesson_editor_no_files_options($context) {
+function minilesson_editor_no_files_options($context)
+{
     return ['maxfiles' => 0, 'noclean' => true, 'context' => $context];
 }
 /**
@@ -130,7 +136,8 @@ function minilesson_editor_no_files_options($context) {
  * @param context $context
  * @return array
  */
-function minilesson_picturefile_options($context) {
+function minilesson_picturefile_options($context)
+{
     return [
         'maxfiles' => EDITOR_UNLIMITED_FILES,
         'noclean' => true,
@@ -146,7 +153,8 @@ function minilesson_picturefile_options($context) {
  * @param int $courseid
  * @param string $type optional type
  */
-function minilesson_reset_gradebook($courseid, $type = '') {
+function minilesson_reset_gradebook($courseid, $type = '')
+{
     global $CFG, $DB;
 
     $sql = "SELECT l.*, cm.idnumber as cmidnumber, l.course as courseid
@@ -167,7 +175,8 @@ function minilesson_reset_gradebook($courseid, $type = '') {
  * @param object $data the data submitted from the reset course.
  * @return array status array
  */
-function minilesson_reset_userdata($data) {
+function minilesson_reset_userdata($data)
+{
     global $CFG, $DB;
 
     $componentstr = get_string('modulenameplural', constants::M_COMPONENT);
@@ -210,7 +219,8 @@ function minilesson_reset_userdata($data) {
  * @param array|object $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
  * @return int 0 if ok, error code otherwise
  */
-function minilesson_grade_item_update($moduleinstance, $grades = null) {
+function minilesson_grade_item_update($moduleinstance, $grades = null)
+{
     global $CFG;
     if (!function_exists('grade_update')) { // Workaround for buggy PHP versions.
         require_once($CFG->libdir . '/gradelib.php');
@@ -226,7 +236,7 @@ function minilesson_grade_item_update($moduleinstance, $grades = null) {
         $params['gradetype'] = GRADE_TYPE_VALUE;
         $params['grademax'] = $moduleinstance->grade;
         $params['grademin'] = 0;
-    } else if ($moduleinstance->grade < 0) {
+    } elseif ($moduleinstance->grade < 0) {
         $params['gradetype'] = GRADE_TYPE_SCALE;
         $params['scaleid'] = -$moduleinstance->grade;
 
@@ -258,11 +268,11 @@ function minilesson_grade_item_update($moduleinstance, $grades = null) {
     if ($grades === 'reset') {
         $params['reset'] = true;
         $grades = null;
-    } else if (!empty($grades)) {
+    } elseif (!empty($grades)) {
         // Need to calculate raw grade (Note: $grades has many forms).
         if (is_object($grades)) {
             $grades = [$grades->userid => $grades];
-        } else if (array_key_exists('userid', $grades)) {
+        } elseif (array_key_exists('userid', $grades)) {
             $grades = [$grades['userid'] => $grades];
         }
         foreach ($grades as $key => $grade) {
@@ -299,15 +309,16 @@ function minilesson_grade_item_update($moduleinstance, $grades = null) {
  * @param int $userid specific user only, 0 means all
  * @param bool $nullifnone
  */
-function minilesson_update_grades($moduleinstance, $userid = 0, $nullifnone = true) {
+function minilesson_update_grades($moduleinstance, $userid = 0, $nullifnone = true)
+{
     global $CFG, $DB;
     require_once($CFG->libdir . '/gradelib.php');
 
     if ($moduleinstance->grade == 0) {
         minilesson_grade_item_update($moduleinstance);
-    } else if ($grades = minilesson_get_user_grades($moduleinstance, $userid)) {
+    } elseif ($grades = minilesson_get_user_grades($moduleinstance, $userid)) {
         minilesson_grade_item_update($moduleinstance, $grades);
-    } else if ($userid && $nullifnone) {
+    } elseif ($userid && $nullifnone) {
         $grade = new stdClass();
         $grade->userid = $userid;
         $grade->rawgrade = null;
@@ -324,7 +335,8 @@ function minilesson_update_grades($moduleinstance, $userid = 0, $nullifnone = tr
  * @param int $userid optional user id, 0 means all users
  * @return array array of grades, false if none
  */
-function minilesson_get_user_grades($moduleinstance, $userid = 0) {
+function minilesson_get_user_grades($moduleinstance, $userid = 0)
+{
     global $CFG, $DB;
 
     $params = ["moduleid" => $moduleinstance->id];
@@ -361,7 +373,8 @@ function minilesson_get_user_grades($moduleinstance, $userid = 0) {
  * @return int|bool
  * @throws Exception
  */
-function minilesson_get_completion_state($course, $cm, $userid, $type) {
+function minilesson_get_completion_state($course, $cm, $userid, $type)
+{
     return minilesson_is_complete($course, $cm, $userid, $type);
 }
 
@@ -376,7 +389,8 @@ function minilesson_get_completion_state($course, $cm, $userid, $type) {
  * @return int|bool
  * @throws Exception
  */
-function minilesson_is_complete($course, $cm, $userid, $type) {
+function minilesson_is_complete($course, $cm, $userid, $type)
+{
 
     global $DB;
 
@@ -399,9 +413,9 @@ function minilesson_is_complete($course, $cm, $userid, $type) {
             if ($onfinished && $onmingrade) {
                 return utils::is_complete('completionwhenfinished', $moduleinstance, $userid) &&
                     utils::is_complete('mingrade', $moduleinstance, $userid);
-            } else if ($onfinished) {
+            } elseif ($onfinished) {
                 return utils::is_complete('completionwhenfinished', $moduleinstance, $userid);
-            } else if ($onmingrade) {
+            } elseif ($onmingrade) {
                 return utils::is_complete('mingrade', $moduleinstance, $userid);
             }
             break;
@@ -423,7 +437,8 @@ function minilesson_is_complete($course, $cm, $userid, $type) {
  * @param progress_trace trace object
  *
  */
-function minilesson_dotask(progress_trace $trace) {
+function minilesson_dotask(progress_trace $trace)
+{
     $trace->output('executing dotask');
 }
 
@@ -432,7 +447,8 @@ function minilesson_dotask(progress_trace $trace) {
  *
  * @return array
  */
-function minilesson_get_editornames() {
+function minilesson_get_editornames()
+{
     return [];
 }
 
@@ -448,7 +464,8 @@ function minilesson_get_editornames() {
  * @param mod_minilesson_mod_form $mform
  * @return int The id of the newly inserted minilesson record
  */
-function minilesson_add_instance(stdClass $minilesson, ?mod_minilesson_mod_form $mform = null) {
+function minilesson_add_instance(stdClass $minilesson, ?mod_minilesson_mod_form $mform = null)
+{
     global $DB;
 
     $minilesson->timecreated = time();
@@ -480,7 +497,8 @@ function minilesson_add_instance(stdClass $minilesson, ?mod_minilesson_mod_form 
  * @param mod_minilesson_mod_form|null $mform
  * @return stdClass
  */
-function minilesson_process_files(stdClass $minilesson, ?mod_minilesson_mod_form $mform = null) {
+function minilesson_process_files(stdClass $minilesson, ?mod_minilesson_mod_form $mform = null)
+{
     global $DB;
     $cmid = $minilesson->coursemodule;
     $context = context_module::instance($cmid);
@@ -513,7 +531,8 @@ function minilesson_process_files(stdClass $minilesson, ?mod_minilesson_mod_form
  * @param mod_minilesson_mod_form $mform
  * @return boolean Success/Fail
  */
-function minilesson_update_instance(stdClass $minilesson, ?mod_minilesson_mod_form $mform = null) {
+function minilesson_update_instance(stdClass $minilesson, ?mod_minilesson_mod_form $mform = null)
+{
 
     global $DB;
 
@@ -571,7 +590,8 @@ function minilesson_update_instance(stdClass $minilesson, ?mod_minilesson_mod_fo
  * @param int $id Id of the module instance
  * @return boolean Success/Failure
  */
-function minilesson_delete_instance($id) {
+function minilesson_delete_instance($id)
+{
     global $DB;
 
     if (!$minilesson = $DB->get_record(constants::M_TABLE, ['id' => $id])) {
@@ -594,7 +614,8 @@ function minilesson_delete_instance($id) {
  *
  * @return stdClass|null
  */
-function minilesson_user_outline($course, $user, $mod, $minilesson) {
+function minilesson_user_outline($course, $user, $mod, $minilesson)
+{
 
     $return = new stdClass();
     $return->time = 0;
@@ -612,7 +633,8 @@ function minilesson_user_outline($course, $user, $mod, $minilesson) {
  * @param stdClass $minilesson the module instance record
  * @return void, is supposed to echp directly
  */
-function minilesson_user_complete($course, $user, $mod, $minilesson) {
+function minilesson_user_complete($course, $user, $mod, $minilesson)
+{
 }
 
 /**
@@ -622,7 +644,8 @@ function minilesson_user_complete($course, $user, $mod, $minilesson) {
  *
  * @return boolean
  */
-function minilesson_print_recent_activity($course, $viewfullnames, $timestart) {
+function minilesson_print_recent_activity($course, $viewfullnames, $timestart)
+{
     return false;  // True if anything was printed, otherwise false.
 }
 
@@ -642,7 +665,8 @@ function minilesson_print_recent_activity($course, $viewfullnames, $timestart) {
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  * @return void adds items into $activities and increases $index
  */
-function minilesson_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0) {
+function minilesson_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0)
+{
 }
 
 /**
@@ -650,7 +674,8 @@ function minilesson_get_recent_mod_activity(&$activities, &$index, $timestart, $
 
  * @return void
  */
-function minilesson_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+function minilesson_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames)
+{
 }
 
 /**
@@ -661,7 +686,8 @@ function minilesson_print_recent_mod_activity($activity, $courseid, $detail, $mo
  * @return boolean
  * @todo Finish documenting this function
  **/
-function minilesson_cron() {
+function minilesson_cron()
+{
     return true;
 }
 
@@ -670,7 +696,8 @@ function minilesson_cron() {
  *
  * @return array
  */
-function minilesson_get_extra_capabilities() {
+function minilesson_get_extra_capabilities()
+{
     return [];
 }
 
@@ -687,7 +714,8 @@ function minilesson_get_extra_capabilities() {
  * @param int $moduleid ID of an instance of this module
  * @return bool true if the scale is used by the given minilesson instance
  */
-function minilesson_scale_used($moduleid, $scaleid) {
+function minilesson_scale_used($moduleid, $scaleid)
+{
     global $DB;
 
     // Example @example.
@@ -706,7 +734,8 @@ function minilesson_scale_used($moduleid, $scaleid) {
  * @param $scaleid int
  * @return boolean true if the scale is used by any minilesson instance
  */
-function minilesson_scale_used_anywhere($scaleid) {
+function minilesson_scale_used_anywhere($scaleid)
+{
     global $DB;
 
     // Example @example.
@@ -730,7 +759,8 @@ function minilesson_scale_used_anywhere($scaleid) {
  * @param stdClass $context
  * @return array of [(string)filearea] => (string)description
  */
-function minilesson_get_file_areas($course, $cm, $context) {
+function minilesson_get_file_areas($course, $cm, $context)
+{
     return minilesson_get_editornames();
 }
 
@@ -751,7 +781,8 @@ function minilesson_get_file_areas($course, $cm, $context) {
  * @param string $filename
  * @return file_info instance or null if not found
  */
-function minilesson_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
+function minilesson_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename)
+{
     return null;
 }
 
@@ -769,7 +800,8 @@ function minilesson_get_file_info($browser, $areas, $course, $cm, $context, $fil
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
  */
-function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = []) {
+function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = [])
+{
     global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -849,7 +881,8 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
  *
  * @return bool True if the activity is branded, false otherwise.
  */
-function minilesson_is_branded() {
+function minilesson_is_branded()
+{
     return true;
 }
 
@@ -859,7 +892,8 @@ function minilesson_is_branded() {
  * @param array $args
  * @return string
  */
-function minilesson_output_fragment_preview($args) {
+function minilesson_output_fragment_preview($args)
+{
     global $DB, $PAGE;
     $args = (object) $args;
     $context = $args->context;
@@ -881,7 +915,8 @@ function minilesson_output_fragment_preview($args) {
  * @param array $args
  * @return string
  */
-function minilesson_output_fragment_mform($args) {
+function minilesson_output_fragment_mform($args)
+{
     global $CFG, $PAGE, $DB;
 
     $args = (object) $args;
@@ -1049,7 +1084,8 @@ function minilesson_output_fragment_mform($args) {
  * @param stdClass $module
  * @param cm_info $cm
  */
-function minilesson_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
+function minilesson_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm)
+{
 }
 
 /**
@@ -1061,7 +1097,8 @@ function minilesson_extend_navigation(navigation_node $navref, stdclass $course,
  * @param settings_navigation $settingsnav {@link settings_navigation}
  * @param navigation_node $minilessonnode {@link navigation_node}
  */
-function minilesson_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $minilessonnode = null) {
+function minilesson_extend_settings_navigation(settings_navigation $settingsnav, ?navigation_node $minilessonnode = null)
+{
 }
 
 /**
@@ -1069,7 +1106,8 @@ function minilesson_extend_settings_navigation(settings_navigation $settingsnav,
  *
  * @return array Associative array mapping Moodle icon identifiers to FontAwesome icon classes.
  */
-function mod_minilesson_get_fontawesome_icon_map() {
+function mod_minilesson_get_fontawesome_icon_map()
+{
     return [
         'mod_minilesson:print' => 'fa-print',
         'mod_minilesson:volume-up' => 'fa-volume-up',
@@ -1083,7 +1121,8 @@ function mod_minilesson_get_fontawesome_icon_map() {
  *
  * @param cm_info $cm
  */
-function mod_minilesson_cm_info_dynamic(cm_info $cm) {
+function mod_minilesson_cm_info_dynamic(cm_info $cm)
+{
     global $USER, $DB;
 
     $moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
@@ -1099,7 +1138,8 @@ function mod_minilesson_cm_info_dynamic(cm_info $cm) {
  * @param cm_info $coursemodule
  * @return cached_cm_info|false
  */
-function minilesson_get_coursemodule_info($coursemodule) {
+function minilesson_get_coursemodule_info($coursemodule)
+{
     global $DB;
 
     if (!$moduleinstance = $DB->get_record('minilesson', ['id' => $coursemodule->instance], '*')) {
@@ -1130,7 +1170,8 @@ function minilesson_get_coursemodule_info($coursemodule) {
  * @param array $args
  * @return string HTML fragment
  */
-function minilesson_output_fragment_ttsaudioelement($args) {
+function minilesson_output_fragment_ttsaudioelement($args)
+{
     $formdata = [];
     $args = (object) $args;
     parse_str($args->formdata, $formdata);
@@ -1153,7 +1194,8 @@ function minilesson_output_fragment_ttsaudioelement($args) {
  * @param array $args
  * @return string JSON encoded response
  */
-function minilesson_output_fragment_aigen_contextform($args) {
+function minilesson_output_fragment_aigen_contextform($args)
+{
     global $CFG;
     require_once($CFG->libdir . '/externallib.php');
 
@@ -1182,7 +1224,8 @@ function minilesson_output_fragment_aigen_contextform($args) {
  * @param array $args
  * @return string AI prompt text
  */
-function mod_minilesson_output_fragment_ai_prompt($args) {
+function mod_minilesson_output_fragment_ai_prompt($args)
+{
     $args = (object) $args;
 
     $promptid = (int) $args->promptid;
@@ -1198,7 +1241,8 @@ function mod_minilesson_output_fragment_ai_prompt($args) {
  * @param array $args
  * @return string HTML fragment
  */
-function minilesson_output_fragment_preview_slides($args) {
+function minilesson_output_fragment_preview_slides($args)
+{
     global $CFG, $OUTPUT;
     require_once($CFG->libdir . '/externallib.php');
     $formdata = [];
@@ -1244,7 +1288,8 @@ function minilesson_output_fragment_preview_slides($args) {
  * @param array $args
  * @return string HTML fragment
  */
-function minilesson_output_fragment_templates($args) {
+function minilesson_output_fragment_templates($args)
+{
     global $DB, $OUTPUT;
     $args = (object) $args;
     require_capability('mod/minilesson:canuseaigen', $args->context);
@@ -1261,7 +1306,8 @@ function minilesson_output_fragment_templates($args) {
  * @param array $args
  * @return stdClass|null
  */
-function minilesson_output_fragment_audiochat_fetchstudentsubmission($args) {
+function minilesson_output_fragment_audiochat_fetchstudentsubmission($args)
+{
     global $DB;
     $args = (object) $args;
     $cm = $DB->get_record('course_modules', ['id' => $args->context->instanceid], '*', MUST_EXIST);
@@ -1279,7 +1325,8 @@ function minilesson_output_fragment_audiochat_fetchstudentsubmission($args) {
  * @param array $args
  * @return string JSON encoded response
  */
-function minilesson_output_fragment_translatetoimport($args) {
+function minilesson_output_fragment_translatetoimport($args)
+{
     global $CFG;
     require_once($CFG->libdir . '/externallib.php');
 

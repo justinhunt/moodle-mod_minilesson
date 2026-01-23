@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,18 +26,20 @@ use mod_minilesson\utils;
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class db_updater extends \core\progress\db_updater {
-
+class db_updater extends \core\progress\db_updater
+{
     protected $printtime = [];
 
-    public function start_progress($description, $max = self::INDETERMINATE, $parentcount = 1) {
+    public function start_progress($description, $max = self::INDETERMINATE, $parentcount = 1)
+    {
         parent::start_progress($description, $max, $parentcount);
         $lastkey = utils::array_key_last($this->currents);
         mtrace("{$description} --> {$lastkey} : start_progress");
         $this->printtime[$lastkey] = microtime();
     }
 
-    public function end_progress() {
+    public function end_progress()
+    {
         $lastkey = utils::array_key_last($this->currents);
         $currentdesc = end($this->descriptions);
         mtrace("{$currentdesc} <-- {$lastkey} : end_progress");
@@ -44,5 +47,4 @@ class db_updater extends \core\progress\db_updater {
         $difftime = microtime_diff($this->printtime[$lastkey], microtime());
         mtrace("{$currentdesc} , {$lastkey} : Execution took {$difftime} seconds");
     }
-
 }

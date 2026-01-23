@@ -57,7 +57,6 @@ define(['jquery',
                         self.mediaurl = message.mediaurl;
                         log.debug('Media saved at speaking gap fill: ' + self.mediaurl);
                         break;
-
                 }
 
             };
@@ -151,9 +150,9 @@ define(['jquery',
             var self = this;
             var review_data = {};
 
-            self.items.forEach(function(item){
+            self.items.forEach(function (item) {
                 var itemwordlist = [];
-                item.parsedstring.forEach(function(data) {
+                item.parsedstring.forEach(function (data) {
                     if (data.type === 'input' || data.type === 'mtext') {
                         itemwordlist.push(data.character);
                     }
@@ -161,13 +160,14 @@ define(['jquery',
                 var wordmatch = itemwordlist.join("");
                 var regex = new RegExp(wordmatch, "gi");
                 var answerclass = item.correct ? 'correctitem' : 'wrongitem';
-                var result = item.target.replace(regex, ` <span class="${answerclass}">${wordmatch}</span>`);
+                var result = item.target.replace(regex, ` < span class = "${answerclass}" > ${wordmatch} < / span > `);
                 item.target = result;
             });
 
             review_data.items = self.items;
             review_data.totalitems = self.items.length;
-            review_data.correctitems = self.items.filter(function (e) { return e.correct; }).length;
+            review_data.correctitems = self.items.filter(function (e) {
+                return e.correct; }).length;
 
             //Get controls
             var listencont = self.controls.listen_cont;
@@ -200,7 +200,8 @@ define(['jquery',
             // On next button click
             self.controls.container.find('.minilesson_nextbutton').on('click', function (e) {
                 if (self.items.some(item => !item.answered)) {
-                    notification.confirm(self.strings.nextlessonitem,
+                    notification.confirm(
+                        self.strings.nextlessonitem,
                         self.strings.confirm_desc,
                         self.strings.yes,
                         self.strings.no,
@@ -365,7 +366,7 @@ define(['jquery',
 
             if (allCorrect && comparison && comparison.length > 0) {
                 // Fill in all the correct words
-                self.items[self.game.pointer].parsedstring.forEach(function(data, index) {
+                self.items[self.game.pointer].parsedstring.forEach(function (data, index) {
                     var characterinput = self.controls.container.find('.sgapfill_reply_' + self.game.pointer + ' .sgapfill_missing_input[data-index="' + index + '"]');
                     if (characterinput && data.type === 'input') {
                         characterinput.text(data.character);
@@ -489,9 +490,9 @@ define(['jquery',
             //progress dots are updated on next_item. The last item has no next item, so we update from here
             self.updateProgressDots();
 
-            setTimeout(function() {
+            setTimeout(function () {
                 $(".minilesson_nextbutton").prop("disabled",false);
-                if(self.quizhelper.showitemreview){
+                if (self.quizhelper.showitemreview) {
                     self.controls.progress_container.removeClass('d-flex');
                     self.controls.progress_container.hide();
                     self.controls.title.hide();
@@ -535,7 +536,7 @@ define(['jquery',
         updateProgressDots: function () {
             var self = this;
             var color,icon;
-            var progress = self.items.map(function(item, idx) {
+            var progress = self.items.map(function (item, idx) {
                 color = "#E6E9FD";
                 icon = 'fa fa-square';
                 if (self.items[idx].answered && self.items[idx].correct) {
@@ -583,7 +584,7 @@ define(['jquery',
                 if (data.type === 'input') {
                     code += "<span class='sgapfill_missing_input' data-index='" + index + "'></span>";
                 } else if (data.type === 'mtext') {
-                    code += "<span class='sgapfill_missing_inputmtext'>"+ data.character +"</span>";
+                    code += "<span class='sgapfill_missing_inputmtext'>" + data.character + "</span>";
                 } else {
                     code += data.character;
                 }

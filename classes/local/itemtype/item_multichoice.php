@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -18,6 +19,7 @@ namespace mod_minilesson\local\itemtype;
 
 use mod_minilesson\constants;
 use mod_minilesson\utils;
+
 /**
  * Renderable class for a multichoice item in a minilesson activity.
  *
@@ -27,7 +29,6 @@ use mod_minilesson\utils;
  */
 class item_multichoice extends item
 {
-
     //the item type
     public const ITEMTYPE = constants::TYPE_MULTICHOICE;
 
@@ -108,7 +109,7 @@ class item_multichoice extends item
                         $theaudiourl = utils::fetch_polly_url(
                             $this->token,
                             $this->region,
-                            $sentencetext ,
+                            $sentencetext,
                             $this->itemrecord->{constants::POLLYOPTION},
                             $this->itemrecord->{constants::POLLYVOICE}
                         );
@@ -197,8 +198,8 @@ class item_multichoice extends item
         $keycols['int2'] = ['jsonname' => 'listenorread', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::LISTENORREAD]; //not boolean ..
         $keycols['text1'] = ['jsonname' => 'answers', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text6'] = ['jsonname' => 'correctfeedback', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::MULTICHOICE_CORRECTFEEDBACK];
-        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER.'1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
-        $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER.'1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+        $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['int5'] = ['jsonname' => 'shuffleanswer', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => constants::MULTICHOICE_SHUFFLEANSWER];
         $keycols['int6'] = ['jsonname' => 'hideanswertext', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => constants::MULTICHOICE_HIDEANSWERTEXT];
         $keycols['int7'] = ['jsonname' => 'answerlayout', 'type' => 'int', 'optional' => true, 'default' => constants::MULTICHOICE_ANSWERLAYOUT_DEFAULT, 'dbname' => constants::MULTICHOICE_HIDEANSWERTEXT];
@@ -211,7 +212,6 @@ class item_multichoice extends item
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
         switch ($generatemethod) {
-
             case 'extract':
                 $prompt = "Create a multichoice question(text) and a one dimensional array of 4 answers (answers) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] ";
                 $prompt .= "Also specify the correct answer as a number 1-4 in 'correctanswer'. ";
@@ -239,7 +239,6 @@ class item_multichoice extends item
         $success = true;
 
         if ($oldversion < 2025071305) {
-
             // The original multichoice stored each answer in a separate field.
             // We need to convert that to the new format which is a single field with answers separated
             // by a newline character. And we need to handle any images that were uploaded
@@ -250,8 +249,10 @@ class item_multichoice extends item
             $mediatype = "image";
 
             // We do a quick check to see if this item has already been upgraded, in which case we will skip the upgrade.
-            if (!isset($this->itemrecord->{constants::TEXTANSWER . 2}) ||
-                empty(utils::super_trim($this->itemrecord->{constants::TEXTANSWER . 2}))) {
+            if (
+                !isset($this->itemrecord->{constants::TEXTANSWER . 2}) ||
+                empty(utils::super_trim($this->itemrecord->{constants::TEXTANSWER . 2}))
+            ) {
                 // This item has already been upgraded, we can skip the upgrade.
                 return $success;
             }

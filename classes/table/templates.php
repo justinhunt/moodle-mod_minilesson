@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,15 +31,16 @@ use stdClass;
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class templates extends dynamictable {
-
+class templates extends dynamictable
+{
     protected $cm;
 
     protected $renderer;
 
     protected $strings = [];
 
-    public function set_filterset(\core_table\local\filter\filterset $filterset): void {
+    public function set_filterset(\core_table\local\filter\filterset $filterset): void
+    {
         global $PAGE;
         $cmid = $filterset->get_filter('cmid')->current();
         $this->cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid);
@@ -67,45 +69,53 @@ class templates extends dynamictable {
         $this->set_sql('*', '{minilesson_templates}', '1 = 1');
     }
 
-    public function guess_base_url(): void {
+    public function guess_base_url(): void
+    {
         $this->define_baseurl(new moodle_url(constants::M_URL . '/aigen_dev.php', ['id' => $this->cm->id]));
     }
 
-    public function get_context(): \context {
+    public function get_context(): \context
+    {
         return context_module::instance($this->cm->id);
     }
 
-    public function col_action(stdClass $record) {
+    public function col_action(stdClass $record)
+    {
         $editbutton = new action_link(
             new moodle_url($this->baseurl, ['action' => 'edit', 'templateid' => $record->id]),
-             $this->renderer->pix_icon('t/edit', $this->strings['edit']));
+            $this->renderer->pix_icon('t/edit', $this->strings['edit'])
+        );
         $o[] = $this->renderer->render($editbutton);
 
         $duplicatebutton = new action_link(
             new moodle_url($this->baseurl, ['action' => 'duplicate', 'templateid' => $record->id,  'sesskey' => sesskey()]),
-             $this->renderer->pix_icon('t/copy', $this->strings['duplicate']));
+            $this->renderer->pix_icon('t/copy', $this->strings['duplicate'])
+        );
         $o[] = $this->renderer->render($duplicatebutton);
 
         $downloadbutton = new action_link(
             new moodle_url($this->baseurl, ['action' => 'download', 'templateid' => $record->id,  'sesskey' => sesskey()]),
-             $this->renderer->pix_icon('t/download', $this->strings['download']));
+            $this->renderer->pix_icon('t/download', $this->strings['download'])
+        );
         $o[] = $this->renderer->render($downloadbutton);
 
         $deletebutton = new action_link(
             new moodle_url($this->baseurl, ['action' => 'delete', 'templateid' => $record->id, 'sesskey' => sesskey()]),
-             $this->renderer->pix_icon('t/delete', $this->strings['delete']));
+            $this->renderer->pix_icon('t/delete', $this->strings['delete'])
+        );
         $deletebutton->add_action(new confirm_action(get_string('templatedeleteconfirmation', constants::M_COMPONENT)));
         $o[] = $this->renderer->render($deletebutton);
 
-        return join(' ',$o);
+        return join(' ', $o);
     }
 
-    public function col_timemodified(stdClass $record) {
-        return $record->timemodified > 0 ? userdate($record->timemodified): '';
+    public function col_timemodified(stdClass $record)
+    {
+        return $record->timemodified > 0 ? userdate($record->timemodified) : '';
     }
 
-    public function has_capability(): bool {
+    public function has_capability(): bool
+    {
         return has_capability('mod/minilesson:managetemplate', $this->get_context());
     }
-
 }

@@ -31,7 +31,8 @@ use mod_minilesson\constants;
  *
  * @see upgrade_plugins_modules()
  */
-function xmldb_minilesson_install() {
+function xmldb_minilesson_install()
+{
     global $DB;
 
     // Create default templates if they do not exist.
@@ -54,5 +55,6 @@ function xmldb_minilesson_install() {
  *
  * @see upgrade_plugins_modules()
  */
-function xmldb_minilesson_install_recovery() {
+function xmldb_minilesson_install_recovery()
+{
 }

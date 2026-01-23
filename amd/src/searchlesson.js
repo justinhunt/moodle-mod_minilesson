@@ -78,7 +78,7 @@ export const registerFilter = () => {
             params.append('perpage', form.elements.perpage.value);
         }
         const args = {
-            function: functionname,
+            function : functionname,
             args: params.toString(),
         };
         Ajax.call([{
@@ -110,11 +110,11 @@ export const registerFilter = () => {
             return;
         }
         e.preventDefault();
-       const dirbtn = e.target.closest('[data-action="previousbtn"],[data-action="nextbtn"]');
+        const dirbtn = e.target.closest('[data-action="previousbtn"],[data-action="nextbtn"]');
         if (dirbtn) {
             const pageno = dirbtn.getAttribute('data-page');
             const perpage = dirbtn.getAttribute('data-perpage');
-            const pagevalue = parseInt(pageno, 10) + (dirbtn.dataset.action === 'previousbtn' ? -1: 1);
+            const pagevalue = parseInt(pageno, 10) + (dirbtn.dataset.action === 'previousbtn' ? -1 : 1);
             if (form) {
                 form.elements.page.value = pagevalue;
                 form.elements.perpage.value = perpage;
@@ -166,11 +166,12 @@ export const registerFilter = () => {
                 body: callFragment(
                     new URLSearchParams([...Object.entries(translatebtn.dataset)]).toString()
                 ).then((response, js) => new Promise(resolve => resolve(
-                    response.html, js
+                    response.html,
+                    js
                 )))
             }).then(function (modal) {
                 modal.hideFooter();
-                modal.getRoot().on('submit ' + ModalEvents.save, function(e) {
+                modal.getRoot().on('submit ' + ModalEvents.save, function (e) {
                     e.preventDefault();
                     var form = this.querySelector('form');
                     modal.setBody(
@@ -189,22 +190,22 @@ export const registerFilter = () => {
             });
         }
     });
-    if (pagination) {
-        pagination.addEventListener('change', e => {
-            const perpagevalue = e.target.value;
-            if (form) {
-                form.elements.page.value = 1;
-                form.elements.perpage.value = perpagevalue;
-                searchFilter(form);
-            }
+if (pagination) {
+    pagination.addEventListener('change', e => {
+        const perpagevalue = e.target.value;
+        if (form) {
+            form.elements.page.value = 1;
+            form.elements.perpage.value = perpagevalue;
+            searchFilter(form);
+        }
         });
-    }
+}
     form?.addEventListener('submit', e => {
         e.preventDefault();
         form.querySelector('[name="page"]').value = 1;
         searchFilter(form);
     });
-    if (form) {
-        searchFilter(form);
-    }
+if (form) {
+    searchFilter(form);
+}
 };

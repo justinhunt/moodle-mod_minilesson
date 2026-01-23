@@ -9,19 +9,19 @@ namespace mod_minilesson\report;
  * Time: 20:52
  */
 
+use mod_minilesson\constants;
+use mod_minilesson\utils;
 
-use \mod_minilesson\constants;
-use \mod_minilesson\utils;
-
-class incompleteattempts extends basereport {
-
+class incompleteattempts extends basereport
+{
     protected $report = "incompleteattempts";
     protected $fields = array('id', 'username', 'itemscomplete','timecreated', 'deletenow');
     protected $headingdata = null;
     protected $qcache = array();
     protected $ucache = array();
 
-    public function fetch_formatted_field($field, $record, $withlinks) {
+    public function fetch_formatted_field($field, $record, $withlinks)
+    {
         global $DB, $CFG, $OUTPUT;
         switch ($field) {
             case 'id':
@@ -43,9 +43,11 @@ class incompleteattempts extends basereport {
 
             case 'deletenow':
                 if ($withlinks) {
-                    $url = new \moodle_url(constants::M_URL . '/manageattempts.php',
-                            array('action' => 'delete', 'n' => $record->moduleid, 'attemptid' => $record->id,
-                                    'source' => $this->report));
+                    $url = new \moodle_url(
+                        constants::M_URL . '/manageattempts.php',
+                        array('action' => 'delete', 'n' => $record->moduleid, 'attemptid' => $record->id,
+                        'source' => $this->report)
+                    );
                     $btn = new \single_button($url, get_string('delete'), 'post');
                     $btn->add_confirm_action(get_string('deleteattemptconfirm', constants::M_COMPONENT));
                     $ret = $OUTPUT->render($btn);
@@ -64,17 +66,18 @@ class incompleteattempts extends basereport {
         return $ret;
     }
 
-    public function fetch_formatted_heading() {
+    public function fetch_formatted_heading()
+    {
         $record = $this->headingdata;
         $ret = '';
         if (!$record) {
             return $ret;
         }
         return get_string('incompleteattemptsheading', constants::M_COMPONENT);
-
     }
 
-    public function process_raw_data($formdata) {
+    public function process_raw_data($formdata)
+    {
         global $DB, $USER;
 
         //heading data
@@ -86,37 +89,34 @@ class incompleteattempts extends basereport {
         $course = $DB->get_record('course', array('id' => $moduleinstance->course), '*', MUST_EXIST);
         $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
 
-        $groupsmode = groups_get_activity_groupmode($cm,$course);
+        $groupsmode = groups_get_activity_groupmode($cm, $course);
         $context = empty($cm) ? \context_course::instance($course->id) : \context_module::instance($cm->id);
         $supergrouper = has_capability('moodle/site:accessallgroups', $context, $USER->id);
 
 
-        if($formdata->groupid > 0){
-
+        if ($formdata->groupid > 0) {
             list($groupswhere, $allparams) = $DB->get_in_or_equal($formdata->groupid);
 
-            $allsql ="SELECT att.* FROM {".constants::M_ATTEMPTSTABLE ."} att " .
+            $allsql = "SELECT att.* FROM {" . constants::M_ATTEMPTSTABLE . "} att " .
                     "INNER JOIN {groups_members} gm ON att.userid=gm.userid " .
                     "WHERE gm.groupid $groupswhere AND att.moduleid = ? AND att.status = " . constants::M_STATE_INCOMPLETE .
                     " ORDER BY timecreated DESC";
-            $allparams[]=$formdata->moduleid;
+            $allparams[] = $formdata->moduleid;
             $alldata = $DB->get_records_sql($allsql, $allparams);
-
-        }else{
-
-
-
-            $alldata = $DB->get_records(constants::M_ATTEMPTSTABLE,
-                array('moduleid' => $formdata->moduleid, 'status' => constants::M_STATE_INCOMPLETE), 'timecreated DESC');
-
+        } else {
+            $alldata = $DB->get_records(
+                constants::M_ATTEMPTSTABLE,
+                array('moduleid' => $formdata->moduleid, 'status' => constants::M_STATE_INCOMPLETE),
+                'timecreated DESC'
+            );
         }
 
         if ($alldata) {
             foreach ($alldata as $thedata) {
-                $thedata->itemscomplete =0;
-                if(utils::is_json($thedata->sessiondata)) {
+                $thedata->itemscomplete = 0;
+                if (utils::is_json($thedata->sessiondata)) {
                     $sessiondata = json_decode($thedata->sessiondata);
-                    if(isset($sessiondata->steps)) {
+                    if (isset($sessiondata->steps)) {
                         $stepsdata = $sessiondata->steps;
                         if ($stepsdata && is_array($stepsdata)) {
                             $thedata->itemscomplete = count($stepsdata);
@@ -131,5 +131,4 @@ class incompleteattempts extends basereport {
         }
         return true;
     }
-
 }

@@ -1,15 +1,15 @@
 import log from 'core/log';
 
 const globalRemoteHost = 'https://cdn.jsdelivr.net/npm/reveal.js@5.2.1';
-const globalJSURL = `${globalRemoteHost}/dist/reveal.js`;
-const globalThemeURL = `${globalRemoteHost}/dist/theme/{theme}.min.css`;
-const globalCssURL = `${globalRemoteHost}/dist/reveal.min.css`;
-const globalMarkdownURL = `${globalRemoteHost}/plugin/markdown/markdown.js`;
+const globalJSURL = `${globalRemoteHost} / dist / reveal.js`;
+const globalThemeURL = `${globalRemoteHost} / dist / theme / {theme}.min.css`;
+const globalCssURL = `${globalRemoteHost} / dist / reveal.min.css`;
+const globalMarkdownURL = `${globalRemoteHost} / plugin / markdown / markdown.js`;
 const chinaRemoteHost = 'https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1';
-const chinaJSURL = `${chinaRemoteHost}/reveal.min.js`;
-const chinaThemeURL = `${chinaRemoteHost}/theme/{theme}.min.css`;
-const chinaCssURL = `${chinaRemoteHost}/reveal.min.css`;
-const chinaMarkdownURL = `${chinaRemoteHost}/plugin/markdown/markdown.min.js`;
+const chinaJSURL = `${chinaRemoteHost} / reveal.min.js`;
+const chinaThemeURL = `${chinaRemoteHost} / theme / {theme}.min.css`;
+const chinaCssURL = `${chinaRemoteHost} / reveal.min.css`;
+const chinaMarkdownURL = `${chinaRemoteHost} / plugin / markdown / markdown.min.js`;
 const defaultTheme = 'beige';
 
 let theregion = null;
@@ -19,8 +19,9 @@ let revealcssLinkElement = document.querySelector('link#revealCssRoot');
 
 log.debug('MiniLesson Reveal JS helper: initialising');
 
-function getThemeURL(theme = undefined){
-    switch(theregion) {
+function getThemeURL(theme = undefined)
+{
+    switch (theregion) {
         case 'ningxia':
             return chinaThemeURL.replace('{theme}', (theme || defaultTheme));
         default:
@@ -28,7 +29,8 @@ function getThemeURL(theme = undefined){
     }
 }
 
-function hasRevealCSS() {
+function hasRevealCSS()
+{
     return Array.from(document.styleSheets).some(sheet => {
         try {
             return sheet.href && sheet.href.toLowerCase().includes('reveal.min.css');
@@ -38,12 +40,14 @@ function hasRevealCSS() {
     });
 }
 
-function getCSSElement(cssfilename) {
+function getCSSElement(cssfilename)
+{
     return Array.from(document.querySelectorAll('link[rel="stylesheet"]'))
         .find(link => link.href && link.href.toLowerCase().includes(cssfilename)) || null;
 }
 
-function appendLinkElement(linkEl, appendLinkEl = revealcssLinkElement) {
+function appendLinkElement(linkEl, appendLinkEl = revealcssLinkElement)
+{
     if (!appendLinkEl) {
         let lastLink = document.querySelectorAll('head > link');
         if (lastLink.length > 0) {
@@ -57,10 +61,11 @@ function appendLinkElement(linkEl, appendLinkEl = revealcssLinkElement) {
     }
 }
 
-export async function init(element, awsregion,  themename = undefined) {
+export async function init(element, awsregion,  themename = undefined)
+{
     theregion = awsregion;
 
-    switch(theregion) {
+    switch (theregion) {
         case 'ningxia':
             var revealJSURL = chinaJSURL;
             var revealMarkdownURL = chinaMarkdownURL;
@@ -78,7 +83,7 @@ export async function init(element, awsregion,  themename = undefined) {
         revealcssLinkElement.setAttribute('rel', 'stylesheet');
         revealcssLinkElement.setAttribute('href',  revealCssURL);
         revealcssLinkElement.id = 'revealCssRoot';
-        revealcssLinkElement.addEventListener('load', function() {
+        revealcssLinkElement.addEventListener('load', function () {
             dispatchEvent(new CustomEvent('RevealCSSLoaded'));
         });
         appendLinkElement(revealcssLinkElement, null);
@@ -119,22 +124,23 @@ export async function init(element, awsregion,  themename = undefined) {
         // Show progress bar
         progress: true
     });
-    instance.on('ready', function() {
+    instance.on('ready', function () {
         instance.layout();
     });
-    addEventListener('RevealCSSLoaded', function() {
+    addEventListener('RevealCSSLoaded', function () {
         instance.layout();
     });
     return instance;
 }
 
-export function setTheme(newtheme) {
+export function setTheme(newtheme)
+{
     themeLinkElement = getCSSElement(currenttheme + '.min.css');
     if (!themeLinkElement) {
         themeLinkElement = document.createElement('link');
         themeLinkElement.setAttribute('rel', 'stylesheet');
         themeLinkElement.setAttribute('href', getThemeURL(newtheme));
-        themeLinkElement.addEventListener('load', function() {
+        themeLinkElement.addEventListener('load', function () {
             dispatchEvent(new CustomEvent('RevealCSSLoaded'));
         });
         appendLinkElement(themeLinkElement);

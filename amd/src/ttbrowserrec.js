@@ -140,12 +140,14 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             this.audioContext = new AudioContext(
                 {
                     sampleRate: this.wavconfig.desiredSampleRate
-                });
+                }
+            );
 
             this.processor = this.audioContext.createScriptProcessor(
                 this.wavconfig.bufferLen,
                 this.wavconfig.numChannels,
-                this.wavconfig.numChannels);
+                this.wavconfig.numChannels
+            );
 
             this.processor.connect(this.audioContext.destination);
 
@@ -296,7 +298,6 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             var x = 0;
 
             for (var i = 0; i < this.bufferLength; i++) {
-
                 var v = this.analyserData[i] / 128.0;
                 var y = v * this.waveHeight;
 

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -21,10 +22,10 @@
  * @copyright  2019 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
  namespace mod_minilesson;
 
 use mod_minilesson\constants;
-
 
 /**
  * AI transcript Functions used generally across this mod
@@ -33,7 +34,8 @@ use mod_minilesson\constants;
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class aitranscriptutils {
+class aitranscriptutils
+{
     /**
      * Render a passage of text into span-wrapped words for further processing
      *
@@ -41,7 +43,8 @@ class aitranscriptutils {
      * @param string The markup type (passage|corrections)
      * @return string The converted passage of text
      */
-    public static function render_passage($passage, $markuptype = 'passage') {
+    public static function render_passage($passage, $markuptype = 'passage')
+    {
         // Load the HTML document.
         $doc = new \DOMDocument();
         // It will assume ISO-8859-1  encoding, so we need to hint it:
@@ -166,7 +169,8 @@ class aitranscriptutils {
      * @param string An optional pad on each replacement (needed for processing when marking up words as spans in passage)
      * @return string The converted passage of text
      */
-    public static function lines_to_brs($passage, $seperator = '') {
+    public static function lines_to_brs($passage, $seperator = '')
+    {
         // See https://stackoverflow.com/questions/5946114/how-to-replace-newline-or-r-n-with-br .
         return str_replace("\r\n", $seperator . '<br>' . $seperator, $passage);
         // This is better but we can not pad the replacement and we need that.

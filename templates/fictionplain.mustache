@@ -23,9 +23,16 @@
     {
     }
 }}
- <div class="minilesson_fiction_yarncontainer plain">
-    <div class="minilesson_fiction_yarntext"></div>
-    <div class="minilesson_fiction_yarnmedia" style="{{^hasmedia}}display: none;{{/hasmedia}}"></div>
-    <div class="minilesson_fiction_yarnoptions"></div>
+<div class="minilesson_fiction_yarncontainer plain">
+    <div class="chat-wrapper">
+    </div>
+    <div class="position-relative">
+        <button id="scroll-bottom-btn"><i class="fa fa-chevron-down"></i></button>
+    </div>
+    <div class="optionscontainer">
+        <div class="minilesson_fiction_yarnoptions"></div>
+        <div class="option_container minilesson_fiction_continuebutton">
+            <div class="optiontext">{{#str}}continue{{/str}}</div>
+        </div>
+    </div>
 </div>
-<button type="button" class="minilesson_fiction_continuebutton btn btn-success m-2" style="width: 280px">{{#str}}continue{{/str}}</button>

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -42,7 +43,7 @@ if ($id) {
     $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
     $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
-} else if ($n) {
+} elseif ($n) {
     $moduleinstance  = $DB->get_record(constants::M_MODNAME, ['id' => $n], '*', MUST_EXIST);
     $course     = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
     $cm         = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
@@ -68,7 +69,7 @@ $PAGE->set_context($modulecontext);
 
 if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded') {
     $PAGE->set_pagelayout('embedded');
-} else if ($config->enablesetuptab  || $moduleinstance->pagelayout == 'popup') {
+} elseif ($config->enablesetuptab  || $moduleinstance->pagelayout == 'popup') {
     $PAGE->set_pagelayout('popup');
 } else {
     $PAGE->set_pagelayout('incourse');
@@ -86,7 +87,7 @@ $redirecturl = new moodle_url('/mod/minilesson/view.php', ['id' => $cm->id]);
 if ($mform->is_cancelled()) {
     redirect($redirecturl);
     exit;
-} else if ($data = $mform->get_data()) {
+} elseif ($data = $mform->get_data()) {
     $data->timemodified = time();
     $data->id = $data->n;
     $data->coursemodule = $cm->id;

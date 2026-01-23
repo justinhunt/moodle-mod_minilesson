@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -8,17 +9,15 @@
 
 namespace mod_minilesson\local\itemform;
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 class smartframeform extends baseform
 {
-
     public $type = constants::TYPE_SMARTFRAME;
 
-    public function custom_definition() {
+    public function custom_definition()
+    {
         $this->add_itemsettings_heading();
-        $this->add_textboxresponse(1,'smartframeurl',true);
-
+        $this->add_textboxresponse(1, 'smartframeurl', true);
     }
-
 }

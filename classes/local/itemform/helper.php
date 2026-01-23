@@ -30,12 +30,11 @@ namespace mod_minilesson\local\itemform;
 
 defined('MOODLE_INTERNAL') || die();
 
-use \mod_minilesson\constants;
-use \mod_minilesson\utils;
+use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 class helper
 {
-
     public static function move_item($minilesson, $moveitemid, $direction)
     {
         global $DB;
@@ -72,8 +71,9 @@ class helper
             $prioritem = $item;
         }//end of for each
     }//end of move item function
-    
-    public static function get_new_itemorder($cm){
+
+    public static function get_new_itemorder($cm)
+    {
         //get itemorder
         $comprehensiontest = new \mod_minilesson\comprehensiontest($cm);
         $currentitems = $comprehensiontest->fetch_items();
@@ -86,11 +86,11 @@ class helper
         return $itemorder;
     }
 
-    public static function duplicate_item($minilesson,$context, $itemid)
+    public static function duplicate_item($minilesson, $context, $itemid)
     {
         global $CFG, $USER, $DB;
 
-        if (!$item = $DB->get_record(constants::M_QTABLE, array('minilesson' => $minilesson->id, 'id'=>$itemid))) {
+        if (!$item = $DB->get_record(constants::M_QTABLE, array('minilesson' => $minilesson->id, 'id' => $itemid))) {
             print_error("Could not fetch item for duplication");
             return;
         }
@@ -100,7 +100,7 @@ class helper
         $newitemorder = self::get_new_itemorder($cm);
         $item->itemorder = $newitemorder;
         // Get the last 3 characters of the name. First check there are more then 3 letters.
-        if ( \core_text::strlen($item->name) < 3) {
+        if (\core_text::strlen($item->name) < 3) {
             $item->name = $item->name . ' (2)';
         } else {
             $last3 = \core_text::substr($item->name, -3);
@@ -112,9 +112,9 @@ class helper
                     $item->name = \core_text::substr($item->name, 0, -3) . '(4)';
                     break;
                 case '(4)':
-                    $item->name = \core_text::substr($item->name, 0, -3). '(5)';
+                    $item->name = \core_text::substr($item->name, 0, -3) . '(5)';
                 case '(5)':
-                        $item->name = \core_text::substr($item->name, 0, -3). '(6)';
+                        $item->name = \core_text::substr($item->name, 0, -3) . '(6)';
                     break;
                 default:
                     $item->name = $item->name . ' (2)';
@@ -136,10 +136,10 @@ class helper
         for ($i = 1; $i <= constants::MAXANSWERS; $i++) {
             $fileareas[] = constants::TEXTPROMPT_FILEAREA . $i;
             $fileareas[] = constants::FILEANSWER . $i;
-             $fileareas[] = constants::FILEANSWER . $i .'_image';
-             $fileareas[] = constants::FILEANSWER . $i .'_audio';
+             $fileareas[] = constants::FILEANSWER . $i . '_image';
+             $fileareas[] = constants::FILEANSWER . $i . '_audio';
         }
- 
+
         // File record.
         $newfilerecord = new \stdClass();
         $newfilerecord->userid = $USER->id;
@@ -156,17 +156,17 @@ class helper
         foreach ($fileareas as $filearea) {
             $newfilerecord->filearea = $filearea;
             $files = $fs->get_area_files($context->id, constants::M_COMPONENT, $filearea, $olditemid);
-            if($files){
-                foreach ($files as $file){
-                    if($file->get_filename() !== '.') {
+            if ($files) {
+                foreach ($files as $file) {
+                    if ($file->get_filename() !== '.') {
                         $newfilerecord->filename = $file->get_filename();
                         $fs->create_file_from_storedfile($newfilerecord, $file);
                     }
                 }
             }
         }
-        $typelabel = get_string($item->type,constants::M_COMPONENT);
-       return [$newitemid,$item->name,$item->type,$typelabel];
+        $typelabel = get_string($item->type, constants::M_COMPONENT);
+        return [$newitemid,$item->name,$item->type,$typelabel];
     }//end of move item function
 
 
@@ -175,15 +175,16 @@ class helper
      *
      *
      */
-    public static function update_all_langmodels($moduleinstance){
-      global $DB;
-        $updates=0;
-        $itemrecords = $DB->get_records(constants:: M_QTABLE,array('minilesson'=>$moduleinstance->id));
-        foreach($itemrecords as $itemrecord) {
-            $theitem =  utils::fetch_item_from_itemrecord($itemrecord,$moduleinstance);
-            $olditemrecord=false;
+    public static function update_all_langmodels($moduleinstance)
+    {
+        global $DB;
+        $updates = 0;
+        $itemrecords = $DB->get_records(constants:: M_QTABLE, array('minilesson' => $moduleinstance->id));
+        foreach ($itemrecords as $itemrecord) {
+            $theitem =  utils::fetch_item_from_itemrecord($itemrecord, $moduleinstance);
+            $olditemrecord = false;
             $updated = $theitem->update_create_langmodel($olditemrecord);
-            if($updated) {
+            if ($updated) {
                 $theitem->update_insert_item();
             }
         }
@@ -193,20 +194,19 @@ class helper
      *  We want to upgrade all the phonetic models on occasion
      *
      */
-    public static function update_all_phonetic($moduleinstance){
+    public static function update_all_phonetic($moduleinstance)
+    {
         global $DB;
-        $updates=0;
-        $itemrecords = $DB->get_records(constants:: M_QTABLE,array('minilesson'=>$moduleinstance->id));
-        foreach($itemrecords as $itemrecord) {
-            $item =  utils::fetch_item_from_itemrecord($itemrecord,$moduleinstance);
+        $updates = 0;
+        $itemrecords = $DB->get_records(constants:: M_QTABLE, array('minilesson' => $moduleinstance->id));
+        foreach ($itemrecords as $itemrecord) {
+            $item =  utils::fetch_item_from_itemrecord($itemrecord, $moduleinstance);
             $olditem = false;
             $phonetic = $item->update_create_phonetic($olditem);
-            if(!empty($phonetic)){
+            if (!empty($phonetic)) {
                 $item->update_insert_item();
                 $updates++;
             }
         }
     }
-
-
 }

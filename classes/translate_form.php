@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,11 +30,13 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class translate_form extends moodleform {
+class translate_form extends moodleform
+{
     /**
      * Define the form.
      */
-    public function definition() {
+    public function definition()
+    {
         global $DB;
         $mform = $this->_form;
         $cm = get_course_and_cm_from_cmid($this->optional_param('id', 0, PARAM_INT))[1];
@@ -54,10 +57,10 @@ class translate_form extends moodleform {
         $mform->setDefault('targetlanguage', $minilesson->nativelang);
 
         $mform->addElement('submit', 'import', get_string('import'));
-
     }
 
-    public function process_dynamic_submission() {
+    public function process_dynamic_submission()
+    {
         $mform = $this->_form;
         $formdata = $this->get_data();
         if (!$formdata) {

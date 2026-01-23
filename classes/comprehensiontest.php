@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -23,9 +24,8 @@
 
 namespace mod_minilesson;
 
-
-class comprehensiontest {
-
+class comprehensiontest
+{
     protected $cm;
     protected $context;
     protected $mod;
@@ -33,7 +33,8 @@ class comprehensiontest {
     protected $course;
     protected $quizdata = null;
 
-    public function __construct($cm) {
+    public function __construct($cm)
+    {
         global $DB;
         $this->cm = $cm;
         $this->mod = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
@@ -41,7 +42,8 @@ class comprehensiontest {
         $this->course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
     }
 
-    public function fetch_item_count() {
+    public function fetch_item_count()
+    {
         global $DB;
         if (!$this->items) {
             $this->items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->mod->id], 'itemorder ASC');
@@ -53,7 +55,8 @@ class comprehensiontest {
         }
     }
 
-    public function fetch_items() {
+    public function fetch_items()
+    {
         global $DB;
         if (!$this->items) {
             $this->items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->mod->id], 'itemorder ASC');
@@ -65,28 +68,31 @@ class comprehensiontest {
         }
     }
 
-    public function has_slides_items() {
+    public function has_slides_items()
+    {
         global $DB;
         return $DB->count_records(constants::M_QTABLE, ['minilesson' => $this->mod->id, 'type' => constants::TYPE_SLIDES]) > 0;
     }
 
-    public function fetch_latest_attempt($userid) {
+    public function fetch_latest_attempt($userid)
+    {
         global $DB;
 
         $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $this->mod->id, 'userid' => $userid], 'id DESC');
-        if($attempts){
+        if ($attempts) {
             $attempt = array_shift($attempts);
             return $attempt;
-        }else{
+        } else {
             return false;
         }
     }
 
     /* return the test items suitable for js to use */
-    public function fetch_test_data_for_js($renderer=false) {
+    public function fetch_test_data_for_js($renderer = false)
+    {
         global $CFG, $USER, $OUTPUT;
 
-        if($this->quizdata){
+        if ($this->quizdata) {
             // if we already have quizdata, then we should return that instead of making it again
             return $this->quizdata;
         }
@@ -95,18 +101,21 @@ class comprehensiontest {
 
         // first confirm we are authorised before we try to get the token
         $config = get_config(constants::M_COMPONENT);
-        if(empty($config->apiuser) || empty($config->apisecret)){
-            $errormessage = get_string('nocredentials', constants::M_COMPONENT,
-                    $CFG->wwwroot . constants::M_PLUGINSETTINGS);
+        if (empty($config->apiuser) || empty($config->apisecret)) {
+            $errormessage = get_string(
+                'nocredentials',
+                constants::M_COMPONENT,
+                $CFG->wwwroot . constants::M_PLUGINSETTINGS
+            );
             // return error?
             $token = false;
-        }else {
+        } else {
             // fetch token
             $token = utils::fetch_token($config->apiuser, $config->apisecret);
 
             // check token authenticated and no errors in it
             $errormessage = utils::fetch_token_error($token);
-            if(!empty($errormessage)){
+            if (!empty($errormessage)) {
                 // return error?
                 // return $this->show_problembox($errormessage);
             }
@@ -121,7 +130,8 @@ class comprehensiontest {
             $titem->set_token($token);
             $titem->set_currentnumber($currentitem);
             // add our item to test
-            if(!$renderer){$renderer = $OUTPUT;
+            if (!$renderer) {
+                $renderer = $OUTPUT;
             }
             $testitems[] = $titem->export_for_template($renderer);
         }//end of loop
@@ -134,12 +144,13 @@ class comprehensiontest {
     }
 
     /* called from ajaxhelper to grade test */
-    public function grade_test($answers) {
+    public function grade_test($answers)
+    {
 
         $items = $this->fetch_items();
         $currentitem = 0;
         $score = 0;
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $currentitem++;
             if (isset($answers->{'' . $currentitem})) {
                 if ($item->correctanswer == $answers->{'' . $currentitem}) {
@@ -147,12 +158,10 @@ class comprehensiontest {
                 }
             }
         }
-        if($score == 0 || count($items) == 0){
+        if ($score == 0 || count($items) == 0) {
             return 0;
-        }else{
+        } else {
             return floor(100 * $score / count($items));
         }
     }
-
-
 }//end of class

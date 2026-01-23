@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -33,11 +34,13 @@ use stored_file;
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class aigen_form extends \moodleform {
+class aigen_form extends \moodleform
+{
     /**
      * Form definition
      */
-    public function definition() {
+    public function definition()
+    {
         $mform = $this->_form;
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -70,7 +73,8 @@ class aigen_form extends \moodleform {
     /**
      * Definition after data
      */
-    public function definition_after_data() {
+    public function definition_after_data()
+    {
         global $DB, $PAGE;
         $mform = $this->_form;
         $id = $this->get_element_value('id');
@@ -337,7 +341,8 @@ class aigen_form extends \moodleform {
      * Set data for dynamic submission
      * @return void
      */
-    public function set_data_for_dynamic_submission() {
+    public function set_data_for_dynamic_submission()
+    {
         global $DB, $USER;
         $fs = get_file_storage();
 
@@ -405,7 +410,8 @@ class aigen_form extends \moodleform {
      *
      * @return stdClass|false
      */
-    public function process_dynamic_submission() {
+    public function process_dynamic_submission()
+    {
         global $DB;
         if (!$this->is_cancelled() && $this->is_submitted() && $this->is_validated()) {
             $formdata = $this->get_data();
@@ -492,7 +498,8 @@ class aigen_form extends \moodleform {
      * @param string $elname
      * @return string|null
      */
-    public function get_element_value($elname) {
+    public function get_element_value($elname)
+    {
         $mform = $this->_form;
         return $mform->elementExists($elname) ? $mform->getElement($elname)->getValue() : null;
     }
@@ -504,7 +511,8 @@ class aigen_form extends \moodleform {
      * @param array $files
      * @return array
      */
-    public function validation($data, $files) {
+    public function validation($data, $files)
+    {
         global $DB;
         $errors = parent::validation($data, $files);
         if ($record = $DB->get_record('minilesson_templates', ['uniqueid' => $data['uniqueid']])) {
@@ -520,7 +528,8 @@ class aigen_form extends \moodleform {
      *
      * @return array
      */
-    public static function mappings() {
+    public static function mappings()
+    {
         // This will return a 1D list of field names, eg 'user_topic', 'user_level', 'user_text', etc.
         $contextdata = utils::fetch_usercontext_fields();
         $availablecontext = array_keys($contextdata);
@@ -532,7 +541,8 @@ class aigen_form extends \moodleform {
      *
      * @return array
      */
-    public static function type_options() {
+    public static function type_options()
+    {
         $types = ['text', 'textarea', 'dropdown'];
         return array_combine($types, $types);
     }

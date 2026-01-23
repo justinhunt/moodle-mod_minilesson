@@ -95,9 +95,9 @@ define(['jquery',
             var self = this;
             var review_data = {};
 
-            self.items.forEach(function(item){
+            self.items.forEach(function (item) {
                 var itemwordlist = [];
-                item.parsedstring.forEach(function(data) {
+                item.parsedstring.forEach(function (data) {
                     if (data.type === 'input' || data.type === 'mtext') {
                         itemwordlist.push(data.character);
                     }
@@ -105,13 +105,14 @@ define(['jquery',
                 var wordmatch = itemwordlist.join("");
                 var regex = new RegExp(wordmatch, "gi");
                 var answerclass = item.correct ? 'correctitem' : 'wrongitem';
-                var result = item.target.replace(regex, ` <span class="${answerclass}">${wordmatch}</span>`);
+                var result = item.target.replace(regex, ` < span class = "${answerclass}" > ${wordmatch} < / span > `);
                 item.target = result;
             });
 
             review_data.items = self.items;
             review_data.totalitems = self.items.length;
-            review_data.correctitems = self.items.filter(function (e) { return e.correct; }).length;
+            review_data.correctitems = self.items.filter(function (e) {
+                return e.correct; }).length;
 
             //Get controls
             var listencont = self.controls.listen_cont;
@@ -144,7 +145,8 @@ define(['jquery',
             // Next page button.
             self.controls.nextbutton.on('click', function (e) {
                 if (self.items.some(item => !item.answered)) {
-                    notification.confirm(self.strings.nextlessonitem,
+                    notification.confirm(
+                        self.strings.nextlessonitem,
                         self.strings.confirm_desc,
                         self.strings.yes,
                         self.strings.no,
@@ -348,9 +350,9 @@ define(['jquery',
             //progress dots are updated on next_item. The last item has no next item, so we update from here
             self.updateProgressDots();
 
-            setTimeout(function() {
+            setTimeout(function () {
                 self.controls.nextbutton.prop("disabled",false);
-                if(self.quizhelper.showitemreview){
+                if (self.quizhelper.showitemreview) {
                     self.controls.progress_container.removeClass('d-flex');
                     self.controls.progress_container.hide();
                     self.controls.title.hide();
@@ -401,17 +403,17 @@ define(['jquery',
         updateProgressDots: function () {
             var self = this;
             var color,icon;
-            var progress = self.items.map(function(item, idx) {
-              color = "#E6E9FD";
-              icon = "fa fa-square";
-              if (self.items[idx].answered && self.items[idx].correct) {
-                color = "#74DC72";
-                icon = "fa fa-check-square";
-              } else if (self.items[idx].answered && !self.items[idx].correct) {
-                color = "#FB6363";
-                icon = "fa fa-window-close";
-              }
-              return "<i style='color:" + color + "' class='" + icon + " pl-1'></i>";
+            var progress = self.items.map(function (item, idx) {
+                color = "#E6E9FD";
+                icon = "fa fa-square";
+                if (self.items[idx].answered && self.items[idx].correct) {
+                    color = "#74DC72";
+                    icon = "fa fa-check-square";
+                } else if (self.items[idx].answered && !self.items[idx].correct) {
+                    color = "#FB6363";
+                    icon = "fa fa-window-close";
+                }
+                return "<i style='color:" + color + "' class='" + icon + " pl-1'></i>";
             }).join(" ");
             self.controls.title.html(progress);
         },
@@ -533,7 +535,7 @@ define(['jquery',
                             break;
                         case 39:
                             // If the keycode is right arrow & the current field is not empty
-                            // focus the input after the current. 
+                            // focus the input after the current.
                             //if (e.target.value !== "") {
                             if (true) {
                                 e.preventDefault();
@@ -542,7 +544,7 @@ define(['jquery',
                             break;
                         case 37:
                             // If the keycode is left arrow & the current field is not empty
-                            // focus the input before the current. 
+                            // focus the input before the current.
                             //if (e.target.value !== "") {
                             if (true) {
                                 e.preventDefault();
@@ -550,7 +552,7 @@ define(['jquery',
                             }
                             break;
                         default:
-                            // If the current field is not empty AND new value is not shift/enter/control etc   
+                            // If the current field is not empty AND new value is not shift/enter/control etc
                             // replace the current value with the newly typed value
                             if (e.target.value !== "" && e.key.length === 1) {
                                 e.target.value = e.target.value.replace(e.target.value, e.key);

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,7 +28,8 @@ use mod_minilesson\constants;
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mobile {
+class mobile
+{
     /**
      * Returns the mobile view for the minilesson activity.
      *
@@ -35,7 +37,8 @@ class mobile {
      * @return array
      * @throws \dml_exception
      */
-    public static function mobile_course_view($args) {
+    public static function mobile_course_view($args)
+    {
         global $DB, $CFG, $OUTPUT, $USER;
 
         $cmid = $args['cmid'];

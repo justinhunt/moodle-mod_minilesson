@@ -1,10 +1,10 @@
-define(['jquery','core/log'], function($,log) {
+define(['jquery','core/log'], function ($,log) {
     "use strict"; // jshint ;_;
 
 
     log.debug('MiniLesson Audio Story: initialising');
 
-    var audiostoryapp ={
+    var audiostoryapp = {
         animateFrameId: null,
         currentIndex: -1,
         secondsPerImage:  20, //this is the animation length, before it reverses
@@ -22,8 +22,8 @@ define(['jquery','core/log'], function($,log) {
             return $.extend(true, {}, this);
         },
 
-        init: function(uniqid){
-            var self =this;
+        init: function (uniqid) {
+            var self = this;
             self.panOptions = [
                 { xStart: this.pm, yStart: 0,   xEnd: this.pp, yEnd: 0   },
                 { xStart: this.pp,  yStart: 0,   xEnd: this.pm, yEnd: 0  },
@@ -36,7 +36,7 @@ define(['jquery','core/log'], function($,log) {
             self.register_events();
         },
 
-        init_controls: function(uniqid){
+        init_controls: function (uniqid) {
             var self = this;
             self.controls.aplayer = $('#' + uniqid + '_audiostory_audio');
             self.controls.slideshowcontainer = $('#' + uniqid + '_audiostory_slideshow_container');
@@ -49,16 +49,16 @@ define(['jquery','core/log'], function($,log) {
 
             // Set Zoom and Pan scale
             var zoomandpan  = self.controls.slideshowcontainer.data('zoomandpan');
-            switch(zoomandpan){
+            switch (zoomandpan) {
                 case 1:
                     self.zoomAndPan = true;
-                    self.maxzoom = 1.1; 
+                    self.maxzoom = 1.1;
                     self.pp = 5; //panfactor +
                     self.pm = -5; //panfactor -
-                    break;    
+                    break;
                 case 2:
                     self.zoomAndPan = true;
-                    self.maxzoom = 1.2; 
+                    self.maxzoom = 1.2;
                     self.pp = 7; //panfactor +
                     self.pm = -7; //panfactor -
                     break;
@@ -66,7 +66,7 @@ define(['jquery','core/log'], function($,log) {
                     self.zoomAndPan = true;
                     self.maxzoom = 1.3;
                     self.pp = 10; //panfactor +
-                    self.pm = -10; //panfactor - 
+                    self.pm = -10; //panfactor -
                     break;
                 case 0:
                 default:
@@ -74,9 +74,10 @@ define(['jquery','core/log'], function($,log) {
             }
 
             // Set up the layers and entry times
-            self.controls.images.each(function(index, element) {
+            self.controls.images.each(function (index, element) {
                 var entrytime = element.dataset.entrytime;
-                if(entrytime==''){ return;} // 
+                if (entrytime == '') {
+                    return;} //
                 const pan = self.panOptions[Math.floor(Math.random() * self.panOptions.length)];
                 self.controls.layers.push({ element: element, pan });
                 self.controls.entryTimes.push(entrytime);
@@ -100,12 +101,12 @@ define(['jquery','core/log'], function($,log) {
         },
 
 
-        register_events: function(){
+        register_events: function () {
             var self = this;
             const audio = self.controls.aplayer[0];
             const captionDiv = self.controls.captioncontainer[0];
             const layers = self.controls.layers;
-            var doUpdate = function(timestamp) {
+            var doUpdate = function (timestamp) {
                 const audio = self.controls.aplayer[0];
                 const layers = self.controls.layers;
                 const currentTime = audio.currentTime;
@@ -128,8 +129,8 @@ define(['jquery','core/log'], function($,log) {
                         l.animation.direction = 1;
                         l.animation.lastTimestamp = null;
                     });
-                    //Toggle zoom direction 
-                    self.zoomIn = !self.zoomIn; 
+                    //Toggle zoom direction
+                    self.zoomIn = !self.zoomIn;
                 }
 
                 self.animateCurrentImage(timestamp);
@@ -137,7 +138,7 @@ define(['jquery','core/log'], function($,log) {
                 self.animationFrameId = requestAnimationFrame(doUpdate);
             };
 
-            
+
 
             self.controls.playbutton.on('click', () => {
                 self.controls.overlay.hide();
@@ -177,12 +178,12 @@ define(['jquery','core/log'], function($,log) {
                 track.mode = 'hidden'; // load cues, but don't show default UI
 
                 track.addEventListener('cuechange', () => {
-                const cue = track.activeCues[0];
-                if (cue) {
-                    captionDiv.textContent = cue.text;
-                } else {
-                    captionDiv.textContent = '';
-                }
+                    const cue = track.activeCues[0];
+                    if (cue) {
+                        captionDiv.textContent = cue.text;
+                    } else {
+                        captionDiv.textContent = '';
+                    }
                 });
             };
             //depending on state of audio load, do metadata or register an event for it
@@ -191,16 +192,18 @@ define(['jquery','core/log'], function($,log) {
             } else {
                 audio.addEventListener('loadedmetadata', handleLoadedMetadata);
             }
-           
+
         },
 
-        animateCurrentImage: function(timestamp) {
+        animateCurrentImage: function (timestamp) {
             var self = this;
             var layers = self.controls.layers;
             var entryTimes = self.controls.entryTimes;
             var audio = self.controls.aplayer[0];
 
-            if (self.currentIndex < 0 || self.currentIndex >= layers.length) return;
+            if (self.currentIndex < 0 || self.currentIndex >= layers.length) {
+                return;
+            }
 
             const imageObj = layers[self.currentIndex];
             const { element, pan, animation } = imageObj;
@@ -210,7 +213,7 @@ define(['jquery','core/log'], function($,log) {
                 element.style.transform = 'scale(1) translate(0, 0)';
                 return;
             }
-            
+
 
             if (animation.lastTimestamp != null) {
                 const delta = timestamp - animation.lastTimestamp;
@@ -239,7 +242,7 @@ define(['jquery','core/log'], function($,log) {
                 scale = self.maxzoom - (self.maxzoom - 1) * easedProgress;
             }
             // from 0 (zoomed out) to 1 (zoomed in)  -  this means we dont pan when zoomed out
-            const panFactor = easedProgress; 
+            const panFactor = easedProgress;
             const x = (pan.xStart + (pan.xEnd - pan.xStart) * panFactor);
             const y = (pan.yStart + (pan.yEnd - pan.yStart) * panFactor);
 

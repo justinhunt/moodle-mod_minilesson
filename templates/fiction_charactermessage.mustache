@@ -29,7 +29,7 @@
             <img class="character_profile_icon-image" src="{{{ . }}}">
         </div>
     {{/picturesrc}}
-    <div class="charactercontainer {{classname}}">
+    <div class="charactercontainer {{classname}} {{#charactername}}has-charactername{{/charactername}}">
         {{#charactername}}
             <div class="charactername text-primary pt-2">{{{ . }}}</div>
         {{/charactername}}

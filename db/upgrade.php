@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -40,7 +41,8 @@ use mod_minilesson\utils;
  * @param int $oldversion
  * @return bool
  */
-function xmldb_minilesson_upgrade($oldversion) {
+function xmldb_minilesson_upgrade($oldversion)
+{
     global $DB;
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
@@ -136,8 +138,8 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         // Some passage hashs seem to be empty. This script will search for empty (and wrong) ones and update them
         $instances = $DB->get_records(constants::M_TABLE);
-        if($instances){
-            foreach ($instances as $moduleinstance){
+        if ($instances) {
+            foreach ($instances as $moduleinstance) {
                 \mod_minilesson\local\itemform\helper::update_all_langmodels($moduleinstance);
             }
         }
@@ -178,11 +180,10 @@ function xmldb_minilesson_upgrade($oldversion) {
 
     // Update all the phonetic fields in minilesson
     if ($oldversion < 2021082701) {
-
         // this will add phonetic info for speechy items that have none currently
         $instances = $DB->get_records(constants::M_TABLE);
-        if($instances){
-            foreach ($instances as $moduleinstance){
+        if ($instances) {
+            foreach ($instances as $moduleinstance) {
                 \mod_minilesson\local\itemform\helper::update_all_phonetic($moduleinstance);
             }
         }
@@ -249,23 +250,23 @@ function xmldb_minilesson_upgrade($oldversion) {
     // redo the prompt/response =>
     if ($oldversion < 2022021400) {
         $questions = $DB->get_records(constants::M_QTABLE);
-        foreach($questions as $question){
+        foreach ($questions as $question) {
             $sentences = explode(PHP_EOL, $question->customtext1);
             $updaterequired = false;
             $newsentences = [];
-            foreach($sentences as $sentence){
+            foreach ($sentences as $sentence) {
                 $sentencebits = explode('|', $sentence);
                 if (count($sentencebits) > 1) {
                     $updaterequired = true;
                     $audioprompt = trim($sentencebits[1]);
                     $correctresponse = trim($sentencebits[0]);
                     $textprompt = $correctresponse;
-                    $newsentences[] = $audioprompt . '|' . $correctresponse .'|' . $textprompt;
-                }else{
+                    $newsentences[] = $audioprompt . '|' . $correctresponse . '|' . $textprompt;
+                } else {
                     $newsentences[] = $sentence;
                 }//end of if count
             }//end of for sentences
-            if($updaterequired){
+            if ($updaterequired) {
                 $updatetext = implode(PHP_EOL, $newsentences);
                 $DB->update_record(constants::M_QTABLE, ['id' => $question->id, 'customtext1' => $updatetext]);
             }
@@ -392,10 +393,9 @@ function xmldb_minilesson_upgrade($oldversion) {
             }
         }
         upgrade_mod_savepoint(true, 2023041200, 'minilesson');
-
     }
 
-    if($oldversion < 2023051300){
+    if ($oldversion < 2023051300) {
         // fields to change the notnull definition for] viewstart and viewend
         $table = new xmldb_table(constants::M_TABLE);
         $fields = [];
@@ -419,7 +419,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         // if its not there add it, if it is there, change the null decl
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
-        }else{
+        } else {
             $DB->set_field(constants::M_QTABLE, 'timelimit', 0, ['timelimit' => null]);
             $dbman->change_field_notnull($table, $field);
         }
@@ -433,7 +433,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2023051300, 'minilesson');
     }
 
-    if($oldversion < 2023092600){
+    if ($oldversion < 2023092600) {
         // The norwegian language-locale code nb-no is not supported by all STT engines in Poodll, and no-no is. So updating
         $DB->set_field(constants::M_TABLE, 'ttslanguage', constants::M_LANG_NONO, ['ttslanguage' => constants::M_LANG_NBNO]);
         upgrade_mod_savepoint(true, 2023092600, 'minilesson');
@@ -514,7 +514,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025011701, 'minilesson');
     }
 
-    if($oldversion < 2025020700){
+    if ($oldversion < 2025020700) {
         // Add itemttsvoice to minilesson question table
         $table = new xmldb_table(constants::M_QTABLE);
 
@@ -533,9 +533,11 @@ function xmldb_minilesson_upgrade($oldversion) {
         }
 
         // Update AI instructions field.
-        if ($DB->record_exists(constants::M_QTABLE, ['type' => 'freespeaking']) ||
-         $DB->record_exists(constants::M_QTABLE, ['type' => 'freewriting'])) {
-            $sql = "UPDATE {". constants::M_QTABLE . "} SET customtext6 = customtext1, customtext1 = ''";
+        if (
+            $DB->record_exists(constants::M_QTABLE, ['type' => 'freespeaking']) ||
+            $DB->record_exists(constants::M_QTABLE, ['type' => 'freewriting'])
+        ) {
+            $sql = "UPDATE {" . constants::M_QTABLE . "} SET customtext6 = customtext1, customtext1 = ''";
             $sql .= " WHERE type = 'freewriting' OR type = 'freespeaking'";
             $DB->execute($sql);
         }
@@ -546,7 +548,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025062902) {
-
         // Define table minilesson_templates to be created.
         $table = new xmldb_table('minilesson_templates');
 
@@ -570,7 +571,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025062903) {
-
         // Define field description to be added to minilesson_templates.
         $table = new xmldb_table('minilesson_templates');
         $field = new xmldb_field('description', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null, 'name');
@@ -585,7 +585,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025062904) {
-
         // Define field config to be added to minilesson_templates.
         $table = new xmldb_table('minilesson_templates');
         $field = new xmldb_field('config', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null, 'description');
@@ -609,7 +608,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025062905) {
-
         // Define field timemodified to be added to minilesson_templates.
         $table = new xmldb_table('minilesson_templates');
         $field = new xmldb_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'timecreated');
@@ -624,7 +622,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025062907) {
-
         // Define key fkminilessonid (foreign) to be dropped form minilesson_templates.
         $table = new xmldb_table('minilesson_templates');
         $key = new xmldb_key('fkminilessonid', XMLDB_KEY_FOREIGN, ['minilessonid'], 'minilesson', ['id']);
@@ -646,7 +643,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025071300) {
-
         // Create default templates if they do not exist.
         $templates = \mod_minilesson\aigen::fetch_lesson_templates();
         if (!$templates || empty($templates)) {
@@ -658,7 +654,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025071301) {
-
         // Delete existing templates because we are going to change the structure.
         $DB->delete_records('minilesson_templates');
 
@@ -692,7 +687,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025071302) {
-
         // Define key uniquniqueid (unique) to be added to minilesson_templates.
         $table = new xmldb_table('minilesson_templates');
         $key = new xmldb_key('uniquniqueid', XMLDB_KEY_UNIQUE, ['uniqueid']);
@@ -705,7 +699,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025071303) {
-
         \mod_minilesson\aigen::create_default_templates();
 
         // Minilesson savepoint reached.
@@ -713,7 +706,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025071303.01) {
-
         // Define table minilesson_template_usages to be created.
         $table = new xmldb_table('minilesson_template_usages');
 
@@ -744,7 +736,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         global $DB;
 
         // Fetch unique minilesson ids for all minilesson items that are of type multichoice or multiaudio.
-        $sql = "SELECT DISTINCT minilesson FROM {". constants::M_QTABLE ."} WHERE type IN (:type1, :type2)";
+        $sql = "SELECT DISTINCT minilesson FROM {" . constants::M_QTABLE . "} WHERE type IN (:type1, :type2)";
         $params = [
             'type1' => constants::TYPE_MULTICHOICE,
             'type2' => constants::TYPE_MULTIAUDIO,
@@ -759,10 +751,11 @@ function xmldb_minilesson_upgrade($oldversion) {
             foreach ($minilessoninstances as $moduleinstance) {
                 $upgradetypes = [ constants::TYPE_MULTICHOICE, constants::TYPE_MULTIAUDIO];
                 foreach ($upgradetypes as $upgradetype) {
-
                     // Fetch all item records for the current minilesson instance.
-                    $itemrecords = $DB->get_records(constants::M_QTABLE,
-                    ['minilesson' => $moduleinstance->id, 'type' => $upgradetype]);
+                    $itemrecords = $DB->get_records(
+                        constants::M_QTABLE,
+                        ['minilesson' => $moduleinstance->id, 'type' => $upgradetype]
+                    );
                     if (!$itemrecords) {
                         continue; // No items to upgrade for this minilesson instance, skip to the next one.
                     }
@@ -784,7 +777,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025071305.01) {
-
         // Define field error to be added to minilesson_template_usages.
         $table = new xmldb_table('minilesson_template_usages');
         $field = new xmldb_field('error', XMLDB_TYPE_TEXT, null, null, null, null, null, 'timemodified');
@@ -799,7 +791,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025073000) {
-
         // Update default templates
         \mod_minilesson\aigen::create_default_templates();
 
@@ -808,7 +799,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025080102) {
-
         // Add more customint fields to minilesson question table
         $table = new xmldb_table(constants::M_QTABLE);
 
@@ -834,7 +824,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025080104) {
-
         // Update default templates
         \mod_minilesson\aigen::create_default_templates();
 
@@ -865,7 +854,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025090100.02, 'minilesson');
     }
 
-    if($oldversion < 2025110301){
+    if ($oldversion < 2025110301) {
         // Update default templates - add slides template
         \mod_minilesson\aigen::create_default_templates();
 
@@ -873,7 +862,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2025110301, 'minilesson');
     }
 
-    if($oldversion < 2025110401){
+    if ($oldversion < 2025110401) {
         // Update default templates - add slides template
         \mod_minilesson\aigen::create_default_templates();
 
@@ -882,7 +871,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025110401.01) {
-
         // Define table minilesson_template_tags to be created.
         $table = new xmldb_table('minilesson_template_tags');
 
@@ -909,10 +897,9 @@ function xmldb_minilesson_upgrade($oldversion) {
 
 
     if ($oldversion < 2025110401.04) {
-
         // Store current template tags.
         $records = $DB->get_records('minilesson_templates');
-        foreach($records as $record) {
+        foreach ($records as $record) {
             mod_minilesson\template_tag_manager::store_template_tags($record);
         }
 
@@ -921,7 +908,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025110402) {
-
         // Update default templates - add slides template
         \mod_minilesson\aigen::create_default_templates();
 
@@ -930,7 +916,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025111800) {
-
         // Update default templates - add slides template
         \mod_minilesson\aigen::create_default_templates();
 
@@ -939,7 +924,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025112901) {
-
         // Update default templates - templates updated
         \mod_minilesson\aigen::create_default_templates();
 
@@ -948,7 +932,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2025112901.01) {
-
         // Define field nativelang to be added to minilesson.
         $table = new xmldb_table('minilesson');
         $field = new xmldb_field('nativelang', XMLDB_TYPE_CHAR, '255', null, null, null, null, 'viewend');
@@ -963,7 +946,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026011000) {
-
         // Update default templates - templates updated
         \mod_minilesson\aigen::create_default_templates();
 

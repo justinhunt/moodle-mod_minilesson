@@ -24,23 +24,21 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 require_login(0, false);
 $systemcontext = context_system::instance();
 $PAGE->set_context($systemcontext);
 $PAGE->set_url('/' . CONSTANTS::M_URL . '/fetchcbpage.php');
 
-if(has_capability('moodle/site:config',$systemcontext)){
-
-    $amddata=['poodllcbsite'=>'poodllcom','wwwroot'=>$CFG->wwwroot,
-        'first_name'=>$USER->firstname,'last_name'=>$USER->lastname,'email'=>$USER->email,'country'=>$USER->country];
+if (has_capability('moodle/site:config', $systemcontext)) {
+    $amddata = ['poodllcbsite' => 'poodllcom','wwwroot' => $CFG->wwwroot,
+        'first_name' => $USER->firstname,'last_name' => $USER->lastname,'email' => $USER->email,'country' => $USER->country];
     echo $OUTPUT->header();
-    echo $OUTPUT->render_from_template( constants::M_COMPONENT . '/fetchcbpage',$amddata);
+    echo $OUTPUT->render_from_template(constants::M_COMPONENT . '/fetchcbpage', $amddata);
     echo $OUTPUT->footer();
-}else{
+} else {
     echo "no permission to do that action";
 }

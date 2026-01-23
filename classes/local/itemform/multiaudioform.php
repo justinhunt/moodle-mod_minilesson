@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -8,11 +9,10 @@
 
 namespace mod_minilesson\local\itemform;
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 class multiaudioform extends baseform
 {
-
     public $type = constants::TYPE_MULTIAUDIO;
 
     public function custom_definition()
@@ -30,5 +30,4 @@ class multiaudioform extends baseform
         // $this->add_repeating_textboxes('sentence',5);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
     }
-
 }

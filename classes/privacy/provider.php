@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -38,9 +39,13 @@ defined('MOODLE_INTERNAL') || die();
 
 //3.3 user_provider not backported so we use this switch to avoid errors when using same codebase for 3.3 and higher
 if (interface_exists('\core_privacy\local\request\core_userlist_provider')) {
-    interface the_user_provider extends \core_privacy\local\request\core_userlist_provider{}
+    interface the_user_provider extends \core_privacy\local\request\core_userlist_provider
+    {
+    }
 } else {
-    interface the_user_provider {};
+    interface the_user_provider
+    {
+    };
 }
 
 /**
@@ -55,8 +60,8 @@ class provider implements
     // This plugin is a core_user_data_provider.
     \core_privacy\local\request\plugin\provider,
     //user provider 3.4 and above
-    the_user_provider{
-
+    the_user_provider
+{
     use \core_privacy\local\legacy_polyfill;
 
     /**
@@ -65,7 +70,8 @@ class provider implements
      * @param  collection $collection A list of information to add to.
      * @return collection Return the collection after adding to it.
      */
-    public static function _get_metadata(collection $collection) {
+    public static function _get_metadata(collection $collection)
+    {
 
         $userdetail = [
             'id' => 'privacy:metadata:attemptid',
@@ -93,7 +99,8 @@ class provider implements
      * @param int $userid the userid.
      * @return contextlist the list of contexts containing user info for the user.
      */
-    public static function _get_contexts_for_userid($userid) {
+    public static function _get_contexts_for_userid($userid)
+    {
 
         $sql = "SELECT c.id
                   FROM {context} c
@@ -120,7 +127,8 @@ class provider implements
      * @param   userlist    $userlist   The userlist containing the list of users who have data in this context/plugin combination.
      *
      */
-    public static function get_users_in_context(userlist $userlist) {
+    public static function get_users_in_context(userlist $userlist)
+    {
         $context = $userlist->get_context();
 
         if (!is_a($context, \context_module::class)) {
@@ -143,7 +151,6 @@ class provider implements
         ];
 
         $userlist->add_from_sql('userid', $sql, $params);
-
     }
 
     /**
@@ -153,7 +160,8 @@ class provider implements
      *
      * @param approved_contextlist $contextlist a list of contexts approved for export.
      */
-    public static function _export_user_data(approved_contextlist $contextlist) {
+    public static function _export_user_data(approved_contextlist $contextlist)
+    {
         global $DB;
 
         if (empty($contextlist->count())) {
@@ -189,7 +197,7 @@ class provider implements
 
 
         foreach ($attempts as $attempt) {
-                $attempt->timemodified =\core_privacy\local\request\transform::datetime($attempt->timemodified);
+                $attempt->timemodified = \core_privacy\local\request\transform::datetime($attempt->timemodified);
                 $context = \context_module::instance($attempt->cmid);
                 $attemptdata = get_object_vars($attempt);
                 self::export_attempt_data_for_user($attemptdata, $context, $user);
@@ -204,7 +212,8 @@ class provider implements
      * @param \context_module $context the context of the minilesson.
      * @param \stdClass $user the user record
      */
-    protected static function export_attempt_data_for_user(array $attemptdata, \context_module $context, \stdClass $user) {
+    protected static function export_attempt_data_for_user(array $attemptdata, \context_module $context, \stdClass $user)
+    {
         // Fetch the generic module data for the choice.
         $contextdata = helper::get_context_data($context, $user);
 
@@ -221,7 +230,8 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(\context $context)
+    {
         global $DB;
 
         if ($context->contextlevel != CONTEXT_MODULE) {
@@ -246,7 +256,8 @@ class provider implements
      *
      * @param approved_contextlist $contextlist a list of contexts approved for deletion.
      */
-    public static function delete_data_for_user(approved_contextlist $contextlist) {
+    public static function delete_data_for_user(approved_contextlist $contextlist)
+    {
         global $DB;
 
         if (empty($contextlist->count())) {
@@ -256,11 +267,14 @@ class provider implements
         $userid = $contextlist->get_user()->id;
         foreach ($contextlist->get_contexts() as $context) {
             if ($context->contextlevel == CONTEXT_MODULE) {
-
                 $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
 
-                $entries = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $instanceid, 'userid' => $userid],
-                    '', 'id');
+                $entries = $DB->get_records(
+                    constants::M_ATTEMPTSTABLE,
+                    ['moduleid' => $instanceid, 'userid' => $userid],
+                    '',
+                    'id'
+                );
 
                 if (!$entries) {
                     continue;
@@ -279,7 +293,8 @@ class provider implements
      *
      * @param   approved_userlist    $userlist The approved context and user information to delete information for.
      */
-    public static function delete_data_for_users(approved_userlist $userlist) {
+    public static function delete_data_for_users(approved_userlist $userlist)
+    {
         global $DB;
 
         $context = $userlist->get_context();

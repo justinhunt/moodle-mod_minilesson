@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,7 +30,6 @@ use moodle_url;
  */
 class item_audiochat extends item
 {
-
     // The item type.
     public const ITEMTYPE = constants::TYPE_AUDIOCHAT;
 
@@ -160,7 +160,7 @@ class item_audiochat extends item
         }
 
         // Replace any template variables in the question text.
-        if(!empty($testitem->itemtext)){
+        if (!empty($testitem->itemtext)) {
             $search = ['{topic}', '{ai data1}', '{ai data2}'];
             $replace = [
                 $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
@@ -243,7 +243,6 @@ class item_audiochat extends item
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
         switch ($generatemethod) {
-
             case 'extract':
                 $prompt = "Create an oral discussion topic(text) suitable for {level} level learners of {language} as a follow up activity on the following reading: [{text}] ";
                 break;
@@ -262,7 +261,8 @@ class item_audiochat extends item
         return $prompt;
     }
 
-    public function replace_student_submission($instruction) {
+    public function replace_student_submission($instruction)
+    {
 
         if (empty($instruction)) {
             return false;
@@ -280,7 +280,8 @@ class item_audiochat extends item
         return false;
     }
 
-    public function fetch_student_submission() {
+    public function fetch_student_submission()
+    {
 
         $submission = $this->itemrecord;
         if (!empty($submission)) {
@@ -305,5 +306,4 @@ class item_audiochat extends item
         }
         return false;
     }
-
 }

@@ -52,7 +52,8 @@ define(['jquery', 'core/log'], function ($, log) {
                 lastDelay = time,
                 outp = {};
 
-            function tick() {
+            function tick()
+            {
                 var now = Date.now(),
                     dTime = now - lastTime;
 

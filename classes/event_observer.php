@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -21,6 +22,7 @@
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_minilesson;
 
 use mod_minilesson\constants;
@@ -32,14 +34,16 @@ use mod_minilesson\constants;
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class event_observer {
+class event_observer
+{
     /**
      * Triggered via course_deleted event.
      *
      * @param \core\event\course_deleted $event
      * @return bool true on success
      */
-    public static function course_deleted(\core\event\course_deleted $event) {
+    public static function course_deleted(\core\event\course_deleted $event)
+    {
         global $DB;
         $ret = $DB->delete_records(constants::M_ATTEMPTSTABLE, ['courseid' => $event->objectid]);
         $ret = $DB->delete_records_select(

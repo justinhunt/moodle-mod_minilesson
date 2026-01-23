@@ -1,4 +1,5 @@
-define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/ttstreamer', 'mod_minilesson/ttazure'],
+define(
+    ['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/ttstreamer', 'mod_minilesson/ttazure'],
     function ($, log, wavencoder, audiostreamer, azurestreamer) {
         "use strict"; // jshint ;_;
         /*
@@ -80,12 +81,14 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
                 this.audioContext = new AudioContext(
                     {
                         sampleRate: this.encodingconfig.desiredSampleRate
-                    });
+                    }
+                );
 
                 this.processor = this.audioContext.createScriptProcessor(
                     this.encodingconfig.bufferLen,
                     this.encodingconfig.numChannels,
-                    this.encodingconfig.numChannels);
+                    this.encodingconfig.numChannels
+                );
 
                 this.processor.connect(this.audioContext.destination);
 
@@ -216,7 +219,8 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
 
             detectSilence: function () {
 
-                if (!this.enablesilencedetection) { return; }
+                if (!this.enablesilencedetection) {
+                    return; }
 
                 this.listener.getByteFrequencyData(this.volumeData);
 
@@ -256,7 +260,6 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
                 var x = 0;
 
                 for (var i = 0; i < this.bufferLength; i++) {
-
                     var v = this.analyserData[i] / 128.0;
                     var y = v * this.waveHeight;
 
@@ -276,4 +279,5 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder', 'mod_minilesson/tts
         }; //end of this declaration
 
 
-    });
+    }
+);

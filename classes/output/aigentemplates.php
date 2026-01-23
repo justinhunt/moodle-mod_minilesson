@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -33,7 +34,8 @@ use templatable;
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class aigentemplates implements renderable, templatable {
+class aigentemplates implements renderable, templatable
+{
     /**
      * @var object $cm course module object
      */
@@ -50,7 +52,8 @@ class aigentemplates implements renderable, templatable {
      * @param object $cm course module object
      * @param array $filters tag filters array
      */
-    public function __construct($cm, $filters) {
+    public function __construct($cm, $filters)
+    {
         $this->cm = $cm;
         $this->filters = $filters;
     }
@@ -61,7 +64,8 @@ class aigentemplates implements renderable, templatable {
      * @param renderer_base $output
      * @return array
      */
-    public function export_for_template(renderer_base $output) {
+    public function export_for_template(renderer_base $output)
+    {
         $tags = self::get_alltags();
         $tags = array_intersect($this->filters, $tags);
 
@@ -112,7 +116,8 @@ class aigentemplates implements renderable, templatable {
      * @param bool $withlabels Whether to include labels with tags.
      * @return array List of all tags, optionally with labels.
      */
-    public static function get_alltags($withlabels = false) {
+    public static function get_alltags($withlabels = false)
+    {
         // Predefined tags.
         if ($withlabels) {
             $predefinedtags = [];

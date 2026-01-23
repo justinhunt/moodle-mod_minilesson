@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -24,17 +25,18 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot.'/mod/minilesson/lib.php');
+require_once($CFG->dirroot . '/mod/minilesson/lib.php');
 
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 
 //if ($ADMIN->fulltree) {
 if ($hassiteconfig) {
-
     //Add category to navigation
-    $minilessoncat = new admin_category('modsettingsminilessoncat',
-        get_string('modulename', constants::M_COMPONENT));//, $module->is_enabled() === false);
+    $minilessoncat = new admin_category(
+        'modsettingsminilessoncat',
+        get_string('modulename', constants::M_COMPONENT)
+    );//, $module->is_enabled() === false);
     $ADMIN->add('modsettings', $minilessoncat);
 
     //create main settings page
@@ -42,9 +44,13 @@ if ($hassiteconfig) {
     $mainsettings = new admin_settingpage('modsettingminilessonmain', $pagetitle, 'moodle/site:config');
 
     // Add all the main settings
-    $mainsettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/apiuser',
+    $mainsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT .  '/apiuser',
         get_string('apiuser', constants::M_COMPONENT),
-            get_string('apiuser_details', constants::M_COMPONENT), '', PARAM_TEXT));
+        get_string('apiuser_details', constants::M_COMPONENT),
+        '',
+        PARAM_TEXT
+    ));
 
     $cloudpoodllapiuser = get_config(constants::M_COMPONENT, 'apiuser');
     $cloudpoodllapisecret = get_config(constants::M_COMPONENT, 'apisecret');
@@ -55,7 +61,7 @@ if ($hassiteconfig) {
         $showbelowapisecret = $tokeninfo;
         // if we have no API user and secret we show a "fetch from elsewhere on site" or "take a free trial" link
     } else {
-        $amddata = ['apppath' => $CFG->wwwroot . '/' .constants::M_URL];
+        $amddata = ['apppath' => $CFG->wwwroot . '/' . constants::M_URL];
         $cpcomponents = ['filter_poodll',
         'qtype_cloudpoodll',
         'mod_readaloud',
@@ -71,7 +77,7 @@ if ($hassiteconfig) {
         ];
 
         foreach ($cpcomponents as $cpcomponent) {
-            switch($cpcomponent){
+            switch ($cpcomponent) {
                 case 'filter_poodll':
                     $apiusersetting = 'cpapiuser';
                     $apisecretsetting = 'cpapisecret';
@@ -94,39 +100,62 @@ if ($hassiteconfig) {
                 }
             }
         }
-        $showbelowapisecret = $OUTPUT->render_from_template( constants::M_COMPONENT . '/managecreds', $amddata);
+        $showbelowapisecret = $OUTPUT->render_from_template(constants::M_COMPONENT . '/managecreds', $amddata);
     }
 
 
     // get_string('apisecret_details', constants::M_COMPONENT)
-    $mainsettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/apisecret',
-        get_string('apisecret', constants::M_COMPONENT), $showbelowapisecret, '', PARAM_TEXT));
+    $mainsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT .  '/apisecret',
+        get_string('apisecret', constants::M_COMPONENT),
+        $showbelowapisecret,
+        '',
+        PARAM_TEXT
+    ));
 
     $regions = utils::get_region_options();
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/awsregion',
-            get_string('awsregion', constants::M_COMPONENT), '', 'useast1', $regions));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT .  '/awsregion',
+        get_string('awsregion', constants::M_COMPONENT),
+        '',
+        'useast1',
+        $regions
+    ));
 
 
     // Default target language.
     $langoptions = utils::get_lang_options();
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/ttslanguage',
-             get_string('ttslanguage', constants::M_COMPONENT), '', 'en-US', $langoptions));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT .  '/ttslanguage',
+        get_string('ttslanguage', constants::M_COMPONENT),
+        '',
+        'en-US',
+        $langoptions
+    ));
 
-    // Default learners native language.    
+    // Default learners native language.
     $nativelangoptions = [0 => '--'] + utils::get_lang_options();
     $shortlangcodes = utils::get_shortlang_options();
     // Use the site default language as default native language or if that is not available use '--'.
     $nativelangdefault = $CFG->lang && array_key_exists($CFG->lang, $shortlangcodes) ? $shortlangcodes[$CFG->lang] : 0;
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/nativelang',
-             get_string('nativelang', constants::M_COMPONENT), '', $nativelangdefault, $nativelangoptions));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT .  '/nativelang',
+        get_string('nativelang', constants::M_COMPONENT),
+        '',
+        $nativelangdefault,
+        $nativelangoptions
+    ));
 
 
 
     // Cloud Poodll Server.
-    $mainsettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/cloudpoodllserver',
+    $mainsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT .  '/cloudpoodllserver',
         get_string('cloudpoodllserver', constants::M_COMPONENT),
-            get_string('cloudpoodllserver_details', constants::M_COMPONENT),
-             constants::M_DEFAULT_CLOUDPOODLL, PARAM_URL));
+        get_string('cloudpoodllserver_details', constants::M_COMPONENT),
+        constants::M_DEFAULT_CLOUDPOODLL,
+        PARAM_URL
+    ));
 
     // Transcriber options
     $name = 'transcriber';
@@ -134,16 +163,26 @@ if ($hassiteconfig) {
     $details = get_string($name . '_details', constants::M_COMPONENT);
     $default = constants::TRANSCRIBER_AUTO;
     $options = utils::fetch_options_transcribers();
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, $options));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $options
+    ));
 
     $name = 'containerwidth';
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
     $default = constants::M_CONTWIDTH_COMPACT;
     $options = utils::get_containerwidth_options();
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, $options));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $options
+    ));
 
     // Reports Table
     $name = 'reportstable';
@@ -151,8 +190,13 @@ if ($hassiteconfig) {
     $details = get_string($name . '_details', constants::M_COMPONENT);
     $default = constants::M_USE_DATATABLES;
     $options = utils::fetch_options_reportstable();
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, $options));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $options
+    ));
 
     // animations
     $name = 'animations';
@@ -160,39 +204,75 @@ if ($hassiteconfig) {
     $details = get_string($name . '_details', constants::M_COMPONENT);
     $default = constants::M_ANIM_FANCY;
     $options = utils::fetch_options_animations();
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, $options));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $options
+    ));
 
 
-    $mainsettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/itemsperpage',
-        get_string('itemsperpage', constants::M_COMPONENT), get_string('itemsperpage_details', constants::M_COMPONENT), 10, PARAM_INT));
+    $mainsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT .  '/itemsperpage',
+        get_string('itemsperpage', constants::M_COMPONENT),
+        get_string('itemsperpage_details', constants::M_COMPONENT),
+        10,
+        PARAM_INT
+    ));
 
 
     $modalsettings = [0 => get_string('modaleditform_newpage', constants::M_COMPONENT),
         1 => get_string('modaleditform_modalform', constants::M_COMPONENT)];
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/modaleditform',
-        get_string('modaleditform', constants::M_COMPONENT), get_string('modaleditform_details', constants::M_COMPONENT), 0, $modalsettings));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT .  '/modaleditform',
+        get_string('modaleditform', constants::M_COMPONENT),
+        get_string('modaleditform_details', constants::M_COMPONENT),
+        0,
+        $modalsettings
+    ));
 
 
     $promptstyle = \mod_minilesson\utils::get_prompttype_options();
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT .  '/prompttype',
-            get_string('prompttype', constants::M_COMPONENT), '', constants::M_PROMPT_SEPARATE, $promptstyle));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT .  '/prompttype',
+        get_string('prompttype', constants::M_COMPONENT),
+        '',
+        constants::M_PROMPT_SEPARATE,
+        $promptstyle
+    ));
 
 
-    $mainsettings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/enablepushtab',
-        get_string('enablepushtab', constants::M_COMPONENT), get_string('enablepushtab_details', constants::M_COMPONENT), 0));
+    $mainsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/enablepushtab',
+        get_string('enablepushtab', constants::M_COMPONENT),
+        get_string('enablepushtab_details', constants::M_COMPONENT),
+        0
+    ));
 
-    $mainsettings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/alternatestreaming',
-    get_string('alternatestreaming', constants::M_COMPONENT), get_string('alternatestreaming_details', constants::M_COMPONENT), 0));
+    $mainsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/alternatestreaming',
+        get_string('alternatestreaming', constants::M_COMPONENT),
+        get_string('alternatestreaming_details', constants::M_COMPONENT),
+        0
+    ));
 
 
 
-    $mainsettings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/enablesetuptab',
-            get_string('enablesetuptab', constants::M_COMPONENT), get_string('enablesetuptab_details', constants::M_COMPONENT), 0));
+    $mainsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/enablesetuptab',
+        get_string('enablesetuptab', constants::M_COMPONENT),
+        get_string('enablesetuptab_details', constants::M_COMPONENT),
+        0
+    ));
 
     // Native Language Setting
-    $mainsettings->add(new admin_setting_configcheckbox(constants::M_COMPONENT .  '/setnativelanguage',
-        get_string('enablenativelanguage', constants::M_COMPONENT), get_string('enablenativelanguage_details', constants::M_COMPONENT), 1));
+    $mainsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/setnativelanguage',
+        get_string('enablenativelanguage', constants::M_COMPONENT),
+        get_string('enablenativelanguage_details', constants::M_COMPONENT),
+        1
+    ));
 
     // Show item review.
     $name = 'showitemreview';
@@ -200,8 +280,13 @@ if ($hassiteconfig) {
     $details = get_string($name . '_help', constants::M_COMPONENT);
     $default = 1;
     $yesnooptions = [1 => get_string('yes'), 0 => get_string('no')];
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, $yesnooptions));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $yesnooptions
+    ));
 
     // Finish Screen Options
     $mainsettings->add(new admin_setting_heading(constants::M_COMPONENT . '/finishscreen', get_string('finishscreen', constants::M_COMPONENT), ''));
@@ -210,8 +295,13 @@ if ($hassiteconfig) {
     $details = get_string($name . '_details', constants::M_COMPONENT);
     $default = constants::FINISHSCREEN_FULL;
     $options = utils::fetch_options_finishscreen();
-    $mainsettings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, $options));
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $options
+    ));
 
     // Default custom Finish Screen
     $name = 'finishscreencustom';
@@ -231,8 +321,13 @@ if ($hassiteconfig) {
 </div>
  <a class ="btn btn-secondary" href="{{{reattempturl}}}">{{#str}} tryagain, mod_minilesson {{/str}}</a> <br />';
 
-    $mainsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, PARAM_RAW));
+    $mainsettings->add(new admin_setting_configtextarea(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        PARAM_RAW
+    ));
 
     // Add main settings page to minilesson category.
     $ADMIN->add('modsettingsminilessoncat', $mainsettings);
@@ -254,8 +349,13 @@ if ($hassiteconfig) {
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
     $default = '';
-    $otherapikeysettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, PARAM_TEXT));
+    $otherapikeysettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        PARAM_TEXT
+    ));
 
     // Azure API region
     $name = 'azureapiregion';
@@ -263,8 +363,13 @@ if ($hassiteconfig) {
     $details = get_string($name . '_details', constants::M_COMPONENT);
     $default = 'eastus';
     $options = utils::fetch_regions_azure();
-    $otherapikeysettings->add(new admin_setting_configselect(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, $options));
+    $otherapikeysettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $options
+    ));
 
 
      // The OpenAI APIKEY.
@@ -272,8 +377,13 @@ if ($hassiteconfig) {
     $label = get_string($name, constants::M_COMPONENT);
     $details = get_string($name . '_details', constants::M_COMPONENT);
     $default = '';
-    $otherapikeysettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
-        $label, $details, $default, PARAM_TEXT));
+    $otherapikeysettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        PARAM_TEXT
+    ));
 
     //add other API keys settings page to minilesson category
     $ADMIN->add('modsettingsminilessoncat', $otherapikeysettings);
@@ -294,13 +404,23 @@ if ($hassiteconfig) {
         $label = get_string('instructionsprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
         $details = '';
         $default = $i < $defaults ? get_string('audiochat:instructionsprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_TEXT));
+        $audiochatsettings->add(new admin_setting_configtext(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_TEXT
+        ));
         $name = 'audiochat_instructionsprompt_' . ($i + 1);
         $label = get_string('instructionsprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
         $default = $i < $defaults ? get_string('audiochat:instructionsprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_RAW));
+        $audiochatsettings->add(new admin_setting_configtextarea(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_RAW
+        ));
     }
     for ($i = 0; $i < $maxprompts; $i++) {
         //Audio Chat feedback prompt
@@ -309,13 +429,23 @@ if ($hassiteconfig) {
         $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
         $details = '';
         $default = $i < $defaults ? get_string('audiochat:feedbackprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_TEXT));
+        $audiochatsettings->add(new admin_setting_configtext(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_TEXT
+        ));
         $name = 'audiochat_feedbackprompt_' . ($i + 1);
         $label = get_string('feedbackprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
         $default = $i < $defaults ? get_string('audiochat:feedbackprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_RAW));
+        $audiochatsettings->add(new admin_setting_configtextarea(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_RAW
+        ));
     }
     //add audiochat settings page to minilesson category
     $ADMIN->add('modsettingsminilessoncat', $audiochatsettings);
@@ -334,13 +464,23 @@ if ($hassiteconfig) {
         $label = get_string('gradingprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
         $details = '';
         $default =  $i < $defaults ? get_string('freespeaking:gradingprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $freespeakingsettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_TEXT));
+        $freespeakingsettings->add(new admin_setting_configtext(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_TEXT
+        ));
         $name = 'freespeaking_gradingprompt_' . ($i + 1);
         $label = get_string('gradingprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
         $default = $i < $defaults ? get_string('freespeaking:gradingprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $freespeakingsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_RAW));
+        $freespeakingsettings->add(new admin_setting_configtextarea(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_RAW
+        ));
     }
     for ($i = 0; $i < $maxprompts; $i++) {
         //Free Speaking Feedback Prompt
@@ -349,13 +489,23 @@ if ($hassiteconfig) {
         $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
         $details = '';
         $default = $i < $defaults ? get_string('freespeaking:feedbackprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $freespeakingsettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_TEXT));
+        $freespeakingsettings->add(new admin_setting_configtext(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_TEXT
+        ));
         $name = 'freespeaking_feedbackprompt_' . ($i + 1);
         $label = get_string('feedbackprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
         $default = $i < $defaults ? get_string('freespeaking:feedbackprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $freespeakingsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_RAW));
+        $freespeakingsettings->add(new admin_setting_configtextarea(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_RAW
+        ));
     }
     // Add free speaking settings page to minilesson category.
     $ADMIN->add('modsettingsminilessoncat', $freespeakingsettings);
@@ -373,13 +523,23 @@ if ($hassiteconfig) {
         $label = get_string('gradingprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
         $details = '';
         $default = $i < $defaults ? get_string('freewriting:gradingprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $freewritingsettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_TEXT));
+        $freewritingsettings->add(new admin_setting_configtext(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_TEXT
+        ));
         $name = 'freewriting_gradingprompt_' . ($i + 1);
         $label = get_string('gradingprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
         $default = $i < $defaults ? get_string('freewriting:gradingprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $freewritingsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_RAW));
+        $freewritingsettings->add(new admin_setting_configtextarea(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_RAW
+        ));
     }
     for ($i = 0; $i < $maxprompts; $i++) {
         // Free Writing Feedback Prompt.
@@ -388,13 +548,23 @@ if ($hassiteconfig) {
         $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
         $details = '';
         $default = $i < $defaults ? get_string('freewriting:feedbackprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $freewritingsettings->add(new admin_setting_configtext(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_TEXT));
+        $freewritingsettings->add(new admin_setting_configtext(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_TEXT
+        ));
         $name = 'freewriting_feedbackprompt_' . ($i + 1);
         $label = get_string('feedbackprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
         $default = $i < $defaults ? get_string('freewriting:feedbackprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $freewritingsettings->add(new admin_setting_configtextarea(constants::M_COMPONENT . "/$name",
-            $label, $details, $default, PARAM_RAW));
+        $freewritingsettings->add(new admin_setting_configtextarea(
+            constants::M_COMPONENT . "/$name",
+            $label,
+            $details,
+            $default,
+            PARAM_RAW
+        ));
     }
 
     $mainsettings->add(new admin_setting_configcheckbox(
@@ -404,13 +574,14 @@ if ($hassiteconfig) {
         0
     ));
 
-    $mainsettings->add(new admin_setting_configtext(constants::M_COMPONENT .  '/lessonbankurl',
+    $mainsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT .  '/lessonbankurl',
         get_string('lessonbankurl', constants::M_COMPONENT),
-            get_string('lessonbankurl_details', constants::M_COMPONENT),
-            ''));
+        get_string('lessonbankurl_details', constants::M_COMPONENT),
+        ''
+    ));
 
     // Add prompt settings page to minilesson category.
     $ADMIN->add('modsettingsminilessoncat', $freewritingsettings);
-
 }
 $settings = null; // We do not want standard settings link.

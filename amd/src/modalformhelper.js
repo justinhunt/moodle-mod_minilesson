@@ -7,8 +7,9 @@
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_events', 'core/fragment', 'core/ajax', 'core/yui'],
-    function($, log,Str, ModalFactory, ModalEvents, Fragment, Ajax, Y) {
+define(
+    ['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_events', 'core/fragment', 'core/ajax', 'core/yui'],
+    function ($, log,Str, ModalFactory, ModalEvents, Fragment, Ajax, Y) {
 
         /**
          * Constructor
@@ -20,7 +21,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
          *
          * Each call to init gets it's own instance of this class.
          */
-        var TheForm = function(selector, contextid, callback) {
+        var TheForm = function (selector, contextid, callback) {
             this.contextid = contextid;
             this.callback = callback;
 
@@ -63,16 +64,16 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
          * @private
          * @return {Promise}
          */
-        TheForm.prototype.preinit = function(selector) {
+        TheForm.prototype.preinit = function (selector) {
             var triggers = $(selector);
-            var dd=this;
+            var dd = this;
 
-            $('body').on('click',selector,function(e) {
+            $('body').on('click',selector,function (e) {
                 //prevent it doing a real click (which will do the non ajax version of a click)
                 e.preventDefault();
 
-                dd.itemid=$(this).data('id');
-                dd.formname=$(this).data('qtype');
+                dd.itemid = $(this).data('id');
+                dd.formname = $(this).data('qtype');
 
                 ModalFactory.create({
                     type: ModalFactory.types.SAVE_CANCEL,
@@ -81,14 +82,15 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
                 }).then(function (modal) {
                     // Keep a reference to the modal.
                     dd.modal = modal;
-                    Str.get_string(dd.formname , 'mod_minilesson').then(function(title){dd.formtitle=title;dd.modal.setTitle(dd.formtitle);});
+                    Str.get_string(dd.formname , 'mod_minilesson').then(function (title) {
+                        dd.formtitle = title;dd.modal.setTitle(dd.formtitle);});
 
 
                     // Forms are big, we want a big modal.
                     dd.modal.setLarge();
 
                     // We want to reset the form every time it is opened.
-                    dd.modal.getRoot().on(ModalEvents.hidden, function() {
+                    dd.modal.getRoot().on(ModalEvents.hidden, function () {
                         dd.modal.setBody(dd.getBody({}));
                     }.bind(dd));
 
@@ -117,7 +119,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
          * @private
          * @return {Promise}
          */
-        TheForm.prototype.getBody = function(formdata) {
+        TheForm.prototype.getBody = function (formdata) {
             if (typeof formdata === "undefined") {
                 formdata = {};
             }
@@ -132,11 +134,11 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
          * @private
          * @return {Promise}
          */
-        TheForm.prototype.handleFormSubmissionResponse = function(formData,ajaxresult) {
+        TheForm.prototype.handleFormSubmissionResponse = function (formData,ajaxresult) {
             this.modal.hide();
             // We could trigger an event instead.
             // Yuk.
-            Y.use('moodle-core-formchangechecker', function() {
+            Y.use('moodle-core-formchangechecker', function () {
                 M.core_formchangechecker.reset_form_dirty_state();
             });
 
@@ -147,15 +149,15 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
 
             if (payloadobject) {
                 log.debug(payloadobject);
-                switch(payloadobject.error) {
+                switch (payloadobject.error) {
                     case false:
                         //we could just reload here. But we wont
                         //document.location.reload();
                         //process formData
-                        var dataobject ={};
+                        var dataobject = {};
                         dataobject.name = new URLSearchParams(formData).get('name');
-                        dataobject.typelabel=this.formtitle;
-                        dataobject.type=this.formname;
+                        dataobject.typelabel = this.formtitle;
+                        dataobject.type = this.formname;
                         this.callback(dataobject,payloadobject.itemid);
                         break;
 
@@ -172,7 +174,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
          * @private
          * @return {Promise}
          */
-        TheForm.prototype.handleFormSubmissionFailure = function(data) {
+        TheForm.prototype.handleFormSubmissionFailure = function (data) {
             // Oh noes! Epic fail :(
             // Ah wait - this is normal. We need to re-display the form with errors!
             this.modal.setBody(this.getBody(data));
@@ -185,7 +187,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
          * @private
          * @param {Event} e Form submission event.
          */
-        TheForm.prototype.submitFormAjax = function(e) {
+        TheForm.prototype.submitFormAjax = function (e) {
             // We don't want to do a real form submission.
             e.preventDefault();
 
@@ -196,7 +198,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
             // Normally this would happen when the form is submitted, but
             // since we aren't submitting the form normally we need to run client side
             // validation.
-            this.modal.getRoot().find(':input').each(function(index, element) {
+            this.modal.getRoot().find(':input').each(function (index, element) {
                 element.dispatchEvent(changeEvent);
             });
 
@@ -231,7 +233,7 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
          * @param {Event} e Form submission event.
          * @private
          */
-        TheForm.prototype.submitForm = function(e) {
+        TheForm.prototype.submitForm = function (e) {
             e.preventDefault();
             this.modal.getRoot().find('form').submit();
         };
@@ -247,8 +249,9 @@ define(['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_event
              * @param {function} callback The callback.
              * @return {Promise}
              */
-            init: function(selector, contextid, callback) {
+            init: function (selector, contextid, callback) {
                 return new TheForm(selector, contextid, callback);
             }
         };
-    });
+    }
+);

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,9 +26,10 @@ use core_table\local\filter\integer_filter;
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class templates_filterset extends filterset {
-
-    public function get_required_filters(): array {
+class templates_filterset extends filterset
+{
+    public function get_required_filters(): array
+    {
         return [
             'cmid' => integer_filter::class
         ];

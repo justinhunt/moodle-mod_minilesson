@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,8 +26,8 @@ use mod_minilesson\constants;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_dictation extends item {
-
+class item_dictation extends item
+{
     //the item type
     public const ITEMTYPE = constants::TYPE_DICTATION;
 
@@ -37,30 +38,31 @@ class item_dictation extends item {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(\renderer_base $output)
+    {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
         //ignore punctuation or require it
-        $testitem->ignorepunctuation=$this->itemrecord->{constants::IGNOREPUNCTUATION}==1;
+        $testitem->ignorepunctuation = $this->itemrecord->{constants::IGNOREPUNCTUATION} == 1;
 
         //sentences
         $sentences = [];
-        if(isset($testitem->customtext1)) {
+        if (isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
         //build sentence objects containing display and phonetic text
-        $testitem->phonetic=$this->itemrecord->phonetic;
-        if(!empty($testitem->phonetic)) {
+        $testitem->phonetic = $this->itemrecord->phonetic;
+        if (!empty($testitem->phonetic)) {
             $phonetics = explode(PHP_EOL, $testitem->phonetic);
-        }else{
-            $phonetics=[];
+        } else {
+            $phonetics = [];
         }
-        $is_ssml=$testitem->voiceoption==constants::TTS_SSML;
-        $dottify=false;
-        $testitem->sentences = $this->process_spoken_sentences($sentences,$phonetics,$dottify, $is_ssml);
+        $is_ssml = $testitem->voiceoption == constants::TTS_SSML;
+        $dottify = false;
+        $testitem->sentences = $this->process_spoken_sentences($sentences, $phonetics, $dottify, $is_ssml);
 
         //cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
@@ -68,14 +70,15 @@ class item_dictation extends item {
         return $testitem;
     }
 
-    public static function validate_import($newrecord,$cm){
+    public static function validate_import($newrecord, $cm)
+    {
         $error = new \stdClass();
-        $error->col='';
-        $error->message='';
+        $error->col = '';
+        $error->message = '';
 
-        if($newrecord->customtext1==''){
-            $error->col='customtext1';
-            $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
+        if ($newrecord->customtext1 == '') {
+            $error->col = 'customtext1';
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
@@ -86,22 +89,23 @@ class item_dictation extends item {
     /*
 * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
 */
-    public static function get_keycolumns(){
+    public static function get_keycolumns()
+    {
         //get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
-        $keycols['text5']=['jsonname'=>'promptvoice','type'=>'voice','optional'=>true,'default'=>null,'dbname'=>constants::POLLYVOICE];
-        $keycols['int4']=['jsonname'=>'promptvoiceopt','type'=>'voiceopts','optional'=>true,'default'=>null,'dbname'=>constants::POLLYOPTION];
-        $keycols['int2']=['jsonname'=>'ignorepunc','type'=>'boolean','optional'=>true,'default'=>0,'dbname'=>constants::IGNOREPUNCTUATION];
-        $keycols['text1']=['jsonname'=>'sentences','type'=>'stringarray','optional'=>true,'default'=>[],'dbname'=>'customtext1'];
+        $keycols['text5'] = ['jsonname' => 'promptvoice','type' => 'voice','optional' => true,'default' => null,'dbname' => constants::POLLYVOICE];
+        $keycols['int4'] = ['jsonname' => 'promptvoiceopt','type' => 'voiceopts','optional' => true,'default' => null,'dbname' => constants::POLLYOPTION];
+        $keycols['int2'] = ['jsonname' => 'ignorepunc','type' => 'boolean','optional' => true,'default' => 0,'dbname' => constants::IGNOREPUNCTUATION];
+        $keycols['text1'] = ['jsonname' => 'sentences','type' => 'stringarray','optional' => true,'default' => [],'dbname' => 'customtext1'];
         return $keycols;
     }
 
      /*
-    This function return the prompt that the generate method requires. 
+    This function return the prompt that the generate method requires.
     */
-    public static function aigen_fetch_prompt ($itemtemplate, $generatemethod) {
-        switch($generatemethod) {
-
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
+    {
+        switch ($generatemethod) {
             case 'extract':
                 $prompt = "Extract a 1 dimensional array of 5 sentences from the following {language} text: [{text}]. ";
                 break;
@@ -119,5 +123,4 @@ class item_dictation extends item {
         }
         return $prompt;
     }
-
 }

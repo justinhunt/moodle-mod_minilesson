@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,7 +27,8 @@ use mod_minilesson\utils;
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class report_renderer extends \plugin_renderer_base {
+class report_renderer extends \plugin_renderer_base
+{
     /**
      * Render report menu
      *
@@ -34,7 +36,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param object $cm
      * @return string
      */
-    public function render_reportmenu($moduleinstance, $cm) {
+    public function render_reportmenu($moduleinstance, $cm)
+    {
         $reports = [];
         // Grades report.
         $gradesreport = new \single_button(
@@ -103,7 +106,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param object $cm
      * @return string
      */
-    public function render_delete_allattempts($cm) {
+    public function render_delete_allattempts($cm)
+    {
         $deleteallbutton = new \single_button(
             new \moodle_url(constants::M_URL . '/manageattempts.php', ['id' => $cm->id, 'action' => 'confirmdeleteall']),
             get_string('deleteallattempts', constants::M_COMPONENT),
@@ -120,7 +124,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param string $username
      * @return string
      */
-    public function render_reporttitle_html($course, $username) {
+    public function render_reporttitle_html($course, $username)
+    {
         $ret = $this->output->heading(format_string($course->fullname), 2);
         $ret .= $this->output->heading(get_string('reporttitle', constants::M_COMPONENT, $username), 3);
         return $ret;
@@ -132,7 +137,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param string $sectiontitle
      * @return string
      */
-    public function render_empty_section_html($sectiontitle) {
+    public function render_empty_section_html($sectiontitle)
+    {
         global $CFG;
         return $this->output->heading(get_string('nodataavailable', constants::M_COMPONENT), 3);
     }
@@ -145,7 +151,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param string $showreport
      * @return string
      */
-    public function render_exportbuttons_html($cm, $formdata, $showreport) {
+    public function render_exportbuttons_html($cm, $formdata, $showreport)
+    {
         // Convert formdata to array.
         $formdata = (array)$formdata;
         $formdata['id'] = $cm->id;
@@ -168,7 +175,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param string $action
      * @return string
      */
-    public function render_grading_exportbuttons_html($cm, $formdata, $action) {
+    public function render_grading_exportbuttons_html($cm, $formdata, $action)
+    {
         // Convert formdata to array.
         $formdata = (array)$formdata;
         $formdata['id'] = $cm->id;
@@ -191,7 +199,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param array $rows
      * @param array $fields
      */
-    public function render_section_csv($sectiontitle, $report, $head, $rows, $fields) {
+    public function render_section_csv($sectiontitle, $report, $head, $rows, $fields)
+    {
         // Use the sectiontitle as the file name. Clean it and change any non-filename characters to '_'.
         $name = clean_param($sectiontitle, PARAM_FILE);
         $name = preg_replace("/[^A-Z0-9]+/i", "_", utils::super_trim($name));
@@ -228,7 +237,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param array $fields
      * @return string
      */
-    public function render_section_html($sectiontitle, $report, $head, $rows, $fields) {
+    public function render_section_html($sectiontitle, $report, $head, $rows, $fields)
+    {
         global $CFG;
         if (empty($rows)) {
             return $this->render_empty_section_html($sectiontitle);
@@ -289,7 +299,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param string $showreport
      * @return string
      */
-    public function show_reports_footer($moduleinstance, $cm, $formdata, $showreport) {
+    public function show_reports_footer($moduleinstance, $cm, $formdata, $showreport)
+    {
         // Print's a popup link to your custom page.
         $link = new \moodle_url(
             constants::M_URL . '/reports.php',
@@ -310,7 +321,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param object $paging an object containting sort/perpage/pageno fields. Created in reports.php and grading.php
      * @return string the HTML to output.
      */
-    public function show_perpage_selector($url, $paging) {
+    public function show_perpage_selector($url, $paging)
+    {
         $options = ['5' => 5, '10' => 10, '20' => 20, '40' => 40, '80' => 80, '150' => 150];
         $selector = new \single_select($url, 'perpage', $options, $paging->perpage);
         $selector->set_label(get_string('attemptsperpage', constants::M_COMPONENT));
@@ -324,7 +336,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param string|moodle_url $baseurl url of the current page, the $pagevar parameter is added
      * @return string the HTML to output.
      */
-    public function show_paging_bar($totalcount, $paging, $baseurl) {
+    public function show_paging_bar($totalcount, $paging, $baseurl)
+    {
         $pagevar = "pageno";
         // Add paging params to url (NOT pageno).
         $baseurl->params(['perpage' => $paging->perpage, 'sort' => $paging->sort]);
@@ -339,7 +352,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param string $mode
      * @return string
      */
-    public function show_grading_footer($moduleinstance, $cm, $mode) {
+    public function show_grading_footer($moduleinstance, $cm, $mode)
+    {
         // Takes you back to home.
         $link = new \moodle_url(constants::M_URL . '/grading.php', ['id' => $cm->id, 'n' => $moduleinstance->id]);
         $ret = \html_writer::link($link, get_string('returntogradinghome', constants::M_COMPONENT));
@@ -354,7 +368,8 @@ class report_renderer extends \plugin_renderer_base {
      * @param string $showreport
      * @return string
      */
-    public function show_export_buttons($cm, $formdata, $showreport) {
+    public function show_export_buttons($cm, $formdata, $showreport)
+    {
         switch ($showreport) {
             case 'grading':
                 return $this->render_grading_exportbuttons_html($cm, $formdata, $showreport);

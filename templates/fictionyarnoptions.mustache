@@ -10,9 +10,13 @@
         {{/options}}
     {{/yarnoptions}}
 {{/presention_mobilechat}}
-{{^presention_mobilechat}}
-    {{#options}}
-        <button class="minilesson_fiction_optionbutton" type="button">{{text}}</button>
-    {{/options}}
-{{/presention_mobilechat}}
+{{#presention_plain}}
+    {{#yarnoptions}}
+        {{#options}}
+            <div class="option_container minilesson_fiction_optionbutton">
+                <div class="optiontext">{{text}}</div>
+            </div>
+        {{/options}}
+    {{/yarnoptions}}
+{{/presention_plain}}
 

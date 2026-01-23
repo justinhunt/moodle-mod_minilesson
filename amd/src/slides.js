@@ -1,7 +1,8 @@
-define([
+define(
+    [
     'jquery', 'core/log', 'mod_minilesson/definitions', './reveal',
     'core/str', 'core/modal_factory', 'core/fragment'
-],
+    ],
     function ($, log, def, RevealImplement, Str, ModalFactory, Fragment) {
         "use strict"; // jshint ;_;
 
@@ -43,7 +44,7 @@ define([
                     stepdata.grade = 0;
                     quizhelper.do_next(stepdata);
                 });
-                $("#" + itemdata.uniqueid + "_container").on("showElement", async (e) => {
+                $("#" + itemdata.uniqueid + "_container").on("showElement", async(e) => {
                     if (!self.instance) {
                         self.instance = await RevealImplement.init(e.target.querySelector('.reveal'), itemdata.region, itemdata.selectedtheme);
                         self.instance.initialize();
@@ -94,7 +95,7 @@ define([
                 if (previewbtn.form) {
                     const themeselect = previewbtn.form.querySelector('[data-control="theme"]');
                     if (themeselect) {
-                        themeselect.addEventListener('change', function(e) {
+                        themeselect.addEventListener('change', function (e) {
                             RevealImplement.setTheme(e.target.value);
                         });
                         RevealImplement.setTheme(themeselect.value);
@@ -102,4 +103,5 @@ define([
                 }
             }
         }; //end of return value
-    });
+    }
+);

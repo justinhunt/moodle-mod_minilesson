@@ -7,8 +7,9 @@
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/ajax','core/notification'],
-    function($, log, Str, ModalFactory, ModalEvents, Ajax, Notification) {
+define(
+    ['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/ajax','core/notification'],
+    function ($, log, Str, ModalFactory, ModalEvents, Ajax, Notification) {
 
         /**
          * Constructor
@@ -20,7 +21,7 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
          *
          * Each call to init gets it's own instance of this class.
          */
-        var TheForm = function(selector, contextid, formname,callback) {
+        var TheForm = function (selector, contextid, formname,callback) {
             this.contextid = contextid;
             this.formname = formname;
             this.callback = callback;
@@ -72,13 +73,16 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
          * @private
          * @return {Promise}
          */
-        TheForm.prototype.preinit = function(selector) {
+        TheForm.prototype.preinit = function (selector) {
             var triggers = $(selector);
-            var dd=this;
-            Str.get_string(this.formname , 'mod_minilesson').then(function(title){dd.formtitle=title;});
-            Str.get_string(this.formname + '_message' , 'mod_minilesson').then(function(message){dd.formmessage=message;});
-            Str.get_string('deletebuttonlabel' , 'mod_minilesson').then(function(deletebuttonlabel){dd.deletebuttonlabel=deletebuttonlabel;});
-            $('body').on('click',selector,function(e) {
+            var dd = this;
+            Str.get_string(this.formname , 'mod_minilesson').then(function (title) {
+                dd.formtitle = title;});
+            Str.get_string(this.formname + '_message' , 'mod_minilesson').then(function (message) {
+                dd.formmessage = message;});
+            Str.get_string('deletebuttonlabel' , 'mod_minilesson').then(function (deletebuttonlabel) {
+                dd.deletebuttonlabel = deletebuttonlabel;});
+            $('body').on('click',selector,function (e) {
                 //prevent it doing a real click (which will do the non ajax version of a click)
                 e.preventDefault();
 
@@ -91,7 +95,7 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
                     title: dd.formtitle,
                     body: dd.formmessage + '<i>' + itemname + '</i>',
                 })
-                    .then(function(modal) {
+                    .then(function (modal) {
                         dd.modal = modal;
                         dd.modal.setSaveButtonText(dd.deletebuttonlabel);
                         var root = dd.modal.getRoot();
@@ -111,10 +115,10 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
          * @param {Event} e Form submission event.
          * @private
          */
-        TheForm.prototype.submitForm = function(e) {
+        TheForm.prototype.submitForm = function (e) {
             e.preventDefault();
             var dd = this;
-            log.debug('deleting:' + dd.formname );
+            log.debug('deleting:' + dd.formname);
             Ajax.call([{
                 methodname: 'mod_minilesson_delete_item',
                 args: {
@@ -127,9 +131,9 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
 
                     if (payloadobject) {
                         log.debug(payloadobject);
-                        switch(payloadobject.error) {
+                        switch (payloadobject.error) {
                             case false:
-                               dd.callback(dd.itemid);
+                                dd.callback(dd.itemid);
                                 break;
 
                             case true:
@@ -160,8 +164,9 @@ define(['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_even
              * @param {object} callback The callback on successful deletion (for ui updates)
              * @return {Promise}
              */
-            init: function(selector, contextid, formname, callback) {
+            init: function (selector, contextid, formname, callback) {
                 return new TheForm(selector, contextid, formname, callback);
             }
         };
-    });
+    }
+);

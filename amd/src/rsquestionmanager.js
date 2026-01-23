@@ -1,311 +1,319 @@
 /* jshint ignore:start */
-define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_minilesson/modalformhelper',
+define(
+    ['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_minilesson/modalformhelper',
         'mod_minilesson/modaldeletehelper','mod_minilesson/moveitemhelper','mod_minilesson/modalpreviewhelper',
         'mod_minilesson/duplicateitemhelper','mod_minilesson/datatables', 'core/modal_factory', 'core/modal_events'],
-    function($,  log, templates, def, mfh, mdh, mih, mph,dplh, datatables, ModalFactory, ModalEvents) {
+    function ($,  log, templates, def, mfh, mdh, mih, mph,dplh, datatables, ModalFactory, ModalEvents) {
 
-    "use strict"; // jshint ;_;
+        "use strict"; // jshint ;_;
 
-    log.debug('RSQuestion manager: initialising');
+        log.debug('RSQuestion manager: initialising');
 
-    return {
+        return {
 
-        cmid: null,
-        controls: null,
-        rowIds: [],
+            cmid: null,
+            controls: null,
+            rowIds: [],
 
 
-        //pass in config
-        init: function(props){
-            var dd = this;
-            dd.contextid=props.contextid;
-            dd.tableid = props.tableid;
-            dd.modaleditform = props.modaleditform;
-            dd.cmid = props.cmid;
-            dd.wwwroot = props.wwwroot;
+            //pass in config
+            init: function (props) {
+                var dd = this;
+                dd.contextid = props.contextid;
+                dd.tableid = props.tableid;
+                dd.modaleditform = props.modaleditform;
+                dd.cmid = props.cmid;
+                dd.wwwroot = props.wwwroot;
 
-            //fetch lesson items from hidden input
-            var datatag = $('#' + props.lessonitems);
-            dd.lessonitems = JSON.parse(datatag.val());
-            datatag.remove(); //we dont need it any more
+                //fetch lesson items from hidden input
+                var datatag = $('#' + props.lessonitems);
+                dd.lessonitems = JSON.parse(datatag.val());
+                datatag.remove(); //we dont need it any more
 
-            dd.modalshow();
-            dd.register_events();
-            dd.process_html();
-            dd.collate_rowids();
-            dd.hide_useless_arrows();
-        },
+                dd.modalshow();
+                dd.register_events();
+                dd.process_html();
+                dd.collate_rowids();
+                dd.hide_useless_arrows();
+            },
 
-        process_html: function(){
-            this.controls = [];
-            this.controls.questionstable = datatables.getDataTable(this.tableid);
-            this.controls.questionscontainer = $('#' + def.itemscontainer);
-            this.controls.noquestionscontainer = $('#' + def.noitemscontainer);
-            this.controls.movearrows=$('#' + def.movearrow);
-        },
+            process_html: function () {
+                this.controls = [];
+                this.controls.questionstable = datatables.getDataTable(this.tableid);
+                this.controls.questionscontainer = $('#' + def.itemscontainer);
+                this.controls.noquestionscontainer = $('#' + def.noitemscontainer);
+                this.controls.movearrows = $('#' + def.movearrow);
+            },
 
         //we maintain an array of datatable rowids, indexed by itemorder
         //we need this because moving, adding, deleting requires access to datatable rowid
-        collate_rowids: function(){
-            var dd = this;
-            dd.rowIds=[];
+            collate_rowids: function () {
+                var dd = this;
+                dd.rowIds = [];
 
-            dd.controls.questionstable.rows().every( function ( rowindex, tableLoop, rowLoop ) {
-                var itemorder = dd.controls.questionstable.cell({row:rowindex, column:1}).data();
-                dd.rowIds[itemorder]=rowindex;
-            } );
-        },
+                dd.controls.questionstable.rows().every(function ( rowindex, tableLoop, rowLoop ) {
+                    var itemorder = dd.controls.questionstable.cell({row:rowindex, column:1}).data();
+                    dd.rowIds[itemorder] = rowindex;
+                });
+            },
 
         //we wont to show move arrows, but hide arrows the final down and first up
-        hide_useless_arrows: function(){
-          //first lets show all the arrows
-          $('.mod_minilesson_item_move').attr('style','');
+            hide_useless_arrows: function () {
+              //first lets show all the arrows
+                $('.mod_minilesson_item_move').attr('style','');
 
-          //if no rows just get out of here.
-          var rowcount=this.controls.questionstable.data().length;
-          if(!rowcount || rowcount<1){return;}
+              //if no rows just get out of here.
+                var rowcount = this.controls.questionstable.data().length;
+                if (!rowcount || rowcount < 1) {
+                    return;}
 
-          //hide bottom down arrow
-          var bottomrowindex=this.rowIds[rowcount];
-          var bottomtr = this.controls.questionstable.row(bottomrowindex).node();
-          $(bottomtr).find('.mod_minilesson_item_move[data-direction="down"]').attr('style','visibility: hidden;');
+              //hide bottom down arrow
+                var bottomrowindex = this.rowIds[rowcount];
+                var bottomtr = this.controls.questionstable.row(bottomrowindex).node();
+                $(bottomtr).find('.mod_minilesson_item_move[data-direction="down"]').attr('style','visibility: hidden;');
 
-          //hide top up arrow
-          var toprowindex=this.rowIds[1];
-          var toptr = this.controls.questionstable.row(toprowindex).node();
-          $(toptr).find('.mod_minilesson_item_move[data-direction="up"]').attr('style','visibility: hidden;');
-        },
+              //hide top up arrow
+                var toprowindex = this.rowIds[1];
+                var toptr = this.controls.questionstable.row(toprowindex).node();
+                $(toptr).find('.mod_minilesson_item_move[data-direction="up"]').attr('style','visibility: hidden;');
+            },
 
         // we need to renumber rows when we remove one, so we start from there and renumber the next ones
-        renumber_rows:function(fromorder) {
+            renumber_rows:function (fromorder) {
 
-            var thetable= this.controls.questionstable;
-            var rowcount = thetable.data().length;
-            for(var itemorder =fromorder; itemorder<rowcount;itemorder++){
-                var rowindex = this.rowIds[itemorder+1];
-                thetable.cell({row:rowindex, column:1}).data(itemorder);
-            }
-        },
-
-        move_row:function(itemid, direction) {
-            var thetable= this.controls.questionstable;
-            var therow = '#' + def.itemrow + '_' + itemid;
-            var currentrow = thetable.row(therow);
-            var currentindex = currentrow.index();
-            var currentorder = parseInt(thetable.cell({row:currentindex, column:1}).data());
-
-
-            var targetorder;
-            if(direction=="up"){
-                targetorder=currentorder-1;
-            } else if(direction=="down"){
-                targetorder=currentorder+1;
-            }
-
-            //should never arrive here pitching for out of range. But just in case
-            if(targetorder<1){return;}
-            var rowcount = thetable.data().length;
-            if(targetorder>rowcount){return;}
-
-            var targetindex = this.rowIds[targetorder];
-            var from = thetable.cell({row:currentindex, column:1}).data();
-            var to = thetable.cell({row:targetindex, column:1}).data();
-            thetable.cell({row:currentindex, column:1}).data(to);
-            thetable.cell({row:targetindex, column:1}).data(from);
-            thetable.draw(false);
-            this.collate_rowids();
-            
-        },
-        register_events: function() {
-          
-            var dd = this;
-        
-
-            var after_questionmove= function(itemid, direction) {
-                dd.move_row(itemid,direction);
-                dd.hide_useless_arrows();
-            };
-
-            var after_questionedit= function(item, itemid) {
-                var therow = '#' + def.itemrow + '_' + itemid;
-                dd.controls.questionstable.cell($(therow + ' .c1')).data(decodeURIComponent(item.name));
-            };
-            var after_questionadd= function(item, itemid) {
-                item.id = itemid;
-                item.name = decodeURIComponent(item.name);
-                item.index = dd.controls.questionstable.data().length+1;
-                item.up = {'key': 't/up','component': 'moodle','title': 'up'};
-                item.down = {'key': 't/down','component': 'moodle','title': 'down'};
-                templates.render('mod_minilesson/itemlistitem',item).then(
-                    function(html,js){
-                        //add row move to the last page so we can see the new row if its off page
-                        dd.controls.questionstable.row.add($(html)[0]).page('last').draw(false);
-                        dd.collate_rowids();
-                        dd.hide_useless_arrows();
-                    }
-                );
-                dd.controls.noquestionscontainer.hide();
-                dd.controls.questionscontainer.show();
-            };
-            var after_questionduplicate= function($resp) {
-
-                var ret = JSON.parse($resp);
-                var item={};
-                item.id = ret.newitemid;
-                item.name = decodeURIComponent(ret.newitemname);
-                item.type = ret.type;
-                item.icon = ret.icon;
-                item.typelabel = decodeURIComponent(ret.typelabel);
-                item.index = dd.controls.questionstable.data().length+1;
-                item.up = {'key': 't/up','component': 'moodle','title': 'up'};
-                item.down = {'key': 't/down','component': 'moodle','title': 'down'};
-                templates.render('mod_minilesson/itemlistitem',item).then(
-                    function(html,js){
-                        //add row move to the last page so we can see the new row if its off page
-                        dd.controls.questionstable.row.add($(html)[0]).page('last').draw(false);
-                        dd.collate_rowids();
-                        dd.hide_useless_arrows();
-                    }
-                );
-                dd.controls.noquestionscontainer.hide();
-                dd.controls.questionscontainer.show();
-            };
-            var after_questiondelete= function(itemid) {
-                log.debug('after question delete');
-                var therow=dd.controls.questionstable.row('#' + def.itemrow + '_' + itemid);
-                var itemorder=parseInt(therow.data()[0]);
-                dd.renumber_rows(itemorder);
-                therow.remove().draw(false);
-                dd.collate_rowids();
-                dd.hide_useless_arrows();
-                var itemcount = dd.controls.questionstable.rows().count();
-                if(!itemcount){
-                    dd.controls.noquestionscontainer.show();
-                    dd.controls.questionscontainer.hide();
+                var thetable = this.controls.questionstable;
+                var rowcount = thetable.data().length;
+                for (var itemorder = fromorder; itemorder < rowcount; itemorder++) {
+                    var rowindex = this.rowIds[itemorder + 1];
+                    thetable.cell({row:rowindex, column:1}).data(itemorder);
                 }
-            };
-            var after_questionpreview= function(itemid) {
-                log.debug('after preview');
-                //we want to remove the question from DOM ... its still there and on subsequent shows, id will match on 2 elements and question will fail to unhide
-                $('#mod_minilesson_quiz_cont').remove();
-            };
+            },
+
+            move_row:function (itemid, direction) {
+                var thetable = this.controls.questionstable;
+                var therow = '#' + def.itemrow + '_' + itemid;
+                var currentrow = thetable.row(therow);
+                var currentindex = currentrow.index();
+                var currentorder = parseInt(thetable.cell({row:currentindex, column:1}).data());
+
+
+                var targetorder;
+                if (direction == "up") {
+                    targetorder = currentorder - 1;
+                } else if (direction == "down") {
+                    targetorder = currentorder + 1;
+                }
+
+                //should never arrive here pitching for out of range. But just in case
+                if (targetorder < 1) {
+                    return;}
+                var rowcount = thetable.data().length;
+                if (targetorder > rowcount) {
+                    return;}
+
+                var targetindex = this.rowIds[targetorder];
+                var from = thetable.cell({row:currentindex, column:1}).data();
+                var to = thetable.cell({row:targetindex, column:1}).data();
+                thetable.cell({row:currentindex, column:1}).data(to);
+                thetable.cell({row:targetindex, column:1}).data(from);
+                thetable.draw(false);
+                this.collate_rowids();
+
+            },
+            register_events: function () {
+
+                var dd = this;
+
+
+                var after_questionmove = function (itemid, direction) {
+                    dd.move_row(itemid,direction);
+                    dd.hide_useless_arrows();
+                };
+
+                var after_questionedit = function (item, itemid) {
+                    var therow = '#' + def.itemrow + '_' + itemid;
+                    dd.controls.questionstable.cell($(therow + ' .c1')).data(decodeURIComponent(item.name));
+                };
+                var after_questionadd = function (item, itemid) {
+                    item.id = itemid;
+                    item.name = decodeURIComponent(item.name);
+                    item.index = dd.controls.questionstable.data().length + 1;
+                    item.up = {'key': 't/up','component': 'moodle','title': 'up'};
+                    item.down = {'key': 't/down','component': 'moodle','title': 'down'};
+                    templates.render('mod_minilesson/itemlistitem',item).then(
+                        function (html,js) {
+                            //add row move to the last page so we can see the new row if its off page
+                            dd.controls.questionstable.row.add($(html)[0]).page('last').draw(false);
+                            dd.collate_rowids();
+                            dd.hide_useless_arrows();
+                        }
+                    );
+                    dd.controls.noquestionscontainer.hide();
+                    dd.controls.questionscontainer.show();
+                };
+                var after_questionduplicate = function ($resp) {
+
+                    var ret = JSON.parse($resp);
+                    var item = {};
+                    item.id = ret.newitemid;
+                    item.name = decodeURIComponent(ret.newitemname);
+                    item.type = ret.type;
+                    item.icon = ret.icon;
+                    item.typelabel = decodeURIComponent(ret.typelabel);
+                    item.index = dd.controls.questionstable.data().length + 1;
+                    item.up = {'key': 't/up','component': 'moodle','title': 'up'};
+                    item.down = {'key': 't/down','component': 'moodle','title': 'down'};
+                    templates.render('mod_minilesson/itemlistitem',item).then(
+                        function (html,js) {
+                            //add row move to the last page so we can see the new row if its off page
+                            dd.controls.questionstable.row.add($(html)[0]).page('last').draw(false);
+                            dd.collate_rowids();
+                            dd.hide_useless_arrows();
+                        }
+                    );
+                    dd.controls.noquestionscontainer.hide();
+                    dd.controls.questionscontainer.show();
+                };
+                var after_questiondelete = function (itemid) {
+                    log.debug('after question delete');
+                    var therow = dd.controls.questionstable.row('#' + def.itemrow + '_' + itemid);
+                    var itemorder = parseInt(therow.data()[0]);
+                    dd.renumber_rows(itemorder);
+                    therow.remove().draw(false);
+                    dd.collate_rowids();
+                    dd.hide_useless_arrows();
+                    var itemcount = dd.controls.questionstable.rows().count();
+                    if (!itemcount) {
+                        dd.controls.noquestionscontainer.show();
+                        dd.controls.questionscontainer.hide();
+                    }
+                };
+                var after_questionpreview = function (itemid) {
+                    log.debug('after preview');
+                    //we want to remove the question from DOM ... its still there and on subsequent shows, id will match on 2 elements and question will fail to unhide
+                    $('#mod_minilesson_quiz_cont').remove();
+                };
 
             //register ajax modal handler
-            var editcallback=function(item, itemid){console.log(item);};
-            var deletecallback=function(itemid){console.log(itemid);};
-            var addcallback=function(itemid){console.log(itemid);};
-            if(dd.modaleditform) {
-                mfh.init('.' + def.component + '_addlink', dd.contextid, after_questionadd);
-                //edit form helper
-                mfh.init('.' + def.itemrow + '_editlink', dd.contextid, after_questionedit);
-            }else{
-                $('.mod_minilesson_qpanel').on('click','.' + def.itemrow + '_editlink',function(){
-                    var editurl = dd.wwwroot + '/mod/minilesson/rsquestion/managersquestions.php?id=' + dd.cmid + '&itemid='+ $(this).data('id');
-                    log.debug('editurl ' + editurl);
-                    window.location.href=editurl;
-                    return false;
-                });
-            }
+                var editcallback = function (item, itemid) {
+                    console.log(item);};
+                var deletecallback = function (itemid) {
+                    console.log(itemid);};
+                var addcallback = function (itemid) {
+                    console.log(itemid);};
+                if (dd.modaleditform) {
+                    mfh.init('.' + def.component + '_addlink', dd.contextid, after_questionadd);
+                    //edit form helper
+                    mfh.init('.' + def.itemrow + '_editlink', dd.contextid, after_questionedit);
+                } else {
+                    $('.mod_minilesson_qpanel').on('click','.' + def.itemrow + '_editlink',function () {
+                        var editurl = dd.wwwroot + '/mod/minilesson/rsquestion/managersquestions.php?id=' + dd.cmid + '&itemid=' + $(this).data('id');
+                        log.debug('editurl ' + editurl);
+                        window.location.href = editurl;
+                        return false;
+                    });
+                }
             //delete helpser
-            mdh.init('.' + def.itemrow + '_deletelink', dd.contextid, 'deleteitem',after_questiondelete);
+                mdh.init('.' + def.itemrow + '_deletelink', dd.contextid, 'deleteitem',after_questiondelete);
             //move helper
-            mih.init('.' + def.movearrow , dd.contextid, after_questionmove);
+                mih.init('.' + def.movearrow , dd.contextid, after_questionmove);
             //preview helper
-            mph.init('.' + def.itemrow + '_previewlink', dd.contextid, after_questionpreview);
+                mph.init('.' + def.itemrow + '_previewlink', dd.contextid, after_questionpreview);
             //duplicate item helper
-            dplh.init('.' + def.itemrow + '_duplicatelink', dd.contextid, after_questionduplicate);
-        },
+                dplh.init('.' + def.itemrow + '_duplicatelink', dd.contextid, after_questionduplicate);
+            },
 
-            modalshow: function() {
+            modalshow: function () {
                 var dd = this;
                 var context = {
                     lessonitems: dd.lessonitems,
                 };
-                $('#additembtn').on('click', function() {
+                $('#additembtn').on('click', function () {
                     ModalFactory.create({
                         type: ModalFactory.types.CANCEL,
                         body: templates.render('mod_minilesson/lessonitem', context),
-                    }).then(function (modal) {
-                        dd.modal = modal;
-                        dd.modal.setLarge();
-                        dd.modal.show();
-                        dd.modal.getRoot().find('.modal-header, .modal-footer').hide();
-                        dd.modal.getRoot().addClass('lessonitem-modal');
+                        }).then(function (modal) {
+                            dd.modal = modal;
+                            dd.modal.setLarge();
+                            dd.modal.show();
+                            dd.modal.getRoot().find('.modal-header, .modal-footer').hide();
+                            dd.modal.getRoot().addClass('lessonitem-modal');
 
-                        dd.modal.getRoot().on(ModalEvents.shown, function() {
-                            modal.getRoot().find('.modal-dialog').addClass('modal-dialog-centered');
-                        });
-
-                        // on click of a lesson item link, show the relevant description panel, hide the others
-                        var modalRoot = dd.modal.getRoot();
-                        modalRoot.on('click', 'a.lessonitem-link', function (e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (e.stopImmediatePropagation) { e.stopImmediatePropagation(); }
-
-                            const selector = this.getAttribute('data-toggletarget');
-                            const allpanels = modalRoot.find('.lessonitem-description');
-                            const alllinks = modalRoot.find('.lessonitem-link');
-                            if (!selector) {
-                                log.debug('No toggle target specified');
-                                return;
-                             }
-                            const target = modalRoot.find(selector);
-                            if (!target) {
-                                log.debug('No target found for selector ' + selector);
-                                return;
-                            }
-
-                            // Show the correct panel and hide the others.
-                            if (target.hasClass('show')) {
-                                log.debug('already visible do nothing ');
-                                // Already shown, do nothing.
-                                return;
-                            } else {
-                                log.debug('not visible, showing now');
-                                // Hide all others.
-                                allpanels.removeClass('show').trigger('lessonitem:hidden');
-                                // Not shown, show it.
-                                target.addClass('show').trigger('lessonitem:shown');
-                                
-                                // Set all other links to aria-expanded false
-                                alllinks.attr('aria-expanded', 'false');
-                                // Show this one.
-                                this.setAttribute('aria-expanded', 'true');
-                            }
-                        });
-
-                        // If they click the add button , lets turn it into a spinner
-                        modalRoot.on('click', 'a.addbtn', function (e) {
-
-                            const addbtn = $(this);
-                            if (addbtn.hasClass('ml_loading')) {
-                                // Already loading, do nothing.
-                                return;
-                            }
-                            addbtn.addClass('ml_loading');
-                            addbtn.html("<i class='icon fa fa-spinner fa-pulse fa-fw ' aria-hidden='true'></i> ");
-                        });
-
-                        dd.videocontroller(dd.modal.getRoot());
-
-                        dd.modal.getRoot().on(ModalEvents.hidden, function() {
-                            $(this).find('video').each(function() {
-                                this.pause();
-                                this.currentTime = 0;
-                                dd.modal.destroy();
+                            dd.modal.getRoot().on(ModalEvents.shown, function () {
+                                modal.getRoot().find('.modal-dialog').addClass('modal-dialog-centered');
                             });
+
+                            // on click of a lesson item link, show the relevant description panel, hide the others
+                            var modalRoot = dd.modal.getRoot();
+                            modalRoot.on('click', 'a.lessonitem-link', function (e) {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (e.stopImmediatePropagation) {
+                                    e.stopImmediatePropagation(); }
+
+                                const selector = this.getAttribute('data-toggletarget');
+                                const allpanels = modalRoot.find('.lessonitem-description');
+                                const alllinks = modalRoot.find('.lessonitem-link');
+                                if (!selector) {
+                                    log.debug('No toggle target specified');
+                                    return;
+                                }
+                                const target = modalRoot.find(selector);
+                                if (!target) {
+                                    log.debug('No target found for selector ' + selector);
+                                    return;
+                                }
+
+                                // Show the correct panel and hide the others.
+                                if (target.hasClass('show')) {
+                                    log.debug('already visible do nothing ');
+                                    // Already shown, do nothing.
+                                    return;
+                                } else {
+                                    log.debug('not visible, showing now');
+                                    // Hide all others.
+                                    allpanels.removeClass('show').trigger('lessonitem:hidden');
+                                    // Not shown, show it.
+                                    target.addClass('show').trigger('lessonitem:shown');
+
+                                    // Set all other links to aria-expanded false
+                                    alllinks.attr('aria-expanded', 'false');
+                                    // Show this one.
+                                    this.setAttribute('aria-expanded', 'true');
+                                }
+                            });
+
+                            // If they click the add button , lets turn it into a spinner
+                            modalRoot.on('click', 'a.addbtn', function (e) {
+
+                                const addbtn = $(this);
+                                if (addbtn.hasClass('ml_loading')) {
+                                    // Already loading, do nothing.
+                                    return;
+                                }
+                                addbtn.addClass('ml_loading');
+                                addbtn.html("<i class='icon fa fa-spinner fa-pulse fa-fw ' aria-hidden='true'></i> ");
+                            });
+
+                            dd.videocontroller(dd.modal.getRoot());
+
+                            dd.modal.getRoot().on(ModalEvents.hidden, function () {
+                                $(this).find('video').each(function () {
+                                    this.pause();
+                                    this.currentTime = 0;
+                                    dd.modal.destroy();
+                                });
+                            });
+
+
+                            return dd.modal;
                         });
-
-
-                        return dd.modal;
-                    });
                 });
             },
 
 
-            videocontroller: function(rootel) {
-                $(rootel).on('shown.bs.collapse lessonitem:shown', '.lessonitem-description', function() {
+            videocontroller: function (rootel) {
+                $(rootel).on('shown.bs.collapse lessonitem:shown', '.lessonitem-description', function () {
                     var video = $(this).find('video').get(0);
                     if (video) {
                         var source = $(video).find('source');
@@ -316,9 +324,9 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                         video.play();
                     }
                 });
-            
 
-                $(rootel).on('hide.bs.collapse lessonitem:hidden', '.lessonitem-description', function() {
+
+                $(rootel).on('hide.bs.collapse lessonitem:hidden', '.lessonitem-description', function () {
                     var video = $(this).find('video').get(0);
                     if (video) {
                         video.pause();
@@ -327,5 +335,6 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                 });
             }
 
-    };//end of returned object
-});//total end
+        };//end of returned object
+    }
+);//total end

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -32,14 +33,16 @@ use mod_minilesson\utils;
  * @copyright Justin Hunt <justin@poodll.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class custom_completion extends activity_custom_completion {
+class custom_completion extends activity_custom_completion
+{
     /**
      * Fetches the completion state for a given completion rule.
      *
      * @param string $rule The completion rule.
      * @return int The completion state.
      */
-    public function get_state(string $rule): int {
+    public function get_state(string $rule): int
+    {
         global $DB, $USER;
 
         $this->validate_rule($rule);
@@ -53,7 +56,8 @@ class custom_completion extends activity_custom_completion {
      *
      * @return array
      */
-    public static function get_defined_custom_rules(): array {
+    public static function get_defined_custom_rules(): array
+    {
         return [
             'completionwhenfinished',
             'mingrade',
@@ -65,7 +69,8 @@ class custom_completion extends activity_custom_completion {
      *
      * @return array
      */
-    public function get_custom_rule_descriptions(): array {
+    public function get_custom_rule_descriptions(): array
+    {
         global $DB;
         $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $this->cm->instance]);
         $mingrade = $moduleinstance->mingrade;
@@ -81,7 +86,8 @@ class custom_completion extends activity_custom_completion {
      *
      * @return array
      */
-    public function get_sort_order(): array {
+    public function get_sort_order(): array
+    {
         return [
             'completionview',
             'completionwhenfinished',

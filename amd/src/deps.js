@@ -1,4 +1,4 @@
-define(['jquery','core/log','theme_boost/tether'], function($,log,Tether) {
+define(['jquery','core/log','theme_boost/tether'], function ($,log,Tether) {
     "use strict"; // jshint ;_;
 
 /*

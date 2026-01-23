@@ -26,6 +26,7 @@
 /**
  * Custom uninstallation procedure
  */
-function xmldb_minilesson_uninstall() {
+function xmldb_minilesson_uninstall()
+{
     return true;
 }

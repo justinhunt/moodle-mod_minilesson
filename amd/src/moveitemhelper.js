@@ -7,8 +7,9 @@
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log','core/str', 'core/ajax'],
-    function($, log,Str, Ajax) {
+define(
+    ['jquery', 'core/log','core/str', 'core/ajax'],
+    function ($, log,Str, Ajax) {
 
         /**
          * Constructor
@@ -20,7 +21,7 @@ define(['jquery', 'core/log','core/str', 'core/ajax'],
          *
          * Each call to init gets it's own instance of this class.
          */
-        var TheForm = function(selector, contextid, callback) {
+        var TheForm = function (selector, contextid, callback) {
             this.contextid = contextid;
             this.callback = callback;
 
@@ -51,15 +52,15 @@ define(['jquery', 'core/log','core/str', 'core/ajax'],
          * @private
          * @return {Promise}
          */
-        TheForm.prototype.init = function(selector) {
+        TheForm.prototype.init = function (selector) {
 
-            var dd=this;
+            var dd = this;
 
-            $('body').on('click',selector,function(e) {
+            $('body').on('click',selector,function (e) {
                 //prevent it doing a real click (which will do the non ajax version of a click)
                 e.preventDefault();
-                dd.direction=dd.direction=$(this).data('direction');
-                dd.itemid=$(this).data('id');
+                dd.direction = dd.direction = $(this).data('direction');
+                dd.itemid = $(this).data('id');
 
                 // Now we can continue...
                 Ajax.call([{
@@ -84,8 +85,9 @@ define(['jquery', 'core/log','core/str', 'core/ajax'],
              * @param {function} callback The callback.
              * @return {Promise}
              */
-            init: function(selector, contextid, callback) {
+            init: function (selector, contextid, callback) {
                 return new TheForm(selector, contextid, callback);
             }
         };
-    });
+    }
+);

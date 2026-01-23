@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -37,7 +38,7 @@ if ($id) {
     $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
     $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
-} else if ($n) {
+} elseif ($n) {
     $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $n], '*', MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
@@ -45,8 +46,10 @@ if ($id) {
     print_error(0, 'You must specify a course_module ID or an instance ID');
 }
 
-$PAGE->set_url(constants::M_URL . '/aigen_dev.php',
-        ['id' => $cm->id, 'action' => $action]);
+$PAGE->set_url(
+    constants::M_URL . '/aigen_dev.php',
+    ['id' => $cm->id, 'action' => $action]
+);
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
@@ -65,7 +68,7 @@ $PAGE->set_pagelayout('incourse');
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 
 $widgethtml = null;
-switch($action) {
+switch ($action) {
     case 'download': {
         if ($templateid && confirm_sesskey()) {
             $template = $DB->get_record('minilesson_templates', ['id' => $templateid], '*', MUST_EXIST);
@@ -115,7 +118,7 @@ switch($action) {
         if ($aigenform->is_cancelled()) {
             // If the form is cancelled, redirect to the module page.
             redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
-        } else if ($template = $aigenform->process_dynamic_submission()) {
+        } elseif ($template = $aigenform->process_dynamic_submission()) {
             redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
         }
 
@@ -130,7 +133,7 @@ switch($action) {
         if ($aigenuploadform->is_cancelled()) {
             // If the form is cancelled, redirect to the module page.
             redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
-        } else if ($template = $aigenuploadform->process_dynamic_submission()) {
+        } elseif ($template = $aigenuploadform->process_dynamic_submission()) {
             redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
         }
 

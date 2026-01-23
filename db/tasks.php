@@ -1,4 +1,6 @@
-<?php // $Id: tasks.php
+<?php
+
+// $Id: tasks.php
 
 defined('MOODLE_INTERNAL') || die();
 

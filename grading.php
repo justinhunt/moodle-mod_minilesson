@@ -24,10 +24,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n  = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
@@ -42,9 +41,9 @@ $debug  = optional_param('debug', 0, PARAM_INT);
 
 //paging details
 $paging = new stdClass();
-$paging->perpage = optional_param('perpage',-1, PARAM_INT);
-$paging->pageno = optional_param('pageno',0, PARAM_INT);
-$paging->sort  = optional_param('sort','user', PARAM_TEXT);
+$paging->perpage = optional_param('perpage', -1, PARAM_INT);
+$paging->pageno = optional_param('pageno', 0, PARAM_INT);
+$paging->sort  = optional_param('sort', 'user', PARAM_TEXT);
 
 
 if ($id) {
@@ -64,12 +63,12 @@ $modulecontext = context_module::instance($cm->id);
 
 require_capability('mod/minilesson:evaluate', $modulecontext);
 
-//Get an admin settings 
+//Get an admin settings
 $config = get_config(constants::M_COMPONENT);
 
 //set per page according to admin setting
-if($paging->perpage==-1){
-	$paging->perpage = $config->itemsperpage;
+if ($paging->perpage == -1) {
+    $paging->perpage = $config->itemsperpage;
 }
 
 // Trigger module viewed event.
@@ -84,20 +83,24 @@ $event->trigger();
 
 
 
-$PAGE->set_url(constants::M_URL . '/grading.php',
-    array('id' => $cm->id,'format'=>$format,'action'=>$action,
-            'userid'=>$userid,'attemptid'=>$attemptid,'returnurl'=>$returnurl));
+$PAGE->set_url(
+    constants::M_URL . '/grading.php',
+    array('id' => $cm->id,'format' => $format,'action' => $action,
+    'userid' => $userid,
+    'attemptid' => $attemptid,
+    'returnurl' => $returnurl)
+);
 
 /// Set up the page header
 $PAGE->set_title(format_string($moduleinstance->name));
 $PAGE->set_heading(format_string($course->fullname));
 $PAGE->set_context($modulecontext);
 
-if($moduleinstance->foriframe==1 || $moduleinstance->pagelayout=='embedded') {
+if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded') {
     $PAGE->set_pagelayout('embedded');
-}elseif($config->enablesetuptab  || $moduleinstance->pagelayout=='popup'){
+} elseif ($config->enablesetuptab  || $moduleinstance->pagelayout == 'popup') {
     $PAGE->set_pagelayout('popup');
-}else{
+} else {
     $PAGE->set_pagelayout('incourse');
 }
 
@@ -108,45 +111,43 @@ if($moduleinstance->foriframe==1 || $moduleinstance->pagelayout=='embedded') {
 
 //This puts all our display logic into the renderer.php files in this plugin
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
-$reportrenderer = $PAGE->get_renderer(constants::M_COMPONENT,'report');
+$reportrenderer = $PAGE->get_renderer(constants::M_COMPONENT, 'report');
 
 //From here we actually display the page.
 $mode = "grading";
-$extraheader="";
-switch ($action){
-
-
+$extraheader = "";
+switch ($action) {
     //list view of attempts and grades and action links
-	case 'grading':
-		$report = new \mod_minilesson\report\grading();
-		//formdata should only have simple values, not objects
-		//later it gets turned into urls for the export buttons
-		$formdata = new stdClass();
-		$formdata->moduleid = $moduleinstance->id;
-		$formdata->modulecontextid = $modulecontext->id;
+    case 'grading':
+        $report = new \mod_minilesson\report\grading();
+        //formdata should only have simple values, not objects
+        //later it gets turned into urls for the export buttons
+        $formdata = new stdClass();
+        $formdata->moduleid = $moduleinstance->id;
+        $formdata->modulecontextid = $modulecontext->id;
         $formdata->groupmenu = true;
-		break;
+        break;
 
     //list view of attempts and grades and action links for a particular user
-	case 'gradingbyuser':
-		$report = new \mod_minilesson\report\gradingbyuser();
-		//formdata should only have simple values, not objects
-		//later it gets turned into urls for the export buttons
-		$formdata = new stdClass();
-		$formdata->moduleid = $moduleinstance->id;
-		$formdata->userid = $userid;
-		$formdata->modulecontextid = $modulecontext->id;
-		break;
+    case 'gradingbyuser':
+        $report = new \mod_minilesson\report\gradingbyuser();
+        //formdata should only have simple values, not objects
+        //later it gets turned into urls for the export buttons
+        $formdata = new stdClass();
+        $formdata->moduleid = $moduleinstance->id;
+        $formdata->userid = $userid;
+        $formdata->modulecontextid = $modulecontext->id;
+        break;
 
 
 
-	default:
-		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_COMPONENT));
-		echo "unknown action.";
+    default:
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_COMPONENT));
+        echo "unknown action.";
         //backtotop
         echo $renderer->backtotopbutton($course->id);
-		echo $renderer->footer();
-		return;
+        echo $renderer->footer();
+        return;
 }
 
 
@@ -159,47 +160,47 @@ switch ($action){
 */
 
 $groupmenu = '';
-if(isset($formdata->groupmenu)){
+if (isset($formdata->groupmenu)) {
     // fetch groupmode/menu/id for this activity
     if ($groupmode = groups_get_activity_groupmode($cm)) {
         $groupmenu = groups_print_activity_menu($cm, $PAGE->url, true);
         $groupmenu .= ' ';
         $formdata->groupid = groups_get_activity_group($cm);
-    }else{
+    } else {
         $formdata->groupid  = 0;
     }
-}else{
+} else {
     $formdata->groupid  = 0;
 }
 
 $report->process_raw_data($formdata, $moduleinstance);
 $reportheading = $report->fetch_formatted_heading();
 
-switch($format){
+switch ($format) {
     case 'csv':
         $reportrows = $report->fetch_formatted_rows(false);
         $reportrenderer->render_section_csv($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
         exit;
-	case 'html':
-	default:
-        $reportrows = $report->fetch_formatted_rows(true,$paging);
+    case 'html':
+    default:
+        $reportrows = $report->fetch_formatted_rows(true, $paging);
         $allrowscount = $report->fetch_all_rows_count();
-	    $pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging,$PAGE->url);
-        $perpage_selector = $reportrenderer->show_perpage_selector($PAGE->url,$paging);
+        $pagingbar = $reportrenderer->show_paging_bar($allrowscount, $paging, $PAGE->url);
+        $perpage_selector = $reportrenderer->show_perpage_selector($PAGE->url, $paging);
 
 
-		echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_COMPONENT));
-		echo $extraheader;
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('grading', constants::M_COMPONENT));
+        echo $extraheader;
         echo $groupmenu;
-		echo $pagingbar;
-		echo $perpage_selector;
-		echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
-		echo $pagingbar;
-		echo $reportrenderer->show_grading_footer($moduleinstance,$cm,$mode);
-        echo $reportrenderer->show_export_buttons($cm,$formdata,$action);
+        echo $pagingbar;
+        echo $perpage_selector;
+        echo $reportrenderer->render_section_html($reportheading, $report->fetch_name(), $report->fetch_head(), $reportrows, $report->fetch_fields());
+        echo $pagingbar;
+        echo $reportrenderer->show_grading_footer($moduleinstance, $cm, $mode);
+        echo $reportrenderer->show_export_buttons($cm, $formdata, $action);
 
         //back to course if we are not in an iframe of some sort
-        if(!$config->enablesetuptab) {
+        if (!$config->enablesetuptab) {
             echo $renderer->backtotopbutton($course->id);
         }
 

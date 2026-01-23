@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,7 +29,6 @@ use moodle_url;
  */
 class item_slides extends item
 {
-
     //the item type
     public const ITEMTYPE = constants::TYPE_SLIDES;
 
@@ -168,7 +168,6 @@ class item_slides extends item
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
     {
         switch ($generatemethod) {
-
             case 'extract':
                 $prompt = "Create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}]";
                 break;

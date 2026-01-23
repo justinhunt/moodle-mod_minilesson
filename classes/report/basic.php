@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -8,20 +9,20 @@
 
 namespace mod_minilesson\report;
 
-use \mod_minilesson\constants;
+use mod_minilesson\constants;
 
 class basic extends basereport
 {
-
-    protected $report="basic";
+    protected $report = "basic";
     protected $fields = array('id','name','timecreated');
     protected $headingdata = null;
-    protected $qcache=array();
-    protected $ucache=array();
+    protected $qcache = array();
+    protected $ucache = array();
 
-    public function fetch_formatted_field($field,$record,$withlinks){
+    public function fetch_formatted_field($field, $record, $withlinks)
+    {
         global $DB;
-        switch($field){
+        switch ($field) {
             case 'id':
                 $ret = $record->id;
                 break;
@@ -31,41 +32,43 @@ class basic extends basereport
                 break;
 
             case 'timecreated':
-                $ret = date("Y-m-d H:i:s",$record->timecreated);
+                $ret = date("Y-m-d H:i:s", $record->timecreated);
                 break;
 
             default:
-                if(property_exists($record,$field)){
-                    $ret=$record->{$field};
-                }else{
+                if (property_exists($record, $field)) {
+                    $ret = $record->{$field};
+                } else {
                     $ret = '';
                 }
         }
         return $ret;
     }
 
-    public function fetch_formatted_heading(){
+    public function fetch_formatted_heading()
+    {
         $record = $this->headingdata;
-        $ret='';
-        if(!$record){return $ret;}
-        return get_string('basicheading',constants::M_COMPONENT);
-
+        $ret = '';
+        if (!$record) {
+            return $ret;
+        }
+        return get_string('basicheading', constants::M_COMPONENT);
     }
 
-    public function process_raw_data($formdata){
+    public function process_raw_data($formdata)
+    {
         global $DB;
 
         //heading data
         $this->headingdata = new \stdClass();
 
         $emptydata = array();
-        $alldata = $DB->get_records(constants::M_TABLE,array());
-        if($alldata){
-            $this->rawdata= $alldata;
-        }else{
-            $this->rawdata= $emptydata;
+        $alldata = $DB->get_records(constants::M_TABLE, array());
+        if ($alldata) {
+            $this->rawdata = $alldata;
+        } else {
+            $this->rawdata = $emptydata;
         }
         return true;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * English strings for Mini Lesson
  *

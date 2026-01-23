@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: ishineguy
@@ -59,7 +60,7 @@ class Helper
         // First split the given string into single characters ; default and
         // most common case.
         $chrs = preg_split("//u", $str, 0, PREG_SPLIT_NO_EMPTY);
-        if($length === 1 && !$yoon) {
+        if ($length === 1 && !$yoon) {
             return $chrs;
         }
 
@@ -67,21 +68,19 @@ class Helper
         $str_length = count($chrs);
         $concatChrs = array();
         for ($i = 0, $j = -1, $k = -1; $i < $str_length; $i++) {
-
             // With yoon set to TRUE, consider the base syllable and the yoon
             // character as a single character.
             $skip = false;
             $k++;
-            if($yoon && preg_match(self::PREG_PATTERN_KANA_YOON, $chrs[$i])) {
+            if ($yoon && preg_match(self::PREG_PATTERN_KANA_YOON, $chrs[$i])) {
                 $skip = true;
                 $k--;
             }
 
-            if(!$skip && $k % $length === 0) {
+            if (!$skip && $k % $length === 0) {
                 $j++;
                 $concatChrs[$j] = $chrs[$i];
-            }
-            else {
+            } else {
                 $concatChrs[$j] .= $chrs[$i];
             }
         }
@@ -149,7 +148,7 @@ class Helper
     public static function extractKanji($str, $length = 0)
     {
         // No length given, extract kanji substrings as it is.
-        if(!$length) {
+        if (!$length) {
             return preg_split(self::PREG_PATTERN_NOT_KANJI, $str, 0, PREG_SPLIT_NO_EMPTY);
         }
 
@@ -175,7 +174,7 @@ class Helper
     public static function extractHiragana($str, $length = 0, $yoon = false)
     {
         // No length given, extract hiragana substrings as it is.
-        if(!$length) {
+        if (!$length) {
             return preg_split(self::PREG_PATTERN_NOT_HIRAGANA, $str, 0, PREG_SPLIT_NO_EMPTY);
         }
 
@@ -201,7 +200,7 @@ class Helper
     public static function extractKatakana($str, $length = 0, $yoon = false)
     {
         // No length given, extract katakana substrings as it is.
-        if(!$length) {
+        if (!$length) {
             return preg_split(self::PREG_PATTERN_NOT_KATAKANA, $str, 0, PREG_SPLIT_NO_EMPTY);
         }
 
@@ -227,7 +226,7 @@ class Helper
     public static function extractKana($str, $length = 0, $yoon = false)
     {
         // No length given, extract kana substrings as it is.
-        if(!$length) {
+        if (!$length) {
             return preg_split(self::PREG_PATTERN_NOT_KANA, $str, 0, PREG_SPLIT_NO_EMPTY);
         }
 
@@ -260,23 +259,23 @@ class Helper
      */
     public static function removeMacrons($str)
     {
-        if ( !preg_match('/[\x80-\xff]/', $str) ) {
+        if (!preg_match('/[\x80-\xff]/', $str)) {
             return $str;
         }
 
         $chars = array(
             // Some romanization system may use circumflex accent rather than macron
-                chr(195).chr(130) => 'A', chr(195).chr(162) => 'a',
-                chr(195).chr(142) => 'I', chr(195).chr(174) => 'i',
-                chr(195).chr(155) => 'U', chr(195).chr(187) => 'u',
-                chr(195).chr(138) => 'E', chr(195).chr(170) => 'e',
-                chr(195).chr(148) => 'O', chr(195).chr(180) => 'o',
+                chr(195) . chr(130) => 'A', chr(195) . chr(162) => 'a',
+                chr(195) . chr(142) => 'I', chr(195) . chr(174) => 'i',
+                chr(195) . chr(155) => 'U', chr(195) . chr(187) => 'u',
+                chr(195) . chr(138) => 'E', chr(195) . chr(170) => 'e',
+                chr(195) . chr(148) => 'O', chr(195) . chr(180) => 'o',
             // Macrons
-                chr(196).chr(128) => 'A', chr(196).chr(129) => 'a',
-                chr(196).chr(170) => 'I', chr(196).chr(171) => 'i',
-                chr(197).chr(170) => 'U', chr(197).chr(171) => 'u',
-                chr(196).chr(146) => 'E', chr(196).chr(147) => 'e',
-                chr(197).chr(140) => 'O', chr(197).chr(141) => 'o',
+                chr(196) . chr(128) => 'A', chr(196) . chr(129) => 'a',
+                chr(196) . chr(170) => 'I', chr(196) . chr(171) => 'i',
+                chr(197) . chr(170) => 'U', chr(197) . chr(171) => 'u',
+                chr(196) . chr(146) => 'E', chr(196) . chr(147) => 'e',
+                chr(197) . chr(140) => 'O', chr(197) . chr(141) => 'o',
         );
 
         return strtr($str, $chars);

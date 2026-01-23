@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -21,7 +22,9 @@
  * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace mod_minilesson;
+
 defined('MOODLE_INTERNAL') || die();
 
 use mod_minilesson\constants;
@@ -36,8 +39,6 @@ use mod_minilesson\constants;
  */
 class utils
 {
-
-
     public static function get_cloud_poodll_server()
     {
         $conf = get_config(constants::M_COMPONENT);
@@ -75,7 +76,6 @@ class utils
     public static function needs_lang_model($moduleinstance, $passage)
     {
         switch ($moduleinstance->region) {
-
             case 'capetown':
             case 'bahrain':
             case 'tokyo':
@@ -120,7 +120,6 @@ class utils
                 case 'de':
                     $cleanpassage = alphabetconverter::eszett_to_ss_convert($cleanpassage, $cleanpassage);
                     break;
-
             }
         }
 
@@ -190,12 +189,10 @@ class utils
 
         // other conversions
         switch ($shortlang) {
-
             case 'de':
                 // find eszetts in original passage, and convert ss words to eszetts in the target passage
                 $params["passage"] = alphabetconverter::eszett_to_ss_convert($usepassage, $usepassage);
                 break;
-
         }
 
         $conf = get_config(constants::M_COMPONENT);
@@ -270,7 +267,6 @@ class utils
         $totalpercent = round($correctitems / $totalitems, 2) * 100;
 
         if ($attempt) {
-
             // grade quiz results
             // $useresults = json_decode($stepresults);
             // $answers = $useresults->answers;
@@ -357,7 +353,6 @@ class utils
                 require_once($CFG->dirroot . constants::M_PATH . '/lib.php');
                 minilesson_update_grades($moduleinstance, $USER->id, false);
                 // tell JS about the grade situation
-
             }
         } else {
             $message = 'unable to update attempt record';
@@ -381,7 +376,6 @@ class utils
                     $key = intval($key);
                     $steps[$key] = $value;
                 }
-
             }
             return $steps;
         }
@@ -426,7 +420,6 @@ class utils
 
         $newattempt->id = $DB->insert_record(constants::M_ATTEMPTSTABLE, $newattempt);
         return $newattempt;
-
     }
 
     // De accent and other processing so our auto transcript will match the passage
@@ -488,7 +481,7 @@ class utils
 
         require_once($CFG->libdir . '/filelib.php');
         $curl = new \curl();
-        if($timeout){
+        if ($timeout) {
             $curl->setopt(['CURLOPT_TIMEOUT' => $timeout]);
         }
 
@@ -567,10 +560,10 @@ class utils
         if (!($tokenobject)) {
             $message = get_string('notokenincache', constants::M_COMPONENT);
             // if we have an object but its no good, creds werer wrong ..or something
-        } else if (!property_exists($tokenobject, 'token') || empty($tokenobject->token)) {
+        } elseif (!property_exists($tokenobject, 'token') || empty($tokenobject->token)) {
             $message = get_string('credentialsinvalid', constants::M_COMPONENT);
             // if we do not have subs, then we are on a very old token or something is wrong, just get out of here.
-        } else if (!property_exists($tokenobject, 'subs')) {
+        } elseif (!property_exists($tokenobject, 'subs')) {
             $message = 'No subscriptions found at all';
         }
         if (!empty($message)) {
@@ -590,7 +583,6 @@ class utils
         }
 
         return $refresh . $message;
-
     }
 
     // We need a Poodll token to make all this recording and transcripts happen
@@ -655,7 +647,6 @@ class utils
 
                 $cache->set('recentpoodlltoken', $tokenobject);
                 $cache->set('recentpoodlluser', $apiuser);
-
             } else {
                 $token = '';
                 if ($respobject && property_exists($respobject, 'error')) {
@@ -772,14 +763,15 @@ class utils
         if (isset($payloadobject->returnCode) && $payloadobject->returnCode > 0) {
             return false;
             // if all good, then lets just return true
-        } else if (isset($payloadobject->returnCode) && $payloadobject->returnCode === 0) {
+        } elseif (isset($payloadobject->returnCode) && $payloadobject->returnCode === 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    public static function fetch_regions_azure() {
+    public static function fetch_regions_azure()
+    {
         return [
             'australiacentral' => 'Australia Central',
             'australiaeast' => 'Australia East',
@@ -843,7 +835,7 @@ class utils
         // if we already have a token just use that
         $now = time();
         $cache = \cache::make_from_params(\cache_store::MODE_APPLICATION, constants::M_COMPONENT, 'token');
-        $tokenobject = $cache->get('azuretoken'. '_' . $apiregion);
+        $tokenobject = $cache->get('azuretoken' . '_' . $apiregion);
         if ($tokenobject && isset($tokenobject->validuntil) && $tokenobject->validuntil > $now) {
             // For js we set the valid number of seconds.
             $tokenobject->validseconds = $tokenobject->validuntil - $now;
@@ -855,9 +847,9 @@ class utils
         // The REST API we are calling.
         // We need to get the ms region from the poodll region.
         $apidomain = 'microsoft.com';
-        if (strpos($apiregion,'china') === 0) {
+        if (strpos($apiregion, 'china') === 0) {
             $apidomain = 'azure.cn';
-        } elseif (strpos($apiregion,'usgov') === 0) {
+        } elseif (strpos($apiregion, 'usgov') === 0) {
             $apidomain = 'azure.us';
         }
         $fetchurl = 'https://' . $apiregion . '.api.cognitive.' . $apidomain . '/sts/v1.0/issueToken';
@@ -977,7 +969,7 @@ class utils
                 return 'chinaeast2';
 
             case 'capetown':
-            case 'southafricanorth': 
+            case 'southafricanorth':
                 return 'southafricanorth';
 
             case 'bahrain':
@@ -1226,7 +1218,6 @@ class utils
         $aigraderesults->stats = $textanalyser->process_some_stats($targetwords);
 
         return $aigraderesults;
-
     }
     public static function is_rtl($language)
     {
@@ -1419,7 +1410,6 @@ class utils
                 default:
                 // do nothing
                 // should never get here
-
             }
         }
         $sessionendword = $lastunmodified;
@@ -1476,7 +1466,7 @@ class utils
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
             return false;
             // if all good, then lets return
-        } else if ($payloadobject->returnCode === 0) {
+        } elseif ($payloadobject->returnCode === 0) {
             $autograderesponse = $payloadobject->returnMessage;
             // clean up the correction a little
             if (\core_text::strlen($autograderesponse) > 0 && self::is_json($autograderesponse)) {
@@ -1673,7 +1663,6 @@ class utils
                 // gdcl :    https://github.com/dohliam/gdcl
                 break;
             case constants::M_LANG_JAJP:
-
                 // fetch katakana/hiragana if the JP
                 $katakanifyurl = self::fetch_lang_server_url($region, 'katakanify');
 
@@ -1765,7 +1754,7 @@ class utils
                                 }
                                 if ($reading != '*') {
                                     $katakanaarray[] = $reading;
-                                } else if ($analysis[1] == '数') {
+                                } elseif ($analysis[1] == '数') {
                                     // numbers dont get phoneticized
                                     $katakanaarray[] = $words[$nodeindex];
                                 } else {
@@ -2090,7 +2079,7 @@ class utils
 
         if (array_key_exists($langcode, $alllang) && !$showall) {
             return $alllang[$langcode];
-        } else if ($showall) {
+        } elseif ($showall) {
             $usearray = [];
 
             // add current language first (in some cases there is no TTS for the lang)
@@ -2253,7 +2242,6 @@ class utils
             constants::M_PROMPT_SEPARATE => get_string('prompt-separate', constants::M_COMPONENT),
             constants::M_PROMPT_RICHTEXT => get_string('prompt-richtext', constants::M_COMPONENT),
         ];
-
     }
 
     public static function get_containerwidth_options()
@@ -2263,7 +2251,6 @@ class utils
             constants::M_CONTWIDTH_WIDE => get_string('contwidth-wide', constants::M_COMPONENT),
             constants::M_CONTWIDTH_FULL => get_string('contwidth-full', constants::M_COMPONENT),
         ];
-
     }
 
     public static function add_mform_elements($mform, $context, $cmid, $setuptab = false)
@@ -2458,7 +2445,6 @@ class utils
         // Get the modules.
         if (!$setuptab) {
             if ($mods = get_course_mods($COURSE->id)) {
-
                 $mform->addElement('header', 'postattemptheader', get_string('postattemptheader', constants::M_COMPONENT));
 
                 $modinstances = [];
@@ -2479,7 +2465,6 @@ class utils
                 $mform->setDefault('activitylink', 0);
             }
         }
-
     } //end of add_mform_elements
 
     public static function prepare_file_and_json_stuff($moduleinstance, $modulecontext)
@@ -2494,7 +2479,6 @@ class utils
         }
 
         return $moduleinstance;
-
     }//end of prepare_file_and_json_stuff
 
     public static function clean_ssml_chars($speaktext)
@@ -2536,7 +2520,6 @@ class utils
         }
 
         switch ((int) ($voiceoption)) {
-
             // slow
             case 1:
                 // fetch slightly slower version of speech
@@ -2564,7 +2547,6 @@ class utils
                 $speaktext = self::clean_ssml_chars($speaktext);
                 $speaktext = '<speak><break time="1000ms"></break>' . $speaktext . '</speak>';
                 break;
-
         }
 
         // The REST API we are calling
@@ -2594,7 +2576,7 @@ class utils
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
             return false;
             // if all good, then lets do the embed
-        } else if ($payloadobject->returnCode === 0) {
+        } elseif ($payloadobject->returnCode === 0) {
             $pollyurl = $payloadobject->returnMessage;
             // if its an S3 URL  then we cache it, yay
             if (\core_text::strpos($pollyurl, 'pollyfile') > 0) {
@@ -2693,7 +2675,7 @@ class utils
             case constants::TYPE_SLIDES:
                 return new local\itemtype\item_slides($itemrecord, $moduleinstance, $context);
             case constants::TYPE_FICTION:
-                return new local\itemtype\item_fiction($itemrecord, $moduleinstance, $context);    
+                return new local\itemtype\item_fiction($itemrecord, $moduleinstance, $context);
             default:
         }
     }
@@ -2754,7 +2736,7 @@ class utils
             case constants::TYPE_SLIDES:
                 return '\\' . constants::M_COMPONENT . '\local\itemform\slidesform';
             case constants::TYPE_FICTION:
-                return '\\' . constants::M_COMPONENT . '\local\itemform\fictionform';    
+                return '\\' . constants::M_COMPONENT . '\local\itemform\fictionform';
             default:
                 return false;
         }

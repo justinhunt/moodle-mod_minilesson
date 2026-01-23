@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -40,7 +41,8 @@ use mod_minilesson\constants;
  * @copyright  2023 Justin Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class step_submitted extends \core\event\base {
+class step_submitted extends \core\event\base
+{
     /**
      * Create instance of event.
      *
@@ -51,7 +53,8 @@ class step_submitted extends \core\event\base {
      * @param $editable
      * @return attempt_submitted
      */
-    public static function create_from_attempt($attempt, $modulecontext, $stepindex) {
+    public static function create_from_attempt($attempt, $modulecontext, $stepindex)
+    {
         global $USER;
 
         $data = [
@@ -76,7 +79,8 @@ class step_submitted extends \core\event\base {
     /**
      * Init method.
      */
-    protected function init() {
+    protected function init()
+    {
         $this->data['objecttable'] = constants::M_ATTEMPTSTABLE;
         $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
@@ -87,7 +91,8 @@ class step_submitted extends \core\event\base {
      *
      * @return string
      */
-    public function get_description() {
+    public function get_description()
+    {
         return "The user with id '$this->relateduserid' has submitted step '" . $this->other['stepindex'] . "'
             the attempt with id '$this->objectid' for the " .
             "minilesson with course module id '$this->contextinstanceid'.";
@@ -98,7 +103,8 @@ class step_submitted extends \core\event\base {
      *
      * @return string
      */
-    public static function get_name() {
+    public static function get_name()
+    {
         return get_string('eventminilessonstepsubmitted', constants::M_COMPONENT);
     }
 
@@ -108,7 +114,8 @@ class step_submitted extends \core\event\base {
      *
      * @return \moodle_url
      */
-    public function get_url() {
+    public function get_url()
+    {
         return new \moodle_url(
             '/mod/minilesson/reports.php',
             [
@@ -125,7 +132,8 @@ class step_submitted extends \core\event\base {
      * @throws \coding_exception
      * @return void
      */
-    protected function validate_data() {
+    protected function validate_data()
+    {
         parent::validate_data();
 
         if (!isset($this->relateduserid)) {
@@ -146,7 +154,8 @@ class step_submitted extends \core\event\base {
      *
      * @return array
      */
-    public static function get_objectid_mapping() {
+    public static function get_objectid_mapping()
+    {
         return ['db' => constants::M_ATTEMPTSTABLE, 'restore' => 'attempt'];
     }
 
@@ -155,7 +164,8 @@ class step_submitted extends \core\event\base {
      *
      * @return array
      */
-    public static function get_other_mapping() {
+    public static function get_other_mapping()
+    {
         $othermapped = [];
         $othermapped['submitterid'] = ['db' => 'user', 'restore' => 'user'];
         $othermapped['moduleid'] = ['db' => constants::M_TABLE, 'restore' => constants::M_MODNAME];

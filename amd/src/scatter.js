@@ -22,7 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates', 'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame'],
+define(
+    ['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates', 'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame'],
     function ($, notification, def, log, templates, anim, Ajax, str, spacegame) {
 
         "use strict"; // jshint ;_;
@@ -105,8 +106,14 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
                 }
                 self.itemdata.shuffleditems = array;
                 self.itemdata.shuffleditems.forEach(shuffleitem => {
-                    shuffleitem.item.classList.remove('borderblue', 'border', 'border-success',
-                        'border-warning', 'shake-constant', 'invisible');
+                    shuffleitem.item.classList.remove(
+                        'borderblue',
+                        'border',
+                        'border-success',
+                        'border-warning',
+                        'shake-constant',
+                        'invisible'
+                    );
                     self.controls.stage.append(shuffleitem.item);
                 });
             },
@@ -286,4 +293,5 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
 
 
         }; //end of return
-    });
+    }
+);

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -25,8 +26,8 @@ use mod_minilesson\constants;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_page extends item {
-
+class item_page extends item
+{
     //the item type
     public const ITEMTYPE = constants::TYPE_PAGE;
 
@@ -37,7 +38,8 @@ class item_page extends item {
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output) {
+    public function export_for_template(\renderer_base $output)
+    {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
@@ -45,5 +47,4 @@ class item_page extends item {
 
         return $testitem;
     }
-
 }

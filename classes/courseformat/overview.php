@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -35,8 +36,8 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
      * @copyright  2025 Poodll
      * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
      */
-    class overview extends \core_courseformat\activityoverviewbase {
-
+    class overview extends \core_courseformat\activityoverviewbase
+    {
         /** @var \stdClass $minilesson the minilesson instance. */
         private \stdClass $minilesson;
 
@@ -59,7 +60,8 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
         }
 
         #[\Override]
-        public function get_actions_overview(): ?overviewitem {
+        public function get_actions_overview(): ?overviewitem
+        {
             $url = new url('/mod/minilesson/view.php', ['id' => $this->cm->id]);
 
             $content = new action_link(
@@ -77,7 +79,8 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
         }
 
         #[\Override]
-        public function get_extra_overview_items(): array {
+        public function get_extra_overview_items(): array
+        {
             global $DB;
 
             $items = [];
@@ -126,7 +129,7 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
             if (has_capability('mod/minilesson:manage', $this->context)) {
                 $sql = "SELECT COUNT(DISTINCT userid) FROM {minilesson_attempt} WHERE moduleid = :moduleid";
                 $studentcount = $DB->count_records_sql($sql, ['moduleid' => $this->minilesson->id]);
- 
+
                 $items['totalattempts'] = new overviewitem(
                     name: $this->stringmanager->get_string('totalattempts', 'mod_minilesson'),
                     value: $studentcount,
