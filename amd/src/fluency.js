@@ -313,9 +313,9 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions','mod_minilesson/polly
               setTimeout(function() {
                 // Re enable button and reset icons and text.
                   self.skipbtn.children('.fa').removeClass('fa-spinner fa-spin');
-                  self.skipbtn.children('.fa').addClass('fa-arrow-right'); 
+                  self.skipbtn.children('.fa').addClass('fa-arrow-right');
                   self.skipbtn.prop("disabled", false);
-                
+
                   // Move to next item.
                   self.container.find(".fluency_reply_" + self.game.pointer).hide();
                   self.game.pointer++;

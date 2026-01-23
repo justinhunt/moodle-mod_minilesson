@@ -266,7 +266,7 @@ This file contains class and ID definitions.
                     log.debug('Setting generate method to: ' + itemdata.generatemethod);
                     // We need to do this to make sure the correct fields are on the page, before we set data to them.
                     log.debug('triggering');
-                    
+
                     // Regenerate the form and, once both renders finish, set the values for this item
                     self.regenerate_item_form(generateMethodSelect[0], itemdata, itemcontrol);
 

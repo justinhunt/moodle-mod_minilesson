@@ -675,7 +675,7 @@ define(['jquery',
                             break;
                         case 39:
                             // If the keycode is right arrow & the current field is not empty
-                            // focus the input after the current. 
+                            // focus the input after the current.
                             //if (e.target.value !== "") {
                             if (true) {
                                 e.preventDefault();
@@ -684,7 +684,7 @@ define(['jquery',
                             break;
                         case 37:
                             // If the keycode is left arrow & the current field is not empty
-                            // focus the input before the current. 
+                            // focus the input before the current.
                             //if (e.target.value !== "") {
                             if (true) {
                                 e.preventDefault();
@@ -692,7 +692,7 @@ define(['jquery',
                             }
                             break;
                         default:
-                            // If the current field is not empty AND new value is not shift/enter/control etc   
+                            // If the current field is not empty AND new value is not shift/enter/control etc
                             // replace the current value with the newly typed value
                             if (e.target.value !== "" && e.key.length === 1) {
                                 e.target.value = e.target.value.replace(e.target.value, e.key);

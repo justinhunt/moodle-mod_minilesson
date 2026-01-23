@@ -114,12 +114,12 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
             thetable.cell({row:targetindex, column:1}).data(from);
             thetable.draw(false);
             this.collate_rowids();
-            
+
         },
         register_events: function() {
-          
+
             var dd = this;
-        
+
 
             var after_questionmove= function(itemid, direction) {
                 dd.move_row(itemid,direction);
@@ -267,7 +267,7 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                                 allpanels.removeClass('show').trigger('lessonitem:hidden');
                                 // Not shown, show it.
                                 target.addClass('show').trigger('lessonitem:shown');
-                                
+
                                 // Set all other links to aria-expanded false
                                 alllinks.attr('aria-expanded', 'false');
                                 // Show this one.
@@ -316,7 +316,7 @@ define(['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_
                         video.play();
                     }
                 });
-            
+
 
                 $(rootel).on('hide.bs.collapse lessonitem:hidden', '.lessonitem-description', function() {
                     var video = $(this).find('video').get(0);

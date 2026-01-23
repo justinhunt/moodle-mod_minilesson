@@ -215,7 +215,7 @@ define(['jquery',
                     inputelement.setAttribute('data-hints', 1 + self.hintsused);
                     anyhintdisplayed = true;
                 }
-                
+
             });
 
            //manage the hint count

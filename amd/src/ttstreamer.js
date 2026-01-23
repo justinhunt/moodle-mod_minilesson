@@ -66,7 +66,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
             // handle incoming messages which contain the transcription
             this.socket.onmessage = function (message) {
-                try {    
+                try {
                     const payload = JSON.parse(message.data);
                     const eventType = payload.type || payload.message_type;
                     log.debug('TT Streamer message type: ' + eventType);
@@ -81,8 +81,8 @@ define(['jquery', 'core/log'], function ($, log) {
                             break;
                         case 'Termination':
                             //Do something on termination if we need to
-                            break;    
-            
+                            break;
+
                         default:
                             break;
                     }
@@ -175,10 +175,10 @@ define(['jquery', 'core/log'], function ($, log) {
                 return;
             }
             log.debug('committing universal response');
-            
+
             this.doclosesocket();
-              
-           
+
+
             log.debug('setting time out to build transcript');
             setTimeout(function () {
                 var finaltranscript = that.buildtranscript();
@@ -248,7 +248,7 @@ define(['jquery', 'core/log'], function ($, log) {
         },
 
 
-        
+
 
         buildtranscript: function () {
             var combined = '';

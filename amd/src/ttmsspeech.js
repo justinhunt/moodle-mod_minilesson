@@ -1,10 +1,10 @@
-define(['jquery', 
-    'core/log'], 
+define(['jquery',
+    'core/log'],
     function ($, log) {
-    
+
    "use strict"; // jshint ;_;
     /*
-    This file streams to msspeech and collects the response. 
+    This file streams to msspeech and collects the response.
      */
 
     log.debug('MS Speech initialising');
@@ -54,7 +54,7 @@ define(['jquery',
 
         recognize: function(blob, callback) {
             var that = this;
-            
+
           //MS Speech SDK requires the audio to be in wav format and to have a name field
           blob.name = 'audio.wav';
           let audioConfig = that.speechsdk.AudioConfig.fromWavFileInput(blob,blob.name);

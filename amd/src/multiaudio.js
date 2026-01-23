@@ -48,16 +48,16 @@ define(['jquery',
       self.quizhelper.do_next(stepdata);
     },
     register_events: function(index, itemdata, quizhelper) {
-      
+
       var self = this;
       var theplayer = $("#" + itemdata.uniqueid + "_player");
       self.index = index;
       self.quizhelper = quizhelper;
-      
+
       $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
         self.next_question(0);
       });
-      
+
       $("#" + itemdata.uniqueid + "_container .mcplayrow").on('click', function(e) {
         //if disabled =>just return (already answered)
           if($("#" + itemdata.uniqueid + "_container .mcplayrow").hasClass('minilesson_mc_disabled')){

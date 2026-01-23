@@ -32,12 +32,12 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'],
     },
 
     register_events: function(index, itemdata, quizhelper) {
-      
+
       var self = this;
       self.index = index;
       self.quizhelper = quizhelper;
       var nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
-      
+
       nextbutton.on('click', function(e) {
         self.next_question(0);
       });

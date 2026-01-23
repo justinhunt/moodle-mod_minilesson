@@ -195,7 +195,7 @@ define(['jquery', 'core/log', 'core/notification', 'core/ajax', 'mod_minilesson/
                     that.update_audio(newaudio);
                 };
 
-                //If browser rec (Chrome Speech Rec) 
+                //If browser rec (Chrome Speech Rec)
                 if (browserRec.will_work_ok() && !this.stt_guided && !this.forcestreaming && !this.using_msspeech) {
                     //Init browserrec
                     log.debug("using browser rec");

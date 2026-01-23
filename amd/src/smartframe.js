@@ -28,11 +28,11 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function($, log, de
       self.quizhelper.do_next(stepdata);
     },
     register_events: function(index, itemdata, quizhelper) {
-      
+
       var self = this;
       self.index = index;
       self.quizhelper = quizhelper;
-      
+
       $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function(e) {
         self.next_question(0);
       });
@@ -60,7 +60,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function($, log, de
             }
           }, false
       );
-      
+
     }
   };
 });

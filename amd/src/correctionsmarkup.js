@@ -98,7 +98,7 @@ define(['jquery', 'core/log'], function ($, log) {
         register_events: function () {
             var that = this;
             //classes to apply mouseover/click events to
-            var highlightclasses='.' + this.cd.wordclass + ',.' + this.cd.spaceclass + 
+            var highlightclasses='.' + this.cd.wordclass + ',.' + this.cd.spaceclass +
                 ',.' + this.cd.originalprewordclass + ',.' + this.cd.originalpostwordclass;
 
             //set up event handlers
@@ -286,7 +286,7 @@ define(['jquery', 'core/log'], function ($, log) {
         //but "removed(omitted) words" [corrections] will show as a green space  after the original words [red]
         // so the span layout for each word in the corrections is:
         // [original_preword][correctionsword][original_postword][correctionsspace]
-        // suggested word: (original)He eat apples => (corrected)He eats apples => 
+        // suggested word: (original)He eat apples => (corrected)He eats apples =>
         //    [original_preword: "eat->"][correctionsword: "eats"][original_postword][correctionsspace]
         // removed(omitted) word: (original)He eat devours the apples=> (corrected) He devours the apples =>
         //    [original_preword: ][correctionsword: "He"][original_postword: "eat->" ][correctionsspace: " "]
@@ -298,7 +298,7 @@ define(['jquery', 'core/log'], function ($, log) {
                 var wordnumber = Number($(this).data('wordnumber'));
                 if($(this).hasClass(that.cd.suggestionclass)||$(this).hasClass(that.cd.wordomittedclass)){
                     var data_tpositions=$(this).attr('data-tpositions');
-                    //if we already added originals, we dont want to do it again, 
+                    //if we already added originals, we dont want to do it again,
                     //eg (original)I the happy man => (corrections)I am a happy man
                     // we only want to add original "the" on corrections "am" .. and not also on "a"
                     if(processed_tpositions.includes(data_tpositions)){return;}
@@ -310,7 +310,7 @@ define(['jquery', 'core/log'], function ($, log) {
                         var tposition = tpositions[i];
                         originalwords.push($('#' + that.cd.passagewordclass + '_' + tposition).text());
                     }
-                    
+
                     if(originalwords.length>0){
                         var originaltext=originalwords.join(' ') + '->';
                         if($(this).hasClass(that.cd.suggestionclass) && $(this).hasClass(that.cd.insertionclass)) {
@@ -329,7 +329,7 @@ define(['jquery', 'core/log'], function ($, log) {
                             $('#' + that.cd.originalpostwordclass + '_' + (wordnumber)).attr('data-tpositions',data_tpositions);
                         }
                     }
-                  
+
                 }
             });
         },

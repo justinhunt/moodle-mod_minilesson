@@ -163,7 +163,7 @@ define(['jquery',
           }
       });
 
-      
+
       $("#" + self.itemdata.uniqueid + "_container .dictate_check_btn").on("click", function() {
         self.check_answer();
       });
@@ -200,7 +200,7 @@ define(['jquery',
           }
         }
       });
-      
+
     },
 
     game: {

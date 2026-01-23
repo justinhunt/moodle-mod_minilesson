@@ -592,7 +592,7 @@ define(['jquery',
                     $(this).attr({ role: 'button', 'aria-label': slotLabel });
                 });
 
-                // Click-to-select and click-to-drop support 
+                // Click-to-select and click-to-drop support
                 self.pointerdiv.on('click', e => {
                     if (self.interactionLocked) { return; }
                     const $target = $(e.target);
@@ -626,7 +626,7 @@ define(['jquery',
                     self.highlightDropZones();
                 });
 
-                // Keyboard support via Spacebar 
+                // Keyboard support via Spacebar
                 self.pointerdiv.on('keydown', function (e) {
                     if (self.interactionLocked) { e.preventDefault(); return; }
                     if (e.key === ' ' || e.key === 'Spacebar') {

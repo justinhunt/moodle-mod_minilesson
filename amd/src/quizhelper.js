@@ -117,7 +117,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
               case def.qtype_spacegame:
                 spacegame.clone().init(index, item, dd);
-                break;    
+                break;
 
               case def.qtype_fluency:
                   fluency.clone().init(index, item, dd);
@@ -126,7 +126,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_freespeaking:
                 freespeaking.clone().init(index, item, dd);
                 break;
-                
+
               case def.qtype_freewriting:
                 freewriting.clone().init(index, item, dd);
                 break;
@@ -134,11 +134,11 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
               case def.qtype_passagereading:
                 passagereading.clone().init(index, item, dd);
                 break;
-                  
+
               case def.qtype_h5p:
                 h5p.clone().init(index, item, dd);
                 break;
-                
+
               case def.qtype_conversation:
                 conversation.clone().init(index, item, dd);
                 break;
@@ -169,7 +169,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
               case def.qtype_fiction:
                   fiction.clone().init(index, item, dd);
-                  break;     
+                  break;
           }
 
         });
@@ -338,7 +338,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'c
 
           //we want to destroy the old question in the DOM also because iframe/media content might be playing
           theoldquestion.remove();
-        
+
       },
 
       report_step_grade: function(stepdata) {

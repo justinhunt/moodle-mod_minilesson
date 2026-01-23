@@ -37,7 +37,7 @@ This file contains functions for media prompts on the mform
 
          // Set up strings
         init_strings: function(){
-            var that = this;  
+            var that = this;
             str.get_strings([
                 { "key": "reallydeletemediaprompt", "component": 'mod_minilesson' },
                 { "key": "deletemediaprompt", "component": 'mod_minilesson' },
@@ -75,7 +75,7 @@ This file contains functions for media prompts on the mform
                     thefieldset.insertAfter(that.controls.selectcontainer);
                 }
                 thefieldset.fadeIn(500); //thefieldset.show();
-              
+
                 //disable the option in the dropdown
                 that.controls.select.find('option[value="' + mediaprompt + '"]').prop('disabled', true);
                 //deselect all options
@@ -101,7 +101,7 @@ This file contains functions for media prompts on the mform
                     default:
                         var keyfield = thefieldset.find("input[name='"+keyfieldname +"']");
                 }
-                
+
                 //fetch the legend text
                 var legend = thefieldset.find("legend:first").text();
 
@@ -117,29 +117,29 @@ This file contains functions for media prompts on the mform
                     var mediaprompt = thefieldset.data('mediaprompt');
                     that.controls.select.find('option[value="' + mediaprompt + '"]').prop('disabled', false);
                 }
-                
+
                 switch(keyfieldname){
                     case 'itemmedia':
                         //item media is inaccessible, and hard to clear data so we confirm with a specific message
-                        notification.confirm(that.strings.deletemediaprompt, 
+                        notification.confirm(that.strings.deletemediaprompt,
                                 that.strings.deletefilesfirst + ' '+ that.strings.reallydeletemediaprompt + legend + '?',
                                 that.strings.delete,'',
                                 dodelete);
                         break;
                     case 'itemaudiostory':
                         //item media is inaccessible, and hard to clear data so we confirm with a specific message
-                        notification.confirm(that.strings.deletemediaprompt, 
+                        notification.confirm(that.strings.deletemediaprompt,
                                 that.strings.deletefilesfirst + ' '+ that.strings.reallydeletemediaprompt + legend + '?',
                                 that.strings.delete,'',
                                 dodelete);
-                        break;    
+                        break;
                     case 'itemtextarea':
                         //item text area is hard to check, and hard to clear data so we confirm with a specific message
-                        notification.confirm(that.strings.deletemediaprompt, 
+                        notification.confirm(that.strings.deletemediaprompt,
                             that.strings.cleartextfirst + ' '+  that.strings.reallydeletemediaprompt + legend + '?',
                             that.strings.delete,'',
                             dodelete);
-                        break;    
+                        break;
                     default:
                         //if we have data confirm deletion, then delete
                         if(keyfield.length>0 && keyfield.val()!=''){
@@ -149,7 +149,7 @@ This file contains functions for media prompts on the mform
                             dodelete();
                         }
                 }
-                
+
             });
         }
 

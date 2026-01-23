@@ -60,7 +60,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
           } else {
             stepdata.totalitems = self.allwords.length;
             stepdata.correctitems = self.totals.correct;
-          } 
+          }
         }
 
         stepdata.grade = percent;
@@ -148,7 +148,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions',
             case 'mediasaved':
               log.debug('Mediaurl saved at passage reading: ' + message.mediaurl);
               self.mediaurl = message.mediaurl;
-              // The mediaurl is not ready yet, so we use the bloburl instead 
+              // The mediaurl is not ready yet, so we use the bloburl instead
               self.totals.mediaurl = message.bloburl;
               break;
 

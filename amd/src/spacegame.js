@@ -92,7 +92,7 @@ define(['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log',
         }
 
         loadImage(src) {
-            if (!this.image) {    
+            if (!this.image) {
                 this.image = new Image();
             }
             // we dont use the pre-loaded images here, we should, but we need diff images in matching
@@ -1607,7 +1607,7 @@ var app = {
       },
 
       init_strings: function(){
-       
+
         str.get_strings([
             { "key": "shootthepairs", "component": 'mod_minilesson'},
             { "key": "emptyquiz", "component": 'mod_minilesson'},
@@ -1623,7 +1623,7 @@ var app = {
             app.strings.lives = s[i++];
             app.strings.spacetostart = s[i++];
         });
-    },  
+    },
 
     reset: function() {
         clearInterval(app.interval);

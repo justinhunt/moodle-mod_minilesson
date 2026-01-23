@@ -171,7 +171,7 @@ define(['jquery', 'core/log'], function ($, log) {
             /* RIFF identifier */
             this.writeString(view, 0, 'RIFF');
             /* file length */
-            view.setUint32(4, 2147483647, true); // Use max int? usually file size - 8. 
+            view.setUint32(4, 2147483647, true); // Use max int? usually file size - 8.
             /* RIFF type */
             this.writeString(view, 8, 'WAVE');
             /* format chunk identifier */

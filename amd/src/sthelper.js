@@ -187,7 +187,7 @@ var app = {
                             app.controls.transcriptioncoverage.html(tc_report);
                         }
                     });
-                    
+
                 }else{
                     app.controls.transcription.text("no transcript was in the result");
                 }

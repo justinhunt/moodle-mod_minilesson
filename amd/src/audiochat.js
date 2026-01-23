@@ -344,7 +344,7 @@ function($, log, def, ttrecorder, templates, str, Fragment) {
                 if (message.usertype === "assistant") {
                     var pictureDiv = document.createElement('div');
                     pictureDiv.innerHTML = `
-                        <img src="${self.itemdata.avatarimage}?themerev=${M.cfg.themerev}" 
+                        <img src="${self.itemdata.avatarimage}?themerev=${M.cfg.themerev}"
                         alt="AI Assistant" class="mr-2 rounded-circle shadow-lg ml_unique_assistant_img">
                         `;
                     headerDiv.appendChild(pictureDiv);
@@ -486,7 +486,7 @@ function($, log, def, ttrecorder, templates, str, Fragment) {
                     if(studentsubmission) {
                         // Replace "{student submission}" placeholder with actual submission
                         updateinstructions = updateinstructions.replace('{student submission}', studentsubmission);
-                        
+
                         // Replace student submission in grade instructions too
                         self.itemdata.audiochatgradeinstructions = self.itemdata.audiochatgradeinstructions.replace('{student submission}', studentsubmission);
 
