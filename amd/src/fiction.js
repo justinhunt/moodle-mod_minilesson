@@ -392,12 +392,15 @@ define([
             var stepdata = {};
             stepdata.index = self.index;
             stepdata.hasgrade = true;
-            stepdata.totalitems = 1;
-            stepdata.correctitems = 1;
+            
             // If the story has a score, use it
             if(self.storyscore !== false) {
                 stepdata.grade = self.storyscore;
+                stepdata.totalitems = 100;
+                stepdata.correctitems = self.storyscore;
             } else {
+                stepdata.correctitems = 1;
+                stepdata.totalitems = 1;
                 stepdata.grade = 100;
             }
             self.quizhelper.do_next(stepdata);
