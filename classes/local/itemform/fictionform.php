@@ -51,7 +51,13 @@ class fictionform extends baseform
 
         $this->add_dropdown(constants::FICTION_PRESENTATION_MODE, get_string('presentationmode', constants::M_COMPONENT), [
             0 => get_string('presentationmode_plain', constants::M_COMPONENT),
-            1 => get_string('presentationmode_mobile_chat', constants::M_COMPONENT)
+            1 => get_string('presentationmode_mobile_chat', constants::M_COMPONENT),
         ], true);
+
+        $this->add_dropdown(constants::FICTION_FLOWTHROUGH_MESSAGES, get_string('flowthroughmessages', constants::M_COMPONENT), [
+            0 => get_string('no'),
+            1 => get_string('yes'),
+        ], true);
+        $this->add_static_text('flowthroughmessages_desc', '', get_string('flowthroughmessages_desc', constants::M_COMPONENT));
     }
 }

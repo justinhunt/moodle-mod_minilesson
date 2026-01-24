@@ -23,10 +23,12 @@ define([
         itemdata: {},
         chatdata: {},
         storycomplete: false,
+        storyscore: false,
         strings: {},
         presentationmode: 'plain',
         index: 0,
         quizhelper: null,
+        storydata: null,
 
         // For making multiple instances
         clone: function () {
@@ -48,10 +50,24 @@ define([
             this.prepare_html(itemdata);
             this.register_events(this.index, itemdata, quizhelper);
             this.presentationmode = itemdata.presention_mobilechat ? 'mobilechat' : 'plain';
+            this.flowthroughmode = itemdata.flowthroughmode;
+            this.filenamesmap = itemdata.filenamesmap;
+            this.preload_images();
+            // Initial user and other data
+            this.storydata = new Map();
+            this.storydata.set('userfirstname', itemdata.userfirstname);
+            this.storydata.set('userlastname', itemdata.userlastname);
+            this.storydata.set('userfullname', itemdata.userfullname);
+            // Auto-declare variables from Yarn script
+            // This makes sure indialogue variables are initialized as well as out of dialogue ones
+            this.autodeclareVariables(itemdata.fictionyarn, this.storydata);
+
+            // Set all the data for Yarn
             var yarnopts = {
                 "dialogue": itemdata.fictionyarn,
                 "combineTextAndOptionsResults": true,
-                "startAt": "Start"
+                "startAt": "Start",
+                "variableStorage": this.storydata,
             };
             log.debug('MiniLesson Fiction: initializing yarnbound with options');
             log.debug(yarnopts);
@@ -155,7 +171,13 @@ define([
                                 that.scrolltobottom();
                                 that.reset_chat_data();
                                 if (!currentResult.isDialogueEnd) {
-                                    that.can_continuebutton(true);
+                                    if (that.flowthroughmode) {
+                                        that.do_runner_advance();
+                                        that.do_render();
+                                    } else {
+                                        that.can_continuebutton(true);
+                                    }
+
                                 }
                             }
                         );
@@ -220,46 +242,64 @@ define([
                     case 'picture': {
                         log.debug('got picture command');
                         const imageURL = args[0];
-                        promise = Templates.render('mod_minilesson/fictionyarnimage', {
-                            "imageurl": imageURL
-                        }).then(
-                            function (html, js) {
-                                that.controls.yarnmedia.html(html);
-                                that.chatdata.charactermedia = html;
-                                that.chatdata.classname = 'hasmedia';
-                                Templates.runTemplateJS(js);
-                            }
-                        );
+                        //check imageURL is in filenamesmap
+                        var theimage = that.filenamesmap.find(function (file) {
+                            return file.fileurl === imageURL;
+                        });
+                        if (theimage) {
+                            promise = Templates.render('mod_minilesson/fictionyarnimage', {
+                                "imageurl": imageURL
+                            }).then(
+                                function (html, js) {
+                                    that.controls.yarnmedia.html(html);
+                                    that.chatdata.charactermedia = html;
+                                    that.chatdata.classname = 'hasmedia';
+                                    Templates.runTemplateJS(js);
+                                }
+                            );
+                        }
                         break;
                     }
                     case 'audio': {
                         log.debug('got audio command');
                         const audioURL = args[0];
-                        promise = Templates.render('mod_minilesson/fictionyarnaudio', {
-                            "audiourl": audioURL
-                        }).then(
-                            function (html, js) {
-                                that.chatdata.charactermedia = html;
-                                that.chatdata.classname = 'hasmedia';
-                                that.controls.yarnmedia.html(html);
-                                Templates.runTemplateJS(js);
-                            }
-                        );
+                        // Check audio file exists
+                        var theaudio = that.filenamesmap.find(function (file) {
+                            return file.fileurl === audioURL;
+                        });
+                        if (theaudio) {
+                            promise = Templates.render('mod_minilesson/fictionyarnaudio', {
+                                "audiourl": audioURL
+                            }).then(
+                                function (html, js) {
+                                    that.chatdata.charactermedia = html;
+                                    that.chatdata.classname = 'hasmedia';
+                                    that.controls.yarnmedia.html(html);
+                                    Templates.runTemplateJS(js);
+                                }
+                            );
+                        }
                         break;
                     }
                     case 'video': {
                         log.debug('got video command');
                         const videoURL = args[0];
-                        promise = Templates.render('mod_minilesson/fictionyarnvideo', {
-                            "videourl": videoURL
-                        }).then(
-                            function (html, js) {
-                                that.chatdata.charactermedia = html;
-                                that.chatdata.classname = 'hasmedia';
-                                that.controls.yarnmedia.html(html);
-                                Templates.runTemplateJS(js);
-                            }
-                        );
+                        // Check video file exists
+                        var thevideo = that.filenamesmap.find(function (file) {
+                            return file.fileurl === videoURL;
+                        });
+                        if (thevideo) {
+                            promise = Templates.render('mod_minilesson/fictionyarnvideo', {
+                                "videourl": videoURL
+                            }).then(
+                                function (html, js) {
+                                    that.chatdata.charactermedia = html;
+                                    that.chatdata.classname = 'hasmedia';
+                                    that.controls.yarnmedia.html(html);
+                                    Templates.runTemplateJS(js);
+                                }
+                            );
+                        }
                         break;
                     }
                     case 'clearpicture': {
@@ -290,6 +330,21 @@ define([
             if (currentResult.isDialogueEnd) {
                 this.can_continuebutton(false);
                 this.storycomplete = true;
+                // If there is a score we retrieve it
+                if(this.storydata.has('score')) {
+                    this.storyscore = this.storydata.get('score');
+                    // If it is numeric, round it
+                    if (!isNaN(this.storyscore)) {
+                        this.storyscore = Math.round(this.storyscore);
+                        if (this.storyscore < 0) {
+                            this.storyscore = 0;
+                        } else if (this.storyscore > 100) {
+                            this.storyscore = 100;
+                        }
+                    } else {
+                        this.storyscore = false;
+                    }
+                }
             }
         },
 
@@ -339,8 +394,28 @@ define([
             stepdata.hasgrade = true;
             stepdata.totalitems = 1;
             stepdata.correctitems = 1;
-            stepdata.grade = 100;
+            // If the story has a score, use it
+            if(self.storyscore !== false) {
+                stepdata.grade = self.storyscore;
+            } else {
+                stepdata.grade = 100;
+            }
             self.quizhelper.do_next(stepdata);
+        },
+
+        /**
+         * Preload images
+         */
+        preload_images: function () {
+            if (this.filenamesmap && this.filenamesmap.length > 0) {
+                log.debug('MiniLesson Fiction: Preloading ' + this.filenamesmap.length + ' images');
+                this.filenamesmap.forEach(function (file) {
+                    if (file.fileurl) {
+                        var img = new Image();
+                        img.src = file.fileurl;
+                    }
+                });
+            }
         },
 
         /**
@@ -368,7 +443,7 @@ define([
                     self.next_question();
                 }
             });
-            $("#" + itemdata.uniqueid + "_container").on("showElement", async() => {
+            $("#" + itemdata.uniqueid + "_container").on("showElement", async () => {
                 if (!self.instance) {
                     // Maybe init yarn-bound here
                     // this.do_render();
@@ -390,17 +465,9 @@ define([
             this.controls.yarncontinuebutton.on('click', function (e) {
                 log.debug('MiniLesson Fiction: yarn continue button clicked');
                 e.preventDefault();
-                const playertext = $(this).text().trim();
-                Templates.render('mod_minilesson/fiction_playermessage', {
-                    playertext: playertext
-                }).then(
-                    function (html, js) {
-                        Templates.appendNodeContents(self.controls.chatwrapper, html, js);
-                        self.do_runner_advance();
-                        self.do_render();
-                    }
-                );
-
+                // No need to show the "continue" text
+                self.do_runner_advance();
+                self.do_render();
             });
 
             // Add an event listener for option buttons that handles option buttons added at runtime
@@ -441,6 +508,38 @@ define([
                     scrollTop: self.controls.chatwrapper[0].scrollHeight
                 }, 'smooth');
             });
+        },
+
+        /**
+         * Scans a Yarn string for <<declare>> statements and populates a Map.
+         * @param {string} yarnText - The raw Yarn story string.
+         * @param {Map} storageMap - Your yarn-bound variableStorage Map.
+         */
+        autodeclareVariables: function(yarnText, storageMap) {
+            // Regex matches: <<declare $variableName = value>>
+            // Captures group 1: variableName, group 2: value
+            const declareRegex = /<<declare\s+\$([\w\d_]+)\s*=\s*(.*?)>>/g;
+            let match;
+
+            while ((match = declareRegex.exec(yarnText)) !== null) {
+                let varName = match[1];
+                let rawValue = match[2].trim();
+                let finalValue;
+
+                // Type conversion: numbers, booleans, or strings
+                if (!isNaN(rawValue)) {
+                    finalValue = Number(rawValue);
+                } else if (rawValue === "true") {
+                    finalValue = true;
+                } else if (rawValue === "false") {
+                    finalValue = false;
+                } else {
+                    // Remove quotes if it's a string literal
+                    finalValue = rawValue.replace(/^["']|["']$/g, '');
+                }
+
+                storageMap.set(varName, finalValue);
+            }
         },
 
         /**

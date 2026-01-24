@@ -68,6 +68,8 @@ class item_fiction extends item
      */
     public function export_for_template(\renderer_base $output)
     {
+        global $USER;
+
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
@@ -164,11 +166,21 @@ class item_fiction extends item
             }
         }
 
-        // Cloudpoodll.
-        $testitem = $this->set_cloudpoodll_details($testitem);
+        // Presentation Mode - plain or mobilechat.
         $testitem->presention_plain = empty($this->itemrecord->{constants::FICTION_PRESENTATION_MODE});
         $testitem->presention_mobilechat = !empty($this->itemrecord->{constants::FICTION_PRESENTATION_MODE});
-        return $testitem;
+
+        // Flowthrough mode.
+        $testitem->flowthroughmode = $this->itemrecord->{constants::FICTION_FLOWTHROUGH_MESSAGES} ? true : false;
+
+        // Pass in user data for display in the story
+        $testitem->userfirstname = $USER->firstname;
+        $testitem->userlastname = $USER->lastname;
+        $testitem->userfullname = fullname($USER);
+    
+        // Cloudpoodll.
+        $testitem = $this->set_cloudpoodll_details($testitem);
+                return $testitem;
     }
 
     /**
@@ -228,13 +240,23 @@ class item_fiction extends item
             'default' => [],
             'dbname' => constants::FICTION_YARN,
         ];
+
         $keycols['int1'] = [
             'jsonname' => 'presentationmode',
             'type' => 'int',
             'optional' => true,
             'default' => 0,
-            'dbname' => constants::FICTION_PRESENTATION_MODE
+            'dbname' => constants::FICTION_PRESENTATION_MODE,
         ];
+
+        $keycols['int2'] = [
+            'jsonname' => 'flowthroughmode',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => constants::FICTION_FLOWTHROUGH_MESSAGES,
+        ];
+
         $keycols[constants::FICTIONFILES] = [
             'jsonname' => constants::FICTIONFILES,
             'type' => 'anonymousfile',

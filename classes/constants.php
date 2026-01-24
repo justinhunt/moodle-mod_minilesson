@@ -202,6 +202,7 @@ class constants
     const FICTION_YARN = 'customtext1';
     const FICTION_YARN_DEFAULT = "title: Start\n---\nNarrator: We're going to go on an adventure!\n\n<<jump Cave>>\n===\n\ntitle: Cave\n---\nNarrator: Let's look inside the spooky cave...\n<<jump theend>>\n===\n\ntitle: theend\n---\nNarrator: The end...\n===";
     const FICTION_PRESENTATION_MODE = 'customint1';
+    const FICTION_FLOWTHROUGH_MESSAGES = 'customint2';
     const AUDIOCHAT_ALLOWRETRY  = 'customint5';
     const READINGPASSAGE = 'customtext1';
     const PASSAGEGAPFILL_PASSAGE = 'customtext1';
