@@ -4,10 +4,10 @@ define([
     'core/str',
     'core/notification',
     'mod_minilesson/definitions',
-    'mod_minilesson/yarn-bound',
+    'mod_minilesson/external/yarn-bound',
     'core/modal_factory',
     'core/fragment',
-    'core/templates'
+    'core/templates',
 ], function ($, log, str, notification, def, YarnBound, ModalFactory, Fragment, Templates) {
     "use strict"; // jshint ;_;
 
