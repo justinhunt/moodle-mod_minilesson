@@ -400,7 +400,7 @@ define(['jquery',
         nextPrompt: function () {
 
             var self = this;
-            self.pointerdiv = self.controls.question.find(`.wordshuffle_wordset_container[data - index = "${self.game.pointer}"]`);
+            self.pointerdiv = self.controls.question.find(`.wordshuffle_wordset_container[data-index="${self.game.pointer}"]`);
             // Unlock interactions for the new prompt
             self.interactionLocked = false;
             self.controls.retry_btn.hide();

@@ -160,7 +160,7 @@ define(['jquery',
                 var wordmatch = itemwordlist.join("");
                 var regex = new RegExp(wordmatch, "gi");
                 var answerclass = item.correct ? 'correctitem' : 'wrongitem';
-                var result = item.target.replace(regex, ` < span class = "${answerclass}" > ${wordmatch} < / span > `);
+                var result = item.target.replace(regex, `<span class="${answerclass}">${wordmatch}</span>`);
                 item.target = result;
             });
 

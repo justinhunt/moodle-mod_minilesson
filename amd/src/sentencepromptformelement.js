@@ -1,6 +1,6 @@
 import Log from "core/log";
 
-const regionSelector = regionname => `[data - region = "${regionname}"]`;
+const regionSelector = regionname => `[data-region="${regionname}"]`;
 
 export const registerElement = ({elementid}) => {
     const element = document.getElementById(elementid);
@@ -77,7 +77,7 @@ export const registerElement = ({elementid}) => {
             const lineNumbers = calculateLineNumbers();
             lineNumbersEle.innerHTML = Array.from(
                 {length: lineNumbers.length},
-                (_, i) => ` < div > ${lineNumbers[i] || '&nbsp;'} < / div > `
+                (_, i) => `<div> ${lineNumbers[i] || '&nbsp;'} </div>`
             ).join('');
         };
 

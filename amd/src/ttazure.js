@@ -45,9 +45,9 @@ define(['jquery', 'core/log'], function ($, log) {
         preparesocket: async function () {
             var that = this;
             var url = `wss://${this.region}.stt.speech.${this.apidomain}/speech/recognition/conversation/cognitiveservices/v1?language=${this.lang}`;
-            url += ` & format = simple`;
+            url += `&format=simple`;
             // Using the token as a query param is the only easy way without headers
-            url += ` & Authorization = Bearer ${this.speechtoken}`;
+            url += `&Authorization=Bearer ${this.speechtoken}`;
 
             this.socket = new WebSocket(url);
 

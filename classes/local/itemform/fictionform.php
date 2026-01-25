@@ -28,41 +28,29 @@ class fictionform extends baseform
 
         // Markdown text area.
         $fixedwidthfont = true;
-        $this->add_textarearesponse(constants::FICTION_YARN, 
+        $this->add_textarearesponse(constants::FICTION_YARN,
             get_string('fictionyarn', constants::M_COMPONENT), true, $fixedwidthfont);
         $mform->setDefault(constants::FICTION_YARN, constants::FICTION_YARN_DEFAULT);
 
         // Files upload area.
-        $this->add_media_upload(constants::FILEANSWER . '1', get_string('fiction:attachments', constants::M_COMPONENT), false, 'image,audio,video', -1);
+        $this->add_media_upload(constants::FILEANSWER . '1', get_string('fiction:attachments', constants::M_COMPONENT),
+         false, 'image,audio,video', -1);
 
-        /*
-        $mform->registerNoSubmitButton('previewbutton');
-        $previewbtn = $mform->addElement('submit', 'previewbutton', get_string('fiction:preview', constants::M_COMPONENT));
-        $previewbtn->_generateId();
-        $previewbtn->updateAttributes(['id' => $previewbtn->getAttribute('id') . '_' . random_string()]);
-        // There is an issue because the region by default may not work in China (fiction is not properly init with region here).
-        // So preview may not work in China region unless we load from different CDN. TBD.
-        $PAGE->requires->js_call_amd(
-            constants::M_COMPONENT . '/fiction',
-            'register_previewbutton',
-            [
-                $previewbtn->getAttribute('id')
-            ]
-        );
-        */
-
-        $this->add_dropdown(constants::FICTION_PRESENTATION_MODE, get_string('presentationmode', constants::M_COMPONENT), [
+        $this->add_dropdown(constants::FICTION_PRESENTATION_MODE, get_string('presentationmode', constants::M_COMPONENT),
+         [
             0 => get_string('presentationmode_plain', constants::M_COMPONENT),
             1 => get_string('presentationmode_mobile_chat', constants::M_COMPONENT),
         ], 0);
 
-        $this->add_dropdown(constants::FICTION_FLOWTHROUGH_MESSAGES, get_string('flowthroughmessages', constants::M_COMPONENT), [
+        $this->add_dropdown(constants::FICTION_FLOWTHROUGH_MESSAGES, get_string('flowthroughmessages', constants::M_COMPONENT),
+         [
             0 => get_string('no'),
             1 => get_string('yes'),
         ], 0);
         $this->add_static_text('flowthroughmessages_desc', '', get_string('flowthroughmessages_desc', constants::M_COMPONENT));
 
-        $this->add_dropdown(constants::FICTION_SHOW_NONOPTIONS, get_string('shownonoptions', constants::M_COMPONENT), [
+        $this->add_dropdown(constants::FICTION_SHOW_NONOPTIONS, get_string('shownonoptions', constants::M_COMPONENT),
+         [
             0 => get_string('no'),
             1 => get_string('yes'),
         ], 0);

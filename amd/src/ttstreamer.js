@@ -58,7 +58,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
             var query = 'sample_rate=16000&encoding=pcm_s16le&speech_model=' + themodel + '&token=' + this.speechtoken;
             //encodeURIComponent(this.speechtoken);
-            var url = `${basehost} / v3 / ws ? ${query}`;
+            var url = `${basehost}/v3/ws?${query}`;
             this.ready = false;
             this.socket = new WebSocket(url);
             log.debug('TT Streamer socket prepared');

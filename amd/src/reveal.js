@@ -1,15 +1,15 @@
 import log from 'core/log';
 
 const globalRemoteHost = 'https://cdn.jsdelivr.net/npm/reveal.js@5.2.1';
-const globalJSURL = `${globalRemoteHost} / dist / reveal.js`;
-const globalThemeURL = `${globalRemoteHost} / dist / theme / {theme}.min.css`;
-const globalCssURL = `${globalRemoteHost} / dist / reveal.min.css`;
-const globalMarkdownURL = `${globalRemoteHost} / plugin / markdown / markdown.js`;
+const globalJSURL = `${globalRemoteHost}/dist/reveal.js`;
+const globalThemeURL = `${globalRemoteHost}/dist/theme/{theme}.min.css`;
+const globalCssURL = `${globalRemoteHost}/dist/reveal.min.css`;
+const globalMarkdownURL = `${globalRemoteHost}/plugin/markdown/markdown.js`;
 const chinaRemoteHost = 'https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1';
-const chinaJSURL = `${chinaRemoteHost} / reveal.min.js`;
-const chinaThemeURL = `${chinaRemoteHost} / theme / {theme}.min.css`;
-const chinaCssURL = `${chinaRemoteHost} / reveal.min.css`;
-const chinaMarkdownURL = `${chinaRemoteHost} / plugin / markdown / markdown.min.js`;
+const chinaJSURL = `${chinaRemoteHost}/reveal.min.js`;
+const chinaThemeURL = `${chinaRemoteHost}/theme/{theme}.min.css`;
+const chinaCssURL = `${chinaRemoteHost}/reveal.min.css`;
+const chinaMarkdownURL = `${chinaRemoteHost}/plugin/markdown/markdown.min.js`;
 const defaultTheme = 'beige';
 
 let theregion = null;
