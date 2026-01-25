@@ -250,7 +250,7 @@ define(['jquery',
             }));
             self.items = self.gapitems.filter(gapitem => gapitem.isgap).map(item => {
                 item.inputelement = self.controls.rootelement
-                    .querySelector(`.pgapfill_gap_input[data - wordindex = "${item.wordindex}"]`);
+                    .querySelector(`.pgapfill_gap_input[data-wordindex="${item.wordindex}"]`);
                 return item;
             });
         },
