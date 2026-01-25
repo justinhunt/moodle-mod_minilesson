@@ -173,11 +173,14 @@ class item_fiction extends item
         // Flowthrough mode.
         $testitem->flowthroughmode = $this->itemrecord->{constants::FICTION_FLOWTHROUGH_MESSAGES} ? true : false;
 
+        // Show non-options.
+        $testitem->shownonoptions = $this->itemrecord->{constants::FICTION_SHOW_NONOPTIONS} ? true : false;
+
         // Pass in user data for display in the story
         $testitem->userfirstname = $USER->firstname;
         $testitem->userlastname = $USER->lastname;
         $testitem->userfullname = fullname($USER);
-    
+ 
         // Cloudpoodll.
         $testitem = $this->set_cloudpoodll_details($testitem);
                 return $testitem;
@@ -189,16 +192,23 @@ class item_fiction extends item
      * @param string $yarn The yarn to sanitize.
      * @return string The sanitized yarn.
      */
-    public function sanitize_yarn($yarn)
-    {
-        // Remove zero-width chars.
-        $yarn = preg_replace('/[\x{200B}\x{200C}\x{200D}\x{FEFF}]/u', '', $yarn);
+    public function sanitize_yarn($yarn) {
+        // 1. Remove zero-width chars (Space-efficient way to include the BOM)
+        $yarn = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}]/u', '', $yarn);
 
-        // Replace NBSP with normal space.
-        $yarn = str_replace(["\xC2\xA0", "\xE2\x80\xAF"], " ", $yarn);
+        // 2. Replace ALL variations of non-breaking spaces
+        // This targets U+00A0 (NBSP) and U+202F (Narrow NBSP) using Unicode hex
+        $yarn = preg_replace('/[\x{00A0}\x{202F}]/u', ' ', $yarn);
 
-        // Trim weird whitespace.
-        $yarn = preg_replace('/\s+$/m', '', $yarn);
+        // 3 Normalize all horizontal whitespace to regular spaces
+        $yarn = preg_replace('/\h/u', ' ', $yarn);
+
+        // 4. Normalize Line Endings
+        // Converts Windows \r\n to Linux \n so your regex logic is consistent
+        $yarn = str_replace("\r\n", "\n", $yarn);
+
+        // 5. Trim trailing whitespace from each line
+        $yarn = preg_replace('/\h+$/m', '', $yarn);
 
         return $yarn;
     }
@@ -255,6 +265,14 @@ class item_fiction extends item
             'optional' => true,
             'default' => 0,
             'dbname' => constants::FICTION_FLOWTHROUGH_MESSAGES,
+        ];
+
+        $keycols['int3'] = [
+            'jsonname' => 'shownonoptions',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => constants::FICTION_SHOW_NONOPTIONS,
         ];
 
         $keycols[constants::FICTIONFILES] = [

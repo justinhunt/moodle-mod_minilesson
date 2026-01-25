@@ -190,6 +190,7 @@ define([
                     'yarnoptions': currentResult,
                     'presention_mobilechat': that.itemdata.presention_mobilechat,
                     'presention_plain': that.itemdata.presention_plain,
+                    'shownonoptions': that.itemdata.shownonoptions,
                 };
                 that.controls.yarnoptions.html('');
                 Templates.render('mod_minilesson/fictionyarnoptions', chatdata).then(

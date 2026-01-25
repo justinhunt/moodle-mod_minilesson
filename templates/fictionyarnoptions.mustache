@@ -1,22 +1,28 @@
-{{#presention_mobilechat}}
-    {{#yarnoptions}}
-        {{#options}}
+ {{#yarnoptions}}
+    {{#options}}
+        {{#isAvailable}}
             <div class="option_container minilesson_fiction_optionbutton">
                 <div class="optiontext">{{text}}</div>
+                {{#presention_mobilechat}}
                 <span>
                     <i class="fa fa-paper-plane"></i>
                 </span>
+                {{/presention_mobilechat}}
             </div>
-        {{/options}}
-    {{/yarnoptions}}
-{{/presention_mobilechat}}
-{{#presention_plain}}
-    {{#yarnoptions}}
-        {{#options}}
-            <div class="option_container minilesson_fiction_optionbutton">
-                <div class="optiontext">{{text}}</div>
-            </div>
-        {{/options}}
-    {{/yarnoptions}}
-{{/presention_plain}}
+        {{/isAvailable}}
+        {{^isAvailable}}
+            {{#shownonoptions}}
+                <div class="option_container minilesson_fiction_fakeoptionbutton">
+                    <div class="optiontext">{{text}}</div>
+                    {{#presention_mobilechat}}
+                    <span>
+                        <i class="fa fa-paper-plane"></i>
+                    </span>
+                    {{/presention_mobilechat}}
+                </div>
+            {{/shownonoptions}}
+        {{/isAvailable}}
+    {{/options}}
+{{/yarnoptions}}
+
 

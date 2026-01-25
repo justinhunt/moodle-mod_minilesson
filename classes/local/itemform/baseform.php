@@ -659,7 +659,7 @@ abstract class baseform extends \moodleform
      * @param bool $required
      * @return void
      */
-    final protected function add_textarearesponse($name_or_count, $label = null, $required = false)
+    final protected function add_textarearesponse($name_or_count, $label = null, $required = false, $fixedwidthfont = false)
     {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
@@ -672,7 +672,14 @@ abstract class baseform extends \moodleform
             $element = $name_or_count;
         }
 
-        $this->_form->addElement('textarea', $element, $label, array('rows' => '4', 'columns' => '140', 'style' => 'width: 600px'));
+        $attributes = ['rows' => '4', 'columns' => '140', 'style' => 'width: 600px;'];
+        if ($fixedwidthfont) {
+            $attributes['rows'] = '15';
+            $attributes['style'] = 'width: 1000px;font-family: ui-monospace, \'Cascadia Code\', \'Source Code Pro\',' .
+            'Menlo, Monaco, Consolas, \'DejaVu Sans Mono\', monospace; font-size: 14px; ' .
+            'direction: ltr; unicode-bidi: plaintext;';
+        }
+        $this->_form->addElement('textarea', $element, $label, $attributes);
         if ($required) {
             $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
         }
@@ -874,7 +881,7 @@ abstract class baseform extends \moodleform
         $this->add_dropdown($name, get_string('chooselayout', constants::M_COMPONENT), $layoutoptions, constants::LAYOUT_AUTO);
     }
 
-     /**
+    /**
      * Convenience function: Adds a dropdown list of voices
      *
      * @param string $label, null means default

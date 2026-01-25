@@ -6702,6 +6702,16 @@ span.wrongitem {
   transition: background-color 0.2s, box-shadow 0.2s;
 }
 
+.minilesson_fiction_yarncontainer.plain .minilesson_fiction_fakeoptionbutton {
+  cursor: default;
+  opacity: 0.6;
+  background-color: #cccccc;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  padding: 15px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+} 
+
 .minilesson_fiction_yarncontainer.plain .minilesson_fiction_optionbutton:hover {
   background-color: #f8f9fa;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);

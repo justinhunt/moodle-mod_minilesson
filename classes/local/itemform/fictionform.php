@@ -27,7 +27,9 @@ class fictionform extends baseform
         $this->add_static_text('instructions', '', get_string('enterfictionyarn', constants::M_COMPONENT));
 
         // Markdown text area.
-        $this->add_textarearesponse(constants::FICTION_YARN, get_string('fictionyarn', constants::M_COMPONENT), true);
+        $fixedwidthfont = true;
+        $this->add_textarearesponse(constants::FICTION_YARN, 
+            get_string('fictionyarn', constants::M_COMPONENT), true, $fixedwidthfont);
         $mform->setDefault(constants::FICTION_YARN, constants::FICTION_YARN_DEFAULT);
 
         // Files upload area.
@@ -52,12 +54,19 @@ class fictionform extends baseform
         $this->add_dropdown(constants::FICTION_PRESENTATION_MODE, get_string('presentationmode', constants::M_COMPONENT), [
             0 => get_string('presentationmode_plain', constants::M_COMPONENT),
             1 => get_string('presentationmode_mobile_chat', constants::M_COMPONENT),
-        ], true);
+        ], 0);
 
         $this->add_dropdown(constants::FICTION_FLOWTHROUGH_MESSAGES, get_string('flowthroughmessages', constants::M_COMPONENT), [
             0 => get_string('no'),
             1 => get_string('yes'),
-        ], true);
+        ], 0);
         $this->add_static_text('flowthroughmessages_desc', '', get_string('flowthroughmessages_desc', constants::M_COMPONENT));
+
+        $this->add_dropdown(constants::FICTION_SHOW_NONOPTIONS, get_string('shownonoptions', constants::M_COMPONENT), [
+            0 => get_string('no'),
+            1 => get_string('yes'),
+        ], 0);
+        $this->add_static_text('shownonoptions_desc', '', get_string('shownonoptions_desc', constants::M_COMPONENT));
+
     }
 }
