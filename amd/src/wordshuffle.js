@@ -493,18 +493,18 @@ define(['jquery',
             const words = self.getSlotWords();
             const expectedAnswers = self.expectedAnswers();
             const fullExpected = [...self.fixedWords(), ...expectedAnswers];
-            words.forEach((w, i) => {
-                const ok = w === expectedAnswers[i];
-                const $slot = self.pointerdiv.find(".drop-slot[data-index='" + i + "']");
-                const $fb = self.pointerdiv.find("#fb-" + i);
+            words.forEach((theword, wordindex) => {
+                const ok = theword === expectedAnswers[wordindex];
+                const $slot = self.pointerdiv.find(".drop-slot[data-index='" + wordindex + "']");
+                const $feedback = self.pointerdiv.find("#fb-" + wordindex);
 
                 $slot.removeClass("border-secondary-subtle border-success border-danger")
                     .addClass(ok ? "border-success" : "border-danger");
 
-                $fb.removeClass("text-muted text-success text-danger")
+                $feedback.removeClass("text-muted text-success text-danger")
                     .addClass(ok ? "text-success" : "text-danger")
                     .text(ok ? "Correct" : "Wrong");
-            });
+            });s
             const attempt = [...self.fixedWords(), ...self.getSlotWords()];
             self.items[self.game.pointer].answered = words.some(Boolean);
             self.items[self.game.pointer].correct = attempt.join(" ") === fullExpected.join(" ");

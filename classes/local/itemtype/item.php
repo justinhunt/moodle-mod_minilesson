@@ -973,15 +973,17 @@ abstract class item implements templatable, renderable
             }
 
             // Remove the brackets from gap words and build maskedwords and gapwords arrays.
+            $gapindex = 0;
             foreach ($words as $index => $word) {
                 if (preg_match('/^\[.*\]$/', $word)) {
                     $cleanedword = str_replace(['[', ']'], '', $word);
                     $maskedwords[$index] = $cleanedword;
                     $gapwords[] = [
-                        'index' => count($gapwords),
+                        'index' => $gapindex,
                         'isgap' => true,
                         'word' => $cleanedword,
                     ];
+                    $gapindex++;
                 } else {
                     $gapwords[] = [
                         'isgap' => false,

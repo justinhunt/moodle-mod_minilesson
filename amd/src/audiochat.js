@@ -643,7 +643,7 @@ define(
 
                     //add a spinner to the results content
                     //if we are not showing item review we do not need this, but in that case it is hidden anyway
-                    self.controls.resultscontent.innerHTML = `<i class ="fa fa-spinner fa-spin fa-2x"></i>`;
+                    self.controls.resultscontent.innerHTML = `<i class="fa fa-spinner fa-spin fa-2x"></i>`;
 
                     setTimeout(() => {
                         //now show the results content if that is what we are doing
