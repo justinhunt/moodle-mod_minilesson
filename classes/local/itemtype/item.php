@@ -986,7 +986,7 @@ abstract class item implements templatable, renderable
                     ];
                     $gapindex++;
                     // Check if the word contains bracketed portions (e.g., "pre[fix]post").    
-                } else if (preg_match('/\[[^\]]+\]/', $word)) {
+                } else if (preg_match('/\[[^\]]+\](?=[\.,]?(?:\s|$))/', $word, $m)) {
                     $cleanedword = str_replace(['[', ']'], '', $word);
                     $maskedwords[$index] = $word;
                     $gapwords[] = [
