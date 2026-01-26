@@ -6486,7 +6486,7 @@ span.wrongitem {
   display: inline-block;
 }
 
-.minilesson_fiction_yarncontainer.mobilechat .optionscontainer {
+.minilesson_fiction_yarncontainer.mobilechat .yarnchoicescontainer {
   padding: 15px;
   border-top: 1px solid #ddd;
 }
@@ -6620,6 +6620,8 @@ span.wrongitem {
   /* remove previous max-height */
 }
 
+
+
 .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer {
   background-color: #fff;
   border-radius: 8px;
@@ -6676,7 +6678,7 @@ span.wrongitem {
 }
 
 /* Options */
-.minilesson_fiction_yarncontainer.plain .optionscontainer {
+.minilesson_fiction_yarncontainer.plain .yarnchoicescontainer {
   margin-top: 20px;
   border-top: 1px solid #ccc;
   padding-top: 20px;
@@ -6710,7 +6712,7 @@ span.wrongitem {
   border-radius: 5px;
   padding: 15px;
   transition: background-color 0.2s, box-shadow 0.2s;
-} 
+}
 
 .minilesson_fiction_yarncontainer.plain .minilesson_fiction_optionbutton:hover {
   background-color: #f8f9fa;
