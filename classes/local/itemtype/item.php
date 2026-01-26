@@ -938,8 +938,14 @@ abstract class item implements templatable, renderable
 
             $parsedstring = [];
             $started = false;
-
-            $maskedwords = $gapwords = $extrawords = [];
+            // Arrays to hold the masked words, gap words, and extra words.
+            // Masked words gap words (isgap = true) that include the gap markers []. 
+            // We use this for char level entry, partic. masking partial gap words like en[courage]ment
+            $maskedwords = [];
+            // Gap words array holds the words flagging them as gaps or non-gaps and other metadata.
+            $gapwords = [];
+            // Extra words are distractors probably just for wordshuffle
+            $extrawords = [];
             if (utils::super_trim($extra) !== '') {
                 // If extra contains a comma, split on commas, otherwise split on spaces.
                 $extrawordsseperator = (strpos($extra, ',') !== false) ? ',' : ' ';
@@ -973,24 +979,26 @@ abstract class item implements templatable, renderable
             }
 
             // Remove the brackets from gap words and build maskedwords and gapwords arrays.
+            // $gapindex is used to index gap words (isgap = true) only.
             $gapindex = 0;
             foreach ($words as $index => $word) {
-                // Check if the word is a gap (enclosed in brackets).
+                // Check if the word is a gap (enclosed in square brackets).
                 if (preg_match('/^\[.*\]$/', $word)) {
                     $cleanedword = str_replace(['[', ']'], '', $word);
-                    $maskedwords[$index] = $cleanedword;
+                    $maskedwords[$index] = $word;
                     $gapwords[] = [
                         'index' => $gapindex,
                         'isgap' => true,
                         'word' => $cleanedword,
                     ];
                     $gapindex++;
-                    // Check if the word contains bracketed portions (e.g., "pre[fix]post").    
                 } else {
-                    $wordsanspunct = preg_replace('/[.,!?;:]/', '', $word);
-                    if (preg_match('/\[[^\]]+\]/', $wordsanspunct, $m)) {
-                        $cleanedword = str_replace(['[', ']'], '', $word);
-                        $maskedwords[$index] = $wordsanspunct;
+                    // Check if the word contains bracketed portions (e.g., "pre[fix]post").
+                    if (preg_match('/\[[^\]]+\]/', $word, $m)) {
+                        // This will capture the bracketed portion. eg d[oubl]e => [oubl].
+                        $truncatedword = $m[0];
+                        $cleanedword = str_replace(['[', ']'], '', $truncatedword );
+                        $maskedwords[$index] = $word;
                         $gapwords[] = [
                             'index' => $gapindex,
                             'isgap' => true,
@@ -998,6 +1006,7 @@ abstract class item implements templatable, renderable
                         ];
                         $gapindex++;
                     } else {
+                        // Otherwise, it's a normal word and not a gap.
                         $gapwords[] = [
                             'isgap' => false,
                             'word' => $word,
@@ -1006,7 +1015,45 @@ abstract class item implements templatable, renderable
                 }
             }
 
+            // Now we build the parsedstring array at character level.
+            $enc = mb_detect_encoding($sentence);
+            foreach ($gapwords as $gindex => $gapword) {
+                // Get the word and add a trailing space to separate words.
+                $ismasked = $gapword['isgap'] && array_key_exists($gindex, $maskedwords);
+                if ($ismasked) {
+                    $theword = $maskedwords[$gindex] . ' ';
+                } else {
+                    $theword = $gapword['word'] . ' ';
+                }
+                $characters = utils::do_mb_str_split($theword, 1, $enc);
+                // Encoding parameter is required for < PHP 8.0.
+                // $characters=str_split($sentence); //DEBUG ONLY - fails on multibyte characters.
+                // $characters=mb_str_split($sentence); //DEBUG ONLY - - only exists on 7.4 and greater .. ie NOT for 7.3.
 
+                foreach ($characters as $character) {
+                    if ($character === '[') {
+                        $started = true;
+                        continue;
+                    }
+                    if ($character === ']') {
+                        $started = false;
+                        continue;
+                    }
+                    if ($ismasked &&
+                        $character !== " " && $character !== "." && $character !== "," &&
+                        $character !== "!" && $character !== "?" && $character !== ";" && $character !== ":"
+                    ) {
+                        if ($started) {
+                            $parsedstring[] = ['index' => $gindex, 'character' => $character, 'type' => 'input'];
+                        } else {
+                            $parsedstring[] = ['index' => $gindex, 'character' => $character, 'type' => 'mtext'];
+                        }
+                    } else {
+                        $parsedstring[] = ['index' => $gindex, 'character' => $character, 'type' => 'text'];
+                    }
+                }
+            }
+/*
             $enc = mb_detect_encoding($sentence);
             $characters = utils::do_mb_str_split($sentence, 1, $enc);
             // Encoding parameter is required for < PHP 8.0.
@@ -1026,7 +1073,10 @@ abstract class item implements templatable, renderable
                     $started = false;
                     continue;
                 }
-                if (array_key_exists($wordindex, $maskedwords) && $character !== " " && $character !== ".") {
+                if (array_key_exists($wordindex, $maskedwords) &&
+                    $character !== " " && $character !== "." && $character !== "," &&
+                    $character !== "!" && $character !== "?" && $character !== ";" && $character !== ":"
+                ) {
                     if ($started) {
                         $parsedstring[] = ['index' => $wordindex, 'character' => $character, 'type' => 'input'];
                     } else {
@@ -1036,6 +1086,7 @@ abstract class item implements templatable, renderable
                     $parsedstring[] = ['index' => $wordindex, 'character' => $character, 'type' => 'text'];
                 }
             }
+*/                
             $sentence = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $sentence);
             $prompt = $sentence;
 
