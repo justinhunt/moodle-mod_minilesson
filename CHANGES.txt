@@ -1,3 +1,7 @@
+Version 1.1.24 (Build 2026013004)
+- Fixed bug in WordShuffle/Fiction (video)
+- New Audio Chat API
+
 Version 1.1.23 (Build 2026013003)
 - Improvements to Fiction item types and AIGEN
 - JS code tidy up

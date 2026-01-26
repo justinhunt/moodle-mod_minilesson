@@ -504,7 +504,7 @@ define(['jquery',
                 $feedback.removeClass("text-muted text-success text-danger")
                     .addClass(ok ? "text-success" : "text-danger")
                     .text(ok ? "Correct" : "Wrong");
-            });s
+            });
             const attempt = [...self.fixedWords(), ...self.getSlotWords()];
             self.items[self.game.pointer].answered = words.some(Boolean);
             self.items[self.game.pointer].correct = attempt.join(" ") === fullExpected.join(" ");
@@ -589,7 +589,8 @@ define(['jquery',
                 var bankLabel = (self.strings && self.strings.wordbank_label) ? self.strings.wordbank_label : 'Word bank';
                 $bank.attr({ role: 'list', 'aria-label': bankLabel });
                 self.pointerdiv.find('.drop-slot').each(function (i) {
-                    var slotLabelTmpl = (self.strings && self.strings.drop_slot_label) ? self.strings.drop_slot_label : 'Drop slot {$a}';
+                    var slotLabelTmpl = (self.strings && self.strings.drop_slot_label) ? 
+                        self.strings.drop_slot_label : 'Drop slot {$a}';
                     var slotLabel = slotLabelTmpl.replace('{$a}', (i + 1));
                     $(this).attr({ role: 'button', 'aria-label': slotLabel });
                 });
@@ -611,7 +612,8 @@ define(['jquery',
                         if (self.selectedWord) {
                             if (self.selectedWord.parent('.drop-slot')) {
                                 self.placeInBank(self.selectedWord);
-                                var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
+                                var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? 
+                                    self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
                                 self.a11yAnnounce(tmpl.replace('{$a}', self.selectedWord.text().trim()));
                             }
                             if (self.selectedWord) {
@@ -621,7 +623,8 @@ define(['jquery',
                     } else if ($target.is('.drop-slot')) {
                         if (self.selectedWord) {
                             self.moveToSlot(self.selectedWord, $target);
-                            var tmpl2 = (self.strings && self.strings.a11y_placed_in_slot) ? self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
+                            var tmpl2 = (self.strings && self.strings.a11y_placed_in_slot) ? 
+                                self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
                             self.a11yAnnounce(tmpl2.replace('{$a}', self.selectedWord.text().trim()));
                             if (self.selectedWord) {
                                 self.selectedWord.attr('aria-grabbed', 'false'); }
@@ -649,7 +652,8 @@ define(['jquery',
                             if (self.selectedWord) {
                                 if (self.selectedWord.parent('.drop-slot')) {
                                     self.placeInBank(self.selectedWord);
-                                    var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
+                                    var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? 
+                                        self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
                                     self.a11yAnnounce(tmpl.replace('{$a}', self.selectedWord.text().trim()));
                                 }
                                 if (self.selectedWord) {
@@ -659,7 +663,8 @@ define(['jquery',
                         } else if ($focused.is('.drop-slot')) {
                             if (self.selectedWord) {
                                 self.moveToSlot(self.selectedWord, $focused);
-                                var tmpl2 = (self.strings && self.strings.a11y_placed_in_slot) ? self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
+                                var tmpl2 = (self.strings && self.strings.a11y_placed_in_slot) ? 
+                                    self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
                                 self.a11yAnnounce(tmpl2.replace('{$a}', self.selectedWord.text().trim()));
                                 if (self.selectedWord) {
                                     self.selectedWord.attr('aria-grabbed', 'false'); }
@@ -743,7 +748,8 @@ define(['jquery',
                     $(this).removeClass('ml_ws_highlight');
                     if (self.draggedWord) {
                         self.moveToSlot(self.draggedWord, $(this));
-                        var tmpl = (self.strings && self.strings.a11y_placed_in_slot) ? self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
+                        var tmpl = (self.strings && self.strings.a11y_placed_in_slot) ? 
+                            self.strings.a11y_placed_in_slot : 'Placed "{$a}" in drop slot';
                         self.a11yAnnounce(tmpl.replace('{$a}', self.draggedWord.text().trim()));
                         self.draggedWord.attr('aria-grabbed', 'false');
                         self.draggedWord = null;
@@ -761,7 +767,8 @@ define(['jquery',
                     $(this).removeClass('ml_ws_highlight');
                     if (self.draggedWord) {
                         self.placeInBank(self.draggedWord);
-                        var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
+                        var tmpl = (self.strings && self.strings.a11y_returned_to_bank) ? 
+                            self.strings.a11y_returned_to_bank : 'Returned "{$a}" to word bank';
                         self.a11yAnnounce(tmpl.replace('{$a}', self.draggedWord.text().trim()));
                         self.draggedWord.attr('aria-grabbed', 'false');
                         self.draggedWord = null;
@@ -832,7 +839,7 @@ define(['jquery',
                     progresbar.each(function () {
                         self.items[self.game.pointer].timer.push($(this).attr('timer'));
                     });
-                }
+                };
 
                 // This adds the timer and starts it. But if we dont have a start page and its the first item
                 // we need to defer the timer start until the item is shown
