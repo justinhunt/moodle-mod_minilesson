@@ -501,6 +501,7 @@ class utils
     public static function openai_forward_offer()
     {
         global $CFG;
+        require_once($CFG->libdir . '/filelib.php');
 
         // Get the secret from config.
         $apikey = get_config(constants::M_COMPONENT, 'openaikey');
@@ -510,15 +511,18 @@ class utils
 
         $offer = file_get_contents("php://input");
         $model = "gpt-4o-mini-realtime-preview";
-       // $model = "gpt-realtime";
-        $serverurl = "https://api.openai.com/v1/realtime?model=" . $model;
-
-        require_once($CFG->libdir . '/filelib.php');
+        $serverurl = "https://api.openai.com/v1/realtime/calls";
 
         $curl = new \curl();
         $curl->setHeader('Authorization: Bearer ' . $apikey);
-        $curl->setHeader(['Content-type: application/sdp']);
-        $result = $curl->post($serverurl, $offer);
+        //$curl->setHeader(['Content-type: application/sdp']);
+        $result = $curl->post($serverurl, [
+            'sdp' => $offer,
+            'session' => json_encode([
+                'type' => 'realtime',
+                'model' => $model
+            ])
+        ]);
         header("Content-Type: application/sdp");
         echo $result;
         die;
