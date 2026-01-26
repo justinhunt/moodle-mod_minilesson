@@ -956,7 +956,8 @@ abstract class item implements templatable, renderable
             // This will turn "The [quick brown] fox" into ["The", "[quick brown]", "fox"].
             // NB it will separate the part after ] as a separate word. [fath]er => ["[fath]", "er"]
             // if that is a problem, its probably better to fix the sentence.
-            if (preg_match_all('/\[[^\]]+\]|[^\s]+/', $sentence, $matches)) {
+            //if (preg_match_all('/\[[^\]]+\]|[^\s]+/', $sentence, $matches)) {
+            if (preg_match_all('/\[[^\]]+\][^\s]*|[^\s]+/', $sentence, $matches)) {
                 $words = $matches[0];
             } else {
                 $words = [];
