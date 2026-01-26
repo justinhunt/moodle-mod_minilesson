@@ -618,12 +618,12 @@ define(
                 var responsedata = {
                     // The response is out of band and not be added to the default conversation
                     conversation: "none",
-                    modalities: ["text"],
+                    output_modalities: ["text"],
                     instructions: gradingInstructions,
                     // Add the gradingrequest tag to make handltertc life easier
                     metadata: { tag: self.gradingrequesttag},
                     max_output_tokens: 500, // Keeps it tight
-                    temperature: 0.6, // Optional: makes grading more deterministic
+                    // temperature: 0.6, // Optional: makes grading more deterministic
                 };
 
                 //If we wanted to reutrn an audio response (but lets not)
@@ -756,14 +756,15 @@ define(
                     log.debug("It is a grading event:");
                     try {
                         var jsonresponse = msg.response.output[0].content[0].text;
-                        if (!jsonresponse || jsonresponse === "") {
+                        const jsonextractregex = /\{[\s\S]*?\}/;
+                        if (!jsonresponse || jsonresponse === "" || !jsonresponse.match(jsonextractregex)) {
                             log.debug("No valid grading data received .. msg is ..");
                             log.debug(msg);
                             self.closeDataChannel();
                             return;
                         }
 
-                        self.gradingData = JSON.parse(jsonresponse);
+                        self.gradingData = JSON.parse(jsonresponse.match(jsonextractregex)[0]);
                         log.debug("Grading and Feedback:", self.gradingData);
                     } catch (err) {
                         self.gradingData = false;
