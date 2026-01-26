@@ -1,5 +1,7 @@
 Version 1.1.23 (Build 2026013003)
-- Improvements to Fiction item types an AIGEN
+- Improvements to Fiction item types and AIGEN
+- JS code tidy up
+- More fixes to gapfill parsing
 
 Version 1.1.22 (Build 2026013002)
 - More tweaks to make gapfill parsing work with different scenarios
