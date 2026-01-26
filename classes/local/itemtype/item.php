@@ -954,6 +954,8 @@ abstract class item implements templatable, renderable
 
             // Split tokens while preserving bracketed gaps. We are not separating gapwords yet
             // This will turn "The [quick brown] fox" into ["The", "[quick brown]", "fox"].
+            // NB it will separate the part after ] as a separate word. [fath]er => ["[fath]", "er"]
+            // if that is a problem, its probably better to fix the sentence.
             if (preg_match_all('/\[[^\]]+\]|[^\s]+/', $sentence, $matches)) {
                 $words = $matches[0];
             } else {
@@ -1053,40 +1055,7 @@ abstract class item implements templatable, renderable
                     }
                 }
             }
-/*
-            $enc = mb_detect_encoding($sentence);
-            $characters = utils::do_mb_str_split($sentence, 1, $enc);
-            // Encoding parameter is required for < PHP 8.0.
-            // $characters=str_split($sentence); //DEBUG ONLY - fails on multibyte characters.
-            // $characters=mb_str_split($sentence); //DEBUG ONLY - - only exists on 7.4 and greater .. ie NOT for 7.3.
-
-            $wordindex = 0;
-            foreach ($characters as $character) {
-                if ($character === ' ') {
-                    $wordindex++;
-                }
-                if ($character === '[') {
-                    $started = true;
-                    continue;
-                }
-                if ($character === ']') {
-                    $started = false;
-                    continue;
-                }
-                if (array_key_exists($wordindex, $maskedwords) &&
-                    $character !== " " && $character !== "." && $character !== "," &&
-                    $character !== "!" && $character !== "?" && $character !== ";" && $character !== ":"
-                ) {
-                    if ($started) {
-                        $parsedstring[] = ['index' => $wordindex, 'character' => $character, 'type' => 'input'];
-                    } else {
-                        $parsedstring[] = ['index' => $wordindex, 'character' => $character, 'type' => 'mtext'];
-                    }
-                } else {
-                    $parsedstring[] = ['index' => $wordindex, 'character' => $character, 'type' => 'text'];
-                }
-            }
-*/                
+ 
             $sentence = str_replace(['[', ']', ',', '.'], ['', '', '', ''], $sentence);
             $prompt = $sentence;
 
