@@ -105,13 +105,11 @@ class item_fiction extends item
         $testitem->hasmedia = !empty($filenames);
         $testitem->filenamesmap = [];
         foreach ($files as $file) {
-            if ($file->is_valid_image()) {
-                $filename = $file->get_filename();
-                $testitem->filenamesmap[] = [
-                    'filekey' => strtolower(str_replace(' ', '_', pathinfo($filename, PATHINFO_FILENAME))),
-                    'fileurl' => str_replace('{filename}', rawurlencode($filename), $imageserveurl),
-                ];
-            }
+            $filename = $file->get_filename();
+            $testitem->filenamesmap[] = [
+                'filekey' => strtolower(str_replace(' ', '_', pathinfo($filename, PATHINFO_FILENAME))),
+                'fileurl' => str_replace('{filename}', rawurlencode($filename), $imageserveurl),
+            ]; 
         }
 
         // Process yarn text for files in files area.
