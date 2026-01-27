@@ -49,7 +49,7 @@ define([
             this.init_strings();
             this.prepare_html(itemdata);
             this.register_events(this.index, itemdata, quizhelper);
-            this.presentationmode = itemdata.presention_mobilechat ? 'mobilechat' : 'plain';
+            this.presentationmode = itemdata.presention_mobilechat ? 'mobilechat' : (itemdata.presention_storymode ? 'storymode' : 'plain');
             this.flowthroughmode = itemdata.flowthroughmode;
             this.filenamesmap = itemdata.filenamesmap;
             this.preload_images();
@@ -126,7 +126,11 @@ define([
             this.controls.yarnmedia = this.controls.yarncontainer.find('.minilesson_fiction_yarnmedia');
             this.controls.yarnoptions = this.controls.yarncontainer.find('.minilesson_fiction_yarnoptions');
             this.controls.yarncontinuebutton = $("#" + itemdata.uniqueid + "_container .minilesson_fiction_continuebutton");
-            this.controls.chatwrapper = $("#" + itemdata.uniqueid + "_container .chat-wrapper");
+            if (this.presentationmode === 'storymode') {
+                this.controls.chatwrapper = $("#" + itemdata.uniqueid + "_container .story-wrapper");
+            } else {
+                this.controls.chatwrapper = $("#" + itemdata.uniqueid + "_container .chat-wrapper");
+            }
             // To speed up rendering later prefetch some templates
             Templates.prefetchTemplates(['mod_minilesson/fiction_playermessage']);
         },
@@ -155,40 +159,74 @@ define([
                 this.chatdata.charactername = yarncontent.yarntext.md?.character?.name;
                 this.chatdata.charactertext = yarncontent.yarntext.text;
 
-                Templates.render('mod_minilesson/fiction_charactermessage', {
-                    charactermedia: '<div class="chat-loader"></div>'
-                }).then(function (html, js) {
-                    Templates.appendNodeContents(that.controls.chatwrapper, html, js);
-                    that.scrolltobottom();
-                    setTimeout(() => {
-                        Templates.render('mod_minilesson/fiction_charactermessage', that.chatdata).then(
-                            function (html, js) {
-                                Templates.replaceNode(
-                                    that.controls.chatwrapper.find('> .chat-window').last(),
-                                    html,
-                                    js
-                                );
-                                that.scrolltobottom();
-                                that.reset_chat_data();
-                                if (!currentResult.isDialogueEnd) {
-                                    if (that.flowthroughmode) {
-                                        that.do_runner_advance();
-                                        that.do_render();
-                                    } else {
-                                        that.can_continuebutton(true);
-                                    }
+                if (that.presentationmode === 'storymode') {
+                    Templates.render('mod_minilesson/fiction_storymessage', {
+                        charactermedia: '<div class="chat-loader"></div>'
+                    }).then(function (html, js) {
+                        Templates.appendNodeContents(that.controls.chatwrapper, html, js);
+                        that.scrolltobottom();
+                        setTimeout(() => {
+                            Templates.render('mod_minilesson/fiction_storymessage', that.chatdata).then(
+                                function (html, js) {
+                                    // In storymode we replace the loader with the real content
+                                    // finding the last story-paragraph
+                                    Templates.replaceNode(
+                                        that.controls.chatwrapper.find('.story-paragraph').last(),
+                                        html,
+                                        js
+                                    );
+                                    that.scrolltobottom();
+                                    that.reset_chat_data();
+                                    if (!currentResult.isDialogueEnd) {
+                                        if (that.flowthroughmode) {
+                                            that.do_runner_advance();
+                                            that.do_render();
+                                        } else {
+                                            that.can_continuebutton(true);
+                                        }
 
+                                    }
                                 }
-                            }
-                        );
-                    }, 2000);
-                });
+                            );
+                        }, 2000);
+                    });
+                } else {
+                    Templates.render('mod_minilesson/fiction_charactermessage', {
+                        charactermedia: '<div class="chat-loader"></div>'
+                    }).then(function (html, js) {
+                        Templates.appendNodeContents(that.controls.chatwrapper, html, js);
+                        that.scrolltobottom();
+                        setTimeout(() => {
+                            Templates.render('mod_minilesson/fiction_charactermessage', that.chatdata).then(
+                                function (html, js) {
+                                    Templates.replaceNode(
+                                        that.controls.chatwrapper.find('> .chat-window').last(),
+                                        html,
+                                        js
+                                    );
+                                    that.scrolltobottom();
+                                    that.reset_chat_data();
+                                    if (!currentResult.isDialogueEnd) {
+                                        if (that.flowthroughmode) {
+                                            that.do_runner_advance();
+                                            that.do_render();
+                                        } else {
+                                            that.can_continuebutton(true);
+                                        }
+
+                                    }
+                                }
+                            );
+                        }, 2000);
+                    });
+                }
                 that.controls.yarnoptions.html('');
             } else if (currentResult instanceof YarnBound.OptionsResult) {
                 yarncontent.yarnoptions = currentResult;
                 var chatdata = {
                     'yarnoptions': currentResult,
                     'presention_mobilechat': that.itemdata.presention_mobilechat,
+                    'presention_storymode': that.itemdata.presention_storymode,
                     'presention_plain': that.itemdata.presention_plain,
                     'shownonoptions': that.itemdata.shownonoptions,
                 };
@@ -207,25 +245,47 @@ define([
                     that.chatdata.charactername = yarncontent.yarnoptions.md?.character?.name;
                     that.chatdata.charactertext = yarncontent.yarnoptions.text;
 
-                    Templates.render('mod_minilesson/fiction_charactermessage', {
-                        charactermedia: '<div class="chat-loader"></div>'
-                    }).then(function (html, js) {
-                        Templates.appendNodeContents(that.controls.chatwrapper, html, js);
-                        that.scrolltobottom();
-                        setTimeout(() => {
-                            Templates.render('mod_minilesson/fiction_charactermessage', that.chatdata).then(
-                                function (html, js) {
-                                    Templates.replaceNode(
-                                        that.controls.chatwrapper.find('> .chat-window').last(),
-                                        html,
-                                        js
-                                    );
-                                    that.scrolltobottom();
-                                    that.reset_chat_data();
-                                }
-                            );
-                        }, 2000);
-                    });
+                    if (that.presentationmode === 'storymode') {
+                        Templates.render('mod_minilesson/fiction_storymessage', {
+                            charactermedia: '<div class="chat-loader"></div>'
+                        }).then(function (html, js) {
+                            Templates.appendNodeContents(that.controls.chatwrapper, html, js);
+                            that.scrolltobottom();
+                            setTimeout(() => {
+                                Templates.render('mod_minilesson/fiction_storymessage', that.chatdata).then(
+                                    function (html, js) {
+                                        Templates.replaceNode(
+                                            that.controls.chatwrapper.find('.story-paragraph').last(),
+                                            html,
+                                            js
+                                        );
+                                        that.scrolltobottom();
+                                        that.reset_chat_data();
+                                    }
+                                );
+                            }, 2000);
+                        });
+                    } else {
+                        Templates.render('mod_minilesson/fiction_charactermessage', {
+                            charactermedia: '<div class="chat-loader"></div>'
+                        }).then(function (html, js) {
+                            Templates.appendNodeContents(that.controls.chatwrapper, html, js);
+                            that.scrolltobottom();
+                            setTimeout(() => {
+                                Templates.render('mod_minilesson/fiction_charactermessage', that.chatdata).then(
+                                    function (html, js) {
+                                        Templates.replaceNode(
+                                            that.controls.chatwrapper.find('> .chat-window').last(),
+                                            html,
+                                            js
+                                        );
+                                        that.scrolltobottom();
+                                        that.reset_chat_data();
+                                    }
+                                );
+                            }, 2000);
+                        });
+                    }
                 } else {
                     that.controls.yarntext.html('');
                 }
@@ -332,7 +392,7 @@ define([
                 this.can_continuebutton(false);
                 this.storycomplete = true;
                 // If there is a score we retrieve it
-                if(this.storydata.has('score')) {
+                if (this.storydata.has('score')) {
                     this.storyscore = this.storydata.get('score');
                     // If it is numeric, round it
                     if (!isNaN(this.storyscore)) {
@@ -393,9 +453,9 @@ define([
             var stepdata = {};
             stepdata.index = self.index;
             stepdata.hasgrade = true;
-            
+
             // If the story has a score, use it
-            if(self.storyscore !== false) {
+            if (self.storyscore !== false) {
                 stepdata.grade = self.storyscore;
                 stepdata.totalitems = 100;
                 stepdata.correctitems = self.storyscore;
@@ -482,15 +542,27 @@ define([
                 var buttons = self.controls.yarncontainer.find('.minilesson_fiction_optionbutton');
                 var optionindex = buttons.index(this); // 0-based position in the rendered list
                 const playertext = $(this).text().trim();
-                Templates.render('mod_minilesson/fiction_playermessage', {
-                    playertext: playertext
-                }).then(
-                    function (html, js) {
-                        Templates.appendNodeContents(self.controls.chatwrapper, html, js);
-                        self.do_runner_advance(optionindex);
-                        self.do_render();
-                    }
-                );
+                if (self.presentationmode === 'storymode') {
+                    Templates.render('mod_minilesson/fiction_storyplayermessage', {
+                        playertext: playertext
+                    }).then(
+                        function (html, js) {
+                            Templates.appendNodeContents(self.controls.chatwrapper, html, js);
+                            self.do_runner_advance(optionindex);
+                            self.do_render();
+                        }
+                    );
+                } else {
+                    Templates.render('mod_minilesson/fiction_playermessage', {
+                        playertext: playertext
+                    }).then(
+                        function (html, js) {
+                            Templates.appendNodeContents(self.controls.chatwrapper, html, js);
+                            self.do_runner_advance(optionindex);
+                            self.do_render();
+                        }
+                    );
+                }
             });
 
             let scrollbtn = $("#" + itemdata.uniqueid + "_container #scroll-bottom-btn");
@@ -519,7 +591,7 @@ define([
          * @param {string} yarnText - The raw Yarn story string.
          * @param {Map} storageMap - Your yarn-bound variableStorage Map.
          */
-        autodeclareVariables: function(yarnText, storageMap) {
+        autodeclareVariables: function (yarnText, storageMap) {
             // Regex matches: <<declare $variableName = value>>
             // Captures group 1: variableName, group 2: value
             const declareRegex = /<<declare\s+\$([\w\d_]+)\s*=\s*(.*?)>>/g;

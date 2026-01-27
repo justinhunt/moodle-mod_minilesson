@@ -1278,3 +1278,4 @@ $string['nolessonitemfound'] = 'No item found';
 $string['presentationmode'] = 'Presentation Mode';
 $string['presentationmode_plain'] = 'Plain';
 $string['presentationmode_mobile_chat'] = 'Mobile Chat';
+$string['presentationmode_storymode'] = 'Story Mode';

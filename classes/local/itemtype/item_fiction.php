@@ -166,7 +166,8 @@ class item_fiction extends item
 
         // Presentation Mode - plain or mobilechat.
         $testitem->presention_plain = empty($this->itemrecord->{constants::FICTION_PRESENTATION_MODE});
-        $testitem->presention_mobilechat = !empty($this->itemrecord->{constants::FICTION_PRESENTATION_MODE});
+        $testitem->presention_mobilechat = $this->itemrecord->{constants::FICTION_PRESENTATION_MODE} == 1;
+        $testitem->presention_storymode =  $this->itemrecord->{constants::FICTION_PRESENTATION_MODE} == 2;
 
         // Flowthrough mode.
         $testitem->flowthroughmode = $this->itemrecord->{constants::FICTION_FLOWTHROUGH_MESSAGES} ? true : false;

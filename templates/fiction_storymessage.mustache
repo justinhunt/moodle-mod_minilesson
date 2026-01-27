@@ -1,0 +1,24 @@
+{{!
+    @template mod_minilesson/fiction_storymessage
+
+    Single text block/paragraph for Storymode.
+
+    Example context (json):
+    {
+        "classname": "hasmedia",
+        "charactermedia": "<img src='...'>",
+        "charactertext": "Once upon a time..."
+    }
+}}
+<div class="story-paragraph {{classname}}">
+    {{#charactermedia}}
+        <div class="mediacontainer">
+            {{{charactermedia}}}
+        </div>
+    {{/charactermedia}}
+    {{#charactertext}}
+        <div class="textcontent">
+            {{{charactertext}}}
+        </div>
+    {{/charactertext}}
+</div>
