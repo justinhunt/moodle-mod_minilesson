@@ -75,7 +75,14 @@ define([
                 this.runner = new YarnBound(yarnopts);
                 this.do_render();
             } catch (e) {
-                var userFriendlyError = "Yarn Parse Error: " + e.message;
+                var userFriendlyError = "Yarn Parse Error: ";
+                // Format the error nicely
+                let errorMessage = e.message;
+                if (typeof errorMessage === 'undefined') {
+                    // If err is not an Error object (e.g. a string), use err directly
+                    errorMessage = e ? String(e) : 'syntax or other error';
+                }
+                userFriendlyError += errorMessage;
                 this.controls.yarncontainer.html(
                     '<div class="alert alert-danger">' + userFriendlyError + '</div>'
                 );
@@ -422,7 +429,14 @@ define([
                     this.runner.advance();
                 }
             } catch (e) {
-                var userFriendlyError = "Yarn Parse Error: " + e.message;
+                var userFriendlyError = "Yarn Parse Error: ";
+                // Format the error nicely
+                let errorMessage = e.message;
+                if (typeof errorMessage === 'undefined') {
+                    // If err is not an Error object (e.g. a string), use err directly
+                    errorMessage = e ? String(e) : 'syntax or other error';
+                }
+                userFriendlyError += errorMessage;
                 this.controls.yarncontainer.html(
                     '<div class="alert alert-danger">' + userFriendlyError + '</div>'
                 );
