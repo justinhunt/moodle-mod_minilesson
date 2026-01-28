@@ -6489,6 +6489,7 @@ span.wrongitem {
 .minilesson_fiction_yarncontainer.mobilechat .yarnchoicescontainer {
   padding: 15px;
   border-top: 1px solid #ddd;
+  min-height: 88px;
 }
 
 .minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_yarnoptions:not(:empty) {
@@ -6683,7 +6684,7 @@ span.wrongitem {
   border-top: 1px solid #ccc;
   padding-top: 20px;
   flex-shrink: 0;
-  /* Prevent shrinking */
+  min-height: 55px;
 }
 
 .minilesson_fiction_yarncontainer.plain .minilesson_fiction_yarnoptions {
