@@ -6801,6 +6801,15 @@ span.wrongitem {
   font-size: 1.2em;
 }
 
+.minilesson_fiction_yarncontainer.plain .playertext {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+  background-color: aliceblue;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
 /* Chat Loader Animation (3 dots) */
 .minilesson_fiction_yarncontainer.plain .chat-loader {
   display: inline-block;

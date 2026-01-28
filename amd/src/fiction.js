@@ -201,6 +201,12 @@ define([
                     }).then(function (html, js) {
                         Templates.appendNodeContents(that.controls.chatwrapper, html, js);
                         that.scrolltobottom();
+                        var waittime = 1000;
+                        if (that.itemdata.presention_mobilechat) {
+                            waittime = 1500;
+                        } else if (that.itemdata.presention_storymode) {
+                            waittime = 50;
+                        }
                         setTimeout(() => {
                             Templates.render('mod_minilesson/fiction_charactermessage', that.chatdata).then(
                                 function (html, js) {
@@ -222,7 +228,7 @@ define([
                                     }
                                 }
                             );
-                        }, 2000);
+                        }, waittime);
                     });
                 }
                 that.controls.yarnoptions.html('');
@@ -236,10 +242,11 @@ define([
                     'shownonoptions': that.itemdata.shownonoptions,
                 };
                 that.controls.yarnoptions.html('');
-                if (that.itemdata.presention_storymode) {
-                    var waittime = 50;
-                } else {
-                    var waittime = 2000;
+                var waittime = 1000;
+                if (that.itemdata.presention_mobilechat) {
+                    waittime = 1500;
+                } else if (that.itemdata.presention_storymode) {
+                    waittime = 50;
                 }
                 Templates.render('mod_minilesson/fictionyarnoptions', chatdata).then(
                     function (html, js) {
@@ -279,6 +286,12 @@ define([
                         }).then(function (html, js) {
                             Templates.appendNodeContents(that.controls.chatwrapper, html, js);
                             that.scrolltobottom();
+                            var waittime = 1000;
+                            if (that.itemdata.presention_mobilechat) {
+                                waittime = 1500;
+                            } else if (that.itemdata.presention_storymode) {
+                                waittime = 50;
+                            }
                             setTimeout(() => {
                                 Templates.render('mod_minilesson/fiction_charactermessage', that.chatdata).then(
                                     function (html, js) {
@@ -291,7 +304,7 @@ define([
                                         that.reset_chat_data();
                                     }
                                 );
-                            }, 2000);
+                            }, waittime);
                         });
                     }
                 } else {
