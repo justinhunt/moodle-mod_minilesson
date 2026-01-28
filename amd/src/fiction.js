@@ -696,6 +696,86 @@ define([
                 scrollTop: this.controls.chatwrapper[0].scrollHeight + 5,
                 behavior: 'smooth'
             });
-        }
-    };
+        },
+
+
+        /* Check yarn script for syntax errors
+         * @param {string} yarnContent - The raw Yarn story string.
+         * @param {string} resultscontainer - The id of thecontainer element to display results in. 
+         */
+        syntaxcheck: function (yarnContent, resultscontainerid) {
+            const results = {
+                valid: true,
+                errors: []
+            };
+            var runner = null;
+            var storydata = new Map();
+            storydata.set('userfirstname', 'bob');
+            storydata.set('userlastname', 'smith');
+            storydata.set('userfullname', 'bob smith');
+            // Auto-declare variables from Yarn script
+            // This makes sure indialogue variables are initialized as well as out of dialogue ones
+            this.autodeclareVariables(yarnContent, storydata);
+
+            // Set all the data for Yarn
+            var yarnopts = {
+                "dialogue": yarnContent,
+                "combineTextAndOptionsResults": true,
+                "startAt": "Start",
+                "variableStorage": storydata,
+            };
+            // Step 1: Initialize YarnBound
+            // This catches top-level errors (bad headers, duplicate titles, invalid declarations)
+            try {
+                var yarnBound = new YarnBound(yarnopts);
+            } catch (err) {
+                log.debug('Yarn initialization error: ' + err.message);
+                results.valid = false;
+                results.errors.push(`Initialization Error: ${err.message}`);
+            }
+            // Step 2 & 3: Iterate through nodes and check syntax
+            // We access the internal 'runner' to get the nodes list
+            if (results.valid) {
+                var runner = yarnBound.runner;
+                const nodeNames = Object.keys(runner.yarnNodes);
+                nodeNames.forEach(nodeName => {
+                    try {
+                        // getParserNodes parses the body text of the node.
+                        // It will throw if it encounters invalid Yarn syntax (e.g. invalid <<command>> or <<if>>)
+                        runner.getParserNodes(nodeName);
+                        // jump will also check variable state , but that is not syntax but we could do it
+                        // yarnBound.jump(nodeName);
+                    } catch (err) {
+                        results.valid = false;
+                        // Format the error nicely
+                        let errorMessage = err.message;
+                        if (typeof errorMessage === 'undefined') {
+                            // If err is not an Error object (e.g. a string), use err directly
+                            errorMessage = err ? String(err) : 'syntax or other error';
+                        }
+                        results.errors.push(`Node '${nodeName}': ${errorMessage}`);
+                    }
+                });
+            }
+
+            // Step 4: Display results
+            Templates.render('mod_minilesson/fiction_syntaxcheckresults', results)
+                .then(function (html, js) {
+                    $('#' + resultscontainerid).html(html);
+                });
+        }, // End syntaxcheck
+
+        register_syntaxcheckbutton: function (buttonid, yarneditorid, resultscontainerid) {
+            var syntaxcheckbtn = document.getElementById(buttonid);
+            var that = this;
+            if (!syntaxcheckbtn) {
+                return;
+            }
+            syntaxcheckbtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                var yarntext = $('#' + yarneditorid).val();
+                that.syntaxcheck(yarntext, resultscontainerid);
+            });
+        },
+    } // End module
 });

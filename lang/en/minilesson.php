@@ -1279,3 +1279,7 @@ $string['presentationmode'] = 'Presentation Mode';
 $string['presentationmode_plain'] = 'Plain';
 $string['presentationmode_mobile_chat'] = 'Mobile Chat';
 $string['presentationmode_storymode'] = 'Story Mode';
+
+$string['fiction:syntaxcheckbutton'] = 'Syntax Check';
+$string['yarnsyntaxok'] = 'Yarn Syntax Ok';
+$string['yarnsyntaxnotok'] = 'Yarn Syntax Not Ok';

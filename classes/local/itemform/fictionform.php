@@ -26,11 +26,28 @@ class fictionform extends baseform
         $mform = $this->_form;
         $this->add_static_text('instructions', '', get_string('enterfictionyarn', constants::M_COMPONENT));
 
-        // Markdown text area.
+        // Yarn format text area.
         $fixedwidthfont = true;
         $this->add_textarearesponse(constants::FICTION_YARN,
             get_string('fictionyarn', constants::M_COMPONENT), true, $fixedwidthfont);
         $mform->setDefault(constants::FICTION_YARN, constants::FICTION_YARN_DEFAULT);
+
+        // Syntax Checker
+        $mform->registerNoSubmitButton('syntaxcheckbutton');
+        $syntaxcheckbtn = $mform->addElement('submit', 'syntaxcheckbutton', get_string('fiction:syntaxcheckbutton', constants::M_COMPONENT));
+        $syntaxcheckbtn->_generateId();
+        $syntaxcheckbtn->updateAttributes(['id' => $syntaxcheckbtn->getAttribute('id') . '_' . random_string()]);
+        $PAGE->requires->js_call_amd(
+            constants::M_COMPONENT . '/fiction',
+            'register_syntaxcheckbutton',
+            [
+                $syntaxcheckbtn->getAttribute('id'),
+                'id_' . constants::FICTION_YARN,
+                'syntaxcheckresults',
+            ]
+        );
+        $this->add_static_text('yarnsyntaxcheckresults', '','<div id="syntaxcheckresults"></div>');
+
 
         // Files upload area.
         $this->add_media_upload(constants::FILEANSWER . '1', get_string('fiction:attachments', constants::M_COMPONENT),
