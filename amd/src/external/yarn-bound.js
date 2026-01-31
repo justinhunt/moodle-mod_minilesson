@@ -44,6 +44,136 @@
           */
           /* eslint-enable */
 
+
+          function transpileLineGroups(content) {
+            const lines = content.split(/\r?\n/);
+            const newLines = [];
+            let group = [];
+
+            function processGroup(groupLines) {
+              if (groupLines.length === 0) return;
+              const parsed = groupLines.map(line => {
+                let trimmed = line.trim().substring(2).trim();
+                const ifMatch = trimmed.match(/<<if\s+(.+)>>/);
+                let condition = null;
+                let text = trimmed;
+                if (ifMatch) {
+                  condition = ifMatch[1];
+                  text = trimmed.replace(ifMatch[0], '').trim();
+                }
+                return { text, condition };
+              });
+              const defaultNode = parsed.find(p => !p.condition);
+              const conditionalNodes = parsed.filter(p => p.condition);
+
+              if (conditionalNodes.length === 0 && defaultNode) {
+                newLines.push(defaultNode.text);
+                return;
+              }
+              conditionalNodes.forEach((node, index) => {
+                if (index === 0) {
+                  newLines.push(`<<if ${node.condition}>>`);
+                } else {
+                  newLines.push(`<<elseif ${node.condition}>>`);
+                }
+                newLines.push(node.text);
+              });
+              if (defaultNode) {
+                newLines.push(`<<else>>`);
+                newLines.push(defaultNode.text);
+              }
+              newLines.push(`<<endif>>`);
+            }
+
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i];
+              const trimmed = line.trim();
+              if (trimmed.indexOf('=>') === 0) {
+                group.push(line);
+              } else {
+                if (group.length > 0) {
+                  processGroup(group);
+                  group = [];
+                }
+                newLines.push(line);
+              }
+            }
+            if (group.length > 0) {
+              processGroup(group);
+            }
+            return newLines.join('\n');
+          }
+
+
+          function transpileOnce(content, nodeTitle) {
+            // Sanitize node title for variable use
+            const safeTitle = nodeTitle.replace(/[^a-zA-Z0-9_]/g, '_');
+
+            const lines = content.split(/\r?\n/);
+            const newLines = [];
+            let counter = 0;
+
+            for (let i = 0; i < lines.length; i++) {
+              let line = lines[i];
+              const trimmed = line.trim();
+
+              // 1. Block Start: <<once>> or <<once if ...>>
+              const blockStartMatch = trimmed.match(/^<<once(?:\s+if\s+(.+))?>>$/);
+              if (blockStartMatch) {
+                const condition = blockStartMatch[1];
+                const variable = `$__once_${safeTitle}_${counter++}`;
+                const indent = line.substring(0, line.indexOf('<'));
+
+                let finalCondition = `!${variable}`;
+                if (condition) {
+                  finalCondition = `(${finalCondition}) && (${condition})`;
+                }
+
+                newLines.push(`${indent}<<if ${finalCondition}>>`);
+                newLines.push(`${indent}    <<set ${variable} = true>>`);
+                continue;
+              }
+
+              // 2. Block End: <<endonce>>
+              if (trimmed === '<<endonce>>') {
+                const indent = line.substring(0, line.indexOf('<'));
+                newLines.push(`${indent}<<endif>>`);
+                continue;
+              }
+
+              // 3. Inline: Text... <<once>> or <<once if ...>>
+              const suffixMatch = line.match(/^(.*?)\s+<<once(?:\s+if\s+(.+))?>>\s*$/);
+
+              if (suffixMatch) {
+                if (!suffixMatch[1].trim()) {
+                  // Should have been matched by block start 
+                } else {
+                  const prefix = suffixMatch[1];
+                  const condition = suffixMatch[2];
+                  const variable = `$__once_${safeTitle}_${counter++}`;
+
+                  const indentMatch = prefix.match(/^\s*/);
+                  const indent = indentMatch ? indentMatch[0] : '';
+                  const cleanText = prefix.trim();
+
+                  let finalCondition = `!${variable}`;
+                  if (condition) {
+                    finalCondition = `(${finalCondition}) && (${condition})`;
+                  }
+
+                  newLines.push(`${indent}<<if ${finalCondition}>>`);
+                  newLines.push(`${indent}    ${cleanText}`);
+                  newLines.push(`${indent}    <<set ${variable} = true>>`);
+                  newLines.push(`${indent}<<endif>>`);
+                  continue;
+                }
+              }
+
+              newLines.push(line);
+            }
+            return newLines.join('\n');
+          }
+
           function convertYarnToJS(content) {
             const objects = [];
             const lines = content.split(/\r?\n+/).filter(line => {
@@ -88,12 +218,22 @@
                 }
               }
             }
+            objects.forEach(obj => {
+              if (obj.body) {
+                obj.body = transpileLineGroups(obj.body);
+                // Also transpile <<once>>
+                // We need the title for state differentiation
+                if (obj.title) {
+                  obj.body = transpileOnce(obj.body, obj.title);
+                }
+              }
+            });
             return objects;
           }
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 163:
 /***/ ((module, exports) => {
@@ -114,14 +254,18 @@
 
             // Called when a variable is being evaluated.
             get(name) {
-              return this.data[name];
+              const val = this.data[name];
+              if (val === undefined && name.startsWith('$__once_')) {
+                return false;
+              }
+              return val;
             }
           }
           var _default = exports["default"] = DefaultVariableStorage;
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 947:
 /***/ ((module, exports, __webpack_require__) => {
@@ -142,7 +286,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 172:
 /***/ ((module, exports, __webpack_require__) => {
@@ -240,7 +384,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 160:
 /***/ ((module, exports, __webpack_require__) => {
@@ -498,7 +642,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 434:
 /***/ ((module, exports, __webpack_require__) => {
@@ -542,7 +686,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 958:
 /***/ ((module, exports) => {
@@ -683,7 +827,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 358:
 /***/ ((__unused_webpack_module, exports) => {
@@ -2362,7 +2506,7 @@
           parser.Parser = Parser;
 
           /***/
-}),
+        }),
 
 /***/ 950:
 /***/ ((module, exports) => {
@@ -2690,7 +2834,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 476:
 /***/ ((module, exports, __webpack_require__) => {
@@ -2727,7 +2871,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 377:
 /***/ ((module, exports) => {
@@ -2794,8 +2938,10 @@
              */
             constructor(options, metadata) {
               super();
-              this.options = options.map(s => {
-                return new OptionResult(s.text, s.isAvailable, s.hashtags);
+              this.options = options.map((s, i) => {
+                const opt = new OptionResult(s.text, s.isAvailable, s.hashtags);
+                opt.index = i;
+                return opt;
               });
               this.metadata = metadata;
             }
@@ -2816,7 +2962,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 333:
 /***/ ((module, exports, __webpack_require__) => {
@@ -2972,6 +3118,8 @@
               let textRunNodes = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
               return function* () {
                 const filteredNodes = nodes.filter(Boolean);
+                // console.log("evalNodes:", filteredNodes.map(n => n.type));
+                // console.log("evalNodes:", filteredNodes.map(n => n.type));
 
                 // Yield the individual user-visible results
                 let result;
@@ -3031,16 +3179,53 @@
                   } = _this.getParserNodes(destination);
                   return yield* _this.evalNodes(parserNodes, metadata);
                 } else if (node instanceof _nodes2.default.StopCommandNode) {
+                  console.log("StopCommandNode hit");
                   return;
                 } else {
                   const command = _this.evaluateExpressionOrLiteral(node.command);
-                  const commandResult = Object.assign(new _results.default.CommandResult(command, node.hashtags, metadata), {
-                    getGeneratorHere
-                  });
-                  if (filteredNodes.length === 1) {
-                    return commandResult;
+
+                  // DETOUR IMPLEMENTATION
+                  const detourMatch = command.match(/^detour\s+(.+)$/);
+                  if (detourMatch) {
+                    const nodeName = detourMatch[1].trim();
+                    const detourInfo = _this.getParserNodes(nodeName);
+
+                    // Flatten strategy: Insert detour nodes + Marker into the current flow
+                    const marker = new _nodes2.default.GenericCommandNode('__DETOUR_END__', { first_line: node.lineNum });
+                    const newNodes = [...detourInfo.parserNodes, marker, ...filteredNodes.slice(1)];
+
+                    return yield* _this.evalNodes(newNodes, detourInfo.metadata, shortcutNodes, textRunNodes);
+
+                  } else if (command === 'return') {
+                    // Find the nearest __DETOUR_END__
+                    const markerIndex = filteredNodes.findIndex(n => {
+                      if (n instanceof _nodes2.default.GenericCommandNode) {
+                        const cmd = _this.evaluateExpressionOrLiteral(n.command);
+                        return cmd === '__DETOUR_END__';
+                      }
+                      return false;
+                    });
+
+                    if (markerIndex !== -1) {
+                      // Skip to after the marker
+                      return yield* _this.evalNodes(filteredNodes.slice(markerIndex + 1), metadata, shortcutNodes, textRunNodes);
+                    } else {
+                      // No marker found, truly return (end of dialogue or function)
+                      return;
+                    }
+
+                  } else if (command === '__DETOUR_END__') {
+                    // Just continue to the next nodes (restoring previous context)
+                    return yield* _this.evalNodes(filteredNodes.slice(1), metadata, shortcutNodes, textRunNodes);
                   } else {
-                    yield commandResult;
+                    const commandResult = Object.assign(new _results.default.CommandResult(command, node.hashtags, metadata), {
+                      getGeneratorHere
+                    });
+                    if (filteredNodes.length === 1) {
+                      return commandResult;
+                    } else {
+                      yield commandResult;
+                    }
                   }
                 }
                 if (filteredNodes.length > 1) {
@@ -3212,6 +3397,9 @@
                 VariableNode: a => {
                   const value = this.variables.get(a.variableName);
                   if (value === undefined && !this.lookahead) {
+                    if (a.variableName.startsWith('$__once_') || a.variableName.startsWith('__once_')) {
+                      return false;
+                    }
                     throw new Error(`Attempted to access undefined variable "${a.variableName}"`);
                   }
                   return value;
@@ -3239,7 +3427,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 954:
 /***/ ((module, exports, __webpack_require__) => {
@@ -3265,7 +3453,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 384:
 /***/ ((module, exports) => {
@@ -3477,7 +3665,7 @@
           module.exports = exports.default;
 
           /***/
-}),
+        }),
 
 /***/ 523:
 /***/ ((module, exports, __webpack_require__) => {
@@ -3619,10 +3807,10 @@
           module.exports = exports.default;
 
           /***/
-})
+        })
 
       /******/
-});
+    });
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
@@ -3634,14 +3822,14 @@
 /******/ 		if (cachedModule !== undefined) {
 /******/ 			return cachedModule.exports;
         /******/
-}
+      }
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
 /******/ 			// no module.id needed
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
         /******/
-};
+      };
 /******/
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
@@ -3649,7 +3837,7 @@
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
       /******/
-}
+    }
 /******/
 /************************************************************************/
 /******/
@@ -3660,6 +3848,6 @@
 /******/
 /******/ 	return __webpack_exports__;
     /******/
-})()
+  })()
     ;
 });

@@ -571,7 +571,7 @@ define([
                 e.preventDefault();
 
                 var buttons = self.controls.yarncontainer.find('.minilesson_fiction_optionbutton');
-                var optionindex = buttons.index(this); // 0-based position in the rendered list
+                var optionindex = $(this).data('optionindex');
                 const playertext = $(this).text().trim();
                 if (self.presentationmode === 'storymode') {
                     Templates.render('mod_minilesson/fiction_storyplayermessage', {
