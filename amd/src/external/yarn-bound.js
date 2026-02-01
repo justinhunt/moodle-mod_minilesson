@@ -277,6 +277,98 @@
             return newLines.join('\n');
           }
 
+          // Transpile Node Groups (when: conditions)
+          function processNodeGroups(nodes) {
+            const groups = {};
+            // Group by title
+            nodes.forEach(node => {
+              if (!groups[node.title]) groups[node.title] = [];
+              groups[node.title].push(node);
+            });
+
+            const mergedNodes = [];
+            Object.keys(groups).forEach(title => {
+              const group = groups[title];
+              if (group.length === 1) {
+                mergedNodes.push(group[0]);
+                return;
+              }
+
+              // Found a node group!
+              const defaultNode = group.find(n => !n.when || n.when === 'always');
+              const conditionalNodes = group.filter(n => n.when && n.when !== 'always');
+
+              let newBody = "";
+              const prefix = `$__ng_${title.replace(/[^a-zA-Z0-9_]/g, '_')}`;
+
+              // 1. Evaluate conditions and count candidates
+              newBody += `<<set $__ng_pool = 0>>\n`;
+
+              conditionalNodes.forEach((node, idx) => {
+                const varName = `${prefix}_${idx}`;
+                let condition = node.when;
+
+                // Handle 'once' condition
+                if (condition === 'once') {
+                  // We need a persistent variable for this specific node variant
+                  // But since they are merged, we need a unique ID for this specific content block?
+                  // Or just use the index.
+                  // "once" means "if this node (variant) has not been visited".
+                  // Let's use a visited flag variable.
+                  const visitedVar = `${prefix}_visited_${idx}`;
+                  condition = `!${visitedVar}`;
+                  // We also need to SET visited=true if this node is chosen.
+                }
+
+                newBody += `<<set ${varName} = ${condition}>>\n`;
+                newBody += `<<if ${varName}>>\n`;
+                newBody += `    <<set $__ng_pool = $__ng_pool + 1>>\n`;
+                newBody += `<<endif>>\n`;
+              });
+
+              // 2. Selection Logic
+              newBody += `<<if $__ng_pool > 0>>\n`;
+              newBody += `    <<set $__pick = floor(random() * $__ng_pool)>>\n`;
+              newBody += `    <<set $__current_idx = 0>>\n`;
+
+              conditionalNodes.forEach((node, idx) => {
+                const varName = `${prefix}_${idx}`;
+                newBody += `    <<if ${varName}>>\n`;
+                newBody += `        <<if $__current_idx == $__pick>>\n`;
+
+                // If this was a 'once' node, mark it as visited now
+                if (node.when === 'once') {
+                  const visitedVar = `${prefix}_visited_${idx}`;
+                  newBody += `            <<if !$__lookahead>>\n`;
+                  newBody += `                <<set ${visitedVar} = true>>\n`;
+                  newBody += `            <<endif>>\n`;
+                }
+
+                newBody += node.body + "\n";
+                newBody += `        <<endif>>\n`;
+                newBody += `        <<set $__current_idx = $__current_idx + 1>>\n`;
+                newBody += `    <<endif>>\n`;
+              });
+
+              newBody += `<<else>>\n`; // No conditions met
+              newBody += `    <<set $__ng_pre = 0>>\n`;
+              if (defaultNode) {
+                newBody += defaultNode.body + "\n";
+              }
+              newBody += `    <<set $__ng_padding = 0>>\n`;
+              newBody += `<<endif>>\n`;
+
+              mergedNodes.push({
+                title: title,
+                tags: group[0].tags, // Inherit tags from first node?
+                body: newBody,
+                filetags: group[0].filetags
+              });
+            });
+
+            return mergedNodes;
+          }
+
           function convertYarnToJS(content) {
             const objects = [];
             const lines = content.split(/\r?\n+/).filter(line => {
@@ -331,7 +423,7 @@
                 }
               }
             });
-            return objects;
+            return processNodeGroups(objects);
           }
           module.exports = exports.default;
 
@@ -358,7 +450,7 @@
             // Called when a variable is being evaluated.
             get(name) {
               const val = this.data[name];
-              if (val === undefined && name.startsWith('$__once_')) {
+              if (val === undefined && (name.startsWith('$__once_') || name.startsWith('$__ng_') || name.startsWith('__ng_'))) {
                 return false;
               }
               return val;
@@ -3251,11 +3343,8 @@
                     const textResult = Object.assign(new _results.default.TextResult(text, node.hashtags, metadata), {
                       getGeneratorHere
                     });
-                    if (filteredNodes.length === 1) {
-                      return textResult;
-                    } else {
-                      yield textResult;
-                    }
+                    yield textResult;
+
                   }
                 } else if (node.type === 'ShortcutNode' || node.type === 'DialogShortcutNode') {
                   // Need to accumulate all adjacent selectables into one list
@@ -3271,8 +3360,10 @@
                     _this.evaluateAssignment(node);
                   }
                 } else if (node.type === 'IfNode' || node.type === 'IfElseNode' || node.type === 'ElseIfNode' || node.type === 'ElseNode') {
+                  console.log("Conditional Node Type:", node.type);
                   // Get the results of the conditional
                   const evalResult = _this.evaluateConditional(node);
+                  console.log("EvalResult:", evalResult ? evalResult.length : "null");
                   if (evalResult) {
                     // Run the results if applicable
                     return yield* _this.evalNodes([...evalResult, ...filteredNodes.slice(1)], metadata, shortcutNodes, textRunNodes);
@@ -3330,11 +3421,8 @@
                     const commandResult = Object.assign(new _results.default.CommandResult(command, node.hashtags, metadata), {
                       getGeneratorHere
                     });
-                    if (filteredNodes.length === 1) {
-                      return commandResult;
-                    } else {
-                      yield commandResult;
-                    }
+                    yield commandResult;
+
                   }
                 }
                 if (filteredNodes.length > 1) {
@@ -3507,7 +3595,8 @@
                   const value = this.variables.get(a.variableName);
                   if (value === undefined && !this.lookahead) {
                     if (a.variableName.startsWith('$__once_') || a.variableName.startsWith('__once_') ||
-                      a.variableName.startsWith('$__lg_') || a.variableName.startsWith('__lg_')) {
+                      a.variableName.startsWith('$__lg_') || a.variableName.startsWith('__lg_') ||
+                      a.variableName.startsWith('$__ng_') || a.variableName.startsWith('__ng_')) {
                       return false;
                     }
                     throw new Error(`Attempted to access undefined variable "${a.variableName}"`);
@@ -3858,11 +3947,14 @@
                 next = this.handleConsecutiveOptionsNodes(true);
               }
               this.runner.lookahead = true;
+              this.runner.variables.set('__lookahead', true);
               let upcoming = this.generator.next();
+
               if (this.handleCommand && upcoming.value instanceof _index.default.CommandResult && upcoming.value.command !== this.pauseCommand) {
                 upcoming = this.handleConsecutiveOptionsNodes();
                 this.generator = next.value.getGeneratorHere();
                 this.runner.lookahead = false;
+                this.runner.variables.set('__lookahead', false);
 
                 // Only possible if dialogue starts/resumes on a CommandResult.
                 const rewoundNext = next.value instanceof _index.default.CommandResult ? this.handleConsecutiveOptionsNodes(true) : this.generator.next();
@@ -3884,6 +3976,7 @@
               } else if (next.value instanceof _index.default.TextResult && this.combineTextAndOptionsResults && upcoming.value instanceof _index.default.OptionsResult) {
                 this.generator = next.value.getGeneratorHere();
                 this.runner.lookahead = false;
+                this.runner.variables.set('__lookahead', false);
                 const rewoundNext = this.generator.next();
                 const rewoundUpcoming = this.generator.next();
                 Object.assign(rewoundUpcoming.value, rewoundNext.value);
@@ -3891,6 +3984,7 @@
               } else {
                 this.generator = next.value.getGeneratorHere();
                 this.runner.lookahead = false;
+                this.runner.variables.set('__lookahead', false);
                 const rewoundNext = this.generator.next();
                 if (!upcoming.value) {
                   Object.assign(rewoundNext.value, {
