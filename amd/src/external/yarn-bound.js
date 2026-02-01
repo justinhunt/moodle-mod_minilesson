@@ -48,59 +48,162 @@
           function transpileLineGroups(content) {
             const lines = content.split(/\r?\n/);
             const newLines = [];
-            let group = [];
 
-            function processGroup(groupLines) {
-              if (groupLines.length === 0) return;
-              const parsed = groupLines.map(line => {
-                let trimmed = line.trim().substring(2).trim();
-                const ifMatch = trimmed.match(/<<if\s+(.+)>>/);
-                let condition = null;
-                let text = trimmed;
-                if (ifMatch) {
-                  condition = ifMatch[1];
-                  text = trimmed.replace(ifMatch[0], '').trim();
-                }
-                return { text, condition };
-              });
-              const defaultNode = parsed.find(p => !p.condition);
-              const conditionalNodes = parsed.filter(p => p.condition);
+            // Group: { indent: number, options: [ { condition: string|null, lines: string[] } ] }
+            let currentGroup = null;
 
-              if (conditionalNodes.length === 0 && defaultNode) {
-                newLines.push(defaultNode.text);
-                return;
-              }
-              conditionalNodes.forEach((node, index) => {
-                if (index === 0) {
-                  newLines.push(`<<if ${node.condition}>>`);
-                } else {
-                  newLines.push(`<<elseif ${node.condition}>>`);
-                }
-                newLines.push(node.text);
+            function flushGroup() {
+              if (!currentGroup) return;
+
+              const groupVarPrefix = `$__lg_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+              const options = currentGroup.options;
+              const groupIndent = " ".repeat(currentGroup.indent);
+
+              // Pass 1: Determine validity vars
+              // We use a pool counter to know how many valid options exist
+              newLines.push(`${groupIndent}<<set $__pool = 0>>`);
+
+              options.forEach((opt, idx) => {
+                const varName = `${groupVarPrefix}_${idx}`;
+                let cond = opt.condition || "true";
+
+                newLines.push(`${groupIndent}<<set ${varName} = ${cond}>>`);
+                newLines.push(`${groupIndent}<<if ${varName}>>`);
+                newLines.push(`${groupIndent}    <<set $__pool = $__pool + 1>>`);
+                newLines.push(`${groupIndent}<<endif>>`);
               });
-              if (defaultNode) {
-                newLines.push(`<<else>>`);
-                newLines.push(defaultNode.text);
-              }
-              newLines.push(`<<endif>>`);
+
+              // Pass 2: Pick selection
+              newLines.push(`${groupIndent}<<if $__pool > 0>>`);
+              newLines.push(`${groupIndent}    <<set $__pick = floor(random() * $__pool)>>`);
+              newLines.push(`${groupIndent}    <<set $__current_idx = 0>>`);
+
+              options.forEach((opt, idx) => {
+                const varName = `${groupVarPrefix}_${idx}`;
+
+                newLines.push(`${groupIndent}    <<if ${varName}>>`);
+                newLines.push(`${groupIndent}        <<if $__current_idx == $__pick>>`);
+
+                opt.lines.forEach(l => {
+                  newLines.push(l);
+                });
+
+                newLines.push(`${groupIndent}        <<endif>>`);
+                newLines.push(`${groupIndent}        <<set $__current_idx = $__current_idx + 1>>`);
+                newLines.push(`${groupIndent}    <<endif>>`);
+              });
+
+              newLines.push(`${groupIndent}<<endif>>`);
+
+              currentGroup = null;
             }
 
             for (let i = 0; i < lines.length; i++) {
               const line = lines[i];
+              const indentMatch = line.match(/^(\s*)/);
+              const indent = indentMatch ? indentMatch[1].length : 0;
               const trimmed = line.trim();
-              if (trimmed.indexOf('=>') === 0) {
-                group.push(line);
-              } else {
-                if (group.length > 0) {
-                  processGroup(group);
-                  group = [];
+
+              if (trimmed.startsWith('=>')) {
+                if (currentGroup) {
+                  if (indent === currentGroup.indent) {
+                    const content = trimmed.substring(2).trim();
+                    let condition = null;
+                    let text = content;
+                    const ifMatch = text.match(/<<if\s+(.+)>>/);
+                    if (ifMatch) {
+                      condition = ifMatch[1];
+                      text = text.replace(ifMatch[0], '').trim();
+                    }
+
+                    const innerIndent = " ".repeat(indent + 8);
+                    const contentLines = [];
+                    if (text) {
+                      contentLines.push(innerIndent + text);
+                    }
+
+                    currentGroup.options.push({
+                      condition: condition,
+                      lines: contentLines
+                    });
+                  } else if (indent > currentGroup.indent) {
+                    // Nested content attached to previous option
+                    const lastOpt = currentGroup.options[currentGroup.options.length - 1];
+                    // We want to preserve relative indentation, but shift it deeper for the block
+                    // The raw line has Indent spaces.
+                    // We want to output it at (Indent + 8).
+                    // So we just add 8 spaces.
+                    lastOpt.lines.push("        " + line);
+                  } else {
+                    // Shallower indent. Close group.
+                    flushGroup();
+                    currentGroup = {
+                      indent: indent,
+                      options: []
+                    };
+                    const content = trimmed.substring(2).trim();
+                    let condition = null;
+                    let text = content;
+                    const ifMatch = text.match(/<<if\s+(.+)>>/);
+                    if (ifMatch) {
+                      condition = ifMatch[1];
+                      text = text.replace(ifMatch[0], '').trim();
+                    }
+                    const innerIndent = " ".repeat(indent + 8);
+                    const contentLines = [];
+                    if (text) {
+                      contentLines.push(innerIndent + text);
+                    }
+                    currentGroup.options.push({
+                      condition: condition,
+                      lines: contentLines
+                    });
+                  }
+                } else {
+                  // Start new group
+                  currentGroup = {
+                    indent: indent,
+                    options: []
+                  };
+                  const content = trimmed.substring(2).trim();
+                  let condition = null;
+                  let text = content;
+                  const ifMatch = text.match(/<<if\s+(.+)>>/);
+                  if (ifMatch) {
+                    condition = ifMatch[1];
+                    text = text.replace(ifMatch[0], '').trim();
+                  }
+                  const innerIndent = " ".repeat(indent + 8);
+                  const contentLines = [];
+                  if (text) {
+                    contentLines.push(innerIndent + text);
+                  }
+                  currentGroup.options.push({
+                    condition: condition,
+                    lines: contentLines
+                  });
                 }
-                newLines.push(line);
+              } else {
+                if (currentGroup) {
+                  if (indent > currentGroup.indent) {
+                    if (currentGroup.options.length > 0) {
+                      const lastOpt = currentGroup.options[currentGroup.options.length - 1];
+                      lastOpt.lines.push("        " + line);
+                    } else {
+                      flushGroup();
+                      newLines.push(line);
+                    }
+                  } else {
+                    flushGroup();
+                    newLines.push(line);
+                  }
+                } else {
+                  newLines.push(line);
+                }
               }
             }
-            if (group.length > 0) {
-              processGroup(group);
-            }
+            flushGroup();
+            console.log("Transpiled Content:\n", newLines.join('\n'));
             return newLines.join('\n');
           }
 
@@ -3016,7 +3119,10 @@
                   throw new Error(`Duplicate node title: ${node.title}`);
                 }
                 this.yarnNodes[node.title] = node;
+                console.log("Loaded Node:", node.title, "Parsed Nodes (body length):", node.body.length, "Is Array?", Array.isArray(node.body));
+                // console.log("First node:", JSON.stringify(node.body[0]));
               });
+              console.log("YarnNodes keys:", Object.keys(this.yarnNodes));
               _parser.default.yy.areDeclarationsHandled = false;
               _parser.default.yy.declarations = {};
               this.handleDeclarations(nodes);
@@ -3096,6 +3202,7 @@
               }
               // Parse the entire node
               const parserNodes = Array.from(_parser.default.parse(yarnNode.body));
+              console.log("Parsed AST Nodes count:", parserNodes.length);
               const metadata = {
                 ...yarnNode
               };
@@ -3118,9 +3225,6 @@
               let textRunNodes = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
               return function* () {
                 const filteredNodes = nodes.filter(Boolean);
-                // console.log("evalNodes:", filteredNodes.map(n => n.type));
-                // console.log("evalNodes:", filteredNodes.map(n => n.type));
-
                 // Yield the individual user-visible results
                 let result;
                 // Need unique copies to make a special duplicate generator
@@ -3136,9 +3240,9 @@
 
                 // Text and the output of Inline Expressions
                 // are combined to deliver a TextNode.
-                if (node instanceof nodeTypes.Text || node instanceof nodeTypes.Expression) {
+                if (node.type === 'TextNode' || node.type === 'ExpressionNode') {
                   textRunNodes.push(node);
-                  if (nextNode && node.lineNum === nextNode.lineNum && (nextNode instanceof nodeTypes.Text || nextNode instanceof nodeTypes.Expression)) {
+                  if (nextNode && node.lineNum === nextNode.lineNum && (nextNode.type === 'TextNode' || nextNode.type === 'ExpressionNode')) {
                     // Same line, with another text equivalent to add to the
                     // text run further on in the loop, so don't yield.
                   } else {
@@ -3153,39 +3257,44 @@
                       yield textResult;
                     }
                   }
-                } else if (node instanceof nodeTypes.Shortcut) {
+                } else if (node.type === 'ShortcutNode' || node.type === 'DialogShortcutNode') {
                   // Need to accumulate all adjacent selectables into one list
                   shortcutNodes.push(node);
-                  if (!(nextNode instanceof nodeTypes.Shortcut)) {
+                  if (!nextNode || (nextNode.type !== 'ShortcutNode' && nextNode.type !== 'DialogShortcutNode')) {
                     // Last shortcut in the series, so yield the shortcuts.
                     return yield* _this.handleShortcuts(shortcutNodes, metadata, filteredNodes.slice(1), getGeneratorHere);
                   }
-                } else if (node instanceof nodeTypes.Assignment) {
-                  if (!_this.lookahead) {
+                } else if (node.type === 'SetVariableEqualToNode') { // Assignment is SetVariableEqualToNode in parser?
+                  const varName = node.variableName;
+                  const isInternal = varName && (varName.startsWith('$__') || varName.startsWith('__'));
+                  if (!_this.lookahead || isInternal) {
                     _this.evaluateAssignment(node);
                   }
-                } else if (node instanceof nodeTypes.Conditional) {
+                } else if (node.type === 'IfNode' || node.type === 'IfElseNode' || node.type === 'ElseIfNode' || node.type === 'ElseNode') {
                   // Get the results of the conditional
                   const evalResult = _this.evaluateConditional(node);
                   if (evalResult) {
                     // Run the results if applicable
                     return yield* _this.evalNodes([...evalResult, ...filteredNodes.slice(1)], metadata, shortcutNodes, textRunNodes);
                   }
-                } else if (node instanceof _nodes2.default.JumpCommandNode) {
+                } else if (node.type === 'JumpCommandNode') {
                   const destination = node.destination instanceof _nodes2.default.InlineExpressionNode ? _this.evaluateExpressionOrLiteral(node.destination) : node.destination;
                   const {
                     parserNodes,
                     metadata
                   } = _this.getParserNodes(destination);
                   return yield* _this.evalNodes(parserNodes, metadata);
-                } else if (node instanceof _nodes2.default.StopCommandNode) {
+                } else if (node.type === 'StopCommandNode') {
                   console.log("StopCommandNode hit");
                   return;
+                } else if (node.type === 'DeclareCommandNode') {
+                  // Declarations are handled at load time
                 } else {
+                  if (!node.command) console.log("Falling through to generic command with node type:", node.type, node);
                   const command = _this.evaluateExpressionOrLiteral(node.command);
 
                   // DETOUR IMPLEMENTATION
-                  const detourMatch = command.match(/^detour\s+(.+)$/);
+                  const detourMatch = (command && typeof command === 'string') ? command.match(/^detour\s+(.+)$/) : null;
                   if (detourMatch) {
                     const nodeName = detourMatch[1].trim();
                     const detourInfo = _this.getParserNodes(nodeName);
@@ -3199,7 +3308,7 @@
                   } else if (command === 'return') {
                     // Find the nearest __DETOUR_END__
                     const markerIndex = filteredNodes.findIndex(n => {
-                      if (n instanceof _nodes2.default.GenericCommandNode) {
+                      if (n.type === 'GenericCommandNode') {
                         const cmd = _this.evaluateExpressionOrLiteral(n.command);
                         return cmd === '__DETOUR_END__';
                       }
@@ -3238,7 +3347,7 @@
              * yield a shortcut result then handle the subsequent selection
              * @param {any[]} selections
              */
-            *handleShortcuts(selections, metadata, restNodes, getGeneratorHere) {
+            * handleShortcuts(selections, metadata, restNodes, getGeneratorHere) {
               // Multiple options to choose from (or just a single shortcut)
               // Tag any conditional dialog options that result to false,
               // the consuming app does the actual filtering or whatever
@@ -3397,7 +3506,8 @@
                 VariableNode: a => {
                   const value = this.variables.get(a.variableName);
                   if (value === undefined && !this.lookahead) {
-                    if (a.variableName.startsWith('$__once_') || a.variableName.startsWith('__once_')) {
+                    if (a.variableName.startsWith('$__once_') || a.variableName.startsWith('__once_') ||
+                      a.variableName.startsWith('$__lg_') || a.variableName.startsWith('__lg_')) {
                       return false;
                     }
                     throw new Error(`Attempted to access undefined variable "${a.variableName}"`);
@@ -3705,6 +3815,8 @@
                 variableStorage.display = variableStorage.display || variableStorage.get;
                 this.runner.setVariableStorage(variableStorage);
               }
+              this.registerFunction('random', () => Math.random());
+              this.registerFunction('floor', (n) => Math.floor(n));
               if (functions) {
                 Object.entries(functions).forEach(entry => {
                   this.registerFunction(...entry);
