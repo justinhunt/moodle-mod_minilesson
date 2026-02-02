@@ -27,6 +27,7 @@ namespace mod_minilesson;
 
 defined('MOODLE_INTERNAL') || die();
 
+use context_module;
 use mod_minilesson\constants;
 
 
@@ -501,7 +502,7 @@ class utils
     public static function openai_forward_offer()
     {
         global $CFG;
-        require_once($CFG->libdir . '/filelib.php');
+            require_once($CFG->libdir . '/filelib.php');
 
         // Get the secret from config.
         $apikey = get_config(constants::M_COMPONENT, 'openaikey');
@@ -1162,8 +1163,9 @@ class utils
             $instructions->feedbackscheme = str_replace($search, $replace, (string) $instructions->feedbackscheme);
             $instructions->markscheme = str_replace($search, $replace, (string) $instructions->markscheme);
         }
+        $cmcontext = context_module::instance($cm->id);
         $aigraderesults = self::fetch_ai_grade(
-            $token,
+            $cmcontext->id,
             $moduleinstance->region,
             $moduleinstance->ttslanguage,
             $isspeech,
@@ -1206,6 +1208,7 @@ class utils
             $targetembedding = $item->{constants::AIGRADE_MODELANSWER};
         }
         $textanalyser = new textanalyser(
+            $cmcontext->id,
             $token,
             $transcript,
             $moduleinstance->region,
@@ -1435,36 +1438,14 @@ class utils
     }
 
     // fetch the AI Grade
-    public static function fetch_ai_grade($token, $region, $ttslanguage, $isspeech, $studentresponse, $instructions)
+    public static function fetch_ai_grade($contextid, $region, $ttslanguage, $isspeech, $studentresponse, $instructions)
     {
-        global $USER;
-        $instructionsjson = json_encode($instructions);
-        // The REST API we are calling
-        $functionname = 'local_cpapi_call_ai';
-
-        // The processing is slightly different for speech and text.
-        $action = $isspeech ? 'autograde_speech' : 'autograde_text';
-
-        $params = [];
-        $params['wstoken'] = $token;
-        $params['wsfunction'] = $functionname;
-        $params['moodlewsrestformat'] = 'json';
-        $params['action'] = $action;
-        $params['appid'] = 'mod_solo';
-        $params['prompt'] = $instructionsjson;
-        $params['language'] = $ttslanguage;
-        $params['subject'] = $studentresponse;
-        $params['region'] = $region;
-        $params['owner'] = hash('md5', $USER->username);
-
-        // log.debug(params);
-
-        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
-        $response = self::curl_fetch($serverurl, $params);
-        if (!self::is_json($response)) {
+        $payloadobject = $isspeech ?
+            aimanager::autograde_speech($contextid, $region, $ttslanguage, $studentresponse, $instructions) :
+            aimanager::autograde_text($contextid, $region, $ttslanguage, $studentresponse, $instructions);
+        if (!$payloadobject) {
             return false;
         }
-        $payloadobject = json_decode($response);
 
         // returnCode > 0  indicates an error
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
@@ -2956,5 +2937,146 @@ class utils
         ], 'id DESC', '*', 0, 1);
 
         return $attemptrec;
+    }
+
+    public static function get_lang_english_name($langcode) {
+        // default to the langcode
+        $ret = $langcode;
+
+        switch ($langcode) {
+            case  constants::M_LANG_ARAE:
+                $ret = "Arabic";
+                break; // => get_string('ar-ae', constants::M_COMPONENT),
+            case  constants::M_LANG_ARSA:
+                $ret = "Arabic";
+                break; // => get_string('ar-sa', constants::M_COMPONENT),
+            case  constants::M_LANG_DADK:
+                $ret = "Danish";
+                break; // => get_string('da-dk', constants::M_COMPONENT),
+            case  constants::M_LANG_DEDE:
+                $ret = "German";
+                break; // => get_string('de-de', constants::M_COMPONENT),
+            case  constants::M_LANG_DECH:
+                $ret = "German";
+                break; // => get_string('de-ch', constants::M_COMPONENT),
+            case  constants::M_LANG_ENUS:
+                $ret = "English";
+                break; // => get_string('en-us', constants::M_COMPONENT),
+            case  constants::M_LANG_ENGB:
+                $ret = "English";
+                break; // => get_string('en-gb', constants::M_COMPONENT),
+            case  constants::M_LANG_ENAU:
+                $ret = "English";
+                break; // => get_string('en-au', constants::M_COMPONENT),
+            case  constants::M_LANG_ENIN:
+                $ret = "English";
+                break; // => get_string('en-in', constants::M_COMPONENT),
+            case  constants::M_LANG_ENIE:
+                $ret = "English";
+                break; // => get_string('en-ie', constants::M_COMPONENT),
+            case  constants::M_LANG_ENWL:
+                $ret = "English";
+                break; // => get_string('en-wl', constants::M_COMPONENT),
+            case  constants::M_LANG_ENAB:
+                $ret = "English";
+                break; // => get_string('en-ab', constants::M_COMPONENT),
+            case  constants::M_LANG_ESUS:
+                $ret = "Spanish";
+                break; // => get_string('es-us', constants::M_COMPONENT),
+            case  constants::M_LANG_ESES:
+                $ret = "Spanish";
+                break; // => get_string('es-es', constants::M_COMPONENT),
+            case  constants::M_LANG_FAIR:
+                $ret = "Farsi";
+                break; // => get_string('fa-ir', constants::M_COMPONENT),
+            case  constants::M_LANG_FILPH:
+                $ret = "Tagalog";
+                break; // => get_string('fil-ph', constants::M_COMPONENT),
+            case  constants::M_LANG_FRCA:
+                $ret = "French";
+                break; // => get_string('fr-ca', constants::M_COMPONENT),
+            case   constants::M_LANG_FRFR:
+                $ret = "French";
+                break; // => get_string('fr-fr', constants::M_COMPONENT),
+            case  constants::M_LANG_HIIN:
+                $ret = "Hindi";
+                break; // => get_string('hi-in', constants::M_COMPONENT),
+            case   constants::M_LANG_HEIL:
+                $ret = "Hebrew";
+                break; // => get_string('he-il', constants::M_COMPONENT),
+            case  constants::M_LANG_IDID:
+                $ret = "Indonesian";
+                break; // => get_string('id-id', constants::M_COMPONENT),
+            case  constants::M_LANG_ITIT:
+                $ret = "Italian";
+                break; // => get_string('it-it', constants::M_COMPONENT),
+            case  constants::M_LANG_JAJP:
+                $ret = "Japanese";
+                break; // => get_string('ja-jp', constants::M_COMPONENT),
+            case  constants::M_LANG_KOKR:
+                $ret = "Korean";
+                break; // => get_string('ko-kr', constants::M_COMPONENT),
+            case  constants::M_LANG_MINZ:
+                $ret = "Maori";
+                break; // => get_string('ms-my', constants::M_COMPONENT),
+            case  constants::M_LANG_MSMY:
+                $ret = "Malaysian";
+                break; // => get_string('ms-my', constants::M_COMPONENT),
+            case  constants::M_LANG_NLNL:
+                $ret = "Dutch";
+                break; // => get_string('nl-nl', constants::M_COMPONENT),
+            case  constants::M_LANG_PTBR:
+                $ret = "Portuguese";
+                break; // => get_string('pt-br', constants::M_COMPONENT),
+            case  constants::M_LANG_PTPT:
+                $ret = "Portuguese";
+                break; // => get_string('pt-pt', constants::M_COMPONENT),
+            case  constants::M_LANG_RURU:
+                $ret = "Russian";
+                break; // => get_string('ru-ru', constants::M_COMPONENT),
+            case  constants::M_LANG_TAIN:
+                $ret = "Tamil";
+                break; // => get_string('ta-in', constants::M_COMPONENT),
+            case  constants::M_LANG_TEIN:
+                $ret = "Telugu";
+                break; // => get_string('te-in', constants::M_COMPONENT),
+            case  constants::M_LANG_TRTR:
+                $ret = "Turkish";
+                break; // => get_string('tr-tr', constants::M_COMPONENT),
+            case  constants::M_LANG_ZHCN:
+                $ret = "Chinese";
+                break; // => get_string('zh-cn', constants::M_COMPONENT)
+            case  constants::M_LANG_NONO:
+                $ret = "Norwegian";
+                break; // => get_string('nb-no', constants::M_COMPONENT),
+            case  constants::M_LANG_NBNO:
+                $ret = "Norwegian";
+                break; // => get_string('nb-no', constants::M_COMPONENT),
+            case  constants::M_LANG_PLPL:
+                $ret = "Polish";
+                break; // => get_string('pl-pl', constants::M_COMPONENT),
+            case  constants::M_LANG_RORO:
+                $ret = "Romanian";
+                break; // => get_string('ro-ro', constants::M_COMPONENT),
+            case  constants::M_LANG_SVSE:
+                $ret = "Swedish";
+                break; // => get_string('sv-se', constants::M_COMPONENT),
+            case  constants::M_LANG_UKUA:
+                $ret = "Ukranian";
+                break; // => get_string('uk-ua', constants::M_COMPONENT),
+            case  constants::M_LANG_EUES:
+                $ret = "Basque";
+                break; // => get_string('eu-es',constants::M_COMPONENT),
+            case  constants::M_LANG_FIFI:
+                $ret = "Finnish";
+                break; // => get_string('fi-fi',constants::M_COMPONENT),
+            case  constants::M_LANG_HUHU:
+                $ret = "Hungarian";
+                break; // => get_string('hu-hu',constants::M_COMPONENT)
+            case  constants::M_LANG_VIVN:
+                $ret = "Vietnamese";
+                break; // => get_string('vi-vn',constants::M_COMPONENT)
+        }
+        return $ret;
     }
 }

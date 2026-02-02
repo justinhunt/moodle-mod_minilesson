@@ -39,6 +39,9 @@ use mod_minilesson\constants;
  */
 class textanalyser
 {
+    /** @var int $contextid The context id */
+    protected $contextid;
+
     /** @var string $token The cloudpoodll token. */
     protected $token;
 
@@ -75,8 +78,9 @@ class textanalyser
          * The class constructor.
          *
          */
-    public function __construct($token, $passage, $region, $language, $targetembedding = false, $userlanguage = false, $targettopic = false)
+    public function __construct($contextid, $token, $passage, $region, $language, $targetembedding = false, $userlanguage = false, $targettopic = false)
     {
+        $this->contextid = $contextid;
         $this->token = $token;
         $this->region = $region;
         $this->passage = $passage;
@@ -380,8 +384,6 @@ class textanalyser
     //fetch the relevance by topic
     public function fetch_relevance_topic($topic, $passage = '')
     {
-        global $USER;
-
         // Default to 100% relevant if no TTS model.
         if ($topic === false || empty($topic)) {
             return 100;
@@ -392,28 +394,16 @@ class textanalyser
             $passage = $this->passage;
         }
 
-        // The REST API we are calling.
-        $functionname = 'local_cpapi_call_ai';
-
-        $params = array();
-        $params['wstoken'] = $this->token;
-        $params['wsfunction'] = $functionname;
-        $params['moodlewsrestformat'] = 'json';
-        $params['action'] = 'get_topic_relevance';
-        $params['appid'] = 'mod_minilesson';
-        $params['prompt'] = $passage;
-        $params['subject'] = $topic;
-        $params['language'] = $this->language;
-        $params['region'] = $this->region;
-        $params['owner'] = hash('md5', $USER->username);
-
-
-        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
-        $response = self::curl_fetch($serverurl, $params, 'post');
-        if (!self::is_json($response)) {
+        $payloadobject = aimanager::get_topic_relevance(
+            $this->contextid,
+            $this->region,
+            $this->language,
+            $topic,
+            $passage
+        );
+        if (!is_object($payloadobject)) {
             return false;
         }
-        $payloadobject = json_decode($response);
 
         // ReturnCode > 0  indicates an error.
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
@@ -804,36 +794,15 @@ class textanalyser
     // fetch the grammar correction suggestions
     public function fetch_grammar_correction($passage = '')
     {
-        global $USER;
-
         // use local passage if not set
         if (empty($passage)) {
             $passage = $this->passage;
         }
 
-        // The REST API we are calling
-        $functionname = 'local_cpapi_call_ai';
-
-        $params = [];
-        $params['wstoken'] = $this->token;
-        $params['wsfunction'] = $functionname;
-        $params['moodlewsrestformat'] = 'json';
-        $params['action'] = 'request_grammar_correction';
-        $params['appid'] = 'mod_minilesson';
-        $params['prompt'] = $passage;
-        $params['language'] = $this->language;
-        $params['subject'] = 'none';
-        $params['region'] = $this->region;
-        $params['owner'] = hash('md5', $USER->username);
-
-        // log.debug(params);
-
-        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
-        $response = self::curl_fetch($serverurl, $params);
-        if (!self::is_json($response)) {
+        $payloadobject = aimanager::request_grammar_correction($this->contextid, $this->region, $this->language, $passage);
+        if (!is_object($payloadobject)) {
             return false;
         }
-        $payloadobject = json_decode($response);
 
         // returnCode > 0  indicates an error
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
@@ -859,35 +828,19 @@ class textanalyser
     // fetch the CEFR Level
     public function fetch_cefr_level($passage = '')
     {
-        global $USER;
-
         if (empty($passage)) {
             $passage = $this->passage;
         }
 
-        // The REST API we are calling
-        $functionname = 'local_cpapi_call_ai';
-
-        $params = [];
-        $params['wstoken'] = $this->token;
-        $params['wsfunction'] = $functionname;
-        $params['moodlewsrestformat'] = 'json';
-        $params['action'] = 'predict_cefr';
-        $params['appid'] = 'mod_minilesson';
-        $params['prompt'] = $passage;// urlencode($passage);
-        $params['language'] = $this->language;
-        $params['subject'] = 'none';
-        $params['region'] = $this->region;
-        $params['owner'] = hash('md5', $USER->username);
-
-        // log.debug(params);
-
-        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
-        $response = self::curl_fetch($serverurl, $params);
-        if (!self::is_json($response)) {
+        $payloadobject = aimanager::predict_cefr(
+            $this->contextid,
+            $this->region,
+            $this->language,
+            $passage
+        );
+        if (!is_object($payloadobject)) {
             return false;
         }
-        $payloadobject = json_decode($response);
 
         // returnCode > 0  indicates an error
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
@@ -965,35 +918,19 @@ class textanalyser
     // fetch the Idea Count
     public function fetch_idea_count($passage = '')
     {
-        global $USER;
-
         if (empty($passage)) {
             $passage = $this->passage;
         }
 
-        // The REST API we are calling
-        $functionname = 'local_cpapi_call_ai';
-
-        $params = [];
-        $params['wstoken'] = $this->token;
-        $params['wsfunction'] = $functionname;
-        $params['moodlewsrestformat'] = 'json';
-        $params['action'] = 'count_unique_ideas';
-        $params['appid'] = 'mod_minilesson';
-        $params['prompt'] = $passage;// urlencode($passage);
-        $params['language'] = $this->language;
-        $params['subject'] = 'none';
-        $params['region'] = $this->region;
-        $params['owner'] = hash('md5', $USER->username);
-
-        // log.debug(params);
-
-        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
-        $response = self::curl_fetch($serverurl, $params);
-        if (!self::is_json($response)) {
+        $payloadobject = aimanager::count_unique_ideas(
+            $this->contextid,
+            $this->region,
+            $this->language,
+            $passage
+        );
+        if (!is_object($payloadobject)) {
             return false;
         }
-        $payloadobject = json_decode($response);
 
         // returnCode > 0  indicates an error
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
