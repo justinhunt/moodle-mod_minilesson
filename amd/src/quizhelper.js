@@ -237,10 +237,17 @@ define(
                     slice.forEach(function (i) {
                         innerclass = i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
                         innerhtml = (i !== (slice.length - 1)) ? "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>" : "";
+                        if (i === current) {
+                            html += "<div class='minilesson_quiz_progress_current'>";
+                        }
                         html += "<div class='minilesson_quiz_progress_item " +
                         (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " +
                         (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" +
-                        (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>" + innerhtml;
+                        (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>";
+                        if (i === current) {
+                            html += "</div>";
+                        }
+                        html += innerhtml;
                     });
                 } else {
                     if (current > total - 6) {
@@ -253,9 +260,15 @@ define(
                     var html = "",innerhtml,innerclass;
                     var lastvalue = slice[slice.length - 1];
                     slice.forEach(function (i) {
+                        if (i === current) {
+                            html += "<div class='minilesson_quiz_progress_current'>";
+                        }
                         html += "<div class='minilesson_quiz_progress_item " + (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " + (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" + (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>";
                         innerclass = (i === lastvalue && i < total - 2) ? "minilesson_quiz_progress_dashedline" : i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
                         innerhtml = "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>";
+                        if (i === current) {
+                            html += "</div>";
+                        }
                         html += innerhtml;
                     });
                     //end marker
@@ -288,9 +301,10 @@ define(
                     theoldquestion.hide();
 
                     var nextindex = currentquizdataindex + 1;
-                    var nextitem = this.quizdata[nextindex];
+                    var nextitem = dd.quizdata[nextindex];
                     //show the question
-                    $("#" + nextitem.uniqueid + "_container").show().trigger("showElement");
+
+                    dd.showStep($("#" + nextitem.uniqueid + "_container"));
                   //any per question type init that needs to occur can go here
                     switch (nextitem.type) {
                         case def.qtype_speechcards:
@@ -316,14 +330,6 @@ define(
                         case def.qtype_fiction:
                         default:
                     }//end of nextitem switch
-
-                  //autoplay audio if we need to
-                    var ttsquestionplayer = $("#" + nextitem.uniqueid + "_container audio.mod_minilesson_itemttsaudio");
-                    if (ttsquestionplayer.data('autoplay') == "1") {
-                        var that = this;
-                        setTimeout(function () {
-                            ttsquestionplayer[0].play();}, that.autoplaydelay);
-                    }
                 } else {
                   //just reload and re-fetch all the data to display
                     $(".minilesson_nextbutton").prop("disabled", true);
@@ -389,18 +395,33 @@ define(
 
             },
 
-
+            showStep: function($container) {
+                $container.show();
+                $container.on('showElement', () => {
+                    $container.find('[data-region="activity-wrapper"]').show();
+                    $container.find('[data-region="splashscreen"]').hide();
+                    //autoplay audio if we need to
+                    var ttsquestionplayer = $("#" + this.quizdata[0].uniqueid + "_container audio.mod_minilesson_itemttsaudio");
+                    if (ttsquestionplayer.data('autoplay') == "1") {
+                        var that = this;
+                        setTimeout(function () {
+                            ttsquestionplayer[0].play();
+                        }, that.autoplaydelay);
+                    }
+                });
+                this.render_quiz_progress(0,this.quizdata.length);
+                const $splashscreen = $container.find('[data-region="splashscreen"]');
+                if ($splashscreen.length > 0) {
+                    $splashscreen.show();
+                    $splashscreen.on('click', '[data-action="startmodule"]', () => $container.trigger("showElement"));
+                    return;
+                }
+                $container.trigger("showElement");
+            },
 
             start_quiz: function () {
-                $("#" + this.quizdata[0].uniqueid + "_container").show().trigger("showElement");
-              //autoplay audio if we need to
-                var ttsquestionplayer = $("#" + this.quizdata[0].uniqueid + "_container audio.mod_minilesson_itemttsaudio");
-                if (ttsquestionplayer.data('autoplay') == "1") {
-                    var that = this;
-                    setTimeout(function () {
-                        ttsquestionplayer[0].play();}, that.autoplaydelay);
-                }
-                this.render_quiz_progress(0,this.quizdata.length);
+                const $container = $("#" + this.quizdata[0].uniqueid + "_container");
+                this.showStep($container);
             },
 
           //this function is overridden by the calling class

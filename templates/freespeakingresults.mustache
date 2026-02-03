@@ -1,85 +1,96 @@
 <div class="ml_freespeaking_results">
-{{#reviewsettings.showreviewdetailed}}
-  <div class="ml_freespeaking_results_summaries">
+  {{#reviewsettings.showreviewdetailed}}
+    <div class="ml_freespeaking_results_summaries">
+      <div class="ml_fs_results_summary">
+        <span class="ml_fs_sumcell_title">{{#str}}sentences, mod_minilesson{{/str}}</span>
+        <span class="ml_fs_sumcell_content">{{stats.sentences}}</span>
+      </div>
+      <div class="ml_fs_results_summary">
+        <span class="ml_fs_sumcell_title">{{#str}}totalwords, mod_minilesson{{/str}}</span>
+        <span class="ml_fs_sumcell_content">{{stats.words}}</span>
+      </div>
+      <div class="ml_fs_results_summary">
+        <span class="ml_fs_sumcell_title">{{#str}}uniquewords, mod_minilesson{{/str}}</span>
+        <span class="ml_fs_sumcell_content">{{stats.wordsunique}}</span>
+      </div>
+      <!--
+      <div class="ml_fs_results_summary">
+        <span class="ml_fs_sumcell_title">{{#str}}ideacount, mod_minilesson{{/str}}</span>
+        <span class="ml_fs_sumcell_content">{{stats.ideacount}}</span>
+      </div>
+      -->
+      <div class="ml_fs_results_summary">
+        <span class="ml_fs_sumcell_title">{{#str}}relevance, mod_minilesson{{/str}}</span>
+        <span class="ml_fs_sumcell_content">{{stats.relevance}}%</span>
+      </div>
+    </div>
+  {{/reviewsettings.showreviewdetailed}}
+  <div class="mlfsr_originaltext_container">
+    <b class="para-bold-title">{{#str}}original, mod_minilesson{{/str}}</b>
+    <br/><span class="mlfsr_originaltext">{{{markeduppassage}}}</span>
+  </div>
+  {{^reviewsettings.hidecorrections}}
+    <div class="mlfsr_correctedtext_container mb-3">
+      <div class="d-flex justify-content-between">
+        <b class="para-bold-title">{{#str}}corrected, mod_minilesson{{/str}}</b>
+        {{>mod_minilesson/summary_togglecorrections}}
+      </div>
+      <span class="mlfsr_correctedtext">{{{markedupcorrections}}}</span>
+    </div>
+  {{/reviewsettings.hidecorrections}}
+  {{#mediaurl}}
+    <div class="ml_freespeaking_results_finalaudio mb-4">
+      <audio controls class="w-100">
+        <source src="{{mediaurl}}" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+  {{/mediaurl}}
+  <!--<div class="ml_freespeaking_results_summaries">
+     not needed currently
     <div class="ml_fs_results_summary">
-      <span class="ml_fs_sumcell_title">{{#str}}sentences, mod_minilesson{{/str}}</span>
-      <span class="ml_fs_sumcell_content">{{stats.sentences}}</span>
+      <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
+      <span class="ml_fs_sumcell_content">{{rawscore}}/{{maxscore}}</span>
     </div>
     <div class="ml_fs_results_summary">
-      <span class="ml_fs_sumcell_title">{{#str}}totalwords, mod_minilesson{{/str}}</span>
+      <span class="ml_fs_sumcell_title">Words</span>
       <span class="ml_fs_sumcell_content">{{stats.words}}</span>
     </div>
-    <div class="ml_fs_results_summary">
-      <span class="ml_fs_sumcell_title">{{#str}}uniquewords, mod_minilesson{{/str}}</span>
-      <span class="ml_fs_sumcell_content">{{stats.wordsunique}}</span>
-    </div>
-    <!--
-    <div class="ml_fs_results_summary">
-      <span class="ml_fs_sumcell_title">{{#str}}ideacount, mod_minilesson{{/str}}</span>
-      <span class="ml_fs_sumcell_content">{{stats.ideacount}}</span>
-    </div>
-    -->
-    <div class="ml_fs_results_summary">
-      <span class="ml_fs_sumcell_title">{{#str}}relevance, mod_minilesson{{/str}}</span>
-      <span class="ml_fs_sumcell_content">{{stats.relevance}}%</span>
-    </div>
-  </div>
-{{/reviewsettings.showreviewdetailed}}
-<div class="mlfsr_originaltext_container"><b>{{#str}}original, mod_minilesson{{/str}}:</b><br/><span class="mlfsr_originaltext">{{{markeduppassage}}}</span></div>
-{{^reviewsettings.hidecorrections}}
-  <div class="mlfsr_correctedtext_container"><b>{{#str}}corrected, mod_minilesson{{/str}}:</b><br/>
-    <span class="mlfsr_correctedtext">{{{markedupcorrections}}}</span>
-    {{>mod_minilesson/summary_togglecorrections}}
-  </div>
-{{/reviewsettings.hidecorrections}}
-{{#mediaurl}}
-  <div class="ml_freespeaking_results_finalaudio">
-    <audio controls class="w-100">
-      <source src="{{mediaurl}}" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-{{/mediaurl}}
-<div class="ml_freespeaking_results_summaries">
-  <!-- not needed currently
-  <div class="ml_fs_results_summary">
-    <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
-    <span class="ml_fs_sumcell_content">{{rawscore}}/{{maxscore}}</span>
-  </div>
-  <div class="ml_fs_results_summary">
-    <span class="ml_fs_sumcell_title">Words</span>
-    <span class="ml_fs_sumcell_content">{{stats.words}}</span>
-  </div>
-  -->
+
+  </div>-->
+</div>
+<div class="ml_freespeaking_feedback">
   <div class="ml_fs_results_summary" style="margin: auto">
     {{#reviewsettings.showscorepercentage}}
       <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
       <span class="ml_fs_sumcell_content">{{percentscore}}%</span>
     {{/reviewsettings.showscorepercentage}}
     {{#reviewsettings.showscorestarrating}}
-       <span class="ml_fs_sumcell_title">{{#str}}result , mod_minilesson{{/str}}</span>
-       {{#yellowstars}}
-        <span><img src="{{{wwwroot}}}/mod/minilesson/pix/yellow_star.png"/></span>
+        <span class="ml_fs_sumcell_title sr-only">{{#str}}result , mod_minilesson{{/str}}</span>
+        {{#yellowstars}}
+        <span><img src="{{{wwwroot}}}/mod/minilesson/pix/yellow_star.svg"/></span>
       {{/yellowstars}}
       {{#graystars}}
-          <span><img src="{{{wwwroot}}}/mod/minilesson/pix/gray_star.png"/></span>
+          <span><img src="{{{wwwroot}}}/mod/minilesson/pix/gray_star.svg"/></span>
       {{/graystars}}
     {{/reviewsettings.showscorestarrating}}
   </div>
-</div>
-</div>
-<div class="ml_freespeaking_feedback">
-<br/><b>{{#str}}feedback, mod_minilesson{{/str}}:</b>
-<ul class="{{rtl}}">
-{{#feedback}}
-<li>{{.}}</li>
-{{/feedback}}
-</ul>
+  <br/>
+  <b>{{#str}}feedback, mod_minilesson{{/str}}</b>
+  <ul class="freespeaking-feedback-list {{rtl}}">
+    {{#feedback}}
+      <li>
+        {{.}}
+      </li>
+    {{/feedback}}
+  </ul>
 </div>
 {{^noreattempt}}
-<div class="minilesson_actionbutton">
-<a class="btn btn-secondary center" href="#" id = "{{uniqid}}_reattempt">
-    {{#str}}reattempt, mod_minilesson{{/str}}</a>
+  <div class="minilesson_actionbutton">
+    <a class="btn center reattempt_btn" href="#" id = "{{uniqid}}_reattempt">
+      <i class="fa fa-refresh"></i>
+      {{#str}}reattempt, mod_minilesson{{/str}}
+    </a>
 </div>
 {{/noreattempt}}
 {{^element.frozen}}
@@ -88,16 +99,19 @@
       var reattemptbutton = $('#{{uniqid}}_reattempt');
       reattemptbutton.on('click',function(e){
         e.preventDefault();
-        notification.confirm('{{#str}}reattempt, mod_minilesson{{/str}}', 
+        notification.confirm('{{#str}}reattempt, mod_minilesson{{/str}}',
                             '{{#str}}reallyreattempt, mod_minilesson{{/str}}',
                             '{{#str}}reattempt, mod_minilesson{{/str}}','',
                             function(){
                                 reattemptbutton .closest('.ml_freespeaking_resultsbox').hide();
                                 reattemptbutton .closest('.ml_freespeaking_pendingbox').hide();
                                 reattemptbutton .closest('.ml_freespeaking_resultsbox').siblings('.ml_freespeaking_actionbox').show();
+                                reattemptbutton .closest('[data-region="activity-wrapper"]')
+                                    .find('.mod_minilesson_iteminstructions,.mod_minilesson_itemtext,.ml_freespeaking_finishedmessage,.progress-container')
+                                    .show();
                             });
-            
-            
+
+
       });
     });
 {{/js}}

@@ -1,5 +1,7 @@
-<div id="{{uniqueid}}_container" class="minilesson_questioncontainer" style="display: none">
+<div id="{{uniqueid}}_container" class="minilesson_questioncontainer {{{ type }}}-item-box" style="display: none">
   {{> mod_minilesson/quiz_progress}}
+  {{$slashscreen}}{{/slashscreen}}
+  <div class="activity-wrapper" data-region="activity-wrapper" style="display: none">
   <audio id="{{uniqueid}}_player"></audio>
   <!-- @@CLOUDPOODLLTOKEN@@ -->
   <!-- title + instructions -->

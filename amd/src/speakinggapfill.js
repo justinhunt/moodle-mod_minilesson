@@ -607,6 +607,7 @@ define(['jquery',
             if (hasdefinition) {
                 code += "<div class='definition-container'><div class='definition'>"
                     + "<div class='hinticon-container'><i class='fa fa-lightbulb-o hinticon'></i></div>"
+                    + "<h4 class='hint-title'>Hint</h4>"
                     + self.items[self.game.pointer].definition + "</div>";
             }
 
