@@ -134,7 +134,9 @@ define(
                 self.pendingbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_pendingbox");
                 self.resultsbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_resultsbox");
                 self.timerdisplay = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_timerdisplay");
-
+                self.iteminstructions = $("#" + self.itemdata.uniqueid + "_container div.mod_minilesson_iteminstructions");
+                self.itemtext = $("#" + self.itemdata.uniqueid + "_container div.mod_minilesson_itemtext");
+                self.finishedmessage = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_finishedmessage");
               // Callback: Recorder updates.
                 var recorderCallback = function (message) {
 
@@ -267,6 +269,9 @@ define(
                                         );
                                     }
                                     //show and hide
+                                    self.iteminstructions.hide();
+                                    self.itemtext.hide();
+                                    self.finishedmessage.hide();
                                     self.resultsbox.show();
                                     self.pendingbox.hide();
                                     self.actionbox.hide();
@@ -280,6 +285,8 @@ define(
                                 }
                             );// End of templates
                             if (self.itemdata.timelimit > 0) {
+                                let timerelementcontainer = $("#" + self.itemdata.uniqueid + "_container .progress-container");
+                                timerelementcontainer.hide();
                                 var timerelement = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer");
                                 var timerinterval = timerelement.attr('timer');
                                 if (timerinterval) {

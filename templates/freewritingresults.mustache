@@ -25,15 +25,21 @@
       </div>
     </div>
   {{/reviewsettings.showreviewdetailed}}
-  <div class="mlfsr_originaltext_container"><b>{{#str}}original, mod_minilesson{{/str}}:</b><br/><span class="mlfsr_originaltext">{{{markeduppassage}}}</span></div>
+  <div class="mlfsr_originaltext_container">
+    <b class="para-bold-title">{{#str}}original, mod_minilesson{{/str}}</b>
+    <br/><span class="mlfsr_originaltext">{{{markeduppassage}}}</span>
+  </div>
   {{^reviewsettings.hidecorrections}}
-    <div class="mlfsr_correctedtext_container"><b>{{#str}}corrected, mod_minilesson{{/str}}:</b><br/>
+    <div class="mlfsr_correctedtext_container mb-3">
+      <div class="d-flex justify-content-between">
+        <b class="para-bold-title">{{#str}}corrected, mod_minilesson{{/str}}</b>
+        {{>mod_minilesson/summary_togglecorrections}}
+      </div>
       <span class="mlfsr_correctedtext">{{{markedupcorrections}}}</span>
-      {{>mod_minilesson/summary_togglecorrections}}
     </div>
   {{/reviewsettings.hidecorrections}}
-  <div class="ml_freespeaking_results_summaries">
-    <!-- not needed currently
+  <!--<div class="ml_freespeaking_results_summaries">
+     not needed currently
     <div class="ml_fs_results_summary">
       <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
       <span class="ml_fs_sumcell_content">{{rawscore}}/{{maxscore}}</span>
@@ -42,55 +48,62 @@
       <span class="ml_fs_sumcell_title">Words</span>
       <span class="ml_fs_sumcell_content">{{stats.words}}</span>
     </div>
-    -->
-    <div class="ml_fs_results_summary" style="margin: auto">
-      {{#reviewsettings.showscorepercentage}}
-        <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
-        <span class="ml_fs_sumcell_content">{{percentscore}}%</span>
-      {{/reviewsettings.showscorepercentage}}
-      {{#reviewsettings.showscorestarrating}}
-        <span class="ml_fs_sumcell_title">{{#str}}result , mod_minilesson{{/str}}</span>
-        {{#yellowstars}}
-          <span><img src="{{{wwwroot}}}/mod/minilesson/pix/yellow_star.png"/></span>
-        {{/yellowstars}}
-        {{#graystars}}
-            <span><img src="{{{wwwroot}}}/mod/minilesson/pix/gray_star.png"/></span>
-        {{/graystars}}
-      {{/reviewsettings.showscorestarrating}}
-    </div>
-  </div>
+
+  </div>-->
 </div>
 <div class="ml_freespeaking_feedback">
-<br/><b>{{#str}}feedback, mod_minilesson{{/str}}:</b>
-<ul class="{{rtl}}">
-  {{#feedback}}
-  <li>{{.}}</li>
-  {{/feedback}}
-</ul>
+  <div class="ml_fs_results_summary">
+    {{#reviewsettings.showscorepercentage}}
+      <span class="ml_fs_sumcell_title">{{#str}}score , mod_minilesson{{/str}}</span>
+      <span class="ml_fs_sumcell_content">{{percentscore}}%</span>
+    {{/reviewsettings.showscorepercentage}}
+    {{#reviewsettings.showscorestarrating}}
+      <span class="ml_fs_sumcell_title sr-only">{{#str}}result , mod_minilesson{{/str}}</span>
+      {{#yellowstars}}
+        <span><img src="{{{wwwroot}}}/mod/minilesson/pix/yellow_star.svg"/></span>
+      {{/yellowstars}}
+      {{#graystars}}
+          <span><img src="{{{wwwroot}}}/mod/minilesson/pix/gray_star.svg"/></span>
+      {{/graystars}}
+    {{/reviewsettings.showscorestarrating}}
+  </div>
+  <br/>
+  <b class="freewriting-feedback-title">{{#str}}feedback, mod_minilesson{{/str}}</b>
+  <ul class="freewriting-feedback-list {{rtl}}">
+    {{#feedback}}
+      <li>
+        {{.}}
+      </li>
+    {{/feedback}}
+  </ul>
 </div>
- {{^noreattempt}}
-<div class="minilesson_actionbutton">
-<a class="btn btn-secondary center" href="#" id = "{{uniqid}}_reattempt">
-  {{#str}}reattempt, mod_minilesson{{/str}}</a>
-</div>
+{{^noreattempt}}
+  <div class="minilesson_actionbutton">
+    <a class="btn center reattempt_btn" href="#" id = "{{uniqid}}_reattempt">
+      <i class="fa fa-refresh"></i>
+      {{#str}}reattempt, mod_minilesson{{/str}}
+    </a>
+  </div>
 {{/noreattempt}}
+
 {{^element.frozen}}
-{{#js}}
-    require(['jquery', 'core/notification', 'core/log'], function($, notification, log) {
-      var reattemptbutton = $('#{{uniqid}}_reattempt');
-      reattemptbutton.on('click',function(e){
-        e.preventDefault();
-        notification.confirm('{{#str}}reattempt, mod_minilesson{{/str}}', 
-                            '{{#str}}reallyreattempt, mod_minilesson{{/str}}',
-                            '{{#str}}reattempt, mod_minilesson{{/str}}','',
-                            function(){
-                                reattemptbutton .closest('.ml_freewriting_resultsbox').hide();
-                                reattemptbutton .closest('.ml_freewriting_pendingbox').hide();
-                                reattemptbutton .closest('.ml_freewriting_resultsbox').siblings('.ml_freewriting_actionbox').show();
-                            });
-            
-            
-      });
-    });
-{{/js}}
+  {{#js}}
+      require(['jquery', 'core/notification', 'core/log'], function($, notification, log) {
+        var reattemptbutton = $('#{{uniqid}}_reattempt');
+        reattemptbutton.on('click',function(e){
+          e.preventDefault();
+          notification.confirm('{{#str}}reattempt, mod_minilesson{{/str}}',
+                              '{{#str}}reallyreattempt, mod_minilesson{{/str}}',
+                              '{{#str}}reattempt, mod_minilesson{{/str}}','',
+                              function(){
+                                  reattemptbutton .closest('.ml_freewriting_resultsbox').hide();
+                                  reattemptbutton .closest('.ml_freewriting_pendingbox').hide();
+                                  reattemptbutton .closest('.ml_freewriting_resultsbox').siblings('.ml_freewriting_actionbox').show();
+                                  reattemptbutton .closest('[data-region="activity-wrapper"]')
+                                    .find('.mod_minilesson_iteminstructions,.mod_minilesson_itemtext,.minilesson_questionheader_contents, .progress-container')
+                                    .show();
+                              });
+          });
+        });
+  {{/js}}
 {{/element.frozen}}

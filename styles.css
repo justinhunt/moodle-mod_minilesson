@@ -1799,6 +1799,10 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   margin-right: auto;
 }
 
+.minilesson_quiz_progress:empty {
+  display: none;
+}
+
 .minilesson_quiz_progress_item {
   border-radius: 50%;
   width: 32px;
@@ -1818,6 +1822,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .minilesson_quiz_progress_item_current {
   background-color: #506DFF;
   color: #FFFFFF;
+  border-color: #506DFF;
 }
 
 .minilesson_quiz_progress_finalitem {
@@ -1839,6 +1844,7 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 .minilesson_quiz_progress_item_completed {
   background-color: #506DFF;
   color: #FFFFFF;
+  border-color: #506DFF;
 }
 
 .minilesson_quiz_progress_line {
@@ -2084,6 +2090,8 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   text-align: center;
 }
 
+.ml_freewriting_startscreen .freewriting_start_btn,
+.startmodule_splashscreen .startmodule_btn,
 .minilesson_landr_player_box .landr_start_btn,
 .minilesson_dictate_player_box .dictate_start_btn,
 .minilesson_fluency_box .fluency_start_btn,
@@ -2468,45 +2476,33 @@ span.mod_minilesson_finishedanswer {
   border-radius: 8px;
 }
 
-.gapfill-container .definition .hinticon-container {
-  /* position: absolute; */
-  float: left;
-  background-color: #5067FF;
-  color: #FFF;
-  width: 30px;
-  height: 30px;
-  top: 0;
-  left: 10px;
-  border-radius: 0px 0px 5px 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.07);
-}
-
 /* Listening Gapfill */
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .activity-wrapper,
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .startmodule_splashscreen,
 .minilesson_lgapfill_player_box {
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
   position: relative;
   margin: auto;
   background-color: #FFFFFF;
   border-radius: 8px;
+  overflow: hidden;
 }
 
-.minilesson_lgapfill_player_box .lgapfill_title {
-  color: #414C81;
+.startmodule_splashscreen .startmodule_mainmenu {
+  text-align: center;
 }
 
+.startmodule_splashscreen .startmodule_btn,
 .minilesson_lgapfill_player_box .lgapfill_start_btn {
   background-color: #506dff;
   margin-top: 0;
-  width: 96px;
-  height: 36px;
   border-radius: 8px;
   border-color: #506dff;
   color: #FFFFFF;
+  padding: 6px 20px;
 }
 
+.startmodule_splashscreen .startmodule_btn:is(:hover,:focus,:active),
 .minilesson_lgapfill_player_box .lgapfill_start_btn:hover,
 .minilesson_lgapfill_player_box .lgapfill_start_btn:focus,
 .minilesson_lgapfill_player_box .lgapfill_start_btn:active {
@@ -2517,10 +2513,19 @@ span.mod_minilesson_finishedanswer {
   color: #FFFFFF;
 }
 
+.startmodule_splashscreen .startmodule_image,
 .minilesson_lgapfill_player_box .lgapfill_image {
   padding: 20px;
   border-radius: 100%;
   background: #f3ecfc;
+  overflow: visible;
+  height: 70px;
+  width: 70px;
+}
+
+.ml_freewriting_startscreen .freewriting_image,
+.ml_freespeaking_startscreen .freespeaking_image {
+  background-color: #FFDE89;
 }
 
 .minilesson_lgapfill_player_box .lgapfill_prompt {
@@ -2608,6 +2613,7 @@ span.mod_minilesson_finishedanswer {
   padding: 10px;
 }
 
+.startmodule_splashscreen .startmodule_title,
 .minilesson_lgapfill_player_box .lgapfill_title {
   height: auto;
   display: flex;
@@ -2617,6 +2623,7 @@ span.mod_minilesson_finishedanswer {
   padding: 12px 0;
   font-size: 24px;
   font-weight: bold;
+  color: #414C81;
 }
 
 .minilesson_lgapfill_player_box .lgapfill_controls {
@@ -2983,6 +2990,7 @@ span.mod_minilesson_finishedanswer {
   padding: 20px;
   border-radius: 100%;
   background: #f3ecfc;
+  overflow: visible;
 }
 
 .minilesson_sgapfill_player_box .sgapfill_start_btn {
@@ -3262,7 +3270,6 @@ body.poodll-minilesson-embed #page {
 
 .mlfsr_correctedtext_container,
 .mlfsr_originaltext_container {
-  border: 1px solid grey;
   padding: 6px;
   font-size: large;
 }
@@ -3565,6 +3572,7 @@ textarea.ml_freewriting_textarea {
   background-color: #FFFFFF;
 }
 
+.startmodule_splashscreen .startmodule_description,
 .minilesson_fluency_box .fluency_description,
 .minilesson_sgapfill_player_box .sgapfill_description,
 .minilesson_tgapfill_player_box .tgapfill_description,
@@ -5394,67 +5402,102 @@ div.ml_speedyplayer_row_buttons {
   }
 }
 
+@keyframes shake-well{
+  0%, 100%{ transform:translateX(0); }
+  20%{ transform:translateX(-8px); }
+  40%{ transform:translateX(8px); }
+  60%{ transform:translateX(-6px); }
+  80%{ transform:translateX(6px); }
+}
+
+@keyframes matchFade {
+  to {
+    opacity:0;
+    transform:scale(0);
+    visibility:hidden;
+  }
+}
+
 .ml_scatter_stage {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 1.25%;
+  box-sizing: border-box;
+  background: radial-gradient(96.87% 96.87% at 50% 50%, #475ABA 0%, #3C4B96 100%);
+  padding: 12px 12px 0 12px;
+  margin: auto;
 }
 
 .ml_scatter_stage .ml_scatter_listitem {
-  width: 174px;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 24%;
+  min-width: 140px;
+  height: 140px;
+  flex-shrink: 0;
+  padding: 12px;
+  border-radius: 8px;
+  border: 6px solid #D0D7F8;
+  background: #FFF;
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.10);
   text-align: center;
-  min-height: 100px;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  padding: 10px;
-  margin-bottom: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: 200ms;
+  font-size: 18px;
+  font-weight: 500;
+  color: #1F2334;
+  margin-bottom: 12px;
 }
 
-.ml_scatter_stage .ml_scatter_listitem.shake-constant {
-  animation-name: shake-horizontal;
-  animation-duration: 50ms;
-  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  animation-iteration-count: 2;
+.ml_scatter_stage .ml_scatter_listitem.shake {
+  animation: shake-well 300ms ease-out;
 }
 
-@keyframes ml_scatter_disappear {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  100% {
-    transform: scale(0);
-    opacity: 0;
-  }
+.ml_scatter_stage .ml_scatter_listitem.matched {
+  pointer-events:none;
+  animation: matchFade 400ms ease-out forwards;
 }
 
-.ml_scatter_stage .ml_scatter_listitem.ml_scatter_anim_correct {
-  animation-name: ml_scatter_disappear;
-  animation-duration: 500ms;
-  animation-timing-function: ease-out;
-  animation-fill-mode: forwards;
+.ml_scatter_stage .ml_scatter_listitem.selected {
+  border-color: #FDDA81;
 }
 
-.ml_scatter_stage .ml_scatter_listitem.ml_scatter_anim_incorrect {
-  animation-name: shake-horizontal;
-  animation-duration: 100ms;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: 5;
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .mod_minilesson_iteminstructions {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 20px;
+  border-bottom: 1px solid #E6E9FD;
+  max-width: 100%;
 }
 
-.ml_scatter_stage .ml_scatter_listitem:active,
-.ml_scatter_stage .ml_scatter_listitem.borderblue {
-  border: 1px solid blue;
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .mod_minilesson_itemtext {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 20px 40px;
+  max-width: 100%;
+  text-align: left;
 }
 
-.ml_scatter_stage .ml_scatter_listitem.invisible {
-  display: none;
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .activity-wrapper:before {
+  content: " ";
+  height: 1px;
+  display: block;
 }
+
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .startmodule_splashscreen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
 
 #page-mod-minilesson-itemtypes .itemimg {
   width: 30px;
@@ -6195,12 +6238,12 @@ span.wrongitem {
 
 .minilesson_quiz_progress_completed {
   background-color: #506DFF;
-  height: 5px;
+  height: 4px;
 }
 
 .minilesson_quiz_progress_incompleted {
   background-color: #C7D2FF;
-  height: 5px;
+  height: 4px;
   margin-left: 2px;
   margin-right: 2px;
   border-radius: 5px;
@@ -6208,7 +6251,7 @@ span.wrongitem {
 
 .minilesson_quiz_progress_dashedline {
   border-bottom: 2px dashed #C7D2FF;
-  height: 5px;
+  height: 4px;
   margin-left: 2px;
   margin-right: 2px;
   border-radius: 5px;
@@ -7030,4 +7073,263 @@ span.wrongitem {
 .minilesson_fiction_yarncontainer.storymode #scroll-bottom-btn:hover {
   background-color: #fff;
   color: #5b4d3b;
+}
+
+.minilesson_quiz_progress .minilesson_quiz_progress_current {
+  border: 1px solid #506DFF;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.freewriting-item-box .mod_minilesson_iteminstructions {
+  color: #1F2334;
+}
+
+.freewriting-item-box .mod_minilesson_itemtext,
+.freespeaking-item-box .mod_minilesson_itemtext {
+  font-weight: 400;
+  font-size: 16px;
+  color: #1F2334;
+}
+
+.freewriting-item-box .ml_freewriting_actionbox {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 20px 40px;
+  max-width: 100%;
+  text-align: left;
+  border-radius: 4px;
+}
+
+.freewriting-item-box .ml_freewriting_textareacontainer {
+  border: 1px solid #B7BDE3;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.freewriting-item-box .ml_freewriting_textarea {
+  border-width: 0;
+  padding: 20px;
+}
+
+.freewriting-item-box .ml_freewriting_textarea:focus-visible {
+  outline-color: #B7BDE3;
+}
+
+.freewriting-item-box .mod_minilesson_fw_wordgoal,
+.freespeaking-item-box .mod_minilesson_fs_wordgoal {
+  padding: 10px;
+  background-color: #E6E9FD66;
+  width: 100%;
+  color: #3C51DA;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.freewriting-item-box .word-count-stats,
+.freespeaking-item-box .word-count-stats {
+  color: #80859D;
+  font-weight: 300;
+  font-size: 21px;
+}
+
+.freewriting-item-box .ml_wordcount,
+.freespeaking-item-box .ml_wordcount {
+  color: #5C669A;
+  font-weight: 600;
+  font-size: 22px;
+}
+
+.freespeaking-item-box .ml_freespeaking_timerdisplay {
+  color: #404871;
+  font-size: 18px;
+}
+
+.freewriting-item-box .ml_freewriting_submitbutton {
+  margin: 30px auto 10px;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  max-width: 20%;
+  border-radius: 5px;
+  background-color: #506DFF;
+  font-weight: 600;
+}
+
+.freewriting-item-box .mod_minilesson_itemimage {
+  max-width: 32%;
+}
+
+.ml_freewriting_resultsbox {
+  color: #000;
+}
+
+.ml_freespeaking_results .ml_freespeaking_results_summaries {
+  padding: 20px 40px;
+  max-width: 100%;
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid #E6E9FD;
+}
+
+.ml_freespeaking_finishedmessage {
+  color: #80859d;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 400;
+  text-align: center;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.ml_freespeaking_results .ml_fs_results_summary {
+    text-align: left;
+}
+
+.ml_freespeaking_results .ml_fs_results_summary .ml_fs_sumcell_title {
+  font-weight: 500;
+  font-size: 13px;
+  color: #727CAD;
+}
+
+.ml_freespeaking_results .ml_fs_results_summary .ml_fs_sumcell_content {
+  font-weight: 600;
+  font-size: 21px;
+  color: #515D99CF;
+}
+
+.ml_freewriting_resultsbox .ml_freespeaking_feedback,
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback {
+  background-color: rgba(230, 233, 253, 0.40);
+  text-align: center;
+  padding: 40px;
+  position: relative;
+}
+
+.ml_freewriting_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary,
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  border: 1px solid #DEE2FC;
+  background-color: #fff;
+  border-radius: 24px;
+  padding: 11px 16px;
+}
+
+.ml_freewriting_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary,
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary {
+  margin: auto
+}
+
+.ml_freewriting_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary img,
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary img {
+    width: 25px;
+}
+
+.ml_freewriting_resultsbox .ml_freespeaking_feedback .freewriting-feedback-title,
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .freewriting-feedback-title {
+  color: #3C51DA;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.ml_freewriting_resultsbox .ml_freespeaking_feedback .freewriting-feedback-list,
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .freespeaking-feedback-list {
+  max-width: 90%;
+  margin: 10px auto;
+  text-align: left;
+  list-style-type: disclosure-closed;
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.ml_freewriting_resultsbox .ml_freespeaking_feedback .freewriting-feedback-list li,
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .freespeaking-feedback-list li {
+    margin-bottom: 16px;
+}
+
+.ml_freewriting_resultsbox .ml_freespeaking_feedback .freewriting-feedback-list li::marker,
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .freespeaking-feedback-list li::marker {
+    color: #506DFF;
+}
+
+.ml_freewriting_resultsbox .mlfsr_originaltext_container ,
+.ml_freewriting_resultsbox .mlfsr_correctedtext_container,
+.ml_freespeaking_resultsbox .mlfsr_originaltext_container ,
+.ml_freespeaking_resultsbox .mlfsr_correctedtext_container,
+.ml_freespeaking_resultsbox .ml_freespeaking_results_finalaudio {
+  padding: 20px 40px;
+}
+
+.ml_freewriting_resultsbox .mlfsr_originaltext_container .para-bold-title,
+.ml_freewriting_resultsbox .mlfsr_correctedtext_container .para-bold-title,
+.ml_freespeaking_resultsbox .mlfsr_originaltext_container .para-bold-title,
+.ml_freespeaking_resultsbox .mlfsr_correctedtext_container .para-bold-title {
+  display: inline-block;
+  color: #506DFF;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+
+.ml_freewriting_resultsbox .mod_minilesson_toggle_differences .mstfd_showall,
+.ml_freewriting_resultsbox .mod_minilesson_toggle_differences .mstfd_hidecrossouts,
+.ml_freespeaking_resultsbox .mod_minilesson_toggle_differences .mstfd_showall,
+.ml_freespeaking_resultsbox .mod_minilesson_toggle_differences .mstfd_hidecrossouts {
+  color: #506DFF;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.ml_freewriting_resultsbox .reattempt_btn,
+.ml_freespeaking_resultsbox .reattempt_btn {
+  border: 1px solid #506DFF;
+  color: #506DFF;
+  border-radius: 8px;
+  margin: 15px;
+}
+
+.ml_freewriting_resultsbox .reattempt_btn:hover,
+.ml_freespeaking_resultsbox .reattempt_btn:hover {
+  color: #506DFF;
+}
+
+.gapfill-container .definition .hinticon-container {
+  position: absolute;
+  float: left;
+  background-color: #5067FF;
+  color: #FFF;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  left: 10px;
+  border-radius: 0px 0px 5px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.07);
+}
+
+.gapfill-container .definition .hint-title {
+  color: #5067FF;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.minilesson_questioncontainer .finishedmessage_btn {
+  padding: 10px;
+  border-radius: 50%;
+  line-height: 12px;
+  background-color: #ff4747;
+  color: white;
+  display: inline-flex;
+  align-items: center;
 }

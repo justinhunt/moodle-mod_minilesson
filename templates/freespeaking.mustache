@@ -1,14 +1,30 @@
-{{> mod_minilesson/questionheader}}
+{{< mod_minilesson/questionheader}}
+{{$slashscreen}}
+<div class="ml_freespeaking_startscreen startmodule_splashscreen" data-region="splashscreen">
+    <div class="freespeaking_image_container startmodule_image_container text-center pt-5">
+        <img class="freespeaking_image startmodule_image" src="{{{itemimageurl}}}" alt="{{#str}}freespeaking, mod_minilesson{{/str}}">
+    </div>
+    <div class="freespeaking_title startmodule_title text-center mt-3">{{#str}}freespeaking, mod_minilesson{{/str}}</div>
+    <div class="freespeaking_description startmodule_description text-center mt-3">{{iteminstructions}}</div>
+    <div class="freespeaking_mainmenu startmodule_mainmenu pt-4 pb-5">
+        <button class="btn freespeaking_start_btn startmodule_btn" data-action="startmodule">
+            {{#str}}start, mod_minilesson{{/str}} <i class="fa fa-play ml-1"></i>
+        </button>
+    </div>
+</div>
+{{/slashscreen}}
+{{/ mod_minilesson/questionheader}}
 {{> mod_minilesson/progresstimer}}
 <div class="minilesson_freespeaking_box">
      <div class="ml_freespeaking_resultsbox"></div>
      <div class="ml_freespeaking_pendingbox hidden"><center><i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i></center></div>
      <div class="ml_freespeaking_actionbox">
-        <div class="ml_freespeaking_speakbtncontainer" style="width:246px;margin:auto;">
+        <div class="ml_freespeaking_speakbtncontainer my-3" style="width:246px;margin:auto;">
                 {{> mod_minilesson/ttrecorder}}
         </div>
-        <div class="timerstatus_{{uniqueid}} ml_freespeaking_timerdisplay ml_recsession"></div>
-        <div class="mod_minilesson_fs_wordgoal {{^countwords}}hidden{{/countwords}} ml_recsession">{{#str}} currentwordcount , mod_minilesson {{/str}}: <span class="ml_wordcount">0</span>/{{targetwordcount}}</div>
+        <div class="timerstatus_{{uniqueid}} ml_freespeaking_timerdisplay ml_recsession mb-4"></div>
+        <div class="mod_minilesson_fs_wordgoal {{^countwords}}hidden{{/countwords}} ml_recsession">{{#str}} currentwordcount , mod_minilesson {{/str}} <p class="mb-0 word-count-stats"><span class="ml_wordcount">0</span>/{{targetwordcount}}</p></div>
      </div>
+     <div class="ml_freespeaking_finishedmessage">Click on the recording button <span class="finishedmessage_btn"><i class="fa fa-stop"></i></span> again when you are finished</div>
 </div>
 {{> mod_minilesson/questionfooter}}

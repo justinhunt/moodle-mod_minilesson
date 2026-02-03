@@ -23,7 +23,8 @@
  */
 
 define(
-    ['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates', 'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame'],
+    ['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates',
+    'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame'],
     function ($, notification, def, log, templates, anim, Ajax, str, spacegame) {
 
         "use strict"; // jshint ;_;
@@ -106,14 +107,7 @@ define(
                 }
                 self.itemdata.shuffleditems = array;
                 self.itemdata.shuffleditems.forEach(shuffleitem => {
-                    shuffleitem.item.classList.remove(
-                        'borderblue',
-                        'border',
-                        'border-success',
-                        'border-warning',
-                        'shake-constant',
-                        'invisible'
-                    );
+                    shuffleitem.item.classList.remove('selected','matched','shake');
                     self.controls.stage.append(shuffleitem.item);
                 });
             },
@@ -125,8 +119,7 @@ define(
                 if (!$listItems.is($target)) {
                     return;
                 }
-                $listItems.filter((_, i) => !i.classList.contains('border-success'))
-                    .removeClass('borderblue border border-warning shake-constant');
+                $listItems.filter((_, i) => !i.classList.contains('matched')).removeClass('shake');
                 const currentIndex = $target.index();
                 if (self.markedIndex.length == 0) {
                     self.markedIndex.push(currentIndex);
@@ -139,33 +132,33 @@ define(
                     const lastIndex = self.markedIndex[0];
                     const lastItem = self.itemdata.shuffleditems[lastIndex];
                     const currentItem = self.itemdata.shuffleditems[currentIndex];
+                    self.markedIndex.push(currentIndex);
                     if (lastItem.key === currentItem.key) {
                         //Correct Choice
                         self.itemdata.scatteritems[currentItem.key].correct = true;
-                        $listItems.eq(lastIndex).addClass('border border-success ml_scatter_anim_correct');
-                        $listItems.eq(currentIndex).addClass('border border-success ml_scatter_anim_correct');
                         setTimeout(function () {
-                            $listItems.eq(lastIndex).addClass('invisible');
-                            $listItems.eq(currentIndex).addClass('invisible');
-                            if (!$listItems.filter(':not(.invisible)').length) {
+                            $listItems.eq(lastIndex).addClass('matched');
+                            $listItems.eq(currentIndex).addClass('matched');
+                            if (!$listItems.filter(':not(.matched)').length) {
                                 self.end();
                             }
-                        }, 500);
+                            self.markedIndex = [];
+                        }, 200);
                     } else {
                         self.itemdata.scatteritems[currentItem.key].correct = false;
-                        $listItems.eq(lastIndex).addClass('border border-warning ml_scatter_anim_incorrect');
-                        $listItems.eq(currentIndex).addClass('border border-warning ml_scatter_anim_incorrect');
+                        $listItems.eq(lastIndex).addClass('shake');
+                        $listItems.eq(currentIndex).addClass('shake');
                         setTimeout(function () {
-                            $listItems.eq(lastIndex).removeClass('border border-warning ml_scatter_anim_incorrect');
-                            $listItems.eq(currentIndex).removeClass('border border-warning ml_scatter_anim_incorrect');
-                        }, 500);
+                            $listItems.eq(lastIndex).removeClass('selected shake');
+                            $listItems.eq(currentIndex).removeClass('selected shake');
+                            self.markedIndex = [];
+                        }, 300);
                     }
-                    self.markedIndex = [];
                 }
                 self.markedIndex.forEach(i => {
-                    $listItems.eq(i).addClass('borderblue');
+                    $listItems.eq(i).addClass('selected');
                 });
-                if (!$listItems.filter(':not(.invisible)').length) {
+                if (!$listItems.filter(':not(.matched)').length) {
                     self.end();
                 }
             },
@@ -277,7 +270,7 @@ define(
                 });
                 self.controls.result_container.show();
                 self.controls.stage.hide();
-                self.controls.progress_container.find('#progresstimer,i').hide();
+                self.controls.progress_container.hide();
                 self.controls.actionbutton.hide();
                 if (self.progressTimer) {
                     clearInterval(self.progressTimer);
