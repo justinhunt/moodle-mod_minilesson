@@ -1285,6 +1285,8 @@ $string['yarnsyntaxok'] = 'Yarn Syntax Ok';
 $string['yarnsyntaxnotok'] = 'Yarn Syntax Not Ok';
 
 $string['aimanager'] = 'AI Manager';
+$string['aimanager_desc'] = 'The AI Manager allows you to select which AI provider to use for various purposes in MiniLesson.';
 $string['grade_student_submission'] = 'Grade student submission';
+$string['grade_student_submission_desc'] = 'Requests to MiniLesson for AI to grade or correct student submissions will be directed to the AI provider selected here, or to Cloud Poodll AI services (the default).';
 $string['cloudpoodll'] = 'Cloud Poodll';
 

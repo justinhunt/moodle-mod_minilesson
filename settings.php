@@ -585,7 +585,7 @@ if ($hassiteconfig) {
     // Add prompt settings page to minilesson category.
     $ADMIN->add('modsettingsminilessoncat', $freewritingsettings);
 
-    // AI MANGER.
+    // AI MANAGER.
     if (class_exists(aimanager::class) && class_exists(\core_ai\manager::class)) {
 
         $aimanagertitle = get_string('aimanager', constants::M_COMPONENT);
@@ -594,16 +594,16 @@ if ($hassiteconfig) {
             new admin_setting_heading(
                 constants::M_COMPONENT . '/aimanager',
                 get_string('aimanager', constants::M_COMPONENT),
-                ''
+                get_string('aimanager_desc', constants::M_COMPONENT)
             )
         );
 
-        foreach (aimanager::get_action_options() as $actiontype => $actioname) {
+        foreach (aimanager::get_action_options() as $actiontype => $actiondetails) {
             $aimanagersettings->add(
                 new admin_setting_configselect(
                     aimanager::get_action_settingname($actiontype),
-                    $actioname,
-                    $actioname,
+                    $actiondetails['name'],
+                    $actiondetails['description'],
                     aimanager::CLOUDPOODLL_OPTION,
                     aimanager::get_provider_options(
                         aimanager::AIMANAGER_ACTIONS[$actiontype]

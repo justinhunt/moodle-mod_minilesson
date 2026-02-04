@@ -82,7 +82,11 @@ class aimanager {
      * @return array
      */
     public static function get_action_options() {
-        $options[self::OPTION_GRADE_STUDENT_SUBMISSION] = get_string('grade_student_submission' , constants::M_COMPONENT);
+        $options[self::OPTION_GRADE_STUDENT_SUBMISSION] = 
+            [
+            'name' => get_string('grade_student_submission' , constants::M_COMPONENT),
+            'description' => get_string('grade_student_submission_desc' , constants::M_COMPONENT),
+            ];
         return $options;
     }
 
