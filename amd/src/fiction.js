@@ -29,6 +29,7 @@ define([
         index: 0,
         quizhelper: null,
         storydata: null,
+        visitednodes: [],
 
         // For making multiple instances
         clone: function () {
@@ -68,6 +69,14 @@ define([
                 "combineTextAndOptionsResults": true,
                 "startAt": "Start",
                 "variableStorage": this.storydata,
+                "functions": {
+                    dice: (sides) => {
+                        return Math.floor(Math.random() * sides) + 1;
+                    },
+                    visited: (nodeName) => {
+                        return this.visitednodes.includes(nodeName);
+                    },
+                }
             };
             log.debug('MiniLesson Fiction: initializing yarnbound with options');
             log.debug(yarnopts);
@@ -152,6 +161,13 @@ define([
             currentResult = this.add_metadata(currentResult);
             log.debug('MiniLesson Fiction: doing render of currentResult');
             log.debug(currentResult);
+
+            if (currentResult && currentResult.metadata && currentResult.metadata.title) {
+                const title = currentResult.metadata.title;
+                if (!this.visitednodes.includes(title)) {
+                    this.visitednodes.push(title);
+                }
+            }
 
             var that = this;
             var yarncontent = {

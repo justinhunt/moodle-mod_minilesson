@@ -59,39 +59,50 @@
               const options = currentGroup.options;
               const groupIndent = " ".repeat(currentGroup.indent);
 
-              // Pass 1: Determine validity vars
-              // We use a pool counter to know how many valid options exist
-              newLines.push(`${groupIndent}<<set $__pool = 0>>`);
+              const conditionalOptions = options.map((opt, idx) => ({ ...opt, idx })).filter(opt => opt.condition);
+              const defaultOptions = options.map((opt, idx) => ({ ...opt, idx })).filter(opt => !opt.condition);
 
-              options.forEach((opt, idx) => {
-                const varName = `${groupVarPrefix}_${idx}`;
-                let cond = opt.condition || "true";
+              // Pass 1: Determine validity vars for conditional options
+              newLines.push(`${groupIndent}<<set $__pool_2 = 0>>`);
 
-                newLines.push(`${groupIndent}<<set ${varName} = ${cond}>>`);
+              conditionalOptions.forEach((opt) => {
+                const varName = `${groupVarPrefix}_${opt.idx}`;
+                newLines.push(`${groupIndent}<<set ${varName} = ${opt.condition}>>`);
                 newLines.push(`${groupIndent}<<if ${varName}>>`);
-                newLines.push(`${groupIndent}    <<set $__pool = $__pool + 1>>`);
+                newLines.push(`${groupIndent}    <<set $__pool_2 = $__pool_2 + 1>>`);
                 newLines.push(`${groupIndent}<<endif>>`);
               });
 
-              // Pass 2: Pick selection
-              newLines.push(`${groupIndent}<<if $__pool > 0>>`);
-              newLines.push(`${groupIndent}    <<set $__pick = floor(random() * $__pool)>>`);
+              // Pass 2: Selection Logic
+              newLines.push(`${groupIndent}<<if $__pool_2 > 0>>`);
+              newLines.push(`${groupIndent}    <<set $__pick = floor(random() * $__pool_2)>>`);
               newLines.push(`${groupIndent}    <<set $__current_idx = 0>>`);
 
-              options.forEach((opt, idx) => {
-                const varName = `${groupVarPrefix}_${idx}`;
-
+              conditionalOptions.forEach((opt) => {
+                const varName = `${groupVarPrefix}_${opt.idx}`;
                 newLines.push(`${groupIndent}    <<if ${varName}>>`);
                 newLines.push(`${groupIndent}        <<if $__current_idx == $__pick>>`);
-
-                opt.lines.forEach(l => {
-                  newLines.push(l);
-                });
-
+                opt.lines.forEach(l => newLines.push(l));
                 newLines.push(`${groupIndent}        <<endif>>`);
                 newLines.push(`${groupIndent}        <<set $__current_idx = $__current_idx + 1>>`);
                 newLines.push(`${groupIndent}    <<endif>>`);
               });
+
+              if (defaultOptions.length > 0) {
+                newLines.push(`${groupIndent}<<else>>`);
+                newLines.push(`${groupIndent}    <<set $__pool_1 = ${defaultOptions.length}>>`);
+                newLines.push(`${groupIndent}    <<set $__pick = floor(random() * $__pool_1)>>`);
+
+                defaultOptions.forEach((opt, dIdx) => {
+                  if (defaultOptions.length > 1) {
+                    newLines.push(`${groupIndent}    <<if $__pick == ${dIdx}>>`);
+                  }
+                  opt.lines.forEach(l => newLines.push(l));
+                  if (defaultOptions.length > 1) {
+                    newLines.push(`${groupIndent}    <<endif>>`);
+                  }
+                });
+              }
 
               newLines.push(`${groupIndent}<<endif>>`);
 
@@ -368,6 +379,83 @@
 
             return mergedNodes;
           }
+          function transpileSmartVariables(nodes) {
+            const smartVars = {};
+            // Regex to find <<declare $var = expr>> with optional type
+            const declareRegex = /<<declare\s+(\$[A-Za-z0-9_.]+)\s*=\s*(.+?)\s*(?:as\s+\w+)?\s*>>/g;
+
+            // 1. Discover smart variables
+            nodes.forEach(node => {
+              if (!node.body) return;
+              let match;
+              while ((match = declareRegex.exec(node.body)) !== null) {
+                const varName = match[1];
+                const expression = match[2].trim();
+                // We define it as smart if it contains at least one variable usage ($)
+                // or if it contains operators, suggesting it's not a simple literal.
+                // Actually, the user's examples all have variables. 
+                // Let's stick to "contains $" as the primary indicator for reactive.
+                if (expression.includes('$')) {
+                  smartVars[varName] = `(${expression})`;
+                }
+              }
+              // Reset regex state
+              declareRegex.lastIndex = 0;
+            });
+
+            if (Object.keys(smartVars).length === 0) return nodes;
+
+            // 2. Resolve nested smart variables (e.g., $C = $A + $B)
+            let changed = true;
+            let iterations = 0;
+            const vars = Object.keys(smartVars);
+            while (changed && iterations < 10) {
+              changed = false;
+              vars.forEach(v => {
+                const expr = smartVars[v];
+                vars.forEach(otherV => {
+                  if (v === otherV) return;
+                  const escapedV = otherV.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  const regex = new RegExp(escapedV + '(?![A-Za-z0-9_.])', 'g');
+                  const newExpr = expr.replace(regex, smartVars[otherV]);
+                  if (newExpr !== expr) {
+                    smartVars[v] = newExpr;
+                    changed = true;
+                  }
+                });
+              });
+              iterations++;
+            }
+
+            // 3. Apply to node bodies and when headers
+            nodes.forEach(node => {
+              // Replace usages in body
+              if (node.body) {
+                Object.keys(smartVars).forEach(v => {
+                  const escapedV = v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  // Remove declaration (including the line it's on)
+                  const decRegex = new RegExp('^<<declare\\s+' + escapedV + '\\s*=.*>>\\r?\\n?', 'gm');
+                  node.body = node.body.replace(decRegex, '');
+
+                  // Replace usages
+                  const usageRegex = new RegExp(escapedV + '(?![A-Za-z0-9_.])', 'g');
+                  node.body = node.body.replace(usageRegex, smartVars[v]);
+                });
+              }
+
+              // Replace usages in 'when' header
+              if (node.when) {
+                Object.keys(smartVars).forEach(v => {
+                  const escapedV = v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                  const usageRegex = new RegExp(escapedV + '(?![A-Za-z0-9_.])', 'g');
+                  node.when = node.when.replace(usageRegex, smartVars[v]);
+                });
+              }
+            });
+
+            return nodes;
+          }
+
 
           function convertYarnToJS(content) {
             const objects = [];
@@ -413,6 +501,10 @@
                 }
               }
             }
+
+            // Apply smart variables transpilation
+            transpileSmartVariables(objects);
+
             objects.forEach(obj => {
               if (obj.body) {
                 obj.body = transpileLineGroups(obj.body);
@@ -3332,9 +3424,9 @@
 
                 // Text and the output of Inline Expressions
                 // are combined to deliver a TextNode.
-                if (node.type === 'TextNode' || node.type === 'ExpressionNode') {
+                if (node.type === 'TextNode' || node.type === 'ExpressionNode' || node.type === 'InlineExpressionNode') {
                   textRunNodes.push(node);
-                  if (nextNode && node.lineNum === nextNode.lineNum && (nextNode.type === 'TextNode' || nextNode.type === 'ExpressionNode')) {
+                  if (nextNode && node.lineNum === nextNode.lineNum && (nextNode.type === 'TextNode' || nextNode.type === 'ExpressionNode' || nextNode.type === 'InlineExpressionNode')) {
                     // Same line, with another text equivalent to add to the
                     // text run further on in the loop, so don't yield.
                   } else {
@@ -3899,7 +3991,6 @@
               this.locale = locale;
               this.runner = new _index.default.Runner();
               this.runner.noEscape = true;
-              this.runner.load(dialogue);
               if (variableStorage) {
                 variableStorage.display = variableStorage.display || variableStorage.get;
                 this.runner.setVariableStorage(variableStorage);
@@ -3911,6 +4002,7 @@
                   this.registerFunction(...entry);
                 });
               }
+              this.runner.load(dialogue);
               this.jump(startAt);
             }
             jump(startAt) {
