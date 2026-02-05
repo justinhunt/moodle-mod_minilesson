@@ -67,6 +67,10 @@ class item_fluency extends item
         // Cloud Poodll.
         $maxtime = 0;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
+        // In the case of Norwegian, we set the language to Norwegian Bokmal for speech recognition.
+        if ($testitem->language == 'no-NO') {
+            $testitem->language= 'nb-NO';
+        }
 
         //add a few things to enable the saving of uploaded audio (on S3)
         $testitem->savemedia = 1;
