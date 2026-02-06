@@ -256,6 +256,13 @@ if ($edit) {
             $data->addaudiostory = 0;
         }
 
+        // Native Language Chooser.
+        if (!empty($data->{constants::NATIVELANGCHOOSER})) {
+            $data->nativelangchooser = 1;
+        } else {
+            $data->nativelangchooser = 0;
+        }
+
         // Init our itemmedia upload file field.
         $draftitemid = file_get_submitted_draft_itemid(constants::MEDIAQUESTION);
         file_prepare_draft_area(
@@ -290,7 +297,8 @@ if ($edit) {
         'addyoutubeclip' => $data->addyoutubeclip,
         'addttsdialog' => $data->addttsdialog,
         'addttspassage' => $data->addttspassage,
-        'addaudiostory' => $data->addaudiostory];
+        'addaudiostory' => $data->addaudiostory,
+        'nativelangchooser' => $data->nativelangchooser];
 
         // Init file upload areas for item answers.
         for ($i = 1; $i <= constants::MAXANSWERS; $i++) {

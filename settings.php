@@ -258,8 +258,6 @@ if ($hassiteconfig) {
         0
     ));
 
-
-
     $mainsettings->add(new admin_setting_configcheckbox(
         constants::M_COMPONENT .  '/enablesetuptab',
         get_string('enablesetuptab', constants::M_COMPONENT),

@@ -154,6 +154,7 @@ class constants
     const TTSAUTOPLAY = 'itemttsautoplay';
     const TTSDIALOG = 'itemttsdialog';
     const TTSPASSAGE = 'itemttspassage';
+    const NATIVELANGCHOOSER = 'itemnativelangchooser';
     const AUDIOSTORY = 'itemaudiostory';
     const AUDIOSTORYTIMES = 'itemaudiostorytimes';
     const TTSDIALOGOPTS = 'itemttsdialogopts';
@@ -765,4 +766,6 @@ class constants
     const AUDIOCHAT_STUDENT_SUBMISSION = 'customint8';
 
     const AUDIOCHAT_AUDIOAVATAR = 'customtext7';
+
+    const NATIVELANG_PREF = "poodll_nativelang";
 }

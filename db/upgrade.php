@@ -953,12 +953,18 @@ function xmldb_minilesson_upgrade($oldversion)
         upgrade_mod_savepoint(true, 2026011000, 'minilesson');
     }
 
-    if ($oldversion < 2026013003) {
-        // Update default templates - templates updated
-        \mod_minilesson\aigen::create_default_templates();
+    if ($oldversion < 2026020600) {
+        // Add itemnativelangchooser to minilesson question table.
+        $table = new xmldb_table(constants::M_QTABLE);
+        $field = new xmldb_field('itemnativelangchooser', XMLDB_TYPE_INTEGER, '2', null, false, null, '0');
+
+        // Conditionally launch add field.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
 
         // Minilesson savepoint reached.
-        upgrade_mod_savepoint(true, 2026013003, 'minilesson');
+        upgrade_mod_savepoint(true, 2026020600, 'minilesson');
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.

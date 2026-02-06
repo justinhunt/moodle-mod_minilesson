@@ -231,6 +231,7 @@ abstract class item implements templatable, renderable
         $keycolumns['timelimit'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'timelimit'];
         $keycolumns['layout'] = ['type' => 'layout', 'optional' => true, 'default' => 0, 'dbname' => 'layout'];
         $keycolumns['correctanswer'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'correctanswer'];
+        $keycolumns['nativelangchooser'] = ['type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::NATIVELANGCHOOSER];
 
         foreach ($keycolumns as $key => $keycol) {
             $keycolumns[$key]['jsonname'] = $key;
@@ -584,6 +585,20 @@ abstract class item implements templatable, renderable
             }
             $testitem->ttsdialoglines = $linesdata;
         }// end of tts dialog
+
+        // Native Language Chooser.
+        if (!empty($itemrecord->{constants::NATIVELANGCHOOSER})) {
+            $testitem->{constants::NATIVELANGCHOOSER} = true;
+            $langoptions = [0 => '--'] + utils::get_lang_options();
+            $nativelanglist = [];
+            foreach ($langoptions as $value => $label) {
+                $nativelanglist[] = (object) ['value' => $value, 'label' => $label];
+            }
+            $testitem->nativelanglist = $nativelanglist;
+        } else {
+            $testitem->{constants::NATIVELANGCHOOSER} = false;
+            $testitem->nativelanglist = [];
+        }
 
         //TTS Passage
         if (!empty($itemrecord->{constants::TTSPASSAGE}) && !empty(trim($itemrecord->{constants::TTSPASSAGE}))) {
@@ -1545,6 +1560,11 @@ abstract class item implements templatable, renderable
         // Save correct answer if we have one.
         if (property_exists($data, constants::CORRECTANSWER)) {
             $theitem->{constants::CORRECTANSWER} = $data->{constants::CORRECTANSWER};
+        }
+
+        // Save Native Language Chooser.
+        if (property_exists($data, constants::NATIVELANGCHOOSER)) {
+            $theitem->{constants::NATIVELANGCHOOSER} = $data->{constants::NATIVELANGCHOOSER};
         }
 
         //save text answers and other data in custom text

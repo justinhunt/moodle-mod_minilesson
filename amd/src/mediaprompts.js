@@ -1,15 +1,15 @@
-define(['jquery','core/log','core/notification','core/str'], function ($,log,notification,str) {
+define(['jquery', 'core/log', 'core/notification', 'core/str'], function ($, log, notification, str) {
     "use strict"; // jshint ;_;
 
-/*
-This file contains functions for media prompts on the mform
- */
+    /*
+    This file contains functions for media prompts on the mform
+     */
 
     log.debug('MiniLesson mediaprompts: initialising');
 
-    return{
+    return {
 
-        controls:{},
+        controls: {},
         strings: {},
 
         //init the media prompts
@@ -32,10 +32,10 @@ This file contains functions for media prompts on the mform
 
             //unselect the media prompts thingy
             that.controls.select.find('option[value="0"]').prop('disabled', true);
-            that.controls.select.prop('selectedIndex',0);
+            that.controls.select.prop('selectedIndex', 0);
         },
 
-         // Set up strings
+        // Set up strings
         init_strings: function () {
             var that = this;
             str.get_strings([
@@ -66,11 +66,11 @@ This file contains functions for media prompts on the mform
             var that = this;
             log.debug("register events");
             //on select change add the fieldset
-            this.controls.select.on('change',function () {
+            this.controls.select.on('change', function () {
                 log.debug("changed");
                 var mediaprompt = $(this).val();
                 var thefieldset = $('#ml_mediaprompt_panel_' + mediaprompt);
-              //tinymce breaks if we move it arround the DOM .. so we dont insertAfter for textarea
+                //tinymce breaks if we move it arround the DOM .. so we dont insertAfter for textarea
                 if (mediaprompt !== 'addtextarea') {
                     thefieldset.insertAfter(that.controls.selectcontainer);
                 }
@@ -79,12 +79,12 @@ This file contains functions for media prompts on the mform
                 //disable the option in the dropdown
                 that.controls.select.find('option[value="' + mediaprompt + '"]').prop('disabled', true);
                 //deselect all options
-                that.controls.select.prop('selectedIndex',0);
+                that.controls.select.prop('selectedIndex', 0);
             });
 
             //close the fieldset on button click
             var fieldset_close = $('.ml_mediaprompt_panel button.close');
-            fieldset_close.on('click',function () {
+            fieldset_close.on('click', function () {
                 var thefieldset = $(this).closest('fieldset');
                 var keyfieldname = thefieldset.data('keyfield');
                 var mediaprompt = thefieldset.data('mediaprompt');
@@ -110,6 +110,9 @@ This file contains functions for media prompts on the mform
                     //clear the data
                     if (keyfield) {
                         keyfield.val('');
+                        if (keyfield.is(':checkbox')) {
+                            keyfield.prop('checked', false);
+                        }
                     }
                     //hide the fieldset
                     thefieldset.hide();
@@ -143,7 +146,7 @@ This file contains functions for media prompts on the mform
                         //item text area is hard to check, and hard to clear data so we confirm with a specific message
                         notification.confirm(
                             that.strings.deletemediaprompt,
-                            that.strings.cleartextfirst + ' ' +  that.strings.reallydeletemediaprompt + legend + '?',
+                            that.strings.cleartextfirst + ' ' + that.strings.reallydeletemediaprompt + legend + '?',
                             that.strings.delete,
                             '',
                             dodelete

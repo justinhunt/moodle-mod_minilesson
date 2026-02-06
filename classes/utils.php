@@ -1096,10 +1096,9 @@ class utils
         $item = $DB->get_record(constants::M_QTABLE, ['id' => $itemid, 'minilesson' => $moduleinstance->id], '*', MUST_EXIST);
 
         // Feedback language for AI instructions
-        // its awful but we hijack the wordcards student native language setting
         $feedbacklanguage = $item->{constants::AIGRADE_FEEDBACK_LANGUAGE};
         if ($conf->setnativelanguage) {
-            $userprefdeflanguage = get_user_preferences('wordcards_deflang');
+            $userprefdeflanguage = get_user_preferences(constants::NATIVELANG_PREF);
             if (!empty($userprefdeflanguage)) {
                 // the WC language is 2 char but Poodll AI expects a locale code
                 $wclanguage = self::lang_to_locale($userprefdeflanguage);

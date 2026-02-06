@@ -83,7 +83,7 @@ class item_audiochat extends item
         // Students native language - it is possible to use the one set in wordcards here also, so we check for that
         $testitem->audiochatnativelanguage = $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE};
         if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
-            $userprefdeflanguage = get_user_preferences('wordcards_deflang');
+            $userprefdeflanguage = get_user_preferences(constants::NATIVELANG_PREF);
             if (!empty($userprefdeflanguage)) {
                 $testitem->audiochatnativelanguage = $userprefdeflanguage;
             }

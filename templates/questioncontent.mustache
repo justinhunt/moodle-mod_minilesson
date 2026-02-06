@@ -7,6 +7,7 @@
             </div>
         </div>
     {{/itemtextarea}}
+    {{#itemnativelangchooser}}<div class="mod_minilesson_nativelangchooser_cont">{{> mod_minilesson/nativelangchooser}}</div>{{/itemnativelangchooser}}
     {{#itemaudio}}<div class="mod_minilesson_itemaudio_cont"><audio controls src="{{{itemaudio}}}" class="mod_minilesson_itemaudio"></audio></div>{{/itemaudio}}
     {{#itemvideo}}<div class="mod_minilesson_itemvideo_cont"><video controls src="{{{itemvideo}}}" class="mod_minilesson_itemvideo"></video></div>{{/itemvideo}}
     {{#itemiframe}}<div class="mod_minilesson_itemiframe_cont"><div class="mod_minilesson_iframe_responsive">{{{itemiframe}}}</div></div>{{/itemiframe}}

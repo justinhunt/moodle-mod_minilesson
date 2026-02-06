@@ -465,7 +465,7 @@ abstract class baseform extends \moodleform
         $m35 = true;
 
         //cut down on the code by using media item types array to pre-prepare fieldsets and media prompt selector
-        $mediaprompts = ['addmedia', 'addiframe', 'addttsaudio', 'addtextarea', 'addyoutubeclip', 'addttsdialog', 'addttspassage', 'addaudiostory'];
+        $mediaprompts = ['addmedia', 'addiframe', 'addttsaudio', 'addtextarea', 'addyoutubeclip', 'addttsdialog', 'addttspassage', 'addaudiostory', 'nativelangchooser'];
         $keyfields = [
             'addmedia' => constants::MEDIAQUESTION,
             'addiframe' => constants::MEDIAIFRAME,
@@ -475,6 +475,7 @@ abstract class baseform extends \moodleform
             'addttsdialog' => constants::TTSDIALOG,
             'addttspassage' => constants::TTSPASSAGE,
             'addaudiostory' => constants::AUDIOSTORY,
+            'nativelangchooser' => constants::NATIVELANGCHOOSER,
         ];
         $fulloptions = [];
         $fieldsettops = [];
@@ -599,6 +600,11 @@ abstract class baseform extends \moodleform
         $mform->setType(constants::AUDIOSTORYMETA, PARAM_TEXT);
         $mform->setDefault(constants::AUDIOSTORYMETA, '00:00:00');
         $this->add_zoomandpanoptions();
+        $mform->addElement('html', $fieldsetbottom, []);
+
+        // Native Language Chooser.
+        $mform->addElement('html', $fieldsettops['nativelangchooser'], []);
+        $mform->addElement('advcheckbox', constants::NATIVELANGCHOOSER, get_string('enablenativelanguage', constants::M_COMPONENT), get_string('enablenativelanguage_details', constants::M_COMPONENT));
         $mform->addElement('html', $fieldsetbottom, []);
     }
 
