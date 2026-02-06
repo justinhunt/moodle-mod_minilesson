@@ -589,12 +589,21 @@ abstract class item implements templatable, renderable
         // Native Language Chooser.
         if (!empty($itemrecord->{constants::NATIVELANGCHOOSER})) {
             $testitem->{constants::NATIVELANGCHOOSER} = true;
+            $testitem->activitynativelang = $this->moduleinstance->nativelang;
+            $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
+            if(empty($userprefnativelanguage)){
+                $usenativelanguage = $testitem->activitynativelang;
+            }else{
+                $usenativelanguage = $userprefnativelanguage;
+            }
             $langoptions = [0 => '--'] + utils::get_lang_options();
             $nativelanglist = [];
             foreach ($langoptions as $value => $label) {
-                $nativelanglist[] = (object) ['value' => $value, 'label' => $label];
+                $selected = ($value == $usenativelanguage);
+                $nativelanglist[] = (object) ['value' => $value, 'label' => $label, 'selected' => $selected];
             }
             $testitem->nativelanglist = $nativelanglist;
+            
         } else {
             $testitem->{constants::NATIVELANGCHOOSER} = false;
             $testitem->nativelanglist = [];

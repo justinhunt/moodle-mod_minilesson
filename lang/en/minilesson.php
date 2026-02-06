@@ -1292,4 +1292,4 @@ $string['aimanager_desc'] = 'The AI Manager allows you to select which AI provid
 $string['grade_student_submission'] = 'Grade student submission';
 $string['grade_student_submission_desc'] = 'Requests to MiniLesson for AI to grade or correct student submissions will be directed to the AI provider selected here, or to Cloud Poodll AI services (the default).';
 $string['cloudpoodll'] = 'Cloud Poodll';
-
+$string['choosenativelanguageinstructions'] = 'Set your native language here. It may be used to provide feedback and help in the activity.';
