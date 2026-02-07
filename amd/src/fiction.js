@@ -45,6 +45,7 @@ define([
          * @param {object} quizhelper
          */
         init: function (index, itemdata, quizhelper) {
+            var that = this;
             this.index = index;
             this.itemdata = itemdata;
             this.quizhelper = quizhelper;
@@ -69,7 +70,7 @@ define([
             this.sourceLang = this.itemdata.language.substring(0, 2);
             this.destLang = this.itemdata.nativelanguage.substring(0, 2);
             translate.check_availability(this.sourceLang, this.destLang).then(function (availability) {
-                self.storydata.set('cantranslate', availability !== 'unavailable');
+                that.storydata.set('cantranslate', availability !== 'unavailable');
             });
 
 
@@ -899,6 +900,7 @@ define([
             storydata.set('userfirstname', 'bob');
             storydata.set('userlastname', 'smith');
             storydata.set('userfullname', 'bob smith');
+            storydata.set('cantranslate', false);
             // Auto-declare variables from Yarn script
             // This makes sure indialogue variables are initialized as well as out of dialogue ones
             this.autodeclareVariables(yarnContent, storydata);

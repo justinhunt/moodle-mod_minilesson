@@ -15,6 +15,9 @@ define(['jquery', 'core/log'], function ($, log) {
          * @returns {Promise<string>} 'ready', 'download_needed', or 'unavailable'
          */
         check_availability: async function (sourceLang, destLang) {
+            if (!this.is_chrome()) {
+                return 'unavailable';
+            }
             try {
                 if ('Translator' in window) {
                     const availability = await window.Translator.availability({
@@ -106,10 +109,10 @@ define(['jquery', 'core/log'], function ($, log) {
             }
 
             try {
-                log.debug('translating (edge): ' + text);
+                log.debug('translating : ' + text);
                 var translated = await this.session.translate(text);
                 log.debug(translated);
-                log.debug('translated (edge): ' + translated);
+                log.debug('translated : ' + translated);
                 return translated;
 
             } catch (e) {
@@ -117,6 +120,29 @@ define(['jquery', 'core/log'], function ($, log) {
             }
 
             return false;
+        },
+
+        is_chrome: function () {
+            var isChromium = window.chrome;
+            var winNav = window.navigator;
+            var vendorName = winNav.vendor;
+            var isOpera = typeof window.opr !== "undefined";
+            var isIEedge = winNav.userAgent.indexOf("Edg") > -1;
+            var isIOSChrome = winNav.userAgent.match("CriOS");
+
+            if (isIOSChrome) {
+                return true;
+            } else if (
+                isChromium !== null &&
+                typeof isChromium !== "undefined" &&
+                vendorName === "Google Inc." &&
+                isOpera === false &&
+                isIEedge === false
+            ) {
+                return true;
+            } else {
+                return false;
+            }
         }
     };
 });
