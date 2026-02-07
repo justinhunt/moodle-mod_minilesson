@@ -123,26 +123,17 @@ define(['jquery', 'core/log'], function ($, log) {
         },
 
         is_chrome: function () {
-            var isChromium = window.chrome;
-            var winNav = window.navigator;
-            var vendorName = winNav.vendor;
-            var isOpera = typeof window.opr !== "undefined";
-            var isIEedge = winNav.userAgent.indexOf("Edg") > -1;
-            var isIOSChrome = winNav.userAgent.match("CriOS");
-
-            if (isIOSChrome) {
-                return true;
-            } else if (
-                isChromium !== null &&
-                typeof isChromium !== "undefined" &&
-                vendorName === "Google Inc." &&
-                isOpera === false &&
-                isIEedge === false
-            ) {
-                return true;
-            } else {
-                return false;
-            }
+            var ua = window.navigator.userAgent;
+            var isChrome = /Chrome/.test(ua) || /CriOS/.test(ua);
+            var isEdge = /Edg\//.test(ua);
+            var isOpera = /OPR\//.test(ua) || /Opera/.test(ua);
+            var isVivaldi = /Vivaldi/.test(ua);
+            log.debug('isChrome: ' + isChrome);
+            log.debug('isEdge: ' + isEdge);
+            log.debug('isOpera: ' + isOpera);
+            log.debug('isVivaldi: ' + isVivaldi);
+            // If it has Chrome and doesn't have Edge, Opera or Vivaldi, it's likely Google Chrome.
+            return !!(isChrome && !isEdge && !isOpera && !isVivaldi);
         }
     };
 });

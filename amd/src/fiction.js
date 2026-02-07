@@ -62,66 +62,70 @@ define([
             this.storydata.set('userlastname', itemdata.userlastname);
             this.storydata.set('userfullname', itemdata.userfullname);
             this.storydata.set('cantranslate', false);
-            // Auto-declare variables from Yarn script  
-            // This makes sure indialogue variables are initialized as well as out of dialogue ones
-            this.autodeclareVariables(itemdata.fictionyarn, this.storydata);
+
             // Set a flag to indicate that translation is possible
             // set lang code to 2 char equivalent, eg en for en-us  
             this.sourceLang = this.itemdata.language.substring(0, 2);
             this.destLang = this.itemdata.nativelanguage.substring(0, 2);
+            // We need to wait for the availability check before we start the story,
+            // otherwise $cantranslate will be false in the first render's conditions.
             translate.check_availability(this.sourceLang, this.destLang).then(function (availability) {
                 that.storydata.set('cantranslate', availability !== 'unavailable');
-            });
 
+                // Auto-declare variables from Yarn script
+                // This makes sure indialogue variables are initialized as well as out of dialogue ones
+                that.autodeclareVariables(itemdata.fictionyarn, that.storydata);
 
-            // Set all the data for Yarn
-            var yarnopts = {
-                "dialogue": itemdata.fictionyarn,
-                "combineTextAndOptionsResults": true,
-                "startAt": "Start",
-                "variableStorage": this.storydata,
-                "functions": {
-                    dice: (sides) => {
-                        return Math.floor(Math.random() * sides) + 1;
-                    },
-                    visited: (nodeName) => {
-                        return this.visitednodes.includes(nodeName);
-                    },
-                    translate: (text) => {
-                        var randomId = Math.random().toString(36).substring(2, 9);
-                        var updateStory = function (themessage) {
-                            var el = $("#ml-f-" + randomId);
-                            if (el.length) {
-                                el.html(themessage);
-                            } else {
-                                setTimeout(updateStory, 100, themessage);
-                            }
-                        };
-                        this.call_translate(this.sourceLang, this.destLang, text, updateStory);
-                        return "<span id='ml-f-" + randomId + "' class='ml-f-inline-translated-text'></span>";
+                // Set all the data for Yarn
+                var yarnopts = {
+                    "dialogue": itemdata.fictionyarn,
+                    "combineTextAndOptionsResults": true,
+                    "startAt": "Start",
+                    "variableStorage": that.storydata,
+                    "functions": {
+                        dice: (sides) => {
+                            return Math.floor(Math.random() * sides) + 1;
+                        },
+                        visited: (nodeName) => {
+                            return that.visitednodes.includes(nodeName);
+                        },
+                        translate: (text) => {
+                            var randomId = Math.random().toString(36).substring(2, 9);
+                            var updateStory = function (themessage) {
+                                var el = $("#ml-f-" + randomId);
+                                if (el.length) {
+                                    el.html(themessage);
+                                } else {
+                                    setTimeout(updateStory, 100, themessage);
+                                }
+                            };
+                            that.call_translate(that.sourceLang, that.destLang, text, updateStory);
+                            return "<span id='ml-f-" + randomId + "' class='ml-f-inline-translated-text'></span>";
+                        }
                     }
+                };
+
+                log.debug('MiniLesson Fiction: initializing yarnbound with options');
+                log.debug(yarnopts);
+                try {
+                    that.runner = new YarnBound(yarnopts);
+                    that.do_render();
+                } catch (e) {
+                    var userFriendlyError = "Yarn Parse Error: ";
+                    // Format the error nicely
+                    let errorMessage = e.message;
+                    if (typeof errorMessage === 'undefined') {
+                        // If err is not an Error object (e.g. a string), use err directly
+                        errorMessage = e ? String(e) : 'syntax or other error';
+                    }
+                    userFriendlyError += errorMessage;
+                    that.controls.yarncontainer.html(
+                        '<div class="alert alert-danger">' + userFriendlyError + '</div>'
+                    );
+                    log.error("Full Yarn Error:");
+                    log.error(e);
                 }
-            };
-            log.debug('MiniLesson Fiction: initializing yarnbound with options');
-            log.debug(yarnopts);
-            try {
-                this.runner = new YarnBound(yarnopts);
-                this.do_render();
-            } catch (e) {
-                var userFriendlyError = "Yarn Parse Error: ";
-                // Format the error nicely
-                let errorMessage = e.message;
-                if (typeof errorMessage === 'undefined') {
-                    // If err is not an Error object (e.g. a string), use err directly
-                    errorMessage = e ? String(e) : 'syntax or other error';
-                }
-                userFriendlyError += errorMessage;
-                this.controls.yarncontainer.html(
-                    '<div class="alert alert-danger">' + userFriendlyError + '</div>'
-                );
-                log.error("Full Yarn Error:");
-                log.error(e);
-            }
+            });
         },
 
         /**
