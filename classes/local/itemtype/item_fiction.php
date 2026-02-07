@@ -179,6 +179,15 @@ class item_fiction extends item
         $testitem->userfirstname = $USER->firstname;
         $testitem->userlastname = $USER->lastname;
         $testitem->userfullname = fullname($USER);
+
+        // Students native language -
+        $testitem->nativelanguage = $this->moduleinstance->nativelang;
+        if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
+            $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
+            if (!empty($userprefnativelanguage)) {
+                $testitem->nativelanguage = $userprefnativelanguage;
+            }
+        }
  
         // Cloudpoodll.
         $testitem = $this->set_cloudpoodll_details($testitem);

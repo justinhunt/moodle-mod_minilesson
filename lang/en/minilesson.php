@@ -1293,3 +1293,7 @@ $string['grade_student_submission'] = 'Grade student submission';
 $string['grade_student_submission_desc'] = 'Requests to MiniLesson for AI to grade or correct student submissions will be directed to the AI provider selected here, or to Cloud Poodll AI services (the default).';
 $string['cloudpoodll'] = 'Cloud Poodll';
 $string['choosenativelanguageinstructions'] = 'Set your native language here. It may be used to provide feedback and help in the activity.';
+$string['downloadtranslationmodel'] = 'Download Translation Model';
+$string['downloadtranslationmodel_desc'] = 'This story uses translation features. Would you like to download the translation model? (This is a one-time download)';
+$string['download'] = 'Download';
+$string['downloadingtranslator'] = 'Downloading translator: {$a}%';

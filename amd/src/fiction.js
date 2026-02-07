@@ -4,11 +4,12 @@ define([
     'core/str',
     'core/notification',
     'mod_minilesson/definitions',
+    'mod_minilesson/translate',
     'mod_minilesson/external/yarn-bound',
     'core/modal_factory',
     'core/fragment',
     'core/templates',
-], function ($, log, str, notification, def, YarnBound, ModalFactory, Fragment, Templates) {
+], function ($, log, str, notification, def, translate, YarnBound, ModalFactory, Fragment, Templates) {
     "use strict"; // jshint ;_;
 
     /**
@@ -59,9 +60,18 @@ define([
             this.storydata.set('userfirstname', itemdata.userfirstname);
             this.storydata.set('userlastname', itemdata.userlastname);
             this.storydata.set('userfullname', itemdata.userfullname);
-            // Auto-declare variables from Yarn script
+            this.storydata.set('cantranslate', false);
+            // Auto-declare variables from Yarn script  
             // This makes sure indialogue variables are initialized as well as out of dialogue ones
             this.autodeclareVariables(itemdata.fictionyarn, this.storydata);
+            // Set a flag to indicate that translation is possible
+            // set lang code to 2 char equivalent, eg en for en-us  
+            this.sourceLang = this.itemdata.language.substring(0, 2);
+            this.destLang = this.itemdata.nativelanguage.substring(0, 2);
+            translate.check_availability(this.sourceLang, this.destLang).then(function (availability) {
+                self.storydata.set('cantranslate', availability !== 'unavailable');
+            });
+
 
             // Set all the data for Yarn
             var yarnopts = {
@@ -122,12 +132,37 @@ define([
                     "key": "no",
                     "component": 'moodle'
                 },
+                {
+                    "key": "downloadtranslationmodel",
+                    "component": 'mod_minilesson'
+                },
+                {
+                    "key": "downloadtranslationmodel_desc",
+                    "component": 'mod_minilesson'
+                },
+                {
+                    "key": "download",
+                    "component": 'mod_minilesson'
+                },
+                {
+                    "key": "skip",
+                    "component": 'mod_minilesson'
+                },
+                {
+                    "key": "downloadingtranslator",
+                    "component": 'mod_minilesson'
+                },
             ]).done(function (s) {
                 var i = 0;
                 self.strings.nextlessonitem = s[i++];
                 self.strings.confirm_desc = s[i++];
                 self.strings.yes = s[i++];
                 self.strings.no = s[i++];
+                self.strings.downloadtranslationmodel = s[i++];
+                self.strings.downloadtranslationmodel_desc = s[i++];
+                self.strings.download = s[i++];
+                self.strings.skip = s[i++];
+                self.strings.downloadingtranslator = s[i++];
             });
         },
 
@@ -182,71 +217,8 @@ define([
                 this.chatdata.charactername = yarncontent.yarntext.md?.character?.name;
                 this.chatdata.charactertext = yarncontent.yarntext.text;
 
-                if (that.presentationmode === 'storymode') {
-                    Templates.render('mod_minilesson/fiction_storymessage', {
-                        charactermedia: '<div class="chat-loader"></div>'
-                    }).then(function (html, js) {
-                        Templates.appendNodeContents(that.controls.chatwrapper, html, js);
-                        that.scrolltobottom();
-                        Templates.render('mod_minilesson/fiction_storymessage', that.chatdata).then(
-                            function (html, js) {
-                                // In storymode we replace the loader with the real content
-                                // finding the last story-paragraph
-                                Templates.replaceNode(
-                                    that.controls.chatwrapper.find('.story-paragraph').last(),
-                                    html,
-                                    js
-                                );
-                                that.scrolltobottom();
-                                that.reset_chat_data();
-                                if (!currentResult.isDialogueEnd) {
-                                    if (that.flowthroughmode) {
-                                        that.do_runner_advance();
-                                        that.do_render();
-                                    } else {
-                                        that.can_continuebutton(true);
-                                    }
+                this.post_message_to_story(this.chatdata, currentResult);
 
-                                }
-                            }
-                        );
-                    });
-                } else {
-                    Templates.render('mod_minilesson/fiction_charactermessage', {
-                        charactermedia: '<div class="chat-loader"></div>'
-                    }).then(function (html, js) {
-                        Templates.appendNodeContents(that.controls.chatwrapper, html, js);
-                        that.scrolltobottom();
-                        var waittime = 1000;
-                        if (that.itemdata.presention_mobilechat) {
-                            waittime = 1500;
-                        } else if (that.itemdata.presention_storymode) {
-                            waittime = 50;
-                        }
-                        setTimeout(() => {
-                            Templates.render('mod_minilesson/fiction_charactermessage', that.chatdata).then(
-                                function (html, js) {
-                                    Templates.replaceNode(
-                                        that.controls.chatwrapper.find('> .chat-window').last(),
-                                        html,
-                                        js
-                                    );
-                                    that.scrolltobottom();
-                                    that.reset_chat_data();
-                                    if (!currentResult.isDialogueEnd) {
-                                        if (that.flowthroughmode) {
-                                            that.do_runner_advance();
-                                            that.do_render();
-                                        } else {
-                                            that.can_continuebutton(true);
-                                        }
-
-                                    }
-                                }
-                            );
-                        }, waittime);
-                    });
-                }
                 that.controls.yarnoptions.html('');
             } else if (currentResult instanceof YarnBound.OptionsResult) {
                 yarncontent.yarnoptions = currentResult;
@@ -273,56 +245,12 @@ define([
                     }
                 );
 
+
                 if ('text' in yarncontent.yarnoptions) {
                     that.chatdata.picturesrc = yarncontent.yarnoptions.md?.character?.picturesrc;
                     that.chatdata.charactername = yarncontent.yarnoptions.md?.character?.name;
                     that.chatdata.charactertext = yarncontent.yarnoptions.text;
-
-                    if (that.presentationmode === 'storymode') {
-                        Templates.render('mod_minilesson/fiction_storymessage', {
-                            charactermedia: '<div class="chat-loader"></div>'
-                        }).then(function (html, js) {
-                            Templates.appendNodeContents(that.controls.chatwrapper, html, js);
-                            that.scrolltobottom();
-                            Templates.render('mod_minilesson/fiction_storymessage', that.chatdata).then(
-                                function (html, js) {
-                                    Templates.replaceNode(
-                                        that.controls.chatwrapper.find('.story-paragraph').last(),
-                                        html,
-                                        js
-                                    );
-                                    that.scrolltobottom();
-                                    that.reset_chat_data();
-                                }
-                            );
-                        });
-                    } else {
-                        Templates.render('mod_minilesson/fiction_charactermessage', {
-                            charactermedia: '<div class="chat-loader"></div>'
-                        }).then(function (html, js) {
-                            Templates.appendNodeContents(that.controls.chatwrapper, html, js);
-                            that.scrolltobottom();
-                            var waittime = 1000;
-                            if (that.itemdata.presention_mobilechat) {
-                                waittime = 1500;
-                            } else if (that.itemdata.presention_storymode) {
-                                waittime = 50;
-                            }
-                            setTimeout(() => {
-                                Templates.render('mod_minilesson/fiction_charactermessage', that.chatdata).then(
-                                    function (html, js) {
-                                        Templates.replaceNode(
-                                            that.controls.chatwrapper.find('> .chat-window').last(),
-                                            html,
-                                            js
-                                        );
-                                        that.scrolltobottom();
-                                        that.reset_chat_data();
-                                    }
-                                );
-                            }, waittime);
-                        });
-                    }
+                    this.post_message_to_story(this.chatdata, currentResult, false);
                 } else {
                     that.controls.yarntext.html('');
                 }
@@ -335,6 +263,7 @@ define([
                 var commandName = parts[0]; // "picture" "audio etc"
                 var args = parts.slice(1); // ["1.png"]
                 let promise = null;
+                var cancel_runner_advance = false;
 
                 switch (commandName) {
                     case 'picture': {
@@ -404,11 +333,113 @@ define([
                         that.controls.yarnmedia.html('');
                         break;
                     }
+                    case 'translate': {
+                        log.debug('got translate command');
+                        const text = args[0];
+                        cancel_runner_advance = true;
+
+                        const sourceLang = that.sourceLang;
+                        const destLang = that.destLang;
+
+                        // Check if we already have a session
+                        if (translate.session && translate.sourceLang === sourceLang && translate.destLang === destLang) {
+                            log.debug('Using existing translation session');
+
+                            translate.translate(text).then((translation) => {
+                                if (translation) {
+                                    that.post_message_to_story({
+                                        charactermedia: translation
+                                    }, currentResult, true);
+                                } else {
+                                    log.debug('translation failed');
+                                }
+                            }).catch((e) => {
+                                log.error("Translation error: " + e);
+                            });
+                            break;
+                        }
+
+                        // Check availability first
+                        translate.check_availability(that.sourceLang, that.destLang).then((status) => {
+                            log.debug('Translation availability: ' + status);
+
+                            if (status === 'unavailable') {
+                                that.post_message_to_story({
+                                    charactermedia: "translation not available for this language pair: " + that.sourceLang + " -> " + that.destLang
+                                }, currentResult, true);
+                                log.debug('Translation not available for this language pair');
+                                return;
+                            }
+
+                            if (status === 'download_needed') {
+                                // Show popup to ask user to download model
+                                notification.confirm(
+                                    that.strings.downloadtranslationmodel,
+                                    that.strings.downloadtranslationmodel_desc,
+                                    that.strings.download,
+                                    that.strings.skip,
+                                    function () {
+                                        log.debug('User clicked "Download" creating session');
+                                        // User clicked "Download" - this provides the required gesture
+
+                                        // Show initial progress
+                                        var progressMessage = that.strings.downloadingtranslator.replace('{$a}', '0');
+                                        that.post_message_to_story({
+                                            charactermedia: '<div class="translation-download-progress">' + progressMessage + '</div>'
+                                        }, currentResult, false);
+
+                                        translate.create_session(sourceLang, destLang, function (percent) {
+                                            var updatedMessage = that.strings.downloadingtranslator.replace('{$a}', percent);
+                                            $('.translation-download-progress').last().text(updatedMessage);
+                                        }).then((success) => {
+                                            if (success) {
+                                                return translate.translate(text);
+                                            } else {
+                                                log.error('Failed to create translation session');
+                                                return null;
+                                            }
+                                        }).then((translation) => {
+                                            if (translation) {
+                                                that.post_message_to_story({
+                                                    charactermedia: translation
+                                                }, currentResult, true);
+                                            }
+                                        }).catch((e) => {
+                                            log.error("Translation error: " + e);
+                                        });
+                                    },
+                                    function () {
+                                        // User clicked "Skip"
+                                        log.debug('User skipped translation model download');
+                                        that.post_message_to_story({
+                                            charactermedia: "translation model not downloaded"
+                                        }, currentResult, true);
+                                    }
+                                );
+                            } else if (status === 'ready') {
+                                // Model already available, create session and translate
+                                translate.create_session(sourceLang, destLang).then(() => {
+                                    return translate.translate(text);
+                                }).then((translation) => {
+                                    if (translation) {
+                                        that.post_message_to_story({
+                                            charactermedia: translation
+                                        }, currentResult, true);
+                                    } else {
+                                        log.debug('translation failed');
+                                    }
+                                }).catch((e) => {
+                                    log.error("Translation error: " + e);
+                                });
+                            }
+                        });
+                        break;
+                    }
                     case 'blahblah':
                     default:
                 }
                 // In all cases just do command and then jump to next line
-                if (!currentResult.isDialogueEnd) {
+                if (!currentResult.isDialogueEnd && !cancel_runner_advance) {
                     // Just skip through for now
                     if (promise) {
                         promise.then(() => {
@@ -443,6 +474,75 @@ define([
                         this.storyscore = false;
                     }
                 }
+            }
+        },
+
+        post_message_to_story: function (messagedata, currentResult, showContinue = true) {
+            var that = this;
+            if (that.presentationmode === 'storymode') {
+                Templates.render('mod_minilesson/fiction_storymessage', {
+                    charactermedia: '<div class="chat-loader"></div>'
+                }).then(function (html, js) {
+                    Templates.appendNodeContents(that.controls.chatwrapper, html, js);
+                    that.scrolltobottom();
+                    Templates.render('mod_minilesson/fiction_storymessage', messagedata).then(
+                        function (html, js) {
+                            // In storymode we replace the loader with the real content
+                            // finding the last story-paragraph
+                            Templates.replaceNode(
+                                that.controls.chatwrapper.find('.story-paragraph').last(),
+                                html,
+                                js
+                            );
+                            that.scrolltobottom();
+                            that.reset_chat_data();
+                            if (showContinue && currentResult && !currentResult.isDialogueEnd) {
+                                if (that.flowthroughmode) {
+                                    that.do_runner_advance();
+                                    that.do_render();
+                                } else {
+                                    that.can_continuebutton(true);
+                                }
+
+                            }
+                        }
+                    );
+                });
+            } else {
+                Templates.render('mod_minilesson/fiction_charactermessage', {
+                    charactermedia: '<div class="chat-loader"></div>'
+                }).then(function (html, js) {
+                    Templates.appendNodeContents(that.controls.chatwrapper, html, js);
+                    that.scrolltobottom();
+                    var waittime = 1000;
+                    if (that.itemdata.presention_mobilechat) {
+                        waittime = 1500;
+                    } else if (that.itemdata.presention_storymode) {
+                        waittime = 50;
+                    }
+                    setTimeout(() => {
+                        Templates.render('mod_minilesson/fiction_charactermessage', messagedata).then(
+                            function (html, js) {
+                                Templates.replaceNode(
+                                    that.controls.chatwrapper.find('> .chat-window').last(),
+                                    html,
+                                    js
+                                );
+                                that.scrolltobottom();
+                                that.reset_chat_data();
+                                if (showContinue && currentResult && !currentResult.isDialogueEnd) {
+                                    if (that.flowthroughmode) {
+                                        that.do_runner_advance();
+                                        that.do_render();
+                                    } else {
+                                        that.can_continuebutton(true);
+                                    }
+
+                                }
+                            }
+                        );
+                    }, waittime);
+                });
             }
         },
 
