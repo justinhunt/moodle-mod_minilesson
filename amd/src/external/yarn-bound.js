@@ -45,11 +45,14 @@
           /* eslint-enable */
 
 
-          function transpileLineGroups(content) {
+          function transpileLineGroups(content, nodeTitle) {
+            const rawSafeTitle = nodeTitle ? nodeTitle.replace(/[^a-zA-Z0-9_]/g, '_') : 'unknown';
+            const safeTitle = rawSafeTitle + '_' + Math.floor(Math.random() * 1000000).toString(36);
             const lines = content.split(/\r?\n/);
             const newLines = [];
+            let onceCounter = 0;
 
-            // Group: { indent: number, options: [ { condition: string|null, lines: string[] } ] }
+            // Group: { indent: number, options: [ { condition: string|null, lines: string[], onceVar: string|null } ] }
             let currentGroup = null;
 
             function flushGroup() {
@@ -82,6 +85,9 @@
                 const varName = `${groupVarPrefix}_${opt.idx}`;
                 newLines.push(`${groupIndent}    <<if ${varName}>>`);
                 newLines.push(`${groupIndent}        <<if $__current_idx == $__pick>>`);
+                if (opt.onceVar) {
+                  newLines.push(`${groupIndent}            <<set ${opt.onceVar} = true>>`);
+                }
                 opt.lines.forEach(l => newLines.push(l));
                 newLines.push(`${groupIndent}        <<endif>>`);
                 newLines.push(`${groupIndent}        <<set $__current_idx = $__current_idx + 1>>`);
@@ -96,6 +102,9 @@
                 defaultOptions.forEach((opt, dIdx) => {
                   if (defaultOptions.length > 1) {
                     newLines.push(`${groupIndent}    <<if $__pick == ${dIdx}>>`);
+                  }
+                  if (opt.onceVar) {
+                    newLines.push(`${groupIndent}        <<set ${opt.onceVar} = true>>`);
                   }
                   opt.lines.forEach(l => newLines.push(l));
                   if (defaultOptions.length > 1) {
@@ -127,6 +136,19 @@
                       text = text.replace(ifMatch[0], '').trim();
                     }
 
+                    const onceMatch = text.match(/<<once(?:\s+if\s+(.+))?>>/);
+                    let onceVar = null;
+                    if (onceMatch) {
+                      onceVar = `$__once_${safeTitle}_lg_${onceCounter++}`;
+                      let onceCond = `!${onceVar}`;
+                      if (onceMatch[1]) {
+                        onceCond = `(${onceCond}) && (${onceMatch[1]})`;
+                      }
+                      // If there was already a condition, merge them
+                      condition = condition ? `(${condition}) && (${onceCond})` : onceCond;
+                      text = text.replace(onceMatch[0], '').trim();
+                    }
+
                     const innerIndent = " ".repeat(indent + 8);
                     const contentLines = [];
                     if (text) {
@@ -135,7 +157,8 @@
 
                     currentGroup.options.push({
                       condition: condition,
-                      lines: contentLines
+                      lines: contentLines,
+                      onceVar: onceVar
                     });
                   } else if (indent > currentGroup.indent) {
                     // Nested content attached to previous option
@@ -160,14 +183,30 @@
                       condition = ifMatch[1];
                       text = text.replace(ifMatch[0], '').trim();
                     }
+
+                    const onceMatch = text.match(/<<once(?:\s+if\s+(.+))?>>/);
+                    let onceVar = null;
+                    if (onceMatch) {
+                      onceVar = `$__once_${safeTitle}_lg_${onceCounter++}`;
+                      let onceCond = `!${onceVar}`;
+                      if (onceMatch[1]) {
+                        onceCond = `(${onceCond}) && (${onceMatch[1]})`;
+                      }
+                      // If there was already a condition, merge them
+                      condition = condition ? `(${condition}) && (${onceCond})` : onceCond;
+                      text = text.replace(onceMatch[0], '').trim();
+                    }
+
                     const innerIndent = " ".repeat(indent + 8);
                     const contentLines = [];
                     if (text) {
                       contentLines.push(innerIndent + text);
                     }
+
                     currentGroup.options.push({
                       condition: condition,
-                      lines: contentLines
+                      lines: contentLines,
+                      onceVar: onceVar
                     });
                   }
                 } else {
@@ -184,15 +223,45 @@
                     condition = ifMatch[1];
                     text = text.replace(ifMatch[0], '').trim();
                   }
+
+                  const onceMatch = text.match(/<<once(?:\s+if\s+(.+))?>>/);
+                  let onceVar = null;
+                  if (onceMatch) {
+                    onceVar = `$__once_${safeTitle}_lg_${onceCounter++}`;
+                    let onceCond = `!${onceVar}`;
+                    if (onceMatch[1]) {
+                      onceCond = `(${onceCond}) && (${onceMatch[1]})`;
+                    }
+                    // If there was already a condition, merge them
+                    condition = condition ? `(${condition}) && (${onceCond})` : onceCond;
+                    text = text.replace(onceMatch[0], '').trim();
+                  }
+
                   const innerIndent = " ".repeat(indent + 8);
                   const contentLines = [];
                   if (text) {
                     contentLines.push(innerIndent + text);
                   }
+
                   currentGroup.options.push({
                     condition: condition,
-                    lines: contentLines
+                    lines: contentLines,
+                    onceVar: onceVar
                   });
+                }
+              } else if (trimmed === '' || trimmed.startsWith('//')) {
+                // Ignore empty lines and comments within or between groups
+                if (currentGroup) {
+                  const lastOpt = currentGroup.options[currentGroup.options.length - 1];
+                  if (lastOpt) {
+                    lastOpt.lines.push(line);
+                  } else {
+                    // If no options yet in the group, just push the line outside the group
+                    flushGroup();
+                    newLines.push(line);
+                  }
+                } else {
+                  newLines.push(line);
                 }
               } else {
                 if (currentGroup) {
@@ -201,6 +270,7 @@
                       const lastOpt = currentGroup.options[currentGroup.options.length - 1];
                       lastOpt.lines.push("        " + line);
                     } else {
+                      // If no options yet in the group, but line is indented, flush and push line
                       flushGroup();
                       newLines.push(line);
                     }
@@ -231,6 +301,12 @@
               let line = lines[i];
               const trimmed = line.trim();
 
+              // Skip lines already handled by transpileLineGroups
+              if (trimmed.startsWith('=>')) {
+                newLines.push(line);
+                continue;
+              }
+
               // 1. Block Start: <<once>> or <<once if ...>>
               const blockStartMatch = trimmed.match(/^<<once(?:\s+if\s+(.+))?>>$/);
               if (blockStartMatch) {
@@ -259,24 +335,53 @@
               const suffixMatch = line.match(/^(.*?)\s+<<once(?:\s+if\s+(.+))?>>\s*$/);
 
               if (suffixMatch) {
-                if (!suffixMatch[1].trim()) {
-                  // Should have been matched by block start 
-                } else {
-                  const prefix = suffixMatch[1];
-                  const condition = suffixMatch[2];
-                  const variable = `$__once_${safeTitle}_${counter++}`;
+                const prefix = suffixMatch[1];
+                const cleanPrefix = prefix.trim();
+                const condition = suffixMatch[2];
+                const variable = `$__once_${safeTitle}_${counter++}`;
 
-                  const indentMatch = prefix.match(/^\s*/);
-                  const indent = indentMatch ? indentMatch[0] : '';
-                  const cleanText = prefix.trim();
+                const indentMatch = prefix.match(/^\s*/);
+                const indent = indentMatch ? indentMatch[0] : '';
 
-                  let finalCondition = `!${variable}`;
-                  if (condition) {
-                    finalCondition = `(${finalCondition}) && (${condition})`;
+                let finalCondition = `!${variable}`;
+                if (condition) {
+                  finalCondition = `(${finalCondition}) && (${condition})`;
+                }
+
+                if (cleanPrefix.startsWith('->')) {
+                  // Shortcut option: merge conditions if one already exists
+                  let finalPrefix = prefix;
+                  const existingIfMatch = prefix.match(/<<if\s+(.+)>>/);
+
+                  if (existingIfMatch) {
+                    const mergedCond = `(${existingIfMatch[1]}) && (${finalCondition})`;
+                    finalPrefix = prefix.replace(existingIfMatch[0], `<<if ${mergedCond}>>`);
+                  } else {
+                    finalPrefix = `${prefix} <<if ${finalCondition}>>`;
                   }
 
+                  newLines.push(finalPrefix);
+
+                  // Detect the correct indentation for the body
+                  let bodyIndent = indent + '    ';
+                  for (let j = i + 1; j < lines.length; j++) {
+                    const nextLine = lines[j];
+                    if (nextLine.trim() !== '') {
+                      const nextIndentMatch = nextLine.match(/^\s*/);
+                      const nextIndent = nextIndentMatch ? nextIndentMatch[0] : '';
+                      if (nextIndent.length > indent.length) {
+                        bodyIndent = nextIndent;
+                      }
+                      break;
+                    }
+                  }
+
+                  newLines.push(`${bodyIndent}<<set ${variable} = true>>`);
+                  continue;
+                }
+                else if (cleanPrefix !== '') {
                   newLines.push(`${indent}<<if ${finalCondition}>>`);
-                  newLines.push(`${indent}    ${cleanText}`);
+                  newLines.push(`${indent}    ${cleanPrefix}`);
                   newLines.push(`${indent}    <<set ${variable} = true>>`);
                   newLines.push(`${indent}<<endif>>`);
                   continue;
@@ -507,7 +612,7 @@
 
             objects.forEach(obj => {
               if (obj.body) {
-                obj.body = transpileLineGroups(obj.body);
+                obj.body = transpileLineGroups(obj.body, obj.title);
                 // Also transpile <<once>>
                 // We need the title for state differentiation
                 if (obj.title) {
