@@ -1,0 +1,39 @@
+<div id="minilesson_chooser_cont_{{uniqid}}" class="{{cssprefix}}_deflang_chooser m-2 p-3 border rounded">
+<div class="minilesson_langchooser_instructions">{{#str}}choosenativelanguageinstructions, mod_minilesson{{/str}}</div>
+    <select id="{{uniqid}}_langselect">
+        {{#nativelanglist}}
+        <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
+        {{/nativelanglist}}
+    </select>
+    <button type="button" class="btn btn-secondary" id="{{uniqid}}_langset">{{#str}}choosenativelanguage, mod_minilesson{{/str}}</button>
+</div>
+{{^element.frozen}}
+    {{#js}}
+        require(['jquery','core/log','core/ajax','core/notification'],function($,log,ajax,notification) {
+            //get controls
+            var defbtn = $("#{{uniqid}}_langset");
+            var defselect = $("#{{uniqid}}_langselect");
+
+            //set handler to get set pref according to selection, and reload
+           defbtn.on("click", function(e){
+             var pref = defselect.val();
+             if(pref==='{{activitynativelang}}' || pref===''){
+                //clear the preference
+                pref = '';
+             }
+            ajax.call([{
+                    methodname: 'mod_minilesson_set_user_preference',
+                    args: {
+                        name: 'poodll_nativelang',
+                        value: pref
+                    }
+                }])[0].done(function(response) {
+                    window.location.reload();
+                }).fail(function() {
+                    log.debug('user preference could not be set');
+                    window.location.reload();
+                })
+           });
+        });
+    {{/js}}
+{{/element.frozen}}

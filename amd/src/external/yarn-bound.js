@@ -1000,7 +1000,7 @@
             EndOfInput: null,
             // Literals in ("<<commands>>")
             Number: /-?[0-9]+(\.[0-9+])?/,
-            String: /"([^"\\]*(?:\\.[^"\\]*)*)"/,
+            String: /"([^"\\]*(?:\\.[^"\\]*)*)"|'([^'\\]*(?:\\.[^'\\]*)*)'/,
             // Command syntax ("<<foo>>")
             BeginCommand: /<</,
             EndCommand: />>/,
@@ -2929,7 +2929,7 @@
               constructor(stringLiteral) {
                 super();
                 this.type = 'StringLiteralNode';
-                this.stringLiteral = stringLiteral;
+                this.stringLiteral = stringLiteral.substring(1, stringLiteral.length - 1).replace(/\\(.)/g, '$1');
               }
             },
             BooleanLiteralNode: class extends Literal {

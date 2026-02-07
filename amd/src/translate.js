@@ -54,8 +54,8 @@ define(['jquery', 'core/log'], function ($, log) {
                 // Create a timeout promise
                 const timeoutPromise = new Promise((resolve, reject) => {
                     setTimeout(() => {
-                        reject(new Error('Session creation timed out after 30 seconds'));
-                    }, 30000);
+                        reject(new Error('Session creation timed out after 120 seconds'));
+                    }, 120000);
                 });
 
                 // Create a promise that resolves when the session is created
@@ -72,7 +72,7 @@ define(['jquery', 'core/log'], function ($, log) {
                                 progressCallback(percent);
                             }
                             if (event.loaded === event.total) {
-                                log.debug('Download complete! Waiting for c reate() to resolve...');
+                                log.debug('Download complete! Waiting for create() to resolve...');
                             }
                         });
                     }

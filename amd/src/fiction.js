@@ -86,6 +86,19 @@ define([
                     visited: (nodeName) => {
                         return this.visitednodes.includes(nodeName);
                     },
+                    translate: (text) => {
+                        var randomId = Math.random().toString(36).substring(2, 9);
+                        var updateStory = function (themessage) {
+                            var el = $("#ml-f-" + randomId);
+                            if (el.length) {
+                                el.html(themessage);
+                            } else {
+                                setTimeout(updateStory, 100, themessage);
+                            }
+                        };
+                        this.call_translate(this.sourceLang, this.destLang, text, updateStory);
+                        return "<span id='ml-f-" + randomId + "' class='ml-f-inline-translated-text'></span>";
+                    }
                 }
             };
             log.debug('MiniLesson Fiction: initializing yarnbound with options');
@@ -205,6 +218,9 @@ define([
             }
 
             var that = this;
+            this.can_continuebutton(false);
+            this.controls.yarnoptions.html('');
+
             var yarncontent = {
                 'yarntext': false,
                 'yarnoptions': false
@@ -212,14 +228,12 @@ define([
 
             if (currentResult instanceof YarnBound.TextResult) {
                 yarncontent.yarntext = currentResult;
-                this.can_continuebutton(false);
                 this.chatdata.picturesrc = yarncontent.yarntext.md?.character?.picturesrc;
                 this.chatdata.charactername = yarncontent.yarntext.md?.character?.name;
                 this.chatdata.charactertext = yarncontent.yarntext.text;
 
                 this.post_message_to_story(this.chatdata, currentResult);
 
-                that.controls.yarnoptions.html('');
             } else if (currentResult instanceof YarnBound.OptionsResult) {
                 yarncontent.yarnoptions = currentResult;
                 var chatdata = {
@@ -229,7 +243,6 @@ define([
                     'presention_plain': that.itemdata.presention_plain,
                     'shownonoptions': that.itemdata.shownonoptions,
                 };
-                that.controls.yarnoptions.html('');
                 var waittime = 1000;
                 if (that.itemdata.presention_mobilechat) {
                     waittime = 1500;
@@ -254,7 +267,6 @@ define([
                 } else {
                     that.controls.yarntext.html('');
                 }
-                that.can_continuebutton(false);
             } else if (currentResult instanceof YarnBound.CommandResult) {
                 // Process the command string a little. so we have command name and args
                 // eg "picture 1.png"
@@ -335,104 +347,44 @@ define([
                     }
                     case 'translate': {
                         log.debug('got translate command');
-                        const text = args[0];
+                        const text = args.join(' ');
                         cancel_runner_advance = true;
 
                         const sourceLang = that.sourceLang;
                         const destLang = that.destLang;
 
-                        // Check if we already have a session
-                        if (translate.session && translate.sourceLang === sourceLang && translate.destLang === destLang) {
-                            log.debug('Using existing translation session');
-
-                            translate.translate(text).then((translation) => {
-                                if (translation) {
-                                    that.post_message_to_story({
-                                        charactermedia: translation
-                                    }, currentResult, true);
-                                } else {
-                                    log.debug('translation failed');
+                        let progressPromise = null;
+                        const messageCallback = function (message) {
+                            // If this is a progress update we try to find the existing div
+                            // This is because we will get 100s of messages and do not want hundreds
+                            // of divs in the story area
+                            if (message.indexOf('translation-download-progress') !== -1) {
+                                if (progressPromise) {
+                                    progressPromise.then(() => {
+                                        var progressDiv = that.controls.chatwrapper.find('.translation-download-progress').last();
+                                        if (progressDiv.length > 0) {
+                                            progressDiv.html(message);
+                                        }
+                                    });
+                                    return;
                                 }
-                            }).catch((e) => {
-                                log.error("Translation error: " + e);
-                            });
-                            break;
-                        }
-
-                        // Check availability first
-                        translate.check_availability(that.sourceLang, that.destLang).then((status) => {
-                            log.debug('Translation availability: ' + status);
-
-                            if (status === 'unavailable') {
-                                that.post_message_to_story({
-                                    charactermedia: "translation not available for this language pair: " + that.sourceLang + " -> " + that.destLang
-                                }, currentResult, true);
-                                log.debug('Translation not available for this language pair');
+                                progressPromise = that.post_message_to_story({
+                                    charactermedia: message
+                                }, currentResult, false);
                                 return;
                             }
 
-                            if (status === 'download_needed') {
-                                // Show popup to ask user to download model
-                                notification.confirm(
-                                    that.strings.downloadtranslationmodel,
-                                    that.strings.downloadtranslationmodel_desc,
-                                    that.strings.download,
-                                    that.strings.skip,
-                                    function () {
-                                        log.debug('User clicked "Download" creating session');
-                                        // User clicked "Download" - this provides the required gesture
+                            // For regular messages (translations), ensure they are posted after any progress
+                            let p = progressPromise || Promise.resolve();
+                            p.then(() => {
+                                that.post_message_to_story({
+                                    charactermedia: message
+                                }, currentResult, true);
+                                progressPromise = null;
+                            });
+                        };
 
-                                        // Show initial progress
-                                        var progressMessage = that.strings.downloadingtranslator.replace('{$a}', '0');
-                                        that.post_message_to_story({
-                                            charactermedia: '<div class="translation-download-progress">' + progressMessage + '</div>'
-                                        }, currentResult, false);
-
-                                        translate.create_session(sourceLang, destLang, function (percent) {
-                                            var updatedMessage = that.strings.downloadingtranslator.replace('{$a}', percent);
-                                            $('.translation-download-progress').last().text(updatedMessage);
-                                        }).then((success) => {
-                                            if (success) {
-                                                return translate.translate(text);
-                                            } else {
-                                                log.error('Failed to create translation session');
-                                                return null;
-                                            }
-                                        }).then((translation) => {
-                                            if (translation) {
-                                                that.post_message_to_story({
-                                                    charactermedia: translation
-                                                }, currentResult, true);
-                                            }
-                                        }).catch((e) => {
-                                            log.error("Translation error: " + e);
-                                        });
-                                    },
-                                    function () {
-                                        // User clicked "Skip"
-                                        log.debug('User skipped translation model download');
-                                        that.post_message_to_story({
-                                            charactermedia: "translation model not downloaded"
-                                        }, currentResult, true);
-                                    }
-                                );
-                            } else if (status === 'ready') {
-                                // Model already available, create session and translate
-                                translate.create_session(sourceLang, destLang).then(() => {
-                                    return translate.translate(text);
-                                }).then((translation) => {
-                                    if (translation) {
-                                        that.post_message_to_story({
-                                            charactermedia: translation
-                                        }, currentResult, true);
-                                    } else {
-                                        log.debug('translation failed');
-                                    }
-                                }).catch((e) => {
-                                    log.error("Translation error: " + e);
-                                });
-                            }
-                        });
+                        this.call_translate(sourceLang, destLang, text, messageCallback);
                         break;
                     }
                     case 'blahblah':
@@ -480,12 +432,12 @@ define([
         post_message_to_story: function (messagedata, currentResult, showContinue = true) {
             var that = this;
             if (that.presentationmode === 'storymode') {
-                Templates.render('mod_minilesson/fiction_storymessage', {
+                return Templates.render('mod_minilesson/fiction_storymessage', {
                     charactermedia: '<div class="chat-loader"></div>'
                 }).then(function (html, js) {
                     Templates.appendNodeContents(that.controls.chatwrapper, html, js);
                     that.scrolltobottom();
-                    Templates.render('mod_minilesson/fiction_storymessage', messagedata).then(
+                    return Templates.render('mod_minilesson/fiction_storymessage', messagedata).then(
                         function (html, js) {
                             // In storymode we replace the loader with the real content
                             // finding the last story-paragraph
@@ -509,7 +461,7 @@ define([
                     );
                 });
             } else {
-                Templates.render('mod_minilesson/fiction_charactermessage', {
+                return Templates.render('mod_minilesson/fiction_charactermessage', {
                     charactermedia: '<div class="chat-loader"></div>'
                 }).then(function (html, js) {
                     Templates.appendNodeContents(that.controls.chatwrapper, html, js);
@@ -520,30 +472,117 @@ define([
                     } else if (that.itemdata.presention_storymode) {
                         waittime = 50;
                     }
-                    setTimeout(() => {
-                        Templates.render('mod_minilesson/fiction_charactermessage', messagedata).then(
-                            function (html, js) {
-                                Templates.replaceNode(
-                                    that.controls.chatwrapper.find('> .chat-window').last(),
-                                    html,
-                                    js
-                                );
-                                that.scrolltobottom();
-                                that.reset_chat_data();
-                                if (showContinue && currentResult && !currentResult.isDialogueEnd) {
-                                    if (that.flowthroughmode) {
-                                        that.do_runner_advance();
-                                        that.do_render();
-                                    } else {
-                                        that.can_continuebutton(true);
-                                    }
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            Templates.render('mod_minilesson/fiction_charactermessage', messagedata).then(
+                                function (html, js) {
+                                    Templates.replaceNode(
+                                        that.controls.chatwrapper.find('> .chat-window').last(),
+                                        html,
+                                        js
+                                    );
+                                    that.scrolltobottom();
+                                    that.reset_chat_data();
+                                    if (showContinue && currentResult && !currentResult.isDialogueEnd) {
+                                        if (that.flowthroughmode) {
+                                            that.do_runner_advance();
+                                            that.do_render();
+                                        } else {
+                                            that.can_continuebutton(true);
+                                        }
 
+                                    }
+                                    resolve();
                                 }
-                            }
-                        );
-                    }, waittime);
+                            );
+                        }, waittime);
+                    });
                 });
             }
+        },
+
+        call_translate: function (sourceLang, destLang, text, messageCallback) {
+            var that = this;
+            // Check if we already have a session
+            if (translate.session && translate.sourceLang === sourceLang && translate.destLang === destLang) {
+                log.debug('Using existing translation session');
+
+                translate.translate(text).then((translation) => {
+                    if (translation) {
+                        messageCallback(translation);
+                    } else {
+                        log.debug('translation failed');
+                    }
+                }).catch((e) => {
+                    log.error("Translation error: " + e);
+                });
+                return;
+            }
+
+            // Check availability first
+            translate.check_availability(sourceLang, destLang).then((status) => {
+                log.debug('Translation availability: ' + status);
+
+                if (status === 'unavailable') {
+                    messageCallback("translation not available for this language pair: " + sourceLang + " -> " + destLang);
+                    log.debug('Translation not available for this language pair');
+                    return;
+                }
+
+                if (status === 'download_needed') {
+                    // Show popup to ask user to download model
+                    notification.confirm(
+                        that.strings.downloadtranslationmodel,
+                        that.strings.downloadtranslationmodel_desc,
+                        that.strings.download,
+                        that.strings.skip,
+                        function () {
+                            log.debug('User clicked "Download" creating session');
+                            // User clicked "Download" - this provides the required gesture
+
+                            // Show initial progress
+                            var progressMessage = that.strings.downloadingtranslator.replace('{$a}', '0');
+                            messageCallback('<div class="translation-download-progress">' + progressMessage + '</div>');
+
+                            translate.create_session(sourceLang, destLang, function (percent) {
+                                var updatedMessage = that.strings.downloadingtranslator.replace('{$a}', percent);
+                                messageCallback('<div class="translation-download-progress">' + updatedMessage + '</div>');
+                            }).then((success) => {
+                                if (success) {
+                                    return translate.translate(text);
+                                } else {
+                                    log.error('Failed to create translation session');
+                                    return null;
+                                }
+                            }).then((translation) => {
+                                if (translation) {
+                                    messageCallback(translation);
+                                }
+                            }).catch((e) => {
+                                log.error("Translation error: " + e);
+                            });
+                        },
+                        function () {
+                            // User clicked "Skip"
+                            log.debug('User skipped translation model download');
+                            messageCallback("translation model not downloaded");
+                        }
+                    );
+                } else if (status === 'ready') {
+                    // Model already available, create session and translate
+                    translate.create_session(sourceLang, destLang).then(() => {
+                        return translate.translate(text);
+                    }).then((translation) => {
+                        if (translation) {
+                            messageCallback(translation);
+                        } else {
+                            log.debug('translation failed');
+                        }
+                    }).catch((e) => {
+                        log.error("Translation error: " + e);
+                    });
+                }
+            });
         },
 
         /**
