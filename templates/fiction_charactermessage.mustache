@@ -33,6 +33,9 @@
         {{#charactername}}
             <div class="charactername text-primary pt-2">{{{ . }}}</div>
         {{/charactername}}
+        {{^charactername}}
+            <div class="pt-2"></div>
+        {{/charactername}}
         {{#charactermedia}}
             <div class="mediacontainer">{{{ . }}}</div>
         {{/charactermedia}}

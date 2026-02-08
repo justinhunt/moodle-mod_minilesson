@@ -6530,7 +6530,7 @@ span.wrongitem {
   display: none;
 }
 
-.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer::before {
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer.has-charactername::before {
   content: "";
   position: absolute;
   left: -10px;
