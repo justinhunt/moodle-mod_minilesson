@@ -1,3 +1,9 @@
+Version 1.1.25 (Build 2026020601)
+- Fixed bug affecting Norwegian in Fluency item
+- Added AI manager allowing users to specify AI service providers
+- Added more Yarn support in fiction item, including browser translation
+- Added native language preference chooser Media type in item options
+
 Version 1.1.24 (Build 2026013004)
 - Fixed bug in WordShuffle/Fiction (video)
 - New Audio Chat API
