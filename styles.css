@@ -2427,7 +2427,7 @@ span.mod_minilesson_finishedanswer {
   width: 26px;
   margin-left: 2px;
   text-align: center;
-  background: #F3F4FD9C;
+  background: rgba(243, 244, 253, 0.61);
   border: 1px solid #B0B8DC;
   border-radius: 5px;
   padding: 5px 5px;
@@ -4329,13 +4329,14 @@ div.ml_speedyplayer_row_buttons {
   border-width: 0;
   border-style: solid;
   border-color: #e5e7eb;
+  text-align: left;
 }
 
 .minilesson_audiochat_box .ml_unique_mainwrapper {
   padding: 1rem;
   min-height: 70vh;
   --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity, 1));
+  background-color: white;
 }
 
 .minilesson_audiochat_box .ml_unique_container {
@@ -4358,11 +4359,26 @@ div.ml_speedyplayer_row_buttons {
   text-align: center
 }
 
+.minilesson_audiochat_box .ml_unique_avatarbanner {
+  margin: 40px 0;
+  width: 100%;
+  background-color: rgba(230, 233, 253, 0.4);
+  padding: 30px 0;
+  padding: 30px 75px 30px 130px;
+}
+
+.minilesson_audiochat_box .ml_unique_avatarblock + .aiimage-item-text {
+  margin-left: 20px;
+}
+
 .minilesson_audiochat_box .ml_unique_avatarblock {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 0.5rem
+  align-self: center;
+  flex-shrink: 0;
+  position: relative;
+  padding-right: 125px;
 }
 
 .minilesson_audiochat_box .ml_unique_avatar {
@@ -4372,7 +4388,14 @@ div.ml_speedyplayer_row_buttons {
   border-radius: 0.5rem;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   max-width: 100%;
-  height: auto;
+  height: 125px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .minilesson_audiochat_box .ml_unique_avatarsection {
@@ -4390,6 +4413,9 @@ div.ml_speedyplayer_row_buttons {
 .minilesson_audiochat_box .ml_unique_micselectbox {
   text-align: center;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .minilesson_audiochat_box .ml_unique_miclabel {
@@ -4400,6 +4426,8 @@ div.ml_speedyplayer_row_buttons {
   --tw-text-opacity: 1;
   color: rgb(55 65 81 / var(--tw-text-opacity, 1));
   margin-bottom: 0.25rem;
+  color: #5C669A;
+  font-weight: 600;
 }
 
 .minilesson_audiochat_box .ml_unique_micselect {
@@ -4407,11 +4435,13 @@ div.ml_speedyplayer_row_buttons {
   padding-right: 1rem;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  border-width: 1px;
   --tw-border-opacity: 1;
-  border-color: rgb(209 213 219 / var(--tw-border-opacity, 1));
   border-radius: 0.375rem;
   max-width: 250px;
+  display: block;
+  text-align: center;
+  background-color: transparent;
+  border: 1px solid #B7BDE3;
 }
 
 .minilesson_audiochat_box .ml_unique_micselect:focus {
@@ -4428,28 +4458,27 @@ div.ml_speedyplayer_row_buttons {
 
 .minilesson_audiochat_box .ml_unique_buttoncontainer {
   display: flex;
-  justify-content: center;
   align-items: center;
   margin-top: 1rem;
   position: relative;
 }
 
 .minilesson_audiochat_box .ml_unique_startbtn {
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
   --tw-bg-opacity: 1;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));
   --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
-  border-radius: 0.375rem;
   --tw-ring-shadow: 0 0 #0000;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   font-size: 1.125rem;
   line-height: 1.75rem;
+  background-color: #506dff;
+  border-radius: 8px;
+  border-color: #506dff;
+  color: #fff;
+  margin-top: 20px;
+  padding: 6px 25px;
 }
 
 .minilesson_audiochat_box .ml_unique_startbtn:hover {
@@ -4519,19 +4548,19 @@ div.ml_speedyplayer_row_buttons {
 .minilesson_audiochat_box .ml_unique_cancelstartbtn {
   padding-left: 1.5rem;
   padding-right: 1.5rem;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
   --tw-bg-opacity: 1;
-  background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1));
   --tw-text-opacity: 1;
-  color: rgb(255 255 255 / var(--tw-text-opacity, 1));
-  border-radius: 0.375rem;
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-ring-shadow: 0 0 #0000;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-  font-size: 1.125rem;
-  line-height: 1.75rem;
+  background-color: #506dff;
+  border-radius: 8px;
+  border-color: #506dff;
+  color: #fff;
+  margin-top: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .minilesson_audiochat_box .ml_unique_cancelstartbtn:hover {
@@ -4554,10 +4583,10 @@ div.ml_speedyplayer_row_buttons {
 }
 
 .minilesson_audiochat_box .ml_unique_stopbtn {
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   --tw-bg-opacity: 1;
   background-color: rgb(220 38 38 / var(--tw-bg-opacity, 1));
   --tw-text-opacity: 1;
@@ -4569,12 +4598,16 @@ div.ml_speedyplayer_row_buttons {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   font-size: 1.125rem;
   line-height: 1.75rem;
-  margin-left: auto
+  margin-left: auto;
+  width: 200px;
+  text-align: center;
+  background-color: #5067FF;
+  color: white;
 }
 
 .minilesson_audiochat_box .ml_unique_stopbtn:hover {
   --tw-bg-opacity: 1;
-  background-color: rgb(185 28 28 / var(--tw-bg-opacity, 1));
+  background-color: #5067FF;
 }
 
 .minilesson_audiochat_box .ml_unique_stopbtn:focus {
@@ -4680,7 +4713,6 @@ div.ml_speedyplayer_row_buttons {
   /* Above canvas */
   cursor: pointer;
   outline: none;
-  /* Remove default focus outline */
 }
 
 .minilesson_audiochat_box .ml_unique_togglemic:focus-visible {
@@ -4704,11 +4736,11 @@ div.ml_speedyplayer_row_buttons {
 .minilesson_audiochat_box .ml_unique_transcriptbox {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-  border-radius: 0.5rem;
+  /* border-radius: 0.5rem; */
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-ring-shadow: 0 0 #0000;
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  /* box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow); */
   height: 24rem;
   overflow-y: auto;
 }
@@ -4719,9 +4751,12 @@ div.ml_speedyplayer_row_buttons {
 
 .minilesson_audiochat_box .ml_unique_finishmessage {
   text-align: center;
-  font-weight: 700;
-  font-size: 1.125rem;
-  line-height: 1.75rem;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 100%;
+  background: #DBF6DB;
+  color: #18B616;
+  padding: 15px;
 }
 
 
@@ -4775,7 +4810,7 @@ div.ml_speedyplayer_row_buttons {
 .minilesson_audiochat_box .ml_unique_startsessioncontrols {
   display: flex;
   flex-direction: column;
-  margin-left: 0.5rem;
+  margin-left: 0;
 }
 
 .minilesson_audiochat_box .ml_unique_ordered_message_user {
@@ -4789,10 +4824,8 @@ div.ml_speedyplayer_row_buttons {
 }
 
 .minilesson_audiochat_box .ml_unique_content_user {
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding: 15px;
+  text-align: left;
   border-radius: 0.5rem;
   --tw-bg-opacity: 1;
   background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1));
@@ -4801,23 +4834,31 @@ div.ml_speedyplayer_row_buttons {
   max-width: 20rem;
 }
 
+.minilesson_audiochat_box .itemtext_afterchatactive {
+  padding-left: 30px;
+  padding-right: 40px;
+  padding-bottom: 30px;
+  font-weight: 400;
+  font-size: 16px;
+  color: #1F2334;
+}
+
 .minilesson_audiochat_box .ml_unique_content_assistant {
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
   border-radius: 0.5rem;
   --tw-bg-opacity: 1;
   background-color: rgb(229 231 235 / var(--tw-bg-opacity, 1));
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity, 1));
   max-width: 20rem;
+  background: rgba(230, 233, 253, 0.4);
+  padding: 20px 25px;
+  text-align: left;
 }
 
 .minilesson_audiochat_box .ml_unique_headerdiv {
   display: flex;
   align-items: center;
-  font-weight: 500;
+  font-weight: 700;
   margin-bottom: 0.25rem;
   line-height: 1rem;
   font-size: 0.75rem;
@@ -4939,6 +4980,14 @@ div.ml_speedyplayer_row_buttons {
   flex-direction: column;
   align-items: center;
   flex: 0 0 auto;
+  background: #E6E9FD;
+  border-radius: 8px;
+  height: 65px;
+  width: 150px;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .ml_ac_clicktosend {
@@ -4965,9 +5014,9 @@ div.ml_speedyplayer_row_buttons {
 
 /* Right flex spacer also flex container to align buttons right */
 .ml_ac_flex-right {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
+  text-align: center;
+  margin-top: 30px;
+  width: 100%;
 }
 
 .ml_ac_results_content {
@@ -5529,7 +5578,7 @@ div.ml_speedyplayer_row_buttons {
 
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td .itemtype:not(.mobileviewtype) {
   color: #5C669A;
-  border-left: 1px solid #5C669AC2;
+  border-left: 1px solid rgba(92, 102, 154, 0.76);
 }
 
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td.itemaction {
@@ -5605,7 +5654,7 @@ div.ml_speedyplayer_row_buttons {
 
 .lessonitem-modal .modal-content {
   border-radius: 16px;
-  box-shadow: 0 2px 20px 0 #00000026;
+  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.15);
 }
 
 .lessonitem-container .lessonditem-description-block {
@@ -5746,7 +5795,7 @@ div.ml_speedyplayer_row_buttons {
   font-size: 15px;
   font-weight: 600;
   font-style: italic;
-  color: #202438D9;
+  color: rgba(32, 36, 56, 0.85);
   line-height: 100%;
   letter-spacing: 0;
 }
@@ -7119,7 +7168,7 @@ span.wrongitem {
 .freewriting-item-box .mod_minilesson_fw_wordgoal,
 .freespeaking-item-box .mod_minilesson_fs_wordgoal {
   padding: 10px;
-  background-color: #E6E9FD66;
+  background-color: rgba(230, 233, 253, 0.4);
   width: 100%;
   color: #3C51DA;
   font-weight: 500;
@@ -7196,11 +7245,12 @@ span.wrongitem {
 .ml_freespeaking_results .ml_fs_results_summary .ml_fs_sumcell_content {
   font-weight: 600;
   font-size: 21px;
-  color: #515D99CF;
+  color: rgba(81, 93, 153, 0.81);
 }
 
 .ml_freewriting_resultsbox .ml_freespeaking_feedback,
-.ml_freespeaking_resultsbox .ml_freespeaking_feedback {
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback,
+.audiochat-item-box .ml-ac-review_feedback {
   background-color: rgba(230, 233, 253, 0.40);
   text-align: center;
   padding: 40px;
@@ -7208,7 +7258,8 @@ span.wrongitem {
 }
 
 .ml_freewriting_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary,
-.ml_freespeaking_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary {
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary,
+.audiochat-item-box .ml-ac-review_feedback .ml_ac_results_summary {
   position: absolute;
   top: 0;
   left: 50%;
@@ -7220,17 +7271,20 @@ span.wrongitem {
 }
 
 .ml_freewriting_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary,
-.ml_freespeaking_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary {
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary,
+.audiochat-item-box .ml-ac-review_feedback .ml_ac_results_summary {
   margin: auto
 }
 
 .ml_freewriting_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary img,
-.ml_freespeaking_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary img {
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .ml_fs_results_summary img,
+.minilesson_audiochat_box .ml-ac-review_feedback .ml_ac_results_summary img {
     width: 25px;
 }
 
 .ml_freewriting_resultsbox .ml_freespeaking_feedback .freewriting-feedback-title,
-.ml_freespeaking_resultsbox .ml_freespeaking_feedback .freewriting-feedback-title {
+.ml_freespeaking_resultsbox .ml_freespeaking_feedback .freewriting-feedback-title,
+.audiochat-item-box .ml-ac-review_feedback .audiochat-feedback-title {
   color: #3C51DA;
   font-weight: 500;
   font-size: 14px;
@@ -7289,7 +7343,8 @@ span.wrongitem {
 }
 
 .ml_freewriting_resultsbox .reattempt_btn,
-.ml_freespeaking_resultsbox .reattempt_btn {
+.ml_freespeaking_resultsbox .reattempt_btn,
+.minilesson_audiochat_box .ml_ac_retrybtn {
   border: 1px solid #506DFF;
   color: #506DFF;
   border-radius: 8px;
@@ -7297,7 +7352,8 @@ span.wrongitem {
 }
 
 .ml_freewriting_resultsbox .reattempt_btn:hover,
-.ml_freespeaking_resultsbox .reattempt_btn:hover {
+.ml_freespeaking_resultsbox .reattempt_btn:hover,
+.minilesson_audiochat_box .ml_ac_retrybtn:hover {
   color: #506DFF;
 }
 
@@ -7324,6 +7380,10 @@ span.wrongitem {
   letter-spacing: 1px;
 }
 
+.minilesson_questioncontainer.audiochat-item-box .mod_minilesson_itemtext {
+  display: none;
+}
+
 .minilesson_questioncontainer .finishedmessage_btn {
   padding: 10px;
   border-radius: 50%;
@@ -7332,4 +7392,28 @@ span.wrongitem {
   color: white;
   display: inline-flex;
   align-items: center;
+}
+
+.minilesson_audiochat_box .ml_ac_autoresponse-toggle {
+  margin-right: auto;
+}
+
+.minilesson_audiochat_box .ml_ac_feedback_text {
+  padding-top: 15px;
+  color: #1F2334;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.audiochat-item-box .paddingtop50 {
+  padding-top: 50px;
+}
+
+.audiochat-item-box .paddingbottom50 {
+  padding: 40px 0 80px;
+}
+
+.minilesson_audiochat_box .ml_ac_btn-container {
+  display: flex;
+  padding-bottom: 2rem;
 }
