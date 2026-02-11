@@ -1,11 +1,11 @@
 define(
-    ['jquery', 'core/log','core/str', 'core/notification','mod_minilesson/definitions', 'mod_minilesson/correctionsmarkup', 'core/templates'],
-    function ($, log,  str, notification, def,  correctionsmarkup, templates) {
+    ['jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/definitions', 'mod_minilesson/correctionsmarkup', 'core/templates', 'mod_minilesson/external/vkeyboard'],
+    function ($, log, str, notification, def, correctionsmarkup, templates, VKeyboard) {
         "use strict"; // jshint ;_;
 
-    /*
-    This file is to manage the free writing item type
-    */
+        /*
+        This file is to manage the free writing item type
+        */
 
         log.debug('MiniLesson FreeWriting: initialising');
 
@@ -16,27 +16,27 @@ define(
             percentscore: 0,
             strings: {},
 
-          //for making multiple instances
+            //for making multiple instances
             clone: function () {
                 return $.extend(true, {}, this);
             },
 
             init: function (index, itemdata, quizhelper) {
                 this.itemdata = itemdata;
-                log.debug('itemdata',itemdata);
+                log.debug('itemdata', itemdata);
                 this.quizhelper = quizhelper;
                 this.init_strings();
-                this.init_components(quizhelper,itemdata);
+                this.init_components(quizhelper, itemdata);
                 this.register_events(index, itemdata, quizhelper);
             },
 
             init_strings: function () {
                 var self = this;
                 str.get_strings([
-                { "key": "notsubmitted", "component": 'mod_minilesson'},
-                { "key": "notsubmit", "component": 'mod_minilesson'},
-                { "key": "submitnow", "component": 'mod_minilesson'},
-                { "key": "cancel", "component": 'core'},
+                    { "key": "notsubmitted", "component": 'mod_minilesson' },
+                    { "key": "notsubmit", "component": 'mod_minilesson' },
+                    { "key": "submitnow", "component": 'mod_minilesson' },
+                    { "key": "cancel", "component": 'core' },
                 ]).done(function (s) {
                     var i = 0;
                     self.strings.notsubmitted = s[i++];
@@ -66,22 +66,24 @@ define(
                     return 0;
                 }
 
-              //words ratio
+                //words ratio
                 var wordsratio = 1;
                 if (self.itemdata.countwords) {
                     wordsratio = transcript_evaluation.stats.words / self.itemdata.targetwordcount;
                     if (wordsratio > 1) {
-                        wordsratio = 1;}
+                        wordsratio = 1;
+                    }
                 }
 
-              //relevance
+                //relevance
                 var relevanceratio = 1;
                 if (self.itemdata.relevance > 0) {
                     relevanceratio = (transcript_evaluation.stats.relevance + 10) / 100;
                     if (relevanceratio > 1) {
-                        relevanceratio = 1;}
+                        relevanceratio = 1;
+                    }
                 }
-              //calculate score based on AI grade * relevance * wordcount
+                //calculate score based on AI grade * relevance * wordcount
                 var score = Math.round(transcript_evaluation.marks * relevanceratio * wordsratio);
                 return score;
             },
@@ -96,7 +98,7 @@ define(
                     e.preventDefault();
                     var wordcount = self.quizhelper.count_words(self.thetextarea.val());
                     var submitted = self.transcript_evaluation !== null;
-                    if (submitted || wordcount === 0 ) {
+                    if (submitted || wordcount === 0) {
                         self.next_question();
                     } else {
                         notification.confirm(
@@ -110,6 +112,12 @@ define(
                         );
                     }
                 });
+
+                if (self.itemdata.enablevkeyboard) {
+                    self.keyboardtoggle.on('click', function (e) {
+                        VKeyboard.VKI_show(self.thetextarea[0]);
+                    });
+                }
 
                 self.thetextarea.on('input', function (e) {
                     e.preventDefault();
@@ -129,7 +137,7 @@ define(
                 self.submitbutton.on('click', function (e) {
                     e.preventDefault();
                     var transcript = self.thetextarea.val();
-                  //update the wordcount
+                    //update the wordcount
                     var wordcount = self.quizhelper.count_words(transcript);
                     self.wordcount.text(wordcount);
 
@@ -163,7 +171,7 @@ define(
                 }
             },
 
-            init_components: function (quizhelper,itemdata) {
+            init_components: function (quizhelper, itemdata) {
                 var self = this;
                 self.allwords = $("#" + self.itemdata.uniqueid + "_container.mod_minilesson_mu_passage_word");
                 self.submitbutton = $("#" + itemdata.uniqueid + "_container .ml_freewriting_submitbutton");
@@ -171,37 +179,40 @@ define(
                 self.thetextarea = $("#" + self.itemdata.uniqueid + "_container .ml_freewriting_textarea");
                 self.wordcount = $("#" + self.itemdata.uniqueid + "_container span.ml_wordcount");
                 self.actionbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_actionbox");
+                self.keyboardtoggle = $("#" + self.itemdata.uniqueid + "_container .ml_freewriting_keyboard_toggle");
                 self.pendingbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_pendingbox");
                 self.resultsbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_resultsbox");
                 self.timerdisplay = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_timerdisplay");
             }, //end of init components
 
-            do_corrections_markup: function (grammarerrors,grammarmatches,insertioncount) {
+            do_corrections_markup: function (grammarerrors, grammarmatches, insertioncount) {
                 var self = this;
-              //corrected text container is created at runtime, so it wont exist at init_components time
-              //that's why we find it here
+                //corrected text container is created at runtime, so it wont exist at init_components time
+                //that's why we find it here
                 var correctionscontainer = self.resultsbox.find('.mlfsr_correctedtext');
 
-                correctionsmarkup.init({ "correctionscontainer": correctionscontainer,
+                correctionsmarkup.init({
+                    "correctionscontainer": correctionscontainer,
                     "grammarerrors": grammarerrors,
                     "grammarmatches": grammarmatches,
-                    "insertioncount": insertioncount});
+                    "insertioncount": insertioncount
+                });
             },
 
             do_evaluation: function (speechtext) {
                 var self = this;
 
-              //show a spinner while we do the AI stuff
+                //show a spinner while we do the AI stuff
                 self.resultsbox.hide();
                 self.actionbox.hide();
                 self.pendingbox.show();
 
-              //do evaluation
-                this.quizhelper.evaluateTranscript(speechtext,this.itemdata.itemid).then(function (ajaxresult) {
+                //do evaluation
+                this.quizhelper.evaluateTranscript(speechtext, this.itemdata.itemid).then(function (ajaxresult) {
                     var transcript_evaluation = JSON.parse(ajaxresult);
                     if (transcript_evaluation) {
                         transcript_evaluation.reviewsettings = self.itemdata.reviewsettings;
-                      //calculate raw score and percent score
+                        //calculate raw score and percent score
                         transcript_evaluation.rawscore = self.calculate_score(transcript_evaluation);
                         self.rawscore = self.calculate_score(transcript_evaluation);
                         self.percentscore = 0;
@@ -211,7 +222,7 @@ define(
                         if (isNaN(self.percentscore)) {
                             self.percentscore = 0;
                         }
-                      //add raw and percent score to trancript_evaluation for mustache
+                        //add raw and percent score to trancript_evaluation for mustache
                         transcript_evaluation.rawscore = self.rawscore;
                         transcript_evaluation.percentscore = self.percentscore;
                         transcript_evaluation.rawspeech = speechtext;
@@ -242,12 +253,12 @@ define(
 
                         log.debug(transcript_evaluation);
 
-                      //display results or move next if not show item review
+                        //display results or move next if not show item review
                         if (!self.quizhelper.showitemreview) {
                             self.next_question();
                         } else {
-                            templates.render('mod_minilesson/freewritingresults',transcript_evaluation).then(
-                                function (html,js) {
+                            templates.render('mod_minilesson/freewritingresults', transcript_evaluation).then(
+                                function (html, js) {
                                     self.resultsbox.html(html);
                                     //do corrections markup
                                     if (transcript_evaluation.hasOwnProperty('grammarerrors')) {
@@ -269,7 +280,7 @@ define(
                                     //self.timerdisplay.html(displaytime);
                                 }
                             );// End of templates
-                          // progresstimer clear interval when submitted and timelimit not finished
+                            // progresstimer clear interval when submitted and timelimit not finished
                             if (self.itemdata.timelimit > 0) {
                                 var timerelement = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer");
                                 var timerinterval = timerelement.attr('timer');

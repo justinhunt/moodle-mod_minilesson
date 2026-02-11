@@ -505,6 +505,7 @@ $string['spacegame_instructions1'] = 'Shoot the aliens by selecting the correct 
 $string['freespeaking_instructions1'] = 'Use the microphone to record your answer to the question.';
 $string['passagereading_instructions1'] = 'Use the microphone to record yourself reading the passage.';
 $string['freewriting_instructions1'] = 'Type your answer to the question in the text area below.';
+$string['enablevkeyboard'] = 'Enable Virtual Keyboard';
 $string['fluency_instructions1'] = 'Read the sentences aloud. Click the microphone icon to start recording.';
 $string['conversation_instructions1'] = 'replace these instructions.';
 $string['audiochat_instructions1'] = 'Practice speaking with your AI partner about the topic.';

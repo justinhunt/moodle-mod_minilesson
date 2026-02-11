@@ -46,6 +46,11 @@ class item_freewriting extends item
         $testitem->relevance = $this->itemrecord->{constants::RELEVANCE};
         $testitem->totalmarks = $this->itemrecord->{constants::TOTALMARKS};
         $testitem->nopasting = $this->itemrecord->{constants::NOPASTING};
+        
+        $testitem->enablevkeyboard = $this->itemrecord->{constants::FREEWRITING_ENABLEVKEYBOARD};
+        $testitem->language = $this->language;
+        $testitem->vkeyboardurl = $output->image_url('vkeyboard', constants::M_COMPONENT)->out();
+
         if ($this->itemrecord->{constants::TARGETWORDCOUNT} > 0) {
             $testitem->targetwordcount = $this->itemrecord->{constants::TARGETWORDCOUNT};
             $testitem->textarearows = round($this->itemrecord->{constants::TARGETWORDCOUNT} / 10, 0) + 1;
@@ -124,8 +129,9 @@ class item_freewriting extends item
         $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
         $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];
         $keycols['text4'] = ['jsonname' => 'aigradefeedbacklanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AIGRADE_FEEDBACK_LANGUAGE];
-        $keycols['text5'] = ['jsonname' => 'freewritingtopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREEWRITING_TOPIC];
-        $keycols['data1'] = ['jsonname' => 'freewritingaidata1', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREEWRITING_AIDATA1];
+        $keycols['text5'] = ['jsonname' => 'freewritingtopic', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::FREEWRITING_TOPIC];
+        $keycols['text1'] = ['jsonname' => 'enablevkeyboard', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::FREEWRITING_ENABLEVKEYBOARD];
+        $keycols['data1'] = ['jsonname' => 'freewritingaidata1', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::FREEWRITING_AIDATA1];
         $keycols['data2'] = ['jsonname' => 'freewritingaidata2', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREEWRITING_AIDATA2];
         return $keycols;
     }

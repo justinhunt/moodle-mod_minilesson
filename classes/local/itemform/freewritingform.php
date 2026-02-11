@@ -34,9 +34,9 @@ class freewritingform extends baseform
         $this->add_numericboxresponse(constants::TARGETWORDCOUNT, get_string('targetwordcount_title', constants::M_COMPONENT), false);
         $mform->setDefault(constants::TARGETWORDCOUNT, 60);
 
-        // Time limit and no pasting
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         $this->add_nopasting(constants::NOPASTING, get_string('nopasting_desc', constants::M_COMPONENT));
+        $this->add_checkbox(constants::FREEWRITING_ENABLEVKEYBOARD, get_string('enablevkeyboard', constants::M_COMPONENT), null, 0);
 
         // AI Grading Instuctions - presets dropdown
         $mform->addElement('header', 'ai_settings', get_string('aigradingandfeedback', constants::M_COMPONENT));

@@ -705,6 +705,8 @@ class constants
 
     const FREEWRITING_SHOWRESULT = 'customint9';
 
+    const FREEWRITING_ENABLEVKEYBOARD = 'customtext1';
+
     const AUDIOCHAT_INSTRUCTIONSSELECTION = 'customint6';
 
     const AUDIOCHAT_FEEDBACKSELECTION = 'customint7';
