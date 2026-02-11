@@ -113,6 +113,10 @@ class constants
     const TYPE_DICTATIONCHAT = 'dictationchat';
     const TYPE_LGAPFILL = 'listeninggapfill';
     const TYPE_TGAPFILL = 'typinggapfill';
+    const LGAPFILL_ENABLEVKEYBOARD = 'customtext6';
+    const LGAPFILL_CUSTOMKEYS = 'customtext7';
+    const TGAPFILL_ENABLEVKEYBOARD = 'customtext6';
+    const TGAPFILL_CUSTOMKEYS = 'customtext7';
     const TYPE_SGAPFILL = 'speakinggapfill';
     const TYPE_PGAPFILL = 'passagegapfill';
     const TYPE_COMPQUIZ = 'comprehensionquiz';
@@ -706,6 +710,7 @@ class constants
     const FREEWRITING_SHOWRESULT = 'customint9';
 
     const FREEWRITING_ENABLEVKEYBOARD = 'customtext1';
+    const FREEWRITING_CUSTOMKEYS = 'customtext7';
 
     const AUDIOCHAT_INSTRUCTIONSSELECTION = 'customint6';
 

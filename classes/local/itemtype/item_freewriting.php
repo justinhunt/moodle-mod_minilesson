@@ -48,6 +48,7 @@ class item_freewriting extends item
         $testitem->nopasting = $this->itemrecord->{constants::NOPASTING};
         
         $testitem->enablevkeyboard = $this->itemrecord->{constants::FREEWRITING_ENABLEVKEYBOARD};
+        $testitem->customkeys = $this->itemrecord->{constants::FREEWRITING_CUSTOMKEYS};
         $testitem->language = $this->language;
         $testitem->vkeyboardurl = $output->image_url('vkeyboard', constants::M_COMPONENT)->out();
 
@@ -131,6 +132,7 @@ class item_freewriting extends item
         $keycols['text4'] = ['jsonname' => 'aigradefeedbacklanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AIGRADE_FEEDBACK_LANGUAGE];
         $keycols['text5'] = ['jsonname' => 'freewritingtopic', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::FREEWRITING_TOPIC];
         $keycols['text1'] = ['jsonname' => 'enablevkeyboard', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::FREEWRITING_ENABLEVKEYBOARD];
+        $keycols['text7'] = ['jsonname' => 'customkeys', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::FREEWRITING_CUSTOMKEYS];
         $keycols['data1'] = ['jsonname' => 'freewritingaidata1', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::FREEWRITING_AIDATA1];
         $keycols['data2'] = ['jsonname' => 'freewritingaidata2', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::FREEWRITING_AIDATA2];
         return $keycols;

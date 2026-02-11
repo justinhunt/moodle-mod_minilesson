@@ -77,7 +77,7 @@ abstract class baseform extends \moodleform
     protected $filemanageroptions = array();
 
     /**
-     * An array of options used in the filemanager
+     * The module instance
      * @var array
      */
     protected $moduleinstance = null;
@@ -606,6 +606,32 @@ abstract class baseform extends \moodleform
         $mform->addElement('html', $fieldsettops['nativelangchooser'], []);
         $mform->addElement('advcheckbox', constants::NATIVELANGCHOOSER, get_string('enablenativelanguage', constants::M_COMPONENT), get_string('enablenativelanguage_details', constants::M_COMPONENT));
         $mform->addElement('html', $fieldsetbottom, []);
+    }
+
+    /**
+     * Convenience function: Adds virtual keyboard settings
+     *
+     * @param string $enablefield The name of the enable field
+     * @param string $customkeysfield The name of the custom keys field
+     * @return void
+     */
+    final protected function add_virtualkeyboard($enablefield, $customkeysfield)
+    {
+        $mform = $this->_form;
+        //Virtual Keyboard
+        $langoptions = utils::get_lang_options();
+        $currentlang = $langoptions[$this->moduleinstance->ttslanguage];
+        $vkeyboardoptions = [
+            0 => get_string('no'),
+            1 => $currentlang,
+            2 => get_string('customlayout', constants::M_COMPONENT)
+        ];
+        $this->add_dropdown($enablefield, get_string('enablevkeyboard', constants::M_COMPONENT), $vkeyboardoptions, 0);
+
+        $mform->addElement('text', $customkeysfield, get_string('customkeys', constants::M_COMPONENT));
+        $mform->addHelpButton($customkeysfield, 'customkeys', constants::M_COMPONENT);
+        $mform->setType($customkeysfield, PARAM_TEXT);
+        $mform->hideIf($customkeysfield, $enablefield, 'neq', 2);
     }
 
     final protected function add_media_upload($name, $label, $required = false, $accept = '', $maxfiles = 0)

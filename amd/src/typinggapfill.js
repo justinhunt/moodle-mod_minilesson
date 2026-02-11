@@ -6,8 +6,10 @@ define(['jquery',
     'mod_minilesson/progresstimer',
     'core/templates',
     'core/str',
-    'core/notification'
-], function ($, log, ajax, def, anim, progresstimer, templates, str, notification) {
+    'core/notification',
+    'mod_minilesson/external/simplekeyboard',
+    'mod_minilesson/external/keyboardlayouts'
+], function ($, log, ajax, def, anim, progresstimer, templates, str, notification, SimpleKeyboard, KeyboardLayouts) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson typing gap fill: initialising');
@@ -25,6 +27,10 @@ define(['jquery',
             self.quizhelper = quizhelper;
             self.index = index;
             self.strings = {};
+            self.itemdata = itemdata;
+            self.quizhelper = quizhelper;
+            self.index = index;
+            self.activeInputElement = null;
 
             var animopts = {};
             animopts.useanimatecss = quizhelper.useanimatecss;
@@ -112,7 +118,8 @@ define(['jquery',
             review_data.items = self.items;
             review_data.totalitems = self.items.length;
             review_data.correctitems = self.items.filter(function (e) {
-                return e.correct; }).length;
+                return e.correct;
+            }).length;
 
             //Get controls
             var listencont = self.controls.listen_cont;
@@ -351,7 +358,7 @@ define(['jquery',
             self.updateProgressDots();
 
             setTimeout(function () {
-                self.controls.nextbutton.prop("disabled",false);
+                self.controls.nextbutton.prop("disabled", false);
                 if (self.quizhelper.showitemreview) {
                     self.controls.progress_container.removeClass('d-flex');
                     self.controls.progress_container.hide();
@@ -402,7 +409,7 @@ define(['jquery',
 
         updateProgressDots: function () {
             var self = this;
-            var color,icon;
+            var color, icon;
             var progress = self.items.map(function (item, idx) {
                 color = "#E6E9FD";
                 icon = "fa fa-square";
@@ -469,11 +476,111 @@ define(['jquery',
             self.controls.ctrl_btn.prop("disabled", false);
 
             var inputElements = Array.from(self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character'));
+            // Virtual Keyboard
+            if (self.itemdata.enablevkeyboard && self.itemdata.enablevkeyboard != '0') {
+                var KeyboardClass = SimpleKeyboard.default || SimpleKeyboard;
+
+                var keyboardConfig = {
+                    onKeyPress: button => self.onKeyPress(button)
+                };
+
+                if (self.itemdata.enablevkeyboard == '2') {
+                    // Custom Layout
+                    var customKeys = self.itemdata.customkeys || "";
+                    if (customKeys.indexOf(' ') === -1 && customKeys.length > 0) {
+                        customKeys = customKeys.split('').join(' ');
+                    }
+
+                    keyboardConfig.layout = {
+                        'default': [customKeys]
+                    };
+                    keyboardConfig.useStandardCaps = false;
+                    keyboardConfig.mergeDisplay = true;
+                } else {
+                    // Standard Language Layout
+                    var LayoutsClass = KeyboardLayouts.default || KeyboardLayouts;
+                    var keyboardLayouts = new LayoutsClass();
+                    var layoutName = self.get_keyboard_layout(self.itemdata.language);
+                    var layout = keyboardLayouts.get(layoutName);
+                    $.extend(keyboardConfig, layout);
+                }
+
+                self.keyboard = new KeyboardClass(".simple-keyboard-" + self.itemdata.uniqueid, keyboardConfig);
+
+                var keyboardtoggle = self.controls.container.find('.ml_freewriting_keyboard_toggle');
+                keyboardtoggle.on('click', function (e) {
+                    var kb = self.controls.container.find(".simple-keyboard-" + self.itemdata.uniqueid);
+                    if (kb.is(":visible")) {
+                        kb.hide();
+                    } else {
+                        kb.show();
+                    }
+                });
+            }
+
             self.formReady(inputElements);
 
             self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character:first').focus();
 
             self.startTimer();
+        },
+
+        onKeyPress: function (button) {
+            var self = this;
+            if (!self.activeInputElement) {
+                return;
+            }
+            var nativeElement = self.activeInputElement[0];
+
+            // Handle backspace
+            if (button === "{bksp}") {
+                if (nativeElement.value === "") {
+                    // Trigger keydown 8 to move focus previous
+                    var event = new KeyboardEvent("keydown", {
+                        bubbles: true, cancelable: true,
+                        key: "Backspace", code: "Backspace", keyCode: 8, which: 8
+                    });
+                    nativeElement.dispatchEvent(event);
+                } else {
+                    nativeElement.value = "";
+                    nativeElement.classList.remove("ml_gapfill_char_correct");
+                    // Trigger input event
+                    var event = new Event('input', { bubbles: true });
+                    nativeElement.dispatchEvent(event);
+                }
+            } else if (button.length === 1) {
+                // If it is regular character
+                nativeElement.value = button;
+                nativeElement.classList.remove("ml_gapfill_char_correct");
+                // Trigger input event
+                var event = new Event('input', { bubbles: true });
+                nativeElement.dispatchEvent(event);
+            }
+        },
+
+        get_keyboard_layout: function (lang) {
+            var langCode = lang.substring(0, 2).toLowerCase();
+            switch (langCode) {
+                case 'en': return 'english';
+                case 'de': return 'german';
+                case 'es': return 'spanish';
+                case 'fr': return 'french';
+                case 'it': return 'italian';
+                case 'ja': return 'japanese';
+                case 'ko': return 'korean';
+                case 'pt': return 'portuguese';
+                case 'ru': return 'russian';
+                case 'tr': return 'turkish';
+                case 'uk': return 'ukrainian';
+                case 'zh': return 'chinese';
+                case 'ar': return 'arabic';
+                case 'el': return 'greek';
+                case 'he': return 'hebrew';
+                case 'hi': return 'hindi';
+                case 'th': return 'thai';
+                case 'ur': return 'urdu';
+                default: return 'english';
+            }
         },
 
         startTimer: function () {
@@ -519,7 +626,11 @@ define(['jquery',
         },
 
         formReady: function (inputElements) {
+            var self = this;
             inputElements.forEach(function (ele, index) {
+                ele.addEventListener("focus", function (e) {
+                    self.activeInputElement = $(e.target);
+                });
                 ele.addEventListener("keydown", function (e) {
                     switch (e.keyCode) {
                         case 8:

@@ -23,6 +23,7 @@ class typinggapfillform extends baseform
         $this->add_sentenceimage(1, null, false);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         $this->add_allowretry(constants::GAPFILLALLOWRETRY, get_string('allowretry_desc', constants::M_COMPONENT));
+        $this->add_virtualkeyboard(constants::TGAPFILL_ENABLEVKEYBOARD, constants::TGAPFILL_CUSTOMKEYS);
         $this->add_hidestartpage(constants::GAPFILLHIDESTARTPAGE, get_string('hidestartpage_desc', constants::M_COMPONENT));
     }
 }

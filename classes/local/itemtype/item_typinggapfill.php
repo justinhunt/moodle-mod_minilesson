@@ -53,6 +53,8 @@ class item_typinggapfill extends item
         $testitem->sentences = $this->process_typinggapfill_sentences($sentences);
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
+        $testitem->enablevkeyboard = $this->itemrecord->{constants::TGAPFILL_ENABLEVKEYBOARD};
+        $testitem->customkeys = $this->itemrecord->{constants::TGAPFILL_CUSTOMKEYS};
 
         // cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
@@ -85,6 +87,8 @@ class item_typinggapfill extends item
         $keycols = parent::get_keycolumns();
         $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
+        $keycols['text6'] = ['jsonname' => 'enablevkeyboard', 'type' => 'string', 'optional' => true, 'default' => 0, 'dbname' => constants::TGAPFILL_ENABLEVKEYBOARD];
+        $keycols['text7'] = ['jsonname' => 'customkeys', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::TGAPFILL_CUSTOMKEYS];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];

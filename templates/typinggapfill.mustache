@@ -27,6 +27,8 @@
 
     <div style="display:none;" class="question"></div>
 
+    <div class="simple-keyboard simple-keyboard-{{uniqueid}}" style="padding: 5px; display: none;"></div>
+
     <div style="display:none;" class="tgapfill_controls pb-3">
         <button class="btn tgapfill_ctrl-btn tgapfill_check_btn">
             <i class="fa fa-check"></i> {{#str}}check, mod_minilesson{{/str}}
@@ -35,7 +37,13 @@
         <button class="btn tgapfill_ctrl-btn tgapfill_skip_btn">
             {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
         </button>
+
+        <button class="btn tgapfill_ctrl-btn ml_freewriting_keyboard_toggle" type="button">
+            <i class="fa fa-keyboard-o"></i>
+        </button>
+
     </div>
+
     <div class="tgapfill_resultscontainer"></div>
 </div>
 {{> mod_minilesson/questionfooter}}

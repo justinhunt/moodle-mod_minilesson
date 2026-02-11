@@ -1,6 +1,6 @@
-define(
-    ['jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/definitions', 'mod_minilesson/correctionsmarkup', 'core/templates', 'mod_minilesson/external/vkeyboard'],
-    function ($, log, str, notification, def, correctionsmarkup, templates, VKeyboard) {
+define([
+    'jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/definitions', 'mod_minilesson/correctionsmarkup', 'core/templates', 'mod_minilesson/external/simplekeyboard', 'mod_minilesson/external/keyboardlayouts'],
+    function ($, log, str, notification, def, correctionsmarkup, templates, SimpleKeyboard, KeyboardLayouts) {
         "use strict"; // jshint ;_;
 
         /*
@@ -113,9 +113,50 @@ define(
                     }
                 });
 
-                if (self.itemdata.enablevkeyboard) {
+                if (self.itemdata.enablevkeyboard && self.itemdata.enablevkeyboard != '0') {
+                    var KeyboardClass = SimpleKeyboard.default || SimpleKeyboard;
+
+                    var keyboardConfig = {
+                        onChange: input => self.onChange(input),
+                        onKeyPress: button => self.onKeyPress(button)
+                    };
+
+                    if (self.itemdata.enablevkeyboard == '2') {
+                        // Custom Layout
+                        var customKeys = self.itemdata.customkeys || "";
+                        // If no spaces, assume characters should be separated
+                        if (customKeys.indexOf(' ') === -1 && customKeys.length > 0) {
+                            customKeys = customKeys.split('').join(' ');
+                        }
+
+                        keyboardConfig.layout = {
+                            'default': [customKeys]
+                        };
+                        keyboardConfig.useStandardCaps = false;
+                        keyboardConfig.mergeDisplay = true;
+
+                    } else {
+                        // Standard Language Layout
+                        var LayoutsClass = KeyboardLayouts.default || KeyboardLayouts;
+                        var keyboardLayouts = new LayoutsClass();
+                        var layoutName = self.get_keyboard_layout(self.itemdata.language);
+                        var layout = keyboardLayouts.get(layoutName);
+                        $.extend(keyboardConfig, layout);
+                    }
+
+                    var keyboard = new KeyboardClass(keyboardConfig);
+
                     self.keyboardtoggle.on('click', function (e) {
-                        VKeyboard.VKI_show(self.thetextarea[0]);
+                        var kb = $(".simple-keyboard");
+                        if (kb.is(":visible")) {
+                            kb.hide();
+                        } else {
+                            kb.show();
+                        }
+                    });
+
+                    self.thetextarea.on('input', function (e) {
+                        keyboard.setInput(e.target.value);
                     });
                 }
 
@@ -297,6 +338,40 @@ define(
                     }
                 });
             },
+
+            onChange: function (input) {
+                this.thetextarea.val(input);
+                this.thetextarea.trigger('input');
+            },
+
+            onKeyPress: function (button) {
+                // log.debug("Button pressed", button);
+            },
+
+            get_keyboard_layout: function (lang) {
+                // Use first two letters of language code (e.g. en from en-US)
+                var langCode = lang.substring(0, 2).toLowerCase();
+                switch (langCode) {
+                    case 'en': return 'english';
+                    case 'de': return 'german';
+                    case 'es': return 'spanish';
+                    case 'fr': return 'french';
+                    case 'it': return 'italian';
+                    case 'ja': return 'japanese';
+                    case 'ko': return 'korean';
+                    case 'pt': return 'portuguese';
+                    case 'ru': return 'russian';
+                    case 'tr': return 'turkish';
+                    case 'uk': return 'ukrainian';
+                    case 'zh': return 'chinese';
+                    case 'ar': return 'arabic';
+                    case 'el': return 'greek';
+                    case 'he': return 'hebrew';
+                    case 'hi': return 'hindi';
+                    case 'th': return 'thai';
+                    case 'ur': return 'urdu';
+                    default: return 'english';
+                }
+            }
         };
-    }
-);
+    });

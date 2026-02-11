@@ -43,6 +43,8 @@
 
     <div style="display:none;" class="question"></div>
 
+    <div class="simple-keyboard simple-keyboard-{{uniqueid}}" style="padding: 5px; display: none;"></div>
+
     <div style="display:none;" class="lgapfill_controls pb-3">
 
         <button class="btn lgapfill_ctrl-btn lgapfill_check_btn">
@@ -51,6 +53,10 @@
 
         <button class="btn lgapfill_ctrl-btn lgapfill_skip_btn">
             {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
+        </button>
+
+        <button class="btn lgapfill_ctrl-btn ml_freewriting_keyboard_toggle" type="button">
+            <i class="fa fa-keyboard-o"></i>
         </button>
 
     </div>

@@ -36,9 +36,14 @@ class freewritingform extends baseform
 
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         $this->add_nopasting(constants::NOPASTING, get_string('nopasting_desc', constants::M_COMPONENT));
-        $this->add_checkbox(constants::FREEWRITING_ENABLEVKEYBOARD, get_string('enablevkeyboard', constants::M_COMPONENT), null, 0);
 
-        // AI Grading Instuctions - presets dropdown
+        //Virtual Keyboard
+        $this->add_virtualkeyboard(constants::FREEWRITING_ENABLEVKEYBOARD, constants::FREEWRITING_CUSTOMKEYS);
+        
+        // Hide corrections in the results  (useful if it is not a language learning course)
+        $this->add_checkbox(constants::FREEWRITING_HIDECORRECTION, get_string('hidecorrection', constants::M_COMPONENT), null, 0);
+
+        // AI Grading Instructions - presets dropdown
         $mform->addElement('header', 'ai_settings', get_string('aigradingandfeedback', constants::M_COMPONENT));
         $options = utils::get_aiprompt_options('FREEWRITING_GRADINGSELECTION');
         $mform->addElement(
