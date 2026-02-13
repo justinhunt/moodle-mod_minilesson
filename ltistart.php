@@ -3,6 +3,7 @@ require_once(__DIR__ . '/../../config.php');
 require_once($CFG->dirroot . '/mod/minilesson/lib.php');
 require_once($CFG->dirroot . '/enrol/lti/lib.php');
 require_once($CFG->dirroot . '/enrol/poodlllti/lib.php'); // Encure class is loaded
+require_once($CFG->dirroot . '/auth/lti/auth.php'); // Ensure auth constants are loaded
 
 use core\http_client;
 use enrol_lti\local\ltiadvantage\lib\lti_cookie;
@@ -39,20 +40,70 @@ if (!$messagelaunch->isDeepLinkLaunch()) {
     throw new moodle_exception('Not a deep link launch.');
 }
 
+// 2. Find/Provision Category & Course
 $launchdata = $messagelaunch->getLaunchData();
 $deploymentid = $launchdata['https://purl.imsglobal.org/spec/lti/claim/deployment_id'] ?? null;
+$context = $launchdata['https://purl.imsglobal.org/spec/lti/claim/context'] ?? [];
+$contextid = $context['id'] ?? null;
+$customparams = $launchdata['https://purl.imsglobal.org/spec/lti/claim/custom'] ?? [];
+$sectionid = $customparams['section_id'] ?? null;
 
-if (empty($deploymentid)) {
-    throw new moodle_exception('No deployment ID in launch data.');
+if (empty($deploymentid) || empty($contextid)) {
+    throw new moodle_exception('Missing required LTI launch parameters.');
 }
 
-// 2. Find Course
-$course = $DB->get_record('course', ['idnumber' => $deploymentid]);
+$category = $DB->get_record('course_categories', ['idnumber' => $deploymentid]);
+if (!$category) {
+    throw new moodle_exception('Tenant category not found for deployment ID: ' . s($deploymentid));
+}
+
+$coursetargetidnumber = $deploymentid . ':' . $contextid;
+$course = $DB->get_record('course', ['idnumber' => $coursetargetidnumber]);
+
 if (!$course) {
-    echo $OUTPUT->header();
-    echo $OUTPUT->notification("No course found with ID number matching deployment ID: " . s($deploymentid), 'notifyproblem');
-    echo $OUTPUT->footer();
-    die();
+    // Provision from Pool
+    $sql = "SELECT * FROM {course} 
+             WHERE category = :category 
+               AND (idnumber IS NULL OR idnumber = '')
+             ORDER BY sortorder ASC";
+    $poolcourse = $DB->get_record_sql($sql, ['category' => $category->id], IGNORE_MULTIPLE);
+    
+    if (!$poolcourse) {
+        throw new moodle_exception('No available pool course found in category: ' . s($category->name));
+    }
+    
+    $poolcourse->idnumber = $coursetargetidnumber;
+    $poolcourse->fullname = $context['title'] ?? ('Course ' . $contextid);
+    $poolcourse->shortname = $context['label'] ?? $poolcourse->idnumber;
+    $DB->update_record('course', $poolcourse);
+    $course = $poolcourse;
+}
+
+// 2b. Ensure Instructor is enrolled
+if (!is_enrolled(context_course::instance($course->id), $USER->id)) {
+    $ltiroles = $launchdata['https://purl.imsglobal.org/spec/lti/claim/roles'] ?? [];
+    $isinstructor = false;
+    foreach ($ltiroles as $role) {
+        if (strpos($role, 'Membership#Instructor') !== false || strpos($role, 'system/person#Administrator') !== false) {
+            $isinstructor = true;
+            break;
+        }
+    }
+    
+    if ($isinstructor) {
+        $enrol = enrol_get_plugin('manual');
+        $instance = $DB->get_record('enrol', ['courseid' => $course->id, 'enrol' => 'manual'], '*', IGNORE_MULTIPLE);
+        if (!$instance) {
+            if ($enrol) {
+                $enrolid = $enrol->add_instance($course);
+                $instance = $DB->get_record('enrol', ['id' => $enrolid], '*', MUST_EXIST);
+            }
+        }
+        if ($instance && $enrol) {
+            $roleid = $DB->get_field('role', 'id', ['shortname' => 'editingteacher'], MUST_EXIST);
+            $enrol->enrol_user($instance, $USER->id, $roleid);
+        }
+    }
 }
 
 // 3. Handle Selection
@@ -62,6 +113,13 @@ if ($selectid) {
     $cm = get_coursemodule_from_id('minilesson', $selectid, $course->id, false, MUST_EXIST);
     $minilesson = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
     $modcontext = context_module::instance($cm->id);
+
+    $resourcelink = $launchdata['https://purl.imsglobal.org/spec/lti/claim/resource_link'] ?? [];
+    $resourceid = $resourcelink['id'] ?? null;
+    
+    if ($resourceid && $cm->idnumber != $resourceid) {
+        $DB->set_field('course_modules', 'idnumber', $resourceid, ['id' => $cm->id]);
+    }
 
     // Find or Create enrol_poodlllti tool for this module
     $toolid = null;
@@ -90,9 +148,26 @@ if ($selectid) {
     } else {
         // Create new instance
         $plugin = enrol_get_plugin('poodlllti');
+        
+        // Get enrol_lti settings for defaults
+        $lticonfig = get_config('enrol_lti');
+        global $SITE;
+        
+        $fields = [
+            'contextid' => $modcontext->id,
+            'institution' => $lticonfig->institution ?? $SITE->fullname,
+            'city' => $lticonfig->city ?? $CFG->defaultcity ?? '',
+            'country' => $lticonfig->country ?? $CFG->country ?? 'AU',
+            'roleinstructor' => 3, // Editing teacher
+            'rolelearner' => 5, // Student
+            'roleid' => 5, // Default role for enrolment instance (Student)
+            'provisioningmodeinstructor' => auth_plugin_lti::PROVISIONING_MODE_PROMPT_NEW_EXISTING,
+            'provisioningmodelearner' => auth_plugin_lti::PROVISIONING_MODE_AUTO_ONLY
+        ];
+
         // add_instance will create the enrol record AND enrol_lti_tools record (via our lib.php overrides or parent)
         // We pass contextid to bind it to the module
-        $enrolid = $plugin->add_instance($course, ['contextid' => $modcontext->id]);
+        $enrolid = $plugin->add_instance($course, $fields);
         
         // Fetch the created tool
         $newtool = $DB->get_record('enrol_lti_tools', ['enrolid' => $enrolid], '*', MUST_EXIST);
@@ -119,7 +194,10 @@ if ($selectid) {
     
     $resource = Resource::new()
         ->setUrl($resourceurl)
-        ->setCustomParams(['id' => $tooluuid]) // Pass UUID as 'id'
+        ->setCustomParams([
+            'id' => $tooluuid,
+            'modid' => $cm->id
+        ]) // Pass UUID as 'id' and CM ID as 'modid'
         ->setTitle($minilesson->name);
         
     // AGS Support
@@ -143,29 +221,45 @@ if ($selectid) {
 }
 
 // 4. List Activities
-$PAGE->set_context(context_system::instance());
+$PAGE->set_context(context_course::instance($course->id));
 $PAGE->set_url(new moodle_url('/mod/minilesson/ltistart.php', ['launchid' => $launchid]));
 $PAGE->set_title('Select MiniLesson');
 $PAGE->set_heading('Select MiniLesson for ' . $course->fullname);
 
 echo $OUTPUT->header();
-echo $OUTPUT->heading('Available MiniLessons');
+
+// Option A: Create New
+echo $OUTPUT->heading('Option A: Create New', 3);
+$createurl = new moodle_url('/mod/minilesson/lticreate.php', ['launchid' => $launchid, 'courseid' => $course->id]);
+echo html_writer::link($createurl, 'Create New MiniLesson', ['class' => 'btn btn-primary mb-4']);
+
+// Option B: Select Existing
+echo $OUTPUT->heading('Option B: Select Existing', 3);
 
 $modinfo = get_fast_modinfo($course);
 $minilessons = $modinfo->get_instances_of('minilesson');
 
+// Filter by section_id if available (custom logic: maybe activities have tags or groups?)
+// For now, we'll just list all, but we provide the hook.
+if ($sectionid) {
+    // Potentially filter $minilessons here. 
+    // Moodle Activities don't usually have a single 'section' field in this way, 
+    // but they might belong to an actual Moodle section.
+}
+
 if (empty($minilessons)) {
-    echo $OUTPUT->notification('No MiniLessons found in this course.', 'warning');
+    echo $OUTPUT->notification('No MiniLessons found in this course.', 'info');
 } else {
-    echo '<ul>';
+    echo '<ul class="list-group">';
     foreach ($minilessons as $cm) {
         $selecturl = new moodle_url('/mod/minilesson/ltistart.php', [
             'launchid' => $launchid,
             'select_minilesson' => $cm->id,
             'sesskey' => sesskey()
         ]);
-        echo '<li>';
-        echo '<a href="' . $selecturl . '" class="btn btn-secondary">' . s($cm->name) . '</a>';
+        echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+        echo s($cm->name);
+        echo '<a href="' . $selecturl . '" class="btn btn-secondary btn-sm">Select</a>';
         echo '</li>';
     }
     echo '</ul>';
