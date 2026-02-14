@@ -79,12 +79,14 @@ if (!$course) {
     $course = $poolcourse;
 }
 
+$PAGE->set_context(context_course::instance($course->id));
+
 // 2b. Ensure Instructor is enrolled
 if (!is_enrolled(context_course::instance($course->id), $USER->id)) {
     $ltiroles = $launchdata['https://purl.imsglobal.org/spec/lti/claim/roles'] ?? [];
     $isinstructor = false;
     foreach ($ltiroles as $role) {
-        if (strpos($role, 'Membership#Instructor') !== false || strpos($role, 'system/person#Administrator') !== false) {
+        if (stripos($role, 'membership#Instructor') !== false || stripos($role, 'system/person#Administrator') !== false) {
             $isinstructor = true;
             break;
         }
@@ -221,7 +223,6 @@ if ($selectid) {
 }
 
 // 4. List Activities
-$PAGE->set_context(context_course::instance($course->id));
 $PAGE->set_url(new moodle_url('/mod/minilesson/ltistart.php', ['launchid' => $launchid]));
 $PAGE->set_title('Select MiniLesson');
 $PAGE->set_heading('Select MiniLesson for ' . $course->fullname);
