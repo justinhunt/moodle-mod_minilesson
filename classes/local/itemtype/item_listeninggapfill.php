@@ -53,8 +53,21 @@ class item_listeninggapfill extends item
         $testitem->sentences = $this->process_listeninggapfill_sentences($sentences);
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
-        $testitem->enablevkeyboard = $this->itemrecord->{constants::LGAPFILL_ENABLEVKEYBOARD};
-        $testitem->customkeys = $this->itemrecord->{constants::LGAPFILL_CUSTOMKEYS};
+        $enablevkeyboard = $this->itemrecord->{constants::LGAPFILL_ENABLEVKEYBOARD};
+        $customkeys = $this->itemrecord->{constants::LGAPFILL_CUSTOMKEYS};
+
+        // If compact layout selected (2), we fetch the keys and set to custom layout (2) for JS
+        if ($enablevkeyboard == 2) {
+            $testitem->enablevkeyboard = 2;
+            $testitem->customkeys = \mod_minilesson\utils::get_compact_keys($this->moduleinstance->ttslanguage);
+        } elseif ($enablevkeyboard == 3) {
+            // If custom layout selected (3), we set to custom layout (2) for JS
+            $testitem->enablevkeyboard = 2;
+            $testitem->customkeys = $customkeys;
+        } else {
+            $testitem->enablevkeyboard = $enablevkeyboard;
+            $testitem->customkeys = $customkeys;
+        }
 
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);

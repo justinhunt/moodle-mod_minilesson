@@ -297,12 +297,26 @@ define(['jquery',
                 if (self.itemdata.enablevkeyboard == '2') {
                     // Custom Layout
                     var customKeys = self.itemdata.customkeys || "";
-                    if (customKeys.indexOf(' ') === -1 && customKeys.length > 0) {
-                        customKeys = customKeys.split('').join(' ');
+                    // 1. Clean up the string (remove extra spaces)
+                    var charArray = customKeys.split(' ').filter(c => c.trim() !== "");
+                    // If no spaces, and not empty, split by character
+                    if (charArray.length === 0 && customKeys.trim().length > 0) {
+                        charArray = customKeys.trim().split('');
                     }
 
+                    // 2. Map to uppercase
+                    var upperArray = charArray.map(c => c.toUpperCase());
+
+                    // 3. Join back into the format simple-keyboard expects
+                    var lowerRow = charArray.join(' ') + ' {shift}';
+                    var upperRow = upperArray.join(' ') + ' {shift}';
+
                     keyboardConfig.layout = {
-                        'default': [customKeys]
+                        'default': [lowerRow],
+                        'shift': [upperRow]
+                    };
+                    keyboardConfig.display = {
+                        '{shift}': '⇧'
                     };
                     keyboardConfig.useStandardCaps = false;
                     keyboardConfig.mergeDisplay = true;
@@ -317,7 +331,7 @@ define(['jquery',
 
                 self.keyboard = new KeyboardClass(".simple-keyboard-" + self.itemdata.uniqueid, keyboardConfig);
 
-                var keyboardtoggle = self.controls.container.find('.ml_freewriting_keyboard_toggle');
+                var keyboardtoggle = self.controls.container.find('.ml_simple_keyboard_toggle');
                 keyboardtoggle.on('click', function (e) {
                     var kb = self.controls.container.find(".simple-keyboard-" + self.itemdata.uniqueid);
                     if (kb.is(":visible")) {
@@ -331,6 +345,22 @@ define(['jquery',
 
         onKeyPress: function (button) {
             var self = this;
+            if (button === "{shift}" || button === "{lock}") {
+                var currentLayout = self.keyboard.options.layoutName;
+                var shiftToggle = currentLayout === "default" ? "shift" : "default";
+
+                self.keyboard.setOptions({
+                    layoutName: shiftToggle
+                });
+
+                var kbContainers = self.controls.container.find(".simple-keyboard-" + self.itemdata.uniqueid);
+                if (shiftToggle === "shift") {
+                    kbContainers.addClass("vkeyboard-shifted");
+                } else {
+                    kbContainers.removeClass("vkeyboard-shifted");
+                }
+                return;
+            }
             if (!self.activeInputElement) {
                 return;
             }

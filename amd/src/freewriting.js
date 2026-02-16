@@ -124,13 +124,26 @@ define([
                     if (self.itemdata.enablevkeyboard == '2') {
                         // Custom Layout
                         var customKeys = self.itemdata.customkeys || "";
-                        // If no spaces, assume characters should be separated
-                        if (customKeys.indexOf(' ') === -1 && customKeys.length > 0) {
-                            customKeys = customKeys.split('').join(' ');
+                        // 1. Clean up the string (remove extra spaces)
+                        var charArray = customKeys.split(' ').filter(c => c.trim() !== "");
+                        // If no spaces, and not empty, split by character
+                        if (charArray.length === 0 && customKeys.trim().length > 0) {
+                            charArray = customKeys.trim().split('');
                         }
 
+                        // 2. Map to uppercase
+                        var upperArray = charArray.map(c => c.toUpperCase());
+
+                        // 3. Join back into the format simple-keyboard expects
+                        var lowerRow = charArray.join(' ') + ' {shift}';
+                        var upperRow = upperArray.join(' ') + ' {shift}';
+
                         keyboardConfig.layout = {
-                            'default': [customKeys]
+                            'default': [lowerRow],
+                            'shift': [upperRow]
+                        };
+                        keyboardConfig.display = {
+                            '{shift}': '⇧'
                         };
                         keyboardConfig.useStandardCaps = false;
                         keyboardConfig.mergeDisplay = true;
@@ -144,19 +157,19 @@ define([
                         $.extend(keyboardConfig, layout);
                     }
 
-                    var keyboard = new KeyboardClass(keyboardConfig);
+                    self.keyboard = new KeyboardClass(".simple-keyboard-" + self.itemdata.uniqueid, keyboardConfig);
 
                     self.keyboardtoggle.on('click', function (e) {
-                        var kb = $(".simple-keyboard");
-                        if (kb.is(":visible")) {
-                            kb.hide();
+                        var kbContainers = self.container.find(".simple-keyboard-" + self.itemdata.uniqueid);
+                        if (kbContainers.is(":visible")) {
+                            kbContainers.hide();
                         } else {
-                            kb.show();
+                            kbContainers.show();
                         }
                     });
 
                     self.thetextarea.on('input', function (e) {
-                        keyboard.setInput(e.target.value);
+                        self.keyboard.setInput(e.target.value);
                     });
                 }
 
@@ -214,13 +227,14 @@ define([
 
             init_components: function (quizhelper, itemdata) {
                 var self = this;
+                self.container = $("#" + self.itemdata.uniqueid + "_container");
                 self.allwords = $("#" + self.itemdata.uniqueid + "_container.mod_minilesson_mu_passage_word");
                 self.submitbutton = $("#" + itemdata.uniqueid + "_container .ml_freewriting_submitbutton");
                 self.nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
                 self.thetextarea = $("#" + self.itemdata.uniqueid + "_container .ml_freewriting_textarea");
                 self.wordcount = $("#" + self.itemdata.uniqueid + "_container span.ml_wordcount");
                 self.actionbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_actionbox");
-                self.keyboardtoggle = $("#" + self.itemdata.uniqueid + "_container .ml_freewriting_keyboard_toggle");
+                self.keyboardtoggle = $("#" + self.itemdata.uniqueid + "_container .ml_simple_keyboard_toggle");
                 self.pendingbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_pendingbox");
                 self.resultsbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_resultsbox");
                 self.timerdisplay = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_timerdisplay");
@@ -345,7 +359,22 @@ define([
             },
 
             onKeyPress: function (button) {
-                // log.debug("Button pressed", button);
+                var self = this;
+                if (button === "{shift}" || button === "{lock}") {
+                    var currentLayout = self.keyboard.options.layoutName;
+                    var shiftToggle = currentLayout === "default" ? "shift" : "default";
+
+                    self.keyboard.setOptions({
+                        layoutName: shiftToggle
+                    });
+
+                    var kbContainers = self.container.find(".simple-keyboard-" + self.itemdata.uniqueid);
+                    if (shiftToggle === "shift") {
+                        kbContainers.addClass("vkeyboard-shifted");
+                    } else {
+                        kbContainers.removeClass("vkeyboard-shifted");
+                    }
+                }
             },
 
             get_keyboard_layout: function (lang) {

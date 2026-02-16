@@ -43,7 +43,7 @@
 
     <div style="display:none;" class="question"></div>
 
-    <div class="simple-keyboard simple-keyboard-{{uniqueid}}" style="padding: 5px; display: none;"></div>
+    <div class="simple-keyboard simple-keyboard-{{uniqueid}}" style="padding: 5px; display: none;" aria-hidden="true"></div>
 
     <div style="display:none;" class="lgapfill_controls pb-3">
 
@@ -55,7 +55,7 @@
             {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
         </button>
 
-        <button class="btn lgapfill_ctrl-btn ml_freewriting_keyboard_toggle" type="button">
+        <button class="btn lgapfill_ctrl-btn ml_simple_keyboard_toggle" type="button">
             <i class="fa fa-keyboard-o"></i>
         </button>
 

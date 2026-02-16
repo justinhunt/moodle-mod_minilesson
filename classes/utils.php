@@ -2177,6 +2177,19 @@ class utils
         ];
     }
 
+    public static function has_compact_layout($langcode)
+    {
+        return array_key_exists($langcode, constants::KEYBOARD_LAYOUT_COMPACT);
+    }
+
+    public static function get_compact_keys($langcode)
+    {
+        if (self::has_compact_layout($langcode)) {
+            return constants::KEYBOARD_LAYOUT_COMPACT[$langcode];
+        }
+        return '';
+    }
+
     public static function get_shortlang_options()
     {
         // return an array of short language codes and the most common 4 letter lang codes for each

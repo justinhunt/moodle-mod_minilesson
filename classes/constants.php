@@ -775,4 +775,27 @@ class constants
     const AUDIOCHAT_AUDIOAVATAR = 'customtext7';
 
     const NATIVELANG_PREF = "poodll_nativelang";
+
+    const KEYBOARD_LAYOUT_COMPACT = [
+        self::M_LANG_FRFR => 'à â æ ç é è ê ë î ï ô œ ù û ü ÿ',
+        self::M_LANG_FRCA => 'à â æ ç é è ê ë î ï ô œ ù û ü ÿ',
+        self::M_LANG_DEDE => 'ä ö ü ß',
+        self::M_LANG_DEAT => 'ä ö ü ß',
+        self::M_LANG_DECH => 'ä ö ü ß',
+        self::M_LANG_ESES => 'á é í ó ú ü ñ ¿ ¡',
+        self::M_LANG_ESUS => 'á é í ó ú ü ñ ¿ ¡',
+        self::M_LANG_ITIT => 'à è é ì ò ù',
+        self::M_LANG_PTPT => 'á â ã à ç é ê í ó ô õ ú',
+        self::M_LANG_PTBR => 'á â ã à ç é ê í ó ô õ ú',
+        self::M_LANG_DADK => 'æ ø å',
+        self::M_LANG_NONO => 'æ ø å',
+        self::M_LANG_SVSE => 'å ä ö',
+        self::M_LANG_FIFI => 'ä ö',
+        self::M_LANG_ISIS => 'á ð é í ó ú ý þ æ ö',
+        self::M_LANG_PLPL => 'ą ć ę ł ń ó ś ź ż',
+        self::M_LANG_CSCZ => 'á č ď é ě í ň ó ř š ť ú ů ý ž',
+        self::M_LANG_HUHU => 'á é í ó ö ő ú ü ű',
+        self::M_LANG_RORO => 'ă â î ș ț',
+        self::M_LANG_TRTR => 'ç ğ ı İ ö ş ü'
+    ];
 }

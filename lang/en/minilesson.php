@@ -1301,3 +1301,4 @@ $string['downloadingtranslator'] = 'Downloading translator: {$a}%';
 $string['customlayout'] = 'Custom Layout';
 $string['customkeys'] = 'Custom Virtual Keys';
 $string['customkeys_help'] = 'Add space separated list of keys for the virtual keyboard. E.g. "à â æ ç"';
+$string['compact'] = 'Compact';

@@ -623,15 +623,19 @@ abstract class baseform extends \moodleform
         $currentlang = $langoptions[$this->moduleinstance->ttslanguage];
         $vkeyboardoptions = [
             0 => get_string('no'),
-            1 => $currentlang,
-            2 => get_string('customlayout', constants::M_COMPONENT)
+            1 => $currentlang
         ];
+        if (utils::has_compact_layout($this->moduleinstance->ttslanguage)) {
+            $vkeyboardoptions[2] = $currentlang . ' (' . get_string('compact', constants::M_COMPONENT) . ')';
+        }
+        $vkeyboardoptions[3] = get_string('customlayout', constants::M_COMPONENT);
+
         $this->add_dropdown($enablefield, get_string('enablevkeyboard', constants::M_COMPONENT), $vkeyboardoptions, 0);
 
         $mform->addElement('text', $customkeysfield, get_string('customkeys', constants::M_COMPONENT));
         $mform->addHelpButton($customkeysfield, 'customkeys', constants::M_COMPONENT);
         $mform->setType($customkeysfield, PARAM_TEXT);
-        $mform->hideIf($customkeysfield, $enablefield, 'neq', 2);
+        $mform->hideIf($customkeysfield, $enablefield, 'neq', 3);
     }
 
     final protected function add_media_upload($name, $label, $required = false, $accept = '', $maxfiles = 0)

@@ -7226,3 +7226,13 @@ li.hg-candidate-box-list-item:active {
 .hg-candidate-box-btn-active {
   color: #444
 }
+
+.vkeyboard-shifted .hg-button.hg-button-shift {
+  background-color: #444 !important;
+  color: #fff !important;
+}
+
+.ml_simple_keyboard_toggle:focus {
+  outline: 2px solid #506dff !important;
+  outline-offset: -2px;
+}

@@ -46,9 +46,23 @@ class item_freewriting extends item
         $testitem->relevance = $this->itemrecord->{constants::RELEVANCE};
         $testitem->totalmarks = $this->itemrecord->{constants::TOTALMARKS};
         $testitem->nopasting = $this->itemrecord->{constants::NOPASTING};
-        
-        $testitem->enablevkeyboard = $this->itemrecord->{constants::FREEWRITING_ENABLEVKEYBOARD};
-        $testitem->customkeys = $this->itemrecord->{constants::FREEWRITING_CUSTOMKEYS};
+
+        $enablevkeyboard = $this->itemrecord->{constants::FREEWRITING_ENABLEVKEYBOARD};
+        $customkeys = $this->itemrecord->{constants::FREEWRITING_CUSTOMKEYS};
+
+        // If compact layout selected (2), we fetch the keys and set to custom layout (2) for JS
+        if ($enablevkeyboard == 2) {
+            $testitem->enablevkeyboard = 2;
+            $testitem->customkeys = \mod_minilesson\utils::get_compact_keys($this->moduleinstance->ttslanguage);
+        } elseif ($enablevkeyboard == 3) {
+            // If custom layout selected (3), we set to custom layout (2) for JS
+            $testitem->enablevkeyboard = 2;
+            $testitem->customkeys = $customkeys;
+        } else {
+            $testitem->enablevkeyboard = $enablevkeyboard;
+            $testitem->customkeys = $customkeys;
+        }
+
         $testitem->language = $this->language;
         $testitem->vkeyboardurl = $output->image_url('vkeyboard', constants::M_COMPONENT)->out();
 
