@@ -967,6 +967,21 @@ function xmldb_minilesson_upgrade($oldversion)
         upgrade_mod_savepoint(true, 2026020600, 'minilesson');
     }
 
+    if ($oldversion < 2026020602) {
+
+        // Define field allowcontinueattempts to be added to minilesson.
+        $table = new xmldb_table('minilesson');
+        $field = new xmldb_field('allowcontinueattempts', XMLDB_TYPE_INTEGER, '1', null, null, null, 1, 'nativelang');
+
+        // Conditionally launch add field allowcontinueattempts.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026020602, 'minilesson');
+    }
+
     // Final return of upgrade result (true, all went good) to Moodle.
     return true;
 }

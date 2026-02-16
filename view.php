@@ -25,6 +25,8 @@
  */
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+
+use mod_minilesson\attempt_continue_form;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 use mod_minilesson\mobile_auth;
@@ -34,6 +36,7 @@ $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $retake = optional_param('retake', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID - it should be named as the first character of the module
 $embed = optional_param('embed', 0, PARAM_INT); // course_module ID, or
+$attemptid = optional_param('attemptid', 0, PARAM_INT);
 
 // Allow login through an authentication token.
 $userid = optional_param('user_id', null, PARAM_ALPHANUMEXT);
@@ -110,8 +113,26 @@ if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded'
 // Get our renderers.
 $renderer = $PAGE->get_renderer('mod_minilesson');
 
+$formurl = new moodle_url('/mod/minilesson/view.php', ['id' => $cm->id, 'embed' => $embed]);
+$form = new attempt_continue_form($formurl);
+if ($formdata = $form->get_data()) {
+    if (!empty($formdata->delete)) {
+        $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $moduleinstance->id, 'userid' => $USER->id], 'timecreated DESC');
+        $DB->delete_records_list(constants::M_ATTEMPTSTABLE, 'id', array_keys($attempts));
+        redirect($formurl);
+        die;
+    } else if (!empty($formdata->continue)) {
+        $formurl->param('attemptid', $formdata->attemptid);
+        redirect($formurl);
+        die;
+    }
+}
+
 // Get attempts.
 $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $moduleinstance->id, 'userid' => $USER->id], 'timecreated DESC');
+if (isset($attempts[$attemptid])) {
+    $attempts = [$attemptid => $attempts[$attemptid]];
+}
 
 
 // Can make a new attempt ?.
@@ -124,10 +145,33 @@ if (!$canpreview && $moduleinstance->maxattempts > 0) {
 }
 
 // Create a new attempt or just fall through to no-items or finished modes.
+$newattempt = false;
 if (!$attempts || ($canattempt && $retake == 1)) {
     $latestattempt = utils::create_new_attempt($moduleinstance->course, $moduleinstance->id);
+    $newattempt = true;
 } else {
     $latestattempt = reset($attempts);
+}
+
+$completedlessonitems = 0;
+$totallessonitems = $DB->count_records(constants::M_QTABLE, ['minilesson' => $moduleinstance->id]);
+if (!empty($latestattempt->sessiondata)) {
+    $sessiondata = json_decode($latestattempt->sessiondata);
+    if (!empty($sessiondata->steps)) {
+        $completedlessonitems = count($sessiondata->steps);
+    }
+}
+if (empty($attemptid) && empty($newattempt) && !empty($attempts) && !empty($moduleinstance->allowcontinueattempts)
+        && $totallessonitems != $completedlessonitems) {
+    $form->set_data(['attemptid' => $latestattempt->id]);
+    if (has_capability('mod/minilesson:evaluate', $modulecontext) && $embed != 2) {
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_COMPONENT));
+    } else {
+        echo $renderer->notabsheader($moduleinstance, $embed);
+    }
+    echo $form->render();
+    echo $renderer->footer();
+    die;
 }
 
 // This library is licensed with the hippocratic license (https://github.com/EthicalSource/hippocratic-license/).
@@ -207,7 +251,7 @@ if ($latestattempt->status == constants::M_STATE_COMPLETE) {
 } elseif ($itemcount > 0) {
     echo $renderer->show_quiz($comptest, $moduleinstance);
     $previewid = 0;
-    echo $renderer->fetch_activity_amd($comptest, $cm, $moduleinstance, $previewid, $canattempt, $embed);
+    echo $renderer->fetch_activity_amd($comptest, $cm, $moduleinstance, $previewid, $canattempt, $embed, $latestattempt);
 } else {
     $showadditemlinks = has_capability('mod/minilesson:evaluate', $modulecontext);
     echo $renderer->show_no_items($cm, $showadditemlinks);

@@ -81,6 +81,7 @@ define(
                 this.wwwroot = activitydata.wwwroot;
                 this.useanimatecss  = activitydata.useanimatecss;
                 this.showitemreview  = activitydata.showitemreview;
+                this.stepresults = activitydata.stepresults;
 
                 this.prepare_html();
                 this.init_questions(this.quizdata,polly);
@@ -392,15 +393,16 @@ define(
 
 
             start_quiz: function () {
-                $("#" + this.quizdata[0].uniqueid + "_container").show().trigger("showElement");
+                const i = this.stepresults.length;
+                $("#" + this.quizdata[i].uniqueid + "_container").show().trigger("showElement");
               //autoplay audio if we need to
-                var ttsquestionplayer = $("#" + this.quizdata[0].uniqueid + "_container audio.mod_minilesson_itemttsaudio");
+                var ttsquestionplayer = $("#" + this.quizdata[i].uniqueid + "_container audio.mod_minilesson_itemttsaudio");
                 if (ttsquestionplayer.data('autoplay') == "1") {
                     var that = this;
                     setTimeout(function () {
-                        ttsquestionplayer[0].play();}, that.autoplaydelay);
+                        ttsquestionplayer[i].play();}, that.autoplaydelay);
                 }
-                this.render_quiz_progress(0,this.quizdata.length);
+                this.render_quiz_progress(i,this.quizdata.length);
             },
 
           //this function is overridden by the calling class

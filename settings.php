@@ -147,7 +147,16 @@ if ($hassiteconfig) {
         $nativelangoptions
     ));
 
-
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . '/allowcontinueattempts',
+        get_string('allowcontinueattempts', constants::M_COMPONENT),
+        '',
+        1,
+        [
+            0 => get_string('no'),
+            1 => get_string('yes'),
+        ]
+    ));
 
     // Cloud Poodll Server.
     $mainsettings->add(new admin_setting_configtext(

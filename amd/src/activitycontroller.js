@@ -1,5 +1,7 @@
 /* jshint ignore:start */
-define(['jquery', 'core/log','mod_minilesson/definitions','mod_minilesson/quizhelper','mod_minilesson/pollyhelper'], function ($,  log, def,  quizhelper,polly) {
+define(['jquery', 'core/log','mod_minilesson/definitions','mod_minilesson/quizhelper','mod_minilesson/pollyhelper',
+    'core/modal_factory', 'core/modal_events', 'core/str'],
+    function ($,  log, def,  quizhelper,polly, ModalFactory, ModalEvents, Str) {
 
     "use strict"; // jshint ;_;
 
@@ -90,6 +92,46 @@ define(['jquery', 'core/log','mod_minilesson/definitions','mod_minilesson/quizhe
         doerrorlayout: function () {
             this.controls.errorcontainer.show();
             this.controls.wheretonextcontainer.show();
+        },
+
+        continueconfirmation: function(buttonselector) {
+            const deletebtn = document.querySelector(buttonselector);
+            if (!deletebtn) {
+                return;
+            }
+            deletebtn.addEventListener('click', e => {
+                e.preventDefault();
+                const form = deletebtn.form;
+                if (!form) {
+                    return;
+                }
+
+                Str.get_strings([
+                    {key: 'confirmation', component: 'core_admin'},
+                    {key: 'confirmactionmessage', component: 'mod_minilesson'},
+                    {key: 'ok', component: 'moodle'},
+                ]).then(strings => {
+                    ModalFactory.create({
+                        type: ModalFactory.types.SAVE_CANCEL,
+                        title: strings[0],
+                        body: strings[1],
+                        buttons: {
+                            save: strings[2]
+                        }
+                    }).then(modal => {
+                        modal.getRoot().on(ModalEvents.save, () => {
+                            const hidden = document.createElement('input');
+                            hidden.type = 'hidden';
+                            hidden.name = deletebtn.getAttribute('name');
+                            hidden.value = deletebtn.getAttribute('value');
+                            form.appendChild(hidden);
+                            form.submit();
+                        });
+                        modal.show();
+                    });
+                });
+                return;
+            });
         }
     };//end of returned object
 });//total end

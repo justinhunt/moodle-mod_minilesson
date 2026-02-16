@@ -23,6 +23,7 @@ use mod_minilesson\aigen_contextform;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 use mod_minilesson\comprehensiontest;
+use moodle_url;
 use stdClass;
 
 /**
@@ -810,7 +811,7 @@ class renderer extends \plugin_renderer_base
      * @param int $embed
      * @return string
      */
-    public function fetch_activity_amd($comptest, $cm, $moduleinstance, $previewquestionid = 0, $canreattempt = false, $embed = 0)
+    public function fetch_activity_amd($comptest, $cm, $moduleinstance, $previewquestionid = 0, $canreattempt = false, $embed = 0, $latestattempt = null)
     {
         global $CFG, $USER;
         // Any html we want to return to be sent to the page.
@@ -914,6 +915,18 @@ class renderer extends \plugin_renderer_base
             }
         } else {
             $recopts['quizdata'] = $quizdata;
+        }
+
+        $recopts['stepresults'] = [];
+        if (!empty($moduleinstance->allowcontinueattempts) && is_object($latestattempt)) {
+            if (!empty($latestattempt->sessiondata)) {
+                $sessiondata = json_decode($latestattempt->sessiondata);
+                if (!empty($sessiondata->steps)) {
+                    $recopts['stepresults'] = $sessiondata->steps;
+                }
+            }
+            $activityurl = new \moodle_url($recopts['activityurl'], ['attemptid' => $latestattempt->id]);
+            $recopts['activityurl'] = $activityurl->out();
         }
 
         // This inits the M.mod_minilesson thingy, after the page has loaded.

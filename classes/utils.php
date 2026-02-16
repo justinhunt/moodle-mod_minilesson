@@ -2379,6 +2379,11 @@ class utils
         $mform->setType('nativelang', PARAM_TEXT);
         $mform->setDefault('nativelang', $config->nativelang);
 
+        // Allow continue attempts.
+        $mform->addElement('selectyesno', 'allowcontinueattempts', get_string('allowcontinueattempts', constants::M_COMPONENT));
+        $mform->setType('allowcontinueattempts', PARAM_INT);
+        $mform->setDefault('allowcontinueattempts', $config->allowcontinueattempts);
+
         // Advanced
         $name = 'advanced';
         $label = get_string($name, 'minilesson');
