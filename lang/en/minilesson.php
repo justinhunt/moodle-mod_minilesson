@@ -1287,4 +1287,4 @@ $string['yarnsyntaxnotok'] = 'Yarn Syntax Not Ok';
 $string['aimanager'] = 'AI Manager';
 $string['grade_student_submission'] = 'Grade student submission';
 $string['cloudpoodll'] = 'Cloud Poodll';
-
+$string['hidedetailedresults'] = 'Hide detailed results';
