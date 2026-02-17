@@ -24,8 +24,8 @@
 
 define(
     ['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates',
-    'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame'],
-    function ($, notification, def, log, templates, anim, Ajax, str, spacegame) {
+    'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame', 'core/url'],
+    function ($, notification, def, log, templates, anim, Ajax, str, spacegame, Url) {
 
         "use strict"; // jshint ;_;
 
@@ -87,6 +87,8 @@ define(
                 self.controls.result_container = self.controls.container.find(".ml_scatter_resultscontainer");
                 self.controls.actionbutton = self.controls.container.find(".minilesson_actionbutton");
                 self.controls.retrybutton = self.controls.container.find(".minilesson-try-again");
+                self.controls.questionheader_contents = self.controls.container.find(".minilesson_questionheader_contents");
+                self.controls.itemtext  = self.controls.container.find(".mod_minilesson_itemtext ");
 
                 const $listItems = self.controls.stage.children('.ml_scatter_listitem');
                 $listItems.each((i, listitem) => {
@@ -219,6 +221,9 @@ define(
                     self.controls.result_container.hide();
                     self.controls.stage.show();
                     self.controls.progress_container.find('#progresstimer,i').show();
+                    self.itemdata.scatteritems.forEach(scatteritem => {
+                       scatteritem.correct = false;
+                    });
                     self.controls.actionbutton.show();
                 });
                 self.controls.container.on('keydown', '#minilesson-try-again', function (e) {
@@ -276,10 +281,39 @@ define(
                     clearInterval(self.progressTimer);
                     self.progressTimer = null;
                 }
+                tdata.yellow_starImgurl = Url.imageUrl('yellow_star', 'mod_minilesson');
+                tdata.timerImgurl = Url.imageUrl('timer', 'mod_minilesson');
+                self.controls.questionheader_contents.hide();
+                self.controls.itemtext.hide();
                 templates.render('mod_minilesson/scatter_feedback', tdata).then(
                     function (html, js) {
                         self.controls.result_container.html(html);
                         templates.runTemplateJS(js || '');
+                        try {
+                            const rc = self.controls.result_container;
+                            const scatterbtn = rc.find('.ml-scatter-btn');
+                            const collapse = rc.find('#ml-scatter-fb-container');
+                            if (collapse.length && scatterbtn.length) {
+                                function updateBtn(expanded) {
+                                    if (expanded) {
+                                        scatterbtn.find('.ml-scatter-show-text').addClass('d-none');
+                                        scatterbtn.find('.ml-scatter-hide-text').removeClass('d-none');
+                                    } else {
+                                        scatterbtn.find('.ml-scatter-show-text').removeClass('d-none');
+                                        scatterbtn.find('.ml-scatter-hide-text').addClass('d-none');
+                                    }
+                                }
+                                updateBtn(collapse.hasClass('show'));
+                                collapse.on('shown.bs.collapse', function () { updateBtn(true); });
+                                collapse.on('hidden.bs.collapse', function () { updateBtn(false); });
+                                // Fallback: toggle after click (in case non-bootstrap toggling is used)
+                                scatterbtn.on('click', function () {
+                                    updateBtn(collapse.hasClass('show'));
+                                });
+                            }
+                        } catch (e) {
+                            log.debug('Error attaching collapse toggle handlers: ' + e);
+                        }
                     }
                 );
             },

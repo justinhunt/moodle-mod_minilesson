@@ -1,39 +1,58 @@
 {{#showitemreview}}
-<div class='ml-spacegame-basic_feedback'>
-  <h2>
-    Finished
-    <hr/>
-    <i class='fa fa-trophy'></i> {{totalcorrect}}/{{total}} {{#str}}correct, mod_minilesson{{/str}}
-    <hr/>
-    <i class='fa fa-clock-o'></i> {{prettytime}}
-  </h2>
+
+<div class='ml-scatter-basic_feedback'>
+  <div class="ml-scatter-basic_feedback_title">
+    <h2>Finished</h2>
+  </div>
+  <div class="ml-scatter-feedback-box">
+    <div class="ml-scatter-correction">
+      <div class="mb-2">
+        <img src="{{{yellow_starImgurl}}}"/>
+      </div>
+      <div>
+        <h2 class="result-font"><span class="bigger-font">{{totalcorrect}}/</span>{{total}}</h2>
+        <p class="correct-text"><i>{{#str}}correct , mod_minilesson{{/str}}</i></p>
+      </div>
+    </div>
+    <div class="ml-scatter-timer">
+      <div class="mb-2">
+        <img src="{{{timerImgurl}}}"/>
+      </div>
+      <div>
+        <h2 class="result-font"><span class="bigger-font">{{prettytime}}</h2>
+        <p class="correct-text"><i>{{#str}}seconds{{/str}}</i></p>
+      </div>
+    </div>
 </div>
 
 <p class='show-detailed-feedback'>
-    <a class="btn btn-primary ml-spacegame-bigbutton" data-toggle="collapse" href="#ml-spacegame-fb-container" role="button" aria-expanded="false" aria-controls="ml-spacegame-fb-container">
-        <i class="fa fa-list"></i> {{#str}}showdetailedresults, mod_minilesson{{/str}}
+    <a class="btn ml-scatter-bigbutton ml-scatter-btn" data-bs-toggle="collapse"  data-toggle="collapse" href="#ml-scatter-fb-container" role="button" aria-expanded="false" aria-controls="ml-scatter-fb-container">
+      <span class="ml-scatter-show-text">{{#str}}showdetailedresults, mod_minilesson{{/str}}</span>
+      <span class="ml-scatter-hide-text d-none">{{#str}}hidedetailedresults, mod_minilesson{{/str}}</span>
     </a>
 </p>
-<div id="ml-spacegame-fb-container" class="collapse" style='text-align:center;overflow:hidden;'>
+<div id="ml-scatter-fb-container" class="collapse" style='text-align:center;overflow:hidden;'>
 
   {{#results}}
 
-  <div class="ml-spacegame-detailed_feedback_div term-wrapper position-relative">
+  <div class="ml-scatter-detailed_feedback_div term-wrapper position-relative">
 
     <div class="term">
 
       <div class="term-header">
         <div class="term-title">
-            <span>{{question}}</span>
-        </div>
-        <div class="term-tick">
-            {{#correct}}<div class="ml-spacegame-correct"><i class='fa fa-check'></i></div>{{/correct}}
-            {{^correct}}<div class="ml-spacegame-incorrect"><i class='fa fa-times'></i></div>{{/correct}}
+            <span class="{{#correct}} term-body-correct {{/correct}} {{^correct}} term-body-incorrect {{/correct}}">{{question}}</span>
         </div>
       </div>
 
+      <div class="d-flex align-items-center">
       <div class="term-body">
-        <span>{{{answer}}}</span>
+          <span class="{{#correct}} term-body-correct {{/correct}} {{^correct}} term-body-incorrect {{/correct}}">{{{answer}}}</span>
+        </div>
+        <div class="term-tick">
+          {{#correct}}<div class="ml-scatter-correct"><i class='fa fa-check'></i></div>{{/correct}}
+          {{^correct}}<div class="ml-scatter-incorrect"><i class='fa fa-times'></i></div>{{/correct}}
+        </div>
       </div>
     </div>
 
@@ -42,9 +61,8 @@
 </div>
 
 {{#allowretry}}
-<hr/>
-<div class="try-again-or-next">
-    <button id="minilesson-try-again" class="btn btn-danger ml-spacegame-bigbutton">
+<div class="try-again-or-next my-3">
+    <button id="minilesson-try-again" class="btn ml-scatter-bigbutton">
         <i class="fa fa-refresh"></i> {{#str}}tryagain, mod_minilesson{{/str}}
     </button>
 </div>
