@@ -286,6 +286,7 @@ define([
 
                         var ystarcnt = 0;
                         var gstarcnt;
+                        const templatedata = Object.assign({}, transcript_evaluation);
                         if (transcript_evaluation.reviewsettings.showscorestarrating) {
                             if (self.percentscore == 0) {
                                 ystarcnt = 0;
@@ -302,17 +303,17 @@ define([
                             }
 
                             gstarcnt = 5 - ystarcnt;
-                            self.transcript_evaluation.yellowstars = new Array(ystarcnt).fill(M.cfg, 0, ystarcnt);
-                            self.transcript_evaluation.graystars = new Array(gstarcnt).fill(M.cfg, 0, gstarcnt);
+                            templatedata.yellowstars = new Array(ystarcnt).fill(M.cfg, 0, ystarcnt);
+                            templatedata.graystars = new Array(gstarcnt).fill(M.cfg, 0, gstarcnt);
                         }
 
-                        log.debug(transcript_evaluation);
+                        log.debug(templatedata);
 
                         //display results or move next if not show item review
                         if (!self.quizhelper.showitemreview) {
                             self.next_question();
                         } else {
-                            templates.render('mod_minilesson/freewritingresults', transcript_evaluation).then(
+                            templates.render('mod_minilesson/freewritingresults',Object.assign({}, templatedata)).then(
                                 function (html, js) {
                                     self.resultsbox.html(html);
                                     //do corrections markup

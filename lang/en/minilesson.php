@@ -13,6 +13,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['actionneeded'] = 'Action needed';
+$string['allowcontinueattempts'] = 'Allow students to return to previous attempts';
+$string['attemptreusequestion'] = "Do you want to continue your previous attempt (yes) ?<br>
+If you say no, your previous attempt will be deleted.";
 $string['modulename'] = 'Poodll MiniLesson';
 $string['modulenameplural'] = 'Poodll MiniLessons';
 $string['modulename_help'] = 'Poodll MiniLesson combines several language learning activities into a simple, self-guided online lesson.
@@ -1302,3 +1306,5 @@ $string['customlayout'] = 'Custom Layout';
 $string['customkeys'] = 'Custom Virtual Keys';
 $string['customkeys_help'] = 'Add space separated list of keys for the virtual keyboard. E.g. "à â æ ç"';
 $string['compact'] = 'Compact';
+$string['confirmactionmessage'] = '<p>Your previous attempt will be deleted. OK?</p>';
+$string['attemptquestioncountmessage'] = 'You have completed {$a->completed} out of {$a->totallessonitem} steps.';
