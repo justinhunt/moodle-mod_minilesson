@@ -1059,6 +1059,7 @@ class renderer extends \plugin_renderer_base
             'maxattempts',
             'transcriber',
             'showitemreview',
+            'allowcontinueattempts',
             'region',
             'containerwidth',
             'csskey',
@@ -1081,6 +1082,9 @@ class renderer extends \plugin_renderer_base
                     break;
                 case 'maxattempts':
                     $action = constants::M_PUSH_MAXATTEMPTS;
+                    break;
+                case 'allowcontinueattempts':
+                    $action = constants::M_PUSH_ALLOWCONTINUEATTEMPTS;
                     break;
                 case 'region':
                     $action = constants::M_PUSH_REGION;

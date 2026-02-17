@@ -13,8 +13,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['actionneeded'] = 'Action needed';
-$string['allowcontinueattempts'] = 'Allow students to return to previous attempts';
+$string['continuepreviousattempt'] = 'Continue Previous Attempt?';
+$string['allowcontinueattempts'] = 'Can continue previous attempt';
+$string['allowcontinueattempts_details'] = 'If enabled, students can resume a previous incomplete attempt from where they left off.';
+$string['allowcontinueattempts_help'] = 'If enabled, students can resume a previous incomplete attempt from where they left off.';
 $string['attemptreusequestion'] = "Do you want to continue your previous attempt (yes) ?<br>
 If you say no, your previous attempt will be deleted.";
 $string['modulename'] = 'Poodll MiniLesson';

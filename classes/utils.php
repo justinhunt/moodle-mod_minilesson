@@ -2382,6 +2382,7 @@ class utils
         // Allow continue attempts.
         $mform->addElement('selectyesno', 'allowcontinueattempts', get_string('allowcontinueattempts', constants::M_COMPONENT));
         $mform->setType('allowcontinueattempts', PARAM_INT);
+        $mform->addHelpButton('allowcontinueattempts', 'allowcontinueattempts', constants::M_COMPONENT);
         $mform->setDefault('allowcontinueattempts', $config->allowcontinueattempts);
 
         // Advanced

@@ -48,7 +48,7 @@ class attempt_continue_form extends \moodleform {
 
         $mform->addElement('html', $html);
 
-        $mform->addElement('html', '<h3 class="restore_lesson_header">' . get_string('actionneeded', constants::M_COMPONENT) . '</h3>');
+        $mform->addElement('html', '<h3 class="restore_lesson_header">' . get_string('continuepreviousattempt', constants::M_COMPONENT) . '</h3>');
 
         $lessoncountmessage = '';
         if (!empty($attemptid)) {
@@ -76,7 +76,7 @@ class attempt_continue_form extends \moodleform {
 
         $buttons[] = $mform->createElement('submit', 'continue', get_string('yes'));
 
-        $mform->addGroup($buttons, 'buttonarr', null, null, false);
+        $mform->addGroup($buttons, 'continueformbuttons', null, null, false,['class' => 'ml-continueformbuttons']);
 
         $html  = html_writer::end_div();
         $mform->addElement('html', $html);

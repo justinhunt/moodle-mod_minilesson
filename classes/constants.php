@@ -592,6 +592,7 @@ class constants
     const M_PUSH_CSSKEY = 9;
     const M_PUSH_CONTAINERWIDTH = 10;
     const M_PUSH_ITEMS = 11;
+    const M_PUSH_ALLOWCONTINUEATTEMPTS = 12;
 
     /**
      * No push mode selected.

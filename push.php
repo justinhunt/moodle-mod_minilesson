@@ -133,6 +133,10 @@ switch ($action) {
         $updatefields = ['items'];
         break;
 
+    case constants::M_PUSH_ALLOWCONTINUEATTEMPTS:
+        $updatefields = ['allowcontinueattempts'];
+        break;
+
     case constants::M_PUSH_NONE:
     default:
         $updatefields = [];

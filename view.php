@@ -113,17 +113,17 @@ if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded'
 // Get our renderers.
 $renderer = $PAGE->get_renderer('mod_minilesson');
 
-$formurl = new moodle_url('/mod/minilesson/view.php', ['id' => $cm->id, 'embed' => $embed]);
-$form = new attempt_continue_form($formurl);
-if ($formdata = $form->get_data()) {
+$continue_form_url = $PAGE->url; //new moodle_url('/mod/minilesson/view.php', ['id' => $cm->id, 'embed' => $embed]);
+$continue_form = new attempt_continue_form($continue_form_url);
+if ($formdata = $continue_form->get_data()) {
     if (!empty($formdata->delete)) {
         $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $moduleinstance->id, 'userid' => $USER->id], 'timecreated DESC');
         $DB->delete_records_list(constants::M_ATTEMPTSTABLE, 'id', array_keys($attempts));
-        redirect($formurl);
+        redirect($continue_form_url);
         die;
     } else if (!empty($formdata->continue)) {
-        $formurl->param('attemptid', $formdata->attemptid);
-        redirect($formurl);
+        $continue_form_url->param('attemptid', $formdata->attemptid);
+        redirect($continue_form_url);
         die;
     }
 }
@@ -162,14 +162,15 @@ if (!empty($latestattempt->sessiondata)) {
     }
 }
 if (empty($attemptid) && empty($newattempt) && !empty($attempts) && !empty($moduleinstance->allowcontinueattempts)
-        && $totallessonitems != $completedlessonitems) {
-    $form->set_data(['attemptid' => $latestattempt->id]);
+        && $totallessonitems != $completedlessonitems && $completedlessonitems > 0) {
+    // If we have an attempt and it is both started and not complete and continuing is enabled, then we show the continue form.
+    $continue_form->set_data(['attemptid' => $latestattempt->id]);
     if (has_capability('mod/minilesson:evaluate', $modulecontext) && $embed != 2) {
         echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_COMPONENT));
     } else {
         echo $renderer->notabsheader($moduleinstance, $embed);
     }
-    echo $form->render();
+    echo $continue_form->render();
     echo $renderer->footer();
     die;
 }

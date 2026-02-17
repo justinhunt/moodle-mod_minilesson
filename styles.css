@@ -7032,9 +7032,7 @@ span.wrongitem {
   color: #5b4d3b;
 }
 
-\n
 /* Simple-Keyboard CSS */
-\n
 
 /*!
  * 
@@ -7237,6 +7235,8 @@ li.hg-candidate-box-list-item:active {
   outline-offset: -2px;
 }
 
+/* MiniLesson Restore Incomplete Attempt Feature */
+
 #page-mod-minilesson-view .restore_lesson {
   border: 1px solid #ccc;
   margin: 0 auto;
@@ -7252,22 +7252,26 @@ li.hg-candidate-box-list-item:active {
   margin-bottom: 25px;
 }
 
-#page-mod-minilesson-view .restore_lesson #fgroup_id_buttonarr .col-md-9 {
+#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons .col-md-9 {
   flex: 0 0 100%;
   max-width: 100%;
   text-align: center;
 }
 
-#page-mod-minilesson-view .restore_lesson #fgroup_id_buttonarr fieldset > div {
+#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons fieldset > div {
   justify-content: center !important;
 }
 
-#page-mod-minilesson-view .restore_lesson #fgroup_id_buttonarr #id_continue {
+#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons #id_continue {
   background-color: #5067FF;
   border-color: #5067FF;
 }
 
-#page-mod-minilesson-view .restore_lesson #fgroup_id_buttonarr #id_delete {
+#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons #id_delete {
   background-color: #6c757d;
   border-color: #6c757d;
+}
+
+.ml-continueformbuttons .align-items-center {
+  justify-content: center;
 }
