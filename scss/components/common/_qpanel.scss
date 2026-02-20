@@ -1,0 +1,200 @@
+// -----------------------------------------------------------------------------
+// Question Panel: admin table for managing lesson items
+// Page: #page-mod-minilesson-rsquestion-rsquestions
+// -----------------------------------------------------------------------------
+
+// Page-scoped overrides
+#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel {
+
+  td .itemname {
+    color: #1F2334;
+    font-weight: 500;
+    line-height: 100%;
+    font-size: 15px;
+    letter-spacing: 0;
+  }
+
+  td .itemtype:not(.mobileviewtype) {
+    color: #5C669A;
+    border-left: 1px solid rgba(92, 102, 154, 0.76);
+  }
+
+  td.itemaction {
+    border-left: 1px solid #E9ECFB;
+    vertical-align: middle;
+
+    .icon {
+      color: #5C669A;
+    }
+
+    .mod_minilesson_item_row_deletelink .icon {
+      color: #FF4747;
+    }
+  }
+
+  td .itemicon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+  }
+}
+
+// Table base styles
+.mod_minilesson_qpanel {
+  border-collapse: separate !important;
+  border-spacing: 0 15px !important;
+  width: 100% !important;
+  border-bottom: 0 !important;
+
+  thead tr th {
+    border: 0 !important;
+    padding: 0 !important;
+  }
+
+  td {
+    background: #FBFBFE;
+    border-top: 1px solid #E9ECFB;
+    border-bottom: 1px solid #E9ECFB;
+    padding: 12px 16px;
+  }
+
+  tr td:first-child,
+  tr th:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-left: 1px solid #E9ECFB;
+    width: 88%;
+    vertical-align: middle;
+  }
+
+  tr td:last-child,
+  tr th:last-child {
+    border-top-right-radius: 8px;
+    border-right: 1px solid #E9ECFB;
+    border-bottom-right-radius: 8px;
+    text-align: right;
+    width: 5%;
+    min-width: 110px;
+    max-width: 130px;
+  }
+
+  tr th:last-child {
+    text-align: right;
+    padding-right: 30px !important;
+  }
+
+  .mod_minilesson_item_row td.c2,
+  .mod_minilesson_item_row th.c2 {
+    width: 11%;
+    text-align: right;
+  }
+
+  .tblheader {
+
+    .theadselectall {
+      display: flex;
+      align-items: center;
+      padding-left: 15px;
+    }
+
+    .selectalllabel {
+      margin-left: 5px !important;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 100%;
+      letter-spacing: 0;
+    }
+
+    th {
+      color: #000000;
+    }
+
+    th[aria-label="Reorder"] {
+      text-align: right;
+      padding-right: 20px !important;
+    }
+
+    th input[data-togglegroup="delete-question"] {
+      width: 17px;
+      height: 17px;
+    }
+  }
+
+  .tblbody {
+
+    .mod_minilesson_item_row {
+
+      .itemdate .icon {
+        color: #5C669A;
+      }
+
+      .itemtypelabel {
+        font-size: 11px;
+        display: inline-block;
+      }
+    }
+
+    .dataTables_empty {
+      height: 150px;
+      color: #202438;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 15px;
+      line-height: 100%;
+      letter-spacing: 0;
+
+      .noitemyet {
+        margin-top: 45px;
+        font-size: 15px;
+        font-weight: 600;
+        font-style: italic;
+        color: rgba(32, 36, 56, 0.85);
+        line-height: 100%;
+        letter-spacing: 0;
+      }
+    }
+
+    td input[data-togglegroup="delete-question"] {
+      width: 17px;
+      height: 17px;
+    }
+  }
+
+  .mobileviewtype {
+    display: none;
+  }
+}
+
+// Item row icons (shared outside qpanel nesting)
+.mod_minilesson_item_row {
+
+  .mod_minilesson_item_row_previewlink .icon,
+  .mod_minilesson_item_row_duplicatelink .icon,
+  .mod_minilesson_item_row_deletelink .icon,
+  .mod_minilesson_item_row_editlink .icon {
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .mod_minilesson_item_move .icon {
+    font-size: 25px;
+    width: 25px;
+    height: 25px;
+  }
+}
+
+// Responsive
+@media only screen and (max-width: 768px) {
+  .mod_minilesson_qpanel {
+
+    .mobileviewtype {
+      display: block;
+      color: #5C669A;
+    }
+
+    .itemtypename {
+      display: none;
+    }
+  }
+}

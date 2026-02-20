@@ -1,0 +1,12 @@
+{
+  "name": "mod_minilesson",
+  "version": "1.0.0",
+  "description": "SCSS build for mod_minilesson Moodle plugin",
+  "scripts": {
+    "scss": "sass scss/main.scss styles.css --style=expanded --no-source-map",
+    "scss:watch": "sass scss/main.scss styles.css --style=expanded --no-source-map --watch"
+  },
+  "devDependencies": {
+    "sass": "^1.72.0"
+  }
+}

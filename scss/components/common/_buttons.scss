@@ -1,0 +1,16 @@
+// Buttons
+
+/* Start button */
+// Used in: freewriting, splashscreen, landr, dictate, fluency, tgapfill, lgapfill, sgapfill, wordshuffle
+.ml_freewriting_startscreen .freewriting_start_btn,
+.startmodule_splashscreen .startmodule_btn,
+.minilesson_landr_player_box .landr_start_btn,
+.minilesson_dictate_player_box .dictate_start_btn,
+.minilesson_fluency_box .fluency_start_btn,
+.minilesson_tgapfill_player_box .tgapfill_start_btn,
+.minilesson_lgapfill_player_box .lgapfill_start_btn,
+.minilesson_sgapfill_player_box .sgapfill_start_btn,
+.minilesson_wordshuffle_player_box .wordshuffle_start_btn {
+  margin-left: auto;
+  margin-right: auto;
+}

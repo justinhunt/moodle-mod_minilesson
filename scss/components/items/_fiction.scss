@@ -1,0 +1,631 @@
+// Fiction activity component
+
+.minilesson_fiction_yarncontainer {
+  // Base styles
+  .minilesson_fiction_yarnmedia {
+    min-width: 300px;
+    max-width: 300px;
+    min-height: 300px;
+    background-color: lightgray;
+
+    video,
+    img {
+      max-width: 300px;
+    }
+  }
+
+  .minilesson_fiction_yarnoptions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .fiction-character-name {
+    min-height: 1.5em;
+  }
+
+  .fiction-message-container {
+    --my-gutter-height: 1.5rem;
+    margin-top: var(--my-gutter-height);
+    margin-bottom: var(--my-gutter-height);
+
+    @media screen and (max-width: 576px) {
+      --my-gutter-height: .8rem;
+    }
+  }
+
+  .fiction-message-video,
+  .fiction-message-audio,
+  .fiction-message-image {
+    max-width: 100%;
+    width: 100%;
+
+    @media screen and (max-width: 576px) {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  // Mobile chat variant
+  &.mobilechat {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #ece5dd;
+    position: relative;
+
+    .chat-wrapper {
+      overflow-y: auto;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 450px;
+      position: relative;
+
+      .charactercontainer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: fit-content;
+        background: #ffffff;
+        padding: 10px 14px;
+        border-radius: 0 12px 12px 12px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        font-size: 14px;
+        line-height: 1.4;
+        padding-top: 0;
+        position: relative;
+        margin-left: 10px;
+
+        &:not(.hasmedia) {
+          max-width: 70%;
+        }
+
+        &.hasmedia {
+          max-width: 50%;
+        }
+
+        .charactername {
+          font-weight: bold;
+          font-size: 14px;
+        }
+
+        .mediacontainer {
+          margin: 8px 0;
+
+          video,
+          img {
+            max-width: 100%;
+            border-radius: 10px;
+          }
+        }
+
+        &::before {
+          content: "";
+          position: absolute;
+          left: -10px;
+          border-width: 0 10px 10px 0;
+          border-style: solid;
+          border-color: transparent white transparent transparent;
+        }
+      }
+
+      .playercontainer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+
+        .playertext:not(:empty) {
+          background-color: #dcf8c6;
+          padding: 10px 14px;
+          border-radius: 12px 0 12px 12px;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          font-size: 14px;
+          line-height: 1.4;
+          max-width: 70%;
+          word-wrap: break-word;
+          display: inline-block;
+        }
+
+        &::before {
+          content: "";
+          position: absolute;
+          right: 6px;
+          border-width: 0px 0 10px 10px;
+          border-style: solid;
+          border-color: transparent transparent transparent #dcf8c6;
+        }
+      }
+    }
+
+    .yarnchoicescontainer {
+      padding: 15px;
+      border-top: 1px solid #ddd;
+      min-height: 88px;
+    }
+
+    .minilesson_fiction_yarnoptions:not(:empty) {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .minilesson_fiction_optionbutton {
+      background-color: #fff;
+      cursor: pointer;
+      height: max-content;
+    }
+
+    .minilesson_fiction_continuebutton {
+      background-color: #fff;
+      cursor: pointer;
+    }
+
+    .option_container {
+      display: flex;
+      justify-content: space-between;
+      background: white;
+      border-radius: 25px;
+      padding: 10px 20px;
+
+      &:has(button[style*="display: none"]),
+      &:has(button.hidden) {
+        display: none;
+      }
+    }
+
+    #scroll-bottom-btn {
+      position: absolute;
+      right: 30px;
+      display: none;
+      padding: 5px 8px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      background-color: white;
+      z-index: 10;
+      bottom: 30px;
+    }
+
+    .character_profile_icon-image {
+      height: 30px;
+      width: 30px;
+      border-radius: 100%;
+    }
+
+    .chat-loader {
+      --loadercolor: #eee;
+      width: 40px;
+      aspect-ratio: 2;
+      --_g: no-repeat radial-gradient(circle closest-side, var(--loadercolor) 90%, var(--loadercolor));
+      background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+      background-size: 25% 50%;
+      animation: l3 1s infinite linear;
+    }
+  }
+
+  // Plain variant
+  &.plain {
+    background-color: #e6eef6;
+    padding: 20px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+
+    .chat-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding-bottom: 20px;
+      flex-grow: 1;
+      overflow-y: auto;
+      min-height: 0;
+      max-height: none;
+
+      .charactercontainer {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        position: relative;
+        border-left: 4px solid transparent;
+
+        &:not(.has-charactername) {
+          background-color: #fff;
+          border-left: none;
+        }
+
+        &.has-charactername {
+          background-color: #e1e6f2;
+          border-left: 4px solid #5a6b8c;
+          margin-top: 20px;
+        }
+
+        .charactername {
+          position: absolute;
+          top: -25px;
+          left: 0;
+          font-weight: bold;
+          color: #5a6b8c;
+          font-size: 0.9em;
+          text-transform: uppercase;
+        }
+
+        .charactertext {
+          font-size: 1.1em;
+          line-height: 1.5;
+          color: #333;
+        }
+
+        &.hasmedia {
+          display: flex;
+          flex-direction: row;
+          gap: 20px;
+          align-items: center;
+
+          .mediacontainer {
+            flex: 1;
+            max-width: 50%;
+
+            img,
+            video {
+              width: 100%;
+              height: auto;
+              border-radius: 4px;
+              display: block;
+            }
+
+            .chat-loader {
+              position: relative;
+              transform: none;
+              left: auto;
+              top: auto;
+              margin: 10px auto;
+            }
+          }
+
+          .charactertext {
+            flex: 1;
+            max-width: 50%;
+          }
+
+          &:has(.chat-loader) .mediacontainer {
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+    }
+
+    .character_profile_icon {
+      float: left;
+      margin-right: 15px;
+      width: 50px;
+      height: 50px;
+    }
+
+    .character_profile_icon-image {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .yarnchoicescontainer {
+      margin-top: 20px;
+      border-top: 1px solid #ccc;
+      padding-top: 20px;
+      flex-shrink: 0;
+      min-height: 55px;
+    }
+
+    .minilesson_fiction_yarnoptions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option_container {
+      cursor: pointer;
+    }
+
+    .minilesson_fiction_optionbutton {
+      background-color: #fff;
+      border: 1px solid #dcdcdc;
+      border-radius: 5px;
+      padding: 15px;
+      transition: background-color 0.2s, box-shadow 0.2s;
+
+      &:hover {
+        background-color: #f8f9fa;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        border-color: #b0b0b0;
+      }
+    }
+
+    .minilesson_fiction_fakeoptionbutton {
+      cursor: default;
+      opacity: 0.6;
+      background-color: #cccccc;
+      border: 1px solid #dcdcdc;
+      border-radius: 5px;
+      padding: 15px;
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
+
+    .optiontext {
+      font-size: 1.1em;
+      color: #444;
+    }
+
+    .minilesson_fiction_continuebutton {
+      margin-top: 15px;
+      cursor: pointer;
+      background-color: #fff;
+      border: 1px solid #dcdcdc;
+      border-radius: 5px;
+      padding: 10px 20px;
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
+    }
+
+    #scroll-bottom-btn {
+      position: absolute;
+      bottom: 0px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #ccc;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #555;
+      transition: all 0.2s;
+      z-index: 10;
+
+      &:hover {
+        background-color: #f0f0f0;
+        transform: translateY(-2px);
+      }
+
+      i {
+        font-size: 1.2em;
+      }
+    }
+
+    .playertext {
+      width: 80%;
+      margin: auto;
+      text-align: center;
+      background-color: aliceblue;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+
+    .chat-loader {
+      display: inline-block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 13px;
+      text-align: center;
+
+      &::after {
+        content: " ";
+        display: block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #5a6b8c;
+        margin: 0 auto;
+        box-shadow: -12px 0 #5a6b8c, 12px 0 #5a6b8c;
+        animation: minilesson_fiction_plain_dots 1s infinite linear alternate;
+      }
+    }
+  }
+
+  // Story mode variant
+  &.storymode {
+    background-color: #fdf6e3;
+    color: #3b3b3b;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.8;
+    font-size: 1.2rem;
+    padding: 20px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+
+    .chat-wrapper {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 0 20px 20px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: #fdf6e3;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: #d3c6a6;
+        border-radius: 4px;
+      }
+    }
+
+    .story-paragraph {
+      margin-bottom: 1.5em;
+      text-align: justify;
+
+      .mediacontainer {
+        text-align: center;
+        margin: 2rem 0;
+
+        img,
+        video {
+          max-width: 300px;
+          width: 50%;
+          border-radius: 2px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          border: 4px solid #fff;
+        }
+      }
+
+      &.player-choice {
+        text-align: center;
+        color: #8b7d6b;
+        font-style: italic;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        padding: 10px;
+        border-top: 1px solid #e0d8c3;
+        border-bottom: 1px solid #e0d8c3;
+
+        &::before {
+          content: "❧";
+          display: block;
+          font-size: 1.5rem;
+          margin-bottom: 5px;
+          color: #d3c6a6;
+        }
+      }
+    }
+
+    .yarnchoicescontainer {
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+      padding-top: 20px;
+      border-top: 2px solid #e0d8c3;
+      margin-top: 10px;
+      flex-shrink: 0;
+      min-height: 74px;
+    }
+
+    .minilesson_fiction_yarnoptions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .minilesson_fiction_optionbutton {
+      background-color: transparent;
+      border: 2px solid #8b7d6b;
+      color: #5b4d3b;
+      font-family: inherit;
+      padding: 10px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      font-weight: bold;
+
+      &:hover {
+        background-color: #8b7d6b;
+        color: #fdf6e3;
+        border-color: #8b7d6b;
+      }
+    }
+
+    .minilesson_fiction_continuebutton {
+      display: block;
+      width: fit-content;
+      margin: 20px auto;
+      background-color: #5b4d3b;
+      color: #fdf6e3;
+      padding: 10px 30px;
+      border-radius: 4px;
+      font-family: inherit;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.9rem;
+
+      &:hover {
+        background-color: #3b3b3b;
+      }
+    }
+
+    #scroll-bottom-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #d3c6a6;
+      background-color: #fdf6e3;
+      color: #8b7d6b;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+
+      &:hover {
+        background-color: #fff;
+        color: #5b4d3b;
+      }
+    }
+  }
+}
+
+#scrolldownbtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+}
+
+@keyframes l3 {
+  20% {
+    background-position: 0% 0%, 50% 50%, 100% 50%;
+  }
+
+  40% {
+    background-position: 0% 100%, 50% 0%, 100% 50%;
+  }
+
+  60% {
+    background-position: 0% 50%, 50% 100%, 100% 0%;
+  }
+
+  80% {
+    background-position: 0% 50%, 50% 50%, 100% 100%;
+  }
+}
+
+@keyframes minilesson_fiction_plain_dots {
+  0% {
+    opacity: 0.2;
+  }
+
+  50%,
+  100% {
+    opacity: 1;
+  }
+}

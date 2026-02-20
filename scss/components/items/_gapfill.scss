@@ -1,0 +1,846 @@
+// Gapfill activity components
+// Shared by: typinggapfill (tgapfill), listeninggapfill (lgapfill),
+// speakinggapfill (sgapfill), passagegapfill (pgapfill)
+
+// Shared gapfill container
+.gapfill-container {
+  input.single-character,
+  input.single-character-mtext {
+    width: 26px;
+    margin-left: 2px;
+    text-align: center;
+    background: rgba(243, 244, 253, 0.61);
+    border: 1px solid #B0B8DC;
+    border-radius: 5px;
+    padding: 5px 5px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 21px;
+    letter-spacing: 0;
+  }
+
+  input.single-character.ml_gapfill_char_correct {
+    background-color: palegreen;
+  }
+
+  .single-character-mtext {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+  }
+
+  .ml_gapfill_char_correct {
+    background-color: palegreen;
+  }
+
+  sgapfill_missing_input.ml_gapfill_char_correct {
+    background-color: palegreen;
+  }
+
+  .form-container {
+    margin: 20px auto 22px;
+
+    input:first-child {
+      margin-left: 10px;
+    }
+
+    input:last-child {
+      margin-right: 10px;
+    }
+  }
+
+  .definition-container {
+    display: flex;
+    min-height: 100px;
+    height: auto;
+    margin-bottom: 50px;
+    margin-top: 10px;
+  }
+
+  .definition {
+    align-self: center;
+    width: 50%;
+    height: auto;
+    min-height: 50px;
+    margin: auto;
+    background-color: #F2F2FD;
+    border-radius: 8px;
+    padding: 6px;
+    position: relative;
+
+    .hinticon-container {
+      position: absolute;
+      float: left;
+      background-color: #5067FF;
+      color: #FFF;
+      width: 30px;
+      height: 30px;
+      top: 0;
+      left: 10px;
+      border-radius: 0px 0px 5px 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.07);
+    }
+
+    .hint-title {
+      color: #5067FF;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+  }
+}
+
+// ============================================
+// Listening Gapfill
+// ============================================
+
+.lgapfill_listen_cont {
+  text-align: center;
+
+  .animatesoundbtn {
+    position: relative;
+    padding: 20px;
+    background: #E6E9FD;
+    width: 80px;
+    border-radius: 8px;
+  }
+}
+
+.minilesson_lgapfill_player_box {
+  .lgapfill_prompt {
+    position: relative;
+    margin-top: 10px;
+  }
+
+  .lgapfill_reply {
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .lgapfill_game {
+    min-height: 250px;
+    padding: 10px;
+    border-top: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+    background-color: rgba(98, 135, 182, 1);
+  }
+
+  .lgapfill_speech {
+    position: relative;
+    font-family: arial;
+    font-size: 16px;
+    background: #a53d38;
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .lgapfill_right {
+    background-color: white;
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-left-color: white;
+      border-right: 0;
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .lgapfill_teacher_left {
+    background-color: rgba(122, 221, 76, 1);
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-right-color: rgba(122, 221, 76, 1);
+      border-left: 0;
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .lgapfill_speech-icon-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .lgapfill_speech-icon-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .lgapfill_mainmenu {
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .lgapfill_title {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #414C81;
+  }
+
+  .lgapfill_controls {
+    margin-top: 5px;
+    background-color: white;
+    text-align: center;
+  }
+
+  .lgapfill_results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 75px;
+    background-color: rgba(98, 135, 182, 1);
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    z-index: 999;
+  }
+
+  .lgapfill_correct {
+    background-color: lightgreen;
+  }
+
+  .lgapfill_incorrect {
+    background-color: lightpink;
+  }
+
+  .lgapfill_targetWord {
+    padding: 3px;
+    border-radius: 5px;
+    margin: 5px;
+  }
+
+  .lgapfill_check_btn {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      width: 96px;
+      height: 36px;
+      border-radius: 8px;
+      background: #5067FF;
+      color: #FFFFFF;
+    }
+  }
+
+  .lgapfill_skip_btn {
+    &,
+    &:hover,
+    &:active,
+    &:focus {
+      background: #ffffff;
+      border-color: #5067FF;
+      border-radius: 10px;
+      color: #5067FF;
+      margin-left: 10px;
+    }
+  }
+
+  .lgapfill_description {
+    color: #1F2334;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 21px;
+    letter-spacing: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(70%);
+  }
+
+  .lgapfill_maintitle {
+    border-bottom: 1px solid #e6e9fd;
+    padding: 24px;
+    text-align: center;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 21px;
+    letter-spacing: 0;
+    color: #1F2334;
+  }
+}
+
+// ============================================
+// Typing Gapfill
+// ============================================
+
+.minilesson_tgapfill_player_box {
+  position: relative;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
+  background: #FFFFFF;
+
+  .tgapfill_check_btn {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      width: 96px;
+      height: 36px;
+      border-radius: 8px;
+      background: #5067FF;
+      color: #FFFFFF;
+      border-color: #5067FF;
+    }
+  }
+
+  .tgapfill_image {
+    padding: 20px;
+    border-radius: 100%;
+    background: #f3ecfc;
+  }
+
+  .tgapfill_prompt {
+    position: relative;
+    margin-top: 10px;
+  }
+
+  .tgapfill_reply {
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .tgapfill_game {
+    min-height: 250px;
+    padding: 10px;
+    border-top: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+    background-color: rgba(98, 135, 182, 1);
+  }
+
+  .tgapfill_speech {
+    position: relative;
+    font-family: arial;
+    font-size: 16px;
+    background: #a53d38;
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .tgapfill_right {
+    background-color: white;
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-left-color: white;
+      border-right: 0;
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .tgapfill_teacher_left {
+    background-color: rgba(122, 221, 76, 1);
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-right-color: rgba(122, 221, 76, 1);
+      border-left: 0;
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .tgapfill_speech-icon-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .tgapfill_speech-icon-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .tgapfill_mainmenu {
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .tgapfill_title {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #414C81;
+  }
+
+  .tgapfill_start_btn {
+    margin-top: 0;
+    width: 96px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: #506DFF;
+    border-color: #506DFF;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: #2642CD;
+      border-color: #2642CD;
+      outline: 0;
+      box-shadow: unset;
+    }
+  }
+
+  .tgapfill_controls {
+    margin-top: 5px;
+    background-color: white;
+    text-align: center;
+  }
+
+  .tgapfill_results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 75px;
+    background-color: rgba(98, 135, 182, 1);
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    z-index: 999;
+  }
+
+  .tgapfill_correct {
+    background-color: lightgreen;
+  }
+
+  .tgapfill_incorrect {
+    background-color: lightpink;
+  }
+
+  .tgapfill_targetWord {
+    padding: 3px;
+    border-radius: 5px;
+    margin: 5px;
+  }
+
+  .tgapfill_skip_btn {
+    &,
+    &:hover,
+    &:active,
+    &:focus {
+      background: #fff;
+      border-color: #5067ff;
+      border-radius: 10px;
+      color: #5067ff;
+      margin-left: 10px;
+    }
+  }
+
+  .tgapfill_description {
+    color: #1F2334;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 21px;
+    letter-spacing: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(70%);
+  }
+
+  .tgapfill_maintitle {
+    border-bottom: 1px solid #e6e9fd;
+    padding: 24px;
+    text-align: center;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 21px;
+    letter-spacing: 0;
+    color: #1F2334;
+  }
+}
+
+// ============================================
+// Speaking Gapfill
+// ============================================
+
+.sgapfill_listen_cont {
+  text-align: center;
+}
+
+.minilesson_sgapfill_player_box {
+  position: relative;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
+  background-color: #FFFFFF;
+
+  .sgapfill_title {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #414C81;
+  }
+
+  .sgapfill_prompt {
+    position: relative;
+    margin-top: 10px;
+  }
+
+  .sgapfill_reply {
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .sgapfill_game {
+    min-height: 250px;
+    padding: 10px;
+    border-top: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+    background-color: rgba(98, 135, 182, 1);
+  }
+
+  .sgapfill_speech {
+    position: relative;
+    font-family: arial;
+    font-size: 16px;
+    background: #a53d38;
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .sgapfill_right {
+    background-color: white;
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-left-color: white;
+      border-right: 0;
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .sgapfill_teacher_left {
+    background-color: rgba(122, 221, 76, 1);
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-right-color: rgba(122, 221, 76, 1);
+      border-left: 0;
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .sgapfill_speech-icon-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .sgapfill_speech-icon-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .sgapfill_mainmenu {
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .sgapfill_image {
+    padding: 20px;
+    border-radius: 100%;
+    background: #f3ecfc;
+    overflow: visible;
+  }
+
+  .sgapfill_start_btn {
+    background-color: #506DFF;
+    border-radius: 8px;
+    width: 96px;
+    height: 36px;
+    margin-top: 0;
+    border-color: #506DFF;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: #2642CD;
+      border-color: #2642CD;
+      outline: 0;
+      box-shadow: unset;
+    }
+  }
+
+  .sgapfill_controls {
+    margin-top: 5px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .sgapfill_speakbtncontainer {
+    height: 75px;
+    text-align: center;
+    display: none;
+  }
+
+  .sgapfill_results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 75px;
+    background-color: rgba(98, 135, 182, 1);
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    z-index: 999;
+  }
+
+  .sgapfill_correct {
+    background-color: lightgreen;
+  }
+
+  .sgapfill_incorrect {
+    background-color: lightpink;
+  }
+
+  .sgapfill_targetWord {
+    padding: 3px;
+    border-radius: 5px;
+    margin: 5px;
+  }
+
+  .sgapfill_skip_btn {
+    &,
+    &:hover,
+    &:active,
+    &:focus {
+      border: 1px;
+      border-style: solid;
+      border-color: #506dff;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      margin: auto;
+      background-color: #fff;
+      color: #506dff;
+    }
+  }
+
+  .sgapfill_missing_inputmtext,
+  .sgapfill_missing_input {
+    padding: 10px;
+    border-bottom: 3px solid #B0B8DC;
+    margin: 3px;
+  }
+
+  .sgapfill_description {
+    color: #1F2334;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 21px;
+    letter-spacing: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(70%);
+  }
+
+  .sgapfill_maintitle {
+    border-bottom: 1px solid #e6e9fd;
+    padding: 24px;
+    text-align: center;
+    font-weight: 400;
+    font-style: italic;
+    line-height: 21px;
+    letter-spacing: 0;
+    color: #1F2334;
+  }
+}
+
+// ============================================
+// Passage Gapfill
+// ============================================
+
+.pgapfill_gap_wrapper {
+  display: inline-block;
+  vertical-align: middle;
+
+  .character-input {
+    display: inline-block;
+    line-height: initial !important;
+    height: auto;
+    padding: 6px 4px;
+    border: 1px inset rgb(118, 118, 118);
+  }
+
+  &.pgapfill_gap_reviewing .pgapfill_gap_input,
+  &.psg_gapfill_correct .pgapfill_gap_input {
+    background-color: lightgreen;
+  }
+
+  &.psg_gapfill_correct .correctIcon {
+    color: green;
+  }
+
+  &.psg_gapfill_wrong .wrongIcon {
+    color: red;
+  }
+
+  &:not(.psg_gapfill_wrong) .wrongIcon,
+  &:not(.psg_gapfill_correct) .correctIcon {
+    display: none;
+  }
+}
+
+.pgapfill_passage {
+  line-height: 2.0;
+}
+
+.pgapfull_monospace {
+  font-family: "Roboto Mono", monospace;
+  font-size: 1.2rem;
+
+  .fa {
+    font-size: 1rem;
+  }
+}
+
+.minilesson_pgapfill_box {
+  .pgapfill_controls {
+    position: relative;
+    margin-top: 10px;
+    height: 35px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .pgapfill_hint_btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    &,
+    &:hover,
+    &:active,
+    &:focus {
+      background: #fff;
+      border-color: #5067ff;
+      border-radius: 10px;
+      color: #5067ff;
+      margin-left: 10px;
+    }
+  }
+
+  .pgapfill_finish_btn {
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+      width: 96px;
+      height: 36px;
+      border-radius: 8px;
+      background: #5067FF;
+      color: #FFFFFF;
+    }
+  }
+}
+
+// ============================================
+// Responsive
+// ============================================
+
+@media (max-width: 480px) {
+  .sgapfill_skip_btn .mobileaccesshide {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}

@@ -1,0 +1,50 @@
+// Abstracts
+@use 'abstracts/variables';
+@use 'abstracts/functions';
+@use 'abstracts/mixins';
+
+// Vendors
+@use 'vendors/simple-keyboard';
+
+// Base
+@use 'base/reset';
+@use 'base/typography';
+@use 'base/animations';
+@use 'base/shakerotate';
+
+// Layout
+@use 'layout/header';
+@use 'layout/footer';
+@use 'layout/grid';
+@use 'layout/instructions';
+@use 'layout/splashscreen';
+
+// Components - Common
+@use 'components/common/buttons';
+@use 'components/common/progress';
+@use 'components/common/resultsbox';
+@use 'components/common/description';
+@use 'components/common/maintitle';
+@use 'components/common/lessonitem';
+@use 'components/common/qpanel';
+
+// Components - Items (activity types)
+@use 'components/items/audiochat';
+@use 'components/items/scatter';
+@use 'components/items/freewriting';
+@use 'components/items/freespeaking';
+@use 'components/items/speechcards';
+@use 'components/items/fiction';
+@use 'components/items/wordshuffle';
+@use 'components/items/gapfill';
+@use 'components/items/dictation';
+@use 'components/items/multichoice';
+
+// Pages
+@use 'pages/activity';
+
+// Themes
+@use 'themes/default';
+
+// Migration (original monolithic CSS - to be gradually refactored into partials)
+@use 'migration/originalstyles';

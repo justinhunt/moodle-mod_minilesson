@@ -1,0 +1,50 @@
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .activity-wrapper,
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .startmodule_splashscreen,
+.minilesson_lgapfill_player_box {
+  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
+  position: relative;
+  margin: auto;
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.startmodule_splashscreen .startmodule_mainmenu {
+  text-align: center;
+}
+
+.startmodule_splashscreen .startmodule_btn,
+.minilesson_lgapfill_player_box .lgapfill_start_btn {
+  background-color: #506dff;
+  margin-top: 0;
+  border-radius: 8px;
+  border-color: #506dff;
+  color: #FFFFFF;
+  padding: 6px 20px;
+}
+
+.startmodule_splashscreen .startmodule_btn:is(:hover,:focus,:active),
+.minilesson_lgapfill_player_box .lgapfill_start_btn:hover,
+.minilesson_lgapfill_player_box .lgapfill_start_btn:focus,
+.minilesson_lgapfill_player_box .lgapfill_start_btn:active {
+  background-color: #2642CD;
+  border-color: #2642CD;
+  outline: 0;
+  box-shadow: none;
+  color: #FFFFFF;
+}
+
+.startmodule_splashscreen .startmodule_image,
+.minilesson_lgapfill_player_box .lgapfill_image {
+  padding: 20px;
+  border-radius: 100%;
+  background: #f3ecfc;
+  overflow: visible;
+  height: 70px;
+  width: 70px;
+}
+
+.ml_freewriting_startscreen .freewriting_image,
+.ml_freespeaking_startscreen .freespeaking_image {
+  background-color: #FFDE89;
+}

@@ -1,0 +1,18 @@
+// -----------------------------------------------------------------------------
+// Description: shared description/instruction styles across activity types
+// -----------------------------------------------------------------------------
+// Used in splashscreen, fluency, dictate, landr, wordshuffle (+ sgapfill, tgapfill, lgapfill migrats a _gapfill.scss)
+.startmodule_splashscreen .startmodule_description,
+.minilesson_fluency_box .fluency_description,
+.minilesson_dictate_player_box .dictate_description,
+.minilesson_landr_player_box .landr_description,
+.minilesson_wordshuffle_player_box .wordshuffle_description {
+  color: #1F2334;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 21px;
+  letter-spacing: 0;
+  margin-left: auto;
+  margin-right: auto;
+  width: calc(70%);
+}
