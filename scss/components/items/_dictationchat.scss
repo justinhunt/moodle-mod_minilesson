@@ -1,0 +1,223 @@
+// -----------------------------------------------------------------------------
+// Dictation Chat: listen and type activity
+// Template: templates/dictationchat.mustache
+// -----------------------------------------------------------------------------
+
+.minilesson_dictate_player_box {
+  position: relative;
+  margin: auto;
+  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background-color: #fff;
+
+  .dictate_image {
+    padding: 20px;
+    border-radius: 100%;
+    background: #f3ecfc;
+    width: 70px;
+    height: 70px;
+  }
+
+  .dictate_prompt {
+    position: relative;
+    margin-top: 10px;
+  }
+
+  .dictate_reply {
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .dictate_game {
+    min-height: 250px;
+    padding: 10px;
+    border-top: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+    background-color: rgba(98, 135, 182, 1);
+    width: 80%;
+    margin: auto;
+  }
+
+  .dictate_speech {
+    position: relative;
+    font-family: arial;
+    font-size: 16px;
+    background: #a53d38;
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .dictate_right {
+    background-color: white;
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-left-color: white;
+      border-right: 0;
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .dictate_teacher_left {
+    background-color: rgba(122, 221, 76, 1);
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-right-color: rgba(122, 221, 76, 1);
+      border-left: 0;
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .dictate_speech-icon-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .dictate_speech-icon-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .dictate_mainmenu {
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .dictate_title {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #414c81;
+  }
+
+  .dictate_start_btn {
+    background-color: #506dff;
+    margin-top: 0;
+    width: 96px;
+    height: 36px;
+    border-radius: 8px;
+    color: #fff;
+    border-color: #506dff;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: #2642cd;
+      border-color: #2642cd;
+      outline: 0;
+      -webkit-box-shadow: unset;
+      box-shadow: unset;
+      color: #fff;
+    }
+  }
+
+  .dictate_skip_btn {
+    background: #ffffff;
+    border-color: #5067FF;
+    border-radius: 10px;
+    color: #5067FF;
+    margin-left: 10px;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background: #ffffff;
+      border-color: #5067FF;
+      border-radius: 10px;
+      color: #5067FF;
+      margin-left: 10px;
+    }
+  }
+
+  .dictate_controls {
+    background-color: white;
+  }
+
+  .dictate_results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 75px;
+    background-color: rgba(98, 135, 182, 1);
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    z-index: 999;
+  }
+
+  .dictate_correct {
+    background-color: lightgreen;
+  }
+
+  .dictate_incorrect {
+    background-color: lightpink;
+  }
+
+  .dictate_targetWord {
+    padding: 3px;
+    border-radius: 5px;
+    margin: 5px;
+  }
+
+  .dictate_ctrl-btn {
+
+    &.dictate_check_btn {
+      width: 96px;
+      height: 36px;
+      background-color: #506dff;
+      border-radius: 8px;
+      color: #FFFFFF;
+      border-color: #506dff;
+    }
+
+    &.dictate_listen_btn {
+      background-color: #506dff;
+      border-radius: 8px;
+      color: #FFFFFF;
+      border-color: #506dff;
+      width: auto;
+      height: auto;
+      box-shadow: unset;
+      outline: 0;
+    }
+  }
+
+  .dictate_feedback {
+    font-size: 14px !important;
+    padding: 10px;
+  }
+
+  .dictate_loaded {
+    text-align: center;
+  }
+}

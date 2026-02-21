@@ -1,0 +1,394 @@
+// -----------------------------------------------------------------------------
+// Fluency: pronunciation/speaking assessment activity
+// Template: templates/fluency.mustache
+// -----------------------------------------------------------------------------
+
+.minilesson_fluency_box {
+  position: relative;
+  margin: auto;
+  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background-color: #FFFFFF;
+
+  .item-feedback-container {
+    display: flex;
+    background-color: #FFFFFF;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 1.1rem;
+    padding: 2px;
+    margin-bottom: 50px;
+  }
+
+  .item-results-container {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 1.1rem;
+    padding: 2px;
+
+    .fa-star {
+      color: gold;
+      font-size: 1.5em;
+    }
+
+    .fa-star-o {
+      color: gray;
+      font-size: 1.5em;
+    }
+  }
+
+  .form-container {
+    margin: 20px auto 22px;
+    min-height: 50px;
+  }
+
+  .item-results {
+    align-self: center;
+    width: 80%;
+    margin: auto;
+    border: 1px solid #ccc;
+    background-color: white;
+    border-radius: 10px;
+    padding: 6px;
+    font-style: italic;
+  }
+
+  .fluency_image {
+    padding: 20px;
+    border-radius: 100%;
+    background: #F3ECFC;
+  }
+
+  .fluency_start_btn {
+    background-color: #506dff;
+    margin-top: 0;
+    width: 96px;
+    height: 36px;
+    border-radius: 8px;
+    color: #FFFFFF;
+    border-color: #506dff;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: #2642CD;
+      border-color: #2642CD;
+      outline: 0;
+      box-shadow: unset;
+      color: #FFFFFF;
+    }
+  }
+
+  .fluency_prompt {
+    position: relative;
+    margin-top: 10px;
+    font-size: 1.3em;
+    color: #1F2334;
+  }
+
+  .fluency_reply {
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .fluency_game {
+    min-height: 250px;
+    padding: 10px;
+    border-top: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+    background-color: rgba(98, 135, 182, 1);
+  }
+
+  .fluency_speech {
+    position: relative;
+    font-family: arial;
+    font-size: 16px;
+    background: #a53d38;
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .fluency_right {
+    background-color: white;
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-left-color: white;
+      border-right: 0;
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .fluency_teacher_left {
+    background-color: rgba(122, 221, 76, 1);
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-right-color: rgba(122, 221, 76, 1);
+      border-left: 0;
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .fluency_speech-icon-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .fluency_speech-icon-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .fluency_mainmenu {
+    height: auto;
+    font-size: 20px;
+    padding: 10px;
+  }
+
+  .fluency_title {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #414C81;
+  }
+
+  .fluency_controls {
+    margin-top: 5px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .fluency_speakbtncontainer {
+    height: 75px;
+    text-align: center;
+    display: none;
+  }
+
+  .fluency_results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 75px;
+    background-color: rgba(98, 135, 182, 1);
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    z-index: 999;
+  }
+
+  .fluency_correct {
+    background-color: lightgreen;
+  }
+
+  .fluency_incorrect {
+    background-color: lightpink;
+  }
+
+  .fluency_targetWord {
+    padding: 3px;
+    border-radius: 5px;
+    margin: 5px;
+  }
+
+  .fluency_skip_btn {
+    border: 1px;
+    border-style: solid;
+    border-color: #506dff;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    margin: auto;
+    background-color: #fff;
+    color: #506dff;
+
+    &:hover,
+    &:active,
+    &:focus {
+      border: 1px;
+      border-style: solid;
+      border-color: #506dff;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      margin: auto;
+      background-color: #fff;
+      color: #506dff;
+    }
+  }
+}
+
+// Elements outside fluency_box
+.fluency_listen_cont {
+  text-align: center;
+
+  .fluency_listen_btn {
+    background: #5067ff;
+    border-radius: 8px;
+    border: 1.5px solid #fff;
+    color: #fff;
+    border-color: #5067ff;
+    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.22);
+    outline: 0;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background: #5067ff;
+      border-radius: 8px;
+      border: 1.5px solid #fff;
+      color: #fff;
+      border-color: #5067ff;
+      box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.22);
+      outline: 0;
+    }
+  }
+}
+
+.btn.fluency_listen_btn.audioself {
+  color: #FFFFFF;
+}
+
+// Word/letter results
+div.fluencywordresult {
+  flex-wrap: nowrap;
+  gap: 3px;
+  margin: 5px;
+}
+
+span.fluencyletterresult {
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background-color: #f9f9f9;
+  cursor: default;
+
+  &.letter_missing {
+    background-color: #FCF9EB;
+    color: gray;
+  }
+
+  &.letter_fair {
+    background-color: #FCF9EB;
+    color: #CC7B02;
+  }
+
+  &.letter_good {
+    background-color: #F2FBF0;
+    color: #099506;
+  }
+
+  &.letter_wrong {
+    background-color: #FCF5F5;
+    color: #FD1515;
+  }
+}
+
+// Phonemes bar
+.ml_fluencyphonemesbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10px;
+  margin-top: 5px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+
+  span {
+    flex-grow: 1;
+    height: 100%;
+  }
+}
+
+span.fluencyphoneme {
+
+  &.letter_missing {
+    background-color: gray;
+  }
+
+  &.letter_fair {
+    background-color: orange;
+  }
+
+  &.letter_good {
+    background-color: green;
+  }
+
+  &.letter_wrong {
+    background-color: red;
+  }
+}
+
+// Star rating
+.fluency_star_rating {
+  background: #FFFFFF;
+  border: 1px solid #DEE2FC;
+  border-radius: 40px;
+  padding: 10px;
+  letter-spacing: 10px;
+}
+
+// Mobileaccesshide (deep nested variant)
+.fluencyaudiobox .minilesson_fluency_box .fluency_mainstage .fluency_controls .fluency_skip_btn .mobileaccesshide {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Responsive
+@media (max-width: 480px) {
+  .fluency_skip_btn .mobileaccesshide {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}

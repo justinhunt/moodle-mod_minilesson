@@ -1,10 +1,10 @@
 // -----------------------------------------------------------------------------
 // Maintitle: shared main title styles across activity types
 // -----------------------------------------------------------------------------
-// Used in fluency, landr, dictate, wordshuffle (+ sgapfill, tgapfill, lgapfill migrats a _gapfill.scss)
+// Used in fluency, dictate, landr, wordshuffle (+ gapfill migrat a _gapfill.scss)
 .minilesson_fluency_box .fluency_maintitle,
-.minilesson_landr_player_box .landr_maintitle,
 .minilesson_dictate_player_box .dictate_maintitle,
+.minilesson_landr_player_box .landr_maintitle,
 .minilesson_wordshuffle_player_box .wordshuffle_maintitle {
   border-bottom: 1px solid #e6e9fd;
   padding: 24px;
