@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * English strings for Mini Lesson
@@ -51,11 +65,11 @@ $string['activitylinkname'] = 'Continue to next activity: {$a}';
 $string['pluginadministration'] = 'Mini Lesson Administration';
 $string['pluginname'] = 'Poodll MiniLesson';
 $string['promptsettings'] = 'Prompt Settings';
-//$string['someadminsetting'] = 'Some Admin Setting';
-//$string['someadminsetting_details'] = 'More info about Some Admin Setting';
-//$string['someinstancesetting'] = 'Some Instance Setting';
-//$string['someinstancesetting_details'] = 'More infor about Some Instance Setting';
-//$string['minilessonsettings'] = 'MiniLesson settings';
+// $string['someadminsetting'] = 'Some Admin Setting';
+// $string['someadminsetting_details'] = 'More info about Some Admin Setting';
+// $string['someinstancesetting'] = 'Some Instance Setting';
+// $string['someinstancesetting_details'] = 'More infor about Some Instance Setting';
+// $string['minilessonsettings'] = 'MiniLesson settings';
 $string['minilesson:addinstance'] = 'Add a new Mini Lesson';
 $string['minilesson:view'] = 'View MiniLesson';
 $string['minilesson:view'] = 'Preview MiniLesson';
@@ -82,7 +96,7 @@ $string['incompleteattemptsheading'] = 'Incomplete Attempts Report';
 $string['gradereport'] = 'Grade Report';
 $string['gradereport_explanation'] = 'A list of grades';
 $string['gradereportheading'] = 'Grade Report';
-//$string['attemptsbyuserheading']='User Attempts Report';
+// $string['attemptsbyuserheading']='User Attempts Report';
 $string['gradingheading'] = 'Grades for each user latest attempts.';
 $string['gradingbyuserheading'] = 'Grades for all attempts by: {$a}';
 $string['totalattempts'] = 'Attempts';
@@ -113,42 +127,42 @@ $string['gradelowest'] = 'lowest scoring attempt';
 $string['gradehighest'] = 'highest scoring attempt';
 $string['gradelatest'] = 'score of latest attempt';
 $string['gradeaverage'] = 'average score of all attempts';
-//$string['defaultsettings'] ='Default Settings';
+// $string['defaultsettings'] ='Default Settings';
 $string['exceededattempts'] = 'You have completed the maximum {$a} attempts.';
-//$string['minilessontask'] ='Mini Lesson Task';
+// $string['minilessontask'] ='Mini Lesson Task';
 $string['welcomelabel'] = 'Default Welcome';
 $string['welcomelabel_details'] = 'The default text to show in the welcome field when creating a new Mini Lesson activity.';
-//$string['feedbacklabel'] ='Default Feedback';
-//$string['feedbacklabel_details'] ='The default text to show in the feedback field when creating a new Mini Lesson activity.';
+// $string['feedbacklabel'] ='Default Feedback';
+// $string['feedbacklabel_details'] ='The default text to show in the feedback field when creating a new Mini Lesson activity.';
 $string['welcomelabel'] = 'Welcome Message';
-//$string['feedbacklabel'] = 'Feedback Message';
+// $string['feedbacklabel'] = 'Feedback Message';
 $string['alternatives'] = 'Alternatives';
 $string['alternatives_descr'] = 'Specify matching options for specific passage words. 1 word set per line. e.g their|there|they\'re See <a href="https://support.poodll.com/support/solutions/articles/19000096937-tuning-your-read-aloud-activity">docs</a> for more details.';
-//$string['defaultwelcome'] = 'To begin the activity first test your microphone. When we can hear sound from your microphone a start button will appear. After you press the start button, a reading passage will appear. Read the passage aloud as clearly as you can.';
-//$string['defaultfeedback'] = 'Thanks for reading. Please be patient until your attempt has been evaluated.';
+// $string['defaultwelcome'] = 'To begin the activity first test your microphone. When we can hear sound from your microphone a start button will appear. After you press the start button, a reading passage will appear. Read the passage aloud as clearly as you can.';
+// $string['defaultfeedback'] = 'Thanks for reading. Please be patient until your attempt has been evaluated.';
 $string['timelimit'] = 'Time Limit';
-//$string['gotnosound'] = 'We could not hear you. Please check the permissions and settings for microphone and try again.';
-//$string['done'] = 'Done';
+// $string['gotnosound'] = 'We could not hear you. Please check the permissions and settings for microphone and try again.';
+// $string['done'] = 'Done';
 $string['processing'] = 'Processing';
-//$string['feedbackheader'] = 'Finished';
-//$string['beginreading'] = 'Begin Reading';
+// $string['feedbackheader'] = 'Finished';
+// $string['beginreading'] = 'Begin Reading';
 $string['errorheader'] = 'Error';
-//$string['uploadconverterror'] = 'An error occured while posting your file to the server. Your submission has NOT been received. Please refresh the page and try again.';
+// $string['uploadconverterror'] = 'An error occured while posting your file to the server. Your submission has NOT been received. Please refresh the page and try again.';
 $string['attemptsreport'] = 'Attempts Report';
 $string['attemptsreport_explanation'] = 'A list of attempts';
 $string['incompleteattemptsreport'] = 'Incomplete Attempts Report';
 $string['incompleteattemptsreport_explanation'] = 'A list of incomplete attempts';
-//$string['submitted'] = 'submitted';
+// $string['submitted'] = 'submitted';
 $string['id'] = 'ID';
 $string['username'] = 'User';
-//$string['audiofile'] = 'Audio';
+// $string['audiofile'] = 'Audio';
 $string['timecreated'] = 'Time Created';
 $string['nodataavailable'] = 'No Data Available Yet';
 $string['saveandnext'] = 'Save .... and next';
-//$string['notgradedyet'] = 'Your submission has been received, but has not been graded yet';
-//$string['enabletts'] = 'Enable TTS(experimental)';
-//$string['enabletts_details'] = 'TTS is currently not implemented';
-//we hijacked this setting for both TTS STT .... bad ... but they are always the same aren't they?
+// $string['notgradedyet'] = 'Your submission has been received, but has not been graded yet';
+// $string['enabletts'] = 'Enable TTS(experimental)';
+// $string['enabletts_details'] = 'TTS is currently not implemented';
+// we hijacked this setting for both TTS STT .... bad ... but they are always the same aren't they?
 $string['ttslanguage'] = 'Target/Voice Language';
 $string['deleteattemptconfirm'] = "Are you sure that you want to delete this attempt?";
 $string['deletenow'] = '';
@@ -186,7 +200,7 @@ $string['capetown'] = 'Capetown, South Africa';
 $string['bahrain'] = 'Bahrain';
 $string['ningxia'] = 'Ningxia, China';
 
-//$string['forever'] = 'Never expire';
+// $string['forever'] = 'Never expire';
 
 $string['en-us'] = 'English (US)';
 $string['es-us'] = 'Spanish (US)';
@@ -260,52 +274,52 @@ $string['ps-af'] = 'Pashto'; // Afghan Pashto
 $string['awsregion'] = 'AWS Region';
 $string['region'] = 'AWS Region';
 $string['region_details'] = 'The AWS Region sets where data is stored and processed.';
-//$string['expiredays']='Days to keep file';
+// $string['expiredays']='Days to keep file';
 
 
-//$string['machinegrading']='Machine Evaluations';
-//$string['viewmachinegrading']='Machine Evaluation';
+// $string['machinegrading']='Machine Evaluations';
+// $string['viewmachinegrading']='Machine Evaluation';
 $string['review'] = 'Review';
 $string['regrade'] = 'Regrade';
 
 
-//$string['humanevaluatedmessage']='Your latest attempt has been graded by your teacher and results are displayed below.';
-//$string['machineevaluatedmessage']='Your latest attempt has been graded <i>automatically</i> and results are displayed below.';
+// $string['humanevaluatedmessage']='Your latest attempt has been graded by your teacher and results are displayed below.';
+// $string['machineevaluatedmessage']='Your latest attempt has been graded <i>automatically</i> and results are displayed below.';
 
-//$string['dospotcheck']="Spot Check";
-//$string['spotcheckbutton']="Quick Grade";
-//$string['gradingbutton']="Manual Grade";
-//$string['transcriptcheckbutton']="Transcript Check";
-//$string['doclear']="Clear all markers";
+// $string['dospotcheck']="Spot Check";
+// $string['spotcheckbutton']="Quick Grade";
+// $string['gradingbutton']="Manual Grade";
+// $string['transcriptcheckbutton']="Transcript Check";
+// $string['doclear']="Clear all markers";
 
-//$string['gradethisattempt']="Grade this attempt";
+// $string['gradethisattempt']="Grade this attempt";
 $string['rawgrade_p'] = 'Grade(%)';
 $string['adjustedgrade_p'] = 'Adj. Grade(%)';
 
-//$string['evaluationview']="Evaluation display";
-//$string['evaluationview_details']="What to show students after they have attempted and received an evaluation";
-//$string['humanpostattempt']="Evaluation display (human)";
-//$string['humanpostattempt_details']="What to show students after they have attempted and received a human evaluation";
-//$string['machinepostattempt']="Evaluation display (machine)";
-//$string['machinepostattempt_details']="What to show students after they have attempted and received a machine evaluation";
-//$string['postattempt_none']="Show the passage. Don't show evaluation or errors.";
-//$string['postattempt_eval']="Show the passage, and evaluation(scores)";
-//$string['postattempt_evalerrors']="Show the passage, evaluation(scores) and errors";
+// $string['evaluationview']="Evaluation display";
+// $string['evaluationview_details']="What to show students after they have attempted and received an evaluation";
+// $string['humanpostattempt']="Evaluation display (human)";
+// $string['humanpostattempt_details']="What to show students after they have attempted and received a human evaluation";
+// $string['machinepostattempt']="Evaluation display (machine)";
+// $string['machinepostattempt_details']="What to show students after they have attempted and received a machine evaluation";
+// $string['postattempt_none']="Show the passage. Don't show evaluation or errors.";
+// $string['postattempt_eval']="Show the passage, and evaluation(scores)";
+// $string['postattempt_evalerrors']="Show the passage, evaluation(scores) and errors";
 $string['attemptsperpage'] = "Attempts to show per page: ";
 $string['backtotop'] = "Back to Course Page";
-//$string['transcript']="Transcript";
-//$string['quickgrade']="Quick Grade";
-//$string['ok']="OK";
-//$string['ng']="Not OK";
-//$string['notok']="Not OK";
-//$string['machinegrademethod']="Human/Machine Grading";
-//$string['machinegrademethod_help']="Use machine evaluations or human evaluations as grades in grade book.";
-//$string['machinegradenone']="Never use machine eval. for grade";
-//$string['machinegrademachine']="Use human or machine eval. for grade";
+// $string['transcript']="Transcript";
+// $string['quickgrade']="Quick Grade";
+// $string['ok']="OK";
+// $string['ng']="Not OK";
+// $string['notok']="Not OK";
+// $string['machinegrademethod']="Human/Machine Grading";
+// $string['machinegrademethod_help']="Use machine evaluations or human evaluations as grades in grade book.";
+// $string['machinegradenone']="Never use machine eval. for grade";
+// $string['machinegrademachine']="Use human or machine eval. for grade";
 
-//$string['noattemptsregrade']='No attempts to regrade';
-//$string['machineregraded']='Successfully regraded {$a->done} attempts. Skipped {$a->skipped} attempts.';
-//$string['machinegradespushed']='Successfully pushed grades to gradebook';
+// $string['noattemptsregrade']='No attempts to regrade';
+// $string['machineregraded']='Successfully regraded {$a->done} attempts. Skipped {$a->skipped} attempts.';
+// $string['machinegradespushed']='Successfully pushed grades to gradebook';
 
 $string['notimelimit'] = 'No time limit';
 $string['xsecs'] = '{$a} seconds';
@@ -325,7 +339,7 @@ $string['appauthorised'] = "Poodll MiniLesson is authorised for this site.";
 $string['appnotauthorised'] = "Poodll MiniLesson is NOT authorised for this site.";
 $string['refreshtoken'] = "Refresh license information";
 $string['notokenincache'] = "Refresh to see license information. Contact Poodll support if there is a problem.";
-//these errors are displayed on activity page
+// these errors are displayed on activity page
 $string['nocredentials'] = 'API user and secret not entered. Please enter them on <a href="{$a}">the settings page.</a> You can get them from <a href="https://poodll.com/member">Poodll.com.</a>';
 $string['novalidcredentials'] = 'API user and secret were rejected and could not gain access. Please check them on <a href="{$a}">the settings page.</a> You can get them from <a href="https://poodll.com/member">Poodll.com.</a>';
 $string['nosubscriptions'] = "There is no current subscription for this site/plugin.";
@@ -347,7 +361,7 @@ $string['privacy:metadata'] = 'The Poodll MiniLesson plugin does store personal 
 $string['privacy:metadata:moduleid'] = 'The unique identifier of a MiniLesson activity instance.';
 $string['privacy:metadata:errorcount'] = 'The error count of a users MiniLesson attempt.';
 
-//rsquestions
+// rsquestions
 $string['rsquestions'] = 'Lesson Items';
 $string['managersquestions'] = 'Manage Lesson Items';
 $string['correctanswer'] = 'Correct answer';
@@ -381,28 +395,28 @@ $string['confirmattemptdelete'] = 'Are you sure you want to <i>DELETE</i> this a
 $string['confirmattemptdeletealltitle'] = 'Really Delete ALL Attempts?';
 $string['confirmattemptdeleteall'] = 'Are you sure you want to <i>DELETE ALL</i> attempts?';
 $string['noitems'] = 'This MiniLesson contains no lesson items';
-//$string['itemdetails'] = 'item Details: {$a}';
-//$string['itemsummary'] = 'item Summary: {$a}';
-//$string['viewreport'] = 'view report';
-//$string['translate'] = 'Translate';
-//$string['iscorrectlabel'] = 'Correct/Incorrect';
-//$string['correcttranslationtitle'] = 'Correct Translation';
+// $string['itemdetails'] = 'item Details: {$a}';
+// $string['itemsummary'] = 'item Summary: {$a}';
+// $string['viewreport'] = 'view report';
+// $string['translate'] = 'Translate';
+// $string['iscorrectlabel'] = 'Correct/Incorrect';
+// $string['correcttranslationtitle'] = 'Correct Translation';
 $string['edit'] = 'Edit';
-//$string['gotoactivity'] = 'Start Activity';
-//$string['tryactivityagain'] = 'Try Again';
-//$string['shuffleanswers'] = 'Shuffle Answers';
-//$string['shufflequestions'] = 'Shuffle Questions';
+// $string['gotoactivity'] = 'Start Activity';
+// $string['tryactivityagain'] = 'Try Again';
+// $string['shuffleanswers'] = 'Shuffle Answers';
+// $string['shufflequestions'] = 'Shuffle Questions';
 $string['minilesson:itemview'] = 'View items';
 $string['minilesson:itemedit'] = 'Edit items';
-//$string['fbquestionname'] = 'Item';
+// $string['fbquestionname'] = 'Item';
 $string['avgcorrect'] = 'Av. Correct';
 $string['avgtotaltime'] = 'Av. Duration';
-//$string['quiz'] = 'Quiz';
+// $string['quiz'] = 'Quiz';
 
 
-//MSV stuff
-//$string['error']="Error";
-//$string['notes']="Notes";
+// MSV stuff
+// $string['error']="Error";
+// $string['notes']="Notes";
 
 
 $string['addmultichoiceitem'] = 'Multi Choice';
@@ -471,22 +485,22 @@ $string['transcriber_poodll'] = 'Guided STT (Poodll)';
 $string['pagelayout'] = 'Page layout';
 
 $string['thatsnotright'] = 'Something is Wrong';
-//$string['invalidattempt'] = 'Invalid attempt';
-//$string['notyourattempt'] = 'I think that is not your reading attempt.';
-//$string['notfinished'] = 'This reading is not finished';
+// $string['invalidattempt'] = 'Invalid attempt';
+// $string['notyourattempt'] = 'I think that is not your reading attempt.';
+// $string['notfinished'] = 'This reading is not finished';
 
-//$string['title'] = 'Title';
-//$string['level'] = 'Level';
-//$string['errors'] = 'Errors';
-//$string['studentname'] = 'Student';
-//$string['goback'] = 'Go Back';
-//$string['teacher'] = 'Teacher';
-//$string['close'] = 'Close';
+// $string['title'] = 'Title';
+// $string['level'] = 'Level';
+// $string['errors'] = 'Errors';
+// $string['studentname'] = 'Student';
+// $string['goback'] = 'Go Back';
+// $string['teacher'] = 'Teacher';
+// $string['close'] = 'Close';
 
-//$string['submitrawaudio'] = 'Submit uncompressed audio';
-//$string['submitrawaudio_details'] = 'Submitting uncompressed audio may increase transcription accuracy, but at the expense of upload speed and reliability.';
+// $string['submitrawaudio'] = 'Submit uncompressed audio';
+// $string['submitrawaudio_details'] = 'Submitting uncompressed audio may increase transcription accuracy, but at the expense of upload speed and reliability.';
 
-//dictation chat
+// dictation chat
 $string['dc_results'] = 'Results';
 $string['listenandtype'] = 'Listen and Type';
 $string['listen'] = 'Listen';
@@ -494,19 +508,19 @@ $string['check'] = 'Check';
 $string['skip'] = 'Skip';
 $string['skip-fluency'] = 'Continue';
 $string['start'] = 'Start';
-//$string['next'] = 'Next';
+// $string['next'] = 'Next';
 $string['nextlessonitem'] = 'Next Page';
 $string['loading'] = 'Loading...';
 $string['dictation_instructions1'] = 'Listen and type each sentence that you hear.';
 $string['sc_instructions1'] = 'Read the phrase on each card aloud.';
 $string['dc_instructions1'] = 'Listen and type the sentences you hear.';
-//$string['dc_instructions2'] = 'Click \'Start\' to begin!';
-//dictation
+// $string['dc_instructions2'] = 'Click \'Start\' to begin!';
+// dictation
 $string['d_question'] = 'Item';
-//listen and repeat
+// listen and repeat
 $string['listenandrepeat'] = 'Listen and Speak';
 $string['lr_instructions1'] = 'Listen and respond to the sentences you hear.';
-//$string['lr_instructions2'] = 'Click \'Start\' to begin!';
+// $string['lr_instructions2'] = 'Click \'Start\' to begin!';
 $string['spacegame_instructions1'] = 'Shoot the aliens by selecting the correct answer.';
 $string['freespeaking_instructions1'] = 'Use the microphone to record your answer to the question.';
 $string['passagereading_instructions1'] = 'Use the microphone to record yourself reading the passage.';
@@ -532,7 +546,7 @@ $string['listenorread_listen'] = 'audio players + dots';
 $string['listenorread_listenandread'] = 'audio players + plain text';
 $string['listenorread_image'] = 'images + plain text';
 
-//$string['gradenow']= 'Grade Now';
+// $string['gradenow']= 'Grade Now';
 
 $string['itemtype'] = 'Item Type';
 $string['action'] = 'Action';
@@ -547,7 +561,7 @@ $string['additems'] = 'Add Items';
 $string['showqtitles'] = 'Show item titles in lesson';
 $string['previewitem'] = 'Preview Item';
 $string['showitemscores'] = 'See All Results';
-//$string['ttshorturl'] = 'SmartFrame URL:';
+// $string['ttshorturl'] = 'SmartFrame URL:';
 $string['reattempt'] = 'Try Again';
 $string['attemptresultsheading'] = '{$a->username}: Attempt({$a->attemptid}): Score: {$a->sessionscore}% : - {$a->date} ';
 $string['result'] = 'Result';
@@ -558,7 +572,7 @@ $string['sentences'] = 'Sentences';
 $string['correctresponses'] = 'Correct responses';
 $string['enterresponses'] = 'Enter a list of correct responses, and an optional list of partially correct responses, in the text areas below.';
 $string['sentenceprompts'] = 'Sentences (prompts)';
-//$string['entersentences'] ='Enter a list of sentences in the text area below. Place each sentence on a new line.';
+// $string['entersentences'] ='Enter a list of sentences in the text area below. Place each sentence on a new line.';
 $string['phraseresponses'] = 'Enter a list of items in the text area below. Each item should be a on a new line. The format is:<br> audio prompt | correct response (optional)| text prompt (optional) <br>e.g How are you?|I am fine.';
 $string['fluencyresponses'] = 'Enter a list of phrases/sentences in the text area below. Each item should be a on a new line. ';
 $string['itemmedia'] = 'Image, audio or video to show';
@@ -571,18 +585,18 @@ $string['prompt-richtext'] = 'Rich Text';
 $string['prompttype'] = 'Text and Media';
 $string['prompttype_help'] = 'Use plain text and separate selectors for adding media files, or a rich text editor';
 
-//repeatable
-//$string['sentence'] ='Sentence';
-//$string['sentence_help'] ='Sentence_help';
-//$string['sentenceno'] ='Sentence No.';
-//$string['sentence_add_fields'] ='Add another sentence';
+// repeatable
+// $string['sentence'] ='Sentence';
+// $string['sentence_help'] ='Sentence_help';
+// $string['sentenceno'] ='Sentence No.';
+// $string['sentence_add_fields'] ='Add another sentence';
 
-//reattempt
+// reattempt
 $string['reattempt'] = 'Try Again';
 $string['reattempttitle'] = 'Really Try Again?';
 $string['reattemptbody'] = 'If you continue your previous attempt will be replaced with this one. OK?';
 
-//media toggles
+// media toggles
 $string['addmedia'] = 'Image / audio or video';
 $string['addmedia_instructions'] = 'Choose the media type you want to show in the lesson item.';
 $string['addiframe'] = 'iFrame / custom HTML';
@@ -606,12 +620,12 @@ $string['choosenativelanguage'] = 'Choose Native Language';
 $string['audiostorytimes'] = 'Image Entry Times';
 $string['audiostoryfiles'] = 'Audio Story Files';
 
-//showtextprompt
+// showtextprompt
 $string['enablesetuptab'] = "Enable setup tab";
 $string['enablesetuptab_details'] = "Don't check this. It will show a tab containing the activity instance settings to admins. This is for a special use case and minilesson pages will show without headers,footers or blocks.";
 $string['setup'] = "Setup";
 
-//TTS options
+// TTS options
 $string['ttsnormal'] = 'Normal';
 $string['ttsslow'] = 'Slow';
 $string['ttsveryslow'] = 'Very Slow';
@@ -634,8 +648,8 @@ $string['layoutmagazine'] = 'Magazine';
 
 $string['freetrial'] = "Get Cloud Poodll API Credentials and a Free Trial";
 $string['freetrial_desc'] = "A dialog should appear that allows you to register for a free trial with Poodll. After registering you should login to the members dashboard to get your API user and secret. And to register your site URL.";
-//$string['memberdashboard'] = "Member Dashboard";
-//$string['memberdashboard_desc'] = "";
+// $string['memberdashboard'] = "Member Dashboard";
+// $string['memberdashboard_desc'] = "";
 $string['fillcredentials'] = "Set API user and secret with existing credentials";
 
 
@@ -1310,3 +1324,4 @@ $string['customkeys_help'] = 'Add space separated list of keys for the virtual k
 $string['compact'] = 'Compact';
 $string['confirmactionmessage'] = '<p>Your previous attempt will be deleted. OK?</p>';
 $string['attemptquestioncountmessage'] = 'You have completed {$a->completed} out of {$a->totallessonitem} steps.';
+$string['fullscreen_toggle'] = 'Fullscreen Toggle';

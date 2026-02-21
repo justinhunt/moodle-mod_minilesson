@@ -61,6 +61,10 @@ class aimanager {
     /** @var string */
     public const FUNC_COUNT_UNIQUE_IDEAS = 'count_unique_ideas';
 
+    /** @var string */
+
+    public const FUNC_GET_EMBEDDING = 'get_embedding';
+
     /** @var array */
     public const OPTION_MAPPING = [
         self::FUNC_EVALUATE_PASSAGE => self::OPTION_GRADE_STUDENT_SUBMISSION,
@@ -95,8 +99,8 @@ class aimanager {
     }
 
     public static function get_action_provider_setting($actiontype) {
-        [$componnent, $settingname] = explode('/', static::get_action_settingname($actiontype), 2);
-        $setting = get_config($componnent, $settingname);
+        [$component, $settingname] = explode('/', static::get_action_settingname($actiontype), 2);
+        $setting = get_config($component, $settingname);
         return !empty($setting) ? $setting : static::CLOUDPOODLL_OPTION;
     }
 
@@ -249,6 +253,39 @@ class aimanager {
             $response = static::call_cp_api($params);
         }
         return $response;
+    }
+
+    public static function get_embedding($contextid, $region, $ttslanguage, $passage, $cache = false) {
+        
+        $actionconst = static::FUNC_GET_EMBEDDING;
+        $params['action'] = $actionconst;
+        $params['prompt'] = $passage;
+        $params['language'] = $ttslanguage;
+        $params['subject'] = 'none';
+        $params['region'] = $region;
+        $response = static::call_cp_api($params);
+
+        // returnCode > 0  indicates an error.
+        if (!$response || !isset($response->returnCode) || $response->returnCode > 0) {
+            return false;
+            // If all good, then process it.
+        } else if ($response->returnCode === 0) {
+            $returndata = $response->returnMessage;
+            // Clean up the correction a little.
+            if (!utils::is_json($returndata)) {
+                $embedding = false;
+            } else {
+                $dataobject = json_decode($returndata);
+                if (is_array($dataobject) && isset($dataobject[0]->object) && $dataobject[0]->object == 'embedding') {
+                    $embedding = json_encode($dataobject[0]->embedding);
+                } else {
+                    $embedding = false;
+                }
+            }
+            return $embedding;
+        } else {
+            return false;
+        }
     }
 
     public static function call_ai_provider_action($actionclass, $params) {

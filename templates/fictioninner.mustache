@@ -1,3 +1,4 @@
+<div id="yarn-player-container-{{uniqid}}" class="yarn-player-wrapper">
 {{#presention_plain}} 
     {{> mod_minilesson/fictionplain}}
 {{/presention_plain}}
@@ -7,3 +8,14 @@
 {{#presention_storymode}} 
     {{> mod_minilesson/fictionstorymode}}
 {{/presention_storymode}}
+
+    <button id="toggle-fs-{{uniqid}}" class="btn btn-secondary fullscreen-btn" title="{{#str}}fullscreen_toggle, mod_minilesson{{/str}}">
+        <i class="fa fa-expand"></i>
+    </button>
+</div>
+
+{{#js}}
+require(['mod_minilesson/fullscreen_helper'], function(FS) {
+    FS.init('yarn-player-container-{{uniqid}}', 'toggle-fs-{{uniqid}}');
+});
+{{/js}}

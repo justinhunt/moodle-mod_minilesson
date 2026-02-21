@@ -75,6 +75,7 @@ class item_fiction extends item
         $testitem = $this->set_layout($testitem);
         $testitem->region = $this->region;
 
+
         $imageserveurl = urldecode(\moodle_url::make_pluginfile_url(
             $this->context->id,
             constants::M_COMPONENT,
@@ -109,32 +110,32 @@ class item_fiction extends item
             $testitem->filenamesmap[] = [
                 'filekey' => strtolower(str_replace(' ', '_', pathinfo($filename, PATHINFO_FILENAME))),
                 'fileurl' => str_replace('{filename}', rawurlencode($filename), $imageserveurl),
-            ]; 
+            ];
         }
 
         // Process yarn text for files in files area.
         $fictionyarn = preg_replace_callback(
             '/<<(?:picture|audio|video)\s+(?<filename>[^>]+)>>/',
             function ($matches) use ($imageserveurl, $filenames) {
-                $filename = trim($matches['filename']);
+            $filename = trim($matches['filename']);
 
-                // Skip if it's already a full URL (http/https).
-                if (preg_match('/^https?:\/\//', $filename)) {
-                    return $matches[0];
-                }
+            // Skip if it's already a full URL (http/https).
+            if (preg_match('/^https?:\/\//', $filename)) {
+                return $matches[0];
+            }
 
-                // Skip if the file does not exist in the file area.
-                if (!in_array($filename, $filenames)) {
-                    return $matches[0];
-                }
+            // Skip if the file does not exist in the file area.
+            if (!in_array($filename, $filenames)) {
+                return $matches[0];
+            }
 
-                // Add base path (and escape spaces if needed).
-                $newsrc = str_replace('{filename}', rawurlencode($filename), $imageserveurl);
+            // Add base path (and escape spaces if needed).
+            $newsrc = str_replace('{filename}', rawurlencode($filename), $imageserveurl);
 
-                // Replace only the filename part.
-                return str_replace($filename, $newsrc, $matches[0]);
-            },
-            $this->itemrecord->{constants::FICTION_YARN}
+            // Replace only the filename part.
+            return str_replace($filename, $newsrc, $matches[0]);
+        },
+            $this->itemrecord->{ constants::FICTION_YARN}
         );
 
         // Weird characters can break things like tables, so clean it a bit.
@@ -152,8 +153,9 @@ class item_fiction extends item
                 $testitem->speechtoken = $tokenobject->token;
                 $testitem->speechtokenregion = $tokenobject->region;
                 $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
-                 $testitem->speechtokentype = $tokenobject->tokentype;
-            } else {
+                $testitem->speechtokentype = $tokenobject->tokentype;
+            }
+            else {
                 $testitem->speechtoken = false;
                 $testitem->speechtokenregion = '';
                 $testitem->speechtokenvalidseconds = 0;
@@ -165,15 +167,15 @@ class item_fiction extends item
         }
 
         // Presentation Mode - plain or mobilechat.
-        $testitem->presention_plain = empty($this->itemrecord->{constants::FICTION_PRESENTATION_MODE});
-        $testitem->presention_mobilechat = $this->itemrecord->{constants::FICTION_PRESENTATION_MODE} == 1;
-        $testitem->presention_storymode =  $this->itemrecord->{constants::FICTION_PRESENTATION_MODE} == 2;
+        $testitem->presention_plain = empty($this->itemrecord->{ constants::FICTION_PRESENTATION_MODE});
+        $testitem->presention_mobilechat = $this->itemrecord->{ constants::FICTION_PRESENTATION_MODE} == 1;
+        $testitem->presention_storymode = $this->itemrecord->{ constants::FICTION_PRESENTATION_MODE} == 2;
 
         // Flowthrough mode.
-        $testitem->flowthroughmode = $this->itemrecord->{constants::FICTION_FLOWTHROUGH_MESSAGES} ? true : false;
+        $testitem->flowthroughmode = $this->itemrecord->{ constants::FICTION_FLOWTHROUGH_MESSAGES} ? true : false;
 
         // Show non-options.
-        $testitem->shownonoptions = $this->itemrecord->{constants::FICTION_SHOW_NONOPTIONS} ? true : false;
+        $testitem->shownonoptions = $this->itemrecord->{ constants::FICTION_SHOW_NONOPTIONS} ? true : false;
 
         // Pass in user data for display in the story
         $testitem->userfirstname = $USER->firstname;
@@ -188,10 +190,10 @@ class item_fiction extends item
                 $testitem->nativelanguage = $userprefnativelanguage;
             }
         }
- 
+
         // Cloudpoodll.
         $testitem = $this->set_cloudpoodll_details($testitem);
-                return $testitem;
+        return $testitem;
     }
 
     /**
@@ -200,7 +202,8 @@ class item_fiction extends item
      * @param string $yarn The yarn to sanitize.
      * @return string The sanitized yarn.
      */
-    public function sanitize_yarn($yarn) {
+    public function sanitize_yarn($yarn)
+    {
         // 1. Remove zero-width chars (Space-efficient way to include the BOM)
         $yarn = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}]/u', '', $yarn);
 
@@ -234,7 +237,7 @@ class item_fiction extends item
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{constants::FICTION_YARN} == '') {
+        if ($newrecord->{ constants::FICTION_YARN} == '') {
             $error->col = constants::FICTION_YARN;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;

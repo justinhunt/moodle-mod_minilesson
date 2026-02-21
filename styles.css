@@ -734,6 +734,82 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
   padding-right: 42px;
 }
 
+.mod_.minilesson_match_word_character {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 10px;
+}
+
+/* Fullscreen Toggle Container & Button */
+.yarn-player-wrapper {
+  position: relative;
+  background: #fff;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+/* Specific styling for when in Fullscreen mode */
+.yarn-player-wrapper:fullscreen {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #000;
+  /* Better for focus/immersion */
+  box-sizing: border-box;
+}
+
+/* Fallback for Safari/iOS */
+.yarn-player-wrapper:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #000;
+  box-sizing: border-box;
+}
+
+/* Ensure inner container expands to full height in fullscreen mode to anchor options to the bottom */
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer,
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer {
+  height: 100%;
+  max-height: none !important;
+  max-width: 100% !important;
+  border-radius: 0;
+  margin: 0;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+/* Ensure that if chat options expand, the main chat area can shrink to display them without clipping */
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer .chat-wrapper,
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer .chat-wrapper {
+  min-height: 0;
+}
+
+/* Floating the button in the corner */
+.fullscreen-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  opacity: 0.7;
+}
+
+.fullscreen-btn:hover {
+  opacity: 1;
+}
+
+/* Hide text on small mobile screens to save space */
+@media (max-width: 576px) {
+  .fullscreen-btn span {
+    display: none;
+  }
+}
+
 .mod_minilesson-answer::after {
   content: ' ';
   position: absolute;
@@ -6414,7 +6490,9 @@ span.wrongitem {
 .minilesson_fiction_yarncontainer.mobilechat {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 600px;
+  /* Layout Stability Fix */
+  max-height: 80vh;
   background-color: #ece5dd;
   position: relative;
 }
@@ -6425,8 +6503,16 @@ span.wrongitem {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 450px;
+  flex-grow: 1;
+  /* Expand to push choices down, but shrink if choices increase */
+  min-height: 0;
   position: relative;
+}
+
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper,
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper {
+  height: auto;
+  flex-grow: 1;
 }
 
 .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer {
@@ -6490,6 +6576,8 @@ span.wrongitem {
   padding: 15px;
   border-top: 1px solid #ddd;
   min-height: 88px;
+  flex-shrink: 0;
+  /* Prevent container from shrinking below choice height, which causes visual overflow */
 }
 
 .minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_yarnoptions:not(:empty) {
@@ -7258,7 +7346,7 @@ li.hg-candidate-box-list-item:active {
   text-align: center;
 }
 
-#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons fieldset > div {
+#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons fieldset>div {
   justify-content: center !important;
 }
 

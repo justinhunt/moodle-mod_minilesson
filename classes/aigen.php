@@ -540,7 +540,7 @@ class aigen
                     $base64data = base64_encode($smallerdata);
                     return $base64data;
                 }
-            } elseif (isset($ret->payload[0]->b64_json)) {
+            } else if (isset($ret->payload[0]->b64_json)) {
                 // If the payload has a base64 encoded image, use that.
                 $rawbase64data = $ret->payload[0]->b64_json;
                 $rawdata = base64_decode($rawbase64data);
