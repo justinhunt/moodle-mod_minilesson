@@ -36,10 +36,10 @@
 @use 'components/common/listitemresults';
 @use 'components/common/ttsdialog';
 @use 'components/common/ttsaudio';
-@use 'components/common/slides';
 @use 'components/common/sentenceprompt';
 @use 'components/common/hiddenplayer';
 @use 'components/common/soundwave';
+@use 'components/common/questioncontainer';
 
 // Components - Items (activity types)
 @use 'components/items/audiochat';
@@ -57,6 +57,8 @@
 @use 'components/items/spacegame';
 @use 'components/common/audiostory';
 @use 'components/items/multichoice';
+@use 'components/items/shortanswer';
+@use 'components/items/slides';
 
 // Pages
 @use 'pages/activity';

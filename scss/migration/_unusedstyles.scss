@@ -1101,5 +1101,42 @@ div.mod_minilesson_passage_cont.mod_minilesson_postattempt {
   background-color: lightgrey;
   border-color: blue;
 }
+
+// Legacy overlay + progress modal — only in constants.php, not used in templates/JS/PHP
+// #mod_minilesson_hider {
+//   display: none;
+//   position: absolute;
+//   top: 0%; left: 0%;
+//   width: 1600px; height: 2000px;
+//   margin-top: -1000px; margin-left: 0px;
+//   z-index: 99;
+//   background-color: Black; opacity: 0.6;
+// }
+// #mod_minilesson_progress_cont {
+//   display: none;
+//   position: absolute;
+//   text-align: center;
+//   top: 50%; left: 50%;
+//   width: 300px; height: 120px;
+//   margin-top: -60px; margin-left: -150px;
+//   border: 2px solid black;
+//   z-index: 100;
+//   background-color: white;
+// }
+
+// Unused animation — not referenced in any template, JS or PHP
+// @keyframes minilesson-bloom {
+//   0% { opacity: 0; }
+//   70% { opacity: 0; }
+//   100% { opacity: 1; }
+// }
+
+// Dead classes — only in constants.php or not referenced at all
+// .mod_minilesson_link_box_container { text-align: center; }
+// .mod_minilesson_quiz_reattempt { margin: 10px; }
+// .mod_minilesson_skeleton_box { background-color: #DDDBDD; color: grey; -webkit-mask: ...; animation: minilessonshimmer 2.5s infinite; }
+// @keyframes minilessonshimmer { 100% { -webkit-mask-position: left } }
+// .form-input-phrase-online { text-wrap: nowrap; }
+// @keyframes minilesson_bounce { 0%,100% { transform: translateY(-25%); } 50% { transform: translateY(0); } }
 */
 

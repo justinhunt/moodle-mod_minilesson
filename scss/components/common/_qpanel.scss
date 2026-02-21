@@ -3,7 +3,52 @@
 // Page: #page-mod-minilesson-rsquestion-rsquestions
 // -----------------------------------------------------------------------------
 
+// Add item link boxes (additemlink.mustache)
+.mod_minilesson_link_box {
+  border: 1px solid black;
+  display: inline-block;
+  width: 150px;
+  height: 120px;
+  vertical-align: top;
+  margin: 10px;
+  position: relative;
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: center 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+}
+
+.mod_minilesson_link_box_title {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  text-align: center;
+  margin: 5px;
+}
+
 // Page-scoped overrides
+#page-mod-minilesson-rsquestion-rsquestions {
+
+  .additembutton {
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 18px;
+    background-color: #506DFF;
+
+    &:hover,
+    &:active {
+      background-color: #2642CD;
+      box-shadow: unset;
+      outline: 0;
+    }
+  }
+}
+
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel {
 
   td .itemname {
@@ -197,4 +242,32 @@
       display: none;
     }
   }
+}
+
+// Reports menu (reportsmenu.mustache)
+.minilesson_reportsmenu_box {
+  text-align: center;
+  display: flex;
+}
+
+.minilesson_reportsmenu_item {
+  height: 80px;
+  width: 150px;
+  margin: 10px;
+}
+
+.minilesson_reportsmenu_itembutton button {
+  height: 80px;
+  width: 150px;
+}
+
+// AI gen page
+#page-mod-minilesson-aigen .table-dynamic[data-table-handler="usages"][data-table-total-rows="0"] {
+  display: none;
+}
+
+// Item types page
+#page-mod-minilesson-itemtypes .itemimg {
+  width: 30px;
+  height: auto;
 }

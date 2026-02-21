@@ -232,3 +232,21 @@ div#itemscores {
 .correct-text {
   color: #57578F;
 }
+
+span.correctitem {
+  color: #18B616;
+  font-weight: 700;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+span.wrongitem {
+  font-weight: 700;
+  color: #FF4747;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.itemscoresbutton {
+  text-align: center;
+}

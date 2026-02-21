@@ -65,3 +65,51 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 span.mod_minilesson_finishedanswer {
   display: block;
 }
+
+.minilesson_actionbutton {
+  margin: 5px;
+  padding: 5px;
+  text-align: center;
+}
+
+.minilessonname {
+  background: #ccc;
+  padding: 10px;
+  font-size: 19px;
+}
+
+.mod_minilesson_placeholder {
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+  margin: auto;
+}
+
+.minilesson_loading {
+  margin: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+.minilesson_loadingtext {
+  margin: 10px;
+}
+
+.minilesson_nextbutton {
+  display: block;
+  width: 150px;
+  height: 50px;
+  border: 1px;
+  border-style: solid;
+  border-color: #506DFF;
+  border-radius: 30px;
+  color: #506DFF;
+  font-size: 15px;
+  font-weight: 500;
+  margin: auto;
+  background-color: #FFFFFF;
+
+  &:focus {
+    outline: 0;
+  }
+}

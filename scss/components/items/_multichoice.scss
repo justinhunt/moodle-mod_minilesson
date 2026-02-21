@@ -97,6 +97,19 @@ div.mcaudiotranscript {
   flex-grow: 1;
 }
 
+// Play trigger (multichoice audio + multiaudio)
+.mcplaytrigger {
+  cursor: pointer;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+}
+
 // Image container
 .minilesson_mc_image {
   position: relative;

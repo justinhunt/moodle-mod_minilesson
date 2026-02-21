@@ -14,3 +14,24 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+/* Next item button */
+
+.minilesson_nextbutton {
+  display: block;
+  width: 150px;
+  height: 50px;
+  border: 1px;
+  border-style: solid;
+  border-color: #506DFF;
+  border-radius: 30px;
+  color: #506DFF;
+  font-size: 15px;
+  font-weight: 500;
+  margin: auto;
+  background-color: #FFFFFF;
+}
+
+.minilesson_nextbutton:focus {
+  outline: 0;
+}

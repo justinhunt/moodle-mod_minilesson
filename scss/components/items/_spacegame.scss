@@ -1,6 +1,12 @@
 // -----------------------------------------------------------------------------
 // Space Game: interactive game activity
+// Template: templates/spacegame.mustache
 // -----------------------------------------------------------------------------
+
+.path-mod-minilesson #mod_minilesson_spacegame {
+  background-color: #000;
+  width: 100%;
+}
 
 .ml-spacegame-correct {
   background-color: rgba(0, 255, 0, 0.5) !important;
@@ -39,4 +45,24 @@
 .ml-spacegame-bigbutton {
   width: 50%;
   margin: auto;
+}
+
+#minilesson-gameboard {
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  max-width: 1200px;
+}
+
+#minilesson-results {
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1200px;
+
+  .try-again-or-next,
+  .show-detailed-feedback {
+    text-align: center;
+  }
 }

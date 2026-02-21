@@ -91,3 +91,34 @@
     max-height: 315px;
   }
 }
+
+.ml_mediaprompt_instructions {
+  margin-bottom: 30px;
+  margin-left: 25%;
+}
+
+.minilesson_sentence_image {
+  max-width: 400px;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.minilesson_padded_image {
+  position: relative;
+  width: 100%;
+  padding-bottom: 75%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: scale-down;
+  }
+}
