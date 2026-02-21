@@ -1,1 +1,144 @@
-// Progress bars/dots
+// -----------------------------------------------------------------------------
+// Progress: dots, star rating, progress bar, step indicators
+// -----------------------------------------------------------------------------
+
+.minilesson_progress_dots {
+  font-size: 40px;
+  text-align: center;
+  letter-spacing: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 0;
+}
+
+.minilesson_star_rating {
+  letter-spacing: 20px;
+  text-align: center;
+  font-size: 30px;
+}
+
+// Quiz progress steps
+
+.minilesson_quiz_progress {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.minilesson_quiz_progress:empty {
+  display: none;
+}
+
+.minilesson_quiz_progress_item {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  display: flex;
+  background-color: #F3F5FD;
+  align-items: center;
+  justify-content: center;
+  color: #6b84eb;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 1;
+  border: 1px solid #C7D2FF;
+}
+
+.minilesson_quiz_progress_item_current {
+  background-color: #506DFF;
+  color: #FFFFFF;
+  border-color: #506DFF;
+}
+
+.minilesson_quiz_progress_finalitem {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B84EB;
+  font-size: 14px;
+  font-weight: 700;
+  background: #F3F5FD;
+  z-index: 1;
+  border: 1px solid #C7D2FF;
+}
+
+.minilesson_quiz_progress_item_completed {
+  background-color: #506DFF;
+  color: #FFFFFF;
+  border-color: #506DFF;
+}
+
+// Progress bar
+
+.progress-container .progress {
+  background-color: #E6E9FD;
+  border-radius: 8px;
+}
+
+.progress-container {
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+}
+
+.progress-container .progress.active {
+  margin-left: 5px;
+}
+
+.progress .progressbar_basestyle {
+  background-color: #5067FF;
+}
+
+.progressicon {
+  padding: 6px;
+  background-color: #f2f2fd;
+  border-radius: 50px;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  color: #5067FF;
+}
+
+.progressicon i.fa {
+  font-size: 18px;
+}
+
+// Progress bar segments
+
+.minilesson_quiz_progress_completed {
+  background-color: #506DFF;
+  height: 4px;
+}
+
+.minilesson_quiz_progress_incompleted {
+  background-color: #C7D2FF;
+  height: 4px;
+  margin-left: 2px;
+  margin-right: 2px;
+  border-radius: 5px;
+}
+
+.minilesson_quiz_progress_dashedline {
+  border-bottom: 2px dashed #C7D2FF;
+  height: 4px;
+  margin-left: 2px;
+  margin-right: 2px;
+  border-radius: 5px;
+}
+
+.minilesson_quiz_progress .minilesson_quiz_progress_current {
+  border: 1px solid #506DFF;
+  border-radius: 50%;
+  padding: 2px;
+}

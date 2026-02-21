@@ -31,6 +31,15 @@
 @use 'components/common/lessonitem';
 @use 'components/common/qpanel';
 @use 'components/common/lessonbank';
+@use 'components/common/grading';
+@use 'components/common/quizflow';
+@use 'components/common/listitemresults';
+@use 'components/common/ttsdialog';
+@use 'components/common/ttsaudio';
+@use 'components/common/slides';
+@use 'components/common/sentenceprompt';
+@use 'components/common/hiddenplayer';
+@use 'components/common/soundwave';
 
 // Components - Items (activity types)
 @use 'components/items/audiochat';

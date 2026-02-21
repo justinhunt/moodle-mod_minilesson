@@ -1,0 +1,67 @@
+// -----------------------------------------------------------------------------
+// Quiz Flow: quiz containers, feedback, error states, finished screen
+// Template: templates/quizfinished.mustache, activity page
+// -----------------------------------------------------------------------------
+
+.mod_minilesson_quiz_finished {
+  display: none;
+  text-align: center;
+}
+
+.mod_minilesson_feedback_cont {
+  display: none;
+}
+
+.mod_minilesson_wheretonext_cont {
+  display: none;
+}
+
+.mod_minilesson_quiz_cont {
+  display: none;
+  margin: auto;
+}
+
+.mod_minilesson_quiz_cont.mod_minilesson_compact {
+  max-width: 750px;
+}
+
+.mod_minilesson_quiz_cont.mod_minilesson_wide {
+  max-width: 1200px;
+}
+
+div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
+  display: block;
+}
+
+.mod_minilesson_evaluated_message {
+  text-align: center;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.mod_minilesson_error_cont {
+  display: none;
+}
+
+.mod_minilesson_error_cont h3 {
+  color: red;
+}
+
+.mod_minilesson_quiz_finished {
+  border: solid 1px #ccc;
+}
+
+.mod_minilesson_quiz_finished h1 {
+  margin-top: 43px;
+  font-size: 26px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.quizrating {
+  margin-bottom: 31px;
+}
+
+span.mod_minilesson_finishedanswer {
+  display: block;
+}
