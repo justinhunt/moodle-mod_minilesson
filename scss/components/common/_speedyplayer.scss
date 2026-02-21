@@ -1,0 +1,100 @@
+// -----------------------------------------------------------------------------
+// Speedy Player: audio player with speed toggle and skip buttons
+// Template: templates/speedyplayer.mustache
+// Used by: audiostory, passagegapfill
+// -----------------------------------------------------------------------------
+
+.ml_speedyplayer_row {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: auto;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 5px auto;
+
+  audio {
+    flex: none;
+    margin-right: 10px;
+    margin-bottom: 0;
+    display: block;
+  }
+
+  .speedy_btn {
+    flex: 1;
+    margin: 0 5px;
+    width: auto;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #4a90e2;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    &:hover {
+      background: #357ab8;
+    }
+  }
+}
+
+.ml_speedyplayer_row_buttons {
+  display: flex;
+  flex-direction: row;
+  width: auto;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+}
+
+.ml_speedyplayer_label {
+  line-height: 1;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+// Responsive
+@media (max-width: 480px) {
+
+  div.ml_speedyplayer_row {
+    width: 100%;
+    align-items: center;
+    padding: 10px;
+    margin: 5px auto;
+
+    audio {
+      width: 100%;
+      flex: none;
+      margin-bottom: 10px;
+      display: block;
+    }
+  }
+
+  div.ml_speedyplayer_row_buttons {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0;
+    margin-top: 0;
+
+    > button {
+      flex: 1;
+      margin: 0 5px;
+      width: auto;
+    }
+  }
+}

@@ -1,0 +1,136 @@
+// -----------------------------------------------------------------------------
+// Lesson Bank: admin page for searching and importing lessons
+// Page: lessonbank.php
+// -----------------------------------------------------------------------------
+
+#page-mod-minilesson-lessonbank {
+
+  #fgroup_id_searchgroup {
+    background-color: #eee;
+    padding: 15px;
+    margin: 0;
+  }
+
+  #advancesearch {
+    padding: 15px;
+    background-color: #eee;
+
+    #fitem_id_level {
+      padding: 0 15px;
+
+      .col-md-3 {
+        max-width: 100px;
+      }
+    }
+  }
+
+  #fgroup_id_searchgroup .col-md-3 {
+    max-width: 100px;
+  }
+
+  .searchbox .itemcontainer {
+    padding: 10px 0;
+    margin: 0;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    flex: 1;
+  }
+
+  [data-region="cards-container"] {
+    min-height: 100px;
+
+    p {
+      margin-bottom: 0.2rem;
+    }
+
+    [data-action="showtext"] {
+      background-color: transparent;
+      border: none;
+      color: #1177d1;
+      box-shadow: none;
+    }
+  }
+
+  .searchbox [data-region="itemcard"] {
+    max-width: calc(50% - 2px);
+    margin-top: 2px;
+    margin-bottom: 2px;
+    display: flex;
+    flex-direction: column;
+
+    [data-region="image"] {
+      gap: 3px;
+    }
+  }
+
+  [data-for="page-activity-header"] {
+    display: none;
+  }
+
+  .lessonbanklayoutbox {
+    border: 1px solid #ced4da;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .listlayoutbtn,
+  .gridlayoutbtn {
+    border: 0;
+
+    &:focus {
+      box-shadow: unset;
+      outline: none;
+    }
+
+    &.active {
+      background-color: #1177d1;
+      color: white;
+      border: 1px solid #1177d1;
+      box-shadow: unset;
+
+      &:focus {
+        background-color: #1177d1;
+        color: white;
+        border: 1px solid #1177d1;
+        box-shadow: unset;
+      }
+    }
+  }
+
+  .listlayout .listtable {
+
+    .imgcolumn {
+      width: 200px;
+      padding: 10px;
+      vertical-align: middle;
+
+      img.searchimg {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    tr td,
+    tr th {
+      vertical-align: middle;
+    }
+
+    th:last-child,
+    td:last-child {
+      width: 200px;
+      white-space: nowrap;
+    }
+
+    .listdescription {
+      width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .levelcolumn,
+    .langcolumn {
+      white-space: nowrap;
+    }
+  }
+}

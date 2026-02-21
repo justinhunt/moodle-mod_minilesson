@@ -944,3 +944,162 @@
 }
 */
 
+// -----------------------------------------------------------------------------
+// Legacy recorder UI + old layout classes
+// These are only referenced in constants.php but not used in any template, JS or PHP.
+// Likely remnants of an older recorder system replaced by ttrecorder.
+// -----------------------------------------------------------------------------
+
+/* DEAD CODE
+span.mod_minilesson_debugsequence {
+  border: 1px solid black;
+  margin: 1px;
+  display: inline-block;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_recording_cont {
+  display: block;
+  margin: auto;
+  text-align: center;
+  width: 100%;
+  background-image: url([[pix:mod_minilesson|loader]]);
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_recorder_instr_right,
+.mod_minilesson_recorder_instr_left {
+  float: left;
+  width: 240px;
+  height: 100px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_start_button_cont,
+.mod_minilesson_record_button_cont,
+.mod_minilesson_stop_button_cont {
+  clear: both;
+  padding: 5px;
+  text-align: center;
+  width: 100%;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_stop_button,
+.mod_minilesson_start_button,
+.mod_minilesson_record_button {
+  margin: auto;
+  width: 200px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_passage_cont {
+  display: none;
+  line-height: 2em;
+  font-size: 1.5em;
+  border-style: double;
+  padding: 3px;
+  border-color: gold;
+  margin-top: 15px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_grading_passagecont {
+  line-height: 2em;
+  font-size: 1.5em;
+  border-style: double;
+  padding: 3px;
+  border-color: gold;
+  margin-top: 15px;
+}
+*/
+
+/* DEAD CODE
+div.mod_minilesson_passage_cont.mod_minilesson_postattempt {
+  display: block;
+  position: relative;
+  font-size: 20px;
+  line-height: 1.8em;
+  border-style: none;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_postattempt .mod_minilesson-passage-pic {
+  max-width: 200px;
+  margin: 9px 1em 1em 0;
+  float: left;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_postattempt .mod_minilesson-passage-pic img {
+  width: 200px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_twocol_cont {
+  padding: 15px;
+  border: 2px solid #CCCCCC;
+  border-radius: 5px;
+  width: 1024px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_twocol_quiz_cont {
+  border: solid 1px;
+  padding-top: 15px;
+  padding-left: 10px;
+  border-radius: 5px;
+  background-color: aliceblue;
+  margin-top: 10px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_twocol_player_cont {
+  color: blue;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_twocol_player {
+  width: 100%;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_rightcol .btn {
+  width: 100%;
+  margin-top: 20px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_grading_action_cont {
+  border-style: double;
+  padding: 3px;
+  border-color: gold;
+  margin-top: 15px;
+  align-items: center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_passage_cont.mod_minilesson_postattempt .mod_minilesson_grading_badword {
+  color: black;
+  background-color: lightgrey;
+  border-color: blue;
+}
+*/
+

@@ -692,3 +692,49 @@
     padding: 40px 0 80px;
   }
 }
+
+// Audiochat layout helpers (outside .minilesson_audiochat_box)
+.ml_ac_mic-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  background: #E6E9FD;
+  border-radius: 8px;
+  height: 65px;
+  width: 150px;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.ml_ac_clicktosend {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-align: center;
+}
+
+.ml_ac_flex-row-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.ml_ac_flex-spacer {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+  min-width: 0;
+}
+
+.ml_ac_flex-right {
+  text-align: center;
+  margin-top: 30px;
+  width: 100%;
+}
+
+.ml_ac_results_content {
+  margin-bottom: 8px;
+}

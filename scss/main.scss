@@ -26,8 +26,11 @@
 @use 'components/common/description';
 @use 'components/common/maintitle';
 @use 'components/common/questioncontent';
+@use 'components/common/texttotalkrecorder';
+@use 'components/common/speedyplayer';
 @use 'components/common/lessonitem';
 @use 'components/common/qpanel';
+@use 'components/common/lessonbank';
 
 // Components - Items (activity types)
 @use 'components/items/audiochat';
@@ -42,6 +45,8 @@
 @use 'components/items/dictationchat';
 @use 'components/items/listenandspeak';
 @use 'components/items/fluency';
+@use 'components/items/spacegame';
+@use 'components/common/audiostory';
 @use 'components/items/multichoice';
 
 // Pages

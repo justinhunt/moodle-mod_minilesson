@@ -1,0 +1,42 @@
+// -----------------------------------------------------------------------------
+// Space Game: interactive game activity
+// -----------------------------------------------------------------------------
+
+.ml-spacegame-correct {
+  background-color: rgba(0, 255, 0, 0.5) !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 1px;
+}
+
+.ml-spacegame-incorrect {
+  background-color: rgba(255, 0, 0, 0.5) !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 1px;
+}
+
+.ml-spacegame-basic_feedback {
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 1px solid darkgray;
+}
+
+.ml-spacegame-detailed_feedback_div {
+  text-align: left;
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 5px;
+  margin: 5px;
+  display: inline-block;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  vertical-align: top;
+}
+
+.ml-spacegame-bigbutton {
+  width: 50%;
+  margin: auto;
+}

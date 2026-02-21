@@ -1,1 +1,17 @@
 // Freespeaking activity component
+
+.ml_freespeaking_results_summaries {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid grey;
+  padding: 4px;
+}
+
+.ml_fs_results_summary {
+  text-align: center;
+}
+
+.ml_fs_sumcell_title {
+  font-size: 0.8em;
+  display: block;
+}
