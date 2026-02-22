@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -41,8 +40,7 @@ use mod_minilesson\utils;
  * @param int $oldversion
  * @return bool
  */
-function xmldb_minilesson_upgrade($oldversion)
-{
+function xmldb_minilesson_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
@@ -542,8 +540,6 @@ function xmldb_minilesson_upgrade($oldversion)
             $DB->execute($sql);
         }
 
-
-
         upgrade_mod_savepoint(true, 2025020700, 'minilesson');
     }
 
@@ -745,7 +741,7 @@ function xmldb_minilesson_upgrade($oldversion)
 
         // Fetch all minilesson instances that we are interested in
         $minilessoninstances = $DB->get_records_list(constants::M_TABLE, 'id', $minilessonids);
-        //$minilessoninstances = $DB->get_records(constants::M_TABLE);
+        // $minilessoninstances = $DB->get_records(constants::M_TABLE);
 
         if ($minilessoninstances) {
             foreach ($minilessoninstances as $moduleinstance) {
@@ -833,7 +829,7 @@ function xmldb_minilesson_upgrade($oldversion)
 
     if ($oldversion < 2025090100.01) {
         $qtypes = constants::ITEMTYPES;
-        //remove dictation chat
+        // remove dictation chat
         $key = array_search('dictationchat', $qtypes);
         if ($key !== false) {
             unset($qtypes[$key]);
@@ -894,7 +890,6 @@ function xmldb_minilesson_upgrade($oldversion)
         // Minilesson savepoint reached.
         upgrade_mod_savepoint(true, 2025110401.01, 'minilesson');
     }
-
 
     if ($oldversion < 2025110401.04) {
         // Store current template tags.
@@ -983,5 +978,31 @@ function xmldb_minilesson_upgrade($oldversion)
     }
 
     // Final return of upgrade result (true, all went good) to Moodle.
+    if ($oldversion < 2026022100) {
+        $table = new xmldb_table('minilesson_ai_cache');
+
+        // Adding fields to table minilesson_ai_cache.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('hashkey', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('action', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('prompt', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('provider', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('response', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table minilesson_ai_cache.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Adding indexes.
+        $table->add_index('idx_hashkey', XMLDB_INDEX_NOTUNIQUE, ['hashkey']);
+
+        // Create table if it does not exist.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_mod_savepoint(true, 2026022100, 'minilesson');
+    }
+
     return true;
 }

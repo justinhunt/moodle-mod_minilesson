@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -37,8 +36,8 @@ use mod_minilesson\constants;
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class textanalyser
-{
+class textanalyser {
+
     /** @var int $contextid The context id */
     protected $contextid;
 
@@ -64,8 +63,7 @@ class textanalyser
     protected $targettopic;
 
     // The cloudpoodll server URL
-    public static function get_cloud_poodll_server()
-    {
+    public static function get_cloud_poodll_server() {
         $conf = get_config(constants::M_COMPONENT);
         if (isset($conf->cloudpoodllserver) && !empty($conf->cloudpoodllserver)) {
             return 'https://' . $conf->cloudpoodllserver;
@@ -78,8 +76,7 @@ class textanalyser
          * The class constructor.
          *
          */
-    public function __construct($contextid, $token, $passage, $region, $language, $targetembedding = false, $userlanguage = false, $targettopic = false)
-    {
+    public function __construct($contextid, $token, $passage, $region, $language, $targetembedding = false, $userlanguage = false, $targettopic = false) {
         $this->contextid = $contextid;
         $this->token = $token;
         $this->region = $region;
@@ -90,9 +87,8 @@ class textanalyser
         $this->targettopic = $targettopic;
     }
 
-    // fetch lang server url, services incl. 'transcribe' , 'lm', 'lt', 'spellcheck'
-    public function fetch_lang_server_url($service = 'transcribe')
-    {
+    // Fetch lang server url, services incl. 'transcribe' , 'lm', 'lt', 'spellcheck'.
+    public function fetch_lang_server_url($service = 'transcribe') {
         switch ($this->region) {
             case 'useast1':
                 $ret = 'https://useast.ls.poodll.com/';
@@ -107,8 +103,7 @@ class textanalyser
     }
 
 
-    public function fetch_sentence_stats($passage = '')
-    {
+    public function fetch_sentence_stats($passage = '') {
 
         if (empty($passage)) {
             $passage = $this->passage;
@@ -139,14 +134,12 @@ class textanalyser
         return ['sentences' => $sentencecount, 'sentenceavg' => $averagesentence, 'sentencelongest' => $longestsentence];
     }
 
-    public function is_english()
-    {
+    public function is_english() {
         $ret = strpos($this->language, 'en') === 0;
         return $ret;
     }
 
-    public function fetch_word_stats($passage = '')
-    {
+    public function fetch_word_stats($passage = '') {
 
         if (empty($passage)) {
             $passage = $this->passage;
@@ -185,8 +178,7 @@ class textanalyser
      * return number of words for format 0
      * return words array for format 1
      */
-    public function mb_count_words($string, $format = 0)
-    {
+    public function mb_count_words($string, $format = 0) {
 
         // wordcount will be different for different languages
         switch ($this->language) {
@@ -246,8 +238,7 @@ class textanalyser
      *
      * based on: https://github.com/e-rasvet/sassessment/blob/master/lib.php
      */
-    public function count_syllables($word)
-    {
+    public function count_syllables($word) {
         // https://github.com/vanderlee/phpSyllable (multilang)
         // https://github.com/DaveChild/Text-Statistics (English only)
         // https://pear.php.net/manual/en/package.text.text-statistics.intro.php
@@ -289,8 +280,7 @@ class textanalyser
         return $count;
     }
 
-    public function process_all_stats($targetwords = [])
-    {
+    public function process_all_stats($targetwords = []) {
 
             $stats = $this->calculate_stats($this->passage, $targetwords);
         if ($stats) {
@@ -309,13 +299,12 @@ class textanalyser
             return $stats;
     }
 
-    public function process_some_stats($targetwords = [])
-    {
+    public function process_some_stats($targetwords = []) {
 
         $stats = $this->calculate_stats($this->passage, $targetwords);
         if ($stats) {
             $stats['ideacount'] = $this->process_idea_count();
-          //  $stats['cefrlevel'] = $this->process_cefr_level();
+            // $stats['cefrlevel'] = $this->process_cefr_level();
             $stats['relevance'] = $this->process_relevance();
             // something went wrong, but it might be used for grading. Let's give them 100, though it sucks
             if ($stats['relevance'] == 0 || $stats['relevance'] == false) {
@@ -323,14 +312,13 @@ class textanalyser
             }
             $stats = array_merge($stats, $this->fetch_sentence_stats());
             $stats = array_merge($stats, $this->fetch_word_stats());
-          //  $stats = array_merge($stats, $this->calc_grammarspell_stats($stats['words']));
+            // $stats = array_merge($stats, $this->calc_grammarspell_stats($stats['words']));
             $stats = (object)$stats;
         }
         return $stats;
     }
 
-    public function process_grammar_correction($passage)
-    {
+    public function process_grammar_correction($passage) {
 
         $ret = ['gcorrections' => false, 'gcerrors' => false, 'gcmatches' => false, 'gcerrorcount' => false];
         // If this is English then lets see if we can get a grammar correction
@@ -353,8 +341,7 @@ class textanalyser
         return $ret;
     }
 
-    public function process_relevance($passage = '', $targetembedding = false, $targettopic = false)
-    {
+    public function process_relevance($passage = '', $targetembedding = false, $targettopic = false) {
 
         if (empty($passage)) {
             $passage = $this->passage;
@@ -370,7 +357,7 @@ class textanalyser
         if (!empty($passage)) {
             if ($targettopic !== false && !empty($targettopic)) {
                 $relevance = $this->fetch_relevance_topic($targettopic, $passage);
-            } elseif (($targetembedding !== false) && !empty($targetembedding)) {
+            } else if (($targetembedding !== false) && !empty($targetembedding)) {
                 $relevance = $this->fetch_relevance_semantic($targetembedding, $passage);
             }
         }
@@ -381,9 +368,8 @@ class textanalyser
         }
     }
 
-    //fetch the relevance by topic
-    public function fetch_relevance_topic($topic, $passage = '')
-    {
+    // fetch the relevance by topic
+    public function fetch_relevance_topic($topic, $passage = '') {
         // Default to 100% relevant if no TTS model.
         if ($topic === false || empty($topic)) {
             return 100;
@@ -394,10 +380,8 @@ class textanalyser
             $passage = $this->passage;
         }
 
-        $payloadobject = aimanager::get_topic_relevance(
-            $this->contextid,
-            $this->region,
-            $this->language,
+        $aimanager = new aimanager($this->contextid, $this->region, $this->language);
+        $payloadobject = $aimanager->get_topic_relevance(
             $topic,
             $passage
         );
@@ -408,8 +392,8 @@ class textanalyser
         // ReturnCode > 0  indicates an error.
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
             return false;
-            //if all good, then return the value
-        } elseif ($payloadobject->returnCode === 0) {
+            // if all good, then return the value
+        } else if ($payloadobject->returnCode === 0) {
             $relevance = $payloadobject->returnMessage;
             if (is_numeric($relevance)) {
                 $relevance = (int)round($relevance * 100, 0);
@@ -422,13 +406,10 @@ class textanalyser
         }
     }
 
-    //fetch the relevance by semantic similarity
-    public function fetch_relevance_semantic($model_or_modelembedding, $passage = '')
-    {
-        global $USER;
-
+    // fetch the relevance by semantic similarity
+    public function fetch_relevance_semantic($modelormodelembedding, $passage = '') {
         // Default to 100% relevant if no TTS model.
-        if ($model_or_modelembedding === false || empty($model_or_modelembedding)) {
+        if ($modelormodelembedding === false || empty($modelormodelembedding)) {
             return 100;
         }
 
@@ -437,47 +418,15 @@ class textanalyser
             $passage = $this->passage;
         }
 
-        //The REST API we are calling
-        $functionname = 'local_cpapi_call_ai';
-
-        $params = array();
-        $params['wstoken'] = $this->token;
-        $params['wsfunction'] = $functionname;
-        $params['moodlewsrestformat'] = 'json';
-        $params['action'] = 'get_semantic_sim';
-        $params['appid'] = 'mod_minilesson';
-        $params['prompt'] = $passage;
-        $params['subject'] = $model_or_modelembedding;
-        $params['language'] = $this->language;
-        $params['region'] = $this->region;
-        $params['owner'] = hash('md5', $USER->username);
-
-        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
-        $response = self::curl_fetch($serverurl, $params, 'post');
-        if (!self::is_json($response)) {
-            return false;
-        }
-        $payloadobject = json_decode($response);
-
-        // ReturnCode > 0  indicates an error.
-        if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
-            return false;
-            //if all good, then return the value
-        } elseif ($payloadobject->returnCode === 0) {
-            $relevance = $payloadobject->returnMessage;
-            if (is_numeric($relevance)) {
-                $relevance = (int)round($relevance * 100, 0);
-            } else {
-                $relevance = false;
-            }
-            return $relevance;
-        } else {
-            return false;
-        }
+        $aimanager = new aimanager($this->contextid, $this->region, $this->language);
+        return $aimanager->get_semantic_sim(
+            $passage,
+            $modelormodelembedding,
+            false // cache disabled by default for this
+        );
     }
 
-    public function process_cefr_level($passage = '')
-    {
+    public function process_cefr_level($passage = '') {
 
         if (empty($passage)) {
             $passage = $this->passage;
@@ -494,8 +443,7 @@ class textanalyser
         }
     }
 
-    public function process_idea_count($passage = '')
-    {
+    public function process_idea_count($passage = '') {
 
         if (empty($passage)) {
             $passage = $this->passage;
@@ -514,8 +462,7 @@ class textanalyser
 
 
     // we leave it up to the grading logic how/if it adds the ai grades to gradebook
-    public function calc_grammarspell_stats($wordcount, $passage = '')
-    {
+    public function calc_grammarspell_stats($wordcount, $passage = '') {
         // init stats with defaults
         $stats = new \stdClass();
         $stats->autospell = "";
@@ -617,8 +564,7 @@ class textanalyser
 
 
     // calculate stats of transcript
-    public function calculate_stats($passage = '', $targetwords = [])
-    {
+    public function calculate_stats($passage = '', $targetwords = []) {
 
         if ($passage == '') {
             $passage = $this->passage;
@@ -679,8 +625,7 @@ class textanalyser
         return get_object_vars($stats);
     }
 
-    public static function can_lang_tool($language)
-    {
+    public static function can_lang_tool($language) {
         // https://dev.languagetool.org/languages
         switch ($language) {
             case constants::M_LANG_DEDE:
@@ -713,8 +658,7 @@ class textanalyser
         }
     }
 
-    public function split_into_sentences()
-    {
+    public function split_into_sentences() {
         $items = [];
         switch ($this->language) {
             // Arabic
@@ -792,14 +736,14 @@ class textanalyser
     }
 
     // fetch the grammar correction suggestions
-    public function fetch_grammar_correction($passage = '')
-    {
+    public function fetch_grammar_correction($passage = '') {
         // use local passage if not set
         if (empty($passage)) {
             $passage = $this->passage;
         }
 
-        $payloadobject = aimanager::request_grammar_correction($this->contextid, $this->region, $this->language, $passage);
+        $aimanager = new aimanager($this->contextid, $this->region, $this->language);
+        $payloadobject = $aimanager->request_grammar_correction($passage);
         if (!is_object($payloadobject)) {
             return false;
         }
@@ -808,7 +752,7 @@ class textanalyser
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
             return false;
             // if all good, then lets do the embed
-        } elseif ($payloadobject->returnCode === 0) {
+        } else if ($payloadobject->returnCode === 0) {
             $correction = $payloadobject->returnMessage;
             // clean up the correction a little
             if (\core_text::strlen($correction) > 0) {
@@ -826,16 +770,13 @@ class textanalyser
     }
 
     // fetch the CEFR Level
-    public function fetch_cefr_level($passage = '')
-    {
+    public function fetch_cefr_level($passage = '') {
         if (empty($passage)) {
             $passage = $this->passage;
         }
 
-        $payloadobject = aimanager::predict_cefr(
-            $this->contextid,
-            $this->region,
-            $this->language,
+        $aimanager = new aimanager($this->contextid, $this->region, $this->language);
+        $payloadobject = $aimanager->predict_cefr(
             $passage
         );
         if (!is_object($payloadobject)) {
@@ -846,7 +787,7 @@ class textanalyser
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
             return false;
             // if all good, then return the value
-        } elseif ($payloadobject->returnCode === 0) {
+        } else if ($payloadobject->returnCode === 0) {
             $cefr = $payloadobject->returnMessage;
             // make pretty sure its a CEFR level
             if (\core_text::strlen($cefr) !== 2) {
@@ -860,72 +801,26 @@ class textanalyser
     }
 
     // fetch embedding
-    public function fetch_embedding($passage = '')
-    {
-        global $USER;
-
+    public function fetch_embedding($passage = '') {
         if (empty($passage)) {
             $passage = $this->passage;
         }
 
-        // The REST API we are calling
-        $functionname = 'local_cpapi_call_ai';
-
-        $params = [];
-        $params['wstoken'] = $this->token;
-        $params['wsfunction'] = $functionname;
-        $params['moodlewsrestformat'] = 'json';
-        $params['action'] = 'get_embedding';
-        $params['appid'] = 'mod_minilesson';
-        $params['prompt'] = $passage;// urlencode($passage);
-        $params['language'] = $this->language;
-        $params['subject'] = 'none';
-        $params['region'] = $this->region;
-        $params['owner'] = hash('md5', $USER->username);
-
-        // log.debug(params);
-
-        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
-        $response = self::curl_fetch($serverurl, $params);
-        if (!self::is_json($response)) {
-            return false;
-        }
-        $payloadobject = json_decode($response);
-
-        // returnCode > 0  indicates an error
-        if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
-            return false;
-            // if all good, then process  it
-        } elseif ($payloadobject->returnCode === 0) {
-            $returndata = $payloadobject->returnMessage;
-            // clean up the correction a little
-            if (!self::is_json($returndata)) {
-                $embedding = false;
-            } else {
-                $dataobject = json_decode($returndata);
-                if (is_array($dataobject) && $dataobject[0]->object == 'embedding') {
-                    $embedding = json_encode($dataobject[0]->embedding);
-                } else {
-                    $embedding = false;
-                }
-            }
-            return $embedding;
-        } else {
-            return false;
-        }
+        $aimanager = new aimanager($this->contextid, $this->region, $this->language);
+        return $aimanager->get_embedding(
+            $passage,
+            false // cache disabled for this specifically, wait, prompt said "Currently only calls to get_structured_data should have the cache parameter set to true"
+        );
     }
 
     // fetch the Idea Count
-    public function fetch_idea_count($passage = '')
-    {
+    public function fetch_idea_count($passage = '') {
         if (empty($passage)) {
             $passage = $this->passage;
         }
 
-        $payloadobject = aimanager::count_unique_ideas(
-            $this->contextid,
-            $this->region,
-            $this->language,
+        $aimanager = new aimanager($this->contextid, $this->region, $this->language);
+        $payloadobject = $aimanager->count_unique_ideas(
             $passage
         );
         if (!is_object($payloadobject)) {
@@ -936,7 +831,7 @@ class textanalyser
         if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
             return false;
             // if all good, then lets do the embed
-        } elseif ($payloadobject->returnCode === 0) {
+        } else if ($payloadobject->returnCode === 0) {
             $ideacount = $payloadobject->returnMessage;
             // clean up the correction a little
             if (!is_number($ideacount)) {
@@ -949,8 +844,7 @@ class textanalyser
         }
     }
 
-    public function process_modelanswer_stats($passage = '')
-    {
+    public function process_modelanswer_stats($passage = '') {
         $ret = ['embedding' => false, 'ideacount' => false];
 
         if (empty($passage)) {
@@ -980,8 +874,7 @@ class textanalyser
     * iv) remove punctuation
     *
     */
-    public static function cleantext($thetext)
-    {
+    public static function cleantext($thetext) {
         // lowercaseify
         $thetext = \core_text::strtolower($thetext);
 
@@ -1024,8 +917,7 @@ class textanalyser
     * ii) replace any line ends with spaces (so we can "split" later)
     *
     */
-    public static function spellsafecleantext($thetext)
-    {
+    public static function spellsafecleantext($thetext) {
 
         // remove any html
         $thetext = strip_tags($thetext);
@@ -1061,8 +953,7 @@ class textanalyser
     // this is our helper
     // we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
     // this is our helper
-    public static function curl_fetch($url, $postdata = false, $method = 'get')
-    {
+    public static function curl_fetch($url, $postdata = false, $method = 'get') {
         global $CFG;
 
         require_once($CFG->libdir . '/filelib.php');
@@ -1077,8 +968,7 @@ class textanalyser
     }
 
 
-    public static function fetch_spellingerrors($stats, $transcript)
-    {
+    public static function fetch_spellingerrors($stats, $transcript) {
         $spellingerrors = [];
         $usetranscript = self::cleanText($transcript);
         // sanity check
@@ -1100,8 +990,7 @@ class textanalyser
         return $spellingerrors;
     }
 
-    public static function fetch_grammarerrors($stats, $transcript)
-    {
+    public static function fetch_grammarerrors($stats, $transcript) {
         $usetranscript = self::cleanText($transcript);
         // sanity check
         if (empty($usetranscript) || !self::is_json($stats->autogrammar)) {
@@ -1113,8 +1002,7 @@ class textanalyser
         return $grammarobj->matches;
     }
 
-    public static function fetch_grammar_correction_diff($selftranscript, $correction)
-    {
+    public static function fetch_grammar_correction_diff($selftranscript, $correction) {
 
         // turn the passage and transcript into an array of words
         $alternatives = diff::fetchAlternativesArray('');
@@ -1192,8 +1080,7 @@ class textanalyser
         return [$sessionerrors, $sessionmatches, $insertioncount];
     }
 
-    public static function fetch_duration_from_transcript($jsontranscript)
-    {
+    public static function fetch_duration_from_transcript($jsontranscript) {
         $transcript = json_decode($jsontranscript);
         $titems = $transcript->results->items;
         $twords = [];
@@ -1211,8 +1098,7 @@ class textanalyser
     }
 
     // see if this is truly json or some error
-    public static function is_json($string)
-    {
+    public static function is_json($string) {
         if (!$string) {
             return false;
         }

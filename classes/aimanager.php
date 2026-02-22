@@ -31,6 +31,27 @@ use core_ai\provider;
  */
 class aimanager {
 
+    /** @var int|null */
+    protected $contextid;
+
+    /** @var string|null */
+    protected $region;
+
+    /** @var string|null */
+    protected $ttslanguage;
+
+    /**
+     * aimanager constructor.
+     * @param int|null $contextid
+     * @param string|null $region
+     * @param string|null $ttslanguage
+     */
+    public function __construct($contextid = null, $region = null, $ttslanguage = null) {
+        $this->contextid = $contextid;
+        $this->region = $region;
+        $this->ttslanguage = $ttslanguage;
+    }
+
     /** @var int */
     public const CLOUDPOODLL_OPTION = -1;
 
@@ -78,7 +99,7 @@ class aimanager {
     ];
 
     public const AIMANAGER_ACTIONS = [
-        self::OPTION_GRADE_STUDENT_SUBMISSION => generate_text::class
+        self::OPTION_GRADE_STUDENT_SUBMISSION => generate_text::class,
     ];
 
     /**
@@ -86,7 +107,7 @@ class aimanager {
      * @return array
      */
     public static function get_action_options() {
-        $options[self::OPTION_GRADE_STUDENT_SUBMISSION] = 
+        $options[self::OPTION_GRADE_STUDENT_SUBMISSION] =
             [
             'name' => get_string('grade_student_submission' , constants::M_COMPONENT),
             'description' => get_string('grade_student_submission_desc' , constants::M_COMPONENT),
@@ -116,21 +137,21 @@ class aimanager {
      *
      *
      */
-    public static function request_grammar_correction($contextid, $region, $ttslanguage, $passage) {
+    public function request_grammar_correction($passage) {
         $actionconst = static::FUNC_REQUEST_GRAMMAR_CORRECTION;
         $aiactionclass = local\aiactions\request_grammar_correction::class;
-        $response = static::call_ai_provider_action($aiactionclass, [
-            'contextid' => $contextid,
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $this->contextid,
             'passage' => $passage,
-            'language' => $ttslanguage,
+            'language' => $this->ttslanguage,
         ]);
         if ($response === null) {
             $params['action'] = $actionconst;
             $params['prompt'] = $passage;
-            $params['language'] = $ttslanguage;
+            $params['language'] = $this->ttslanguage;
             $params['subject'] = 'none';
-            $params['region'] = $region;
-            $response = static::call_cp_api($params);
+            $params['region'] = $this->region;
+            $response = self::call_cp_api($params);
         }
         return $response;
     }
@@ -139,24 +160,24 @@ class aimanager {
      *
      *
      */
-    public static function autograde_speech($contextid, $region, $ttslanguage, $studentresponse, $instructions) {
+    public function autograde_speech($studentresponse, $instructions) {
         $actionconst = static::FUNC_AUTOGRADE_SPEECH;
         $instructionsjson = json_encode($instructions);
         $aiactionclass = local\aiactions\autograde_text::class;
-        $response = static::call_ai_provider_action($aiactionclass, [
-            'contextid' => $contextid,
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $this->contextid,
             'submittedtext' => $studentresponse,
             'instructions' => $instructionsjson,
-            'language' => $ttslanguage,
+            'language' => $this->ttslanguage,
             'isspeech' => true,
         ]);
         if ($response === null) {
             $params['action'] = $actionconst;
             $params['prompt'] = $instructionsjson;
-            $params['language'] = $ttslanguage;
+            $params['language'] = $this->ttslanguage;
             $params['subject'] = $studentresponse;
-            $params['region'] = $region;
-            $response = static::call_cp_api($params);
+            $params['region'] = $this->region;
+            $response = self::call_cp_api($params);
         }
         return $response;
     }
@@ -165,23 +186,23 @@ class aimanager {
      *
      *
      */
-    public static function autograde_text($contextid, $region, $ttslanguage, $studentresponse, $instructions) {
+    public function autograde_text($studentresponse, $instructions) {
         $actionconst = static::FUNC_AUTOGRADE_TEXT;
         $instructionsjson = json_encode($instructions);
         $aiactionclass = local\aiactions\autograde_text::class;
-        $response = static::call_ai_provider_action($aiactionclass, [
-            'contextid' => $contextid,
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $this->contextid,
             'submittedtext' => $studentresponse,
             'instructions' => $instructionsjson,
-            'language' => $ttslanguage,
+            'language' => $this->ttslanguage,
         ]);
         if ($response === null) {
             $params['action'] = $actionconst;
             $params['prompt'] = $instructionsjson;
-            $params['language'] = $ttslanguage;
+            $params['language'] = $this->ttslanguage;
             $params['subject'] = $studentresponse;
-            $params['region'] = $region;
-            $response = static::call_cp_api($params);
+            $params['region'] = $this->region;
+            $response = self::call_cp_api($params);
         }
         return $response;
     }
@@ -193,21 +214,21 @@ class aimanager {
     public static function textanalyse_passage() {
     }
 
-    public static function get_topic_relevance($contextid, $region, $ttslanguage, $referencetext, $submittedtext) {
+    public function get_topic_relevance($referencetext, $submittedtext) {
         $actionconst = static::FUNC_GET_TOPIC_RELEVANCE;
         $aiactionclass = local\aiactions\get_topic_relevance::class;
-        $response = static::call_ai_provider_action($aiactionclass, [
-            'contextid' => $contextid,
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $this->contextid,
             'referencetext' => $referencetext,
             'submittedtext' => $submittedtext,
         ]);
         if ($response === null) {
             $params['action'] = $actionconst;
             $params['prompt'] = $submittedtext;
-            $params['language'] = $ttslanguage;
+            $params['language'] = $this->ttslanguage;
             $params['subject'] = $referencetext;
-            $params['region'] = $region;
-            $response = static::call_cp_api($params);
+            $params['region'] = $this->region;
+            $response = self::call_cp_api($params);
         } else if (utils::is_json($response->returnMessage)) {
             $jsondata = json_decode($response->returnMessage);
             $response->returnMessage = 0.1 * $jsondata->relevance;
@@ -217,53 +238,294 @@ class aimanager {
         return $response;
     }
 
-    public static function count_unique_ideas($contextid, $region, $ttslanguage, $originaltext) {
+    public function count_unique_ideas($originaltext) {
         $actionconst = static::FUNC_COUNT_UNIQUE_IDEAS;
         $aiactionclass = local\aiactions\count_unique_ideas::class;
-        $response = static::call_ai_provider_action($aiactionclass, [
-            'contextid' => $contextid,
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $this->contextid,
             'originaltext' => $originaltext,
-            'language' => $ttslanguage,
+            'language' => $this->ttslanguage,
         ]);
         if ($response === null) {
             $params['action'] = $actionconst;
             $params['prompt'] = $originaltext;
-            $params['language'] = $ttslanguage;
+            $params['language'] = $this->ttslanguage;
             $params['subject'] = 'none';
-            $params['region'] = $region;
-            $response = static::call_cp_api($params);
+            $params['region'] = $this->region;
+            $response = self::call_cp_api($params);
         }
         return $response;
     }
 
-    public static function predict_cefr($contextid, $region, $ttslanguage, $originaltext) {
+    public function predict_cefr($originaltext) {
         $actionconst = static::FUNC_PREDICT_CEFR;
         $aiactionclass = local\aiactions\predict_cefr::class;
-        $response = static::call_ai_provider_action($aiactionclass, [
-            'contextid' => $contextid,
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $this->contextid,
             'originaltext' => $originaltext,
-            'language' => $ttslanguage,
+            'language' => $this->ttslanguage,
         ]);
         if ($response === null) {
             $params['action'] = $actionconst;
             $params['prompt'] = $originaltext;
-            $params['language'] = $ttslanguage;
+            $params['language'] = $this->ttslanguage;
             $params['subject'] = 'none';
-            $params['region'] = $region;
-            $response = static::call_cp_api($params);
+            $params['region'] = $this->region;
+            $response = self::call_cp_api($params);
         }
         return $response;
     }
 
-    public static function get_embedding($contextid, $region, $ttslanguage, $passage, $cache = false) {
-        
-        $actionconst = static::FUNC_GET_EMBEDDING;
+    private static function check_cache($action, $prompt, $provider) {
+        global $DB;
+        $hashkey = md5($action . '|' . $prompt . '|' . $provider);
+        if ($record = $DB->get_record('minilesson_ai_cache', ['hashkey' => $hashkey])) {
+            return $record->response;
+        }
+        return false;
+    }
+
+    private static function set_cache($action, $prompt, $provider, $response) {
+        global $DB;
+        $hashkey = md5($action . '|' . $prompt . '|' . $provider);
+        $record = new \stdClass();
+        $record->hashkey = $hashkey;
+        $record->action = $action;
+        $record->prompt = $prompt;
+        $record->provider = $provider;
+        $record->response = $response;
+        $record->timecreated = time();
+        $DB->insert_record('minilesson_ai_cache', $record);
+    }
+
+    public function get_semantic_sim($passage, $targettopic, $cache = false) {
+        $actionconst = static::FUNC_GET_SEMANTIC_SIM; // We will need to define this, wait, the prompt says the action is get_semantic_sim
+        // Let's just use string literal 'get_semantic_sim' if no constant is added.
+        $actionconst = 'get_semantic_sim';
+        $provider = 'cloud poodll';
+
+        if ($cache) {
+            $cachedresponse = self::check_cache($actionconst, $passage, $provider);
+            if ($cachedresponse !== false) {
+                return (int)$cachedresponse;
+            }
+        }
+
+        $params = [];
         $params['action'] = $actionconst;
         $params['prompt'] = $passage;
-        $params['language'] = $ttslanguage;
+        $params['subject'] = $targettopic;
+        $params['language'] = $this->ttslanguage;
+        $params['region'] = $this->region;
+
+        $response = self::call_cp_api($params);
+
+        if (!$response || !isset($response->returnCode) || $response->returnCode > 0) {
+            return false;
+        } else if ($response->returnCode === 0) {
+            $relevance = $response->returnMessage;
+            if (is_numeric($relevance)) {
+                $relevance = (int)round($relevance * 100, 0);
+                if ($cache) {
+                    self::set_cache($actionconst, $passage, $provider, (string)$relevance);
+                }
+            } else {
+                $relevance = false;
+            }
+            return $relevance;
+        }
+        return false;
+    }
+
+    public function generate_structured_content($prompt, $cache = false) {
+        $actionconst = 'generate_structured_content';
+        $provider = 'cloud poodll';
+
+        if ($cache) {
+            $cachedresponse = self::check_cache($actionconst, $prompt, $provider);
+            if ($cachedresponse !== false) {
+                return json_decode($cachedresponse);
+            }
+        }
+
+        $params['action'] = $actionconst;
+        $params['prompt'] = $prompt;
+        $params['language'] = $this->ttslanguage;
+        $params['region'] = $this->region;
         $params['subject'] = 'none';
-        $params['region'] = $region;
-        $response = static::call_cp_api($params);
+
+        $response = self::call_cp_api($params);
+
+        $ret = new \stdClass();
+        if ($response && isset($response->returnCode)) {
+            $ret->success = $response->returnCode == '0' ? true : false;
+            $ret->payload = json_decode($response->returnMessage);
+            if ($cache && $ret->success && $ret->payload !== null) {
+                self::set_cache($actionconst, $prompt, $provider, json_encode($ret));
+            }
+        } else {
+            $ret->success = false;
+            $ret->payload = $response ? $response : "unknown problem occurred";
+        }
+        return $ret;
+    }
+
+    public function generate_image($prompt, $cache = false) {
+        $actionconst = 'generate_images';
+        $provider = 'cloud poodll';
+
+        if ($cache) {
+            $cachedresponse = self::check_cache($actionconst, $prompt, $provider);
+            if ($cachedresponse !== false) {
+                return $cachedresponse; // Returns base64
+            }
+        }
+
+        $params['action'] = $actionconst;
+        $params['prompt'] = $prompt;
+        $params['language'] = $this->ttslanguage;
+        $params['region'] = $this->region;
+        $params['subject'] = '1';
+
+        $response = self::call_cp_api($params);
+
+        $ret = new \stdClass();
+        if ($response && isset($response->returnCode)) {
+            $ret->success = $response->returnCode == '0' ? true : false;
+            $ret->payload = json_decode($response->returnMessage);
+        } else {
+            $ret->success = false;
+            $ret->payload = "unknown problem occurred";
+        }
+
+        if ($ret->success && isset($ret->payload[0]->url)) {
+            $url = $ret->payload[0]->url;
+            $rawdata = file_get_contents($url);
+        } else if ($ret->success && isset($ret->payload[0]->b64_json)) {
+            $rawbase64data = $ret->payload[0]->b64_json;
+            $rawdata = base64_decode($rawbase64data);
+        } else {
+            return null;
+        }
+
+        if (isset($rawdata) && $rawdata !== false) {
+            $smallerdata = self::make_image_smaller($rawdata);
+            $base64data = base64_encode($smallerdata);
+            if ($cache) {
+                self::set_cache($actionconst, $prompt, $provider, $base64data);
+            }
+            return $base64data;
+        }
+
+        return null;
+    }
+
+    public function generate_images(
+        $fileareatemplate,
+        $imagepromptdata,
+        $overallimagecontext,
+        $cache = false
+    ) {
+        $imageurls = [];
+        $imagecnt = 0;
+
+        foreach ($fileareatemplate as $filename => $filecontent) {
+            if (!is_array($imagepromptdata)) {
+                $prompt = $imagepromptdata;
+            } else if (array_key_exists($imagecnt, $imagepromptdata)) {
+                $prompt = $imagepromptdata[$imagecnt];
+            } else {
+                continue;
+            }
+
+            $stylekeywords = [
+                'flat vector illustration',
+                'cartoon',
+                'illustration',
+                'photorealistic',
+                'digital painting',
+                'sketch',
+                'line drawing',
+                'realistic',
+                'infographic',
+                '3d render',
+            ];
+            $stylefound = false;
+            foreach ($stylekeywords as $stylekeyword) {
+                if (stripos(mb_strtolower($prompt), $stylekeyword) !== false) {
+                    $stylefound = true;
+                    break;
+                }
+            }
+            if (!$stylefound) {
+                $prompt = "Give me a simple cute cartoon image, with no text on it, depicting: " . $prompt;
+            }
+
+            if ($overallimagecontext && !empty($overallimagecontext) && $overallimagecontext !== "--") {
+                $prompt .= PHP_EOL . " in the context of the following topic: " . $overallimagecontext;
+            }
+
+            $base64image = $this->generate_image($prompt, $cache);
+
+            // Second attempt if failed
+            if (!$base64image) {
+                $base64image = $this->generate_image($prompt, $cache);
+            }
+
+            if ($base64image) {
+                $imageurls[$filename] = $base64image;
+            }
+
+            $imagecnt++;
+        }
+
+        return $imageurls;
+    }
+
+    public static function make_image_smaller($imagedata) {
+        global $CFG;
+        require_once($CFG->libdir . '/gdlib.php');
+
+        if (empty($imagedata)) {
+            return $imagedata;
+        }
+
+        $randomid = uniqid();
+        $temporiginal = $CFG->tempdir . '/aigen_orig_' . $randomid;
+        file_put_contents($temporiginal, $imagedata);
+
+        $resizedimagedata = \resize_image($temporiginal, 500, 500, true);
+
+        if (!$resizedimagedata) {
+            $resizedimagedata = $imagedata;
+        }
+
+        if (file_exists($temporiginal)) {
+            unlink($temporiginal);
+        }
+
+        return $resizedimagedata;
+    }
+
+    public function get_embedding($passage, $cache = false) {
+
+        $actionconst = static::FUNC_GET_EMBEDDING;
+        $provider = 'cloud poodll';
+
+        if ($cache) {
+            $cachedresponse = self::check_cache($actionconst, $passage, $provider);
+            if ($cachedresponse !== false) {
+                return $cachedresponse;
+            }
+        }
+
+        $params['action'] = $actionconst;
+        $params['prompt'] = $passage;
+        $params['language'] = $this->ttslanguage;
+        $params['subject'] = 'none';
+        $params['region'] = $this->region;
+
+        $response = self::call_cp_api($params);
 
         // returnCode > 0  indicates an error.
         if (!$response || !isset($response->returnCode) || $response->returnCode > 0) {
@@ -278,6 +540,9 @@ class aimanager {
                 $dataobject = json_decode($returndata);
                 if (is_array($dataobject) && isset($dataobject[0]->object) && $dataobject[0]->object == 'embedding') {
                     $embedding = json_encode($dataobject[0]->embedding);
+                    if ($cache) {
+                        self::set_cache($actionconst, $passage, $provider, $embedding);
+                    }
                 } else {
                     $embedding = false;
                 }
