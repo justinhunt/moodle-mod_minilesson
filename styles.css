@@ -359,8 +359,7 @@
 }
 
 :is(.freespeaking-item-box, .freewriting-item-box, .scatter-item-box, .audiochat-item-box) .activity-wrapper,
-:is(.freespeaking-item-box, .freewriting-item-box, .scatter-item-box, .audiochat-item-box) .startmodule_splashscreen,
-.minilesson_lgapfill_player_box {
+:is(.freespeaking-item-box, .freewriting-item-box, .scatter-item-box, .audiochat-item-box) .startmodule_splashscreen {
   box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
   position: relative;
   margin: auto;
@@ -369,7 +368,7 @@
   overflow: hidden;
 }
 
-.startmodule_splashscreen .startmodule_title {
+:is(.startmodule_splashscreen, .item-container) .startmodule_title {
   height: auto;
   display: flex;
   justify-content: center;
@@ -380,13 +379,12 @@
   font-weight: bold;
   color: #414C81;
 }
-
-.startmodule_splashscreen .startmodule_mainmenu {
+:is(.startmodule_splashscreen, .item-container) .start_mainmenu {
   text-align: center;
+  font-size: 20px;
+  padding: 10px;
 }
-
-.startmodule_splashscreen .startmodule_btn,
-.minilesson_lgapfill_player_box .lgapfill_start_btn {
+:is(.startmodule_splashscreen, .item-container) .startmodule_btn {
   background-color: #506DFF;
   margin-top: 0;
   width: 96px;
@@ -395,21 +393,17 @@
   border-color: #506DFF;
   color: #FFFFFF;
   padding: 6px 20px;
+  margin-left: auto;
+  margin-right: auto;
 }
-
-.startmodule_splashscreen .startmodule_btn:is(:hover, :focus, :active),
-.minilesson_lgapfill_player_box .lgapfill_start_btn:hover,
-.minilesson_lgapfill_player_box .lgapfill_start_btn:focus,
-.minilesson_lgapfill_player_box .lgapfill_start_btn:active {
+:is(.startmodule_splashscreen, .item-container) .startmodule_btn:hover, :is(.startmodule_splashscreen, .item-container) .startmodule_btn:focus, :is(.startmodule_splashscreen, .item-container) .startmodule_btn:active {
   background-color: #2642CD;
   border-color: #2642CD;
   outline: 0;
   box-shadow: none;
   color: #FFFFFF;
 }
-
-.startmodule_splashscreen .startmodule_image,
-.minilesson_lgapfill_player_box .lgapfill_image {
+:is(.startmodule_splashscreen, .item-container) .startmodule_image {
   padding: 20px;
   border-radius: 100%;
   background: #f3ecfc;
@@ -421,20 +415,6 @@
 .ml_freewriting_startscreen .freewriting_image,
 .ml_freespeaking_startscreen .freespeaking_image {
   background-color: #FFDE89;
-}
-
-/* Start button */
-.ml_freewriting_startscreen .freewriting_start_btn,
-.startmodule_splashscreen .startmodule_btn,
-.minilesson_landr_player_box .landr_start_btn,
-.minilesson_dictate_player_box .dictate_start_btn,
-.minilesson_fluency_box .fluency_start_btn,
-.minilesson_tgapfill_player_box .tgapfill_start_btn,
-.minilesson_lgapfill_player_box .lgapfill_start_btn,
-.minilesson_sgapfill_player_box .sgapfill_start_btn,
-.minilesson_wordshuffle_player_box .wordshuffle_start_btn {
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* Next item button */
@@ -737,11 +717,7 @@
   color: #506DFF;
 }
 
-.startmodule_splashscreen .startmodule_description,
-.minilesson_fluency_box .fluency_description,
-.minilesson_dictate_player_box .dictate_description,
-.minilesson_landr_player_box .landr_description,
-.minilesson_wordshuffle_player_box .wordshuffle_description {
+:is(.startmodule_splashscreen, .item-container) .startmodule_description {
   color: #1F2334;
   font-weight: 400;
   font-size: 15px;
@@ -3977,47 +3953,12 @@ textarea.ml_freewriting_textarea {
   color: #506DFF;
   margin-left: 10px;
 }
-.minilesson_wordshuffle_player_box .wordshuffle_image {
-  padding: 20px;
-  border-radius: 100%;
-  background: #f3ecfc;
-  overflow: visible;
-}
 .minilesson_wordshuffle_player_box .wordshuffle_game {
   min-height: 250px;
   padding: 10px;
   border-top: 1px solid darkgray;
   border-bottom: 1px solid darkgray;
   background-color: rgb(98, 135, 182);
-}
-.minilesson_wordshuffle_player_box .wordshuffle_mainmenu {
-  font-size: 20px;
-  padding: 10px;
-}
-.minilesson_wordshuffle_player_box .wordshuffle_title {
-  color: #414C81;
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 12px 0;
-  font-size: 24px;
-  font-weight: bold;
-}
-.minilesson_wordshuffle_player_box .wordshuffle_start_btn {
-  margin-top: 0;
-  width: 96px;
-  height: 36px;
-  border-radius: 8px;
-  background-color: #506DFF;
-  border-color: #506DFF;
-}
-.minilesson_wordshuffle_player_box .wordshuffle_start_btn:hover, .minilesson_wordshuffle_player_box .wordshuffle_start_btn:active, .minilesson_wordshuffle_player_box .wordshuffle_start_btn:focus {
-  background-color: #2642CD;
-  border-color: #2642CD;
-  outline: 0;
-  box-shadow: unset;
 }
 .minilesson_wordshuffle_player_box .wordshuffle_controls {
   margin-top: 5px;
@@ -4146,21 +4087,6 @@ textarea.ml_freewriting_textarea {
   font-size: 50px !important;
   height: 50px;
 }
-.minilesson_lgapfill_player_box .lgapfill_mainmenu {
-  font-size: 20px;
-  padding: 10px;
-}
-.minilesson_lgapfill_player_box .lgapfill_title {
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 12px 0;
-  font-size: 24px;
-  font-weight: bold;
-  color: #414C81;
-}
 .minilesson_lgapfill_player_box .lgapfill_controls {
   margin-top: 5px;
   background-color: #FFFFFF;
@@ -4207,34 +4133,7 @@ textarea.ml_freewriting_textarea {
   color: #506DFF;
   margin-left: 10px;
 }
-.minilesson_lgapfill_player_box .lgapfill_description {
-  color: #1F2334;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 21px;
-  letter-spacing: 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 70%;
-}
-.minilesson_lgapfill_player_box .lgapfill_maintitle {
-  border-bottom: 1px solid #E6E9FD;
-  padding: 24px;
-  text-align: center;
-  font-weight: 400;
-  font-style: italic;
-  line-height: 21px;
-  letter-spacing: 0;
-  color: #1F2334;
-}
 
-.minilesson_tgapfill_player_box {
-  position: relative;
-  margin: auto;
-  border-radius: 8px;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
-  background: #FFFFFF;
-}
 .minilesson_tgapfill_player_box .tgapfill_check_btn, .minilesson_tgapfill_player_box .tgapfill_check_btn:hover, .minilesson_tgapfill_player_box .tgapfill_check_btn:focus, .minilesson_tgapfill_player_box .tgapfill_check_btn:active {
   width: 96px;
   height: 36px;
@@ -4242,12 +4141,6 @@ textarea.ml_freewriting_textarea {
   background: #506DFF;
   color: #FFFFFF;
   border-color: #506DFF;
-}
-.minilesson_tgapfill_player_box .tgapfill_image {
-  padding: 20px;
-  border-radius: 100%;
-  background: #f3ecfc;
-  overflow: visible;
 }
 .minilesson_tgapfill_player_box .tgapfill_prompt {
   position: relative;
@@ -4317,35 +4210,6 @@ textarea.ml_freewriting_textarea {
   font-size: 50px !important;
   height: 50px;
 }
-.minilesson_tgapfill_player_box .tgapfill_mainmenu {
-  font-size: 20px;
-  padding: 10px;
-}
-.minilesson_tgapfill_player_box .tgapfill_title {
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 12px 0;
-  font-size: 24px;
-  font-weight: bold;
-  color: #414C81;
-}
-.minilesson_tgapfill_player_box .tgapfill_start_btn {
-  margin-top: 0;
-  width: 96px;
-  height: 36px;
-  border-radius: 8px;
-  background-color: #506DFF;
-  border-color: #506DFF;
-}
-.minilesson_tgapfill_player_box .tgapfill_start_btn:hover, .minilesson_tgapfill_player_box .tgapfill_start_btn:active, .minilesson_tgapfill_player_box .tgapfill_start_btn:focus {
-  background-color: #2642CD;
-  border-color: #2642CD;
-  outline: 0;
-  box-shadow: unset;
-}
 .minilesson_tgapfill_player_box .tgapfill_controls {
   margin-top: 5px;
   background-color: #FFFFFF;
@@ -4385,49 +4249,11 @@ textarea.ml_freewriting_textarea {
   color: #506DFF;
   margin-left: 10px;
 }
-.minilesson_tgapfill_player_box .tgapfill_description {
-  color: #1F2334;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 21px;
-  letter-spacing: 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 70%;
-}
-.minilesson_tgapfill_player_box .tgapfill_maintitle {
-  border-bottom: 1px solid #E6E9FD;
-  padding: 24px;
-  text-align: center;
-  font-weight: 400;
-  font-style: italic;
-  line-height: 21px;
-  letter-spacing: 0;
-  color: #1F2334;
-}
 
 .sgapfill_listen_cont {
   text-align: center;
 }
 
-.minilesson_sgapfill_player_box {
-  position: relative;
-  margin: auto;
-  border-radius: 8px;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
-  background-color: #FFFFFF;
-}
-.minilesson_sgapfill_player_box .sgapfill_title {
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 12px 0;
-  font-size: 24px;
-  font-weight: bold;
-  color: #414C81;
-}
 .minilesson_sgapfill_player_box .sgapfill_prompt {
   position: relative;
   margin-top: 10px;
@@ -4496,30 +4322,6 @@ textarea.ml_freewriting_textarea {
   font-size: 50px !important;
   height: 50px;
 }
-.minilesson_sgapfill_player_box .sgapfill_mainmenu {
-  font-size: 20px;
-  padding: 10px;
-}
-.minilesson_sgapfill_player_box .sgapfill_image {
-  padding: 20px;
-  border-radius: 100%;
-  background: #f3ecfc;
-  overflow: visible;
-}
-.minilesson_sgapfill_player_box .sgapfill_start_btn {
-  background-color: #506DFF;
-  border-radius: 8px;
-  width: 96px;
-  height: 36px;
-  margin-top: 0;
-  border-color: #506DFF;
-}
-.minilesson_sgapfill_player_box .sgapfill_start_btn:hover, .minilesson_sgapfill_player_box .sgapfill_start_btn:focus, .minilesson_sgapfill_player_box .sgapfill_start_btn:active {
-  background-color: #2642CD;
-  border-color: #2642CD;
-  outline: 0;
-  box-shadow: unset;
-}
 .minilesson_sgapfill_player_box .sgapfill_controls {
   margin-top: 5px;
   background-color: #FFFFFF;
@@ -4579,26 +4381,6 @@ textarea.ml_freewriting_textarea {
   padding: 10px;
   border-bottom: 3px solid #B0B8DC;
   margin: 3px;
-}
-.minilesson_sgapfill_player_box .sgapfill_description {
-  color: #1F2334;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 21px;
-  letter-spacing: 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 70%;
-}
-.minilesson_sgapfill_player_box .sgapfill_maintitle {
-  border-bottom: 1px solid #E6E9FD;
-  padding: 24px;
-  text-align: center;
-  font-weight: 400;
-  font-style: italic;
-  line-height: 21px;
-  letter-spacing: 0;
-  color: #1F2334;
 }
 
 .pgapfill_gap_wrapper {
@@ -4729,21 +4511,6 @@ div.poodlldictationplayer {
   font-size: 30px !important;
 }
 
-.minilesson_dictate_player_box {
-  position: relative;
-  margin: auto;
-  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
-  background-color: #FFFFFF;
-}
-.minilesson_dictate_player_box .dictate_image {
-  padding: 20px;
-  border-radius: 100%;
-  background: #f3ecfc;
-  overflow: visible;
-  width: 70px;
-  height: 70px;
-}
 .minilesson_dictate_player_box .dictate_prompt {
   position: relative;
   margin-top: 10px;
@@ -4813,38 +4580,6 @@ div.poodlldictationplayer {
   margin: auto;
   font-size: 50px !important;
   height: 50px;
-}
-.minilesson_dictate_player_box .dictate_mainmenu {
-  font-size: 20px;
-  padding: 10px;
-}
-.minilesson_dictate_player_box .dictate_title {
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 12px 0;
-  font-size: 24px;
-  font-weight: bold;
-  color: #414C81;
-}
-.minilesson_dictate_player_box .dictate_start_btn {
-  background-color: #506DFF;
-  margin-top: 0;
-  width: 96px;
-  height: 36px;
-  border-radius: 8px;
-  color: #FFFFFF;
-  border-color: #506DFF;
-}
-.minilesson_dictate_player_box .dictate_start_btn:hover, .minilesson_dictate_player_box .dictate_start_btn:focus, .minilesson_dictate_player_box .dictate_start_btn:active {
-  background-color: #2642CD;
-  border-color: #2642CD;
-  outline: 0;
-  -webkit-box-shadow: unset;
-  box-shadow: unset;
-  color: #FFFFFF;
 }
 .minilesson_dictate_player_box .dictate_skip_btn {
   background: #FFFFFF;
@@ -4916,35 +4651,6 @@ div.poodlldictationplayer {
   text-align: center;
 }
 
-.minilesson_landr_player_box {
-  position: relative;
-  margin: auto;
-  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
-  background-color: #FFFFFF;
-}
-.minilesson_landr_player_box .landr_start_btn {
-  background-color: #506DFF;
-  margin-top: 0;
-  width: 96px;
-  height: 36px;
-  border-radius: 8px;
-  color: #FFFFFF;
-  border-color: #506DFF;
-}
-.minilesson_landr_player_box .landr_start_btn:hover, .minilesson_landr_player_box .landr_start_btn:active, .minilesson_landr_player_box .landr_start_btn:focus {
-  outline: 0;
-  box-shadow: 0;
-  background-color: #2642CD;
-  border-color: #2642CD;
-  color: #FFFFFF;
-}
-.minilesson_landr_player_box .landr_image {
-  padding: 20px;
-  border-radius: 100%;
-  background: #f3ecfc;
-  overflow: visible;
-}
 .minilesson_landr_player_box .landr_ctrl-btn {
   background-color: #506DFF;
   border-color: #506DFF;
@@ -5045,21 +4751,6 @@ div.poodlldictationplayer {
   margin: auto;
   font-size: 50px !important;
   height: 50px;
-}
-.minilesson_landr_player_box .landr_mainmenu {
-  font-size: 20px;
-  padding: 10px;
-}
-.minilesson_landr_player_box .landr_title {
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 12px 0;
-  font-size: 24px;
-  font-weight: bold;
-  color: #414C81;
 }
 .minilesson_landr_player_box .landr_controls {
   background-color: #FFFFFF;
@@ -5231,28 +4922,6 @@ div.poodlldictationplayer {
   padding: 6px;
   font-style: italic;
 }
-.minilesson_fluency_box .fluency_image {
-  padding: 20px;
-  border-radius: 100%;
-  background: #f3ecfc;
-  overflow: visible;
-}
-.minilesson_fluency_box .fluency_start_btn {
-  background-color: #506DFF;
-  margin-top: 0;
-  width: 96px;
-  height: 36px;
-  border-radius: 8px;
-  color: #FFFFFF;
-  border-color: #506DFF;
-}
-.minilesson_fluency_box .fluency_start_btn:hover, .minilesson_fluency_box .fluency_start_btn:focus, .minilesson_fluency_box .fluency_start_btn:active {
-  background-color: #2642CD;
-  border-color: #2642CD;
-  outline: 0;
-  box-shadow: unset;
-  color: #FFFFFF;
-}
 .minilesson_fluency_box .fluency_prompt {
   position: relative;
   margin-top: 10px;
@@ -5322,22 +4991,6 @@ div.poodlldictationplayer {
   margin: auto;
   font-size: 50px !important;
   height: 50px;
-}
-.minilesson_fluency_box .fluency_mainmenu {
-  height: auto;
-  font-size: 20px;
-  padding: 10px;
-}
-.minilesson_fluency_box .fluency_title {
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 12px 0;
-  font-size: 24px;
-  font-weight: bold;
-  color: #414C81;
 }
 .minilesson_fluency_box .fluency_controls {
   margin-top: 5px;

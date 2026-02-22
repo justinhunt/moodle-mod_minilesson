@@ -55,33 +55,6 @@
     font-style: italic;
   }
 
-  .fluency_image {
-    padding: 20px;
-    border-radius: 100%;
-    background: $lavender-bg;
-    overflow: visible;
-  }
-
-  .fluency_start_btn {
-    background-color: $primary;
-    margin-top: 0;
-    width: 96px;
-    height: 36px;
-    border-radius: 8px;
-    color: $white;
-    border-color: $primary;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $primary-hover;
-      border-color: $primary-hover;
-      outline: 0;
-      box-shadow: unset;
-      color: $white;
-    }
-  }
-
   .fluency_prompt {
     position: relative;
     margin-top: 10px;
@@ -160,24 +133,6 @@
     margin: auto;
     font-size: 50px !important;
     height: 50px;
-  }
-
-  .fluency_mainmenu {
-    height: auto;
-    font-size: 20px;
-    padding: 10px;
-  }
-
-  .fluency_title {
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 12px 0;
-    font-size: 24px;
-    font-weight: bold;
-    color: $heading-navy;
   }
 
   .fluency_controls {

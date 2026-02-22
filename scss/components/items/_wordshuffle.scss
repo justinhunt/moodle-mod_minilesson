@@ -282,54 +282,12 @@
     }
   }
 
-  .wordshuffle_image {
-    padding: 20px;
-    border-radius: 100%;
-    background: $lavender-bg;
-    overflow: visible;
-  }
-
   .wordshuffle_game {
     min-height: 250px;
     padding: 10px;
     border-top: 1px solid darkgray;
     border-bottom: 1px solid darkgray;
     background-color: $bubble-blue;
-  }
-
-  .wordshuffle_mainmenu {
-    font-size: 20px;
-    padding: 10px;
-  }
-
-  .wordshuffle_title {
-    color: $heading-navy;
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 12px 0;
-    font-size: 24px;
-    font-weight: bold;
-  }
-
-  .wordshuffle_start_btn {
-    margin-top: 0;
-    width: 96px;
-    height: 36px;
-    border-radius: 8px;
-    background-color: $primary;
-    border-color: $primary;
-
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: $primary-hover;
-      border-color: $primary-hover;
-      outline: 0;
-      box-shadow: unset;
-    }
   }
 
   .wordshuffle_controls {

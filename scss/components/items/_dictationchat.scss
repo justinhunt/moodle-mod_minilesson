@@ -6,20 +6,6 @@
 // -----------------------------------------------------------------------------
 
 .minilesson_dictate_player_box {
-  position: relative;
-  margin: auto;
-  box-shadow: 0 2px 20px 0 rgba($black, 0.12);
-  border-radius: 8px;
-  background-color: $white;
-
-  .dictate_image {
-    padding: 20px;
-    border-radius: 100%;
-    background: $lavender-bg;
-    overflow: visible;
-    width: 70px;
-    height: 70px;
-  }
 
   .dictate_prompt {
     position: relative;
@@ -99,44 +85,6 @@
     margin: auto;
     font-size: 50px !important;
     height: 50px;
-  }
-
-  .dictate_mainmenu {
-    font-size: 20px;
-    padding: 10px;
-  }
-
-  .dictate_title {
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 12px 0;
-    font-size: 24px;
-    font-weight: bold;
-    color: $heading-navy;
-  }
-
-  .dictate_start_btn {
-    background-color: $primary;
-    margin-top: 0;
-    width: 96px;
-    height: 36px;
-    border-radius: 8px;
-    color: $white;
-    border-color: $primary;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $primary-hover;
-      border-color: $primary-hover;
-      outline: 0;
-      -webkit-box-shadow: unset;
-      box-shadow: unset;
-      color: $white;
-    }
   }
 
   .dictate_skip_btn {

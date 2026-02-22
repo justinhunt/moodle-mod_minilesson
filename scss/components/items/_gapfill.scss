@@ -131,23 +131,6 @@
     height: 50px;
   }
 
-  .lgapfill_mainmenu {
-    font-size: 20px;
-    padding: 10px;
-  }
-
-  .lgapfill_title {
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 12px 0;
-    font-size: 24px;
-    font-weight: bold;
-    color: $heading-navy;
-  }
-
   .lgapfill_controls {
     margin-top: 5px;
     background-color: $white;
@@ -211,27 +194,6 @@
     }
   }
 
-  .lgapfill_description {
-    color: $text;
-    font-weight: 400;
-    font-size: 15px;
-    line-height: 21px;
-    letter-spacing: 0;
-    margin-left: auto;
-    margin-right: auto;
-    width: calc(70%);
-  }
-
-  .lgapfill_maintitle {
-    border-bottom: 1px solid $primary-light;
-    padding: 24px;
-    text-align: center;
-    font-weight: 400;
-    font-style: italic;
-    line-height: 21px;
-    letter-spacing: 0;
-    color: $text;
-  }
 }
 
 // ============================================
@@ -239,11 +201,6 @@
 // ============================================
 
 .minilesson_tgapfill_player_box {
-  position: relative;
-  margin: auto;
-  border-radius: 8px;
-  box-shadow: 0px 2px 20px 0px rgba($black, 0.12);
-  background: $white;
 
   .tgapfill_check_btn {
     &,
@@ -257,13 +214,6 @@
       color: $white;
       border-color: $primary;
     }
-  }
-
-  .tgapfill_image {
-    padding: 20px;
-    border-radius: 100%;
-    background: $lavender-bg;
-    overflow: visible;
   }
 
   .tgapfill_prompt {
@@ -344,41 +294,6 @@
     height: 50px;
   }
 
-  .tgapfill_mainmenu {
-    font-size: 20px;
-    padding: 10px;
-  }
-
-  .tgapfill_title {
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 12px 0;
-    font-size: 24px;
-    font-weight: bold;
-    color: $heading-navy;
-  }
-
-  .tgapfill_start_btn {
-    margin-top: 0;
-    width: 96px;
-    height: 36px;
-    border-radius: 8px;
-    background-color: $primary;
-    border-color: $primary;
-
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: $primary-hover;
-      border-color: $primary-hover;
-      outline: 0;
-      box-shadow: unset;
-    }
-  }
-
   .tgapfill_controls {
     margin-top: 5px;
     background-color: $white;
@@ -429,27 +344,6 @@
     }
   }
 
-  .tgapfill_description {
-    color: $text;
-    font-weight: 400;
-    font-size: 15px;
-    line-height: 21px;
-    letter-spacing: 0;
-    margin-left: auto;
-    margin-right: auto;
-    width: calc(70%);
-  }
-
-  .tgapfill_maintitle {
-    border-bottom: 1px solid $primary-light;
-    padding: 24px;
-    text-align: center;
-    font-weight: 400;
-    font-style: italic;
-    line-height: 21px;
-    letter-spacing: 0;
-    color: $text;
-  }
 }
 
 // ============================================
@@ -461,23 +355,6 @@
 }
 
 .minilesson_sgapfill_player_box {
-  position: relative;
-  margin: auto;
-  border-radius: 8px;
-  box-shadow: 0px 2px 20px 0px rgba($black, 0.12);
-  background-color: $white;
-
-  .sgapfill_title {
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 12px 0;
-    font-size: 24px;
-    font-weight: bold;
-    color: $heading-navy;
-  }
 
   .sgapfill_prompt {
     position: relative;
@@ -557,36 +434,6 @@
     height: 50px;
   }
 
-  .sgapfill_mainmenu {
-    font-size: 20px;
-    padding: 10px;
-  }
-
-  .sgapfill_image {
-    padding: 20px;
-    border-radius: 100%;
-    background: $lavender-bg;
-    overflow: visible;
-  }
-
-  .sgapfill_start_btn {
-    background-color: $primary;
-    border-radius: 8px;
-    width: 96px;
-    height: 36px;
-    margin-top: 0;
-    border-color: $primary;
-
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: $primary-hover;
-      border-color: $primary-hover;
-      outline: 0;
-      box-shadow: unset;
-    }
-  }
-
   .sgapfill_controls {
     margin-top: 5px;
     background-color: $white;
@@ -661,27 +508,6 @@
     margin: 3px;
   }
 
-  .sgapfill_description {
-    color: $text;
-    font-weight: 400;
-    font-size: 15px;
-    line-height: 21px;
-    letter-spacing: 0;
-    margin-left: auto;
-    margin-right: auto;
-    width: calc(70%);
-  }
-
-  .sgapfill_maintitle {
-    border-bottom: 1px solid $primary-light;
-    padding: 24px;
-    text-align: center;
-    font-weight: 400;
-    font-style: italic;
-    line-height: 21px;
-    letter-spacing: 0;
-    color: $text;
-  }
 }
 
 // ============================================

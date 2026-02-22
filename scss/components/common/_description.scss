@@ -3,12 +3,8 @@
 // -----------------------------------------------------------------------------
 // Description: shared description/instruction styles across activity types
 // -----------------------------------------------------------------------------
-// Used in splashscreen, fluency, dictate, landr, wordshuffle (+ gapfill migrat a _gapfill.scss)
-.startmodule_splashscreen .startmodule_description,
-.minilesson_fluency_box .fluency_description,
-.minilesson_dictate_player_box .dictate_description,
-.minilesson_landr_player_box .landr_description,
-.minilesson_wordshuffle_player_box .wordshuffle_description {
+
+:is(.startmodule_splashscreen, .item-container) .startmodule_description {
   color: $text;
   font-weight: 400;
   font-size: 15px;
