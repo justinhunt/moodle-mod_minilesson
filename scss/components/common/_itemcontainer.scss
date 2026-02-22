@@ -6,16 +6,37 @@
 // -----------------------------------------------------------------------------
 
 .item-container {
-  .form-container {
-    margin: 20px auto 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 2px 20px 0 rgb(0 0 0 / .12);
+    border-radius: 8px;
+    background-color: #FFF;
+    /* TODO- Are really needed? */
+    position: relative;
+    margin: auto;
 
-    input:first-child {
-      margin-left: 10px;
+    .maintitle {
+        border-bottom: 1px solid $primary-light;
+        padding: 24px;
+        text-align: center;
+        font-weight: 400;
+        font-style: italic;
+        line-height: 21px;
+        color: $text;
+        width: 100%;
     }
 
-    input:last-child {
-      margin-right: 10px;
-    }
+    .form-container {
+        margin: 20px auto 22px;
+
+        input:first-child {
+            margin-left: 10px;
+        }
+
+        input:last-child {
+            margin-right: 10px;
+        }
   }
 
   .definition-container {
