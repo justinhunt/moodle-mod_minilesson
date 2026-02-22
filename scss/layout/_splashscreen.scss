@@ -1,10 +1,12 @@
+@use '../abstracts/variables' as *;
+
 :is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .activity-wrapper,
 :is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .startmodule_splashscreen,
 .minilesson_lgapfill_player_box {
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 2px 20px 0px rgba($black, 0.12);
   position: relative;
   margin: auto;
-  background-color: #FFFFFF;
+  background-color: $white;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -18,7 +20,7 @@
   padding: 12px 0;
   font-size: 24px;
   font-weight: bold;
-  color: #414C81;
+  color: $heading-navy;
 }
 
 .startmodule_splashscreen .startmodule_mainmenu {
@@ -27,11 +29,11 @@
 
 .startmodule_splashscreen .startmodule_btn,
 .minilesson_lgapfill_player_box .lgapfill_start_btn {
-  background-color: #506dff;
+  background-color: $primary;
   margin-top: 0;
   border-radius: 8px;
-  border-color: #506dff;
-  color: #FFFFFF;
+  border-color: $primary;
+  color: $white;
   padding: 6px 20px;
 }
 
@@ -39,18 +41,18 @@
 .minilesson_lgapfill_player_box .lgapfill_start_btn:hover,
 .minilesson_lgapfill_player_box .lgapfill_start_btn:focus,
 .minilesson_lgapfill_player_box .lgapfill_start_btn:active {
-  background-color: #2642CD;
-  border-color: #2642CD;
+  background-color: $primary-hover;
+  border-color: $primary-hover;
   outline: 0;
   box-shadow: none;
-  color: #FFFFFF;
+  color: $white;
 }
 
 .startmodule_splashscreen .startmodule_image,
 .minilesson_lgapfill_player_box .lgapfill_image {
   padding: 20px;
   border-radius: 100%;
-  background: #f3ecfc;
+  background: $lavender-bg;
   overflow: visible;
   height: 70px;
   width: 70px;
@@ -58,5 +60,5 @@
 
 .ml_freewriting_startscreen .freewriting_image,
 .ml_freespeaking_startscreen .freespeaking_image {
-  background-color: #FFDE89;
+  background-color: $warning-light;
 }

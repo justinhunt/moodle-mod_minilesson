@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Slides: Reveal.js slide container for lesson previews
 // -----------------------------------------------------------------------------
@@ -8,7 +10,7 @@
   max-width: 800px;
   height: 450px;
   margin: 30px auto;
-  border: 2px solid #ccc;
+  border: 2px solid $grey-500;
   border-radius: 8px;
   overflow: hidden;
 }

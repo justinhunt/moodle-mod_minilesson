@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Description: shared description/instruction styles across activity types
 // -----------------------------------------------------------------------------
@@ -7,7 +9,7 @@
 .minilesson_dictate_player_box .dictate_description,
 .minilesson_landr_player_box .landr_description,
 .minilesson_wordshuffle_player_box .wordshuffle_description {
-  color: #1F2334;
+  color: $text;
   font-weight: 400;
   font-size: 15px;
   line-height: 21px;

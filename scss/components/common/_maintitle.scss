@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Maintitle: shared main title styles across activity types
 // -----------------------------------------------------------------------------
@@ -6,12 +8,12 @@
 .minilesson_dictate_player_box .dictate_maintitle,
 .minilesson_landr_player_box .landr_maintitle,
 .minilesson_wordshuffle_player_box .wordshuffle_maintitle {
-  border-bottom: 1px solid #e6e9fd;
+  border-bottom: 1px solid $primary-light;
   padding: 24px;
   text-align: center;
   font-weight: 400;
   font-style: italic;
   line-height: 21px;
   letter-spacing: 0;
-  color: #1F2334;
+  color: $text;
 }

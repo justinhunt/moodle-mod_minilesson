@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // Buttons
 
 /* Start button */
@@ -23,13 +25,13 @@
   height: 50px;
   border: 1px;
   border-style: solid;
-  border-color: #506DFF;
+  border-color: $primary;
   border-radius: 30px;
-  color: #506DFF;
+  color: $primary;
   font-size: 15px;
   font-weight: 500;
   margin: auto;
-  background-color: #FFFFFF;
+  background-color: $white;
 }
 
 .minilesson_nextbutton:focus {

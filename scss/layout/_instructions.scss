@@ -1,3 +1,5 @@
+@use '../abstracts/variables' as *;
+
 // Item instructions layout
 :is(
     .freespeaking-item-box,
@@ -8,6 +10,6 @@
     margin-top: 10px;
     margin-bottom: 10px;
     padding: 20px;
-    border-bottom: 1px solid #E6E9FD;
+    border-bottom: 1px solid $primary-light;
     max-width: 100%;
 }

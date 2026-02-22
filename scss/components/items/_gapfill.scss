@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // Gapfill activity components
 // Shared by: typinggapfill (tgapfill), listeninggapfill (lgapfill),
 // speakinggapfill (sgapfill), passagegapfill (pgapfill)
@@ -10,7 +12,7 @@
     margin-left: 2px;
     text-align: center;
     background: rgba(243, 244, 253, 0.61);
-    border: 1px solid #B0B8DC;
+    border: 1px solid $primary-border-dark;
     border-radius: 5px;
     padding: 5px 5px;
     font-size: 15px;
@@ -24,9 +26,9 @@
   }
 
   .single-character-mtext {
-    color: #0c5460;
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
+    color: $info-text;
+    background-color: $info-bg;
+    border-color: $info-border;
   }
 
   .ml_gapfill_char_correct {
@@ -63,7 +65,7 @@
     height: auto;
     min-height: 50px;
     margin: auto;
-    background-color: #F2F2FD;
+    background-color: $primary-lighter;
     border-radius: 8px;
     padding: 6px;
     position: relative;
@@ -71,8 +73,8 @@
     .hinticon-container {
       position: absolute;
       float: left;
-      background-color: #5067FF;
-      color: #FFF;
+      background-color: $primary;
+      color: $white;
       width: 30px;
       height: 30px;
       top: 0;
@@ -81,11 +83,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.07);
+      box-shadow: 1px 2px 2px 0px rgba($black, 0.07);
     }
 
     .hint-title {
-      color: #5067FF;
+      color: $primary;
       text-transform: uppercase;
       font-weight: 600;
       letter-spacing: 1px;
@@ -103,7 +105,7 @@
   .animatesoundbtn {
     position: relative;
     padding: 20px;
-    background: #E6E9FD;
+    background: $primary-light;
     width: 80px;
     border-radius: 8px;
   }
@@ -125,26 +127,26 @@
     padding: 10px;
     border-top: 1px solid darkgray;
     border-bottom: 1px solid darkgray;
-    background-color: rgba(98, 135, 182, 1);
+    background-color: $bubble-blue;
   }
 
   .lgapfill_speech {
     position: relative;
     font-family: arial;
     font-size: 16px;
-    background: #a53d38;
-    color: black;
+    background: $error-bubble;
+    color: $black;
     border-radius: 10px;
     padding: 20px;
   }
 
   .lgapfill_right {
-    background-color: white;
+    background-color: $white;
 
     &:after {
       content: '';
       border: 20px solid transparent;
-      border-left-color: white;
+      border-left-color: $white;
       border-right: 0;
       position: absolute;
       right: -20px;
@@ -154,12 +156,12 @@
   }
 
   .lgapfill_teacher_left {
-    background-color: rgba(122, 221, 76, 1);
+    background-color: $bubble-green;
 
     &:after {
       content: '';
       border: 20px solid transparent;
-      border-right-color: rgba(122, 221, 76, 1);
+      border-right-color: $bubble-green;
       border-left: 0;
       position: absolute;
       left: -20px;
@@ -202,12 +204,12 @@
     padding: 12px 0;
     font-size: 24px;
     font-weight: bold;
-    color: #414C81;
+    color: $heading-navy;
   }
 
   .lgapfill_controls {
     margin-top: 5px;
-    background-color: white;
+    background-color: $white;
     text-align: center;
   }
 
@@ -221,9 +223,9 @@
     align-items: center;
     justify-content: center;
     font-size: 75px;
-    background-color: rgba(98, 135, 182, 1);
+    background-color: $bubble-blue;
     font-weight: bold;
-    color: white;
+    color: $white;
     text-align: center;
     z-index: 999;
   }
@@ -250,8 +252,8 @@
       width: 96px;
       height: 36px;
       border-radius: 8px;
-      background: #5067FF;
-      color: #FFFFFF;
+      background: $primary;
+      color: $white;
     }
   }
 
@@ -260,16 +262,16 @@
     &:hover,
     &:active,
     &:focus {
-      background: #ffffff;
-      border-color: #5067FF;
+      background: $white;
+      border-color: $primary;
       border-radius: 10px;
-      color: #5067FF;
+      color: $primary;
       margin-left: 10px;
     }
   }
 
   .lgapfill_description {
-    color: #1F2334;
+    color: $text;
     font-weight: 400;
     font-size: 15px;
     line-height: 21px;
@@ -280,14 +282,14 @@
   }
 
   .lgapfill_maintitle {
-    border-bottom: 1px solid #e6e9fd;
+    border-bottom: 1px solid $primary-light;
     padding: 24px;
     text-align: center;
     font-weight: 400;
     font-style: italic;
     line-height: 21px;
     letter-spacing: 0;
-    color: #1F2334;
+    color: $text;
   }
 }
 
@@ -299,8 +301,8 @@
   position: relative;
   margin: auto;
   border-radius: 8px;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
-  background: #FFFFFF;
+  box-shadow: 0px 2px 20px 0px rgba($black, 0.12);
+  background: $white;
 
   .tgapfill_check_btn {
     &,
@@ -310,16 +312,16 @@
       width: 96px;
       height: 36px;
       border-radius: 8px;
-      background: #5067FF;
-      color: #FFFFFF;
-      border-color: #5067FF;
+      background: $primary;
+      color: $white;
+      border-color: $primary;
     }
   }
 
   .tgapfill_image {
     padding: 20px;
     border-radius: 100%;
-    background: #f3ecfc;
+    background: $lavender-bg;
   }
 
   .tgapfill_prompt {
@@ -337,26 +339,26 @@
     padding: 10px;
     border-top: 1px solid darkgray;
     border-bottom: 1px solid darkgray;
-    background-color: rgba(98, 135, 182, 1);
+    background-color: $bubble-blue;
   }
 
   .tgapfill_speech {
     position: relative;
     font-family: arial;
     font-size: 16px;
-    background: #a53d38;
-    color: black;
+    background: $error-bubble;
+    color: $black;
     border-radius: 10px;
     padding: 20px;
   }
 
   .tgapfill_right {
-    background-color: white;
+    background-color: $white;
 
     &:after {
       content: '';
       border: 20px solid transparent;
-      border-left-color: white;
+      border-left-color: $white;
       border-right: 0;
       position: absolute;
       right: -20px;
@@ -366,12 +368,12 @@
   }
 
   .tgapfill_teacher_left {
-    background-color: rgba(122, 221, 76, 1);
+    background-color: $bubble-green;
 
     &:after {
       content: '';
       border: 20px solid transparent;
-      border-right-color: rgba(122, 221, 76, 1);
+      border-right-color: $bubble-green;
       border-left: 0;
       position: absolute;
       left: -20px;
@@ -414,7 +416,7 @@
     padding: 12px 0;
     font-size: 24px;
     font-weight: bold;
-    color: #414C81;
+    color: $heading-navy;
   }
 
   .tgapfill_start_btn {
@@ -422,14 +424,14 @@
     width: 96px;
     height: 36px;
     border-radius: 8px;
-    background-color: #506DFF;
-    border-color: #506DFF;
+    background-color: $primary;
+    border-color: $primary;
 
     &:hover,
     &:active,
     &:focus {
-      background-color: #2642CD;
-      border-color: #2642CD;
+      background-color: $primary-hover;
+      border-color: $primary-hover;
       outline: 0;
       box-shadow: unset;
     }
@@ -437,7 +439,7 @@
 
   .tgapfill_controls {
     margin-top: 5px;
-    background-color: white;
+    background-color: $white;
     text-align: center;
   }
 
@@ -451,9 +453,9 @@
     align-items: center;
     justify-content: center;
     font-size: 75px;
-    background-color: rgba(98, 135, 182, 1);
+    background-color: $bubble-blue;
     font-weight: bold;
-    color: white;
+    color: $white;
     text-align: center;
     z-index: 999;
   }
@@ -477,16 +479,16 @@
     &:hover,
     &:active,
     &:focus {
-      background: #fff;
-      border-color: #5067ff;
+      background: $white;
+      border-color: $primary;
       border-radius: 10px;
-      color: #5067ff;
+      color: $primary;
       margin-left: 10px;
     }
   }
 
   .tgapfill_description {
-    color: #1F2334;
+    color: $text;
     font-weight: 400;
     font-size: 15px;
     line-height: 21px;
@@ -497,14 +499,14 @@
   }
 
   .tgapfill_maintitle {
-    border-bottom: 1px solid #e6e9fd;
+    border-bottom: 1px solid $primary-light;
     padding: 24px;
     text-align: center;
     font-weight: 400;
     font-style: italic;
     line-height: 21px;
     letter-spacing: 0;
-    color: #1F2334;
+    color: $text;
   }
 }
 
@@ -520,8 +522,8 @@
   position: relative;
   margin: auto;
   border-radius: 8px;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
-  background-color: #FFFFFF;
+  box-shadow: 0px 2px 20px 0px rgba($black, 0.12);
+  background-color: $white;
 
   .sgapfill_title {
     height: auto;
@@ -532,7 +534,7 @@
     padding: 12px 0;
     font-size: 24px;
     font-weight: bold;
-    color: #414C81;
+    color: $heading-navy;
   }
 
   .sgapfill_prompt {
@@ -550,26 +552,26 @@
     padding: 10px;
     border-top: 1px solid darkgray;
     border-bottom: 1px solid darkgray;
-    background-color: rgba(98, 135, 182, 1);
+    background-color: $bubble-blue;
   }
 
   .sgapfill_speech {
     position: relative;
     font-family: arial;
     font-size: 16px;
-    background: #a53d38;
-    color: black;
+    background: $error-bubble;
+    color: $black;
     border-radius: 10px;
     padding: 20px;
   }
 
   .sgapfill_right {
-    background-color: white;
+    background-color: $white;
 
     &:after {
       content: '';
       border: 20px solid transparent;
-      border-left-color: white;
+      border-left-color: $white;
       border-right: 0;
       position: absolute;
       right: -20px;
@@ -579,12 +581,12 @@
   }
 
   .sgapfill_teacher_left {
-    background-color: rgba(122, 221, 76, 1);
+    background-color: $bubble-green;
 
     &:after {
       content: '';
       border: 20px solid transparent;
-      border-right-color: rgba(122, 221, 76, 1);
+      border-right-color: $bubble-green;
       border-left: 0;
       position: absolute;
       left: -20px;
@@ -621,23 +623,23 @@
   .sgapfill_image {
     padding: 20px;
     border-radius: 100%;
-    background: #f3ecfc;
+    background: $lavender-bg;
     overflow: visible;
   }
 
   .sgapfill_start_btn {
-    background-color: #506DFF;
+    background-color: $primary;
     border-radius: 8px;
     width: 96px;
     height: 36px;
     margin-top: 0;
-    border-color: #506DFF;
+    border-color: $primary;
 
     &:hover,
     &:focus,
     &:active {
-      background-color: #2642CD;
-      border-color: #2642CD;
+      background-color: $primary-hover;
+      border-color: $primary-hover;
       outline: 0;
       box-shadow: unset;
     }
@@ -645,7 +647,7 @@
 
   .sgapfill_controls {
     margin-top: 5px;
-    background-color: white;
+    background-color: $white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -668,9 +670,9 @@
     align-items: center;
     justify-content: center;
     font-size: 75px;
-    background-color: rgba(98, 135, 182, 1);
+    background-color: $bubble-blue;
     font-weight: bold;
-    color: white;
+    color: $white;
     text-align: center;
     z-index: 999;
   }
@@ -696,25 +698,25 @@
     &:focus {
       border: 1px;
       border-style: solid;
-      border-color: #506dff;
+      border-color: $primary;
       border-radius: 10px;
       font-size: 15px;
       font-weight: 500;
       margin: auto;
-      background-color: #fff;
-      color: #506dff;
+      background-color: $white;
+      color: $primary;
     }
   }
 
   .sgapfill_missing_inputmtext,
   .sgapfill_missing_input {
     padding: 10px;
-    border-bottom: 3px solid #B0B8DC;
+    border-bottom: 3px solid $primary-border-dark;
     margin: 3px;
   }
 
   .sgapfill_description {
-    color: #1F2334;
+    color: $text;
     font-weight: 400;
     font-size: 15px;
     line-height: 21px;
@@ -725,14 +727,14 @@
   }
 
   .sgapfill_maintitle {
-    border-bottom: 1px solid #e6e9fd;
+    border-bottom: 1px solid $primary-light;
     padding: 24px;
     text-align: center;
     font-weight: 400;
     font-style: italic;
     line-height: 21px;
     letter-spacing: 0;
-    color: #1F2334;
+    color: $text;
   }
 }
 
@@ -749,7 +751,7 @@
     line-height: initial !important;
     height: auto;
     padding: 6px 4px;
-    border: 1px inset rgb(118, 118, 118);
+    border: 1px inset $gapfill-input-border;
   }
 
   &.pgapfill_gap_reviewing .pgapfill_gap_input,
@@ -758,11 +760,11 @@
   }
 
   &.psg_gapfill_correct .correctIcon {
-    color: green;
+    color: $green;
   }
 
   &.psg_gapfill_wrong .wrongIcon {
-    color: red;
+    color: $red;
   }
 
   &:not(.psg_gapfill_wrong) .wrongIcon,
@@ -789,7 +791,7 @@
     position: relative;
     margin-top: 10px;
     height: 35px;
-    background-color: white;
+    background-color: $white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -805,10 +807,10 @@
     &:hover,
     &:active,
     &:focus {
-      background: #fff;
-      border-color: #5067ff;
+      background: $white;
+      border-color: $primary;
       border-radius: 10px;
-      color: #5067ff;
+      color: $primary;
       margin-left: 10px;
     }
   }
@@ -821,8 +823,8 @@
       width: 96px;
       height: 36px;
       border-radius: 8px;
-      background: #5067FF;
-      color: #FFFFFF;
+      background: $primary;
+      color: $white;
     }
   }
 }

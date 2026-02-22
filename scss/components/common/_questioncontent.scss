@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Question Content: shared media containers for all activity types
 // Template: templates/questioncontent.mustache
@@ -57,7 +59,7 @@
   margin-top: 10px;
   padding: 8px;
   font-size: large;
-  border: 1px solid grey;
+  border: 1px solid $grey;
   border-radius: 0.5em;
 }
 

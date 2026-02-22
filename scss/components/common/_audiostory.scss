@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Audio Story: audio-driven slideshow with captions
 // Template: templates/audiostory.mustache
@@ -6,9 +8,9 @@
 .audiostoryplayer {
   margin: 0;
   padding: 20px;
-  background: #111;
+  background: $grey-950;
   font-family: sans-serif;
-  color: white;
+  color: $white;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -29,9 +31,9 @@
   aspect-ratio: 3 / 2;
   position: relative;
   overflow: hidden;
-  background: #000;
+  background: $black;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba($white, 0.1);
 }
 
 .audiostory_image_container {
@@ -62,7 +64,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba($black, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -71,12 +73,12 @@
 
 .audiostory_play_button {
   font-size: 2rem;
-  background: white;
+  background: $white;
   border: none;
   padding: 1em 2em;
   border-radius: 1em;
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 10px rgba($black, 0.3);
 }
 
 .audiostory_caption {

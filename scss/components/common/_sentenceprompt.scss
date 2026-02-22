@@ -1,10 +1,12 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Sentence Prompt: multi-line text editor with line numbers
 // -----------------------------------------------------------------------------
 
 .element-sentenceprompt-container {
   display: flex;
-  border: 1px solid rgb(203, 213, 225);
+  border: 1px solid $sp-border;
   border-radius: 0.5rem;
   overflow: hidden;
   max-height: 32rem;
@@ -18,7 +20,7 @@
 }
 
 .element-sentenceprompt-container .sentenceprompt__lines {
-  border-right: 1px solid rgb(203, 213, 225);
+  border-right: 1px solid $sp-border;
   padding: 0.5rem;
   text-align: right;
   overflow: hidden;

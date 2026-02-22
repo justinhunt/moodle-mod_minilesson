@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Lesson Item: accordion panel for choosing activity type (admin/editing UI)
 // Template: templates/lessonitem.mustache
@@ -8,8 +10,8 @@
 
   .lessonitem-list {
     width: 40%;
-    border-right: 1px solid #E9ECFB;
-    background: #F7F7FD;
+    border-right: 1px solid $primary-bg-muted;
+    background: $primary-bg-ghost;
     padding: 20px;
     border-top-left-radius: 16px;
     border-bottom-left-radius: 16px;
@@ -23,11 +25,11 @@
       }
 
       &::-webkit-scrollbar-track {
-        background: #ffffff;
+        background: $white;
       }
 
       &::-webkit-scrollbar-thumb {
-        background-color: #5C669A;
+        background-color: $text-slate;
         border-radius: 4px;
       }
     }
@@ -37,11 +39,11 @@
       align-items: center;
       padding: 10px;
       text-decoration: none;
-      color: black;
+      color: $black;
       margin: 5px;
 
       &[aria-expanded="true"] {
-        background-color: #FFFFFF;
+        background-color: $white;
         border-radius: 5px;
       }
 
@@ -57,7 +59,7 @@
 
       .itemname {
         text-align: left;
-        color: #414C81;
+        color: $heading-navy;
       }
     }
   }
@@ -85,7 +87,7 @@
 
   .modal-content {
     border-radius: 16px;
-    box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 20px 0 rgba($black, 0.15);
   }
 
   .modal-dialog:focus {
@@ -95,7 +97,7 @@
   .lessonitem-container {
 
     .itemheading {
-      color: #56619C;
+      color: $text-slate-dark;
       font-size: 17px;
       font-weight: 700;
       line-height: 100%;
@@ -104,7 +106,7 @@
     .lessonditem-description-block {
 
       .lessonditem-description-heading {
-        color: #343f74;
+        color: $text-navy-dark;
         font-weight: 700;
         font-size: 17px;
         line-height: 100%;
@@ -116,19 +118,19 @@
         font-size: 14px;
         line-height: 20px;
         letter-spacing: 0;
-        color: #141C43;
+        color: $text-navy-darkest;
         margin-top: 25px;
       }
 
       .addbtn {
-        background-color: #506DFF;
-        color: white;
+        background-color: $primary;
+        color: $white;
         width: 72px;
         height: 38px;
         border-radius: 5px;
 
         &:hover {
-          background-color: #2642CD;
+          background-color: $primary-hover;
         }
       }
     }

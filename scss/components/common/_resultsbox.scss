@@ -1,10 +1,11 @@
+@use '../../abstracts/variables' as *;
 
 .ml_freewriting_resultsbox {
-  color: #000;
+  color: $black;
 }
 
 .ml_freespeaking_finishedmessage {
-  color: #80859d;
+  color: $text-muted;
   font-size: 15px;
   font-style: italic;
   font-weight: 400;
@@ -19,7 +20,7 @@
     max-width: 100%;
     text-align: left;
     border: none;
-    border-bottom: 1px solid #E6E9FD;
+    border-bottom: 1px solid $primary-light;
   }
 
   .ml_fs_results_summary {
@@ -28,7 +29,7 @@
     .ml_fs_sumcell_title {
       font-weight: 500;
       font-size: 13px;
-      color: #727CAD;
+      color: $text-muted-blue;
     }
 
     .ml_fs_sumcell_content {
@@ -51,8 +52,8 @@
       top: 0;
       left: 50%;
       transform: translateX(-50%) translateY(-50%);
-      border: 1px solid #DEE2FC;
-      background-color: #fff;
+      border: 1px solid $primary-border;
+      background-color: $white;
       border-radius: 24px;
       padding: 11px 16px;
       margin: auto;
@@ -63,7 +64,7 @@
     }
 
     .freewriting-feedback-title {
-      color: #3C51DA;
+      color: $primary-dark;
       font-weight: 500;
       font-size: 14px;
       text-transform: uppercase;
@@ -84,7 +85,7 @@
         margin-bottom: 16px;
 
         &::marker {
-          color: #506DFF;
+          color: $primary;
         }
       }
     }
@@ -95,7 +96,7 @@
 
     .para-bold-title {
       display: inline-block;
-      color: #506DFF;
+      color: $primary;
       text-transform: uppercase;
       margin-bottom: 10px;
       font-weight: 400;
@@ -104,20 +105,20 @@
 
   .mod_minilesson_toggle_differences {
     :is(.mstfd_showall, .mstfd_hidecrossouts) {
-      color: #506DFF;
+      color: $primary;
       font-size: 16px;
       font-weight: 400;
     }
   }
 
   .reattempt_btn {
-    border: 1px solid #506DFF;
-    color: #506DFF;
+    border: 1px solid $primary;
+    color: $primary;
     border-radius: 8px;
     margin: 15px;
 
     &:hover {
-      color: #506DFF;
+      color: $primary;
     }
   }
 }
@@ -138,15 +139,15 @@
     top: 0;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
-    border: 1px solid #DEE2FC;
-    background-color: #fff;
+    border: 1px solid $primary-border;
+    background-color: $white;
     border-radius: 24px;
     padding: 11px 16px;
     margin: auto;
   }
 
   .audiochat-feedback-title {
-    color: #3C51DA;
+    color: $primary-dark;
     font-weight: 500;
     font-size: 14px;
     text-transform: uppercase;
@@ -158,12 +159,12 @@
 }
 
 .minilesson_audiochat_box .ml_ac_retrybtn {
-  border: 1px solid #506DFF;
-  color: #506DFF;
+  border: 1px solid $primary;
+  color: $primary;
   border-radius: 8px;
   margin: 15px;
 
   &:hover {
-    color: #506DFF;
+    color: $primary;
   }
 }

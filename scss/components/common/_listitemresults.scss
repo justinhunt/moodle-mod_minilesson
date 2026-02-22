@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // List Item Results: per-item results panel with scores and audio playback
 // Template: templates/listitemresults.mustache
@@ -21,7 +23,7 @@
   left: 0;
   top: 17px;
   width: 36px;
-  background-color: #ccc;
+  background-color: $grey-500;
   text-align: center;
   border-bottom: 0;
   border-right: 0;
@@ -160,17 +162,17 @@ div#itemscores {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: $white;
   border-radius: 50%;
   border: none;
 }
 
 .ml_listitem_result .ml_li_resultstatus.ml_correct {
-  background-color: #74DC72;
+  background-color: $success;
 }
 
 .ml_listitem_result .ml_li_resultstatus.ml_incorrect {
-  background-color: #FB6363;
+  background-color: $error-light;
 }
 
 .minilesson_resultspanel_swish {
@@ -194,8 +196,8 @@ div#itemscores {
 }
 
 .ml_listitem-container {
-  background-color: #FFF;
-  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, .12);
+  background-color: $white;
+  box-shadow: 0 2px 20px 0 rgba($black, 0.12);
   border-radius: 8px;
 }
 
@@ -204,8 +206,8 @@ div#itemscores {
   padding-top: 20px;
   min-width: 150px;
   border-radius: 8px;
-  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, .12);
-  background-color: #FFF;
+  box-shadow: 0 2px 20px 0 rgba($black, 0.12);
+  background-color: $white;
 }
 
 .star-container {
@@ -214,13 +216,13 @@ div#itemscores {
   height: 45px;
   top: -20px;
   left: 52px;
-  color: #FFC328;
+  color: $warning;
   font-size: 24px;
-  background-color: #FFF;
+  background-color: $white;
 }
 
 .result-font {
-  color: #57578F;
+  color: $text-indigo;
   font-size: 18px;
   font-weight: 600;
 }
@@ -230,11 +232,11 @@ div#itemscores {
 }
 
 .correct-text {
-  color: #57578F;
+  color: $text-indigo;
 }
 
 span.correctitem {
-  color: #18B616;
+  color: $success-text;
   font-weight: 700;
   margin-left: 2px;
   margin-right: 2px;
@@ -242,7 +244,7 @@ span.correctitem {
 
 span.wrongitem {
   font-weight: 700;
-  color: #FF4747;
+  color: $error;
   margin-left: 2px;
   margin-right: 2px;
 }

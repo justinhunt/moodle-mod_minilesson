@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Progress: dots, star rating, progress bar, step indicators
 // -----------------------------------------------------------------------------
@@ -41,20 +43,20 @@
   height: 32px;
   min-width: 32px;
   display: flex;
-  background-color: #F3F5FD;
+  background-color: $primary-lightest;
   align-items: center;
   justify-content: center;
   color: #6b84eb;
   font-size: 14px;
   font-weight: 700;
   z-index: 1;
-  border: 1px solid #C7D2FF;
+  border: 1px solid $primary-border-medium;
 }
 
 .minilesson_quiz_progress_item_current {
-  background-color: #506DFF;
-  color: #FFFFFF;
-  border-color: #506DFF;
+  background-color: $primary;
+  color: $white;
+  border-color: $primary;
 }
 
 .minilesson_quiz_progress_finalitem {
@@ -68,21 +70,21 @@
   color: #6B84EB;
   font-size: 14px;
   font-weight: 700;
-  background: #F3F5FD;
+  background: $primary-lightest;
   z-index: 1;
-  border: 1px solid #C7D2FF;
+  border: 1px solid $primary-border-medium;
 }
 
 .minilesson_quiz_progress_item_completed {
-  background-color: #506DFF;
-  color: #FFFFFF;
-  border-color: #506DFF;
+  background-color: $primary;
+  color: $white;
+  border-color: $primary;
 }
 
 // Progress bar
 
 .progress-container .progress {
-  background-color: #E6E9FD;
+  background-color: $primary-light;
   border-radius: 8px;
 }
 
@@ -97,17 +99,17 @@
 }
 
 .progress .progressbar_basestyle {
-  background-color: #5067FF;
+  background-color: $primary;
 }
 
 .progressicon {
   padding: 6px;
-  background-color: #f2f2fd;
+  background-color: $primary-lighter;
   border-radius: 50px;
   width: 32px;
   height: 32px;
   text-align: center;
-  color: #5067FF;
+  color: $primary;
 }
 
 .progressicon i.fa {
@@ -117,12 +119,12 @@
 // Progress bar segments
 
 .minilesson_quiz_progress_completed {
-  background-color: #506DFF;
+  background-color: $primary;
   height: 4px;
 }
 
 .minilesson_quiz_progress_incompleted {
-  background-color: #C7D2FF;
+  background-color: $primary-border-medium;
   height: 4px;
   margin-left: 2px;
   margin-right: 2px;
@@ -130,7 +132,7 @@
 }
 
 .minilesson_quiz_progress_dashedline {
-  border-bottom: 2px dashed #C7D2FF;
+  border-bottom: 2px dashed $primary-border-medium;
   height: 4px;
   margin-left: 2px;
   margin-right: 2px;
@@ -138,7 +140,7 @@
 }
 
 .minilesson_quiz_progress .minilesson_quiz_progress_current {
-  border: 1px solid #506DFF;
+  border: 1px solid $primary;
   border-radius: 50%;
   padding: 2px;
 }

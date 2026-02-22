@@ -1,2 +1,210 @@
+// ==========================================================================
+// Color Variables
+// ==========================================================================
 
+// --------------------------------------------------------------------------
+// 1. Base
+// --------------------------------------------------------------------------
+$white: #FFFFFF;
+$black: #000000;
+$red: red;
+$blue: blue;
+$green: green;
+$grey: grey;
+$gray: gray;
+$orange: orange;
+
+// --------------------------------------------------------------------------
+// 2. Brand / Primary
+// --------------------------------------------------------------------------
+$primary: #506DFF;
+$primary-hover: #2642CD;
+$primary-dark: #3C51DA;
+$primary-light: #E6E9FD;
+$primary-lighter: #F2F2FD;
+$primary-lightest: #F3F5FD;
+$primary-bg: #F5F5FE;
+$primary-ghost: #FBFBFE;
+$primary-border: #DEE2FC;
+$primary-border-medium: #C7D2FF;
+$primary-border-dark: #B0B8DC;
+$primary-border-slate: #B7BDE3;
+$primary-border-soft: #C7CBE8;
+$primary-border-light: #D0D7F8;
+$primary-bg-muted: #E9ECFB;
+$primary-bg-ghost: #F7F7FD;
+
+// --------------------------------------------------------------------------
+// 3. Text / Heading
+// --------------------------------------------------------------------------
 $text: #1F2334;
+$text-dark: #202438;
+$heading-navy: #414C81;
+$text-indigo: #57578F;
+$text-slate: #5C669A;
+$text-slate-dark: #56619C;
+$text-navy-dark: #343f74;
+$text-navy-darkest: #141C43;
+$text-muted-blue: #727CAD;
+$text-muted: #80859d;
+
+// --------------------------------------------------------------------------
+// 4. Success / Green
+// --------------------------------------------------------------------------
+$success: #74DC72;
+$success-text: #18B616;
+$success-dark: #099506;
+$success-bg: #c5efcf;
+$success-bg-light: #d7f9ca;
+$success-bg-muted: #d1e7dd;
+$success-bg-lightest: #F2FBF0;
+$success-bg-bright: #DBF6DB;
+$success-text-dark: #0f5132;
+
+// --------------------------------------------------------------------------
+// 5. Error / Red
+// --------------------------------------------------------------------------
+$error: #FF4747;
+$error-light: #FB6363;
+$error-bright: #FD1515;
+$error-text: #F13B3B;
+$error-dark: #842029;
+$error-bg: #f8d7da;
+$error-bg-light: #ffcaca;
+$error-bubble: #a53d38;
+$error-shadow: #9c282e;
+
+// --------------------------------------------------------------------------
+// 6. Warning / Gold
+// --------------------------------------------------------------------------
+$warning: #FFC328;
+$warning-text: #CC7B02;
+$warning-light: #FFDE89;
+$warning-border: #FDDA81;
+$warning-bg: #FCF9EB;
+$warning-highlight: #fff6bf;
+
+// --------------------------------------------------------------------------
+// 7. Orange / Recording
+// --------------------------------------------------------------------------
+$recording: #FF8A47;
+$recording-light: #ffccbd;
+
+// --------------------------------------------------------------------------
+// 8. Greys
+// --------------------------------------------------------------------------
+$grey-50: #f9f9f9;
+$grey-75: #f8f9fa;
+$grey-100: #f5f5f5;
+$grey-200: #f0f0f0;
+$grey-300: #eee;
+$grey-350: #e5e7eb;
+$grey-400: #ddd;
+$grey-400-alt: #dcdcdc;
+$grey-border: #ced4da;
+$grey-500: #ccc;
+$grey-550: #b0b0b0;
+$grey-600: #999;
+$grey-muted: #6c757d;
+$grey-700: #555;
+$grey-800: #444;
+$grey-900: #333;
+$grey-950: #111;
+
+// --------------------------------------------------------------------------
+// 9. Speech bubbles
+// --------------------------------------------------------------------------
+$bubble-blue: rgb(98, 135, 182);
+$bubble-green: rgb(122, 221, 76);
+
+// --------------------------------------------------------------------------
+// 10. Players / Links
+// --------------------------------------------------------------------------
+$player-blue: #4a90e2;
+$player-blue-hover: #357ab8;
+$link-blue: #1177d1;
+$lavender-bg: #f3ecfc;
+
+// --------------------------------------------------------------------------
+// 11. Info (Bootstrap-like)
+// --------------------------------------------------------------------------
+$info-text: #0c5460;
+$info-bg: #d1ecf1;
+$info-border: #bee5eb;
+
+// --------------------------------------------------------------------------
+// 12. Scatter-specific
+// --------------------------------------------------------------------------
+$scatter-bg-dark: #475ABA;
+$scatter-bg-light: #3C4B96;
+$scatter-bg-translucent: #F2F2FD73;
+
+// --------------------------------------------------------------------------
+// 13. Fiction-specific
+// --------------------------------------------------------------------------
+$fiction-whatsapp-bg: #ece5dd;
+$fiction-whatsapp-sent: #dcf8c6;
+$fiction-narrator-bg: #e6eef6;
+$fiction-narrator-active: #e1e6f2;
+$fiction-narrator-accent: #5a6b8c;
+$fiction-book-bg: #fdf6e3;
+$fiction-book-text: #3b3b3b;
+$fiction-book-border: #d3c6a6;
+$fiction-book-accent: #8b7d6b;
+$fiction-book-divider: #e0d8c3;
+$fiction-book-dark: #5b4d3b;
+$fiction-book-darkest: #3b3b3b;
+
+// --------------------------------------------------------------------------
+// 14. Wordshuffle-specific
+// --------------------------------------------------------------------------
+$ws-slot-bg: #eaf9ee;
+$ws-word-bg: #ffe3ea;
+$ws-word-text: #0e7490;
+$ws-border: #e5e7eb;
+$ws-hover: #a78bfa;
+$ws-bank: #34d399;
+$ws-text: #374151;
+$ws-word-light: #ffd1dc;
+$ws-selected: #f9a8d4;
+$ws-focus: #3b82f6;
+$ws-correct: #bbf7d0;
+$ws-correct-ring: #16a34a;
+$ws-fixed-bg: #cdf5d4;
+
+// --------------------------------------------------------------------------
+// 15. Audiochat-specific (Tailwind-derived)
+// --------------------------------------------------------------------------
+$ac-blue: rgb(37, 99, 235);
+$ac-blue-hover: rgb(29, 78, 216);
+$ac-blue-ring: rgb(59, 130, 246);
+$ac-red: rgb(220, 38, 38);
+$ac-red-hover: rgb(185, 28, 28);
+$ac-red-ring: rgb(239, 68, 68);
+$ac-grey-bg: rgb(229, 231, 235);
+$ac-grey-text: rgb(31, 41, 55);
+$ac-green-text: rgb(22, 163, 74);
+$ac-text-grey: rgb(55, 65, 81);
+$ac-text-grey-light: rgb(75, 85, 99);
+
+// --------------------------------------------------------------------------
+// 16. Fluency-specific
+// --------------------------------------------------------------------------
+$fluency-error-bg: #FCF5F5;
+
+// --------------------------------------------------------------------------
+// 17. Grading-specific
+// --------------------------------------------------------------------------
+$grading-insert: #cacaff;
+$grading-correct-bg: rgb(234, 229, 229);
+$grading-link: #0000FF;
+
+// --------------------------------------------------------------------------
+// 18. Sentenceprompt
+// --------------------------------------------------------------------------
+$sp-border: rgb(203, 213, 225);
+
+// --------------------------------------------------------------------------
+// 19. Gapfill
+// --------------------------------------------------------------------------
+$gapfill-input-border: rgb(118, 118, 118);

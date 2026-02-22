@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Quiz Flow: quiz containers, feedback, error states, finished screen
 // Template: templates/quizfinished.mustache, activity page
@@ -44,11 +46,11 @@ div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
 }
 
 .mod_minilesson_error_cont h3 {
-  color: red;
+  color: $red;
 }
 
 .mod_minilesson_quiz_finished {
-  border: solid 1px #ccc;
+  border: solid 1px $grey-500;
 }
 
 .mod_minilesson_quiz_finished h1 {
@@ -73,7 +75,7 @@ span.mod_minilesson_finishedanswer {
 }
 
 .minilessonname {
-  background: #ccc;
+  background: $grey-500;
   padding: 10px;
   font-size: 19px;
 }
@@ -101,13 +103,13 @@ span.mod_minilesson_finishedanswer {
   height: 50px;
   border: 1px;
   border-style: solid;
-  border-color: #506DFF;
+  border-color: $primary;
   border-radius: 30px;
-  color: #506DFF;
+  color: $primary;
   font-size: 15px;
   font-weight: 500;
   margin: auto;
-  background-color: #FFFFFF;
+  background-color: $white;
 
   &:focus {
     outline: 0;

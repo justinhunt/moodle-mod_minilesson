@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Sound Wave: animated sound wave bars inside audio buttons
 // -----------------------------------------------------------------------------
@@ -13,7 +15,7 @@
 
 .animatesoundbtn .soundWave .bar {
   width: 2px;
-  background-color: #5067FF;
+  background-color: $primary;
   height: 8px;
   position: absolute;
   top: 50%;

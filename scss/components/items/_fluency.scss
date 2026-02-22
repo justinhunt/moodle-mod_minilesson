@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Fluency: pronunciation/speaking assessment activity
 // Template: templates/fluency.mustache
@@ -6,13 +8,13 @@
 .minilesson_fluency_box {
   position: relative;
   margin: auto;
-  box-shadow: 0px 2px 20px 0px rgba(0, 0, 0, 0.12);
+  box-shadow: 0px 2px 20px 0px rgba($black, 0.12);
   border-radius: 8px;
-  background-color: #FFFFFF;
+  background-color: $white;
 
   .item-feedback-container {
     display: flex;
-    background-color: #FFFFFF;
+    background-color: $white;
     height: 50px;
     align-items: center;
     justify-content: center;
@@ -37,7 +39,7 @@
     }
 
     .fa-star-o {
-      color: gray;
+      color: $gray;
       font-size: 1.5em;
     }
   }
@@ -51,8 +53,8 @@
     align-self: center;
     width: 80%;
     margin: auto;
-    border: 1px solid #ccc;
-    background-color: white;
+    border: 1px solid $grey-500;
+    background-color: $white;
     border-radius: 10px;
     padding: 6px;
     font-style: italic;
@@ -61,26 +63,26 @@
   .fluency_image {
     padding: 20px;
     border-radius: 100%;
-    background: #F3ECFC;
+    background: $lavender-bg;
   }
 
   .fluency_start_btn {
-    background-color: #506dff;
+    background-color: $primary;
     margin-top: 0;
     width: 96px;
     height: 36px;
     border-radius: 8px;
-    color: #FFFFFF;
-    border-color: #506dff;
+    color: $white;
+    border-color: $primary;
 
     &:hover,
     &:focus,
     &:active {
-      background-color: #2642CD;
-      border-color: #2642CD;
+      background-color: $primary-hover;
+      border-color: $primary-hover;
       outline: 0;
       box-shadow: unset;
-      color: #FFFFFF;
+      color: $white;
     }
   }
 
@@ -88,7 +90,7 @@
     position: relative;
     margin-top: 10px;
     font-size: 1.3em;
-    color: #1F2334;
+    color: $text;
   }
 
   .fluency_reply {
@@ -101,26 +103,26 @@
     padding: 10px;
     border-top: 1px solid darkgray;
     border-bottom: 1px solid darkgray;
-    background-color: rgba(98, 135, 182, 1);
+    background-color: $bubble-blue;
   }
 
   .fluency_speech {
     position: relative;
     font-family: arial;
     font-size: 16px;
-    background: #a53d38;
-    color: black;
+    background: $error-bubble;
+    color: $black;
     border-radius: 10px;
     padding: 20px;
   }
 
   .fluency_right {
-    background-color: white;
+    background-color: $white;
 
     &:after {
       content: '';
       border: 20px solid transparent;
-      border-left-color: white;
+      border-left-color: $white;
       border-right: 0;
       position: absolute;
       right: -20px;
@@ -130,12 +132,12 @@
   }
 
   .fluency_teacher_left {
-    background-color: rgba(122, 221, 76, 1);
+    background-color: $bubble-green;
 
     &:after {
       content: '';
       border: 20px solid transparent;
-      border-right-color: rgba(122, 221, 76, 1);
+      border-right-color: $bubble-green;
       border-left: 0;
       position: absolute;
       left: -20px;
@@ -179,12 +181,12 @@
     padding: 12px 0;
     font-size: 24px;
     font-weight: bold;
-    color: #414C81;
+    color: $heading-navy;
   }
 
   .fluency_controls {
     margin-top: 5px;
-    background-color: white;
+    background-color: $white;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -207,9 +209,9 @@
     align-items: center;
     justify-content: center;
     font-size: 75px;
-    background-color: rgba(98, 135, 182, 1);
+    background-color: $bubble-blue;
     font-weight: bold;
-    color: white;
+    color: $white;
     text-align: center;
     z-index: 999;
   }
@@ -231,26 +233,26 @@
   .fluency_skip_btn {
     border: 1px;
     border-style: solid;
-    border-color: #506dff;
+    border-color: $primary;
     border-radius: 10px;
     font-size: 15px;
     font-weight: 500;
     margin: auto;
-    background-color: #fff;
-    color: #506dff;
+    background-color: $white;
+    color: $primary;
 
     &:hover,
     &:active,
     &:focus {
       border: 1px;
       border-style: solid;
-      border-color: #506dff;
+      border-color: $primary;
       border-radius: 10px;
       font-size: 15px;
       font-weight: 500;
       margin: auto;
-      background-color: #fff;
-      color: #506dff;
+      background-color: $white;
+      color: $primary;
     }
   }
 }
@@ -260,30 +262,30 @@
   text-align: center;
 
   .fluency_listen_btn {
-    background: #5067ff;
+    background: $primary;
     border-radius: 8px;
-    border: 1.5px solid #fff;
-    color: #fff;
-    border-color: #5067ff;
-    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.22);
+    border: 1.5px solid $white;
+    color: $white;
+    border-color: $primary;
+    box-shadow: 0px 2px 6px 0px rgba($black, 0.22);
     outline: 0;
 
     &:hover,
     &:active,
     &:focus {
-      background: #5067ff;
+      background: $primary;
       border-radius: 8px;
-      border: 1.5px solid #fff;
-      color: #fff;
-      border-color: #5067ff;
-      box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.22);
+      border: 1.5px solid $white;
+      color: $white;
+      border-color: $primary;
+      box-shadow: 0px 2px 6px 0px rgba($black, 0.22);
       outline: 0;
     }
   }
 }
 
 .btn.fluency_listen_btn.audioself {
-  color: #FFFFFF;
+  color: $white;
 }
 
 // Word/letter results
@@ -297,27 +299,27 @@ span.fluencyletterresult {
   padding: 3px 5px;
   border-radius: 5px;
   border: 1px solid transparent;
-  background-color: #f9f9f9;
+  background-color: $grey-50;
   cursor: default;
 
   &.letter_missing {
-    background-color: #FCF9EB;
-    color: gray;
+    background-color: $warning-bg;
+    color: $gray;
   }
 
   &.letter_fair {
-    background-color: #FCF9EB;
-    color: #CC7B02;
+    background-color: $warning-bg;
+    color: $warning-text;
   }
 
   &.letter_good {
-    background-color: #F2FBF0;
-    color: #099506;
+    background-color: $success-bg-lightest;
+    color: $success-dark;
   }
 
   &.letter_wrong {
-    background-color: #FCF5F5;
-    color: #FD1515;
+    background-color: $fluency-error-bg;
+    color: $error-bright;
   }
 }
 
@@ -328,7 +330,7 @@ span.fluencyletterresult {
   align-items: center;
   height: 10px;
   margin-top: 5px;
-  background-color: #f0f0f0;
+  background-color: $grey-200;
   border-radius: 5px;
 
   span {
@@ -340,26 +342,26 @@ span.fluencyletterresult {
 span.fluencyphoneme {
 
   &.letter_missing {
-    background-color: gray;
+    background-color: $gray;
   }
 
   &.letter_fair {
-    background-color: orange;
+    background-color: $orange;
   }
 
   &.letter_good {
-    background-color: green;
+    background-color: $green;
   }
 
   &.letter_wrong {
-    background-color: red;
+    background-color: $red;
   }
 }
 
 // Star rating
 .fluency_star_rating {
-  background: #FFFFFF;
-  border: 1px solid #DEE2FC;
+  background: $white;
+  border: 1px solid $primary-border;
   border-radius: 40px;
   padding: 10px;
   letter-spacing: 10px;

@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Question Panel: admin table for managing lesson items
 // Page: #page-mod-minilesson-rsquestion-rsquestions
@@ -5,7 +7,7 @@
 
 // Add item link boxes (additemlink.mustache)
 .mod_minilesson_link_box {
-  border: 1px solid black;
+  border: 1px solid $black;
   display: inline-block;
   width: 150px;
   height: 120px;
@@ -18,7 +20,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: #f5f5f5;
+    background-color: $grey-100;
   }
 }
 
@@ -38,11 +40,11 @@
     padding: 15px;
     border-radius: 10px;
     font-size: 18px;
-    background-color: #506DFF;
+    background-color: $primary;
 
     &:hover,
     &:active {
-      background-color: #2642CD;
+      background-color: $primary-hover;
       box-shadow: unset;
       outline: 0;
     }
@@ -52,7 +54,7 @@
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel {
 
   td .itemname {
-    color: #1F2334;
+    color: $text;
     font-weight: 500;
     line-height: 100%;
     font-size: 15px;
@@ -60,20 +62,20 @@
   }
 
   td .itemtype:not(.mobileviewtype) {
-    color: #5C669A;
+    color: $text-slate;
     border-left: 1px solid rgba(92, 102, 154, 0.76);
   }
 
   td.itemaction {
-    border-left: 1px solid #E9ECFB;
+    border-left: 1px solid $primary-bg-muted;
     vertical-align: middle;
 
     .icon {
-      color: #5C669A;
+      color: $text-slate;
     }
 
     .mod_minilesson_item_row_deletelink .icon {
-      color: #FF4747;
+      color: $error;
     }
   }
 
@@ -97,9 +99,9 @@
   }
 
   td {
-    background: #FBFBFE;
-    border-top: 1px solid #E9ECFB;
-    border-bottom: 1px solid #E9ECFB;
+    background: $primary-ghost;
+    border-top: 1px solid $primary-bg-muted;
+    border-bottom: 1px solid $primary-bg-muted;
     padding: 12px 16px;
   }
 
@@ -107,7 +109,7 @@
   tr th:first-child {
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
-    border-left: 1px solid #E9ECFB;
+    border-left: 1px solid $primary-bg-muted;
     width: 88%;
     vertical-align: middle;
   }
@@ -115,7 +117,7 @@
   tr td:last-child,
   tr th:last-child {
     border-top-right-radius: 8px;
-    border-right: 1px solid #E9ECFB;
+    border-right: 1px solid $primary-bg-muted;
     border-bottom-right-radius: 8px;
     text-align: right;
     width: 5%;
@@ -151,7 +153,7 @@
     }
 
     th {
-      color: #000000;
+      color: $black;
     }
 
     th[aria-label="Reorder"] {
@@ -170,7 +172,7 @@
     .mod_minilesson_item_row {
 
       .itemdate .icon {
-        color: #5C669A;
+        color: $text-slate;
       }
 
       .itemtypelabel {
@@ -181,7 +183,7 @@
 
     .dataTables_empty {
       height: 150px;
-      color: #202438;
+      color: $text-dark;
       font-weight: 400;
       font-style: italic;
       font-size: 15px;
@@ -235,7 +237,7 @@
 
     .mobileviewtype {
       display: block;
-      color: #5C669A;
+      color: $text-slate;
     }
 
     .itemtypename {

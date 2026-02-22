@@ -1,23 +1,25 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Space Game: interactive game activity
 // Template: templates/spacegame.mustache
 // -----------------------------------------------------------------------------
 
 .path-mod-minilesson #mod_minilesson_spacegame {
-  background-color: #000;
+  background-color: $black;
   width: 100%;
 }
 
 .ml-spacegame-correct {
   background-color: rgba(0, 255, 0, 0.5) !important;
-  border: 1px solid black;
+  border: 1px solid $black;
   border-radius: 5px;
   padding: 1px;
 }
 
 .ml-spacegame-incorrect {
   background-color: rgba(255, 0, 0, 0.5) !important;
-  border: 1px solid black;
+  border: 1px solid $black;
   border-radius: 5px;
   padding: 1px;
 }

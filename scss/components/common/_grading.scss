@@ -1,23 +1,25 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Grading & Corrections: shared grading markup, passage reading, corrections
 // Used by: correctionsmarkup.js, passagereading, freespeaking, freewriting
 // -----------------------------------------------------------------------------
 
 .mod_minilesson_grading_badword {
-  color: red;
-  background-color: #ffcaca;
+  color: $red;
+  background-color: $error-bg-light;
   padding: 5px;
   border-radius: 5px 5px 5px;
-  border: 1px solid red;
+  border: 1px solid $red;
   position: relative;
 }
 
 .mod_minilesson_grading_endspace {
-  color: blue;
-  background-color: #cacaff;
+  color: $blue;
+  background-color: $grading-insert;
   padding: 5px;
   border-radius: 5px 5px 5px;
-  border: 1px solid blue;
+  border: 1px solid $blue;
   position: relative;
 }
 
@@ -42,11 +44,11 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 }
 
 .mod_minilesson_grading_player_cont {
-  color: blue;
+  color: $blue;
 }
 
 .mod_minilesson_grading_score {
-  color: blue;
+  color: $blue;
   line-height: 18px;
   margin-left: 5px;
   text-align: center;
@@ -56,17 +58,17 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 }
 
 .mod_minilesson_grading_error_img {
-  color: blue;
+  color: $blue;
 }
 
 .mod_minilesson_grading_action_cont {
-  color: blue;
+  color: $blue;
   display: flex;
 }
 
 .mod_minilesson_spotcheckmode .mod_minilesson_grading_passageword.mod_minilesson_grading_badword {
-  border-color: green;
-  background-color: #d7f9ca;
+  border-color: $green;
+  background-color: $success-bg-light;
 }
 
 .mod_minilesson_spotcheckmode .mod_minilesson_grading_passagespace.mod_minilesson_aiunmatched {
@@ -74,17 +76,17 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 }
 
 .mod_minilesson_msvmode .mod_minilesson_grading_passageword.mod_minilesson_grading_badword {
-  border-color: red;
-  background-color: #ffcaca;
+  border-color: $red;
+  background-color: $error-bg-light;
   -webkit-print-color-adjust: exact;
 }
 
 .mod_minilesson_msvmode .mod_minilesson_grading_passageword.mod_minilesson_grading_selfcorrectedword {
-  color: green;
-  background-color: #d7f9ca;
+  color: $green;
+  background-color: $success-bg-light;
   padding: 5px;
   border-radius: 5px 5px 5px;
-  border: 1px solid green;
+  border: 1px solid $green;
   position: relative;
 }
 
@@ -109,7 +111,7 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 .btn.mod_minilesson_quickgrade_ok {
   background-color: DodgerBlue;
   border: none;
-  color: white;
+  color: $white;
   padding: 10px 14px;
   font-size: 14px;
   cursor: pointer;
@@ -124,7 +126,7 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 .btn.mod_minilesson_quickgrade_ng {
   background-color: darkgrey;
   border: none;
-  color: white;
+  color: $white;
   padding: 10px 14px;
   font-size: 14px;
   cursor: pointer;
@@ -133,7 +135,7 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 }
 
 .btn.mod_minilesson_quickgrade_ng:hover {
-  background-color: grey;
+  background-color: $grey;
 }
 
 // Corrections markup (correctionsmarkup.js)
@@ -147,20 +149,20 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 .mod_minilesson_mu_passage_word.pr_correct,
 .mod_minilesson_mu_passage_space.pr_correct {
   text-decoration: underline;
-  text-decoration-color: green;
-  background-color: #c5efcf;
+  text-decoration-color: $green;
+  background-color: $success-bg;
 }
 
 .mod_minilesson_mu_passage_word.pr_incorrect,
 .mod_minilesson_mu_passage_space.pr_incorrect {
   text-decoration: underline;
-  text-decoration-color: red;
-  background-color: #ffcaca;
+  text-decoration-color: $red;
+  background-color: $error-bg-light;
 }
 
 .mod_minilesson_mu_passage_space.pr_unreached,
 .mod_minilesson_mu_passage_word.pr_unreached {
-  background-color: rgb(234, 229, 229);
+  background-color: $grading-correct-bg;
 }
 
 // Passage reading
@@ -172,7 +174,7 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 }
 
 .ml_passagereading_passage {
-  border: 1px solid grey;
+  border: 1px solid $grey;
   border-radius: 0.5em;
   padding: 8px;
   font-size: large;
@@ -182,7 +184,7 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 .ml_passagereading_resultscontainer {
   display: flex;
   justify-content: space-between;
-  border: 1px solid grey;
+  border: 1px solid $grey;
   padding: 4px;
 }
 
@@ -198,7 +200,7 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 // Grading overrides (later in cascade)
 
 .mod_minilesson_grading_badword {
-  text-decoration: underline #0000FF;
+  text-decoration: underline $grading-link;
   font-weight: bold;
 }
 
@@ -213,7 +215,7 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 }
 
 .mod_minilesson_grading_unreadword {
-  color: #F13B3B;
+  color: $error-text;
   font-weight: 700;
 }
 
@@ -228,7 +230,7 @@ div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
 }
 
 .mod_minilesson_mu_passage_space.mod_minilesson_aiunmatched {
-  text-decoration: underline #0000FF;
+  text-decoration: underline $grading-link;
   font-weight: bold;
 }
 

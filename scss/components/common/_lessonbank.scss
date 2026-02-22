@@ -1,3 +1,5 @@
+@use '../../abstracts/variables' as *;
+
 // -----------------------------------------------------------------------------
 // Lesson Bank: admin page for searching and importing lessons
 // Page: lessonbank.php
@@ -6,14 +8,14 @@
 #page-mod-minilesson-lessonbank {
 
   #fgroup_id_searchgroup {
-    background-color: #eee;
+    background-color: $grey-300;
     padding: 15px;
     margin: 0;
   }
 
   #advancesearch {
     padding: 15px;
-    background-color: #eee;
+    background-color: $grey-300;
 
     #fitem_id_level {
       padding: 0 15px;
@@ -31,7 +33,7 @@
   .searchbox .itemcontainer {
     padding: 10px 0;
     margin: 0;
-    border: 1px solid #ced4da;
+    border: 1px solid $grey-border;
     border-radius: 4px;
     flex: 1;
   }
@@ -46,7 +48,7 @@
     [data-action="showtext"] {
       background-color: transparent;
       border: none;
-      color: #1177d1;
+      color: $link-blue;
       box-shadow: none;
     }
   }
@@ -68,7 +70,7 @@
   }
 
   .lessonbanklayoutbox {
-    border: 1px solid #ced4da;
+    border: 1px solid $grey-border;
     border-radius: 10px;
     overflow: hidden;
   }
@@ -83,15 +85,15 @@
     }
 
     &.active {
-      background-color: #1177d1;
-      color: white;
-      border: 1px solid #1177d1;
+      background-color: $link-blue;
+      color: $white;
+      border: 1px solid $link-blue;
       box-shadow: unset;
 
       &:focus {
-        background-color: #1177d1;
-        color: white;
-        border: 1px solid #1177d1;
+        background-color: $link-blue;
+        color: $white;
+        border: 1px solid $link-blue;
         box-shadow: unset;
       }
     }
