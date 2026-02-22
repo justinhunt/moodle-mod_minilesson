@@ -368,12 +368,28 @@
   overflow: hidden;
 }
 
+:is(.startmodule_splashscreen, .item-container) .startmodule_image_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 36px auto 0;
+  height: 70px;
+  width: 70px;
+  background: #f3ecfc;
+  border-radius: 100%;
+  /*
+  .startmodule_image {
+  }
+  */
+}
 :is(.startmodule_splashscreen, .item-container) .startmodule_title {
   height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  text-align: center;
+  margin-top: 1rem;
   padding: 12px 0;
   font-size: 24px;
   font-weight: bold;
@@ -403,13 +419,17 @@
   box-shadow: none;
   color: #FFFFFF;
 }
-:is(.startmodule_splashscreen, .item-container) .startmodule_image {
-  padding: 20px;
-  border-radius: 100%;
-  background: #f3ecfc;
-  overflow: visible;
-  height: 70px;
-  width: 70px;
+:is(.startmodule_splashscreen, .item-container) .startmodule_description {
+  color: #1F2334;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 21px;
+  letter-spacing: 0;
+  text-align: center;
+  margin-top: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 70%;
 }
 
 .ml_freewriting_startscreen .freewriting_image,
@@ -715,17 +735,6 @@
 }
 .minilesson_audiochat_box .ml_ac_retrybtn:hover {
   color: #506DFF;
-}
-
-:is(.startmodule_splashscreen, .item-container) .startmodule_description {
-  color: #1F2334;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 21px;
-  letter-spacing: 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 70%;
 }
 
 .minilesson_questionheader_contents {
@@ -4879,6 +4888,13 @@ div.poodlldictationplayer {
     white-space: nowrap;
     border: 0;
   }
+}
+.minilesson_fluency_box .startmodule_image_container {
+  background-color: #ab7aee;
+}
+.minilesson_fluency_box .startmodule_image_container .startmodule_image {
+  position: relative;
+  top: 3px;
 }
 .minilesson_fluency_box .item-feedback-container {
   display: flex;

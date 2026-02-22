@@ -14,12 +14,30 @@
 // Shared start screen elements (scoped for specificity 0,2,0)
 :is(.startmodule_splashscreen, .item-container) {
 
+  .startmodule_image_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 36px auto 0;
+    height: 70px;
+    width: 70px;
+    background: $lavender-bg;
+    border-radius: 100%;
+    /*
+    .startmodule_image {
+    }
+    */
+
+  }
+
   .startmodule_title {
     height: auto;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    text-align: center;
+    margin-top: 1rem;
     padding: 12px 0;
     font-size: 24px;
     font-weight: bold;
@@ -55,13 +73,17 @@
     }
   }
 
-  .startmodule_image {
-    padding: 20px;
-    border-radius: 100%;
-    background: $lavender-bg;
-    overflow: visible;
-    height: 70px;
-    width: 70px;
+  .startmodule_description {
+    color: $text;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 21px;
+    letter-spacing: 0;
+    text-align: center;
+    margin-top: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    width: calc(70%);
   }
 }
 

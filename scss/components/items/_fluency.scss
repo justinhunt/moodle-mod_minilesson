@@ -6,6 +6,14 @@
 // -----------------------------------------------------------------------------
 
 .minilesson_fluency_box {
+    .startmodule_image_container {
+        background-color: #ab7aee;
+
+        .startmodule_image {
+            position: relative;
+            top: 3px;
+        }
+    }
 
   .item-feedback-container {
     display: flex;
