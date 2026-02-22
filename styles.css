@@ -389,6 +389,8 @@
 .minilesson_lgapfill_player_box .lgapfill_start_btn {
   background-color: #506DFF;
   margin-top: 0;
+  width: 96px;
+  height: 36px;
   border-radius: 8px;
   border-color: #506DFF;
   color: #FFFFFF;
@@ -2291,6 +2293,55 @@ span.wrongitem {
   align-items: center;
 }
 
+.item-container .form-container {
+  margin: 20px auto 22px;
+}
+.item-container .form-container input:first-child {
+  margin-left: 10px;
+}
+.item-container .form-container input:last-child {
+  margin-right: 10px;
+}
+.item-container .definition-container {
+  display: flex;
+  min-height: 100px;
+  height: auto;
+  margin-bottom: 50px;
+  margin-top: 10px;
+}
+.item-container .definition {
+  align-self: center;
+  width: 50%;
+  height: auto;
+  min-height: 50px;
+  margin: auto;
+  background-color: #F2F2FD;
+  border-radius: 8px;
+  padding: 6px;
+  position: relative;
+}
+.item-container .definition .hinticon-container {
+  position: absolute;
+  float: left;
+  background-color: #506DFF;
+  color: #FFFFFF;
+  width: 30px;
+  height: 30px;
+  top: 0;
+  left: 10px;
+  border-radius: 0px 0px 5px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.07);
+}
+.item-container .definition .hint-title {
+  color: #506DFF;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
 .minilesson_audiochat_box * {
   box-sizing: border-box;
   border-width: 0;
@@ -3923,6 +3974,7 @@ textarea.ml_freewriting_textarea {
   padding: 20px;
   border-radius: 100%;
   background: #f3ecfc;
+  overflow: visible;
 }
 .minilesson_wordshuffle_player_box .wordshuffle_game {
   min-height: 250px;
@@ -3982,8 +4034,8 @@ textarea.ml_freewriting_textarea {
   z-index: 999;
 }
 
-.gapfill-container input.single-character,
-.gapfill-container input.single-character-mtext {
+.item-container input.single-character,
+.item-container input.single-character-mtext {
   width: 26px;
   margin-left: 2px;
   text-align: center;
@@ -3996,67 +4048,16 @@ textarea.ml_freewriting_textarea {
   line-height: 21px;
   letter-spacing: 0;
 }
-.gapfill-container input.single-character.ml_gapfill_char_correct {
+.item-container input.single-character.ml_gapfill_char_correct {
   background-color: palegreen;
 }
-.gapfill-container .single-character-mtext {
+.item-container .single-character-mtext {
   color: #0c5460;
   background-color: #d1ecf1;
   border-color: #bee5eb;
 }
-.gapfill-container .ml_gapfill_char_correct {
+.item-container .ml_gapfill_char_correct {
   background-color: palegreen;
-}
-.gapfill-container sgapfill_missing_input.ml_gapfill_char_correct {
-  background-color: palegreen;
-}
-.gapfill-container .form-container {
-  margin: 20px auto 22px;
-}
-.gapfill-container .form-container input:first-child {
-  margin-left: 10px;
-}
-.gapfill-container .form-container input:last-child {
-  margin-right: 10px;
-}
-.gapfill-container .definition-container {
-  display: flex;
-  min-height: 100px;
-  height: auto;
-  margin-bottom: 50px;
-  margin-top: 10px;
-}
-.gapfill-container .definition {
-  align-self: center;
-  width: 50%;
-  height: auto;
-  min-height: 50px;
-  margin: auto;
-  background-color: #F2F2FD;
-  border-radius: 8px;
-  padding: 6px;
-  position: relative;
-}
-.gapfill-container .definition .hinticon-container {
-  position: absolute;
-  float: left;
-  background-color: #506DFF;
-  color: #FFFFFF;
-  width: 30px;
-  height: 30px;
-  top: 0;
-  left: 10px;
-  border-radius: 0px 0px 5px 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.07);
-}
-.gapfill-container .definition .hint-title {
-  color: #506DFF;
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 1px;
 }
 
 .lgapfill_listen_cont {
@@ -4239,6 +4240,7 @@ textarea.ml_freewriting_textarea {
   padding: 20px;
   border-radius: 100%;
   background: #f3ecfc;
+  overflow: visible;
 }
 .minilesson_tgapfill_player_box .tgapfill_prompt {
   position: relative;
@@ -4540,6 +4542,9 @@ textarea.ml_freewriting_textarea {
   text-align: center;
   z-index: 999;
 }
+.minilesson_sgapfill_player_box .sgapfill_missing_input.ml_gapfill_char_correct {
+  background-color: palegreen;
+}
 .minilesson_sgapfill_player_box .sgapfill_correct {
   background-color: lightgreen;
 }
@@ -4728,6 +4733,7 @@ div.poodlldictationplayer {
   padding: 20px;
   border-radius: 100%;
   background: #f3ecfc;
+  overflow: visible;
   width: 70px;
   height: 70px;
 }
@@ -4930,6 +4936,7 @@ div.poodlldictationplayer {
   padding: 20px;
   border-radius: 100%;
   background: #f3ecfc;
+  overflow: visible;
 }
 .minilesson_landr_player_box .landr_ctrl-btn {
   background-color: #506DFF;
@@ -5228,6 +5235,7 @@ div.poodlldictationplayer {
   padding: 20px;
   border-radius: 100%;
   background: #f3ecfc;
+  overflow: visible;
 }
 .minilesson_fluency_box .fluency_start_btn {
   background-color: #506DFF;

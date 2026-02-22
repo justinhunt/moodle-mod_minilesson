@@ -40,6 +40,7 @@
 @use 'components/common/hiddenplayer';
 @use 'components/common/soundwave';
 @use 'components/common/questioncontainer';
+@use 'components/common/itemcontainer';
 
 // Components - Items (activity types)
 @use 'components/items/audiochat';
@@ -66,5 +67,3 @@
 // Themes
 @use 'themes/default';
 
-// Migration (original monolithic CSS - to be gradually refactored into partials)
-@use 'migration/originalstyles';

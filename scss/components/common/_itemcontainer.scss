@@ -1,0 +1,63 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// Item Container: shared gapfill character inputs, definitions, and hints
+// Used by: typinggapfill, listeninggapfill, speakinggapfill, wordshuffle, listenrepeat
+// -----------------------------------------------------------------------------
+
+.item-container {
+  .form-container {
+    margin: 20px auto 22px;
+
+    input:first-child {
+      margin-left: 10px;
+    }
+
+    input:last-child {
+      margin-right: 10px;
+    }
+  }
+
+  .definition-container {
+    display: flex;
+    min-height: 100px;
+    height: auto;
+    margin-bottom: 50px;
+    margin-top: 10px;
+  }
+
+  .definition {
+    align-self: center;
+    width: 50%;
+    height: auto;
+    min-height: 50px;
+    margin: auto;
+    background-color: $primary-lighter;
+    border-radius: 8px;
+    padding: 6px;
+    position: relative;
+
+    .hinticon-container {
+      position: absolute;
+      float: left;
+      background-color: $primary;
+      color: $white;
+      width: 30px;
+      height: 30px;
+      top: 0;
+      left: 10px;
+      border-radius: 0px 0px 5px 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 1px 2px 2px 0px rgba($black, 0.07);
+    }
+
+    .hint-title {
+      color: $primary;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+  }
+}
