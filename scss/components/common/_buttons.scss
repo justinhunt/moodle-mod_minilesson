@@ -22,3 +22,35 @@
 .minilesson_nextbutton:focus {
   outline: 0;
 }
+
+
+/* Skip button */
+
+.btn.skip-button {
+  background: $white;
+  border-color: $primary;
+  border-radius: 10px;
+  color: $primary;
+  font-weight: 500;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background: $white;
+    border-color: $primary;
+    color: $primary;
+  }
+
+    img.icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  .icon {
+    max-width: 30px;
+    max-height: 24px;
+    margin: 0 0 0 .5rem;
+    padding: 0;
+    box-sizing: content-box;
+  }
+}
