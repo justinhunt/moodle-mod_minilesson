@@ -2,6 +2,10 @@
 
 // Freespeaking activity component
 
+.ml_freespeaking_startscreen .freespeaking_image_container {
+  background-color: $warning-light;
+}
+
 .ml_freespeaking_results_summaries {
   display: flex;
   justify-content: space-between;

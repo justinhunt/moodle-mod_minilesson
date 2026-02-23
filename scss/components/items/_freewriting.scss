@@ -1,14 +1,17 @@
+@use '../../abstracts/variables' as *;
+
 // Freewriting activity component
 
-.ml_freewriting_submitbutton {
-  margin: auto;
-  width: 80%;
-}
-
-textarea.ml_freewriting_textarea {
-  width: 100%;
+.ml_freewriting_startscreen .freewriting_image_container {
+  background-color: $warning-light;
 }
 
 .ml_freewriting_actionbox {
-  text-align: center;
+    text-align: center;
+    margin-top: 24px;
+    margin-bottom: 36px;
+}
+
+.minilesson_freewriting_box {
+    width: 100%;
 }

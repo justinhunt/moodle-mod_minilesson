@@ -9,6 +9,9 @@
   background-color: $white;
   border-radius: 8px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 // Shared start screen elements (scoped for specificity 0,2,0)
@@ -80,10 +83,4 @@
     text-align: center;
     width: 70%;
   }
-}
-
-// Activity-specific image overrides
-.ml_freewriting_startscreen .freewriting_image,
-.ml_freespeaking_startscreen .freespeaking_image {
-  background-color: $warning-light;
 }

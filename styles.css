@@ -366,6 +366,9 @@
   background-color: #FFFFFF;
   border-radius: 8px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 :is(.startmodule_splashscreen, .item-container) .startmodule_image_container {
@@ -425,11 +428,6 @@
   letter-spacing: 0;
   text-align: center;
   width: 70%;
-}
-
-.ml_freewriting_startscreen .freewriting_image,
-.ml_freespeaking_startscreen .freespeaking_image {
-  background-color: #FFDE89;
 }
 
 /* Next item button */
@@ -536,6 +534,7 @@
   padding: 5px 8px;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .progress-container .progress.active {
@@ -587,6 +586,10 @@
   padding: 2px;
 }
 
+.resultscontainer {
+  width: 100%;
+}
+
 .ml_freewriting_resultsbox {
   color: #000000;
 }
@@ -614,7 +617,7 @@
 .ml_freespeaking_results .ml_fs_results_summary .ml_fs_sumcell_title {
   font-weight: 500;
   font-size: 13px;
-  color: #727CAD;
+  color: #596084;
 }
 .ml_freespeaking_results .ml_fs_results_summary .ml_fs_sumcell_content {
   font-weight: 600;
@@ -627,6 +630,7 @@
   text-align: center;
   padding: 40px;
   position: relative;
+  margin-top: 48px;
 }
 :is(.ml_freewriting_resultsbox, .ml_freespeaking_resultsbox) .ml_freespeaking_feedback .ml_fs_results_summary {
   position: absolute;
@@ -673,7 +677,8 @@
   color: #506DFF;
   text-transform: uppercase;
   margin-bottom: 10px;
-  font-weight: 400;
+  font-weight: 600;
+  font-size: 13px;
 }
 :is(.ml_freewriting_resultsbox, .ml_freespeaking_resultsbox) .mod_minilesson_toggle_differences :is(.mstfd_showall, .mstfd_hidecrossouts) {
   color: #506DFF;
@@ -685,6 +690,14 @@
   color: #506DFF;
   border-radius: 8px;
   margin: 15px;
+  padding-top: 5px;
+  padding-bottom: 7px;
+  font-weight: 600;
+  font-size: 14px;
+}
+:is(.ml_freewriting_resultsbox, .ml_freespeaking_resultsbox) .reattempt_btn img.icon {
+  width: 14px;
+  height: 14px;
 }
 :is(.ml_freewriting_resultsbox, .ml_freespeaking_resultsbox) .reattempt_btn:hover {
   color: #506DFF;
@@ -2224,7 +2237,6 @@ span.wrongitem {
   margin: auto;
   text-align: center;
   font-size: 1.3em;
-  padding-top: 5px;
 }
 
 .minilesson_questionheader {
@@ -2269,6 +2281,9 @@ span.wrongitem {
   /* TODO- Are really needed? */
   position: relative;
   margin: auto;
+}
+.item-container > div {
+  width: 100%;
 }
 .item-container .maintitle {
   border-bottom: 1px solid #E6E9FD;
@@ -3139,17 +3154,22 @@ span.wrongitem {
   padding: 10px;
 }
 
-.ml_freewriting_submitbutton {
-  margin: auto;
-  width: 80%;
-}
-
-textarea.ml_freewriting_textarea {
-  width: 100%;
+.ml_freewriting_startscreen .freewriting_image_container {
+  background-color: #FFDE89;
 }
 
 .ml_freewriting_actionbox {
   text-align: center;
+  margin-top: 24px;
+  margin-bottom: 36px;
+}
+
+.minilesson_freewriting_box {
+  width: 100%;
+}
+
+.ml_freespeaking_startscreen .freespeaking_image_container {
+  background-color: #FFDE89;
 }
 
 .ml_freespeaking_results_summaries {

@@ -16,6 +16,10 @@
     position: relative;
     margin: auto;
 
+    > div {
+        width: 100%;
+    }
+
     .maintitle {
         border-bottom: 1px solid $primary-light;
         padding: 24px;

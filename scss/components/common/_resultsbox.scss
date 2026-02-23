@@ -1,5 +1,11 @@
 @use '../../abstracts/variables' as *;
 
+// Results component for freewriting, freespeaking and audiochat
+
+.resultscontainer {
+  width: 100%;
+}
+
 .ml_freewriting_resultsbox {
   color: $black;
 }
@@ -46,6 +52,7 @@
     text-align: center;
     padding: 40px;
     position: relative;
+    margin-top: 48px;
 
     .ml_fs_results_summary {
       position: absolute;
@@ -95,11 +102,12 @@
     padding: 20px 40px;
 
     .para-bold-title {
-      display: inline-block;
-      color: $primary;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      font-weight: 400;
+        display: inline-block;
+        color: $primary;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        font-weight: 600;
+        font-size: 13px;
     }
   }
 
@@ -116,6 +124,15 @@
     color: $primary;
     border-radius: 8px;
     margin: 15px;
+    padding-top: 5px;
+    padding-bottom: 7px;
+    font-weight: 600;
+    font-size: 14px;
+
+    img.icon {
+      width: 14px;
+      height: 14px;
+    }
 
     &:hover {
       color: $primary;
