@@ -99,6 +99,66 @@
     }
   }
 
+}
+
+// -----------------------------------------------------------------------------
+// DataTables pagination: reports page
+// -----------------------------------------------------------------------------
+
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button {
+  border: 1px solid $primary-border !important;
+  border-radius: 6px !important;
+  background: $white !important;
+  color: $primary !important;
+  font-weight: 500;
+  margin: 0 2px;
+  box-shadow: none !important;
+}
+
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button:hover {
+  background: $primary-bg !important;
+  border-color: $primary !important;
+  color: $primary !important;
+}
+
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.current:hover {
+  background: $primary !important;
+  border-color: $primary !important;
+  color: $white !important;
+}
+
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.previous,
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.next {
+  border: none !important;
+  background: transparent !important;
+  color: $primary !important;
+  font-size: 14px;
+}
+
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.previous:hover,
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.next:hover {
+  background: transparent !important;
+  color: $primary-hover !important;
+  border: none !important;
+}
+
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.disabled {
+  color: $grey-muted !important;
+}
+
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.previous.disabled,
+.dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.next.disabled {
+  color: $text-slate !important;
+  border: none !important;
+  background: transparent !important;
+  cursor: default;
+}
+
+// Lessonbank (continued)
+
+#page-mod-minilesson-lessonbank {
+
   .listlayout .listtable {
 
     .imgcolumn {

@@ -12,39 +12,6 @@
   --hover: #{$ws-hover};
   --bank: #{$ws-bank};
 
-  .definition-container {
-    display: flex;
-    min-height: 100px;
-    height: auto;
-    margin-bottom: 50px;
-    margin-top: 10px;
-  }
-
-  .definition {
-    align-self: center;
-    width: 80%;
-    margin: auto;
-    background-color: $primary-lighter;
-    border-radius: 8px;
-    padding: 6px;
-    position: relative;
-    min-height: 50px;
-
-    .hinticon-container {
-      float: left;
-      background-color: $primary;
-      color: $white;
-      width: 30px;
-      height: 30px;
-      top: 0;
-      left: 10px;
-      border-radius: 0px 0px 5px 5px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 1px 2px 2px 0px rgba($black, 0.07);
-    }
-  }
 
   .question-container {
     display: flex;
@@ -230,7 +197,7 @@
   position: relative;
   margin: auto;
   border-radius: 8px;
-  box-shadow: 0px 2px 20px 0px rgba($black, 0.12);
+  box-shadow: $main-shadow;
   background: $white;
 
   .wordshuffle_retry_btn {

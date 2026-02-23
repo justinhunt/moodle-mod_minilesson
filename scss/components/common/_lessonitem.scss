@@ -87,7 +87,7 @@
 
   .modal-content {
     border-radius: 16px;
-    box-shadow: 0 2px 20px 0 rgba($black, 0.15);
+    box-shadow: $main-shadow;
   }
 
   .modal-dialog:focus {

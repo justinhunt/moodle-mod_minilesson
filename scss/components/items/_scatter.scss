@@ -58,9 +58,13 @@
 
 .minilesson-scatter-container {
 
-  .mod_minilesson_iteminstructions {
-    margin-bottom: 0;
-  }
+    .startmodule_image_container {
+        background-color: $scatter-icon-bg;
+    }
+
+    .mod_minilesson_iteminstructions {
+        margin-bottom: 0;
+    }
 
   .minilesson_scatter_box {
     width: 100%;

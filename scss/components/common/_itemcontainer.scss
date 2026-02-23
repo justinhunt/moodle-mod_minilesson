@@ -9,8 +9,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 2px 20px 0 rgb(0 0 0 / .12);
+    box-shadow: $main-shadow;
     border-radius: 8px;
+    overflow: hidden;
     background-color: #FFF;
     /* TODO- Are really needed? */
     position: relative;
@@ -47,19 +48,19 @@
     display: flex;
     min-height: 100px;
     height: auto;
-    margin-bottom: 50px;
+    margin-bottom: 36px;
     margin-top: 10px;
   }
 
   .definition {
     align-self: center;
-    width: 50%;
+    width: 600px;
     height: auto;
     min-height: 50px;
     margin: auto;
     background-color: $primary-lighter;
     border-radius: 8px;
-    padding: 6px;
+    padding: 18px;
     position: relative;
 
     .hinticon-container {
@@ -82,7 +83,8 @@
       color: $primary;
       text-transform: uppercase;
       font-weight: 600;
-      letter-spacing: 1px;
+      letter-spacing: .3px;
+      font-size: 14px;
     }
   }
 }

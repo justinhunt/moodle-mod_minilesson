@@ -26,7 +26,7 @@
 
 /* Skip button */
 
-.btn.skip-button {
+.btn.btn-skip-button-secondary {
   background: $white;
   border-color: $primary;
   border-radius: 10px;
@@ -35,15 +35,18 @@
 
   &:hover,
   &:active,
-  &:focus {
-    background: $white;
-    border-color: $primary;
-    color: $primary;
+  &:focus,
+  &:active:focus {
+    background: $primary-bg !important;
+    border-color: $primary !important;
+    color: $primary !important;
   }
 
     img.icon {
     width: 10px;
     height: 10px;
+    position: relative;
+    top: -1px;
   }
 
   .icon {
@@ -52,5 +55,27 @@
     margin: 0 0 0 .5rem;
     padding: 0;
     box-sizing: content-box;
+  }
+
+  &[disabled] img.icon {
+    filter: brightness(0) opacity(.8) !important;
+  }
+}
+
+/* Check button */
+
+.btn.btn-check-button-primary {
+  background: $primary;
+  border-color: $primary;
+  border-radius: 10px;
+  color: $white;
+  font-weight: 500;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background: $primary-hover;
+    border-color: $primary-hover;
+    color: $white;
   }
 }

@@ -1,7 +1,5 @@
 // Abstracts
 @use 'abstracts/variables';
-@use 'abstracts/functions';
-@use 'abstracts/mixins';
 
 // Vendors
 @use 'vendors/simple-keyboard';
@@ -9,8 +7,8 @@
 // Base
 @use 'base/reset';
 @use 'base/typography';
-@use 'base/animations';
 @use 'base/shakerotate';
+@use 'base/utility';
 
 // Layout
 @use 'layout/header';

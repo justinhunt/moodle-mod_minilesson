@@ -192,12 +192,12 @@ div#itemscores {
 // Results container styling
 
 .ml_listitem_results {
-  background-color: rgba(242, 242, 253, 0.45);
+  background-color: $primary-bg-muted-lighter;
 }
 
 .ml_listitem-container {
   background-color: $white;
-  box-shadow: 0 2px 20px 0 rgba($black, 0.12);
+  box-shadow: $subtle-shadow;
   border-radius: 8px;
 }
 
@@ -206,7 +206,7 @@ div#itemscores {
   padding-top: 20px;
   min-width: 150px;
   border-radius: 8px;
-  box-shadow: 0 2px 20px 0 rgba($black, 0.12);
+  box-shadow: $subtle-shadow;
   background-color: $white;
 }
 

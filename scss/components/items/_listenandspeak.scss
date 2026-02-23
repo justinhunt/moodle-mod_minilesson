@@ -12,7 +12,7 @@
     border-color: $primary;
     border-radius: 8px;
     outline: 0;
-    box-shadow: 0 2px 6px 0 rgba($black, 0.22);
+    box-shadow: $main-shadow;
     color: $white;
 
     &:hover,
@@ -22,7 +22,7 @@
       border-color: $primary;
       border-radius: 8px;
       outline: 0;
-      box-shadow: 0 2px 6px 0 rgba($black, 0.22);
+      box-shadow: $main-shadow;
       color: $white;
     }
   }
