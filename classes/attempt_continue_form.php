@@ -76,7 +76,7 @@ class attempt_continue_form extends \moodleform {
 
         $buttons[] = $mform->createElement('submit', 'continue', get_string('yes'));
 
-        $mform->addGroup($buttons, 'continueformbuttons', null, null, false,['class' => 'ml-continueformbuttons']);
+        $mform->addGroup($buttons, 'continueformbuttons', null, null, false, ['class' => 'ml-continueformbuttons']);
 
         $html  = html_writer::end_div();
         $mform->addElement('html', $html);

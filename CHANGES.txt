@@ -1,7 +1,10 @@
+Version 1.1.27 (Build 2026022300)
+- Fixed virtual keboard issue on gapfill items
+
 Version 1.1.26 (Build 2026022100)
 - Added virtual keyboard feature to free writing , typing and listening gapfill items
 - Extended AI manager fo better routing and caching of AI requests
-- Added full screen mode for Fluency item type.
+- Added full screen mode for Fiction item type.
 
 Version 1.1.25 (Build 2026020601)
 - Fixed bug affecting Norwegian in Fluency item

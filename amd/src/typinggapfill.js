@@ -210,6 +210,62 @@ define(['jquery',
                     self.check_answer();
                 }
             });
+
+            // Virtual Keyboard
+            if (self.itemdata.enablevkeyboard && self.itemdata.enablevkeyboard != '0') {
+                var KeyboardClass = SimpleKeyboard.default || SimpleKeyboard;
+
+                var keyboardConfig = {
+                    onKeyPress: button => self.onKeyPress(button)
+                };
+
+                if (self.itemdata.enablevkeyboard == '2') {
+                    // Custom Layout
+                    var customKeys = self.itemdata.customkeys || "";
+                    // 1. Clean up the string (remove extra spaces)
+                    var charArray = customKeys.split(' ').filter(c => c.trim() !== "");
+                    // If no spaces, and not empty, split by character
+                    if (charArray.length === 0 && customKeys.trim().length > 0) {
+                        charArray = customKeys.trim().split('');
+                    }
+
+                    // 2. Map to uppercase
+                    var upperArray = charArray.map(c => c.toUpperCase());
+
+                    // 3. Join back into the format simple-keyboard expects
+                    var lowerRow = charArray.join(' ') + ' {shift}';
+                    var upperRow = upperArray.join(' ') + ' {shift}';
+
+                    keyboardConfig.layout = {
+                        'default': [lowerRow],
+                        'shift': [upperRow]
+                    };
+                    keyboardConfig.display = {
+                        '{shift}': '⇧'
+                    };
+                    keyboardConfig.useStandardCaps = false;
+                    keyboardConfig.mergeDisplay = true;
+                } else {
+                    // Standard Language Layout
+                    var LayoutsClass = KeyboardLayouts.default || KeyboardLayouts;
+                    var keyboardLayouts = new LayoutsClass();
+                    var layoutName = self.get_keyboard_layout(self.itemdata.language);
+                    var layout = keyboardLayouts.get(layoutName);
+                    $.extend(keyboardConfig, layout);
+                }
+
+                self.keyboard = new KeyboardClass(".simple-keyboard-" + self.itemdata.uniqueid, keyboardConfig);
+
+                var keyboardtoggle = self.controls.container.find('.ml_simple_keyboard_toggle');
+                keyboardtoggle.on('click', function (e) {
+                    var kb = self.controls.container.find(".simple-keyboard-" + self.itemdata.uniqueid);
+                    if (kb.is(":visible")) {
+                        kb.hide();
+                    } else {
+                        kb.show();
+                    }
+                });
+            }
         },
 
         game: {
@@ -476,61 +532,7 @@ define(['jquery',
             self.controls.ctrl_btn.prop("disabled", false);
 
             var inputElements = Array.from(self.controls.container.find('.tgapfill_reply_' + self.game.pointer + ' input.single-character'));
-            // Virtual Keyboard
-            if (self.itemdata.enablevkeyboard && self.itemdata.enablevkeyboard != '0') {
-                var KeyboardClass = SimpleKeyboard.default || SimpleKeyboard;
 
-                var keyboardConfig = {
-                    onKeyPress: button => self.onKeyPress(button)
-                };
-
-                if (self.itemdata.enablevkeyboard == '2') {
-                    // Custom Layout
-                    var customKeys = self.itemdata.customkeys || "";
-                    // 1. Clean up the string (remove extra spaces)
-                    var charArray = customKeys.split(' ').filter(c => c.trim() !== "");
-                    // If no spaces, and not empty, split by character
-                    if (charArray.length === 0 && customKeys.trim().length > 0) {
-                        charArray = customKeys.trim().split('');
-                    }
-
-                    // 2. Map to uppercase
-                    var upperArray = charArray.map(c => c.toUpperCase());
-
-                    // 3. Join back into the format simple-keyboard expects
-                    var lowerRow = charArray.join(' ') + ' {shift}';
-                    var upperRow = upperArray.join(' ') + ' {shift}';
-
-                    keyboardConfig.layout = {
-                        'default': [lowerRow],
-                        'shift': [upperRow]
-                    };
-                    keyboardConfig.display = {
-                        '{shift}': '⇧'
-                    };
-                    keyboardConfig.useStandardCaps = false;
-                    keyboardConfig.mergeDisplay = true;
-                } else {
-                    // Standard Language Layout
-                    var LayoutsClass = KeyboardLayouts.default || KeyboardLayouts;
-                    var keyboardLayouts = new LayoutsClass();
-                    var layoutName = self.get_keyboard_layout(self.itemdata.language);
-                    var layout = keyboardLayouts.get(layoutName);
-                    $.extend(keyboardConfig, layout);
-                }
-
-                self.keyboard = new KeyboardClass(".simple-keyboard-" + self.itemdata.uniqueid, keyboardConfig);
-
-                var keyboardtoggle = self.controls.container.find('.ml_simple_keyboard_toggle');
-                keyboardtoggle.on('click', function (e) {
-                    var kb = self.controls.container.find(".simple-keyboard-" + self.itemdata.uniqueid);
-                    if (kb.is(":visible")) {
-                        kb.hide();
-                    } else {
-                        kb.show();
-                    }
-                });
-            }
 
             self.formReady(inputElements);
 

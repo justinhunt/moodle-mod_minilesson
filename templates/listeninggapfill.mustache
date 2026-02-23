@@ -55,9 +55,11 @@
             {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
         </button>
 
-        <button class="btn lgapfill_ctrl-btn ml_simple_keyboard_toggle" type="button">
-            <i class="fa fa-keyboard-o"></i>
-        </button>
+        {{#enablevkeyboard}}
+            <button class="btn lgapfill_ctrl-btn ml_simple_keyboard_toggle" type="button">
+                <i class="fa fa-keyboard-o"></i>
+            </button>
+        {{/enablevkeyboard}}
 
     </div>
 

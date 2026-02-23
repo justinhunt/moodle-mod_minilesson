@@ -341,6 +341,7 @@ define(['jquery',
                     }
                 });
             }
+
         },
 
         onKeyPress: function (button) {
