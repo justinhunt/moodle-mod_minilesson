@@ -75,14 +75,15 @@ class attempt_continue_form extends \moodleform {
         $buttons[] = $deletebtn;
 
         $buttons[] = $mform->createElement('submit', 'continue', get_string('yes'));
-
-        $mform->addGroup($buttons, 'continueformbuttons', null, null, false, ['class' => 'ml-continueformbuttons']);
+        $group = $mform->addGroup($buttons, 'continueformbuttons', null, null, false, ['class' => 'ml-continueformbuttons']);
+        // For prior to Moodle 4.4 to stick we need to set the class attribute like this
+        $group->setAttributes(['class' => 'ml-continueformbuttons']);
 
         $html  = html_writer::end_div();
         $mform->addElement('html', $html);
 
         $PAGE->requires->js_call_amd('mod_minilesson/activitycontroller', 'continueconfirmation', [
-            '.restore_lesson #' . $deletebtn->getAttribute('id')
+            '.restore_lesson #' . $deletebtn->getAttribute('id'),
         ]);
     }
 
