@@ -1,5 +1,9 @@
 @use '../../abstracts/variables' as *;
 
+.ml-scatter-correction .icon {
+  margin: 0 !important;
+}
+
 .ml_scatter_stage {
   width: 100%;
   height: 100%;
@@ -122,7 +126,7 @@
 
     .term-title {
         padding: 10px 20px;
-        border: 1px solid $primary-border-soft;
+        border: 1px solid rgba($primary-border-soft, 0.37);
         border-radius: 4px;
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
@@ -130,7 +134,7 @@
 
     .term-body {
         padding: 10px 20px;
-        border: 1px solid $primary-border-soft;
+        border: 1px solid rgba($primary-border-soft, 0.37);
         border-radius: 4px;
         border-left: none;
         border-top-left-radius: 0;
@@ -143,13 +147,13 @@
 
     .term-body-correct {
         color: $success-text;
-        font-weight: 700;
+        font-weight: 500;
         font-size: 15px;
     }
 
     .term-body-incorrect {
         color: $error;
-        font-weight: 700;
+        font-weight: 500;
         font-size: 15px;
     }
 

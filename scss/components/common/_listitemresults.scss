@@ -228,12 +228,14 @@ div#itemscores {
 
 .result-font {
   color: $text-indigo;
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
-}
+  margin-bottom: 0;
 
-.result-font .bigger-font {
-  font-size: 30px;
+  .result-denominator {
+    color: $text-muted;
+    font-weight: 300;
+  }
 }
 
 .correct-text {
