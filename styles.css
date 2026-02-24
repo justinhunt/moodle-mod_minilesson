@@ -585,7 +585,7 @@
 }
 
 .progress-container {
-  padding: 5px 8px;
+  padding: 18px 24px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -615,23 +615,23 @@
 
 .minilesson_quiz_progress_completed {
   background-color: #506DFF;
-  height: 4px;
+  height: 3px;
 }
 
 .minilesson_quiz_progress_incompleted {
   background-color: #C7D2FF;
-  height: 4px;
+  height: 3px;
   margin-left: 2px;
   margin-right: 2px;
   border-radius: 5px;
 }
 
 .minilesson_quiz_progress_dashedline {
-  border-bottom: 2px dashed #C7D2FF;
-  height: 4px;
+  height: 3px;
   margin-left: 2px;
   margin-right: 2px;
   border-radius: 5px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='3'%3E%3Cline x1='1.5' y1='1.5' x2='5.5' y2='1.5' stroke='%23C7D2FF' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x;
 }
 
 .minilesson_quiz_progress .minilesson_quiz_progress_current {
@@ -1498,7 +1498,7 @@
 
 .dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.previous.disabled,
 .dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.next.disabled {
-  color: #5C669A !important;
+  color: #80859d !important;
   border: none !important;
   background: transparent !important;
   cursor: default;
@@ -2098,6 +2098,10 @@ div#itemscores {
   color: #FFC328;
   font-size: 24px;
   background-color: #FFFFFF;
+  padding: 0.6rem !important;
+}
+.star-container .fa-star {
+  font-size: 20px;
 }
 
 .result-font {
@@ -2448,6 +2452,9 @@ span.wrongitem {
   align-items: center;
   justify-content: center;
   box-shadow: 1px 2px 2px 0px rgba(0, 0, 0, 0.07);
+}
+.item-container .definition .hinticon-container .icon {
+  margin: 0 !important;
 }
 .item-container .definition .hint-title {
   color: #506DFF;
@@ -4059,6 +4066,7 @@ span.wrongitem {
   border-radius: 8px;
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.12);
   background: #FFFFFF;
+  padding-bottom: 36px;
 }
 .minilesson_wordshuffle_player_box .wordshuffle_retry_btn {
   width: 128px;
@@ -5034,11 +5042,7 @@ div.poodlldictationplayer {
   }
 }
 .minilesson_fluency_box .startmodule_image_container {
-  background-color: #ab7aee;
-}
-.minilesson_fluency_box .startmodule_image_container .startmodule_image {
-  position: relative;
-  top: 3px;
+  background: #ffefb5;
 }
 .minilesson_fluency_box .item-feedback-container {
   display: flex;

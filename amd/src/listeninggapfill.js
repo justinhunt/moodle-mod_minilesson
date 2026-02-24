@@ -585,7 +585,7 @@ define(['jquery',
             //hint - definition
             if (self.items[self.game.pointer].definition) {
                 code += "<div class='definition-container'><div class='definition'>"
-                    + "<div class='hinticon-container'><i class='fa fa-lightbulb-o hinticon'></i></div>"
+                    + "<div class='hinticon-container'><img class='icon' src='" + M.util.image_url('lightbulb-icon', 'mod_minilesson') + "' alt='hint'></div>"
                     + "<h4 class='hint-title'>Hint</h4>"
                     + self.items[self.game.pointer].definition + "</div>";
             }

@@ -89,7 +89,7 @@
 }
 
 .progress-container {
-  padding: 5px 8px;
+  padding: 18px 24px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -121,23 +121,23 @@
 
 .minilesson_quiz_progress_completed {
   background-color: $primary;
-  height: 4px;
+  height: 3px;
 }
 
 .minilesson_quiz_progress_incompleted {
   background-color: $primary-border-medium;
-  height: 4px;
+  height: 3px;
   margin-left: 2px;
   margin-right: 2px;
   border-radius: 5px;
 }
 
 .minilesson_quiz_progress_dashedline {
-  border-bottom: 2px dashed $primary-border-medium;
-  height: 4px;
+  height: 3px;
   margin-left: 2px;
   margin-right: 2px;
   border-radius: 5px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='3'%3E%3Cline x1='1.5' y1='1.5' x2='5.5' y2='1.5' stroke='%23C7D2FF' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x;
 }
 
 .minilesson_quiz_progress .minilesson_quiz_progress_current {

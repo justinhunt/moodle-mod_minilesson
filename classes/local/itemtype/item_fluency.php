@@ -48,7 +48,6 @@ class item_fluency extends item
     {
 
         $testitem = parent::export_for_template($output);
-        $testitem->itemimageurl = (string) $output->image_url('fluency-white-bg', constants::M_COMPONENT);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 

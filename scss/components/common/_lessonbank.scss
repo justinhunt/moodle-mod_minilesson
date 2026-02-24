@@ -149,7 +149,7 @@
 
 .dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.previous.disabled,
 .dataTables_wrapper .dataTables_paginate.paging_simple_numbers .paginate_button.next.disabled {
-  color: $text-slate !important;
+  color: $text-muted !important;
   border: none !important;
   background: transparent !important;
   cursor: default;

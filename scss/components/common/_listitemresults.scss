@@ -219,6 +219,11 @@ div#itemscores {
   color: $warning;
   font-size: 24px;
   background-color: $white;
+  padding: 0.6rem !important;
+
+  .fa-star {
+    font-size: 20px;
+  }
 }
 
 .result-font {
