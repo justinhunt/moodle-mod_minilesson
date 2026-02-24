@@ -80,6 +80,9 @@ class aimanager {
     public const FUNC_PREDICT_CEFR = 'predict_cefr';
 
     /** @var string */
+    public const FUNC_GET_SEMANTIC_SIM = 'get_semantic_sim';
+
+    /** @var string */
     public const FUNC_COUNT_UNIQUE_IDEAS = 'count_unique_ideas';
 
     /** @var string */
@@ -299,8 +302,6 @@ class aimanager {
     }
 
     public function get_semantic_sim($passage, $targettopic, $cache = false) {
-        $actionconst = static::FUNC_GET_SEMANTIC_SIM; // We will need to define this, wait, the prompt says the action is get_semantic_sim
-        // Let's just use string literal 'get_semantic_sim' if no constant is added.
         $actionconst = 'get_semantic_sim';
         $provider = 'cloud poodll';
 

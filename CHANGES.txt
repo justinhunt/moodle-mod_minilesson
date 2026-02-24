@@ -1,3 +1,6 @@
+Version 1.1.28 (Build 2026022400)
+- Added semantic similarity to AI Manager (fix free speaking bug)
+
 Version 1.1.27 (Build 2026022300)
 - Fixed virtual keboard issue on gapfill items
 
