@@ -1210,10 +1210,8 @@
 }
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td .itemtype:not(.mobileviewtype) {
   color: #5C669A;
-  border-left: 1px solid rgba(92, 102, 154, 0.76);
 }
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td.itemaction {
-  border-left: 1px solid #E9ECFB;
   vertical-align: middle;
 }
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td.itemaction .icon {
@@ -1229,6 +1227,8 @@
 }
 
 .mod_minilesson_qpanel {
+  --bs-border-color: #dfe4e9;
+  --bs-border-width: 1px;
   border-collapse: separate !important;
   border-spacing: 0 15px !important;
   width: 100% !important;
@@ -1240,22 +1240,18 @@
 }
 .mod_minilesson_qpanel td {
   background: #FBFBFE;
-  border-top: 1px solid #E9ECFB;
-  border-bottom: 1px solid #E9ECFB;
   padding: 12px 16px;
 }
 .mod_minilesson_qpanel tr td:first-child,
 .mod_minilesson_qpanel tr th:first-child {
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
-  border-left: 1px solid #E9ECFB;
   width: 88%;
   vertical-align: middle;
 }
 .mod_minilesson_qpanel tr td:last-child,
 .mod_minilesson_qpanel tr th:last-child {
   border-top-right-radius: 8px;
-  border-right: 1px solid #E9ECFB;
   border-bottom-right-radius: 8px;
   text-align: right;
   width: 5%;
@@ -1300,6 +1296,10 @@
 .mod_minilesson_qpanel .tblbody .mod_minilesson_item_row .itemtypelabel {
   font-size: 11px;
   display: inline-block;
+  position: relative;
+  top: -1px;
+  border-left: 1px solid;
+  padding-left: 11px;
 }
 .mod_minilesson_qpanel .tblbody .dataTables_empty {
   height: 150px;
@@ -1327,6 +1327,10 @@
   display: none;
 }
 
+.mod_minilesson_item_row {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
 .mod_minilesson_item_row .mod_minilesson_item_row_previewlink .icon,
 .mod_minilesson_item_row .mod_minilesson_item_row_duplicatelink .icon,
 .mod_minilesson_item_row .mod_minilesson_item_row_deletelink .icon,
@@ -3283,6 +3287,9 @@ span.wrongitem {
 }
 
 .ml_freewriting_actionbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   margin-top: 24px;
   margin-bottom: 36px;
@@ -3290,6 +3297,53 @@ span.wrongitem {
 
 .minilesson_freewriting_box {
   width: 100%;
+}
+
+.ml_freewriting_textareacontainer {
+  width: 600px;
+  max-width: 100%;
+  border: 1px solid #B7BDE3;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ml_freewriting_textareacontainer .ml_freewriting_textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: vertical;
+  padding: 16px;
+}
+.ml_freewriting_textareacontainer .ml_freewriting_textarea::placeholder {
+  color: #6E738E;
+}
+.ml_freewriting_textareacontainer .word-count-container {
+  background-color: #F5F5FE;
+  width: 100%;
+  padding: 12px;
+  text-align: center;
+  color: #3C51DA;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 21px;
+  text-transform: uppercase;
+}
+.ml_freewriting_textareacontainer .word-count-container .word-count-stats {
+  color: #80859d;
+  font-size: 21px;
+  font-weight: 300;
+  line-height: 21px;
+}
+.ml_freewriting_textareacontainer .word-count-container .ml_wordcount {
+  color: #5C669A;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 25px;
+  letter-spacing: -1.54px;
+}
+
+.ml_freewriting_submitbutton {
+  margin-top: 24px;
+  font-weight: 500;
 }
 
 .ml_freespeaking_startscreen .freespeaking_image_container {

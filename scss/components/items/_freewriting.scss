@@ -7,6 +7,9 @@
 }
 
 .ml_freewriting_actionbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     margin-top: 24px;
     margin-bottom: 36px;
@@ -15,3 +18,56 @@
 .minilesson_freewriting_box {
     width: 100%;
 }
+
+.ml_freewriting_textareacontainer {
+    width: 600px;
+    max-width: 100%;
+    border: 1px solid $primary-border-slate;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .ml_freewriting_textarea {
+        width: 100%;
+        border: none;
+        outline: none;
+        resize: vertical;
+        padding: 16px;
+
+        &::placeholder {
+            color: $text-placeholder;
+        }
+    }
+
+    .word-count-container {
+        background-color: $primary-bg;
+        width: 100%;
+        padding: 12px;
+        text-align: center;
+        color: $primary-dark;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 21px;
+        text-transform: uppercase;
+
+        .word-count-stats {
+            color: $text-muted;
+            font-size: 21px;
+            font-weight: 300;
+            line-height: 21px;
+        }
+
+        .ml_wordcount {
+            color: $text-slate;
+            font-size: 22px;
+            font-weight: 600;
+            line-height: 25px;
+            letter-spacing: -1.54px;
+        }
+    }
+}
+
+.ml_freewriting_submitbutton {
+    margin-top: 24px;
+    font-weight: 500;
+}
+

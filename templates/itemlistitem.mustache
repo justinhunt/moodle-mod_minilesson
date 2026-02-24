@@ -6,7 +6,7 @@
             </label>
             <div class="ml-3"><img class="itemicon" src="{{icon}}" alt="imgicon"></div>
             <div class="itemname ml-2">{{name}}  <p class="mobileviewtype mt-1 itemtype mb-0"> <span class="itemtypelabel">{{typelabel}}</span></p></div>
-            <p class="itemtypename ml-2 itemtype mb-0"> <span class="ml-2 itemtypelabel">{{typelabel}}</span></p>
+            <p class="itemtypename ml-2 itemtype mb-0"> <span class="itemtypelabel">{{typelabel}}</span></p>
 
         </div>
     </td>
@@ -18,9 +18,11 @@
         <a href="#" class="mod_minilesson_item_move" data-id="{{id}}" data-direction="down">{{#pix}} arrowdown, mod_minilesson {{/pix}}</a>
     </td>
     <td class="itemaction cell c3" style="">
-        <a href="#" class="mod_minilesson_item_row_previewlink" data-id="{{id}}" data-name="{{name}}" data-type="preview" alt="{{#str}}previewitem, mod_minilesson{{/str}}">{{#pix}}zoom, mod_minilesson{{/pix}}</a>
-        <a href="#" class="mod_minilesson_item_row_editlink" data-id="{{id}}" data-qtype='{{type}}' data-type="edit" alt="{{#str}}edititem, mod_minilesson{{/str}}">{{#pix}}edit, mod_minilesson{{/pix}}</a>
-        <a href="#" class="mod_minilesson_item_row_duplicatelink" data-id="{{id}}" data-name="{{name}}" data-type="duplicate" alt="{{#str}}duplicateitem, mod_minilesson{{/str}}">{{#pix}}copy, mod_minilesson{{/pix}}</a>
-        <a href="#" class="mod_minilesson_item_row_deletelink" data-id="{{id}}" data-name="{{name}}" data-type="delete" alt="{{#str}}deleteitem, mod_minilesson{{/str}}">{{#pix}}trash, mod_minilesson{{/pix}}</a>
+        <div class="actions-group">
+            <a href="#" class="mod_minilesson_item_row_previewlink" data-id="{{id}}" data-name="{{name}}" data-type="preview" alt="{{#str}}previewitem, mod_minilesson{{/str}}">{{#pix}}zoom, mod_minilesson{{/pix}}</a>
+            <a href="#" class="mod_minilesson_item_row_editlink" data-id="{{id}}" data-qtype='{{type}}' data-type="edit" alt="{{#str}}edititem, mod_minilesson{{/str}}">{{#pix}}edit, mod_minilesson{{/pix}}</a>
+            <a href="#" class="mod_minilesson_item_row_duplicatelink" data-id="{{id}}" data-name="{{name}}" data-type="duplicate" alt="{{#str}}duplicateitem, mod_minilesson{{/str}}">{{#pix}}copy, mod_minilesson{{/pix}}</a>
+            <a href="#" class="mod_minilesson_item_row_deletelink" data-id="{{id}}" data-name="{{name}}" data-type="delete" alt="{{#str}}deleteitem, mod_minilesson{{/str}}">{{#pix}}trash, mod_minilesson{{/pix}}</a>
+        </div>
     </td>
 </tr>
