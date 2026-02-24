@@ -116,6 +116,15 @@
       border: 1px solid $primary;
       color: $primary;
       border-radius: 8px;
+      font-weight: 500;
+
+      img.icon {
+        margin: 0 !important;
+        position: relative;
+        top: -1px;
+        width: 18px;
+        height: 14px;
+      }
     }
 
     .term {

@@ -47,6 +47,17 @@
 .ml-spacegame-bigbutton {
   width: 50%;
   margin: auto;
+  font-weight: 500;
+
+  img.icon {
+    margin: 0 !important;
+    margin-right: 3px !important;
+    position: relative;
+    top: -1px;
+    width: 12px;
+    height: 12px;
+    filter: grayscale(1) brightness(3);
+  }
 }
 
 #minilesson-gameboard {

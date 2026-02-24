@@ -179,7 +179,17 @@
   border: 1px solid $primary;
   color: $primary;
   border-radius: 8px;
-  margin: 15px;
+  font-weight: 500;
+  margin-top: 20px;
+  margin-bottom: 36px;
+
+  img.icon {
+    margin: 0 !important;
+    position: relative;
+    top: -1px;
+    width: 18px;
+    height: 14px;
+  }
 
   &:hover {
     color: $primary;

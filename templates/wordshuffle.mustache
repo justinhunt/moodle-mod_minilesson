@@ -83,13 +83,13 @@
 
     <div style="display:none;" class="wordshuffle_controls text-center">
 
-        <button class="btn wordshuffle_ctrl-btn wordshuffle_check_btn">
-             <i class="fa fa-refresh"></i> {{#str}} reset {{/str}}
+        <button class="btn btn-skip-button-secondary wordshuffle_ctrl-btn wordshuffle_check_btn">
+             {{#pix}}redo-icon, mod_minilesson{{/pix}} {{#str}} reset {{/str}}
         </button>
 
         {{#allowretry}}
-        <button class="btn ctrl-btn wordshuffle_retry_btn">
-            <i class="fa fa-refresh"></i> {{#str}}tryagain, mod_minilesson{{/str}}
+        <button class="btn btn-skip-button-secondary ctrl-btn wordshuffle_retry_btn">
+            {{#pix}}redo-icon, mod_minilesson{{/pix}} {{#str}}tryagain, mod_minilesson{{/str}}
         </button>
         {{/allowretry}}
 

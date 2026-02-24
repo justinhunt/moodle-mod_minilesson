@@ -201,40 +201,23 @@
   background: $white;
   padding-bottom: 36px;
 
-  .wordshuffle_retry_btn {
-    width: 128px;
-    height: 36px;
-    border-radius: 8px;
-    background: $primary;
-    color: $white;
-
-    &:hover,
-    &:focus,
-    &:active {
-      width: 128px;
-      height: 36px;
-      border-radius: 8px;
-      background: $primary;
-      color: $white;
+  :is(.wordshuffle_retry_btn, .wordshuffle_check_btn) {
+    img.icon {
+      width: 12px;
+      height: 12px;
+      margin: 0 !important;
+      margin-right: 3px !important;
     }
   }
 
-  .wordshuffle_check_btn {
-    width: 96px;
+  .wordshuffle_retry_btn {
+    width: auto;
     height: 36px;
-    border-radius: 8px;
-    background: $primary;
-    color: $white;
+  }
 
-    &:hover,
-    &:focus,
-    &:active {
-      width: 96px;
-      height: 36px;
-      border-radius: 8px;
-      background: $primary;
-      color: $white;
-    }
+  .wordshuffle_check_btn {
+    width: auto;
+    height: 36px;
   }
 
   .wordshuffle_skip_btn {
