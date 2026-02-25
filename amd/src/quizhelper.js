@@ -1,13 +1,13 @@
 define(
     ['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'core/ajax',
-    'mod_minilesson/dictation', 'mod_minilesson/dictationchat', 'mod_minilesson/multichoice','mod_minilesson/multiaudio',
+        'mod_minilesson/dictation', 'mod_minilesson/dictationchat', 'mod_minilesson/multichoice', 'mod_minilesson/multiaudio',
         'mod_minilesson/speechcards', 'mod_minilesson/listenrepeat',
-        'mod_minilesson/page','mod_minilesson/smartframe','mod_minilesson/shortanswer',
-        'mod_minilesson/listeninggapfill','mod_minilesson/typinggapfill','mod_minilesson/speakinggapfill',
-        'mod_minilesson/spacegame','mod_minilesson/fluency','mod_minilesson/freespeaking',
-        'mod_minilesson/freewriting','mod_minilesson/passagereading','mod_minilesson/h5p',
-        'mod_minilesson/conversation','mod_minilesson/compquiz','mod_minilesson/passagegapfill',
-        'mod_minilesson/audiochat','mod_minilesson/wordshuffle','mod_minilesson/scatter',
+        'mod_minilesson/page', 'mod_minilesson/smartframe', 'mod_minilesson/shortanswer',
+        'mod_minilesson/listeninggapfill', 'mod_minilesson/typinggapfill', 'mod_minilesson/speakinggapfill',
+        'mod_minilesson/spacegame', 'mod_minilesson/fluency', 'mod_minilesson/freespeaking',
+        'mod_minilesson/freewriting', 'mod_minilesson/passagereading', 'mod_minilesson/h5p',
+        'mod_minilesson/conversation', 'mod_minilesson/compquiz', 'mod_minilesson/passagegapfill',
+        'mod_minilesson/audiochat', 'mod_minilesson/wordshuffle', 'mod_minilesson/scatter',
         'mod_minilesson/slides', 'mod_minilesson/fiction', 'mod_minilesson/progresstimer'],
     function (
         $,
@@ -45,28 +45,28 @@ define(
     ) {
         "use strict"; // jshint ;_;
 
-      /*
-      This file is to manage the quiz stage
-       */
+        /*
+        This file is to manage the quiz stage
+         */
 
         log.debug('MiniLesson Quiz helper: initialising');
 
         return {
 
-          //original spliton_regexp: new RegExp(/([,.!?:;" ])/, 'g'),
+            //original spliton_regexp: new RegExp(/([,.!?:;" ])/, 'g'),
             // V2 spliton_regexp new RegExp(/([!"# ¡¿$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~])/, 'g'),
             //v3 we removed the apostrophe because it was not counting words correcting in listen and speak
             spliton_regexp: new RegExp(/([!"# ¡¿$%&()。「」、*+,-.\/:;<=>?@[\]^_`{|}~])/, 'g'),
-          //nopunc is diff to split on because it does not match on spaces
-            nopunc_regexp: new RegExp(/[!"#¡¿$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~]/,'g'),
-            nonspaces_regexp: new RegExp(/[^ ]/,'g'),
+            //nopunc is diff to split on because it does not match on spaces
+            nopunc_regexp: new RegExp(/[!"#¡¿$%&'()。「」、*+,-.\/:;<=>?@[\]^_`{|}~]/, 'g'),
+            nonspaces_regexp: new RegExp(/[^ ]/, 'g'),
             autoplaydelay: 800,
 
             controls: {},
             submitbuttonclass: 'mod_minilesson_quizsubmitbutton',
             stepresults: [],
 
-            init: function (quizcontainer, activitydata, cmid, attemptid,polly) {
+            init: function (quizcontainer, activitydata, cmid, attemptid, polly) {
                 this.quizdata = activitydata.quizdata;
                 this.region = activitydata.region;
                 this.ttslanguage = activitydata.ttslanguage;
@@ -79,19 +79,19 @@ define(
                 this.backtocourse = activitydata.backtocourse;
                 this.stt_guided = activitydata.stt_guided;
                 this.wwwroot = activitydata.wwwroot;
-                this.useanimatecss  = activitydata.useanimatecss;
-                this.showitemreview  = activitydata.showitemreview;
+                this.useanimatecss = activitydata.useanimatecss;
+                this.showitemreview = activitydata.showitemreview;
                 this.stepresults = activitydata.stepresults;
 
                 this.prepare_html();
-                this.init_questions(this.quizdata,polly);
+                this.init_questions(this.quizdata, polly);
                 this.register_events();
                 this.start_quiz();
             },
 
             prepare_html: function () {
 
-              // this.controls.quizcontainer.append(submitbutton);
+                // this.controls.quizcontainer.append(submitbutton);
                 this.controls.quizfinished = $("#mod_minilesson_quiz_finished");
 
             },
@@ -102,109 +102,109 @@ define(
                     switch (item.type) {
                         case def.qtype_dictation:
                             dictation.clone().init(index, item, dd, polly);
-                        break;
+                            break;
                         case def.qtype_dictationchat:
                             dictationchat.clone().init(index, item, dd, polly);
-                        break;
+                            break;
                         case def.qtype_multichoice:
                             multichoice.clone().init(index, item, dd);
-                        break;
+                            break;
                         case def.qtype_multiaudio:
                             multiaudio.clone().init(index, item, dd);
-                          break;
+                            break;
                         case def.qtype_speechcards:
-                          //speechcards init needs to occur when it is visible. lame.
-                          // so we do that in do_next function, down below
+                            //speechcards init needs to occur when it is visible. lame.
+                            // so we do that in do_next function, down below
                             speechcards.clone().init(index, item, dd);
-                        break;
+                            break;
                         case def.qtype_listenrepeat:
                             listenrepeat.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_page:
                             page.clone().init(index, item, dd);
-                          break;
+                            break;
 
                         case def.qtype_smartframe:
                             smartframe.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_shortanswer:
                             shortanswer.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_listeninggapfill:
                             listeninggapfill.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_typinggapfill:
                             typinggapfill.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_speakinggapfill:
                             speakinggapfill.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_spacegame:
                             spacegame.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_fluency:
                             fluency.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_freespeaking:
                             freespeaking.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_freewriting:
                             freewriting.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_passagereading:
                             passagereading.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_h5p:
                             h5p.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_conversation:
                             conversation.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_compquiz:
                             compquiz.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_passagegapfill:
                             passagegapfill.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_audiochat:
                             audiochat.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_wordshuffle:
                             wordshuffle.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_scatter:
                             scatter.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_slides:
                             slides.clone().init(index, item, dd);
-                        break;
+                            break;
 
                         case def.qtype_fiction:
                             fiction.clone().init(index, item, dd);
-                        break;
+                            break;
                     }
 
                 });
 
-              //TTS in question headers
+                //TTS in question headers
                 $("audio.mod_minilesson_itemttsaudio").each(function () {
                     var that = this;
                     polly.fetch_polly_url($(this).data('text'), $(this).data('ttsoption'), $(this).data('voice')).then(function (audiourl) {
@@ -216,10 +216,10 @@ define(
 
             register_events: function () {
                 $('.' + this.submitbuttonclass).on('click', function () {
-                  //do something
+                    //do something
                 });
             },
-            render_quiz_progress:function (current,total) {
+            render_quiz_progress: function (current, total) {
                 var array = [];
                 for (var i = 0; i < total; i++) {
                     array.push(i);
@@ -234,14 +234,21 @@ define(
                     var slice = array.slice(0, 5);
                     var slicelength = slice.length > 1 ? (slice.length - 1) : slice.length;
                     var itemWidth = 100 / slicelength;
-                    var innerclass,innerhtml,html = "";
+                    var innerclass, innerhtml, html = "";
                     slice.forEach(function (i) {
                         innerclass = i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
                         innerhtml = (i !== (slice.length - 1)) ? "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>" : "";
+                        if (i === current) {
+                            html += "<div class='minilesson_quiz_progress_current'>";
+                        }
                         html += "<div class='minilesson_quiz_progress_item " +
-                        (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " +
-                        (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" +
-                        (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>" + innerhtml;
+                            (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " +
+                            (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" +
+                            (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>";
+                        if (i === current) {
+                            html += "</div>";
+                        }
+                        html += innerhtml;
                     });
                 } else {
                     if (current > total - 6) {
@@ -251,12 +258,18 @@ define(
                     }
                     var slicelength = slice.length > 1 ? (slice.length - 1) : slice.length;
                     var itemWidth = 100 / slicelength;
-                    var html = "",innerhtml,innerclass;
+                    var html = "", innerhtml, innerclass;
                     var lastvalue = slice[slice.length - 1];
                     slice.forEach(function (i) {
+                        if (i === current) {
+                            html += "<div class='minilesson_quiz_progress_current'>";
+                        }
                         html += "<div class='minilesson_quiz_progress_item " + (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " + (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" + (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>";
                         innerclass = (i === lastvalue && i < total - 2) ? "minilesson_quiz_progress_dashedline" : i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
                         innerhtml = "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>";
+                        if (i === current) {
+                            html += "</div>";
+                        }
                         html += innerhtml;
                     });
                     //end marker
@@ -270,29 +283,31 @@ define(
 
             do_next: function (stepdata) {
                 var dd = this;
-              //get current question
-                var currentquizdataindex =   stepdata.index;
+                //get current question
+                var currentquizdataindex = stepdata.index;
                 var currentitem = this.quizdata[currentquizdataindex];
-              //in preview mode do no do_next
+                //in preview mode do no do_next
                 if (currentitem.preview === true) {
-                    return;}
+                    return;
+                }
 
-              //post grade
-               // log.debug("reporting step grade");
+                //post grade
+                // log.debug("reporting step grade");
                 dd.report_step_grade(stepdata);
-               // log.debug("reported step grade");
+                // log.debug("reported step grade");
 
-              //show next question or End Screen
+                //show next question or End Screen
                 if (dd.quizdata.length > currentquizdataindex + 1) {
-                  // we want to hide current question - before show new one
+                    // we want to hide current question - before show new one
                     var theoldquestion = $("#" + currentitem.uniqueid + "_container");
                     theoldquestion.hide();
 
                     var nextindex = currentquizdataindex + 1;
-                    var nextitem = this.quizdata[nextindex];
+                    var nextitem = dd.quizdata[nextindex];
                     //show the question
-                    $("#" + nextitem.uniqueid + "_container").show().trigger("showElement");
-                  //any per question type init that needs to occur can go here
+
+                    dd.showStep($("#" + nextitem.uniqueid + "_container"));
+                    //any per question type init that needs to occur can go here
                     switch (nextitem.type) {
                         case def.qtype_speechcards:
                             //speechcards.init(nextindex, nextitem, dd);
@@ -317,16 +332,8 @@ define(
                         case def.qtype_fiction:
                         default:
                     }//end of nextitem switch
-
-                  //autoplay audio if we need to
-                    var ttsquestionplayer = $("#" + nextitem.uniqueid + "_container audio.mod_minilesson_itemttsaudio");
-                    if (ttsquestionplayer.data('autoplay') == "1") {
-                        var that = this;
-                        setTimeout(function () {
-                            ttsquestionplayer[0].play();}, that.autoplaydelay);
-                    }
                 } else {
-                  //just reload and re-fetch all the data to display
+                    //just reload and re-fetch all the data to display
                     $(".minilesson_nextbutton").prop("disabled", true);
                     window.location.href = dd.activityurl;
                     /*
@@ -338,7 +345,7 @@ define(
 
                     return;
 
-                  //no longer do this
+                    //no longer do this
                     /*
                   var results = dd.stepresults.filter(function(e){return e.hasgrade;});
                   var correctitems = 0;
@@ -364,9 +371,9 @@ define(
                   */
                 }//end of if has more questions
 
-                this.render_quiz_progress(stepdata.index + 1,this.quizdata.length);
+                this.render_quiz_progress(stepdata.index + 1, this.quizdata.length);
 
-              //we want to destroy the old question in the DOM also because iframe/media content might be playing
+                //we want to destroy the old question in the DOM also because iframe/media content might be playing
                 theoldquestion.remove();
 
             },
@@ -374,10 +381,10 @@ define(
             report_step_grade: function (stepdata) {
                 var dd = this;
 
-              //store results locally
+                //store results locally
                 this.stepresults.push(stepdata);
 
-              //push results to server
+                //push results to server
                 var isasync = false;
                 var ret = Ajax.call([{
                     methodname: 'mod_minilesson_report_step_grade',
@@ -385,27 +392,41 @@ define(
                         cmid: dd.cmid,
                         step: JSON.stringify(stepdata),
                     },
-                }],isasync)[0];
+                }], isasync)[0];
                 log.debug("report_step_grade success: " + ret);
 
             },
 
-
-
-            start_quiz: function () {
-                const i = this.stepresults.length;
-                $("#" + this.quizdata[i].uniqueid + "_container").show().trigger("showElement");
-              //autoplay audio if we need to
-                var ttsquestionplayer = $("#" + this.quizdata[i].uniqueid + "_container audio.mod_minilesson_itemttsaudio");
-                if (ttsquestionplayer.data('autoplay') == "1") {
-                    var that = this;
-                    setTimeout(function () {
-                        ttsquestionplayer[i].play();}, that.autoplaydelay);
+            showStep: function ($container) {
+                $container.show();
+                $container.on('showElement', () => {
+                    $container.find('[data-region="activity-wrapper"]').show();
+                    $container.find('[data-region="splashscreen"]').hide();
+                    //autoplay audio if we need to
+                    var ttsquestionplayer = $("#" + this.quizdata[0].uniqueid + "_container audio.mod_minilesson_itemttsaudio");
+                    if (ttsquestionplayer.data('autoplay') == "1") {
+                        var that = this;
+                        setTimeout(function () {
+                            ttsquestionplayer[0].play();
+                        }, that.autoplaydelay);
+                    }
+                });
+                this.render_quiz_progress(0, this.quizdata.length);
+                const $splashscreen = $container.find('[data-region="splashscreen"]');
+                if ($splashscreen.length > 0) {
+                    $splashscreen.show();
+                    $splashscreen.on('click', '[data-action="startmodule"]', () => $container.trigger("showElement"));
+                    return;
                 }
-                this.render_quiz_progress(i,this.quizdata.length);
+                $container.trigger("showElement");
             },
 
-          //this function is overridden by the calling class
+            start_quiz: function () {
+                const $container = $("#" + this.quizdata[0].uniqueid + "_container");
+                this.showStep($container);
+            },
+
+            //this function is overridden by the calling class
             onSubmit: function () {
                 alert('quiz submitted. Override this');
             },
@@ -427,7 +448,7 @@ define(
                 }
             },
 
-          //this will always be true these days
+            //this will always be true these days
             use_ttrecorder: function () {
                 return true;
             },
@@ -435,17 +456,17 @@ define(
                 return this.stt_guided;
             },
 
-          //count words
+            //count words
             count_words: function (transcript) {
                 return transcript.trim().split(/\s+/).filter(function (word) {
                     return word.length > 0;
                 }).length;
             },
 
-          //text comparison functions follow===============
+            //text comparison functions follow===============
 
             similarity: function (s1, s2) {
-              //we remove spaces because JP transcript and passage might be different. And who cares about spaces anyway?
+                //we remove spaces because JP transcript and passage might be different. And who cares about spaces anyway?
                 s1 = s1.replace(/\s+/g, '');
                 s2 = s2.replace(/\s+/g, '');
 
@@ -494,12 +515,12 @@ define(
 
             cleanText: function (text) {
                 var lowertext = text.toLowerCase();
-                var punctuationless = lowertext.replace(this.nopunc_regexp,"");
+                var punctuationless = lowertext.replace(this.nopunc_regexp, "");
                 var ret = punctuationless.replace(/\s+/g, " ").trim();
                 return ret;
             },
 
-          //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match
+            //this will return the promise, the result of which is an integer 100 being perfect match, 0 being no match
             checkByPhonetic: function (passage, transcript, passagephonetic, language) {
                 return Ajax.call([{
                     methodname: 'mod_minilesson_check_by_phonetic',
@@ -516,7 +537,7 @@ define(
 
             },
 
-            comparePassageToTranscript: function (passage,transcript,passagephonetic,language,alternatives="") {
+            comparePassageToTranscript: function (passage, transcript, passagephonetic, language, alternatives = "") {
                 return Ajax.call([{
                     methodname: 'mod_minilesson_compare_passage_to_transcript',
                     args: {
@@ -532,7 +553,7 @@ define(
                 }])[0];
             },
 
-          //this will return the promise, the result of which is an object containing marks, corrections and feedback
+            //this will return the promise, the result of which is an object containing marks, corrections and feedback
             evaluateTranscript: function (transcript, itemid) {
                 return Ajax.call([{
                     methodname: 'mod_minilesson_evaluate_transcript',

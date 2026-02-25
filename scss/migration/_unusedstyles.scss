@@ -1,0 +1,1135 @@
+// Dead/unused CSS code extracted from _originalstyles.scss
+// Generated on: 2026-02-19 20:23:26
+// Total dead blocks: 106
+
+/* DEAD CODE
+.mod_minilesson_debug .mod_minilesson_grading_passageword::after,
+.mod_minilesson_debug_transcriptword::after {
+  content: attr(data-wordnumber);
+  border: 1px solid blue;
+  font-size: 10px;
+  border-radius: 5px;
+  padding: 1px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_center {
+  text-align: center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_center>div,
+.mod_minilesson_center>table
+/ * insert any other block-level elements here * /
+
+  {
+  margin-left: auto;
+  margin-right: auto;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_listbuttons input[type='submit'] {
+  width: 400px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_actionbuttons {
+  display: flex;
+  float: right;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_dummyrecorder {
+  float: left;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_dummy_recorder_hidden {
+  display: none;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_dummy_recorder_recording {
+  display: block;
+  float: left;
+  width: 239px;
+  height: 100px;
+  background-size: 90px 90px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: red;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_dummy_recorder_stopped {
+  display: block;
+  width: 239px;
+  height: 100px;
+  float: left;
+  background-size: 90px 90px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: grey;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_getpermissionmode {
+  background-color: red;
+  height: 170px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_voicecanvas {
+  width: 239px;
+  height: 100px;
+  z-index: 8;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_mrseed-standing img {
+  width: 100px;
+  height: auto;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_mrseed-standing {
+  max-width: 100px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_printtwocol_cont {
+  padding: 15px;
+  border: 2px solid #CCCCCC;
+  border-radius: 5px;
+  width: 1024px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_twocol_wpm_cont {
+  border: solid 1px;
+  padding-top: 15px;
+  padding-left: 10px;
+  border-radius: 5px;
+  background-color: aliceblue;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_passage_finished {
+  background-color: #cccccc;
+  padding: 2px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_backtotop_cont {
+  width: fit-content;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 20px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_grading_accuracy_cont,
+.mod_minilesson_grading_wpm_cont,
+.mod_minilesson_grading_quiz_cont,
+.mod_minilesson_grading_error_cont,
+.mod_minilesson_grading_sessionscore_cont,
+.mod_minilesson_grading_errorrate_cont,
+.mod_minilesson_grading_scrate_cont {
+  color: blue;
+  / * display: flex; * /
+  margin-left: 15px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_grading_wpm_img {
+  color: blue;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_afterattempt_cont,
+.mod_minilesson_wheretonext_cont,
+.mod_minilesson_ungraded_cont {
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_grading_passageactions {
+  margin-top: 10px;
+}
+*/
+
+/* .minilesson_speechcards_container {
+  border: 1px solid darkgray;
+  margin-bottom: 5px;
+  padding: 10px;
+}
+
+.minilesson-poodllspeechcards_box {
+  text-align: center;
+  width: 60%;
+  font-size: 25px;
+  margin: auto;
+  border: 1px solid darkgray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  background-color: #f5f5f5;
+  box-shadow: 0px 0px 20px 5px rgba(0, 0, 0, 0.75);
+}
+
+.minilesson-speechcards_toprow {
+  margin: 15px auto;
+  display: flex;
+  justify-content: center;
+}
+
+.minilesson-speechcards_whatheard {
+  width: 400px;
+  border: dotted 1px;
+  border-color: green;
+  text-align: center;
+  margin: 1px;
+}
+
+.minilesson-speechcards_gotit {
+  color: white;
+  background-color: green;
+}
+
+.minilesson-speechcards_button.minilesson-speechcards_nextbutton,
+.minilesson-speechcards_button.minilesson-speechcards_nextbutton:hover,
+.minilesson-speechcards_button.minilesson-speechcards_nextbutton:active,
+.minilesson-speechcards_button.minilesson-speechcards_nextbutton:focus {
+  background: #fff;
+  border-color: #5067ff;
+  border-radius: 10px;
+  color: #5067ff;
+  margin-left: 10px;
+}
+ */
+
+
+/* DEAD CODE
+.mod_minilesson_grading_passageactions>button {
+  margin: 5px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-app-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-app {
+  box-sizing: border-box;
+  min-width: 1024px;
+  max-width: 1024px;
+  min-height: 768px;
+  max-height: 768px;
+  background: white;
+  padding: 1em;
+  border: #efefef 3px solid;
+  border-radius: 10px;
+  font-size: 18px;
+  display: flex;
+  position: relative;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-flex {
+  display: flex;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-flex-1 {
+  flex: 1;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-flex-col {
+  display: flex;
+  flex-direction: column;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-flex-equal>* {
+  flex: 1;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-flex-center {
+  justify-content: center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-flex-items-center {
+  align-items: center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-app .mod_minilesson-passage {
+  line-height: 1.8em;
+  font-size: 20px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-app .mod_minilesson-passage.blurred {
+  color: transparent;
+  text-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-app .mod_minilesson-passage-pic {
+  max-width: 200px;
+  margin: 9px 1em 1em 0;
+  float: left;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-app .mod_minilesson-passage-pic img {
+  max-width: 100%;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-app .mod_minilesson-passage.blurred img {
+  filter: blur(5px);
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-texttospeech {
+  position: relative;
+  display: flex;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-texttospeech>div {
+  display: inline-block;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-texttospeech a {
+  margin: 0 0 0 0.5em;
+  align-self: flex-start;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-texttospeech a:focus,
+.mod_minilesson-texttospeech a:hover {
+  text-decoration: none;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-scrollview-wrapper,
+.mod_minilesson-scrollview {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-scrollview {
+  overflow: hidden;
+  padding-top: 50px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-scrollview-before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  min-height: 50px;
+  background: linear-gradient(white, transparent 80%);
+  margin-top: -1px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-scrollview-actions {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-top: 50px;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(transparent, white 80%);
+  margin-bottom: -1px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-question-feedback {
+  text-align: center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-quiz-tracker {
+  margin-bottom: 1em;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-quiz-tracker-el {
+  font-size: 14px;
+  padding: 0 4px;
+  margin-right: 3px;
+  display: inline-block;
+  border: 3px solid #ccc;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-quiz-tracker-el.is-current {
+  border-color: #000;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-quiz-tracker-el.is-answered {
+  border-color: hsl(348, 100%, 61%);
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-quiz-tracker-el.is-answered.is-correct {
+  border-color: hsl(141, 71%, 48%);
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-question-title {
+  line-height: 1.8em;
+  border-left: 3px solid #ccc;
+  padding-left: 20px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-answers {
+  margin: 1em;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-answer {
+  color: #333;
+  display: flex;
+  margin: 5px;
+  border-radius: 5px;
+  background-color: #eee;
+  padding: 13px 23px;
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-answer:hover,
+.mod_minilesson-answer:focus {
+  color: inherit;
+  text-decoration: none;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-answer.is-selected.is-incorrect {
+  color: white;
+  background: hsl(348, 100%, 61%);
+  border-color: hsl(348, 100%, 61%);
+  padding-right: 42px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-answer.is-correct {
+  color: white;
+  background: hsl(141, 71%, 48%);
+  border-color: hsl(141, 71%, 48%);
+  padding-right: 42px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-answer::after {
+  content: ' ';
+  position: absolute;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  background-repeat: no-repeat;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-answer.is-correct::after {
+  background-image: url([[pix:mod_minilesson|correct]]);
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-answer.is-selected.is-incorrect::after {
+  background-image: url([[pix:mod_minilesson|incorrect]]);
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-btn,
+.mod_minilesson-btn:hover,
+.mod_minilesson-btn:focus,
+.mod_minilesson-btn:visited,
+.mod_minilesson-btn:active {
+  border-radius: 5px;
+  background: hsl(204, 86%, 53%);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-btn.inactive,
+.mod_minilesson-btn:hover.inactive,
+.mod_minilesson-btn:focus.inactive,
+.mod_minilesson-btn:visited.inactive,
+.mod_minilesson-btn:active.inactive {
+  background: hsl(0, 0%, 96%);
+  color: hsl(0, 0%, 21%);
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-btn-recorder-like {
+  border: 2px solid #000;
+  border-radius: 5px;
+  background: #cbf2dc;
+  color: #444;
+  font-size: xx-large;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 210px;
+  height: 80px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-speech-bubble {
+  position: relative;
+  background: #f7f7f7;
+  border-radius: 0.4em;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-speech-bubble:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-top-color: #f7f7f7;
+  border-bottom: 0;
+  border-left: 0;
+  margin-left: -5px;
+  margin-bottom: -10px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-speech-bubble-content {
+  text-align: center;
+  font-size: 25px;
+  padding: 25px;
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 35px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-speech-bubble.size-medium .mod_minilesson-speech-bubble-content {
+  font-size: 20px;
+  padding: 10px;
+  min-height: auto;
+  line-height: 25px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-speech-bubble.size-large .mod_minilesson-speech-bubble-content {
+  font-size: 32px;
+  font-weight: bold;
+  padding: 10px;
+  min-height: auto;
+  line-height: 25px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-bloom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-bloom img {
+  position: absolute;
+  / * The delay is set according to the blooming animation * /
+  animation: minilesson-bloom;
+  animation-duration: 1200ms;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-mr-seed-wrapper {
+  position: relative;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson-mr-seed-wrapper .mod_minilesson-speech-bubble {
+  position: absolute;
+  right: 0;
+  width: 50%;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_grading_passageactions {
+  margin-top: 10px;
+  display: flex;
+}
+*/
+
+/* DEAD CODE
+.dictate_error {}
+*/
+
+/* DEAD CODE
+.minilesson_quiz_progress_line {
+  background-color: #506DFF;
+  height: 5px;
+  position: absolute;
+  margin-top: auto;
+  margin-bottom: auto;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+*/
+
+/* DEAD CODE
+.lgapfill_error {}
+*/
+
+/* DEAD CODE
+.tgapfill_error {}
+*/
+
+/* DEAD CODE
+.minilesson_bq_resultbox {
+  float: right;
+  padding-left: 8px;
+}
+*/
+
+/* DEAD CODE
+.bqplayrow {
+  margin: 5px 5px 10px 5px;
+  padding: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+*/
+
+/* DEAD CODE
+.minilesson_bq_response {
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  font-size: 1.33em;
+  overflow: auto;
+}
+*/
+
+/* DEAD CODE
+.minilesson_bq_confirmchoice {
+  text-align: center;
+  background-color: blue;
+  color: white;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.33em;
+  overflow: auto;
+}
+*/
+
+/* DEAD CODE
+.minilesson_bq_selected {
+  background-color: lightblue;
+}
+*/
+
+/* DEAD CODE
+.minilesson_bq_disabled {
+  pointer-events: none;
+}
+*/
+
+/* DEAD CODE
+.minilesson_bq_disabled {
+  pointer-events: none;
+}
+*/
+
+/* DEAD CODE
+.minilesson_bq_right {
+  color: green;
+}
+*/
+
+/* DEAD CODE
+.minilesson_bq_wrong {
+  color: red;
+}
+*/
+
+/* DEAD CODE
+.minilesson_bq_unanswered {
+  color: black;
+}
+*/
+
+/* DEAD CODE
+.minilesson_bq_playstate {
+  float: right;
+}
+*/
+
+/* DEAD CODE
+.path-mod-minilesson #mod_minilesson_spacegame {
+  background-color: #000;
+  width: 100%;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_activity_header {
+  color: #281D5B;
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_overflow_auto {
+  overflow: auto;
+}
+*/
+
+/* DEAD CODE
+.ml_listitem_results_header h3 {
+  text-align: center;
+  padding-top: 7px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_aigenpageexplanation {
+  margin: 10px auto;
+}
+*/
+
+/* DEAD CODE
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .mod_minilesson_itemtext {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 20px 40px;
+  max-width: 100%;
+  text-align: left;
+}
+*/
+
+/* DEAD CODE
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .activity-wrapper:before {
+  content: " ";
+  height: 1px;
+  display: block;
+}
+*/
+
+/* DEAD CODE
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .startmodule_splashscreen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .mod_minilesson_iteminstructions {
+  color: #1F2334;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .mod_minilesson_itemtext,
+.freespeaking-item-box .mod_minilesson_itemtext {
+  font-weight: 400;
+  font-size: 16px;
+  color: #1F2334;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .ml_freewriting_actionbox {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 20px 40px;
+  max-width: 100%;
+  text-align: left;
+  border-radius: 4px;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .ml_freewriting_textareacontainer {
+  border: 1px solid #B7BDE3;
+  border-radius: 4px;
+  overflow: hidden;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .ml_freewriting_textarea {
+  border-width: 0;
+  padding: 20px;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .ml_freewriting_textarea:focus-visible {
+  outline-color: #B7BDE3;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .mod_minilesson_fw_wordgoal,
+.freespeaking-item-box .mod_minilesson_fs_wordgoal {
+  padding: 10px;
+  background-color: rgba(230, 233, 253, 0.4);
+  width: 100%;
+  color: #3C51DA;
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .word-count-stats,
+.freespeaking-item-box .word-count-stats {
+  color: #80859D;
+  font-weight: 300;
+  font-size: 21px;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .ml_wordcount,
+.freespeaking-item-box .ml_wordcount {
+  color: #5C669A;
+  font-weight: 600;
+  font-size: 22px;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .ml_freewriting_submitbutton {
+  margin: 30px auto 10px;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  max-width: 20%;
+  border-radius: 5px;
+  background-color: #506DFF;
+  font-weight: 600;
+}
+*/
+
+/* DEAD CODE
+.freewriting-item-box .mod_minilesson_itemimage {
+  max-width: 32%;
+}
+*/
+
+// -----------------------------------------------------------------------------
+// Legacy recorder UI + old layout classes
+// These are only referenced in constants.php but not used in any template, JS or PHP.
+// Likely remnants of an older recorder system replaced by ttrecorder.
+// -----------------------------------------------------------------------------
+
+/* DEAD CODE
+span.mod_minilesson_debugsequence {
+  border: 1px solid black;
+  margin: 1px;
+  display: inline-block;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_recording_cont {
+  display: block;
+  margin: auto;
+  text-align: center;
+  width: 100%;
+  background-image: url([[pix:mod_minilesson|loader]]);
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_recorder_instr_right,
+.mod_minilesson_recorder_instr_left {
+  float: left;
+  width: 240px;
+  height: 100px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_start_button_cont,
+.mod_minilesson_record_button_cont,
+.mod_minilesson_stop_button_cont {
+  clear: both;
+  padding: 5px;
+  text-align: center;
+  width: 100%;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_stop_button,
+.mod_minilesson_start_button,
+.mod_minilesson_record_button {
+  margin: auto;
+  width: 200px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_passage_cont {
+  display: none;
+  line-height: 2em;
+  font-size: 1.5em;
+  border-style: double;
+  padding: 3px;
+  border-color: gold;
+  margin-top: 15px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_grading_passagecont {
+  line-height: 2em;
+  font-size: 1.5em;
+  border-style: double;
+  padding: 3px;
+  border-color: gold;
+  margin-top: 15px;
+}
+*/
+
+/* DEAD CODE
+div.mod_minilesson_passage_cont.mod_minilesson_postattempt {
+  display: block;
+  position: relative;
+  font-size: 20px;
+  line-height: 1.8em;
+  border-style: none;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_postattempt .mod_minilesson-passage-pic {
+  max-width: 200px;
+  margin: 9px 1em 1em 0;
+  float: left;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_postattempt .mod_minilesson-passage-pic img {
+  width: 200px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_twocol_cont {
+  padding: 15px;
+  border: 2px solid #CCCCCC;
+  border-radius: 5px;
+  width: 1024px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_twocol_quiz_cont {
+  border: solid 1px;
+  padding-top: 15px;
+  padding-left: 10px;
+  border-radius: 5px;
+  background-color: aliceblue;
+  margin-top: 10px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_twocol_player_cont {
+  color: blue;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_twocol_player {
+  width: 100%;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_rightcol .btn {
+  width: 100%;
+  margin-top: 20px;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_grading_action_cont {
+  border-style: double;
+  padding: 3px;
+  border-color: gold;
+  margin-top: 15px;
+  align-items: center;
+}
+*/
+
+/* DEAD CODE
+.mod_minilesson_passage_cont.mod_minilesson_postattempt .mod_minilesson_grading_badword {
+  color: black;
+  background-color: lightgrey;
+  border-color: blue;
+}
+
+// Legacy overlay + progress modal — only in constants.php, not used in templates/JS/PHP
+// #mod_minilesson_hider {
+//   display: none;
+//   position: absolute;
+//   top: 0%; left: 0%;
+//   width: 1600px; height: 2000px;
+//   margin-top: -1000px; margin-left: 0px;
+//   z-index: 99;
+//   background-color: Black; opacity: 0.6;
+// }
+// #mod_minilesson_progress_cont {
+//   display: none;
+//   position: absolute;
+//   text-align: center;
+//   top: 50%; left: 50%;
+//   width: 300px; height: 120px;
+//   margin-top: -60px; margin-left: -150px;
+//   border: 2px solid black;
+//   z-index: 100;
+//   background-color: white;
+// }
+
+// Unused animation — not referenced in any template, JS or PHP
+// @keyframes minilesson-bloom {
+//   0% { opacity: 0; }
+//   70% { opacity: 0; }
+//   100% { opacity: 1; }
+// }
+
+// Dead classes — only in constants.php or not referenced at all
+// .mod_minilesson_link_box_container { text-align: center; }
+// .mod_minilesson_quiz_reattempt { margin: 10px; }
+// .mod_minilesson_skeleton_box { background-color: #DDDBDD; color: grey; -webkit-mask: ...; animation: minilessonshimmer 2.5s infinite; }
+// @keyframes minilessonshimmer { 100% { -webkit-mask-position: left } }
+// .form-input-phrase-online { text-wrap: nowrap; }
+// @keyframes minilesson_bounce { 0%,100% { transform: translateY(-25%); } 50% { transform: translateY(0); } }
+*/
+

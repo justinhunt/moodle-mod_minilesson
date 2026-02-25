@@ -1,7 +1,23 @@
-{{> mod_minilesson/questionheader}}
+<div class="minilesson-scatter-container">
+{{< mod_minilesson/questionheader}}
+    {{$slashscreen}}
+    <div class="ml_scatter_startscreen startmodule_splashscreen" data-region="splashscreen">
+        <div class="startmodule_image_container scatter_image_container">
+            <img class="scatter_image startmodule_image" src="{{{itemimageurl}}}" alt="{{#str}}scatter, mod_minilesson{{/str}}">
+        </div>
+        <div class="startmodule_title scatter_title">{{#str}}scatter, mod_minilesson{{/str}}</div>
+        <div class="startmodule_description scatter_description">{{iteminstructions}}</div>
+        <div class="start_mainmenu scatter_mainmenu">
+            <button class="btn scatter_start_btn startmodule_btn" data-action="startmodule">
+                {{#str}}start, mod_minilesson{{/str}} <i class="fa fa-play ml-1"></i>
+            </button>
+        </div>
+    </div>
+    {{/slashscreen}}
+{{/ mod_minilesson/questionheader}}
 {{> mod_minilesson/progresstimer}}
 <div class="minilesson_scatter_box">
-    <div class="ml_scatter_resultscontainer text-center" style="display: none">
+    <div class="resultscontainer ml_scatter_resultscontainer text-center" style="display: none">
         {{> mod_minilesson/loading}}
     </div>
     <div class="ml_scatter_stage">
@@ -12,3 +28,4 @@
 </div>
 
 {{> mod_minilesson/questionfooter}}
+</div>

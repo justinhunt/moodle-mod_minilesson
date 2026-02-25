@@ -1,0 +1,174 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// Dictation Chat: listen and type activity
+// Template: templates/dictationchat.mustache
+// -----------------------------------------------------------------------------
+
+.minilesson_dictate_player_box {
+
+  .dictate_prompt {
+    position: relative;
+    margin-top: 10px;
+  }
+
+  .dictate_reply {
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .dictate_game {
+    min-height: 250px;
+    padding: 10px;
+    border-top: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+    background-color: $bubble-blue;
+    width: 80%;
+    margin: auto;
+  }
+
+  .dictate_speech {
+    position: relative;
+    font-family: arial;
+    font-size: 16px;
+    background: $error-bubble;
+    color: $black;
+    border-radius: 10px;
+    padding: 20px;
+  }
+
+  .dictate_right {
+    background-color: $white;
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-left-color: $white;
+      border-right: 0;
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .dictate_teacher_left {
+    background-color: $bubble-green;
+
+    &:after {
+      content: '';
+      border: 20px solid transparent;
+      border-right-color: $bubble-green;
+      border-left: 0;
+      position: absolute;
+      left: -20px;
+      top: 50%;
+      margin-top: -20px;
+    }
+  }
+
+  .dictate_speech-icon-left {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .dictate_speech-icon-right {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    font-size: 50px !important;
+    height: 50px;
+  }
+
+  .dictate_skip_btn {
+    background: $white;
+    border-color: $primary;
+    border-radius: 10px;
+    color: $primary;
+    margin-left: 10px;
+
+    &:hover,
+    &:active,
+    &:focus {
+      background: $white;
+      border-color: $primary;
+      border-radius: 10px;
+      color: $primary;
+      margin-left: 10px;
+    }
+  }
+
+  .dictate_controls {
+    background-color: $white;
+  }
+
+  .dictate_results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 75px;
+    background-color: $bubble-blue;
+    font-weight: bold;
+    color: $white;
+    text-align: center;
+    z-index: 999;
+  }
+
+  .dictate_correct {
+    background-color: lightgreen;
+  }
+
+  .dictate_incorrect {
+    background-color: lightpink;
+  }
+
+  .dictate_targetWord {
+    padding: 3px;
+    border-radius: 5px;
+    margin: 5px;
+  }
+
+  .dictate_ctrl-btn {
+
+    &.dictate_check_btn {
+      width: 96px;
+      height: 36px;
+      background-color: $primary;
+      border-radius: 8px;
+      color: $white;
+      border-color: $primary;
+    }
+
+    &.dictate_listen_btn {
+      background-color: $primary;
+      border-radius: 8px;
+      color: $white;
+      border-color: $primary;
+      width: auto;
+      height: auto;
+      box-shadow: unset;
+      outline: 0;
+    }
+  }
+
+  .dictate_feedback {
+    font-size: 14px !important;
+    padding: 10px;
+  }
+
+  .dictate_loaded {
+    text-align: center;
+  }
+}

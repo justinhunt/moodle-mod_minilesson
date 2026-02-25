@@ -1,0 +1,50 @@
+@use '../../abstracts/variables' as *;
+
+div.poodlldictationplayer {
+  position: relative;
+  min-width: 50px;
+}
+
+.poodlldictationinput {
+  flex-grow: 1;
+}
+
+.poodlldictationstatus {
+  text-align: center;
+  position: relative;
+  min-width: 50px;
+}
+
+.dictationtrigger {
+  cursor: pointer;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+}
+
+.dictationrow {
+  margin: 5px;
+  padding: 0;
+  border: 2px solid darkgray;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.dictate-feedback {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  font-size: 30px !important;
+}

@@ -1,0 +1,56 @@
+@use '../../abstracts/variables' as *;
+
+// Freespeaking activity component
+
+.ml_freespeaking_startscreen .freespeaking_image_container {
+  background-color: $warning-light;
+}
+
+.ml_freespeaking_results_summaries {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid grey;
+  padding: 4px;
+}
+
+.ml_fs_results_summary {
+  text-align: center;
+}
+
+.ml_fs_sumcell_title {
+  font-size: 0.8em;
+  display: block;
+}
+
+.minilesson_freespeaking_box {
+    width: 100%;
+
+    .ml_freespeaking_timerdisplay {
+        color: #404871; 
+        color: $heading-navy;
+        font-size: 18px;
+        margin-bottom: 30px;
+    }
+
+    .mod_minilesson_fs_wordgoal {
+        background-color: $primary-lightest;
+        width: 100%;
+        padding: 18px 18px 12px 18px;
+        color: $primary-dark;
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+
+        .word-count-stats {
+            font-size: 21px;
+            color: $text-muted;
+            font-weight: 300;
+
+            span {
+                color: $text-slate;
+                font-weight: 600;
+            }
+        }
+
+    }
+}

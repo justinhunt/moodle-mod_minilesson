@@ -23,8 +23,9 @@
  */
 
 define(
-    ['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates', 'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame'],
-    function ($, notification, def, log, templates, anim, Ajax, str, spacegame) {
+    ['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates',
+    'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'mod_minilesson/spacegame', 'core/url'],
+    function ($, notification, def, log, templates, anim, Ajax, str, spacegame, Url) {
 
         "use strict"; // jshint ;_;
 
@@ -86,6 +87,8 @@ define(
                 self.controls.result_container = self.controls.container.find(".ml_scatter_resultscontainer");
                 self.controls.actionbutton = self.controls.container.find(".minilesson_actionbutton");
                 self.controls.retrybutton = self.controls.container.find(".minilesson-try-again");
+                self.controls.questionheader_contents = self.controls.container.find(".minilesson_questionheader_contents");
+                self.controls.itemtext  = self.controls.container.find(".mod_minilesson_itemtext ");
 
                 const $listItems = self.controls.stage.children('.ml_scatter_listitem');
                 $listItems.each((i, listitem) => {
@@ -106,14 +109,7 @@ define(
                 }
                 self.itemdata.shuffleditems = array;
                 self.itemdata.shuffleditems.forEach(shuffleitem => {
-                    shuffleitem.item.classList.remove(
-                        'borderblue',
-                        'border',
-                        'border-success',
-                        'border-warning',
-                        'shake-constant',
-                        'invisible'
-                    );
+                    shuffleitem.item.classList.remove('selected','matched','shake');
                     self.controls.stage.append(shuffleitem.item);
                 });
             },
@@ -125,8 +121,7 @@ define(
                 if (!$listItems.is($target)) {
                     return;
                 }
-                $listItems.filter((_, i) => !i.classList.contains('border-success'))
-                    .removeClass('borderblue border border-warning shake-constant');
+                $listItems.filter((_, i) => !i.classList.contains('matched')).removeClass('shake');
                 const currentIndex = $target.index();
                 if (self.markedIndex.length == 0) {
                     self.markedIndex.push(currentIndex);
@@ -139,33 +134,33 @@ define(
                     const lastIndex = self.markedIndex[0];
                     const lastItem = self.itemdata.shuffleditems[lastIndex];
                     const currentItem = self.itemdata.shuffleditems[currentIndex];
+                    self.markedIndex.push(currentIndex);
                     if (lastItem.key === currentItem.key) {
                         //Correct Choice
                         self.itemdata.scatteritems[currentItem.key].correct = true;
-                        $listItems.eq(lastIndex).addClass('border border-success ml_scatter_anim_correct');
-                        $listItems.eq(currentIndex).addClass('border border-success ml_scatter_anim_correct');
                         setTimeout(function () {
-                            $listItems.eq(lastIndex).addClass('invisible');
-                            $listItems.eq(currentIndex).addClass('invisible');
-                            if (!$listItems.filter(':not(.invisible)').length) {
+                            $listItems.eq(lastIndex).addClass('matched');
+                            $listItems.eq(currentIndex).addClass('matched');
+                            if (!$listItems.filter(':not(.matched)').length) {
                                 self.end();
                             }
-                        }, 500);
+                            self.markedIndex = [];
+                        }, 200);
                     } else {
                         self.itemdata.scatteritems[currentItem.key].correct = false;
-                        $listItems.eq(lastIndex).addClass('border border-warning ml_scatter_anim_incorrect');
-                        $listItems.eq(currentIndex).addClass('border border-warning ml_scatter_anim_incorrect');
+                        $listItems.eq(lastIndex).addClass('shake');
+                        $listItems.eq(currentIndex).addClass('shake');
                         setTimeout(function () {
-                            $listItems.eq(lastIndex).removeClass('border border-warning ml_scatter_anim_incorrect');
-                            $listItems.eq(currentIndex).removeClass('border border-warning ml_scatter_anim_incorrect');
-                        }, 500);
+                            $listItems.eq(lastIndex).removeClass('selected shake');
+                            $listItems.eq(currentIndex).removeClass('selected shake');
+                            self.markedIndex = [];
+                        }, 300);
                     }
-                    self.markedIndex = [];
                 }
                 self.markedIndex.forEach(i => {
-                    $listItems.eq(i).addClass('borderblue');
+                    $listItems.eq(i).addClass('selected');
                 });
-                if (!$listItems.filter(':not(.invisible)').length) {
+                if (!$listItems.filter(':not(.matched)').length) {
                     self.end();
                 }
             },
@@ -226,6 +221,9 @@ define(
                     self.controls.result_container.hide();
                     self.controls.stage.show();
                     self.controls.progress_container.find('#progresstimer,i').show();
+                    self.itemdata.scatteritems.forEach(scatteritem => {
+                       scatteritem.correct = false;
+                    });
                     self.controls.actionbutton.show();
                 });
                 self.controls.container.on('keydown', '#minilesson-try-again', function (e) {
@@ -277,16 +275,45 @@ define(
                 });
                 self.controls.result_container.show();
                 self.controls.stage.hide();
-                self.controls.progress_container.find('#progresstimer,i').hide();
+                self.controls.progress_container.hide();
                 self.controls.actionbutton.hide();
                 if (self.progressTimer) {
                     clearInterval(self.progressTimer);
                     self.progressTimer = null;
                 }
+                tdata.yellow_starImgurl = Url.imageUrl('yellow_star', 'mod_minilesson');
+                tdata.timerImgurl = Url.imageUrl('timer', 'mod_minilesson');
+                self.controls.questionheader_contents.hide();
+                self.controls.itemtext.hide();
                 templates.render('mod_minilesson/scatter_feedback', tdata).then(
                     function (html, js) {
                         self.controls.result_container.html(html);
                         templates.runTemplateJS(js || '');
+                        try {
+                            const rc = self.controls.result_container;
+                            const scatterbtn = rc.find('.ml-scatter-btn');
+                            const collapse = rc.find('#ml-scatter-fb-container');
+                            if (collapse.length && scatterbtn.length) {
+                                function updateBtn(expanded) {
+                                    if (expanded) {
+                                        scatterbtn.find('.ml-scatter-show-text').addClass('d-none');
+                                        scatterbtn.find('.ml-scatter-hide-text').removeClass('d-none');
+                                    } else {
+                                        scatterbtn.find('.ml-scatter-show-text').removeClass('d-none');
+                                        scatterbtn.find('.ml-scatter-hide-text').addClass('d-none');
+                                    }
+                                }
+                                updateBtn(collapse.hasClass('show'));
+                                collapse.on('shown.bs.collapse', function () { updateBtn(true); });
+                                collapse.on('hidden.bs.collapse', function () { updateBtn(false); });
+                                // Fallback: toggle after click (in case non-bootstrap toggling is used)
+                                scatterbtn.on('click', function () {
+                                    updateBtn(collapse.hasClass('show'));
+                                });
+                            }
+                        } catch (e) {
+                            log.debug('Error attaching collapse toggle handlers: ' + e);
+                        }
                     }
                 );
             },

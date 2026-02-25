@@ -1,0 +1,33 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// Hidden Player: concealed audio player with play/pause button states
+// -----------------------------------------------------------------------------
+
+.mod_minilesson_hidden_player {
+  display: none;
+}
+
+.mod_minilesson_hidden_player_button {
+  color: $white;
+  border-color: cadetblue;
+  background-color: cadetblue;
+  border-style: solid;
+  border: 1px;
+  padding: 3px;
+  text-align: center;
+}
+
+.mod_minilesson_hidden_player_button_active {
+  color: $white;
+  border-color: tomato;
+  background-color: tomato;
+}
+
+.mod_minilesson_hidden_player_button_paused {
+  color: $white;
+}
+
+.mod_minilesson_hidden_player_button_playing {
+  color: $white;
+}

@@ -1,0 +1,7 @@
+@use '../abstracts/variables' as *;
+
+// Reset/normalize
+
+.progress-bar {
+  --bs-progress-bar-bg: #{$primary};
+}

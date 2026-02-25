@@ -1,0 +1,197 @@
+@use '../../abstracts/variables' as *;
+
+.ml-scatter-correction .icon {
+  margin: 0 !important;
+}
+
+.ml_scatter_stage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.25%;
+  box-sizing: border-box;
+  background: radial-gradient(96.87% 96.87% at 50% 50%, $scatter-bg-dark 0%, $scatter-bg-light 100%);
+  padding: 12px 12px 0 12px;
+  margin: auto;
+
+  .ml_scatter_listitem {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 24%;
+    min-width: 140px;
+    height: 140px;
+    flex-shrink: 0;
+    padding: 12px;
+    border-radius: 8px;
+    border: 6px solid $primary-border-light;
+    background: $white;
+    box-shadow: 0 3px 4px 0 rgba($black, 0.10);
+    text-align: center;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: 200ms;
+    font-size: 18px;
+    font-weight: 500;
+    color: $text;
+    margin-bottom: 12px;
+
+    &.shake {
+      animation: shake-well 300ms ease-out;
+    }
+
+    &.matched {
+      pointer-events: none;
+      animation: matchFade 400ms ease-out forwards;
+    }
+
+    &.selected {
+      border-color: $warning-border;
+    }
+  }
+}
+
+.scatter-basic_feedback {
+  width: 50%;
+  background-color: $white;
+}
+
+.minilesson-scatter-container {
+
+    .startmodule_image_container {
+        background-color: $scatter-icon-bg;
+    }
+
+    .mod_minilesson_iteminstructions {
+        margin-bottom: 0;
+    }
+
+  .minilesson_scatter_box {
+    width: 100%;
+
+    .ml_scatter_resultscontainer {
+        padding: 40px 0;
+        background: $scatter-bg-translucent;
+
+    .ml-scatter-basic_feedback {
+        width: 60%;
+        background: $white;
+        margin: 0 auto;
+        box-shadow: 0 1px 4px 0 rgba($black, 0.04);
+        border: 1px solid #e7e9fdab;
+        border-radius: 6px;
+    }
+
+    .ml-scatter-basic_feedback_title {
+      border-bottom: 1px solid $primary-light;
+      padding: 10px;
+      color: $text-indigo;
+      font-weight: 600;
+
+      h2 {
+        margin-bottom: 0;
+        font-size: 20px;
+        font-weight: 600;
+      }
+  }
+
+    }
+
+    .ml-scatter-feedback-box {
+      display: flex;
+      justify-content: space-around;
+      padding: 30px;
+
+      img {
+        height: 30px;
+        width: 30px;
+      }
+    }
+
+    .ml-scatter-bigbutton {
+      border: 1px solid $primary;
+      color: $primary;
+      border-radius: 8px;
+      font-weight: 500;
+
+      img.icon {
+        margin: 0 !important;
+        position: relative;
+        top: -1px;
+        width: 18px;
+        height: 14px;
+      }
+    }
+
+    .term {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .term-title {
+        padding: 10px 20px;
+        border: 1px solid rgba($primary-border-soft, 0.37);
+        border-radius: 4px;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .term-body {
+        padding: 10px 20px;
+        border: 1px solid rgba($primary-border-soft, 0.37);
+        border-radius: 4px;
+        border-left: none;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    .term-tick {
+        margin-left: 12px;
+    }
+
+    .term-body-correct {
+        color: $success-text;
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .term-body-incorrect {
+        color: $error;
+        font-weight: 500;
+        font-size: 15px;
+    }
+
+    .ml-scatter-correct {
+      background-color: $success;
+      border: $success;
+      border-radius: 100%;
+      color: $white;
+      font-size: 13px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .ml-scatter-incorrect {
+      background-color: $error-light;
+      border: $error-light;
+      border-radius: 100%;
+      color: $white;
+      font-size: 13px;
+      width: 20px;
+      height: 20px;
+    }
+
+    .ml-scatter-detailed_feedback_div {
+      padding: 6px;
+
+      &:last-child {
+        padding-bottom: 32px;
+      }
+    }
+  }
+}

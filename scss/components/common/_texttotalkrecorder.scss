@@ -1,0 +1,76 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// Text-to-Talk Recorder: shared voice recording button with waveform
+// Template: templates/ttrecorder.mustache
+// Used by: listenrepeat, speakinggapfill, freespeaking, passagereading, multiaudio
+// -----------------------------------------------------------------------------
+
+.mod_minilesson_ttrec_waveButtonContainer {
+  position: relative;
+  margin: auto;
+  border-radius: 10px;
+  width: 200px;
+
+  .ttrec_ready {
+    background: $primary;
+    box-shadow: $main-shadow;
+  }
+
+  .ttrec_engaged {
+    background: $recording;
+  }
+
+  .mod_minilesson_ttrec_waveButton.ttrec_waiting {
+    background: $grey;
+    box-shadow: none;
+  }
+
+  .mod_minilesson_ttrec_waveForm.ttrec_waiting {
+    display: none;
+  }
+}
+
+.mod_minilesson_ttrec_waveForm {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: $primary-bg;
+  border-radius: 10px;
+}
+
+.mod_minilesson_ttrec_waveButton {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: inset 0px 1px 3px $recording-light, inset 0px -1px 3px $error-shadow;
+  color: $white;
+  font-size: 26px;
+  text-shadow: 0px -1px 0px rgba($black, 0.3);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  margin: auto;
+  border: none;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &.ttrec_restart {
+    background-color: $recording;
+    box-shadow: $main-shadow;
+  }
+
+  &.ttrec_isrecording {
+    background-color: $error;
+    box-shadow: $main-shadow;
+  }
+}

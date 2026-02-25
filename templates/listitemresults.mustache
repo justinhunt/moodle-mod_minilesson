@@ -1,10 +1,10 @@
 <div id="{{uniqid}}" class="ml_listitem_results p-md-5 p-3">
   <div class="d-flex align-items-center justify-content-center">
     <div class="result-container text-center position-relative">
-      <div class="star-container position-absolute d-flex align-items-center justify-content-center p-2">
+      <div class="star-container position-absolute d-flex align-items-center justify-content-center">
         <i class="fa fa-star"></i>
       </div>
-      <h2 class="result-font"><span class="bigger-font">{{correctitems}}/</span>{{totalitems}}</h2>
+      <h2 class="result-font"><span class="result-numerator">{{correctitems}}</span><span class="result-denominator">/{{totalitems}}</span></h2>
       <p class="correct-text"><i>{{#str}}correct , mod_minilesson{{/str}}</i></p>
     </div>
   </div>
@@ -26,10 +26,10 @@
       {{{target}}}
       </div>
       {{#correct}}
-        <div class="ml_li_resultstatus ml_correct"><i class="fa fa-lg fa-check"></i></div>
+        <div class="ml_li_resultstatus ml_correct"><i class="fa fa-check"></i></div>
       {{/correct}}
       {{^correct}}
-        <div class="ml_li_resultstatus ml_incorrect"><i class="fa fa-lg fa-times"></i></div>
+        <div class="ml_li_resultstatus ml_incorrect"><i class="fa fa-times"></i></div>
       {{/correct}}
     </div>
   {{/items}}

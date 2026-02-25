@@ -1,0 +1,41 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// Slides: Reveal.js slide container for lesson previews
+// -----------------------------------------------------------------------------
+
+.minilesson-slides-container {
+  position: relative;
+  width: 80%;
+  max-width: 800px;
+  height: 450px;
+  margin: 30px auto;
+  border: 2px solid $grey-500;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.minilesson-slides-preview-modal .minilesson-slides-container {
+  width: 100%;
+  max-width: unset;
+  margin: 0;
+}
+
+.minilesson-slides-container .reveal {
+  line-height: 1.4;
+  height: 100%;
+}
+
+.minilesson-slides-container .reveal .slides {
+  pointer-events: auto;
+}
+
+.minilesson-slides-container .reveal .slides img {
+  max-height: 60vh;
+}
+
+.minilesson-slides-container .reveal section > ul,
+.minilesson-slides-container .reveal section > ol {
+  display: block;
+  width: 100%;
+}

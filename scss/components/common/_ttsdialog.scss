@@ -1,0 +1,38 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// TTS Dialog: text-to-speech conversation dialog with actor roles
+// -----------------------------------------------------------------------------
+
+.ttsdialog_actorplusline {
+  border: 1px solid darkgray;
+  background-color: $white;
+}
+
+.ttsdialog_text {
+  background-color: $white;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.ttsdialog_actor {
+  margin: auto;
+  text-align: center;
+
+  &.rolea {
+    color: $blue;
+  }
+
+  &.roleb {
+    color: $green;
+  }
+
+  &.rolec {
+    color: $orange;
+  }
+
+  &.rolenone {
+    opacity: 0;
+  }
+}

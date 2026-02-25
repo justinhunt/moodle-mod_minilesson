@@ -1,0 +1,93 @@
+@use '../abstracts/variables' as *;
+
+// Box styling for splashscreen containers and activity wrappers
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .activity-wrapper,
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .startmodule_splashscreen {
+  box-shadow: $main-shadow;
+  position: relative;
+  margin: auto;
+  background-color: $white;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// Shared start screen elements (scoped for specificity 0,2,0)
+:is(.startmodule_splashscreen, .item-container) {
+
+  .startmodule_image_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 36px auto 0;
+    height: 70px;
+    width: 70px;
+    background: $lavender-bg;
+    border-radius: 100%;
+    /*
+    .startmodule_image {
+    }
+    */
+
+  }
+
+  .startmodule_title {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    text-align: center;
+    padding: 24px 0 18px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: $heading-navy;
+  }
+
+  .start_mainmenu {
+    text-align: center;
+    font-size: 20px;
+    padding: 36px 0;    
+  }
+
+  .startmodule_btn {
+    background-color: $primary;
+    margin-top: 0;
+    width: 96px;
+    height: 36px;
+    border-radius: 8px;
+    border-color: $primary;
+    color: $white;
+    padding: 6px 20px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 500;
+    
+    &:hover,
+    &:focus,
+    &:active {
+      background-color: $primary-hover;
+      border-color: $primary-hover;
+      outline: 0;
+      box-shadow: none;
+      color: $white;
+    }
+
+    i {
+        font-size: 11px;
+        position: relative;
+        top: -1px;
+    }
+  }
+
+  .startmodule_description {
+    color: $text;
+    font-weight: 400;
+    font-size: 15px;
+    letter-spacing: 0;
+    text-align: center;
+    width: 70%;
+  }
+}

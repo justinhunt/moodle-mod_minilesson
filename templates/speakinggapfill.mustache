@@ -1,21 +1,21 @@
 {{> mod_minilesson/questionheader}}
-<div class="minilesson_sgapfill_player_box gapfill-container mt-5">
+<div class="minilesson_sgapfill_player_box item-container">
     <div style="display:none;" class="sgapfill_results">{{#str}}dc_results, mod_minilesson{{/str}}</div>
 
-    <div class="sgapfill_maintitle" style="display: none">{{iteminstructions}}</div>
+    <div class="maintitle sgapfill_maintitle" style="display: none">{{iteminstructions}}</div>
     <div class="sgapfill_itemtext mod_minilesson_itemtext {{rtl}}" style="display: none">{{{itemtext}}}</div>
 
-    <div class="sgapfill_image_container text-center pt-5">
-        <img class="sgapfill_image" src="{{{itemimageurl}}}" alt="{{#str}}sgapfill, mod_minilesson{{/str}}">
+    <div class="startmodule_image_container sgapfill_image_container">
+        <img class="startmodule_image sgapfill_image" src="{{{itemimageurl}}}" alt="{{#str}}sgapfill, mod_minilesson{{/str}}">
     </div>
 
-    <div class="sgapfill_title text-center mt-3">{{#str}}speakinggapfill, mod_minilesson{{/str}}</div>
+    <div class="startmodule_title sgapfill_title">{{#str}}speakinggapfill, mod_minilesson{{/str}}</div>
 
-    <div class="sgapfill_description mt-3 text-center">{{iteminstructions}}</div>
+    <div class="startmodule_description sgapfill_description">{{iteminstructions}}</div>
 
-    <div class="sgapfill_mainmenu mt-3 pb-5">
+    <div class="start_mainmenu sgapfill_mainmenu">
         <div class="sgapfill_loaded" style="display:none;">
-            <button disabled class='btn btn-block btn-primary sgapfill_start_btn'>
+            <button disabled class='btn startmodule_btn sgapfill_start_btn'>
                 {{#str}}start, mod_minilesson{{/str}} <i class='fa fa-play ml-1'></i>
             </button>
         </div>
@@ -38,12 +38,12 @@
         <div class="sgapfill_speakbtncontainer">
             {{> mod_minilesson/ttrecorder}}
         </div>
-        <button class="btn sgapfill_ctrl-btn sgapfill_skip_btn my-4">
-            <span class="mobileaccesshide">{{#str}}skip, mod_minilesson{{/str}}</span> <i class="fa fa-arrow-right"></i>
+        <button class="btn btn-skip-button-secondary sgapfill_ctrl-btn sgapfill_skip_btn my-4">
+            <span class="mobileaccesshide">{{#str}}skip, mod_minilesson{{/str}}</span>{{#pix}}skip-icon, mod_minilesson{{/pix}}
         </button>
     </div>
 
-    <div class="sgapfill_resultscontainer"></div>
+    <div class="resultscontainer sgapfill_resultscontainer"></div>
 
 </div>
 

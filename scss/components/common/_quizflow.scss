@@ -1,0 +1,117 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// Quiz Flow: quiz containers, feedback, error states, finished screen
+// Template: templates/quizfinished.mustache, activity page
+// -----------------------------------------------------------------------------
+
+.mod_minilesson_quiz_finished {
+  display: none;
+  text-align: center;
+}
+
+.mod_minilesson_feedback_cont {
+  display: none;
+}
+
+.mod_minilesson_wheretonext_cont {
+  display: none;
+}
+
+.mod_minilesson_quiz_cont {
+  display: none;
+  margin: auto;
+}
+
+.mod_minilesson_quiz_cont.mod_minilesson_compact {
+  max-width: 750px;
+}
+
+.mod_minilesson_quiz_cont.mod_minilesson_wide {
+  max-width: 1200px;
+}
+
+div.mod_minilesson_feedback_cont.mod_minilesson_postattempt {
+  display: block;
+}
+
+.mod_minilesson_evaluated_message {
+  text-align: center;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.mod_minilesson_error_cont {
+  display: none;
+}
+
+.mod_minilesson_error_cont h3 {
+  color: $red;
+}
+
+.mod_minilesson_quiz_finished {
+  border: solid 1px $grey-500;
+}
+
+.mod_minilesson_quiz_finished h1 {
+  margin-top: 43px;
+  font-size: 26px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.quizrating {
+  margin-bottom: 31px;
+}
+
+span.mod_minilesson_finishedanswer {
+  display: block;
+}
+
+.minilesson_actionbutton {
+  margin: 12px;
+  padding: 6px;
+  text-align: center;
+}
+
+.minilessonname {
+  background: $grey-500;
+  padding: 10px;
+  font-size: 19px;
+}
+
+.mod_minilesson_placeholder {
+  width: 100%;
+  max-width: 400px;
+  height: 300px;
+  margin: auto;
+}
+
+.minilesson_loading {
+  margin: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+.minilesson_loadingtext {
+  margin: 10px;
+}
+
+.minilesson_nextbutton {
+  display: block;
+  width: 150px;
+  height: 50px;
+  border: 1px;
+  border-style: solid;
+  border-color: $primary;
+  border-radius: 30px;
+  color: $primary;
+  font-size: 15px;
+  font-weight: 500;
+  margin: auto;
+  background-color: $white;
+
+  &:focus {
+    outline: 0;
+  }
+}

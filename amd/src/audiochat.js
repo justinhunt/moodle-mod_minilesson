@@ -1,7 +1,7 @@
 define(
     ['jquery', 'core/log', 'mod_minilesson/definitions',
-        'mod_minilesson/ttrecorder', 'core/templates', 'core/str', 'core/fragment'],
-    function ($, log, def, ttrecorder, templates, str, Fragment) {
+        'mod_minilesson/ttrecorder', 'core/templates', 'core/str', 'core/fragment', 'core/url'],
+    function ($, log, def, ttrecorder, templates, str, Fragment, Url) {
         "use strict"; // jshint ;_;
 
         /*
@@ -237,7 +237,6 @@ define(
                     messagesContainer: container.querySelector(".ml_ac_messages-container"),
                     micButtonContainer: container.querySelector(".mic-button-container"),
                     toggleMicBtn: container.querySelector(".toggle-mic-btn"),
-                    micIcon: container.querySelector(".mic-icon"),
                     micWaveformCanvas: container.querySelector(".mic-waveform-canvas"),
                     micSelect: container.querySelector('.ml_ac_micselect'),
                     finishMessage: container.querySelector('.ml_ac_finished-message'),
@@ -250,6 +249,9 @@ define(
 
                     clicktosendlabel: container.querySelector('.ml_ac_clicktosend'),
                     mainWrapper: container.querySelector('.minilesson_audiochat_box .ml_unique_mainwrapper'),
+                    sessionControls: container.querySelector('.ml_unique_sessioncontrols'),
+                    itemtextAfterchatactive: container.querySelector('.itemtext_afterchatactive'),
+                    micColumn: container.querySelector('.ml_ac_mic-column'),
                 };
                 self.canvasCtx = !self.controls.micWaveformCanvas ? null :
                     self.controls.micWaveformCanvas.getContext("2d");
@@ -316,10 +318,14 @@ define(
 
                 // The cute dog avatar
                 self.controls.aiAvatarSection.classList.toggle("hidden", self.isSessionStarted || self.isSessionActive || self.isSessionStopped);
-                //The chat session is active message
-                self.controls.chatActiveMessage.classList.toggle("hidden", !self.isSessionActive);
                 // The conversation area
                 self.controls.conversationSection.classList.toggle("hidden", !(self.isSessionActive || self.isSessionStopped));
+
+                self.controls.sessionControls.classList.toggle('hidden', self.isSessionStarted || self.isSessionActive || self.isSessionStopped);
+                if (self.controls.itemtextAfterchatactive) {
+                    self.controls.itemtextAfterchatactive.classList.toggle('hidden', !(self.isSessionActive || self.isSessionStopped));
+                }
+                self.controls.micColumn.classList.toggle('hidden', !self.isSessionActive);
 
                 // Render messages
                 self.controls.messagesContainer.innerHTML = ""; // Clear existing messages
@@ -329,17 +335,17 @@ define(
                         return;
                     }
                     var messageDiv = document.createElement("div");
-                    messageDiv.className = `flex ${message.usertype === "user" ? "justify-end" : "justify-start"} ml_unique_ordered_message_${message.usertype === "user" ? "user" : "assistant"}`;
+                    messageDiv.className = `ml_unique_ordered_message_${message.usertype === "user" ? "user" : "assistant"}`;
 
                     var contentDiv = document.createElement("div");
-                    contentDiv.className = `max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                    contentDiv.className = `rounded-lg ${
                             message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
                     } ml_unique_content_${
                         message.usertype === "user" ? "user" : "assistant"
                     }`;
 
                     var headerDiv = document.createElement("div");
-                    headerDiv.className = "flex items-center text-xs font-medium mb-1 ml_unique_headerdiv";
+                    headerDiv.className = "mb-1 ml_unique_headerdiv";
                     if (message.usertype === "assistant") {
                         var pictureDiv = document.createElement('div');
                         pictureDiv.innerHTML = `
@@ -352,20 +358,20 @@ define(
                     contentDiv.appendChild(headerDiv);
 
                     var textDiv = document.createElement("div");
-                    textDiv.className = "text-sm ml_unique_textsmall";
+                    textDiv.className = "ml_unique_textsmall";
                     textDiv.textContent = message.content;
                     contentDiv.appendChild(textDiv);
 
                     if (self.loadingMessages.has(message.id)) {
                         var loaderDiv = document.createElement("div");
-                        loaderDiv.className = "flex items-center space-x-1 py-1 message-loader ml_unique_loadingmessage";
+                        loaderDiv.className = "py-1 message-loader ml_unique_loadingmessage";
                         loaderDiv.innerHTML = `
-                            <div class="flex space-x-1 ml_unique_loader">
-                                <div class="w-2 h-2 bg-current rounded-full ml_unique_loader_dot"></div>
-                                <div class="w-2 h-2 bg-current rounded-full ml_unique_loader_dot"></div>
-                                <div class="w-2 h-2 bg-current rounded-full ml_unique_loader_dot"></div>
+                            <div class="ml_unique_loader">
+                                <div class="ml_unique_loader_dot"></div>
+                                <div class="ml_unique_loader_dot"></div>
+                                <div class="ml_unique_loader_dot"></div>
                             </div>
-                            <span class="text-xs opacity-70 ml_unique_loader_text">AI is thinking...</span>
+                            <span class="ml_unique_loader_text">AI is thinking...</span>
                         `;
                         contentDiv.appendChild(loaderDiv);
                     }
@@ -391,11 +397,35 @@ define(
                     self.controls.micWaveformCanvas.classList.toggle("active", self.isMicActive);
                 }
 
-                if (self.controls.micIcon) {
+                if (self.controls.toggleMicBtn) {
                     // Set icon based on mic state
-                    self.controls.micIcon.innerHTML = self.isMicActive
-                    ? `<rect id="primary" x="2" y="2" width="20" height="20" rx="2" style="fill: rgb(0, 0, 0);"></rect>` // Mic On icon
-                    : `<path id="secondary" d="M12,15h0a4,4,0,0,1-4-4V7a4,4,0,0,1,4-4h0a4,4,0,0,1,4,4v4A4,4,0,0,1,12,15Z" style="fill: rgb(44, 169, 188); stroke-width: 2;"></path><path id="primary" d="M18.24,16A8,8,0,0,1,5.76,16" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary-2" data-name="primary" d="M12,19v2m4-10V7a4,4,0,0,0-4-4h0A4,4,0,0,0,8,7v4a4,4,0,0,0,4,4h0A4,4,0,0,0,16,11Z" style="fill: none; stroke: rgb(0, 0, 0); stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path>`; // Mic Off icon
+                    self.controls.toggleMicBtn.innerHTML = self.isMicActive
+                    ? `<svg id="mic-icon" class="mic-icon mic-icon-svg ml_unique_micsvg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect id="primary" x="2" y="2" width="20" height="20" rx="2" style="fill: rgb(0, 0, 0);"/>
+</svg>
+` // Mic On icon
+                    : `<svg width="48" height="48" viewBox="0 0 59 59" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g filter="url(#filter0_d_2299_874)">
+    <circle cx="29.2834" cy="27.2834" r="23.2834" fill="#5067FF"/>
+  </g>
+  <rect x="25.641" y="16.3383" width="7.28658" height="13.0053" rx="3.64329" stroke="white" stroke-width="1.7"/>
+  <path d="M37.0438 25.7002C37.0438 29.9866 33.569 33.4613 29.2826 33.4613C24.9963 33.4613 21.5215 29.9866 21.5215 25.7002" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
+  <path d="M29.2832 37.138V33.8701" stroke="white" stroke-width="1.7"/>
+  <path d="M25.6074 37.5459H32.9601" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <filter id="filter0_d_2299_874" x="0" y="0" width="58.5664" height="58.5664" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="2"/>
+      <feGaussianBlur stdDeviation="3"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.22 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2299_874"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2299_874" result="shape"/>
+    </filter>
+  </defs>
+</svg>
+`; // Mic Off icon
                 }
 
                 //show or not show clicktosendlabel
@@ -705,6 +735,8 @@ define(
                     stars.push({ filled: i < filledStars });
                 }
                 tdata.stars = stars;
+                tdata.yellow_starImgurl = Url.imageUrl('yellow_star', 'mod_minilesson');
+                tdata.gray_starImgurl = Url.imageUrl('gray_star', 'mod_minilesson');
 
                 templates.render('mod_minilesson/audiochatimmediatefeedback', tdata).then(
                     function (html, js) {

@@ -1,23 +1,46 @@
-{{> mod_minilesson/questionheader}}
+{{< mod_minilesson/questionheader}}
+{{$slashscreen}}
+<div class="ml_freewriting_startscreen startmodule_splashscreen" data-region="splashscreen">
+    <div class="startmodule_image_container freewriting_image_container">
+        <img class="freewriting_image startmodule_image" src="{{{itemimageurl}}}" alt="{{#str}}freewriting, mod_minilesson{{/str}}">
+    </div>
+    <div class="startmodule_title freewriting_title">{{#str}}freewriting, mod_minilesson{{/str}}</div>
+    <div class="startmodule_description freewriting_description">{{iteminstructions}}</div>
+    <div class="start_mainmenu freewriting_mainmenu">
+        <button class="btn freewriting_start_btn startmodule_btn" data-action="startmodule">
+            {{#str}}start, mod_minilesson{{/str}} <i class="fa fa-play ml-1"></i>
+        </button>
+    </div>
+</div>
+{{/slashscreen}}
+{{/ mod_minilesson/questionheader}}
 {{> mod_minilesson/progresstimer}}
 <div class="minilesson_freewriting_box">
     <div class="ml_freewriting_resultsbox"></div>
-    <div class="ml_freewriting_pendingbox hidden"><center><i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i></center></div>
-        <div class="ml_freewriting_actionbox">
-            <div class="ml_freewriting_textareacontainer">
-                <textarea class="ml_freewriting_textarea" rows="{{textarearows}}" cols="50" placeholder="{{#str}}writehere, mod_minilesson{{/str}}" lang="{{language}}"></textarea>
-                {{#enablevkeyboard}}
-                    <button class="btn ml_simple_keyboard_toggle" type="button" title="Virtual Keyboard" style="padding: 0; background: none; border: none; margin-left: 5px;">
-                        <img src="{{vkeyboardurl}}" style="cursor: pointer; width: 24px; height: 24px;" alt="Virtual Keyboard" />
-                    </button>
-                {{/enablevkeyboard}}
-            </div>
+    <div class="ml_freewriting_pendingbox hidden">
+        <center>
+            <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+        </center>
+    </div>
+    <div class="ml_freewriting_actionbox">
+        <div class="ml_freewriting_textareacontainer">
+            <textarea class="ml_freewriting_textarea" rows="{{textarearows}}" cols="50" placeholder="{{#str}}writehere, mod_minilesson{{/str}}" lang="{{language}}"></textarea>
             {{#enablevkeyboard}}
-                <div class="simple-keyboard simple-keyboard-{{uniqueid}}" style="display: none; padding: 5px;" aria-hidden="true"></div>
+                <button class="btn ml_simple_keyboard_toggle" type="button" title="Virtual Keyboard" style="padding: 0; background: none; border: none; margin-left: 5px;">
+                    <img src="{{vkeyboardurl}}" style="cursor: pointer; width: 24px; height: 24px;" alt="Virtual Keyboard" />
+                </button>
             {{/enablevkeyboard}}
-            <a class="btn btn-primary ml_freewriting_submitbutton" href="#">{{#str}}submit, mod_minilesson{{/str}}</a>
-            <div class="timerstatus_{{uniqueid}} ml_freewriting_timerdisplay ml_recsession"></div>
-            <div class="mod_minilesson_fw_wordgoal {{^countwords}}hidden{{/countwords}} ml_recsession">{{#str}} currentwordcount , mod_minilesson {{/str}}: <span class="ml_wordcount">0</span>/{{targetwordcount}}</div>
         </div>
+        {{#enablevkeyboard}}
+            <div class="simple-keyboard simple-keyboard-{{uniqueid}}" style="display: none; padding: 5px;" aria-hidden="true"></div>
+        {{/enablevkeyboard}}
+        <div class="mod_minilesson_fw_wordgoal {{^countwords}}hidden{{/countwords}} ml_recsession word-count-container">
+            {{#str}} currentwordcount , mod_minilesson {{/str}}
+            <p class="word-count-stats mb-0"><span class="ml_wordcount">0</span> / {{targetwordcount}}</p>
+        </div>
+        </div>
+        <a class="btn btn-check-button-primary ml_freewriting_submitbutton w-auto" href="#">{{#str}}submit, mod_minilesson{{/str}}</a>
+        <div class="timerstatus_{{uniqueid}} ml_freewriting_timerdisplay ml_recsession"></div>
+    </div>
 </div>
 {{> mod_minilesson/questionfooter}}

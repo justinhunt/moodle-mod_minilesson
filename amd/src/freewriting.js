@@ -238,6 +238,9 @@ define([
                 self.pendingbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_pendingbox");
                 self.resultsbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_resultsbox");
                 self.timerdisplay = $("#" + self.itemdata.uniqueid + "_container div.ml_freewriting_timerdisplay");
+                self.iteminstructions = $("#" + self.itemdata.uniqueid + "_container div.mod_minilesson_iteminstructions");
+                self.itemtext = $("#" + self.itemdata.uniqueid + "_container div.mod_minilesson_itemtext");
+                self.questionheader_contents = $("#" + self.itemdata.uniqueid + "_container div.minilesson_questionheader_contents");
             }, //end of init components
 
             do_corrections_markup: function (grammarerrors, grammarmatches, insertioncount) {
@@ -325,6 +328,9 @@ define([
                                         );
                                     }
                                     //show and hide
+                                    self.iteminstructions.hide();
+                                    self.itemtext.hide();
+                                    self.questionheader_contents.hide();
                                     self.resultsbox.show();
                                     self.pendingbox.hide();
                                     self.actionbox.hide();
@@ -338,6 +344,8 @@ define([
                             );// End of templates
                             // progresstimer clear interval when submitted and timelimit not finished
                             if (self.itemdata.timelimit > 0) {
+                                let progresscontainer = $("#" + self.itemdata.uniqueid + "_container .progress-container");
+                                progresscontainer.hide();
                                 var timerelement = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer");
                                 var timerinterval = timerelement.attr('timer');
                                 if (timerinterval) {
@@ -350,6 +358,9 @@ define([
                         self.resultsbox.hide();
                         self.pendingbox.hide();
                         self.actionbox.show();
+                        self.iteminstructions.show();
+                        self.itemtext.show();
+                        self.questionheader_contents.show();
                     }
                 });
             },

@@ -1,0 +1,197 @@
+@use '../../abstracts/variables' as *;
+
+// Results component for freewriting, freespeaking and audiochat
+
+.resultscontainer {
+  width: 100%;
+}
+
+.ml_freewriting_resultsbox {
+  color: $black;
+}
+
+.ml_freespeaking_finishedmessage {
+  color: $text-muted;
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 400;
+  text-align: center;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.ml_freespeaking_results {
+  .ml_freespeaking_results_summaries {
+    padding: 20px 40px;
+    max-width: 100%;
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid $primary-light;
+  }
+
+  .ml_fs_results_summary {
+    text-align: left;
+
+    .ml_fs_sumcell_title {
+      font-weight: 500;
+      font-size: 13px;
+      color: $text-muted-blue;
+    }
+
+    .ml_fs_sumcell_content {
+      font-weight: 600;
+      font-size: 21px;
+      color: rgba(81, 93, 153, 0.81);
+    }
+  }
+}
+
+:is(.ml_freewriting_resultsbox, .ml_freespeaking_resultsbox) {
+  .ml_freespeaking_feedback {
+    background-color: rgba(230, 233, 253, 0.40);
+    text-align: center;
+    padding: 22px 40px 40px 40px;
+    position: relative;
+    margin-top: 48px;
+
+    .ml_fs_results_summary {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      border: 1px solid $primary-border;
+      background-color: $white;
+      border-radius: 24px;
+      padding: 11px 16px;
+      margin: auto;
+
+      img {
+        width: 25px;
+      }
+    }
+
+    .freewriting-feedback-title {
+      color: $primary-dark;
+      font-weight: 500;
+      font-size: 14px;
+      text-transform: uppercase;
+    }
+
+    :is(.freewriting-feedback-list, .freespeaking-feedback-list) {
+      max-width: 90%;
+      margin: 10px auto;
+      text-align: left;
+      list-style-type: disclosure-closed;
+      font-family: "Inter", sans-serif;
+      font-optical-sizing: auto;
+      font-style: normal;
+      font-size: 15px;
+      font-weight: 400;
+
+      li {
+        margin-bottom: 16px;
+
+        &::marker {
+          color: $primary;
+        }
+      }
+    }
+  }
+
+  :is(.mlfsr_originaltext_container, .mlfsr_correctedtext_container) {
+    padding: 20px 40px;
+
+    .para-bold-title {
+        display: inline-block;
+        color: $primary;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        font-weight: 600;
+        font-size: 13px;
+    }
+  }
+
+  .mod_minilesson_toggle_differences {
+    :is(.mstfd_showall, .mstfd_hidecrossouts) {
+      color: $primary;
+      font-size: 16px;
+      font-weight: 400;
+    }
+  }
+
+  .reattempt_btn {
+    border: 1px solid $primary;
+    color: $primary;
+    border-radius: 8px;
+    margin: 15px;
+    padding-top: 5px;
+    padding-bottom: 7px;
+    font-weight: 600;
+    font-size: 14px;
+
+    img.icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      color: $primary;
+    }
+  }
+}
+
+.ml_freespeaking_resultsbox .ml_freespeaking_results_finalaudio {
+  padding: 20px 40px;
+}
+
+// Audiochat review feedback
+.audiochat-item-box .ml-ac-review_feedback {
+  background-color: rgba(230, 233, 253, 0.40);
+  text-align: center;
+  padding: 40px;
+  position: relative;
+
+  .ml_ac_results_summary {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    border: 1px solid $primary-border;
+    background-color: $white;
+    border-radius: 24px;
+    padding: 11px 16px;
+    margin: auto;
+  }
+
+  .audiochat-feedback-title {
+    color: $primary-dark;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+}
+
+.minilesson_audiochat_box .ml-ac-review_feedback .ml_ac_results_summary img {
+  width: 25px;
+}
+
+.minilesson_audiochat_box .ml_ac_retrybtn {
+  border: 1px solid $primary;
+  color: $primary;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-top: 20px;
+  margin-bottom: 36px;
+
+  img.icon {
+    margin: 0 !important;
+    position: relative;
+    top: -1px;
+    width: 18px;
+    height: 14px;
+  }
+
+  &:hover {
+    color: $primary;
+  }
+}

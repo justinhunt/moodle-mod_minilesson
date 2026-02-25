@@ -1,0 +1,267 @@
+@use '../../abstracts/variables' as *;
+
+// Wordshuffle activity component
+
+// Wordset container (game board)
+.wordshuffle_wordset_container {
+  --slot-bg: #{$ws-slot-bg};
+  --word-bg: #{$ws-word-bg};
+  --word-text: #{$ws-word-text};
+  --fixed-bg: #{$warning-highlight};
+  --border: #{$ws-border};
+  --hover: #{$ws-hover};
+  --bank: #{$ws-bank};
+
+
+  .question-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .gapword-box {
+    background-color: $warning-highlight;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: $ws-text;
+    box-shadow: 0 1px 0 rgba($black, 0.05);
+  }
+
+  .gapdrop-box-wrap {
+    display: block;
+  }
+
+  .gapdrop-box {
+    height: 40px;
+    min-width: 120px;
+    background-color: $ws-fixed-bg;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px $ws-border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .gapdrag-box {
+    background-color: $ws-word-light;
+    color: $ws-word-text;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: move;
+    user-select: none;
+    box-shadow: 0 1px 0 rgba($black, 0.05);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .answer-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 12px;
+    border: 1px dashed $ws-border;
+    border-radius: 10px;
+  }
+
+  .ui-droppable-hover {
+    &.gapdrop-box {
+      outline: 3px solid $ws-hover;
+      outline-offset: 0;
+    }
+
+    &.answer-container {
+      outline: 3px solid $ws-bank;
+    }
+
+    &.slot {
+      outline: 3px solid var(--hover);
+    }
+
+    &.bank {
+      outline: 3px solid var(--bank);
+    }
+  }
+
+  .slot {
+    width: 130px;
+    height: 46px;
+    background: var(--slot-bg);
+    border-radius: .75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .word {
+    background: var(--word-bg);
+    color: var(--word-text);
+    padding: .5rem 1rem;
+    border-radius: .75rem;
+    font-weight: 700;
+    user-select: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 0 rgba($black, 0.06);
+
+    &[draggable="true"] {
+      cursor: grab;
+    }
+
+    &.ml_ws_dragging {
+      cursor: grabbing;
+      opacity: 0.85;
+      box-shadow: 0 2px 6px rgba($black, 0.2);
+      transform: translateZ(0);
+    }
+
+    &.ml_ws_highlight {
+      box-sizing: border-box;
+      border: 2px solid $ws-focus;
+      cursor: pointer;
+    }
+  }
+
+  .bank {
+    border: 1px dashed var(--border);
+    border-radius: .75rem;
+    gap: 1rem;
+
+    &.ml_ws_highlight {
+      background-color: $ws-selected;
+      border-color: $ws-focus;
+      cursor: pointer;
+    }
+  }
+
+  .assembled {
+    min-height: 24px;
+  }
+
+  .slot-wrap {
+    width: 130px;
+  }
+
+  .word-text {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.15rem;
+    line-height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  .question-sentence {
+    gap: 0.25rem;
+  }
+
+  .drop-slot {
+    &.ml_ws_highlight {
+      background-color: $ws-correct;
+      box-shadow: 0 0 0 2px $ws-correct-ring;
+      cursor: pointer;
+    }
+  }
+
+  .drop-slot:focus,
+  .bank:focus,
+  .word:focus {
+    outline: 2px solid $ws-focus;
+    outline-offset: 2px;
+  }
+
+  .badge {
+    font-size: 100%;
+  }
+
+  &.ml-ws-locked {
+    .word,
+    .drop-slot,
+    .word-bank {
+      pointer-events: none !important;
+      opacity: 0.6;
+      transition: opacity 0.2s ease-in-out;
+    }
+  }
+}
+
+// Player box
+.minilesson_wordshuffle_player_box {
+  position: relative;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: $main-shadow;
+  background: $white;
+  padding-bottom: 36px;
+
+  :is(.wordshuffle_retry_btn, .wordshuffle_check_btn) {
+    img.icon {
+      width: 12px;
+      height: 12px;
+      margin: 0 !important;
+      margin-right: 3px !important;
+    }
+  }
+
+  .wordshuffle_retry_btn {
+    width: auto;
+    height: 36px;
+  }
+
+  .wordshuffle_check_btn {
+    width: auto;
+    height: 36px;
+  }
+
+  .wordshuffle_skip_btn {
+    &,
+    &:hover,
+    &:active,
+    &:focus {
+      background: $white;
+      border-color: $primary;
+      border-radius: 10px;
+      color: $primary;
+      margin-left: 10px;
+    }
+  }
+
+  .wordshuffle_game {
+    min-height: 250px;
+    padding: 10px;
+    border-top: 1px solid darkgray;
+    border-bottom: 1px solid darkgray;
+    background-color: $bubble-blue;
+  }
+
+  .wordshuffle_controls {
+    margin-top: 5px;
+    background-color: $white;
+    text-align: center;
+  }
+
+  .wordshuffle_results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 75px;
+    background-color: $bubble-blue;
+    font-weight: bold;
+    color: $white;
+    text-align: center;
+    z-index: 999;
+  }
+}
+

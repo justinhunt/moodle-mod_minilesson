@@ -1,0 +1,1461 @@
+.mod_minilesson_placeholder {
+  position: relative;
+  box-sizing: border-box;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.mod_minilesson-answer:hover,
+.mod_minilesson-answer:focus {
+  color: inherit;
+  text-decoration: none;
+}
+
+.mod_minilesson-answer.is-selected.is-incorrect {
+  color: white;
+  background: hsl(348, 100%, 61%);
+  border-color: hsl(348, 100%, 61%);
+  padding-right: 42px;
+}
+
+.mod_minilesson-answer.is-correct {
+  color: white;
+  background: hsl(141, 71%, 48%);
+  border-color: hsl(141, 71%, 48%);
+  padding-right: 42px;
+}
+
+.mod_.minilesson_match_word_character {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 10px;
+}
+
+/* Fullscreen Toggle Container & Button */
+.yarn-player-wrapper {
+  position: relative;
+  background: #fff;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+}
+
+/* Specific styling for when in Fullscreen mode */
+.yarn-player-wrapper:fullscreen {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #000;
+  /* Better for focus/immersion */
+  box-sizing: border-box;
+}
+
+/* Fallback for Safari/iOS */
+.yarn-player-wrapper:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #000;
+  box-sizing: border-box;
+}
+
+/* Ensure inner container expands to full height in fullscreen mode to anchor options to the bottom */
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer,
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer {
+  height: 100%;
+  max-height: none !important;
+  max-width: 100% !important;
+  border-radius: 0;
+  margin: 0;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+/* Ensure that if chat options expand, the main chat area can shrink to display them without clipping */
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer .chat-wrapper,
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer .chat-wrapper {
+  min-height: 0;
+}
+
+/* Floating the button in the corner */
+.fullscreen-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  opacity: 0.7;
+}
+
+.fullscreen-btn:hover {
+  opacity: 1;
+}
+
+/* Hide text on small mobile screens to save space */
+@media (max-width: 576px) {
+  .fullscreen-btn span {
+    display: none;
+  }
+}
+
+.mod_minilesson-answer::after {
+  content: ' ';
+  position: absolute;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  display: inline-block;
+  background-repeat: no-repeat;
+}
+
+.mod_minilesson-answer.is-correct::after {
+  background-image: url([[pix:mod_minilesson|correct]]);
+}
+
+.mod_minilesson-answer.is-selected.is-incorrect::after {
+  background-image: url([[pix:mod_minilesson|incorrect]]);
+}
+
+.mod_minilesson-btn,
+.mod_minilesson-btn:hover,
+.mod_minilesson-btn:focus,
+.mod_minilesson-btn:visited,
+.mod_minilesson-btn:active {
+  border-radius: 5px;
+  background: hsl(204, 86%, 53%);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+}
+
+.mod_minilesson-btn.inactive,
+.mod_minilesson-btn:hover.inactive,
+.mod_minilesson-btn:focus.inactive,
+.mod_minilesson-btn:visited.inactive,
+.mod_minilesson-btn:active.inactive {
+  background: hsl(0, 0%, 96%);
+  color: hsl(0, 0%, 21%);
+}
+
+.mod_minilesson-btn-recorder-like {
+  border: 2px solid #000;
+  border-radius: 5px;
+  background: #cbf2dc;
+  color: #444;
+  font-size: xx-large;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 210px;
+  height: 80px;
+}
+
+/**
+ * Source: https://leaverou.github.io/bubbly/
+ */
+
+.mod_minilesson-speech-bubble {
+  position: relative;
+  background: #f7f7f7;
+  border-radius: 0.4em;
+}
+
+.mod_minilesson-speech-bubble:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-top-color: #f7f7f7;
+  border-bottom: 0;
+  border-left: 0;
+  margin-left: -5px;
+  margin-bottom: -10px;
+}
+
+.mod_minilesson-speech-bubble-content {
+  text-align: center;
+  font-size: 25px;
+  padding: 25px;
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 35px;
+}
+
+.mod_minilesson-speech-bubble.size-medium .mod_minilesson-speech-bubble-content {
+  font-size: 20px;
+  padding: 10px;
+  min-height: auto;
+  line-height: 25px;
+}
+
+.mod_minilesson-speech-bubble.size-large .mod_minilesson-speech-bubble-content {
+  font-size: 32px;
+  font-weight: bold;
+  padding: 10px;
+  min-height: auto;
+  line-height: 25px;
+}
+
+.mod_minilesson-bloom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mod_minilesson-bloom img {
+  position: absolute;
+  /* The delay is set according to the blooming animation */
+  animation: minilesson-bloom;
+  animation-duration: 1200ms;
+}
+
+.mod_minilesson-mr-seed-wrapper {
+  position: relative;
+}
+
+.mod_minilesson-mr-seed-wrapper .mod_minilesson-speech-bubble {
+  position: absolute;
+  right: 0;
+  width: 50%;
+}
+
+@keyframes minilesson-bloom {
+  0% {
+    opacity: 0;
+  }
+
+  70% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/*! * * * * * * * * * * * * * * * * * * * *\
+  CSShake :: shake-rotate
+  v1.5.0
+  CSS classes to move your DOM
+  (c) 2015 @elrumordelaluz
+  http://elrumordelaluz.github.io/csshake/
+  Licensed under MIT
+\* * * * * * * * * * * * * * * * * * * * */
+
+@keyframes shake-rotate {
+  2% {
+    transform: translate(0, 0) rotate(-4.5deg);
+  }
+
+  4% {
+    transform: translate(0, 0) rotate(-1.5deg);
+  }
+
+  6% {
+    transform: translate(0, 0) rotate(-6.5deg);
+  }
+
+  8% {
+    transform: translate(0, 0) rotate(2.5deg);
+  }
+
+  10% {
+    transform: translate(0, 0) rotate(6.5deg);
+  }
+
+  12% {
+    transform: translate(0, 0) rotate(-3.5deg);
+  }
+
+  14% {
+    transform: translate(0, 0) rotate(7.5deg);
+  }
+
+  16% {
+    transform: translate(0, 0) rotate(2.5deg);
+  }
+
+  18% {
+    transform: translate(0, 0) rotate(7.5deg);
+  }
+
+  20% {
+    transform: translate(0, 0) rotate(3.5deg);
+  }
+
+  22% {
+    transform: translate(0, 0) rotate(1.5deg);
+  }
+
+  24% {
+    transform: translate(0, 0) rotate(1.5deg);
+  }
+
+  26% {
+    transform: translate(0, 0) rotate(0.5deg);
+  }
+
+  28% {
+    transform: translate(0, 0) rotate(6.5deg);
+  }
+
+  30% {
+    transform: translate(0, 0) rotate(-1.5deg);
+  }
+
+  32% {
+    transform: translate(0, 0) rotate(-1.5deg);
+  }
+
+  34% {
+    transform: translate(0, 0) rotate(2.5deg);
+  }
+
+  36% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+
+  38% {
+    transform: translate(0, 0) rotate(1.5deg);
+  }
+
+  40% {
+    transform: translate(0, 0) rotate(7.5deg);
+  }
+
+  42% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+
+  44% {
+    transform: translate(0, 0) rotate(-0.5deg);
+  }
+
+  46% {
+    transform: translate(0, 0) rotate(-6.5deg);
+  }
+
+  48% {
+    transform: translate(0, 0) rotate(0.5deg);
+  }
+
+  50% {
+    transform: translate(0, 0) rotate(1.5deg);
+  }
+
+  52% {
+    transform: translate(0, 0) rotate(1.5deg);
+  }
+
+  54% {
+    transform: translate(0, 0) rotate(4.5deg);
+  }
+
+  56% {
+    transform: translate(0, 0) rotate(-4.5deg);
+  }
+
+  58% {
+    transform: translate(0, 0) rotate(5.5deg);
+  }
+
+  60% {
+    transform: translate(0, 0) rotate(-3.5deg);
+  }
+
+  62% {
+    transform: translate(0, 0) rotate(-0.5deg);
+  }
+
+  64% {
+    transform: translate(0, 0) rotate(7.5deg);
+  }
+
+  66% {
+    transform: translate(0, 0) rotate(6.5deg);
+  }
+
+  68% {
+    transform: translate(0, 0) rotate(-6.5deg);
+  }
+
+  70% {
+    transform: translate(0, 0) rotate(-4.5deg);
+  }
+
+  72% {
+    transform: translate(0, 0) rotate(3.5deg);
+  }
+
+  74% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+
+  76% {
+    transform: translate(0, 0) rotate(-4.5deg);
+  }
+
+  78% {
+    transform: translate(0, 0) rotate(1.5deg);
+  }
+
+  80% {
+    transform: translate(0, 0) rotate(1.5deg);
+  }
+
+  82% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+
+  84% {
+    transform: translate(0, 0) rotate(-3.5deg);
+  }
+
+  86% {
+    transform: translate(0, 0) rotate(-6.5deg);
+  }
+
+  88% {
+    transform: translate(0, 0) rotate(-0.5deg);
+  }
+
+  90% {
+    transform: translate(0, 0) rotate(5.5deg);
+  }
+
+  92% {
+    transform: translate(0, 0) rotate(4.5deg);
+  }
+
+  94% {
+    transform: translate(0, 0) rotate(-1.5deg);
+  }
+
+  96% {
+    transform: translate(0, 0) rotate(1.5deg);
+  }
+
+  98% {
+    transform: translate(0, 0) rotate(-3.5deg);
+  }
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+}
+
+.mod_minilesson-shake {
+  animation-name: shake-rotate;
+  animation-duration: 100ms;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 2;
+}
+
+.mod_minilesson_grading_passageactions {
+  margin-top: 10px;
+  display: flex;
+}
+
+.minilesson_speechcards_container {
+  border: 1px solid darkgray;
+  margin-bottom: 5px;
+  padding: 10px;
+}
+
+.minilesson-poodllspeechcards_box {
+  text-align: center;
+  width: 60%;
+  /*225px;*/
+  font-size: 25px;
+}
+
+.minilesson_wordshuffle_player_box .wordshuffle_results {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 75px;
+  background-color: rgba(98, 135, 182, 1);
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  z-index: 999;
+}
+
+.audiochatavtarimage-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.audiochatavtarimage-container .avatar-image-check .form-check-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.audiochatavtarimage-container .avatar-image-check .avatar-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  cursor: pointer;
+  border: 2px solid lightgray;
+}
+
+.audiochatavtarimage-container .avatar-image-check .form-check-input:checked+.avatar-img {
+  border: 2px solid #1177d1;
+}
+
+.minilesson_fiction_yarncontainer .minilesson_fiction_yarnmedia {
+  min-width: 300px;
+  max-width: 300px;
+  min-height: 300px;
+  background-color: lightgray;
+}
+
+.minilesson_fiction_yarncontainer .minilesson_fiction_yarnoptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.minilesson_fiction_yarncontainer .minilesson_fiction_yarnmedia video,
+.minilesson_fiction_yarncontainer .minilesson_fiction_yarnmedia img {
+  max-width: 300px;
+}
+
+.minilesson_fiction_yarncontainer .fiction-character-name {
+  min-height: 1.5em
+}
+
+.minilesson_fiction_yarncontainer .fiction-message-container {
+  --my-gutter-height: 1.5rem;
+  margin-top: var(--my-gutter-height);
+  margin-bottom: var(--my-gutter-height)
+}
+
+@media screen and (max-width: 576px) {
+  .minilesson_fiction_yarncontainer .fiction-message-container {
+    --my-gutter-height: .8rem
+  }
+}
+
+.minilesson_fiction_yarncontainer .fiction-message-video,
+.minilesson_fiction_yarncontainer .fiction-message-audio,
+.minilesson_fiction_yarncontainer .fiction-message-image {
+  max-width: 100%;
+  width: 100%;
+}
+
+@media screen and (max-width: 576px) {
+
+  .minilesson_fiction_yarncontainer .fiction-message-video,
+  .minilesson_fiction_yarncontainer .fiction-message-audio,
+  .minilesson_fiction_yarncontainer .fiction-message-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Fiction Item Mobile Chat Style */
+
+.minilesson_fiction_yarncontainer.mobilechat {
+  display: flex;
+  flex-direction: column;
+  height: 600px;
+  /* Layout Stability Fix */
+  max-height: 80vh;
+  background-color: #ece5dd;
+  position: relative;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper {
+  overflow-y: auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-grow: 1;
+  /* Expand to push choices down, but shrink if choices increase */
+  min-height: 0;
+  position: relative;
+}
+
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper,
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper {
+  height: auto;
+  flex-grow: 1;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: fit-content;
+  background: #ffffff;
+  padding: 10px 14px;
+  border-radius: 0 12px 12px 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.4;
+  padding-top: 0;
+  position: relative;
+  margin-left: 10px;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer:not(.hasmedia) {
+  max-width: 70%;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer.hasmedia {
+  max-width: 50%;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .charactername {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .mediacontainer {
+  margin: 8px 0;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .mediacontainer video,
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .mediacontainer img {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .playercontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .playercontainer .playertext:not(:empty) {
+  background-color: #dcf8c6;
+  padding: 10px 14px;
+  border-radius: 12px 0 12px 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 70%;
+  word-wrap: break-word;
+  display: inline-block;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .yarnchoicescontainer {
+  padding: 15px;
+  border-top: 1px solid #ddd;
+  min-height: 88px;
+  flex-shrink: 0;
+  /* Prevent container from shrinking below choice height, which causes visual overflow */
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_yarnoptions:not(:empty) {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_optionbutton {
+  background-color: #fff;
+  cursor: pointer;
+  height: max-content;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_continuebutton {
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .option_container {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+  border-radius: 25px;
+  padding: 10px 20px;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .option_container:has(button[style*="display: none"]),
+.minilesson_fiction_yarncontainer.mobilechat .option_container:has(button.hidden) {
+  display: none;
+}
+
+#scrolldownbtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: none;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer.has-charactername::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  border-width: 0 10px 10px 0;
+  border-style: solid;
+  border-color: transparent white transparent transparent;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .playercontainer::before {
+  content: "";
+  position: absolute;
+  right: 6px;
+  border-width: 0px 0 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent transparent #dcf8c6;
+}
+
+.minilesson_fiction_yarncontainer.mobilechat #scroll-bottom-btn {
+  position: absolute;
+  right: 30px;
+  display: none;
+  padding: 5px 8px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  background-color: white;
+  z-index: 10;
+  bottom: 30px;
+}
+
+
+.minilesson_fiction_yarncontainer.mobilechat .character_profile_icon-image {
+  height: 30px;
+  width: 30px;
+  border-radius: 100%;
+}
+
+@keyframes l3 {
+  20% {
+    background-position: 0% 0%, 50% 50%, 100% 50%;
+  }
+
+  40% {
+    background-position: 0% 100%, 50% 0%, 100% 50%;
+  }
+
+  60% {
+    background-position: 0% 50%, 50% 100%, 100% 0%;
+  }
+
+  80% {
+    background-position: 0% 50%, 50% 50%, 100% 100%;
+  }
+}
+
+.minilesson_fiction_yarncontainer.mobilechat .chat-loader {
+  --loadercolor: #eee;
+  width: 40px;
+  aspect-ratio: 2;
+  --_g: no-repeat radial-gradient(circle closest-side, var(--loadercolor) 90%, var(--loadercolor));
+  background: var(--_g) 0% 50%, var(--_g) 50% 50%, var(--_g) 100% 50%;
+  background-size: 25% 50%;
+  animation: l3 1s infinite linear;
+}
+
+/* Plain Fiction Style */
+.minilesson_fiction_yarncontainer.plain {
+  background-color: #e6eef6;
+  padding: 20px;
+  /* Layout Stability Fixes */
+  height: 600px;
+  /* Fixed height to prevent jumping */
+  display: flex;
+  flex-direction: column;
+}
+
+.minilesson_fiction_yarncontainer.plain .chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-bottom: 20px;
+  /* Internal Scrolling */
+  flex-grow: 1;
+  overflow-y: auto;
+  min-height: 0;
+  /* Important for flex child scrolling */
+  max-height: none;
+  /* remove previous max-height */
+}
+
+
+
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  border-left: 4px solid transparent;
+}
+
+/* Narration (no character name) */
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer:not(.has-charactername) {
+  background-color: #fff;
+  border-left: none;
+}
+
+/* Character Speech */
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.has-charactername {
+  background-color: #e1e6f2;
+  /* Light blue/grey background */
+  border-left: 4px solid #5a6b8c;
+  /* Dark blue accent */
+  margin-top: 20px;
+  /* Space for name */
+}
+
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer .charactername {
+  position: absolute;
+  top: -25px;
+  left: 0;
+  font-weight: bold;
+  color: #5a6b8c;
+  font-size: 0.9em;
+  text-transform: uppercase;
+}
+
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer .charactertext {
+  font-size: 1.1em;
+  line-height: 1.5;
+  color: #333;
+}
+
+.minilesson_fiction_yarncontainer.plain .character_profile_icon {
+  float: left;
+  margin-right: 15px;
+  width: 50px;
+  height: 50px;
+}
+
+.minilesson_fiction_yarncontainer.plain .character_profile_icon-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Options */
+.minilesson_fiction_yarncontainer.plain .yarnchoicescontainer {
+  margin-top: 20px;
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+  flex-shrink: 0;
+  min-height: 55px;
+}
+
+.minilesson_fiction_yarncontainer.plain .minilesson_fiction_yarnoptions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.minilesson_fiction_yarncontainer.plain .option_container {
+  cursor: pointer;
+}
+
+.minilesson_fiction_yarncontainer.plain .minilesson_fiction_optionbutton {
+  background-color: #fff;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  padding: 15px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.minilesson_fiction_yarncontainer.plain .minilesson_fiction_fakeoptionbutton {
+  cursor: default;
+  opacity: 0.6;
+  background-color: #cccccc;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  padding: 15px;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.minilesson_fiction_yarncontainer.plain .minilesson_fiction_optionbutton:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-color: #b0b0b0;
+}
+
+.minilesson_fiction_yarncontainer.plain .optiontext {
+  font-size: 1.1em;
+  color: #444;
+}
+
+/* Continue Button */
+.minilesson_fiction_yarncontainer.plain .minilesson_fiction_continuebutton {
+  margin-top: 15px;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  padding: 10px 20px;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}
+
+.minilesson_fiction_yarncontainer.plain .minilesson_fiction_continuebutton:hover {
+  background-color: #f0f0f0;
+}
+
+/* Plain Mode Refinements */
+
+/* Media Layout: Side-by-Side */
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.hasmedia {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  /* Align vertically center */
+}
+
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.hasmedia .mediacontainer {
+  flex: 1;
+  max-width: 50%;
+}
+
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.hasmedia .charactertext {
+  flex: 1;
+  max-width: 50%;
+}
+
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.hasmedia .mediacontainer img,
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.hasmedia .mediacontainer video {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  /* Remove bottom space */
+}
+
+/* Scroll Button Styling */
+.minilesson_fiction_yarncontainer.plain #scroll-bottom-btn {
+  position: absolute;
+  bottom: 0px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #555;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.minilesson_fiction_yarncontainer.plain #scroll-bottom-btn:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.minilesson_fiction_yarncontainer.plain #scroll-bottom-btn i {
+  font-size: 1.2em;
+}
+
+.minilesson_fiction_yarncontainer.plain .playertext {
+  width: 80%;
+  margin: auto;
+  text-align: center;
+  background-color: aliceblue;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+/* Chat Loader Animation (3 dots) */
+.minilesson_fiction_yarncontainer.plain .chat-loader {
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 13px;
+  /* approximate height */
+  text-align: center;
+}
+
+/* Container for the loader to ensure it takes up space in the chat flow */
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer .mediacontainer .chat-loader {
+  position: relative;
+  transform: none;
+  left: auto;
+  top: auto;
+  margin: 10px auto;
+}
+
+.minilesson_fiction_yarncontainer.plain .chat-loader::after {
+  content: " ";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #5a6b8c;
+  margin: 0 auto;
+  /* 3 dots animation using box-shadow */
+  box-shadow: -12px 0 #5a6b8c, 12px 0 #5a6b8c;
+  animation: minilesson_fiction_plain_dots 1s infinite linear alternate;
+}
+
+@keyframes minilesson_fiction_plain_dots {
+  0% {
+    opacity: 0.2;
+  }
+
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Ensure container has height for loader if empty */
+.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.hasmedia:has(.chat-loader) .mediacontainer {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Story Mode (Classic Novel) Style */
+
+.minilesson_fiction_yarncontainer.storymode {
+  background-color: #fdf6e3;
+  /* Cream background */
+  color: #3b3b3b;
+  /* Dark grey text */
+  font-family: 'Georgia', 'Times New Roman', serif;
+  /* Serif font */
+  line-height: 1.8;
+  font-size: 1.2rem;
+  padding: 20px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.minilesson_fiction_yarncontainer.storymode .chat-wrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 20px 20px 20px;
+  max-width: 800px;
+  /* Reading column width */
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Scrollbar styling for story mode to blend in */
+.minilesson_fiction_yarncontainer.storymode .chat-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.minilesson_fiction_yarncontainer.storymode .chat-wrapper::-webkit-scrollbar-track {
+  background: #fdf6e3;
+}
+
+.minilesson_fiction_yarncontainer.storymode .chat-wrapper::-webkit-scrollbar-thumb {
+  background-color: #d3c6a6;
+  border-radius: 4px;
+}
+
+.minilesson_fiction_yarncontainer.storymode .story-paragraph {
+  margin-bottom: 1.5em;
+  text-align: justify;
+  /* Classic justification */
+}
+
+/* Images in story */
+.minilesson_fiction_yarncontainer.storymode .story-paragraph .mediacontainer {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.minilesson_fiction_yarncontainer.storymode .story-paragraph .mediacontainer img,
+.minilesson_fiction_yarncontainer.storymode .story-paragraph .mediacontainer video {
+  max-width: 300px;
+  width: 50%;
+  border-radius: 2px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 4px solid #fff;
+  /* Photo frame effect */
+}
+
+/* User Choice (Player Text) */
+.minilesson_fiction_yarncontainer.storymode .story-paragraph.player-choice {
+  text-align: center;
+  color: #8b7d6b;
+  /* Lighter/Brownish color */
+  font-style: italic;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  padding: 10px;
+  border-top: 1px solid #e0d8c3;
+  border-bottom: 1px solid #e0d8c3;
+}
+
+.minilesson_fiction_yarncontainer.storymode .story-paragraph.player-choice::before {
+  content: "❧";
+  /* Decorative character */
+  display: block;
+  font-size: 1.5rem;
+  margin-bottom: 5px;
+  color: #d3c6a6;
+}
+
+/* Options Area */
+.minilesson_fiction_yarncontainer.storymode .yarnchoicescontainer {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+  padding-top: 20px;
+  border-top: 2px solid #e0d8c3;
+  margin-top: 10px;
+  flex-shrink: 0;
+  min-height: 74px;
+}
+
+.minilesson_fiction_yarncontainer.storymode .minilesson_fiction_yarnoptions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+.minilesson_fiction_yarncontainer.storymode .minilesson_fiction_optionbutton {
+  background-color: transparent;
+  border: 2px solid #8b7d6b;
+  color: #5b4d3b;
+  font-family: inherit;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.minilesson_fiction_yarncontainer.storymode .minilesson_fiction_optionbutton:hover {
+  background-color: #8b7d6b;
+  color: #fdf6e3;
+  border-color: #8b7d6b;
+}
+
+.minilesson_fiction_yarncontainer.storymode .minilesson_fiction_continuebutton {
+  display: block;
+  width: fit-content;
+  margin: 20px auto;
+  background-color: #5b4d3b;
+  color: #fdf6e3;
+  padding: 10px 30px;
+  border-radius: 4px;
+  font-family: inherit;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9rem;
+}
+
+.minilesson_fiction_yarncontainer.storymode .minilesson_fiction_continuebutton:hover {
+  background-color: #3b3b3b;
+}
+
+/* Scroll button */
+.minilesson_fiction_yarncontainer.storymode #scroll-bottom-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #d3c6a6;
+  background-color: #fdf6e3;
+  color: #8b7d6b;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.minilesson_fiction_yarncontainer.storymode #scroll-bottom-btn:hover {
+  background-color: #fff;
+  color: #5b4d3b;
+}
+
+/* Simple-Keyboard CSS */
+
+/*!
+ * 
+ *   simple-keyboard v3.8.107
+ *   https://github.com/hodgef/simple-keyboard
+ *
+ *   Copyright (c) Francisco Hodge (https://github.com/hodgef) and project contributors.
+ *
+ *   This source code is licensed under the MIT license found in the
+ *   LICENSE file in the root directory of this source tree.
+ *
+ */
+.hg-theme-default {
+  background-color: #ececec;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;
+  overflow: hidden;
+  padding: 5px;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  width: 100%
+}
+
+.hg-theme-default .hg-button span,
+.hg-theme-default .hg-button span svg {
+  pointer-events: none
+}
+
+.hg-theme-default button.hg-button {
+  border-width: 0;
+  font-size: inherit
+}
+
+.hg-theme-default .hg-button {
+  display: inline-block;
+  flex-grow: 1
+}
+
+.hg-theme-default .hg-row {
+  display: flex
+}
+
+.hg-theme-default .hg-row:not(:last-child) {
+  margin-bottom: 5px
+}
+
+.hg-theme-default .hg-row .hg-button-container,
+.hg-theme-default .hg-row .hg-button:not(:last-child) {
+  margin-right: 5px
+}
+
+.hg-theme-default .hg-row>div:last-child {
+  margin-right: 0
+}
+
+.hg-theme-default .hg-row .hg-button-container {
+  display: flex
+}
+
+.hg-theme-default .hg-button {
+  align-items: center;
+  background: #fff;
+  border-bottom: 1px solid #b5b5b5;
+  border-radius: 5px;
+  box-shadow: 0 0 3px -1px rgba(0, 0, 0, .3);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  padding: 5px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+}
+
+.hg-theme-default .hg-button.hg-standardBtn {
+  width: 20px
+}
+
+.hg-theme-default .hg-button.hg-activeButton {
+  background: #efefef
+}
+
+.hg-theme-default.hg-layout-numeric .hg-button {
+  align-items: center;
+  display: flex;
+  height: 60px;
+  justify-content: center;
+  width: 33.3%
+}
+
+.hg-theme-default .hg-button.hg-button-numpadadd,
+.hg-theme-default .hg-button.hg-button-numpadenter {
+  height: 85px
+}
+
+.hg-theme-default .hg-button.hg-button-numpad0 {
+  width: 105px
+}
+
+.hg-theme-default .hg-button.hg-button-com {
+  max-width: 85px
+}
+
+.hg-theme-default .hg-button.hg-standardBtn.hg-button-at {
+  max-width: 45px
+}
+
+.hg-theme-default .hg-button.hg-selectedButton {
+  background: rgba(5, 25, 70, .53);
+  color: #fff
+}
+
+.hg-theme-default .hg-button.hg-standardBtn[data-skbtn=".com"] {
+  max-width: 82px
+}
+
+.hg-theme-default .hg-button.hg-standardBtn[data-skbtn="@"] {
+  max-width: 60px
+}
+
+.hg-candidate-box {
+  background: #ececec;
+  border-bottom: 2px solid #b5b5b5;
+  border-radius: 5px;
+  display: inline-flex;
+  margin-top: -10px;
+  position: absolute;
+  transform: translateY(-100%);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none
+}
+
+ul.hg-candidate-box-list {
+  display: flex;
+  flex: 1;
+  list-style: none;
+  margin: 0;
+  padding: 0
+}
+
+li.hg-candidate-box-list-item {
+  align-items: center;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  width: 40px
+}
+
+li.hg-candidate-box-list-item:hover {
+  background: rgba(0, 0, 0, .03);
+  cursor: pointer
+}
+
+li.hg-candidate-box-list-item:active {
+  background: rgba(0, 0, 0, .1)
+}
+
+.hg-candidate-box-prev:before {
+  content: "◄"
+}
+
+.hg-candidate-box-next:before {
+  content: "►"
+}
+
+.hg-candidate-box-next,
+.hg-candidate-box-prev {
+  align-items: center;
+  color: #969696;
+  cursor: pointer;
+  display: flex;
+  padding: 0 10px
+}
+
+.hg-candidate-box-next {
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px
+}
+
+.hg-candidate-box-prev {
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px
+}
+
+.hg-candidate-box-btn-active {
+  color: #444
+}
+
+.vkeyboard-shifted .hg-button.hg-button-shift {
+  background-color: #444 !important;
+  color: #fff !important;
+}
+
+.ml_simple_keyboard_toggle:focus {
+  outline: 2px solid #506dff !important;
+  outline-offset: -2px;
+}
+
+/* MiniLesson Restore Incomplete Attempt Feature */
+
+#page-mod-minilesson-view .restore_lesson {
+  border: 1px solid #ccc;
+  margin: 0 auto;
+  width: 470px;
+}
+
+#page-mod-minilesson-view .restore_lesson_header {
+  margin-top: 10px;
+}
+
+#page-mod-minilesson-view .restore_lesson_text {
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons .col-md-9 {
+  flex: 0 0 100%;
+  max-width: 100%;
+  text-align: center;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons fieldset>div {
+  justify-content: center !important;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons #id_continue {
+  background-color: #5067FF;
+  border-color: #5067FF;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continueformbuttons #id_delete {
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.ml-continueformbuttons .align-items-center {
+  justify-content: center;
+}

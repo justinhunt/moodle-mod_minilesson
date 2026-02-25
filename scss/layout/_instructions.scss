@@ -1,0 +1,15 @@
+@use '../abstracts/variables' as *;
+
+// Item instructions layout
+:is(
+    .freespeaking-item-box,
+    .freewriting-item-box,
+    .scatter-item-box,
+    .audiochat-item-box
+    ) .mod_minilesson_iteminstructions {
+    padding-top: 10px;
+    margin-bottom: 10px;
+    padding: 20px;
+    border-bottom: 1px solid $primary-light;
+    max-width: 100%;
+}

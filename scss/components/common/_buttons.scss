@@ -1,0 +1,81 @@
+@use '../../abstracts/variables' as *;
+
+// Buttons
+
+/* Next item button */
+
+.minilesson_nextbutton {
+  display: block;
+  width: 150px;
+  height: 50px;
+  border: 1px;
+  border-style: solid;
+  border-color: $primary;
+  border-radius: 30px;
+  color: $primary;
+  font-size: 15px;
+  font-weight: 500;
+  margin: auto;
+  background-color: $white;
+}
+
+.minilesson_nextbutton:focus {
+  outline: 0;
+}
+
+
+/* Skip button */
+
+.btn.btn-skip-button-secondary {
+  background: $white;
+  border-color: $primary;
+  border-radius: 10px;
+  color: $primary;
+  font-weight: 500;
+
+  &:hover,
+  &:active,
+  &:focus,
+  &:active:focus {
+    background: $primary-bg !important;
+    border-color: $primary !important;
+    color: $primary !important;
+  }
+
+    img.icon {
+    width: 10px;
+    height: 10px;
+    position: relative;
+    top: -1px;
+  }
+
+  .icon {
+    max-width: 30px;
+    max-height: 24px;
+    margin: 0 0 0 .5rem;
+    padding: 0;
+    box-sizing: content-box;
+  }
+
+  &[disabled] img.icon {
+    filter: brightness(0) opacity(.8) !important;
+  }
+}
+
+/* Check button */
+
+.btn.btn-check-button-primary {
+  background: $primary;
+  border-color: $primary;
+  border-radius: 10px;
+  color: $white;
+  font-weight: 500;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background: $primary-hover;
+    border-color: $primary-hover;
+    color: $white;
+  }
+}

@@ -1,7 +1,13 @@
 
     <div class="mod_minilesson_toggle_differences" id="{{uniqid}}_differencetoggle">
-        <a href="#" class="mstfd_showall" id="{{uniqid}}_mstfd_showall" style="display: none">{{#str}}showcorrections, mod_minilesson{{/str}}</a>
-        <a href="#" class="mstfd_hidecrossouts" id="{{uniqid}}_mstfd_hidecrossouts">{{#str}}hidecorrections, mod_minilesson{{/str}}</a>
+        <a href="#" class="mstfd_showall" id="{{uniqid}}_mstfd_showall" style="display: none">
+            <i class="fa fa-eye" aria-hidden="true"></i>
+            {{#str}}showcorrections, mod_minilesson{{/str}}
+        </a>
+        <a href="#" class="mstfd_hidecrossouts" id="{{uniqid}}_mstfd_hidecrossouts">
+            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+            {{#str}}hidecorrections, mod_minilesson{{/str}}
+        </a>
     </div>
 
 {{#js}}

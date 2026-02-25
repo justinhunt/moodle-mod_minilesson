@@ -1,0 +1,262 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// Grading & Corrections: shared grading markup, passage reading, corrections
+// Used by: correctionsmarkup.js, passagereading, freespeaking, freewriting
+// -----------------------------------------------------------------------------
+
+.mod_minilesson_grading_badword {
+  color: $red;
+  background-color: $error-bg-light;
+  padding: 5px;
+  border-radius: 5px 5px 5px;
+  border: 1px solid $red;
+  position: relative;
+}
+
+.mod_minilesson_grading_endspace {
+  color: $blue;
+  background-color: $grading-insert;
+  padding: 5px;
+  border-radius: 5px 5px 5px;
+  border: 1px solid $blue;
+  position: relative;
+}
+
+.mod_minilesson_grading_passagespace {
+  padding: 2px;
+}
+
+div.mod_minilesson_postattempt .mod_minilesson_grading_unreadword {
+  text-decoration: none;
+  background-color: lightgrey;
+  padding-right: 2px;
+}
+
+div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
+  background-color: lightgrey;
+  padding: 0px 2px;
+}
+
+.mod_minilesson_grading_unreadword {
+  font-style: italic;
+  text-decoration: line-through;
+}
+
+.mod_minilesson_grading_player_cont {
+  color: $blue;
+}
+
+.mod_minilesson_grading_score {
+  color: $blue;
+  line-height: 18px;
+  margin-left: 5px;
+  text-align: center;
+  font-size: 2em;
+  height: 35px;
+  width: 80px;
+}
+
+.mod_minilesson_grading_error_img {
+  color: $blue;
+}
+
+.mod_minilesson_grading_action_cont {
+  color: $blue;
+  display: flex;
+}
+
+.mod_minilesson_spotcheckmode .mod_minilesson_grading_passageword.mod_minilesson_grading_badword {
+  border-color: $green;
+  background-color: $success-bg-light;
+}
+
+.mod_minilesson_spotcheckmode .mod_minilesson_grading_passagespace.mod_minilesson_aiunmatched {
+  background-color: lightgrey;
+}
+
+.mod_minilesson_msvmode .mod_minilesson_grading_passageword.mod_minilesson_grading_badword {
+  border-color: $red;
+  background-color: $error-bg-light;
+  -webkit-print-color-adjust: exact;
+}
+
+.mod_minilesson_msvmode .mod_minilesson_grading_passageword.mod_minilesson_grading_selfcorrectedword {
+  color: $green;
+  background-color: $success-bg-light;
+  padding: 5px;
+  border-radius: 5px 5px 5px;
+  border: 1px solid $green;
+  position: relative;
+}
+
+.mod_minilesson_msvmode .mod_minilesson_grading_passageword.mod_minilesson_grading_maybeselfcorrectedword {
+  text-decoration: underline;
+}
+
+.mod_minilesson_spotcheckmode .mod_minilesson_grading_passagespace.mod_minilesson_aiunmatched {
+  background-color: lightgrey;
+  -webkit-print-color-adjust: exact;
+}
+
+.mod_minilesson_grading_passageword.mod_minilesson_aiunmatched {
+  background-color: lightgrey;
+  -webkit-print-color-adjust: exact;
+}
+
+.mod_minilesson_grading_passagespace.mod_minilesson_aiunmatched {
+  background-color: lightgrey;
+}
+
+.btn.mod_minilesson_quickgrade_ok {
+  background-color: DodgerBlue;
+  border: none;
+  color: $white;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 2px;
+  background-image: none;
+}
+
+.btn.mod_minilesson_quickgrade_ok:hover {
+  background-color: RoyalBlue;
+}
+
+.btn.mod_minilesson_quickgrade_ng {
+  background-color: darkgrey;
+  border: none;
+  color: $white;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  margin: 2px;
+  background-image: none;
+}
+
+.btn.mod_minilesson_quickgrade_ng:hover {
+  background-color: $grey;
+}
+
+// Corrections markup (correctionsmarkup.js)
+
+.mlfsr_correctedtext_container,
+.mlfsr_originaltext_container {
+  padding: 6px;
+  font-size: large;
+}
+
+.mod_minilesson_mu_passage_word.pr_correct,
+.mod_minilesson_mu_passage_space.pr_correct {
+  text-decoration: underline;
+  text-decoration-color: $green;
+  background-color: $success-bg;
+}
+
+.mod_minilesson_mu_passage_word.pr_incorrect,
+.mod_minilesson_mu_passage_space.pr_incorrect {
+  text-decoration: underline;
+  text-decoration-color: $red;
+  background-color: $error-bg-light;
+}
+
+.mod_minilesson_mu_passage_space.pr_unreached,
+.mod_minilesson_mu_passage_word.pr_unreached {
+  background-color: $grading-correct-bg;
+}
+
+// Passage reading
+
+.ml_recsession {
+  width: 150px;
+  margin: auto;
+  text-align: center;
+}
+
+.ml_passagereading_passage {
+  border: 1px solid $grey;
+  border-radius: 0.5em;
+  padding: 8px;
+  font-size: large;
+  margin-bottom: 15px;
+}
+
+.ml_passagereading_resultscontainer {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid $grey;
+  padding: 4px;
+}
+
+.ml_rp_resultcell {
+  text-align: center;
+}
+
+.ml_rp_resultcell_title {
+  font-size: 0.8em;
+  display: block;
+}
+
+// Grading overrides (later in cascade)
+
+.mod_minilesson_grading_badword {
+  text-decoration: underline $grading-link;
+  font-weight: bold;
+}
+
+div.mod_minilesson_postattempt .mod_minilesson_grading_unreadword {
+  text-decoration: none;
+  background-color: lightgrey;
+}
+
+div.mod_minilesson_postattempt .mod_minilesson_grading_unreadspace {
+  background-color: lightgrey;
+  padding: 0px 2px;
+}
+
+.mod_minilesson_grading_unreadword {
+  color: $error-text;
+  font-weight: 700;
+}
+
+.mod_minilesson_mu_passage_word.mod_minilesson_aicorrected,
+.mod_minilesson_mu_passage_space.mod_minilesson_aicorrected {
+  background-color: lightpink;
+}
+
+.mod_minilesson_mu_passage_word.asf_cp_aiomitted,
+.mod_minilesson_mu_passage_space.asf_cp_aiomitted {
+  text-decoration: line-through;
+}
+
+.mod_minilesson_mu_passage_space.mod_minilesson_aiunmatched {
+  text-decoration: underline $grading-link;
+  font-weight: bold;
+}
+
+.mod_minilesson_corrections {
+  text-align: left;
+  font-style: normal;
+}
+
+span.mod_minilesson_corrections_suggestedword {
+  font-weight: bold;
+  background-color: lightgreen;
+}
+
+span.mod_minilesson_corrections_insertionword {
+  font-weight: bold;
+  background-color: lightgreen;
+}
+
+span.mod_minilesson_corrections_omittedword {
+  font-weight: bold;
+  background-color: lightgreen;
+  word-spacing: 5px;
+}
+
+span.mod_minilesson_mu_original_preword,
+span.mod_minilesson_mu_original_postword {
+  font-weight: 500;
+  background-color: antiquewhite;
+}

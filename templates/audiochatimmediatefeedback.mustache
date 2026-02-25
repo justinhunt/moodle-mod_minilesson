@@ -1,13 +1,18 @@
 <div class='ml-ac-review_feedback text-center'>
-  <h2>
-      <hr />
-      {{#stars}}
-      <i class="fa fa-star{{^filled}}-o{{/filled}} fa-lg"></i>
-    {{/stars}}
-  </h2>
+    <div class="ml_ac_results_summary">
+        {{#stars}}
+            {{#filled}}
+                <span><img src="{{{yellow_starImgurl}}}"/></span>
+            {{/filled}}
+            {{^filled}}
+                <span><img src="{{{gray_starImgurl}}}"/></span>
+            {{/filled}}
+        {{/stars}}
+    </div>
     <hr/>
     {{#resultsdata.aifeedback}}
-      <i class='fa fa-comment'></i> {{#str}}feedback, mod_minilesson{{/str}}: {{resultsdata.aifeedback}}
+       <b class="audiochat-feedback-title">{{#str}}feedback, mod_minilesson{{/str}}</b>
+       <p class="ml_ac_feedback_text">{{resultsdata.aifeedback}}</p>
     {{/resultsdata.aifeedback}}
 </div>
 <!--

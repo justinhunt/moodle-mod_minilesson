@@ -1,0 +1,21 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// Short Answer: text input activity with answer validation
+// Template: templates/shortanswer.mustache
+// -----------------------------------------------------------------------------
+
+.mod_minilesson_spokenandcorrect {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+  margin-bottom: 8px;
+  max-width: 400px;
+  padding: 5px;
+  border: 1px solid grey;
+
+  &.minilesson_success {
+    background-color: lightgreen;
+  }
+}

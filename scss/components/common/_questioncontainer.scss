@@ -1,0 +1,68 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// Question Container: main wrapper for each quiz item/activity
+// Template: templates/questionheader.mustache, templates/questionpageheader.mustache
+// -----------------------------------------------------------------------------
+
+.mod_minilesson_iteminstructions {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+    font-size: 1.1em;
+    font-style: italic;
+    padding-top: 5px;
+}
+
+.mod_minilesson_itemtext {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    font-size: 1.15em;
+    margin: 12px auto;
+}
+
+.minilesson_questionheader {
+    padding: 10px;
+    text-align: center;
+    margin-bottom: 5px;
+    background-color: $grey-100;
+    border-radius: 5px;
+}
+
+.minilesson_questioncontainer {
+
+  .shortanswer_check_btn {
+    border-radius: 5px;
+  }
+
+  .textinput_responsetype {
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    border: 1px solid $grey-500;
+    border-radius: 4px;
+    padding: 5px;
+  }
+
+  .textinput_success {
+    background-color: lightgreen;
+  }
+
+    .finishedmessage_btn {
+        padding: 2px;
+
+        img.icon {
+            width: 26px;
+            height: 26px;
+            }
+
+        .icon {
+            max-width: none;
+            max-height: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+}

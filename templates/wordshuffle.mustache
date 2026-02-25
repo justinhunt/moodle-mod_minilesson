@@ -1,21 +1,21 @@
 {{> mod_minilesson/questionheader}}
-<div class="minilesson_wordshuffle_player_box gapfill-container mt-5">
+<div class="minilesson_wordshuffle_player_box item-container">
     <div style="display:none;" class="wordshuffle_results">{{#str}}wordshuffle_results, mod_minilesson{{/str}}</div>
 
-    <div class="wordshuffle_maintitle" style="display: none">{{iteminstructions}}</div>
+    <div class="maintitle wordshuffle_maintitle" style="display: none">{{iteminstructions}}</div>
     <div class="wordshuffle_itemtext mod_minilesson_itemtext {{rtl}}" style="display: none">{{{itemtext}}}</div>
 
-    <div class="wordshuffle_image_container text-center pt-5">
-        <img class="wordshuffle_image" src="{{{itemimageurl}}}" alt="{{#str}}wordshuffle, mod_minilesson{{/str}}">
+    <div class="startmodule_image_container wordshuffle_image_container">
+        <img class="startmodule_image wordshuffle_image" src="{{{itemimageurl}}}" alt="{{#str}}wordshuffle, mod_minilesson{{/str}}">
     </div>
 
-    <div class="wordshuffle_title text-center mt-3">{{#str}}wordshuffle, mod_minilesson{{/str}}</div>
+    <div class="startmodule_title wordshuffle_title">{{#str}}wordshuffle, mod_minilesson{{/str}}</div>
 
-    <div class="wordshuffle_description mt-3 text-center">{{iteminstructions}}</div>
+    <div class="startmodule_description wordshuffle_description">{{iteminstructions}}</div>
 
-    <div class="wordshuffle_mainmenu mt-3 pb-5">
+    <div class="start_mainmenu wordshuffle_mainmenu">
         <div class="wordshuffle_loaded" style="display:none;">
-            <button disabled class='btn btn-block btn-primary wordshuffle_start_btn'>
+            <button disabled class='btn startmodule_btn wordshuffle_start_btn'>
                 {{#str}}start, mod_minilesson{{/str}} <i class='fa fa-play ml-1'></i>
             </button>
         </div>
@@ -73,7 +73,7 @@
                 {{/imageurl}}
                 {{#hint}}
                 <div class='definition-container'><div class='definition'>
-                    <div class='hinticon-container'><i class='fa fa-lightbulb-o hinticon'></i></div>
+                    <div class='hinticon-container'>{{#pix}}lightbulb-icon, mod_minilesson{{/pix}}</div>
                     {{hint}}
                 </div></div>
                 {{/hint}}
@@ -83,22 +83,22 @@
 
     <div style="display:none;" class="wordshuffle_controls text-center">
 
-        <button class="btn wordshuffle_ctrl-btn wordshuffle_check_btn">
-             <i class="fa fa-refresh"></i> {{#str}} reset {{/str}}
+        <button class="btn btn-skip-button-secondary wordshuffle_ctrl-btn wordshuffle_check_btn">
+             {{#pix}}redo-icon, mod_minilesson{{/pix}} {{#str}} reset {{/str}}
         </button>
 
         {{#allowretry}}
-        <button class="btn ctrl-btn wordshuffle_retry_btn">
-            <i class="fa fa-refresh"></i> {{#str}}tryagain, mod_minilesson{{/str}}
+        <button class="btn btn-skip-button-secondary ctrl-btn wordshuffle_retry_btn">
+            {{#pix}}redo-icon, mod_minilesson{{/pix}} {{#str}}tryagain, mod_minilesson{{/str}}
         </button>
         {{/allowretry}}
 
-        <button class="btn wordshuffle_ctrl-btn wordshuffle_skip_btn">
-            {{#str}}skip, mod_minilesson{{/str}} <i class="fa fa-arrow-right"></i>
+        <button class="btn btn-skip-button-secondary wordshuffle_ctrl-btn wordshuffle_skip_btn">
+            {{#str}}skip, mod_minilesson{{/str}}{{#pix}}skip-icon, mod_minilesson{{/pix}}
         </button>
 
     </div>
 
-    <div class="wordshuffle_resultscontainer"></div>
+    <div class="resultscontainer wordshuffle_resultscontainer"></div>
 </div>
 {{> mod_minilesson/questionfooter}}
