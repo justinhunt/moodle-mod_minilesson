@@ -306,7 +306,7 @@ define(
                     var nextitem = dd.quizdata[nextindex];
                     //show the question
 
-                    dd.showStep($("#" + nextitem.uniqueid + "_container"));
+                    dd.showStep($("#" + nextitem.uniqueid + "_container"), nextindex);
                     //any per question type init that needs to occur can go here
                     switch (nextitem.type) {
                         case def.qtype_speechcards:
@@ -397,13 +397,13 @@ define(
 
             },
 
-            showStep: function ($container) {
+            showStep: function ($container, index = 0) {
                 $container.show();
                 $container.on('showElement', () => {
                     $container.find('[data-region="activity-wrapper"]').show();
                     $container.find('[data-region="splashscreen"]').hide();
                     //autoplay audio if we need to
-                    var ttsquestionplayer = $("#" + this.quizdata[0].uniqueid + "_container audio.mod_minilesson_itemttsaudio");
+                    var ttsquestionplayer = $("#" + this.quizdata[index].uniqueid + "_container audio.mod_minilesson_itemttsaudio");
                     if (ttsquestionplayer.data('autoplay') == "1") {
                         var that = this;
                         setTimeout(function () {
@@ -411,7 +411,7 @@ define(
                         }, that.autoplaydelay);
                     }
                 });
-                this.render_quiz_progress(0, this.quizdata.length);
+                this.render_quiz_progress(index, this.quizdata.length);
                 const $splashscreen = $container.find('[data-region="splashscreen"]');
                 if ($splashscreen.length > 0) {
                     $splashscreen.show();
@@ -422,8 +422,9 @@ define(
             },
 
             start_quiz: function () {
-                const $container = $("#" + this.quizdata[0].uniqueid + "_container");
-                this.showStep($container);
+                const resumeindex = this.stepresults.length;
+                const $container = $("#" + this.quizdata[resumeindex].uniqueid + "_container");
+                this.showStep($container, resumeindex);
             },
 
             //this function is overridden by the calling class
