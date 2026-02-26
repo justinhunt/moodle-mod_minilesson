@@ -180,11 +180,13 @@
     z-index: 999;
   }
 
-  .landr_correct {
+  .landr_correct,
+  .landr_correct.landr_word_input:disabled {
     background-color: lightgreen;
   }
 
-  .landr_incorrect {
+  .landr_incorrect,
+  .landr_incorrect.landr_word_input:disabled {
     background-color: lightpink;
   }
 

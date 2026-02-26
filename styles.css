@@ -5024,10 +5024,12 @@ div.poodlldictationplayer {
   text-align: center;
   z-index: 999;
 }
-.minilesson_landr_player_box .landr_correct {
+.minilesson_landr_player_box .landr_correct,
+.minilesson_landr_player_box .landr_correct.landr_word_input:disabled {
   background-color: lightgreen;
 }
-.minilesson_landr_player_box .landr_incorrect {
+.minilesson_landr_player_box .landr_incorrect,
+.minilesson_landr_player_box .landr_incorrect.landr_word_input:disabled {
   background-color: lightpink;
 }
 .minilesson_landr_player_box .landr_targetWord {
