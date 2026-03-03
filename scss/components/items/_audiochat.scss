@@ -3,6 +3,11 @@
 // Audiochat activity component
 
 .minilesson_audiochat_box {
+  box-shadow: none;
+  width: 100%;
+}
+
+.minilesson_audiochat_box {
   * {
     box-sizing: border-box;
     border-width: 0;

@@ -452,7 +452,7 @@
   color: #506DFF;
   font-size: 15px;
   font-weight: 500;
-  margin: auto;
+  margin-left: auto;
   background-color: #FFFFFF;
 }
 
@@ -1899,7 +1899,7 @@ span.mod_minilesson_finishedanswer {
   color: #506DFF;
   font-size: 15px;
   font-weight: 500;
-  margin: auto;
+  margin-left: auto;
   background-color: #FFFFFF;
 }
 .minilesson_nextbutton:focus {
@@ -2356,6 +2356,10 @@ span.wrongitem {
   padding-top: 5px;
 }
 
+.mod_minilesson_itemtext:empty {
+  margin: 0;
+}
+
 .mod_minilesson_itemtext {
   width: 100%;
   max-width: 600px;
@@ -2476,6 +2480,11 @@ span.wrongitem {
   font-weight: 600;
   letter-spacing: 0.3px;
   font-size: 14px;
+}
+
+.minilesson_audiochat_box {
+  box-shadow: none;
+  width: 100%;
 }
 
 .minilesson_audiochat_box * {
@@ -4617,8 +4626,11 @@ span.wrongitem {
   padding: 6px 4px;
   border: 1px inset rgb(118, 118, 118);
 }
-.pgapfill_gap_wrapper.pgapfill_gap_reviewing .pgapfill_gap_input, .pgapfill_gap_wrapper.psg_gapfill_correct .pgapfill_gap_input {
-  background-color: lightgreen;
+.pgapfill_gap_wrapper.psg_gapfill_correct .pgapfill_gap_input {
+  background-color: lightgreen !important;
+}
+.pgapfill_gap_wrapper.pgapfill_gap_reviewing .pgapfill_gap_input {
+  background-color: lightgray;
 }
 .pgapfill_gap_wrapper.psg_gapfill_correct .correctIcon {
   color: green;
@@ -5107,6 +5119,10 @@ div.poodlldictationplayer {
 }
 .minilesson_fluency_box .startmodule_image_container {
   background: #ffefb5;
+}
+.minilesson_fluency_box .item-feedback-container:empty {
+  height: 0;
+  margin-bottom: 0px;
 }
 .minilesson_fluency_box .item-feedback-container {
   display: flex;
@@ -6862,7 +6878,7 @@ body.poodll-minilesson-embed #page {
 
 /* Simple-Keyboard CSS */
 /*!
- * 
+ *
  *   simple-keyboard v3.8.107
  *   https://github.com/hodgef/simple-keyboard
  *

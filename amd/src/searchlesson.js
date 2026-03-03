@@ -126,6 +126,11 @@ export const registerFilter = () => {
             if (!downloadbtn.dataset.id) {
                 return;
             }
+            if (downloadbtn.classList.contains('ml_loading')) {
+                return;
+            }
+            downloadbtn.classList.add('ml_loading');
+            downloadbtn.innerHTML = "<i class='icon fa fa-spinner fa-pulse fa-fw ' aria-hidden='true'></i> ";
             const id = Number(downloadbtn.dataset.id);
             const url = new URL(window.location.href);
             url.searchParams.set('restore', id);

@@ -454,7 +454,7 @@ define(
 
           //feedback and results containers
                 code += "<div class='item-results-container'></div>";
-                code += "<div class='item-feedback-container my-4'></div>";
+                code += "<div class='item-feedback-container'></div>";
 
                 $("#" + self.itemdata.uniqueid + "_container .question").append(code);
                 var newreply = self.container.find(".fluency_reply_" + self.game.pointer);
