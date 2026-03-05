@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Form for creating/editing a fiction item in a MiniLesson activity.
@@ -12,15 +26,14 @@ namespace mod_minilesson\local\itemform;
 
 use mod_minilesson\constants;
 
-class fictionform extends baseform
-{
+class fictionform extends baseform {
+
     public $type = constants::TYPE_FICTION;
 
     /**
      * Add any form fields specific to this item type.
      */
-    public function custom_definition()
-    {
+    public function custom_definition() {
         global $PAGE;
         $this->add_itemsettings_heading();
         $mform = $this->_form;
@@ -31,6 +44,13 @@ class fictionform extends baseform
         $this->add_textarearesponse(constants::FICTION_YARN,
             get_string('fictionyarn', constants::M_COMPONENT), true, $fixedwidthfont);
         $mform->setDefault(constants::FICTION_YARN, constants::FICTION_YARN_DEFAULT);
+
+        // Initialize CodeMirror generic Editor for Yarn
+        $PAGE->requires->js_call_amd(
+            constants::M_COMPONENT . '/codeeditor',
+            'setupCodeEditor',
+            ['id_' . constants::FICTION_YARN, ['language' => 'yarn']]
+        );
 
         // Syntax Checker
         $mform->registerNoSubmitButton('syntaxcheckbutton');
@@ -46,8 +66,7 @@ class fictionform extends baseform
                 'syntaxcheckresults',
             ]
         );
-        $this->add_static_text('yarnsyntaxcheckresults', '','<div id="syntaxcheckresults"></div>');
-
+        $this->add_static_text('yarnsyntaxcheckresults', '', '<div id="syntaxcheckresults"></div>');
 
         // Files upload area.
         $this->add_media_upload(constants::FILEANSWER . '1', get_string('fiction:attachments', constants::M_COMPONENT),

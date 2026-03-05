@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Form for creating/editing a slides item in a MiniLesson activity.
@@ -12,8 +26,8 @@ namespace mod_minilesson\local\itemform;
 
 use mod_minilesson\constants;
 
-class slidesform extends baseform
-{
+class slidesform extends baseform {
+
     public $type = constants::TYPE_SLIDES;
 
     // Got list from https://api.github.com/repos/hakimel/reveal.js/contents/css/theme/source?ref=5.2.1
@@ -38,8 +52,7 @@ class slidesform extends baseform
     /**
      * Add any form fields specific to this item type.
      */
-    public function custom_definition()
-    {
+    public function custom_definition() {
         global $PAGE;
         $this->add_itemsettings_heading();
         $mform = $this->_form;
@@ -48,6 +61,13 @@ class slidesform extends baseform
         // Markdown text area.
         $this->add_textarearesponse(constants::SLIDES_MARKDOWN, get_string('slidesmarkdown', constants::M_COMPONENT), true);
         $mform->setDefault(constants::SLIDES_MARKDOWN, constants::SLIDES_MARKDOWN_DEFAULT);
+
+        // Initialize CodeMirror markdown editor
+        $PAGE->requires->js_call_amd(
+            constants::M_COMPONENT . '/codeeditor',
+            'setupCodeEditor',
+            ['id_' . constants::SLIDES_MARKDOWN, ['language' => 'markdown']]
+        );
 
         // Files upload area.
         $this->add_media_upload(constants::FILEANSWER . '1', get_string('slides:attachments', constants::M_COMPONENT), false, 'image,audio,video', -1);
@@ -76,7 +96,7 @@ class slidesform extends baseform
             constants::M_COMPONENT . '/slides',
             'register_previewbutton',
             [
-                $previewbtn->getAttribute('id')
+                $previewbtn->getAttribute('id'),
             ]
         );
     }
