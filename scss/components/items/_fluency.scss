@@ -11,6 +11,11 @@
     background: $fluency-icon-bg;
   }
 
+  .item-feedback-container:empty{
+    height: 0;
+    margin-bottom: 0px;
+  }
+
   .item-feedback-container {
     display: flex;
     background-color: $white;

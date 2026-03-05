@@ -115,6 +115,8 @@ define(['jquery',
         show_item_review: function () {
             var self = this;
             var review_data = {};
+            self.controls.title.hide();
+            self.controls.progress_container.hide();
             review_data.items = self.items;
             review_data.totalitems = self.items.length;
             review_data.correctitems = self.items.filter(function (e) {

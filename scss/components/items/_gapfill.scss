@@ -541,9 +541,12 @@
     border: 1px inset $gapfill-input-border;
   }
 
-  &.pgapfill_gap_reviewing .pgapfill_gap_input,
   &.psg_gapfill_correct .pgapfill_gap_input {
-    background-color: lightgreen;
+    background-color: lightgreen !important;
+  }
+
+  &.pgapfill_gap_reviewing .pgapfill_gap_input {
+    background-color: lightgray;
   }
 
   &.psg_gapfill_correct .correctIcon {
