@@ -914,7 +914,9 @@ abstract class baseform extends \moodleform
             constants::LAYOUT_MAGAZINE => get_string('layoutmagazine', constants::M_COMPONENT)
         ];
         $name = constants::LAYOUT;
-        $this->add_dropdown($name, get_string('chooselayout', constants::M_COMPONENT), $layoutoptions, constants::LAYOUT_AUTO);
+        $layout = get_config(constants::M_COMPONENT, $name);
+        $defaultlayout = !empty($layout) ? $layout : constants::LAYOUT_VERTICAL;
+        $this->add_dropdown($name, get_string('chooselayout', constants::M_COMPONENT), $layoutoptions, $defaultlayout);
     }
 
     /**

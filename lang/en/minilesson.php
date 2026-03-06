@@ -1326,3 +1326,4 @@ $string['confirmactionmessage'] = '<p>Your previous attempt will be deleted. OK?
 $string['attemptquestioncountmessage'] = 'You have completed {$a->completed} out of {$a->totallessonitem} steps.';
 $string['fullscreen_toggle'] = 'Fullscreen Toggle';
 $string['hidedetailedresults'] = 'Hide detailed results';
+$string['defaultitemlayout'] = 'Default item layout';

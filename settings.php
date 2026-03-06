@@ -252,6 +252,20 @@ if ($hassiteconfig) {
         $promptstyle
     ));
 
+    $layoutoptions = [
+        constants::LAYOUT_AUTO => get_string('layoutauto', constants::M_COMPONENT),
+        constants::LAYOUT_HORIZONTAL => get_string('layouthorizontal', constants::M_COMPONENT),
+        constants::LAYOUT_VERTICAL => get_string('layoutvertical', constants::M_COMPONENT),
+        constants::LAYOUT_MAGAZINE => get_string('layoutmagazine', constants::M_COMPONENT)
+    ];
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT .  '/layout',
+        get_string('defaultitemlayout', constants::M_COMPONENT),
+        '',
+        constants::LAYOUT_VERTICAL,
+        $layoutoptions
+    ));
+
 
     $mainsettings->add(new admin_setting_configcheckbox(
         constants::M_COMPONENT .  '/enablepushtab',
