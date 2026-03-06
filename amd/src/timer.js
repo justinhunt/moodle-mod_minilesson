@@ -76,18 +76,20 @@ define(['jquery', 'core/log'], function ($, log) {
             this.enabled = true;
         },
 
-        fetch_display_time: function (someseconds) {
-            if (!someseconds) {
-                someseconds = this.seconds;
+        fetch_display_time(seconds = this.seconds) {
+            const hours = Math.floor(seconds / 3600);
+            seconds -= hours * 3600;
+            const minutes = Math.floor((seconds % 3600) / 60);
+            seconds -= minutes * 60;
+            const secs = seconds;
+
+            const pad = (n) => String(n).padStart(2, '0');
+
+            if (hours > 0) {
+                return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
             }
-            var theHours = '00' + parseInt(someseconds / 3600);
-            theHours = theHours.substr(theHours.length - 2, 2);
-            var theMinutes = '00' + parseInt(someseconds / 60);
-            theMinutes = theMinutes.substr(theMinutes.length - 2, 2);
-            var theSeconds = '00' + parseInt(someseconds % 60);
-            theSeconds = theSeconds.substr(theSeconds.length - 2, 2);
-            var display_time = theHours + ':' + theMinutes + ':' + theSeconds;
-            return display_time;
+
+            return `${pad(minutes)}:${pad(secs)}`;
         },
 
         stop: function () {
