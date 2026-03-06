@@ -3,6 +3,7 @@
 // Fiction activity component
 
 .minilesson_fiction_yarncontainer {
+
   // Base styles
   .minilesson_fiction_yarnmedia {
     min-width: 300px;
@@ -20,6 +21,21 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+
+    .minilesson_fiction_option_number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+      border: 1px solid $grey-400-alt;
+      border-radius: 4px;
+      background-color: $grey-100;
+      font-size: 0.85em;
+      font-weight: 600;
+      color: $grey-600;
+    }
   }
 
   .fiction-character-name {
@@ -169,6 +185,7 @@
     .option_container {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       background: white;
       border-radius: 25px;
       padding: 10px 20px;

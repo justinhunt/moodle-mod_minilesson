@@ -945,7 +945,7 @@ class utils {
 
             case 'capetown':
             case 'southafricanorth':
-                return 'southafricanorth';
+          //      return 'southafricanorth';
 
             case 'bahrain':
             case 'dublin':

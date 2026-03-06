@@ -19,8 +19,11 @@
   background-color: $white;
 }
 
-.minilesson_nextbutton:focus {
-  outline: 0;
+.minilesson_nextbutton:focus,
+.minilesson_nextbutton:hover {
+  outline: 2px solid $primary;
+  outline-offset: 2px;
+  background-color: $primary-bg;
 }
 
 
@@ -42,7 +45,7 @@
     color: $primary !important;
   }
 
-    img.icon {
+  img.icon {
     width: 10px;
     height: 10px;
     position: relative;

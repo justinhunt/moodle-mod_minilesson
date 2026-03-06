@@ -51,8 +51,9 @@ define([
             this.quizhelper = quizhelper;
             this.init_strings();
             this.prepare_html(itemdata);
-            this.register_events(this.index, itemdata, quizhelper);
-            this.presentationmode = itemdata.presention_mobilechat ? 'mobilechat' : (itemdata.presention_storymode ? 'storymode' : 'plain');
+            this.register_events(this.index, itemdata);
+            this.presentationmode = itemdata.presention_mobilechat ? 'mobilechat'
+                : (itemdata.presention_storymode ? 'storymode' : 'plain');
             this.flowthroughmode = itemdata.flowthroughmode;
             this.filenamesmap = itemdata.filenamesmap;
             this.preload_images();
@@ -64,7 +65,7 @@ define([
             this.storydata.set('cantranslate', false);
 
             // Set a flag to indicate that translation is possible
-            // set lang code to 2 char equivalent, eg en for en-us  
+            // set lang code to 2 char equivalent, eg en for en-us
             this.sourceLang = this.itemdata.language.substring(0, 2);
             this.destLang = this.itemdata.nativelanguage.substring(0, 2);
             // We need to wait for the availability check before we start the story,
@@ -240,6 +241,15 @@ define([
                 this.post_message_to_story(this.chatdata, currentResult);
 
             } else if (currentResult instanceof YarnBound.OptionsResult) {
+                if (currentResult.options && currentResult.options.length) {
+                    currentResult.options.forEach(function (opt, i) {
+                        opt.displayNumber = i + 1;
+                        // Ensure index exists just in case
+                        if (!('index' in opt)) {
+                            opt.index = i;
+                        }
+                    });
+                }
                 yarncontent.yarnoptions = currentResult;
                 var chatdata = {
                     'yarnoptions': currentResult,
@@ -286,7 +296,7 @@ define([
                     case 'picture': {
                         log.debug('got picture command');
                         const imageURL = args[0];
-                        //check imageURL is in filenamesmap
+                        // Check imageURL is in filenamesmap
                         var theimage = that.filenamesmap.find(function (file) {
                             return file.fileurl === imageURL;
                         });
@@ -603,9 +613,11 @@ define([
                     this.runner.advance();
                 }
             } catch (e) {
-                var userFriendlyError = "Yarn Parse Error: ";
-                if (this.runner && this.runner.currentResult && this.runner.currentResult.metadata && this.runner.currentResult.metadata.title) {
-                    userFriendlyError += "(Node: " + this.runner.currentResult.metadata.title + " or maybe the node you are jumping to) ";
+                var errStr = "Yarn Parse Error: ";
+                if (this.runner && this.runner.currentResult && this.runner.currentResult.metadata) {
+                    if (this.runner.currentResult.metadata.title) {
+                        errStr += "(Node: " + this.runner.currentResult.metadata.title + ") ";
+                    }
                 }
                 // Format the error nicely
                 let errorMessage = e.message;
@@ -613,9 +625,9 @@ define([
                     // If err is not an Error object (e.g. a string), use err directly
                     errorMessage = e ? String(e) : 'syntax or other error';
                 }
-                userFriendlyError += errorMessage;
+                errStr += errorMessage;
                 this.controls.yarncontainer.html(
-                    '<div class="alert alert-danger">' + userFriendlyError + '</div>'
+                    '<div class="alert alert-danger">' + errStr + '</div>'
                 );
                 log.error("Full Yarn Error:");
                 log.error(e);
@@ -678,9 +690,8 @@ define([
          *
          * @param {int} index
          * @param {object} itemdata
-         * @param {object} quizhelper
          */
-        register_events: function (index, itemdata, quizhelper) {
+        register_events: function (index, itemdata) {
             var self = this;
             // When click next button, report and leave it up to parent to deal with it.
             $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function () {
@@ -730,9 +741,8 @@ define([
                 log.debug('MiniLesson Fiction: yarn option button clicked');
                 e.preventDefault();
 
-                var buttons = self.controls.yarncontainer.find('.minilesson_fiction_optionbutton');
                 var optionindex = $(this).data('optionindex');
-                const playertext = $(this).text().trim();
+                const playertext = $(this).data('optiontext') ? $(this).data('optiontext').toString().trim() : $(this).text().trim();
                 if (self.presentationmode === 'storymode') {
                     Templates.render('mod_minilesson/fiction_storyplayermessage', {
                         playertext: playertext
@@ -774,6 +784,47 @@ define([
                 self.controls.chatwrapper.animate({
                     scrollTop: self.controls.chatwrapper[0].scrollHeight
                 }, 'smooth');
+            });
+
+            // Add keyboard navigation
+            // Ensure we use a namespaced event to not conflict with other items
+            $(document).on('keydown.minilesson_fiction_' + itemdata.uniqueid, function (e) {
+                // Check if this item is currently visible (to handle multiple items on a page)
+                if (!$("#" + itemdata.uniqueid + "_container").is(':visible')) {
+                    return;
+                }
+
+                // If a modifier key is pressed, ignore it
+                if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) {
+                    return;
+                }
+
+                // Handle Number keys 1-9 (keyCodes 49-57 for main keyboard, 97-105 for numpad)
+                let num = null;
+                if (e.keyCode >= 49 && e.keyCode <= 57) {
+                    num = e.keyCode - 48;
+                } else if (e.keyCode >= 97 && e.keyCode <= 105) {
+                    num = e.keyCode - 96;
+                }
+
+                if (num !== null) {
+                    let targetOptionIndex = num - 1;
+                    let selector = '.minilesson_fiction_optionbutton[data-optionindex="' + targetOptionIndex + '"]';
+                    let btn = self.controls.yarncontainer.find(selector);
+                    if (btn.length > 0) {
+                        e.preventDefault();
+                        btn.click();
+                    }
+                    return;
+                }
+
+                // Handle Enter key for the 'continue' button
+                if (e.keyCode === 13) {
+                    if (self.controls.yarncontinuebutton.is(':visible') && !self.controls.yarncontinuebutton.prop('disabled')) {
+                        e.preventDefault();
+                        self.controls.yarncontinuebutton.click();
+                    }
+                }
             });
         },
 
@@ -892,14 +943,13 @@ define([
 
         /* Check yarn script for syntax errors
          * @param {string} yarnContent - The raw Yarn story string.
-         * @param {string} resultscontainer - The id of thecontainer element to display results in. 
+         * @param {string} resultscontainerid - The id of thecontainer element to display results in.
          */
         syntaxcheck: function (yarnContent, resultscontainerid) {
             const results = {
                 valid: true,
                 errors: []
             };
-            var runner = null;
             var storydata = new Map();
             storydata.set('userfirstname', 'bob');
             storydata.set('userlastname', 'smith');
@@ -916,10 +966,11 @@ define([
                 "startAt": "Start",
                 "variableStorage": storydata,
             };
+            let yarnBoundObj = null;
             // Step 1: Initialize YarnBound
             // This catches top-level errors (bad headers, duplicate titles, invalid declarations)
             try {
-                var yarnBound = new YarnBound(yarnopts);
+                yarnBoundObj = new YarnBound(yarnopts);
             } catch (err) {
                 log.debug('Yarn initialization error: ' + err.message);
                 results.valid = false;
@@ -927,15 +978,15 @@ define([
             }
             // Step 2 & 3: Iterate through nodes and check syntax
             // We access the internal 'runner' to get the nodes list
-            if (results.valid) {
-                var runner = yarnBound.runner;
-                const nodeNames = Object.keys(runner.yarnNodes);
+            if (results.valid && yarnBoundObj) {
+                let ybRunner = yarnBoundObj.runner;
+                const nodeNames = Object.keys(ybRunner.yarnNodes);
                 nodeNames.forEach(nodeName => {
                     try {
-                        // getParserNodes parses the body text of the node.
+                        // GetParserNodes parses the body text of the node.
                         // It will throw if it encounters invalid Yarn syntax (e.g. invalid <<command>> or <<if>>)
-                        runner.getParserNodes(nodeName);
-                        // jump will also check variable state , but that is not syntax but we could do it
+                        ybRunner.getParserNodes(nodeName);
+                        // Jump will also check variable state , but that is not syntax but we could do it
                         // yarnBound.jump(nodeName);
                     } catch (err) {
                         results.valid = false;
@@ -952,8 +1003,11 @@ define([
 
             // Step 4: Display results
             Templates.render('mod_minilesson/fiction_syntaxcheckresults', results)
-                .then(function (html, js) {
+                .then(function (html) {
                     $('#' + resultscontainerid).html(html);
+                    return true;
+                }).catch(function () {
+                    return false;
                 });
         }, // End syntaxcheck
 
@@ -968,6 +1022,6 @@ define([
                 var yarntext = $('#' + yarneditorid).val();
                 that.syntaxcheck(yarntext, resultscontainerid);
             });
-        },
-    } // End module
+        }
+    }; // End module
 });

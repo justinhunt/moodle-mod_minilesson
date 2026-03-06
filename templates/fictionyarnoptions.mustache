@@ -1,8 +1,8 @@
  {{#yarnoptions}}
     {{#options}}
         {{#isAvailable}}
-            <div class="option_container minilesson_fiction_optionbutton" data-optionindex="{{index}}">
-                <div class="optiontext">{{text}}</div>
+            <div class="option_container minilesson_fiction_optionbutton" data-optionindex="{{index}}" data-optiontext="{{text}}">
+                <div class="optiontext"><span class="minilesson_fiction_option_number">{{displayNumber}}</span> {{text}}</div>
                 {{#presention_mobilechat}}
                 <span>
                     <i class="fa fa-paper-plane"></i>
@@ -12,8 +12,8 @@
         {{/isAvailable}}
         {{^isAvailable}}
             {{#shownonoptions}}
-                <div class="option_container minilesson_fiction_fakeoptionbutton" data-optionindex="{{index}}">
-                    <div class="optiontext">{{text}}</div>
+                <div class="option_container minilesson_fiction_fakeoptionbutton" data-optionindex="{{index}}" data-optiontext="{{text}}">
+                    <div class="optiontext"><span class="minilesson_fiction_option_number">{{displayNumber}}</span> {{text}}</div>
                     {{#presention_mobilechat}}
                     <span>
                         <i class="fa fa-paper-plane"></i>
