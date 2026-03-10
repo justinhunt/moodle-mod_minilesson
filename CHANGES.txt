@@ -1,3 +1,12 @@
+Version 1.1.29 (Build 2026031000)
+- Improved UI
+- Better accessibility for Fiction item type
+- Added ability to continue previous attempts
+- Fixed broken "select all" on add/edit items page
+- Added a default layout to the admin settings, it defaults to "vertical"
+- Removed not necessary "hours" field from free speaking timer
+- Added a code editor for fiction item type
+
 Version 1.1.28 (Build 2026022400)
 - Added semantic similarity to AI Manager (fix free speaking bug)
 
@@ -6,7 +15,7 @@ Version 1.1.27 (Build 2026022300)
 
 Version 1.1.26 (Build 2026022100)
 - Added virtual keyboard feature to free writing , typing and listening gapfill items
-- Extended AI manager fo better routing and caching of AI requests
+- Extended AI manager for better routing and caching of AI requests
 - Added full screen mode for Fiction item type.
 
 Version 1.1.25 (Build 2026020601)

@@ -242,6 +242,8 @@ class rsquestion_renderer extends \plugin_renderer_base
         $data['up'] = $uppix->export_for_pix();
         $data['down'] = $downpix->export_for_pix();
         $data['hasitems'] = count($itemsarray) > 0 ? true : false;
+        $data['toggle'] = $CFG->branch > 500 ? 'toggler' : 'master';
+        $data['target'] = $CFG->branch > 500 ? 'target' : 'slave';
 
         return $this->render_from_template('mod_minilesson/itemlist', $data);
     }
