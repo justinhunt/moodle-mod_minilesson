@@ -87,9 +87,6 @@ define([
                         dice: (sides) => {
                             return Math.floor(Math.random() * sides) + 1;
                         },
-                        visited: (nodeName) => {
-                            return that.visitednodes.includes(nodeName);
-                        },
                         translate: (text) => {
                             var randomId = Math.random().toString(36).substring(2, 9);
                             var updateStory = function (themessage) {
@@ -215,13 +212,6 @@ define([
             currentResult = this.add_metadata(currentResult);
             log.debug('MiniLesson Fiction: doing render of currentResult');
             log.debug(currentResult);
-
-            if (currentResult && currentResult.metadata && currentResult.metadata.title) {
-                const title = currentResult.metadata.title;
-                if (!this.visitednodes.includes(title)) {
-                    this.visitednodes.push(title);
-                }
-            }
 
             var that = this;
             this.can_continuebutton(false);

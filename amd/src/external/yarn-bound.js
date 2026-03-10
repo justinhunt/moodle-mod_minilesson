@@ -3034,7 +3034,12 @@
               constructor(stringLiteral) {
                 super();
                 this.type = 'StringLiteralNode';
-                this.stringLiteral = stringLiteral.substring(1, stringLiteral.length - 1).replace(/\\(.)/g, '$1');
+                if ((stringLiteral.startsWith('"') && stringLiteral.endsWith('"')) ||
+                    (stringLiteral.startsWith("'") && stringLiteral.endsWith("'"))) {
+                  this.stringLiteral = stringLiteral.substring(1, stringLiteral.length - 1).replace(/\\(.)/g, '$1');
+                } else {
+                  this.stringLiteral = stringLiteral.replace(/\\(.)/g, '$1');
+                }
               }
             },
             BooleanLiteralNode: class extends Literal {
@@ -3379,6 +3384,7 @@
               this.yarnNodes = {};
               this.variables = new _defaultVariableStorage.default();
               this.functions = {};
+              this.visitedNodes = new Set();
             }
 
             /**
@@ -3513,6 +3519,9 @@
               let shortcutNodes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
               let textRunNodes = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
               return function* () {
+                if (metadata.title) {
+                  _this.visitedNodes.add(metadata.title);
+                }
                 const filteredNodes = nodes.filter(Boolean);
                 // Yield the individual user-visible results
                 let result;
@@ -4107,6 +4116,7 @@
                   this.registerFunction(...entry);
                 });
               }
+              this.registerFunction('visited', (nodeName) => this.runner.visitedNodes.has(nodeName));
               this.runner.load(dialogue);
               this.jump(startAt);
             }
