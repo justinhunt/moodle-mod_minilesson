@@ -6,8 +6,14 @@ define(['jquery'], function ($) {
 
             if (!container || !btn) return;
 
+            // Check for native support
+            const supportsNative = !!(container.requestFullscreen || container.webkitRequestFullscreen);
+
             const updateButtonUI = () => {
-                const isFS = !!document.fullscreenElement || !!document.webkitFullscreenElement;
+                const isFsNative = !!document.fullscreenElement || !!document.webkitFullscreenElement;
+                const isFsPseudo = container.classList.contains('is-pseudo-fullscreen');
+                const isFS = isFsNative || isFsPseudo;
+
                 btn.classList.toggle('is-fullscreen', isFS);
                 // Update icon and text for clarity
                 btn.innerHTML = isFS
@@ -16,18 +22,24 @@ define(['jquery'], function ($) {
             };
 
             const toggleFullscreen = () => {
-                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                    if (container.requestFullscreen) {
-                        container.requestFullscreen();
-                    } else if (container.webkitRequestFullscreen) { /* Safari/iOS */
-                        container.webkitRequestFullscreen();
+                if (supportsNative) {
+                    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                        if (container.requestFullscreen) {
+                            container.requestFullscreen();
+                        } else if (container.webkitRequestFullscreen) { /* Safari/iOS */
+                            container.webkitRequestFullscreen();
+                        }
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                        }
                     }
                 } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    }
+                    // Pseudo-fullscreen fallback for iOS Safari
+                    container.classList.toggle('is-pseudo-fullscreen');
+                    updateButtonUI();
                 }
             };
 

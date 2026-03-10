@@ -69,7 +69,8 @@
   &.mobilechat {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 600px;
+    max-height: 80vh;
     background-color: $fiction-whatsapp-bg;
     position: relative;
 
@@ -79,7 +80,8 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      height: 450px;
+      flex-grow: 1;
+      min-height: 0;
       position: relative;
 
       .charactercontainer {
@@ -162,6 +164,7 @@
       padding: 15px;
       border-top: 1px solid $grey-400;
       min-height: 88px;
+      flex-shrink: 0;
     }
 
     .minilesson_fiction_yarnoptions:not(:empty) {

@@ -40,7 +40,8 @@
 }
 
 /* Specific styling for when in Fullscreen mode */
-.yarn-player-wrapper:fullscreen {
+.yarn-player-wrapper:fullscreen,
+.yarn-player-wrapper.is-pseudo-fullscreen {
   width: 100%;
   height: 100%;
   border: none;
@@ -50,6 +51,15 @@
   background: #000;
   /* Better for focus/immersion */
   box-sizing: border-box;
+}
+
+.yarn-player-wrapper.is-pseudo-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
 }
 
 /* Fallback for Safari/iOS */
@@ -66,7 +76,8 @@
 
 /* Ensure inner container expands to full height in fullscreen mode to anchor options to the bottom */
 .yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer,
-.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer {
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson_fiction_yarncontainer {
   height: 100%;
   max-height: none !important;
   max-width: 100% !important;
@@ -78,7 +89,8 @@
 
 /* Ensure that if chat options expand, the main chat area can shrink to display them without clipping */
 .yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer .chat-wrapper,
-.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer .chat-wrapper {
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer .chat-wrapper,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson_fiction_yarncontainer .chat-wrapper {
   min-height: 0;
 }
 

@@ -3505,7 +3505,8 @@ span.wrongitem {
 .minilesson_fiction_yarncontainer.mobilechat {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 600px;
+  max-height: 80vh;
   background-color: #ece5dd;
   position: relative;
 }
@@ -3515,7 +3516,8 @@ span.wrongitem {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 450px;
+  flex-grow: 1;
+  min-height: 0;
   position: relative;
 }
 .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer {
@@ -3587,6 +3589,7 @@ span.wrongitem {
   padding: 15px;
   border-top: 1px solid #ddd;
   min-height: 88px;
+  flex-shrink: 0;
 }
 .minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_yarnoptions:not(:empty) {
   display: flex;
@@ -5791,7 +5794,8 @@ body.poodll-minilesson-embed #page {
 }
 
 /* Specific styling for when in Fullscreen mode */
-.yarn-player-wrapper:fullscreen {
+.yarn-player-wrapper:fullscreen,
+.yarn-player-wrapper.is-pseudo-fullscreen {
   width: 100%;
   height: 100%;
   border: none;
@@ -5801,6 +5805,15 @@ body.poodll-minilesson-embed #page {
   background: #000;
   /* Better for focus/immersion */
   box-sizing: border-box;
+}
+
+.yarn-player-wrapper.is-pseudo-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
 }
 
 /* Fallback for Safari/iOS */
@@ -5817,7 +5830,8 @@ body.poodll-minilesson-embed #page {
 
 /* Ensure inner container expands to full height in fullscreen mode to anchor options to the bottom */
 .yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer,
-.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer {
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson_fiction_yarncontainer {
   height: 100%;
   max-height: none !important;
   max-width: 100% !important;
@@ -5829,7 +5843,8 @@ body.poodll-minilesson-embed #page {
 
 /* Ensure that if chat options expand, the main chat area can shrink to display them without clipping */
 .yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer .chat-wrapper,
-.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer .chat-wrapper {
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer .chat-wrapper,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson_fiction_yarncontainer .chat-wrapper {
   min-height: 0;
 }
 
