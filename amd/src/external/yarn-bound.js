@@ -460,7 +460,7 @@
                   newBody += `            <<endif>>\n`;
                 }
 
-                newBody += node.body + "\n";
+                newBody += node.body.split('\n').map(l => l ? '            ' + l : l).join('\n') + "\n";
                 newBody += `        <<endif>>\n`;
                 newBody += `        <<set $__current_idx = $__current_idx + 1>>\n`;
                 newBody += `    <<endif>>\n`;
@@ -469,7 +469,7 @@
               newBody += `<<else>>\n`; // No conditions met
               newBody += `    <<set $__ng_pre = 0>>\n`;
               if (defaultNode) {
-                newBody += defaultNode.body + "\n";
+                newBody += defaultNode.body.split('\n').map(l => l ? '    ' + l : l).join('\n') + "\n";
               }
               newBody += `    <<set $__ng_padding = 0>>\n`;
               newBody += `<<endif>>\n`;
