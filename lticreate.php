@@ -9,6 +9,7 @@ use enrol_lti\local\ltiadvantage\lib\issuer_database;
 use enrol_lti\local\ltiadvantage\lib\lti_cookie;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 use enrol_lti\local\ltiadvantage\repository\deployment_repository;
+use Packback\Lti1p3\LtiConstants;
 use Packback\Lti1p3\LtiMessageLaunch;
 use Packback\Lti1p3\LtiServiceConnector;
 
@@ -35,16 +36,16 @@ try {
 }
 
 $launchdata = $messagelaunch->getLaunchData();
-$resourcelink = $launchdata['https://purl.imsglobal.org/spec/lti/claim/resource_link'] ?? [];
+$resourcelink = $launchdata[LtiConstants::RESOURCE_LINK] ?? [];
 $resourceid = $resourcelink['id'] ?? null;
 
 // 2. Handle Form Submission
 if ($name = optional_param('name', '', PARAM_TEXT)) {
     require_sesskey();
-    
+
     // Create the module
     $module = $DB->get_record('modules', ['name' => 'minilesson'], '*', MUST_EXIST);
-    
+
     $modinfo = new stdClass();
     $modinfo->course = $course->id;
     $modinfo->module = $module->id;
@@ -55,17 +56,17 @@ if ($name = optional_param('name', '', PARAM_TEXT)) {
     if ($resourceid) {
         $modinfo->idnumber = $resourceid; // Map to LTI resource_id if available
     }
-    
+
     // MiniLesson specific defaults
     $modinfo->grade = 100;
-    
+
     // Use course/modlib.php to add instance
     $modinfo = add_moduleinfo($modinfo, $course);
     $cmid = $modinfo->coursemodule;
-    
+
     // Rebuild cache
     rebuild_course_cache($course->id);
-    
+
     // Redirect back to ltistart.php to complete deep linking
     $redirecturl = new moodle_url('/mod/minilesson/ltistart.php', [
         'launchid' => $launchid,
