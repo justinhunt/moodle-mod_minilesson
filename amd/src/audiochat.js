@@ -354,7 +354,12 @@ define(
                             `;
                         headerDiv.appendChild(pictureDiv);
                     }
-                    headerDiv.innerHTML += message.usertype === "user" ? "Student" : "AI Assistant";
+                    str.get_strings([
+                        {key: 'audiochataiassistant', component: 'mod_minilesson'},
+                        {key: 'audiochatstudent', component: 'mod_minilesson'}
+                    ]).then(function(strings) {
+                        headerDiv.innerHTML += message.usertype === "user" ? strings[1] : strings[0];
+                    });
                     contentDiv.appendChild(headerDiv);
 
                     var textDiv = document.createElement("div");

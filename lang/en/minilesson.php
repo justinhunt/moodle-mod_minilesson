@@ -1332,3 +1332,6 @@ $string['addlessonitem_desc'] = 'Manually add lesson items to build your lesson'
 $string['chooselessonitem_desc'] = 'Choose a ready made lesson from the Lesson Bank';
 $string['generatelessonitem_desc'] = 'Generate a lesson or lesson items using AI';
 $string['generate'] = 'Generate';
+
+$string['audiochatstudent'] = 'Student';
+$string['audiochataiassistant'] = 'AI Assistant';
