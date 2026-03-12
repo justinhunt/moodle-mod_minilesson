@@ -9,6 +9,7 @@ use enrol_lti\local\ltiadvantage\lib\issuer_database;
 use enrol_lti\local\ltiadvantage\lib\lti_cookie;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 use enrol_lti\local\ltiadvantage\repository\deployment_repository;
+use mod_minilesson\constants;
 use Packback\Lti1p3\LtiConstants;
 use Packback\Lti1p3\LtiMessageLaunch;
 use Packback\Lti1p3\LtiServiceConnector;
@@ -74,6 +75,13 @@ if ($name = optional_param('name', '', PARAM_TEXT)) {
         'sesskey' => sesskey()
     ]);
     redirect($redirecturl);
+}
+
+// Get admin settings.
+$config = get_config(constants::M_COMPONENT);
+if (!empty($config->enablesetuptab)) {
+    $PAGE->set_pagelayout('popup');
+    $PAGE->add_body_class('poodll-minilesson-embed');
 }
 
 // 3. Render Simple Form

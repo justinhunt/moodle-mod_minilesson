@@ -12,6 +12,7 @@ use enrol_lti\local\ltiadvantage\lib\issuer_database;
 use enrol_lti\local\ltiadvantage\repository\application_registration_repository;
 use enrol_lti\local\ltiadvantage\repository\deployment_repository;
 use enrol_lti\local\ltiadvantage\utility\message_helper;
+use mod_minilesson\constants;
 use Packback\Lti1p3\LtiMessageLaunch;
 use Packback\Lti1p3\LtiServiceConnector;
 use Packback\Lti1p3\LtiConstants;
@@ -215,6 +216,13 @@ if ($selectid) {
     echo "</form>";
     echo "<script>document.getElementById('autosubmit').submit();</script>";
     die();
+}
+
+// Get admin settings.
+$config = get_config(constants::M_COMPONENT);
+if (!empty($config->enablesetuptab)) {
+    $PAGE->set_pagelayout('popup');
+    $PAGE->add_body_class('poodll-minilesson-embed');
 }
 
 // 4. List Activities
