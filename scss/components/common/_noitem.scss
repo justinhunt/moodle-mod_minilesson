@@ -1,0 +1,51 @@
+@use '../../abstracts/variables' as *;
+
+// -----------------------------------------------------------------------------
+// No item : displayed when there are no items in a lesson, with options to add or choose or generate items
+// Used by: all pages that display items, when there are no items to display
+// -----------------------------------------------------------------------------
+
+.mod_minilesson_noitems_msg {
+
+    .noitem-flex-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .noitem-flex-item {
+        flex: 1 1 200px;
+        max-width: 20%;
+        text-align: center;
+
+        .noitem-flex-item-container {
+            background: #506DFF;
+            padding: 15px;
+            border-radius: 15px;
+            display: block;
+            text-decoration: none;
+
+            img {
+                width: 100%;
+                height: 100px;
+            }
+        }
+    }
+
+    .noitem-flex-item-url {
+        color: white;
+    }
+
+    @media (max-width: 992px) {
+        .noitem-flex-item {
+            max-width: 50%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .noitem-flex-item {
+            max-width: 100%;
+        }
+    }
+
+}

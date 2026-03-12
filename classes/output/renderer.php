@@ -280,19 +280,18 @@ class renderer extends \plugin_renderer_base
      * @param bool $showadditemlinks
      * @return string
      */
-    public function show_no_items($cm, $showadditemlinks)
-    {
-        $displaytext = $this->output->box_start();
-        $displaytext .= $this->output->heading(get_string('noitems', constants::M_COMPONENT), 3, 'main');
-        if ($showadditemlinks) {
-            $displaytext .= \html_writer::div(get_string('letsadditems', constants::M_COMPONENT), '', []);
-            $displaytext .= $this->output->single_button(new \moodle_url(
-                constants::M_URL . '/rsquestion/rsquestions.php',
-                ['id' => $cm->id]
-            ), get_string('additems', constants::M_COMPONENT));
-        }
-        $displaytext .= $this->output->box_end();
-        $ret = \html_writer::div($displaytext, constants::M_NOITEMS_MSG, ['id' => constants::M_NOITEMS_MSG]);
+    public function show_no_items($cm, $showadditemlinks) {
+        $context = [];
+        $context['showadditemlinks'] = $showadditemlinks;
+        $context['additemurl'] = new moodle_url(constants::M_URL . '/rsquestion/rsquestions.php', ['id' => $cm->id]);
+        $context['aiitemurl'] = new moodle_url('/mod/minilesson/aigen.php', ['id' => $cm->id]);
+        $context['lessonbankitemurl'] = new moodle_url('/mod/minilesson/lessonbank.php', ['id' => $cm->id]);
+        $context['showlessonbank'] = !empty(get_config(constants::M_COMPONENT, 'setlessonbank')) &&
+            !empty(get_config(constants::M_COMPONENT, 'lessonbankurl'));
+        $context['additemicon'] = $this->output->image_url('add', constants::M_COMPONENT);
+        $context['aiitemicon'] = $this->output->image_url('generate', constants::M_COMPONENT);
+        $context['lessonbankicon'] = $this->output->image_url('choose', constants::M_COMPONENT);
+        $ret = $this->output->render_from_template('mod_minilesson/noitems', $context);
         return $ret;
     }
 

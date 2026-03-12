@@ -2484,6 +2484,41 @@ span.wrongitem {
   font-size: 14px;
 }
 
+.mod_minilesson_noitems_msg .noitem-flex-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.mod_minilesson_noitems_msg .noitem-flex-item {
+  flex: 1 1 200px;
+  max-width: 20%;
+  text-align: center;
+}
+.mod_minilesson_noitems_msg .noitem-flex-item .noitem-flex-item-container {
+  background: #506DFF;
+  padding: 15px;
+  border-radius: 15px;
+  display: block;
+  text-decoration: none;
+}
+.mod_minilesson_noitems_msg .noitem-flex-item .noitem-flex-item-container img {
+  width: 100%;
+  height: 100px;
+}
+.mod_minilesson_noitems_msg .noitem-flex-item-url {
+  color: white;
+}
+@media (max-width: 992px) {
+  .mod_minilesson_noitems_msg .noitem-flex-item {
+    max-width: 50%;
+  }
+}
+@media (max-width: 576px) {
+  .mod_minilesson_noitems_msg .noitem-flex-item {
+    max-width: 100%;
+  }
+}
+
 .minilesson_audiochat_box {
   box-shadow: none;
   width: 100%;
