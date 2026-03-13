@@ -86,6 +86,13 @@ class slidesform extends baseform {
         $mform->setType(constants::SLIDEFONTSIZE, PARAM_FLOAT);
         $mform->setDefault(constants::SLIDEFONTSIZE, 32);
 
+        $this->add_dropdown(constants::SLIDES_FULLSCREEN, get_string('fullscreen', constants::M_COMPONENT),
+            [
+                0 => get_string('no'),
+                1 => get_string('yes'),
+            ], 0);
+
+
         $mform->registerNoSubmitButton('previewbutton');
         $previewbtn = $mform->addElement('submit', 'previewbutton', get_string('slides:preview', constants::M_COMPONENT));
         $previewbtn->_generateId();

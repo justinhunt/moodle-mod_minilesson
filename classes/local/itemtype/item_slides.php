@@ -113,6 +113,8 @@ class item_slides extends item
 
         $testitem->selectedtheme = $this->itemrecord->{constants::SLIDETHEME};
         $testitem->selectedfontsize = $this->itemrecord->{constants::SLIDEFONTSIZE};
+        $testitem->fullscreen = $this->itemrecord->{constants::SLIDES_FULLSCREEN};
+
 
         return $testitem;
     }
@@ -157,7 +159,9 @@ class item_slides extends item
         $keycols['text1'] = ['jsonname' => 'slidesmarkdown', 'type' => 'string', 'optional' => false, 'default' => [], 'dbname' => constants::SLIDES_MARKDOWN];
         $keycols['text2'] = ['jsonname' => 'slidestheme', 'type' => 'string', 'optional' => false, 'default' => 'black', 'dbname' => constants::SLIDETHEME];
         $keycols['text3'] = ['jsonname' => 'slidesfontsize', 'type' => 'string', 'optional' => false, 'default' => '32', 'dbname' => constants::SLIDEFONTSIZE];
+        $keycols['int1'] = ['jsonname' => 'slidesfullscreen', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::SLIDES_FULLSCREEN];
         $keycols[constants::SLIDESFILES] = ['jsonname' => constants::SLIDESFILES, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+
 
         return $keycols;
     }

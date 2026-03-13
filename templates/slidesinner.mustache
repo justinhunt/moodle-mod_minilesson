@@ -1,5 +1,5 @@
-<div class="minilesson-slides-container">
-  <div id="reveal-{{{uniqid}}}" class="reveal"{{#selectedfontsize}} style="--r-main-font-size: {{{.}}}px" {{/selectedfontsize}}>
+<div id="minilesson-slides-container-{{uniqueid}}" class="minilesson-slides-container yarn-player-wrapper">
+  <div id="reveal-{{{uniqueid}}}" class="reveal"{{#selectedfontsize}} style="--r-main-font-size: {{{.}}}px" {{/selectedfontsize}}>
       <div class="slides">
         <section data-markdown data-separator="^---$" data-separator-vertical="^--$">
  <textarea data-template>
@@ -8,15 +8,23 @@
         </section>
       </div>
   </div>
+    {{#fullscreen}}
+        <button id="toggle-fs-{{uniqueid}}" class="btn btn-secondary fullscreen-btn" title="{{#str}}fullscreen_toggle, mod_minilesson{{/str}}">
+            <i class="fa fa-expand"></i>
+        </button>
+    {{/fullscreen}}
 </div>
 {{#inajax}}
     {{#js}}
-        require(['mod_minilesson/reveal'], function(RevealImplement) {
-            RevealImplement.init(document.querySelector("#reveal-{{{uniqid}}}"))
+        require(['mod_minilesson/reveal', 'mod_minilesson/fullscreen_helper'], function(RevealImplement, FullscreenHelper) {
+            RevealImplement.init(document.querySelector("#reveal-{{{uniqueid}}}"))
             .then(function(instance) {
                 instance.initialize();
                 RevealImplement.setTheme({{#quote}}{{{selectedtheme}}}{{/quote}});
             });
+            {{#fullscreen}}
+                FullscreenHelper.init('minilesson-slides-container-{{uniqueid}}', 'toggle-fs-{{uniqueid}}');
+            {{/fullscreen}}
         });
     {{/js}}
 {{/inajax}}

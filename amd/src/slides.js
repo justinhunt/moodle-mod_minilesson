@@ -1,9 +1,10 @@
 define(
     [
     'jquery', 'core/log', 'mod_minilesson/definitions', './reveal',
-    'core/str', 'core/modal_factory', 'core/fragment'
+    'core/str', 'core/modal_factory', 'core/fragment', 'mod_minilesson/fullscreen_helper'
     ],
-    function ($, log, def, RevealImplement, Str, ModalFactory, Fragment) {
+    function ($, log, def, RevealImplement, Str, ModalFactory, Fragment, FullscreenHelper) {
+
         "use strict"; // jshint ;_;
 
         /*
@@ -49,6 +50,12 @@ define(
                         self.instance = await RevealImplement.init(e.target.querySelector('.reveal'), itemdata.region, itemdata.selectedtheme);
                         self.instance.initialize();
                     }
+
+                    if (itemdata.fullscreen) {
+                        FullscreenHelper.init('minilesson-slides-container-' + itemdata.uniqueid, 'toggle-fs-' + itemdata.uniqueid);
+                    }
+
+
 
                     if (itemdata.timelimit > 0) {
                         $("#" + itemdata.uniqueid + "_container .progress-container").show();

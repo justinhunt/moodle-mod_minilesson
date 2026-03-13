@@ -5782,6 +5782,18 @@ div.mcaudiotranscript {
   width: 100%;
 }
 
+/* Fullscreen support for slides */
+.yarn-player-wrapper:fullscreen .minilesson-slides-container,
+.yarn-player-wrapper:-webkit-full-screen .minilesson-slides-container,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson-slides-container {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
 body.poodll-minilesson-embed #page {
   margin-top: 5px;
 }

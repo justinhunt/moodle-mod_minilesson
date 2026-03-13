@@ -203,6 +203,8 @@ class constants
     const AUDIOCHAT_AUTORESPONSE = 'customint4';
 
     const SLIDES_MARKDOWN = 'customtext1';
+    const SLIDES_FULLSCREEN = 'customint1';
+
     const SLIDES_MARKDOWN_DEFAULT = "# Slide 1 Title\n\nYour content here. Use markdown syntax to format text and add images.\n\n---\n\n# Slide 2 Title\n\nMore content here. You can add as many slides as you need.\n";
     const FICTION_YARN = 'customtext1';
     const FICTION_YARN_DEFAULT = "title: Start\n---\nNarrator: We're going to go on an adventure!\n\n<<jump Cave>>\n===\n\ntitle: Cave\n---\nNarrator: Let's look inside the spooky cave...\n<<jump theend>>\n===\n\ntitle: theend\n---\nNarrator: The end...\n===";
