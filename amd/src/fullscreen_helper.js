@@ -48,6 +48,14 @@ define(['jquery'], function ($) {
                 toggleFullscreen();
             });
 
+            btn.addEventListener('keydown', (e) => {
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleFullscreen();
+                }
+            });
+
             // Handle browser-level changes (Esc key, orientation change)
             document.addEventListener('fullscreenchange', updateButtonUI);
             document.addEventListener('webkitfullscreenchange', updateButtonUI);
