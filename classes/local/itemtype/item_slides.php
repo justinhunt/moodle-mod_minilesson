@@ -128,8 +128,8 @@ class item_slides extends item
         // Replace NBSP with normal space.
         $md = str_replace(["\xC2\xA0", "\xE2\x80\xAF"], " ", $md);
 
-        // Trim weird whitespace.
-        $md = preg_replace('/\s+$/m', '', $md);
+        // Trim trailing spaces and tabs but preserve newlines.
+        $md = preg_replace('/[ \t]+$/m', '', $md);
 
         return $md;
     }
