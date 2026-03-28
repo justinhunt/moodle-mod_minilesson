@@ -7,45 +7,257 @@
 
 .mod_minilesson_noitems_msg {
 
+    .still-no-items {
+        font-size: 25px;
+        text-align: center;
+        color: $heading-navy;
+        margin-bottom: 36px;
+        margin-top: 12px;
+    }
+
     .noitem-flex-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 20px;
+        gap: 24px;
+        justify-content: center;
+        padding: 20px 0;
     }
 
-    .noitem-flex-item {
-        flex: 1 1 200px;
-        max-width: 20%;
+    a.noitem-flex-item {
+        flex: 0 1 360px;
+        min-width: 360px;
+        min-height: 332px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
         text-align: center;
+        text-decoration: none;
+        background: rgba(217, 205, 244, 0.20);
+        border: 1px solid #E5E4E9;
+        border-radius: 8px;
+        padding: 40px 24px 32px;
+        transition: border-color 0.2s ease;
 
-        .noitem-flex-item-container {
-            background: #506DFF;
-            padding: 15px;
-            border-radius: 15px;
-            display: block;
-            text-decoration: none;
+        &:hover {
+            border-color: #aa9eda;
+        }
 
-            img {
-                width: 100%;
-                height: 100px;
+        .noitem-flex-item-icon {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .noitem-flex-item-text {
+            flex-shrink: 0;
+            min-height: 40%;
+            height: 40%;
+        }
+
+        &.noitem-add .noitem-flex-item-icon {
+            position: relative;
+
+            .add-round-icon {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                right: 50%;
+                bottom: 0;
+                transform: translate(110%, -24%);
+                transition: opacity 0.2s ease;
             }
+        }
+
+        &.noitem-add .noitem-flex-item-icon svg:not(.add-round-icon) {
+            width: 90px;
+            height: 90px;
+
+            #banner-after,
+            #right-after,
+            #left-after,
+            #banner-before,
+            #right-before,
+            #left-before {
+                transition: opacity 0.2s ease;
+            }
+
+            #banner-after,
+            #right-after,
+            #left-after {
+                opacity: 0;
+            }
+        }
+
+        &.noitem-add:hover .noitem-flex-item-icon svg {
+            #banner-after,
+            #right-after,
+            #left-after {
+                opacity: 1;
+            }
+
+            #banner-before,
+            #right-before,
+            #left-before {
+                opacity: 0;
+            }
+        }
+
+        &.noitem-add:hover .noitem-flex-item-icon .add-round-icon {
+            opacity: 0;
+        }
+
+        &.noitem-choose .noitem-flex-item-icon {
+            margin-left: -24px;
+            margin-right: -24px;
+            width: calc(100% + 48px);
+            overflow: hidden;
+        }
+
+        &.noitem-choose .noitem-flex-item-icon svg {
+            width: 100%;
+            height: auto;
+            max-width: 170px;
+            max-height: 106px;
+
+            .choose-right-wrap,
+            .choose-left-wrap {
+                transition: transform 0.2s ease;
+                transform-box: fill-box;
+                transform-origin: 50% 100%;
+            }
+
+            // Stacked (default): bring cards closer and rotate inward
+            .choose-right-wrap {
+                transform: translateX(-20px) rotate(-7.4deg);
+            }
+
+            .choose-left-wrap {
+                transform: translateX(15px) rotate(7.2deg);
+            }
+        }
+
+        &.noitem-choose:hover .noitem-flex-item-icon svg {
+            .choose-right-wrap,
+            .choose-left-wrap {
+                transform: rotate(0deg);
+            }
+        }
+
+        &.noitem-generate .noitem-flex-item-icon {
+            position: relative;
+            margin-left: -24px;
+            margin-right: -24px;
+            width: calc(100% + 48px);
+            overflow: hidden;
+
+            .ai-round-icon {
+                position: absolute;
+                width: 50px;
+                height: 50px;
+                right: 50%;
+                bottom: 0;
+                transform: translate(110%, -31%);
+                transition: opacity 0.2s ease;
+            }
+        }
+
+        &.noitem-generate .noitem-flex-item-icon svg:not(.ai-round-icon) {
+            width: 134px;
+            height: 134px;
+            position: relative;
+
+            #golden-gradient,
+            #sparkles {
+                opacity: 0;
+                transition: opacity 0.2s ease;
+            }
+        }
+
+        &.noitem-generate:hover .noitem-flex-item-icon svg:not(.ai-round-icon) {
+            #golden-gradient {
+                opacity: 1;
+            }
+
+            #sparkles {
+                opacity: 0.5;
+            }
+        }
+
+        &.noitem-generate:hover .noitem-flex-item-icon .ai-round-icon {
+            opacity: 0;
         }
     }
 
     .noitem-flex-item-url {
-        color: white;
+        display: block;
+        font-size: 20px;
+        font-weight: 700;
+        color: $heading-navy;
+        margin-bottom: 8px;
+    }
+
+    .noitem-flex-item-description {
+        font-size: 15px;
+        color: $text;
+        line-height: 1.4;
+    }
+
+    @media (max-width: 1286px) and (min-width: 577px) {
+        a.noitem-flex-item {
+            flex: 0 1 30%;
+            min-width: 30%;
+        }
+
     }
 
     @media (max-width: 992px) {
         .noitem-flex-item {
-            max-width: 50%;
+            flex: 0 1 200px;
         }
     }
 
     @media (max-width: 576px) {
         .noitem-flex-item {
-            max-width: 100%;
+            flex: 0 1 100%;
+        }
+
+        a.noitem-flex-item .noitem-flex-item-icon {
+            height: 130px;
+        }
+
+        a.noitem-flex-item.noitem-choose .noitem-flex-item-icon svg {
+            width: 63%;
+            height: auto;
         }
     }
 
+}
+
+@keyframes dash-march {
+    to {
+        stroke-dashoffset: -8;
+    }
+}
+
+@keyframes sparkle-wobble-1 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    25% { transform: translate(2px, -2.5px) rotate(4deg) scale(1.05); }
+    50% { transform: translate(-1.5px, 1px) rotate(-2deg) scale(0.97); }
+    75% { transform: translate(2.5px, 2px) rotate(-4deg) scale(0.95); }
+}
+
+@keyframes sparkle-wobble-2 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    25% { transform: translate(-2.5px, 1.5px) rotate(-3.5deg) scale(0.95); }
+    50% { transform: translate(1px, -2px) rotate(2.5deg) scale(1.05); }
+    75% { transform: translate(-2px, -1.5px) rotate(3deg) scale(1.03); }
+}
+
+@keyframes sparkle-wobble-3 {
+    0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+    25% { transform: translate(1.5px, 2.5px) rotate(3deg) scale(1.03); }
+    50% { transform: translate(-2.5px, -1px) rotate(-4deg) scale(0.95); }
+    75% { transform: translate(1px, -3px) rotate(2deg) scale(1.05); }
 }
