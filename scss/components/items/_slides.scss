@@ -40,15 +40,44 @@
   width: 100%;
 }
 
-/* Fullscreen support for slides */
-.yarn-player-wrapper:fullscreen .minilesson-slides-container,
-.yarn-player-wrapper:-webkit-full-screen .minilesson-slides-container,
-.yarn-player-wrapper.is-pseudo-fullscreen .minilesson-slides-container {
+/* Custom Slides Grid Layouts from Markdown parsing */
+.ml_slides_2cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
   width: 100%;
-  max-width: none;
-  height: 100%;
-  margin: 0;
-  border: none;
-  border-radius: 0;
 }
 
+.ml_slides_3cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.ml_slides_4cols {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.ml_slides_2x2grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
+}
+
+.ml_slides_col {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.ml_slides_col img {
+  max-width: 100%;
+  height: auto;
+}

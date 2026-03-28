@@ -1279,6 +1279,10 @@ function minilesson_output_fragment_preview_slides($args)
     $testitem->selectedtheme = $formdata[constants::SLIDETHEME];
     $testitem->selectedfontsize = $formdata[constants::SLIDEFONTSIZE];
 
+    // Standardize markdown output, applying layout formatting, before rendering the preview template.
+    $testitem->slidesmarkdown = \mod_minilesson\local\itemtype\item_slides::sanitize_markdown($testitem->slidesmarkdown);
+    $testitem->slidesmarkdown = \mod_minilesson\local\itemtype\item_slides::process_layout_markdown($testitem->slidesmarkdown);
+
     return $OUTPUT->render_from_template(constants::M_COMPONENT . '/slidesinner', $testitem);
 }
 

@@ -7,23 +7,59 @@
 </textarea>
         </section>
       </div>
+      {{#fullscreen}}
+          <button id="toggle-fs-{{uniqueid}}" class="btn btn-secondary fullscreen-btn" title="{{#str}}fullscreen_toggle, mod_minilesson{{/str}}">
+              <i class="fa fa-expand"></i>
+          </button>
+      {{/fullscreen}}
   </div>
-    {{#fullscreen}}
-        <button id="toggle-fs-{{uniqueid}}" class="btn btn-secondary fullscreen-btn" title="{{#str}}fullscreen_toggle, mod_minilesson{{/str}}">
-            <i class="fa fa-expand"></i>
-        </button>
-    {{/fullscreen}}
 </div>
 {{#inajax}}
     {{#js}}
-        require(['mod_minilesson/reveal', 'mod_minilesson/fullscreen_helper'], function(RevealImplement, FullscreenHelper) {
+        require(['mod_minilesson/reveal'], function(RevealImplement) {
             RevealImplement.init(document.querySelector("#reveal-{{{uniqueid}}}"))
             .then(function(instance) {
                 instance.initialize();
                 RevealImplement.setTheme({{#quote}}{{{selectedtheme}}}{{/quote}});
             });
             {{#fullscreen}}
-                FullscreenHelper.init('minilesson-slides-container-{{uniqueid}}', 'toggle-fs-{{uniqueid}}');
+                const btn = document.getElementById('toggle-fs-{{uniqueid}}');
+                if (btn) {
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const isFS = !!document.fullscreenElement || !!document.webkitFullscreenElement;
+                        
+                        if (isFS) {
+                            const exitMethod = document.exitFullscreen ||
+                                document.webkitExitFullscreen ||
+                                document.mozCancelFullScreen ||
+                                document.msExitFullscreen;
+                            if (exitMethod) {
+                                exitMethod.apply(document);
+                            }
+                        } else {
+                            // Dispatch synthetic F key to trigger Reveal's native fullscreen
+                            const event = new KeyboardEvent('keydown', {
+                                key: 'f',
+                                keyCode: 70,
+                                which: 70,
+                                bubbles: true,
+                                cancelable: true
+                            });
+                            document.dispatchEvent(event);
+                        }
+                    });
+
+                    const updateButtonUI = () => {
+                        const isFS = !!document.fullscreenElement || !!document.webkitFullscreenElement;
+                        btn.classList.toggle('is-fullscreen', isFS);
+                        btn.innerHTML = isFS
+                            ? '<i class="fa fa-compress"></i>'
+                            : '<i class="fa fa-expand"></i>';
+                    };
+                    document.addEventListener('fullscreenchange', updateButtonUI);
+                    document.addEventListener('webkitfullscreenchange', updateButtonUI);
+                }
             {{/fullscreen}}
         });
     {{/js}}

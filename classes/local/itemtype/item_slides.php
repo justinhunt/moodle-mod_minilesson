@@ -106,7 +106,10 @@ class item_slides extends item
         );
 
         // Weird characters can break things like tables, so clean it a bit.
-        $slidesmarkdown = $this->sanitize_markdown($slidesmarkdown);
+        $slidesmarkdown = self::sanitize_markdown($slidesmarkdown);
+
+        // Process markdown layouts (e.g. ::: 2cols -> <div class="ml_slides_2cols">)
+        $slidesmarkdown = self::process_layout_markdown($slidesmarkdown);
 
         // Set it to output.
         $testitem->slidesmarkdown = $slidesmarkdown;
@@ -119,7 +122,7 @@ class item_slides extends item
         return $testitem;
     }
 
-    public function sanitize_markdown($md)
+    public static function sanitize_markdown($md)
     {
 
         // Remove zero-width chars.
@@ -130,6 +133,22 @@ class item_slides extends item
 
         // Trim trailing spaces and tabs but preserve newlines.
         $md = preg_replace('/[ \t]+$/m', '', $md);
+
+        return $md;
+    }
+
+    /**
+     * Replaces ::: class syntax with divs to create grid layouts
+     */
+    public static function process_layout_markdown($md)
+    {
+        // Replace opening tags. Use [ \t]* so we don't accidentally consume newlines and merge previous slides together!
+        // Tolerate \r before end-of-line in case of Windows CRLF line endings.
+        // Inject \n\n around the block so that Marked.js isolates the HTML elements and resumes standard markdown-parsing inside them.
+        $md = preg_replace('/^:::[ \t]*([a-zA-Z0-9_\-]+)[ \t]*\r?$/m', "\n\n<div class=\"ml_slides_$1\">\n\n", $md);
+        
+        // Replace closing tags
+        $md = preg_replace('/^:::[ \t]*\r?$/m', "\n\n</div>\n\n", $md);
 
         return $md;
     }

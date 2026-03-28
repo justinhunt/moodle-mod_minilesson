@@ -52,7 +52,43 @@ define(
                     }
 
                     if (itemdata.fullscreen) {
-                        FullscreenHelper.init('minilesson-slides-container-' + itemdata.uniqueid, 'toggle-fs-' + itemdata.uniqueid);
+                        const btn = document.getElementById('toggle-fs-' + itemdata.uniqueid);
+                        if (btn) {
+                            btn.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                const isFS = !!document.fullscreenElement || !!document.webkitFullscreenElement;
+                                
+                                if (isFS) {
+                                    const exitMethod = document.exitFullscreen ||
+                                        document.webkitExitFullscreen ||
+                                        document.mozCancelFullScreen ||
+                                        document.msExitFullscreen;
+                                    if (exitMethod) {
+                                        exitMethod.apply(document);
+                                    }
+                                } else {
+                                    // Dispatch synthetic F key to trigger Reveal's native fullscreen
+                                    const event = new KeyboardEvent('keydown', {
+                                        key: 'f',
+                                        keyCode: 70,
+                                        which: 70,
+                                        bubbles: true,
+                                        cancelable: true
+                                    });
+                                    document.dispatchEvent(event);
+                                }
+                            });
+
+                            const updateButtonUI = () => {
+                                const isFS = !!document.fullscreenElement || !!document.webkitFullscreenElement;
+                                btn.classList.toggle('is-fullscreen', isFS);
+                                btn.innerHTML = isFS
+                                    ? '<i class="fa fa-compress"></i>'
+                                    : '<i class="fa fa-expand"></i>';
+                            };
+                            document.addEventListener('fullscreenchange', updateButtonUI);
+                            document.addEventListener('webkitfullscreenchange', updateButtonUI);
+                        }
                     }
 
 

@@ -19,6 +19,12 @@ define(['jquery'], function ($) {
                 btn.innerHTML = isFS
                     ? '<i class="fa fa-compress"></i>'
                     : '<i class="fa fa-expand"></i>';
+                    
+                // Dispatch event so layout handlers can run after dom repaints
+                setTimeout(() => {
+                    container.dispatchEvent(new CustomEvent('minilesson:fullscreenchange', { detail: { isFullscreen: isFS } }));
+                    window.dispatchEvent(new Event('resize'));
+                }, 100);
             };
 
             const toggleFullscreen = () => {
