@@ -26,45 +26,54 @@
 
 <div class="mod_minilesson_noitems_msg" id="mod_minilesson_noitems_msg">
     <div class="py-3">
-        <h3>{{#str}}noitems, mod_minilesson{{/str}}</h3>
+        <h3 class="still-no-items">{{#str}}noitems, mod_minilesson{{/str}}</h3>
         {{#showadditemlinks}}
-            <div>{{#str}}letsadditems, mod_minilesson{{/str}}</div>
             <div class="noitem-flex-container">
-                <div class="noitem-flex-item">
-                    <a class="noitem-flex-item-container" href="{{additemurl}}">
-                        <div class="noitem-flex-item-icon">
-                            <img src="{{additemicon}}" alt="{{#str}}add{{/str}}" />
-                        </div>
+                <a class="noitem-flex-item noitem-add" href="{{additemurl}}">
+                    <div class="noitem-flex-item-icon">
+                        {{> mod_minilesson/icon_add }}
+                        <svg class="add-round-icon" width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="25" cy="25" r="24.5" fill="white" stroke="#E4DFF1"/>
+                            <path d="M23.86 15.14C23.86 14.51 24.37 14 25 14C25.63 14 26.14 14.51 26.14 15.14V34.86C26.14 35.49 25.63 36 25 36C24.37 36 23.86 35.49 23.86 34.86V15.14Z" fill="#AB83F4"/>
+                            <path d="M34.86 23.86C35.49 23.86 36 24.37 36 25C36 25.63 35.49 26.14 34.86 26.14H15.14C14.51 26.14 14 25.63 14 25C14 24.37 14.51 23.86 15.14 23.86H34.86Z" fill="#AB83F4"/>
+                        </svg>
+                    </div>
+                    <div class="noitem-flex-item-text">
                         <span class="noitem-flex-item-url">{{#str}}add{{/str}}</span>
-                    </a>
-                    <div class="noitem-flex-item-description">
-                        {{#str}}addlessonitem_desc, mod_minilesson{{/str}}
-                    </div>
-                </div>
-                {{#showlessonbank}}
-                    <div class="noitem-flex-item">
-                        <a class="noitem-flex-item-container" href="{{lessonbankitemurl}}">
-                            <div class="noitem-flex-item-icon">
-                                <img src="{{lessonbankicon}}" alt="{{#str}}choose{{/str}}" />
-                            </div>
-                            <span class="noitem-flex-item-url">{{#str}}choose{{/str}}</span>
-                        </a>
                         <div class="noitem-flex-item-description">
-                            {{#str}}chooselessonitem_desc, mod_minilesson{{/str}}
+                            {{#str}}addlessonitem_desc, mod_minilesson{{/str}}
                         </div>
                     </div>
-                {{/showlessonbank}}
-                <div class="noitem-flex-item">
-                    <a class="noitem-flex-item-container" href="{{aiitemurl}}">
+                </a>
+                {{!#showlessonbank}}
+                    <a class="noitem-flex-item noitem-choose" href="{{lessonbankitemurl}}">
                         <div class="noitem-flex-item-icon">
-                            <img src="{{aiitemicon}}" alt="{{#str}}generate, mod_minilesson{{/str}}" />
+                            {{> mod_minilesson/icon_choose }}
                         </div>
-                        <span class="noitem-flex-item-url">{{#str}}generate, mod_minilesson{{/str}}</span>
+                        <div class="noitem-flex-item-text">
+                            <span class="noitem-flex-item-url">{{#str}}choose{{/str}}</span>
+                            <div class="noitem-flex-item-description">
+                                {{#str}}chooselessonitem_desc, mod_minilesson{{/str}}
+                            </div>
+                        </div>
                     </a>
-                    <div class="noitem-flex-item-description">
-                        {{#str}}generatelessonitem_desc, mod_minilesson{{/str}}
+                {{!/showlessonbank}}
+                <a class="noitem-flex-item noitem-generate" href="{{aiitemurl}}">
+                    <div class="noitem-flex-item-icon">
+                        {{> mod_minilesson/icon_generate }}
+                        <svg class="ai-round-icon" width="50" height="50" viewBox="63 55 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M105 76C105 87.598 95.598 97 84 97C72.402 97 63 87.598 63 76C63 64.402 72.402 55 84 55C95.598 55 105 64.402 105 76Z" fill="white"/>
+                            <path d="M104 76C104 64.9543 95.0457 56 84 56C72.9543 56 64 64.9543 64 76C64 87.0457 72.9543 96 84 96V97C72.402 97 63 87.598 63 76C63 64.402 72.402 55 84 55C95.598 55 105 64.402 105 76C105 87.598 95.598 97 84 97V96C95.0457 96 104 87.0457 104 76Z" fill="#E4DFF1"/>
+                            <path d="M79.8936 71.5508C79.9974 71.8201 80.1189 72.118 80.2598 72.4346C80.8393 73.7369 81.7528 75.3895 83.0811 76.7178C84.4093 78.046 86.0619 78.9595 87.3643 79.5391C87.68 79.6795 87.9773 79.8007 88.2461 79.9043C87.9691 80.0125 87.663 80.1408 87.3369 80.2871C86.0284 80.8744 84.3745 81.7876 83.0811 83.0811C81.7878 84.3743 80.8744 86.0275 80.2871 87.3359C80.1383 87.6675 80.0088 87.9792 79.8994 88.2598C79.79 87.9792 79.6605 87.6674 79.5117 87.3359C78.9244 86.0275 78.011 84.3743 76.7178 83.0811C75.4245 81.7878 73.7714 80.8744 72.4629 80.2871C72.1305 80.1379 71.8183 80.008 71.5371 79.8984C71.8179 79.789 72.1301 79.6616 72.4619 79.5127C73.7704 78.9255 75.4238 78.0117 76.7178 76.7178C78.0117 75.4238 78.9255 73.7704 79.5127 72.4619C79.6592 72.1354 79.7853 71.828 79.8936 71.5508ZM90.0928 65.5674C90.4519 66.3743 91.0222 67.4079 91.8574 68.2432C92.6927 69.0784 93.7263 69.6487 94.5332 70.0078C94.5697 70.024 94.6069 70.0383 94.6426 70.0537C94.6009 70.0718 94.5584 70.0902 94.5156 70.1094C93.7059 70.4728 92.6717 71.0432 91.8574 71.8574C91.0432 72.6717 90.4728 73.7059 90.1094 74.5156C90.0887 74.5617 90.0692 74.6076 90.0498 74.6523C90.0304 74.6077 90.0118 74.5616 89.9912 74.5156C89.6278 73.7059 89.0574 72.6717 88.2432 71.8574C87.4289 71.0432 86.3947 70.4728 85.585 70.1094C85.5386 70.0886 85.4923 70.0694 85.4473 70.0498C85.492 70.0304 85.538 70.0119 85.584 69.9912C86.3937 69.6278 87.4285 69.0578 88.2432 68.2432C89.0578 67.4285 89.6278 66.3937 89.9912 65.584C90.0103 65.5414 90.0269 65.4985 90.0449 65.457C90.0606 65.4932 90.0763 65.5304 90.0928 65.5674Z" fill="#FFD76B" stroke="#E8AD0B"/>
+                        </svg>
                     </div>
-                </div>
+                    <div class="noitem-flex-item-text">
+                        <span class="noitem-flex-item-url">{{#str}}generate, mod_minilesson{{/str}}</span>
+                        <div class="noitem-flex-item-description">
+                            {{#str}}generatelessonitem_desc, mod_minilesson{{/str}}
+                        </div>
+                    </div>
+                </a>
             </div>
         {{/showadditemlinks}}
     </div>
