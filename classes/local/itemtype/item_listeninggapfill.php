@@ -51,6 +51,7 @@ class item_listeninggapfill extends item
         }
 
         $testitem->sentences = $this->process_listeninggapfill_sentences($sentences);
+        $testitem->hintrtl = $this->itemrecord->{constants::GAPFILLHINTRTL} == 1;
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
         $enablevkeyboard = $this->itemrecord->{constants::LGAPFILL_ENABLEVKEYBOARD};
@@ -105,6 +106,7 @@ class item_listeninggapfill extends item
         $keycols['text6'] = ['jsonname' => 'enablevkeyboard', 'type' => 'string', 'optional' => true, 'default' => 0, 'dbname' => constants::LGAPFILL_ENABLEVKEYBOARD];
         $keycols['text7'] = ['jsonname' => 'customkeys', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::LGAPFILL_CUSTOMKEYS];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
+        $keycols['int6'] = ['jsonname' => 'hintrtl', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHINTRTL];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         return $keycols;

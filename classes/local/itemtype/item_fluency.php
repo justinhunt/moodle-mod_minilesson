@@ -53,6 +53,7 @@ class item_fluency extends item
 
         // Is rtl
         $testitem->rtl = utils::is_rtl($this->language);
+        $testitem->hintrtl = $this->itemrecord->{constants::FLUENCYHINTRTL} == 1;
 
         $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE} == 1;
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
@@ -69,7 +70,7 @@ class item_fluency extends item
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
         // In the case of Norwegian, we set the language to Norwegian Bokmal for speech recognition.
         if ($testitem->language == 'no-NO') {
-            $testitem->language= 'nb-NO';
+            $testitem->language = 'nb-NO';
         }
 
         //add a few things to enable the saving of uploaded audio (on S3)
@@ -136,6 +137,7 @@ class item_fluency extends item
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
         $keycols['int6'] = ['jsonname' => 'hidewarning', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::FLUENCY_HIDEWARNING];
+        $keycols['int7'] = ['jsonname' => 'hintrtl', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::FLUENCYHINTRTL];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         return $keycols;

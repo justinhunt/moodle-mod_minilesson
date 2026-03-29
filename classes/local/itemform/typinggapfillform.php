@@ -20,6 +20,8 @@ class typinggapfillform extends baseform
         $this->add_itemsettings_heading();
         $this->add_static_text('instructions', '', get_string('gapfillitemsdesc', constants::M_COMPONENT));
         $this->add_sentenceprompt(1, get_string('sentenceprompts', constants::M_COMPONENT), true);
+        $this->add_checkbox(constants::GAPFILLHINTRTL, get_string('hintrtl', constants::M_COMPONENT),
+            get_string('hintrtl_desc', constants::M_COMPONENT), false);
         $this->add_sentenceimage(1, null, false);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         $this->add_allowretry(constants::GAPFILLALLOWRETRY, get_string('allowretry_desc', constants::M_COMPONENT));

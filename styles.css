@@ -1212,6 +1212,10 @@
   box-shadow: unset;
   outline: 0;
 }
+#page-mod-minilesson-rsquestion-rsquestions .noitemyet {
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
 
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td .itemname {
   color: #1F2334;
@@ -2458,6 +2462,9 @@ span.wrongitem {
   padding: 18px;
   position: relative;
 }
+.item-container .definition.rtl {
+  direction: rtl;
+}
 .item-container .definition .hinticon-container {
   position: absolute;
   float: left;
@@ -3428,6 +3435,9 @@ span.wrongitem {
 }
 .ml_scatter_stage .ml_scatter_listitem.selected {
   border-color: #FDDA81;
+}
+.ml_scatter_stage .ml_scatter_listitem.rtl {
+  direction: rtl;
 }
 
 .scatter-basic_feedback {
@@ -5428,6 +5438,13 @@ div.poodlldictationplayer {
   margin-top: 10px;
   position: relative;
 }
+.minilesson_fluency_box .fluency_reply .fluency_prompt_hint {
+  font-size: 1.3em;
+  color: #1F2334;
+}
+.minilesson_fluency_box .fluency_reply .fluency_prompt_hint.rtl {
+  direction: rtl;
+}
 .minilesson_fluency_box .fluency_game {
   min-height: 250px;
   padding: 10px;
@@ -7423,3 +7440,5 @@ li.hg-candidate-box-list-item:active {
 .ml-continueformbuttons .align-items-center {
   justify-content: center;
 }
+
+/*# sourceMappingURL=styles.css.map */

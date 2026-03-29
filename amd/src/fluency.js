@@ -90,7 +90,7 @@ define(
 
                     switch (message.type) {
                         case 'recording':
-            break;
+                            break;
 
                         case 'pronunciation_results':
                             var speechresults = message.results;
@@ -99,7 +99,7 @@ define(
                             self.do_evaluation_stars(speechresults);
                             self.do_recolor_continue_button(speechresults);
                           // self.do_evaluation_results(speechresults);
-            break;
+                            break;
 
                         case 'mediasaved':
                             // Save the returned media URL with the current item
@@ -107,7 +107,7 @@ define(
                             self.items[self.game.pointer].audioself = new Audio();
                             self.items[self.game.pointer].audioself.src = message.mediaurl;
                             log.debug('Media saved at fluency: ' + self.mediaurl);
-                break;
+                            break;
                     } //end of switch message type
                 };
 
@@ -439,8 +439,11 @@ define(
                 code += "<div class='fluency_prompt fluency_prompt_" + self.game.pointer + "'>";
                 code += self.items[self.game.pointer].displayprompt || self.items[self.game.pointer].prompt;
                 code += "</div>";
-                if (self.items[self.game.pointer].hintdisplay) {
-                    code += "<div class='fluency_prompt_hint'>" + self.items[self.game.pointer].target + "</div>";
+                if (self.items[self.game.pointer].hintdisplay) {    
+                    var rtl = self.itemdata.hintrtl ? ' rtl' : '';
+                    code += "<div class='fluency_prompt_hint" + rtl + "'>";
+                    code += self.items[self.game.pointer].target;
+                    code += "</div>";
                 }
 
                 //correct or not

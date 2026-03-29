@@ -75,12 +75,14 @@ define(['jquery',
                 { "key": "confirm_desc", "component": 'mod_minilesson' },
                 { "key": "yes", "component": 'moodle' },
                 { "key": "no", "component": 'moodle' },
+                { "key": "hint", "component": 'mod_minilesson' },
             ]).done(function (s) {
                 var i = 0;
                 self.strings.nextlessonitem = s[i++];
                 self.strings.confirm_desc = s[i++];
                 self.strings.yes = s[i++];
                 self.strings.no = s[i++];
+                self.strings.hint = s[i++];
             });
         },
 
@@ -517,11 +519,14 @@ define(['jquery',
             }
             //hint - definition
             if (self.items[self.game.pointer].definition) {
-                code += "<div class='definition-container'><div class='definition'>"
-                    + "<div class='hinticon-container'><img class='icon' src='" + M.util.image_url('lightbulb-icon', 'mod_minilesson') + "' alt='hint'></div>"
-                    + "<h4 class='hint-title'>Hint</h4>"
-                    + self.items[self.game.pointer].definition + "</div>";
-            } code += "</div>";
+                var rtl = self.itemdata.hintrtl ? ' rtl' : '';
+                code += "<div class='definition-container'>";
+                code += "<div class='definition" + rtl + "'>";
+                code += "<div class='hinticon-container'><img class='icon' src='" + M.util.image_url('lightbulb-icon', 'mod_minilesson') + "' alt='hint'></div>"
+                code += "<h4 class='hint-title'>" + self.strings.hint + "</h4>"
+                code += self.items[self.game.pointer].definition + "</div>";
+                code += "</div>";
+            }
             self.controls.question.append(code);
             var newreply = self.controls.container.find('.tgapfill_reply_' + self.game.pointer);
 

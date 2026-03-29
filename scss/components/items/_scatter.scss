@@ -52,6 +52,11 @@
     &.selected {
       border-color: $warning-border;
     }
+
+    &.rtl {
+      direction: rtl;
+    }
+
   }
 }
 
@@ -62,42 +67,42 @@
 
 .minilesson-scatter-container {
 
-    .startmodule_image_container {
-        background-color: $scatter-icon-bg;
-    }
+  .startmodule_image_container {
+    background-color: $scatter-icon-bg;
+  }
 
-    .mod_minilesson_iteminstructions {
-        margin-bottom: 0;
-    }
+  .mod_minilesson_iteminstructions {
+    margin-bottom: 0;
+  }
 
   .minilesson_scatter_box {
     width: 100%;
 
     .ml_scatter_resultscontainer {
-        padding: 40px 0;
-        background: $scatter-bg-translucent;
+      padding: 40px 0;
+      background: $scatter-bg-translucent;
 
-    .ml-scatter-basic_feedback {
+      .ml-scatter-basic_feedback {
         width: 60%;
         background: $white;
         margin: 0 auto;
         box-shadow: 0 1px 4px 0 rgba($black, 0.04);
         border: 1px solid #e7e9fdab;
         border-radius: 6px;
-    }
-
-    .ml-scatter-basic_feedback_title {
-      border-bottom: 1px solid $primary-light;
-      padding: 10px;
-      color: $text-indigo;
-      font-weight: 600;
-
-      h2 {
-        margin-bottom: 0;
-        font-size: 20px;
-        font-weight: 600;
       }
-  }
+
+      .ml-scatter-basic_feedback_title {
+        border-bottom: 1px solid $primary-light;
+        padding: 10px;
+        color: $text-indigo;
+        font-weight: 600;
+
+        h2 {
+          margin-bottom: 0;
+          font-size: 20px;
+          font-weight: 600;
+        }
+      }
 
     }
 
@@ -128,42 +133,42 @@
     }
 
     .term {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .term-title {
-        padding: 10px 20px;
-        border: 1px solid rgba($primary-border-soft, 0.37);
-        border-radius: 4px;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+      padding: 10px 20px;
+      border: 1px solid rgba($primary-border-soft, 0.37);
+      border-radius: 4px;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
     }
 
     .term-body {
-        padding: 10px 20px;
-        border: 1px solid rgba($primary-border-soft, 0.37);
-        border-radius: 4px;
-        border-left: none;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
+      padding: 10px 20px;
+      border: 1px solid rgba($primary-border-soft, 0.37);
+      border-radius: 4px;
+      border-left: none;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
 
     .term-tick {
-        margin-left: 12px;
+      margin-left: 12px;
     }
 
     .term-body-correct {
-        color: $success-text;
-        font-weight: 500;
-        font-size: 15px;
+      color: $success-text;
+      font-weight: 500;
+      font-size: 15px;
     }
 
     .term-body-incorrect {
-        color: $error;
-        font-weight: 500;
-        font-size: 15px;
+      color: $error;
+      font-weight: 500;
+      font-size: 15px;
     }
 
     .ml-scatter-correct {

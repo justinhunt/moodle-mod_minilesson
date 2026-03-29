@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,9 +26,9 @@ use mod_minilesson\utils;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_wordshuffle extends item
-{
-    //the item type
+class item_wordshuffle extends item {
+
+    // the item type
     public const ITEMTYPE = constants::TYPE_WORDSHUFFLE;
 
     /**
@@ -38,20 +37,18 @@ class item_wordshuffle extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
         $itemrecord = $this->itemrecord;
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
-        //Do we need audio
+        // Do we need audio
         $testitem->readsentence = !empty($itemrecord->{constants::READSENTENCE});
 
         // Prepare data arrays
         $testitem->sentences = [];
         $testitem->imagecontent = true;
         $testitem->audiocontent = $testitem->readsentence;
-
 
         // Sentences.
         $sentences = [];
@@ -120,7 +117,6 @@ class item_wordshuffle extends item
                 $s->imageurl = false;
                 $s->audiourl = false;
 
-
                 if (!empty($theimageurl)) {
                     $s->imageurl = $theimageurl;
                 }
@@ -154,12 +150,12 @@ class item_wordshuffle extends item
         // WordShuffle also has hide startpage and allow retry
         $testitem->hidestartpage = $itemrecord->{constants::WORDSHUFFLEHIDESTARTPAGE} == 1;
         $testitem->allowretry = $itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
+        $testitem->hintrtl = $itemrecord->{constants::WORDSHUFFLEHINTRTL} == 1;
         $testitem->newui = true;
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -182,23 +178,23 @@ class item_wordshuffle extends item
                     return $error;
                 }
         */
-        //return false to indicate no error
+        // return false to indicate no error
         return false;
     }
 
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
      */
-    public static function get_keycolumns()
-    {
-        //get the basic key columns and customize a little for instances of this item type
+    public static function get_keycolumns() {
+        // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
-        $keycols['int2'] = ['jsonname' => 'readsentence', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE]; //not boolean ..
+        $keycols['int2'] = ['jsonname' => 'readsentence', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE]; // not boolean ..
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::WORDSHUFFLEHIDESTARTPAGE];
+        $keycols['int6'] = ['jsonname' => 'hintrtl', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::WORDSHUFFLEHINTRTL];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
 
@@ -208,8 +204,7 @@ class item_wordshuffle extends item
     /*
      * This function return the prompt that the generate method requires for multichoice.
      */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Extract a one dimensional array of 4 short sentences (sentences) in {language} suitable for {level} level learners from the following passage: [{text}] ";

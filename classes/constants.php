@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Created by PhpStorm.
@@ -11,9 +25,9 @@ namespace mod_minilesson;
 
 defined('MOODLE_INTERNAL') || die();
 
-class constants
-{
-    //component name, db tables, things that define app
+class constants {
+
+    // component name, db tables, things that define app
     const M_COMPONENT = 'mod_minilesson';
 
     const M_DEFAULT_CLOUDPOODLL = "cloud.poodll.com";
@@ -39,7 +53,7 @@ class constants
     const M_USE_DATATABLES = 0;
     const M_USE_PAGEDTABLES = 1;
 
-    const M_NEURALVOICES = array(
+    const M_NEURALVOICES = [
         "Amy",
         "Emma",
         "Brian",
@@ -80,22 +94,22 @@ class constants
         "Elin",
         "Hala",
         "Zayd",
-        "Lisa"
-    );
+        "Lisa",
+    ];
 
 
-    //grading options
+    // grading options
     const M_GRADEHIGHEST = 0;
     const M_GRADELOWEST = 1;
     const M_GRADELATEST = 2;
     const M_GRADEAVERAGE = 3;
     const M_GRADENONE = 4;
-    //accuracy adjustment method options
+    // accuracy adjustment method options
     const ACCMETHOD_NONE = 0;
     const ACCMETHOD_AUTO = 1;
     const ACCMETHOD_FIXED = 2;
     const ACCMETHOD_NOERRORS = 3;
-    //what to display to user when reviewing activity options
+    // what to display to user when reviewing activity options
     const POSTATTEMPT_NONE = 0;
     const POSTATTEMPT_EVAL = 1;
     const POSTATTEMPT_EVALERRORS = 2;
@@ -103,7 +117,7 @@ class constants
     const RELEVANCETYPE_NONE = 0;
     const RELEVANCETYPE_QUESTION = 1;
     const RELEVANCETYPE_MODELANSWER = 2;
-    //Constants for RS Questions
+    // Constants for RS Questions
     const NONE = 0;
     const TYPE_TEXTPROMPT_LONG = 'multichoicelong';
 
@@ -216,6 +230,10 @@ class constants
     const PASSAGEGAPFILL_PASSAGE = 'customtext1';
     const PASSAGEGAPFILL_HINTS = 'customint5';
     const PENALIZEHINTS = 'customint2';
+    const GAPFILLHINTRTL = 'customint6';
+    const WORDSHUFFLEHINTRTL = 'customint6';
+    const SCATTERHINTRTL = 'customint6';
+    const FLUENCYHINTRTL = 'customint7';
     const ALTERNATES = 'customtext2';
     const TARGETWORDCOUNT = 'customint3';
     const TOTALMARKS = 'customint1';
@@ -241,7 +259,7 @@ class constants
     const MAXCUSTOMDATA = 5;
     const MAXCUSTOMINT = 9;
 
-    const ITEMTEXTAREA_EDOPTIONS = array('trusttext' => 0, 'noclean' => 1, 'maxfiles' => 0);
+    const ITEMTEXTAREA_EDOPTIONS = ['trusttext' => 0, 'noclean' => 1, 'maxfiles' => 0];
     const READSENTENCE = 'customint2';
     const IGNOREPUNCTUATION = 'customint2';
     const SHOWTEXTPROMPT = 'customint1';
@@ -266,14 +284,14 @@ class constants
     const TTS_SSML = 3;
     const TTS_NOTTS = 4;
 
-    const ALL_VOICES_NINGXIA = array(
-        constants::M_LANG_ARAE => ['Hala' => 'Hala', 'Zayd' => 'Zayd'],
-        constants::M_LANG_ARSA => ['Zeina' => 'Zeina', 'ar-XA-Wavenet-B' => 'Amir_g', 'ar-XA-Wavenet-A' => 'Salma_g', 'ar-MA-Azure-JamalNeural' => 'Jamal_a', 'ar-MA-Azure-MounaNeural' => 'Mouna_a'],
-        constants::M_LANG_ZHCN => ['Zhiyu' => 'Zhiyu'],
-        constants::M_LANG_DADK => ['Naja' => 'Naja', 'Mads' => 'Mads'],
-        constants::M_LANG_NLNL => ["Ruben" => "Ruben", "Lotte" => "Lotte", "Laura" => "Laura"],
-        constants::M_LANG_NLBE => ["Lisa" => "Lisa"],
-        constants::M_LANG_ENUS => [
+    const ALL_VOICES_NINGXIA = [
+        self::M_LANG_ARAE => ['Hala' => 'Hala', 'Zayd' => 'Zayd'],
+        self::M_LANG_ARSA => ['Zeina' => 'Zeina', 'ar-XA-Wavenet-B' => 'Amir_g', 'ar-XA-Wavenet-A' => 'Salma_g', 'ar-MA-Azure-JamalNeural' => 'Jamal_a', 'ar-MA-Azure-MounaNeural' => 'Mouna_a'],
+        self::M_LANG_ZHCN => ['Zhiyu' => 'Zhiyu'],
+        self::M_LANG_DADK => ['Naja' => 'Naja', 'Mads' => 'Mads'],
+        self::M_LANG_NLNL => ["Ruben" => "Ruben", "Lotte" => "Lotte", "Laura" => "Laura"],
+        self::M_LANG_NLBE => ["Lisa" => "Lisa"],
+        self::M_LANG_ENUS => [
             'Joey' => 'Joey',
             'Justin' => 'Justin',
             'Matthew' => 'Matthew',
@@ -283,48 +301,48 @@ class constants
             'Kendra' => 'Kendra',
             'Kimberly' => 'Kimberly',
             'Salli' => 'Salli',
-            'en-US-LemonFox-nova' => 'Tiffany'
+            'en-US-LemonFox-nova' => 'Tiffany',
         ],
-        constants::M_LANG_ENGB => ['Brian' => 'Brian', 'Amy' => 'Amy', 'Emma' => 'Emma'],
-        constants::M_LANG_ENAU => ['Russell' => 'Russell', 'Nicole' => 'Nicole'],
-        constants::M_LANG_ENIN => ['Aditi' => 'Aditi', 'Raveena' => 'Raveena'],
-        constants::M_LANG_ENWL => ["Geraint" => "Geraint"],
-        constants::M_LANG_FIFI => ['Suvi' => 'Suvi'],
-        constants::M_LANG_FRCA => ['Chantal' => 'Chantal'],
-        constants::M_LANG_FRFR => ['Mathieu' => 'Mathieu', 'Celine' => 'Celine', 'Lea' => 'Lea'],
-        constants::M_LANG_DEDE => ['Hans' => 'Hans', 'Marlene' => 'Marlene', 'Vicki' => 'Vicki'],
-        constants::M_LANG_DEAT => ['Hannah' => 'Hannah'],
-        constants::M_LANG_HIIN => ["Aditi" => "Aditi"],
-        constants::M_LANG_ISIS => ['Dora' => 'Dora', 'Karl' => 'Karl'],
-        constants::M_LANG_ITIT => ['Carla' => 'Carla', 'Bianca' => 'Bianca', 'Giorgio' => 'Giorgio'],
-        constants::M_LANG_JAJP => ['Takumi' => 'Takumi', 'Mizuki' => 'Mizuki'],
-        constants::M_LANG_KOKR => ['Seoyeon' => 'Seoyeon'],
-        constants::M_LANG_NONO => ['Liv' => 'Liv'],
-        constants::M_LANG_PSAF => ['ps-AF-Azure-GulNawazNeural' => 'GulNawaz_a', 'ps-AF-Azure-LatifaNeural' => 'Latifa_a'],
-        constants::M_LANG_PLPL => ['Ewa' => 'Ewa', 'Maja' => 'Maja', 'Jacek' => 'Jacek', 'Jan' => 'Jan'],
-        constants::M_LANG_PTBR => ['Ricardo' => 'Ricardo', 'Vitoria' => 'Vitoria', 'Camila' => 'Camila'],
-        constants::M_LANG_PTPT => ["Ines" => "Ines", 'Cristiano' => 'Cristiano'],
-        constants::M_LANG_RORO => ['Carmen' => 'Carmen'],
-        constants::M_LANG_RURU => ["Tatyana" => "Tatyana", "Maxim" => "Maxim"],
-        constants::M_LANG_ESUS => ['Miguel' => 'Miguel', 'Penelope' => 'Penelope', 'Lupe' => 'Lupe', 'Pedro' => 'Pedro'],
-        constants::M_LANG_ESES => ['Enrique' => 'Enrique', 'Conchita' => 'Conchita', 'Lucia' => 'Lucia'],
-        constants::M_LANG_SVSE => ['Astrid' => 'Astrid'],
-        constants::M_LANG_SOSO => ['so-SO-Azure-UbaxNeural' => 'Ubax_a', 'so-SO-Azure-MuuseNeural' => 'Muuse_a'],
-        constants::M_LANG_TRTR => ['Filiz' => 'Filiz'],
-    );
+        self::M_LANG_ENGB => ['Brian' => 'Brian', 'Amy' => 'Amy', 'Emma' => 'Emma'],
+        self::M_LANG_ENAU => ['Russell' => 'Russell', 'Nicole' => 'Nicole'],
+        self::M_LANG_ENIN => ['Aditi' => 'Aditi', 'Raveena' => 'Raveena'],
+        self::M_LANG_ENWL => ["Geraint" => "Geraint"],
+        self::M_LANG_FIFI => ['Suvi' => 'Suvi'],
+        self::M_LANG_FRCA => ['Chantal' => 'Chantal'],
+        self::M_LANG_FRFR => ['Mathieu' => 'Mathieu', 'Celine' => 'Celine', 'Lea' => 'Lea'],
+        self::M_LANG_DEDE => ['Hans' => 'Hans', 'Marlene' => 'Marlene', 'Vicki' => 'Vicki'],
+        self::M_LANG_DEAT => ['Hannah' => 'Hannah'],
+        self::M_LANG_HIIN => ["Aditi" => "Aditi"],
+        self::M_LANG_ISIS => ['Dora' => 'Dora', 'Karl' => 'Karl'],
+        self::M_LANG_ITIT => ['Carla' => 'Carla', 'Bianca' => 'Bianca', 'Giorgio' => 'Giorgio'],
+        self::M_LANG_JAJP => ['Takumi' => 'Takumi', 'Mizuki' => 'Mizuki'],
+        self::M_LANG_KOKR => ['Seoyeon' => 'Seoyeon'],
+        self::M_LANG_NONO => ['Liv' => 'Liv'],
+        self::M_LANG_PSAF => ['ps-AF-Azure-GulNawazNeural' => 'GulNawaz_a', 'ps-AF-Azure-LatifaNeural' => 'Latifa_a'],
+        self::M_LANG_PLPL => ['Ewa' => 'Ewa', 'Maja' => 'Maja', 'Jacek' => 'Jacek', 'Jan' => 'Jan'],
+        self::M_LANG_PTBR => ['Ricardo' => 'Ricardo', 'Vitoria' => 'Vitoria', 'Camila' => 'Camila'],
+        self::M_LANG_PTPT => ["Ines" => "Ines", 'Cristiano' => 'Cristiano'],
+        self::M_LANG_RORO => ['Carmen' => 'Carmen'],
+        self::M_LANG_RURU => ["Tatyana" => "Tatyana", "Maxim" => "Maxim"],
+        self::M_LANG_ESUS => ['Miguel' => 'Miguel', 'Penelope' => 'Penelope', 'Lupe' => 'Lupe', 'Pedro' => 'Pedro'],
+        self::M_LANG_ESES => ['Enrique' => 'Enrique', 'Conchita' => 'Conchita', 'Lucia' => 'Lucia'],
+        self::M_LANG_SVSE => ['Astrid' => 'Astrid'],
+        self::M_LANG_SOSO => ['so-SO-Azure-UbaxNeural' => 'Ubax_a', 'so-SO-Azure-MuuseNeural' => 'Muuse_a'],
+        self::M_LANG_TRTR => ['Filiz' => 'Filiz'],
+    ];
 
-    const ALL_VOICES = array(
-        constants::M_LANG_ARAE => ['Hala' => 'Hala', 'Zayd' => 'Zayd'],
-        constants::M_LANG_ARSA => ['Zeina' => 'Zeina', 'ar-MA-Azure-JamalNeural' => 'Jamal_a', 'ar-XA-Wavenet-B' => 'Amir_g', 'ar-XA-Wavenet-A' => 'Salma_g', 'ar-MA-Azure-MounaNeural' => 'Mouna_a'],
-        constants::M_LANG_BGBG => ['bg-BG-Standard-A' => 'Mila_g'],//nikolai
-        constants::M_LANG_HRHR => ['hr-HR-Whisper-alloy' => 'Marko', 'hr-HR-Whisper-shimmer' => 'Ivana'],
-        constants::M_LANG_ZHCN => ['Zhiyu' => 'Zhiyu'],
-        constants::M_LANG_CSCZ => ['cs-CZ-Wavenet-A' => 'Zuzana_g', 'cs-CZ-Standard-A' => 'Karolina_g'],
-        constants::M_LANG_DADK => ['Naja' => 'Naja', 'Mads' => 'Mads'],
-        constants::M_LANG_NLNL => ["Ruben" => "Ruben", "Lotte" => "Lotte", "Laura" => "Laura"],
-        constants::M_LANG_NLBE => ["nl-BE-Wavenet-B" => "Marc_g", "nl-BE-Wavenet-A" => "Marie_g", "Lisa" => "Lisa"],
-            //constants::M_LANG_DECH => [],
-        constants::M_LANG_ENUS => [
+    const ALL_VOICES = [
+        self::M_LANG_ARAE => ['Hala' => 'Hala', 'Zayd' => 'Zayd'],
+        self::M_LANG_ARSA => ['Zeina' => 'Zeina', 'ar-MA-Azure-JamalNeural' => 'Jamal_a', 'ar-XA-Wavenet-B' => 'Amir_g', 'ar-XA-Wavenet-A' => 'Salma_g', 'ar-MA-Azure-MounaNeural' => 'Mouna_a'],
+        self::M_LANG_BGBG => ['bg-BG-Standard-A' => 'Mila_g'], // nikolai
+        self::M_LANG_HRHR => ['hr-HR-Whisper-alloy' => 'Marko', 'hr-HR-Whisper-shimmer' => 'Ivana'],
+        self::M_LANG_ZHCN => ['Zhiyu' => 'Zhiyu'],
+        self::M_LANG_CSCZ => ['cs-CZ-Wavenet-A' => 'Zuzana_g', 'cs-CZ-Standard-A' => 'Karolina_g'],
+        self::M_LANG_DADK => ['Naja' => 'Naja', 'Mads' => 'Mads'],
+        self::M_LANG_NLNL => ["Ruben" => "Ruben", "Lotte" => "Lotte", "Laura" => "Laura"],
+        self::M_LANG_NLBE => ["nl-BE-Wavenet-B" => "Marc_g", "nl-BE-Wavenet-A" => "Marie_g", "Lisa" => "Lisa"],
+            // constants::M_LANG_DECH => [],
+        self::M_LANG_ENUS => [
             'Joey' => 'Joey',
             'Justin' => 'Justin',
             'Kevin' => 'Kevin',
@@ -338,60 +356,60 @@ class constants
             'en-US-Whisper-alloy' => 'Ricky',
             'en-US-Whisper-onyx' => 'Ed',
             'en-US-Whisper-nova' => 'Tiffany',
-            'en-US-Whisper-shimmer' => 'Tammy'
+            'en-US-Whisper-shimmer' => 'Tammy',
         ],
-        constants::M_LANG_ENGB => ['Brian' => 'Brian', 'Amy' => 'Amy', 'Emma' => 'Emma', 'Arthur' => 'Arthur'],
-        constants::M_LANG_ENAU => ['Russell' => 'Russell', 'Nicole' => 'Nicole', 'Olivia' => 'Olivia'],
-        constants::M_LANG_ENNZ => ['Aria' => 'Aria'],
-        constants::M_LANG_ENZA => ['Ayanda' => 'Ayanda'],
-        constants::M_LANG_ENIN => ['Aditi' => 'Aditi', 'Raveena' => 'Raveena', 'Kajal' => 'Kajal'],
+        self::M_LANG_ENGB => ['Brian' => 'Brian', 'Amy' => 'Amy', 'Emma' => 'Emma', 'Arthur' => 'Arthur'],
+        self::M_LANG_ENAU => ['Russell' => 'Russell', 'Nicole' => 'Nicole', 'Olivia' => 'Olivia'],
+        self::M_LANG_ENNZ => ['Aria' => 'Aria'],
+        self::M_LANG_ENZA => ['Ayanda' => 'Ayanda'],
+        self::M_LANG_ENIN => ['Aditi' => 'Aditi', 'Raveena' => 'Raveena', 'Kajal' => 'Kajal'],
             // constants::M_LANG_ENIE => [],
-        constants::M_LANG_ENWL => ["Geraint" => "Geraint"],
+        self::M_LANG_ENWL => ["Geraint" => "Geraint"],
             // constants::M_LANG_ENAB => [],
-        constants::M_LANG_FILPH => ['fil-PH-Wavenet-A' => 'Darna_g', 'fil-PH-Wavenet-B' => 'Reyna_g', 'fil-PH-Wavenet-C' => 'Bayani_g', 'fil-PH-Wavenet-D' => 'Ernesto_g'],
-        constants::M_LANG_FIFI => ['Suvi' => 'Suvi', 'fi-FI-Wavenet-A' => 'Kaarina_g'],
-        constants::M_LANG_FRCA => ['Chantal' => 'Chantal', 'Gabrielle' => 'Gabrielle', 'Liam' => 'Liam'],
-        constants::M_LANG_FRFR => ['Mathieu' => 'Mathieu', 'Celine' => 'Celine', 'Lea' => 'Lea', 'Remi' => 'Remi'],
-        constants::M_LANG_DEDE => ['Hans' => 'Hans', 'Marlene' => 'Marlene', 'Vicki' => 'Vicki', 'Daniel' => 'Daniel'],
-        constants::M_LANG_DEAT => ['Hannah' => 'Hannah'],
-        constants::M_LANG_ELGR => ['el-GR-Wavenet-A' => 'Sophia_g', 'el-GR-Standard-A' => 'Isabella_g'],
-        constants::M_LANG_HIIN => ["Aditi" => "Aditi"],
-        constants::M_LANG_HEIL => ['he-IL-Wavenet-A' => 'Sarah_g', 'he-IL-Wavenet-B' => 'Noah_g'],
-        constants::M_LANG_HUHU => ['hu-HU-Wavenet-A' => 'Eszter_g'],
+        self::M_LANG_FILPH => ['fil-PH-Wavenet-A' => 'Darna_g', 'fil-PH-Wavenet-B' => 'Reyna_g', 'fil-PH-Wavenet-C' => 'Bayani_g', 'fil-PH-Wavenet-D' => 'Ernesto_g'],
+        self::M_LANG_FIFI => ['Suvi' => 'Suvi', 'fi-FI-Wavenet-A' => 'Kaarina_g'],
+        self::M_LANG_FRCA => ['Chantal' => 'Chantal', 'Gabrielle' => 'Gabrielle', 'Liam' => 'Liam'],
+        self::M_LANG_FRFR => ['Mathieu' => 'Mathieu', 'Celine' => 'Celine', 'Lea' => 'Lea', 'Remi' => 'Remi'],
+        self::M_LANG_DEDE => ['Hans' => 'Hans', 'Marlene' => 'Marlene', 'Vicki' => 'Vicki', 'Daniel' => 'Daniel'],
+        self::M_LANG_DEAT => ['Hannah' => 'Hannah'],
+        self::M_LANG_ELGR => ['el-GR-Wavenet-A' => 'Sophia_g', 'el-GR-Standard-A' => 'Isabella_g'],
+        self::M_LANG_HIIN => ["Aditi" => "Aditi"],
+        self::M_LANG_HEIL => ['he-IL-Wavenet-A' => 'Sarah_g', 'he-IL-Wavenet-B' => 'Noah_g'],
+        self::M_LANG_HUHU => ['hu-HU-Wavenet-A' => 'Eszter_g'],
 
-        constants::M_LANG_IDID => ['id-ID-Wavenet-A' => 'Guntur_g', 'id-ID-Wavenet-B' => 'Bhoomik_g'],
-        constants::M_LANG_ISIS => ['Dora' => 'Dora', 'Karl' => 'Karl'],
-        constants::M_LANG_ITIT => ['Carla' => 'Carla', 'Bianca' => 'Bianca', 'Giorgio' => 'Giorgio'],
-        constants::M_LANG_JAJP => ['Takumi' => 'Takumi', 'Mizuki' => 'Mizuki', 'Kazuha' => 'Kazuha', 'Tomoko' => 'Tomoko'],
-        constants::M_LANG_KOKR => ['Seoyeon' => 'Seoyeon'],
-        constants::M_LANG_LVLV => ['lv-LV-Standard-A' => 'Janis_g'],
-        constants::M_LANG_LTLT => ['lt-LT-Standard-A' => 'Matas_g'],
-        constants::M_LANG_MINZ => ['mi-NZ-Whisper-alloy' => 'Tane', 'mi-NZ-Whisper-shimmer' => 'Aroha'],
-        constants::M_LANG_MKMK => ['mk-MK-Whisper-alloy' => 'Trajko', 'mk-MK-Whisper-shimmer' => 'Marija'],
-        constants::M_LANG_MSMY => ['ms-MY-Whisper-alloy' => 'Afsah', 'ms-MY-Whisper-shimmer' => 'Siti'],
-        constants::M_LANG_NONO => ['Liv' => 'Liv', 'Ida' => 'Ida', 'nb-NO-Wavenet-B' => 'Lars_g', 'nb-NO-Wavenet-A' => 'Hedda_g', 'nb-NO-Wavenet-D' => 'Anders_g'],
-        constants::M_LANG_PSAF => ['ps-AF-Azure-GulNawazNeural' => 'GulNawaz_a', 'ps-AF-Azure-LatifaNeural' => 'Latifa_a'],
-        constants::M_LANG_FAIR => ['fa-IR-Azure-FaridNeural' => 'Farid_a', 'fa-IR-Azure-DilaraNeural' => 'Dilara_a'],
-        constants::M_LANG_PLPL => ['Ewa' => 'Ewa', 'Maja' => 'Maja', 'Jacek' => 'Jacek', 'Jan' => 'Jan'],
-        constants::M_LANG_PTBR => ['Ricardo' => 'Ricardo', 'Vitoria' => 'Vitoria', 'Camila' => 'Camila'],
-        constants::M_LANG_PTPT => ["Ines" => "Ines", 'Cristiano' => 'Cristiano'],
-        constants::M_LANG_RORO => ['Carmen' => 'Carmen', 'ro-RO-Wavenet-A' => 'Sorina_g'],
-        constants::M_LANG_RURU => ["Tatyana" => "Tatyana", "Maxim" => "Maxim", "ru-RU-Azure-SvetlanaNeural" => 'Svetlana_a', "ru-RU-Azure-DmitryNeural" => "Dmitry_a", "ru-RU-Azure-DariyaNeural" => "Dariya_a"],
-        constants::M_LANG_ESUS => ['Miguel' => 'Miguel', 'Penelope' => 'Penelope', 'Lupe' => 'Lupe', 'Pedro' => 'Pedro'],
-        constants::M_LANG_ESES => ['Enrique' => 'Enrique', 'Conchita' => 'Conchita', 'Lucia' => 'Lucia'],
-        constants::M_LANG_SVSE => ['Astrid' => 'Astrid', 'Elin' => 'Elin'],
-        constants::M_LANG_SKSK => ['sk-SK-Wavenet-A' => 'Laura_g', 'sk-SK-Standard-A' => 'Natalia_g'],
-        constants::M_LANG_SLSI => ['sl-SI-Whisper-alloy' => 'Vid', 'sl-SI-Whisper-shimmer' => 'Pia'],
-        constants::M_LANG_SOSO => ['so-SO-Azure-UbaxNeural' => 'Ubax_a', 'so-SO-Azure-MuuseNeural' => 'Muuse_a'],
-        constants::M_LANG_SRRS => ['sr-RS-Standard-A' => 'Milena_g'],
-        constants::M_LANG_TAIN => ['ta-IN-Wavenet-A' => 'Dyuthi_g', 'ta-IN-Wavenet-B' => 'Bhoomik_g'],
-        constants::M_LANG_TEIN => ['te-IN-Standard-A' => 'Anandi_g', 'te-IN-Standard-B' => 'Kai_g'],
-        constants::M_LANG_TRTR => ['Filiz' => 'Filiz'],
-        constants::M_LANG_UKUA => ['uk-UA-Wavenet-A' => 'Katya_g'],
-        constants::M_LANG_VIVN => ['vi-VN-Wavenet-A' => 'Huyen_g', 'vi-VN-Wavenet-B' => 'Duy_g'],
-    );
+        self::M_LANG_IDID => ['id-ID-Wavenet-A' => 'Guntur_g', 'id-ID-Wavenet-B' => 'Bhoomik_g'],
+        self::M_LANG_ISIS => ['Dora' => 'Dora', 'Karl' => 'Karl'],
+        self::M_LANG_ITIT => ['Carla' => 'Carla', 'Bianca' => 'Bianca', 'Giorgio' => 'Giorgio'],
+        self::M_LANG_JAJP => ['Takumi' => 'Takumi', 'Mizuki' => 'Mizuki', 'Kazuha' => 'Kazuha', 'Tomoko' => 'Tomoko'],
+        self::M_LANG_KOKR => ['Seoyeon' => 'Seoyeon'],
+        self::M_LANG_LVLV => ['lv-LV-Standard-A' => 'Janis_g'],
+        self::M_LANG_LTLT => ['lt-LT-Standard-A' => 'Matas_g'],
+        self::M_LANG_MINZ => ['mi-NZ-Whisper-alloy' => 'Tane', 'mi-NZ-Whisper-shimmer' => 'Aroha'],
+        self::M_LANG_MKMK => ['mk-MK-Whisper-alloy' => 'Trajko', 'mk-MK-Whisper-shimmer' => 'Marija'],
+        self::M_LANG_MSMY => ['ms-MY-Whisper-alloy' => 'Afsah', 'ms-MY-Whisper-shimmer' => 'Siti'],
+        self::M_LANG_NONO => ['Liv' => 'Liv', 'Ida' => 'Ida', 'nb-NO-Wavenet-B' => 'Lars_g', 'nb-NO-Wavenet-A' => 'Hedda_g', 'nb-NO-Wavenet-D' => 'Anders_g'],
+        self::M_LANG_PSAF => ['ps-AF-Azure-GulNawazNeural' => 'GulNawaz_a', 'ps-AF-Azure-LatifaNeural' => 'Latifa_a'],
+        self::M_LANG_FAIR => ['fa-IR-Azure-FaridNeural' => 'Farid_a', 'fa-IR-Azure-DilaraNeural' => 'Dilara_a'],
+        self::M_LANG_PLPL => ['Ewa' => 'Ewa', 'Maja' => 'Maja', 'Jacek' => 'Jacek', 'Jan' => 'Jan'],
+        self::M_LANG_PTBR => ['Ricardo' => 'Ricardo', 'Vitoria' => 'Vitoria', 'Camila' => 'Camila'],
+        self::M_LANG_PTPT => ["Ines" => "Ines", 'Cristiano' => 'Cristiano'],
+        self::M_LANG_RORO => ['Carmen' => 'Carmen', 'ro-RO-Wavenet-A' => 'Sorina_g'],
+        self::M_LANG_RURU => ["Tatyana" => "Tatyana", "Maxim" => "Maxim", "ru-RU-Azure-SvetlanaNeural" => 'Svetlana_a', "ru-RU-Azure-DmitryNeural" => "Dmitry_a", "ru-RU-Azure-DariyaNeural" => "Dariya_a"],
+        self::M_LANG_ESUS => ['Miguel' => 'Miguel', 'Penelope' => 'Penelope', 'Lupe' => 'Lupe', 'Pedro' => 'Pedro'],
+        self::M_LANG_ESES => ['Enrique' => 'Enrique', 'Conchita' => 'Conchita', 'Lucia' => 'Lucia'],
+        self::M_LANG_SVSE => ['Astrid' => 'Astrid', 'Elin' => 'Elin'],
+        self::M_LANG_SKSK => ['sk-SK-Wavenet-A' => 'Laura_g', 'sk-SK-Standard-A' => 'Natalia_g'],
+        self::M_LANG_SLSI => ['sl-SI-Whisper-alloy' => 'Vid', 'sl-SI-Whisper-shimmer' => 'Pia'],
+        self::M_LANG_SOSO => ['so-SO-Azure-UbaxNeural' => 'Ubax_a', 'so-SO-Azure-MuuseNeural' => 'Muuse_a'],
+        self::M_LANG_SRRS => ['sr-RS-Standard-A' => 'Milena_g'],
+        self::M_LANG_TAIN => ['ta-IN-Wavenet-A' => 'Dyuthi_g', 'ta-IN-Wavenet-B' => 'Bhoomik_g'],
+        self::M_LANG_TEIN => ['te-IN-Standard-A' => 'Anandi_g', 'te-IN-Standard-B' => 'Kai_g'],
+        self::M_LANG_TRTR => ['Filiz' => 'Filiz'],
+        self::M_LANG_UKUA => ['uk-UA-Wavenet-A' => 'Katya_g'],
+        self::M_LANG_VIVN => ['vi-VN-Wavenet-A' => 'Huyen_g', 'vi-VN-Wavenet-B' => 'Duy_g'],
+    ];
 
-    //CSS ids/classes
+    // CSS ids/classes
     const M_RECORD_BUTTON = 'mod_minilesson_record_button';
     const M_START_BUTTON = 'mod_minilesson_start_button';
     const M_READING_AUDIO_URL = 'mod_minilesson_readingaudiourl';
@@ -462,7 +480,7 @@ class constants
     const M_NOITEMS_MSG = 'mod_minilesson_noitems_msg';
 
 
-    //languages
+    // languages
     const M_LANG_ENUS = 'en-US';
     const M_LANG_ENGB = 'en-GB';
     const M_LANG_ENAU = 'en-AU';
@@ -571,7 +589,7 @@ class constants
         "Bradley Hand",
         "Brush Script MT",
         "Luminari",
-        "Comic Sans MS"
+        "Comic Sans MS",
     ];
 
     const M_GOOGLE_FONTS = ["Andika"];
@@ -614,66 +632,66 @@ class constants
      */
     const PUSHMODE_SITE = 3;
     const M_LANG_SAMPLES = [
-        constants::M_LANG_ARAE => 'عندما يكون الطقس مشمسًا، دعنا نخرج للتنزه في الحديقة.',
-        constants::M_LANG_ARSA => 'عندما يكون الطقس مشمسًا، دعنا نخرج للتنزه في الحديقة.',
-        constants::M_LANG_EUES => 'Eguraldi eguzkitsua egiten duenean, goazen parkean paseatzera.',
-        constants::M_LANG_BGBG => 'Когато времето е слънчево, нека се разходим в парка.',
-        constants::M_LANG_HRHR => 'Kad je sunčano vrijeme, idemo u šetnju parkom.',
-        constants::M_LANG_ZHCN => '天气晴朗的时候，我们去公园散步吧。',
-        constants::M_LANG_CSCZ => 'Až bude slunečné počasí, pojďme se projít do parku.',
-        constants::M_LANG_DADK => 'Når vejret er solrigt, lad os gå en tur i parken.',
-        constants::M_LANG_NLNL => 'Als het zonnig is, gaan we een wandeling maken in het park.',
-        constants::M_LANG_NLBE => 'Als het zonnig is, gaan we een wandeling maken in het park.',
-        constants::M_LANG_ENUS => 'When the weather is sunny, let\'s go for a walk in the park.',
-        constants::M_LANG_ENGB => 'When the weather is sunny, let\'s go for a walk in the park.',
-        constants::M_LANG_ENAU => 'When the weather is sunny, let\'s go for a walk in the park.',
-        constants::M_LANG_ENNZ => 'When the weather is sunny, let\'s go for a walk in the park.',
-        constants::M_LANG_ENZA => 'When the weather is sunny, let\'s go for a walk in the park.',
-        constants::M_LANG_ENIN => 'When the weather is sunny, let\'s go for a walk in the park.',
-        constants::M_LANG_ENIE => 'When the weather is sunny, let\'s go for a walk in the park.',
-        constants::M_LANG_ENWL => 'When the weather is sunny, let\'s go for a walk in the park.',
-        constants::M_LANG_ENAB => 'When the weather is sunny, let\'s go for a walk in the park.',
-        constants::M_LANG_FAIR => 'وقتی هوا آفتابی است، بیایید در پارک قدم بزنیم.',
-        constants::M_LANG_FILPH => 'Kapag maaraw ang panahon, mamasyal tayo sa parke.',
-        constants::M_LANG_FIFI => 'Kun on aurinkoista, mennään puistoon kävelylle.',
-        constants::M_LANG_FRCA => 'Quand il fait beau, on va se promener dans le parc.',
-        constants::M_LANG_FRFR => 'Quand il fait beau, allons nous promener dans le parc.',
-        constants::M_LANG_DEDE => 'Wenn das Wetter sonnig ist, machen wir einen Spaziergang im Park.',
-        constants::M_LANG_DEAT => 'Wenn das Wetter sonnig ist, machen wir einen Spaziergang im Park.',
-        constants::M_LANG_DECH => 'Wenn das Wetter sonnig ist, machen wir einen Spaziergang im Park.',
-        constants::M_LANG_HIIN => 'जब मौसम सुहाना हो तो चलो पार्क में टहलने चलें।.',
-        constants::M_LANG_ELGR => 'Όταν ο καιρός είναι ηλιόλουστος, ας πάμε μια βόλτα στο πάρκο.',
-        constants::M_LANG_HEIL => 'כשמזג ​​האוויר שמשי, בואו נצא לטייל בפארק.',
-        constants::M_LANG_HUHU => 'Amikor süt az idő, menjünk sétálni a parkban.',
-        constants::M_LANG_IDID => 'Jika cuaca cerah, mari kita berjalan-jalan di taman.',
-        constants::M_LANG_ISIS => 'Þegar sólin skín, förum við í göngutúr í garðinum.',
-        constants::M_LANG_ITIT => 'Quando il tempo è soleggiato, andiamo a fare una passeggiata al parco.',
-        constants::M_LANG_JAJP => '天気が晴れたら公園に散歩に行きましょう。',
-        constants::M_LANG_KOKR => '날씨가 맑으면 공원에 산책하러 가자.',
-        constants::M_LANG_LTLT => 'Kai oras saulėtas, eikime pasivaikščioti po parką.',
-        constants::M_LANG_LVLV => 'Kad laiks ir saulains, dosimies pastaigā pa parku.',
-        constants::M_LANG_MINZ => 'Ka paki te rangi, me haere tatou ki te hīkoi i te papa.',
-        constants::M_LANG_MSMY => 'Bila cuaca cerah, jom kita jalan-jalan di taman.',
-        constants::M_LANG_MKMK => 'Кога времето е сончево, ајде да одиме на прошетка во паркот.',
-        constants::M_LANG_NONO => 'Ora tin solo, ban kana un ratu den parke.',
-        constants::M_LANG_PSAF => 'کله چې هوا لمر وي، راځئ چې په پارک کې ګرځو.',
-        constants::M_LANG_PLPL => 'Gdy pogoda jest słoneczna, chodźmy na spacer do parku.',
-        constants::M_LANG_PTBR => 'Quando o tempo estiver ensolarado, vamos dar uma volta no parque.',
-        constants::M_LANG_PTPT => 'Quando o tempo estiver soalheiro, vamos dar uma volta ao parque.',
-        constants::M_LANG_RORO => 'Când vremea e însorită, hai să mergem la o plimbare în parc.',
-        constants::M_LANG_RURU => 'Когда погода солнечная, давайте прогуляемся в парке.',
-        constants::M_LANG_SOSO => 'Marka cimiladu qoraxdu tahay, aan u soconno beerta dhexdeeda.',
-        constants::M_LANG_ESUS => 'Cuando el clima esté soleado, salgamos a caminar por el parque.',
-        constants::M_LANG_ESES => 'Cuando el clima esté soleado, salgamos a caminar por el parque.',
-        constants::M_LANG_SKSK => 'Keď bude slnečné počasie, poďme sa prejsť do parku.',
-        constants::M_LANG_SLSI => 'Ko bo sončno vreme, gremo na sprehod v park.',
-        constants::M_LANG_SRRS => 'Кад је време сунчано, хајде да прошетамо парком.',
-        constants::M_LANG_SVSE => 'När vädret är soligt, låt oss gå en promenad i parken.',
-        constants::M_LANG_TAIN => 'வானிலை வெயிலாக இருக்கும்போது, ​​பூங்காவில் நடந்து செல்வோம்.',
-        constants::M_LANG_TEIN => 'వాతావరణం ఎండగా ఉన్నప్పుడు, పార్కులో నడకకు వెళ్దాం.',
-        constants::M_LANG_TRTR => 'Hava güneşli olunca parkta yürüyüşe çıkalım.',
-        constants::M_LANG_UKUA => 'Коли погода сонячна, давайте погуляємо в парку.',
-        constants::M_LANG_VIVN => 'Khi trời nắng, chúng ta hãy đi dạo trong công viên.',
+        self::M_LANG_ARAE => 'عندما يكون الطقس مشمسًا، دعنا نخرج للتنزه في الحديقة.',
+        self::M_LANG_ARSA => 'عندما يكون الطقس مشمسًا، دعنا نخرج للتنزه في الحديقة.',
+        self::M_LANG_EUES => 'Eguraldi eguzkitsua egiten duenean, goazen parkean paseatzera.',
+        self::M_LANG_BGBG => 'Когато времето е слънчево, нека се разходим в парка.',
+        self::M_LANG_HRHR => 'Kad je sunčano vrijeme, idemo u šetnju parkom.',
+        self::M_LANG_ZHCN => '天气晴朗的时候，我们去公园散步吧。',
+        self::M_LANG_CSCZ => 'Až bude slunečné počasí, pojďme se projít do parku.',
+        self::M_LANG_DADK => 'Når vejret er solrigt, lad os gå en tur i parken.',
+        self::M_LANG_NLNL => 'Als het zonnig is, gaan we een wandeling maken in het park.',
+        self::M_LANG_NLBE => 'Als het zonnig is, gaan we een wandeling maken in het park.',
+        self::M_LANG_ENUS => 'When the weather is sunny, let\'s go for a walk in the park.',
+        self::M_LANG_ENGB => 'When the weather is sunny, let\'s go for a walk in the park.',
+        self::M_LANG_ENAU => 'When the weather is sunny, let\'s go for a walk in the park.',
+        self::M_LANG_ENNZ => 'When the weather is sunny, let\'s go for a walk in the park.',
+        self::M_LANG_ENZA => 'When the weather is sunny, let\'s go for a walk in the park.',
+        self::M_LANG_ENIN => 'When the weather is sunny, let\'s go for a walk in the park.',
+        self::M_LANG_ENIE => 'When the weather is sunny, let\'s go for a walk in the park.',
+        self::M_LANG_ENWL => 'When the weather is sunny, let\'s go for a walk in the park.',
+        self::M_LANG_ENAB => 'When the weather is sunny, let\'s go for a walk in the park.',
+        self::M_LANG_FAIR => 'وقتی هوا آفتابی است، بیایید در پارک قدم بزنیم.',
+        self::M_LANG_FILPH => 'Kapag maaraw ang panahon, mamasyal tayo sa parke.',
+        self::M_LANG_FIFI => 'Kun on aurinkoista, mennään puistoon kävelylle.',
+        self::M_LANG_FRCA => 'Quand il fait beau, on va se promener dans le parc.',
+        self::M_LANG_FRFR => 'Quand il fait beau, allons nous promener dans le parc.',
+        self::M_LANG_DEDE => 'Wenn das Wetter sonnig ist, machen wir einen Spaziergang im Park.',
+        self::M_LANG_DEAT => 'Wenn das Wetter sonnig ist, machen wir einen Spaziergang im Park.',
+        self::M_LANG_DECH => 'Wenn das Wetter sonnig ist, machen wir einen Spaziergang im Park.',
+        self::M_LANG_HIIN => 'जब मौसम सुहाना हो तो चलो पार्क में टहलने चलें।.',
+        self::M_LANG_ELGR => 'Όταν ο καιρός είναι ηλιόλουστος, ας πάμε μια βόλτα στο πάρκο.',
+        self::M_LANG_HEIL => 'כשמזג ​​האוויר שמשי, בואו נצא לטייל בפארק.',
+        self::M_LANG_HUHU => 'Amikor süt az idő, menjünk sétálni a parkban.',
+        self::M_LANG_IDID => 'Jika cuaca cerah, mari kita berjalan-jalan di taman.',
+        self::M_LANG_ISIS => 'Þegar sólin skín, förum við í göngutúr í garðinum.',
+        self::M_LANG_ITIT => 'Quando il tempo è soleggiato, andiamo a fare una passeggiata al parco.',
+        self::M_LANG_JAJP => '天気が晴れたら公園に散歩に行きましょう。',
+        self::M_LANG_KOKR => '날씨가 맑으면 공원에 산책하러 가자.',
+        self::M_LANG_LTLT => 'Kai oras saulėtas, eikime pasivaikščioti po parką.',
+        self::M_LANG_LVLV => 'Kad laiks ir saulains, dosimies pastaigā pa parku.',
+        self::M_LANG_MINZ => 'Ka paki te rangi, me haere tatou ki te hīkoi i te papa.',
+        self::M_LANG_MSMY => 'Bila cuaca cerah, jom kita jalan-jalan di taman.',
+        self::M_LANG_MKMK => 'Кога времето е сончево, ајде да одиме на прошетка во паркот.',
+        self::M_LANG_NONO => 'Ora tin solo, ban kana un ratu den parke.',
+        self::M_LANG_PSAF => 'کله چې هوا لمر وي، راځئ چې په پارک کې ګرځو.',
+        self::M_LANG_PLPL => 'Gdy pogoda jest słoneczna, chodźmy na spacer do parku.',
+        self::M_LANG_PTBR => 'Quando o tempo estiver ensolarado, vamos dar uma volta no parque.',
+        self::M_LANG_PTPT => 'Quando o tempo estiver soalheiro, vamos dar uma volta ao parque.',
+        self::M_LANG_RORO => 'Când vremea e însorită, hai să mergem la o plimbare în parc.',
+        self::M_LANG_RURU => 'Когда погода солнечная, давайте прогуляемся в парке.',
+        self::M_LANG_SOSO => 'Marka cimiladu qoraxdu tahay, aan u soconno beerta dhexdeeda.',
+        self::M_LANG_ESUS => 'Cuando el clima esté soleado, salgamos a caminar por el parque.',
+        self::M_LANG_ESES => 'Cuando el clima esté soleado, salgamos a caminar por el parque.',
+        self::M_LANG_SKSK => 'Keď bude slnečné počasie, poďme sa prejsť do parku.',
+        self::M_LANG_SLSI => 'Ko bo sončno vreme, gremo na sprehod v park.',
+        self::M_LANG_SRRS => 'Кад је време сунчано, хајде да прошетамо парком.',
+        self::M_LANG_SVSE => 'När vädret är soligt, låt oss gå en promenad i parken.',
+        self::M_LANG_TAIN => 'வானிலை வெயிலாக இருக்கும்போது, ​​பூங்காவில் நடந்து செல்வோம்.',
+        self::M_LANG_TEIN => 'వాతావరణం ఎండగా ఉన్నప్పుడు, పార్కులో నడకకు వెళ్దాం.',
+        self::M_LANG_TRTR => 'Hava güneşli olunca parkta yürüyüşe çıkalım.',
+        self::M_LANG_UKUA => 'Коли погода сонячна, давайте погуляємо в парку.',
+        self::M_LANG_VIVN => 'Khi trời nắng, chúng ta hãy đi dạo trong công viên.',
     ];
 
     const FREESPEAKING_TOPIC = 'customtext5';
@@ -722,29 +740,29 @@ class constants
     const MAX_AI_PROMPTS = 6;
 
     const ITEMTYPES = [
-        constants::TYPE_PAGE,
-        constants::TYPE_MULTICHOICE,
-        constants::TYPE_DICTATION,
-        constants::TYPE_SPEECHCARDS,
-        constants::TYPE_LISTENREPEAT,
-        constants::TYPE_MULTIAUDIO,
-        constants::TYPE_SHORTANSWER,
-        constants::TYPE_LGAPFILL,
-        constants::TYPE_TGAPFILL,
-        constants::TYPE_SGAPFILL,
-        constants::TYPE_SPACEGAME,
-        constants::TYPE_FREESPEAKING,
-        constants::TYPE_FREEWRITING,
-        constants::TYPE_PASSAGEREADING,
-        constants::TYPE_PGAPFILL,
-        constants::TYPE_H5P,
-        constants::TYPE_WORDSHUFFLE,
-        constants::TYPE_SCATTER,
-        constants::TYPE_FLUENCY,
-        constants::TYPE_AUDIOCHAT,
-        constants::TYPE_DICTATIONCHAT,
-        constants::TYPE_SLIDES,
-        constants::TYPE_FICTION,
+        self::TYPE_PAGE,
+        self::TYPE_MULTICHOICE,
+        self::TYPE_DICTATION,
+        self::TYPE_SPEECHCARDS,
+        self::TYPE_LISTENREPEAT,
+        self::TYPE_MULTIAUDIO,
+        self::TYPE_SHORTANSWER,
+        self::TYPE_LGAPFILL,
+        self::TYPE_TGAPFILL,
+        self::TYPE_SGAPFILL,
+        self::TYPE_SPACEGAME,
+        self::TYPE_FREESPEAKING,
+        self::TYPE_FREEWRITING,
+        self::TYPE_PASSAGEREADING,
+        self::TYPE_PGAPFILL,
+        self::TYPE_H5P,
+        self::TYPE_WORDSHUFFLE,
+        self::TYPE_SCATTER,
+        self::TYPE_FLUENCY,
+        self::TYPE_AUDIOCHAT,
+        self::TYPE_DICTATIONCHAT,
+        self::TYPE_SLIDES,
+        self::TYPE_FICTION,
       // constants::TYPE_SMARTFRAME,
       // constants::TYPE_COMPQUIZ,
       // constants::TYPE_CONVERSATION,
@@ -757,7 +775,7 @@ class constants
 
     const RESPONSE_TYPE = [
         'audiorecorder' => 1,
-        'text' => 2
+        'text' => 2,
     ];
     const MULTICHOICE_SHUFFLEANSWER = 'customint5';
 
@@ -799,6 +817,6 @@ class constants
         self::M_LANG_CSCZ => 'á č ď é ě í ň ó ř š ť ú ů ý ž',
         self::M_LANG_HUHU => 'á é í ó ö ő ú ü ű',
         self::M_LANG_RORO => 'ă â î ș ț',
-        self::M_LANG_TRTR => 'ç ğ ı İ ö ş ü'
+        self::M_LANG_TRTR => 'ç ğ ı İ ö ş ü',
     ];
 }

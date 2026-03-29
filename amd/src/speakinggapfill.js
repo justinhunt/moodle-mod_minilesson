@@ -120,12 +120,14 @@ define(['jquery',
                 { "key": "confirm_desc", "component": 'mod_minilesson' },
                 { "key": "yes", "component": 'moodle' },
                 { "key": "no", "component": 'moodle' },
+                { "key": "hint", "component": 'mod_minilesson' },
             ]).done(function (s) {
                 var i = 0;
                 self.strings.nextlessonitem = s[i++];
                 self.strings.confirm_desc = s[i++];
                 self.strings.yes = s[i++];
                 self.strings.no = s[i++];
+                self.strings.hint = s[i++];
             });
         },
 
@@ -167,7 +169,8 @@ define(['jquery',
             review_data.items = self.items;
             review_data.totalitems = self.items.length;
             review_data.correctitems = self.items.filter(function (e) {
-                return e.correct; }).length;
+                return e.correct;
+            }).length;
 
             //Get controls
             var listencont = self.controls.listen_cont;
@@ -491,7 +494,7 @@ define(['jquery',
             self.updateProgressDots();
 
             setTimeout(function () {
-                $(".minilesson_nextbutton").prop("disabled",false);
+                $(".minilesson_nextbutton").prop("disabled", false);
                 if (self.quizhelper.showitemreview) {
                     self.controls.progress_container.removeClass('d-flex');
                     self.controls.progress_container.hide();
@@ -535,7 +538,7 @@ define(['jquery',
 
         updateProgressDots: function () {
             var self = this;
-            var color,icon;
+            var color, icon;
             var progress = self.items.map(function (item, idx) {
                 color = "#E6E9FD";
                 icon = 'fa fa-square';
@@ -605,10 +608,13 @@ define(['jquery',
             }
             //hint - definition
             if (hasdefinition) {
-                code += "<div class='definition-container'><div class='definition'>"
-                    + "<div class='hinticon-container'><img class='icon' src='" + M.util.image_url('lightbulb-icon', 'mod_minilesson') + "' alt='hint'></div>"
-                    + "<h4 class='hint-title'>Hint</h4>"
-                    + self.items[self.game.pointer].definition + "</div>";
+                var rtl = self.itemdata.hintrtl ? ' rtl' : '';
+                code += "<div class='definition-container'>";
+                code += "<div class='definition" + rtl + "'>";
+                code += "<div class='hinticon-container'><img class='icon' src='" + M.util.image_url('lightbulb-icon', 'mod_minilesson') + "' alt='hint'></div>"
+                code += "<h4 class='hint-title'>" + self.strings.hint + "</h4>"
+                code += self.items[self.game.pointer].definition + "</div>";
+                code += "</div>";
             }
 
 

@@ -53,6 +53,7 @@ class item_typinggapfill extends item
         $testitem->sentences = $this->process_typinggapfill_sentences($sentences);
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
+        $testitem->hintrtl = $this->itemrecord->{constants::GAPFILLHINTRTL} == 1;   
         $enablevkeyboard = $this->itemrecord->{constants::TGAPFILL_ENABLEVKEYBOARD};
         $customkeys = $this->itemrecord->{constants::TGAPFILL_CUSTOMKEYS};
 
@@ -60,7 +61,7 @@ class item_typinggapfill extends item
         if ($enablevkeyboard == 2) {
             $testitem->enablevkeyboard = 2;
             $testitem->customkeys = \mod_minilesson\utils::get_compact_keys($this->moduleinstance->ttslanguage);
-        } elseif ($enablevkeyboard == 3) {
+        } else if ($enablevkeyboard == 3) {
             // If custom layout selected (3), we set to custom layout (2) for JS
             $testitem->enablevkeyboard = 2;
             $testitem->customkeys = $customkeys;
@@ -103,6 +104,7 @@ class item_typinggapfill extends item
         $keycols['text6'] = ['jsonname' => 'enablevkeyboard', 'type' => 'string', 'optional' => true, 'default' => 0, 'dbname' => constants::TGAPFILL_ENABLEVKEYBOARD];
         $keycols['text7'] = ['jsonname' => 'customkeys', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::TGAPFILL_CUSTOMKEYS];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
+        $keycols['int6'] = ['jsonname' => 'hintrtl', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHINTRTL];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         return $keycols;

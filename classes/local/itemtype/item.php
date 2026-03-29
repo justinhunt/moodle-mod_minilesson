@@ -714,26 +714,20 @@ abstract class item implements templatable, renderable
             }
         } //end of if audio story
 
-        //Question TextArea
+        // Question TextArea.
         if (!empty($itemrecord->{ constants::QUESTIONTEXTAREA}) && !empty(trim($itemrecord->{ constants::QUESTIONTEXTAREA}))) {
             $testitem->itemtextarea = nl2br($itemrecord->{ constants::QUESTIONTEXTAREA});
             $testitem->itemtextarea = format_text($testitem->itemtextarea, FORMAT_MOODLE, $editoroptions);
         }
 
-        //show text prompt or dots, for listen and repeat really
+        // Show text prompt or dots, for listen and repeat really.
         $testitem->show_text = $itemrecord->{ constants::SHOWTEXTPROMPT};
 
-        //For right to left languages we want to add the RTL direction and right justify.
-        switch ($this->moduleinstance->ttslanguage) {
-            case constants::M_LANG_ARAE:
-            case constants::M_LANG_ARSA:
-            case constants::M_LANG_FAIR:
-            case constants::M_LANG_HEIL:
-            case constants::M_LANG_PSAF:
-                $testitem->rtl = constants::M_CLASS . '_rtl';
-                break;
-            default:
-                $testitem->rtl = '';
+        // For right to left languages we want to add the RTL direction and right justify.
+        if (utils::is_rtl($this->moduleinstance->ttslanguage)) {
+            $testitem->rtl = constants::M_CLASS . '_rtl';
+        } else {
+            $testitem->rtl = '';
         }
 
         return $testitem;

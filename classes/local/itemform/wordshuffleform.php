@@ -49,6 +49,8 @@ class wordshuffleform extends baseform
 
         $this->add_static_text('instructions', '', get_string('wordshuffledesc', constants::M_COMPONENT));
         $this->add_sentenceprompt(1, get_string('sentenceprompts', constants::M_COMPONENT), true);
+        $this->add_checkbox(constants::WORDSHUFFLEHINTRTL, get_string('hintrtl', constants::M_COMPONENT),
+            get_string('hintrtl_desc', constants::M_COMPONENT), false);
         $this->add_sentenceimage(1, null, false);
         $this->add_sentenceaudio(1, null, false);
         // $this->add_confirmchoice(constants::CONFIRMCHOICE, get_string('confirmchoice_formlabel', constants::M_COMPONENT));
