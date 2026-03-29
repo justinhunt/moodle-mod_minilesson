@@ -149,7 +149,7 @@ class aigen {
                     );
                     $genresult = $aimanager->generate_structured_content(
                         $useprompt,
-                        true // Enable caching as requested
+                        true, // Enable caching.
                     );
                     if ($genresult && $genresult->success) {
                         $genpayload = $genresult->payload;
@@ -466,7 +466,7 @@ class aigen {
         );
         return $aimanager->generate_structured_content(
             $prompt,
-            true // Enable cache for structured content
+            true, // Enable cache for structured content.
         );
     }
 

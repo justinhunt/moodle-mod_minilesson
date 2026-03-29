@@ -117,7 +117,7 @@
     "lessonTitle": "Interactive Story (with pics)",
     "lessonDescription": "An interactive story with pics",
     "uniqueid": "6960baa71fa35",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -169,6 +169,8 @@
                 "Infographic",
                 "Line drawing",
                 "Digital painting",
+                "Hand drawn doodle",
+                "Black and white movie still",
                 "3D Render"
             ]
         },

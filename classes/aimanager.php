@@ -624,7 +624,7 @@ class aimanager {
         $params['appid'] = $params['appid'] ?? static::get_component_from_classname(static::class);
         $params['owner'] = $params['owner'] ?? hash('md5', $USER->username);
         $serverurl = utils::get_cloud_poodll_server() . '/webservice/rest/server.php';
-        $response = utils::curl_fetch($serverurl, $params);
+        $response = utils::curl_fetch($serverurl, $params, "post");
         if (!utils::is_json($response)) {
             return false;
         }
