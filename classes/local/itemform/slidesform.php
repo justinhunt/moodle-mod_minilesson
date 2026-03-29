@@ -18,7 +18,7 @@
  * Form for creating/editing a slides item in a MiniLesson activity.
  *
  * @package    mod_minilesson
- * @copyright  2023 Your Name <your@email.com>
+ * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -77,11 +77,13 @@ class slidesform extends baseform {
         $mform->setType(constants::SLIDETHEME, PARAM_ALPHA);
 
         // Font size emtopx = 16; approx 1.6 = 24px,  1.8 = 28px,  2.0 = 32px, 2.2 = 36px,  2.4 = 40px
+        $fontsizes[16] = get_string('slides:fontsmallest', constants::M_COMPONENT);
+        $fontsizes[24] = get_string('slides:fontsmaller', constants::M_COMPONENT);
         $fontsizes[32] = get_string('slides:fontsmall', constants::M_COMPONENT);
-        $fontsizes[36] = get_string('slides:fontsmaller', constants::M_COMPONENT);
-        $fontsizes[40] = get_string('slides:fontstandard', constants::M_COMPONENT);
+        $fontsizes[36] = get_string('slides:fontstandard', constants::M_COMPONENT);
+        $fontsizes[40] = get_string('slides:fontlarge', constants::M_COMPONENT);
         $fontsizes[44] = get_string('slides:fontlarger', constants::M_COMPONENT);
-        $fontsizes[48] = get_string('slides:fontlarge', constants::M_COMPONENT);
+        $fontsizes[48] = get_string('slides:fontlargest', constants::M_COMPONENT);
         $mform->addElement('select', constants::SLIDEFONTSIZE, get_string('slides:fontsize', constants::M_COMPONENT), $fontsizes);
         $mform->setType(constants::SLIDEFONTSIZE, PARAM_FLOAT);
         $mform->setDefault(constants::SLIDEFONTSIZE, 32);
