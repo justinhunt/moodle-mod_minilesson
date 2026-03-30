@@ -1004,5 +1004,13 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026022100, 'minilesson');
     }
 
+    if ($oldversion < 2026033001) {
+        // Update default templates - templates updated
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026033001, 'minilesson');
+    }
+
     return true;
 }
