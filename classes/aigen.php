@@ -47,6 +47,7 @@ class aigen {
         '691ad9a15f203' => 'wordpractice2',
         '6960baa71fa35' => 'fiction_withpics',
         '696105abf2b2a' => 'fiction_nopics',
+        '6979e4ab51d53' => 'narrativefiction_withpics',
     ];
     /** @var \stdClass|null */
     private $moduleinstance = null;
