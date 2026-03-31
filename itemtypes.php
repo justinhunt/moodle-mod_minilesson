@@ -47,10 +47,11 @@ $table->data = [];
 $table->attributes['class'] = 'admintable generaltable';
 $table->id = 'managelessonitems';
 
-$enabledplugin = get_config('minilesson', 'enableditems');
+$enabledplugin = get_config(constants::M_MODNAME, 'enableditems');
 if (empty($enabledplugin)) {
     $enableditems = [];
-} else {
+}
+else {
     $enableditems = explode(',', $enabledplugin);
 }
 
@@ -62,7 +63,8 @@ foreach ($qtypes as $qtype) {
         $hideurl = $manageurl->out(false);
         $hideshow = "<a href=\"$hideurl\">";
         $hideshow .= $OUTPUT->pix_icon('t/hide', get_string('disable')) . '</a>';
-    } else {
+    }
+    else {
         $manageurl->params(['action' => 'enable', 'qtype' => $qtype]);
         $showurl = $manageurl->out(false);
         $hideshow = "<a href=\"$showurl\">";
@@ -81,9 +83,9 @@ echo $OUTPUT->header();
 echo html_writer::tag(
     'div',
     get_string('manageminilessonitems_explanation', 'mod_minilesson'),
-    [
-        'class' => 'ml_manage_items_explanation',
-    ]
+[
+    'class' => 'ml_manage_items_explanation',
+]
 );
 echo html_writer::table($table);
 

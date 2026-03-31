@@ -1,4 +1,4 @@
-Version 1.1.30 (Build 2026033001)
+Version 1.1.30 (Build 2026033003)
 - Added new image styles to fiction_with_pics AI generate template
 - Added RTL option for hints on gapfills, fluency, wordshuffle and scatter
 - Added full screen option for slides

@@ -1007,12 +1007,12 @@ function xmldb_minilesson_upgrade($oldversion)
         upgrade_mod_savepoint(true, 2026022100, 'minilesson');
     }
 
-    if ($oldversion < 2026033002) {
+    if ($oldversion < 2026033003) {
         // Update default templates - templates updated
         \mod_minilesson\aigen::create_default_templates();
 
         // Add fiction and slides item types to the config enableditems
-        $enableditems = get_config(constants::M_COMPONENT, 'enableditems');
+        $enableditems = get_config(constants::M_MODNAME, 'enableditems');
         if ($enableditems !== false) {
             $items = empty($enableditems) ? [] : explode(',', $enableditems);
             if (!in_array(constants::TYPE_FICTION, $items)) {
@@ -1021,11 +1021,11 @@ function xmldb_minilesson_upgrade($oldversion)
             if (!in_array(constants::TYPE_SLIDES, $items)) {
                 $items[] = constants::TYPE_SLIDES;
             }
-            set_config('enableditems', implode(',', $items), constants::M_COMPONENT);
+            set_config('enableditems', implode(',', $items), constants::M_MODNAME);
         }
 
         // Minilesson savepoint reached.
-        upgrade_mod_savepoint(true, 2026033002, 'minilesson');
+        upgrade_mod_savepoint(true, 2026033003, 'minilesson');
     }
 
     return true;
