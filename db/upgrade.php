@@ -40,7 +40,8 @@ use mod_minilesson\utils;
  * @param int $oldversion
  * @return bool
  */
-function xmldb_minilesson_upgrade($oldversion) {
+function xmldb_minilesson_upgrade($oldversion)
+{
     global $DB;
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
@@ -260,10 +261,11 @@ function xmldb_minilesson_upgrade($oldversion) {
                     $correctresponse = trim($sentencebits[0]);
                     $textprompt = $correctresponse;
                     $newsentences[] = $audioprompt . '|' . $correctresponse . '|' . $textprompt;
-                } else {
+                }
+                else {
                     $newsentences[] = $sentence;
-                }//end of if count
-            }//end of for sentences
+                } //end of if count
+            } //end of for sentences
             if ($updaterequired) {
                 $updatetext = implode(PHP_EOL, $newsentences);
                 $DB->update_record(constants::M_QTABLE, ['id' => $question->id, 'customtext1' => $updatetext]);
@@ -376,7 +378,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2023011801, 'minilesson');
     }
 
-      // Added Gap fill questions with time limits
+    // Added Gap fill questions with time limits
     if ($oldversion < 2023041200) {
         $table = new xmldb_table(constants::M_QTABLE);
 
@@ -417,7 +419,8 @@ function xmldb_minilesson_upgrade($oldversion) {
         // if its not there add it, if it is there, change the null decl
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
-        } else {
+        }
+        else {
             $DB->set_field(constants::M_QTABLE, 'timelimit', 0, ['timelimit' => null]);
             $dbman->change_field_notnull($table, $field);
         }
@@ -493,7 +496,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2024120700, 'minilesson');
     }
 
-     // Add showitemreview field to minilesson table.
+    // Add showitemreview field to minilesson table.
     if ($oldversion < 2025010702) {
         $activitytable = new xmldb_table(constants::M_TABLE);
         // Define field showitemreview to be added to minilesson.
@@ -532,8 +535,8 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         // Update AI instructions field.
         if (
-            $DB->record_exists(constants::M_QTABLE, ['type' => 'freespeaking']) ||
-            $DB->record_exists(constants::M_QTABLE, ['type' => 'freewriting'])
+        $DB->record_exists(constants::M_QTABLE, ['type' => 'freespeaking']) ||
+        $DB->record_exists(constants::M_QTABLE, ['type' => 'freewriting'])
         ) {
             $sql = "UPDATE {" . constants::M_QTABLE . "} SET customtext6 = customtext1, customtext1 = ''";
             $sql .= " WHERE type = 'freewriting' OR type = 'freespeaking'";
@@ -745,12 +748,12 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         if ($minilessoninstances) {
             foreach ($minilessoninstances as $moduleinstance) {
-                $upgradetypes = [ constants::TYPE_MULTICHOICE, constants::TYPE_MULTIAUDIO];
+                $upgradetypes = [constants::TYPE_MULTICHOICE, constants::TYPE_MULTIAUDIO];
                 foreach ($upgradetypes as $upgradetype) {
                     // Fetch all item records for the current minilesson instance.
                     $itemrecords = $DB->get_records(
                         constants::M_QTABLE,
-                        ['minilesson' => $moduleinstance->id, 'type' => $upgradetype]
+                    ['minilesson' => $moduleinstance->id, 'type' => $upgradetype]
                     );
                     if (!$itemrecords) {
                         continue; // No items to upgrade for this minilesson instance, skip to the next one.
@@ -1004,12 +1007,25 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026022100, 'minilesson');
     }
 
-    if ($oldversion < 2026033001) {
+    if ($oldversion < 2026033002) {
         // Update default templates - templates updated
         \mod_minilesson\aigen::create_default_templates();
 
+        // Add fiction and slides item types to the config enableditems
+        $enableditems = get_config(constants::M_COMPONENT, 'enableditems');
+        if ($enableditems !== false) {
+            $items = empty($enableditems) ? [] : explode(',', $enableditems);
+            if (!in_array(constants::TYPE_FICTION, $items)) {
+                $items[] = constants::TYPE_FICTION;
+            }
+            if (!in_array(constants::TYPE_SLIDES, $items)) {
+                $items[] = constants::TYPE_SLIDES;
+            }
+            set_config('enableditems', implode(',', $items), constants::M_COMPONENT);
+        }
+
         // Minilesson savepoint reached.
-        upgrade_mod_savepoint(true, 2026033001, 'minilesson');
+        upgrade_mod_savepoint(true, 2026033002, 'minilesson');
     }
 
     return true;
