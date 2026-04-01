@@ -40,8 +40,7 @@ use mod_minilesson\utils;
  * @param int $oldversion
  * @return bool
  */
-function xmldb_minilesson_upgrade($oldversion)
-{
+function xmldb_minilesson_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager(); // loads ddl manager and xmldb classes
@@ -1026,6 +1025,14 @@ function xmldb_minilesson_upgrade($oldversion)
 
         // Minilesson savepoint reached.
         upgrade_mod_savepoint(true, 2026033003, 'minilesson');
+    }
+
+    if ($oldversion < 2026040100) {
+        // Update default templates - templates updated
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026040100, 'minilesson');
     }
 
     return true;

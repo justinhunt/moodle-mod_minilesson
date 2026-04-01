@@ -1,3 +1,6 @@
+Version 1.1.31 (Build 2026040100)
+- IF tweaks
+
 Version 1.1.30 (Build 2026033003)
 - Added new image styles to fiction_with_pics AI generate template
 - Added RTL option for hints on gapfills, fluency, wordshuffle and scatter
