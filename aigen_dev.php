@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -38,7 +37,7 @@ if ($id) {
     $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
     $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
-} elseif ($n) {
+} else if ($n) {
     $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $n], '*', MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance(constants::M_TABLE, $moduleinstance->id, $course->id, false, MUST_EXIST);
@@ -118,7 +117,7 @@ switch ($action) {
         if ($aigenform->is_cancelled()) {
             // If the form is cancelled, redirect to the module page.
             redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
-        } elseif ($template = $aigenform->process_dynamic_submission()) {
+        } else if ($template = $aigenform->process_dynamic_submission()) {
             redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
         }
 
@@ -133,7 +132,7 @@ switch ($action) {
         if ($aigenuploadform->is_cancelled()) {
             // If the form is cancelled, redirect to the module page.
             redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
-        } elseif ($template = $aigenuploadform->process_dynamic_submission()) {
+        } else if ($template = $aigenuploadform->process_dynamic_submission()) {
             redirect(new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]));
         }
 
@@ -166,6 +165,11 @@ switch ($action) {
 
 // From here we actually display the page.
 echo $renderer->header($moduleinstance, $cm, 'aigen', null, get_string('aigen', constants::M_COMPONENT));
+
+if ($templateid) {
+    $template = $DB->get_record('minilesson_templates', ['id' => $templateid], '*', MUST_EXIST);
+    echo html_writer::tag('h2', $template->name);
+}
 
 // Render main html
 echo $widgethtml;
