@@ -1,10 +1,25 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Created by PhpStorm.
- * User: ishineguy
- * Date: 2018/03/13
- * Time: 19:31
+ * Speaking Gap Fill mod_minilesson
+ *
+ * @package    mod_minilesson
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_minilesson\local\itemform;
@@ -47,7 +62,7 @@ class speakinggapfillform extends baseform
         $this->add_static_text('instructions', '', get_string('gapfillitemsdesc', constants::M_COMPONENT));
         $this->add_sentenceprompt(1, get_string('sentenceprompts', constants::M_COMPONENT), true);
         $this->add_checkbox(constants::GAPFILLHINTRTL, get_string('hintrtl', constants::M_COMPONENT),
-            get_string('hintrtl_desc', constants::M_COMPONENT), false);
+            get_string('hintrtl_desc', constants::M_COMPONENT));
         $this->add_sentenceimage(1, null, false);
         $this->add_sentenceaudio(1, null, false);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));

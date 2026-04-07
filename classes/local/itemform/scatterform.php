@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Created by PhpStorm.
- * User: ishineguy
- * Date: 2018/03/13
- * Time: 19:31
+ * Scatter mod_minilesson
+ *
+ * @package    mod_minilesson
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_minilesson\local\itemform;
@@ -32,7 +33,7 @@ class scatterform extends baseform {
     public function custom_definition() {
         global $CFG;
 
-        // add a heading for this form
+        // Add a heading for this form.
         $this->add_itemsettings_heading();
         $this->add_static_text(
             'enterscatteritems',
@@ -41,7 +42,7 @@ class scatterform extends baseform {
         );
         $this->add_textarearesponse(1, get_string('scatteritems', constants::M_COMPONENT), true);
         $this->add_checkbox(constants::SCATTERHINTRTL, get_string('scatterdefrtl', constants::M_COMPONENT),
-            get_string('scatterdefrtl_desc', constants::M_COMPONENT), false);
+            get_string('scatterdefrtl_desc', constants::M_COMPONENT));
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
     }
 }

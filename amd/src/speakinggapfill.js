@@ -152,17 +152,20 @@ define(['jquery',
             var self = this;
             var review_data = {};
 
-            self.items.forEach(function (item) {
+            self.items.forEach(function (item, index) {
                 var itemwordlist = [];
-                item.parsedstring.forEach(function (data) {
-                    if (data.type === 'input' || data.type === 'mtext') {
-                        itemwordlist.push(data.character);
+                const gapwords = self.itemdata.sentences[index].gapwords || [];
+                var answerclass = item.correct ? 'correctitem' : 'wrongitem';
+                gapwords.forEach(function (gapword, wordindex) {
+                    if (gapword.isgap) {
+                        const textword = self.itemdata.sentences[index].words[wordindex] || gapword.word;
+                        const output = textword.replace(/\[(.*?)\]/g, '<span class="' + answerclass + '">$1</span>');
+                        itemwordlist.push(output);
+                    } else {
+                        itemwordlist.push(gapword.word);
                     }
                 });
-                var wordmatch = itemwordlist.join("");
-                var regex = new RegExp(wordmatch, "gi");
-                var answerclass = item.correct ? 'correctitem' : 'wrongitem';
-                var result = item.target.replace(regex, `<span class="${answerclass}">${wordmatch}</span>`);
+                var result = itemwordlist.join(" ");
                 item.target = result;
             });
 
@@ -611,8 +614,8 @@ define(['jquery',
                 var rtl = self.itemdata.hintrtl ? ' rtl' : '';
                 code += "<div class='definition-container'>";
                 code += "<div class='definition" + rtl + "'>";
-                code += "<div class='hinticon-container'><img class='icon' src='" + M.util.image_url('lightbulb-icon', 'mod_minilesson') + "' alt='hint'></div>"
-                code += "<h4 class='hint-title'>" + self.strings.hint + "</h4>"
+                code += "<div class='hinticon-container'><img class='icon' src='" + M.util.image_url('lightbulb-icon', 'mod_minilesson') + "' alt='hint'></div>";
+                code += "<h4 class='hint-title'>" + self.strings.hint + "</h4>";
                 code += self.items[self.game.pointer].definition + "</div>";
                 code += "</div>";
             }
@@ -685,7 +688,7 @@ define(['jquery',
                     progresbar.each(function () {
                         self.items[self.game.pointer].timer.push($(this).attr('timer'));
                     });
-                }
+                };
 
                 // This adds the timer and starts it. But if we dont have a start page and its the first item
                 // we need to defer the timer start until the item is shown
