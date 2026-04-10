@@ -39,6 +39,27 @@ export const registerFilter = () => {
     const countcontainer = document.querySelector('.countcontainer');
     const pagination = document.querySelector('[name="perpageselection"]');
 
+    const getSpinner = () => {
+        const template = document.getElementById('mod_minilesson-spinner');
+        if (template) {
+            return template.content.cloneNode(true);
+        }
+        return '';
+    };
+
+    const getPreviewIframe = (url) => {
+        const template = document.getElementById('mod_minilesson-preview-iframe');
+        if (template) {
+            const content = template.content.cloneNode(true);
+            const iframe = content.querySelector('iframe');
+            if (iframe) {
+                iframe.src = url;
+            }
+            return content;
+        }
+        return '';
+    };
+
     gridlayoutbtn?.addEventListener('click', e => {
         e.preventDefault();
         cardsContainer.classList.remove('listlayout');
@@ -130,7 +151,8 @@ export const registerFilter = () => {
                 return;
             }
             downloadbtn.classList.add('ml_loading');
-            downloadbtn.innerHTML = "<i class='icon fa fa-spinner fa-pulse fa-fw ' aria-hidden='true'></i> ";
+            downloadbtn.innerHTML = '';
+            downloadbtn.appendChild(getSpinner());
             const id = Number(downloadbtn.dataset.id);
             const url = new URL(window.location.href);
             url.searchParams.set('restore', id);
@@ -193,6 +215,41 @@ export const registerFilter = () => {
                 });
                 modal.show();
             });
+        }
+    });
+    cardsContainer.addEventListener('click', e => {
+        if (e.target.href) {
+            return;
+        }
+        e.preventDefault();
+        const previewbtn = e.target.closest('[data-action="preview"]');
+        if (previewbtn) {
+            
+           if (!previewbtn.dataset.id && !previewbtn.dataset.viewurl) {
+                return;
+            }
+            if (previewbtn.classList.contains('ml_loading')) {
+                return;
+            }
+            const url = previewbtn.dataset.viewurl;
+            const title = previewbtn.dataset.title;
+            const originalHTML = previewbtn.innerHTML;
+            previewbtn.classList.add('ml_loading');
+            previewbtn.innerHTML = '';
+            previewbtn.appendChild(getSpinner());
+
+            ModalFactory.create({
+                type: ModalFactory.types.DEFAULT,
+                title: title,
+                body: getPreviewIframe(url),
+                large: true,
+                removeOnClose: true
+            }).then(modal => {
+                modal.show();
+                previewbtn.classList.remove('ml_loading');
+                previewbtn.innerHTML = originalHTML;
+                return modal;
+            }).catch(Notification.exception);
         }
     });
 if (pagination) {
