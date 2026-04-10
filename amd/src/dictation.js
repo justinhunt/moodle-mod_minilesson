@@ -14,6 +14,7 @@ define(['jquery',
     return {
 
         playing: false,
+        paused: false,
 
       //for making multiple instances
         clone: function () {
@@ -134,20 +135,31 @@ define(['jquery',
 
             });
 
-          //audio play requests
-            $("#" + itemdata.uniqueid + "_container .dictationtrigger").on('click', function (e) {
-                if (!self.playing) {
-                    var el = this;
-                    self.playing = true;
-                    theplayer.attr('src', $(this).attr('data-src'));
+            $("#" + itemdata.uniqueid + "_container").on("click", ".dictationtrigger", function () {
+                const el = $(this);
+                const src = el.attr("data-src");
+                if (!self.playing && !self.paused) {
+                    theplayer.attr("src", src);
                     theplayer[0].play();
-                    theplayer[0].onended = function () {
-                        $(el).find(".fa").removeClass("fa-spin fa-spinner").addClass("fa-play");
-                        self.playing = false;
-                    };
-                    $(el).find(".fa").removeClass("fa-play").addClass("fa-spin fa-spinner");
+                    self.playing = true;
+                    el.find(".fa").removeClass("fa-play").addClass("fa-pause");
+                } else if (self.playing && !self.paused) {
+                    theplayer[0].pause();
+                    self.paused = true;
+                    el.find(".fa").removeClass("fa-pause").addClass("fa-play");
+                } else if (self.playing && self.paused) {
+                    theplayer[0].play();
+                    self.paused = false;
+                    el.find(".fa").removeClass("fa-play").addClass("fa-pause");
                 }
             });
+
+                    theplayer[0].onended = function () {
+                const container = $("#" + itemdata.uniqueid + "_container");
+                container.find(".fa").removeClass("fa-pause").addClass("fa-play");
+                        self.playing = false;
+                self.paused = false;
+                    };
 
           //When click next button , report and leave it up to parent to eal with it.
             $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function (e) {

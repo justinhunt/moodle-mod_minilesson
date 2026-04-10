@@ -16,10 +16,11 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Created by PhpStorm.
- * User: ishineguy
- * Date: 2018/03/13
- * Time: 19:31
+ * Free Speaking mod_minilesson
+ *
+ * @package    mod_minilesson
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_minilesson\local\itemform;
@@ -41,12 +42,14 @@ class freespeakingform extends baseform
         // Instructions.
         $this->add_static_text('instructions', '', get_string('freespeakingdesc', constants::M_COMPONENT));
 
-        // Total marks and target word count
+        // Total marks and target word count.
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
         $mform->setDefault(constants::TOTALMARKS, 5);
         $this->add_static_text('freespeakingtotalmarks_instructions', '', get_string('totalmarks_instructions', constants::M_COMPONENT));
         $this->add_numericboxresponse(constants::TARGETWORDCOUNT, get_string('targetwordcount_title', constants::M_COMPONENT), false);
-        $mform->setDefault(constants::TARGETWORDCOUNT, 60);
+        $mform->setDefault(constants::TARGETWORDCOUNT, 0);
+        $this->add_static_text('freespeakingtargetwordcount_instructions', '', get_string('targetwordcount_instructions', constants::M_COMPONENT));
+
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
 
 
@@ -114,7 +117,7 @@ class freespeakingform extends baseform
             $mform->disabledIf(constants::AIGRADE_MODELANSWER, constants::RELEVANCE, 'neq', constants::RELEVANCETYPE_MODELANSWER);
         }
 
-        // Add the "Results Display" fieldset
+        // Add the "Results Display" fieldset.
         $mform->addElement('header', 'resultsdisplay', get_string('resultsdisplay', constants::M_COMPONENT));
         $mform->setExpanded('resultsdisplay');
         $options = [
@@ -130,13 +133,12 @@ class freespeakingform extends baseform
         $this->add_dropdown(constants::FREESPEAKING_SHOWRESULT, get_string('showresult', constants::M_COMPONENT), $options, 1);
         $this->add_checkbox(constants::FREESPEAKING_HIDECORRECTION, get_string('hidecorrection', constants::M_COMPONENT), null, 0);
 
-
-        // The custom AI data fields
+        // The custom AI data fields.
         $mform->addElement('header', 'aicontextheading', get_string('aicontextheading', constants::M_COMPONENT));
         $mform->setExpanded('aicontextheading');
         $this->add_static_text('aicontext_instructions', '', get_string('aicontext_instructions', constants::M_COMPONENT));
 
-        // AI Topic and additional data used as context in prompts
+        // AI Topic and additional data used as context in prompts.
         $this->add_textarearesponse(constants::FREESPEAKING_TOPIC, get_string('ai_topic', constants::M_COMPONENT), false);
         $mform->addHelpButton(constants::FREESPEAKING_TOPIC, 'ai_topic', constants::M_COMPONENT);
         $this->add_textarearesponse(constants::FREESPEAKING_AIDATA1, get_string('ai_data1', constants::M_COMPONENT), false);

@@ -103,17 +103,20 @@ define(['jquery',
             var self = this;
             var review_data = {};
 
-            self.items.forEach(function (item) {
+            self.items.forEach(function (item, index) {
                 var itemwordlist = [];
-                item.parsedstring.forEach(function (data) {
-                    if (data.type === 'input' || data.type === 'mtext') {
-                        itemwordlist.push(data.character);
+                const gapwords = self.itemdata.sentences[index].gapwords || [];
+                var answerclass = item.correct ? 'correctitem' : 'wrongitem';
+                gapwords.forEach(function (gapword, wordindex) {
+                    if (gapword.isgap) {
+                        const textword = self.itemdata.sentences[index].words[wordindex] || gapword.word;
+                        const output = textword.replace(/\[(.*?)\]/g, '<span class="' + answerclass + '">$1</span>');
+                        itemwordlist.push(output);
+                    } else {
+                        itemwordlist.push(gapword.word);
                     }
                 });
-                var wordmatch = itemwordlist.join("");
-                var regex = new RegExp(wordmatch, "gi");
-                var answerclass = item.correct ? 'correctitem' : 'wrongitem';
-                var result = item.target.replace(regex, `<span class="${answerclass}">${wordmatch}</span>`);
+                var result = itemwordlist.join(" ");
                 item.target = result;
             });
 

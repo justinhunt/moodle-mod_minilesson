@@ -1,10 +1,25 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Created by PhpStorm.
- * User: ishineguy
- * Date: 2018/03/13
- * Time: 19:31
+ * Free Writing mod_minilesson
+ *
+ * @package    mod_minilesson
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_minilesson\local\itemform;
@@ -25,25 +40,26 @@ class freewritingform extends baseform
         // Instructions.
         $this->add_static_text('instructions', '', get_string('freewritingdesc', constants::M_COMPONENT));
 
-        // Total marks and target word count
+        // Total marks and target word count.
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
         $mform->setDefault(constants::TOTALMARKS, 5);
         $this->add_static_text('freewritingtotalmarks_instructions', '', get_string('totalmarks_instructions', constants::M_COMPONENT));
 
-        // Target word count
+        // Target word count.
         $this->add_numericboxresponse(constants::TARGETWORDCOUNT, get_string('targetwordcount_title', constants::M_COMPONENT), false);
-        $mform->setDefault(constants::TARGETWORDCOUNT, 60);
+        $mform->setDefault(constants::TARGETWORDCOUNT, 0);
+        $this->add_static_text('freewritingtargetwordcount_instructions', '', get_string('targetwordcount_instructions', constants::M_COMPONENT));
 
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         $this->add_nopasting(constants::NOPASTING, get_string('nopasting_desc', constants::M_COMPONENT));
 
-        //Virtual Keyboard
+        // Virtual Keyboard.
         $this->add_virtualkeyboard(constants::FREEWRITING_ENABLEVKEYBOARD, constants::FREEWRITING_CUSTOMKEYS);
         
-        // Hide corrections in the results  (useful if it is not a language learning course)
+        // Hide corrections in the results  (useful if it is not a language learning course).
         $this->add_checkbox(constants::FREEWRITING_HIDECORRECTION, get_string('hidecorrection', constants::M_COMPONENT), null, 0);
 
-        // AI Grading Instructions - presets dropdown
+        // AI Grading Instructions - presets dropdown.
         $mform->addElement('header', 'ai_settings', get_string('aigradingandfeedback', constants::M_COMPONENT));
         $options = utils::get_aiprompt_options('FREEWRITING_GRADINGSELECTION');
         $mform->addElement(
