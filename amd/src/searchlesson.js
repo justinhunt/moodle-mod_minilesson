@@ -31,7 +31,8 @@ import Fragment from 'core/fragment';
 
 const component = 'mod_minilesson';
 
-export const registerFilter = () => {
+export const registerFilter = (opts) => {
+    const targetnativelang = opts.targetnativelang;
     const form = document.querySelector('#lessonbank_filters');
     const cardsContainer = document.querySelector('[data-region="cards-container"]');
     const gridlayoutbtn = document.querySelector('.gridlayoutbtn');
@@ -77,54 +78,103 @@ export const registerFilter = () => {
     });
 
     const searchFilter = form => {
-
+        // The remote function we will call to search and list the lessons
         const functionname = 'local_lessonbank_list_minilessons';
+        // Build our search params
         const params = new URLSearchParams();
+        // Target Language  
         if (form.elements['searchgroup[language]']) {
             params.append('language', form.elements['searchgroup[language]'].value);
         }
+        // Keywords
         if (form.elements['searchgroup[keyword]']) {
             params.append('keywords', form.elements['searchgroup[keyword]'].value);
         }
+        // Level
         if (form.elements['level[]']) {
             const selectedOptions = form.elements['level[]'].selectedOptions;
             Array.from(selectedOptions).forEach((option, index) => {
                 params.append(`level[${index}]`, option.value);
             });
         }
+        // Skills
+        if (form.elements['skill[]']) {
+            const selectedOptions = form.elements['skill[]'].selectedOptions;
+            Array.from(selectedOptions).forEach((option, index) => {
+                params.append(`skill[${index}]`, option.value);
+            });
+        }
+        // Topic
+        if (form.elements['topic[]']) {
+            const selectedOptions = form.elements['topic[]'].selectedOptions;
+            Array.from(selectedOptions).forEach((option, index) => {
+                params.append(`topic[${index}]`, option.value);
+            });
+        }
+        // Item Type
+        if (form.elements['itemtype[]']) {
+            const selectedOptions = form.elements['itemtype[]'].selectedOptions;
+            Array.from(selectedOptions).forEach((option, index) => {
+                params.append(`itemtypes[${index}]`, option.value);
+            });
+        }
+        // Page
         if (form.elements.page) {
             params.append('page', form.elements.page.value);
         }
+        // Per page
         if (form.elements.perpage) {
             params.append('perpage', form.elements.perpage.value);
         }
+        // Prepare the arguments for the ajax call
         const args = {
-            function : functionname,
+            function: functionname,
             args: params.toString(),
         };
+        // Make the ajax call
         Ajax.call([{
             methodname: `${component}_lessonbank`,
             args: args,
-        }])[0].then(items => {
-            items = JSON.parse(items.data);
-            items.islistlayot = cardsContainer.classList.contains('listlayout') ? true : false;
+        }])[0].then(rawlessons => {
+            var lessons = JSON.parse(rawlessons.data);
+            // If items is null or false, probably an error occurred. We just show no items.
+            if (!lessons) {
+                lessons = {};
+                // Items here is a misnomer, it really means totallessons 
+                lessons.totalitems = 0;
+            }
+
+            // If there are lessons.lessonitems then check the nativelang and set showtranslate
+            if (lessons.lessonitems) {
+                lessons.lessonitems.forEach(lessonitem => {
+                    if (lessonitem.nativelanguage !== targetnativelang) {
+                        lessonitem.showtranslate = true;
+                    }
+                });
+            }
+
+
+            // Set the layout flag
+            lessons.islistlayot = cardsContainer.classList.contains('listlayout') ? true : false;
+            // Update the count
             if (countcontainer) {
-                Str.get_string('foundlessons', 'mod_minilesson', items.totalitems).then((langstr) => {
+                Str.get_string('foundlessons', 'mod_minilesson', lessons.totalitems).then((langstr) => {
                     countcontainer.textContent = langstr;
                 });
             }
-            Templates.render(`${component}/lessonbankitems`, items)
-            .then((html, js) => {
-                return Templates.replaceNodeContents(cardsContainer, html, js);
-            }).then(() => {
-                document.querySelector('#region-main')?.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
+            // Render the lessons  (again the lessonbankitems really means lessonbank lessons)
+            Templates.render(`${component}/lessonbankitems`, lessons)
+                .then((html, js) => {
+                    return Templates.replaceNodeContents(cardsContainer, html, js);
+                }).then(() => {
+                    document.querySelector('#region-main')?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start"
+                    });
                 });
-            });
             return null;
         })
-        .catch(Notification.exception);
+            .catch(Notification.exception);
     };
     cardsContainer.addEventListener('click', e => {
         if (e.target.href) {
@@ -177,13 +227,13 @@ export const registerFilter = () => {
                 return Fragment.loadFragment(component, 'translatetoimport', M.cfg.contextid, {
                     params: data
                 })
-                .then((response, js) => new Promise(resolve => {
-                    response = JSON.parse(response);
-                    return resolve(
-                        response,
-                        js
-                    );
-                }));
+                    .then((response, js) => new Promise(resolve => {
+                        response = JSON.parse(response);
+                        return resolve(
+                            response,
+                            js
+                        );
+                    }));
             };
             ModalFactory.create({
                 type: ModalFactory.types.DEFAULT,
@@ -203,14 +253,14 @@ export const registerFilter = () => {
                     var form = this.querySelector('form');
                     modal.setBody(
                         callFragment(new URLSearchParams(new FormData(form)).toString())
-                        .then((response, js) => new Promise(resolve => {
-                            if (response.redirecturl) {
-                                location.href = response.redirecturl;
-                                resolve('', js);
-                                return;
-                            }
-                            resolve(response.html, js);
-                        }))
+                            .then((response, js) => new Promise(resolve => {
+                                if (response.redirecturl) {
+                                    location.href = response.redirecturl;
+                                    resolve('', js);
+                                    return;
+                                }
+                                resolve(response.html, js);
+                            }))
                     );
                 });
                 modal.show();
@@ -224,8 +274,8 @@ export const registerFilter = () => {
         e.preventDefault();
         const previewbtn = e.target.closest('[data-action="preview"]');
         if (previewbtn) {
-            
-           if (!previewbtn.dataset.id && !previewbtn.dataset.viewurl) {
+
+            if (!previewbtn.dataset.id && !previewbtn.dataset.viewurl) {
                 return;
             }
             if (previewbtn.classList.contains('ml_loading')) {
@@ -252,22 +302,22 @@ export const registerFilter = () => {
             }).catch(Notification.exception);
         }
     });
-if (pagination) {
-    pagination.addEventListener('change', e => {
-        const perpagevalue = e.target.value;
-        if (form) {
-            form.elements.page.value = 1;
-            form.elements.perpage.value = perpagevalue;
-            searchFilter(form);
-        }
+    if (pagination) {
+        pagination.addEventListener('change', e => {
+            const perpagevalue = e.target.value;
+            if (form) {
+                form.elements.page.value = 1;
+                form.elements.perpage.value = perpagevalue;
+                searchFilter(form);
+            }
         });
-}
+    }
     form?.addEventListener('submit', e => {
         e.preventDefault();
         form.querySelector('[name="page"]').value = 1;
         searchFilter(form);
     });
-if (form) {
-    searchFilter(form);
-}
+    if (form) {
+        searchFilter(form);
+    }
 };

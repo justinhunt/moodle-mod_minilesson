@@ -54,11 +54,11 @@
                 <a data-id="{{id}}" data-action="download" data-download="{{name}}" class="btn btn-primary text-white rounded ml-auto importlessonitembtn">
                     {{#str}}import{{/str}}
                 </a>
-                {{#nativelanguage}}
+                {{#showtranslate}}
                     <a data-translateimportid="{{id}}" data-sourcelanguage="{{{nativelanguage}}}" data-action="translate" class="btn btn-primary text-white rounded ml-auto">
                         {{#str}}translatetoimport, mod_minilesson{{/str}}
                     </a>
-                {{/nativelanguage}}
+                {{/showtranslate}}
                 <a data-id="{{id}}" data-action="preview" data-viewurl="{{{viewurl}}}&embed=2" data-title="{{name}}" class="btn btn-primary text-white rounded ml-auto importlessonitembtn">
                     {{#str}}preview{{/str}}
                 </a>
