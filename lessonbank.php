@@ -117,7 +117,7 @@ if (!empty($translateimportid) || ($restore && confirm_sesskey())) {
 $searchform = new lessonbank_form($url, [], 'post', '', ['id' => 'lessonbank_filters']);
 $searchform->set_data(['searchgroup[language]' => $moduleinstance->ttslanguage]);
 
-$PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter', ['opts' => ['targetnativelang' => $moduleinstance->nativelang]]);
+$PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter', ['opts' => ['nativelang' => $moduleinstance->nativelang]]);
 $lessonbankcontrolsdata = [
     'lessonbankitemcount' => get_string('foundlessons', constants::M_COMPONENT, 0),
     'paginationoptions' => [10, 25, 50, 100],

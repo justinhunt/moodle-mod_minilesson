@@ -32,7 +32,7 @@ import Fragment from 'core/fragment';
 const component = 'mod_minilesson';
 
 export const registerFilter = (opts) => {
-    const targetnativelang = opts.targetnativelang;
+    const localnativelang = opts.nativelang;
     const form = document.querySelector('#lessonbank_filters');
     const cardsContainer = document.querySelector('[data-region="cards-container"]');
     const gridlayoutbtn = document.querySelector('.gridlayoutbtn');
@@ -82,9 +82,11 @@ export const registerFilter = (opts) => {
         const functionname = 'local_lessonbank_list_minilessons';
         // Build our search params
         const params = new URLSearchParams();
+        var targetlanguage = '';
         // Target Language  
         if (form.elements['searchgroup[language]']) {
-            params.append('language', form.elements['searchgroup[language]'].value);
+            targetlanguage = form.elements['searchgroup[language]'].value;
+            params.append('language', targetlanguage);
         }
         // Keywords
         if (form.elements['searchgroup[keyword]']) {
@@ -147,7 +149,12 @@ export const registerFilter = (opts) => {
             // If there are lessons.lessonitems then check the nativelang and set showtranslate
             if (lessons.lessonitems) {
                 lessons.lessonitems.forEach(lessonitem => {
-                    if (lessonitem.nativelanguage !== targetnativelang) {
+                    // If the native language of the activity and the native language of the lesson are different
+                    // AND the lesson has a different  target language to native language, then it can be translated
+                    if (lessonitem.nativelanguage === targetlanguage) {
+                        lessonitem.nativelanguage = false;
+                    }
+                    if (lessonitem.nativelanguage && (lessonitem.nativelanguage !== localnativelang)) {
                         lessonitem.showtranslate = true;
                     }
                 });
