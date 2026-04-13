@@ -1,0 +1,8 @@
+{
+  "subplugintypes": {
+    "minilessonitem": "item"
+  },
+  "plugintypes": {
+    "minilessonitem": "mod\/minilesson\/item"
+  }
+}

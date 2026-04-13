@@ -127,6 +127,9 @@ class comprehensiontest
         foreach ($items as $item) {
             $currentitem++;
             $titem = utils::fetch_item_from_itemrecord($item, $this->mod, $this->context);
+            if (empty($titem)) {
+                continue;
+            }
             $titem->set_token($token);
             $titem->set_currentnumber($currentitem);
             // add our item to test

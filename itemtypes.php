@@ -25,21 +25,16 @@
 
 use mod_minilesson\constants;
 
-require('../../config.php');
+require_once(dirname(__FILE__, 3) . '/config.php');
+require_once($CFG->libdir . '/adminlib.php');
 
 $show = optional_param('show', '', PARAM_PLUGIN);
 $hide = optional_param('hide', '', PARAM_PLUGIN);
 
-
-$url = new moodle_url('/mod/minilesson/itemtypes.php', []);
-$PAGE->set_url($url);
-$PAGE->set_context(context_system::instance());
-$PAGE->set_title(get_string('manageminilessonitem', 'mod_minilesson'));
+admin_externalpage_setup('manageminilessonitem');
 $PAGE->set_heading(get_string('manageminilessonitem', 'mod_minilesson'));
 
-require_login();
-
-$qtypes = constants::ITEMTYPES;
+$qtypes = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
 $table = new html_table();
 $table->head = [get_string('itemname', 'minilesson'), get_string('itemcount', 'minilesson'), get_string('action')];
 $table->colclasses = ['leftalign', 'centeralign', 'centeralign'];
@@ -47,33 +42,27 @@ $table->data = [];
 $table->attributes['class'] = 'admintable generaltable';
 $table->id = 'managelessonitems';
 
-$enabledplugin = get_config(constants::M_MODNAME, 'enableditems');
-if (empty($enabledplugin)) {
-    $enableditems = [];
-}
-else {
-    $enableditems = explode(',', $enabledplugin);
-}
-
 $manageurl = new moodle_url('/mod/minilesson/manage.php', ['sesskey' => sesskey()]);
-foreach ($qtypes as $qtype) {
-    $count = $DB->count_records('minilesson_rsquestions', ['type' => $qtype]);
-    if (in_array($qtype, $enableditems)) {
-        $manageurl->params(['action' => 'disable', 'qtype' => $qtype]);
+/** @var \mod_minilesson\plugininfo\minilessonitem  $qplugininfo */
+foreach ($qtypes as $qplugininfo) {
+    $count = $DB->count_records('minilesson_rsquestions', ['type' => $qplugininfo->name]);
+    if ($qplugininfo->is_enabled()) {
+        $manageurl->params(['action' => 'disable', 'qtype' => $qplugininfo->name]);
         $hideurl = $manageurl->out(false);
         $hideshow = "<a href=\"$hideurl\">";
         $hideshow .= $OUTPUT->pix_icon('t/hide', get_string('disable')) . '</a>';
-    }
-    else {
-        $manageurl->params(['action' => 'enable', 'qtype' => $qtype]);
+    } else {
+        $manageurl->params(['action' => 'enable', 'qtype' => $qplugininfo->name]);
         $showurl = $manageurl->out(false);
         $hideshow = "<a href=\"$showurl\">";
         $hideshow .= $OUTPUT->pix_icon('t/show', get_string('enable')) . '</a>';
     }
-    $image = new moodle_url('/mod/minilesson/pix/' . $qtype . '.png', ['ver' => $CFG->themerev]);
     $table->data[] = [
-        html_writer::tag('img', '', ['src' => $image->out(false), 'class' => 'itemimg']) . '
-        ' . get_string('add' . $qtype . 'item', constants::M_COMPONENT),
+        html_writer::img(
+            $qplugininfo->get_logo_url(),
+            $qplugininfo->component,
+            ['class' => 'itemimg']
+        ) . $qplugininfo->get_add_label(),
         $count,
         $hideshow,
     ];

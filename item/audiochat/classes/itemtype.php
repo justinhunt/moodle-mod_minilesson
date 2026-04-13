@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,23 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace mod_minilesson\local\itemtype;
+namespace minilessonitem_audiochat;
 
 use mod_minilesson\constants;
+use mod_minilesson\local\itemtype\item;
 use mod_minilesson\utils;
 use moodle_url;
+use stdClass;
 
 /**
  * Renderable class for an audiochat item in a minilesson activity.
  *
- * @package    mod_minilesson
- * @copyright  2023 Justin Hunt <justin@poodll.com>
+ * @package    minilessonitem_audiochat
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class item_audiochat extends item
+class itemtype extends item
 {
-    // The item type.
-    public const ITEMTYPE = constants::TYPE_AUDIOCHAT;
 
     /** Default image avatar */
     public const DEFAULT_AVATAR = 'cutepoodll_small.png';
@@ -306,4 +305,59 @@ class item_audiochat extends item
         }
         return false;
     }
+
+    public function prepare_instructions_for_ai_grade(stdClass $instructions) {
+        $search = ['{topic}', '{ai data1}', '{ai data2}', '{student submission}'];
+        $item = $this->itemrecord;
+        $studentsubmission = $this->fetch_student_submission();
+        $replace = [
+            $item->{constants::AUDIOCHAT_TOPIC},
+            $item->{constants::AUDIOCHAT_AIDATA1},
+            $item->{constants::AUDIOCHAT_AIDATA2},
+            $studentsubmission ? $studentsubmission : '',
+        ];
+        $instructions->feedbackscheme = str_replace($search, $replace, (string) $instructions->feedbackscheme);
+        $instructions->markscheme = str_replace($search, $replace, (string) $instructions->markscheme);
+    }
+
+    public function prepare_result(stdClass $result) {
+        $search = ['{topic}', '{ai data1}', '{ai data2}'];
+        $items = $this->itemrecord;
+        $context = $this->context;
+        $replace = [
+            $items->{constants::AUDIOCHAT_TOPIC},
+            $items->{constants::AUDIOCHAT_AIDATA1},
+            $items->{constants::AUDIOCHAT_AIDATA2},
+        ];
+        $itemtext = file_rewrite_pluginfile_urls(
+            $items->{constants::TEXTQUESTION},
+            'pluginfile.php',
+            $context->id,
+            constants::M_COMPONENT,
+            constants::TEXTQUESTION_FILEAREA,
+            $items->id
+        );
+        $itemtext = format_text($itemtext, FORMAT_MOODLE, ['context' => $context]);
+        $result->questext = str_replace($search, $replace, $itemtext);
+        $result->hascorrectanswer = false;
+        $result->hasincorrectanswer = false;
+        if (isset($result->resultsdata)) {
+            $result->hasanswerdetails = true;
+            $result->resultsdatajson = json_encode(
+                $result->resultsdata,
+                JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+            );
+        } else {
+            $result->hasanswerdetails = false;
+        }
+    }
+
+    public static function is_configured() {
+        if (!parent::is_configured()) {
+            return false;
+        }
+        $config = get_config(constants::M_COMPONENT);
+        return !empty($config->openaikey);
+    }
+
 }

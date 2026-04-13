@@ -819,4 +819,8 @@ class constants {
         self::M_LANG_RORO => 'ă â î ș ț',
         self::M_LANG_TRTR => 'ç ğ ı İ ö ş ü',
     ];
+
+    const SUBPLUGINTYPES = [
+        'item' => 'minilessonitem',
+    ];
 }

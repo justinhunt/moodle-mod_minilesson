@@ -1,6 +1,5 @@
 <?php
-
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,26 +12,25 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+namespace minilessonitem_audiochat;
 
 /**
- * Created by PhpStorm.
- * User: ishineguy
- * Date: 2018/03/13
- * Time: 19:31
+ * Class itemform
+ *
+ * @package    minilessonitem_audiochat
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace mod_minilesson\local\itemform;
-
 use html_writer;
 use mod_minilesson\constants;
-use mod_minilesson\local\itemtype\item_audiochat;
+use mod_minilesson\local\itemform\baseform;
 use mod_minilesson\utils;
 use moodle_url;
 
-class audiochatform extends baseform
+class itemform extends baseform
 {
-    public $type = constants::TYPE_AUDIOCHAT;
 
     public function custom_definition()
     {
@@ -43,6 +41,11 @@ class audiochatform extends baseform
         $itemid = $this->optional_param('itemid', 0, PARAM_INT);
         $moduleinstance = $this->_customdata['moduleinstance'];
         $this->add_static_text('instructions', '', get_string('audiochatdesc', constants::M_COMPONENT));
+
+        $mform->setDefault(
+            constants::TEXTINSTRUCTIONS,
+            get_string('audiochat_instructions1', constants::M_COMPONENT)
+        );
 
         // Total marks and target word count
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
@@ -138,7 +141,7 @@ class audiochatform extends baseform
             foreach ($imagefiles as $imagefilepath) {
                 if (file_exists($imagefilepath)) {
                     if (empty($groupelements)) {
-                        $defaultimagepath = str_replace(basename($imagefilepath), item_audiochat::DEFAULT_AVATAR, $imagefilepath);
+                        $defaultimagepath = str_replace(basename($imagefilepath), itemtype::DEFAULT_AVATAR, $imagefilepath);
                         $groupelements[] = $mform->createElement('html', '<div class="audiochatavtarimage-container">');
                         $groupelements[] = $mform->createElement(
                             'radio',
@@ -181,7 +184,6 @@ class audiochatform extends baseform
         $mform->setExpanded('aicontextheading');
         $this->add_static_text('aicontext_instructions', '', get_string('aicontext_instructions', constants::M_COMPONENT));
 
-
         // Student submission.
         if ($moduleinstance) {
             $submissionoptions = [0 => get_string('choose')];
@@ -202,6 +204,6 @@ class audiochatform extends baseform
         $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
         $mform->setDefault(constants::AUDIOCHAT_AIDATA2, '');
 
-        $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/aiprompt', 'init');
+        $PAGE->requires->js_call_amd(static::get_component() . '/aiprompt', 'init');
     }
 }

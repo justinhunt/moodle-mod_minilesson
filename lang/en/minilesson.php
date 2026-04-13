@@ -89,6 +89,8 @@ $string['minilesson:canuseaigen'] = 'Can use AI Generation feature';
 
 $string['id'] = 'ID';
 $string['name'] = 'Name';
+$string['subplugintype_minilessonitem'] = 'Minilesson item';
+$string['subplugintype_minilessonitem_plural'] = 'Minilesson items';
 $string['timecreated'] = 'Time Created';
 $string['basicheading'] = 'Basic Report';
 $string['attemptsheading'] = 'Attempts Report';
@@ -444,7 +446,6 @@ $string['addfreespeakingitem'] = 'Free Speaking';
 $string['addfluencyitem'] = 'Fluency';
 $string['addpassagereadingitem'] = 'Passage Reading';
 $string['addconversationitem'] = 'Conversation';
-$string['addaudiochatitem'] = 'Audio Chat';
 $string['addwordshuffleitem'] = 'Word Shuffle';
 $string['addscatteritem'] = 'Scatter';
 $string['addslidesitem'] = 'Slides';
@@ -1135,7 +1136,7 @@ $string['freewriting:gradingprompt3'] = 'Describe the picture - requires a pictu
 $string['freewriting:gradingprompt_dec1'] = 'Deduct 1 point for each grammar, spelling or punctuation error.';
 $string['freewriting:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer.
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a broken sentence that has the correct meaning.';
-$string['freewriting:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}] 
+$string['freewriting:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}]
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
 $string['freewriting:feedbackprompt1'] = 'Default';
 $string['freewriting:feedbackprompt2'] = 'Describe the picture ';
@@ -1146,9 +1147,9 @@ $string['freespeaking:gradingprompt1'] = 'Default';
 $string['freespeaking:gradingprompt2'] = 'Short Answer - requires the correct answer (ai data1) ';
 $string['freespeaking:gradingprompt3'] = 'Describe the picture - requires a picture description (ai data1) ';
 $string['freespeaking:gradingprompt_dec1'] = 'Deduct 1 point for each grammar error.';
-$string['freespeaking:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer. 
+$string['freespeaking:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer.
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a sentence with mistakes that has the correct meaning';
-$string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}] 
+$string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}]
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
 $string['freespeaking:feedbackprompt1'] = 'Default';
 $string['freespeaking:feedbackprompt2'] = 'Describe the picture';
@@ -1165,7 +1166,7 @@ $string['audiochat:instructionsprompt1'] = 'Open discussion - requires a topic';
 $string['audiochat:instructionsprompt2'] = 'Discussing a picture - requires a picture description (topic) and questions (ai data1)';
 $string['audiochat:instructionsprompt3'] = 'Discussing a passage - requires a passage (topic) and questions (ai data1)';
 $string['audiochat:instructionsprompt_dec1'] = "You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. Today the discussion topic is: {topic}. Please discuss it with your student. Speak simply and slowly. Your responses should be brief. Your aim is to give the student opportunity to speak. Explain words and concepts in the student's native language if they do not understand.";
-$string['audiochat:instructionsprompt_dec2'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student is looking at a picture the depicts the following scene: "{topic}" 
+$string['audiochat:instructionsprompt_dec2'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student is looking at a picture the depicts the following scene: "{topic}"
 
 Your task is to ask the student the following questions, one at a time: {ai data1}
 
@@ -1223,7 +1224,6 @@ $string['item_h5p_desc'] = 'The H5P item allows the author to select an existing
 $string['item_wordshuffle_desc'] = 'The Word Shuffle item takes a set of sentences The words in each sentence are re-arranged. The student must order the words correctly.';
 $string['item_scatter_desc'] = 'The Scatter item presents a grid of cards from a set of word pairs. Students must remove all the cards by matching each pair.';
 $string['item_fluency_desc'] = 'The Fluency item presents a series of sentences/phrases for students to say aloud. It marks up the parts of the spoken sentence that were good, ok or not good.';
-$string['item_audiochat_desc'] = 'The Audio Chat item sets up an audio conversation with an AI partner. It can be used for discussing a topic, or asking questions about a picture. The prompts to the AI bot are free text and editable.';
 $string['item_smartframe_desc'] = 'The SmartFrame item is a placeholder for an item type that has not been developed yet.';
 $string['item_comprehensionquiz_desc'] = 'The Comprehension Quiz item is a placeholder for an item type that has not been developed yet.';
 $string['item_conversation_desc'] = 'The Conversation item is a placeholder for an item type that has not been developed yet.';

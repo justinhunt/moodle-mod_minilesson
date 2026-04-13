@@ -410,68 +410,6 @@ if ($hassiteconfig) {
     //add other API keys settings page to minilesson category
     $ADMIN->add('modsettingsminilessoncat', $otherapikeysettings);
 
-    //create audio chat settings page
-    $pagetitle = get_string('audiochat', constants::M_COMPONENT);
-    $audiochatsettings = new admin_settingpage('modsettingminilessonaudiochat', $pagetitle, 'moodle/site:config');
-
-    // Audio chat settings.
-    $audiochatsettings->add(new admin_setting_heading(constants::M_COMPONENT . '/audiochat', get_string('audiochat', constants::M_COMPONENT), ''));
-
-    // Audio Chat Prompts
-    $maxprompts = constants::MAX_AI_PROMPTS;
-    for ($i = 0; $i < $maxprompts; $i++) {
-        // Audio Chat instructions prompt
-        $defaults = 3;
-        $name = 'audiochat_instructionspromptheading_' . ($i + 1);
-        $label = get_string('instructionsprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $details = '';
-        $default = $i < $defaults ? get_string('audiochat:instructionsprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtext(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_TEXT
-        ));
-        $name = 'audiochat_instructionsprompt_' . ($i + 1);
-        $label = get_string('instructionsprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $default = $i < $defaults ? get_string('audiochat:instructionsprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtextarea(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_RAW
-        ));
-    }
-    for ($i = 0; $i < $maxprompts; $i++) {
-        //Audio Chat feedback prompt
-        $defaults = 2;
-        $name = 'audiochat_feedbackpromptheading_' . ($i + 1);
-        $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $details = '';
-        $default = $i < $defaults ? get_string('audiochat:feedbackprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtext(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_TEXT
-        ));
-        $name = 'audiochat_feedbackprompt_' . ($i + 1);
-        $label = get_string('feedbackprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $default = $i < $defaults ? get_string('audiochat:feedbackprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtextarea(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_RAW
-        ));
-    }
-    //add audiochat settings page to minilesson category
-    $ADMIN->add('modsettingsminilessoncat', $audiochatsettings);
-
     // Free speaking settings.
     $pagetitle = get_string('freespeaking', constants::M_COMPONENT);
     $freespeakingsettings = new admin_settingpage('modsettingminilessonfreespeaking', $pagetitle, 'moodle/site:config');
@@ -634,6 +572,11 @@ if ($hassiteconfig) {
         }
 
         $ADMIN->add('modsettingsminilessoncat', $aimanagersettings);
+    }
+
+    $plugins = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
+    foreach ($plugins as $plugin) {
+        $plugin->load_settings($ADMIN, 'modsettingsminilessoncat', $hassiteconfig);
     }
 
 }

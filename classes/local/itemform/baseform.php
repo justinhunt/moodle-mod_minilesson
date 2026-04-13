@@ -51,11 +51,6 @@ use mod_minilesson\utils;
  */
 abstract class baseform extends \moodleform
 {
-    /**
-     * This is used to identify this itemtype.
-     * @var string
-     */
-    public $type;
 
     /**
      * The simple string that describes the item type e.g. audioitem, textitem
@@ -78,7 +73,7 @@ abstract class baseform extends \moodleform
 
     /**
      * The module instance
-     * @var array
+     * @var array|object
      */
     protected $moduleinstance = null;
 
@@ -318,14 +313,6 @@ abstract class baseform extends \moodleform
                         $mform->setDefault(
                             constants::TEXTINSTRUCTIONS,
                             get_string('conversations_instructions1', constants::M_COMPONENT)
-                        );
-                        break;
-
-                    // AudioChat.
-                    case constants::TYPE_AUDIOCHAT:
-                        $mform->setDefault(
-                            constants::TEXTINSTRUCTIONS,
-                            get_string('audiochat_instructions1', constants::M_COMPONENT)
                         );
                         break;
 
@@ -1198,5 +1185,21 @@ abstract class baseform extends \moodleform
             8 => 8,
         ];
         $this->add_dropdown($name, $label, $alienoptions, $default);
+    }
+
+    final public static function get_itemname($subpluginname = constants::SUBPLUGINTYPES['item']) {
+        return ltrim(str_replace($subpluginname, '', static::get_component()), '_');
+    }
+
+    final public static function get_component() {
+        return utils::get_component(static::class);
+    }
+
+    public function __get($name)
+    {
+        if ($name == 'type') {
+            return static::get_itemname();
+        }
+        throw new \Exception('Not implemented');
     }
 }
