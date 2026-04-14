@@ -141,7 +141,7 @@ if ($mform->is_cancelled()) {
 // If we have data, then our job here is to save it and return to the quiz edit page.
 if ($data = $mform->get_data()) {
     require_sesskey();
-        $data->type = $type;
+    $data->type = $type;
 
     if ($edit) {
         $theitem = utils::fetch_item_from_itemrecord($data, $minilesson);

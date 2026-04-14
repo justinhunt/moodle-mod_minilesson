@@ -32,7 +32,6 @@
 use mod_minilesson\aigen_contextform;
 use mod_minilesson\constants;
 use mod_minilesson\local\formelement\ttsaudio;
-use mod_minilesson\local\itemtype\item_audiochat;
 use mod_minilesson\translate_form;
 use mod_minilesson\utils;
 
@@ -1318,7 +1317,10 @@ function minilesson_output_fragment_audiochat_fetchstudentsubmission($args)
     $minilesson = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
     $itemrecord = $DB->get_record(constants::M_QTABLE, ['id' => $args->itemid]);
 
-    $theaudiochat = new item_audiochat($itemrecord, $minilesson, $args->context);
+    $theaudiochat = utils::fetch_item_from_itemrecord($itemrecord, $minilesson, $args->context);
+    if (empty($theaudiochat)) {
+        throw new moodle_exception('Item type handler plugin not found');
+    }
     $studentsubmission = $theaudiochat->fetch_student_submission();
     return $studentsubmission;
 }

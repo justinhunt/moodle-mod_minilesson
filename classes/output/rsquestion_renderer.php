@@ -17,6 +17,7 @@
 
 namespace mod_minilesson\output;
 
+use core_plugin_manager;
 use html_writer;
 use moodle_url;
 use mod_minilesson\constants;
@@ -45,71 +46,31 @@ class rsquestion_renderer extends \plugin_renderer_base
         $output = $this->output->heading(get_string("whatdonow", "minilesson"), 3);
         $links = [];
 
-        $qtypes = [
-            constants::TYPE_PAGE,
-            constants::TYPE_MULTICHOICE,
-            constants::TYPE_DICTATION,
-            constants::TYPE_SPEECHCARDS,
-            constants::TYPE_LISTENREPEAT,
-        ];
-        $qtypes[] = constants::TYPE_MULTIAUDIO;
-        $qtypes[] = constants::TYPE_SHORTANSWER;
-        $qtypes[] = constants::TYPE_LGAPFILL;
-        $qtypes[] = constants::TYPE_TGAPFILL;
-        $qtypes[] = constants::TYPE_SGAPFILL;
-        $qtypes[] = constants::TYPE_SPACEGAME;
-        $qtypes[] = constants::TYPE_FREESPEAKING;
-        $qtypes[] = constants::TYPE_FREEWRITING;
-        $qtypes[] = constants::TYPE_PASSAGEREADING;
-        $qtypes[] = constants::TYPE_PGAPFILL;
-        $qtypes[] = constants::TYPE_H5P;
-        $qtypes[] = constants::TYPE_WORDSHUFFLE;
-        $qtypes[] = constants::TYPE_SCATTER;
-        $qtypes[] = constants::TYPE_SLIDES;
-        $qtypes[] = constants::TYPE_FLUENCY;
-        $qtypes[] = constants::TYPE_FICTION;
-        if ($config->openaikey && !empty($config->openaikey)) {
-            $qtypes[] = constants::TYPE_AUDIOCHAT;
-        }
-        if (isset($CFG->minilesson_experimental) && $CFG->minilesson_experimental) {
-            $qtypes[] = constants::TYPE_SMARTFRAME;
-            $qtypes[] = constants::TYPE_COMPQUIZ;
-            $qtypes[] = constants::TYPE_CONVERSATION;
-            $qtypes[] = constants::TYPE_DICTATIONCHAT;
-        }
-
-        $enableditems = get_config('minilesson', 'enableditems');
-        $availableitems = [];
-        if (!empty($enableditems)) {
-            $availableitems = explode(',', $enableditems);
-        }
-
-        $availableitems = array_intersect($availableitems, $qtypes);
+        $availableitems = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
         // If modaleditform is true adding and editing item types is done in a popup modal. Thats good ...
         // but when there is a lot to be edited , a standalone page is better.
         // The modaleditform flag is acted on on additemlink template and rsquestionmanager js.
         $modaleditform = $config->modaleditform == "1";
         $allitems = [];
         $i = 0;
-        foreach ($availableitems as $qtype) {
+        /** @var \mod_minilesson\plugininfo\minilessonitem @qplugininfo */
+        foreach ($availableitems as $qplugininfo) {
+            if (!$qplugininfo->is_enabled()) {
+                continue;
+            }
             $i++;
-            $videourl = new moodle_url('/mod/minilesson/video/' . $qtype . '.mp4');
             $addurl = new moodle_url(
                 '/mod/minilesson/rsquestion/managersquestions.php',
-                ['id' => $this->page->cm->id, 'type' => $qtype]
+                ['id' => $this->page->cm->id, 'type' => $qplugininfo->name]
             );
-            $imgsrc = new moodle_url("/mod/minilesson/pix/{$qtype}.svg", ['ver' => $CFG->themerev]);
             $data = [
-                'wwwroot' => $CFG->wwwroot,
-                'type' => $qtype,
-                'itemid' => $itemid,
+                'type' => $qplugininfo->name,
                 'cmid' => $this->page->cm->id,
-                'label' => get_string('add' . $qtype . 'item', constants::M_COMPONENT),
+                'label' => (string) $qplugininfo->get_add_label(),
                 'modaleditform' => $modaleditform,
-                'imgrev' => '?ver=' . $CFG->themerev,
-                'imgsrc' => $imgsrc->out(false),
-                'description' => get_string("item_{$qtype}_desc", 'mod_minilesson'),
-                'videourl' => $videourl->out(false),
+                'imgsrc' => $qplugininfo->get_logo_url()->out(false),
+                'description' => (string) $qplugininfo->get_description(),
+                'videourl' => $qplugininfo->get_intro_video_url()->out(false),
                 'addurl' => $addurl->out(false),
                 'first' => $i == 1 ? true : false,
             ];
@@ -223,11 +184,18 @@ class rsquestion_renderer extends \plugin_renderer_base
         $data['tableid'] = constants::M_ITEMS_TABLE;
         $data['display'] = 'block';
         $itemsarray = [];
+        $availableitems = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
+
         foreach (array_values($items) as $i => $item) {
             $arrayitem = (array) $item;
+            if (!array_key_exists($arrayitem['type'], $availableitems)) {
+                continue;
+            }
+            /** @var \mod_minilesson\plugininfo\minilessonitem  $qplugininfo */
+            $qplugininfo = $availableitems[$arrayitem['type']];
             $arrayitem['index'] = ($i + 1);
-            $arrayitem['typelabel'] = strtoupper(get_string($arrayitem['type'], constants::M_COMPONENT));
-            $arrayitem['icon'] = new moodle_url("/mod/minilesson/pix/{$arrayitem['type']}.svg", ['ver' => $CFG->themerev]);
+            $arrayitem['typelabel'] = strtoupper($qplugininfo->displayname);
+            $arrayitem['icon'] = $qplugininfo->get_logo_url();
             $itemsarray[] = $arrayitem;
         }
 

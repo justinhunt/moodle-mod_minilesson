@@ -310,7 +310,7 @@ class renderer extends \plugin_renderer_base
         global $CFG, $DB;
         $ans = [];
         // Quiz data.
-        $quizdata = $comptest->fetch_test_data_for_js();
+        $quizdata = $comptest->fetch_test_data_for_js($this);
 
         // Config.
         $config = get_config(constants::M_COMPONENT);
@@ -366,13 +366,6 @@ class renderer extends \plugin_renderer_base
                         $items->{constants::FREESPEAKING_TOPIC},
                         $items->{constants::FREESPEAKING_AIDATA1},
                         $items->{constants::FREESPEAKING_AIDATA2},
-                    ];
-                    break;
-                case constants::TYPE_AUDIOCHAT:
-                    $replace = [
-                        $items->{constants::AUDIOCHAT_TOPIC},
-                        $items->{constants::AUDIOCHAT_AIDATA1},
-                        $items->{constants::AUDIOCHAT_AIDATA2},
                     ];
                     break;
             }
@@ -525,19 +518,6 @@ class renderer extends \plugin_renderer_base
                         $result->hasanswerdetails = false;
                     }
                     break;
-                case constants::TYPE_AUDIOCHAT:
-                    $result->hascorrectanswer = false;
-                    $result->hasincorrectanswer = false;
-                    if (isset($result->resultsdata)) {
-                        $result->hasanswerdetails = true;
-                        $result->resultsdatajson = json_encode(
-                            $result->resultsdata,
-                            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-                        );
-                    } else {
-                        $result->hasanswerdetails = false;
-                    }
-                    break;
                 case constants::TYPE_WORDSHUFFLE:  // TO DO how to handle this?
                 case constants::TYPE_SCATTER:  // TO DO how to handle this?
                 case constants::TYPE_SPACEGAME: // TO DO how to handle this?
@@ -567,6 +547,9 @@ class renderer extends \plugin_renderer_base
             $result->yellowstars = array_fill(0, $ystarcnt, true);
             $gstarcnt = 5 - $ystarcnt;
             $result->graystars = array_fill(0, $gstarcnt, true);
+
+            $iteminstance = utils::fetch_item_from_itemrecord($items, $moduleinstance, $context);
+            $iteminstance->prepare_result($result);
 
             $useresults[] = $result;
         }
@@ -666,14 +649,11 @@ class renderer extends \plugin_renderer_base
     public function show_quiz($comptest, $moduleinstance)
     {
         // Quiz data.
-        $quizdata = $comptest->fetch_test_data_for_js();
+        $quizdata = $comptest->fetch_test_data_for_js($this);
 
         $itemshtml = [];
         foreach ($quizdata as $item) {
-            $itemshtml[] = $this->render_from_template(
-                constants::M_COMPONENT . '/' . $item->type,
-                $item
-            );
+            $itemshtml[] = $this->render_from_template($item->templatename, $item);
         }
 
         $finisheddiv = html_writer::div(
@@ -710,11 +690,11 @@ class renderer extends \plugin_renderer_base
     {
 
         // Quiz data.
-        $quizdata = $comptest->fetch_test_data_for_js();
+        $quizdata = $comptest->fetch_test_data_for_js($this);
         $itemshtml = [];
         foreach ($quizdata as $item) {
             if ($item->id == $qid) {
-                $itemshtml[] = $this->render_from_template(constants::M_COMPONENT . '/' . $item->type, $item);
+                $itemshtml[] = $this->render_from_template($item->templatename, $item);
             }
         }
 
