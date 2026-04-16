@@ -158,6 +158,10 @@ $totallessonitems = $DB->count_records(constants::M_QTABLE, ['minilesson' => $mo
 if (!empty($latestattempt->sessiondata)) {
     $sessiondata = json_decode($latestattempt->sessiondata);
     if (!empty($sessiondata->steps)) {
+        // if sessiondata is not an array, reconstruct it as an array
+        if (!is_array($sessiondata->steps)) {
+            $sessiondata->steps = utils::remake_steps_as_array($sessiondata->steps);
+        }
         $completedlessonitems = count($sessiondata->steps);
     }
 }
