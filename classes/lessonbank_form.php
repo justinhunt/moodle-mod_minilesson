@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,8 +28,8 @@ require_once($CFG->libdir . '/formslib.php');
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class lessonbank_form extends moodleform
-{
+class lessonbank_form extends moodleform {
+
     /**
      * Lessons per page
      */
@@ -39,8 +38,7 @@ class lessonbank_form extends moodleform
     /**
      * Form definition
      */
-    protected function definition()
-    {
+    protected function definition() {
         $form = $this->_form;
 
         $languages = ['' => get_string('choose')] + utils::get_lang_options();
@@ -60,16 +58,40 @@ class lessonbank_form extends moodleform
         $form->setType('searchgroup[keyword]', PARAM_RAW);
         $form->addGroup($grouparray, 'searchgroup', get_string('language'), '', true);
 
-        $t = mod_minilesson_external::lessonbank('local_lessonbank_fetch_langlevels');
+        // Add the advanced search collapse div.
+        $form->addElement('html', '<div class="collapse w-100" id="advancesearch">');
+
+        $t = mod_minilesson_external::lessonbank('local_lessonbank_fetch_customfield_options');
         if (!empty($t->data)) {
             $jsonoptions = json_decode($t->data);
-            $levels = array_column($jsonoptions, 'text', 'value');
-            $form->addElement('html', '<div class="collapse w-100" id="advancesearch">');
-            $form->addElement('autocomplete', 'level', get_string('level', constants::M_COMPONENT), $levels, 'multiple');
-            $form->setType('level', PARAM_INT);
-            $form->addElement('html', '</div>');
+            // Loop through custom fields and add to form.
+            foreach ($jsonoptions as $field) {
+                if (in_array($field->shortname, ['languagelevel', 'skills', 'topic'])) {
+                    $options = array_column($field->options, 'text', 'value');
+                    $fieldname = $field->shortname === 'languagelevel' ? 'level' :
+                        ($field->shortname === 'skills' ? 'skill' : $field->shortname);
+                    $form->addElement('html', '<div class="d-flex flex-wrap">');
+                    $form->addElement('autocomplete', $fieldname, $field->name, $options, ['multiple' => true]);
+                    $form->addElement('html', '</div>');
+                    $form->setType($fieldname, PARAM_RAW);
+                }
+            }
         }
 
+        // Add an optional item types multiselect area.
+        $itemtypes = constants::ITEMTYPES;
+        $itemtypesandlabels = [];
+        foreach ($itemtypes as $itemtype) {
+            $itemtypesandlabels[$itemtype] = get_string($itemtype, 'mod_minilesson');
+        }
+        $form->addElement('html', '<div class="d-flex flex-wrap">');
+        $form->addElement('autocomplete', 'itemtype', get_string('itemtypes', 'mod_minilesson'), $itemtypesandlabels, ['multiple' => true]);
+        $form->addElement('html', '</div>');
+
+        // Close the collapse div.
+        $form->addElement('html', '</div>');
+
+        // Add the page and perpage hidden fields.
         $form->addElement('hidden', 'page');
         $form->setType('page', PARAM_INT);
         $form->setDefault('page', 1);

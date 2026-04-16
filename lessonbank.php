@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -62,7 +61,7 @@ $PAGE->set_heading(get_string('lessonbank', constants::M_COMPONENT));
 
 if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded') {
     $PAGE->set_pagelayout('embedded');
-} elseif ($config->enablesetuptab || $moduleinstance->pagelayout == 'popup') {
+} else if ($config->enablesetuptab || $moduleinstance->pagelayout == 'popup') {
     $PAGE->set_pagelayout('popup');
 } else {
     $PAGE->set_pagelayout('incourse');
@@ -98,7 +97,7 @@ if (!empty($translateimportid) || ($restore && confirm_sesskey())) {
                 $translateditems = $theimport->call_translate($itemsjson, $importfromlang, $importtolang);
                 if (is_array($translateditems)) {
                     $importdata->items = $translateditems;
-                } elseif ($translateditems && utils::is_json($translateditems)) {
+                } else if ($translateditems && utils::is_json($translateditems)) {
                     $importdata->items = json_decode($translateditems);
                 }
             }
@@ -118,10 +117,10 @@ if (!empty($translateimportid) || ($restore && confirm_sesskey())) {
 $searchform = new lessonbank_form($url, [], 'post', '', ['id' => 'lessonbank_filters']);
 $searchform->set_data(['searchgroup[language]' => $moduleinstance->ttslanguage]);
 
-$PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter');
+$PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter', ['opts' => ['nativelang' => $moduleinstance->nativelang]]);
 $lessonbankcontrolsdata = [
     'lessonbankitemcount' => get_string('foundlessons', constants::M_COMPONENT, 0),
-    'paginationoptions' => [10, 25, 50, 100]
+    'paginationoptions' => [10, 25, 50, 100],
 ];
 
 echo $renderer->header($moduleinstance, $cm, 'lessonbank', null, get_string('lessonbank', constants::M_COMPONENT));
