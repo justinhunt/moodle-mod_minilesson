@@ -1,0 +1,227 @@
+<?php
+
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+namespace minilessonitem_passagegapfill;
+
+use mod_minilesson\local\itemtype\item;
+
+use mod_minilesson\constants;
+use mod_minilesson\utils;
+use stdClass;
+
+/**
+ * Renderable class for a listening gap fill item in a minilesson activity.
+ *
+ * @package    mod_minilesson
+ * @copyright  2023 Justin Hunt <justin@poodll.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class itemtype extends item
+{
+    public const PASSAGE = 'customtext1';
+    public const HINTS = 'customint5';
+
+    //the item type
+    /**
+     * Export the data for the mustache template.
+     *
+     * @param \renderer_base $output renderer to be used to render the action bar elements.
+     * @return array
+     */
+    public function export_for_template(\renderer_base $output)
+    {
+
+        $testitem = parent::export_for_template($output);
+        $testitem = $this->get_polly_options($testitem);
+        $testitem = $this->set_layout($testitem);
+
+
+        // Passage Text
+        $passagetext = $this->itemrecord->{self::PASSAGE};
+        $plaintext = str_replace(['[', ']'], ['', ''], $passagetext);
+        $passagetextwithnewlines = nl2br(s($passagetext));
+
+        // Process the passage text to create the gaps and info that the mustache template and javascript needs.
+        // we split on square brackets, so that we can identify the chunks that are to be replaced with gaps.
+        $parsedchunks = [];
+        $chunks = preg_split('/(\[|\])/u', $passagetextwithnewlines, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $inside = false;
+        $index = -1;
+        $wordindex = -1;
+        foreach ($chunks as $chunk) {
+            if ($chunk === '[') {
+                $inside = true;
+                continue;
+            } elseif ($chunk === ']') {
+                $inside = false;
+                continue;
+            } elseif ($inside) {
+                // This is the bracketed word – create placeholder
+                $placeholder = \core_text::substr($chunk, 0, 1) . str_repeat('&#x2022;', mb_strlen($chunk) - 1);
+                $text = $chunk;
+                $isgap = true;
+                $index++;
+                $wordindex++;
+            } else {
+                // Regular text (including punctuation, partial words, etc.)
+                $placeholder = '';
+                $text = $chunk;
+                $isgap = false;
+                $index++;
+            }
+
+            switch ($this->language) {
+                case 'ar-SA':
+                case 'ar-AE':
+                case 'fa-IR':
+                case 'he-IL':
+                case 'ps-AF':
+                    $textpadding = 2; // RTL langs seem to be wider and need more padding for proper display.
+                    break;
+                default:
+                    $textpadding = 1;
+            }
+            $parsedchunks[$index] = [
+                'wordindex' => $wordindex,
+                'text' => $text,
+                'placeholder' => $placeholder,
+                'isgap' => $isgap,
+                'textlength' => mb_strlen($text),
+                'paddedtextlength' => mb_strlen($text) + $textpadding,
+            ];
+        }
+        $passagedata = ['rawtext' => $passagetext, 'plaintext' => $plaintext, 'chunks' => $parsedchunks];
+        $testitem->passagedata = $passagedata;
+
+        //Item audio
+        if ($this->itemrecord->{constants::POLLYOPTION} != constants::TTS_NOTTS) {
+            $testitem->passageaudio = utils::fetch_polly_url(
+                $this->token,
+                $this->region,
+                $plaintext,
+                $this->itemrecord->{constants::POLLYOPTION},
+                $this->itemrecord->{constants::POLLYVOICE}
+            );
+        } else {
+            $custompassageaudio = $this->fetch_sentence_media('audio', 1);
+            if ($custompassageaudio && count($custompassageaudio) > 0) {
+                $testitem->passageaudio = array_shift($custompassageaudio);
+            } else {
+                $testitem->passageaudio = false;
+            }
+        }
+
+        // Cloudpoodll
+        $testitem = $this->set_cloudpoodll_details($testitem);
+        // Hints gone from function so regain it here
+        $testitem->hints = $this->itemrecord->{self::HINTS} == 0 ? false : $this->itemrecord->{self::HINTS};
+        $testitem->althintstring = get_string('anotherhint', constants::M_COMPONENT);
+        $testitem->penalizehints = $this->itemrecord->{constants::PENALIZEHINTS} == 1;
+        return $testitem;
+    }
+
+    public static function validate_import($newrecord, $cm)
+    {
+        $error = new \stdClass();
+        $error->col = '';
+        $error->message = '';
+
+        if ($newrecord->{self::PASSAGE} == '') {
+            $error->col = self::PASSAGE;
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
+            return $error;
+        }
+
+        //return false to indicate no error
+        return false;
+    }
+
+    /*
+ * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+ */
+    public static function get_keycolumns()
+    {
+        //get the basic key columns and customize a little for instances of this item type
+        $keycols = parent::get_keycolumns();
+        $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
+        $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
+        $keycols['text1'] = ['jsonname' => 'passage', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::PASSAGE];
+        $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => self::HINTS];
+        $keycols['int2'] = ['jsonname' => 'penalizehints', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PENALIZEHINTS];
+        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
+        return $keycols;
+    }
+
+    /*
+    This function return the prompt that the generate method requires.
+    */
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
+    {
+        switch ($generatemethod) {
+            case 'extract':
+                $prompt = "Choose 8 keywords from the following {language} text. ";
+                $prompt .= "Surround each instance of the keyword in the passage with square brackets, e.g [word].  " . PHP_EOL;
+                $prompt .= " [{text}]. ";
+                break;
+
+            case 'reuse':
+                // This is a special case where we reuse the existing data, so we do not need a prompt.
+                // We don't call AI. So will just return an empty string.
+                $prompt = "";
+                break;
+
+            case 'generate':
+            default:
+                $prompt = "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] " . PHP_EOL;
+                $prompt .= "The passage should be about 6 sentences long. ";
+                $prompt .= "Choose 8 keywords from the passage and surround each with square brackets, e.g [word].  ";
+                break;
+        }
+        return $prompt;
+    }
+
+    public function prepare_result(stdClass $result, stdClass $itemquizdata) {
+        $resultsdata = isset($result->resultsdata) ? $result->resultsdata : null;
+        $hasitems = $resultsdata && isset($resultsdata->items) && $resultsdata->items && $resultsdata->items > 0;
+        if (!$hasitems || !$resultsdata) {
+            $result->correctans = [];
+            $result->incorrectans = [];
+            return;
+        }
+        $result->hascorrectanswer = $hasitems;
+        $result->hasincorrectanswer = $hasitems;
+        $result->hasanswerdetails = false;
+        $resultsdata = isset($result->resultsdata) ? $result->resultsdata : null;
+        $correctanswers = [];
+        $incorrectanswers = [];
+
+        $items = $resultsdata->items;
+        for ($i = 0; $i < count($items); $i++) {
+            $theitem = $resultsdata->items[$i];
+            if (!$theitem) {
+                continue;
+            }
+            if ($theitem->correct) {
+                $correctanswers[] = ['sentence' => $theitem->text];
+            } else {
+                $incorrectanswers[] = ['sentence' => $theitem->text];
+            }
+        }
+        $result->correctans = $correctanswers;
+        $result->incorrectans = $incorrectanswers;
+    }
+}

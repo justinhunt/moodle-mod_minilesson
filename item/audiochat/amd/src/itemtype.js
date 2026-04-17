@@ -765,7 +765,7 @@ define(
                 tdata.yellow_starImgurl = Url.imageUrl('yellow_star', 'mod_minilesson');
                 tdata.gray_starImgurl = Url.imageUrl('gray_star', 'mod_minilesson');
 
-                templates.render('mod_minilesson/audiochatimmediatefeedback', tdata).then(
+                templates.render('minilessonitem_audiochat/audiochatimmediatefeedback', tdata).then(
                     function (html, js) {
                         self.controls.resultscontent.innerHTML = html;
                         templates.runTemplateJS(js);

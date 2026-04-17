@@ -97,7 +97,6 @@ class constants {
         "Lisa",
     ];
 
-
     // grading options
     const M_GRADEHIGHEST = 0;
     const M_GRADELOWEST = 1;
@@ -127,10 +126,6 @@ class constants {
     const TYPE_DICTATIONCHAT = 'dictationchat';
     const TYPE_LGAPFILL = 'listeninggapfill';
     const TYPE_TGAPFILL = 'typinggapfill';
-    const LGAPFILL_ENABLEVKEYBOARD = 'customtext6';
-    const LGAPFILL_CUSTOMKEYS = 'customtext7';
-    const TGAPFILL_ENABLEVKEYBOARD = 'customtext6';
-    const TGAPFILL_CUSTOMKEYS = 'customtext7';
     const TYPE_SGAPFILL = 'speakinggapfill';
     const TYPE_PGAPFILL = 'passagegapfill';
     const TYPE_COMPQUIZ = 'comprehensionquiz';
@@ -193,9 +188,6 @@ class constants {
     const MEDIAIFRAME = 'customdata5';
     const TEXTANSWER = 'customtext';
     const FILEANSWER = 'customfile';
-    const H5PFILE = 'customfile1';
-    const SLIDESFILES = 'customfile1';
-    const FICTIONFILES = 'customfile1';
     const CUSTOMDATA = 'customdata';
     const CUSTOMINT = 'customint';
     const POLLYVOICE = 'customtext5';
@@ -206,29 +198,7 @@ class constants {
     const AIGRADE_FEEDBACK = 'customtext2';
     const AIGRADE_FEEDBACK_LANGUAGE = 'customtext4';
     const AIGRADE_MODELANSWER = 'customtext3';
-    const AUDIOCHAT_INSTRUCTIONS = 'customtext6';
-    const AUDIOCHAT_FEEDBACKINSTRUCTIONS = 'customdata3';
-    const AUDIOCHAT_ROLE = 'customtext2';
-    const AUDIOCHAT_VOICE = 'customtext3';
-    const AUDIOCHAT_NATIVE_LANGUAGE = 'customtext4';
-    const AUDIOCHAT_TOPIC = 'customtext5';
-    const AUDIOCHAT_AIDATA1  = 'customdata1';
-    const AUDIOCHAT_AIDATA2  = 'customdata2';
-    const AUDIOCHAT_AUTORESPONSE = 'customint4';
 
-    const SLIDES_MARKDOWN = 'customtext1';
-    const SLIDES_FULLSCREEN = 'customint1';
-
-    const SLIDES_MARKDOWN_DEFAULT = "# Slide 1 Title\n\nYour content here. Use markdown syntax to format text and add images.\n\n---\n\n# Slide 2 Title\n\nMore content here. You can add as many slides as you need.\n";
-    const FICTION_YARN = 'customtext1';
-    const FICTION_YARN_DEFAULT = "title: Start\n---\nNarrator: We're going to go on an adventure!\n\n<<jump Cave>>\n===\n\ntitle: Cave\n---\nNarrator: Let's look inside the spooky cave...\n<<jump theend>>\n===\n\ntitle: theend\n---\nNarrator: The end...\n===";
-    const FICTION_PRESENTATION_MODE = 'customint1';
-    const FICTION_FLOWTHROUGH_MESSAGES = 'customint2';
-    const FICTION_SHOW_NONOPTIONS = 'customint3';
-    const AUDIOCHAT_ALLOWRETRY  = 'customint5';
-    const READINGPASSAGE = 'customtext1';
-    const PASSAGEGAPFILL_PASSAGE = 'customtext1';
-    const PASSAGEGAPFILL_HINTS = 'customint5';
     const PENALIZEHINTS = 'customint2';
     const GAPFILLHINTRTL = 'customint6';
     const WORDSHUFFLEHINTRTL = 'customint6';
@@ -244,7 +214,6 @@ class constants {
     const TIMELIMIT = 'timelimit';
     const GAPFILLALLOWRETRY = 'customint3';
     const FLUENCYCORRECTTHRESHOLD = 'customint3';
-    const FLUENCY_HIDEWARNING = 'customint6';
     const NOPASTING = 'customint4';
     const GAPFILLHIDESTARTPAGE = 'customint5';
     const WORDSHUFFLEHIDESTARTPAGE = 'customint5';
@@ -253,7 +222,6 @@ class constants {
     const SG_ALIENCOUNT_MATCHING = 'customint2';
     const SG_ALLOWRETRY = 'customint4';
 
-    const SCATTER_ALLOWRETRY = 'customint4';
     const MAXANSWERS = 4;
     const MAXCUSTOMTEXT = 7;
     const MAXCUSTOMDATA = 5;
@@ -479,7 +447,6 @@ class constants {
     const M_LINK_BOX_TITLE = 'mod_minilesson_link_box_title';
     const M_NOITEMS_MSG = 'mod_minilesson_noitems_msg';
 
-
     // languages
     const M_LANG_ENUS = 'en-US';
     const M_LANG_ENGB = 'en-GB';
@@ -694,49 +661,6 @@ class constants {
         self::M_LANG_VIVN => 'Khi trời nắng, chúng ta hãy đi dạo trong công viên.',
     ];
 
-    const FREESPEAKING_TOPIC = 'customtext5';
-
-    const FREESPEAKING_AIDATA1 = 'customdata1';
-
-    const FREESPEAKING_AIDATA2 = 'customdata2';
-
-    const FREESPEAKING_GRADINGINSTRUCTIONS = 'customtext6';
-
-    const FREESPEAKING_FEEDBACKINSTRUCTIONS = 'customtext2';
-
-    const FREESPEAKING_GRADINGSELECTION = 'customint4';
-
-    const FREESPEAKING_FEEDBACKSELECTION = 'customint5';
-
-    const FREESPEAKING_HIDECORRECTION = 'customint6';
-
-    const FREESPEAKING_SHOWGRADE = 'customint7';
-
-    const FREESPEAKING_SHOWRESULT = 'customint8';
-
-    const FREEWRITING_TOPIC = 'customtext5';
-
-    const FREEWRITING_AIDATA1 = 'customdata1';
-
-    const FREEWRITING_AIDATA2 = 'customdata2';
-
-    const FREEWRITING_GRADINGSELECTION = 'customint5';
-
-    const FREEWRITING_FEEDBACKSELECTION = 'customint6';
-
-    const FREEWRITING_HIDECORRECTION = 'customint7';
-
-    const FREEWRITING_SHOWGRADE = 'customint8';
-
-    const FREEWRITING_SHOWRESULT = 'customint9';
-
-    const FREEWRITING_ENABLEVKEYBOARD = 'customtext1';
-    const FREEWRITING_CUSTOMKEYS = 'customtext7';
-
-    const AUDIOCHAT_INSTRUCTIONSSELECTION = 'customint6';
-
-    const AUDIOCHAT_FEEDBACKSELECTION = 'customint7';
-
     const MAX_AI_PROMPTS = 6;
 
     const ITEMTYPES = [
@@ -768,32 +692,10 @@ class constants {
       // constants::TYPE_CONVERSATION,
     ];
 
-    const SHORTANSWER_PARTIALLYRESPONSE = 'customtext3';
-    const SHORTANSWER_TOTALMARKS = 'customint1';
-    const SHORTANSWER_PARTIALLYMARKS = 'customint2';
-    const SHORTANSWER_RESPONSETYPE = 'customint3';
-
     const RESPONSE_TYPE = [
         'audiorecorder' => 1,
         'text' => 2,
     ];
-    const MULTICHOICE_SHUFFLEANSWER = 'customint5';
-
-    const SLIDETHEME = 'customtext2';
-    const SLIDEFONTSIZE = 'customtext3';
-
-    const MULTICHOICE_CORRECTFEEDBACK = 'customtext6';
-    const MULTICHOICE_HIDEANSWERTEXT = 'customint6';
-
-    const MULTICHOICE_ANSWERLAYOUT = 'customint7';
-
-    const MULTICHOICE_ANSWERLAYOUT_DEFAULT = 1;
-
-    const MULTICHOICE_ANSWERLAYOUT_TWOCOLUMN = 2;
-
-    const AUDIOCHAT_STUDENT_SUBMISSION = 'customint8';
-
-    const AUDIOCHAT_AUDIOAVATAR = 'customtext7';
 
     const NATIVELANG_PREF = "poodll_nativelang";
 
