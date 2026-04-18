@@ -16,25 +16,28 @@
 
 namespace minilessonitem_audiochat;
 
-/**
- * Class itemform
- *
- * @package    minilessonitem_audiochat
- * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
 use html_writer;
 use mod_minilesson\constants;
 use mod_minilesson\local\itemform\baseform;
 use mod_minilesson\utils;
 use moodle_url;
 
-class itemform extends baseform
-{
+/*
+ * Class itemform
+ *
+ * @package    minilessonitem_audiochat
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-    public function custom_definition()
-    {
-        global $CFG, $PAGE, $DB;
+class itemform extends baseform {
+
+    /**
+     * item form definition
+     * @return void
+     */
+    public function custom_definition() {
+        global $CFG, $PAGE, $OUTPUT;
 
         $this->add_itemsettings_heading();
         $mform = $this->_form;
@@ -47,7 +50,7 @@ class itemform extends baseform
             get_string('audiochat_instructions1', constants::M_COMPONENT)
         );
 
-        // Total marks and target word count
+        // Total marks and target word count.
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
         $mform->setDefault(constants::TOTALMARKS, 5);
         $this->add_static_text('totalmarks_instructions', '', get_string('totalmarks_instructions', constants::M_COMPONENT));
@@ -55,18 +58,18 @@ class itemform extends baseform
         $mform->setDefault(constants::TARGETWORDCOUNT, 60);
 
         // The topic for the audio chat.
-        $this->add_textarearesponse(constants::AUDIOCHAT_TOPIC, get_string('audiochat_topic', constants::M_COMPONENT), true);
-        $mform->setDefault(constants::AUDIOCHAT_TOPIC, get_string('audiochat_topic_default', constants::M_COMPONENT));
+        $this->add_textarearesponse(itemtype::TOPIC, get_string('audiochat_topic', constants::M_COMPONENT), true);
+        $mform->setDefault(itemtype::TOPIC, get_string('audiochat_topic_default', constants::M_COMPONENT));
 
         // The role of the AI.
-        $this->add_textarearesponse(constants::AUDIOCHAT_ROLE, get_string('audiochat_role', constants::M_COMPONENT), true);
-        $mform->setDefault(constants::AUDIOCHAT_ROLE, get_string('audiochat_role_default', constants::M_COMPONENT));
+        $this->add_textarearesponse(itemtype::ROLE, get_string('audiochat_role', constants::M_COMPONENT), true);
+        $mform->setDefault(itemtype::ROLE, get_string('audiochat_role_default', constants::M_COMPONENT));
 
         // The voice of the AI.
         $options = ['alloy' => 'Alloy', 'ash' => 'Ash', 'ballad' => 'Ballad',
             'coral' => 'Coral', 'echo' => 'Echo', 'sage' => 'Sage', 'shimmer' => 'Shimmer', 'verse' => 'Verse', 'marin' => 'Marin', 'cedar' => 'Cedar'];
         $this->add_dropdown(
-            constants::AUDIOCHAT_VOICE,
+            itemtype::VOICE,
             get_string('audiochat_voice', constants::M_COMPONENT),
             $options,
             'alloy'
@@ -76,7 +79,7 @@ class itemform extends baseform
         $defaultfeedbacklang = $this->moduleinstance->nativelang ?
                     $this->moduleinstance->nativelang : $this->moduleinstance->ttslanguage;
         $this->add_languageselect(
-            constants::AUDIOCHAT_NATIVE_LANGUAGE,
+            itemtype::NATIVE_LANGUAGE,
             get_string('audiochat_native_language', constants::M_COMPONENT),
             $defaultfeedbacklang
         );
@@ -84,59 +87,59 @@ class itemform extends baseform
         $options = utils::get_aiprompt_options('AUDIOCHAT_INSTRUCTIONSSELECTION');
         $mform->addElement(
             'select',
-            constants::AUDIOCHAT_INSTRUCTIONSSELECTION,
+            itemtype::INSTRUCTIONSSELECTION,
             get_string('audiochat_instructions', constants::M_COMPONENT),
             $options,
             ['data-name' => 'instructionsaiprompt', 'data-type' => 'audiochat']
         );
-        $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONSSELECTION, 0);
+        $mform->setDefault(itemtype::INSTRUCTIONSSELECTION, 0);
         $this->add_static_text('preset_instructions1', '', get_string('aigrade_instructions_preset', constants::M_COMPONENT));
 
-        // The instructions template for the audio chat
-        $this->add_textarearesponse(constants::AUDIOCHAT_INSTRUCTIONS, '', true);
-        $mform->getElement(constants::AUDIOCHAT_INSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_instructions']);
+        // The instructions template for the audio chat.
+        $this->add_textarearesponse(itemtype::INSTRUCTIONS, '', true);
+        $mform->getElement(itemtype::INSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_instructions']);
         $default = get_config(constants::M_COMPONENT, 'audiochat_instructionsprompt_1');
-        $mform->setDefault(constants::AUDIOCHAT_INSTRUCTIONS, $default);
+        $mform->setDefault(itemtype::INSTRUCTIONS, $default);
         $this->add_static_text('audiochat_instructions_instructions', '', get_string('audiochat_instructions_instructions', constants::M_COMPONENT));
 
-        // The grading/feedback template for the audio chat
+        // The grading/feedback template for the audio chat.
         $options = utils::get_aiprompt_options('AUDIOCHAT_FEEDBACKSELECTION');
         $mform->addElement(
             'select',
-            constants::AUDIOCHAT_FEEDBACKSELECTION,
+            itemtype::FEEDBACKSELECTION,
             get_string('aigrade_feedback', constants::M_COMPONENT),
             $options,
             ['data-name' => 'feedbackaiprompt', 'data-type' => 'audiochat',]
         );
-        $mform->setDefault(constants::AUDIOCHAT_FEEDBACKSELECTION, 0);
+        $mform->setDefault(itemtype::FEEDBACKSELECTION, 0);
         $this->add_static_text('preset_instructions2', '', get_string('aigrade_instructions_preset', constants::M_COMPONENT));
 
-        // The instructions for grading the audio chat
-        $this->add_textarearesponse(constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS, '', false);
-        $mform->getElement(constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_feedback']);
+        // The instructions for grading the audio chat.
+        $this->add_textarearesponse(itemtype::FEEDBACKINSTRUCTIONS, '', false);
+        $mform->getElement(itemtype::FEEDBACKINSTRUCTIONS)->updateAttributes(['data-name' => 'aigrade_feedback']);
         $default = get_config(constants::M_COMPONENT, 'audiochat_feedbackprompt_1');
-        $mform->setDefault(constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS, $default);
+        $mform->setDefault(itemtype::FEEDBACKINSTRUCTIONS, $default);
         $this->add_static_text('audiochat_gradeinstructions_instructions', '', get_string('audiochat_gradeinstructions_instructions', constants::M_COMPONENT));
 
-        // Auto Response
+        // Auto Response.
         $mform->addElement(
             'advcheckbox',
-            constants::AUDIOCHAT_AUTORESPONSE,
+            itemtype::AUTORESPONSE,
             get_string('audiochat_autosend', constants::M_COMPONENT),
             get_string('audiochat_autosend_desc', constants::M_COMPONENT),
             [],
             [0, 1]
         );
-        $mform->setDefault(constants::AUDIOCHAT_AUTORESPONSE, 1);
+        $mform->setDefault(itemtype::AUTORESPONSE, 1);
 
-        //Allow Retry
-        $this->add_allowretry(constants::AUDIOCHAT_ALLOWRETRY, get_string('audiochatretry_desc', constants::M_COMPONENT));
+        // Allow Retry.
+        $this->add_allowretry(itemtype::ALLOWRETRY, get_string('audiochatretry_desc', constants::M_COMPONENT));
 
-        // Time limit if we need one
+        // Time limit if we need one.
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
 
         // Avatar image selection.
-        $imagefiles = glob($CFG->dirroot . '/mod/minilesson/pix/audiochatavatar*.{jpg,jpeg,png}', GLOB_BRACE);
+        $imagefiles = glob($CFG->dirroot . '/mod/minilesson/item/audiochat/pix/audiochatavatar*.{jpg,jpeg,png}', GLOB_BRACE);
         if (!empty($imagefiles)) {
             foreach ($imagefiles as $imagefilepath) {
                 if (file_exists($imagefilepath)) {
@@ -145,10 +148,10 @@ class itemform extends baseform
                         $groupelements[] = $mform->createElement('html', '<div class="audiochatavtarimage-container">');
                         $groupelements[] = $mform->createElement(
                             'radio',
-                            constants::AUDIOCHAT_AUDIOAVATAR,
+                            itemtype::AUDIOAVATAR,
                             null,
                             html_writer::img(
-                                new moodle_url(str_replace($CFG->dirroot, '', $defaultimagepath), ['themerev' => $CFG->themerev]),
+                                $OUTPUT->image_url(pathinfo($defaultimagepath, PATHINFO_FILENAME), self::get_component()),
                                 basename($defaultimagepath),
                                 ['class' => 'avatar-img']
                             ),
@@ -156,14 +159,14 @@ class itemform extends baseform
                             ['class' => 'avatar-image-check']
                         );
 
-                        $mform->setDefault(constants::AUDIOCHAT_AUDIOAVATAR, basename($defaultimagepath));
+                        $mform->setDefault(itemtype::AUDIOAVATAR, basename($defaultimagepath));
                     }
                     $groupelements[] = $mform->createElement(
                         'radio',
-                        constants::AUDIOCHAT_AUDIOAVATAR,
+                        itemtype::AUDIOAVATAR,
                         null,
                         html_writer::img(
-                            new moodle_url(str_replace($CFG->dirroot, '', $imagefilepath), ['themerev' => $CFG->themerev]),
+                            $OUTPUT->image_url(pathinfo($imagefilepath, PATHINFO_FILENAME), self::get_component()),
                             basename($imagefilepath),
                             ['class' => 'avatar-img']
                         ),
@@ -179,7 +182,7 @@ class itemform extends baseform
             }
         }
 
-        // The custom AI data fields
+        // The custom AI data fields.
         $mform->addElement('header', 'aicontextheading', get_string('aicontextheading', constants::M_COMPONENT));
         $mform->setExpanded('aicontextheading');
         $this->add_static_text('aicontext_instructions', '', get_string('aicontext_instructions', constants::M_COMPONENT));
@@ -192,17 +195,17 @@ class itemform extends baseform
                 $submissionoptions[$item->id] = $item->name;
             }
             $this->add_dropdown(
-                constants::AUDIOCHAT_STUDENT_SUBMISSION,
+                itemtype::STUDENT_SUBMISSION,
                 get_string('audiochat_student_submission', constants::M_COMPONENT),
                 $submissionoptions
             );
             $this->add_static_text('audiochat_student_submission_instructions', '', get_string('audiochat_student_submission_instructions', constants::M_COMPONENT));
         }
-        // AI Data 1 and 2
-        $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA1, get_string('audiochat_aidata1', constants::M_COMPONENT), false);
-        $mform->setDefault(constants::AUDIOCHAT_AIDATA1, '');
-        $this->add_textarearesponse(constants::AUDIOCHAT_AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
-        $mform->setDefault(constants::AUDIOCHAT_AIDATA2, '');
+        // AI Data 1 and 2.
+        $this->add_textarearesponse(itemtype::AIDATA1, get_string('audiochat_aidata1', constants::M_COMPONENT), false);
+        $mform->setDefault(itemtype::AIDATA1, '');
+        $this->add_textarearesponse(itemtype::AIDATA2, get_string('audiochat_aidata2', constants::M_COMPONENT), false);
+        $mform->setDefault(itemtype::AIDATA2, '');
 
         $PAGE->requires->js_call_amd(static::get_component() . '/aiprompt', 'init');
     }

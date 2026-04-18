@@ -35,6 +35,34 @@ class itemtype extends item
     /** Default image avatar */
     public const DEFAULT_AVATAR = 'cutepoodll_small.png';
 
+    public const INSTRUCTIONS = 'customtext6';
+
+    public const FEEDBACKINSTRUCTIONS = 'customdata3';
+
+    public const ROLE = 'customtext2';
+
+    public const VOICE = 'customtext3';
+
+    public const NATIVE_LANGUAGE = 'customtext4';
+
+    public const TOPIC = 'customtext5';
+
+    public const AIDATA1  = 'customdata1';
+
+    public const AIDATA2  = 'customdata2';
+
+    public const AUTORESPONSE = 'customint4';
+
+    public const ALLOWRETRY  = 'customint5';
+
+    public const INSTRUCTIONSSELECTION = 'customint6';
+
+    public const FEEDBACKSELECTION = 'customint7';
+
+    public const STUDENT_SUBMISSION = 'customint8';
+
+    public const AUDIOAVATAR = 'customtext7';
+
     /**
      * The class constructor.
      *
@@ -66,21 +94,21 @@ class itemtype extends item
         }
 
         //Allow retry
-        $testitem->allowretry = $this->itemrecord->{constants::AUDIOCHAT_ALLOWRETRY} == 1;
+        $testitem->allowretry = $this->itemrecord->{self::ALLOWRETRY} == 1;
 
         // Replace the placeholders with what we know, first correcting missing placeholder data
-        if (empty($this->itemrecord->{constants::AUDIOCHAT_ROLE})) {
-            $this->itemrecord->{constants::AUDIOCHAT_ROLE} = get_string('audiochat_role_default', constants::M_COMPONENT);
+        if (empty($this->itemrecord->{self::ROLE})) {
+            $this->itemrecord->{self::ROLE} = get_string('audiochat_role_default', constants::M_COMPONENT);
         }
-        if (empty($this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE})) {
-            $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE} = constants::M_LANG_ENUS;
+        if (empty($this->itemrecord->{self::NATIVE_LANGUAGE})) {
+            $this->itemrecord->{self::NATIVE_LANGUAGE} = constants::M_LANG_ENUS;
         }
-        if (empty($this->itemrecord->{constants::AUDIOCHAT_TOPIC})) {
-            $this->itemrecord->{constants::AUDIOCHAT_TOPIC} = 'student choice of topic';
+        if (empty($this->itemrecord->{self::TOPIC})) {
+            $this->itemrecord->{self::TOPIC} = 'student choice of topic';
         }
 
         // Students native language - it is possible to use the one set in wordcards here also, so we check for that
-        $testitem->audiochatnativelanguage = $this->itemrecord->{constants::AUDIOCHAT_NATIVE_LANGUAGE};
+        $testitem->audiochatnativelanguage = $this->itemrecord->{self::NATIVE_LANGUAGE};
         if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
             $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
             if (!empty($userprefnativelanguage)) {
@@ -89,7 +117,7 @@ class itemtype extends item
         }
 
         // Set up the audiochat instructions
-        $testitem->audiochatinstructions = $this->itemrecord->{constants::AUDIOCHAT_INSTRUCTIONS};
+        $testitem->audiochatinstructions = $this->itemrecord->{self::INSTRUCTIONS};
         // If no topic was set, then we use the default topic.
         if (empty($testitem->audiochatinstructions)) {
             $testitem->audiochatinstructions = get_string('audiochat:gradingprompt_dec1', constants::M_COMPONENT);
@@ -107,19 +135,19 @@ class itemtype extends item
                 '{ai data2}',
             ],
             [
-                $this->itemrecord->{constants::AUDIOCHAT_ROLE},
-                $this->itemrecord->{constants::AUDIOCHAT_VOICE},
+                $this->itemrecord->{self::ROLE},
+                $this->itemrecord->{self::VOICE},
                 $testitem->audiochatnativelanguage,
                 $this->language,
-                $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
-                $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
-                $this->itemrecord->{constants::AUDIOCHAT_AIDATA2},
+                $this->itemrecord->{self::TOPIC},
+                $this->itemrecord->{self::AIDATA1},
+                $this->itemrecord->{self::AIDATA2},
             ],
             $testitem->audiochatinstructions
         );
 
         // Set up the audiochat grade instructions.
-        $testitem->audiochatgradeinstructions = $this->itemrecord->{constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS};
+        $testitem->audiochatgradeinstructions = $this->itemrecord->{self::FEEDBACKINSTRUCTIONS};
         if (!empty($testitem->audiochatgradeinstructions)) {
             $testitem->audiochatgradeinstructions = str_replace(
                 [
@@ -132,23 +160,23 @@ class itemtype extends item
                     '{ai data2}',
                 ],
                 [
-                    $this->itemrecord->{constants::AUDIOCHAT_ROLE},
-                    $this->itemrecord->{constants::AUDIOCHAT_VOICE},
+                    $this->itemrecord->{self::ROLE},
+                    $this->itemrecord->{self::VOICE},
                     $testitem->audiochatnativelanguage,
                     $this->language,
-                    $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
-                    $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
-                    $this->itemrecord->{constants::AUDIOCHAT_AIDATA2},
+                    $this->itemrecord->{self::TOPIC},
+                    $this->itemrecord->{self::AIDATA1},
+                    $this->itemrecord->{self::AIDATA2},
                 ],
                 $testitem->audiochatgradeinstructions
             );
         }
 
         // Set the Auto turn detection to on or off.
-        $testitem->audiochat_autoresponse = $this->itemrecord->{constants::AUDIOCHAT_AUTORESPONSE} ? true : false;
+        $testitem->audiochat_autoresponse = $this->itemrecord->{self::AUTORESPONSE} ? true : false;
 
         // AI Voice.
-        $testitem->audiochat_voice = $this->itemrecord->{constants::AUDIOCHAT_VOICE};
+        $testitem->audiochat_voice = $this->itemrecord->{self::VOICE};
 
         $testitem->totalmarks = $this->itemrecord->{constants::TOTALMARKS};
         if ($this->itemrecord->{constants::TARGETWORDCOUNT} > 0) {
@@ -162,9 +190,9 @@ class itemtype extends item
         if (!empty($testitem->itemtext)) {
             $search = ['{topic}', '{ai data1}', '{ai data2}'];
             $replace = [
-                $this->itemrecord->{constants::AUDIOCHAT_TOPIC},
-                $this->itemrecord->{constants::AUDIOCHAT_AIDATA1},
-                $this->itemrecord->{constants::AUDIOCHAT_AIDATA2},
+                $this->itemrecord->{self::TOPIC},
+                $this->itemrecord->{self::AIDATA1},
+                $this->itemrecord->{self::AIDATA2},
             ];
             $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
         }
@@ -178,11 +206,13 @@ class itemtype extends item
         $testitem->language = $this->language;
         $testitem->region = $this->region;
 
-        $imgaudioavatar = $this->itemrecord->{constants::AUDIOCHAT_AUDIOAVATAR} ?
-            $this->itemrecord->{constants::AUDIOCHAT_AUDIOAVATAR} :
+        $imgaudioavatar = $this->itemrecord->{self::AUDIOAVATAR} ?
+            $this->itemrecord->{self::AUDIOAVATAR} :
             self::DEFAULT_AVATAR;
-        $avatarimage = new moodle_url("/mod/minilesson/pix/{$imgaudioavatar}");
-        $testitem->avatarimage = $avatarimage->out(false);
+        $testitem->avatarimage = $output->image_url(
+            pathinfo($imgaudioavatar, PATHINFO_FILENAME),
+            self::get_component()
+        )->out(false);
 
         return $testitem;
     }
@@ -193,14 +223,14 @@ class itemtype extends item
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{constants::AUDIOCHAT_INSTRUCTIONS} == '') {
-            $error->col = constants::AUDIOCHAT_INSTRUCTIONS;
+        if ($newrecord->{self::INSTRUCTIONS} == '') {
+            $error->col = self::INSTRUCTIONS;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
-        if ($newrecord->{constants::AUDIOCHAT_ROLE} == '') {
-            $error->col = constants::AUDIOCHAT_ROLE;
+        if ($newrecord->{self::ROLE} == '') {
+            $error->col = self::ROLE;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
@@ -219,20 +249,20 @@ class itemtype extends item
         $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
         $keycols['int2'] = ['jsonname' => 'relevance', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::RELEVANCE];
         $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
-        $keycols['int4'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_AUTORESPONSE];
-        $keycols['int5'] = ['jsonname' => 'allowretry', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_ALLOWRETRY];
-        $keycols['int6'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_INSTRUCTIONSSELECTION];
-        $keycols['int7'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => constants::AUDIOCHAT_FEEDBACKSELECTION];
-        $keycols['text5'] = ['jsonname' => 'audiochattopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_TOPIC];
-        $keycols['text6'] = ['jsonname' => 'audiochatinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_INSTRUCTIONS];
-        $keycols['data3'] = ['jsonname' => 'audiochatgradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_FEEDBACKINSTRUCTIONS];
-        $keycols['data1'] = ['jsonname' => 'audiochataidata1', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_AIDATA1];
-        $keycols['data2'] = ['jsonname' => 'audiochataidata2', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_AIDATA2];
-        $keycols['text2'] = ['jsonname' => 'audiochatrole', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_ROLE];
-        $keycols['text3'] = ['jsonname' => 'audiochatvoice', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AUDIOCHAT_VOICE];
-        $keycols['text4'] = ['jsonname' => 'audiochatnativelanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AUDIOCHAT_NATIVE_LANGUAGE];
-        $keycols['int8'] = ['jsonname' => 'studentsubmission', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::AUDIOCHAT_STUDENT_SUBMISSION];
-        $keycols['text7'] = ['jsonname' => 'audioavatar', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AUDIOCHAT_AUDIOAVATAR];
+        $keycols['int4'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::AUTORESPONSE];
+        $keycols['int5'] = ['jsonname' => 'allowretry', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::ALLOWRETRY];
+        $keycols['int6'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::INSTRUCTIONSSELECTION];
+        $keycols['int7'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::FEEDBACKSELECTION];
+        $keycols['text5'] = ['jsonname' => 'audiochattopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::TOPIC];
+        $keycols['text6'] = ['jsonname' => 'audiochatinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::INSTRUCTIONS];
+        $keycols['data3'] = ['jsonname' => 'audiochatgradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::FEEDBACKINSTRUCTIONS];
+        $keycols['data1'] = ['jsonname' => 'audiochataidata1', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::AIDATA1];
+        $keycols['data2'] = ['jsonname' => 'audiochataidata2', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::AIDATA2];
+        $keycols['text2'] = ['jsonname' => 'audiochatrole', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::ROLE];
+        $keycols['text3'] = ['jsonname' => 'audiochatvoice', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::VOICE];
+        $keycols['text4'] = ['jsonname' => 'audiochatnativelanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => self::NATIVE_LANGUAGE];
+        $keycols['int8'] = ['jsonname' => 'studentsubmission', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => self::STUDENT_SUBMISSION];
+        $keycols['text7'] = ['jsonname' => 'audioavatar', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => self::AUDIOAVATAR];
         return $keycols;
     }
 
@@ -284,7 +314,7 @@ class itemtype extends item
 
         $submission = $this->itemrecord;
         if (!empty($submission)) {
-            $studentsubmissionitemid = $submission->{constants::AUDIOCHAT_STUDENT_SUBMISSION};
+            $studentsubmissionitemid = $submission->{self::STUDENT_SUBMISSION};
             $attemptrec = utils::latest_attempt(
                 $this->moduleinstance->course,
                 $this->moduleinstance->id
@@ -311,23 +341,23 @@ class itemtype extends item
         $item = $this->itemrecord;
         $studentsubmission = $this->fetch_student_submission();
         $replace = [
-            $item->{constants::AUDIOCHAT_TOPIC},
-            $item->{constants::AUDIOCHAT_AIDATA1},
-            $item->{constants::AUDIOCHAT_AIDATA2},
+            $item->{self::TOPIC},
+            $item->{self::AIDATA1},
+            $item->{self::AIDATA2},
             $studentsubmission ? $studentsubmission : '',
         ];
         $instructions->feedbackscheme = str_replace($search, $replace, (string) $instructions->feedbackscheme);
         $instructions->markscheme = str_replace($search, $replace, (string) $instructions->markscheme);
     }
 
-    public function prepare_result(stdClass $result) {
+    public function prepare_result(stdClass $result, stdClass $itemquizdata) {
         $search = ['{topic}', '{ai data1}', '{ai data2}'];
         $items = $this->itemrecord;
         $context = $this->context;
         $replace = [
-            $items->{constants::AUDIOCHAT_TOPIC},
-            $items->{constants::AUDIOCHAT_AIDATA1},
-            $items->{constants::AUDIOCHAT_AIDATA2},
+            $items->{self::TOPIC},
+            $items->{self::AIDATA1},
+            $items->{self::AIDATA2},
         ];
         $itemtext = file_rewrite_pluginfile_urls(
             $items->{constants::TEXTQUESTION},

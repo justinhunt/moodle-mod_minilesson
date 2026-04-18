@@ -1,8 +1,7 @@
 define(
     ['jquery', 'core/log','core/modal_factory','core/str','core/modal_events',
-        'mod_minilesson/definitions','core/templates', 'mod_minilesson/correctionsmarkup',
-        'mod_minilesson/passagereading'],
-    function ($, log,ModalFactory, str, ModalEvents, def, templates, correctionsmarkup, passagereading) {
+        'mod_minilesson/definitions','core/templates', 'mod_minilesson/correctionsmarkup'],
+    function ($, log,ModalFactory, str, ModalEvents, def, templates, correctionsmarkup) {
         "use strict"; // jshint ;_;
 
     /*
@@ -64,22 +63,23 @@ define(
                             showbutton.textContent = showbutton.dataset.showText;
                         }
                     }
-                })
+                });
 
                 $('body').on('click','.mod_minilesson_finishedanswerdetailslink',function (e) {
-                            e.preventDefault();
-                            var type = $(this).data('type');
-                            var resultstemplate = $(this).data('resultstemplate');
-                            var resultsdata = $(this).data('resultsdata');
-                            var teacherreport = $(this).data('teacherreport');
-                            resultsdata.teacherreport = teacherreport;
+                    e.preventDefault();
+                    var resultstemplate = $(this).data('resultstemplate');
+                    var resultsdata = $(this).data('resultsdata');
+                    var teacherreport = $(this).data('teacherreport');
+                    resultsdata.teacherreport = teacherreport;
 
-                            var thetarget = $(this).data('target');
+                    var thetarget = $(this).data('target');
                     if (thetarget === undefined) {
-                        return;}
+                        return;
+                    }
                     var resultsbox = $('#' + thetarget);
                     if (resultsbox === undefined) {
-                        return;}
+                        return;
+                    }
                     if (resultsbox.is(':visible')) {
                         resultsbox.hide();
                         return;
@@ -89,7 +89,7 @@ define(
                         return;
                     }
         //otherwise load the results and show the box
-                    templates.render('mod_minilesson/' + resultstemplate,resultsdata).then(
+                    templates.render(resultstemplate,resultsdata).then(
                         function (html,js) {
                             resultsbox.html(html);
                             //do corrections markup .. if we have them
@@ -101,7 +101,9 @@ define(
                             }
                             //do passage results
                             if (resultsdata.hasOwnProperty('unreached')) {
-                                passagereading.doComparisonMarkup(resultsdata.comparison,thetarget);
+                                require([`${def.get_sub_component('passagereading')}/itemtype`], passagereading => {
+                                    passagereading.doComparisonMarkup(resultsdata.comparison,thetarget);
+                                });
                             }
 
                             //show and hide

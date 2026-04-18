@@ -17,7 +17,9 @@
 
 namespace mod_minilesson\local\itemtype;
 
+use core_plugin_manager;
 use mod_minilesson\constants;
+use mod_minilesson\plugininfo\minilessonitem;
 use mod_minilesson\utils;
 use templatable;
 use renderable;
@@ -270,7 +272,7 @@ abstract class item implements templatable, renderable
     public function export_for_template(\renderer_base $output)
     {
         $testitem = new \stdClass();
-        $testitem->itemimageurl = (string)$output->image_url('icon', static::get_component());
+        $testitem->itemimageurl = $this->get_plugininfo()->get_logo_url()->out(false);
         $testitem->templatename = $this->get_template_name($output);
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
@@ -1868,7 +1870,12 @@ abstract class item implements templatable, renderable
     public function prepare_instructions_for_ai_grade(stdClass $instructions) {
     }
 
-    public function prepare_result(stdClass $result) {
+    public function prepare_result(stdClass $result, stdClass $itemquizdata) {
+        $result->hascorrectanswer = false;
+        $result->hasincorrectanswer = false;
+        $result->hasanswerdetails = false;
+        $result->correctans = [];
+        $result->incorrectans = [];
     }
 
     public static function is_configured() {
@@ -1881,6 +1888,10 @@ abstract class item implements templatable, renderable
             return !empty($CFG->minilesson_experimental);
         }
         return true;
+    }
+
+    public static function get_plugininfo(): minilessonitem {
+        return core_plugin_manager::instance()->get_plugin_info(static::get_component());
     }
 
 }

@@ -40,7 +40,6 @@ use mod_minilesson\utils;
 use mod_minilesson\constants;
 use mod_minilesson\diff;
 use mod_minilesson\alphabetconverter;
-use mod_minilesson\local\itemtype\item;
 use mod_minilesson\curl;
 
 /**
@@ -722,7 +721,11 @@ class mod_minilesson_external extends external_api
             $context,
             $itemid
         );
-        $iconurl = new moodle_url('/mod/minilesson/pix/' . $type . '.png', ['ver' => $CFG->themerev]);
+        /** @var plugininfo/minilessonitem $pluginfo */
+        $pluginfo = core_plugin_manager::instance()->get_plugin_info(
+            utils::get_sub_component($type)
+        );
+        $iconurl = $pluginfo->get_logo_url();
         $ret = new \stdClass();
         $ret->olditemid = $itemid;
         $ret->newitemid = $newitemid;
