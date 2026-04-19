@@ -1,7 +1,7 @@
 define(
-    ['jquery', 'core/log','core/modal_factory','core/str','core/modal_events',
+    ['jquery', 'core/log','core/modal_save_cancel','core/str', 'core/modal_events',
         'mod_minilesson/definitions','core/templates', 'mod_minilesson/correctionsmarkup'],
-    function ($, log,ModalFactory, str, ModalEvents, def, templates, correctionsmarkup) {
+    function ($, log,ModalSaveCancel, str, ModalEvents, def, templates, correctionsmarkup) {
         "use strict"; // jshint ;_;
 
     /*
@@ -39,8 +39,7 @@ define(
                     }
 
                   //if its a reattempt, confirm and proceed
-                    ModalFactory.create({
-                        type: ModalFactory.types.SAVE_CANCEL,
+                    ModalSaveCancel.create({
                         title: that.strings.reattempttitle,
                         body: that.strings.reattemptbody
                             })

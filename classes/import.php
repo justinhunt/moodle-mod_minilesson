@@ -535,14 +535,14 @@ class import
         // make an empty item object
         $itemobj = new \stdClass();
 
-        // loop through columnns making a nice value for our json object
+        // Loop through columnns making a nice value for our json object.
         foreach ($keycolumns as $keycolumn) {
-            $fieldvalue = $itemrecord->{$keycolumn['dbname']};
-            // skip any optional fields whose value is the default
-            // anonymous files are not in the DB record, so we need to process them a little later, to see if they are present
-            // for some reason integers and nulls are strings in $fieldvalue, so we  == though it should be ===
+            $fieldvalue = property_exists($itemrecord, $keycolumn['dbname']) ? $itemrecord->{$keycolumn['dbname']} : null;
+            // Skip any optional fields whose value is the default
+            // Anonymous files are not in the DB record, so we need to process them a little later, to see if they are present
+            // For some reason integers and nulls are strings in $fieldvalue, so we  == though it should be ===
             if ($keycolumn['optional'] == true && $keycolumn['default'] == $fieldvalue && $keycolumn['type'] !== 'anonymousfile') {
-                // skip
+                // Skip.
                 continue;
             }
 
@@ -561,7 +561,7 @@ class import
                 case 'voice':
                     if (array_key_exists(strtolower($fieldvalue), $this->allvoices)) {
                         $jsonvalue = $this->allvoices[strtolower($fieldvalue)];
-                    } elseif (in_array(strtolower($fieldvalue) . '_g', $this->allvoices)) {
+                    } else if (in_array(strtolower($fieldvalue) . '_g', $this->allvoices)) {
                         $jsonvalue = $this->allvoices[strtolower($fieldvalue) . '_g'];
                     } else {
                         $jsonvalue = 'auto';

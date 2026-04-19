@@ -6,10 +6,10 @@ define([
     'mod_minilesson/definitions',
     'mod_minilesson/translate',
     'mod_minilesson/external/yarn-bound',
-    'core/modal_factory',
+    'core/modal_cancel',
     'core/fragment',
     'core/templates',
-], function ($, log, str, notification, def, translate, YarnBound, ModalFactory, Fragment, Templates) {
+], function ($, log, str, notification, def, translate, YarnBound, ModalCancel, Fragment, Templates) {
     "use strict"; // jshint ;_;
 
     /**
@@ -889,8 +889,7 @@ define([
                 if (!form) {
                     return;
                 }
-                ModalFactory.create({
-                    type: ModalFactory.types.CANCEL,
+                ModalCancel.create({
                     large: true,
                     removeOnClose: true,
                     templateContext: {

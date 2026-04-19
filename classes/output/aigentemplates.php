@@ -22,10 +22,8 @@ use mod_minilesson\aigen_contextform;
 use mod_minilesson\constants;
 use mod_minilesson\template_tag_manager;
 use moodle_url;
-use renderable;
 use renderer_base;
 use single_button;
-use templatable;
 
 /**
  * Class aigentemplates
@@ -34,7 +32,7 @@ use templatable;
  * @copyright  2025 YOUR NAME <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class aigentemplates implements renderable, templatable
+class aigentemplates implements \renderable, \templatable
 {
     /**
      * @var object $cm course module object

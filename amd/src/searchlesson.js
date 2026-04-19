@@ -23,7 +23,7 @@
 import Ajax from 'core/ajax';
 import * as Notification from 'core/notification';
 import Templates from 'core/templates';
-import ModalFactory from 'core/modal_factory';
+import Modal from 'core/modal';
 import ModalEvents from 'core/modal_events';
 import * as Str from 'core/str';
 import Fragment from 'core/fragment';
@@ -242,8 +242,7 @@ export const registerFilter = (opts) => {
                         );
                     }));
             };
-            ModalFactory.create({
-                type: ModalFactory.types.DEFAULT,
+            Modal.create({
                 large: false,
                 removeOnClose: true,
                 title: Str.get_string('translatetoimport', component),
@@ -295,8 +294,7 @@ export const registerFilter = (opts) => {
             previewbtn.innerHTML = '';
             previewbtn.appendChild(getSpinner());
 
-            ModalFactory.create({
-                type: ModalFactory.types.DEFAULT,
+            Modal.create({
                 title: title,
                 body: getPreviewIframe(url),
                 large: true,

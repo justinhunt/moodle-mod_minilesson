@@ -1,3 +1,9 @@
+Version 1.1.32 (Build 2026042000)
+- Updates for Moodle 5.2 (now requires Moodle 4.3)
+- Added support for core/modal API (dropped support for legacy modal_factory)
+- Large refactoring of item types as subplugins
+- Fixed issue where error might show on viewing previously submitted minilesson
+
 Version 1.1.31 (Build 2026040100)
 - IF tweaks
 

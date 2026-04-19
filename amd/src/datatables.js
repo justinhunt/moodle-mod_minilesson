@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'core/str', 'core/log', 'core/modal_factory', 'core/modal_events', 'https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js'],
-    function ($, str, log, ModalFactory, ModalEvents) {
+    ['jquery', 'core/str', 'core/log', 'core/modal_save_cancel', 'core/modal_events', 'https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js'],
+    function ($, str, log, ModalSaveCancel, ModalEvents) {
         "use strict"; // jshint ;_;
 
     /*
@@ -31,8 +31,7 @@ define(
                 bulkdelete_btn.on('click', function (e) {
                     var btn = bulkdelete_btn[0];
 
-                    ModalFactory.create({
-                        type: ModalFactory.types.SAVE_CANCEL,
+                    ModalSaveCancel.create({
                         title: str.get_string('confirmation', 'admin'),
                         body: str.get_string('bulkdeletequestion', 'mod_minilesson'),
                         removeOnClose: true

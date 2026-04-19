@@ -8,8 +8,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define(
-    ['jquery', 'core/log', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/ajax','core/notification'],
-    function ($, log, Str, ModalFactory, ModalEvents, Ajax, Notification) {
+    ['jquery', 'core/log', 'core/str', 'core/modal_save_cancel', 'core/modal_events', 'core/ajax','core/notification'],
+    function ($, log, Str, ModalSaveCancel, ModalEvents, Ajax, Notification) {
 
         /**
          * Constructor
@@ -90,8 +90,7 @@ define(
                 var itemid = clickedLink.data('id');
                 dd.itemid = itemid;
                 var itemname = clickedLink.data('name');
-                ModalFactory.create({
-                    type: ModalFactory.types.SAVE_CANCEL,
+                ModalSaveCancel.create({
                     title: dd.formtitle,
                     body: dd.formmessage + '<i>' + itemname + '</i>',
                 })

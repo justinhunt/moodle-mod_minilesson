@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026040100;
-$plugin->requires = 2016052300; // Requires Moodle 3.1.
+$plugin->version = 2026042000;
+$plugin->requires = 2023100900; // Requires Moodle 4.3.
 $plugin->component = 'mod_minilesson';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Version 1.1.31 (Build 2026040100)';
+$plugin->release = 'Version 1.1.32 (Build 2026042000)';

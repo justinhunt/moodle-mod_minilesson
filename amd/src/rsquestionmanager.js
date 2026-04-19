@@ -2,8 +2,8 @@
 define(
     ['jquery', 'core/log','core/templates','mod_minilesson/definitions','mod_minilesson/modalformhelper',
         'mod_minilesson/modaldeletehelper','mod_minilesson/moveitemhelper','mod_minilesson/modalpreviewhelper',
-        'mod_minilesson/duplicateitemhelper','mod_minilesson/datatables', 'core/modal_factory', 'core/modal_events'],
-    function ($,  log, templates, def, mfh, mdh, mih, mph,dplh, datatables, ModalFactory, ModalEvents) {
+        'mod_minilesson/duplicateitemhelper','mod_minilesson/datatables', 'core/modal_cancel', 'core/modal_events'],
+    function ($,  log, templates, def, mfh, mdh, mih, mph,dplh, datatables, ModalCancel, ModalEvents) {
 
         "use strict"; // jshint ;_;
 
@@ -229,8 +229,7 @@ define(
                     lessonitems: dd.lessonitems,
                 };
                 $('#additembtn').on('click', function () {
-                    ModalFactory.create({
-                        type: ModalFactory.types.CANCEL,
+                    ModalCancel.create({
                         body: templates.render('mod_minilesson/lessonitem', context),
                         }).then(function (modal) {
                             dd.modal = modal;

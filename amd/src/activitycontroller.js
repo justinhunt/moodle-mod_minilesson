@@ -1,7 +1,7 @@
 /* jshint ignore:start */
 define(['jquery', 'core/log','mod_minilesson/definitions','mod_minilesson/quizhelper','mod_minilesson/pollyhelper',
-    'core/modal_factory', 'core/modal_events', 'core/str'],
-    function ($,  log, def,  quizhelper,polly, ModalFactory, ModalEvents, Str) {
+    'core/modal_save_cancel', 'core/modal_events', 'core/str'],
+    function ($,  log, def,  quizhelper,polly, ModalSaveCancel, ModalEvents, Str) {
 
     "use strict"; // jshint ;_;
 
@@ -111,8 +111,7 @@ define(['jquery', 'core/log','mod_minilesson/definitions','mod_minilesson/quizhe
                     {key: 'confirmactionmessage', component: 'mod_minilesson'},
                     {key: 'ok', component: 'moodle'},
                 ]).then(strings => {
-                    ModalFactory.create({
-                        type: ModalFactory.types.SAVE_CANCEL,
+                    ModalSaveCancel.create({
                         title: strings[0],
                         body: strings[1],
                         buttons: {

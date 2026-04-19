@@ -73,8 +73,8 @@ function minilesson_supports($feature)
             } else {
                 return null;
             }
-            // FEATURE_MOD_OTHERPURPOSE  - wont be defined for < 5.1. so we hard code it.
-            // If it is defined then interactivecontent  and assessment will also be  defined.
+        // FEATURE_MOD_OTHERPURPOSE  - wont be defined for < 5.1. so we hard code it.
+        // If it is defined then interactivecontent  and assessment will also be  defined.
         case "mod_otherpurpose":
             return "assessment";
 
@@ -194,8 +194,11 @@ function minilesson_reset_userdata($data)
             minilesson_reset_gradebook($data->courseid);
         }
 
-        $status[] = ['component' => $componentstr,
-        'item' => get_string('deletealluserdata', constants::M_COMPONENT), 'error' => false];
+        $status[] = [
+            'component' => $componentstr,
+            'item' => get_string('deletealluserdata', constants::M_COMPONENT),
+            'error' => false
+        ];
     }
 
     // Updating dates - shift may be negative too.
@@ -1282,7 +1285,7 @@ function minilesson_output_fragment_preview_slides($args)
     $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::sanitize_markdown($testitem->slidesmarkdown);
     $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::process_layout_markdown($testitem->slidesmarkdown);
 
-    return $OUTPUT->render_from_template(constants::M_COMPONENT . '/slidesinner', $testitem);
+    return $OUTPUT->render_from_template('minilessonitem_slides' . '/slidesinner', $testitem);
 }
 
 /**

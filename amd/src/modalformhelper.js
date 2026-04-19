@@ -8,8 +8,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define(
-    ['jquery', 'core/log','core/str', 'core/modal_factory', 'core/modal_events', 'core/fragment', 'core/ajax', 'core/yui'],
-    function ($, log,Str, ModalFactory, ModalEvents, Fragment, Ajax, Y) {
+    ['jquery', 'core/log','core/str', 'core/modal_save_cancel', 'core/modal_events', 'core/fragment', 'core/ajax', 'core/yui'],
+    function ($, log,Str, ModalSaveCancel, ModalEvents, Fragment, Ajax, Y) {
 
         /**
          * Constructor
@@ -75,8 +75,7 @@ define(
                 dd.itemid = $(this).data('id');
                 dd.formname = $(this).data('qtype');
 
-                ModalFactory.create({
-                    type: ModalFactory.types.SAVE_CANCEL,
+                ModalSaveCancel.create({
                     title: dd.formtitle,
                     body: dd.getBody({})
                 }).then(function (modal) {

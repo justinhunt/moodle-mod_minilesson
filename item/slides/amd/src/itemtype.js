@@ -1,9 +1,9 @@
 define(
     [
     'jquery', 'core/log', 'mod_minilesson/definitions', 'minilessonitem_slides/reveal',
-    'core/str', 'core/modal_factory', 'core/fragment', 'mod_minilesson/fullscreen_helper'
+    'core/str', 'core/modal_cancel', 'core/fragment', 'mod_minilesson/fullscreen_helper'
     ],
-    function ($, log, def, RevealImplement, Str, ModalFactory, Fragment, FullscreenHelper) {
+    function ($, log, def, RevealImplement, Str, ModalCancel, Fragment, FullscreenHelper) {
 
         "use strict"; // jshint ;_;
 
@@ -122,8 +122,7 @@ define(
                     if (!form) {
                         return;
                     }
-                    ModalFactory.create({
-                        type: ModalFactory.types.CANCEL,
+                    ModalCancel.create({
                         large: true,
                         removeOnClose: true,
                         templateContext: {

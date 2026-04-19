@@ -28,7 +28,8 @@ use mod_minilesson\local\itemform\baseform;
 
 use mod_minilesson\constants;
 
-class itemform extends baseform {
+class itemform extends baseform
+{
     // Got list from https://api.github.com/repos/hakimel/reveal.js/contents/css/theme/source?ref=5.2.1
     const THEMES = [
         'beige',
@@ -51,7 +52,8 @@ class itemform extends baseform {
     /**
      * Add any form fields specific to this item type.
      */
-    public function custom_definition() {
+    public function custom_definition()
+    {
         global $PAGE;
         $mform = $this->_form;
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('slides_instructions1', constants::M_COMPONENT));
@@ -88,11 +90,15 @@ class itemform extends baseform {
         $mform->setType(itemtype::SLIDEFONTSIZE, PARAM_FLOAT);
         $mform->setDefault(itemtype::SLIDEFONTSIZE, 32);
 
-        $this->add_dropdown(itemtype::FULLSCREEN, get_string('fullscreen', constants::M_COMPONENT),
+        $this->add_dropdown(
+            itemtype::FULLSCREEN,
+            get_string('fullscreen', constants::M_COMPONENT),
             [
                 0 => get_string('no'),
                 1 => get_string('yes'),
-            ], 0);
+            ],
+            0
+        );
 
 
         $mform->registerNoSubmitButton('previewbutton');
@@ -102,7 +108,7 @@ class itemform extends baseform {
         // There is an issue because the region by default may not work in China (slides is not properly init with region here).
         // So preview may not work in China region unless we load from different CDN. TBD.
         $PAGE->requires->js_call_amd(
-            constants::M_COMPONENT . '/slides',
+            'minilessonitem_slides/itemtype',
             'register_previewbutton',
             [
                 $previewbtn->getAttribute('id'),

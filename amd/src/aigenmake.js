@@ -1,7 +1,7 @@
 define(
-    ['jquery','core/log','core/templates','core/fragment','core/modal_factory',
-        'core/str','core/config','core/modal_events', 'core_table/dynamic', 'core/ajax'],
-    function ($,log,templates,Fragment,Modalfactory,Str,Config,ModalEvents, DyanamicTable, Ajax) {
+    ['jquery','core/log','core/templates','core/fragment','core/modal_save_cancel',
+        'core/str','core/config', 'core/modal_events', 'core_table/dynamic', 'core/ajax'],
+    function ($,log,templates,Fragment,ModalSaveCancel,Str,Config, ModalEvents, DyanamicTable, Ajax) {
         "use strict"; // jshint ;_;
 
     /*
@@ -302,8 +302,7 @@ define(
                     wrapper.addEventListener('submit', function (e) {
                         if (e.target.elements.hasOwnProperty('templateid')) {
                             e.preventDefault();
-                            Modalfactory.create({
-                                type: Modalfactory.types.SAVE_CANCEL,
+                            ModalSaveCancel.create({
                                 title: Str.get_string('aigenmodaltitle', 'mod_minilesson'),
                                 body: self.callAiGenerateContextFormApi(e.target),
                                 large: true,
