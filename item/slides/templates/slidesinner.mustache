@@ -16,7 +16,7 @@
 </div>
 {{#inajax}}
     {{#js}}
-        require(['mod_minilesson/reveal'], function(RevealImplement) {
+        require(['minilessonitem_slides/reveal'], function(RevealImplement) {
             RevealImplement.init(document.querySelector("#reveal-{{{uniqueid}}}"))
             .then(function(instance) {
                 instance.initialize();

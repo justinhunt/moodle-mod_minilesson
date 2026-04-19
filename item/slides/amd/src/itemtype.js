@@ -105,6 +105,10 @@ define(
                         });
                     }
                 });
+
+                if ($("#" + itemdata.uniqueid + "_container").is(':visible')) {
+                    $("#" + itemdata.uniqueid + "_container").trigger('showElement');
+                }
             },
 
             register_previewbutton: function (buttonid, region = 'default') {
