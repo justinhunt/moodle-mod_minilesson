@@ -410,185 +410,7 @@ if ($hassiteconfig) {
     //add other API keys settings page to minilesson category
     $ADMIN->add('modsettingsminilessoncat', $otherapikeysettings);
 
-    //create audio chat settings page
-    $pagetitle = get_string('audiochat', constants::M_COMPONENT);
-    $audiochatsettings = new admin_settingpage('modsettingminilessonaudiochat', $pagetitle, 'moodle/site:config');
-
-    // Audio chat settings.
-    $audiochatsettings->add(new admin_setting_heading(constants::M_COMPONENT . '/audiochat', get_string('audiochat', constants::M_COMPONENT), ''));
-
-    // Audio Chat Prompts
-    $maxprompts = constants::MAX_AI_PROMPTS;
-    for ($i = 0; $i < $maxprompts; $i++) {
-        // Audio Chat instructions prompt
-        $defaults = 3;
-        $name = 'audiochat_instructionspromptheading_' . ($i + 1);
-        $label = get_string('instructionsprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $details = '';
-        $default = $i < $defaults ? get_string('audiochat:instructionsprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtext(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_TEXT
-        ));
-        $name = 'audiochat_instructionsprompt_' . ($i + 1);
-        $label = get_string('instructionsprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $default = $i < $defaults ? get_string('audiochat:instructionsprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtextarea(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_RAW
-        ));
-    }
-    for ($i = 0; $i < $maxprompts; $i++) {
-        //Audio Chat feedback prompt
-        $defaults = 2;
-        $name = 'audiochat_feedbackpromptheading_' . ($i + 1);
-        $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $details = '';
-        $default = $i < $defaults ? get_string('audiochat:feedbackprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtext(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_TEXT
-        ));
-        $name = 'audiochat_feedbackprompt_' . ($i + 1);
-        $label = get_string('feedbackprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $default = $i < $defaults ? get_string('audiochat:feedbackprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $audiochatsettings->add(new admin_setting_configtextarea(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_RAW
-        ));
-    }
-    //add audiochat settings page to minilesson category
-    $ADMIN->add('modsettingsminilessoncat', $audiochatsettings);
-
-    // Free speaking settings.
-    $pagetitle = get_string('freespeaking', constants::M_COMPONENT);
-    $freespeakingsettings = new admin_settingpage('modsettingminilessonfreespeaking', $pagetitle, 'moodle/site:config');
-
-    $freespeakingsettings->add(new admin_setting_heading(constants::M_COMPONENT . '/freespeaking', get_string('freespeaking', constants::M_COMPONENT), ''));
-    $maxprompts = constants::MAX_AI_PROMPTS;
-
-    for ($i = 0; $i < $maxprompts; $i++) {
-        //Free Speaking instructions prompt
-        $defaults = 3;
-        $name = 'freespeaking_gradingpromptheading_' . ($i + 1);
-        $label = get_string('gradingprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $details = '';
-        $default =  $i < $defaults ? get_string('freespeaking:gradingprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $freespeakingsettings->add(new admin_setting_configtext(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_TEXT
-        ));
-        $name = 'freespeaking_gradingprompt_' . ($i + 1);
-        $label = get_string('gradingprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $default = $i < $defaults ? get_string('freespeaking:gradingprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $freespeakingsettings->add(new admin_setting_configtextarea(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_RAW
-        ));
-    }
-    for ($i = 0; $i < $maxprompts; $i++) {
-        //Free Speaking Feedback Prompt
-        $defaults = 2;
-        $name = 'freespeaking_feedbackpromptheading_' . ($i + 1);
-        $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $details = '';
-        $default = $i < $defaults ? get_string('freespeaking:feedbackprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $freespeakingsettings->add(new admin_setting_configtext(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_TEXT
-        ));
-        $name = 'freespeaking_feedbackprompt_' . ($i + 1);
-        $label = get_string('feedbackprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $default = $i < $defaults ? get_string('freespeaking:feedbackprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $freespeakingsettings->add(new admin_setting_configtextarea(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_RAW
-        ));
-    }
-    // Add free speaking settings page to minilesson category.
-    $ADMIN->add('modsettingsminilessoncat', $freespeakingsettings);
-
-    // Free Writing settings.
-    $pagetitle = get_string('freewriting', constants::M_COMPONENT);
-    $freewritingsettings = new admin_settingpage('modsettingminilessonfreewriting', $pagetitle, 'moodle/site:config');
-    $freewritingsettings->add(new admin_setting_heading(constants::M_COMPONENT . '/freewriting', get_string('freewriting', constants::M_COMPONENT), ''));
-    $maxprompts = constants::MAX_AI_PROMPTS;
-
-    for ($i = 0; $i < $maxprompts; $i++) {
-        //Free Writing instructions prompt
-        $defaults = 3;
-        $name = 'freewriting_gradingpromptheading_' . ($i + 1);
-        $label = get_string('gradingprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $details = '';
-        $default = $i < $defaults ? get_string('freewriting:gradingprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $freewritingsettings->add(new admin_setting_configtext(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_TEXT
-        ));
-        $name = 'freewriting_gradingprompt_' . ($i + 1);
-        $label = get_string('gradingprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $default = $i < $defaults ? get_string('freewriting:gradingprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $freewritingsettings->add(new admin_setting_configtextarea(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_RAW
-        ));
-    }
-    for ($i = 0; $i < $maxprompts; $i++) {
-        // Free Writing Feedback Prompt.
-        $defaults = 2;
-        $name = 'freewriting_feedbackpromptheading_' . ($i + 1);
-        $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $details = '';
-        $default = $i < $defaults ? get_string('freewriting:feedbackprompt' . ($i + 1), constants::M_COMPONENT) : '';
-        $freewritingsettings->add(new admin_setting_configtext(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_TEXT
-        ));
-        $name = 'freewriting_feedbackprompt_' . ($i + 1);
-        $label = get_string('feedbackprompt', constants::M_COMPONENT) . ' ' . ($i + 1);
-        $default = $i < $defaults ? get_string('freewriting:feedbackprompt_dec' . ($i + 1), constants::M_COMPONENT) : '';
-        $freewritingsettings->add(new admin_setting_configtextarea(
-            constants::M_COMPONENT . "/$name",
-            $label,
-            $details,
-            $default,
-            PARAM_RAW
-        ));
-    }
-
+    // Lesson bank settings.
     $mainsettings->add(new admin_setting_configcheckbox(
         constants::M_COMPONENT .  '/setlessonbank',
         get_string('enablelessonbank', constants::M_COMPONENT),
@@ -602,9 +424,6 @@ if ($hassiteconfig) {
         get_string('lessonbankurl_details', constants::M_COMPONENT),
         ''
     ));
-
-    // Add prompt settings page to minilesson category.
-    $ADMIN->add('modsettingsminilessoncat', $freewritingsettings);
 
     // AI MANAGER.
     if (class_exists(aimanager::class) && class_exists(\core_ai\manager::class)) {
@@ -634,6 +453,11 @@ if ($hassiteconfig) {
         }
 
         $ADMIN->add('modsettingsminilessoncat', $aimanagersettings);
+    }
+
+    $plugins = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
+    foreach ($plugins as $plugin) {
+        $plugin->load_settings($ADMIN, 'modsettingsminilessoncat', $hassiteconfig);
     }
 
 }

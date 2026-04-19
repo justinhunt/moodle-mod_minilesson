@@ -32,7 +32,6 @@
 use mod_minilesson\aigen_contextform;
 use mod_minilesson\constants;
 use mod_minilesson\local\formelement\ttsaudio;
-use mod_minilesson\local\itemtype\item_audiochat;
 use mod_minilesson\translate_form;
 use mod_minilesson\utils;
 
@@ -1273,15 +1272,15 @@ function minilesson_output_fragment_preview_slides($args)
             // Replace only the filename part.
             return str_replace($filename, $newsrc, $matches[0]);
         },
-        $formdata[constants::SLIDES_MARKDOWN]
+        $formdata[\minilessonitem_slides\itemtype::MARKDOWN]
     );
 
-    $testitem->selectedtheme = $formdata[constants::SLIDETHEME];
-    $testitem->selectedfontsize = $formdata[constants::SLIDEFONTSIZE];
+    $testitem->selectedtheme = $formdata[\minilessonitem_slides\itemtype::SLIDETHEME];
+    $testitem->selectedfontsize = $formdata[\minilessonitem_slides\itemtype::SLIDEFONTSIZE];
 
     // Standardize markdown output, applying layout formatting, before rendering the preview template.
-    $testitem->slidesmarkdown = \mod_minilesson\local\itemtype\item_slides::sanitize_markdown($testitem->slidesmarkdown);
-    $testitem->slidesmarkdown = \mod_minilesson\local\itemtype\item_slides::process_layout_markdown($testitem->slidesmarkdown);
+    $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::sanitize_markdown($testitem->slidesmarkdown);
+    $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::process_layout_markdown($testitem->slidesmarkdown);
 
     return $OUTPUT->render_from_template(constants::M_COMPONENT . '/slidesinner', $testitem);
 }
@@ -1318,7 +1317,10 @@ function minilesson_output_fragment_audiochat_fetchstudentsubmission($args)
     $minilesson = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
     $itemrecord = $DB->get_record(constants::M_QTABLE, ['id' => $args->itemid]);
 
-    $theaudiochat = new item_audiochat($itemrecord, $minilesson, $args->context);
+    $theaudiochat = utils::fetch_item_from_itemrecord($itemrecord, $minilesson, $args->context);
+    if (empty($theaudiochat)) {
+        throw new moodle_exception('Item type handler plugin not found');
+    }
     $studentsubmission = $theaudiochat->fetch_student_submission();
     return $studentsubmission;
 }

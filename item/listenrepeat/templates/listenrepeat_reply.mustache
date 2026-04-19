@@ -1,0 +1,23 @@
+<div class="landr_reply_container landr_reply_{{pointer}}" style="display: none;">
+    <i class="fa fa-user landr_icon"></i>
+    <div class="landr_speech_inputs">
+        {{#words}}
+            {{#isword}}
+            <ruby>
+                <input disabled="disabled" type="text" maxlength="{{length}}" size="{{lengthplusone}}" class="landr_word_input" data-realidx="{{realidx}}" data-idx="{{idx}}"/>
+                <rt><i class="landr_feedback_icon" data-idx="{{idx}}"></i></rt>
+            </ruby>
+            {{/isword}}
+            {{^isword}}
+                {{text}}
+            {{/isword}}
+        {{/words}}
+    </div>
+</div>
+{{#imageurl}}
+<div class='minilesson_sentence_image'>
+    <div class='minilesson_padded_image'>
+        <img src='{{imageurl}}' alt='minilesson image for speaking prompt' />
+    </div>
+</div>
+{{/imageurl}}

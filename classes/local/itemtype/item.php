@@ -17,10 +17,13 @@
 
 namespace mod_minilesson\local\itemtype;
 
+use core_plugin_manager;
 use mod_minilesson\constants;
+use mod_minilesson\plugininfo\minilessonitem;
 use mod_minilesson\utils;
 use templatable;
 use renderable;
+use stdClass;
 
 /**
  * Renderable class for an item in a minilesson activity.
@@ -269,7 +272,8 @@ abstract class item implements templatable, renderable
     public function export_for_template(\renderer_base $output)
     {
         $testitem = new \stdClass();
-        $testitem->itemimageurl = (string)$output->image_url(static::ITEMTYPE, constants::M_COMPONENT);
+        $testitem->itemimageurl = $this->get_plugininfo()->get_logo_url()->out(false);
+        $testitem->templatename = $this->get_template_name($output);
         $testitem = $this->get_common_elements($testitem);
         $testitem = $this->get_text_answer_elements($testitem);
 
@@ -963,7 +967,7 @@ abstract class item implements templatable, renderable
             $parsedstring = [];
             $started = false;
             // Arrays to hold the masked words, gap words, and extra words.
-            // Masked words gap words (isgap = true) that include the gap markers []. 
+            // Masked words gap words (isgap = true) that include the gap markers [].
             // We use this for char level entry, partic. masking partial gap words like en[courage]ment
             $maskedwords = [];
             // Gap words array holds the words flagging them as gaps or non-gaps and other metadata.
@@ -1850,4 +1854,44 @@ abstract class item implements templatable, renderable
         }
         return false; // Malformed string
     }
+
+    final public static function get_itemname($subpluginname = constants::SUBPLUGINTYPES['item']) {
+        return ltrim(str_replace($subpluginname, '', static::get_component()), '_');
+    }
+
+    final public static function get_component() {
+        return utils::get_component(static::class);
+    }
+
+    public function get_template_name(\renderer_base $renderer): string {
+        return static::get_component() . '/' . static::get_itemname();
+    }
+
+    public function prepare_instructions_for_ai_grade(stdClass $instructions) {
+    }
+
+    public function prepare_result(stdClass $result, stdClass $itemquizdata) {
+        $result->hascorrectanswer = false;
+        $result->hasincorrectanswer = false;
+        $result->hasanswerdetails = false;
+        $result->correctans = [];
+        $result->incorrectans = [];
+    }
+
+    public static function is_configured() {
+        global $CFG;
+        $experimentalitems[] = constants::TYPE_SMARTFRAME;
+        $experimentalitems[] = constants::TYPE_COMPQUIZ;
+        $experimentalitems[] = constants::TYPE_CONVERSATION;
+        $experimentalitems[] = constants::TYPE_DICTATIONCHAT;
+        if (in_array(static::get_itemname(), $experimentalitems)) {
+            return !empty($CFG->minilesson_experimental);
+        }
+        return true;
+    }
+
+    public static function get_plugininfo(): minilessonitem {
+        return core_plugin_manager::instance()->get_plugin_info(static::get_component());
+    }
+
 }

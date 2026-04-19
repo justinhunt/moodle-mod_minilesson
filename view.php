@@ -111,6 +111,7 @@ if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded'
 
 
 // Get our renderers.
+/** @var mod_minilesson\output\renderer $renderer */
 $renderer = $PAGE->get_renderer('mod_minilesson');
 
 $continue_form_url = $PAGE->url; //new moodle_url('/mod/minilesson/view.php', ['id' => $cm->id, 'embed' => $embed]);

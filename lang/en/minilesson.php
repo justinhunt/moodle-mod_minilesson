@@ -89,6 +89,8 @@ $string['minilesson:canuseaigen'] = 'Can use AI Generation feature';
 
 $string['id'] = 'ID';
 $string['name'] = 'Name';
+$string['subplugintype_minilessonitem'] = 'Minilesson item';
+$string['subplugintype_minilessonitem_plural'] = 'Minilesson items';
 $string['timecreated'] = 'Time Created';
 $string['basicheading'] = 'Basic Report';
 $string['attemptsheading'] = 'Attempts Report';
@@ -419,36 +421,10 @@ $string['avgtotaltime'] = 'Av. Duration';
 // $string['notes']="Notes";
 
 
-$string['addmultichoiceitem'] = 'Multi Choice';
-$string['addmultiaudioitem'] = 'MC Audio';
-$string['adddictationchatitem'] = 'Dictation Chat';
-$string['adddictationitem'] = 'Dictation';
-$string['addlistenrepeatitem'] = 'Listen and Speak';
-$string['addspeechcardsitem'] = 'Speech Cards';
 $string['wordshuffle_wordbank_label'] = 'Word bank';
 $string['wordshuffle_drop_slot_label'] = 'Drop slot {$a}';
 $string['wordshuffle_a11y_returned_to_bank'] = 'Returned "{$a}" to word bank';
 $string['wordshuffle_a11y_placed_in_slot'] = 'Placed "{$a}" in drop slot';
-$string['addpageitem'] = 'Content Page';
-$string['addsmartframeitem'] = 'SmartFrame';
-$string['addshortansweritem'] = 'Short Answer';
-$string['addlisteninggapfillitem'] = 'Listening Gapfill';
-$string['addspeakinggapfillitem'] = 'Speaking Gapfill';
-$string['addtypinggapfillitem'] = 'Typing Gapfill';
-$string['addpassagegapfillitem'] = 'Passage Gapfill';
-$string['addcomprehensionquizitem'] = 'Comprehension Quiz';
-$string['addh5pitem'] = 'H5P';
-$string['addspacegameitem'] = 'Space Game';
-$string['addfreewritingitem'] = 'Free Writing';
-$string['addfreespeakingitem'] = 'Free Speaking';
-$string['addfluencyitem'] = 'Fluency';
-$string['addpassagereadingitem'] = 'Passage Reading';
-$string['addconversationitem'] = 'Conversation';
-$string['addaudiochatitem'] = 'Audio Chat';
-$string['addwordshuffleitem'] = 'Word Shuffle';
-$string['addscatteritem'] = 'Scatter';
-$string['addslidesitem'] = 'Slides';
-$string['addfictionitem'] = 'Fiction';
 
 $string['multichoice'] = 'Multi Choice';
 $string['multiaudio'] = 'MC Audio';
@@ -1135,7 +1111,7 @@ $string['freewriting:gradingprompt3'] = 'Describe the picture - requires a pictu
 $string['freewriting:gradingprompt_dec1'] = 'Deduct 1 point for each grammar, spelling or punctuation error.';
 $string['freewriting:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer.
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a broken sentence that has the correct meaning.';
-$string['freewriting:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}] 
+$string['freewriting:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}]
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
 $string['freewriting:feedbackprompt1'] = 'Default';
 $string['freewriting:feedbackprompt2'] = 'Describe the picture ';
@@ -1146,9 +1122,9 @@ $string['freespeaking:gradingprompt1'] = 'Default';
 $string['freespeaking:gradingprompt2'] = 'Short Answer - requires the correct answer (ai data1) ';
 $string['freespeaking:gradingprompt3'] = 'Describe the picture - requires a picture description (ai data1) ';
 $string['freespeaking:gradingprompt_dec1'] = 'Deduct 1 point for each grammar error.';
-$string['freespeaking:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer. 
+$string['freespeaking:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer.
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a sentence with mistakes that has the correct meaning';
-$string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}] 
+$string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}]
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
 $string['freespeaking:feedbackprompt1'] = 'Default';
 $string['freespeaking:feedbackprompt2'] = 'Describe the picture';
@@ -1165,7 +1141,7 @@ $string['audiochat:instructionsprompt1'] = 'Open discussion - requires a topic';
 $string['audiochat:instructionsprompt2'] = 'Discussing a picture - requires a picture description (topic) and questions (ai data1)';
 $string['audiochat:instructionsprompt3'] = 'Discussing a passage - requires a passage (topic) and questions (ai data1)';
 $string['audiochat:instructionsprompt_dec1'] = "You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. Today the discussion topic is: {topic}. Please discuss it with your student. Speak simply and slowly. Your responses should be brief. Your aim is to give the student opportunity to speak. Explain words and concepts in the student's native language if they do not understand.";
-$string['audiochat:instructionsprompt_dec2'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student is looking at a picture the depicts the following scene: "{topic}" 
+$string['audiochat:instructionsprompt_dec2'] = 'You are {ai role}. Your name is {ai voice}. You are teaching {target language}. The student is a native speaker of {native language}. The student is looking at a picture the depicts the following scene: "{topic}"
 
 Your task is to ask the student the following questions, one at a time: {ai data1}
 
@@ -1204,32 +1180,6 @@ $string['mingrade'] = 'Minimum Grade';
 $string['reorder'] = 'Reorder';
 $string['chooseitem'] = 'Choose item';
 
-$string['item_page_desc'] = 'The Content Page is the most basic item. It simply shows the text or media content specified by the activity author and a next button. Use this content type to prepare students for subsequent items or to include educational content';
-$string['item_multichoice_desc'] = 'The Multi Choice item displays a multi choice question with up to 4 possible answers, only one of which is correct. Answer options can be text, audio or images';
-$string['item_dictation_desc'] = 'The Dictation item displays a list of audio player + text field sets. The student must listen to the audio and type what they hear';
-$string['item_speechcards_desc'] = 'The Speech Cards item displays a series of cards containing a phrase or a sentence. Students must read each card aloud.';
-$string['item_listenrepeat_desc'] = 'The Listen and Speak item presents a series of audio prompts to which the student must give an audio response. Mostly used for listen and repeat activities';
-$string['item_multiaudio_desc'] = 'The Multi Choice Audio item is a multi choice question where the student must answer by speaking the answer aloud.';
-$string['item_shortanswer_desc'] = 'The Short Answer item is a single question to which the student must give a spoken response. The correct responses are pre-determined by the item author.';
-$string['item_listeninggapfill_desc'] = 'The Listening Gapfill item displays a series of sentences with one or more words missing (gaps). The student must listen to the sentence and enter any missing words.';
-$string['item_typinggapfill_desc'] = 'The Typing Gapfill item displays a series of sentences with one or more words missing (gaps). The student must enter any missing words.';
-$string['item_speakinggapfill_desc'] = 'The Speaking Gapfill item displays a series of sentences with one or more words missing (gaps). The student must say aloud the completed sentence.';
-$string['item_spacegame_desc'] = 'The Space Game item is an arcade style game made from a list of word pairs. The student must “shoot” as many correct words as they can.';
-$string['item_freespeaking_desc'] = 'The Free Speaking item allows the teacher to set speaking tasks for the student that will be automatically graded and feedback given to student.';
-$string['item_freewriting_desc'] = 'The Free Writing item allows the teacher to set writing tasks for the student that will be automatically graded and feedback given to student.';
-$string['item_passagereading_desc'] = 'The passagereading item displays a multi choice question with up to 4 possible answers, only one of which is correct. Answer options can be text, audio or images';
-$string['item_passagegapfill_desc'] = 'The Passage Gapfill item gives the student a passage of text with multiple words removed. The student must listen to the accompanying audio and fill in the gaps.';
-$string['item_h5p_desc'] = 'The H5P item allows the author to select an existing H5P from the content bank and embed it within the Minilesson. H5P is a separate Moodle activity that is popular with language teachers.';
-$string['item_wordshuffle_desc'] = 'The Word Shuffle item takes a set of sentences The words in each sentence are re-arranged. The student must order the words correctly.';
-$string['item_scatter_desc'] = 'The Scatter item presents a grid of cards from a set of word pairs. Students must remove all the cards by matching each pair.';
-$string['item_fluency_desc'] = 'The Fluency item presents a series of sentences/phrases for students to say aloud. It marks up the parts of the spoken sentence that were good, ok or not good.';
-$string['item_audiochat_desc'] = 'The Audio Chat item sets up an audio conversation with an AI partner. It can be used for discussing a topic, or asking questions about a picture. The prompts to the AI bot are free text and editable.';
-$string['item_smartframe_desc'] = 'The SmartFrame item is a placeholder for an item type that has not been developed yet.';
-$string['item_comprehensionquiz_desc'] = 'The Comprehension Quiz item is a placeholder for an item type that has not been developed yet.';
-$string['item_conversation_desc'] = 'The Conversation item is a placeholder for an item type that has not been developed yet.';
-$string['item_dictationchat_desc'] = 'The Dictation Chat item presents a series of audio prompts to which the student must type a response. Mostly used for dictation activities.';
-$string['item_slides_desc'] = 'The Slides item allows the author to create a series of slides. The slides can be used to deliver a learning presentation. Slides are authored using markdown syntax, so this is a feature for advanced users.';
-$string['item_fiction_desc'] = 'The Fiction item allows the author to create a story with choices that the user can play. Fiction items are authored using a format called Yarn, so this is a feature for advanced users.';
 
 $string['noitemyet'] = 'There are no items in this MiniLesson. Press the \'Add new item\' button and choose an item type to get started.';
 $string['addingcontent'] = "Click on ‘Add new item’ to start adding content";

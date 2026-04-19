@@ -50,42 +50,6 @@ This file contains class and ID definitions.
         gradingmodebutton: 'mod_minilesson_gradingbutton',
         clearbutton: 'mod_minilesson_clearbutton',
 
-
-        //quiz
-        qtype_pictureprompt: 'multichoicepicture',
-        qtype_audioprompt: 'multichoiceaudio',
-        qtype_textpromptlong: 'multichoicelong',
-        qtype_textpromptshort: 'multichoice',
-        qtype_textpromptaudio: 'audioresponse',
-
-        //question types
-        qtype_page: 'page',
-        qtype_multichoice: 'multichoice',
-        qtype_multiaudio: 'multiaudio',
-        qtype_dictationchat: 'dictationchat',
-        qtype_dictation: 'dictation',
-        qtype_speechcards: 'speechcards',
-        qtype_listenrepeat: 'listenrepeat',
-        qtype_smartframe: 'smartframe',
-        qtype_shortanswer: 'shortanswer',
-        qtype_listeninggapfill: 'listeninggapfill',
-        qtype_speakinggapfill: 'speakinggapfill',
-        qtype_typinggapfill: 'typinggapfill',
-        qtype_spacegame: 'spacegame',
-        qtype_fluency: 'fluency',
-        qtype_freespeaking: 'freespeaking',
-        qtype_freewriting: 'freewriting',
-        qtype_passagereading: 'passagereading',
-        qtype_h5p: 'h5p',
-        qtype_conversation: 'conversation',
-        qtype_compquiz: 'compquiz',
-        qtype_passagegapfill: 'passagegapfill',
-        qtype_audiochat: 'audiochat',
-        qtype_wordshuffle: 'wordshuffle',
-        qtype_scatter: 'scatter',
-        qtype_slides: 'slides',
-        qtype_fiction: 'fiction',
-
         //running records features
         maybeselfcorrectedwordclass: 'mod_minilesson_grading_maybeselfcorrectedword',
         selfcorrectedwordclass: 'mod_minilesson_grading_selfcorrectedword',
@@ -151,7 +115,16 @@ This file contains class and ID definitions.
 
         neural_voices: ["Amy","Emma","Brian","Olivia","Aria","Ayanda","Ivy","Joanna","Kendra","Kimberly",
             "Salli","Joey","Justin","Kevin","Matthew","Camila","Lupe","Lucia","Gabrielle","Lea", "Vicki", "Seoyeon", "Takumi","Lucia",
-            "Lea","Bianca","Laura","Kajal","Suvi","Liam","Daniel","Hannah","Camila","Ida","Kazuha","Tomoko","Elin","Hala","Zayd"]
+            "Lea","Bianca","Laura","Kajal","Suvi","Liam","Daniel","Hannah","Camila","Ida","Kazuha","Tomoko","Elin","Hala","Zayd"],
+
+        subplugintypes: {
+            'item': 'minilessonitem'
+        },
+
+        get_sub_component: function(type, subplugintype) {
+            subplugintype = subplugintype || this.subplugintypes.item;
+            return `${subplugintype}_${type}`.trimRight('_');
+        }
 
     };//end of return value
 });

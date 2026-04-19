@@ -308,9 +308,8 @@ class renderer extends \plugin_renderer_base
     public function show_finished_results($comptest, $latestattempt, $cm, $canattempt, $embed, $teacherreport = false)
     {
         global $CFG, $DB;
-        $ans = [];
         // Quiz data.
-        $quizdata = $comptest->fetch_test_data_for_js();
+        $quizdata = $comptest->fetch_test_data_for_js($this);
 
         // Config.
         $config = get_config(constants::M_COMPONENT);
@@ -336,7 +335,8 @@ class renderer extends \plugin_renderer_base
                 continue;
             }
 
-            $items = $DB->get_record(constants::M_QTABLE, ['id' => $quizdata[$result->index]->id]);
+            $itemquizdata = $quizdata[$result->index];
+            $items = $DB->get_record(constants::M_QTABLE, ['id' => $itemquizdata->id]);
             $result->title = $items->name;
 
             // Question Text.
@@ -348,218 +348,21 @@ class renderer extends \plugin_renderer_base
                 constants::TEXTQUESTION_FILEAREA,
                 $items->id
             );
-            $itemtext = format_text($itemtext, FORMAT_MOODLE, ['context' => $context]);
-
-            // We need to replace within itemtext for these items too.
-            $search = ['{topic}', '{ai data1}', '{ai data2}'];
-            $replace = [];
-            switch ($items->type) {
-                case constants::TYPE_FREEWRITING:
-                    $replace = [
-                        $items->{constants::FREEWRITING_TOPIC},
-                        $items->{constants::FREEWRITING_AIDATA1},
-                        $items->{constants::FREEWRITING_AIDATA2},
-                    ];
-                    break;
-                case constants::TYPE_FREESPEAKING:
-                    $replace = [
-                        $items->{constants::FREESPEAKING_TOPIC},
-                        $items->{constants::FREESPEAKING_AIDATA1},
-                        $items->{constants::FREESPEAKING_AIDATA2},
-                    ];
-                    break;
-                case constants::TYPE_AUDIOCHAT:
-                    $replace = [
-                        $items->{constants::AUDIOCHAT_TOPIC},
-                        $items->{constants::AUDIOCHAT_AIDATA1},
-                        $items->{constants::AUDIOCHAT_AIDATA2},
-                    ];
-                    break;
-            }
-            if (!empty($replace)) {
-                $itemtext = str_replace($search, $replace, $itemtext);
-            }
-            $result->questext = $itemtext;
-
-            $result->itemtype = $quizdata[$result->index]->type;
-            $result->resultstemplate = $result->itemtype . 'results';
-
-            // Correct answer.
-            switch ($result->itemtype) {
-                case constants::TYPE_DICTATION:
-                case constants::TYPE_DICTATIONCHAT:
-                case constants::TYPE_LISTENREPEAT:
-                case constants::TYPE_SPEECHCARDS:
-                case constants::TYPE_SHORTANSWER:
-                case constants::TYPE_LGAPFILL:
-                case constants::TYPE_TGAPFILL:
-                case constants::TYPE_SGAPFILL:
-                    $result->hascorrectanswer = true;
-                    $result->correctans = $quizdata[$result->index]->sentences;
-                    $result->hasanswerdetails = false;
-                    break;
-
-                case constants::TYPE_MULTIAUDIO:
-                case constants::TYPE_MULTICHOICE:
-                case constants::TYPE_COMPQUIZ:
-                    $result->hascorrectanswer = true;
-                    $result->hasincorrectanswer = true;
-                    if (!empty($quizdata[$result->index]->correctfeedback)) {
-                        $result->hasanswerdetails = true;
-                        $result->resultsdatajson = json_encode(['correctfeedback' => $quizdata[$result->index]->correctfeedback]);
-                        $result->resultstemplate = 'multichoiceresults';
-                    } else {
-                        $result->hasanswerdetails = false;
-                    }
-                    $correctanswers = [];
-                    $incorrectanswers = [];
-                    $correctindex = $quizdata[$result->index]->correctanswer;
-
-                    foreach ($quizdata[$result->index]->sentences as $sentance) {
-                        if ($correctindex == $sentance->indexplusone) {
-                            $correctanswers[] = $sentance->sentence;
-                        } else {
-                            $incorrectanswers[] = $sentance->sentence;
-                        }
-                    }
-
-                    if (count($correctanswers) == 0) {
-                        $result->hascorrectanswer = false;
-                    }
-                    if (count($incorrectanswers) == 0) {
-                        $result->hasincorrectanswer = false;
-                    }
-
-                    $result->correctans = ['sentence' => join(' ', $correctanswers)];
-                    $result->incorrectans = ['sentence' => join('<br> ', $incorrectanswers)];
-                    break;
-
-                case constants::TYPE_PGAPFILL:
-                    $resultsdata = isset($result->resultsdata) ? $result->resultsdata : null;
-                    $hasitems = $resultsdata && isset($resultsdata->items) && $resultsdata->items && $resultsdata->items > 0;
-                    if (!$hasitems || !$resultsdata) {
-                        $result->correctans = [];
-                        $result->incorrectans = [];
-                        break;
-                    }
-                    $result->hascorrectanswer = $hasitems;
-                    $result->hasincorrectanswer = $hasitems;
-                    $result->hasanswerdetails = false;
-                    $resultsdata = isset($result->resultsdata) ? $result->resultsdata : null;
-                    $correctanswers = [];
-                    $incorrectanswers = [];
-
-                    $items = $resultsdata->items;
-                    for ($i = 0; $i < count($items); $i++) {
-                        $theitem = $resultsdata->items[$i];
-                        if (!$theitem) {
-                            continue;
-                        }
-                        if ($theitem->correct) {
-                            $correctanswers[] = ['sentence' => $theitem->text];
-                        } else {
-                            $incorrectanswers[] = ['sentence' => $theitem->text];
-                        }
-                    }
-                    $result->correctans = $correctanswers;
-                    $result->incorrectans = $incorrectanswers;
-                    break;
-
-                case constants::TYPE_H5P:
-                    $result->hascorrectanswer = false;
-                    $result->hasincorrectanswer = false;
-                    $result->hasanswerdetails = false;
-                    break;
-
-                case constants::TYPE_PASSAGEREADING:
-                    $result->hascorrectanswer = false;
-                    $result->hasincorrectanswer = false;
-                    if (
-                        isset($result->resultsdata)
-                        && isset($result->resultsdata->read)
-                        && ($result->resultsdata->read + $result->resultsdata->unreached) > 0
-                    ) {
-                        $result->hasanswerdetails = true;
-                        $result->resultstemplate = 'passagereadingreviewresults';
-                        $result->resultsdata->passagehtml = \mod_minilesson\aitranscriptutils::render_passage(
-                            $items->{constants::READINGPASSAGE}
-                        );
-                        $result->resultsdatajson = json_encode(
-                            $result->resultsdata,
-                            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-                        );
-                    } else {
-                        $result->hasanswerdetails = false;
-                    }
-                    break;
-
-                case constants::TYPE_FLUENCY:
-                    $result->hascorrectanswer = true;
-                    $result->correctans = $quizdata[$result->index]->sentences;
-                    if (isset($result->resultsdata)) {
-                        $result->hasanswerdetails = true;
-                        $result->resultsdatajson = json_encode(
-                            $result->resultsdata,
-                            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-                        );
-                        // For now ...
-                        $result->resultstemplate = 'listitemresults';
-                    } else {
-                        $result->hasanswerdetails = false;
-                    }
-                    break;
-
-                case constants::TYPE_FREEWRITING:
-                case constants::TYPE_FREESPEAKING:
-                    $result->hascorrectanswer = false;
-                    $result->hasincorrectanswer = false;
-                    if (isset($result->resultsdata)) {
-                        $result->hasanswerdetails = true;
-                        // The free writing and reading both need to be told to show no reattempt button.
-                        $result->resultsdata->noreattempt = true;
-                        $result->resultsdatajson = json_encode(
-                            $result->resultsdata,
-                            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-                        );
-                    } else {
-                        $result->hasanswerdetails = false;
-                    }
-                    break;
-                case constants::TYPE_AUDIOCHAT:
-                    $result->hascorrectanswer = false;
-                    $result->hasincorrectanswer = false;
-                    if (isset($result->resultsdata)) {
-                        $result->hasanswerdetails = true;
-                        $result->resultsdatajson = json_encode(
-                            $result->resultsdata,
-                            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-                        );
-                    } else {
-                        $result->hasanswerdetails = false;
-                    }
-                    break;
-                case constants::TYPE_WORDSHUFFLE:  // TO DO how to handle this?
-                case constants::TYPE_SCATTER:  // TO DO how to handle this?
-                case constants::TYPE_SPACEGAME: // TO DO how to handle this?
-                default:
-                    $result->hascorrectanswer = false;
-                    $result->hasincorrectanswer = false;
-                    $result->hasanswerdetails = false;
-                    $result->correctans = [];
-                    $result->incorrectans = [];
-            }
+            $result->questext = format_text($itemtext, FORMAT_MOODLE, ['context' => $context]);
+            $result->itemtype = $itemquizdata->type;
+            $result->resultstemplate = utils::get_sub_component($result->itemtype) . "/{$result->itemtype}results";
 
             $result->index++;
             // Every item stars.
             if ($result->grade == 0) {
                 $ystarcnt = 0;
-            } elseif ($result->grade < 19) {
+            } else if ($result->grade < 19) {
                 $ystarcnt = 1;
-            } elseif ($result->grade < 39) {
+            } else if ($result->grade < 39) {
                 $ystarcnt = 2;
-            } elseif ($result->grade < 59) {
+            } else if ($result->grade < 59) {
                 $ystarcnt = 3;
-            } elseif ($result->grade < 79) {
+            } else if ($result->grade < 79) {
                 $ystarcnt = 4;
             } else {
                 $ystarcnt = 5;
@@ -567,6 +370,9 @@ class renderer extends \plugin_renderer_base
             $result->yellowstars = array_fill(0, $ystarcnt, true);
             $gstarcnt = 5 - $ystarcnt;
             $result->graystars = array_fill(0, $gstarcnt, true);
+
+            $iteminstance = utils::fetch_item_from_itemrecord($items, $moduleinstance, $context);
+            $iteminstance->prepare_result($result, $itemquizdata);
 
             $useresults[] = $result;
         }
@@ -666,14 +472,11 @@ class renderer extends \plugin_renderer_base
     public function show_quiz($comptest, $moduleinstance)
     {
         // Quiz data.
-        $quizdata = $comptest->fetch_test_data_for_js();
+        $quizdata = $comptest->fetch_test_data_for_js($this);
 
         $itemshtml = [];
         foreach ($quizdata as $item) {
-            $itemshtml[] = $this->render_from_template(
-                constants::M_COMPONENT . '/' . $item->type,
-                $item
-            );
+            $itemshtml[] = $this->render_from_template($item->templatename, $item);
         }
 
         $finisheddiv = html_writer::div(
@@ -710,11 +513,11 @@ class renderer extends \plugin_renderer_base
     {
 
         // Quiz data.
-        $quizdata = $comptest->fetch_test_data_for_js();
+        $quizdata = $comptest->fetch_test_data_for_js($this);
         $itemshtml = [];
         foreach ($quizdata as $item) {
             if ($item->id == $qid) {
-                $itemshtml[] = $this->render_from_template(constants::M_COMPONENT . '/' . $item->type, $item);
+                $itemshtml[] = $this->render_from_template($item->templatename, $item);
             }
         }
 

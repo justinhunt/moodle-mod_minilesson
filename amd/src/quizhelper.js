@@ -1,47 +1,10 @@
 define(
-    ['jquery', 'core/log', 'mod_minilesson/definitions', 'core/templates', 'core/ajax',
-        'mod_minilesson/dictation', 'mod_minilesson/dictationchat', 'mod_minilesson/multichoice', 'mod_minilesson/multiaudio',
-        'mod_minilesson/speechcards', 'mod_minilesson/listenrepeat',
-        'mod_minilesson/page', 'mod_minilesson/smartframe', 'mod_minilesson/shortanswer',
-        'mod_minilesson/listeninggapfill', 'mod_minilesson/typinggapfill', 'mod_minilesson/speakinggapfill',
-        'mod_minilesson/spacegame', 'mod_minilesson/fluency', 'mod_minilesson/freespeaking',
-        'mod_minilesson/freewriting', 'mod_minilesson/passagereading', 'mod_minilesson/h5p',
-        'mod_minilesson/conversation', 'mod_minilesson/compquiz', 'mod_minilesson/passagegapfill',
-        'mod_minilesson/audiochat', 'mod_minilesson/wordshuffle', 'mod_minilesson/scatter',
-        'mod_minilesson/slides', 'mod_minilesson/fiction', 'mod_minilesson/progresstimer'],
+    ['jquery', 'core/log', 'mod_minilesson/definitions', 'core/ajax',],
     function (
         $,
         log,
         def,
-        templates,
         Ajax,
-        dictation,
-        dictationchat,
-        multichoice,
-        multiaudio,
-        speechcards,
-        listenrepeat,
-        page,
-        smartframe,
-        shortanswer,
-        listeninggapfill,
-        typinggapfill,
-        speakinggapfill,
-        spacegame,
-        fluency,
-        freespeaking,
-        freewriting,
-        passagereading,
-        h5p,
-        conversation,
-        compquiz,
-        passagegapfill,
-        audiochat,
-        wordshuffle,
-        scatter,
-        slides,
-        fiction,
-        progresstimer
     ) {
         "use strict"; // jshint ;_;
 
@@ -99,109 +62,9 @@ define(
             init_questions: function (quizdata, polly) {
                 var dd = this;
                 $.each(quizdata, function (index, item) {
-                    switch (item.type) {
-                        case def.qtype_dictation:
-                            dictation.clone().init(index, item, dd, polly);
-                            break;
-                        case def.qtype_dictationchat:
-                            dictationchat.clone().init(index, item, dd, polly);
-                            break;
-                        case def.qtype_multichoice:
-                            multichoice.clone().init(index, item, dd);
-                            break;
-                        case def.qtype_multiaudio:
-                            multiaudio.clone().init(index, item, dd);
-                            break;
-                        case def.qtype_speechcards:
-                            //speechcards init needs to occur when it is visible. lame.
-                            // so we do that in do_next function, down below
-                            speechcards.clone().init(index, item, dd);
-                            break;
-                        case def.qtype_listenrepeat:
-                            listenrepeat.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_page:
-                            page.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_smartframe:
-                            smartframe.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_shortanswer:
-                            shortanswer.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_listeninggapfill:
-                            listeninggapfill.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_typinggapfill:
-                            typinggapfill.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_speakinggapfill:
-                            speakinggapfill.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_spacegame:
-                            spacegame.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_fluency:
-                            fluency.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_freespeaking:
-                            freespeaking.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_freewriting:
-                            freewriting.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_passagereading:
-                            passagereading.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_h5p:
-                            h5p.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_conversation:
-                            conversation.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_compquiz:
-                            compquiz.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_passagegapfill:
-                            passagegapfill.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_audiochat:
-                            audiochat.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_wordshuffle:
-                            wordshuffle.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_scatter:
-                            scatter.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_slides:
-                            slides.clone().init(index, item, dd);
-                            break;
-
-                        case def.qtype_fiction:
-                            fiction.clone().init(index, item, dd);
-                            break;
-                    }
-
+                    require([`${def.get_sub_component(item.type)}/itemtype`], module => {
+                        module.clone().init(index, item, dd, polly);
+                    });
                 });
 
                 //TTS in question headers
@@ -307,31 +170,6 @@ define(
                     //show the question
 
                     dd.showStep($("#" + nextitem.uniqueid + "_container"), nextindex);
-                    //any per question type init that needs to occur can go here
-                    switch (nextitem.type) {
-                        case def.qtype_speechcards:
-                            //speechcards.init(nextindex, nextitem, dd);
-                            break;
-                        case def.qtype_dictation:
-                        case def.qtype_dictationchat:
-                        case def.qtype_multichoice:
-                        case def.qtype_multiaudio:
-                        case def.qtype_listenrepeat:
-                        case def.qtype_smartframe:
-                        case def.qtype_shortanswer:
-                        case def.qtype_spacegame:
-                        case def.qtype_fluency:
-                        case def.qtype_freespeaking:
-                        case def.qtype_freewriting:
-                        case def.qtype_passagereading:
-                        case def.qtype_h5p:
-                        case def.qtype_conversation:
-                        case def.qtype_compquiz:
-                        case def.qtype_audiochat:
-                        case def.qtype_slides:
-                        case def.qtype_fiction:
-                        default:
-                    }//end of nextitem switch
                 } else {
                     //just reload and re-fetch all the data to display
                     $(".minilesson_nextbutton").prop("disabled", true);
