@@ -81,6 +81,9 @@ define(
                 //  "prefix_padding_ms": 300,
             },
 
+            gradeRequestTrial: 0,
+            maxGradeRequestTrial: 3,
+
             // For making multiple instances
             clone: function () {
                 return $.extend(true, {}, this);
@@ -713,15 +716,6 @@ define(
                     //add a spinner to the results content
                     //if we are not showing item review we do not need this, but in that case it is hidden anyway
                     self.controls.resultscontent.innerHTML = `<i class="fa fa-spinner fa-spin fa-2x"></i>`;
-
-                    setTimeout(() => {
-                        //now show the results content if that is what we are doing
-                        if (self.quizhelper.showitemreview) {
-                            self.showResults();
-                        }
-                        log.debug("Closing session resources...");
-                        self.closeDataChannel();
-                    }, 7000);
                 } else {
                     log.debug("Closing session resources...");
                     self.closeDataChannel();
@@ -739,6 +733,11 @@ define(
                 if (typeof self.pc !== 'undefined' && self.pc) {
                     self.pc.close();
                     self.pc = null;
+                }
+
+                if (self.inputBufferInterval) {
+                    clearInterval(self.inputBufferInterval);
+                    self.inputBufferInterval = null;
                 }
             },
 
@@ -819,12 +818,29 @@ define(
                         if (!jsonresponse || jsonresponse === "" || !jsonresponse.match(jsonextractregex)) {
                             log.debug("No valid grading data received .. msg is ..");
                             log.debug(msg);
+                            if (self.gradeRequestTrial < self.maxGradeRequestTrial) {
+                                self.gradeRequestTrial++;
+                                self.sendGradingRequest();
+                                log.debug('Grading Request Retry number: ' + self.gradeRequestTrial);
+                                return;
+                            }
+                            log.debug("Closing session resources...");
                             self.closeDataChannel();
                             return;
+                        }
+                        if (self.gradeRequestTrial > 0) {
+                            self.gradeRequestTrial = 0;
                         }
 
                         self.gradingData = JSON.parse(jsonresponse.match(jsonextractregex)[0]);
                         log.debug("Grading and Feedback:", self.gradingData);
+
+                        //now show the results content if that is what we are doing
+                        if (self.quizhelper.showitemreview) {
+                            self.showResults();
+                        }
+                        log.debug("Closing session resources...");
+                        self.closeDataChannel();
                     } catch (err) {
                         self.gradingData = false;
                         log.debug("Failed to parse grading feedback:", err);
