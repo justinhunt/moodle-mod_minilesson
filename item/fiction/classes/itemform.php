@@ -25,10 +25,11 @@
 namespace minilessonitem_fiction;
 
 use mod_minilesson\local\itemform\baseform;
-
 use mod_minilesson\constants;
+use mod_minilesson\utils;
 
-class itemform extends baseform {
+class itemform extends baseform
+{
     /**
      * Add any form fields specific to this item type.
      */
@@ -54,14 +55,16 @@ class itemform extends baseform {
 
         // Syntax Checker
         $mform->registerNoSubmitButton('syntaxcheckbutton');
-        $syntaxcheckbtn = $mform->addElement('submit', 'syntaxcheckbutton', get_string('fiction:syntaxcheckbutton', constants::M_COMPONENT));
-        $syntaxcheckbtn->_generateId();
-        $syntaxcheckbtn->updateAttributes(['id' => $syntaxcheckbtn->getAttribute('id') . '_' . random_string()]);
+        $buttonid = 'syntaxcheckbutton_' . random_string(10);
+        $mform->addElement('submit', 'syntaxcheckbutton', 
+            get_string('fiction:syntaxcheckbutton', constants::M_COMPONENT), 
+            ['id' => $buttonid]
+        );        
         $PAGE->requires->js_call_amd(
-            constants::M_COMPONENT . '/fiction',
+            'minilessonitem_fiction/itemtype',
             'register_syntaxcheckbutton',
             [
-                $syntaxcheckbtn->getAttribute('id'),
+                $buttonid,
                 'id_' . itemtype::YARN,
                 'syntaxcheckresults',
             ]

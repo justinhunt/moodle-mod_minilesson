@@ -1905,7 +1905,7 @@ define(
                 var totalcorrect = app.calc_total_points(app.results);
                 //remove any decimal (leave one decimal place)
                 stepdata.correctitems = Math.round(totalcorrect * 10) / 10;
-                stepdata.grade = Math.round(100 * (stepdata.correctitems / stepdata.totalitems));
+                stepdata.grade = stepdata.totalitems > 0 ? Math.round(100 * (stepdata.correctitems / stepdata.totalitems)) : 0;
                 self.quizhelper.do_next(stepdata);
             },
 

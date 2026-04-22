@@ -141,8 +141,8 @@ class itemtype extends item
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
         $keycols['text3'] = ['jsonname' => 'partiallycorrectanswer', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => self::PARTIALLYRESPONSE];
-        $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => false, 'default' => 0, 'dbname' => self::TOTALMARKS];
-        $keycols['int2'] = ['jsonname' => 'partiallymarks', 'type' => 'int', 'optional' => false, 'default' => 0, 'dbname' => self::PARTIALLYMARKS];
+        $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => false, 'default' => 2, 'dbname' => self::TOTALMARKS];
+        $keycols['int2'] = ['jsonname' => 'partiallymarks', 'type' => 'int', 'optional' => false, 'default' => 1, 'dbname' => self::PARTIALLYMARKS];
         $keycols['int3'] = ['jsonname' => 'responsetype', 'type' => 'int', 'optional' => false, 'default' => constants::RESPONSE_TYPE['audiorecorder'], 'dbname' => self::RESPONSETYPE];
         return $keycols;
     }

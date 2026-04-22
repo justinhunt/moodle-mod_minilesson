@@ -86,7 +86,7 @@ define(['jquery',
             stepdata.correctitems = self.items.filter(e => e.correct).length;
             // If the user has used hints, we need to adjust the grade - its a bit yuk
             var hintspenalty = self.penalizehints ? totalhints / 3 : 0;
-            stepdata.grade = Math.round(((stepdata.correctitems - hintspenalty) / stepdata.totalitems) * 100);
+            stepdata.grade = stepdata.totalitems > 0 ? Math.round(((stepdata.correctitems - hintspenalty) / stepdata.totalitems) * 100) : 0;
             if (hintspenalty > 0) {
                 stepdata.correctitems = Math.round(stepdata.correctitems - hintspenalty);
             }

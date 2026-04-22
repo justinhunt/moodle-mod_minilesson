@@ -12,6 +12,7 @@
             "slidesmarkdown": "# Slide 1 Title\r\n\r\nYour content here. Use markdown syntax to format text and add images.\r\n\r\n---\r\n\r\n# Slide 2 Title\r\n\r\nMore content here. You can add as many slides as you need.",
             "slidestheme": "beige",
             "slidesfontsize": "32",
+            "slidescontenttype": "0",
             "filesid": 1
         }
     ],

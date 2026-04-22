@@ -173,7 +173,7 @@ define(
                 stepdata.hasgrade = true;
                 stepdata.totalitems = self.itemdata.scatteritems.length;
                 stepdata.correctitems = self.itemdata.scatteritems.filter(e => e.correct).length;
-                stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
+                stepdata.grade = stepdata.totalitems > 0 ? Math.round((stepdata.correctitems / stepdata.totalitems) * 100) : 0;
                 self.quizhelper.do_next(stepdata);
             },
 

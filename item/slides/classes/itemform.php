@@ -58,18 +58,52 @@ class itemform extends baseform
         $mform = $this->_form;
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('slides_instructions1', constants::M_COMPONENT));
         $this->add_itemsettings_heading();
-        $this->add_static_text('instructions', '', get_string('enterslidesmarkdown', constants::M_COMPONENT));
 
-        // Markdown text area.
-        $this->add_textarearesponse(itemtype::MARKDOWN, get_string('slidesmarkdown', constants::M_COMPONENT), true);
+        $this->add_dropdown(
+            itemtype::CONTENTTYPE,
+            get_string('slides:contenttype', 'minilessonitem_slides'),
+            [
+                itemtype::CONTENTTYPE_MARKDOWN => get_string('slides:contenttype_markdown', 'minilessonitem_slides'),
+                itemtype::CONTENTTYPE_HTML => get_string('slides:contenttype_html', 'minilessonitem_slides'),
+            ],
+            itemtype::CONTENTTYPE_MARKDOWN,
+            ['data-control' => 'slidescontenttype']
+        );
+
+        $this->add_static_text('instructions', '', get_string('enterslidesmarkdown', 'minilessonitem_slides'));
+
+        // Markdown/HTML text area.
+        $this->add_textarearesponse(itemtype::MARKDOWN, get_string('slidesmarkdown', 'minilessonitem_slides'), true);
         $mform->setDefault(itemtype::MARKDOWN, itemtype::MARKDOWN_DEFAULT);
 
-        // Initialize CodeMirror markdown editor
+        // Initialize CodeMirror editor.
+        $slidescontenttype = $this->_customdata['item']->{itemtype::CONTENTTYPE} ?? itemtype::CONTENTTYPE_MARKDOWN;
+        $initiallanguage = $slidescontenttype == itemtype::CONTENTTYPE_HTML ? 'html' : 'markdown';
         $PAGE->requires->js_call_amd(
             constants::M_COMPONENT . '/codeeditor',
             'setupCodeEditor',
-            ['id_' . itemtype::MARKDOWN, ['language' => 'markdown']]
+            ['id_' . itemtype::MARKDOWN, ['language' => $initiallanguage]]
         );
+
+        // Add JS to switch editor language when Content Mode changes.
+        $js = "
+            (function() {
+                const selectElement = document.querySelector('[data-control=\"slidescontenttype\"]');
+                if (selectElement) {
+                    selectElement.addEventListener('change', function() {
+                        const lang = this.value == " . itemtype::CONTENTTYPE_HTML . " ? 'html' : 'markdown';
+                        // The codeeditor AMD module should have a way to refresh or we just re-init if possible.
+                        // However, Moodle's AMD may not easily allow re-calling setupCodeEditor on the same ID.
+                        // Usually, the best way in mod_minilesson's generic codeeditor is to refresh it.
+                        // Let's assume for now that we might need an update to codeeditor.js or a specific call.
+                        // For this implementation, we will try to dispatch a custom event that codeeditor.js can listen to.
+                        const event = new CustomEvent('ml_slides_contenttype_change', { detail: { language: lang } });
+                        document.getElementById('id_" . itemtype::MARKDOWN . "').dispatchEvent(event);
+                    });
+                }
+            })();
+        ";
+        $PAGE->requires->js_amd_inline($js);
 
         // Files upload area.
         $this->add_media_upload(constants::FILEANSWER . '1', get_string('slides:attachments', constants::M_COMPONENT), false, 'image,audio,video', -1);

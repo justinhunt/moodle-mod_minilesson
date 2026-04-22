@@ -135,7 +135,7 @@ class aigen_form extends \moodleform
         // we will match with availablecontext to make the full AI generation prompt.
         foreach ($tdata['items'] as $itemnumber => $item) {
             $itemtype = $item['type'];
-            $itemclass = '\\mod_minilesson\\local\\itemtype\\item_' . $itemtype;
+            $itemclass = utils::fetch_itemtype_classname($itemtype);
             if (class_exists($itemclass)) {
                 $tdata['items'][$itemnumber]['itemnumber'] = $itemnumber;
 

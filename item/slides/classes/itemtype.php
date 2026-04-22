@@ -37,6 +37,9 @@ class itemtype extends item
     public const SLIDETHEME = 'customtext2';
     public const SLIDEFONTSIZE = 'customtext3';
     public const FILES = 'customfile1';
+    public const CONTENTTYPE = 'customint2';
+    public const CONTENTTYPE_MARKDOWN = 0;
+    public const CONTENTTYPE_HTML = 1;
 
     //the item type
     public function from_record($itemrecord, $moduleinstance = false, $context = false)
@@ -87,39 +90,71 @@ class itemtype extends item
             $filenames[] = $file->get_filename();
         }
 
-        // Process markdown for files in files area.
-        $slidesmarkdown = preg_replace_callback(
-            '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
-            function ($matches) use ($imageserveurl, $filenames) {
-                $filename = trim($matches['filename']);
+        // Process images in slides area.
+        $slidescontent = $this->itemrecord->{self::MARKDOWN};
+        $slidescontenttype = $this->itemrecord->{self::CONTENTTYPE} ?? self::CONTENTTYPE_MARKDOWN;
 
-                // Skip if it's already a full URL (http/https).
-                if (preg_match('/^https?:\/\//', $filename)) {
-                    return $matches[0];
-                }
+        if ($slidescontenttype == self::CONTENTTYPE_MARKDOWN) {
+            $slidescontent = preg_replace_callback(
+                '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
+                function ($matches) use ($imageserveurl, $filenames) {
+                    $filename = trim($matches['filename']);
 
-                // Skip if the file does not exist in the file area.
-                if (!in_array($filename, $filenames)) {
-                    return $matches[0];
-                }
+                    // Skip if it's already a full URL (http/https).
+                    if (preg_match('/^https?:\/\//', $filename)) {
+                        return $matches[0];
+                    }
 
-                // Add base path (and escape spaces if needed)
-                $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
+                    // Skip if the file does not exist in the file area.
+                    if (!in_array($filename, $filenames)) {
+                        return $matches[0];
+                    }
 
-                // Replace only the filename part
-                return str_replace($filename, $newsrc, $matches[0]);
-            },
-            $this->itemrecord->{self::MARKDOWN}
-        );
+                    // Add base path (and escape spaces if needed)
+                    $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
 
-        // Weird characters can break things like tables, so clean it a bit.
-        $slidesmarkdown = self::sanitize_markdown($slidesmarkdown);
+                    // Replace only the filename part
+                    return str_replace($filename, $newsrc, $matches[0]);
+                },
+                $slidescontent
+            );
 
-        // Process markdown layouts (e.g. ::: 2cols -> <div class="ml_slides_2cols">)
-        $slidesmarkdown = self::process_layout_markdown($slidesmarkdown);
+            // Weird characters can break things like tables, so clean it a bit.
+            $slidescontent = self::sanitize_markdown($slidescontent);
+
+            // Process markdown layouts (e.g. ::: 2cols -> <div class="ml_slides_2cols">)
+            $slidescontent = self::process_layout_markdown($slidescontent);
+        } else {
+            // HTML mode.
+            $slidescontent = preg_replace_callback(
+                '/(src|data-background-image)=\"(?<filename>.*?)\"/',
+                function ($matches) use ($imageserveurl, $filenames) {
+                    $filename = trim($matches['filename']);
+
+                    // Skip if it's already a full URL (http/https).
+                    if (preg_match('/^https?:\/\//', $filename)) {
+                        return $matches[0];
+                    }
+
+                    // Skip if the file does not exist in the file area.
+                    if (!in_array($filename, $filenames)) {
+                        return $matches[0];
+                    }
+
+                    // Add base path (and escape spaces if needed)
+                    $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
+
+                    // Replace only the filename part
+                    return str_replace($filename, $newsrc, $matches[0]);
+                },
+                $slidescontent
+            );
+        }
 
         // Set it to output.
-        $testitem->slidesmarkdown = $slidesmarkdown;
+        $testitem->slidesmarkdown = $slidescontent;
+        $testitem->slidescontenttype = $slidescontenttype;
+        $testitem->ishtml = $slidescontenttype == self::CONTENTTYPE_HTML;
 
         $testitem->selectedtheme = $this->itemrecord->{self::SLIDETHEME};
         $testitem->selectedfontsize = $this->itemrecord->{self::SLIDEFONTSIZE};
@@ -186,6 +221,7 @@ class itemtype extends item
         $keycols['text2'] = ['jsonname' => 'slidestheme', 'type' => 'string', 'optional' => false, 'default' => 'black', 'dbname' => self::SLIDETHEME];
         $keycols['text3'] = ['jsonname' => 'slidesfontsize', 'type' => 'string', 'optional' => false, 'default' => '32', 'dbname' => self::SLIDEFONTSIZE];
         $keycols['int1'] = ['jsonname' => 'slidesfullscreen', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => self::FULLSCREEN];
+        $keycols['int2'] = ['jsonname' => 'slidescontenttype', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => self::CONTENTTYPE];
         $keycols[self::FILES] = ['jsonname' => self::FILES, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
 
 

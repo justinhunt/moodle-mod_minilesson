@@ -96,7 +96,7 @@ define(['jquery',
                     stepdata.totalitems = app.terms.length;
                     stepdata.correctitems = app.results.filter(function (e) {
                         return e.points > 0; }).length;
-                    stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
+                    stepdata.grade = stepdata.totalitems > 0 ? Math.round((stepdata.correctitems / stepdata.totalitems) * 100) : 0;
                     quizhelper.do_next(stepdata);
                 },
                 register_events: function () {

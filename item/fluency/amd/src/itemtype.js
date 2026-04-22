@@ -202,7 +202,7 @@ define(
                 stepdata.correctitems = self.items.filter(function (e) {
                         return e.correct;
                 }).length;
-                stepdata.grade = Math.round((stepdata.correctitems / stepdata.totalitems) * 100);
+                stepdata.grade = stepdata.totalitems > 0 ? Math.round((stepdata.correctitems / stepdata.totalitems) * 100) : 0;
 
         //stop audio
                 self.stop_audio();

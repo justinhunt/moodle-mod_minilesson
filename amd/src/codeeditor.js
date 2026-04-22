@@ -30318,6 +30318,8 @@ var CodeEditor = (() => {
       ];
     } else if (config2.language === "markdown") {
       languageExtension = [markdown()];
+    } else if (config2.language === "html") {
+      languageExtension = [html()];
     }
     let maxLines = config2.lines || 30;
     let editorTheme = EditorView.theme({
@@ -30357,6 +30359,29 @@ var CodeEditor = (() => {
     if (isTextArea) {
       element.style.display = "none";
       element.parentNode.insertBefore(view.dom, element.nextSibling);
+
+      // Add listener to handle dynamic language changes.
+      element.addEventListener('ml_slides_contenttype_change', (e) => {
+        const newLang = e.detail.language;
+        let newLangExt = [];
+        if (newLang === 'html') {
+          newLangExt = [html()];
+        } else if (newLang === 'markdown') {
+          newLangExt = [markdown()];
+        }
+        
+        // This is a bit tricky in CM6 without the proper effects imported.
+        // But we can try to reconfigure the state if we have access to the right tools.
+        // Given this is a bundle, we might not have StateEffect easily accessible.
+        // An alternative is to just re-init the whole thing.
+        if (typeof setupCodeEditor === 'function') {
+           // Remove the old editor DOM
+           if (view.dom && view.dom.parentNode) {
+             view.dom.parentNode.removeChild(view.dom);
+           }
+           setupCodeEditor(elementId, { ...config2, language: newLang });
+        }
+      });
     }
     return view;
   }

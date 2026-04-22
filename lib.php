@@ -1259,31 +1259,58 @@ function minilesson_output_fragment_preview_slides($args)
 
     $testitem = new stdClass();
     $testitem->inajax = AJAX_SCRIPT;
-    $testitem->slidesmarkdown = preg_replace_callback(
-        '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
-        function ($matches) use ($imageserveurl) {
-            $filename = trim($matches['filename']);
+    $slidescontenttype = $formdata[\minilessonitem_slides\itemtype::CONTENTTYPE] ?? \minilessonitem_slides\itemtype::CONTENTTYPE_MARKDOWN;
+    $slidescontent = $formdata[\minilessonitem_slides\itemtype::MARKDOWN];
 
-            // Skip if it's already a full URL (http/https).
-            if (preg_match('/^https?:\/\//', $filename)) {
-                return $matches[0];
-            }
+    if ($slidescontenttype == \minilessonitem_slides\itemtype::CONTENTTYPE_MARKDOWN) {
+        $testitem->slidesmarkdown = preg_replace_callback(
+            '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
+            function ($matches) use ($imageserveurl) {
+                $filename = trim($matches['filename']);
 
-            // Add base path (and escape spaces if needed).
-            $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
+                // Skip if it's already a full URL (http/https).
+                if (preg_match('/^https?:\/\//', $filename)) {
+                    return $matches[0];
+                }
 
-            // Replace only the filename part.
-            return str_replace($filename, $newsrc, $matches[0]);
-        },
-        $formdata[\minilessonitem_slides\itemtype::MARKDOWN]
-    );
+                // Add base path (and escape spaces if needed).
+                $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
 
+                // Replace only the filename part.
+                return str_replace($filename, $newsrc, $matches[0]);
+            },
+            $slidescontent
+        );
+
+        // Standardize markdown output, applying layout formatting, before rendering the preview template.
+        $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::sanitize_markdown($testitem->slidesmarkdown);
+        $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::process_layout_markdown($testitem->slidesmarkdown);
+    } else {
+        // HTML mode.
+        $testitem->slidesmarkdown = preg_replace_callback(
+            '/(src|data-background-image)=\"(?<filename>.*?)\"/',
+            function ($matches) use ($imageserveurl) {
+                $filename = trim($matches['filename']);
+
+                // Skip if it's already a full URL (http/https).
+                if (preg_match('/^https?:\/\//', $filename)) {
+                    return $matches[0];
+                }
+
+                // Add base path (and escape spaces if needed).
+                $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
+
+                // Replace only the filename part.
+                return str_replace($filename, $newsrc, $matches[0]);
+            },
+            $slidescontent
+        );
+    }
+
+    $testitem->slidescontenttype = $slidescontenttype;
+    $testitem->ishtml = $slidescontenttype == \minilessonitem_slides\itemtype::CONTENTTYPE_HTML;
     $testitem->selectedtheme = $formdata[\minilessonitem_slides\itemtype::SLIDETHEME];
     $testitem->selectedfontsize = $formdata[\minilessonitem_slides\itemtype::SLIDEFONTSIZE];
-
-    // Standardize markdown output, applying layout formatting, before rendering the preview template.
-    $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::sanitize_markdown($testitem->slidesmarkdown);
-    $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::process_layout_markdown($testitem->slidesmarkdown);
 
     return $OUTPUT->render_from_template('minilessonitem_slides' . '/slidesinner', $testitem);
 }

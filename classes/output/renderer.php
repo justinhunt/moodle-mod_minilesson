@@ -351,8 +351,8 @@ class renderer extends \plugin_renderer_base
             $result->questext = format_text($itemtext, FORMAT_MOODLE, ['context' => $context]);
             $result->itemtype = $itemquizdata->type;
             $result->resultstemplate = utils::get_sub_component($result->itemtype) . "/{$result->itemtype}results";
-
             $result->index++;
+         
             // Every item stars.
             if ($result->grade == 0) {
                 $ystarcnt = 0;

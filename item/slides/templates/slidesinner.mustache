@@ -1,11 +1,16 @@
 <div id="minilesson-slides-container-{{uniqueid}}" class="minilesson-slides-container yarn-player-wrapper">
   <div id="reveal-{{{uniqueid}}}" class="reveal"{{#selectedfontsize}} style="--r-main-font-size: {{{.}}}px" {{/selectedfontsize}}>
       <div class="slides">
-        <section data-markdown data-separator="^---$" data-separator-vertical="^--$">
- <textarea data-template>
+        {{^ishtml}}
+            <section data-markdown data-separator="^---$" data-separator-vertical="^--$">
+<textarea data-template>
 {{{slidesmarkdown}}}
 </textarea>
-        </section>
+            </section>
+        {{/ishtml}}
+        {{#ishtml}}
+            {{{slidesmarkdown}}}
+        {{/ishtml}}
       </div>
       {{#fullscreen}}
           <button id="toggle-fs-{{uniqueid}}" class="btn btn-secondary fullscreen-btn" title="{{#str}}fullscreen_toggle, mod_minilesson{{/str}}">
@@ -28,7 +33,7 @@
                     btn.addEventListener('click', (e) => {
                         e.preventDefault();
                         const isFS = !!document.fullscreenElement || !!document.webkitFullscreenElement;
-                        
+
                         if (isFS) {
                             const exitMethod = document.exitFullscreen ||
                                 document.webkitExitFullscreen ||
