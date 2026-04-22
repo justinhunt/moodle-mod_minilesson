@@ -42,6 +42,7 @@ $string['slides:fontstandard'] = 'Standard';
 $string['slides:fontlarge'] = 'Large';
 $string['slides:fontlarger'] = 'Larger';
 $string['slides:fontlargest'] = 'Largest';
-$string['enterslidesmarkdown'] = 'Enter your slides content here.';
+$string['enterslidesmarkdown'] = 'Enter your Slides Markdown. Markdown is a sort of shorthand syntax for creating HTML. See the <a href="https://poodll.freshdesk.com/a/solutions/articles/19000169462">Slides Markdown Guide</a> for details.';
+$string['enterslideshtml'] = 'Enter your Slides HTML here. See the <a href="https://revealjs.com/markup">reveal.js HTML </a> slides reference for details.';
 $string['slidesmarkdown'] = 'Slides Content';
 $string['slides:attachments'] = 'Backgrounds and Images';

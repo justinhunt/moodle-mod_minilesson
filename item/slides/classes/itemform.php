@@ -70,7 +70,10 @@ class itemform extends baseform
             ['data-control' => 'slidescontenttype']
         );
 
-        $this->add_static_text('instructions', '', get_string('enterslidesmarkdown', 'minilessonitem_slides'));
+        $this->add_static_text('markdowninstructions', '', get_string('enterslidesmarkdown', 'minilessonitem_slides'), 'minilessonitem_slides');
+        $this->add_static_text('htmlinstructions', '', get_string('enterslideshtml', 'minilessonitem_slides'), 'minilessonitem_slides');
+        $mform->hideif('htmlinstructions', itemtype::CONTENTTYPE, 'eq', itemtype::CONTENTTYPE_MARKDOWN);
+        $mform->hideif('markdowninstructions', itemtype::CONTENTTYPE, 'eq', itemtype::CONTENTTYPE_HTML);
 
         // Markdown/HTML text area.
         $this->add_textarearesponse(itemtype::MARKDOWN, get_string('slidesmarkdown', 'minilessonitem_slides'), true);
