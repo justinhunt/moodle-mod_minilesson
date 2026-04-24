@@ -72,6 +72,30 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         audiochat_voice: 'Aoede',
         autocreateresponse: false,
         datainputbuffer: false,
+        setupConfig: {
+            model: 'models/' + DEFAULT_MODEL,
+            generationConfig: {
+                responseModalities: ['AUDIO'],
+                temperature: 0.7,
+                speechConfig: {
+                    voiceConfig: {
+                        prebuiltVoiceConfig: {
+                            voiceName: self.audiochat_voice
+                        }
+                    }
+                }
+            },
+            realtimeInputConfig: {
+                automaticActivityDetection: {
+                    disabled: false,
+                }
+            },
+            sessionResumption: {},
+            inputAudioTranscription: {},
+            outputAudioTranscription: {}
+        },
+        sessionResumptionToken: null,
+        resumingSession: false,
 
         clone: function () {
             return $.extend(true, {}, this);
@@ -133,9 +157,19 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         getLoadingMessages: function () { return this.loadingMessages; },
 
         setAutoCreateResponse: function (enabled) {
-            this.autocreateresponse = enabled;
+            var self = this;
+            self.autocreateresponse = enabled;
             log.debug('Gemini driver: autocreate response toggled:');
             log.debug(enabled);
+            self._fetchSessionInfo().then(function(sessionInfo) {
+                if (self.ws && self.ws.readyState === WebSocket.OPEN) {
+                    self.ws.close();
+                }
+                self.resumingSession = true;
+                return self._openWebSocket(sessionInfo).then(function() {
+                    self._sendSetupAndFirstTurn(sessionInfo.model);
+                });
+            });
         },
 
         setDataInputBuffer: function (value, source) {
@@ -290,28 +324,30 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 // bidiGenerateContentSetup (Constrained endpoint enforces this).
                 log.debug('Gemini: sending setup message, WS state:');
                 log.debug(self.ws ? self.ws.readyState : 'null');
+                self.setupConfig.model = 'models/' + (model || DEFAULT_MODEL);
+                self.setupConfig.realtimeInputConfig.automaticActivityDetection.disabled = !self.autocreateresponse;
+                self.setupConfig.sessionResumption = {};
+                if (self.sessionResumptionToken) {
+                    self.setupConfig.sessionResumption.handle = self.sessionResumptionToken;
+                    self.sessionResumptionToken = null;
+                }
                 self._sendWS({
-                    setup: {
-                        model: 'models/' + (model || DEFAULT_MODEL),
-                        generationConfig: {
-                            responseModalities: ['AUDIO'],
-                            temperature: 0.7,
-                            speechConfig: {
-                                voiceConfig: {
-                                    prebuiltVoiceConfig: { voiceName: self.audiochat_voice }
-                                }
-                            }
-                        },
-                        realtimeInputConfig: {
-                            automaticActivityDetection: {
-                                disabled: !self.autocreateresponse
-                            }
-                        },
-                        inputAudioTranscription: {},
-                        outputAudioTranscription: {}
-                    }
+                    setup: self.setupConfig
                 });
                 log.debug('Gemini: setup message sent');
+
+                // If resuming session then no need to send first instruction.
+                if (self.resumingSession) {
+                    if (self._micEnabled && !self.autocreateresponse) {
+                        self._sendWS({
+                            realtimeInput: {
+                                activityStart: {}
+                            }
+                        });
+                    }
+                    self.resumingSession = false;
+                    return;
+                }
 
                 // Queue the first turn – sent once setupComplete arrives.
                 // Instructions are included here (not in setup.systemInstruction)
@@ -524,6 +560,13 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             if (msg.toolCall || msg.toolCallCancellation) {
                 return;
             }
+
+            if (msg.sessionResumptionUpdate && msg.sessionResumptionUpdate.resumable) {
+                log.debug('Session resumption message received:');
+                log.debug(msg);
+                self.sessionResumptionToken = msg.sessionResumptionUpdate.newHandle;
+            }
+
             if (msg.serverContent) {
                 log.debug('Gemini message:');
                 log.debug(msg);
@@ -739,6 +782,13 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 '{"score": "the score (0-100)", "gradeexplanation": "the explanation", "feedback": "the feedback"}.';
             self._gradingPending = true;
             self._gradingBuffer = '';
+            if (self._micEnabled && !self.autocreateresponse) {
+                self._sendWS({
+                    realtimeInput: {
+                        activityEnd: {}
+                    }
+                });
+            }
             self._sendWS({
                 realtimeInput: {
                     text: gradingInstructions
