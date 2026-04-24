@@ -252,8 +252,10 @@ define(
                     stepdata.resultsdata.gradeexplanation = self.strings.gradebywordcount;
                     if (self.itemdata.countwords === false || self.itemdata.targetwordcount === 0) {
                         stepdata.grade = 100;
+                    } else {
+                        // Calculate grade based on word count
+                        stepdata.grade = Math.min(wordcount / self.itemdata.targetwordcount, 1) * 100;
                     }
-                    stepdata.grade = Math.min(wordcount / self.itemdata.targetwordcount, 1) * 100;
                 }
 
                 return stepdata;
