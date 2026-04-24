@@ -288,7 +288,7 @@ class aigen {
             // If the itemtemplate has set a voice field, and the template language is different from the module language
             // We need a voice in the module language.
             $itemtype = $importitem->type;
-            $itemclass = '\\mod_minilesson\\local\\itemtype\\item_' . $itemtype;
+            $itemclass = utils::fetch_itemtype_classname($itemtype);
 
             // Now check the item for voice fields and update them if necessary.
             if (class_exists($itemclass)) {
