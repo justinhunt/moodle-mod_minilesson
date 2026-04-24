@@ -23,8 +23,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
  */
 
-require_once(__DIR__ . '/../../config.php');
+require_once(dirname(__FILE__, 5) . '/config.php');
 defined('MOODLE_INTERNAL') || die();
-use mod_minilesson\utils;
+use minilessonitem_audiochat\helper;
 require_login();
-utils::openai_forward_offer();
+helper::openai_forward_offer();

@@ -34,6 +34,19 @@ $settings = new admin_settingpage('modsettingminilessonaudiochat', $plugininfo->
 // Audio chat settings.
 $settings->add(new admin_setting_heading(constants::M_COMPONENT . '/audiochat', $plugininfo->displayname, ''));
 
+$settings->add(
+    new admin_setting_configselect(
+        constants::M_COMPONENT . "/provider",
+        get_string('provider', 'minilessonitem_audiochat'),
+        '',
+        'openai',
+        [
+            'openai' => get_string('openai', 'minilessonitem_audiochat'),
+            'gemini' => get_string('gemini', 'minilessonitem_audiochat'),
+        ]
+    )
+);
+
 // Audio Chat Prompts
 $maxprompts = constants::MAX_AI_PROMPTS;
 for ($i = 0; $i < $maxprompts; $i++) {

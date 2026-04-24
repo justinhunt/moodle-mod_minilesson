@@ -14,7 +14,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * audiochat module itemtype
+ * audiochat module itemtype (UI layer).
+ *
+ * This module owns all DOM-touching work: controls wiring, mic waveform,
+ * template rendering, and session UI state. Protocol concerns (RTC/WebSocket
+ * handshake, event stream) are delegated to a chat driver selected from
+ * itemdata.chatprovider.
  *
  * @module     minilessonitem_audiochat/itemtype
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -22,96 +27,173 @@
  */
 define(
     ['jquery', 'core/log', 'mod_minilesson/definitions',
-        'mod_minilesson/ttrecorder', 'core/templates', 'core/str', 'core/fragment', 'core/url'],
-    function ($, log, def, ttrecorder, templates, str, Fragment, Url) {
+        'mod_minilesson/ttrecorder', 'core/templates', 'core/str', 'core/url'],
+    function ($, log, def, ttrecorder, templates, str, Url) {
         "use strict"; // jshint ;_;
 
-        /*
-    This file is to manage the free speaking item type
-            */
-
-          log.debug('MiniLesson AudioChat: initialising');
+        log.debug('MiniLesson AudioChat: initialising');
 
         return {
-            autocreateresponse : false, // If true, the response will be created automatically
-            gradingrequesttag: "gradingrequest", // Tag for the grading request
-            gradingData: false, // Data returne by the grading request
             strings: {},
-            controls: {}, // Controls for the item
-            itemdata: {}, // Item data for the item
-            index: 0, // Index of the item in the quiz
-            quizhelper: {}, // Quiz helper for the item
-            pc: null,
-            dc: null,
+            controls: {},
+            itemdata: {},
+            index: 0,
+            quizhelper: {},
+
+            // UI-owned session state.
             cantChat: false,
-            audiochat_voice: "alloy", // Default voice for the AI
             isSessionStarted: false,
             isSessionStopped: false,
             isSessionActive: false,
             isLoading: false,
             isMicActive: false,
-            isMicInitialized: false, // True when getUserMedia has successfully run once
-            loadingMessages: new Set(), // To track messages that are currently loading,
+            isMicInitialized: false,
+
+            // Mic waveform (UI audio analyser). The driver owns the MediaStream itself.
             audioContext: null,
             analyser: null,
             dataArray: null,
             sourceNode: null,
-            mediaStream: null,
             animationFrameId: null,
             canvasCtx: null,
-            eventlogs: [],
-            items: {},
-            responses: {},
-            abortcontroller: new AbortController(),
-            datainputbuffer: false,
-            inputBufferInterval: null,
-            //Turn detection - semantic is good for native speakers, but awful for language learners
-            // time based we give 3.5s of silence detection before posting
-            semantic_vad: {
-                type: "semantic_vad",
-                eagerness: "low",
-            },
 
-            timebased_vad: {
-                type: "server_vad",
-                silence_duration_ms: 3500,
-                create_response: true, // true = it will turn on and off the mic and respond
-                interrupt_response: true, // only in conversation mode
-                threshold: 0.3,
-                //  "prefix_padding_ms": 300,
-            },
+            // Protocol driver (OpenAI RTC or Gemini WebSocket).
+            driver: null,
 
-            gradeRequestTrial: 0,
-            maxGradeRequestTrial: 3,
+            // Mirrored from the driver for rendering.
+            orderedItems: [],
+            loadingMessages: new Set(),
 
-            // For making multiple instances
+            // For making multiple instances.
             clone: function () {
                 return $.extend(true, {}, this);
             },
 
             init: function (index, itemdata, quizhelper) {
-                this.itemdata = itemdata;
-                this.autocreateresponse = itemdata.audiochat_autoresponse || false;
+                var self = this;
+                self.itemdata = itemdata;
                 log.debug('itemdata', itemdata);
-                this.quizhelper = quizhelper;
-                this.index = index;
-                this.cantChat = !itemdata.canchat;
-                this.init_strings();
-                this.init_controls(quizhelper, itemdata);
-                this.init_voice(itemdata.audiochat_voice);
-                this.register_events(index, itemdata, quizhelper);
-                this.renderUI();
+                self.quizhelper = quizhelper;
+                self.index = index;
+                self.cantChat = !itemdata.canchat;
+                self.init_strings();
+                self.init_controls(quizhelper, itemdata).then(function () {
+                    return self.init_driver();
+                }).then(function () {
+                    self.register_events(index, itemdata, quizhelper);
+                    self.renderUI();
+                });
             },
 
             init_strings: function () {
                 var self = this;
-                // Set up strings
                 str.get_strings([
                     { "key": "gradebywordcount", "component": "mod_minilesson" },
                 ]).done(function (s) {
                     var i = 0;
                     self.strings.gradebywordcount = s[i++];
                 });
+            },
+
+            /**
+             * Dynamically load the chat driver for the configured provider.
+             * Defaults to OpenAI when not specified.
+             */
+            init_driver: function () {
+                var self = this;
+                var provider = self.itemdata.chatprovider || 'gemini';
+                var driverModule = provider === 'gemini'
+                    ? 'minilessonitem_audiochat/chatdriver_gemini'
+                    : 'minilessonitem_audiochat/chatdriver_openai';
+
+                return new Promise(function (resolve, reject) {
+                    require([driverModule], function (driver) {
+                        self.driver = driver.clone();
+                        self.driver.init({
+                            itemdata: self.itemdata,
+                            audioElement: self.controls.hiddenaudio,
+                            callbacks: self._buildDriverCallbacks(),
+                        });
+                        resolve();
+                    }, reject);
+                });
+            },
+
+            _buildDriverCallbacks: function () {
+                var self = this;
+                return {
+                    onStateChange: function (state) {
+                        self._onDriverStateChange(state);
+                    },
+                    onItemsChanged: function (orderedItems, loadingMessages) {
+                        self.orderedItems = orderedItems || [];
+                        self.loadingMessages = loadingMessages || new Set();
+                        self.renderUI();
+                    },
+                    onGradingData: function (/*data*/) {
+                        // Nothing to do immediately; grade_activity/showResults reads
+                        // the data from the driver at render time.
+                    },
+                    onMicAvailabilityChange: function (available) {
+                        if (available) {
+                            self.enableMic();
+                        } else {
+                            self.disableMic();
+                        }
+                    },
+                    onUserSpeechStopped: function () {
+                        // If the user was mid-turn and autocreate is on, release the mic.
+                        if (self.isMicActive && self.driver.autocreateresponse) {
+                            self.toggleMute();
+                            self.disableMic();
+                        }
+                    },
+                    onOutputAudioStopped: function () {
+                        // AI finished speaking: re-open the mic so the student can reply.
+                        if (!self.isMicActive) {
+                            self.toggleMute();
+                        }
+                    },
+                    onMediaStreamReady: function (stream) {
+                        self._attachAnalyserToStream(stream);
+                    },
+                    onGradingWindowClosed: function () {
+                        if (self.quizhelper.showitemreview) {
+                            self.showResults();
+                        }
+                    },
+                    onScrollRequested: function () {
+                        self.scrollToBottom();
+                    },
+                    onError: function (err) {
+                        log.debug('Chat driver error:', err);
+                    },
+                };
+            },
+
+            _onDriverStateChange: function (state) {
+                var self = this;
+                log.debug('Driver state:', state);
+                switch (state) {
+                    case 'connecting':
+                        self.isLoading = true;
+                        break;
+                    case 'connected':
+                        self.isLoading = false;
+                        self.isSessionActive = true;
+                        self.isSessionStarted = true;
+                        self.isSessionStopped = false;
+                        break;
+                    case 'aborted':
+                    case 'error':
+                        self.isLoading = false;
+                        break;
+                    case 'stopped':
+                        self.isSessionActive = false;
+                        self.isSessionStopped = true;
+                        break;
+                }
+                self.renderUI();
             },
 
             next_question: function () {
@@ -121,8 +203,7 @@ define(
                 stepdata.hasgrade = true;
                 stepdata.lessonitemid = self.itemdata.id;
                 stepdata.totalitems = self.itemdata.totalmarks;
-                stepdata.resultsdata = {'items': Object.values(self.items)};
-                // Add grade and other results data
+                stepdata.resultsdata = { 'items': Object.values(self.driver.getItems()) };
                 stepdata = self.grade_activity(stepdata);
                 stepdata.correctitems = Math.round((self.itemdata.totalmarks * stepdata.grade) / 100);
                 self.quizhelper.do_next(stepdata);
@@ -131,81 +212,68 @@ define(
             count_words: function () {
                 var self = this;
                 var userTranscript = [];
-                Object.values(self.items).forEach(item => {
+                Object.values(self.driver.getItems()).forEach(function (item) {
                     if (item.content) {
                         userTranscript.push(item.content);
                     }
                 });
-                var wordCount = userTranscript.join(' ').split(/\s+/).length;
-                return wordCount;
+                return userTranscript.join(' ').split(/\s+/).length;
             },
 
             toggle_autocreate_response: function () {
                 var self = this;
-                self.autocreateresponse = !self.autocreateresponse;
-                self.timebased_vad.create_response = self.autocreateresponse;
-                log.debug("Autocreate response toggled:", self.autocreateresponse);
-                self.dc.send(JSON.stringify({
-                    type: "session.update",
-                    session: {
-                        turn_detection: self.timebased_vad,
-                    }
-                }));
+                var newvalue = !self.driver.autocreateresponse;
+                self.driver.setAutoCreateResponse(newvalue);
+                log.debug("Autocreate response toggled:", newvalue);
+                self.renderUI();
             },
 
             grade_activity: function (stepdata) {
-                //loop through items and form a complete user transcript
                 var self = this;
-
-                //count words in the transcript
+                var gradingData = self.driver.getGradingData();
                 var wordcount = self.count_words();
 
-                if (self.gradingData && self.gradingData.score !== undefined) {
-                    log.debug("Using grading data from AI:", self.gradingData);
-                    // If grading data is available, use it
-                    stepdata.grade = self.gradingData.score;
+                if (gradingData && gradingData.score !== undefined) {
+                    log.debug("Using grading data from AI:", gradingData);
+                    stepdata.grade = gradingData.score;
 
-                    //If target word count is greater then 0, we lower the grade if it is lower then that target word count
+                    // Lower the grade if the student fell short of the target word count.
                     if (typeof stepdata.grade === 'number' &&
                         typeof wordcount === 'number' &&
                         self.itemdata.targetwordcount > 0 &&
-                         wordcount < self.itemdata.targetwordcount) {
+                        wordcount < self.itemdata.targetwordcount) {
                         stepdata.grade = Math.round(stepdata.grade * (wordcount / self.itemdata.targetwordcount));
                     }
 
-
-                    stepdata.resultsdata.aifeedback = self.gradingData.feedback || "";
-                    stepdata.resultsdata.gradeexplanation = self.gradingData.gradeexplanation || "";
+                    stepdata.resultsdata.aifeedback = gradingData.feedback || "";
+                    stepdata.resultsdata.gradeexplanation = gradingData.gradeexplanation || "";
                 } else {
-                    //Otherwise we default to counting words
-                    log.debug("No grading data from AI: counting words", self.gradingData);
+                    log.debug("No grading data from AI: counting words", gradingData);
                     stepdata.resultsdata.gradeexplanation = self.strings.gradebywordcount;
                     if (self.itemdata.countwords === false || self.itemdata.targetwordcount === 0) {
-                        stepdata.grade =  100;
-                    } else {
-                        // Calculate grade based on word count
-                        stepdata.grade = Math.min(wordcount / self.itemdata.targetwordcount, 1) * 100;
+                        stepdata.grade = 100;
                     }
+                    stepdata.grade = Math.min(wordcount / self.itemdata.targetwordcount, 1) * 100;
                 }
 
-                // return stepdata
                 return stepdata;
-
             },
 
             register_events: function (index, itemdata) {
-
                 var self = this;
 
-                // Event Listeners
-                self.controls.startSessionBtn.addEventListener("click", self.startSession.bind(this));
-                self.controls.stopSessionBtn.addEventListener("click", self.stopSession.bind(this));
-                self.controls.retrySessionBtn.addEventListener("click", self.resetSession.bind(this));
-                self.controls.autocreateresponseCheckbox.addEventListener("change", self.toggle_autocreate_response.bind(self));
+                self.controls.startSessionBtn.addEventListener("click", self.startSession.bind(self));
+                self.controls.stopSessionBtn.addEventListener("click", self.stopSession.bind(self));
+                self.controls.retrySessionBtn.addEventListener("click", self.resetSession.bind(self));
+                self.controls.autocreateresponseCheckbox.addEventListener(
+                    "change",
+                    self.toggle_autocreate_response.bind(self)
+                );
                 self.controls.cancelStartSessionBtn.addEventListener("click", () => {
                     log.debug("Cancelling session start");
-                    self.abortcontroller.abort();
-                    self.abortcontroller = new AbortController();
+                    if (self.driver && typeof self.driver.abort === 'function') {
+                        self.driver.abort();
+                    }
                 });
 
                 $(self.controls.nextbutton).on('click', function () {
@@ -227,21 +295,9 @@ define(
                     }
                 });
 
-
                 if (self.controls.toggleMicBtn) {
                     self.controls.toggleMicBtn.addEventListener("click", self.toggleMute.bind(self));
                 }
-            },
-
-            init_voice: function (voice) {
-                var self = this;
-                var voices = ['alloy', 'ash', 'ballad', 'coral', 'echo', 'sage', 'shimmer', 'verse', 'marin', 'cedar'];
-                if (voice && voices.includes(voice)) {
-                    self.audiochat_voice = voice;
-                } else {
-                    self.audiochat_voice = 'alloy'; // Default voice
-                }
-                log.debug("AudioChat voice set to:", this.audiochat_voice);
             },
 
             init_controls: async function () {
@@ -269,7 +325,6 @@ define(
                     resultscontainer: container.querySelector('.ml_ac_results_container'),
                     resultscontent: container.querySelector('.ml_ac_results_content'),
                     autocreateresponseToggle: container.querySelector('.ml_ac_autoresponse-toggle'),
-
                     clicktosendlabel: container.querySelector('.ml_ac_clicktosend'),
                     mainWrapper: container.querySelector('.minilesson_audiochat_box .ml_unique_mainwrapper'),
                     sessionControls: container.querySelector('.ml_unique_sessioncontrols'),
@@ -279,42 +334,52 @@ define(
                 self.canvasCtx = !self.controls.micWaveformCanvas ? null :
                     self.controls.micWaveformCanvas.getContext("2d");
 
-                // Initial render
                 await self.populateMicList();
-
             },
 
             scrollToBottom: function () {
                 var self = this;
+                if (!self.controls.conversationSection || !self.controls.conversationSection.firstElementChild) {
+                    return;
+                }
                 self.controls.conversationSection.firstElementChild.scrollIntoViewIfNeeded();
-                self.controls.conversationSection.firstElementChild.scrollTop = self.controls.conversationSection.firstElementChild.scrollHeight;
+                self.controls.conversationSection.firstElementChild.scrollTop =
+                    self.controls.conversationSection.firstElementChild.scrollHeight;
             },
 
             scrollMicButtonIntoView: function () {
                 var self = this;
                 if (self.controls.micButtonContainer) {
-                    self.controls.micButtonContainer.scrollIntoView({behavior: "smooth", block: "center"});
+                    self.controls.micButtonContainer.scrollIntoView({ behavior: "smooth", block: "center" });
                 }
             },
 
             renderUI: function () {
                 var self = this;
-                // Session Controls
-                self.controls.startSessionBtn.classList.toggle("hidden", self.isSessionActive || self.isLoading || self.isSessionStarted || self.cantChat);
+                var autocreate = self.driver ? self.driver.autocreateresponse : false;
+
+                // Session Controls.
+                self.controls.startSessionBtn.classList.toggle(
+                    "hidden",
+                    self.isSessionActive || self.isLoading || self.isSessionStarted || self.cantChat
+                );
                 self.controls.cantChatWarning.classList.toggle("hidden", !self.cantChat);
                 self.controls.loadingIndicator.classList.toggle("hidden", !self.isLoading);
                 self.controls.stopSessionBtn.classList.toggle("hidden", !self.isSessionActive);
                 self.controls.micButtonContainer.classList.toggle("hidden", !self.isSessionActive);
                 var endScreen = self.isSessionStarted && self.isSessionStopped;
-                self.controls.resultscontainer.classList.toggle("hidden", !endScreen && self.quizhelper.showitemreview);
+                self.controls.resultscontainer.classList.toggle(
+                    "hidden",
+                    !endScreen && self.quizhelper.showitemreview
+                );
                 self.controls.finishMessage.classList.toggle("hidden", !endScreen);
-                self.controls.retrySessionBtn.classList.toggle("hidden", !endScreen && self.itemdata.allowretry);
-                // We no longer show the cancel button. It does not work after changes we made to icegathering.
-                // If we set abortcontroller.signal to work with it will work, but it is complex
-                //self.controls.cancelStartSessionBtn.classList.toggle('hidden', !(self.isLoading && !self.isSessionActive));
+                self.controls.retrySessionBtn.classList.toggle(
+                    "hidden",
+                    !endScreen && self.itemdata.allowretry
+                );
+                // The cancel button was disabled after ICE-gathering changes made it unreliable.
                 self.controls.autocreateresponseToggle.classList.toggle("hidden", !self.isSessionActive);
                 if (self.controls.micSelect) {
-                    //how many options are in micselect
                     var mics = self.controls.micSelect.querySelectorAll('option');
                     var noshowmics = mics.length < 2;
                     self.controls.micSelect.parentElement.classList.toggle(
@@ -323,37 +388,31 @@ define(
                     );
                 }
 
-                var orderedItems = [];
-                var idMap = new Map();
-                var previousMap = new Map();
-                var currentItem;
-                Object.values(self.items).forEach(item => {
-                    idMap.set(item.id, item);
-                    previousMap.set(item.previous_item_id, item);
-                    if (item.previous_item_id === null) {
-                        currentItem = item;
-                    }
-                });
-                while (currentItem) {
-                    orderedItems.push(currentItem);
-                    currentItem = previousMap.get(currentItem.id);
-                }
-
-                // The cute dog avatar
-                self.controls.aiAvatarSection.classList.toggle("hidden", self.isSessionStarted || self.isSessionActive || self.isSessionStopped);
-                // The conversation area
-                self.controls.conversationSection.classList.toggle("hidden", !(self.isSessionActive || self.isSessionStopped));
-
-                self.controls.sessionControls.classList.toggle('hidden', self.isSessionStarted || self.isSessionActive || self.isSessionStopped);
+                // The cute dog avatar.
+                self.controls.aiAvatarSection.classList.toggle(
+                    "hidden",
+                    self.isSessionStarted || self.isSessionActive || self.isSessionStopped
+                );
+                // The conversation area.
+                self.controls.conversationSection.classList.toggle(
+                    "hidden",
+                    !(self.isSessionActive || self.isSessionStopped)
+                );
+                self.controls.sessionControls.classList.toggle(
+                    'hidden',
+                    self.isSessionStarted || self.isSessionActive || self.isSessionStopped
+                );
                 if (self.controls.itemtextAfterchatactive) {
-                    self.controls.itemtextAfterchatactive.classList.toggle('hidden', !(self.isSessionActive || self.isSessionStopped));
+                    self.controls.itemtextAfterchatactive.classList.toggle(
+                        'hidden',
+                        !(self.isSessionActive || self.isSessionStopped)
+                    );
                 }
                 self.controls.micColumn.classList.toggle('hidden', !self.isSessionActive);
 
-                // Render messages
-                self.controls.messagesContainer.innerHTML = ""; // Clear existing messages
-
-                orderedItems.forEach((message) => {
+                // Render messages from the driver-provided ordered list.
+                self.controls.messagesContainer.innerHTML = "";
+                self.orderedItems.forEach((message) => {
                     if (!message.content) {
                         return;
                     }
@@ -361,11 +420,9 @@ define(
                     messageDiv.className = `ml_unique_ordered_message_${message.usertype === "user" ? "user" : "assistant"}`;
 
                     var contentDiv = document.createElement("div");
-                    contentDiv.className = `rounded-lg ${
-                            message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
-                    } ml_unique_content_${
-                        message.usertype === "user" ? "user" : "assistant"
-                    }`;
+                    contentDiv.className = `rounded-lg ${message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+                        } ml_unique_content_${message.usertype === "user" ? "user" : "assistant"
+                        }`;
 
                     var headerDiv = document.createElement("div");
                     headerDiv.className = "mb-1 ml_unique_headerdiv";
@@ -378,9 +435,9 @@ define(
                         headerDiv.appendChild(pictureDiv);
                     }
                     str.get_strings([
-                        {key: 'audiochataiassistant', component: 'mod_minilesson'},
-                        {key: 'audiochatstudent', component: 'mod_minilesson'}
-                    ]).then(function(strings) {
+                        { key: 'audiochataiassistant', component: 'mod_minilesson' },
+                        { key: 'audiochatstudent', component: 'mod_minilesson' }
+                    ]).then(function (strings) {
                         headerDiv.innerHTML += message.usertype === "user" ? strings[1] : strings[0];
                     });
                     contentDiv.appendChild(headerDiv);
@@ -409,30 +466,25 @@ define(
                 });
 
                 self.scrollToBottom();
-               // self.scrollMicButtonIntoView();
 
-                // Update mic button container and canvas visibility
+                // Mic button visual state.
                 if (self.controls.micButtonContainer) {
                     self.controls.micButtonContainer.classList.toggle("active", self.isMicActive);
-                    self.controls.micButtonContainer.classList.toggle("bg-blue-500", self.isMicActive); // Active background color
-                    self.controls.micButtonContainer.classList.toggle("text-white", self.isMicActive); // Active icon color
-                    self.controls.micButtonContainer.classList.toggle("bg-gray-200", !self.isMicActive); // Inactive background color
-                    self.controls.micButtonContainer.classList.toggle("text-gray-800", !self.isMicActive); // Inactive icon color
+                    self.controls.micButtonContainer.classList.toggle("bg-blue-500", self.isMicActive);
+                    self.controls.micButtonContainer.classList.toggle("text-white", self.isMicActive);
+                    self.controls.micButtonContainer.classList.toggle("bg-gray-200", !self.isMicActive);
+                    self.controls.micButtonContainer.classList.toggle("text-gray-800", !self.isMicActive);
                 }
-
-
                 if (self.controls.micWaveformCanvas) {
                     self.controls.micWaveformCanvas.classList.toggle("active", self.isMicActive);
                 }
-
                 if (self.controls.toggleMicBtn) {
-                    // Set icon based on mic state
                     self.controls.toggleMicBtn.innerHTML = self.isMicActive
-                    ? `<svg id="mic-icon" class="mic-icon mic-icon-svg ml_unique_micsvg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        ? `<svg id="mic-icon" class="mic-icon mic-icon-svg ml_unique_micsvg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <rect id="primary" x="2" y="2" width="20" height="20" rx="2" style="fill: rgb(0, 0, 0);"/>
 </svg>
-` // Mic On icon
-                    : `<svg width="48" height="48" viewBox="0 0 59 59" fill="none" xmlns="http://www.w3.org/2000/svg">
+`
+                        : `<svg width="48" height="48" viewBox="0 0 59 59" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g filter="url(#filter0_d_2299_874)">
     <circle cx="29.2834" cy="27.2834" r="23.2834" fill="#5067FF"/>
   </g>
@@ -453,307 +505,64 @@ define(
     </filter>
   </defs>
 </svg>
-`; // Mic Off icon
+`;
                 }
 
-                //show or not show clicktosendlabel
-                if (self.isMicActive && !self.autocreateresponse) {
+                if (self.isMicActive && !autocreate) {
                     self.controls.clicktosendlabel.classList.remove("hidden");
                 } else {
                     self.controls.clicktosendlabel.classList.add("hidden");
                 }
-
-            },
-
-            //setter for datainputbuffer
-            setDataInputBuffer: function (value, source) {
-                var self=this;
-                self.datainputbuffer = value;
-                log.debug("Data in input buffer set to:", value);
-                log.debug("Data input buffer set source:", source);
             },
 
             resetSession: function () {
-                log.debug("reset  session");
+                log.debug("reset session");
                 var self = this;
                 self.isLoading = false;
                 self.isSessionActive = false;
                 self.isSessionStopped = false;
                 self.isSessionStarted = false;
-                self.renderUI();
+                self.orderedItems = [];
+                self.loadingMessages = new Set();
+                self.init_driver().then(function () {
+                    self.renderUI();
+                });
             },
 
             startSession: async function () {
                 var self = this;
-                var twoletterlang = self.itemdata.language.substr(0, 2);
-                var hiddenaudio = self.controls.hiddenaudio;
                 log.debug("Session starting");
                 self.isLoading = true;
-                self.items = [];
                 self.renderUI();
-                // Open the RTC PeerConnection via Stun and ICE servers
-                log.debug("Opening peer connection...");
-                self.pc = new RTCPeerConnection({
-                    iceServers: [{
-                        urls: "stun:stun.l.google.com:19302"
-                    }]
-                });
-
-                // Create a DataChannel for sending events (text and audio)
-                log.debug("creating data channel...");
-                self.dc = self.pc.createDataChannel("oai-events");
-
-                // Handle incoming messages on the DataChannel
-                self.dc.onmessage = (e) => {
-                    self.eventlogs.push(e.data);
-                    //log.debug("DataChannel message:", e.data);
-                    try {
-                        var lines = e.data.split("\n").filter(Boolean);
-                        for (var line of lines) {
-                            self.handleRTCEvent.call(self, JSON.parse(line));
-                        }
-                    } catch (err) {
-                        log.debug("Failed to parse");
-                        log.debug(err);
-                    }
-                };
-                self.dc.onopen = () => {
-                    log.debug("DataChannel open");
-
-                    //Turn detection - semantic is good for native speakers, but awful for language learners
-                    // time based we give 1.5s of silence detection before posting
-                    // var semantic_vad = {
-                    //     type: "semantic_vad",
-                    //     eagerness: "low",
-                    // };
-
-                    // Set the auto turn detection, or manual submit flag
-                    self.timebased_vad.create_response = self.autocreateresponse;
-
-                    log.debug(self.itemdata.audiochatinstructions);
-                    var updateinstructions = self.itemdata.audiochatinstructions;
-                    Fragment.loadFragment(
-                        'mod_minilesson',
-                        'audiochat_fetchstudentsubmission',
-                        M.cfg.contextid,
-                        {
-                            itemid: self.itemdata.id
-                        }
-                    ).done(function (studentsubmission) {
-                        log.debug("Loaded audio chat studentsubmission:", studentsubmission);
-                        if (studentsubmission) {
-                            // Replace "{student submission}" placeholder with actual submission
-                            updateinstructions = updateinstructions.replace('{student submission}', studentsubmission);
-
-                            // Replace student submission in grade instructions too
-                            self.itemdata.audiochatgradeinstructions = self.itemdata.audiochatgradeinstructions.replace('{student submission}', studentsubmission);
-
-                            // Save student submission in itemdata for later use
-                            self.itemdata.studentsubmission = studentsubmission;
-                        }
-
-                        self.sendEvent({
-                            type: "session.update",
-                            session: {
-                                type: 'realtime',
-                                instructions: updateinstructions,
-                                audio: {
-                                    input: {
-                                        transcription: {
-                                            language: twoletterlang,
-                                            model: "whisper-1" // "gpt-4o-mini-transcribe"  // Use a transcription model
-                                        },
-                                        turn_detection: self.timebased_vad,
-                                    },
-                                    output: {
-                                        speed: 0.9,
-                                        voice: self.audiochat_voice,
-                                    }
-                                },
-                                output_modalities: ["audio"],
-                            }
-                        });
-
-                        // Send the first message to tell AI to say something
-                        // the response create function overrides the session instructions, so we need to double up here
-                        var firstmessageinstructions =  "Please introduce yourself to the student and explain todays topic.";
-                        self.sendEvent({
-                            type: "response.create",
-                            response: {
-                                output_modalities: ["audio"],
-                                instructions:  updateinstructions + " " + firstmessageinstructions,
-                                audio: {
-                                    output: {
-                                        voice: self.audiochat_voice,
-                                    },
-                                },
-                            }
-                        });
-                    });
-                };
-
-                // Set up the audio element to play incoming audio.
-                self.pc.ontrack = (event) => {
-                    hiddenaudio.srcObject = event.streams[0];
-                };
-
-                // Set up the Mic stream.
-                self.mediaStream = await navigator.mediaDevices.getUserMedia({audio: true});
-                self.mediaStream.getTracks().forEach((track) => {
-                    track.enabled = false;
-                    self.pc.addTrack(track, self.mediaStream);
-                });
-
-                // Set up the RTC Connection by bouncing our request off the Moodle server
-                var offer = await self.pc.createOffer({
-                    offerToReceiveAudio: true
-                });
-                await self.pc.setLocalDescription(offer);
-                // Search for server candidates for relaying messages, may take 15s
-                await self.waitForIceGathering(self.pc);
-
-                try {
-                    var sdpResponse = await fetch(M.cfg.wwwroot + "/mod/minilesson/openairtc.php", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/sdp"
-                        },
-                        body: self.pc.localDescription.sdp,
-                        signal: self.abortcontroller.signal
-                    });
-                    if (!sdpResponse.ok) {
-                        log.debug("Failed /rtc:", await sdpResponse.text());
-                        return;
-                    }
-                    log.debug("Received SDP answer from server");
-                    var answer = await sdpResponse.text();
-                    log.debug(answer);
-                    await self.pc.setRemoteDescription({
-                        type: "answer",
-                        sdp: answer
-                    });
-                    log.debug("Session started");
-                } catch (e) {
-                    log.debug(e, 'connect error');
-                    if (e.name === 'AbortError') {
-                        log.debug("Session start aborted by user.");
-                        // Reset UI and state as needed
-                        self.isLoading = false;
-                        self.renderUI();
-                        return;
-                    }
-
-                    // Close data channel if open
-                    if (self.dc) {
-                        self.dc.close();
-                    }
-                    // Close peer connection if open
-                    if (self.pc) {
-                        self.pc.close();
-                    }
-                    if (self.mediaStream) {
-                        self.mediaStream.getTracks().forEach((track) => track.stop());
-                    }
-                    self.isLoading = false;
-                    self.renderUI();
-                    return;
-                }
-
-                self.isLoading = false;
-                self.isSessionActive = true;
-                self.isSessionStarted = true;
-                self.isSessionStopped = false;
-                self.renderUI();
-            },
-
-            sendGradingRequest: function () {
-                var self = this;
-                // Send a final message to tell AI to grade the session and give feedback
-                var gradingInstructions = "Please provide a percentage score for the session, an explanation of the score (for teachers), and feedback (for the student). " +
-                     self.itemdata.audiochatgradeinstructions +
-                    "Return the response as JSON in the format: {\"score\": \"the score  ( 0-100 ) \", \"gradeexplanation\": \"the explanation\", \"feedback\": \"the feedback\"}.";
-
-                var responsedata = {
-                    // The response is out of band and not be added to the default conversation
-                    conversation: "none",
-                    output_modalities: ["text"],
-                    instructions: gradingInstructions,
-                    // Add the gradingrequest tag to make handltertc life easier
-                    metadata: { tag: self.gradingrequesttag},
-                    max_output_tokens: 500, // Keeps it tight
-                    // temperature: 0.6, // Optional: makes grading more deterministic
-                };
-
-                //If we wanted to reutrn an audio response (but lets not)
-                //responsedata.voice = self.audiochat_voice;
-
-                self.sendEvent({
-                    type: "response.create",
-                    response: responsedata,
-                });
+                await self.driver.start();
             },
 
             stopSession: function () {
                 var self = this;
-
-                log.debug("Session stopping...");
+                log.debug("Session stopping (UI)");
                 self.isSessionActive = false;
                 self.isSessionStopped = true;
-                self.loadingMessages.clear();
-
-                // Release mic resources when session ends
                 self.releaseMicResources();
                 self.renderUI();
 
-                // request grading information
-                // after that response, we will close the data channel and peer connection
-                //but shut it down after 2s just in case there is an error or something
                 if (self.itemdata.audiochatgradeinstructions && self.itemdata.audiochatgradeinstructions !== "") {
-                    self.sendGradingRequest();
-
-                    //add a spinner to the results content
-                    //if we are not showing item review we do not need this, but in that case it is hidden anyway
                     self.controls.resultscontent.innerHTML = `<i class="fa fa-spinner fa-spin fa-2x"></i>`;
-                } else {
-                    log.debug("Closing session resources...");
-                    self.closeDataChannel();
-                }
-                log.debug("Session stopped");
-            },
-
-            closeDataChannel: function () {
-                var self = this;
-                // Tidy up the data channel and peer connection
-                if (typeof self.dc !== 'undefined' && self.dc) {
-                    self.dc.close();
-                    self.dc = null;
-                }
-                if (typeof self.pc !== 'undefined' && self.pc) {
-                    self.pc.close();
-                    self.pc = null;
                 }
 
-                if (self.inputBufferInterval) {
-                    clearInterval(self.inputBufferInterval);
-                    self.inputBufferInterval = null;
-                }
+                self.driver.stopSession();
             },
 
             showResults: function () {
                 var self = this;
                 var tdata = {};
-                tdata.resultsdata = {'items': Object.values(self.items)};
-                // Add grade and other results data
+                tdata.resultsdata = { 'items': Object.values(self.driver.getItems()) };
                 tdata = self.grade_activity(tdata);
 
-                //calculate stars from grade
                 const stars = [];
                 const maxStars = 5;
-                // if tdata grade is NAn or undefined, set it to 0
                 if (typeof tdata.grade === 'undefined' || isNaN(tdata.grade) || tdata.grade === null || tdata.grade === "") {
                     tdata.grade = 0;
                 }
-
                 const filledStars = Math.round((tdata.grade / 100) * maxStars);
                 for (let i = 0; i < maxStars; i++) {
                     stars.push({ filled: i < filledStars });
@@ -768,481 +577,6 @@ define(
                         templates.runTemplateJS(js);
                     }
                 );
-            },
-
-            waitForIceGathering: function (pc, timeout = 15000) {
-                return new Promise((resolve) => {
-                    let timer;
-
-                    function checkState()
-                    {
-                        if (pc.iceGatheringState === "complete") {
-                            clearTimeout(timer);
-                            pc.removeEventListener("icegatheringstatechange", checkState);
-                            resolve();
-                        }
-                    }
-
-                    pc.addEventListener("icegatheringstatechange", checkState);
-
-                    // Timeout to resolve with current state
-                    timer = setTimeout(() => {
-                        pc.removeEventListener("icegatheringstatechange", checkState);
-                        resolve(); // Resolve with as many candidates as gathered so far
-                    }, timeout);
-                });
-            },
-
-            sendEvent: function (obj) {
-                var self = this;
-                if (self.dc && self.dc.readyState === "open") {
-                    self.dc.send(JSON.stringify(obj));
-                }
-            },
-
-            handleRTCEvent: function (msg) {
-                var self = this;
-                log.debug("Received event:");
-                log.debug(msg);
-
-                // Check if its the final grading message, which we don't want to enter "items"
-                if (msg.type === "response.done" &&
-                    msg.response.metadata?.tag === self.gradingrequesttag) {
-                    // Check if the response corresponds to the grading event
-                    log.debug("It is a grading event:");
-                    try {
-                        var jsonresponse = msg.response.output[0].content[0].text;
-                        const jsonextractregex = /\{[\s\S]*?\}/;
-                        if (!jsonresponse || jsonresponse === "" || !jsonresponse.match(jsonextractregex)) {
-                            log.debug("No valid grading data received .. msg is ..");
-                            log.debug(msg);
-                            if (self.gradeRequestTrial < self.maxGradeRequestTrial) {
-                                self.gradeRequestTrial++;
-                                self.sendGradingRequest();
-                                log.debug('Grading Request Retry number: ' + self.gradeRequestTrial);
-                                return;
-                            }
-                            log.debug("Closing session resources...");
-                            self.closeDataChannel();
-                            return;
-                        }
-                        if (self.gradeRequestTrial > 0) {
-                            self.gradeRequestTrial = 0;
-                        }
-
-                        self.gradingData = JSON.parse(jsonresponse.match(jsonextractregex)[0]);
-                        log.debug("Grading and Feedback:", self.gradingData);
-
-                        //now show the results content if that is what we are doing
-                        if (self.quizhelper.showitemreview) {
-                            self.showResults();
-                        }
-                        log.debug("Closing session resources...");
-                        self.closeDataChannel();
-                    } catch (err) {
-                        self.gradingData = false;
-                        log.debug("Failed to parse grading feedback:", err);
-                        log.debug(jsonresponse);
-                    }
-                        return;
-                }
-
-                // log.debug(msg);
-                var msgresponse_id = msg.response ? msg.response.id : msg.response_id;
-                var msgitem_id = msg.item ? msg.item.id : msg.item_id;
-                if (msgresponse_id) {
-                    self.responses[msgresponse_id] = self.responses[msgresponse_id] || {
-                        id: msgresponse_id,
-                        itemid: msgitem_id,
-                        stack: []
-                    };
-                }
-                if (msgitem_id) {
-                    if (typeof self.items[msgitem_id] === 'undefined') {
-                        self.scrollToBottom();
-                    }
-                    self.items[msgitem_id] = self.items[msgitem_id] || {
-                        id: msgitem_id,
-                        events: [],
-                        responses: null,
-                        content: ''
-                    };
-                    if (msgresponse_id) {
-                        self.items[msgitem_id].responses = self.responses[msgresponse_id];
-                    }
-                }
-
-                msg.time = Date.now().toString();
-
-                switch (msg.type) {
-                    case "response.created": {
-        /*```
-    {
-    "type": "response.created",
-    "event_id": "event_Bzbmm1vOdUpYK5LcKMPAU",
-    "response": {
-        "object": "realtime.response",
-        "id": "resp_BzbmmfvbvyUuYz2hvigPm",
-        "status": "in_progress",
-        "status_details": null,
-        "output": [],
-        "conversation_id": "conv_BzbmjU4iAZBReV6QpTbKH",
-        "modalities": [
-            "audio",
-            "text"
-        ],
-        "voice": "alloy",
-        "output_audio_format": "pcm16",
-        "temperature": 0.8,
-        "max_output_tokens": "inf",
-        "usage": null,
-        "metadata": null
-    }
-    }
-        ```*/
-                        self.responses[msg.response.id].stack.push(msg);
-                        break;
-                    }
-                    case "response.output_item.added": {
-        /*```
-    {
-    "type": "response.output_item.added",
-    "event_id": "event_BzbmnNUVJeqok4KqSLSVl",
-    "response_id": "resp_BzbmmfvbvyUuYz2hvigPm",
-    "output_index": 0,
-    "item": {
-        "id": "item_BzbmmIsy7p3YZXC9HroUp",
-        "object": "realtime.item",
-        "type": "message",
-        "status": "in_progress",
-        "role": "assistant",
-        "content": []
-    }
-    }
-        ```*/
-                        self.responses[msg.response_id].stack.push(msg);
-                        break;
-                    }
-                    case "conversation.item.added":
-                    case "conversation.item.created": {
-        /*```
-    {
-    "type": "conversation.item.created",
-    "event_id": "event_BzbmnttqDhvU3h2he1tK7",
-    "previous_item_id": "item_BzbmmcBxU60HVn8xvCWA2",
-    "item": {
-        "id": "item_BzbmmIsy7p3YZXC9HroUp",
-        "object": "realtime.item",
-        "type": "message",
-        "status": "in_progress",
-        "role": "assistant",
-        "content": []
-    }
-    }
-        ```*/
-                        self.items[msg.item.id].previous_item_id = msg.previous_item_id;
-                        self.items[msg.item.id].usertype = msg.item.role;
-                        self.items[msg.item.id].events.push(msg);
-                        if (msg.item.role === 'assistant') {
-                            self.loadingMessages.add(msgitem_id);
-                        }
-                        break;
-                    }
-                    case "response.content_part.added": {
-        /*```
-    {
-    "type": "response.content_part.added",
-    "event_id": "event_Bzbmn7lA1i7fOfFq8ju3F",
-    "response_id": "resp_BzbmmfvbvyUuYz2hvigPm",
-    "item_id": "item_BzbmmIsy7p3YZXC9HroUp",
-    "output_index": 0,
-    "content_index": 0,
-    "part": {
-        "type": "audio",
-        "transcript": ""
-    }
-    }
-        ```*/
-                        self.enableMic();// Let's enable mic
-                        self.responses[msg.response_id].stack.push(msg);
-                        break;
-                    }
-                    case "response.output_audio_transcript.delta":
-                    case "response.audio_transcript.delta": {
-        /*```
-    {
-    "type": "response.audio_transcript.delta",
-    "event_id": "event_BzbmnpxUmLA0zAnR5mRy3",
-    "response_id": "resp_BzbmmfvbvyUuYz2hvigPm",
-    "item_id": "item_BzbmmIsy7p3YZXC9HroUp",
-    "output_index": 0,
-    "content_index": 0,
-    "delta": "Hi"
-    }
-        ```*/
-                        self.responses[msg.response_id].stack.push(msg);
-                        self.items[msg.item_id].content += msg.delta;
-                        break;
-                    }
-
-                    case "output_audio_buffer.cleared": {
-        /*```
-    {
-    "type": "output_audio_buffer.cleared",
-    "event_id": "event_f7273193069b4938",
-    "response_id": "resp_BzbmmfvbvyUuYz2hvigPm"
-    }
-        ```*/
-                        self.responses[msg.response_id].stack.push(msg);
-                        break;
-                    }
-                    case "response.output_audio.done":
-                    case "response.audio.done": {
-        /*```
-    {
-    "type": "response.audio.done",
-    "event_id": "event_Bzbmn7aEtTnprkzqE9i6X",
-    "response_id": "resp_BzbmmfvbvyUuYz2hvigPm",
-    "item_id": "item_BzbmmIsy7p3YZXC9HroUp",
-    "output_index": 0,
-    "content_index": 0
-    }
-        ```*/
-                        self.responses[msg.response_id].stack.push(msg);
-                        break;
-                    }
-                    case "response.output_audio_transcript.done":
-                    case "response.audio_transcript.done": {
-        /*```
-    {
-    "type": "response.audio_transcript.done",
-    "event_id": "event_BzbmnNGRs7797nz1Qh7em",
-    "response_id": "resp_BzbmmfvbvyUuYz2hvigPm",
-    "item_id": "item_BzbmmIsy7p3YZXC9HroUp",
-    "output_index": 0,
-    "content_index": 0,
-    "transcript": "Hi! How are you today? What did you do today?"
-    }
-        ```*/
-                        self.responses[msg.response_id].stack.push(msg);
-                        self.items[msg.item_id].content = msg.transcript;
-                        break;
-                    }
-                    case "response.content_part.done": {
-        /*```
-    {
-    "type": "response.content_part.done",
-    "event_id": "event_BzbmnYdAvAKMU7ti311Vj",
-    "response_id": "resp_BzbmmfvbvyUuYz2hvigPm",
-    "item_id": "item_BzbmmIsy7p3YZXC9HroUp",
-    "output_index": 0,
-    "content_index": 0,
-    "part": {
-        "type": "audio",
-        "transcript": "Hi! How are you today? What did you do today?"
-    }
-    }
-        ```*/
-                        self.responses[msg.response_id].stack.push(msg);
-                        break;
-                    }
-                    case "response.output_item.done": {
-        /*```
-    {
-    "type": "response.output_item.done",
-    "event_id": "event_BzbmnhD5RdLxAOnko94Z1",
-    "response_id": "resp_BzbmmfvbvyUuYz2hvigPm",
-    "output_index": 0,
-    "item": {
-        "id": "item_BzbmmIsy7p3YZXC9HroUp",
-        "object": "realtime.item",
-        "type": "message",
-        "status": "incomplete",
-        "role": "assistant",
-        "content": [
-            {
-                "type": "audio",
-                "transcript": "Hi! How are you today? What did you do today?"
-            }
-        ]
-    }
-    }
-        ```*/
-                        self.responses[msg.response_id].stack.push(msg);
-                        self.loadingMessages.delete(msg.item.id);
-                        break;
-                    }
-                    case "response.done": {
-        /*```
-    {
-    "type": "response.done",
-    "event_id": "event_Bzbmn8bIaGB59d6qG7LQS",
-    "response": {
-        "object": "realtime.response",
-        "id": "resp_BzbmmfvbvyUuYz2hvigPm",
-        "status": "cancelled",
-        "status_details": {
-            "type": "cancelled",
-            "reason": "turn_detected"
-        },
-        "output": [
-            {
-                "id": "item_BzbmmIsy7p3YZXC9HroUp",
-                "object": "realtime.item",
-                "type": "message",
-                "status": "incomplete",
-                "role": "assistant",
-                "content": [
-                    {
-                        "type": "audio",
-                        "transcript": "Hi! How are you today? What did you do today?"
-                    }
-                ]
-            }
-        ],
-        "conversation_id": "conv_BzbmjU4iAZBReV6QpTbKH",
-        "modalities": [
-            "audio",
-            "text"
-        ],
-        "voice": "alloy",
-        "output_audio_format": "pcm16",
-        "temperature": 0.8,
-        "max_output_tokens": "inf",
-        "usage": {
-            "total_tokens": 170,
-            "input_tokens": 94,
-            "output_tokens": 76,
-            "input_token_details": {
-                "text_tokens": 87,
-                "audio_tokens": 7,
-                "cached_tokens": 0,
-                "cached_tokens_details": {
-                    "text_tokens": 0,
-                    "audio_tokens": 0
-                }
-            },
-            "output_token_details": {
-                "text_tokens": 23,
-                "audio_tokens": 53
-            }
-        },
-        "metadata": null
-    }
-    }
-        ```*/
-                        self.responses[msg.response.id].stack.push(msg);
-                        break;
-                    }
-                    case "output_audio_buffer.stopped": {
-        /*```
-    {
-    "type":"output_audio_buffer.stopped",
-    "event_id":"event_0ebd8495b5a945e5",
-    "response_id":"resp_C17PJbWxcyg7tgQBVTAaL"
-    }
-        ```*/
-                        if (!self.isMicActive) {
-                            self.toggleMute();
-                        }
-                        self.responses[msg.response_id].stack.push(msg);
-                        break;
-                    }
-                    case "conversation.item.truncated": {
-        /*```
-    {
-    "type": "conversation.item.truncated",
-    "event_id": "event_BzbmnGqfHdq1hy2Wr2fnA",
-    "item_id": "item_BzbmmIsy7p3YZXC9HroUp",
-    "content_index": 0,
-    "audio_end_ms": 261
-    }
-        ```*/
-                        self.items[msg.item_id].events.push(msg);
-                        break;
-                    }
-                    // User events.
-                    case "input_audio_buffer.speech_started": {
-        /*```
-    {
-    "type": "input_audio_buffer.speech_started",
-    "event_id": "event_Bzbmm9FJ5oCTmCpng9tem",
-    "audio_start_ms": 820,
-    "item_id": "item_BzbmmcBxU60HVn8xvCWA2"
-    }
-        ```*/
-                        log.debug("Input audio buffer speech started");
-                        self.setDataInputBuffer(true, 'audiobufferstarted');
-                        self.items[msg.item_id].events.push(msg);
-                        break;
-                    }
-                    case "input_audio_buffer.speech_stopped": {
-        /*```
-    {
-    "type": "input_audio_buffer.speech_stopped",
-    "event_id": "event_BzbmmUgLX2JKgJr1eMx0l",
-    "audio_end_ms": 1568,
-    "item_id": "item_BzbmmcBxU60HVn8xvCWA2"
-    }
-        ```*/
-                        if (self.isMicActive) {
-                            // Only auto-toggle mic if autocreateresponse is true
-                            if (self.autocreateresponse) {
-                                self.toggleMute();
-                                self.disableMic();
-                            }
-                        }
-                        self.items[msg.item_id].events.push(msg);
-                        break;
-                    }
-                    case "input_audio_buffer.committed": {
-        /*```
-    {
-    "type": "input_audio_buffer.committed",
-    "event_id": "event_BzbmmOICFLRU8vnGEJ6vM",
-    "previous_item_id": null,
-    "item_id": "item_BzbmmcBxU60HVn8xvCWA2"
-    }
-        ```*/               log.debug("Input audio buffer committed");
-                        self.setDataInputBuffer(false, 'audiobuffercommitted');
-                        self.items[msg.item_id].events.push(msg);
-                        break;
-                    }
-                    case "conversation.item.input_audio_transcription.delta": {
-        /*```
-    {
-    "type": "conversation.item.input_audio_transcription.delta",
-    "event_id": "event_BzbmonQuYXZ7QxUCOLlZd",
-    "item_id": "item_BzbmmcBxU60HVn8xvCWA2",
-    "content_index": 0,
-    "delta": "Hey."
-    }
-        ```*/
-                        self.items[msg.item_id].events.push(msg);
-                        self.items[msg.item_id].content += msg.delta;
-                        break;
-                    }
-                    case "conversation.item.input_audio_transcription.completed": {
-        /*```
-    {
-    "type": "conversation.item.input_audio_transcription.completed",
-    "event_id": "event_BzbmotVIjHphgHjViNkZk",
-    "item_id": "item_BzbmmcBxU60HVn8xvCWA2",
-    "content_index": 0,
-    "transcript": "Hey.",
-    "usage": {
-        "type": "duration",
-        "seconds": 1
-    }
-    }
-        ```*/
-                        self.items[msg.item_id].events.push(msg);
-                        self.items[msg.item_id].content = msg.transcript;
-                        self.loadingMessages.delete(msg.item_id);
-                        break;
-                    }
-                }
-                self.renderUI();
             },
 
             enableMic: function () {
@@ -1261,119 +595,86 @@ define(
                 }
             },
 
-            initializeMicStream: async function () {
+            /**
+             * Build the local analyser graph on top of the driver's MediaStream so we can
+             * draw a waveform. Reusable for switchMic (reconnects the new stream).
+             */
+            _attachAnalyserToStream: function (stream) {
                 var self = this;
+                if (!stream) {
+                    return;
+                }
                 try {
-                    self.audioContext = new(window.AudioContext || window.webkitAudioContext)();
-                    self.analyser = self.audioContext.createAnalyser();
-                    self.analyser.fftSize = 2048;
-                    const bufferLength = self.analyser.frequencyBinCount;
-                    self.dataArray = new Uint8Array(bufferLength);
-
-                    self.sourceNode = self.audioContext.createMediaStreamSource(self.mediaStream);
-                    // Source is connected/disconnected in toggleMute
+                    if (!self.audioContext) {
+                        self.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        self.analyser = self.audioContext.createAnalyser();
+                        self.analyser.fftSize = 2048;
+                        self.dataArray = new Uint8Array(self.analyser.frequencyBinCount);
+                    }
+                    if (self.sourceNode) {
+                        try {
+                            self.sourceNode.disconnect();
+                        } catch (e) { log.debug('analyser disconnect failed', e); }
+                    }
+                    self.sourceNode = self.audioContext.createMediaStreamSource(stream);
                     self.isMicInitialized = true;
-                    return true;
                 } catch (err) {
-                    log.debug("Error accessing microphone:", err);
+                    log.debug("Error setting up mic analyser:", err);
                     self.isMicInitialized = false;
-                    log.debug("Could not access microphone. Please ensure it's connected and permissions are granted.");
-                    return false;
                 }
             },
 
-            // Toggles mute/unmute state of the mic
+            initializeMicStream: async function () {
+                var self = this;
+                if (self.isMicInitialized) {
+                    return true;
+                }
+                var stream = self.driver.getMediaStream();
+                if (!stream) {
+                    log.debug('No media stream available from driver');
+                    return false;
+                }
+                self._attachAnalyserToStream(stream);
+                return self.isMicInitialized;
+            },
+
             toggleMute: async function () {
                 var self = this;
                 if (!self.isMicInitialized) {
                     const success = await self.initializeMicStream();
                     if (!success) {
                         return;
-                    } // If initialization failed, stop here
+                    }
                 }
 
                 if (self.isMicActive) {
-                    // Mute mic: Disconnect source from analyser
                     if (self.sourceNode && self.analyser) {
-                        self.sourceNode.disconnect(self.analyser);
+                        try {
+                            self.sourceNode.disconnect(self.analyser);
+                        } catch (e) { log.debug('analyser detach failed', e); }
                     }
                     if (self.animationFrameId) {
                         cancelAnimationFrame(self.animationFrameId);
                         self.animationFrameId = null;
                     }
-                    if (self.pc) {
-                        self.mediaStream.getTracks().forEach((track) => {
-                            track.enabled = false;
-                        });
-                    }
                     if (self.canvasCtx) {
-                        self.canvasCtx.clearRect(0, 0, self.controls.micWaveformCanvas.width, self.controls.micWaveformCanvas.height); // Clear canvas
+                        self.canvasCtx.clearRect(
+                            0, 0,
+                            self.controls.micWaveformCanvas.width,
+                            self.controls.micWaveformCanvas.height
+                        );
                     }
                     self.isMicActive = false;
-
-                    // Send response event when mic is disabled and autocreateresponse is false
-                    if (!self.autocreateresponse) {
-                        if (!self.datainputbuffer) {
-                            log.debug(" sending response.create");
-                            self.sendEvent({
-                                type: "response.create",
-                                response: {
-                                    output_modalities: ["audio"],
-                                    instructions: self.itemdata.audiochatinstructions,
-                                    audio: {
-                                        output: {
-                                            voice: self.audiochat_voice,
-                                        },
-                                    },
-                                }
-                            });
-                        } else {
-                            //set a recurring 500ms timeout that will send the response.create event if self.datainputbuffer is false
-                            log.debug("Waiting for input audio buffer to commit before sending response.create");
-                            let attempts = 0;
-                            if (self.inputBufferInterval) {
-                                clearInterval(self.inputBufferInterval);
-                                self.inputBufferInterval = null;
-                            }
-                            const maxAttempts = 3;
-                            self.inputBufferInterval = setInterval(() => {
-                                log.debug("Checking input buffer status, attempt:", attempts);
-                                if (!self.datainputbuffer || attempts >= maxAttempts) {
-                                    clearInterval(self.inputBufferInterval);
-                                    self.setDataInputBuffer(false, 'setInterval:' + attempts);
-                                    log.debug(" sending response.create");
-                                    self.sendEvent({
-                                        type: "response.create",
-                                        response: {
-                                            output_modalities: ["audio"],
-                                            instructions: self.itemdata.audiochatinstructions,
-                                            audio: {
-                                                output: {
-                                                    voice: self.audiochat_voice,
-                                                },
-                                            },
-                                        }
-                                    });
-                                }
-                                attempts++;
-                            }, 1500);
-                        }
-                    }
+                    self.driver.setMicActive(false);
                 } else {
-                    // Unmute mic: Connect source to analyser
                     if (self.sourceNode && self.analyser) {
                         self.sourceNode.connect(self.analyser);
                     }
-
-                    if (self.pc) {
-                        self.mediaStream.getTracks().forEach((track) => {
-                            track.enabled = true;
-                        });
-                    }
+                    self.driver.setMicActive(true);
                     self.isMicActive = true;
-                    self.drawWave(); // Start drawing waveform
+                    self.drawWave();
                 }
-                self.renderUI(); // Update UI
+                self.renderUI();
             },
 
             releaseMicResources: function () {
@@ -1382,40 +683,33 @@ define(
                     cancelAnimationFrame(self.animationFrameId);
                     self.animationFrameId = null;
                 }
-                if (self.mediaStream) {
-                    self.mediaStream.getTracks().forEach((track) => {
-                        if (typeof self.pc !== 'undefined' && self.pc) {
-                            // Find the RTCRtpSender associated with the track
-                            const sender = self.pc.getSenders().find(s => s.track === track);
-                            // Remove the sender if it exists
-                            if (sender) {
-                                self.pc.removeTrack(sender);
-                            }
-                        }
-                        track.stop();
-                    });
-                    self.mediaStream = null;
-                }
                 if (self.sourceNode) {
-                    self.sourceNode.disconnect();
+                    try { self.sourceNode.disconnect(); } catch (e) { log.debug(e); }
                     self.sourceNode = null;
                 }
                 if (self.audioContext) {
-                    self.audioContext.close();
+                    try { self.audioContext.close(); } catch (e) { log.debug(e); }
                     self.audioContext = null;
+                }
+                if (self.driver && typeof self.driver.releaseResources === 'function') {
+                    self.driver.releaseResources();
                 }
                 self.isMicActive = false;
                 self.isMicInitialized = false;
                 if (self.canvasCtx) {
-                    self.canvasCtx.clearRect(0, 0, self.controls.micWaveformCanvas.width, self.controls.micWaveformCanvas.height); // Clear canvas
+                    self.canvasCtx.clearRect(
+                        0, 0,
+                        self.controls.micWaveformCanvas.width,
+                        self.controls.micWaveformCanvas.height
+                    );
                 }
-                self.renderUI(); // Update UI to show mic inactive
+                self.renderUI();
             },
 
             drawWave: function () {
                 var self = this;
                 if (!self.canvasCtx || !self.analyser || !self.dataArray || !self.isMicActive) {
-                    self.animationFrameId = null; // Stop animation if conditions are not met
+                    self.animationFrameId = null;
                     return;
                 }
 
@@ -1423,31 +717,25 @@ define(
                 const HEIGHT = self.controls.micWaveformCanvas.height;
 
                 self.animationFrameId = requestAnimationFrame(self.drawWave.bind(self));
+                self.analyser.getByteTimeDomainData(self.dataArray);
 
-                self.analyser.getByteTimeDomainData(self.dataArray); // Get waveform data
-
-                self.canvasCtx.clearRect(0, 0, WIDTH, HEIGHT); // Clear previous drawing
+                self.canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
                 self.canvasCtx.lineWidth = 2;
-                self.canvasCtx.strokeStyle = "rgb(255, 255, 255)"; // White color for wave on blue background
-
+                self.canvasCtx.strokeStyle = "rgb(255, 255, 255)";
                 self.canvasCtx.beginPath();
 
                 const sliceWidth = (WIDTH * 1.0) / self.dataArray.length;
                 let x = 0;
-
                 for (let i = 0; i < self.dataArray.length; i++) {
-                    const v = self.dataArray[i] / 128.0; // Normalize to 0-2
+                    const v = self.dataArray[i] / 128.0;
                     const y = (v * HEIGHT) / 2;
-
                     if (i === 0) {
                         self.canvasCtx.moveTo(x, y);
                     } else {
                         self.canvasCtx.lineTo(x, y);
                     }
-
                     x += sliceWidth;
                 }
-
                 self.canvasCtx.lineTo(WIDTH, HEIGHT / 2);
                 self.canvasCtx.stroke();
             },
@@ -1458,13 +746,14 @@ define(
                     const devices = await navigator.mediaDevices.enumerateDevices();
                     const mics = devices.filter(device => device.kind === "audioinput");
                     const select = self.controls.micSelect;
+                    if (!select) {
+                        return;
+                    }
+                    select.innerHTML = "";
 
-                    select.innerHTML = ""; // Clear existing options
-
-                    // Group by groupId to remove duplicates
+                    // Group by groupId to remove duplicates.
                     const uniqueMics = [];
                     const seenGroups = new Set();
-
                     for (const mic of mics) {
                         if (!seenGroups.has(mic.groupId)) {
                             uniqueMics.push(mic);
@@ -1484,59 +773,17 @@ define(
                     });
                     select.parentElement.classList.remove('hidden');
 
-                    // Set change listener
-                    select.addEventListener("change", async(e) => {
+                    select.addEventListener("change", async (e) => {
                         const deviceId = e.target.value;
-                        await self.switchMic(deviceId);
+                        if (self.driver && typeof self.driver.switchMic === 'function') {
+                            await self.driver.switchMic(deviceId);
+                        }
                     });
                 } catch (err) {
                     log.debug("Failed to get microphone list:", err);
                 }
             },
 
-            switchMic: async function (deviceId) {
-                var self = this;
-
-                // Stop and release current mic
-                if (self.mediaStream) {
-                    self.mediaStream.getTracks().forEach(track => track.stop());
-                }
-
-                try {
-                    // Get new media stream from selected device
-                    self.mediaStream = await navigator.mediaDevices.getUserMedia({
-                        audio: {deviceId: {exact: deviceId}}
-                    });
-
-                    // Replace tracks in PeerConnection
-                    if (self.pc) {
-                        const senders = self.pc.getSenders();
-                        const audioTrack = self.mediaStream.getAudioTracks()[0];
-                        const audioSender = senders.find(sender => sender.track.kind === 'audio');
-                        if (audioSender) {
-                            audioSender.replaceTrack(audioTrack);
-                        }
-                    }
-
-                    // Reinitialize mic stream and waveform
-                    await self.initializeMicStream();
-                    if (self.isMicInitialized) {
-                        self.sourceNode.connect(self.analyser);
-                        self.mediaStream.getTracks().forEach((track) => {
-                            track.enabled = self.isMicActive;
-                        });
-                        if (self.isMicActive) {
-                            self.drawWave();
-                        }
-                    }
-
-                    log.debug("Switched microphone to:" + deviceId);
-                } catch (err) {
-                    log.debug("Failed to switch microphone:");
-                    log.debug(err);
-                }
-            },
-
-        }; // End of return object.
+        };
     }
 );

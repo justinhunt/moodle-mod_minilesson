@@ -29,9 +29,7 @@ use stdClass;
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
-
+class itemtype extends item {
     /** Default image avatar */
     public const DEFAULT_AVATAR = 'cutepoodll_small.png';
 
@@ -63,12 +61,13 @@ class itemtype extends item
 
     public const AUDIOAVATAR = 'customtext7';
 
+    /** * @var string */
+    public const CHAT_PROVIDER = 'customtext1';
+
     /**
      * The class constructor.
-     *
      */
-    public function __construct($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
         $this->needs_speechrec = true;
     }
@@ -79,9 +78,7 @@ class itemtype extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
-
+    public function export_for_template(\renderer_base $output) {
         $testitem = parent::export_for_template($output);
         $testitem = $this->set_layout($testitem);
 
@@ -93,10 +90,10 @@ class itemtype extends item
             $testitem->canchat = true;
         }
 
-        //Allow retry
+        // Allow retry.
         $testitem->allowretry = $this->itemrecord->{self::ALLOWRETRY} == 1;
 
-        // Replace the placeholders with what we know, first correcting missing placeholder data
+        // Replace the placeholders with what we know, first correcting missing placeholder data.
         if (empty($this->itemrecord->{self::ROLE})) {
             $this->itemrecord->{self::ROLE} = get_string('audiochat_role_default', constants::M_COMPONENT);
         }
@@ -107,7 +104,7 @@ class itemtype extends item
             $this->itemrecord->{self::TOPIC} = 'student choice of topic';
         }
 
-        // Students native language - it is possible to use the one set in wordcards here also, so we check for that
+        // Students native language - it is possible to use the one set in wordcards here also, so we check for that.
         $testitem->audiochatnativelanguage = $this->itemrecord->{self::NATIVE_LANGUAGE};
         if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
             $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
@@ -116,14 +113,14 @@ class itemtype extends item
             }
         }
 
-        // Set up the audiochat instructions
+        // Set up the audiochat instructions.
         $testitem->audiochatinstructions = $this->itemrecord->{self::INSTRUCTIONS};
         // If no topic was set, then we use the default topic.
         if (empty($testitem->audiochatinstructions)) {
             $testitem->audiochatinstructions = get_string('audiochat:gradingprompt_dec1', constants::M_COMPONENT);
         }
 
-        // Replace the placeholders in the audiochat instructions with the actual data
+        // Replace the placeholders in the audiochat instructions with the actual data.
         $testitem->audiochatinstructions = str_replace(
             [
                 '{ai role}',
@@ -205,6 +202,7 @@ class itemtype extends item
         // If we add a cloud poodll recorder to the page these are also added, but here we just add them manually.
         $testitem->language = $this->language;
         $testitem->region = $this->region;
+        $testitem->chatprovider = $this->itemrecord->{self::CHAT_PROVIDER};
 
         $imgaudioavatar = $this->itemrecord->{self::AUDIOAVATAR} ?
             $this->itemrecord->{self::AUDIOAVATAR} :
@@ -217,8 +215,7 @@ class itemtype extends item
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -234,43 +231,148 @@ class itemtype extends item
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
-
-        // return false to indicate no error
         return false;
     }
 
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
      */
-    public static function get_keycolumns()
-    {
-        // get the basic key columns and customize a little for instances of this item type
+    public static function get_keycolumns() {
+        // Get the basic key columns and customize a little for instances of this item type.
         $keycols = parent::get_keycolumns();
-        $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
-        $keycols['int2'] = ['jsonname' => 'relevance', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::RELEVANCE];
-        $keycols['int3'] = ['jsonname' => 'targetwordcount', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TARGETWORDCOUNT];
-        $keycols['int4'] = ['jsonname' => 'autoresponse', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::AUTORESPONSE];
-        $keycols['int5'] = ['jsonname' => 'allowretry', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::ALLOWRETRY];
-        $keycols['int6'] = ['jsonname' => 'gradingselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::INSTRUCTIONSSELECTION];
-        $keycols['int7'] = ['jsonname' => 'feedbackselection', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::FEEDBACKSELECTION];
-        $keycols['text5'] = ['jsonname' => 'audiochattopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::TOPIC];
-        $keycols['text6'] = ['jsonname' => 'audiochatinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::INSTRUCTIONS];
-        $keycols['data3'] = ['jsonname' => 'audiochatgradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::FEEDBACKINSTRUCTIONS];
-        $keycols['data1'] = ['jsonname' => 'audiochataidata1', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::AIDATA1];
-        $keycols['data2'] = ['jsonname' => 'audiochataidata2', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::AIDATA2];
-        $keycols['text2'] = ['jsonname' => 'audiochatrole', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::ROLE];
-        $keycols['text3'] = ['jsonname' => 'audiochatvoice', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::VOICE];
-        $keycols['text4'] = ['jsonname' => 'audiochatnativelanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => self::NATIVE_LANGUAGE];
-        $keycols['int8'] = ['jsonname' => 'studentsubmission', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => self::STUDENT_SUBMISSION];
-        $keycols['text7'] = ['jsonname' => 'audioavatar', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => self::AUDIOAVATAR];
+        $keycols['int1'] = [
+            'jsonname' => 'totalmarks',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => constants::TOTALMARKS,
+        ];
+        $keycols['int2'] = [
+            'jsonname' => 'relevance',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => constants::RELEVANCE,
+        ];
+        $keycols['int3'] = [
+            'jsonname' => 'targetwordcount',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => constants::TARGETWORDCOUNT,
+        ];
+        $keycols['int4'] = [
+            'jsonname' => 'autoresponse',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 1,
+            'dbname' => self::AUTORESPONSE,
+        ];
+        $keycols['int5'] = [
+            'jsonname' => 'allowretry',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 1,
+            'dbname' => self::ALLOWRETRY,
+        ];
+        $keycols['int6'] = [
+            'jsonname' => 'gradingselection',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 1,
+            'dbname' => self::INSTRUCTIONSSELECTION,
+        ];
+        $keycols['int7'] = [
+            'jsonname' => 'feedbackselection',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 1,
+            'dbname' => self::FEEDBACKSELECTION,
+        ];
+        $keycols['text5'] = [
+            'jsonname' => 'audiochattopic',
+            'type' => 'string',
+            'optional' => false,
+            'default' => '',
+            'dbname' => self::TOPIC,
+        ];
+        $keycols['text6'] = [
+            'jsonname' => 'audiochatinstructions',
+            'type' => 'string',
+            'optional' => false,
+            'default' => '',
+            'dbname' => self::INSTRUCTIONS,
+        ];
+        $keycols['data3'] = [
+            'jsonname' => 'audiochatgradeinstructions',
+            'type' => 'string',
+            'optional' => false,
+            'default' => '',
+            'dbname' => self::FEEDBACKINSTRUCTIONS,
+        ];
+        $keycols['data1'] = [
+            'jsonname' => 'audiochataidata1',
+            'type' => 'string',
+            'optional' => false,
+            'default' => '',
+            'dbname' => self::AIDATA1,
+        ];
+        $keycols['data2'] = [
+            'jsonname' => 'audiochataidata2',
+            'type' => 'string',
+            'optional' => false,
+            'default' => '',
+            'dbname' => self::AIDATA2,
+        ];
+        $keycols['text2'] = [
+            'jsonname' => 'audiochatrole',
+            'type' => 'string',
+            'optional' => false,
+            'default' => '',
+            'dbname' => self::ROLE,
+        ];
+        $keycols['text3'] = [
+            'jsonname' => 'audiochatvoice',
+            'type' => 'string',
+            'optional' => false,
+            'default' => '',
+            'dbname' => self::VOICE,
+        ];
+        $keycols['text4'] = [
+            'jsonname' => 'audiochatnativelanguage',
+            'type' => 'string',
+            'optional' => true,
+            'default' => 'en-US',
+            'dbname' => self::NATIVE_LANGUAGE,
+        ];
+        $keycols['int8'] = [
+            'jsonname' => 'studentsubmission',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => self::STUDENT_SUBMISSION,
+        ];
+        $keycols['text7'] = [
+            'jsonname' => 'audioavatar',
+            'type' => 'string',
+            'optional' => true,
+            'default' => '',
+            'dbname' => self::AUDIOAVATAR
+        ];
+        $keycols['data5'] = [
+            'jsonname' => 'chatprovider',
+            'type' => 'string',
+            'optional' => false,
+            'default' => '',
+            'dbname' => self::CHAT_PROVIDER,
+        ];
         return $keycols;
     }
 
-    /*
-  This function return the prompt that the generate method requires.
-  */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    /**
+     * This function return the prompt that the generate method requires.
+     */
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create an oral discussion topic(text) suitable for {level} level learners of {language} as a follow up activity on the following reading: [{text}] ";
@@ -290,9 +392,7 @@ class itemtype extends item
         return $prompt;
     }
 
-    public function replace_student_submission($instruction)
-    {
-
+    public function replace_student_submission($instruction) {
         if (empty($instruction)) {
             return false;
         }
@@ -309,9 +409,7 @@ class itemtype extends item
         return false;
     }
 
-    public function fetch_student_submission()
-    {
-
+    public function fetch_student_submission() {
         $submission = $this->itemrecord;
         if (!empty($submission)) {
             $studentsubmissionitemid = $submission->{self::STUDENT_SUBMISSION};
@@ -387,7 +485,6 @@ class itemtype extends item
             return false;
         }
         $config = get_config(constants::M_COMPONENT);
-        return !empty($config->openaikey);
+        return !empty($config->openaikey) || !empty($config->geminiapikey);
     }
-
 }

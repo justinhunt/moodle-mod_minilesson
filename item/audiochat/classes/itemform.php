@@ -57,6 +57,18 @@ class itemform extends baseform {
         $this->add_numericboxresponse(constants::TARGETWORDCOUNT, get_string('targetwordcount_title', constants::M_COMPONENT), false);
         $mform->setDefault(constants::TARGETWORDCOUNT, 60);
 
+        $provideroptions = [
+            'openai' => get_string('openai', 'minilessonitem_audiochat'),
+            'gemini' => get_string('gemini', 'minilessonitem_audiochat'),
+        ];
+        $defaultprovider = get_config(constants::M_COMPONENT, 'provider') ?: 'gemini';
+        $this->add_dropdown(
+            itemtype::CHAT_PROVIDER,
+            get_string('provider', 'minilessonitem_audiochat'),
+            $provideroptions,
+            $defaultprovider
+        );
+
         // The topic for the audio chat.
         $this->add_textarearesponse(itemtype::TOPIC, get_string('audiochat_topic', constants::M_COMPONENT), true);
         $mform->setDefault(itemtype::TOPIC, get_string('audiochat_topic_default', constants::M_COMPONENT));

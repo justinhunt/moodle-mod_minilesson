@@ -407,6 +407,19 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
+    // The Gemini APIKEY.
+    $name = 'geminiapikey';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = '';
+    $otherapikeysettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        PARAM_TEXT
+    ));
+
     //add other API keys settings page to minilesson category
     $ADMIN->add('modsettingsminilessoncat', $otherapikeysettings);
 
