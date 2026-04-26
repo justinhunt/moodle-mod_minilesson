@@ -336,13 +336,14 @@
     font-size: 20px;
     font-weight: 700;
     color: $heading-navy;
-    margin-bottom: 12px !important;
+    margin-bottom: 4px !important;
+    margin-top: 12px;
   }
 
   .searchbox .itemcontainer__meta {
     text-transform: uppercase;
     font-size: 13px;
-    margin-bottom: 6px;
+    margin-bottom: 16px;
   }
 
   .searchbox .itemcontainer__label {
@@ -353,7 +354,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-top: 14px;
+    margin-top: 26px;
   }
 
   .searchbox .itemcontainer__tag {
@@ -379,6 +380,10 @@
   .searchbox .itemcontainer__body {
     flex: 1;
     padding: 16px;
+
+    @media (max-width: 1199px) {
+      align-content: flex-start;
+    }
   }
 
   .searchbox .itemcontainer__footer {
