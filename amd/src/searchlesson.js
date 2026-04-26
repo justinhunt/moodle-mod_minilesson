@@ -33,6 +33,7 @@ const component = 'mod_minilesson';
 
 export const registerFilter = (opts) => {
     const localnativelang = opts.nativelang;
+    const itemtypeiconmap = opts.itemtypeiconmap || {};
     const form = document.querySelector('#lessonbank_filters');
     const cardsContainer = document.querySelector('[data-region="cards-container"]');
     const gridlayoutbtn = document.querySelector('.gridlayoutbtn');
@@ -156,6 +157,12 @@ export const registerFilter = (opts) => {
                     }
                     if (lessonitem.nativelanguage && (lessonitem.nativelanguage !== localnativelang)) {
                         lessonitem.showtranslate = true;
+                    }
+                    // Enrich itemtypes with icon URLs.
+                    if (lessonitem.itemtypes) {
+                        lessonitem.itemtypes.forEach(it => {
+                            it.iconurl = itemtypeiconmap[it.text] || '';
+                        });
                     }
                 });
             }

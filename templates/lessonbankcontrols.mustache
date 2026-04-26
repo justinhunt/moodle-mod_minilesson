@@ -36,8 +36,21 @@
         <span class="ml-1">{{#str}}perpage, mod_minilesson{{/str}}</span>
     </div>
     <div class="lessonbanklayoutbox align-items-center d-flex ml-3">
-        <button class="btn listlayoutbtn"><i class="fa fa-list"></i></button>
-        <button class="btn gridlayoutbtn active"><i class="fa fa-th-large"></i></button>
+        <button class="btn listlayoutbtn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="2" width="14" height="2.5" rx="1" fill="currentColor"/>
+                <rect x="1" y="6.75" width="14" height="2.5" rx="1" fill="currentColor"/>
+                <rect x="1" y="11.5" width="14" height="2.5" rx="1" fill="currentColor"/>
+            </svg>
+        </button>
+        <button class="btn gridlayoutbtn active">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="1" y="1" width="6" height="6" rx="1.5" fill="currentColor"/>
+                <rect x="9" y="1" width="6" height="6" rx="1.5" fill="currentColor"/>
+                <rect x="1" y="9" width="6" height="6" rx="1.5" fill="currentColor"/>
+                <rect x="9" y="9" width="6" height="6" rx="1.5" fill="currentColor"/>
+            </svg>
+        </button>
     </div>
 </div>
 <template id="mod_minilesson-spinner">

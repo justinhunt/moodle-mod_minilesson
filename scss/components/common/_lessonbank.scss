@@ -11,9 +11,10 @@
 
   .lbsf {
     background: $primary-bg;
-    border: 1px solid $primary-border;
     border-radius: 14px;
-    padding: 16px;
+    padding: 18px;
+    margin-bottom: 24px;
+    margin-top: 24px;
   }
 
   .lbsf__bar {
@@ -322,11 +323,135 @@
   }
 
   .searchbox .itemcontainer {
-    padding: 10px 0;
     margin: 0;
-    border: 1px solid $grey-border;
-    border-radius: 4px;
+    border-radius: 12px;
+    background: $white;
+    box-shadow: 0 1px 7px 0 rgba(0, 0, 0, 0.13);
     flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .searchbox .itemname {
+    font-size: 20px;
+    font-weight: 700;
+    color: $heading-navy;
+    margin-bottom: 12px !important;
+  }
+
+  .searchbox .itemcontainer__meta {
+    text-transform: uppercase;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .searchbox .itemcontainer__label {
+    color: $heading-navy;
+  }
+
+  .searchbox .itemcontainer__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 14px;
+  }
+
+  .searchbox .itemcontainer__tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    background: $primary-lighter;
+    color: $text-slate;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  .searchbox .itemcontainer__tag-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .searchbox .itemcontainer__body {
+    flex: 1;
+    padding: 16px;
+  }
+
+  .searchbox .itemcontainer__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 16px;
+    margin-top: auto;
+    border-top: 1px solid $grey-border-light;
+  }
+
+  .itemcontainer__btn--primary {
+    background: $primary;
+    color: $white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px 18px;
+    transition: background 0.15s;
+
+    &:hover {
+      background: $primary-hover;
+      color: $white;
+    }
+  }
+
+  .itemcontainer__btn--secondary {
+    background: transparent;
+    color: $primary;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px 18px;
+    transition: background 0.15s;
+
+    &:hover {
+      background: $primary-lighter;
+      color: $primary;
+    }
+  }
+
+  .itemcontainer__btn--outlined {
+    background: $white;
+    color: $primary;
+    border: 1px solid $primary-border-soft;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px 18px;
+    transition: border-color 0.15s, background 0.15s;
+
+    &:hover {
+      background: $primary-lighter;
+      border-color: $primary-border-medium;
+      color: $primary;
+    }
+  }
+
+  .searchbox img.searchimg {
+    border-radius: 8px;
+    object-fit: cover;
+    width: 100%;
+    height: 220px;
+
+    @media (min-width: 992px) {
+      height: 320px;
+    }
+
+    @media (min-width: 1200px) {
+      height: 100%;
+    }
   }
 
   [data-region="cards-container"] {
@@ -344,10 +469,22 @@
     }
   }
 
+  .searchbox.row {
+    gap: 18px 0;
+    margin-top: 24px;
+  }
+
   .searchbox [data-region="itemcard"] {
-    max-width: calc(50% - 2px);
-    margin-top: 2px;
-    margin-bottom: 2px;
+    max-width: 50%;
+    padding: 0;
+
+    &:nth-child(odd) {
+      padding-right: 9px;
+    }
+
+    &:nth-child(even) {
+      padding-left: 9px;
+    }
     display: flex;
     flex-direction: column;
 
@@ -361,7 +498,7 @@
   }
 
   .lessonbanklayoutbox {
-    border: 1px solid $grey-border;
+    border: 1px solid $primary-border-soft;
     border-radius: 10px;
     overflow: hidden;
   }
@@ -369,6 +506,13 @@
   .listlayoutbtn,
   .gridlayoutbtn {
     border: 0;
+    color: $text-muted;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      color: $primary;
+      background: $primary-lighter;
+    }
 
     &:focus {
       box-shadow: unset;
@@ -376,17 +520,28 @@
     }
 
     &.active {
-      background-color: $link-blue;
+      background-color: $primary;
       color: $white;
-      border: 1px solid $link-blue;
+      border: 1px solid $primary;
       box-shadow: unset;
 
+      &:hover,
       &:focus {
-        background-color: $link-blue;
+        background-color: $primary-hover;
         color: $white;
-        border: 1px solid $link-blue;
+        border: 1px solid $primary-hover;
         box-shadow: unset;
       }
+    }
+
+    &.listlayoutbtn {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &.gridlayoutbtn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
   }
 
