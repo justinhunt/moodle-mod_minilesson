@@ -1,0 +1,251 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/lessonbank_searchform
+
+    Custom search form for the lesson bank.
+
+    Example context (json):
+    {
+        "languages": [{"value": "en-us", "label": "English (US)", "selected": true}],
+        "levels": [{"value": "A1", "label": "A1"}],
+        "skills": [{"value": "reading", "label": "Reading"}],
+        "topics": [{"value": "travel", "label": "Travel"}],
+        "itemtypes": [{"value": "multichoice", "label": "Multi Choice"}]
+    }
+}}
+
+<form id="lessonbank_filters" method="post" class="lbsf">
+    {{! ── Main search bar ── }}
+    <div class="lbsf__bar">
+        <div class="lbsf__lang">
+            <select name="searchgroup[language]" id="lbsf_language">
+                <option value="">{{#str}}choose{{/str}}</option>
+                {{#languages}}
+                <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
+                {{/languages}}
+            </select>
+        </div>
+        <div class="lbsf__keyword">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <input type="text"
+                   name="searchgroup[keyword]"
+                   placeholder="{{#str}}keyword, mod_minilesson{{/str}}"
+                   autocomplete="off">
+        </div>
+        <button type="submit" class="lbsf__submit">
+            <i class="fa fa-search" aria-hidden="true"></i>
+            {{#str}}search{{/str}}
+        </button>
+        <button type="button"
+                class="lbsf__toggle"
+                data-bs-toggle="collapse" data-bs-target="#advancesearch"
+                data-toggle="collapse" data-target="#advancesearch"
+                aria-expanded="false" aria-controls="advancesearch">
+            <i class="fa fa-sliders" aria-hidden="true"></i>
+            {{#str}}showadvanced, mod_minilesson{{/str}}
+        </button>
+    </div>
+
+    {{! ── Advanced filters ── }}
+    <div class="collapse" id="advancesearch">
+        <div class="lbsf__filters">
+
+            {{#haslevels}}
+            <div class="lbsf__filter" data-field="level">
+                <button type="button" class="lbsf__filter-trigger">
+                    <span class="lbsf__filter-label">{{levelname}}</span>
+                    <span class="lbsf__filter-badge" style="display:none">0</span>
+                    <i class="fa fa-chevron-down lbsf__filter-arrow" aria-hidden="true"></i>
+                </button>
+                <div class="lbsf__filter-menu">
+                    {{#levels}}
+                    <label class="lbsf__filter-item">
+                        <input type="checkbox" value="{{value}}">
+                        <span>{{label}}</span>
+                    </label>
+                    {{/levels}}
+                </div>
+                <div class="lbsf__chips"></div>
+                <select name="level[]" multiple hidden aria-hidden="true">
+                    {{#levels}}<option value="{{value}}">{{label}}</option>{{/levels}}
+                </select>
+            </div>
+            {{/haslevels}}
+
+            {{#hasskills}}
+            <div class="lbsf__filter" data-field="skill">
+                <button type="button" class="lbsf__filter-trigger">
+                    <span class="lbsf__filter-label">{{skillname}}</span>
+                    <span class="lbsf__filter-badge" style="display:none">0</span>
+                    <i class="fa fa-chevron-down lbsf__filter-arrow" aria-hidden="true"></i>
+                </button>
+                <div class="lbsf__filter-menu">
+                    {{#skills}}
+                    <label class="lbsf__filter-item">
+                        <input type="checkbox" value="{{value}}">
+                        <span>{{label}}</span>
+                    </label>
+                    {{/skills}}
+                </div>
+                <div class="lbsf__chips"></div>
+                <select name="skill[]" multiple hidden aria-hidden="true">
+                    {{#skills}}<option value="{{value}}">{{label}}</option>{{/skills}}
+                </select>
+            </div>
+            {{/hasskills}}
+
+            {{#hastopics}}
+            <div class="lbsf__filter" data-field="topic">
+                <button type="button" class="lbsf__filter-trigger">
+                    <span class="lbsf__filter-label">{{topicname}}</span>
+                    <span class="lbsf__filter-badge" style="display:none">0</span>
+                    <i class="fa fa-chevron-down lbsf__filter-arrow" aria-hidden="true"></i>
+                </button>
+                <div class="lbsf__filter-menu">
+                    {{#topics}}
+                    <label class="lbsf__filter-item">
+                        <input type="checkbox" value="{{value}}">
+                        <span>{{label}}</span>
+                    </label>
+                    {{/topics}}
+                </div>
+                <div class="lbsf__chips"></div>
+                <select name="topic[]" multiple hidden aria-hidden="true">
+                    {{#topics}}<option value="{{value}}">{{label}}</option>{{/topics}}
+                </select>
+            </div>
+            {{/hastopics}}
+
+            <div class="lbsf__filter" data-field="itemtype">
+                <button type="button" class="lbsf__filter-trigger">
+                    <span class="lbsf__filter-label">{{#str}}itemtypes, mod_minilesson{{/str}}</span>
+                    <span class="lbsf__filter-badge" style="display:none">0</span>
+                    <i class="fa fa-chevron-down lbsf__filter-arrow" aria-hidden="true"></i>
+                </button>
+                <div class="lbsf__filter-menu">
+                    {{#itemtypes}}
+                    <label class="lbsf__filter-item">
+                        <input type="checkbox" value="{{value}}">
+                        <span>{{label}}</span>
+                    </label>
+                    {{/itemtypes}}
+                </div>
+                <div class="lbsf__chips"></div>
+                <select name="itemtype[]" multiple hidden aria-hidden="true">
+                    {{#itemtypes}}<option value="{{value}}">{{label}}</option>{{/itemtypes}}
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <input type="hidden" name="page" value="1">
+    <input type="hidden" name="perpage" value="10">
+</form>
+
+{{#js}}
+require([], function() {
+    var form = document.getElementById('lessonbank_filters');
+    if (!form) { return; }
+
+    var filters = form.querySelectorAll('.lbsf__filter');
+
+    function closeAll(except) {
+        filters.forEach(function(f) {
+            if (f !== except) { f.classList.remove('lbsf__filter--open'); }
+        });
+    }
+
+    function syncFilter(filterEl) {
+        var hiddenSelect = filterEl.querySelector('select[hidden]');
+        var checkboxes = filterEl.querySelectorAll('.lbsf__filter-item input[type="checkbox"]');
+        var chipsContainer = filterEl.querySelector('.lbsf__chips');
+        var badge = filterEl.querySelector('.lbsf__filter-badge');
+        var selected = [];
+
+        Array.from(hiddenSelect.options).forEach(function(opt) { opt.selected = false; });
+
+        checkboxes.forEach(function(cb) {
+            if (cb.checked) {
+                selected.push({value: cb.value, label: cb.parentElement.querySelector('span').textContent});
+                var opt = hiddenSelect.querySelector('option[value="' + cb.value + '"]');
+                if (opt) { opt.selected = true; }
+            }
+        });
+
+        if (selected.length > 0) {
+            badge.textContent = selected.length;
+            badge.style.display = '';
+        } else {
+            badge.style.display = 'none';
+        }
+
+        chipsContainer.innerHTML = '';
+        selected.forEach(function(item) {
+            var chip = document.createElement('span');
+            chip.className = 'lbsf__chip';
+            chip.innerHTML = item.label +
+                '<button type="button" class="lbsf__chip-x" data-value="' +
+                item.value + '">\u00d7</button>';
+            chipsContainer.appendChild(chip);
+        });
+    }
+
+    filters.forEach(function(filterEl) {
+        var trigger = filterEl.querySelector('.lbsf__filter-trigger');
+        var menu = filterEl.querySelector('.lbsf__filter-menu');
+        var chipsContainer = filterEl.querySelector('.lbsf__chips');
+
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var isOpen = filterEl.classList.contains('lbsf__filter--open');
+            closeAll();
+            if (!isOpen) { filterEl.classList.add('lbsf__filter--open'); }
+        });
+
+        menu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        menu.addEventListener('change', function() {
+            syncFilter(filterEl);
+        });
+
+        chipsContainer.addEventListener('click', function(e) {
+            var xBtn = e.target.closest('.lbsf__chip-x');
+            if (xBtn) {
+                var val = xBtn.dataset.value;
+                var cb = menu.querySelector('input[value="' + val + '"]');
+                if (cb) { cb.checked = false; }
+                syncFilter(filterEl);
+            }
+        });
+    });
+
+    document.addEventListener('click', function() {
+        closeAll();
+    });
+
+    form.addEventListener('click', function(e) {
+        if (!e.target.closest('.lbsf__filter')) {
+            closeAll();
+        }
+    });
+});
+{{/js}}
