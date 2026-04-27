@@ -26,9 +26,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Audio Chat';
+$string['cantchat_ningxia'] = 'Chat is NOT available. To use this item type you must have a valid {$a} key set in the MiniLesson activity admin settings. Chat is also not available in China (Ningxia region)';
 $string['gemini'] = 'Gemini';
 $string['item_desc'] = 'The Audio Chat item sets up an audio conversation with an AI partner. It can be used for discussing a topic, or asking questions about a picture. The prompts to the AI bot are free text and editable.';
 $string['openai'] = 'OpenAI';
 $string['pluginname'] = 'Audio chat';
 $string['privacy:metadata'] = 'The Audio chat plugin doesn\'t store any personal data.';
 $string['provider'] = 'Provider';
+

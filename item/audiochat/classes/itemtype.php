@@ -19,7 +19,6 @@ namespace minilessonitem_audiochat;
 use mod_minilesson\constants;
 use mod_minilesson\local\itemtype\item;
 use mod_minilesson\utils;
-use moodle_url;
 use stdClass;
 
 /**
@@ -61,8 +60,14 @@ class itemtype extends item {
 
     public const AUDIOAVATAR = 'customtext7';
 
-    /** * @var string */
+    /** @var string */
     public const CHAT_PROVIDER = 'customtext1';
+
+    /** @var string */
+    public const PROVIDER_GEMINI = 'gemini';
+
+    /** @var string */
+    public const PROVIDER_OPENAI = 'openai';
 
     /**
      * The class constructor.
@@ -81,14 +86,22 @@ class itemtype extends item {
     public function export_for_template(\renderer_base $output) {
         $testitem = parent::export_for_template($output);
         $testitem = $this->set_layout($testitem);
+        $testitem->itisningxiaregion = false;
+        $provider = $testitem->{self::CHAT_PROVIDER};
 
         // Do we have an OpenAI key? (we need one).
-        $apikey = get_config(constants::M_COMPONENT, 'openaikey');
-        if (empty($apikey)) {
-            $testitem->canchat = false;
-        } else {
-            $testitem->canchat = true;
+        $testitem->canchat = false;
+        $testitem->provider = get_string('openai', self::get_component());
+        if ($provider == self::PROVIDER_OPENAI) {
+            $apikey = get_config(constants::M_COMPONENT, 'openaikey');
+            $testitem->canchat = !empty($apikey);
+        } else if ($provider == self::PROVIDER_GEMINI) {
+            $apikey = get_config(constants::M_COMPONENT, 'geminiapikey');
+            $testitem->provider = get_string('gemini', self::get_component());
+            $testitem->canchat = !empty($apikey);
         }
+
+        $testitem->itisningxiaregion = $this->region == 'ningxia';
 
         // Allow retry.
         $testitem->allowretry = $this->itemrecord->{self::ALLOWRETRY} == 1;

@@ -40,6 +40,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         // Runtime state.
         itemdata: {},
         audioElement: null,
+        autoCreateResponseToggleWrapperElement: null,
         callbacks: {},
 
         // Transport.
@@ -88,6 +89,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             realtimeInputConfig: {
                 automaticActivityDetection: {
                     disabled: false,
+                    silenceDurationMs: 1500,
                 }
             },
             sessionResumption: {},
@@ -105,6 +107,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             var self = this;
             self.itemdata = options.itemdata;
             self.audioElement = options.audioElement;
+            self.autoCreateResponseToggleWrapperElement = options.autoCreateResponseToggleWrapperElement;
             self.callbacks = options.callbacks || {};
             self.autocreateresponse = options.itemdata.audiochat_autoresponse || false;
             self.audiochat_voice = self._resolveVoice(options.itemdata.audiochat_voice);
@@ -116,6 +119,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             self.currentAssistantItemId = null;
             self._pendingFirstMessage = null;
             self._setupComplete = false;
+            self.autoCreateResponseToggleWrapperElement.style.display = 'none';
         },
 
         _resolveVoice: function (voice) {
@@ -166,6 +170,8 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                     self.ws.close();
                 }
                 self.resumingSession = true;
+                self.currentUserItemId = null;
+                self.currentAssistantItemId = null;
                 return self._openWebSocket(sessionInfo).then(function() {
                     self._sendSetupAndFirstTurn(sessionInfo.model);
                 });
@@ -291,6 +297,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                     log.debug('Gemini WS closed');
                     log.debug(ev.code);
                     log.debug(ev.reason);
+                    self.loadingMessages.clear();
                 };
                 self.ws.onmessage = function (ev) { self._handleWSMessage(ev); };
             });
@@ -732,6 +739,12 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                             activityEnd: {}
                         }
                     });
+                } else {
+                    self._sendWS({
+                        realtimeInput: {
+                            audioStreamEnd: true,
+                        }
+                    });
                 }
             }
         },
@@ -782,12 +795,20 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 '{"score": "the score (0-100)", "gradeexplanation": "the explanation", "feedback": "the feedback"}.';
             self._gradingPending = true;
             self._gradingBuffer = '';
-            if (self._micEnabled && !self.autocreateresponse) {
-                self._sendWS({
-                    realtimeInput: {
-                        activityEnd: {}
-                    }
-                });
+            if (self._micEnabled) {
+                if (!self.autocreateresponse) {
+                    self._sendWS({
+                        realtimeInput: {
+                            activityEnd: {}
+                        }
+                    });
+                } else {
+                    self._sendWS({
+                        realtimeInput: {
+                            audioStreamEnd: true,
+                        }
+                    });
+                }
             }
             self._sendWS({
                 realtimeInput: {

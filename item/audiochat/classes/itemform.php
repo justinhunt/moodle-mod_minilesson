@@ -58,8 +58,8 @@ class itemform extends baseform {
         $mform->setDefault(constants::TARGETWORDCOUNT, 60);
 
         $provideroptions = [
-            'openai' => get_string('openai', 'minilessonitem_audiochat'),
-            'gemini' => get_string('gemini', 'minilessonitem_audiochat'),
+            itemtype::PROVIDER_OPENAI => get_string('openai', 'minilessonitem_audiochat'),
+            itemtype::PROVIDER_GEMINI => get_string('gemini', 'minilessonitem_audiochat'),
         ];
         $defaultprovider = get_config(constants::M_COMPONENT, 'provider') ?: 'gemini';
         $this->add_dropdown(

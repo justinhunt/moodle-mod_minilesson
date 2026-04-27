@@ -112,6 +112,7 @@ define(
                         self.driver.init({
                             itemdata: self.itemdata,
                             audioElement: self.controls.hiddenaudio,
+                            autoCreateResponseToggleWrapperElement: self.controls.autocreateresponseToggle,
                             callbacks: self._buildDriverCallbacks(),
                         });
                         resolve();
@@ -413,59 +414,81 @@ define(
                 self.controls.micColumn.classList.toggle('hidden', !self.isSessionActive);
 
                 // Render messages from the driver-provided ordered list.
-                self.controls.messagesContainer.innerHTML = "";
+                var allMessages = [...self.controls.messagesContainer.querySelectorAll('[data-msg-id]')].reduce(
+                    (a, i) => {
+                        a[i.dataset.msgId] = i;
+                        return a;
+                    },
+                    {}
+                );
                 self.orderedItems.forEach((message) => {
                     if (!message.content) {
                         return;
                     }
-                    var messageDiv = document.createElement("div");
-                    messageDiv.className = `ml_unique_ordered_message_${message.usertype === "user" ? "user" : "assistant"}`;
+                    var messageDiv = allMessages[message.id] || null;
+                    var loaderDiv = null;
+                    var textDiv = null;
+                    if (!messageDiv) {
+                        messageDiv = document.createElement("div");
+                        messageDiv.dataset.msgId = message.id;
+                        messageDiv.className = `ml_unique_ordered_message_${message.usertype === "user" ? "user" : "assistant"}`;
 
-                    var contentDiv = document.createElement("div");
-                    contentDiv.className = `rounded-lg ${message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
-                        } ml_unique_content_${message.usertype === "user" ? "user" : "assistant"
-                        }`;
+                        var contentDiv = document.createElement("div");
+                        contentDiv.className = `rounded-lg ${message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+                            } ml_unique_content_${message.usertype === "user" ? "user" : "assistant"
+                            }`;
 
-                    var headerDiv = document.createElement("div");
-                    headerDiv.className = "mb-1 ml_unique_headerdiv";
-                    if (message.usertype === "assistant") {
-                        var pictureDiv = document.createElement('div');
-                        pictureDiv.innerHTML = `
-                            <img src="${self.itemdata.avatarimage}?themerev=${M.cfg.themerev}"
-                            alt="AI Assistant" class="mr-2 rounded-circle shadow-lg ml_unique_assistant_img">
-                            `;
-                        headerDiv.appendChild(pictureDiv);
+                        var headerDiv = document.createElement("div");
+                        headerDiv.className = "mb-1 ml_unique_headerdiv";
+                        if (message.usertype === "assistant") {
+                            var pictureDiv = document.createElement('div');
+                            pictureDiv.innerHTML = `
+                                <img src="${self.itemdata.avatarimage}?themerev=${M.cfg.themerev}"
+                                alt="AI Assistant" class="mr-2 rounded-circle shadow-lg ml_unique_assistant_img">
+                                `;
+                            headerDiv.appendChild(pictureDiv);
+                        }
+                        str.get_strings([
+                            { key: 'audiochataiassistant', component: 'mod_minilesson' },
+                            { key: 'audiochatstudent', component: 'mod_minilesson' }
+                        ]).then(function (strings) {
+                            headerDiv.innerHTML += message.usertype === "user" ? strings[1] : strings[0];
+                        });
+                        contentDiv.appendChild(headerDiv);
+
+                        textDiv = document.createElement("div");
+                        textDiv.className = "ml_unique_textsmall";
+                        textDiv.textContent = message.content;
+                        contentDiv.appendChild(textDiv);
+                        messageDiv.appendChild(contentDiv);
+                        self.controls.messagesContainer.appendChild(messageDiv);
+                    } else {
+                        textDiv = messageDiv.querySelector('.ml_unique_textsmall');
+                        textDiv.textContent = message.content;
+                        loaderDiv = messageDiv.querySelector('.ml_unique_loadingmessage');
+                        delete allMessages[message.id];
                     }
-                    str.get_strings([
-                        { key: 'audiochataiassistant', component: 'mod_minilesson' },
-                        { key: 'audiochatstudent', component: 'mod_minilesson' }
-                    ]).then(function (strings) {
-                        headerDiv.innerHTML += message.usertype === "user" ? strings[1] : strings[0];
-                    });
-                    contentDiv.appendChild(headerDiv);
-
-                    var textDiv = document.createElement("div");
-                    textDiv.className = "ml_unique_textsmall";
-                    textDiv.textContent = message.content;
-                    contentDiv.appendChild(textDiv);
 
                     if (self.loadingMessages.has(message.id)) {
-                        var loaderDiv = document.createElement("div");
-                        loaderDiv.className = "py-1 message-loader ml_unique_loadingmessage";
-                        loaderDiv.innerHTML = `
-                            <div class="ml_unique_loader">
-                                <div class="ml_unique_loader_dot"></div>
-                                <div class="ml_unique_loader_dot"></div>
-                                <div class="ml_unique_loader_dot"></div>
-                            </div>
-                            <span class="ml_unique_loader_text">AI is thinking...</span>
-                        `;
-                        contentDiv.appendChild(loaderDiv);
+                        if (!loaderDiv) {
+                            loaderDiv = document.createElement("div");
+                            loaderDiv.className = "py-1 message-loader ml_unique_loadingmessage";
+                            loaderDiv.innerHTML = `
+                                <div class="ml_unique_loader mt-3">
+                                    <div class="ml_unique_loader_dot"></div>
+                                    <div class="ml_unique_loader_dot"></div>
+                                    <div class="ml_unique_loader_dot"></div>
+                                </div>
+                                <span class="ml_unique_loader_text mt-3">AI is responding...</span>
+                            `;
+                            contentDiv.appendChild(loaderDiv);
+                        }
+                    } else if (loaderDiv) {
+                        loaderDiv.remove();
                     }
-
-                    messageDiv.appendChild(contentDiv);
-                    self.controls.messagesContainer.appendChild(messageDiv);
                 });
+
+                Object.values(allMessages).forEach(message => message.remove());
 
                 self.scrollToBottom();
 
