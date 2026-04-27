@@ -114,13 +114,24 @@ if (!empty($translateimportid) || ($restore && confirm_sesskey())) {
 }
 
 
-$searchform = new lessonbank_form($url, [], 'post', '', ['id' => 'lessonbank_filters']);
-$searchform->set_data(['searchgroup[language]' => $moduleinstance->ttslanguage]);
+$searchform = new lessonbank_form($moduleinstance->ttslanguage);
 
-$PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter', ['opts' => ['nativelang' => $moduleinstance->nativelang]]);
+// Build item type icon map: label → icon URL.
+$itemtypeiconmap = [];
+foreach (constants::ITEMTYPES as $itemtype) {
+    $label = get_string($itemtype, constants::M_COMPONENT);
+    $iconurl = $OUTPUT->image_url('icon', 'minilessonitem_' . $itemtype)->out(false);
+    $itemtypeiconmap[$label] = $iconurl;
+}
+
+$PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter', [
+    'opts' => [
+        'nativelang' => $moduleinstance->nativelang,
+        'itemtypeiconmap' => $itemtypeiconmap,
+    ],
+]);
 $lessonbankcontrolsdata = [
     'lessonbankitemcount' => get_string('foundlessons', constants::M_COMPONENT, 0),
-    'paginationoptions' => [10, 25, 50, 100],
 ];
 
 echo $renderer->header($moduleinstance, $cm, 'lessonbank', null, get_string('lessonbank', constants::M_COMPONENT));

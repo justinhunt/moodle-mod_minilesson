@@ -25,44 +25,51 @@
 }}
 
 <div class="col-md-6" data-region="itemcard">
-    <div class="itemcontainer row">
-        <div class="col-md-4 d-flex flex-column" data-region="image">
-            <img src="{{posterimage}}" alt="{{name}}" class="searchimg img-responsive">
+    <div class="itemcontainer">
+        <div class="row itemcontainer__body">
+            <div class="col-xl-4 d-flex flex-column" data-region="image">
+                <img src="{{posterimage}}" alt="{{name}}" class="searchimg img-responsive">
+            </div>
+            <div class="col-xl-8 d-flex flex-column">
+                <h3 class="itemname mb-1">{{name}}</h3>
+                <div class="d-flex itemcontainer__meta">
+                    <p>{{language}}</p>
+                    <p class="ml-2">{{languagelevel}}</p>
+                    {{#nativelanguage}}
+                        <p class="ml-auto">{{#str}}nativelang, mod_minilesson{{/str}} : {{{.}}} </p>
+                    {{/nativelanguage}}
+                </div>
+                <div class="d-flex">
+                    <p><b class="mr-2 itemcontainer__label">{{#str}}keywordcolon, mod_minilesson{{/str}}</b>{{keywords}}</p>
+                </div>
+                <div class="d-flex flex-column">
+                    <p data-text={{#quote}}{{{description}}}{{/quote}}>
+                        <b class="mr-2 itemcontainer__label">{{#str}}descriptioncolon, mod_minilesson{{/str}}</b>
+                        {{#shortentext}} 150, {{{description}}} {{/shortentext}}
+                    </p>
+                </div>
+                <div class="itemcontainer__tags">
+                    {{#itemtypes}}
+                    <span class="itemcontainer__tag">
+                        {{#iconurl}}<img src="{{iconurl}}" class="itemcontainer__tag-icon" alt="">{{/iconurl}}
+                        {{text}}
+                    </span>
+                    {{/itemtypes}}
+                </div>
+            </div>
         </div>
-        <div class="col-md-8 d-flex flex-column">
-            <h3 class="itemname mb-1">{{name}}</h3>
-            <div class="d-flex">
-                <p>{{language}}</p>
-                <p class="ml-2">{{languagelevel}}</p>
-                {{#nativelanguage}}
-                    <p class="ml-auto">{{#str}}nativelang, mod_minilesson{{/str}} : {{{.}}} </p>
-                {{/nativelanguage}}
-            </div>
-            <div class="d-flex">
-                <p><b class="mr-2">{{#str}}keywordcolon, mod_minilesson{{/str}}</b>{{keywords}}</p>
-            </div>
-            <div class="d-flex flex-column">
-                <p data-text={{#quote}}{{{description}}}{{/quote}}>
-                    <b class="mr-2">{{#str}}descriptioncolon, mod_minilesson{{/str}}</b>
-                    {{#shortentext}} 150, {{{description}}} {{/shortentext}}
-                </p>
-            </div>
-            <div class="d-flex">
-                <p><b class="mr-2">{{#str}}itemscolon, mod_minilesson{{/str}}</b>{{#itemtypes}}{{{text}}}{{^islast}},{{/islast}}{{/itemtypes}}</p>
-            </div>
-            <div class="d-flex mt-auto">
-                <a data-id="{{id}}" data-action="download" data-download="{{name}}" class="btn btn-primary text-white rounded ml-auto importlessonitembtn">
-                    {{#str}}import{{/str}}
+        <div class="itemcontainer__footer">
+            <a data-id="{{id}}" data-action="preview" data-viewurl="{{{viewurl}}}&embed=2" data-title="{{name}}" class="btn itemcontainer__btn--secondary">
+                {{#str}}preview{{/str}}
+            </a>
+            {{#showtranslate}}
+                <a data-translateimportid="{{id}}" data-sourcelanguage="{{{nativelanguage}}}" data-action="translate" class="btn itemcontainer__btn--outlined">
+                    {{#str}}translatetoimport, mod_minilesson{{/str}}
                 </a>
-                {{#showtranslate}}
-                    <a data-translateimportid="{{id}}" data-sourcelanguage="{{{nativelanguage}}}" data-action="translate" class="btn btn-primary text-white rounded ml-auto">
-                        {{#str}}translatetoimport, mod_minilesson{{/str}}
-                    </a>
-                {{/showtranslate}}
-                <a data-id="{{id}}" data-action="preview" data-viewurl="{{{viewurl}}}&embed=2" data-title="{{name}}" class="btn btn-primary text-white rounded ml-auto importlessonitembtn">
-                    {{#str}}preview{{/str}}
-                </a>
-            </div>
+            {{/showtranslate}}
+            <a data-id="{{id}}" data-action="download" data-download="{{name}}" class="btn itemcontainer__btn--primary">
+                {{#str}}import{{/str}}
+            </a>
         </div>
     </div>
 </div>

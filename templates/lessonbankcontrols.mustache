@@ -26,18 +26,13 @@
 
 <div class="d-flex align-items-center justify-content-end mt-1 mb-1">
     <div class="countcontainer mr-auto"> {{lessonbankitemcount}} </div>
-    <div class="d-flex align-items-center gap-1">
-        <span>{{#str}}show{{/str}}</span>
-        <select class="select custom-select form-control" id="menuperpageselection" name="perpageselection">
-            {{#paginationoptions}}
-                <option value="{{.}}">{{.}}</option>
-            {{/paginationoptions}}
-        </select>
-        <span class="ml-1">{{#str}}perpage, mod_minilesson{{/str}}</span>
-    </div>
     <div class="lessonbanklayoutbox align-items-center d-flex ml-3">
-        <button class="btn listlayoutbtn"><i class="fa fa-list"></i></button>
-        <button class="btn gridlayoutbtn active"><i class="fa fa-th-large"></i></button>
+        <button class="btn listlayoutbtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+        <button class="btn gridlayoutbtn active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </button>
     </div>
 </div>
 <template id="mod_minilesson-spinner">
