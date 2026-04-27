@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * TODO describe module searchlesson
+ * Lesson bank search with infinite scroll.
  *
  * @module     mod_minilesson/searchlesson
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
@@ -30,6 +30,8 @@ import Fragment from 'core/fragment';
 
 
 const component = 'mod_minilesson';
+const PERPAGE = 10;
+const SKELETON_COUNT = 2;
 
 export const registerFilter = (opts) => {
     const localnativelang = opts.nativelang;
@@ -39,7 +41,11 @@ export const registerFilter = (opts) => {
     const gridlayoutbtn = document.querySelector('.gridlayoutbtn');
     const listlayoutbtn = document.querySelector('.listlayoutbtn');
     const countcontainer = document.querySelector('.countcontainer');
-    const pagination = document.querySelector('[name="perpageselection"]');
+
+    let currentPage = 1;
+    let isLoading = false;
+    let hasMore = true;
+    let observer = null;
 
     const getSpinner = () => {
         const template = document.getElementById('mod_minilesson-spinner');
@@ -62,12 +68,235 @@ export const registerFilter = (opts) => {
         return '';
     };
 
+    const getSentinel = () => {
+        let sentinel = cardsContainer.querySelector('.lbsf-sentinel');
+        if (!sentinel) {
+            sentinel = document.createElement('div');
+            sentinel.className = 'lbsf-sentinel';
+            cardsContainer.appendChild(sentinel);
+        }
+        return sentinel;
+    };
+
+    const setupObserver = () => {
+        if (observer) {
+            observer.disconnect();
+        }
+        observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !isLoading && hasMore) {
+                loadMoreCards();
+            }
+        }, {rootMargin: '200px'});
+        observer.observe(getSentinel());
+    };
+
+    const insertSkeletons = () => {
+        const sentinel = getSentinel();
+        const promises = [];
+        for (let i = 0; i < SKELETON_COUNT; i++) {
+            promises.push(Templates.render(`${component}/lessonbank_skeleton`, {}));
+        }
+        Promise.all(promises).then(htmlArray => {
+            sentinel.insertAdjacentHTML('beforebegin', htmlArray.join(''));
+        });
+    };
+
+    const removeSkeletons = () => {
+        cardsContainer.querySelectorAll('.lbsf-skeleton-card').forEach(el => el.remove());
+    };
+
+    const buildParams = () => {
+        const params = new URLSearchParams();
+        var targetlanguage = '';
+        if (form.elements['searchgroup[language]']) {
+            targetlanguage = form.elements['searchgroup[language]'].value;
+            params.append('language', targetlanguage);
+        }
+        if (form.elements['searchgroup[keyword]']) {
+            params.append('keywords', form.elements['searchgroup[keyword]'].value);
+        }
+        if (form.elements['level[]']) {
+            const selectedOptions = form.elements['level[]'].selectedOptions;
+            Array.from(selectedOptions).forEach((option, index) => {
+                params.append(`level[${index}]`, option.value);
+            });
+        }
+        if (form.elements['skill[]']) {
+            const selectedOptions = form.elements['skill[]'].selectedOptions;
+            Array.from(selectedOptions).forEach((option, index) => {
+                params.append(`skill[${index}]`, option.value);
+            });
+        }
+        if (form.elements['topic[]']) {
+            const selectedOptions = form.elements['topic[]'].selectedOptions;
+            Array.from(selectedOptions).forEach((option, index) => {
+                params.append(`topic[${index}]`, option.value);
+            });
+        }
+        if (form.elements['itemtype[]']) {
+            const selectedOptions = form.elements['itemtype[]'].selectedOptions;
+            Array.from(selectedOptions).forEach((option, index) => {
+                params.append(`itemtypes[${index}]`, option.value);
+            });
+        }
+        return {params, targetlanguage};
+    };
+
+    const enrichLessons = (lessons, targetlanguage) => {
+        if (lessons.lessonitems) {
+            lessons.lessonitems.forEach(lessonitem => {
+                if (lessonitem.nativelanguage === targetlanguage) {
+                    lessonitem.nativelanguage = false;
+                }
+                if (lessonitem.nativelanguage && (lessonitem.nativelanguage !== localnativelang)) {
+                    lessonitem.showtranslate = true;
+                }
+                if (lessonitem.itemtypes) {
+                    lessonitem.itemtypes.forEach(it => {
+                        it.iconurl = itemtypeiconmap[it.text] || '';
+                    });
+                }
+            });
+        }
+    };
+
+    const isListLayout = () => cardsContainer.classList.contains('listlayout');
+
+    const fetchPage = (page) => {
+        const {params, targetlanguage} = buildParams();
+        params.append('page', page);
+        params.append('perpage', PERPAGE);
+
+        const args = {
+            function: 'local_lessonbank_list_minilessons',
+            args: params.toString(),
+        };
+
+        return Ajax.call([{
+            methodname: `${component}_lessonbank`,
+            args: args,
+        }])[0].then(rawlessons => {
+            var lessons = JSON.parse(rawlessons.data);
+            if (!lessons) {
+                lessons = {};
+                lessons.totalitems = 0;
+            }
+            enrichLessons(lessons, targetlanguage);
+            return lessons;
+        });
+    };
+
+    const renderCards = (lessons) => {
+        lessons.islistlayot = isListLayout();
+        if (isListLayout()) {
+            return Templates.render(`${component}/lessonbanklistitem`, lessons);
+        }
+        // For grid layout, render individual cards
+        const promises = (lessons.lessonitems || []).map(item => {
+            return Templates.render(`${component}/lessonbankitem`, item);
+        });
+        return Promise.all(promises).then(htmlArray => htmlArray.join(''));
+    };
+
+    const searchFilter = () => {
+        currentPage = 1;
+        hasMore = true;
+        isLoading = true;
+
+        // Clear container and set up wrapper
+        cardsContainer.innerHTML = '';
+        const wrapper = document.createElement('div');
+        wrapper.className = 'searchbox row no-gutters justify-content-between';
+        cardsContainer.appendChild(wrapper);
+
+        // Create sentinel inside the wrapper
+        const sentinel = document.createElement('div');
+        sentinel.className = 'lbsf-sentinel';
+        wrapper.appendChild(sentinel);
+
+        // Insert skeletons before sentinel
+        insertSkeletons();
+
+        fetchPage(currentPage).then(lessons => {
+            if (countcontainer) {
+                Str.get_string('foundlessons', 'mod_minilesson', lessons.totalitems).then((langstr) => {
+                    countcontainer.textContent = langstr;
+                });
+            }
+
+            hasMore = !!lessons.hasnextbutton;
+            removeSkeletons();
+
+            if (!lessons.lessonitems || lessons.lessonitems.length === 0) {
+                const noItems = document.createElement('p');
+                noItems.className = 'bg-secondary p-3 text-center w-100';
+                noItems.innerHTML = '<b>' + (lessons.nolessonitemfound || 'No items found') + '</b>';
+                Str.get_string('nolessonitemfound', 'mod_minilesson').then((langstr) => {
+                    noItems.innerHTML = '<b>' + langstr + '</b>';
+                });
+                sentinel.parentNode.insertBefore(noItems, sentinel);
+                isLoading = false;
+                return;
+            }
+
+            return renderCards(lessons).then(html => {
+                sentinel.insertAdjacentHTML('beforebegin', html);
+                isLoading = false;
+                setupObserver();
+
+                document.querySelector('#region-main')?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            });
+        }).catch(err => {
+            isLoading = false;
+            Notification.exception(err);
+        });
+    };
+
+    const loadMoreCards = () => {
+        if (isLoading || !hasMore) {
+            return;
+        }
+        isLoading = true;
+        currentPage++;
+
+        insertSkeletons();
+
+        fetchPage(currentPage).then(lessons => {
+            hasMore = !!lessons.hasnextbutton;
+            removeSkeletons();
+
+            if (!lessons.lessonitems || lessons.lessonitems.length === 0) {
+                isLoading = false;
+                if (observer) {
+                    observer.disconnect();
+                }
+                return;
+            }
+
+            return renderCards(lessons).then(html => {
+                const sentinel = cardsContainer.querySelector('.lbsf-sentinel');
+                sentinel.insertAdjacentHTML('beforebegin', html);
+                isLoading = false;
+
+                if (!hasMore && observer) {
+                    observer.disconnect();
+                }
+            });
+        }).catch(err => {
+            isLoading = false;
+            Notification.exception(err);
+        });
+    };
+
     gridlayoutbtn?.addEventListener('click', e => {
         e.preventDefault();
         cardsContainer.classList.remove('listlayout');
         gridlayoutbtn.classList.add('active');
         listlayoutbtn.classList.remove('active');
-        searchFilter(form);
+        searchFilter();
     });
 
     listlayoutbtn?.addEventListener('click', e => {
@@ -75,137 +304,14 @@ export const registerFilter = (opts) => {
         cardsContainer.classList.add('listlayout');
         listlayoutbtn.classList.add('active');
         gridlayoutbtn.classList.remove('active');
-        searchFilter(form);
+        searchFilter();
     });
 
-    const searchFilter = form => {
-        // The remote function we will call to search and list the lessons
-        const functionname = 'local_lessonbank_list_minilessons';
-        // Build our search params
-        const params = new URLSearchParams();
-        var targetlanguage = '';
-        // Target Language  
-        if (form.elements['searchgroup[language]']) {
-            targetlanguage = form.elements['searchgroup[language]'].value;
-            params.append('language', targetlanguage);
-        }
-        // Keywords
-        if (form.elements['searchgroup[keyword]']) {
-            params.append('keywords', form.elements['searchgroup[keyword]'].value);
-        }
-        // Level
-        if (form.elements['level[]']) {
-            const selectedOptions = form.elements['level[]'].selectedOptions;
-            Array.from(selectedOptions).forEach((option, index) => {
-                params.append(`level[${index}]`, option.value);
-            });
-        }
-        // Skills
-        if (form.elements['skill[]']) {
-            const selectedOptions = form.elements['skill[]'].selectedOptions;
-            Array.from(selectedOptions).forEach((option, index) => {
-                params.append(`skill[${index}]`, option.value);
-            });
-        }
-        // Topic
-        if (form.elements['topic[]']) {
-            const selectedOptions = form.elements['topic[]'].selectedOptions;
-            Array.from(selectedOptions).forEach((option, index) => {
-                params.append(`topic[${index}]`, option.value);
-            });
-        }
-        // Item Type
-        if (form.elements['itemtype[]']) {
-            const selectedOptions = form.elements['itemtype[]'].selectedOptions;
-            Array.from(selectedOptions).forEach((option, index) => {
-                params.append(`itemtypes[${index}]`, option.value);
-            });
-        }
-        // Page
-        if (form.elements.page) {
-            params.append('page', form.elements.page.value);
-        }
-        // Per page
-        if (form.elements.perpage) {
-            params.append('perpage', form.elements.perpage.value);
-        }
-        // Prepare the arguments for the ajax call
-        const args = {
-            function: functionname,
-            args: params.toString(),
-        };
-        // Make the ajax call
-        Ajax.call([{
-            methodname: `${component}_lessonbank`,
-            args: args,
-        }])[0].then(rawlessons => {
-            var lessons = JSON.parse(rawlessons.data);
-            // If items is null or false, probably an error occurred. We just show no items.
-            if (!lessons) {
-                lessons = {};
-                // Items here is a misnomer, it really means totallessons 
-                lessons.totalitems = 0;
-            }
-
-            // If there are lessons.lessonitems then check the nativelang and set showtranslate
-            if (lessons.lessonitems) {
-                lessons.lessonitems.forEach(lessonitem => {
-                    // If the native language of the activity and the native language of the lesson are different
-                    // AND the lesson has a different  target language to native language, then it can be translated
-                    if (lessonitem.nativelanguage === targetlanguage) {
-                        lessonitem.nativelanguage = false;
-                    }
-                    if (lessonitem.nativelanguage && (lessonitem.nativelanguage !== localnativelang)) {
-                        lessonitem.showtranslate = true;
-                    }
-                    // Enrich itemtypes with icon URLs.
-                    if (lessonitem.itemtypes) {
-                        lessonitem.itemtypes.forEach(it => {
-                            it.iconurl = itemtypeiconmap[it.text] || '';
-                        });
-                    }
-                });
-            }
-
-
-            // Set the layout flag
-            lessons.islistlayot = cardsContainer.classList.contains('listlayout') ? true : false;
-            // Update the count
-            if (countcontainer) {
-                Str.get_string('foundlessons', 'mod_minilesson', lessons.totalitems).then((langstr) => {
-                    countcontainer.textContent = langstr;
-                });
-            }
-            // Render the lessons  (again the lessonbankitems really means lessonbank lessons)
-            Templates.render(`${component}/lessonbankitems`, lessons)
-                .then((html, js) => {
-                    return Templates.replaceNodeContents(cardsContainer, html, js);
-                }).then(() => {
-                    document.querySelector('#region-main')?.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start"
-                    });
-                });
-            return null;
-        })
-            .catch(Notification.exception);
-    };
     cardsContainer.addEventListener('click', e => {
         if (e.target.href) {
             return;
         }
         e.preventDefault();
-        const dirbtn = e.target.closest('[data-action="previousbtn"],[data-action="nextbtn"]');
-        if (dirbtn) {
-            const pageno = dirbtn.getAttribute('data-page');
-            const perpage = dirbtn.getAttribute('data-perpage');
-            const pagevalue = parseInt(pageno, 10) + (dirbtn.dataset.action === 'previousbtn' ? -1 : 1);
-            if (form) {
-                form.elements.page.value = pagevalue;
-                form.elements.perpage.value = perpage;
-                searchFilter(form);
-            }
-        }
         const downloadbtn = e.target.closest('[data-action="download"]');
         if (downloadbtn) {
             if (!downloadbtn.dataset.id) {
@@ -314,22 +420,11 @@ export const registerFilter = (opts) => {
             }).catch(Notification.exception);
         }
     });
-    if (pagination) {
-        pagination.addEventListener('change', e => {
-            const perpagevalue = e.target.value;
-            if (form) {
-                form.elements.page.value = 1;
-                form.elements.perpage.value = perpagevalue;
-                searchFilter(form);
-            }
-        });
-    }
     form?.addEventListener('submit', e => {
         e.preventDefault();
-        form.querySelector('[name="page"]').value = 1;
-        searchFilter(form);
+        searchFilter();
     });
     if (form) {
-        searchFilter(form);
+        searchFilter();
     }
 };
