@@ -91,14 +91,26 @@ export const registerFilter = (opts) => {
     };
 
     const insertSkeletons = () => {
-        const sentinel = getSentinel();
+        const skeletonTemplate = isListLayout()
+            ? `${component}/lessonbank_skeleton_row`
+            : `${component}/lessonbank_skeleton`;
         const promises = [];
         for (let i = 0; i < SKELETON_COUNT; i++) {
-            promises.push(Templates.render(`${component}/lessonbank_skeleton`, {}));
+            promises.push(Templates.render(skeletonTemplate, {}));
         }
-        Promise.all(promises).then(htmlArray => {
-            sentinel.insertAdjacentHTML('beforebegin', htmlArray.join(''));
-        });
+        if (isListLayout()) {
+            const tbody = cardsContainer.querySelector('tbody');
+            if (tbody) {
+                Promise.all(promises).then(htmlArray => {
+                    tbody.insertAdjacentHTML('beforeend', htmlArray.join(''));
+                });
+            }
+        } else {
+            const sentinel = getSentinel();
+            Promise.all(promises).then(htmlArray => {
+                sentinel.insertAdjacentHTML('beforebegin', htmlArray.join(''));
+            });
+        }
     };
 
     const removeSkeletons = () => {
@@ -186,16 +198,72 @@ export const registerFilter = (opts) => {
         });
     };
 
+    const renderRows = (lessons) => {
+        const promises = (lessons.lessonitems || []).map(item => {
+            return Templates.render(`${component}/lessonbank_listrow`, item);
+        });
+        return Promise.all(promises).then(htmlArray => htmlArray.join(''));
+    };
+
     const renderCards = (lessons) => {
-        lessons.islistlayot = isListLayout();
-        if (isListLayout()) {
-            return Templates.render(`${component}/lessonbanklistitem`, lessons);
-        }
-        // For grid layout, render individual cards
         const promises = (lessons.lessonitems || []).map(item => {
             return Templates.render(`${component}/lessonbankitem`, item);
         });
         return Promise.all(promises).then(htmlArray => htmlArray.join(''));
+    };
+
+    const buildContainerStructure = () => {
+        cardsContainer.innerHTML = '';
+        if (isListLayout()) {
+            // Create table with thead once; tbody receives rows incrementally
+            const table = document.createElement('table');
+            table.className = 'table table-bordered table-striped listtable';
+            // Thead will be rendered via Str, but we build it with known columns
+            table.innerHTML =
+                '<thead><tr>' +
+                '<th></th><th></th><th class="langcolumn"></th>' +
+                '<th class="levelcolumn"></th><th class="keywordcolumn"></th>' +
+                '<th class="listdescription"></th><th></th><th></th>' +
+                '</tr></thead><tbody></tbody>';
+            cardsContainer.appendChild(table);
+            // Fill header labels
+            const ths = table.querySelectorAll('thead th');
+            const headerKeys = [
+                null, 'title', 'targetlang', 'level', 'keyword', null, 'items', null
+            ];
+            headerKeys.forEach((key, i) => {
+                if (key) {
+                    Str.get_string(key, 'mod_minilesson').then(s => { ths[i].textContent = s; });
+                }
+            });
+            Str.get_string('description').then(s => { ths[5].textContent = s; });
+            Str.get_string('actions').then(s => { ths[7].textContent = s; });
+        } else {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'searchbox row no-gutters justify-content-between';
+            cardsContainer.appendChild(wrapper);
+            // Sentinel inside the wrapper so cards stay within .searchbox.row
+            const sentinel = document.createElement('div');
+            sentinel.className = 'lbsf-sentinel';
+            wrapper.appendChild(sentinel);
+            return;
+        }
+        // Sentinel outside the table for list layout
+        const sentinel = document.createElement('div');
+        sentinel.className = 'lbsf-sentinel';
+        cardsContainer.appendChild(sentinel);
+    };
+
+    const insertContent = (html) => {
+        if (isListLayout()) {
+            const tbody = cardsContainer.querySelector('tbody');
+            if (tbody) {
+                tbody.insertAdjacentHTML('beforeend', html);
+            }
+        } else {
+            const sentinel = cardsContainer.querySelector('.lbsf-sentinel');
+            sentinel.insertAdjacentHTML('beforebegin', html);
+        }
     };
 
     const searchFilter = () => {
@@ -203,18 +271,7 @@ export const registerFilter = (opts) => {
         hasMore = true;
         isLoading = true;
 
-        // Clear container and set up wrapper
-        cardsContainer.innerHTML = '';
-        const wrapper = document.createElement('div');
-        wrapper.className = 'searchbox row no-gutters justify-content-between';
-        cardsContainer.appendChild(wrapper);
-
-        // Create sentinel inside the wrapper
-        const sentinel = document.createElement('div');
-        sentinel.className = 'lbsf-sentinel';
-        wrapper.appendChild(sentinel);
-
-        // Insert skeletons before sentinel
+        buildContainerStructure();
         insertSkeletons();
 
         fetchPage(currentPage).then(lessons => {
@@ -230,17 +287,19 @@ export const registerFilter = (opts) => {
             if (!lessons.lessonitems || lessons.lessonitems.length === 0) {
                 const noItems = document.createElement('p');
                 noItems.className = 'bg-secondary p-3 text-center w-100';
-                noItems.innerHTML = '<b>' + (lessons.nolessonitemfound || 'No items found') + '</b>';
+                noItems.innerHTML = '<b></b>';
                 Str.get_string('nolessonitemfound', 'mod_minilesson').then((langstr) => {
-                    noItems.innerHTML = '<b>' + langstr + '</b>';
+                    noItems.querySelector('b').textContent = langstr;
                 });
-                sentinel.parentNode.insertBefore(noItems, sentinel);
+                const sentinel = cardsContainer.querySelector('.lbsf-sentinel');
+                sentinel.insertAdjacentElement('beforebegin', noItems);
                 isLoading = false;
                 return;
             }
 
-            return renderCards(lessons).then(html => {
-                sentinel.insertAdjacentHTML('beforebegin', html);
+            const render = isListLayout() ? renderRows(lessons) : renderCards(lessons);
+            return render.then(html => {
+                insertContent(html);
                 isLoading = false;
                 setupObserver();
 
@@ -276,9 +335,9 @@ export const registerFilter = (opts) => {
                 return;
             }
 
-            return renderCards(lessons).then(html => {
-                const sentinel = cardsContainer.querySelector('.lbsf-sentinel');
-                sentinel.insertAdjacentHTML('beforebegin', html);
+            const render = isListLayout() ? renderRows(lessons) : renderCards(lessons);
+            return render.then(html => {
+                insertContent(html);
                 isLoading = false;
 
                 if (!hasMore && observer) {

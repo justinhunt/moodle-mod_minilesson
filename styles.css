@@ -1865,6 +1865,23 @@
   width: 80px;
   border-radius: 10px;
 }
+#page-mod-minilesson-lessonbank .lbsf-skeleton--image-sm {
+  height: 60px;
+  width: 100%;
+  border-radius: 6px;
+}
+#page-mod-minilesson-lessonbank .lbsf-skeleton--title-sm {
+  height: 18px;
+  width: 80%;
+}
+#page-mod-minilesson-lessonbank .lbsf-skeleton--cell {
+  height: 14px;
+  width: 70%;
+}
+#page-mod-minilesson-lessonbank .lbsf-skeleton--cell-short {
+  height: 14px;
+  width: 30px;
+}
 #page-mod-minilesson-lessonbank .lbsf-sentinel {
   width: 100%;
   height: 1px;
