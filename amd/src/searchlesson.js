@@ -101,13 +101,14 @@ export const registerFilter = (opts) => {
         if (isListLayout()) {
             const tbody = cardsContainer.querySelector('tbody');
             if (tbody) {
-                Promise.all(promises).then(htmlArray => {
+                return Promise.all(promises).then(htmlArray => {
                     tbody.insertAdjacentHTML('beforeend', htmlArray.join(''));
                 });
             }
+            return Promise.resolve();
         } else {
             const sentinel = getSentinel();
-            Promise.all(promises).then(htmlArray => {
+            return Promise.all(promises).then(htmlArray => {
                 sentinel.insertAdjacentHTML('beforebegin', htmlArray.join(''));
             });
         }
@@ -272,9 +273,9 @@ export const registerFilter = (opts) => {
         isLoading = true;
 
         buildContainerStructure();
-        insertSkeletons();
+        const skeletonsReady = insertSkeletons();
 
-        fetchPage(currentPage).then(lessons => {
+        Promise.all([skeletonsReady, fetchPage(currentPage)]).then(([, lessons]) => {
             if (countcontainer) {
                 Str.get_string('foundlessons', 'mod_minilesson', lessons.totalitems).then((langstr) => {
                     countcontainer.textContent = langstr;
@@ -287,9 +288,9 @@ export const registerFilter = (opts) => {
             if (!lessons.lessonitems || lessons.lessonitems.length === 0) {
                 const noItems = document.createElement('p');
                 noItems.className = 'bg-secondary p-3 text-center w-100';
-                noItems.innerHTML = '<b></b>';
+                noItems.innerHTML = '<span></span>';
                 Str.get_string('nolessonitemfound', 'mod_minilesson').then((langstr) => {
-                    noItems.querySelector('b').textContent = langstr;
+                    noItems.querySelector('span').textContent = langstr;
                 });
                 const sentinel = cardsContainer.querySelector('.lbsf-sentinel');
                 sentinel.insertAdjacentElement('beforebegin', noItems);
@@ -321,9 +322,9 @@ export const registerFilter = (opts) => {
         isLoading = true;
         currentPage++;
 
-        insertSkeletons();
+        const skeletonsReady = insertSkeletons();
 
-        fetchPage(currentPage).then(lessons => {
+        Promise.all([skeletonsReady, fetchPage(currentPage)]).then(([, lessons]) => {
             hasMore = !!lessons.hasnextbutton;
             removeSkeletons();
 

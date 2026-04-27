@@ -37,13 +37,15 @@
     </td>
     <td>{{itemcount}}</td>
     <td>
-        {{#nativelanguage}}
-            <a data-translateimportid="{{id}}" data-sourcelanguage="{{{nativelanguage}}}" data-action="translate" class="btn btn-primary text-white rounded ml-auto">
-                {{#str}}translatetoimport, mod_minilesson{{/str}}
+        <div class="d-flex flex-column align-items-center" style="gap:6px">
+            {{#nativelanguage}}
+                <a data-translateimportid="{{id}}" data-sourcelanguage="{{{nativelanguage}}}" data-action="translate" class="btn itemcontainer__btn--outlined">
+                    {{#str}}translatetoimport, mod_minilesson{{/str}}
+                </a>
+            {{/nativelanguage}}
+            <a data-id="{{id}}" data-action="download" data-download="{{name}}" class="btn itemcontainer__btn--primary importlessonitembtn">
+                {{#str}}import{{/str}}
             </a>
-        {{/nativelanguage}}
-        <a data-id="{{id}}" data-action="download" data-download="{{name}}" class="btn btn-primary text-white rounded ml-auto importlessonitembtn">
-            {{#str}}import{{/str}}
-        </a>
+        </div>
     </td>
 </tr>

@@ -1798,6 +1798,11 @@
   color: #1177d1;
   box-shadow: none;
 }
+#page-mod-minilesson-lessonbank .bg-secondary.text-center {
+  background-color: #F5F5FE !important;
+  padding: 48px 0 !important;
+  color: #414C81;
+}
 #page-mod-minilesson-lessonbank .searchbox.row {
   gap: 18px 0;
   margin-top: 24px;
@@ -1896,15 +1901,25 @@
 #page-mod-minilesson-lessonbank [data-for=page-activity-header] {
   display: none;
 }
+#page-mod-minilesson-lessonbank .countcontainer {
+  color: #414C81;
+}
 #page-mod-minilesson-lessonbank .lessonbanklayoutbox {
   border: 1px solid #C7CBE8;
   border-radius: 10px;
   overflow: hidden;
+  align-items: stretch !important;
+}
+#page-mod-minilesson-lessonbank .listlayoutbtn svg,
+#page-mod-minilesson-lessonbank .gridlayoutbtn svg {
+  margin-top: -4px;
+  height: 18px;
+  width: 18px;
 }
 #page-mod-minilesson-lessonbank .listlayoutbtn,
 #page-mod-minilesson-lessonbank .gridlayoutbtn {
   border: 0;
-  color: #80859d;
+  color: #5C669A;
   transition: background 0.15s, color 0.15s;
 }
 #page-mod-minilesson-lessonbank .listlayoutbtn:hover,
@@ -1919,18 +1934,10 @@
 }
 #page-mod-minilesson-lessonbank .listlayoutbtn.active,
 #page-mod-minilesson-lessonbank .gridlayoutbtn.active {
-  background-color: #506DFF;
-  color: #FFFFFF;
-  border: 1px solid #506DFF;
-  box-shadow: unset;
-}
-#page-mod-minilesson-lessonbank .listlayoutbtn.active:hover, #page-mod-minilesson-lessonbank .listlayoutbtn.active:focus,
-#page-mod-minilesson-lessonbank .gridlayoutbtn.active:hover,
-#page-mod-minilesson-lessonbank .gridlayoutbtn.active:focus {
-  background-color: #2642CD;
-  color: #FFFFFF;
-  border: 1px solid #2642CD;
-  box-shadow: unset;
+  background-color: #506DFF !important;
+  color: #FFFFFF !important;
+  box-shadow: none !important;
+  border: 0 !important;
 }
 #page-mod-minilesson-lessonbank .listlayoutbtn.listlayoutbtn,
 #page-mod-minilesson-lessonbank .gridlayoutbtn.listlayoutbtn {
@@ -1993,6 +2000,15 @@
   cursor: default;
 }
 
+#page-mod-minilesson-lessonbank .listlayout .listtable {
+  --bs-table-border-color: #dddff1;
+  --bs-border-color: #dddff1;
+  --bs-table-striped-bg: #F5F5FE;
+  margin-top: 24px;
+}
+#page-mod-minilesson-lessonbank .listlayout .listtable thead th {
+  background: #F5F5FE;
+}
 #page-mod-minilesson-lessonbank .listlayout .listtable .imgcolumn {
   width: 200px;
   padding: 10px;
@@ -2009,7 +2025,9 @@
 #page-mod-minilesson-lessonbank .listlayout .listtable th:last-child,
 #page-mod-minilesson-lessonbank .listlayout .listtable td:last-child {
   width: 200px;
-  white-space: nowrap;
+}
+#page-mod-minilesson-lessonbank .listlayout .listtable td:last-child {
+  white-space: normal;
 }
 #page-mod-minilesson-lessonbank .listlayout .listtable .listdescription {
   width: 200px;
@@ -2020,6 +2038,9 @@
 #page-mod-minilesson-lessonbank .listlayout .listtable .levelcolumn,
 #page-mod-minilesson-lessonbank .listlayout .listtable .langcolumn {
   white-space: nowrap;
+}
+#page-mod-minilesson-lessonbank .listlayout .listtable td p[data-text] > b {
+  display: none;
 }
 
 .mod_minilesson_grading_badword {

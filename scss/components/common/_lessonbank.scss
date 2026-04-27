@@ -474,6 +474,12 @@
     }
   }
 
+  .bg-secondary.text-center {
+    background-color: $primary-bg !important;
+    padding: 48px 0 !important;
+    color: $heading-navy;
+  }
+
   .searchbox.row {
     gap: 18px 0;
     margin-top: 24px;
@@ -541,16 +547,26 @@
     display: none;
   }
 
+  .countcontainer {
+    color: $heading-navy;
+  }
+
   .lessonbanklayoutbox {
     border: 1px solid $primary-border-soft;
     border-radius: 10px;
     overflow: hidden;
+    align-items: stretch !important;
   }
 
   .listlayoutbtn,
   .gridlayoutbtn {
+    svg {
+      margin-top: -4px;
+      height: 18px;
+      width: 18px;
+    }
     border: 0;
-    color: $text-muted;
+    color: $text-slate;
     transition: background 0.15s, color 0.15s;
 
     &:hover {
@@ -564,18 +580,10 @@
     }
 
     &.active {
-      background-color: $primary;
-      color: $white;
-      border: 1px solid $primary;
-      box-shadow: unset;
-
-      &:hover,
-      &:focus {
-        background-color: $primary-hover;
-        color: $white;
-        border: 1px solid $primary-hover;
-        box-shadow: unset;
-      }
+      background-color: $primary !important;
+      color: $white !important;
+      box-shadow: none !important;
+      border: 0 !important;
     }
 
     &.listlayoutbtn {
@@ -650,6 +658,14 @@
 #page-mod-minilesson-lessonbank {
 
   .listlayout .listtable {
+    --bs-table-border-color: #{$primary-border-pale};
+    --bs-border-color: #{$primary-border-pale};
+    --bs-table-striped-bg: #{$primary-bg};
+    margin-top: 24px;
+
+    thead th {
+      background: $primary-bg;
+    }
 
     .imgcolumn {
       width: 200px;
@@ -670,7 +686,10 @@
     th:last-child,
     td:last-child {
       width: 200px;
-      white-space: nowrap;
+    }
+
+    td:last-child {
+      white-space: normal;
     }
 
     .listdescription {
@@ -683,6 +702,10 @@
     .levelcolumn,
     .langcolumn {
       white-space: nowrap;
+    }
+
+    td p[data-text] > b {
+      display: none;
     }
   }
 }
