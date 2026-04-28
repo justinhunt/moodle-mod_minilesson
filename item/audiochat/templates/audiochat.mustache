@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="  ml_unique_startsessioncontrols">
-                        <div class="ml_ac_cantchat alert-warning mb-2">{{#str}}cantchat, mod_minilesson{{/str}}</div>
+                        <div class="ml_ac_cantchat bg-warning mb-2 p-3 text-center">{{#itisningxiaregion}} {{#str}}cantchat_ningxia, minilessonitem_audiochat, {{{provider}}}{{/str}} {{/itisningxiaregion}} {{^itisningxiaregion}}{{#str}}cantchat, mod_minilesson, {{{provider}}}{{/str}}{{/itisningxiaregion}}</div>
                         <div class="w-100 text-center hidden ml_unique_micselectbox">
                             <label for="micselect" class="block mb-1 ml_unique_miclabel">Select microphone:</label>
                             <select id="micselect" class="ml_ac_micselect px-4 py-2 ml_unique_micselect"></select>
@@ -66,9 +66,6 @@
                 <div class="itemtext_afterchatactive">
                     {{{itemtext}}}
                 </div>
-                <!--<div id="chat-active-message" class="ml_ac_chat-active-message ml_audiochat_resultsbox1">
-                    <p class="ml_unique_readymsg">{{#str}}audiochatsessionactive, mod_minilesson{{/str}}</p>
-                </div>-->
 
                 <!-- Conversation Transcript - Takes center stage when active -->
                 <div id="conversation-section" class="mb-4 ml_ac_conversation-section hidden mx-auto ml_unique_conversationsection">
@@ -83,7 +80,7 @@
                 </div>
 
                 <!-- Mic and buttons related to session and mic -->
-                <div class="ml_unique_buttoncontainer ml_ac_flex-row-container pl-4">
+                <div class="ml_unique_buttoncontainer ml_ac_flex-row-container">
                     <div class="ml_ac_flex-spacer1"></div>
                     <!-- Toggle button for autosend -->
                     <div class="ml_ac_btn-container">
@@ -99,7 +96,7 @@
                             </label>
                         </div>
                         <div class="ml_ac_mic-column hidden">
-                            <div class="mic-wrapper m-1" style="position: relative; width: 48px; height: 48px;">
+                            <div class="mic-wrapper m-1 position-relative">
                                 <div id="mic-button-container"
                                     class="mic-button-container hidden bg-gray-200 text-gray-800 ml_unique_micbtnwrapper">
                                     <canvas id="mic-waveform-canvas" width="48" height="48"

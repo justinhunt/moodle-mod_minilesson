@@ -476,40 +476,6 @@ class utils {
         return $result;
     }
 
-    // We forward an OpenAI RTC offer to the OpenAI API.
-    // This is called from: openairtc.php
-    // Which is called from the OpenAI RTC client side code in audiochat.
-    // (in which we dont want to expose our openai key)
-    // It expects an SDP offer in the request body and returns an SDP answer.
-    public static function openai_forward_offer() {
-        global $CFG;
-            require_once($CFG->libdir . '/filelib.php');
-
-        // Get the secret from config.
-        $apikey = get_config(constants::M_COMPONENT, 'openaikey');
-        if (empty($apikey)) {
-            return false;
-        }
-
-        $offer = file_get_contents("php://input");
-        $model = "gpt-4o-mini-realtime-preview";
-        $serverurl = "https://api.openai.com/v1/realtime/calls";
-
-        $curl = new \curl();
-        $curl->setHeader('Authorization: Bearer ' . $apikey);
-        // $curl->setHeader(['Content-type: application/sdp']);
-        $result = $curl->post($serverurl, [
-            'sdp' => $offer,
-            'session' => json_encode([
-                'type' => 'realtime',
-                'model' => $model,
-            ]),
-        ]);
-        header("Content-Type: application/sdp");
-        echo $result;
-        die;
-    }
-
     // This is called from the settings page and we do not want to make calls out to cloud.poodll.com on settings
     // page load, for performance and stability issues. So if the cache is empty and/or no token, we just show a
     // "refresh token" links

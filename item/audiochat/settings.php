@@ -22,11 +22,12 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use minilessonitem_audiochat\itemtype;
 use mod_minilesson\constants;
 
 defined('MOODLE_INTERNAL') || die();
 
-//create audio chat settings page
+// Create audio chat settings page.
 
 /** @var \mod_minilesson\plugininfo\minilessonitem $plugininfo */
 $settings = new admin_settingpage('modsettingminilessonaudiochat', $plugininfo->displayname, 'moodle/site:config');
@@ -34,10 +35,23 @@ $settings = new admin_settingpage('modsettingminilessonaudiochat', $plugininfo->
 // Audio chat settings.
 $settings->add(new admin_setting_heading(constants::M_COMPONENT . '/audiochat', $plugininfo->displayname, ''));
 
-// Audio Chat Prompts
+$settings->add(
+    new admin_setting_configselect(
+        constants::M_COMPONENT . "/provider",
+        get_string('provider', 'minilessonitem_audiochat'),
+        '',
+        itemtype::PROVIDER_OPENAI,
+        [
+            itemtype::PROVIDER_OPENAI => get_string('openai', 'minilessonitem_audiochat'),
+            itemtype::PROVIDER_GEMINI => get_string('gemini', 'minilessonitem_audiochat'),
+        ]
+    )
+);
+
+// Audio Chat Prompts.
 $maxprompts = constants::MAX_AI_PROMPTS;
 for ($i = 0; $i < $maxprompts; $i++) {
-    // Audio Chat instructions prompt
+    // Audio Chat instructions prompt.
     $defaults = 3;
     $name = 'audiochat_instructionspromptheading_' . ($i + 1);
     $label = get_string('instructionsprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
@@ -62,7 +76,7 @@ for ($i = 0; $i < $maxprompts; $i++) {
     ));
 }
 for ($i = 0; $i < $maxprompts; $i++) {
-    //Audio Chat feedback prompt
+    // Audio Chat feedback prompt.
     $defaults = 2;
     $name = 'audiochat_feedbackpromptheading_' . ($i + 1);
     $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);

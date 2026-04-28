@@ -3488,8 +3488,8 @@ span.wrongitem {
   background-color: rgb(229, 231, 235, var(--tw-bg-opacity, 1));
   --tw-text-opacity: 1;
   color: rgb(31, 41, 55, var(--tw-text-opacity, 1));
-  margin-left: auto;
-  position: absolute;
+  margin: 4px;
+  position: relative;
   width: 48px;
   height: 48px;
   border-radius: 9999px;
@@ -3660,12 +3660,14 @@ span.wrongitem {
   max-width: 20rem;
 }
 .minilesson_audiochat_box .itemtext_afterchatactive {
-  padding-left: 30px;
-  padding-right: 40px;
-  padding-bottom: 30px;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 20px;
   color: #1F2334;
+  background-color: #f5f6fe;
+  padding: 20px;
+}
+.minilesson_audiochat_box .itemtext_afterchatactive .text_to_html {
+  text-align: center;
 }
 .minilesson_audiochat_box .ml_unique_content_assistant {
   border-radius: 0.5rem;
@@ -3754,7 +3756,10 @@ span.wrongitem {
   }
 }
 .minilesson_audiochat_box .ml_ac_autoresponse-toggle {
-  margin-right: auto;
+  margin-right: 0;
+  position: absolute;
+  top: calc(50% - 1rem);
+  left: 2.5rem;
 }
 .minilesson_audiochat_box .ml_ac_feedback_text {
   padding-top: 15px;
@@ -3764,7 +3769,7 @@ span.wrongitem {
 }
 .minilesson_audiochat_box .ml_ac_btn-container {
   display: flex;
-  padding-bottom: 2rem;
+  width: 100%;
 }
 
 .audiochat-results-container {
@@ -3838,12 +3843,14 @@ span.wrongitem {
   flex: 0 0 auto;
   background: #E6E9FD;
   border-radius: 8px;
-  height: 65px;
+  height: auto;
   width: 150px;
   justify-content: center;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  left: unset;
+  transform: unset;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .ml_ac_clicktosend {
@@ -3856,7 +3863,7 @@ span.wrongitem {
   display: flex;
   align-items: center;
   width: 100%;
-  gap: 1rem;
+  gap: 0;
 }
 
 .ml_ac_flex-spacer {
