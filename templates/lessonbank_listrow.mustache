@@ -1,0 +1,51 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/lessonbank_listrow
+
+    Single table row for list layout in lessonbank.
+
+    Example context (json):
+    {
+    }
+}}
+<tr>
+    <td class="imgcolumn"><img src="{{posterimage}}" alt="{{name}}" class="searchimg img-responsive"></td>
+    <td>{{name}}</td>
+    <td class="langcolumn">{{language}}</td>
+    <td class="levelcolumn">{{languagelevel}}</td>
+    <td class="keywordcolumn">{{keywords}}</td>
+    <td>
+        <p data-text={{#quote}}{{{description}}}{{/quote}}>
+            <b class="mr-2">{{#str}}descriptioncolon, mod_minilesson{{/str}}</b>
+            {{#shortentext}} 150, {{{description}}} {{/shortentext}}
+        </p>
+    </td>
+    <td>{{itemcount}}</td>
+    <td>
+        <div class="d-flex flex-column align-items-center" style="gap:6px">
+            {{#nativelanguage}}
+                <a data-translateimportid="{{id}}" data-sourcelanguage="{{{nativelanguage}}}" data-action="translate" class="btn itemcontainer__btn--outlined">
+                    {{#str}}translatetoimport, mod_minilesson{{/str}}
+                </a>
+            {{/nativelanguage}}
+            <a data-id="{{id}}" data-action="download" data-download="{{name}}" class="btn itemcontainer__btn--primary importlessonitembtn">
+                {{#str}}import{{/str}}
+            </a>
+        </div>
+    </td>
+</tr>

@@ -15,17 +15,21 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_minilesson/lessonbankitems
+    @template mod_minilesson/lessonbank_skeleton_row
 
-    TODO describe template lessonbankitems
+    Skeleton placeholder row for list layout loading.
 
     Example context (json):
     {
     }
 }}
-{{#lessonitems}}
-    {{> mod_minilesson/lessonbankitem}}
-{{/lessonitems}}
-{{^lessonitems}}
-    <p class="bg-secondary p-3 text-center w-100"><span>{{#str}}nolessonitemfound, mod_minilesson{{/str}}</span></p>
-{{/lessonitems}}
+<tr class="lbsf-skeleton-card">
+    <td class="imgcolumn"><div class="lbsf-skeleton lbsf-skeleton--image-sm"></div></td>
+    <td><div class="lbsf-skeleton lbsf-skeleton--title-sm"></div></td>
+    <td><div class="lbsf-skeleton lbsf-skeleton--cell"></div></td>
+    <td><div class="lbsf-skeleton lbsf-skeleton--cell"></div></td>
+    <td><div class="lbsf-skeleton lbsf-skeleton--cell"></div></td>
+    <td><div class="lbsf-skeleton lbsf-skeleton--text"></div></td>
+    <td><div class="lbsf-skeleton lbsf-skeleton--cell-short"></div></td>
+    <td><div class="lbsf-skeleton lbsf-skeleton--button"></div></td>
+</tr>
