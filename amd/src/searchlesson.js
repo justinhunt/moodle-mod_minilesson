@@ -35,12 +35,13 @@ const SKELETON_COUNT = 2;
 
 export const registerFilter = (opts) => {
     const localnativelang = opts.nativelang;
-    const itemtypeiconmap = opts.itemtypeiconmap || {};
     const form = document.querySelector('#lessonbank_filters');
     const cardsContainer = document.querySelector('[data-region="cards-container"]');
     const gridlayoutbtn = document.querySelector('.gridlayoutbtn');
     const listlayoutbtn = document.querySelector('.listlayoutbtn');
     const countcontainer = document.querySelector('.countcontainer');
+    // Pickup icon type map from DOM (placed there by lessonbank.php because too long for AMD opts)
+    const itemtypeiconmap = JSON.parse(document.getElementById('itemtypeiconmap').value) || {};
 
     let currentPage = 1;
     let isLoading = false;
@@ -86,7 +87,7 @@ export const registerFilter = (opts) => {
             if (entries[0].isIntersecting && !isLoading && hasMore) {
                 loadMoreCards();
             }
-        }, {rootMargin: '200px'});
+        }, { rootMargin: '200px' });
         observer.observe(getSentinel());
     };
 
@@ -152,7 +153,7 @@ export const registerFilter = (opts) => {
                 params.append(`itemtypes[${index}]`, option.value);
             });
         }
-        return {params, targetlanguage};
+        return { params, targetlanguage };
     };
 
     const enrichLessons = (lessons, targetlanguage) => {
@@ -176,7 +177,7 @@ export const registerFilter = (opts) => {
     const isListLayout = () => cardsContainer.classList.contains('listlayout');
 
     const fetchPage = (page) => {
-        const {params, targetlanguage} = buildParams();
+        const { params, targetlanguage } = buildParams();
         params.append('page', page);
         params.append('perpage', PERPAGE);
 
