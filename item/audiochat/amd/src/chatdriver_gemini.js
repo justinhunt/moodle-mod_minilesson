@@ -52,7 +52,6 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         sourceNode: null,
         _micEnabled: false,
         _setupComplete: false,
-        _stopped: false,
 
         // Conversation state.
         items: {},
@@ -215,7 +214,6 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             } catch (err) {
                 log.debug('Gemini driver: session info fetch failed');
                 log.debug(err);
-                self._stopped = true;
                 self._teardownConnection();
                 self._fire('onStateChange', 'error');
                 self._fire('onError', err);
@@ -228,7 +226,6 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             } catch (err) {
                 log.debug('Gemini driver: ws open failed');
                 log.debug(err);
-                self._stopped = true;
                 self._teardownConnection();
                 self._fire('onStateChange', 'error');
                 self._fire('onError', err);
@@ -241,7 +238,6 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             } catch (err) {
                 log.debug('Gemini driver: mic pipeline failed');
                 log.debug(err);
-                self._stopped = true;
                 self._teardownConnection();
                 self._fire('onStateChange', 'error');
                 self._fire('onError', err);
@@ -773,14 +769,12 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             log.debug('Gemini driver: session stopping');
             self.loadingMessages.clear();
             self._fire('onStateChange', 'stopped');
-            self._stopped = true;
 
             if (self.itemdata.audiochatgradeinstructions && self.itemdata.audiochatgradeinstructions !== '') {
                 log.debug('Gemini: sending grading request');
                 self.sendGradingRequest();
             } else {
                 log.debug('Gemini: no grading instructions, closing session');
-                self._stopped = true;
                 self.closeDataChannel();
             }
             log.debug('Gemini session stopped');
@@ -827,7 +821,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
 
         _teardownConnection: function () {
             var self = this;
-            if (self.ws && self._stopped) {
+            if (self.ws && !self._gradingPending) {
                 try { self.ws.close(); } catch (e) { log.debug('Gemini: ws close error');log.debug(e); }
                 self.ws = null;
             }

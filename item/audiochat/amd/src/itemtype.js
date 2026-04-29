@@ -208,6 +208,7 @@ define(
                 stepdata = self.grade_activity(stepdata);
                 stepdata.correctitems = Math.round((self.itemdata.totalmarks * stepdata.grade) / 100);
                 self.quizhelper.do_next(stepdata);
+                self.releaseMicResources();
             },
 
             count_words: function () {
@@ -567,6 +568,7 @@ define(
                 log.debug("Session stopping (UI)");
                 self.isSessionActive = false;
                 self.isSessionStopped = true;
+                self.driver.stopSession();
                 self.releaseMicResources();
                 self.renderUI();
 
@@ -574,7 +576,6 @@ define(
                     self.controls.resultscontent.innerHTML = `<i class="fa fa-spinner fa-spin fa-2x"></i>`;
                 }
 
-                self.driver.stopSession();
             },
 
             showResults: function () {
