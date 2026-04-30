@@ -37,6 +37,10 @@ define(
             strings: {},
             controls: {},
             itemdata: {},
+            icons: {
+                activemic: null,
+                passivemic: null,
+            },
             index: 0,
             quizhelper: {},
 
@@ -339,6 +343,7 @@ define(
                     self.controls.micWaveformCanvas.getContext("2d");
 
                 await self.populateMicList();
+                await self.grabMicIcon();
             },
 
             scrollToBottom: function () {
@@ -422,6 +427,8 @@ define(
                     },
                     {}
                 );
+
+                self.orderedMessageItems = [];
                 self.orderedItems.forEach((message) => {
                     if (!message.content) {
                         return;
@@ -435,7 +442,8 @@ define(
                         messageDiv.className = `ml_unique_ordered_message_${message.usertype === "user" ? "user" : "assistant"}`;
 
                         var contentDiv = document.createElement("div");
-                        contentDiv.className = `rounded-lg ${message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
+                        contentDiv.className = `rounded-lg message_text_div ${
+                            message.usertype === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
                             } ml_unique_content_${message.usertype === "user" ? "user" : "assistant"
                             }`;
 
@@ -464,6 +472,7 @@ define(
                         messageDiv.appendChild(contentDiv);
                         self.controls.messagesContainer.appendChild(messageDiv);
                     } else {
+                        contentDiv = messageDiv.querySelector('.message_text_div');
                         textDiv = messageDiv.querySelector('.ml_unique_textsmall');
                         textDiv.textContent = message.content;
                         loaderDiv = messageDiv.querySelector('.ml_unique_loadingmessage');
@@ -487,9 +496,14 @@ define(
                     } else if (loaderDiv) {
                         loaderDiv.remove();
                     }
+                    self.orderedMessageItems.push(messageDiv);
                 });
 
                 Object.values(allMessages).forEach(message => message.remove());
+
+                if (self.orderedMessageItems.length > 0) {
+                    self.controls.messagesContainer.appendChild(...self.orderedMessageItems.reverse());
+                }
 
                 self.scrollToBottom();
 
@@ -505,33 +519,7 @@ define(
                     self.controls.micWaveformCanvas.classList.toggle("active", self.isMicActive);
                 }
                 if (self.controls.toggleMicBtn) {
-                    self.controls.toggleMicBtn.innerHTML = self.isMicActive
-                        ? `<svg id="mic-icon" class="mic-icon mic-icon-svg ml_unique_micsvg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <rect id="primary" x="2" y="2" width="20" height="20" rx="2" style="fill: rgb(0, 0, 0);"/>
-</svg>
-`
-                        : `<svg width="48" height="48" viewBox="0 0 59 59" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <g filter="url(#filter0_d_2299_874)">
-    <circle cx="29.2834" cy="27.2834" r="23.2834" fill="#5067FF"/>
-  </g>
-  <rect x="25.641" y="16.3383" width="7.28658" height="13.0053" rx="3.64329" stroke="white" stroke-width="1.7"/>
-  <path d="M37.0438 25.7002C37.0438 29.9866 33.569 33.4613 29.2826 33.4613C24.9963 33.4613 21.5215 29.9866 21.5215 25.7002" stroke="white" stroke-width="1.7" stroke-linecap="round"/>
-  <path d="M29.2832 37.138V33.8701" stroke="white" stroke-width="1.7"/>
-  <path d="M25.6074 37.5459H32.9601" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-  <defs>
-    <filter id="filter0_d_2299_874" x="0" y="0" width="58.5664" height="58.5664" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-      <feOffset dy="2"/>
-      <feGaussianBlur stdDeviation="3"/>
-      <feComposite in2="hardAlpha" operator="out"/>
-      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.22 0"/>
-      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2299_874"/>
-      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2299_874" result="shape"/>
-    </filter>
-  </defs>
-</svg>
-`;
+                    self.controls.toggleMicBtn.innerHTML = self.isMicActive ? self.icons.activemic : self.icons.passivemic;
                 }
 
                 if (self.isMicActive && !autocreate) {
@@ -624,6 +612,7 @@ define(
             /**
              * Build the local analyser graph on top of the driver's MediaStream so we can
              * draw a waveform. Reusable for switchMic (reconnects the new stream).
+             * @param {MediaStream} stream
              */
             _attachAnalyserToStream: function (stream) {
                 var self = this;
@@ -809,6 +798,14 @@ define(
                     log.debug("Failed to get microphone list:", err);
                 }
             },
+
+            grabMicIcon: async function () {
+                Object.keys(this.icons).forEach(async iconname => {
+                    this.icons[iconname] = await fetch(
+                        M.util.image_url(iconname, 'minilessonitem_audiochat')
+                    ).then(r => r.text());
+                });
+            }
 
         };
     }

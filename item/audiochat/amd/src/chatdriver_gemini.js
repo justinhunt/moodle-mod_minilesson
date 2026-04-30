@@ -302,6 +302,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         /**
          * Send the BidiGenerateContentSetup message and queue the first text
          * turn. The first turn is held back until setupComplete is received.
+         * @param {string} model
          */
         _sendSetupAndFirstTurn: function (model) {
             var self = this;
@@ -595,6 +596,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                     self.currentUserItemId = self._newItem('user');
                 }
                 self.items[self.currentUserItemId].content += content.inputTranscription.text;
+                self._fire('onUserSpeechStopped');
             }
 
             // Model turn (audio + optional text).
