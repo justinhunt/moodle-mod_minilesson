@@ -61,9 +61,6 @@ class itemtype extends item {
     public const AUDIOAVATAR = 'customtext7';
 
     /** @var string */
-    public const CHAT_PROVIDER = 'customtext1';
-
-    /** @var string */
     public const PROVIDER_GEMINI = 'gemini';
 
     /** @var string */
@@ -87,7 +84,7 @@ class itemtype extends item {
         $testitem = parent::export_for_template($output);
         $testitem = $this->set_layout($testitem);
         $testitem->itisningxiaregion = false;
-        $provider = $testitem->{self::CHAT_PROVIDER};
+        $provider = get_config(constants::M_COMPONENT, 'provider') ?? self::PROVIDER_GEMINI;
 
         // Do we have an OpenAI key? (we need one).
         $testitem->canchat = false;
@@ -215,7 +212,7 @@ class itemtype extends item {
         // If we add a cloud poodll recorder to the page these are also added, but here we just add them manually.
         $testitem->language = $this->language;
         $testitem->region = $this->region;
-        $testitem->chatprovider = $this->itemrecord->{self::CHAT_PROVIDER};
+        $testitem->chatprovider = $provider;
 
         $imgaudioavatar = $this->itemrecord->{self::AUDIOAVATAR} ?
             $this->itemrecord->{self::AUDIOAVATAR} :
@@ -371,13 +368,6 @@ class itemtype extends item {
             'optional' => true,
             'default' => '',
             'dbname' => self::AUDIOAVATAR,
-        ];
-        $keycols['data5'] = [
-            'jsonname' => 'chatprovider',
-            'type' => 'string',
-            'optional' => false,
-            'default' => '',
-            'dbname' => self::CHAT_PROVIDER,
         ];
         return $keycols;
     }
