@@ -370,7 +370,7 @@ class itemtype extends item {
             'type' => 'string',
             'optional' => true,
             'default' => '',
-            'dbname' => self::AUDIOAVATAR
+            'dbname' => self::AUDIOAVATAR,
         ];
         $keycols['data5'] = [
             'jsonname' => 'chatprovider',

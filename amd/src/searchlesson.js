@@ -373,6 +373,7 @@ export const registerFilter = (opts) => {
             return;
         }
         e.preventDefault();
+
         const downloadbtn = e.target.closest('[data-action="download"]');
         if (downloadbtn) {
             if (!downloadbtn.dataset.id) {
@@ -389,19 +390,17 @@ export const registerFilter = (opts) => {
             url.searchParams.set('restore', id);
             url.searchParams.set('sesskey', M.cfg.sesskey);
             window.location.href = url.toString();
+            return;
         }
+
         const showtextbtn = e.target.closest('[data-action="showtext"]');
         if (showtextbtn) {
             const wrapper = showtextbtn.parentElement;
             const titlehtml = wrapper.firstElementChild.cloneNode(true).outerHTML;
             wrapper.innerHTML = titlehtml + wrapper.dataset.text;
-        }
-    });
-    cardsContainer.addEventListener('click', e => {
-        if (e.target.href) {
             return;
         }
-        e.preventDefault();
+
         const translatebtn = e.target.closest('[data-action="translate"]');
         if (translatebtn) {
             const callFragment = data => {
@@ -436,7 +435,14 @@ export const registerFilter = (opts) => {
                             .then((response, js) => new Promise(resolve => {
                                 if (response.redirecturl) {
                                     location.href = response.redirecturl;
-                                    resolve('', js);
+                                    const spinnerOverlay = document.createElement('div');
+                                    spinnerOverlay.style.cssText =
+                                        'display:flex;align-items:center;justify-content:center;min-height:200px;';
+                                    const spinnerWrapper = document.createElement('div');
+                                    spinnerWrapper.style.transform = 'scale(3)';
+                                    spinnerWrapper.appendChild(getSpinner());
+                                    spinnerOverlay.appendChild(spinnerWrapper);
+                                    resolve(spinnerOverlay.outerHTML, js);
                                     return;
                                 }
                                 resolve(response.html, js);
@@ -445,16 +451,11 @@ export const registerFilter = (opts) => {
                 });
                 modal.show();
             });
-        }
-    });
-    cardsContainer.addEventListener('click', e => {
-        if (e.target.href) {
             return;
         }
-        e.preventDefault();
+
         const previewbtn = e.target.closest('[data-action="preview"]');
         if (previewbtn) {
-
             if (!previewbtn.dataset.id && !previewbtn.dataset.viewurl) {
                 return;
             }
@@ -470,17 +471,49 @@ export const registerFilter = (opts) => {
 
             Modal.create({
                 title: title,
-                body: getPreviewIframe(url),
+                body: '',
                 large: true,
                 removeOnClose: true
             }).then(modal => {
                 modal.show();
                 previewbtn.classList.remove('ml_loading');
                 previewbtn.innerHTML = originalHTML;
+
+                // Prepare the Modal content
+                const modalBodyEl = modal.getBody()[0];
+                modalBodyEl.style.position = 'relative';
+                modalBodyEl.style.minHeight = '300px';
+
+                // Make a spinner to show while the preview is loading
+                // Add it to the modal
+                const spinnerOverlay = document.createElement('div');
+                spinnerOverlay.style.cssText =
+                    'position:absolute;inset:0;display:flex;align-items:center;' +
+                    'justify-content:center;background:rgba(255,255,255,0.85);z-index:10';
+                const spinnerWrapper = document.createElement('div');
+                spinnerWrapper.style.transform = 'scale(3)';
+                spinnerWrapper.appendChild(getSpinner());
+                spinnerOverlay.appendChild(spinnerWrapper);
+                modalBodyEl.appendChild(spinnerOverlay);
+
+                // Build iframe and load it into the Modal
+                const iframeTemplate = document.getElementById('mod_minilesson-preview-iframe');
+                const iframe = iframeTemplate
+                    ? iframeTemplate.content.cloneNode(true).querySelector('iframe')
+                    : document.createElement('iframe');
+                modalBodyEl.appendChild(iframe);
+
+                // Listen for the load event to remove the spinner.
+                // Ironically since this wont fire till all images:/audio load, it adds time to UX
+                iframe.addEventListener('load', () => spinnerOverlay.remove(), { once: true });
+                // Load the iframe contents
+                iframe.src = url;
+
                 return modal;
             }).catch(Notification.exception);
         }
     });
+
     form?.addEventListener('submit', e => {
         e.preventDefault();
         searchFilter();

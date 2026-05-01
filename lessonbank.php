@@ -126,7 +126,7 @@ foreach (constants::ITEMTYPES as $itemtype) {
 
 $PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter', [
     'opts' => [
-        'nativelang' => $moduleinstance->nativelang
+        'nativelang' => $moduleinstance->nativelang,
     ],
 ]);
 $lessonbankcontrolsdata = [
