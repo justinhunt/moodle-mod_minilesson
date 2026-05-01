@@ -156,6 +156,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         /**
          * Change auto-create-response mode. When enabled the server VAD creates responses
          * automatically; when disabled the user must explicitly end their turn.
+         * @param {boolean} enabled
          */
         setAutoCreateResponse: function (enabled) {
             var self = this;
@@ -435,6 +436,9 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         waitForIceGathering: function (pc, timeout = 15000) {
             return new Promise((resolve) => {
                 let timer;
+                /**
+                 * Checks Peer channel status.
+                 */
                 function checkState() {
                     if (pc.iceGatheringState === "complete") {
                         clearTimeout(timer);
@@ -460,6 +464,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         /**
          * Enable or disable the outgoing mic (toggles track.enabled on the RTC sender).
          * When muting with autocreate off, also kicks off a manual response.create.
+         * @param {boolean} active
          */
         setMicActive: function (active) {
             var self = this;
@@ -561,6 +566,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         /**
          * Handle a single parsed event from the realtime DataChannel.
          * Updates items/responses state and fires callbacks for UI side-effects.
+         * @param {object} msg
          */
         handleRTCEvent: function (msg) {
             var self = this;
