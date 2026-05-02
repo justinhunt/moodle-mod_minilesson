@@ -28,8 +28,8 @@ use mod_minilesson\local\itemform\baseform;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 
-class itemform extends baseform
-{
+class itemform extends baseform {
+
     /**
      * Add any form fields specific to this item type.
      */
@@ -50,16 +50,24 @@ class itemform extends baseform
         $PAGE->requires->js_call_amd(
             constants::M_COMPONENT . '/codeeditor',
             'setupCodeEditor',
-            ['id_' . itemtype::YARN, ['language' => 'yarn']]
+            [
+                'id_' . itemtype::YARN,
+                [
+                    'language' => 'yarn',
+                    'aihelper' => true,
+                    'itemtype' => 'fiction',
+                    'contextid' => $this->context->id,
+                ],
+            ]
         );
 
         // Syntax Checker
         $mform->registerNoSubmitButton('syntaxcheckbutton');
         $buttonid = 'syntaxcheckbutton_' . random_string(10);
-        $mform->addElement('submit', 'syntaxcheckbutton', 
-            get_string('fiction:syntaxcheckbutton', constants::M_COMPONENT), 
+        $mform->addElement('submit', 'syntaxcheckbutton',
+            get_string('fiction:syntaxcheckbutton', constants::M_COMPONENT),
             ['id' => $buttonid]
-        );        
+        );
         $PAGE->requires->js_call_amd(
             'minilessonitem_fiction/itemtype',
             'register_syntaxcheckbutton',

@@ -827,8 +827,60 @@ class utils {
         }
     }
 
+    public static function fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad) {
 
-    // Fetch the streaming token for the region and language
+        $cloudpoodlltoken = false;
+        $conf = get_config(constants::M_COMPONENT);
+        if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
+            $cloudpoodlltoken = self::fetch_token($conf->apiuser, $conf->apisecret);
+        }
+        if (!$cloudpoodlltoken || empty($cloudpoodlltoken)) {
+            return false;
+        }
+
+        // Poodll region.
+        $poodllregion = $conf->awsregion;
+
+        // The REST API we are calling.
+        $functionname = 'local_cpapi_fetch_audiochat_token';
+
+        // log.debug(params);
+        $params = [];
+        $params['wstoken'] = $cloudpoodlltoken;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $params['region'] = $poodllregion;
+        $params['voice'] = $voice;
+        $params['disablevad'] = $disablevad;
+
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
+        $response = self::curl_fetch($serverurl, $params);
+
+        if (!self::is_json($response)) {
+            return false;
+        } else {
+            $payloadobject = json_decode($response);
+            if (isset($payloadobject->returnCode) && $payloadobject->returnCode == 0 && isset($payloadobject->returnMessage)) {
+                $thetoken = $payloadobject->returnMessage;
+                $tokenobject = [];
+                // We need to return something like this.
+                /*
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'ephemeralToken' => $response->name,
+                    'url' => 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained',
+                    'model' => $model,
+                ]);
+                */
+                return $tokenobject;
+            } else {
+                return false;
+            }
+        }
+    }
+
+
+    // Fetch the streaming token for the region and language.
     public static function fetch_streaming_token($poodllregion) {
         global $CFG;
 
@@ -911,7 +963,7 @@ class utils {
 
             case 'capetown':
             case 'southafricanorth':
-          //      return 'southafricanorth';
+                // return 'southafricanorth';
 
             case 'bahrain':
             case 'dublin':

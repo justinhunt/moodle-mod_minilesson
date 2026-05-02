@@ -1,25 +1,39 @@
 <?php
+// This file is part of Moodle - https://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace mod_minilesson\local\itemform;
 
 ///////////////////////////////////////////////////////////////////////////
-//                                                                       //
+//
 // This file is part of Moodle - http://moodle.org/                      //
 // Moodle - Modular Object-Oriented Dynamic Learning Environment         //
-//                                                                       //
+//
 // Moodle is free software: you can redistribute it and/or modify        //
 // it under the terms of the GNU General Public License as published by  //
 // the Free Software Foundation, either version 3 of the License, or     //
 // (at your option) any later version.                                   //
-//                                                                       //
+//
 // Moodle is distributed in the hope that it will be useful,             //
 // but WITHOUT ANY WARRANTY; without even the implied warranty of        //
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         //
 // GNU General Public License for more details.                          //
-//                                                                       //
+//
 // You should have received a copy of the GNU General Public License     //
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.       //
-//                                                                       //
+//
 ///////////////////////////////////////////////////////////////////////////
 
 /**
@@ -31,7 +45,7 @@ namespace mod_minilesson\local\itemform;
  * @copyright  (C) 1999 onwards Justin Hunt  http://poodll.com
  */
 
-//why do we need to include this?
+// why do we need to include this?
 require_once($CFG->libdir . '/formslib.php');
 
 use mod_minilesson\constants;
@@ -49,8 +63,8 @@ use mod_minilesson\utils;
  * @copyright  2014 Justin Hunt
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class baseform extends \moodleform
-{
+abstract class baseform extends \moodleform {
+
 
     /**
      * The simple string that describes the item type e.g. audioitem, textitem
@@ -63,19 +77,25 @@ abstract class baseform extends \moodleform
      * An array of options used in the htmleditor
      * @var array
      */
-    protected $editoroptions = array();
+    protected $editoroptions = [];
 
     /**
      * An array of options used in the filemanager
      * @var array
      */
-    protected $filemanageroptions = array();
+    protected $filemanageroptions = [];
 
     /**
      * The module instance
      * @var array|object
      */
     protected $moduleinstance = null;
+
+    /**
+     * The context of the module
+     * @var \context
+     */
+    protected $context = null;
 
 
     /**
@@ -91,16 +111,14 @@ abstract class baseform extends \moodleform
      * Each item type can and should override this to add any custom elements to
      * the basic form that they want
      */
-    public function custom_definition()
-    {
+    public function custom_definition() {
     }
 
     /**
      * Used to determine if this is a standard item or a special item
      * @return bool
      */
-    final public function is_standard()
-    {
+    final public function is_standard() {
         return (bool) $this->standard;
     }
 
@@ -110,8 +128,7 @@ abstract class baseform extends \moodleform
      * This method adds the basic elements to the form including title and contents
      * and then calls custom_definition();
      */
-    final public function definition()
-    {
+    final public function definition() {
         global $CFG, $OUTPUT;
 
         $m35 = $CFG->version >= 2018051700;
@@ -119,7 +136,16 @@ abstract class baseform extends \moodleform
         $this->editoroptions = $this->_customdata['editoroptions'];
         $this->filemanageroptions = $this->_customdata['filemanageroptions'];
         $this->moduleinstance = $this->_customdata['moduleinstance'];
-
+        $this->context = $this->_customdata['context'] ?? null;
+        if (!$this->context && is_object($this->moduleinstance) && isset($this->moduleinstance->context)) {
+            $this->context = $this->moduleinstance->context;
+        }
+        if (!$this->context && !empty($this->moduleinstance->id)) {
+            $cm = get_coursemodule_from_instance('minilesson', $this->moduleinstance->id);
+            if ($cm) {
+                $this->context = \context_module::instance($cm->id);
+            }
+        }
 
         $mform->addElement('header', 'typeheading', get_string('createaitem', constants::M_COMPONENT, get_string($this->type, constants::M_COMPONENT)));
 
@@ -136,12 +162,11 @@ abstract class baseform extends \moodleform
             $mform->addElement('hidden', 'itemorder');
             $mform->setType('itemorder', PARAM_INT);
 
-            $mform->addElement('text', 'name', get_string('itemtitle', constants::M_COMPONENT), array('size' => 70));
+            $mform->addElement('text', 'name', get_string('itemtitle', constants::M_COMPONENT), ['size' => 70]);
             $mform->setType('name', PARAM_TEXT);
             $mform->addRule('name', get_string('required'), 'required', null, 'client');
             $typelabel = get_string($this->type, constants::M_COMPONENT);
             $mform->setDefault('name', get_string('newitem', constants::M_COMPONENT, $typelabel));
-
 
             if ($this->moduleinstance->richtextprompt == constants::M_PROMPT_RICHTEXT) {
                 $someid = \html_writer::random_id();
@@ -149,20 +174,20 @@ abstract class baseform extends \moodleform
                     'editor',
                     constants::TEXTQUESTION . '_editor',
                     get_string('itemcontents', constants::M_COMPONENT),
-                    array('id' => $someid, 'wrap' => 'virtual', 'style' => 'width: 100%;', 'rows' => '5'),
+                    ['id' => $someid, 'wrap' => 'virtual', 'style' => 'width: 100%;', 'rows' => '5'],
                     $this->editoroptions
                 );
-                $this->_form->setDefault(constants::TEXTQUESTION . '_editor', array('text' => '', 'format' => FORMAT_HTML));
+                $this->_form->setDefault(constants::TEXTQUESTION . '_editor', ['text' => '', 'format' => FORMAT_HTML]);
                 $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
             } else {
-                //Question instructions
-                $mform->addElement('text', constants::TEXTINSTRUCTIONS, get_string('iteminstructions', constants::M_COMPONENT), array('size' => 70));
+                // Question instructions
+                $mform->addElement('text', constants::TEXTINSTRUCTIONS, get_string('iteminstructions', constants::M_COMPONENT), ['size' => 70]);
                 $mform->setType(constants::TEXTINSTRUCTIONS, PARAM_RAW);
 
-                //Question text
-                $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', constants::M_COMPONENT), array('wrap' => 'virtual', 'style' => 'width: 100%;'));
+                // Question text
+                $mform->addElement('textarea', constants::TEXTQUESTION, get_string('itemcontents', constants::M_COMPONENT), ['wrap' => 'virtual', 'style' => 'width: 100%;']);
                 $mform->setType(constants::TEXTQUESTION, PARAM_RAW);
-                //add layout
+                // add layout
                 $this->add_layoutoptions();
 
                 // Add the media prompts chooser and fields.
@@ -184,42 +209,39 @@ abstract class baseform extends \moodleform
         $this->add_action_buttons(get_string('cancel'), get_string('saveitem', constants::M_COMPONENT));
     }
 
-    protected function add_itemsettings_heading()
-    {
-        //add the heading
+    protected function add_itemsettings_heading() {
+        // add the heading
         $this->_form->addElement('header', 'itemsettingsheading', get_string('itemsettingsheadings', constants::M_COMPONENT));
         $this->_form->setExpanded('itemsettingsheading');
     }
 
-    final protected function add_static_text($name, $label = null, $text = '')
-    {
+    final protected function add_static_text($name, $label = null, $text = '') {
 
         $this->_form->addElement('static', $name, $label, $text);
     }
 
-    final protected function add_repeating_textboxes($name, $repeatno = 5)
-    {
+    final protected function add_repeating_textboxes($name, $repeatno = 5) {
         global $DB;
 
         $additionalfields = 1;
-        $repeatarray = array();
+        $repeatarray = [];
         $repeatarray[] = $this->_form->createElement('text', $name, get_string($name . 'no', constants::M_COMPONENT));
-        //$repeatarray[] = $this->_form->createElement('text', 'limit', get_string('limitno', constants::M_COMPONENT));
-        //$repeatarray[] = $this->_form->createElement('hidden', $name . 'id', 0);
-/*
+        // $repeatarray[] = $this->_form->createElement('text', 'limit', get_string('limitno', constants::M_COMPONENT));
+        // $repeatarray[] = $this->_form->createElement('hidden', $name . 'id', 0);
+        /*
         if ($this->_instance){
             $repeatno = $DB->count_records('choice_options', array('choiceid'=>$this->_instance));
             $repeatno += $additionalfields;
         }
-*/
+        */
 
-        $repeateloptions = array();
+        $repeateloptions = [];
         $repeateloptions[$name]['default'] = '';
-        //$repeateloptions[$name]['disabledif'] = array('limitanswers', 'eq', 0);
-        //$repeateloptions[$name]['rule'] = 'numeric';
+        // $repeateloptions[$name]['disabledif'] = array('limitanswers', 'eq', 0);
+        // $repeateloptions[$name]['rule'] = 'numeric';
         $repeateloptions[$name]['type'] = PARAM_TEXT;
 
-        $repeateloptions[$name]['helpbutton'] = array($name . '_help', constants::M_COMPONENT);
+        $repeateloptions[$name]['helpbutton'] = [$name . '_help', constants::M_COMPONENT];
         $this->_form->setType($name, PARAM_CLEANHTML);
 
         // $this->_form->setType($name .'id', PARAM_INT);
@@ -236,25 +258,21 @@ abstract class baseform extends \moodleform
         );
     }
 
-    final protected function add_showtextpromptoptions($name, $label, $default = constants::TEXTPROMPT_DOTS)
-    {
+    final protected function add_showtextpromptoptions($name, $label, $default = constants::TEXTPROMPT_DOTS) {
         $options = utils::fetch_options_textprompt();
         return $this->add_dropdown($name, $label, $options, $default);
     }
-    final protected function add_showignorepuncoptions($name, $label, $default = constants::TEXTPROMPT_DOTS)
-    {
+    final protected function add_showignorepuncoptions($name, $label, $default = constants::TEXTPROMPT_DOTS) {
         $options = utils::fetch_options_yesno();
         return $this->add_dropdown($name, $label, $options, $default);
     }
 
-    final protected function add_showlistorreadoptions($name, $label, $default = constants::LISTENORREAD_READ)
-    {
+    final protected function add_showlistorreadoptions($name, $label, $default = constants::LISTENORREAD_READ) {
         $options = utils::fetch_options_listenorread();
         return $this->add_dropdown($name, $label, $options, $default);
     }
 
-    final protected function add_dropdown($name, $label, $options, $default = false)
-    {
+    final protected function add_dropdown($name, $label, $options, $default = false) {
 
         $this->_form->addElement('select', $name, $label, $options);
         if ($default !== false) {
@@ -262,12 +280,11 @@ abstract class baseform extends \moodleform
         }
     }
 
-    protected function add_media_prompts()
-    {
+    protected function add_media_prompts() {
         global $CFG, $OUTPUT;
         $m35 = true;
 
-        //cut down on the code by using media item types array to pre-prepare fieldsets and media prompt selector
+        // cut down on the code by using media item types array to pre-prepare fieldsets and media prompt selector
         $mediaprompts = ['addmedia', 'addiframe', 'addttsaudio', 'addtextarea', 'addyoutubeclip', 'addttsdialog', 'addttspassage', 'addaudiostory', 'nativelangchooser'];
         $keyfields = [
             'addmedia' => constants::MEDIAQUESTION,
@@ -284,9 +301,9 @@ abstract class baseform extends \moodleform
         $fieldsettops = [];
         $fieldsetbottom = "</fieldset>";
         foreach ($mediaprompts as $mediaprompt) {
-            //dropdown options for media prompt selector
+            // dropdown options for media prompt selector
             $fulloptions[$mediaprompt] = get_string($mediaprompt, constants::M_COMPONENT);
-            //fieldset
+            // fieldset
             $panelopts["mediatype"] = $mediaprompt;
             $panelopts["legend"] = get_string($mediaprompt, constants::M_COMPONENT);
             $panelopts["keyfield"] = $keyfields[$mediaprompt];
@@ -294,102 +311,99 @@ abstract class baseform extends \moodleform
             $fieldsettops[$mediaprompt] = $OUTPUT->render_from_template('mod_minilesson/mediapromptfieldset', $panelopts);
         }
 
-        //lets make life easy with short access to $this->_form
+        // lets make life easy with short access to $this->_form
         $mform = $this->_form;
 
-        //add media prompt selector
+        // add media prompt selector
         $useoptions = [0 => get_string('choosemediaprompt', constants::M_COMPONENT)] + $fulloptions;
         $mform->addElement('select', 'mediaprompts', get_string('mediaprompts', constants::M_COMPONENT), $useoptions);
 
-
-        //Question media upload
+        // Question media upload
         $mform->addElement('html', $fieldsettops['addmedia'], []);
         $this->add_media_upload(constants::MEDIAQUESTION, get_string('itemmedia', constants::M_COMPONENT));
         $mform->addElement('html', $fieldsetbottom, []);
 
-
-        //Question media iframe
+        // Question media iframe
         $mform->addElement('html', $fieldsettops['addiframe'], []);
-        $mform->addElement('text', constants::MEDIAIFRAME, get_string('itemiframe', constants::M_COMPONENT), array('size' => 100));
+        $mform->addElement('text', constants::MEDIAIFRAME, get_string('itemiframe', constants::M_COMPONENT), ['size' => 100]);
         $mform->setType(constants::MEDIAIFRAME, PARAM_RAW);
-        //close the fieldset
+        // close the fieldset
         $mform->addElement('html', $fieldsetbottom, []);
 
-
-        //Question text to speech
+        // Question text to speech
         $mform->addElement('html', $fieldsettops['addttsaudio'], []);
-        $mform->addElement('textarea', constants::TTSQUESTION, get_string('itemttsquestion', constants::M_COMPONENT), array('wrap' => 'virtual', 'style' => 'width: 100%;'));
+        $mform->addElement('textarea', constants::TTSQUESTION, get_string('itemttsquestion', constants::M_COMPONENT), ['wrap' => 'virtual', 'style' => 'width: 100%;']);
         $mform->setType(constants::TTSQUESTION, PARAM_RAW);
         $this->add_ttsaudioselect(constants::TTSQUESTIONVOICE, get_string('itemttsquestionvoice', constants::M_COMPONENT));
         $this->add_voiceoptions(constants::TTSQUESTIONOPTION, get_string('choosevoiceoption', constants::M_COMPONENT));
         $mform->addElement('advcheckbox', constants::TTSAUTOPLAY, get_string('autoplay', constants::M_COMPONENT), '');
         $mform->addElement('html', $fieldsetbottom, []);
 
-        //Question itemtextarea
+        // Question itemtextarea
         $mform->addElement('html', $fieldsettops['addtextarea'], []);
         $someid = \html_writer::random_id();
         $edoptions = constants::ITEMTEXTAREA_EDOPTIONS;
-        //a bug prevents hideif working, but putting it in a group works dandy
+        // a bug prevents hideif working, but putting it in a group works dandy
         $groupelements = [];
         $groupelements[] = &$mform->createElement(
             'editor',
             constants::QUESTIONTEXTAREA . '_editor',
             get_string('itemtextarea', constants::M_COMPONENT),
-            array('id' => $someid, 'wrap' => 'virtual', 'style' => 'width: 100%;', 'rows' => '5'),
+            ['id' => $someid, 'wrap' => 'virtual', 'style' => 'width: 100%;', 'rows' => '5'],
             $edoptions
         );
-        $this->_form->setDefault(constants::QUESTIONTEXTAREA . '_editor', array('text' => '', 'format' => FORMAT_HTML));
+        $this->_form->setDefault(constants::QUESTIONTEXTAREA . '_editor', ['text' => '', 'format' => FORMAT_HTML]);
         $mform->setType(constants::QUESTIONTEXTAREA, PARAM_RAW);
-        $mform->addGroup($groupelements, 'groupelements', get_string('itemtextarea', constants::M_COMPONENT), array(' '), false);
+        $mform->addGroup($groupelements, 'groupelements', get_string('itemtextarea', constants::M_COMPONENT), [' '], false);
         $mform->addElement('html', $fieldsetbottom, []);
 
-        //Question YouTube Clip
+        // Question YouTube Clip
         $mform->addElement('html', $fieldsettops['addyoutubeclip'], []);
-        $ytarray = array();
-        $ytarray[] =& $mform->createElement('text', constants::YTVIDEOID, get_string('itemytid', constants::M_COMPONENT), array('size' => 15, 'placeholder' => "Video ID"));
-        $ytarray[] =& $mform->createElement('text', constants::YTVIDEOSTART, get_string('itemytstart', constants::M_COMPONENT), array('size' => 3, 'placeholder' => "Start"));
+        $ytarray = [];
+        $ytarray[] =& $mform->createElement('text', constants::YTVIDEOID, get_string('itemytid', constants::M_COMPONENT), ['size' => 15, 'placeholder' => "Video ID"]);
+        $ytarray[] =& $mform->createElement('text', constants::YTVIDEOSTART, get_string('itemytstart', constants::M_COMPONENT), ['size' => 3, 'placeholder' => "Start"]);
         $ytarray[] =& $mform->createElement('html', 's - ');
-        $ytarray[] =& $mform->createElement('text', constants::YTVIDEOEND, get_string('itemytend', constants::M_COMPONENT), array('size' => 3, 'placeholder' => "End"));
+        $ytarray[] =& $mform->createElement('text', constants::YTVIDEOEND, get_string('itemytend', constants::M_COMPONENT), ['size' => 3, 'placeholder' => "End"]);
         $ytarray[] =& $mform->createElement('html', 's');
 
-        $mform->addGroup($ytarray, 'ytarray', get_string('ytclipdetails', constants::M_COMPONENT), array(' '), false);
+        $mform->addGroup($ytarray, 'ytarray', get_string('ytclipdetails', constants::M_COMPONENT), [' '], false);
         $mform->setType(constants::YTVIDEOID, PARAM_RAW);
         $mform->setType(constants::YTVIDEOSTART, PARAM_INT);
         $mform->setType(constants::YTVIDEOEND, PARAM_INT);
         $mform->addElement('html', $fieldsetbottom, []);
 
-        //Question TTS Dialog
+        // Question TTS Dialog
         $mform->addElement('html', $fieldsettops['addttsdialog'], []);
-        $ttsdialog_instructions_array = array();
-        $ttsdialog_instructions_array[] =& $mform->createElement('static', 'ttsdialog_instructions', null, get_string('ttsdialoginstructions', constants::M_COMPONENT));
-        $mform->addGroup($ttsdialog_instructions_array, 'ttsdialog_grp', '', array(' '), false);
-        //Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
-        //$this->add_static_text('ttsdialog_instructions',null,get_string('ttsdialoginstructions', constants::M_COMPONENT));
+        $ttsdialoginstructionsarray = [];
+        $ttsdialoginstructionsarray[] =& $mform->createElement('static', 'ttsdialog_instructions', null, get_string('ttsdialoginstructions', constants::M_COMPONENT));
+        $mform->addGroup($ttsdialoginstructionsarray, 'ttsdialog_grp', '', [' '], false);
+        // Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
+        // $this->add_static_text('ttsdialog_instructions',null,get_string('ttsdialoginstructions', constants::M_COMPONENT));
 
         $this->add_ttsaudioselect(constants::TTSDIALOGVOICEA, get_string('ttsdialogvoicea', constants::M_COMPONENT));
         $this->add_ttsaudioselect(constants::TTSDIALOGVOICEB, get_string('ttsdialogvoiceb', constants::M_COMPONENT));
         $this->add_ttsaudioselect(constants::TTSDIALOGVOICEC, get_string('ttsdialogvoicec', constants::M_COMPONENT));
-        $mform->addElement('textarea', constants::TTSDIALOG, get_string('ttsdialog', constants::M_COMPONENT), array('wrap' => 'virtual', 'style' => 'width: 100%;', 'placeholder' => 'A) Hello&#10;B) Goodbye'));
+        $mform->addElement('textarea', constants::TTSDIALOG, get_string('ttsdialog', constants::M_COMPONENT), ['wrap' => 'virtual', 'style' => 'width: 100%;', 'placeholder' => 'A) Hello&#10;B) Goodbye']);
         $mform->setType(constants::TTSDIALOG, PARAM_RAW);
         $mform->addElement('advcheckbox', constants::TTSDIALOGVISIBLE, get_string('ttsdialogvisible', constants::M_COMPONENT), get_string('ttsdialogvisible_desc', constants::M_COMPONENT));
         $mform->setDefault(constants::TTSDIALOGVISIBLE, 1);
         $mform->addElement('html', $fieldsetbottom, []);
 
-        //Question TTS Passage
+        // Question TTS Passage
         $mform->addElement('html', $fieldsettops['addttspassage'], []);
-        $ttspassage_instructions_array = array();
-        $ttspassage_instructions_array[] =& $mform->createElement('static', 'ttspassage_instructions', null, get_string('ttspassageinstructions', constants::M_COMPONENT));
-        $mform->addGroup($ttspassage_instructions_array, 'ttspassage_grp', '', array(' '), false);
-        //Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
-        //$this->add_static_text('ttspassage_instructions',null,get_string('ttspassageinstructions', constants::M_COMPONENT));
+        $ttspassageinstructionsarray = [];
+        $ttspassageinstructionsarray[] =& $mform->createElement('static', 'ttspassage_instructions', null, get_string('ttspassageinstructions', constants::M_COMPONENT));
+        $mform->addGroup($ttspassageinstructionsarray, 'ttspassage_grp', '', [' '], false);
+        // Moodle cant hide static text elements with hideif (why?) , so we wrap it in a group
+        // $this->add_static_text('ttspassage_instructions',null,get_string('ttspassageinstructions', constants::M_COMPONENT));
 
         $this->add_ttsaudioselect(constants::TTSPASSAGEVOICE, get_string('ttspassagevoice', constants::M_COMPONENT));
         $this->add_voiceoptions(constants::TTSPASSAGESPEED, get_string('ttspassagespeed', constants::M_COMPONENT));
-        $mform->addElement('textarea', constants::TTSPASSAGE, get_string('ttspassage', constants::M_COMPONENT), array('wrap' => 'virtual', 'style' => 'width: 100%;', 'placeholder' => ''));
+        $mform->addElement('textarea', constants::TTSPASSAGE, get_string('ttspassage', constants::M_COMPONENT), ['wrap' => 'virtual', 'style' => 'width: 100%;', 'placeholder' => '']);
         $mform->setType(constants::TTSPASSAGE, PARAM_RAW);
         $mform->addElement('html', $fieldsetbottom, []);
 
-        //Question Audio Story
+        // Question Audio Story
         $mform->addElement('html', $fieldsettops['addaudiostory'], []);
         $mform->addElement('static', 'audiostory_instructions', null, '');
         sentenceprompt::register();
@@ -398,7 +412,7 @@ abstract class baseform extends \moodleform
             sentenceprompt::ELNAME,
             constants::AUDIOSTORYMETA,
             get_string('audiostorytimes', constants::M_COMPONENT),
-            array('rows' => '4', 'columns' => '140', 'style' => 'width: 600px')
+            ['rows' => '4', 'columns' => '140', 'style' => 'width: 600px']
         );
         $mform->setType(constants::AUDIOSTORYMETA, PARAM_TEXT);
         $mform->setDefault(constants::AUDIOSTORYMETA, '00:00:00');
@@ -418,15 +432,14 @@ abstract class baseform extends \moodleform
      * @param string $customkeysfield The name of the custom keys field
      * @return void
      */
-    final protected function add_virtualkeyboard($enablefield, $customkeysfield)
-    {
+    final protected function add_virtualkeyboard($enablefield, $customkeysfield) {
         $mform = $this->_form;
-        //Virtual Keyboard
+        // Virtual Keyboard
         $langoptions = utils::get_lang_options();
         $currentlang = $langoptions[$this->moduleinstance->ttslanguage];
         $vkeyboardoptions = [
             0 => get_string('no'),
-            1 => $currentlang
+            1 => $currentlang,
         ];
         if (utils::has_compact_layout($this->moduleinstance->ttslanguage)) {
             $vkeyboardoptions[2] = $currentlang . ' (' . get_string('compact', constants::M_COMPONENT) . ')';
@@ -441,8 +454,7 @@ abstract class baseform extends \moodleform
         $mform->hideIf($customkeysfield, $enablefield, 'neq', 3);
     }
 
-    final protected function add_media_upload($name, $label, $required = false, $accept = '', $maxfiles = 0)
-    {
+    final protected function add_media_upload($name, $label, $required = false, $accept = '', $maxfiles = 0) {
         global $CFG;
 
         // If accept is set, add it to the filemanager options
@@ -463,8 +475,7 @@ abstract class baseform extends \moodleform
         );
     }
 
-    final protected function add_media_prompt_upload($label = null, $required = false)
-    {
+    final protected function add_media_prompt_upload($label = null, $required = false) {
         $accept = '';
         return $this->add_media_upload(constants::AUDIOPROMPT, $label, $required, $accept);
     }
@@ -477,14 +488,13 @@ abstract class baseform extends \moodleform
      * @param bool $required
      * @return void
      */
-    final protected function add_editorarearesponse($count, $label = null, $required = false)
-    {
+    final protected function add_editorarearesponse($count, $label = null, $required = false) {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
-        //edoptions = array('noclean'=>true)
-        $this->_form->addElement('editor', constants::TEXTANSWER . $count . '_editor', $label, array('rows' => '4', 'columns' => '80'), $this->editoroptions);
-        $this->_form->setDefault(constants::TEXTANSWER . $count . '_editor', array('text' => '', 'format' => FORMAT_MOODLE));
+        // edoptions = array('noclean'=>true)
+        $this->_form->addElement('editor', constants::TEXTANSWER . $count . '_editor', $label, ['rows' => '4', 'columns' => '80'], $this->editoroptions);
+        $this->_form->setDefault(constants::TEXTANSWER . $count . '_editor', ['text' => '', 'format' => FORMAT_MOODLE]);
         if ($required) {
             $this->_form->addRule(constants::TEXTANSWER . $count . '_editor', get_string('required'), 'required', null, 'client');
         }
@@ -498,17 +508,16 @@ abstract class baseform extends \moodleform
      * @param bool $required
      * @return void
      */
-    final protected function add_textarearesponse($name_or_count, $label = null, $required = false, $fixedwidthfont = false)
-    {
+    final protected function add_textarearesponse($nameorcount, $label = null, $required = false, $fixedwidthfont = false) {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
 
         // Set the form element name
-        if (is_number($name_or_count) || empty($name_or_count)) {
-            $element = constants::TEXTANSWER . $name_or_count;
+        if (is_number($nameorcount) || empty($nameorcount)) {
+            $element = constants::TEXTANSWER . $nameorcount;
         } else {
-            $element = $name_or_count;
+            $element = $nameorcount;
         }
 
         $attributes = ['rows' => '4', 'columns' => '140', 'style' => 'width: 600px;'];
@@ -524,37 +533,35 @@ abstract class baseform extends \moodleform
         }
     }
 
-    final protected function add_sentenceprompt($name_or_count, $label = null, $required = false)
-    {
+    final protected function add_sentenceprompt($nameorcount, $label = null, $required = false) {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
 
         // Set the form element name
-        if (is_number($name_or_count) || empty($name_or_count)) {
-            $element = constants::TEXTANSWER . $name_or_count;
+        if (is_number($nameorcount) || empty($nameorcount)) {
+            $element = constants::TEXTANSWER . $nameorcount;
         } else {
-            $element = $name_or_count;
+            $element = $nameorcount;
         }
 
         sentenceprompt::register();
-        $this->_form->addElement(sentenceprompt::ELNAME, $element, $label, array('rows' => '4', 'columns' => '140', 'style' => 'width: 600px'));
+        $this->_form->addElement(sentenceprompt::ELNAME, $element, $label, ['rows' => '4', 'columns' => '140', 'style' => 'width: 600px']);
         if ($required) {
             $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
         }
     }
 
-    final protected function add_sentenceimage($name_or_count, $label = null, $required = false)
-    {
+    final protected function add_sentenceimage($nameorcount, $label = null, $required = false) {
         if ($label === null) {
             $label = get_string('sentenceimage', constants::M_COMPONENT);
         }
 
         // Set the form element name
-        if (is_number($name_or_count) || empty($name_or_count)) {
-            $element = constants::FILEANSWER . $name_or_count;
+        if (is_number($nameorcount) || empty($nameorcount)) {
+            $element = constants::FILEANSWER . $nameorcount;
         } else {
-            $element = $name_or_count;
+            $element = $nameorcount;
         }
 
         $filemanageroptions = $this->filemanageroptions;
@@ -567,17 +574,16 @@ abstract class baseform extends \moodleform
         }
     }
 
-    final protected function add_sentenceaudio($name_or_count, $label = null, $required = false, $maxfiles = -1)
-    {
+    final protected function add_sentenceaudio($nameorcount, $label = null, $required = false, $maxfiles = -1) {
         if ($label === null) {
             $label = get_string('sentenceaudio', constants::M_COMPONENT);
         }
 
         // Set the form element name
-        if (is_number($name_or_count) || empty($name_or_count)) {
-            $element = constants::FILEANSWER . $name_or_count;
+        if (is_number($nameorcount) || empty($nameorcount)) {
+            $element = constants::FILEANSWER . $nameorcount;
         } else {
-            $element = $name_or_count;
+            $element = $nameorcount;
         }
 
         $filemanageroptions = $this->filemanageroptions;
@@ -598,28 +604,26 @@ abstract class baseform extends \moodleform
      * @param bool $required
      * @return void
      */
-    final protected function add_textboxresponse($name_or_count, $label = null, $required = false)
-    {
+    final protected function add_textboxresponse($nameorcount, $label = null, $required = false) {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
 
         // Set the form element name
-        if (is_number($name_or_count) || empty($name_or_count)) {
-            $element = constants::TEXTANSWER . $name_or_count;
+        if (is_number($nameorcount) || empty($nameorcount)) {
+            $element = constants::TEXTANSWER . $nameorcount;
         } else {
-            $element = $name_or_count;
+            $element = $nameorcount;
         }
 
-        $this->_form->addElement('text', $element, $label, array('size' => '60'));
+        $this->_form->addElement('text', $element, $label, ['size' => '60']);
         $this->_form->setType($element, PARAM_TEXT);
         if ($required) {
             $this->_form->addRule($element, get_string('required'), 'required', null, 'client');
         }
     }
 
-    final protected function add_imageresponse_upload($name_or_count, $label = null, $required = false, $hideif_field = false, $hideif_values = [])
-    {
+    final protected function add_imageresponse_upload($nameorcount, $label = null, $required = false, $hideiffield = false, $hideifvalues = []) {
         global $CFG;
 
         if ($label === null) {
@@ -627,25 +631,25 @@ abstract class baseform extends \moodleform
         }
 
         // Set the form element name
-        if (is_number($name_or_count) || empty($name_or_count)) {
-            $element = constants::FILEANSWER . $name_or_count;
+        if (is_number($nameorcount) || empty($nameorcount)) {
+            $element = constants::FILEANSWER . $nameorcount;
         } else {
-            $element = $name_or_count;
+            $element = $nameorcount;
         }
 
         $accept = 'image';
         $this->add_media_upload($element, $label, $required, $accept);
 
-        if ($hideif_field !== false && !empty($hideif_values)) {
+        if ($hideiffield !== false && !empty($hideifvalues)) {
             $m35 = $CFG->version >= 2018051700;
-            if (!is_array($hideif_values)) {
-                $hideif_values = [$hideif_values];
+            if (!is_array($hideifvalues)) {
+                $hideifvalues = [$hideifvalues];
             }
-            foreach ($hideif_values as $hideif_value) {
+            foreach ($hideifvalues as $hideifvalue) {
                 if ($m35) {
-                    $this->_form->hideIf($element, $hideif_field, 'eq', $hideif_value);
+                    $this->_form->hideIf($element, $hideiffield, 'eq', $hideifvalue);
                 } else {
-                    $this->_form->disabledIf($element, $hideif_field, 'eq', $hideif_value);
+                    $this->_form->disabledIf($element, $hideiffield, 'eq', $hideifvalue);
                 }
             }
         }
@@ -659,20 +663,19 @@ abstract class baseform extends \moodleform
      * @param bool $required
      * @return void
      */
-    final protected function add_numericboxresponse($name_or_count, $label = null, $required = false)
-    {
+    final protected function add_numericboxresponse($nameorcount, $label = null, $required = false) {
         if ($label === null) {
             $label = get_string('response', constants::M_COMPONENT);
         }
 
         // Set the form element name
-        if (is_number($name_or_count) || empty($name_or_count)) {
-            $element = constants::CUSTOMINT . $name_or_count;
+        if (is_number($nameorcount) || empty($nameorcount)) {
+            $element = constants::CUSTOMINT . $nameorcount;
         } else {
-            $element = $name_or_count;
+            $element = $nameorcount;
         }
 
-        $this->_form->addElement('text', $element, $label, array('size' => '8'));
+        $this->_form->addElement('text', $element, $label, ['size' => '8']);
         $this->_form->setType($element, PARAM_INT);
         $this->_form->setDefault($element, 0);
         $this->_form->addRule($element, get_string('numberonly', constants::M_COMPONENT), 'numeric', null, 'client');
@@ -687,12 +690,11 @@ abstract class baseform extends \moodleform
      * @param string $label, null means default
      * @return void
      */
-    final protected function add_correctanswer($label = null)
-    {
+    final protected function add_correctanswer($label = null) {
         if ($label === null) {
             $label = get_string('correctanswer', constants::M_COMPONENT);
         }
-        $options = array();
+        $options = [];
         $options['1'] = 1;
         $options['2'] = 2;
         $options['3'] = 3;
@@ -708,13 +710,12 @@ abstract class baseform extends \moodleform
      * @param string $label, null means default
      * @return void
      */
-    final protected function add_layoutoptions()
-    {
+    final protected function add_layoutoptions() {
         $layoutoptions = [
             constants::LAYOUT_AUTO => get_string('layoutauto', constants::M_COMPONENT),
             constants::LAYOUT_HORIZONTAL => get_string('layouthorizontal', constants::M_COMPONENT),
             constants::LAYOUT_VERTICAL => get_string('layoutvertical', constants::M_COMPONENT),
-            constants::LAYOUT_MAGAZINE => get_string('layoutmagazine', constants::M_COMPONENT)
+            constants::LAYOUT_MAGAZINE => get_string('layoutmagazine', constants::M_COMPONENT),
         ];
         $name = constants::LAYOUT;
         $layout = get_config(constants::M_COMPONENT, $name);
@@ -728,8 +729,7 @@ abstract class baseform extends \moodleform
      * @param string $label, null means default
      * @return void
      */
-    final protected function add_zoomandpanoptions()
-    {
+    final protected function add_zoomandpanoptions() {
         $options = [
             constants::ZOOMANDPAN_NONE => get_string('zoomandpannone', constants::M_COMPONENT),
             constants::ZOOMANDPAN_LITE => get_string('zoomandpanlite', constants::M_COMPONENT),
@@ -751,24 +751,23 @@ abstract class baseform extends \moodleform
      * @param string $label, null means default
      * @return void
      */
-    final protected function add_voiceselect($name, $label = null, $hideif_field = false, $hideif_values = [])
-    {
+    final protected function add_voiceselect($name, $label = null, $hideiffield = false, $hideifvalues = []) {
         global $CFG;
         $showall = true;
         $allvoiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage, $showall, $this->moduleinstance->region);
         $somevoiceoptions = utils::get_tts_voices($this->moduleinstance->ttslanguage, !$showall, $this->moduleinstance->region);
         $defaultvoice = array_pop($somevoiceoptions);
         $this->add_dropdown($name, $label, $allvoiceoptions, $defaultvoice);
-        if ($hideif_field !== false && !empty($hideif_values)) {
+        if ($hideiffield !== false && !empty($hideifvalues)) {
             $m35 = $CFG->version >= 2018051700;
-            if (!is_array($hideif_values)) {
-                $hideif_values = [$hideif_values];
+            if (!is_array($hideifvalues)) {
+                $hideifvalues = [$hideifvalues];
             }
-            foreach ($hideif_values as $hideif_value) {
+            foreach ($hideifvalues as $hideifvalue) {
                 if ($m35) {
-                    $this->_form->hideIf($name, $hideif_field, 'eq', $hideif_value);
+                    $this->_form->hideIf($name, $hideiffield, 'eq', $hideifvalue);
                 } else {
-                    $this->_form->disabledIf($name, $hideif_field, 'eq', $hideif_value);
+                    $this->_form->disabledIf($name, $hideiffield, 'eq', $hideifvalue);
                 }
             }
         }
@@ -780,8 +779,7 @@ abstract class baseform extends \moodleform
      * @param string $label, null means default
      * @return void
      */
-    final protected function add_ttsaudioselect($name, $label = null, $hideif_field = false, $hideif_values = [])
-    {
+    final protected function add_ttsaudioselect($name, $label = null, $hideiffield = false, $hideifvalues = []) {
         global $CFG;
 
         ttsaudio::register();
@@ -790,16 +788,16 @@ abstract class baseform extends \moodleform
             'langcode' => $this->moduleinstance->ttslanguage,
         ]);
 
-        if ($hideif_field !== false && !empty($hideif_values)) {
+        if ($hideiffield !== false && !empty($hideifvalues)) {
             $m35 = $CFG->version >= 2018051700;
-            if (!is_array($hideif_values)) {
-                $hideif_values = [$hideif_values];
+            if (!is_array($hideifvalues)) {
+                $hideifvalues = [$hideifvalues];
             }
-            foreach ($hideif_values as $hideif_value) {
+            foreach ($hideifvalues as $hideifvalue) {
                 if ($m35) {
-                    $this->_form->hideIf($name, $hideif_field, 'eq', $hideif_value);
+                    $this->_form->hideIf($name, $hideiffield, 'eq', $hideifvalue);
                 } else {
-                    $this->_form->disabledIf($name, $hideif_field, 'eq', $hideif_value);
+                    $this->_form->disabledIf($name, $hideiffield, 'eq', $hideifvalue);
                 }
             }
         }
@@ -811,29 +809,27 @@ abstract class baseform extends \moodleform
      * @param string $label, null means default
      * @return void
      */
-    final protected function add_voiceoptions($name, $label = null, $hideif_field = false, $hideif_values = [], $no_ssml = false, $nottsoption = false)
-    {
+    final protected function add_voiceoptions($name, $label = null, $hideiffield = false, $hideifvalues = [], $nossml = false, $nottsoption = false) {
         global $CFG;
-        $voiceoptions = utils::get_tts_options($no_ssml, $nottsoption);
+        $voiceoptions = utils::get_tts_options($nossml, $nottsoption);
         $this->add_dropdown($name, $label, $voiceoptions);
         $m35 = $CFG->version >= 2018051700;
-        if ($hideif_field !== false && !empty($hideif_values)) {
+        if ($hideiffield !== false && !empty($hideifvalues)) {
             $m35 = $CFG->version >= 2018051700;
-            if (!is_array($hideif_values)) {
-                $hideif_values = [$hideif_values];
+            if (!is_array($hideifvalues)) {
+                $hideifvalues = [$hideifvalues];
             }
-            foreach ($hideif_values as $hideif_value) {
+            foreach ($hideifvalues as $hideifvalue) {
                 if ($m35) {
-                    $this->_form->hideIf($name, $hideif_field, 'eq', $hideif_value);
+                    $this->_form->hideIf($name, $hideiffield, 'eq', $hideifvalue);
                 } else {
-                    $this->_form->disabledIf($name, $hideif_field, 'eq', $hideif_value);
+                    $this->_form->disabledIf($name, $hideiffield, 'eq', $hideifvalue);
                 }
             }
         }
     }
 
-    final protected function add_relevanceoptions($name, $label, $default = false)
-    {
+    final protected function add_relevanceoptions($name, $label, $default = false) {
         global $CFG;
         $relevanceoptions = utils::get_relevance_options();
         $this->add_dropdown($name, $label, $relevanceoptions, $default);
@@ -845,8 +841,7 @@ abstract class baseform extends \moodleform
      * @param string $label, null means default
      * @return void
      */
-    final protected function add_confirmchoice($name, $label = null)
-    {
+    final protected function add_confirmchoice($name, $label = null) {
         global $CFG;
         if (empty($label)) {
             $label = get_string('confirmchoice_formlabel', constants::M_COMPONENT);
@@ -861,8 +856,7 @@ abstract class baseform extends \moodleform
      * @param string $label, null means default
      * @return void
      */
-    final protected function add_languageselect($name, $label = null, $default = false)
-    {
+    final protected function add_languageselect($name, $label = null, $default = false) {
         $langoptions = utils::get_lang_options();
         $this->add_dropdown($name, $label, $langoptions, $default);
     }
@@ -875,8 +869,7 @@ abstract class baseform extends \moodleform
      *
      * @return bool
      */
-    public function construction_override($itemid, $minilesson)
-    {
+    public function construction_override($itemid, $minilesson) {
         return true;
     }
 
@@ -888,8 +881,7 @@ abstract class baseform extends \moodleform
      * @param bool|int $default
      * @return void
      */
-    final protected function add_timelimit($name, $label, $default = false)
-    {
+    final protected function add_timelimit($name, $label, $default = false) {
         $this->_form->addElement('duration', $name, $label, ['optional' => true, 'defaultunit' => 1]);
         if ($default !== false) {
             $this->_form->setDefault($name, $default);
@@ -904,8 +896,7 @@ abstract class baseform extends \moodleform
      * @param bool|int $default
      * @return void
      */
-    final protected function add_checkbox($name, $label, $detailslabel = null, $default = 0)
-    {
+    final protected function add_checkbox($name, $label, $detailslabel = null, $default = 0) {
         $this->_form->addElement(
             'advcheckbox',
             $name,
@@ -927,8 +918,7 @@ abstract class baseform extends \moodleform
      * @param bool|int $default
      * @return void
      */
-    final protected function add_allowretry($name, $detailslabel = null, $default = 0)
-    {
+    final protected function add_allowretry($name, $detailslabel = null, $default = 0) {
         $this->_form->addElement(
             'advcheckbox',
             $name,
@@ -950,8 +940,7 @@ abstract class baseform extends \moodleform
      * @param bool|int $default
      * @return void
      */
-    final protected function add_nopasting($name, $detailslabel = null, $default = 1)
-    {
+    final protected function add_nopasting($name, $detailslabel = null, $default = 1) {
         $this->_form->addElement(
             'advcheckbox',
             $name,
@@ -973,8 +962,7 @@ abstract class baseform extends \moodleform
      * @param bool|int $default
      * @return void
      */
-    final protected function add_hidestartpage($name, $detailslabel = null, $default = 0)
-    {
+    final protected function add_hidestartpage($name, $detailslabel = null, $default = 0) {
         $this->_form->addElement(
             'advcheckbox',
             $name,
@@ -989,8 +977,7 @@ abstract class baseform extends \moodleform
     }
 
 
-    final protected function add_aliencount($name, $label, $default)
-    {
+    final protected function add_aliencount($name, $label, $default) {
         $alienoptions = [
             2 => 2,
             3 => 3,
@@ -1011,8 +998,7 @@ abstract class baseform extends \moodleform
         return utils::get_component(static::class);
     }
 
-    public function __get($name)
-    {
+    public function __get($name) {
         if ($name == 'type') {
             return static::get_itemname();
         }

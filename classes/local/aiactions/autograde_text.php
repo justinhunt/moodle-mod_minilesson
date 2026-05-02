@@ -120,6 +120,17 @@ class autograde_text extends generate_text {
         return $this->prompttext;
     }
 
+    public static function get_model_parameters(string $provider): array {
+        $params = parent::get_model_parameters($provider);
+        switch($provider) {
+            case 'openai':
+            case 'deepseek':
+                $params['response_format'] = ['type' => 'json_object'];
+                break;
+        }
+        return $params;
+    }
+
     public static function get_system_instruction(): string {
         return 'You are a language teacher';
     }

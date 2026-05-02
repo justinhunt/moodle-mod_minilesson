@@ -251,4 +251,33 @@ class itemtype extends item
         }
         return $prompt;
     }
+
+    /**
+     * Builds the prompt for the AI helper in the code editor.
+     *
+     * @param string $language The language of the code (e.g., 'markdown', 'html').
+     * @param string $prompt The user's prompt.
+     * @param string $currentcode The current code in the editor.
+     * @return string The full prompt for the AI.
+     */
+    public static function codeeditor_build_prompt($language, $prompt, $currentcode) {
+        $fullprompt = "You are an assistant helping a teacher create or edit educational slides for Reveal.js." . PHP_EOL;
+        $fullprompt .= "The format is: " . strtoupper($language) . PHP_EOL;
+        $fullprompt .= "Rules for Slides:" . PHP_EOL;
+        $fullprompt .= "- Use '---' to separate slides." . PHP_EOL;
+        $fullprompt .= "- Each slide should have a clear heading." . PHP_EOL;
+        if ($language == 'html') {
+            $fullprompt .= "- Use semantic HTML5 elements where appropriate." . PHP_EOL;
+            $fullprompt .= "- Do not include <html>, <head> or <body> tags. Just the slide content." . PHP_EOL;
+        }
+
+        if (!empty($currentcode)) {
+            $fullprompt .= "The existing slide code is:" . PHP_EOL . "---" . PHP_EOL . $currentcode . PHP_EOL . "---" . PHP_EOL;
+            $fullprompt .= "Please modify the existing code based on this instruction: " . $prompt . PHP_EOL;
+        } else {
+            $fullprompt .= "Please create new slides based on this instruction: " . $prompt . PHP_EOL;
+        }
+        $fullprompt .= "Only return the code itself, without any explanations or markdown code blocks unless they are part of the content.";
+        return $fullprompt;
+    }
 }

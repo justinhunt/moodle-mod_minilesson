@@ -18,7 +18,8 @@ namespace mod_minilesson;
 
 use core\di;
 use core_ai\aiactions\base;
-use core_ai\aiactions\generate_text;
+use core_ai\aiactions\generate_text as core_generate_text;
+use mod_minilesson\local\aiactions\generate_text;
 use core_ai\manager;
 use core_ai\provider;
 
@@ -40,6 +41,12 @@ class aimanager {
     /** @var string|null */
     protected $ttslanguage;
 
+    /** @var string|null */
+    protected $errormessage;
+
+    /** @var string|null */
+    protected $lastprovider;
+
     /**
      * aimanager constructor.
      * @param int|null $contextid
@@ -50,6 +57,16 @@ class aimanager {
         $this->contextid = $contextid;
         $this->region = $region;
         $this->ttslanguage = $ttslanguage;
+        $this->errormessage = '';
+        $this->lastprovider = '';
+    }
+
+    public function get_last_provider() {
+        return $this->lastprovider;
+    }
+
+    public function get_error_message() {
+        return $this->errormessage;
     }
 
     /** @var int */
@@ -117,6 +134,7 @@ class aimanager {
             ];
         return $options;
     }
+
 
     public static function get_action_settingname($actiontype) {
         return constants::M_COMPONENT . "/aiaction_{$actiontype}";
@@ -371,6 +389,58 @@ class aimanager {
         return $ret;
     }
 
+    /**
+     * Generate text using the configured AI provider.
+     * @param string $prompt
+     * @param int $contextid
+     * @return string|null
+     */
+    public function generate_text($prompt, $contextid = null) {
+        $contextid = $contextid ?? $this->contextid;
+        $aiactionclass = generate_text::class;
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $contextid,
+            'prompttext' => $prompt,
+        ]);
+        if ($response !== null) {
+            if ($response->returnCode == '0') {
+                $this->lastprovider = 'Moodle AI';
+                return $response->returnMessage;
+            } else {
+                $this->errormessage = $response->returnMessage;
+                // If Moodle AI failed, we still try CloudPoodll fallback.
+            }
+        }
+
+        // Fallback to Cloud Poodll if Moodle AI not configured
+        $this->lastprovider = 'CloudPoodll';
+        $params = [];
+        $params['action'] = 'generate_structured_content';
+        $generateformat = new \stdClass();
+        $generateformat->response = 'string';
+        $generateformatjson = json_encode($generateformat);
+        $params['prompt'] = $prompt . PHP_EOL . 'Generate the data in this JSON format: ' . $generateformatjson;
+        $params['language'] = $this->ttslanguage;
+        $params['region'] = $this->region;
+        $params['subject'] = 'none';
+
+        $cpresponse = self::call_cp_api($params);
+        if ($cpresponse && isset($cpresponse->returnCode) && $cpresponse->returnCode == '0') {
+            $data = json_decode($cpresponse->returnMessage);
+            if ($data && isset($data->response)) {
+                return $data->response;
+            }
+            // If it's not JSON, maybe it's just the string.
+            return $cpresponse->returnMessage;
+        } else if ($cpresponse && isset($cpresponse->returnMessage)) {
+             $this->errormessage = $cpresponse->returnMessage;
+        } else {
+             $this->errormessage = 'No response from CloudPoodll or Moodle AI provider.';
+        }
+
+        return false;
+    }
+
     public function generate_image($prompt, $cache = false) {
         $actionconst = 'generate_images';
         $provider = 'cloud poodll';
@@ -570,6 +640,7 @@ class aimanager {
         }
         $providerdata = static::get_provider_and_check_enabled($setting, $actionclass);
         if (empty($providerdata)) {
+            $this->errormessage = 'Provider not found or not enabled for this action.';
             return null;
         }
 
@@ -579,14 +650,11 @@ class aimanager {
         $params['prompttext'] = $params['prompttext'] ?? '';
         $action = new $actionclass(...$params);
         $result = static::call_and_store_action($manager, $providerinstance, $action);
-        if ($result === false) {
-            return null;
-        }
         $response = $result->get_response_data();
         $returnmessage = isset($response['jsondata']) ? $response['jsondata'] : $response['generatedcontent'];
         return (object) [
-            'returnCode' => 0,
-            'returnMessage' => $returnmessage,
+            'returnCode' => $result->get_success() ? 0 : 1,
+            'returnMessage' => $result->get_success() ? $returnmessage : $result->get_error_message(),
         ];
     }
 
@@ -604,10 +672,6 @@ class aimanager {
 
         $reflmethod2 = $reflclass->getMethod('store_action_result');
         $reflmethod2->invoke($manager, $providerinstance, $action, $result);
-
-        if (!$result->get_success()) {
-            return false;
-        }
 
         return $result;
     }
@@ -644,9 +708,10 @@ class aimanager {
         $options = [static::CLOUDPOODLL_OPTION => get_string('cloudpoodll', constants::M_COMPONENT)];
         $manager = static::get_ai_manager();
         if (!empty($manager)) {
-            $allproviders = $manager->get_providers_for_actions([$actionclass], true);
-            if (!empty($allproviders[$actionclass])) {
-                foreach ($allproviders[$actionclass] as $aiprovider) {
+            $mapactionclass = static::get_action_parentclass($actionclass);
+            $allproviders = $manager->get_providers_for_actions([$mapactionclass], true);
+            if (!empty($allproviders[$mapactionclass])) {
+                foreach ($allproviders[$mapactionclass] as $aiprovider) {
                     if ($CFG->branch < 500) {
                         $options[$aiprovider->get_name()] = $aiprovider->get_name();
                     } else {
@@ -695,7 +760,7 @@ class aimanager {
                 foreach ($providerinstances[$mapactionclass] as $provider) {
                     if ($provider->get_name() == $providerid) {
                         $providerinstance = $provider;
-                        $component = static::get_component_from_classname(get_class($provider));
+                        $component = \core\component::get_component_from_classname(get_class($provider));
                         $CFG->forced_plugin_settings[$component]['action_generate_text_systeminstruction'] = $actionclass::get_system_instruction();
                         $providerenabled = manager::is_action_enabled(
                             $providerid,
@@ -713,6 +778,8 @@ class aimanager {
                     function ($record) use ($actionclass, $mapactionclass): ?provider {
                         // Check if the provider class specified in the record exists.
                         if (class_exists($record->provider)) {
+                            $actionclass = ltrim($actionclass, '\\');
+                            $mapactionclass = ltrim($mapactionclass, '\\');
                             $actionconfig = !empty($record->actionconfig) ? json_decode($record->actionconfig, true) : '';
                             if (!empty($actionconfig) && isset($actionconfig[$mapactionclass])) {
                                 // Copy parent class settings to action class.
@@ -720,7 +787,10 @@ class aimanager {
                                 // For Moodle version 5 or later.
                                 $actionconfig[$actionclass]['settings']['systeminstruction'] = $actionclass::get_system_instruction();
                                 // Set Modal Config.
-                                $plugintypename = str_replace('aiprovider_', '', strstr($record->provider, '\\', true));
+                                $plugintypename = str_replace('aiprovider_', '', ltrim(strstr($record->provider, '\\', true), '\\'));
+                                if (empty($plugintypename)) {
+                                     $plugintypename = str_replace('aiprovider_', '', $record->provider);
+                                }
                                 $actionconfig[$actionclass]['settings']['modelextraparams'] = json_encode(
                                     $actionclass::get_model_parameters($plugintypename)
                                 );
@@ -744,7 +814,7 @@ class aimanager {
             $providerinstance = reset($providerinstances);
             $providerenabled = !empty($providerinstance) &&
                 $manager->is_action_enabled(
-                    $providerinstance->provider,
+                    ltrim($providerinstance->provider, '\\'),
                     $mapactionclass,
                     $providerinstance->id
                 );
@@ -761,6 +831,6 @@ class aimanager {
     }
 
     public static function get_component_from_classname($classname): string {
-        return strstr($classname, '\\', true);
+        return \core\component::get_component_from_classname($classname) ?? strstr(ltrim($classname, '\\'), '\\', true);
     }
 }

@@ -25,7 +25,7 @@ use core_ai\aiactions\generate_text as baseclass;
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class generate_text extends baseclass implements inherited_action {
+class generate_text extends baseclass implements inherited_action {
     use common_functions;
 
     public function __construct(
@@ -34,20 +34,15 @@ abstract class generate_text extends baseclass implements inherited_action {
         string $prompttext
     ) {
         parent::__construct($contextid, $userid, $prompttext);
-        $this->generate_prompt();
+    }
+
+    public function generate_prompt(): string {
+        return $this->prompttext;
     }
 
     public static function get_model_parameters(string $provider): array {
         switch($provider) {
             case 'openai':
-                return [
-                    'max_tokens' => 800,
-                    'temperature' => 0,
-                    'top_p' => 1,
-                    'presence_penalty' => 0,
-                    'frequency_penalty' => 0,
-                    'response_format' => ['type' => 'json_object'],
-                ];
             case 'deepseek':
                 return [
                     'max_tokens' => 800,
@@ -55,20 +50,14 @@ abstract class generate_text extends baseclass implements inherited_action {
                     'top_p' => 1,
                     'presence_penalty' => 0,
                     'frequency_penalty' => 0,
-                    'response_format' => ['type' => 'json_object'],
                 ];
-            // Apidoc: https://ai.google.dev/api/generate-content#generationconfig.
-            // case 'gemini':
-            //     return [
-            //         'maxOutputTokens' => 800,
-            //         'temperature' => 0,
-            //         'topP' => 1,
-            //         'presencePenalty' => 0,
-            //         'frequencyPenalty' => 0,
-            //     ];
             default:
                 return [];
         };
+    }
+
+    public static function get_system_instruction(): string {
+        return "You are a helpful assistant.";
     }
 
 }

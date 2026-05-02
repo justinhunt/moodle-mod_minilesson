@@ -435,6 +435,8 @@ export const registerFilter = (opts) => {
                             .then((response, js) => new Promise(resolve => {
                                 if (response.redirecturl) {
                                     location.href = response.redirecturl;
+                                    // We want to show a spinner while waiting for the redirect.
+                                    // So we prepare that here.
                                     const spinnerOverlay = document.createElement('div');
                                     spinnerOverlay.style.cssText =
                                         'display:flex;align-items:center;justify-content:center;min-height:200px;';
@@ -442,6 +444,8 @@ export const registerFilter = (opts) => {
                                     spinnerWrapper.style.transform = 'scale(3)';
                                     spinnerWrapper.appendChild(getSpinner());
                                     spinnerOverlay.appendChild(spinnerWrapper);
+
+                                    // This will display the spinner while the page redirects.
                                     resolve(spinnerOverlay.outerHTML, js);
                                     return;
                                 }

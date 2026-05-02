@@ -24,6 +24,7 @@
  */
 
 use mod_minilesson\constants;
+use minilessonitem_audiochat\itemtype;
 
 define('AJAX_SCRIPT', true);
 require_once(dirname(__FILE__, 5) . '/config.php');
@@ -39,6 +40,16 @@ $PAGE->set_context($context);
 require_login();
 require_sesskey();
 
+// Based on provider we fetch the token in a different way.
+// For cloudpoodll we get it from our cloud poodll server.
+$provider = get_config(constants::M_COMPONENT, 'provider');
+if ($provider == itemtype::PROVIDER_CLOUDPOODLL) {
+    $jsontoken = utils::fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad);
+    return $jsontoken;
+    die;
+}
+
+// Otherwise, hopefully we have a Gemini API key and can generate our own token
 $apikey = get_config(constants::M_COMPONENT, 'geminiapikey');
 $model = 'gemini-3.1-flash-live-preview';
 $now = time();
@@ -54,25 +65,25 @@ $payload = [
             'speechConfig' => [
                 'voiceConfig' => [
                     'prebuiltVoiceConfig' => [
-                        'voiceName' => $voice
-                    ]
-                ]
-            ]
+                        'voiceName' => $voice,
+                    ],
+                ],
+            ],
         ],
         'realtimeInputConfig' => [
             'automaticActivityDetection' => [
                 'disabled' => $disablevad,
-            ]
+            ],
         ],
         'inputAudioTranscription' => new \stdClass(),
         'outputAudioTranscription' => new \stdClass(),
-    ]
+    ],
 ];
 
 $curl = new curl();
 $curl->setHeader([
     "x-goog-api-key: {$apikey}",
-    "content-type: application/json"
+    "content-type: application/json",
 ]);
 $response = $curl->post('https://generativelanguage.googleapis.com/v1alpha/auth_tokens', json_encode($payload));
 $response = json_decode($response);

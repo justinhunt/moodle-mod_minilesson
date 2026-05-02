@@ -1,4 +1,4 @@
-define(['jquery'], function($) {
+define(['jquery', 'core/ajax', 'core/modal', 'core/modal_events', 'core/templates', 'core/str'], function($, Ajax, Modal, ModalEvents, Templates, Str) {
 /* eslint-disable */
 var CodeEditor = (() => {
   var __defProp = Object.defineProperty;
@@ -30301,6 +30301,7 @@ var CodeEditor = (() => {
     ]),
     EditorView.lineWrapping
   ];
+  var getMoodle = () => window.CodeEditor ? window.CodeEditor.Moodle : null;
   function setupCodeEditor(elementId, config2 = {}) {
     let element = typeof elementId === "string" ? document.getElementById(elementId) : elementId;
     if (!element) {
@@ -30318,8 +30319,6 @@ var CodeEditor = (() => {
       ];
     } else if (config2.language === "markdown") {
       languageExtension = [markdown()];
-    } else if (config2.language === "html") {
-      languageExtension = [html()];
     }
     let maxLines = config2.lines || 30;
     let editorTheme = EditorView.theme({
@@ -30356,39 +30355,121 @@ var CodeEditor = (() => {
       state,
       ...isTextArea ? {} : { parent: element }
     });
+    const container = document.createElement("div");
+    container.className = "mod_minilesson_codeeditor_container";
+    container.style.position = "relative";
+    container.style.width = "100%";
+    container.style.maxWidth = "1200px";
+    container.style.marginTop = "40px";
     if (isTextArea) {
       element.style.display = "none";
-      element.parentNode.insertBefore(view.dom, element.nextSibling);
-
-      // Add listener to handle dynamic language changes.
-      element.addEventListener('ml_slides_contenttype_change', (e) => {
-        const newLang = e.detail.language;
-        let newLangExt = [];
-        if (newLang === 'html') {
-          newLangExt = [html()];
-        } else if (newLang === 'markdown') {
-          newLangExt = [markdown()];
-        }
-        
-        // This is a bit tricky in CM6 without the proper effects imported.
-        // But we can try to reconfigure the state if we have access to the right tools.
-        // Given this is a bundle, we might not have StateEffect easily accessible.
-        // An alternative is to just re-init the whole thing.
-        if (typeof setupCodeEditor === 'function') {
-           // Remove the old editor DOM
-           if (view.dom && view.dom.parentNode) {
-             view.dom.parentNode.removeChild(view.dom);
-           }
-           setupCodeEditor(elementId, { ...config2, language: newLang });
-        }
-      });
+      element.parentNode.insertBefore(container, element.nextSibling);
+      container.appendChild(view.dom);
+    } else {
+      element.appendChild(container);
+      container.appendChild(view.dom);
+    }
+    if (config2.aihelper) {
+      addAIHelperButton(container, view, config2);
     }
     return view;
+  }
+  function addAIHelperButton(container, view, config2) {
+    const button = document.createElement("button");
+    button.className = "btn btn-secondary btn-sm mod_minilesson_aihelper_btn";
+    button.innerHTML = '<i class="fa fa-magic"></i> AI Wizard';
+    button.title = "AI Helper";
+    button.style.position = "absolute";
+    button.style.top = "-35px";
+    button.style.right = "0";
+    button.style.zIndex = "10";
+    container.appendChild(button);
+    button.addEventListener("click", (e) => {
+      e.preventDefault();
+      openAIHelperModal(view, config2);
+    });
+  }
+  function openAIHelperModal(view, config2) {
+    const Moodle = getMoodle();
+    if (!Moodle) {
+      console.error("Moodle APIs not available");
+      return;
+    }
+    const { Ajax, Modal, ModalEvents, Templates, Str } = Moodle;
+    Modal.create({
+      title: Str.get_string("aihelper_modal_title", "mod_minilesson"),
+      body: Templates.render("mod_minilesson/aihelper_modal", {}),
+      footer: Templates.render("mod_minilesson/aihelper_modal_footer", {}),
+      large: false
+    }).then((modal) => {
+      modal.show();
+      const root = modal.getRoot();
+      root.on("click", '[data-action="generate"]', () => {
+        const promptInput = root.find("#mod_minilesson_aihelper_prompt");
+        const generateBtn = root.find('[data-action="generate"]');
+        const responseContainer = root.find(".mod_minilesson_aihelper_response_container");
+        const responsePre = root.find("#mod_minilesson_aihelper_response");
+        const loading = root.find(".mod_minilesson_aihelper_loading");
+        const applyBtn = root.find('[data-action="apply"]');
+        const prompt = promptInput.val();
+        if (!prompt) return;
+        loading.removeClass("d-none");
+        responseContainer.addClass("d-none");
+        generateBtn.prop("disabled", true);
+        Ajax.call([{
+          methodname: "mod_minilesson_fetch_codeeditor_aihelp",
+          args: {
+            itemtype: config2.itemtype,
+            language: config2.language,
+            prompt,
+            currentcode: view.state.doc.toString(),
+            contextid: config2.contextid
+          }
+        }])[0].then((res) => {
+          loading.addClass("d-none");
+          generateBtn.prop("disabled", false);
+          if (res.status) {
+            console.log("AI Generation successful using: " + res.provider);
+            responsePre.text(res.response);
+            responseContainer.removeClass("d-none");
+            applyBtn.removeClass("d-none");
+          } else {
+            console.log("AI Generation failed using: " + res.provider);
+            responsePre.text("Error: " + (res.message || "Unknown error"));
+            responseContainer.removeClass("d-none");
+          }
+        }).catch((e) => {
+          loading.addClass("d-none");
+          generateBtn.prop("disabled", false);
+          responsePre.text("Error: " + e.message);
+          responseContainer.removeClass("d-none");
+          console.error(e);
+        });
+      });
+      root.on("click", '[data-action="apply"]', () => {
+        const responsePre = root.find("#mod_minilesson_aihelper_response");
+        const newContent = responsePre.text();
+        const transaction = view.state.update({
+          changes: { from: 0, to: view.state.doc.length, insert: newContent }
+        });
+        view.dispatch(transaction);
+        modal.hide();
+      });
+      root.on("click", '[data-action="cancel"]', () => {
+        modal.hide();
+      });
+      modal.getRoot().on(ModalEvents.hidden, () => {
+        modal.destroy();
+      });
+      return modal;
+    });
   }
   window.setupCodeEditor = setupCodeEditor;
   return __toCommonJS(index_exports);
 })();
 
+window.CodeEditor = CodeEditor;
+CodeEditor.Moodle = { Ajax, Modal, ModalEvents, Templates, Str };
 return {
   setupCodeEditor: CodeEditor.setupCodeEditor
 };

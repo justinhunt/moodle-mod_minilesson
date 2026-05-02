@@ -44,6 +44,7 @@ $settings->add(
         [
             itemtype::PROVIDER_OPENAI => get_string('openai', 'minilessonitem_audiochat'),
             itemtype::PROVIDER_GEMINI => get_string('gemini', 'minilessonitem_audiochat'),
+            itemtype::PROVIDER_CLOUDPOODLL => get_string('cloudpoodll', 'minilessonitem_audiochat'),
         ]
     )
 );

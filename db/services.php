@@ -124,4 +124,12 @@ $functions = [
         'type'        => 'write',
         'ajax'        => true,
     ),
+
+    'mod_minilesson_fetch_codeeditor_aihelp' => [
+        'classname' => 'mod_minilesson_external',
+        'methodname' => 'fetch_codeeditor_aihelp',
+        'description' => 'Fetches AI help for the code editor',
+        'type' => 'read',
+        'ajax' => true,
+    ],
 ];

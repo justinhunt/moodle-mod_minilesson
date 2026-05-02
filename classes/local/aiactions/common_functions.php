@@ -37,11 +37,12 @@ trait common_functions {
 
     public static function get_parent_actionclass(bool $considerself = false): ?string {
         foreach (class_parents(static::class) as $classname) {
+            $classname = ltrim($classname, '\\');
             if (strpos($classname, 'core_ai') === 0) {
                 return $classname;
             }
         }
-        return $considerself ? static::class : null;
+        return $considerself ? ltrim(static::class, '\\') : null;
     }
 
     public static function get_response_classname(): string {

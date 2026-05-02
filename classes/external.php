@@ -41,6 +41,7 @@ use mod_minilesson\constants;
 use mod_minilesson\diff;
 use mod_minilesson\alphabetconverter;
 use mod_minilesson\curl;
+use mod_minilesson\aimanager;
 
 /**
  * External class.
@@ -957,5 +958,85 @@ class mod_minilesson_external extends external_api
             'error' => new external_value(PARAM_BOOL, 'has error', VALUE_DEFAULT, false),
             'data' => new external_value(PARAM_RAW, 'json encoded data', VALUE_DEFAULT),
         ]);
+    }
+
+    /**
+     * Returns description of fetch_codeeditor_aihelp parameters
+     * @return external_function_parameters
+     */
+    public static function fetch_codeeditor_aihelp_parameters() {
+        return new external_function_parameters(
+            [
+                'itemtype' => new external_value(PARAM_TEXT, 'The item type'),
+                'language' => new external_value(PARAM_TEXT, 'The language of the code'),
+                'prompt' => new external_value(PARAM_TEXT, 'The user prompt'),
+                'currentcode' => new external_value(PARAM_RAW, 'The current code in the editor'),
+                'contextid' => new external_value(PARAM_INT, 'The context id'),
+            ]
+        );
+    }
+
+    /**
+     * Fetches AI help for the code editor
+     * @param string $itemtype
+     * @param string $language
+     * @param string $prompt
+     * @param string $currentcode
+     * @param int $contextid
+     * @return array
+     */
+    public static function fetch_codeeditor_aihelp($itemtype, $language, $prompt, $currentcode, $contextid) {
+        global $DB;
+
+        $params = self::validate_parameters(self::fetch_codeeditor_aihelp_parameters(),
+            ['itemtype' => $itemtype, 'language' => $language, 'prompt' => $prompt,
+                'currentcode' => $currentcode, 'contextid' => $contextid]);
+
+        $context = \context::instance_by_id($params['contextid']);
+        self::validate_context($context);
+
+        $region = null;
+        $ttslanguage = null;
+        if ($context->contextlevel == CONTEXT_MODULE) {
+            $cm = get_coursemodule_from_id('minilesson', $context->instanceid);
+            if ($cm) {
+                $minilesson = $DB->get_record('minilesson', ['id' => $cm->instance]);
+                if ($minilesson) {
+                    $region = $minilesson->region;
+                    $ttslanguage = $minilesson->ttslanguage;
+                }
+            }
+        }
+
+        $itemclass = '\minilessonitem_' . $params['itemtype'] . '\itemtype';
+        if (!class_exists($itemclass)) {
+            throw new \moodle_exception('invaliditemtype', 'mod_minilesson', '', $params['itemtype']);
+        }
+
+        $fullprompt = $itemclass::codeeditor_build_prompt($params['language'], $params['prompt'], $params['currentcode']);
+
+        $aimanager = new aimanager($params['contextid'], $region, $ttslanguage);
+        $response = $aimanager->generate_text($fullprompt);
+
+        if ($response) {
+            return ['status' => true, 'response' => $response, 'provider' => $aimanager->get_last_provider()];
+        } else {
+            return ['status' => false, 'response' => '', 'message' => $aimanager->get_error_message(), 'provider' => $aimanager->get_last_provider()];
+        }
+    }
+
+    /**
+     * Returns description of fetch_codeeditor_aihelp returns
+     * @return external_single_structure
+     */
+    public static function fetch_codeeditor_aihelp_returns() {
+        return new external_single_structure(
+            [
+                'status' => new external_value(PARAM_BOOL, 'Status of the request'),
+                'response' => new external_value(PARAM_RAW, 'The response from the AI'),
+                'message' => new external_value(PARAM_RAW, 'The error message', VALUE_OPTIONAL),
+                'provider' => new external_value(PARAM_TEXT, 'The provider used', VALUE_OPTIONAL),
+            ]
+        );
     }
 }

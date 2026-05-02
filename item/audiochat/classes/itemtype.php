@@ -66,6 +66,9 @@ class itemtype extends item {
     /** @var string */
     public const PROVIDER_OPENAI = 'openai';
 
+    /** @var string */
+    public const PROVIDER_CLOUDPOODLL = 'cloudpoodll';
+
     /**
      * The class constructor.
      */
@@ -88,14 +91,18 @@ class itemtype extends item {
 
         // Do we have an OpenAI key? (we need one).
         $testitem->canchat = false;
-        $testitem->provider = get_string('openai', self::get_component());
+        
         if ($provider == self::PROVIDER_OPENAI) {
             $apikey = get_config(constants::M_COMPONENT, 'openaikey');
+            $testitem->provider = get_string('openai', self::get_component());
             $testitem->canchat = !empty($apikey);
         } else if ($provider == self::PROVIDER_GEMINI) {
             $apikey = get_config(constants::M_COMPONENT, 'geminiapikey');
             $testitem->provider = get_string('gemini', self::get_component());
             $testitem->canchat = !empty($apikey);
+        } else {
+            $testitem->provider = get_string('unknown', self::get_component());
+            $testitem->canchat = false;
         }
 
         $testitem->itisningxiaregion = $this->region == 'ningxia';

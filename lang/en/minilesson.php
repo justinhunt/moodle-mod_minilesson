@@ -1299,3 +1299,10 @@ total word count is less than the target word count';
 
 $string['geminiapikey_details'] = 'The Gemini key is used for AudioChat. It is not required or used currently for other item types.';
 $string['geminiapikey'] = 'Gemini API Key';
+$string['aihelper_modal_title'] = 'AI Wizard';
+$string['aihelper_prompt_label'] = 'How can I help?';
+$string['aihelper_prompt_placeholder'] = 'e.g. Create a 5-slide presentation about the water cycle...';
+$string['aihelper_response_label'] = 'AI Response';
+$string['aihelper_generating'] = 'Generating content...';
+$string['aihelper_generate_btn'] = 'Generate';
+$string['aihelper_apply_btn'] = 'Apply to Editor';

@@ -1,0 +1,16 @@
+<div class="mod_minilesson_aihelper_modal">
+    <div class="form-group">
+        <label for="mod_minilesson_aihelper_prompt">{{#str}} aihelper_prompt_label, mod_minilesson {{/str}}</label>
+        <textarea id="mod_minilesson_aihelper_prompt" class="form-control" rows="4" placeholder="{{#str}} aihelper_prompt_placeholder, mod_minilesson {{/str}}"></textarea>
+    </div>
+    <div class="mod_minilesson_aihelper_response_container d-none">
+        <label>{{#str}} aihelper_response_label, mod_minilesson {{/str}}</label>
+        <pre id="mod_minilesson_aihelper_response" class="bg-light p-2 border" style="max-height: 300px; overflow-y: auto;"></pre>
+    </div>
+    <div class="mod_minilesson_aihelper_loading d-none text-center p-3">
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">{{#str}} loading, core {{/str}}</span>
+        </div>
+        <p class="mt-2">{{#str}} aihelper_generating, mod_minilesson {{/str}}</p>
+    </div>
+</div>

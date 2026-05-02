@@ -330,4 +330,31 @@ class itemtype extends item
         }
         return $prompt;
     }
+
+    /**
+     * Builds the prompt for the AI helper in the code editor.
+     *
+     * @param string $language The language of the code (e.g., 'yarn').
+     * @param string $prompt The user's prompt.
+     * @param string $currentcode The current code in the editor.
+     * @return string The full prompt for the AI.
+     */
+    public static function codeeditor_build_prompt($language, $prompt, $currentcode) {
+        $fullprompt = "You are an assistant helping a teacher create or edit interactive fiction in Yarn format." . PHP_EOL;
+        $fullprompt .= "The format is: YARN v2.0 (extended for Poodll)" . PHP_EOL;
+        $fullprompt .= "Rules for Yarn:" . PHP_EOL;
+        $fullprompt .= "- Start with a 'Start' node." . PHP_EOL;
+        $fullprompt .= "- Use '===' to separate nodes." . PHP_EOL;
+        $fullprompt .= "- Use '-> Option Text [[NodeName]]' for choices." . PHP_EOL;
+        $fullprompt .= "- Each node starts with a title like 'title: NodeName'." . PHP_EOL;
+
+        if (!empty($currentcode)) {
+            $fullprompt .= "The existing Yarn code is:" . PHP_EOL . "---" . PHP_EOL . $currentcode . PHP_EOL . "---" . PHP_EOL;
+            $fullprompt .= "Please modify the existing code based on this instruction: " . $prompt . PHP_EOL;
+        } else {
+            $fullprompt .= "Please create new Yarn content based on this instruction: " . $prompt . PHP_EOL;
+        }
+        $fullprompt .= "Only return the code itself, without any explanations or markdown code blocks unless they are part of the content.";
+        return $fullprompt;
+    }
 }

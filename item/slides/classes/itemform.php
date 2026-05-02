@@ -28,8 +28,8 @@ use mod_minilesson\local\itemform\baseform;
 
 use mod_minilesson\constants;
 
-class itemform extends baseform
-{
+class itemform extends baseform {
+
     // Got list from https://api.github.com/repos/hakimel/reveal.js/contents/css/theme/source?ref=5.2.1
     const THEMES = [
         'beige',
@@ -52,8 +52,7 @@ class itemform extends baseform
     /**
      * Add any form fields specific to this item type.
      */
-    public function custom_definition()
-    {
+    public function custom_definition() {
         global $PAGE;
         $mform = $this->_form;
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('slides_instructions1', constants::M_COMPONENT));
@@ -85,7 +84,15 @@ class itemform extends baseform
         $PAGE->requires->js_call_amd(
             constants::M_COMPONENT . '/codeeditor',
             'setupCodeEditor',
-            ['id_' . itemtype::MARKDOWN, ['language' => $initiallanguage]]
+            [
+                'id_' . itemtype::MARKDOWN,
+                [
+                    'language' => $initiallanguage,
+                    'aihelper' => true,
+                    'itemtype' => 'slides',
+                    'contextid' => $this->context->id,
+                ],
+            ]   
         );
 
         // Add JS to switch editor language when Content Mode changes.
@@ -136,7 +143,6 @@ class itemform extends baseform
             ],
             0
         );
-
 
         $mform->registerNoSubmitButton('previewbutton');
         $previewbtn = $mform->addElement('submit', 'previewbutton', get_string('slides:preview', constants::M_COMPONENT));

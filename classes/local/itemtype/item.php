@@ -414,6 +414,27 @@ abstract class item implements \templatable, \renderable
         return $prompt;
     }
 
+    /**
+     * Builds the prompt for the AI helper in the code editor.
+     *
+     * @param string $language The language of the code (e.g., 'yarn', 'markdown', 'html').
+     * @param string $prompt The user's prompt.
+     * @param string $currentcode The current code in the editor.
+     * @return string The full prompt for the AI.
+     */
+    public static function codeeditor_build_prompt($language, $prompt, $currentcode) {
+        $fullprompt = "You are an assistant helping a teacher create or edit educational content." . PHP_EOL;
+        $fullprompt .= "The current language/format is: " . $language . PHP_EOL;
+        if (!empty($currentcode)) {
+            $fullprompt .= "The existing code is:" . PHP_EOL . "---" . PHP_EOL . $currentcode . PHP_EOL . "---" . PHP_EOL;
+            $fullprompt .= "Please modify the existing code based on this instruction: " . $prompt . PHP_EOL;
+        } else {
+            $fullprompt .= "Please create new code based on this instruction: " . $prompt . PHP_EOL;
+        }
+        $fullprompt .= "Only return the code itself, without any explanations or markdown code blocks unless they are part of the content.";
+        return $fullprompt;
+    }
+
     protected function get_common_elements($testitem)
     {
         global $CFG;
