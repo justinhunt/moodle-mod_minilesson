@@ -40,7 +40,7 @@ $settings->add(
         constants::M_COMPONENT . "/provider",
         get_string('provider', 'minilessonitem_audiochat'),
         '',
-        itemtype::PROVIDER_OPENAI,
+        itemtype::PROVIDER_CLOUDPOODLL,
         [
             itemtype::PROVIDER_OPENAI => get_string('openai', 'minilessonitem_audiochat'),
             itemtype::PROVIDER_GEMINI => get_string('gemini', 'minilessonitem_audiochat'),

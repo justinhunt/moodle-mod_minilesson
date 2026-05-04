@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -44,8 +43,14 @@ require_sesskey();
 // For cloudpoodll we get it from our cloud poodll server.
 $provider = get_config(constants::M_COMPONENT, 'provider');
 if ($provider == itemtype::PROVIDER_CLOUDPOODLL) {
-    $jsontoken = utils::fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad);
-    return $jsontoken;
+    $jsontoken = \mod_minilesson\utils::fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad);
+    if ($jsontoken) {
+        header('Content-Type: application/json');
+        echo $jsontoken;
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Could not fetch token from CloudPoodll']);
+    }
     die;
 }
 

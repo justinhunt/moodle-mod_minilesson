@@ -256,6 +256,8 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             formData.append('sesskey', M.cfg.sesskey);
             formData.append('voice', self.audiochat_voice);
             formData.append('disablevad', !self.autocreateresponse);
+            // Ideally this should be an AJAX request to a minilesson web service method,
+            // but to keep things "in subplugin" for now we call a subplugin helper file
             return fetch(
                 M.cfg.wwwroot + '/mod/minilesson/item/audiochat/geminilive.php',
                 {

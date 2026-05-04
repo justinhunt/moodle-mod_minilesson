@@ -92,28 +92,22 @@ class itemform extends baseform {
                     'itemtype' => 'slides',
                     'contextid' => $this->context->id,
                 ],
-            ]   
+            ],
         );
 
         // Add JS to switch editor language when Content Mode changes.
-        $js = "
-            (function() {
-                const selectElement = document.querySelector('[data-control=\"slidescontenttype\"]');
-                if (selectElement) {
-                    selectElement.addEventListener('change', function() {
-                        const lang = this.value == " . itemtype::CONTENTTYPE_HTML . " ? 'html' : 'markdown';
-                        // The codeeditor AMD module should have a way to refresh or we just re-init if possible.
-                        // However, Moodle's AMD may not easily allow re-calling setupCodeEditor on the same ID.
-                        // Usually, the best way in mod_minilesson's generic codeeditor is to refresh it.
-                        // Let's assume for now that we might need an update to codeeditor.js or a specific call.
-                        // For this implementation, we will try to dispatch a custom event that codeeditor.js can listen to.
-                        const event = new CustomEvent('ml_slides_contenttype_change', { detail: { language: lang } });
-                        document.getElementById('id_" . itemtype::MARKDOWN . "').dispatchEvent(event);
-                    });
-                }
-            })();
-        ";
-        $PAGE->requires->js_amd_inline($js);
+        $contenttypeel = $mform->getElement(itemtype::CONTENTTYPE);
+        $contenttypeel->_generateId();
+        $contenttypeid = $contenttypeel->getAttribute('id');
+        $PAGE->requires->js_call_amd(
+            'minilessonitem_slides/itemtype',
+            'register_format_switcher',
+            [
+                $contenttypeid,
+                'id_' . itemtype::MARKDOWN,
+                itemtype::CONTENTTYPE_HTML,
+            ]
+        );
 
         // Files upload area.
         $this->add_media_upload(constants::FILEANSWER . '1', get_string('slides:attachments', constants::M_COMPONENT), false, 'image,audio,video', -1);

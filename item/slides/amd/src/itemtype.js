@@ -147,6 +147,24 @@ define(
                         RevealImplement.setTheme(themeselect.value);
                     }
                 }
+            },
+
+            register_format_switcher: function(selectid, editorid, htmlvalue) {
+                var selectElement = document.getElementById(selectid);
+                if (selectElement) {
+                    selectElement.addEventListener('change', function() {
+                        var lang = this.value == htmlvalue ? 'html' : 'markdown';
+                        var event = new CustomEvent('ml_slides_contenttype_change', {
+                            detail: {
+                                language: lang
+                            }
+                        });
+                        var editor = document.getElementById(editorid);
+                        if (editor) {
+                            editor.dispatchEvent(event);
+                        }
+                    });
+                }
             }
         }; //end of return value
     }

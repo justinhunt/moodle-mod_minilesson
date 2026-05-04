@@ -87,11 +87,10 @@ class itemtype extends item {
         $testitem = parent::export_for_template($output);
         $testitem = $this->set_layout($testitem);
         $testitem->itisningxiaregion = false;
-        $provider = get_config(constants::M_COMPONENT, 'provider') ?? self::PROVIDER_GEMINI;
+        $provider = get_config(constants::M_COMPONENT, 'provider') ?: self::PROVIDER_CLOUDPOODLL;
 
-        // Do we have an OpenAI key? (we need one).
+        // Lets see if we can chat
         $testitem->canchat = false;
-        
         if ($provider == self::PROVIDER_OPENAI) {
             $apikey = get_config(constants::M_COMPONENT, 'openaikey');
             $testitem->provider = get_string('openai', self::get_component());
@@ -100,10 +99,20 @@ class itemtype extends item {
             $apikey = get_config(constants::M_COMPONENT, 'geminiapikey');
             $testitem->provider = get_string('gemini', self::get_component());
             $testitem->canchat = !empty($apikey);
+        } else if ($provider == self::PROVIDER_CLOUDPOODLL) {
+            $testitem->provider = get_string('cloudpoodll', self::get_component());
+            $testitem->canchat = true;
         } else {
             $testitem->provider = get_string('unknown', self::get_component());
             $testitem->canchat = false;
         }
+
+        // If we add a cloud poodll recorder to the page these are also added, but here we just add them manually.
+        $testitem->language = $this->language;
+        $testitem->region = $this->region;
+        // For now cloudpoodll = gemini as far as JS is concerned ..
+        // But in PHP cloudpoodll means we fetch the token from cloud poodll (in geminilive.php)
+        $testitem->chatprovider = ($provider == self::PROVIDER_CLOUDPOODLL) ? self::PROVIDER_GEMINI : $provider;
 
         $testitem->itisningxiaregion = $this->region == 'ningxia';
 
@@ -211,15 +220,13 @@ class itemtype extends item {
             $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
         }
 
+        // We also want to show the question topic.
+        $testitem->topic = $this->itemrecord->{self::TOPIC};
+
         // We might need cmid and itemid to do the AI evaluation by ajax.
         $testitem->itemid = $this->itemrecord->id;
         // Not sure if we need this.
         $testitem->maxtime = $this->itemrecord->timelimit;
-
-        // If we add a cloud poodll recorder to the page these are also added, but here we just add them manually.
-        $testitem->language = $this->language;
-        $testitem->region = $this->region;
-        $testitem->chatprovider = $provider;
 
         $imgaudioavatar = $this->itemrecord->{self::AUDIOAVATAR} ?
             $this->itemrecord->{self::AUDIOAVATAR} :

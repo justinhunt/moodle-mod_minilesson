@@ -34,4 +34,5 @@ $string['openai'] = 'OpenAI';
 $string['pluginname'] = 'Audio chat';
 $string['privacy:metadata'] = 'The Audio chat plugin doesn\'t store any personal data.';
 $string['provider'] = 'Provider';
+$string['unknown'] = 'Unknown';
 

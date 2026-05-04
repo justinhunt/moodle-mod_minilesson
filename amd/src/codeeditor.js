@@ -30302,6 +30302,21 @@ var CodeEditor = (() => {
     EditorView.lineWrapping
   ];
   var getMoodle = () => window.CodeEditor ? window.CodeEditor.Moodle : null;
+  var languageConf = new Compartment();
+  function getLanguageExtension(lang) {
+    if (lang === "yarn") {
+      return [
+        yarnLanguage,
+        yarnLinter,
+        autocompletion({ override: [yarnCompletions] })
+      ];
+    } else if (lang === "markdown") {
+      return [markdown()];
+    } else if (lang === "html") {
+      return [html()];
+    }
+    return [];
+  }
   function setupCodeEditor(elementId, config2 = {}) {
     let element = typeof elementId === "string" ? document.getElementById(elementId) : elementId;
     if (!element) {
@@ -30310,16 +30325,6 @@ var CodeEditor = (() => {
     }
     let isTextArea = element.tagName === "TEXTAREA";
     let docContent = config2.doc !== void 0 ? config2.doc : isTextArea ? element.value : "";
-    let languageExtension = [];
-    if (config2.language === "yarn") {
-      languageExtension = [
-        yarnLanguage,
-        yarnLinter,
-        autocompletion({ override: [yarnCompletions] })
-      ];
-    } else if (config2.language === "markdown") {
-      languageExtension = [markdown()];
-    }
     let maxLines = config2.lines || 30;
     let editorTheme = EditorView.theme({
       "&": {
@@ -30337,7 +30342,7 @@ var CodeEditor = (() => {
       doc: docContent,
       extensions: [
         basicSetup,
-        languageExtension,
+        languageConf.of(getLanguageExtension(config2.language)),
         editorTheme,
         EditorView.updateListener.of((update) => {
           if (update.docChanged) {
@@ -30372,6 +30377,20 @@ var CodeEditor = (() => {
     if (config2.aihelper) {
       addAIHelperButton(container, view, config2);
     }
+    element.addEventListener("ml_codeeditor_set_language", (e) => {
+      const newLang = e.detail.language;
+      if (newLang) {
+        console.log("CodeEditor: Switching language to " + newLang);
+        config2.language = newLang;
+        view.dispatch({
+          effects: languageConf.reconfigure(getLanguageExtension(newLang))
+        });
+      }
+    });
+    element.addEventListener("ml_slides_contenttype_change", (e) => {
+      const newLang = e.detail.language;
+      element.dispatchEvent(new CustomEvent("ml_codeeditor_set_language", { detail: { language: newLang } }));
+    });
     return view;
   }
   function addAIHelperButton(container, view, config2) {
@@ -30433,6 +30452,7 @@ var CodeEditor = (() => {
             responsePre.text(res.response);
             responseContainer.removeClass("d-none");
             applyBtn.removeClass("d-none");
+            generateBtn.addClass("d-none");
           } else {
             console.log("AI Generation failed using: " + res.provider);
             responsePre.text("Error: " + (res.message || "Unknown error"));

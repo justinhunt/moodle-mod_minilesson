@@ -1,0 +1,33 @@
+@use '../abstracts/variables' as *;
+
+// Standard bounce keyframes (Tailwind style)
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+// Custom minilesson bounce for staggered dots
+@keyframes minilesson_bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+  }
+  50% {
+    transform: translateY(0);
+  }
+}
+
+// Utility classes
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+.animate-bounce-custom {
+  // This is used as a wrapper in some templates
+  // The animation is applied to children typically
+}

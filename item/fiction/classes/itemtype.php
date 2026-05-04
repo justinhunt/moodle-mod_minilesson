@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,8 +28,8 @@ use mod_minilesson\utils;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
+class itemtype extends item {
+
     public const YARN = 'customtext1';
     public const YARN_DEFAULT = "title: Start\n---\nNarrator: We're going to go on an adventure!\n\n<<jump Cave>>\n===\n\ntitle: Cave\n---\nNarrator: Let's look inside the spooky cave...\n<<jump theend>>\n===\n\ntitle: theend\n---\nNarrator: The end...\n===";
     public const PRESENTATION_MODE = 'customint1';
@@ -47,8 +46,7 @@ class itemtype extends item
      * @param object|false $context The context object.
      * @return void
      */
-    public function from_record($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function from_record($itemrecord, $moduleinstance = false, $context = false) {
         parent::from_record($itemrecord, $moduleinstance, $context);
         $this->filemanageroptions['maxfiles'] = -1;
     }
@@ -61,8 +59,7 @@ class itemtype extends item
      * @param object|false $context The context object.
      * @return void
      */
-    public function __construct($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
         $this->needs_speechrec = true;
     }
@@ -73,15 +70,13 @@ class itemtype extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
         global $USER;
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
         $testitem->region = $this->region;
-
 
         $imageserveurl = urldecode(\moodle_url::make_pluginfile_url(
             $this->context->id,
@@ -124,24 +119,24 @@ class itemtype extends item
         $fictionyarn = preg_replace_callback(
             '/<<(?:picture|audio|video)\s+(?<filename>[^>]+)>>/',
             function ($matches) use ($imageserveurl, $filenames) {
-            $filename = trim($matches['filename']);
+                $filename = trim($matches['filename']);
 
-            // Skip if it's already a full URL (http/https).
-            if (preg_match('/^https?:\/\//', $filename)) {
-                return $matches[0];
-            }
+                // Skip if it's already a full URL (http/https).
+                if (preg_match('/^https?:\/\//', $filename)) {
+                    return $matches[0];
+                }
 
-            // Skip if the file does not exist in the file area.
-            if (!in_array($filename, $filenames)) {
-                return $matches[0];
-            }
+                // Skip if the file does not exist in the file area.
+                if (!in_array($filename, $filenames)) {
+                    return $matches[0];
+                }
 
-            // Add base path (and escape spaces if needed).
-            $newsrc = str_replace('{filename}', rawurlencode($filename), $imageserveurl);
+                // Add base path (and escape spaces if needed).
+                $newsrc = str_replace('{filename}', rawurlencode($filename), $imageserveurl);
 
-            // Replace only the filename part.
-            return str_replace($filename, $newsrc, $matches[0]);
-        },
+                // Replace only the filename part.
+                return str_replace($filename, $newsrc, $matches[0]);
+            },
             $this->itemrecord->{ self::YARN}
         );
 
@@ -209,8 +204,7 @@ class itemtype extends item
      * @param string $yarn The yarn to sanitize.
      * @return string The sanitized yarn.
      */
-    public function sanitize_yarn($yarn)
-    {
+    public function sanitize_yarn($yarn) {
         // 1. Remove zero-width chars (Space-efficient way to include the BOM)
         $yarn = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}]/u', '', $yarn);
 
@@ -238,8 +232,7 @@ class itemtype extends item
      * @param object $cm The course module object.
      * @return \stdClass|false An error object if validation fails, or false if no error.
      */
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -257,8 +250,7 @@ class itemtype extends item
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type.
      * @return array
      */
-    public static function get_keycolumns()
-    {
+    public static function get_keycolumns() {
         // Get the basic key columns and customize a little for instances of this item type.
         $keycols = parent::get_keycolumns();
         $keycols['text1'] = [
@@ -310,8 +302,7 @@ class itemtype extends item
      * @param string $generatemethod The method of generation.
      * @return string The prompt to be used.
      */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create an adventure fiction story in yarn format on the topic of: [{topic}] ";
@@ -340,13 +331,28 @@ class itemtype extends item
      * @return string The full prompt for the AI.
      */
     public static function codeeditor_build_prompt($language, $prompt, $currentcode) {
-        $fullprompt = "You are an assistant helping a teacher create or edit interactive fiction in Yarn format." . PHP_EOL;
-        $fullprompt .= "The format is: YARN v2.0 (extended for Poodll)" . PHP_EOL;
-        $fullprompt .= "Rules for Yarn:" . PHP_EOL;
-        $fullprompt .= "- Start with a 'Start' node." . PHP_EOL;
-        $fullprompt .= "- Use '===' to separate nodes." . PHP_EOL;
-        $fullprompt .= "- Use '-> Option Text [[NodeName]]' for choices." . PHP_EOL;
-        $fullprompt .= "- Each node starts with a title like 'title: NodeName'." . PHP_EOL;
+        $fullprompt = "You are an assistant helping a teacher create or edit interactive fiction in Yarn Spinner format." . PHP_EOL;
+        $fullprompt .= "The format is: YARN v2.0 (Bondage.js implementation)" . PHP_EOL . PHP_EOL;
+
+        $fullprompt .= "### YARN SYNTAX CHEAT SHEET ###" . PHP_EOL;
+        $fullprompt .= "- Node Header: title: NodeName (First node must be 'Start')." . PHP_EOL;
+        $fullprompt .= "- Node Delimiter: '---' on a new line after the header." . PHP_EOL;
+        $fullprompt .= "- Node Terminator: '===' on a new line at the very end of every node." . PHP_EOL;
+        $fullprompt .= "- Commands: <<jump NodeName>>, <<set $var = $var + 1>>, <<picture file.jpg>>." . PHP_EOL;
+        $fullprompt .= "- Options: '-> Option Text <<jump NodeName>>'." . PHP_EOL;
+        $fullprompt .= "- Variables: Must be declared first: <<declare $score = 0>>. No compound operators (use $v = $v + 1, NOT +=)." . PHP_EOL;
+        $fullprompt .= "- Built-ins: {$userfirstname}, {$userfullname}, {$score}." . PHP_EOL . PHP_EOL;
+
+        $fullprompt .= "### EXAMPLE STRUCTURE ###" . PHP_EOL;
+        $fullprompt .= "title: Start" . PHP_EOL;
+        $fullprompt .= "---" . PHP_EOL;
+        $fullprompt .= "<<declare $knowssecret = false>>" . PHP_EOL;
+        $fullprompt .= "Character: Welcome, {$userfirstname}!" . PHP_EOL;
+        $fullprompt .= "-> Ask about secret" . PHP_EOL;
+        $fullprompt .= "    <<set $knowssecret = true>>" . PHP_EOL;
+        $fullprompt .= "    <<jump SecretRoom>>" . PHP_EOL;
+        $fullprompt .= "-> Say goodbye <<jump TheEnd>>" . PHP_EOL;
+        $fullprompt .= "===" . PHP_EOL . PHP_EOL;
 
         if (!empty($currentcode)) {
             $fullprompt .= "The existing Yarn code is:" . PHP_EOL . "---" . PHP_EOL . $currentcode . PHP_EOL . "---" . PHP_EOL;

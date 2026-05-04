@@ -842,7 +842,7 @@ class utils {
         $poodllregion = $conf->awsregion;
 
         // The REST API we are calling.
-        $functionname = 'local_cpapi_fetch_audiochat_token';
+        $functionname = 'local_cpapi_fetch_geminilive_token';
 
         // log.debug(params);
         $params = [];
@@ -862,17 +862,7 @@ class utils {
             $payloadobject = json_decode($response);
             if (isset($payloadobject->returnCode) && $payloadobject->returnCode == 0 && isset($payloadobject->returnMessage)) {
                 $thetoken = $payloadobject->returnMessage;
-                $tokenobject = [];
-                // We need to return something like this.
-                /*
-                header('Content-Type: application/json');
-                echo json_encode([
-                    'ephemeralToken' => $response->name,
-                    'url' => 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained',
-                    'model' => $model,
-                ]);
-                */
-                return $tokenobject;
+                return $thetoken;
             } else {
                 return false;
             }

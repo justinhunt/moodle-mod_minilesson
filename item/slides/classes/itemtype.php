@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,8 +28,8 @@ use moodle_url;
  * @copyright  2023 Your Name <your@email.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
+class itemtype extends item {
+
     public const MARKDOWN = 'customtext1';
     public const FULLSCREEN = 'customint1';
     public const MARKDOWN_DEFAULT = "# Slide 1 Title\n\nYour content here. Use markdown syntax to format text and add images.\n\n---\n\n# Slide 2 Title\n\nMore content here. You can add as many slides as you need.\n";
@@ -41,9 +40,8 @@ class itemtype extends item
     public const CONTENTTYPE_MARKDOWN = 0;
     public const CONTENTTYPE_HTML = 1;
 
-    //the item type
-    public function from_record($itemrecord, $moduleinstance = false, $context = false)
-    {
+    // the item type
+    public function from_record($itemrecord, $moduleinstance = false, $context = false) {
         parent::from_record($itemrecord, $moduleinstance, $context);
         $this->filemanageroptions['maxfiles'] = -1;
     }
@@ -54,8 +52,7 @@ class itemtype extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
@@ -160,12 +157,10 @@ class itemtype extends item
         $testitem->selectedfontsize = $this->itemrecord->{self::SLIDEFONTSIZE};
         $testitem->fullscreen = $this->itemrecord->{self::FULLSCREEN};
 
-
         return $testitem;
     }
 
-    public static function sanitize_markdown($md)
-    {
+    public static function sanitize_markdown($md) {
 
         // Remove zero-width chars.
         $md = preg_replace('/[\x{200B}\x{200C}\x{200D}\x{FEFF}]/u', '', $md);
@@ -182,21 +177,19 @@ class itemtype extends item
     /**
      * Replaces ::: class syntax with divs to create grid layouts
      */
-    public static function process_layout_markdown($md)
-    {
+    public static function process_layout_markdown($md) {
         // Replace opening tags. Use [ \t]* so we don't accidentally consume newlines and merge previous slides together!
         // Tolerate \r before end-of-line in case of Windows CRLF line endings.
         // Inject \n\n around the block so that Marked.js isolates the HTML elements and resumes standard markdown-parsing inside them.
         $md = preg_replace('/^:::[ \t]*([a-zA-Z0-9_\-]+)[ \t]*\r?$/m', "\n\n<div class=\"ml_slides_$1\">\n\n", $md);
-        
+
         // Replace closing tags
         $md = preg_replace('/^:::[ \t]*\r?$/m', "\n\n</div>\n\n", $md);
 
         return $md;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -213,8 +206,7 @@ class itemtype extends item
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
      */
-    public static function get_keycolumns()
-    {
+    public static function get_keycolumns() {
         // Get the basic key columns and customize a little for instances of this item type.
         $keycols = parent::get_keycolumns();
         $keycols['text1'] = ['jsonname' => 'slidesmarkdown', 'type' => 'string', 'optional' => false, 'default' => [], 'dbname' => self::MARKDOWN];
@@ -224,15 +216,13 @@ class itemtype extends item
         $keycols['int2'] = ['jsonname' => 'slidescontenttype', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => self::CONTENTTYPE];
         $keycols[self::FILES] = ['jsonname' => self::FILES, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
 
-
         return $keycols;
     }
 
     /*
-  This function return the prompt that the generate method requires.
-  */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    This function return the prompt that the generate method requires.
+    */
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create a reveal.js presentation in markdown format to summarize and explain the following topic: [{text}]";
@@ -262,22 +252,36 @@ class itemtype extends item
      */
     public static function codeeditor_build_prompt($language, $prompt, $currentcode) {
         $fullprompt = "You are an assistant helping a teacher create or edit educational slides for Reveal.js." . PHP_EOL;
-        $fullprompt .= "The format is: " . strtoupper($language) . PHP_EOL;
-        $fullprompt .= "Rules for Slides:" . PHP_EOL;
-        $fullprompt .= "- Use '---' to separate slides." . PHP_EOL;
-        $fullprompt .= "- Each slide should have a clear heading." . PHP_EOL;
+        $fullprompt .= "The format is: " . strtoupper($language) . PHP_EOL . PHP_EOL;
+
         if ($language == 'html') {
-            $fullprompt .= "- Use semantic HTML5 elements where appropriate." . PHP_EOL;
-            $fullprompt .= "- Do not include <html>, <head> or <body> tags. Just the slide content." . PHP_EOL;
+            $fullprompt .= "### HTML SLIDES CHEAT SHEET ###" . PHP_EOL;
+            $fullprompt .= "- Slide Separator: Use <section> tags to wrap each slide." . PHP_EOL;
+            $fullprompt .= "- Headings: Use <h1>, <h2>, etc. (NEVER use Markdown #)." . PHP_EOL;
+            $fullprompt .= "- Backgrounds: <section data-background-color=\"#ff0000\">" . PHP_EOL;
+            $fullprompt .= "- Fragments: <p class=\"fragment\">This appears on click</p>" . PHP_EOL;
+            $fullprompt .= "- Layouts: Use <div class=\"ml_slides_2cols\"> for columns." . PHP_EOL;
+            $fullprompt .= "- Images: <img src=\"filename.jpg\" alt=\"description\"> (No path needed, just filename)." . PHP_EOL;
+            $fullprompt .= "- Content: Use standard tags like <ul>, <li>, <p>, <strong>." . PHP_EOL . PHP_EOL;
+        } else {
+            $fullprompt .= "### MARKDOWN SLIDES CHEAT SHEET ###" . PHP_EOL;
+            $fullprompt .= "- Slide Separator (Horizontal): '---' on a new line." . PHP_EOL;
+            $fullprompt .= "- Slide Separator (Vertical): '--' on a new line." . PHP_EOL;
+            $fullprompt .= "- Headings: # Title, ## Subtitle." . PHP_EOL;
+            $fullprompt .= "- Layouts: ::: 2cols, ::: 3cols, ::: 4cols, ::: 2x2grid. Wrap columns in ::: col." . PHP_EOL;
+            $fullprompt .= "- Images: ![alt](filename.jpg) (No path needed, just filename)." . PHP_EOL;
+            $fullprompt .= "- Slide Attributes: <!-- .slide: data-background=\"#ff0000\" -->" . PHP_EOL;
+            $fullprompt .= "- Element Attributes: <!-- .element: class=\"fragment\" --> (for reveal-on-click)." . PHP_EOL;
+            $fullprompt .= "- Horizontal Line: '***' or '-----'." . PHP_EOL . PHP_EOL;
         }
 
         if (!empty($currentcode)) {
-            $fullprompt .= "The existing slide code is:" . PHP_EOL . "---" . PHP_EOL . $currentcode . PHP_EOL . "---" . PHP_EOL;
-            $fullprompt .= "Please modify the existing code based on this instruction: " . $prompt . PHP_EOL;
+            $fullprompt .= "The existing slide code is:" .  PHP_EOL . PHP_EOL . $currentcode . PHP_EOL .  PHP_EOL;
+            $fullprompt .= "Please modify the existing code based on this instruction: " . PHP_EOL . $prompt . PHP_EOL;
         } else {
-            $fullprompt .= "Please create new slides based on this instruction: " . $prompt . PHP_EOL;
+            $fullprompt .= "Please create new slides based on this instruction: " . PHP_EOL . $prompt . PHP_EOL;
         }
-        $fullprompt .= "Only return the code itself, without any explanations or markdown code blocks unless they are part of the content.";
+        $fullprompt .= "Only return the code itself, without any explanations or markdown code blocks (like ```html) unless they are part of the content.";
         return $fullprompt;
     }
 }
