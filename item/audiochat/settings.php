@@ -39,7 +39,7 @@ $settings->add(
     new admin_setting_configselect(
         constants::M_COMPONENT . "/provider",
         get_string('provider', 'minilessonitem_audiochat'),
-        '',
+        get_string('provider_details', 'minilessonitem_audiochat'),
         itemtype::PROVIDER_CLOUDPOODLL,
         [
             itemtype::PROVIDER_OPENAI => get_string('openai', 'minilessonitem_audiochat'),

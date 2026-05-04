@@ -34,5 +34,5 @@ $string['openai'] = 'OpenAI';
 $string['pluginname'] = 'Audio chat';
 $string['privacy:metadata'] = 'The Audio chat plugin doesn\'t store any personal data.';
 $string['provider'] = 'Provider';
+$string['provider_details'] = 'Select an AI provider for the Audio Chat item. Cloud Poodll should will work out of the box, though not in Ningxia region. For the others you need to provide an API key in the minilesson admin BYOK settings.';
 $string['unknown'] = 'Unknown';
-
