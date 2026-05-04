@@ -91,6 +91,7 @@ class itemform extends baseform {
                     'aihelper' => true,
                     'itemtype' => 'slides',
                     'contextid' => $this->context->id,
+                    'ai_placeholder' => get_string('aihelper_placeholder_slides', constants::M_COMPONENT),
                 ],
             ],
         );

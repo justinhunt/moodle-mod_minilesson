@@ -30417,7 +30417,9 @@ var CodeEditor = (() => {
     const { Ajax, Modal, ModalEvents, Templates, Str } = Moodle;
     Modal.create({
       title: Str.get_string("aihelper_modal_title", "mod_minilesson"),
-      body: Templates.render("mod_minilesson/aihelper_modal", {}),
+      body: Templates.render("mod_minilesson/aihelper_modal", {
+        placeholder: config2.ai_placeholder || ""
+      }),
       footer: Templates.render("mod_minilesson/aihelper_modal_footer", {}),
       large: false
     }).then((modal) => {

@@ -57,6 +57,7 @@ class itemform extends baseform {
                     'aihelper' => true,
                     'itemtype' => 'fiction',
                     'contextid' => $this->context->id,
+                    'ai_placeholder' => get_string('aihelper_placeholder_fiction', constants::M_COMPONENT),
                 ],
             ]
         );

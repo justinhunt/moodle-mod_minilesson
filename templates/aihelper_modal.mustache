@@ -1,7 +1,8 @@
 <div class="mod_minilesson_aihelper_modal">
+    <p class="text-muted small mb-3">{{#str}} aihelper_modal_instruction, mod_minilesson {{/str}}</p>
     <div class="form-group">
         <label for="mod_minilesson_aihelper_prompt">{{#str}} aihelper_prompt_label, mod_minilesson {{/str}}</label>
-        <textarea id="mod_minilesson_aihelper_prompt" class="form-control" rows="4" placeholder="{{#str}} aihelper_prompt_placeholder, mod_minilesson {{/str}}"></textarea>
+        <textarea id="mod_minilesson_aihelper_prompt" class="form-control" rows="4" placeholder="{{#placeholder}}{{placeholder}}{{/placeholder}}{{^placeholder}}{{#str}} aihelper_prompt_placeholder, mod_minilesson {{/str}}{{/placeholder}}"></textarea>
     </div>
     <div class="mod_minilesson_aihelper_response_container d-none">
         <label>{{#str}} aihelper_response_label, mod_minilesson {{/str}}</label>
