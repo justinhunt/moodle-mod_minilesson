@@ -1,6 +1,6 @@
 define(
-    ['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper','mod_minilesson/animatecss'],
-    function ($, log, def, polly, anim) {
+    ['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper','mod_minilesson/animatecss', 'mod_minilesson/progresstimer'],
+    function ($, log, def, polly, anim, progresstimer) {
         "use strict"; // jshint ;_;
 
     /*

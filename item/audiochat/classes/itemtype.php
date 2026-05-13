@@ -512,10 +512,17 @@ class itemtype extends item {
     }
 
     public static function is_configured() {
+        return parent::is_configured();
+
+        // Previously we required keys before it could be considered configured.
+        // But now with CloudPoodll selected as provider it will work.
+
+        /*
         if (!parent::is_configured()) {
             return false;
         }
         $config = get_config(constants::M_COMPONENT);
         return !empty($config->openaikey) || !empty($config->geminiapikey);
+        */
     }
 }

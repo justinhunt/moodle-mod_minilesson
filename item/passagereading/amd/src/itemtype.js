@@ -1,7 +1,7 @@
 define(
     ['jquery', 'core/log', 'mod_minilesson/definitions',
-    'mod_minilesson/ttrecorder', 'core/notification', 'core/str', 'core/templates'],
-    function ($, log, def, ttrecorder, notification, str, templates) {
+    'mod_minilesson/ttrecorder', 'core/notification', 'core/str', 'core/templates', 'mod_minilesson/progresstimer'],
+    function ($, log, def, ttrecorder, notification, str, templates, progresstimer) {
         "use strict"; // jshint ;_;
 
       /*

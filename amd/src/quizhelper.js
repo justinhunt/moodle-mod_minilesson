@@ -260,9 +260,17 @@ define(
             },
 
             start_quiz: function () {
-                const resumeindex = this.stepresults.length;
+                var resumeindex = this.stepresults.length;
+                const quizlength = this.quizdata.length;
+
+                // If an item had been removed shortening the lesson, we start from the beginning
+                if (resumeindex >= quizlength) {
+                    resumeindex = 0;
+                }
+
                 const $container = $("#" + this.quizdata[resumeindex].uniqueid + "_container");
                 this.showStep($container, resumeindex);
+
             },
 
             //this function is overridden by the calling class

@@ -9,7 +9,8 @@ define([
     'core/modal_cancel',
     'core/fragment',
     'core/templates',
-], function ($, log, str, notification, def, translate, YarnBound, ModalCancel, Fragment, Templates) {
+    'mod_minilesson/progresstimer',
+], function ($, log, str, notification, def, translate, YarnBound, ModalCancel, Fragment, Templates, progresstimer) {
     "use strict"; // jshint ;_;
 
     /**

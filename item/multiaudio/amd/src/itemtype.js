@@ -3,8 +3,9 @@ define(['jquery',
     'mod_minilesson/definitions',
     'mod_minilesson/pollyhelper',
     'mod_minilesson/ttrecorder',
-    'mod_minilesson/animatecss'
-    ], function ($, log, def, polly, ttrecorder,anim) {
+    'mod_minilesson/animatecss',
+    'mod_minilesson/progresstimer'
+    ], function ($, log, def, polly, ttrecorder,anim,progresstimer) {
         "use strict"; // jshint ;_;
 
   /*

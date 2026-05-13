@@ -1,3 +1,8 @@
+Version 1.1.35 (Build 2026051300)
+- Fix for error with some items using progress timer
+- Better display of topic in AudioChat
+- Fixed issue with AudioChat not enabling if API keys were not set
+
 Version 1.1.34 (Build 2026050100)
 - Fixed "getting-ready" animation for audio chat.
 - Added Gemini and Cloud Poodll providers for Audio Chat
