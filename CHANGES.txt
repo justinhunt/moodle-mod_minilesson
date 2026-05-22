@@ -1,3 +1,6 @@
+Version 1.1.36 (Build 2026052200)
+- Fixed broken audio chat when using openai (old model no longer available)
+
 Version 1.1.35 (Build 2026051300)
 - Fix for error with some items using progress timer
 - Better display of topic in AudioChat

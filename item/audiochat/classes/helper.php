@@ -43,7 +43,7 @@ class helper {
         }
 
         $offer = file_get_contents("php://input");
-        $model = "gpt-4o-mini-realtime-preview";
+        $model = "gpt-realtime-mini";
         $serverurl = "https://api.openai.com/v1/realtime/calls";
 
         $curl = new \curl();
