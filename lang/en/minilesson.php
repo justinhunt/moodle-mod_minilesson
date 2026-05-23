@@ -1309,3 +1309,9 @@ $string['aihelper_response_label'] = 'AI Response';
 $string['aihelper_generating'] = 'Generating content...';
 $string['aihelper_generate_btn'] = 'Generate';
 $string['aihelper_apply_btn'] = 'Apply to Editor';
+
+$string['completed'] = 'Completed';
+$string['progress'] = 'Progress';
+$string['notfound'] = 'Not found';
+$string['jobnotfound'] = 'The job with that id could not be found';
+$string['notaccess'] = 'You have no permission to see status';
