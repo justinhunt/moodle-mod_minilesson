@@ -13,6 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * OpenAPI Specs generation
  *
@@ -69,7 +70,7 @@ function build_schema_from_structure($structure, &$schemas, $name = '') {
 
         return [
             'type' => 'object',
-            'properties' => $properties
+            'properties' => $properties,
         ];
     }
 
@@ -80,14 +81,14 @@ function build_schema_from_structure($structure, &$schemas, $name = '') {
             'items' => build_schema_from_structure(
                 $structure->content,
                 $schemas,
-                $name . 'Item'
-            )
+                $name . 'Item',
+            ),
         ];
     }
 
     return [
         'type' => map_openapi_type($structure->type ?? PARAM_TEXT),
-        'description' => $structure->desc ?? ''
+        'description' => $structure->desc ?? '',
     ];
 }
 
@@ -97,20 +98,20 @@ $openapi = [
     'info' => [
         'title' => 'Moodle LMS',
         'version' => '1.0.0',
-        'description' => 'AI Generation APIs'
+        'description' => 'AI Generation APIs',
     ],
 
     'servers' => [
         [
             'url' => $CFG->wwwroot . '/webservice/rest/server.php',
-            'description' => 'Moodle REST API'
-        ]
+            'description' => 'Moodle REST API',
+        ],
     ],
 
     'security' => [
         [
-            'api_key' => []
-        ]
+            'api_key' => [],
+        ],
     ],
 
     'paths' => [],
@@ -120,8 +121,8 @@ $openapi = [
             'api_key' => [
                 'type' => 'apiKey',
                 'in' => 'query',
-                'name' => 'wstoken'
-            ]
+                'name' => 'wstoken',
+            ],
         ],
 
         'parameters' => [
@@ -131,19 +132,19 @@ $openapi = [
                 'required' => false,
                 'schema' => [
                     'type' => 'string',
-                    'default' => 'json'
-                ]
-            ]
+                    'default' => 'json',
+                ],
+            ],
         ],
 
-        'schemas' => []
-    ]
+        'schemas' => [],
+    ],
 ];
 
 $service = $DB->get_record('external_services', [
     'shortname' => 'aigenservice',
     'component' => constants::M_COMPONENT,
-    'enabled' => 1
+    'enabled' => 1,
 ], '*', MUST_EXIST);
 
 $webservicemanager = new webservice();
@@ -168,12 +169,12 @@ foreach ($functions as $function) {
             'required' => true,
             'schema' => [
                 'type' => 'string',
-                'default' => $function->name
-            ]
+                'default' => $function->name,
+            ],
         ],
         [
-            '$ref' => '#/components/parameters/WSRestFormat'
-        ]
+            '$ref' => '#/components/parameters/WSRestFormat',
+        ],
     ];
 
     $requestbodyproperties = [];
@@ -207,7 +208,7 @@ foreach ($functions as $function) {
                         'type' => map_openapi_type(
                             $subparam->type ?? PARAM_TEXT
                         ),
-                        'description' => $subparam->desc ?? ''
+                        'description' => $subparam->desc ?? '',
                     ];
 
                     if ($subrequired) {
@@ -223,9 +224,9 @@ foreach ($functions as $function) {
                         'items' => [
                             'type' => map_openapi_type(
                                 $param->content->type ?? PARAM_TEXT
-                            )
+                            ),
                         ],
-                        'description' => $param->desc ?? ''
+                        'description' => $param->desc ?? '',
                     ];
 
                 } else {
@@ -237,13 +238,13 @@ foreach ($functions as $function) {
                             $openapi['components']['schemas'],
                             ucfirst($key)
                         ),
-                        'description' => $param->desc ?? ''
+                        'description' => $param->desc ?? '',
                     ];
                 }
 
                 $requestbodyencoding[$key. '[]'] = [
                     'style' => "form",
-                    'explode' => true
+                    'explode' => true,
                 ];
 
                 if ($required) {
@@ -256,7 +257,7 @@ foreach ($functions as $function) {
                     'in' => 'query',
                     'required' => $required,
                     'schema' => $schema,
-                    'description' => $param->desc ?? ''
+                    'description' => $param->desc ?? '',
                 ];
             }
         }
@@ -285,19 +286,19 @@ foreach ($functions as $function) {
                 'content' => [
                     'application/json' => [
                         'schema' => [
-                            '$ref' => '#/components/schemas/' . $schemaname
-                        ]
-                    ]
-                ]
-            ]
-        ]
+                            '$ref' => '#/components/schemas/' . $schemaname,
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ];
 
     if (!empty($requestbodyproperties)) {
 
         $requestbodyschema = [
             'type' => 'object',
-            'properties' => $requestbodyproperties
+            'properties' => $requestbodyproperties,
         ];
 
         if (!empty($requestbodyrequired)) {
@@ -309,8 +310,8 @@ foreach ($functions as $function) {
             'content' => [
                 'application/x-www-form-urlencoded' => [
                     'schema' => $requestbodyschema,
-                ]
-            ]
+                ],
+            ],
         ];
 
         if (!empty($requestbodyencoding)) {
@@ -321,7 +322,7 @@ foreach ($functions as $function) {
 
 
     $openapi['paths'][$path] = [
-        $method => $operation
+        $method => $operation,
     ];
 }
 
@@ -332,7 +333,21 @@ $agentinstructions = <<<JSON
         "authentication": {
             "step_1_obtain_token": "POST to {MOODLE_URL}/login/token.php with username, password, and service name 'aigenservice'",
             "step_2_use_token": "Include wstoken parameter in all subsequent API calls",
-            "token_storage": "Store token securely using encrypted storage or environment variables"
+            "token_storage": "Store token securely using encrypted storage or environment variables",
+            "token_endpoint_response": {
+                "success": {
+                    "token": "string - the web service token to pass as wstoken on subsequent calls",
+                    "privatetoken": "string or null - secondary token used by some Moodle flows; usually ignored by API clients"
+                },
+                "error": {
+                    "error": "string - human-readable error message",
+                    "errorcode": "string - machine-readable code, e.g. 'invalidlogin', 'enablewsdescription'",
+                    "stacktrace": "string or null",
+                    "debuginfo": "string or null",
+                    "reproductionlink": "string or null"
+                },
+                "note": "HTTP status is 200 in both cases; distinguish success from failure by presence of 'token' vs 'errorcode'."
+            }
         },
         "typical_workflow": [
             {

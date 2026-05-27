@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,22 +29,21 @@ use stdClass;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
+class itemtype extends item {
+
     public const PARTIALLYRESPONSE = 'customtext3';
     public const TOTALMARKS = 'customint1';
     public const PARTIALLYMARKS = 'customint2';
     public const RESPONSETYPE = 'customint3';
 
-    //the item type
+    // the item type
     /**
      * The class constructor.
      *
      */
-    public function __construct($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec = true;
+        $this->needsspeechrec = true;
     }
 
     /**
@@ -54,8 +52,7 @@ class itemtype extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
@@ -67,18 +64,18 @@ class itemtype extends item
         $testitem->correctmarks = $this->itemrecord->{self::TOTALMARKS};
         $testitem->partialmarks = $this->itemrecord->{self::PARTIALLYMARKS};
 
-        //sentences
+        // sentences
         $sentences = [];
         if (isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
 
-        //partial answers
+        // partial answers
         $partialresponses = [];
         if (isset($testitem->{self::PARTIALLYRESPONSE})) {
             $partialresponses = explode(PHP_EOL, $testitem->{self::PARTIALLYRESPONSE});
         }
-        //build sentence objects containing display and phonetic text
+        // build sentence objects containing display and phonetic text
         $testitem->phonetic = $this->itemrecord->phonetic;
         if (!empty($testitem->phonetic)) {
             $phonetics = explode(PHP_EOL, $testitem->phonetic);
@@ -115,8 +112,7 @@ class itemtype extends item
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -127,16 +123,15 @@ class itemtype extends item
             return $error;
         }
 
-        //return false to indicate no error
+        // return false to indicate no error
         return false;
     }
 
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
      */
-    public static function get_keycolumns()
-    {
-        //get the basic key columns and customize a little for instances of this item type
+    public static function get_keycolumns() {
+        // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
@@ -150,8 +145,7 @@ class itemtype extends item
     /*
     This function return the prompt that the generate method requires.
     */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create a closed question (text) and a 1 dimensional array of  grammatically correct answers (sentences) to test the learners understanding of the following passage: [{text}] ";

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,17 +29,16 @@ use stdClass;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
-    //the item type
+class itemtype extends item {
+
+    // the item type
     /**
      * The class constructor.
      *
      */
-    public function __construct($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec = true;
+        $this->needsspeechrec = true;
     }
 
     /**
@@ -49,8 +47,7 @@ class itemtype extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
@@ -69,9 +66,9 @@ class itemtype extends item
         } else {
             $phonetics = [];
         }
-        $is_ssml = $testitem->voiceoption == constants::TTS_SSML;
+        $isssml = $testitem->voiceoption == constants::TTS_SSML;
         $dottify = $this->itemrecord->{constants::SHOWTEXTPROMPT} == constants::TEXTPROMPT_DOTS;
-        $testitem->sentences = $this->process_spoken_sentences($sentences, $phonetics, $dottify, $is_ssml);
+        $testitem->sentences = $this->process_spoken_sentences($sentences, $phonetics, $dottify, $isssml);
 
         // Do we need a streaming token?
         $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
@@ -94,16 +91,15 @@ class itemtype extends item
             }
         }
 
-        //cloudpoodll
+        // cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
 
         return $testitem;
     }
 
-    //overriding to get jp phonemes.
+    // overriding to get jp phonemes.
     // This is just zenkaku to hankaku for comparison of numbers
-    protected function process_japanese_phonetics($sentence, $thephonetic = false)
-    {
+    protected function process_japanese_phonetics($sentence, $thephonetic = false) {
         $sentence = mb_convert_kana($sentence, "n");
         return $sentence;
     }
@@ -111,15 +107,13 @@ class itemtype extends item
     /*
      * Remove any accents and chars that would mess up the transcript/passage matching
      */
-    public function deaccent()
-    {
+    public function deaccent() {
         $this->itemrecord->customtext1 = utils::remove_accents_and_poormatchchars($this->itemrecord->customtext1, $this->moduleinstance->ttslanguage);
     }
 
-    public function update_create_langmodel($olditemrecord)
-    {
-        //if we need to generate a DeepSpeech model for this, then lets do that now:
-        //we want to process the hashcode and lang model if it makes sense
+    public function update_create_langmodel($olditemrecord) {
+        // if we need to generate a DeepSpeech model for this, then lets do that now:
+        // we want to process the hashcode and lang model if it makes sense
         $thepassagehash = '';
         $newitem = $this->itemrecord;
 
@@ -128,14 +122,14 @@ class itemtype extends item
         if (utils::needs_lang_model($this->moduleinstance, $passage)) {
             $newpassagehash = utils::fetch_passagehash($this->language, $passage);
             if ($newpassagehash) {
-                //check if it has changed, if its a brand new one, if so register a langmodel
+                // check if it has changed, if its a brand new one, if so register a langmodel
                 if (!$olditemrecord || $olditemrecord->passagehash != ($this->region . '|' . $newpassagehash)) {
-                    //build a lang model
+                    // build a lang model
                     $ret = utils::fetch_lang_model($passage, $this->language, $this->region);
 
-                    //for doing a dry run
-                    //$ret=new \stdClass();
-                    //$ret->success=true;
+                    // for doing a dry run
+                    // $ret=new \stdClass();
+                    // $ret->success=true;
 
                     if ($ret && isset($ret->success) && $ret->success) {
                         $this->itemrecord->passagehash = $this->region . '|' . $newpassagehash;
@@ -143,15 +137,15 @@ class itemtype extends item
                     }
                 }
             }
-            //if we get here just set the new passage hash to the existing one
+            // if we get here just set the new passage hash to the existing one
             if ($olditemrecord) {
                 $this->itemrecord->passagehash = $olditemrecord->passagehash;
             } else {
-                //This would happen if the user changed region, forcing an update, but there was no valid cloud poodll token
+                // This would happen if the user changed region, forcing an update, but there was no valid cloud poodll token
                 $this->itemrecord->passagehash = '';
             }
         } else {
-            //I think this will never get here
+            // I think this will never get here
             $this->itemrecord->passagehash = '';
         }
         return false;
@@ -160,9 +154,8 @@ class itemtype extends item
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
      */
-    public static function get_keycolumns()
-    {
-        //get the basic key columns and customize a little for instances of this item type
+    public static function get_keycolumns() {
+        // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['text1'] = ['jsonname' => 'answers', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
@@ -174,8 +167,7 @@ class itemtype extends item
     /*
      * This is for use with importing, validating submitted data in each column
      */
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -192,15 +184,14 @@ class itemtype extends item
             return $error;
         }
 
-        //return false to indicate no error
+        // return false to indicate no error
         return false;
     }
 
     /*
      * This function return the prompt that the generate method requires for listening gap fill items.
      */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create a multichoice question(text) and a one dimensional array of 4 answers (answers) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] ";
@@ -222,8 +213,7 @@ class itemtype extends item
         return $prompt;
     }
 
-    public function upgrade_item($oldversion)
-    {
+    public function upgrade_item($oldversion) {
         global $DB;
 
         $success = true;

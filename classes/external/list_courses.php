@@ -33,15 +33,31 @@ require_once($CFG->dirroot . '/enrol/externallib.php');
 class list_courses extends core_enrol_external {
 
     /**
-     * Returns description of method parameters
+     * Returns description of method parameters.
+     *
+     * userid is intentionally dropped from the public parameter list: callers
+     * may only list their own courses, never another user's.
      *
      * @return external_function_parameters
      */
     public static function get_users_courses_parameters() {
-        global $USER;
         $payloadstructure = parent::get_users_courses_parameters();
-        $payloadstructure->keys['userid']->required = VALUE_OPTIONAL;
-        $payloadstructure->keys['userid']->default = $USER->id;
+        unset($payloadstructure->keys['userid']);
         return $payloadstructure;
+    }
+
+    /**
+     * List the authenticated caller's courses. The $userid argument is kept for
+     * signature compatibility with the parent but is intentionally ignored — we
+     * always operate on the authenticated user to avoid leaking other users'
+     * enrolments.
+     *
+     * @param int $userid ignored
+     * @param bool $returnusercount
+     * @return array of courses
+     */
+    public static function get_users_courses($userid = 0, $returnusercount = true) {
+        global $USER;
+        return parent::get_users_courses($USER->id, $returnusercount);
     }
 }

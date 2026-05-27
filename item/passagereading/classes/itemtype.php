@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -31,8 +30,8 @@ use stdClass;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
+class itemtype extends item {
+
     public const PASSAGE = 'customtext1';
 
     // The item type.
@@ -40,10 +39,9 @@ class itemtype extends item
       * The class constructor.
       *
       */
-    public function __construct($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec = true;
+        $this->needsspeechrec = true;
     }
 
 
@@ -53,14 +51,13 @@ class itemtype extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->set_layout($testitem);
         $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
-        $testitem->passagetext = $this->itemrecord->{itemtype::PASSAGE};
-        $testitem->passagehtml = \mod_minilesson\aitranscriptutils::render_passage($this->itemrecord->{itemtype::PASSAGE});
+        $testitem->passagetext = $this->itemrecord->{self::PASSAGE};
+        $testitem->passagehtml = \mod_minilesson\aitranscriptutils::render_passage($this->itemrecord->{self::PASSAGE});
 
         // Do we need a streaming token?
         $alternatestreaming = get_config(constants::M_COMPONENT, 'alternatestreaming');
@@ -83,7 +80,7 @@ class itemtype extends item
             }
         }
 
-        //add a few things to enable the saving of uploaded audio (on S3)
+        // add a few things to enable the saving of uploaded audio (on S3)
         $testitem->savemedia = 1; // For now this is disabled
         $testitem->savemediaregion = $this->moduleinstance->region;
         $testitem->transcode = 1;
@@ -96,14 +93,13 @@ class itemtype extends item
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{itemtype::PASSAGE} == '') {
-            $error->col = itemtype::PASSAGE;
+        if ($newrecord->{self::PASSAGE} == '') {
+            $error->col = self::PASSAGE;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
@@ -115,12 +111,11 @@ class itemtype extends item
     /*
     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
     */
-    public static function get_keycolumns()
-    {
+    public static function get_keycolumns() {
         // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
-        $keycols['text1'] = ['jsonname' => 'passage', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => itemtype::PASSAGE];
+        $keycols['text1'] = ['jsonname' => 'passage', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::PASSAGE];
         $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
         return $keycols;
     }
@@ -128,8 +123,7 @@ class itemtype extends item
     /*
     This function return the prompt that the generate method requires.
     */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create a {language} passage that is a 5 or 6 sentence summarisation of the following text: [{text}]. ";
