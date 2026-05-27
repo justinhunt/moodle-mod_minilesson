@@ -92,6 +92,86 @@ function build_schema_from_structure($structure, &$schemas, $name = '') {
     ];
 }
 
+function get_login_token_details() {
+    return [
+        'post' => [
+            'summary' => 'Get Moodle web service token',
+            'description' => 'Get Moodle web service token',
+            'operationId' => 'get_moodle_web_service_token',
+            'security' => [],
+            'requestBody' => [
+                'required' => true,
+                'content' => [
+                    'application/x-www-form-urlencoded' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'username' => [
+                                    'type' => 'string',
+                                    'description' => 'Moodle username',
+                                ],
+                                'password' => [
+                                    'type' => 'string',
+                                    'description' => 'Moodle password',
+                                ],
+                                'service' => [
+                                    'type' => 'string',
+                                    'default' => 'aigenservice',
+                                    'description' => 'The Moodle web service name',
+                                ],
+                            ],
+                            'required' => ['username', 'password', 'service'],
+                        ],
+                    ],
+                ],
+            ],
+            'responses' => [
+                '200' => [
+                    'description' => 'Successful response (returns token or error details)',
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'token' => [
+                                        'type' => 'string',
+                                        'description' => 'The web service token to pass as wstoken on subsequent calls',
+                                    ],
+                                    'privatetoken' => [
+                                        'type' => 'string',
+                                        'nullable' => true,
+                                    ],
+                                    'error' => [
+                                        'type' => 'string',
+                                    ],
+                                    'errorcode' => [
+                                        'type' => 'string',
+                                    ],
+                                    'stacktrace' => [
+                                        'type' => 'string',
+                                        'nullable' => true,
+                                    ],
+                                    'debuginfo' => [
+                                        'type' => 'string',
+                                        'nullable' => true,
+                                    ],
+                                    'reproductionlink' => [
+                                        'type' => 'string',
+                                        'nullable' => true,
+                                    ],
+                                ],
+                                'additionalProperties' => true,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
+}
+
+
+// This is the procedural part where the code actually commences running
 $openapi = [
     'openapi' => '3.1.0',
 
@@ -105,12 +185,6 @@ $openapi = [
         [
             'url' => $CFG->wwwroot . '/webservice/rest/server.php',
             'description' => 'Moodle REST API',
-        ],
-    ],
-
-    'security' => [
-        [
-            'api_key' => [],
         ],
     ],
 
@@ -155,10 +229,13 @@ foreach ($functions as $function) {
 
     $functioninfo = external_api::external_function_info($function->name);
 
+    // The path below is a bit of a hack and is not strictly valid, but claude and agents get it
+    // gpt will try to add it to the server url and fail though. so gpt wont work here
     $path = '/' . $function->name;
 
     $method = 'post';
-    if ($functioninfo->type == 'read') {
+    if ($functioninfo->type == 'read'
+        && $function->name !== 'mod_minilesson_aigen_fetch_create_items_status') {
         $method = 'get';
     }
 
@@ -173,7 +250,22 @@ foreach ($functions as $function) {
             ],
         ],
         [
-            '$ref' => '#/components/parameters/WSRestFormat',
+            'name' => 'wstoken',
+            'in' => 'query',
+            'required' => true,
+            'schema' => [
+                'type' => 'string',
+            ],
+            'description' => 'Moodle web service token to auth requests',
+        ],
+        [
+            'name' => 'moodlewsrestformat',
+            'in' => 'query',
+            'required' => false,
+            'schema' => [
+                'type' => 'string',
+                'default' => 'json',
+            ],
         ],
     ];
 
@@ -243,7 +335,7 @@ foreach ($functions as $function) {
                 }
 
                 $requestbodyencoding[$key. '[]'] = [
-                    'style' => "form",
+                    'style' => 'form',
                     'explode' => true,
                 ];
 
@@ -278,8 +370,11 @@ foreach ($functions as $function) {
     $operation = [
         'summary' => $functioninfo->description,
         'description' => $functioninfo->description,
+        'operationId' => $functioninfo->name,
         'parameters' => $parameters,
-
+        'security' => [
+            ['api_key' => []],
+        ],
         'responses' => [
             '200' => [
                 'description' => 'Successful response',
@@ -319,16 +414,17 @@ foreach ($functions as $function) {
         }
     }
 
-
-
     $openapi['paths'][$path] = [
         $method => $operation,
     ];
 }
 
+// The login token path is a bit special (its not strictly speaking a web service but it is documented here)
+$openapi['paths']['/login/token.php'] = get_login_token_details();
+
 $agentinstructions = <<<JSON
 {
-"x-agent-instructions": {
+    "x-agent-instructions": {
         "title": "Agent Workflow for Moodle AI Minilesson Generation APIs",
         "authentication": {
             "step_1_obtain_token": "POST to {MOODLE_URL}/login/token.php with username, password, and service name 'aigenservice'",
@@ -383,7 +479,7 @@ $agentinstructions = <<<JSON
             {
                 "step": 5,
                 "name": "Check Status",
-                "call": "GET /mod_minilesson_aigen_fetch_create_items_status",
+                "call": "POST /mod_minilesson_aigen_fetch_create_items_status",
                 "purpose": "Poll job completion status",
                 "required_params": ["wstoken", "jobids[]"],
                 "polling": "Repeat every 2-5 seconds until status != 'processing'"
