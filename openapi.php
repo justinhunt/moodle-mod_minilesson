@@ -482,7 +482,7 @@ $agentinstructions = <<<JSON
                 "call": "POST /mod_minilesson_aigen_fetch_create_items_status",
                 "purpose": "Poll job completion status",
                 "required_params": ["wstoken", "jobids[]"],
-                "polling": "Repeat every 2-5 seconds until status != 'processing'"
+                "polling": "Repeat every 2-5 seconds until status != 'Progress'"
             }
         ]
     }

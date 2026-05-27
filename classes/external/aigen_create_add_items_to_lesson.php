@@ -79,9 +79,8 @@ class aigen_create_add_items_to_lesson extends external_api {
 
         $othercontextdata = utils::fetch_usercontext_fields($modulecontext->ttslanguage);
         foreach (aigen_form::mappings() as $fieldname) {
-            $key = array_search($fieldname, array_keys($params['contextdata']));
-            if ($key !== false) {
-                $othercontextdata[$fieldname] = $params['contextdata'][$key];
+            if (array_key_exists($fieldname, $params['contextdata'])) {
+                $othercontextdata[$fieldname] = $params['contextdata'][$fieldname];
             }
         }
 
