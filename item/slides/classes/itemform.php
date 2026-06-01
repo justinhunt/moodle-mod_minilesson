@@ -82,7 +82,7 @@ class itemform extends baseform {
         $slidescontenttype = $this->_customdata['item']->{itemtype::CONTENTTYPE} ?? itemtype::CONTENTTYPE_MARKDOWN;
         $initiallanguage = $slidescontenttype == itemtype::CONTENTTYPE_HTML ? 'html' : 'markdown';
         $PAGE->requires->js_call_amd(
-            constants::M_COMPONENT . '/codeeditor',
+            constants::M_COMPONENT . '/codeeditor-lazy',
             'setupCodeEditor',
             [
                 'id_' . itemtype::MARKDOWN,
