@@ -1,9 +1,9 @@
 define(
     [
     'jquery', 'core/log', 'mod_minilesson/definitions', 'minilessonitem_slides/reveal',
-    'core/str', 'core/modal_cancel', 'core/fragment', 'mod_minilesson/fullscreen_helper'
+    'core/str', 'core/modal_cancel', 'core/fragment', 'mod_minilesson/fullscreen_helper', 'mod_minilesson/progresstimer'
     ],
-    function ($, log, def, RevealImplement, Str, ModalCancel, Fragment, FullscreenHelper) {
+    function ($, log, def, RevealImplement, Str, ModalCancel, Fragment, FullscreenHelper, progresstimer) {
 
         "use strict"; // jshint ;_;
 

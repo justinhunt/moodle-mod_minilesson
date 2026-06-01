@@ -1,6 +1,6 @@
 define([
-    'jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/definitions', 'mod_minilesson/correctionsmarkup', 'core/templates', 'mod_minilesson/external/simplekeyboard', 'mod_minilesson/external/keyboardlayouts'],
-    function ($, log, str, notification, def, correctionsmarkup, templates, SimpleKeyboard, KeyboardLayouts) {
+    'jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/definitions', 'mod_minilesson/correctionsmarkup', 'core/templates', 'mod_minilesson/external/simplekeyboard', 'mod_minilesson/external/keyboardlayouts', 'mod_minilesson/progresstimer'],
+    function ($, log, str, notification, def, correctionsmarkup, templates, SimpleKeyboard, KeyboardLayouts, progresstimer) {
         "use strict"; // jshint ;_;
 
         /*

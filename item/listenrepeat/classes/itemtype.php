@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,17 +29,16 @@ use stdClass;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
+class itemtype extends item {
+
     // the item type
     /**
      * The class constructor.
      *
      */
-    public function __construct($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec = true;
+        $this->needsspeechrec = true;
     }
 
     /**
@@ -49,8 +47,7 @@ class itemtype extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
@@ -108,8 +105,7 @@ class itemtype extends item
     * We store the segmented sentence in the phonetic field, separated by || from the phonetic text. But previously
     * we fetched it at runtime so we look out for data that has not been updated to store the segmented text
     */
-    protected function process_japanese_phonetics($sentence, $thephonetics = false)
-    {
+    protected function process_japanese_phonetics($sentence, $thephonetics = false) {
         // We have a local segmentation algorythm utils:segment_japanese but
         // sadly this segmentation algorithm mismatches with server based one we need for phonetics
         // so we are not using it. It looks like this
@@ -128,8 +124,7 @@ class itemtype extends item
         return $sentence;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -147,8 +142,7 @@ class itemtype extends item
     /*
     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
     */
-    public static function get_keycolumns()
-    {
+    public static function get_keycolumns() {
         // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
@@ -164,8 +158,7 @@ class itemtype extends item
      /*
     This function return the prompt that the generate method requires.
     */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Extract a 1 dimensional array of 4 sentences from the following {language} text: [{text}]. ";

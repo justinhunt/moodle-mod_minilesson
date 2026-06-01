@@ -14,7 +14,7 @@ $PAGE->set_heading($SITE->fullname);
 
 $enabledplugin = get_config('minilesson', 'enableditems');
 if (empty($enabledplugin)) {
-    $enableditems = array();
+    $enableditems = [];
 } else {
     $enableditems = explode(',', $enabledplugin);
 }

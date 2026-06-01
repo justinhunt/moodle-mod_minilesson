@@ -24,8 +24,8 @@
 
 define(
     ['jquery', 'core/notification', 'mod_minilesson/definitions', 'core/log', 'core/templates',
-    'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'minilessonitem_spacegame/itemtype', 'core/url'],
-    function ($, notification, def, log, templates, anim, Ajax, str, spacegame, Url) {
+    'mod_minilesson/animatecss', 'core/ajax', 'core/str', 'minilessonitem_spacegame/itemtype', 'core/url', 'mod_minilesson/progresstimer'],
+    function ($, notification, def, log, templates, anim, Ajax, str, spacegame, Url, progresstimer) {
 
         "use strict"; // jshint ;_;
 

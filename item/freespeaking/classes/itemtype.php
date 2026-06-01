@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,8 +29,8 @@ use stdClass;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
+class itemtype extends item {
+
     public const TOPIC = 'customtext5';
     public const AIDATA1 = 'customdata1';
     public const AIDATA2 = 'customdata2';
@@ -48,10 +47,9 @@ class itemtype extends item
      * The class constructor.
      *
      */
-    public function __construct($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec = true;
+        $this->needsspeechrec = true;
     }
 
     /**
@@ -60,8 +58,7 @@ class itemtype extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->set_layout($testitem);
@@ -119,7 +116,7 @@ class itemtype extends item
             $testitem->itemtext = str_replace($search, $replace, $testitem->itemtext);
         }
 
-        //add a few things to enable the saving of uploaded audio (on S3)
+        // add a few things to enable the saving of uploaded audio (on S3)
         $testitem->savemedia = 1;
         $testitem->transcode = 1;
         $testitem->expiredays = 365;
@@ -132,8 +129,7 @@ class itemtype extends item
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -157,8 +153,7 @@ class itemtype extends item
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
      */
-    public static function get_keycolumns()
-    {
+    public static function get_keycolumns() {
         // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
@@ -180,10 +175,9 @@ class itemtype extends item
     }
 
     /*
-  This function return the prompt that the generate method requires.
-  */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    This function return the prompt that the generate method requires.
+    */
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create an oral discussion question(text) suitable for {level} level learners of {language} as a follow up activity on the following reading: [{text}] ";

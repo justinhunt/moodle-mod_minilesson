@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,15 +29,14 @@ use stdClass;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
+class itemtype extends item {
+
     public const HIDEWARNING = 'customint6';
 
     // the item type
-    public function __construct($itemrecord, $moduleinstance = false, $context = false)
-    {
+    public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec = true;
+        $this->needsspeechrec = true;
     }
 
     /**
@@ -47,8 +45,7 @@ class itemtype extends item
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
@@ -65,7 +62,7 @@ class itemtype extends item
         // Correct threshold.
         $testitem->correctthreshold = (int) $this->itemrecord->{constants::FLUENCYCORRECTTHRESHOLD};
 
-        //Hide Warning
+        // Hide Warning
         $testitem->hidewarning = (int) $this->itemrecord->{self::HIDEWARNING};
 
         // Cloud Poodll.
@@ -76,7 +73,7 @@ class itemtype extends item
             $testitem->language = 'nb-NO';
         }
 
-        //add a few things to enable the saving of uploaded audio (on S3)
+        // add a few things to enable the saving of uploaded audio (on S3)
         $testitem->savemedia = 1;
         $testitem->transcode = 1;
         $testitem->expiredays = 365;
@@ -111,8 +108,7 @@ class itemtype extends item
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -130,8 +126,7 @@ class itemtype extends item
     /*
     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
     */
-    public static function get_keycolumns()
-    {
+    public static function get_keycolumns() {
         // Get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
@@ -149,8 +144,7 @@ class itemtype extends item
      /*
     This function return the prompt that the generate method requires.
     */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Extract a 1 dimensional array of 4 sentences from the following {language} text: [{text}]. ";

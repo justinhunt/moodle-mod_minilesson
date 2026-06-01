@@ -74,7 +74,7 @@ class itemtype extends item {
      */
     public function __construct($itemrecord, $moduleinstance = false, $context = false) {
         parent::__construct($itemrecord, $moduleinstance, $context);
-        $this->needs_speechrec = true;
+        $this->needsspeechrec = true;
     }
 
     /**
@@ -123,11 +123,25 @@ class itemtype extends item {
         if (empty($this->itemrecord->{self::ROLE})) {
             $this->itemrecord->{self::ROLE} = get_string('audiochat_role_default', constants::M_COMPONENT);
         }
+        // Native language of the student.  We default to en-us.
         if (empty($this->itemrecord->{self::NATIVE_LANGUAGE})) {
             $this->itemrecord->{self::NATIVE_LANGUAGE} = constants::M_LANG_ENUS;
         }
+
+        // In some cases teachers may not set the topic, so we need to handle that.
+        // If the topic is empty, we check if the itemtext is set, otherwise we use 'student choice of topic'.
         if (empty($this->itemrecord->{self::TOPIC})) {
-            $this->itemrecord->{self::TOPIC} = 'student choice of topic';
+            if (!empty($this->itemrecord->itemtext)) {
+                $this->itemrecord->{self::TOPIC} = $this->itemrecord->itemtext;
+            } else {
+                $this->itemrecord->{self::TOPIC} = 'student choice of topic';
+            }
+        }
+
+        // The item text is what is shown to the student, the topic is what is passed to AI to be used in the prompt.
+        // We need to show something to student, so if its empty we show the topic
+        if (empty($this->itemrecord->itemtext)) {
+            $this->itemrecord->itemtext = $this->itemrecord->{self::TOPIC};
         }
 
         // Students native language - it is possible to use the one set in wordcards here also, so we check for that.
@@ -498,10 +512,17 @@ class itemtype extends item {
     }
 
     public static function is_configured() {
+        return parent::is_configured();
+
+        // Previously we required keys before it could be considered configured.
+        // But now with CloudPoodll selected as provider it will work.
+
+        /*
         if (!parent::is_configured()) {
             return false;
         }
         $config = get_config(constants::M_COMPONENT);
         return !empty($config->openaikey) || !empty($config->geminiapikey);
+        */
     }
 }

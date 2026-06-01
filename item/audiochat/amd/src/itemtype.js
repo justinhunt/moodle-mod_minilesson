@@ -26,9 +26,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define(
-    ['jquery', 'core/log', 'mod_minilesson/definitions',
+    ['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/progresstimer',
         'mod_minilesson/ttrecorder', 'core/templates', 'core/str', 'core/url'],
-    function ($, log, def, ttrecorder, templates, str, Url) {
+    function ($, log, def, progresstimer, ttrecorder, templates, str, Url) {
         "use strict"; // jshint ;_;
 
         log.debug('MiniLesson AudioChat: initialising');
