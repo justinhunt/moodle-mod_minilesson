@@ -16,6 +16,9 @@
 
 namespace mod_minilesson;
 
+use core_customfield\{data_controller, field_controller};
+use local_lessonbank\external\list_minilessons;
+use local_modcustomfields\customfield\mod_handler;
 use mod_minilesson\local\exception\textgenerationfailed;
 
 /**
@@ -63,6 +66,9 @@ class aigen {
     /** @var \core\progress\db_updater */
     private $progressbar = null;
 
+    /** @var aimanager */
+    private aimanager $aimanager;
+
     /**
      * aigen constructor.
      *
@@ -80,6 +86,11 @@ class aigen {
         $this->course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
         $this->conf = get_config(constants::M_COMPONENT);
         $this->progressbar = $progressbar;
+        $this->aimanager = new aimanager(
+            $this->context->id,
+            $this->moduleinstance->region,
+            $this->moduleinstance->ttslanguage
+        );
     }
 
     /**
@@ -143,12 +154,7 @@ class aigen {
                         );
                     }
 
-                    $aimanager = new aimanager(
-                        $this->context->id,
-                        $this->moduleinstance->region,
-                        $this->moduleinstance->ttslanguage
-                    );
-                    $genresult = $aimanager->generate_structured_content(
+                    $genresult = $this->aimanager->generate_structured_content(
                         $useprompt,
                         true, // Enable caching.
                     );
@@ -217,13 +223,8 @@ class aigen {
                                 $imagepromptdata = $contextdata[$generatefilearea->mapping];
                             }
 
-                            $aimanager = new aimanager(
-                                $this->context->id,
-                                $this->moduleinstance->region,
-                                $this->moduleinstance->ttslanguage
-                            );
                             $importitemfileareas->{$generatefilearea->name} =
-                                $aimanager->generate_images(
+                                $this->aimanager->generate_images(
                                     $importitemfileareas->{$generatefilearea->name},
                                     $imagepromptdata,
                                     $overallimagecontext,
@@ -320,6 +321,154 @@ class aigen {
         $thereturn->items = $importitems;
         $thereturn->files = $importlessonfiles;
         return $thereturn;
+    }
+
+    public function add_custom_field_data(\stdClass $importdata) {
+        global $CFG;
+        require_once($CFG->libdir . '/filelib.php');
+        $pluginman = \core_plugin_manager::instance();
+        if (
+            $pluginman->get_plugin_info('local_lessonbank') &&
+            $pluginman->get_plugin_info('local_modcustomfields')
+        ) {
+            $modcustomfieldhandler = mod_handler::create();
+            $modcustomfieldhandler->set_parent_context($this->context->get_course_context());
+            $categories = $modcustomfieldhandler->get_categories_with_fields();
+            $importdata->customfields = [
+                'version' => '1.0.0'
+            ];
+            $fields = [];
+
+            foreach ($categories as $categorycontoller) {
+                if ($categorycontoller->get('name') === get_string('lessonbankcatname', 'local_lessonbank')) {
+                    foreach ($categorycontoller->get_fields() as $field) {
+                        $fieldshortname = $field->get('shortname');
+                        if (in_array($fieldshortname, list_minilessons::CUSTOMFIELDS)) {
+                            if (in_array($field->get('type'), ['text', 'select', 'multiselect'])) {
+                                if ($fieldshortname !== 'version') {
+                                    $fields[$fieldshortname] = $field;
+                                }
+                            } else if ($field->get('type') === 'picture') {
+                                if (!empty($importdata->files)) {
+                                    $singleStack = [];
+                                    $filesarray = json_decode(json_encode($importdata->files), true);
+                                    array_walk_recursive(
+                                        $filesarray,
+                                        function ($value, $key) use (&$singleStack) {
+                                            if (pathinfo($key, PATHINFO_EXTENSION) && file_extension_in_typegroup($key, 'image')) {
+                                                if (empty($singleStack[$key])) {
+                                                    $singleStack[$key] = $value;
+                                                }
+                                            }
+                                        }
+                                    );
+                                    if (!empty($singleStack)) {
+                                        $filename = key($singleStack);
+                                        $filecontent = $singleStack[$filename];
+                                        $storedfile = self::create_draft_file([
+                                            'filename' => $filename,
+                                            'content' => base64_decode($filecontent),
+                                        ]);
+                                        $importdata->customfields[$fieldshortname] = (int) $storedfile->get_itemid();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            $payloadobject = $this->aimanager->generate_customfield(
+                $fields,
+                $importdata->items,
+            );
+            if (!is_object($payloadobject)) {
+                return $importdata;
+            }
+
+            // returnCode > 0  indicates an error
+            if (!isset($payloadobject->returnCode) || $payloadobject->returnCode > 0) {
+                return $importdata;
+                // if all good, then lets do the embed
+            } else if ($payloadobject->returnCode === 0) {
+                $fielddatas = json_decode($payloadobject->returnMessage, true);
+                $errors = [];
+                foreach ($fielddatas as $fieldshortname => $fielddata) {
+                    if (!empty($fields[$fieldshortname])) {
+                        $field = $fields[$fieldshortname];
+                        $fieldtype = $field->get('type');
+                        $fieldoptions = array_flip(self::get_customfield_options($field));
+                        if (!empty($fieldoptions)) {
+                            $fielddata = array_intersect_key(
+                                $fieldoptions,
+                                array_fill_keys((array) $fielddata, 1)
+                            );
+                            if ($fieldtype === 'select') {
+                                $fielddata = reset($fielddata);
+                            }
+                        }
+                        if ($fieldtype === 'text') {
+                            $fielddata = join(' ', (array) $fielddata);
+                        }
+                        $datacontroller = data_controller::create(0, null, $field);
+                        $importdata->customfields[$fieldshortname] = $fielddata;
+                        $errors += $datacontroller->instance_form_validation([
+                            $datacontroller->get_form_element_name() => $fielddata,
+                        ], []);
+                    }
+                }
+                if (!empty($errors)) {
+                    mtrace('Custom field generation errors -> ' . var_export($errors, true));
+                } else if (!empty($importdata->customfields)) {
+                    foreach ($importdata->customfields as $fieldshortname => $fielddata) {
+                        $this->cm->{'customfield_' . $fieldshortname} = $fielddata;
+                    }
+                    $modcustomfieldhandler->instance_form_save($this->cm, true);
+                }
+            } else {
+                return $importdata;
+            }
+        }
+        return $importdata;
+    }
+
+    public static function create_draft_file($filedata = []): \stored_file {
+        global $USER;
+
+        $fs = get_file_storage();
+
+        $filerecord = array(
+            'component' => 'user',
+            'filearea'  => 'draft',
+            'itemid'    => isset($filedata['itemid']) ? $filedata['itemid'] : file_get_unused_draft_itemid(),
+            'author'    => isset($filedata['author']) ? $filedata['author'] : fullname($USER),
+            'filepath'  => isset($filedata['filepath']) ? $filedata['filepath'] : '/',
+            'filename'  => isset($filedata['filename']) ? $filedata['filename'] : 'file.txt',
+        );
+
+        if (isset($filedata['contextid'])) {
+            $filerecord['contextid'] = $filedata['contextid'];
+        } else {
+            $usercontext = \context_user::instance($USER->id);
+            $filerecord['contextid'] = $usercontext->id;
+        }
+        $source = isset($filedata['source']) ? $filedata['source'] : serialize((object)['source' => 'From string']);
+        $content = isset($filedata['content']) ? $filedata['content'] : 'some content here';
+
+        $file = $fs->create_file_from_string($filerecord, $content);
+        $file->set_source($source);
+
+        return $file;
+    }
+
+    public static function get_customfield_options(field_controller $field): array {
+        $fieldtype = $field->get('type');
+        if ($fieldtype === 'select') {
+            return array_filter($field->get_options());
+        } else if ($fieldtype === 'multiselect') {
+            return $field::get_options_array($field);
+        }
+        return [];
     }
 
     /**
@@ -448,24 +597,14 @@ class aigen {
     }
 
     public function generate_image($prompt) {
-        $aimanager = new aimanager(
-            $this->context->id,
-            $this->moduleinstance->region,
-            $this->moduleinstance->ttslanguage
-        );
-        return $aimanager->generate_image(
+        return $this->aimanager->generate_image(
             $prompt,
             false
         );
     }
 
     public function generate_data($prompt) {
-        $aimanager = new aimanager(
-            $this->context->id,
-            $this->moduleinstance->region,
-            $this->moduleinstance->ttslanguage
-        );
-        return $aimanager->generate_structured_content(
+        return $this->aimanager->generate_structured_content(
             $prompt,
             true, // Enable cache for structured content.
         );
