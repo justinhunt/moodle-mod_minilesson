@@ -34,6 +34,7 @@ class generate_text extends baseclass implements inherited_action {
         string $prompttext
     ) {
         parent::__construct($contextid, $userid, $prompttext);
+        $this->generate_prompt();
     }
 
     public function generate_prompt(): string {
@@ -41,7 +42,7 @@ class generate_text extends baseclass implements inherited_action {
     }
 
     public static function get_model_parameters(string $provider): array {
-        switch($provider) {
+        switch ($provider) {
             case 'openai':
             case 'deepseek':
                 return [
@@ -59,5 +60,4 @@ class generate_text extends baseclass implements inherited_action {
     public static function get_system_instruction(): string {
         return "You are a helpful assistant.";
     }
-
 }
