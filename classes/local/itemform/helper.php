@@ -24,7 +24,7 @@ namespace mod_minilesson\local\itemform;
  * logic, should go here. Never include this file from your lib.php!
  *
  * @package    mod_minilesson
- * @copyright  COPYRIGHTNOTICE
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

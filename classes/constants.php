@@ -36,6 +36,8 @@ class constants {
     const M_ATTEMPTSTABLE = 'minilesson_attempt';
     const M_AITABLE = 'minilesson_ai_result';
     const M_QTABLE = 'minilesson_rsquestions';
+    const M_MEDIA_CACHE_TABLE = 'minilesson_media_cache';
+    const M_TEMPL_USAGES_TABLE = 'minilesson_template_usages';
     const M_AUTHTABLE = 'minilesson_auth';
     const M_CORRECTPHONES_TABLE = 'minilesson_correctphones';
     const M_MODNAME = 'minilesson';

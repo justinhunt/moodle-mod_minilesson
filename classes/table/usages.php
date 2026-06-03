@@ -27,7 +27,7 @@ use stdClass;
  * Class usages
  *
  * @package    mod_minilesson
- * @copyright  2025 YOUR NAME <your@email.com>
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class usages extends templates
@@ -71,7 +71,7 @@ class usages extends templates
             $sqlwhere .= ' AND COALESCE(progress, 0) < 1';
         }
         $params['minilessonid'] = $this->cm->instance;
-        $this->set_sql('*', '{minilesson_template_usages}', $sqlwhere, $params);
+        $this->set_sql('*', '{' . \mod_minilesson\constants::M_TEMPL_USAGES_TABLE . '}', $sqlwhere, $params);
         $this->set_attribute('data-updateinterval', 2);
     }
 

@@ -1,3 +1,9 @@
+Version 1.1.37 (Build 2026060300)
+- Added a local DB table for caching media urls
+- Improved cminfo fetching
+- Implemented missing DB tidy up on activity delete
+- Standardized copyright labels
+
 Version 1.1.36 (Build 2026052200)
 - Fixed broken audio chat when using openai (old model no longer available)
 

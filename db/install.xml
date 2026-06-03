@@ -216,5 +216,20 @@
               <INDEX NAME="idx_hashkey" UNIQUE="false" FIELDS="hashkey"/>
           </INDEXES>
       </TABLE>
+      <TABLE NAME="minilesson_media_cache" COMMENT="Cache for media urls like Polly audio">
+          <FIELDS>
+              <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+              <FIELD NAME="hashkey" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+              <FIELD NAME="url" TYPE="text" LENGTH="big" NOTNULL="true" SEQUENCE="false"/>
+              <FIELD NAME="minilesson" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+          </FIELDS>
+          <KEYS>
+              <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+          </KEYS>
+          <INDEXES>
+              <INDEX NAME="idx_hashkey" UNIQUE="false" FIELDS="hashkey"/>
+              <INDEX NAME="idx_minilesson" UNIQUE="false" FIELDS="minilesson"/>
+          </INDEXES>
+      </TABLE>
   </TABLES>
 </XMLDB>

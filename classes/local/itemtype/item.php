@@ -579,7 +579,7 @@ abstract class item implements \templatable, \renderable {
                     if ($lineset->voice == "soundeffect") {
                         $lineset->audiourl = $CFG->wwwroot . '/' . constants::M_PATH . '/sounds/' . utils::super_trim($thetext) . '.mp3';
                     } else {
-                        $lineset->audiourl = utils::fetch_polly_url($this->token, $this->region, $thetext, $voiceoptions, $voice);
+                        $lineset->audiourl = utils::fetch_polly_url($this->token, $this->region, $thetext, $voiceoptions, $voice, $this->moduleinstance->id);
                     }
                     $linesdata[] = $lineset;
                 }
@@ -624,7 +624,7 @@ abstract class item implements \templatable, \renderable {
                     $linedata = new \stdClass();
                     $linedata->linebreak = false;
                     $linedata->sentence = $theline;
-                    $linedata->audiourl = utils::fetch_polly_url($this->token, $this->region, $theline, $voiceoptions, $voice);
+                    $linedata->audiourl = utils::fetch_polly_url($this->token, $this->region, $theline, $voiceoptions, $voice, $this->moduleinstance->id);
                     $linedatas[] = $linedata;
                 } else {
                     // If it is not a sentence it is a line break. We add an empty line with no audio.
@@ -693,7 +693,8 @@ abstract class item implements \templatable, \renderable {
                     $this->region,
                     $testitem->itemttsaudio,
                     $testitem->itemttsoption,
-                    $testitem->itemttsaudiovoice
+                    $testitem->itemttsaudiovoice,
+                    $this->moduleinstance->id
                 );
                 // Unset the TTS audio as we are using the audio story audio.
                 unset($testitem->itemttsaudio);
@@ -872,7 +873,8 @@ abstract class item implements \templatable, \renderable {
                     $this->region,
                     $sentence->prompt,
                     $this->itemrecord->{constants::POLLYOPTION},
-                    $this->itemrecord->{constants::POLLYVOICE}
+                    $this->itemrecord->{constants::POLLYVOICE},
+                    $this->moduleinstance->id
                 );
             }
         }
@@ -902,7 +904,8 @@ abstract class item implements \templatable, \renderable {
                     $this->region,
                     $sentence->prompt,
                     $this->itemrecord->{constants::POLLYOPTION},
-                    $this->itemrecord->{constants::POLLYVOICE}
+                    $this->itemrecord->{constants::POLLYVOICE},
+                    $this->moduleinstance->id
                 );
             }
 
@@ -1164,7 +1167,8 @@ abstract class item implements \templatable, \renderable {
                     $this->region,
                     $prompt,
                     $this->itemrecord->{constants::POLLYOPTION},
-                    $this->itemrecord->{constants::POLLYVOICE}
+                    $this->itemrecord->{constants::POLLYVOICE},
+                    $this->moduleinstance->id
                 );
             }
 

@@ -601,6 +601,10 @@ function minilesson_delete_instance($id)
     }
 
     // Delete any dependent records here #.
+    $DB->delete_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $minilesson->id]);
+    $DB->delete_records(constants::M_QTABLE, ['minilesson' => $minilesson->id]);
+    $DB->delete_records(constants::M_TEMPL_USAGES_TABLE, ['minilessonid' => $minilesson->id]);
+    $DB->delete_records(constants::M_MEDIA_CACHE_TABLE, ['minilesson' => $minilesson->id]);
 
     $DB->delete_records(constants::M_TABLE, ['id' => $minilesson->id]);
 

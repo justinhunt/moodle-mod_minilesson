@@ -26,7 +26,7 @@ use mod_minilesson\constants;
  * A custom renderer class that extends the plugin_renderer_base.
  *
  * @package mod_minilesson
- * @copyright COPYRIGHTNOTICE
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class rsquestion_renderer extends \plugin_renderer_base

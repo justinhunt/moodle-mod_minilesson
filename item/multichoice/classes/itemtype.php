@@ -119,7 +119,8 @@ class itemtype extends item
                             $this->region,
                             $sentencetext,
                             $this->itemrecord->{constants::POLLYOPTION},
-                            $this->itemrecord->{constants::POLLYVOICE}
+                            $this->itemrecord->{constants::POLLYVOICE},
+                            $this->moduleinstance->id
                         );
                     }
                 }

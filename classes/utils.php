@@ -2398,8 +2398,8 @@ class utils {
     }
 
     // fetch the MP3 URL of the text we want read aloud
-    public static function fetch_polly_url($token, $region, $speaktext, $voiceoption, $voice) {
-        global $USER;
+    public static function fetch_polly_url($token, $region, $speaktext, $voiceoption, $voice, $minilessonid = 0) {
+        global $USER, $DB;
 
         // Do a little sanity check
         if (empty($speaktext) || empty($voice) || empty($token)) {
@@ -2421,6 +2421,13 @@ class utils {
         $pollyurl = $cache->get($key);
         if ($pollyurl && !empty($pollyurl)) {
             return $pollyurl;
+        }
+
+        // check minilesson_media_cache
+        $dbcache = $DB->get_record(constants::M_MEDIA_CACHE_TABLE, ['hashkey' => $key], '*', IGNORE_MULTIPLE);
+        if ($dbcache) {
+            $cache->set($key, $dbcache->url);
+            return $dbcache->url;
         }
 
         switch ((int) ($voiceoption)) {
@@ -2484,7 +2491,14 @@ class utils {
             $pollyurl = $payloadobject->returnMessage;
             // if its an S3 URL  then we cache it, yay
             if (\core_text::strpos($pollyurl, 'pollyfile') > 0) {
+                // First cache in Moodle Cache
                 $cache->set($key, $pollyurl);
+                // Then cache in minilesson db cache
+                $dbcache = new \stdClass();
+                $dbcache->hashkey = $key;
+                $dbcache->url = $pollyurl;
+                $dbcache->minilesson = $minilessonid;
+                $DB->insert_record(constants::M_MEDIA_CACHE_TABLE, $dbcache);
             }
             return $pollyurl;
         } else {

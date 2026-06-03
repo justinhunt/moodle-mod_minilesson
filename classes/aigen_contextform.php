@@ -130,7 +130,7 @@ class aigen_contextform extends moodleform
                 $record->templateid = $templateid;
                 $record->contextdata = json_encode($contextdata);
                 $record->timecreated = time();
-                $record->id = $DB->insert_record('minilesson_template_usages', $record);
+                $record->id = $DB->insert_record(\mod_minilesson\constants::M_TEMPL_USAGES_TABLE, $record);
 
                 $task = new task\process_aigen();
                 $task->set_component(constants::M_COMPONENT);

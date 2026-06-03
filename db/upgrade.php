@@ -1043,5 +1043,29 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026042200, 'minilesson');
     }
 
+    if ($oldversion < 2026052200.03) {
+        $table = new xmldb_table('minilesson_media_cache');
+
+        // Adding fields to table minilesson_media_cache.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('hashkey', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('url', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('minilesson', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table minilesson_media_cache.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Adding indexes.
+        $table->add_index('idx_hashkey', XMLDB_INDEX_NOTUNIQUE, ['hashkey']);
+        $table->add_index('idx_minilesson', XMLDB_INDEX_NOTUNIQUE, ['minilesson']);
+
+        // Create table if it does not exist.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_mod_savepoint(true, 2026052200.03, 'minilesson');
+    }
+
     return true;
 }

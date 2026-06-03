@@ -54,6 +54,13 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
         );
         $paths[] = $rsquestions;
 
+        // media_caches
+        $media_caches = new restore_path_element(
+            constants::M_MEDIA_CACHE_TABLE,
+            '/activity/minilesson/media_caches/media_cache'
+        );
+        $paths[] = $media_caches;
+
 
 
         // End here if no-user data has been selected
@@ -106,6 +113,18 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
         $data->{constants::M_MODNAME} = $this->get_new_parentid(constants::M_MODNAME);
         $newquestionid = $DB->insert_record(constants::M_QTABLE, $data);
         $this->set_mapping(constants::M_QTABLE, $oldid, $newquestionid, true); // Mapping with files
+    }
+
+    protected function process_minilesson_media_cache($data)
+    {
+        global $DB;
+
+        $data = (object)$data;
+        $oldid = $data->id;
+
+        $data->minilesson = $this->get_new_parentid(constants::M_MODNAME);
+        $newitemid = $DB->insert_record(constants::M_MEDIA_CACHE_TABLE, $data);
+        $this->set_mapping(constants::M_MEDIA_CACHE_TABLE, $oldid, $newitemid, false);
     }
 
 

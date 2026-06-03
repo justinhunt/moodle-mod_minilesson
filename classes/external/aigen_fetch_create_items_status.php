@@ -55,7 +55,7 @@ class aigen_fetch_create_items_status extends external_api {
         }
 
         $jobids = array_map('intval', $params['jobids']);
-        $usages = $DB->get_records_list('minilesson_template_usages', 'id', $jobids);
+        $usages = $DB->get_records_list(\mod_minilesson\constants::M_TEMPL_USAGES_TABLE, 'id', $jobids);
 
         $jobs = [];
         foreach ($jobids as $jobid) {

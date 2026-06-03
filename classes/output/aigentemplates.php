@@ -29,7 +29,7 @@ use single_button;
  * Class aigentemplates
  *
  * @package    mod_minilesson
- * @copyright  2025 YOUR NAME <your@email.com>
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class aigentemplates implements \renderable, \templatable

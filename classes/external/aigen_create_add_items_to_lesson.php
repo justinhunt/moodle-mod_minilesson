@@ -89,7 +89,7 @@ class aigen_create_add_items_to_lesson extends external_api {
         $usagesdata->templateid = $params['templateid'];
         $usagesdata->contextdata = json_encode($othercontextdata);
         $usagesdata->timecreated = time();
-        $usagesdata->id = $DB->insert_record('minilesson_template_usages', $usagesdata);
+        $usagesdata->id = $DB->insert_record(\mod_minilesson\constants::M_TEMPL_USAGES_TABLE, $usagesdata);
 
         $task = new process_aigen();
         $task->set_component(constants::M_COMPONENT);

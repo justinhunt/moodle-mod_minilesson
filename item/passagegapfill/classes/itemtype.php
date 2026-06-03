@@ -114,7 +114,8 @@ class itemtype extends item
                 $this->region,
                 $plaintext,
                 $this->itemrecord->{constants::POLLYOPTION},
-                $this->itemrecord->{constants::POLLYVOICE}
+                $this->itemrecord->{constants::POLLYVOICE},
+                $this->moduleinstance->id
             );
         } else {
             $custompassageaudio = $this->fetch_sentence_media('audio', 1);

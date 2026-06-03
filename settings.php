@@ -18,7 +18,7 @@
 /**
  * minilesson module admin settings and defaults
  *
- * @package    mod
+ * @package    mod_minilesson
  * @subpackage minilesson
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
