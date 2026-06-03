@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -29,18 +28,15 @@ use mod_minilesson\local\progress\db_updater;
  * Class process_aigen
  *
  * @package    mod_minilesson
- * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
+ * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class process_aigen extends adhoc_task
-{
-    public function get_name()
-    {
+class process_aigen extends adhoc_task {
+    public function get_name() {
         return get_string('processaigentask', constants::M_COMPONENT);
     }
 
-    public function execute()
-    {
+    public function execute() {
         global $DB;
         $customdata = $this->get_custom_data();
         if (!empty($customdata->usageid)) {
@@ -89,6 +85,7 @@ class process_aigen extends adhoc_task
                     $template,
                     $contextdata
                 );
+                $aigen->add_custom_field_data($importdata);
             } catch (textgenerationfailed $e) {
                 $usage->progress = -1;
                 $usage->error = $e->getMessage();

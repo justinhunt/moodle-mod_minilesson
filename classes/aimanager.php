@@ -106,6 +106,10 @@ class aimanager {
 
     public const FUNC_GET_EMBEDDING = 'get_embedding';
 
+    /** @var string */
+
+    public const FUNC_GENERATE_CUSTOMFIELD = 'generate_customfield';
+
     /** @var array */
     public const OPTION_MAPPING = [
         self::FUNC_EVALUATE_PASSAGE => self::OPTION_GRADE_STUDENT_SUBMISSION,
@@ -116,10 +120,11 @@ class aimanager {
         self::FUNC_GET_TOPIC_RELEVANCE => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_PREDICT_CEFR => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_COUNT_UNIQUE_IDEAS => self::OPTION_GRADE_STUDENT_SUBMISSION,
+        self::FUNC_GENERATE_CUSTOMFIELD => self::OPTION_GRADE_STUDENT_SUBMISSION,
     ];
 
     public const AIMANAGER_ACTIONS = [
-        self::OPTION_GRADE_STUDENT_SUBMISSION => generate_text::class,
+        self::OPTION_GRADE_STUDENT_SUBMISSION => core_generate_text::class,
     ];
 
     /**
@@ -129,8 +134,8 @@ class aimanager {
     public static function get_action_options() {
         $options[self::OPTION_GRADE_STUDENT_SUBMISSION] =
             [
-            'name' => get_string('grade_student_submission' , constants::M_COMPONENT),
-            'description' => get_string('grade_student_submission_desc' , constants::M_COMPONENT),
+                'name' => get_string('grade_student_submission', constants::M_COMPONENT),
+                'description' => get_string('grade_student_submission_desc', constants::M_COMPONENT),
             ];
         return $options;
     }
@@ -151,7 +156,6 @@ class aimanager {
      *
      */
     public static function evaluate_passage() {
-
     }
 
     /**
@@ -297,6 +301,25 @@ class aimanager {
         return $response;
     }
 
+    public function generate_customfield(array $fields, array $importjson) {
+        $actionconst = static::FUNC_GENERATE_CUSTOMFIELD;
+        $aiactionclass = local\aiactions\generate_customfield_value::class;
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $this->contextid,
+            'fields' => $fields,
+            'importjson' => $importjson,
+        ]);
+        if ($response === null) {
+            $params['action'] = $actionconst;
+            $params['field'] = $field;
+            $params['importjson'] = $importjson;
+            $params['subject'] = 'none';
+            $params['region'] = $this->region;
+            // $response = self::call_cp_api($params);
+        }
+        return $response;
+    }
+
     private static function check_cache($action, $prompt, $provider) {
         global $DB;
         $hashkey = md5($action . '|' . $prompt . '|' . $provider);
@@ -433,9 +456,9 @@ class aimanager {
             // If it's not JSON, maybe it's just the string.
             return $cpresponse->returnMessage;
         } else if ($cpresponse && isset($cpresponse->returnMessage)) {
-             $this->errormessage = $cpresponse->returnMessage;
+            $this->errormessage = $cpresponse->returnMessage;
         } else {
-             $this->errormessage = 'No response from CloudPoodll or Moodle AI provider.';
+            $this->errormessage = 'No response from CloudPoodll or Moodle AI provider.';
         }
 
         return false;
@@ -789,7 +812,7 @@ class aimanager {
                                 // Set Modal Config.
                                 $plugintypename = str_replace('aiprovider_', '', ltrim(strstr($record->provider, '\\', true), '\\'));
                                 if (empty($plugintypename)) {
-                                     $plugintypename = str_replace('aiprovider_', '', $record->provider);
+                                    $plugintypename = str_replace('aiprovider_', '', $record->provider);
                                 }
                                 $actionconfig[$actionclass]['settings']['modelextraparams'] = json_encode(
                                     $actionclass::get_model_parameters($plugintypename)
@@ -798,11 +821,16 @@ class aimanager {
                             }
                             // Instantiate the provider class with the record's data.
                             return new $record->provider(
-                                /* enabled:  */$record->enabled,
-                                /* name:  */$record->name,
-                                /* config:  */$record->config,
-                                /* actionconfig:  */$record->actionconfig,
-                                /* id:  */$record->id
+                                /* enabled:  */
+                                $record->enabled,
+                                /* name:  */
+                                $record->name,
+                                /* config:  */
+                                $record->config,
+                                /* actionconfig:  */
+                                $record->actionconfig,
+                                /* id:  */
+                                $record->id
                             );
                         }
                         return null;

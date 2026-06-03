@@ -7,10 +7,8 @@ define(['jquery',
     'mod_minilesson/progresstimer',
     'core/templates',
     'core/str',
-    'core/notification',
-    'mod_minilesson/external/simplekeyboard',
-    'mod_minilesson/external/keyboardlayouts'
-], function ($, log, ajax, def, polly, anim, progresstimer, templates, str, notification, SimpleKeyboard, KeyboardLayouts) {
+    'core/notification'
+], function ($, log, ajax, def, polly, anim, progresstimer, templates, str, notification) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson listening gap fill: initialising');
@@ -293,60 +291,70 @@ define(['jquery',
 
             // Virtual Keyboard
             if (self.itemdata.enablevkeyboard && self.itemdata.enablevkeyboard != '0') {
-                var KeyboardClass = SimpleKeyboard.default || SimpleKeyboard;
+                self.load_keyboard_dependencies(function (SimpleKeyboard, KeyboardLayouts) {
+                    var KeyboardClass = SimpleKeyboard.default || SimpleKeyboard;
 
-                var keyboardConfig = {
-                    onKeyPress: button => self.onKeyPress(button)
-                };
-
-                if (self.itemdata.enablevkeyboard == '2') {
-                    // Custom Layout
-                    var customKeys = self.itemdata.customkeys || "";
-                    // 1. Clean up the string (remove extra spaces)
-                    var charArray = customKeys.split(' ').filter(c => c.trim() !== "");
-                    // If no spaces, and not empty, split by character
-                    if (charArray.length === 0 && customKeys.trim().length > 0) {
-                        charArray = customKeys.trim().split('');
-                    }
-
-                    // 2. Map to uppercase
-                    var upperArray = charArray.map(c => c.toUpperCase());
-
-                    // 3. Join back into the format simple-keyboard expects
-                    var lowerRow = charArray.join(' ') + ' {shift}';
-                    var upperRow = upperArray.join(' ') + ' {shift}';
-
-                    keyboardConfig.layout = {
-                        'default': [lowerRow],
-                        'shift': [upperRow]
+                    var keyboardConfig = {
+                        onKeyPress: button => self.onKeyPress(button)
                     };
-                    keyboardConfig.display = {
-                        '{shift}': '⇧'
-                    };
-                    keyboardConfig.useStandardCaps = false;
-                    keyboardConfig.mergeDisplay = true;
-                } else {
-                    // Standard Language Layout
-                    var LayoutsClass = KeyboardLayouts.default || KeyboardLayouts;
-                    var keyboardLayouts = new LayoutsClass();
-                    var layoutName = self.get_keyboard_layout(self.itemdata.language);
-                    var layout = keyboardLayouts.get(layoutName);
-                    $.extend(keyboardConfig, layout);
-                }
 
-                self.keyboard = new KeyboardClass(".simple-keyboard-" + self.itemdata.uniqueid, keyboardConfig);
+                    if (self.itemdata.enablevkeyboard == '2') {
+                        // Custom Layout
+                        var customKeys = self.itemdata.customkeys || "";
+                        // 1. Clean up the string (remove extra spaces)
+                        var charArray = customKeys.split(' ').filter(c => c.trim() !== "");
+                        // If no spaces, and not empty, split by character
+                        if (charArray.length === 0 && customKeys.trim().length > 0) {
+                            charArray = customKeys.trim().split('');
+                        }
 
-                var keyboardtoggle = self.controls.container.find('.ml_simple_keyboard_toggle');
-                keyboardtoggle.on('click', function (e) {
-                    var kb = self.controls.container.find(".simple-keyboard-" + self.itemdata.uniqueid);
-                    if (kb.is(":visible")) {
-                        kb.hide();
+                        // 2. Map to uppercase
+                        var upperArray = charArray.map(c => c.toUpperCase());
+
+                        // 3. Join back into the format simple-keyboard expects
+                        var lowerRow = charArray.join(' ') + ' {shift}';
+                        var upperRow = upperArray.join(' ') + ' {shift}';
+
+                        keyboardConfig.layout = {
+                            'default': [lowerRow],
+                            'shift': [upperRow]
+                        };
+                        keyboardConfig.display = {
+                            '{shift}': '⇧'
+                        };
+                        keyboardConfig.useStandardCaps = false;
+                        keyboardConfig.mergeDisplay = true;
                     } else {
-                        kb.show();
+                        // Standard Language Layout
+                        var LayoutsClass = KeyboardLayouts.default || KeyboardLayouts;
+                        var keyboardLayouts = new LayoutsClass();
+                        var layoutName = self.get_keyboard_layout(self.itemdata.language);
+                        var layout = keyboardLayouts.get(layoutName);
+                        $.extend(keyboardConfig, layout);
                     }
+
+                    self.keyboard = new KeyboardClass(".simple-keyboard-" + self.itemdata.uniqueid, keyboardConfig);
+
+                    var keyboardtoggle = self.controls.container.find('.ml_simple_keyboard_toggle');
+                    keyboardtoggle.on('click', function (e) {
+                        var kb = self.controls.container.find(".simple-keyboard-" + self.itemdata.uniqueid);
+                        if (kb.is(":visible")) {
+                            kb.hide();
+                        } else {
+                            kb.show();
+                        }
+                    });
                 });
             }
 
+        },
+
+        load_keyboard_dependencies: function (callback) {
+            require(['mod_minilesson/external/simplekeyboard-lazy', 'mod_minilesson/external/keyboardlayouts-lazy'],
+                function (SimpleKeyboard, KeyboardLayouts) {
+                    callback(SimpleKeyboard, KeyboardLayouts);
+                }
+            );
         },
 
         onKeyPress: function (button) {

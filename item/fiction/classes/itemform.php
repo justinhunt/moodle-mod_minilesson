@@ -48,7 +48,7 @@ class itemform extends baseform {
 
         // Initialize CodeMirror generic Editor for Yarn
         $PAGE->requires->js_call_amd(
-            constants::M_COMPONENT . '/codeeditor',
+            constants::M_COMPONENT . '/codeeditor-lazy',
             'setupCodeEditor',
             [
                 'id_' . itemtype::YARN,
