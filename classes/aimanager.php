@@ -311,11 +311,11 @@ class aimanager {
         ]);
         if ($response === null) {
             $params['action'] = $actionconst;
-            $params['field'] = $field;
+            $params['fields'] = $fields;
             $params['importjson'] = $importjson;
             $params['subject'] = 'none';
             $params['region'] = $this->region;
-            // $response = self::call_cp_api($params);
+            $response = self::call_cp_api($params);
         }
         return $response;
     }
