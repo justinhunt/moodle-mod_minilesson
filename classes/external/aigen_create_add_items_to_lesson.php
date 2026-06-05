@@ -56,7 +56,7 @@ class aigen_create_add_items_to_lesson extends external_api {
                 'user_customdata8' => new external_value(PARAM_RAW, 'User Custom Data', VALUE_OPTIONAL),
                 'user_customdata9' => new external_value(PARAM_RAW, 'User Custom Data', VALUE_OPTIONAL),
                 'user_customdata10' => new external_value(PARAM_RAW, 'User Custom Data', VALUE_OPTIONAL),
-            ], '', VALUE_OPTIONAL)
+            ], '', VALUE_OPTIONAL),
         ]);
     }
 
@@ -89,7 +89,7 @@ class aigen_create_add_items_to_lesson extends external_api {
         $usagesdata->templateid = $params['templateid'];
         $usagesdata->contextdata = json_encode($othercontextdata);
         $usagesdata->timecreated = time();
-        $usagesdata->id = $DB->insert_record(\mod_minilesson\constants::M_TEMPL_USAGES_TABLE, $usagesdata);
+        $usagesdata->id = $DB->insert_record(constants::M_TEMPL_USAGES_TABLE, $usagesdata);
 
         $task = new process_aigen();
         $task->set_component(constants::M_COMPONENT);
@@ -101,7 +101,7 @@ class aigen_create_add_items_to_lesson extends external_api {
 
     public static function execute_returns() {
         return new external_single_structure([
-            'jobid' => new external_value(PARAM_INT, 'Job ID')
+            'jobid' => new external_value(PARAM_INT, 'Job ID'),
         ]);
     }
 }

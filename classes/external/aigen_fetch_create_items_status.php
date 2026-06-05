@@ -37,7 +37,7 @@ class aigen_fetch_create_items_status extends external_api {
         return new external_function_parameters([
             'jobids' => new external_multiple_structure(
                 new external_value(PARAM_INT, 'Job id'), 'List of job ids'
-            )
+            ),
         ]);
     }
 
@@ -55,7 +55,7 @@ class aigen_fetch_create_items_status extends external_api {
         }
 
         $jobids = array_map('intval', $params['jobids']);
-        $usages = $DB->get_records_list(\mod_minilesson\constants::M_TEMPL_USAGES_TABLE, 'id', $jobids);
+        $usages = $DB->get_records_list(constants::M_TEMPL_USAGES_TABLE, 'id', $jobids);
 
         $jobs = [];
         foreach ($jobids as $jobid) {
@@ -106,7 +106,7 @@ class aigen_fetch_create_items_status extends external_api {
                     'message' => new external_value(PARAM_TEXT, 'Job message'),
                 ]),
                 'Jobs list'
-            )
+            ),
         ]);
     }
 }

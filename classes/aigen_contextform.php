@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -37,8 +36,8 @@ require_once($CFG->libdir . '/formslib.php');
 /**
  * Class AI gen context form
  */
-class aigen_contextform extends moodleform
-{
+class aigen_contextform extends moodleform {
+
     /**  AIGEN actions @var int */
     const AIGEN_LIST = 0;
     /** @var int */
@@ -48,8 +47,7 @@ class aigen_contextform extends moodleform
      * form element definition
      * @return void
      */
-    public function definition()
-    {
+    public function definition() {
         $mform = $this->_form;
         $templateid = $this->optional_param('templateid', null, PARAM_INT);
 
@@ -98,8 +96,7 @@ class aigen_contextform extends moodleform
      * process form submission
      * @return bool|string
      */
-    public function process_dynamic_submission()
-    {
+    public function process_dynamic_submission() {
         global $DB, $USER;
         if (!$this->is_cancelled() && $this->is_submitted() && $this->is_validated()) {
             $formdata = $this->get_data();
@@ -130,7 +127,7 @@ class aigen_contextform extends moodleform
                 $record->templateid = $templateid;
                 $record->contextdata = json_encode($contextdata);
                 $record->timecreated = time();
-                $record->id = $DB->insert_record(\mod_minilesson\constants::M_TEMPL_USAGES_TABLE, $record);
+                $record->id = $DB->insert_record(constants::M_TEMPL_USAGES_TABLE, $record);
 
                 $task = new task\process_aigen();
                 $task->set_component(constants::M_COMPONENT);

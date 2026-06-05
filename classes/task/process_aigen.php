@@ -40,7 +40,7 @@ class process_aigen extends adhoc_task {
         global $DB;
         $customdata = $this->get_custom_data();
         if (!empty($customdata->usageid)) {
-            $usage = $DB->get_record(\mod_minilesson\constants::M_TEMPL_USAGES_TABLE, ['id' => $customdata->usageid]);
+            $usage = $DB->get_record(constants::M_TEMPL_USAGES_TABLE, ['id' => $customdata->usageid]);
             $lessontemplates = aigen::fetch_lesson_templates();
             if (!array_key_exists($usage->templateid, $lessontemplates)) {
                 return;
@@ -68,12 +68,12 @@ class process_aigen extends adhoc_task {
             }
 
             $usage->timemodified = time();
-            $DB->update_record(\mod_minilesson\constants::M_TEMPL_USAGES_TABLE, $usage);
+            $DB->update_record(constants::M_TEMPL_USAGES_TABLE, $usage);
 
             $modulecontext = context_module::instance($cm->id);
             $contextdata = json_decode($usage->contextdata, true);
 
-            $progressbar = new db_updater($usage->id, \mod_minilesson\constants::M_TEMPL_USAGES_TABLE, 'progress', 0);
+            $progressbar = new db_updater($usage->id, constants::M_TEMPL_USAGES_TABLE, 'progress', 0);
             $progressbar->start_progress('Starting generation', count($config->items));
 
             // Make the AI generator object.
@@ -90,7 +90,7 @@ class process_aigen extends adhoc_task {
                 $usage->progress = -1;
                 $usage->error = $e->getMessage();
                 mtrace('Error: --> ' . json_encode(get_exception_info($e)));
-                $DB->update_record(\mod_minilesson\constants::M_TEMPL_USAGES_TABLE, $usage);
+                $DB->update_record(constants::M_TEMPL_USAGES_TABLE, $usage);
                 return;
             }
 

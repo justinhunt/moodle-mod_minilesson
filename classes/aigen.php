@@ -335,13 +335,13 @@ class aigen {
             $modcustomfieldhandler->set_parent_context($this->context->get_course_context());
             $categories = $modcustomfieldhandler->get_categories_with_fields();
             $importdata->customfields = [
-                'version' => '1.0.0'
+                'version' => '1.0.0',
             ];
             $fields = [];
 
-            foreach ($categories as $categorycontoller) {
-                if ($categorycontoller->get('name') === get_string('lessonbankcatname', 'local_lessonbank')) {
-                    foreach ($categorycontoller->get_fields() as $field) {
+            foreach ($categories as $categorycontroller) {
+                if ($categorycontroller->get('name') === get_string('lessonbankcatname', 'local_lessonbank')) {
+                    foreach ($categorycontroller->get_fields() as $field) {
                         $fieldshortname = $field->get('shortname');
                         if (in_array($fieldshortname, list_minilessons::CUSTOMFIELDS)) {
                             if (in_array($field->get('type'), ['text', 'select', 'multiselect'])) {
@@ -350,21 +350,21 @@ class aigen {
                                 }
                             } else if ($field->get('type') === 'picture') {
                                 if (!empty($importdata->files)) {
-                                    $singleStack = [];
+                                    $singlestack = [];
                                     $filesarray = json_decode(json_encode($importdata->files), true);
                                     array_walk_recursive(
                                         $filesarray,
-                                        function ($value, $key) use (&$singleStack) {
+                                        function ($value, $key) use (&$singlestack) {
                                             if (pathinfo($key, PATHINFO_EXTENSION) && file_extension_in_typegroup($key, 'image')) {
-                                                if (empty($singleStack[$key])) {
-                                                    $singleStack[$key] = $value;
+                                                if (empty($singlestack[$key])) {
+                                                    $singlestack[$key] = $value;
                                                 }
                                             }
                                         }
                                     );
-                                    if (!empty($singleStack)) {
-                                        $filename = key($singleStack);
-                                        $filecontent = $singleStack[$filename];
+                                    if (!empty($singlestack)) {
+                                        $filename = key($singlestack);
+                                        $filecontent = $singlestack[$filename];
                                         $storedfile = self::create_draft_file([
                                             'filename' => $filename,
                                             'content' => base64_decode($filecontent),
@@ -437,14 +437,14 @@ class aigen {
 
         $fs = get_file_storage();
 
-        $filerecord = array(
+        $filerecord = [
             'component' => 'user',
             'filearea'  => 'draft',
             'itemid'    => isset($filedata['itemid']) ? $filedata['itemid'] : file_get_unused_draft_itemid(),
             'author'    => isset($filedata['author']) ? $filedata['author'] : fullname($USER),
             'filepath'  => isset($filedata['filepath']) ? $filedata['filepath'] : '/',
             'filename'  => isset($filedata['filename']) ? $filedata['filename'] : 'file.txt',
-        );
+        ];
 
         if (isset($filedata['contextid'])) {
             $filerecord['contextid'] = $filedata['contextid'];

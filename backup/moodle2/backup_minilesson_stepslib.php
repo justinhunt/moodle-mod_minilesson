@@ -101,7 +101,7 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
             [constants::M_MODNAME => backup::VAR_PARENTID]
         );
         $mediacache->set_source_table(
-            \mod_minilesson\constants::M_MEDIA_CACHE_TABLE,
+            constants::M_MEDIA_CACHE_TABLE,
             ['minilesson' => backup::VAR_ACTIVITYID]
         );
 

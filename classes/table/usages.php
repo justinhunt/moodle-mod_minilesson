@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,12 +29,11 @@ use stdClass;
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class usages extends templates
-{
+class usages extends templates {
+
     protected $templates;
 
-    public function set_filterset(\core_table\local\filter\filterset $filterset): void
-    {
+    public function set_filterset(\core_table\local\filter\filterset $filterset): void {
         global $DB, $PAGE;
         $cmid = $filterset->get_filter('cmid')->current();
         $this->cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid);
@@ -71,43 +69,39 @@ class usages extends templates
             $sqlwhere .= ' AND COALESCE(progress, 0) < 1';
         }
         $params['minilessonid'] = $this->cm->instance;
-        $this->set_sql('*', '{' . \mod_minilesson\constants::M_TEMPL_USAGES_TABLE . '}', $sqlwhere, $params);
+        $this->set_sql('*', '{' . constants::M_TEMPL_USAGES_TABLE . '}', $sqlwhere, $params);
         $this->set_attribute('data-updateinterval', 2);
     }
 
-    public function col_name(stdClass $record)
-    {
+    public function col_name(stdClass $record) {
         if (array_key_exists($record->templateid, $this->templates)) {
             return $this->templates[$record->templateid]['name'];
         }
         return '';
     }
 
-    public function col_timecreated(stdClass $record)
-    {
+    public function col_timecreated(stdClass $record) {
         return $record->timecreated > 0 ? userdate($record->timecreated) : '';
     }
 
-    public function col_progress(stdClass $record)
-    {
+    public function col_progress(stdClass $record) {
         if ($record->progress == 1) { // Complete.
             $icon = $this->renderer->render(new pix_icon('i/checked', get_string('successful', constants::M_COMPONENT)));
             $status = html_writer::span($icon, 'action-icon');
-        } elseif ($record->progress == -1) {
+        } else if ($record->progress == -1) {
             $icon = $this->renderer->render(new pix_icon('i/invalid', get_string('failed', constants::M_COMPONENT)));
             $status = html_writer::tag('p', html_writer::span($icon, 'action-icon') . $record->error);
         } else {
             $data = [
                 'id' => $record->id, 'width' => floor(100 * $record->progress),
-                'inprogress' => !is_null($record->progress), 'tableuniqueid' => $this->uniqueid
+                'inprogress' => !is_null($record->progress), 'tableuniqueid' => $this->uniqueid,
             ];
             $status = $this->renderer->render_from_template(constants::M_COMPONENT . '/aigen_progress', $data);
         }
         return $status;
     }
 
-    public function needs_update(string $column)
-    {
+    public function needs_update(string $column) {
         return in_array($column, ['timemodified', 'progress']);
     }
 }
