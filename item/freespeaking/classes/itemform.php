@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,10 +29,9 @@ use mod_minilesson\local\itemform\baseform;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 
-class itemform extends baseform
-{
-    public function custom_definition()
-    {
+class itemform extends baseform {
+
+    public function custom_definition() {
         $mform = $this->_form;
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('freespeaking_instructions1', constants::M_COMPONENT));
         global $CFG, $PAGE;
@@ -52,7 +50,6 @@ class itemform extends baseform
         $this->add_static_text('freespeakingtargetwordcount_instructions', '', get_string('targetwordcount_instructions', constants::M_COMPONENT));
 
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
-
 
         $mform->addElement('header', 'ai_settings', get_string('aigradingandfeedback', constants::M_COMPONENT));
 
@@ -123,13 +120,13 @@ class itemform extends baseform
         $mform->setExpanded('resultsdisplay');
         $options = [
             1 => get_string('starrating', constants::M_COMPONENT),
-            2 => get_string('percentagescore', constants::M_COMPONENT)
+            2 => get_string('percentagescore', constants::M_COMPONENT),
         ];
         $this->add_dropdown(itemtype::SHOWGRADE, get_string("showgrade", constants::M_COMPONENT), $options, 1);
 
         $options = [
             1 => get_string('detailedresults', constants::M_COMPONENT),
-            2 => get_string('basicresult', constants::M_COMPONENT)
+            2 => get_string('basicresult', constants::M_COMPONENT),
         ];
         $this->add_dropdown(itemtype::SHOWRESULT, get_string('showresult', constants::M_COMPONENT), $options, 1);
         $this->add_checkbox(itemtype::HIDECORRECTION, get_string('hidecorrection', constants::M_COMPONENT), null, 0);
@@ -149,7 +146,6 @@ class itemform extends baseform
         $mform->setDefault(itemtype::AIDATA2, '');
         $mform->addHelpButton(itemtype::AIDATA2, 'ai_data2', constants::M_COMPONENT);
 
-
-        $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/aiprompt', 'init');
+        $PAGE->requires->js_call_amd(static::get_component() . '/aiprompt', 'init');
     }
 }

@@ -29,10 +29,9 @@ use mod_minilesson\local\itemform\baseform;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 
-class itemform extends baseform
-{
-    public function custom_definition()
-    {
+class itemform extends baseform {
+
+    public function custom_definition() {
         global $CFG, $PAGE;
         $mform = $this->_form;
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('freewriting_instructions1', constants::M_COMPONENT));
@@ -56,7 +55,7 @@ class itemform extends baseform
 
         // Virtual Keyboard.
         $this->add_virtualkeyboard(itemtype::ENABLEVKEYBOARD, itemtype::CUSTOMKEYS);
-        
+
         // Hide corrections in the results  (useful if it is not a language learning course).
         $this->add_checkbox(itemtype::HIDECORRECTION, get_string('hidecorrection', constants::M_COMPONENT), null, 0);
 
@@ -87,7 +86,7 @@ class itemform extends baseform
             itemtype::FEEDBACKSELECTION,
             get_string('aigrade_feedback', constants::M_COMPONENT),
             $options,
-            ['data-name' => 'feedbackaiprompt', 'data-type' => 'freewriting',]
+            ['data-name' => 'feedbackaiprompt', 'data-type' => 'freewriting']
         );
         $mform->setDefault(itemtype::FEEDBACKSELECTION, 0);
         $this->add_static_text('preset_instructions2', '', get_string('aigrade_instructions_preset', constants::M_COMPONENT));
@@ -141,7 +140,6 @@ class itemform extends baseform
         $this->add_dropdown(itemtype::SHOWRESULT, get_string('showresult', constants::M_COMPONENT), $options, 1);
         $this->add_checkbox(itemtype::HIDECORRECTION, get_string('hidecorrection', constants::M_COMPONENT), null, 0);
 
-
         // The custom AI data fields
         $mform->addElement('header', 'aicontextheading', get_string('aicontextheading', constants::M_COMPONENT));
         $mform->setExpanded('aicontextheading');
@@ -157,8 +155,7 @@ class itemform extends baseform
         $mform->setDefault(itemtype::AIDATA2, '');
         $mform->addHelpButton(itemtype::AIDATA2, 'ai_data2', constants::M_COMPONENT);
 
-
         // JS for the AI Prompt Preset Dropdown fields
-        $PAGE->requires->js_call_amd(constants::M_COMPONENT . '/aiprompt', 'init');
+        $PAGE->requires->js_call_amd(static::get_component() . '/aiprompt', 'init');
     }
 }
