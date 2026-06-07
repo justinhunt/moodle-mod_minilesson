@@ -1108,28 +1108,38 @@ $string['instructionprompt'] = 'Instruction ';
 $string['freewriting:gradingprompt1'] = 'Default';
 $string['freewriting:gradingprompt2'] = 'Short Answer - requires the correct answer (ai data1)';
 $string['freewriting:gradingprompt3'] = 'Describe the picture - requires a picture description (ai data1)';
+$string['freewriting:gradingprompt4'] = 'Re-tell the story - requires a story summary (ai data1)';
 $string['freewriting:gradingprompt_dec1'] = 'Deduct 1 point for each grammar, spelling or punctuation error.';
 $string['freewriting:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer.
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a broken sentence that has the correct meaning.';
 $string['freewriting:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}]
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
+$string['freewriting:gradingprompt_dec4'] = 'The student is re-telling a story. The story is: [{topic}]
+Give 2 points for each grammatically correct sentence that the student uses in their submission. Give 1 point if the sentence is almost correct.';
 $string['freewriting:feedbackprompt1'] = 'Default';
-$string['freewriting:feedbackprompt2'] = 'Describe the picture ';
+$string['freewriting:feedbackprompt2'] = 'Describe the picture - requires a picture description (ai data1)';
+$string['freewriting:feedbackprompt3'] = 'Re-tell the story - requires a story summary (ai data1)';
 $string['freewriting:feedbackprompt_dec1'] = 'Explain each mistake simply.';
 $string['freewriting:feedbackprompt_dec2'] = 'Explain major grammar mistakes simply. Suggest any elements of the scene that the student did not describe.';
+$string['freewriting:feedbackprompt_dec3'] = 'Explain major grammar mistakes simply. Suggest any elements of the story that the student did not include.';
 
 $string['freespeaking:gradingprompt1'] = 'Default';
 $string['freespeaking:gradingprompt2'] = 'Short Answer - requires the correct answer (ai data1) ';
-$string['freespeaking:gradingprompt3'] = 'Describe the picture - requires a picture description (ai data1) ';
+$string['freespeaking:gradingprompt3'] = 'Describe the picture - requires a picture description (topic) ';
+$string['freespeaking:gradingprompt4'] = 'Re-tell the story - requires a story summary (topic)';
 $string['freespeaking:gradingprompt_dec1'] = 'Deduct 1 point for each grammar error.';
 $string['freespeaking:gradingprompt_dec2'] = 'The correct answer is "{ai data1}" Give 0 marks for an incorrect answer.
 Give 2 marks for a full sentence that has the correct meaning, Give 1 mark for a sentence with mistakes that has the correct meaning';
 $string['freespeaking:gradingprompt_dec3'] = 'The student is describing a picture. The picture depicts the following scene: [{topic}]
 Give 2 points for each grammatically correct sentence that the student uses to describe part of the picture. Give 1 point if the sentence is almost correct.';
+$string['freespeaking:gradingprompt_dec4'] = 'The student is re-telling a story. The story they are re-telling is: [{topic}]
+Give 2 points for each grammatically correct sentence that the student uses in their submission. Give 1 point if the sentence is almost correct.';
 $string['freespeaking:feedbackprompt1'] = 'Default';
-$string['freespeaking:feedbackprompt2'] = 'Describe the picture';
+$string['freespeaking:feedbackprompt2'] = 'Describe the picture- requires a picture description (topic) ';
+$string['freespeaking:feedbackprompt3'] = 'Re-tell the story - requires a story summary (topic)';
 $string['freespeaking:feedbackprompt_dec1'] = 'Explain each grammar mistake simply. Do not comment on spelling or punctuation.';
 $string['freespeaking:feedbackprompt_dec2'] = 'Explain non minor grammar mistakes simply. Do not comment on spelling or punctuation. Suggest any elements of the scene that the student did not describe.';
+$string['freespeaking:feedbackprompt_dec3'] = 'Explain non minor grammar mistakes simply. Do not comment on spelling or punctuation. Suggest any elements of the story that the student did not describe.';
 $string['instructionsprompt_header'] = 'Instructions Prompt Header';
 $string['instructionsprompt'] = 'Instructions Prompt';
 $string['gradingprompt_header'] = 'Grading Prompt Header';
