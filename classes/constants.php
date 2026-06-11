@@ -148,6 +148,7 @@ class constants {
     const TYPE_SCATTER = 'scatter';
     const TYPE_SLIDES = 'slides';
     const TYPE_FICTION = 'fiction';
+    const TYPE_SHADOW = 'shadow';
     const AUDIOSTORYMETA = 'itemaudiofname';
     const AUDIOSTORYZOOMANDPAN = 'itemaudiostoryzoom';
     const ZOOMANDPAN_NONE = 0;
@@ -200,6 +201,10 @@ class constants {
     const AIGRADE_FEEDBACK = 'customtext2';
     const AIGRADE_FEEDBACK_LANGUAGE = 'customtext4';
     const AIGRADE_MODELANSWER = 'customtext3';
+
+    // Markers for grading dropdown lists that tell MiniLesson to use activity lang for feedback
+    const AIGRADE_FEEDBACK_TARGET_LANGUAGE = 'target';
+    const AIGRADE_FEEDBACK_NATIVE_LANGUAGE = 'native';
 
     const PENALIZEHINTS = 'customint2';
     const GAPFILLHINTRTL = 'customint6';
@@ -695,6 +700,7 @@ class constants {
         self::TYPE_DICTATIONCHAT,
         self::TYPE_SLIDES,
         self::TYPE_FICTION,
+        self::TYPE_SHADOW,
       // constants::TYPE_SMARTFRAME,
       // constants::TYPE_COMPQUIZ,
       // constants::TYPE_CONVERSATION,

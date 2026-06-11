@@ -15,18 +15,27 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version of minilesson
+ * Admin settings for the Video Shadowing item type.
  *
- *
- * @package    mod_minilesson
- * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
+ * @package    minilessonitem_shadow
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026061101;
-$plugin->requires = 2023100900; // Requires Moodle 4.3.
-$plugin->component = 'mod_minilesson';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Version 1.1.38 (Build 2026061101)';
+// Create video shadowing settings page.
+
+/** @var \mod_minilesson\plugininfo\minilessonitem $plugininfo */
+$settings = new admin_settingpage('modsettingminilessonshadow', $plugininfo->displayname, 'moodle/site:config');
+
+$settings->add(new admin_setting_heading('minilessonitem_shadow/heading', $plugininfo->displayname, ''));
+
+$settings->add(
+    new admin_setting_configcheckbox(
+        'minilessonitem_shadow/enablesubtitlefetch',
+        get_string('enablesubtitlefetch', 'minilessonitem_shadow'),
+        get_string('enablesubtitlefetch_details', 'minilessonitem_shadow'),
+        0
+    )
+);

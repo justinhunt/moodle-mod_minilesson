@@ -15,18 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version of minilesson
+ * Version information for Video Shadowing
  *
- *
- * @package    mod_minilesson
- * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
+ * @package    minilessonitem_shadow
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026061101;
-$plugin->requires = 2023100900; // Requires Moodle 4.3.
-$plugin->component = 'mod_minilesson';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Version 1.1.38 (Build 2026061101)';
+$plugin->component    = 'minilessonitem_shadow';
+$plugin->release      = '1.0';
+$plugin->version      = 2026061101;
+$plugin->requires     = 2022041900;
+$plugin->supported    = [400, 501];
+$plugin->maturity     = MATURITY_STABLE;

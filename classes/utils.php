@@ -1073,6 +1073,12 @@ class utils {
 
         // Feedback language for AI instructions
         $feedbacklanguage = $item->{constants::AIGRADE_FEEDBACK_LANGUAGE};
+        if ($feedbacklanguage == constants::AIGRADE_FEEDBACK_TARGET_LANGUAGE) {
+            $feedbacklanguage = $moduleinstance->ttslanguage;
+        } else if ($feedbacklanguage == constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE) {
+            $feedbacklanguage = $moduleinstance->nativelang;
+        }
+
         if ($conf->setnativelanguage) {
             $userprefdeflanguage = get_user_preferences(constants::NATIVELANG_PREF);
             if (!empty($userprefdeflanguage)) {

@@ -191,6 +191,14 @@ $functions = [
             'type' => 'read',
             'loginrequired' => true,
         ],
+        'mod_minilesson_fetch_youtube_transcript' => [
+            'classname' => 'mod_minilesson\external\fetch_transcript',
+            'methodname' => 'execute',
+            'description' => 'Fetches the subtitles (WebVTT) of a YouTube video',
+            'capabilities' => 'mod/minilesson:itemedit',
+            'type' => 'read',
+            'ajax' => true,
+        ],
 ];
 
 $services = [

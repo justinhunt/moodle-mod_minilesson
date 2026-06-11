@@ -1,0 +1,86 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_shadow/shadow
+
+    Video Shadowing item: a YouTube clip is replayed line by line and the
+    student shadows each subtitle line as the words highlight.
+
+    Context variables required for this template:
+    * uniqueid - unique id for this item instance
+    * videoid - the youtube video id
+    * videostart - clip start in seconds (0 = from the beginning)
+    * videoend - clip end in seconds (0 = to the end)
+    * loopcount - times each line is shadowed
+    * cues - array of subtitle cues {index, start, end, text, haswordtimings, words}
+}}
+<div class="minilesson-shadow-container">
+{{< mod_minilesson/questionheader}}
+    {{$slashscreen}}
+    <div class="ml_shadow_startscreen startmodule_splashscreen" data-region="splashscreen">
+        <div class="startmodule_image_container shadow_image_container">
+            <img class="shadow_image startmodule_image" src="{{{itemimageurl}}}" alt="{{#str}}shadow, mod_minilesson{{/str}}">
+        </div>
+        <div class="startmodule_title shadow_title">{{#str}}shadow, mod_minilesson{{/str}}</div>
+        <div class="startmodule_description shadow_description">{{iteminstructions}}</div>
+        <div class="start_mainmenu shadow_mainmenu">
+            <button class="btn shadow_start_btn startmodule_btn" data-action="startmodule">
+                {{#str}}start, mod_minilesson{{/str}} <i class="fa fa-play ml-1"></i>
+            </button>
+        </div>
+    </div>
+    {{/slashscreen}}
+{{/ mod_minilesson/questionheader}}
+
+<div class="poodll-orientation-shield">{{#str}}rotatedevice, minilessonitem_shadow{{/str}}</div>
+
+<div class="poodll-shadowing-wrapper ml_shadow_wrapper" data-mode="watch">
+
+    <div class="ml_shadow_videobox">
+        <div id="{{uniqueid}}_shadowplayer" class="ml_shadow_player"></div>
+    </div>
+
+    <div class="ml_shadow_captionbox">
+        <div class="ml_shadow_loopindicator" style="display: none;"></div>
+        <div class="ml_shadow_countdown" style="display: none;"><div class="ml_shadow_countdown_pie"></div></div>
+        <div class="ml_shadow_watchhint">{{#str}}watchhint, minilessonitem_shadow{{/str}}</div>
+        {{#cues}}
+        <div class="ml_shadow_caption" data-cueindex="{{index}}" data-start="{{start}}" data-end="{{end}}"
+            data-haswords="{{#haswordtimings}}1{{/haswordtimings}}{{^haswordtimings}}0{{/haswordtimings}}">
+            {{#haswordtimings}}{{#words}}<span class="ml_shadow_word" data-start="{{start}}" data-end="{{end}}">{{text}}</span>
+            {{/words}}{{/haswordtimings}}
+            {{^haswordtimings}}<span class="ml_shadow_wholeline">{{text}}</span>{{/haswordtimings}}
+        </div>
+        {{/cues}}
+    </div>
+
+    <div class="ml_shadow_actiondrawer">
+        <button type="button" class="btn btn-primary ml_shadow_startshadowing" disabled>
+            {{#str}}startshadowing, minilessonitem_shadow{{/str}}
+        </button>
+        <button type="button" class="btn btn-primary ml_shadow_oknext" style="display: none;">
+            {{#str}}oknext, minilessonitem_shadow{{/str}} <i class="fa fa-arrow-right"></i>
+        </button>
+        <button type="button" class="btn btn-outline-secondary ml_shadow_retry" style="display: none;">
+            <i class="fa fa-undo"></i> {{#str}}retry, minilessonitem_shadow{{/str}}
+        </button>
+    </div>
+
+</div>
+
+{{> mod_minilesson/questionfooter}}
+</div>

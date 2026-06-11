@@ -93,12 +93,18 @@ class itemform extends baseform {
 
         // AI Feedback language.
         $defaultfeedbacklang = $this->moduleinstance->nativelang ?
-            $this->moduleinstance->nativelang : $this->moduleinstance->ttslanguage;
-        $this->add_languageselect(
-            constants::AIGRADE_FEEDBACK_LANGUAGE,
+            constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE : $this->moduleinstance->ttslanguage;
+        // Add generic fallback languages so that items exported/imported will use the native lang of the parent minilesson
+        $extralangoptions = [];
+        $extralangoptions[constants::AIGRADE_FEEDBACK_TARGET_LANGUAGE] = get_string('defaulttargetlanguage', constants::M_COMPONENT);
+        $extralangoptions[constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE] = get_string('defaultnativelanguage', constants::M_COMPONENT);
+        $langoptions = $extralangoptions + utils::get_lang_options();
+        // Add the language select dropdown
+        $this->add_dropdown(constants::AIGRADE_FEEDBACK_LANGUAGE,
             get_string('aigrade_feedback_language', constants::M_COMPONENT),
-            $defaultfeedbacklang
-        );
+            $langoptions,
+            $defaultfeedbacklang);
+        $mform->addHelpButton(constants::AIGRADE_FEEDBACK_LANGUAGE, 'aigrade_feedback_language', constants::M_COMPONENT);
 
         // Relevance settings.
         $this->add_relevanceoptions(

@@ -123,9 +123,26 @@ class itemtype extends item {
         if (empty($this->itemrecord->{self::ROLE})) {
             $this->itemrecord->{self::ROLE} = get_string('audiochat_role_default', constants::M_COMPONENT);
         }
-        // Native language of the student.  We default to en-us.
-        if (empty($this->itemrecord->{self::NATIVE_LANGUAGE})) {
-            $this->itemrecord->{self::NATIVE_LANGUAGE} = constants::M_LANG_ENUS;
+        // Native language of the student.
+        $nativelanguage = $this->itemrecord->{self::NATIVE_LANGUAGE};
+        if ($nativelanguage == constants::AIGRADE_FEEDBACK_TARGET_LANGUAGE) {
+            $nativelanguage = $moduleinstance->ttslanguage;
+        } else if ($nativelanguage == constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE) {
+            $nativelanguage = $moduleinstance->nativelang;
+        }
+        // If that did not work, set it en-US
+        if (empty($nativelanguage)) {
+            $nativelanguage = constants::M_LANG_ENUS;
+        }
+        $this->itemrecord->{self::NATIVE_LANGUAGE} = $nativelanguage;
+
+        // Students native language - it is possible to use the one set in wordcards here also, so we check for that.
+        $testitem->audiochatnativelanguage = $this->itemrecord->{self::NATIVE_LANGUAGE};
+        if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
+            $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
+            if (!empty($userprefnativelanguage)) {
+                $testitem->audiochatnativelanguage = $userprefnativelanguage;
+            }
         }
 
         // In some cases teachers may not set the topic, so we need to handle that.
@@ -144,20 +161,11 @@ class itemtype extends item {
             $this->itemrecord->itemtext = $this->itemrecord->{self::TOPIC};
         }
 
-        // Students native language - it is possible to use the one set in wordcards here also, so we check for that.
-        $testitem->audiochatnativelanguage = $this->itemrecord->{self::NATIVE_LANGUAGE};
-        if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
-            $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
-            if (!empty($userprefnativelanguage)) {
-                $testitem->audiochatnativelanguage = $userprefnativelanguage;
-            }
-        }
-
         // Set up the audiochat instructions.
         $testitem->audiochatinstructions = $this->itemrecord->{self::INSTRUCTIONS};
         // If no topic was set, then we use the default topic.
         if (empty($testitem->audiochatinstructions)) {
-            $testitem->audiochatinstructions = get_string('audiochat:gradingprompt_dec1', constants::M_COMPONENT);
+            $testitem->audiochatinstructions = get_string('audiochat:instructionsprompt_dec1', constants::M_COMPONENT);
         }
 
         // Replace the placeholders in the audiochat instructions with the actual data.

@@ -1,8 +1,8 @@
 @use '../abstracts/variables' as *;
 
 // Box styling for splashscreen containers and activity wrappers
-:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .activity-wrapper,
-:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box) .startmodule_splashscreen {
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box,.shadow-item-box) .activity-wrapper,
+:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box,.shadow-item-box) .startmodule_splashscreen {
   box-shadow: $main-shadow;
   position: relative;
   margin: auto;

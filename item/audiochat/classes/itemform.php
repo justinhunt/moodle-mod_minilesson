@@ -77,12 +77,18 @@ class itemform extends baseform {
 
         // Students native language.
         $defaultfeedbacklang = $this->moduleinstance->nativelang ?
-                    $this->moduleinstance->nativelang : $this->moduleinstance->ttslanguage;
-        $this->add_languageselect(
-            itemtype::NATIVE_LANGUAGE,
-            get_string('audiochat_native_language', constants::M_COMPONENT),
-            $defaultfeedbacklang
-        );
+            constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE : $this->moduleinstance->ttslanguage;
+        // Add generic fallback languages so that items exported/imported will use the native lang of the parent minilesson
+        $extralangoptions = [];
+        $extralangoptions[constants::AIGRADE_FEEDBACK_TARGET_LANGUAGE] = get_string('defaulttargetlanguage', constants::M_COMPONENT);
+        $extralangoptions[constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE] = get_string('defaultnativelanguage', constants::M_COMPONENT);
+        $langoptions = $extralangoptions + utils::get_lang_options();
+        // Add the language select dropdown
+        $this->add_dropdown(itemtype::NATIVE_LANGUAGE,
+            get_string('aigrade_feedback_language', constants::M_COMPONENT),
+            $langoptions,
+            $defaultfeedbacklang);
+        $mform->addHelpButton(itemtype::NATIVE_LANGUAGE, 'aigrade_feedback_language', constants::M_COMPONENT);
 
         $options = utils::get_aiprompt_options('AUDIOCHAT_INSTRUCTIONSSELECTION');
         $mform->addElement(
@@ -109,7 +115,7 @@ class itemform extends baseform {
             itemtype::FEEDBACKSELECTION,
             get_string('aigrade_feedback', constants::M_COMPONENT),
             $options,
-            ['data-name' => 'feedbackaiprompt', 'data-type' => 'audiochat',]
+            ['data-name' => 'feedbackaiprompt', 'data-type' => 'audiochat']
         );
         $mform->setDefault(itemtype::FEEDBACKSELECTION, 0);
         $this->add_static_text('preset_instructions2', '', get_string('aigrade_instructions_preset', constants::M_COMPONENT));

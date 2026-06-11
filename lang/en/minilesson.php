@@ -451,6 +451,10 @@ $string['scatter'] = 'Scatter';
 $string['wordshuffle'] = 'WordShuffle';
 $string['slides'] = 'Slides';
 $string['fiction'] = 'Fiction';
+$string['shadow'] = 'Video Shadowing';
+$string['error:invalidyoutubeurl'] = 'The YouTube URL or video ID is not valid.';
+$string['error:noyoutubetranscript'] = 'No subtitles are available for this YouTube video.';
+$string['error:youtubefetchfailed'] = 'Could not fetch data from YouTube. Please try again later.';
 
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';
@@ -867,6 +871,7 @@ $string['aigrade_feedback'] = 'Feedback Instructions for AI';
 $string['aigrade_feedback_desc'] = 'The feedback instructions tell AI how to give feedback to the student on their response. They are a template that will be merged with the AI topic, AI data 1, AI data 2 to create the instructions. You can use the following variables in the instructions: {topic}, {ai data1}, {ai data2}.';
 $string['aigrade_feedback_help'] = 'The feedback instructions tell AI how to give feedback to the student on their response. They are a template that will be merged with the AI topic, AI data 1, AI data 2 to create the instructions. You can use the following variables in the instructions: {topic}, {ai data1}, {ai data2}.';
 $string['aigrade_feedback_language'] = 'AI Feedback Language';
+$string['aigrade_feedback_language_help'] = 'Sets the language that feedback will be returned in. Default native and target languages refers to those set in this Minilesson\'s settings. The choice here may be overridden if the user has set their own native language preference.';
 $string['aigrade_instructions_preset'] = 'Select a preset from the list to load ready made instructions into the text area below. You can modify the instructions as you wish.';
 $string['targetwordcount_title'] = 'Target Word Count';
 $string['totalmarks'] = 'Total Marks';
@@ -1146,6 +1151,8 @@ $string['gradingprompt_header'] = 'Grading Prompt Header';
 $string['gradingprompt'] = 'Grading Prompt';
 $string['feedbackprompt_header'] = 'Feedback Prompt Header';
 $string['feedbackprompt'] = 'Feedback Prompt';
+$string['defaulttargetlanguage'] = "Default target language";
+$string['defaultnativelanguage'] = "Default native language";
 
 $string['audiochat:instructionsprompt1'] = 'Open discussion - requires a topic';
 $string['audiochat:instructionsprompt2'] = 'Discussing a picture - requires a picture description (topic) and questions (ai data1)';
