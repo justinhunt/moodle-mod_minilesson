@@ -118,6 +118,7 @@ if ($action == 'confirmdelete') {
 // Get filechooser and html editor options.
 $editoroptions = \mod_minilesson\local\itemtype\item::fetch_editor_options($course, $context);
 $filemanageroptions = \mod_minilesson\local\itemtype\item::fetch_filemanager_options($course, 3);
+$itemtypename = utils::get_subitem_name($type);
 
 $itemformclass  = utils::fetch_itemform_classname($type);
 if (!$itemformclass) {
@@ -369,14 +370,14 @@ if ($edit) {
 
     $mform->set_data($data);
     $PAGE->navbar->add(get_string('edit'), new moodle_url('/mod/minilesson/rsquestion/rsquestions.php', ['id' => $id]));
-    $PAGE->navbar->add(get_string('editingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
+    $PAGE->navbar->add(get_string('editingitem', constants::M_COMPONENT, $itemtypename));
     $renderer = $PAGE->get_renderer('mod_minilesson');
     $mode = 'rsquestions';
     echo $renderer->header($minilesson, $cm, $mode, null, get_string('edit', constants::M_COMPONENT));
 if ($edit) {
-       echo $renderer->heading(get_string('editingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
+    echo $renderer->heading(get_string('editingitem', constants::M_COMPONENT, $itemtypename));
 } else {
-    echo $renderer->heading(get_string('addingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
+    echo $renderer->heading(get_string('addingitem', constants::M_COMPONENT, $itemtypename));
 }
     $mform->display();
     echo $renderer->footer();

@@ -147,7 +147,7 @@ abstract class baseform extends \moodleform {
             }
         }
 
-        $mform->addElement('header', 'typeheading', get_string('createaitem', constants::M_COMPONENT, get_string($this->type, constants::M_COMPONENT)));
+        $mform->addElement('header', 'typeheading', get_string('createaitem', constants::M_COMPONENT, utils::get_subitem_name($this->type)));
 
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -165,7 +165,7 @@ abstract class baseform extends \moodleform {
             $mform->addElement('text', 'name', get_string('itemtitle', constants::M_COMPONENT), ['size' => 70]);
             $mform->setType('name', PARAM_TEXT);
             $mform->addRule('name', get_string('required'), 'required', null, 'client');
-            $typelabel = get_string($this->type, constants::M_COMPONENT);
+            $typelabel = utils::get_subitem_name($this->type);
             $mform->setDefault('name', get_string('newitem', constants::M_COMPONENT, $typelabel));
 
             if ($this->moduleinstance->richtextprompt == constants::M_PROMPT_RICHTEXT) {

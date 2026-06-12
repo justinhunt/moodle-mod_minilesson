@@ -28,6 +28,7 @@ define(
             controls: {},
             submitbuttonclass: 'mod_minilesson_quizsubmitbutton',
             stepresults: [],
+            loadpromises: [],
 
             init: function (quizcontainer, activitydata, cmid, attemptid, polly) {
                 this.quizdata = activitydata.quizdata;
@@ -62,15 +63,26 @@ define(
             init_questions: function (quizdata, polly) {
                 var dd = this;
                 $.each(quizdata, function (index, item) {
-                    require([`${def.get_sub_component(item.type)}/itemtype`], module => {
-                        module.clone().init(index, item, dd, polly);
-                    });
+                    dd.loadpromises.push(new Promise(resolve => require(
+                            [`${def.get_sub_component(item.type)}/itemtype`],
+                            module => {
+                                resolve(module.clone().init(index, item, dd, polly));
+                            })
+                        )
+                    );
                 });
 
                 //TTS in question headers
                 $("audio.mod_minilesson_itemttsaudio").each(function () {
                     var that = this;
-                    polly.fetch_polly_url($(this).data('text'), $(this).data('ttsoption'), $(this).data('voice')).then(function (audiourl) {
+                    if (that.src !== '') {
+                        return;
+                    }
+                    polly.fetch_polly_url(
+                        $(this).data('text'),
+                        $(this).data('ttsoption'),
+                        $(this).data('voice')
+                    ).then(function (audiourl) {
                         $(that).attr("src", audiourl);
                     });
                 });
@@ -100,7 +112,8 @@ define(
                     var innerclass, innerhtml, html = "";
                     slice.forEach(function (i) {
                         innerclass = i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
-                        innerhtml = (i !== (slice.length - 1)) ? "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>" : "";
+                        innerhtml = (i !== (slice.length - 1)) ?
+                        "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>" : "";
                         if (i === current) {
                             html += "<div class='minilesson_quiz_progress_current'>";
                         }
@@ -127,8 +140,12 @@ define(
                         if (i === current) {
                             html += "<div class='minilesson_quiz_progress_current'>";
                         }
-                        html += "<div class='minilesson_quiz_progress_item " + (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " + (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" + (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>";
-                        innerclass = (i === lastvalue && i < total - 2) ? "minilesson_quiz_progress_dashedline" : i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
+                        html += "<div class='minilesson_quiz_progress_item " +
+                        (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " +
+                        (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" +
+                        (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>";
+                        innerclass = (i === lastvalue && i < total - 2) ? "minilesson_quiz_progress_dashedline" :
+                        i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
                         innerhtml = "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>";
                         if (i === current) {
                             html += "</div>";
@@ -256,7 +273,7 @@ define(
                     $splashscreen.on('click', '[data-action="startmodule"]', () => $container.trigger("showElement"));
                     return;
                 }
-                $container.trigger("showElement");
+                Promise.allSettled(this.loadpromises).then(() => $container.trigger("showElement"));
             },
 
             start_quiz: function () {

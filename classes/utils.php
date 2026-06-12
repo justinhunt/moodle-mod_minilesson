@@ -2925,4 +2925,12 @@ class utils {
     public static function get_sub_component($type = null, $subplugintype = constants::SUBPLUGINTYPES['item']) {
         return rtrim(sprintf("%s_%s", $subplugintype, (string) $type), '_');
     }
+
+    public static function get_subitem_name($type = null, $subplugintype = constants::SUBPLUGINTYPES['item']) {
+        $itemtypename = get_string('pluginname', self::get_sub_component($type, $subplugintype));
+        if (get_string_manager()->string_exists($type, constants::M_COMPONENT)) {
+            $itemtypename = get_string($type, constants::M_COMPONENT);
+        }
+        return $itemtypename;
+    }
 }
