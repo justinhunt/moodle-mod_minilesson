@@ -35,7 +35,6 @@ require_once($CFG->libdir . '/filelib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class youtubetranscript {
-
     /** @var string return WebVTT subtitle text */
     const FORMAT_VTT = 'vtt';
 
@@ -83,10 +82,16 @@ class youtubetranscript {
      * @param string $urlorid a YouTube URL or video ID
      * @param string $format one of the FORMAT_* constants
      * @param array $preflangs language codes in preference order
+     * @param bool $wordtimestamps whether to add word-level timestamps to the VTT (best effort)
      * @return array with 'vtt' and/or 'transcript' keys depending on $format
      * @throws \moodle_exception error:invalidyoutubeurl, error:noyoutubetranscript or error:youtubefetchfailed
      */
-    public function fetch(string $urlorid, string $format = self::FORMAT_VTT, array $preflangs = self::DEFAULT_LANGS): array {
+    public function fetch(
+        string $urlorid,
+        string $format = self::FORMAT_VTT,
+        array $preflangs = self::DEFAULT_LANGS,
+        bool $wordtimestamps = true
+    ): array {
         $videoid = self::get_video_id($urlorid);
         if ($videoid === null) {
             throw new \moodle_exception('error:invalidyoutubeurl', constants::M_COMPONENT);
@@ -105,7 +110,8 @@ class youtubetranscript {
             if (trim($vtt) === '' || strpos($vtt, 'WEBVTT') === false) {
                 throw new \moodle_exception('error:noyoutubetranscript', constants::M_COMPONENT);
             }
-            $result['vtt'] = $vtt;
+            $vtt = $this->add_word_timestamps($vtt, $track, $tracks, $wordtimestamps);
+            $result['vtt'] = self::add_cue_identifiers($vtt);
         }
         if ($format === self::FORMAT_TRANSCRIPT || $format === self::FORMAT_BOTH) {
             $json3 = $this->fetch_track($baseurl, 'json3');
@@ -182,6 +188,79 @@ class youtubetranscript {
     }
 
     /**
+     * Add word-level timestamps to a fetched VTT, best effort.
+     *
+     * Word timings only exist on auto-generated (ASR) tracks. If the chosen
+     * track is itself ASR, a clean word-level VTT is rebuilt from its json3
+     * events (its native VTT is the rolled-up live-caption format). If the
+     * chosen track is manually created, the ASR track in the same language
+     * supplies the timings and vttwordaligner merges them into the manual
+     * text. On any failure the plain VTT is returned unchanged.
+     *
+     * With $wordtimestamps false no word timings are added, but an ASR
+     * track's VTT is still rebuilt from json3 (without the inline tags),
+     * since its native VTT is the rolled-up format.
+     *
+     * @param string $vtt the fetched WebVTT text
+     * @param array $track the chosen caption track
+     * @param array $tracks all caption tracks of the video
+     * @param bool $wordtimestamps whether to add word-level timestamps
+     * @return string the WebVTT text, with inline word timestamps where possible
+     */
+    protected function add_word_timestamps(string $vtt, array $track, array $tracks, bool $wordtimestamps = true): string {
+        try {
+            if (($track['kind'] ?? '') === 'asr') {
+                $json3 = $this->fetch_track($track['baseUrl'] ?? '', 'json3');
+                $enhanced = vttwordaligner::build_vtt_from_json3($json3, $wordtimestamps);
+            } else {
+                if (!$wordtimestamps) {
+                    return $vtt;
+                }
+                $asrtrack = self::pick_asr_track($tracks, $track['languageCode'] ?? '');
+                if ($asrtrack === null) {
+                    return $vtt;
+                }
+                $json3 = $this->fetch_track($asrtrack['baseUrl'] ?? '', 'json3');
+                $enhanced = vttwordaligner::enhance_manual_vtt($vtt, $json3);
+            }
+        } catch (\moodle_exception $e) {
+            return $vtt;
+        }
+        if (trim($enhanced) === '' || strpos($enhanced, 'WEBVTT') === false) {
+            return $vtt;
+        }
+        return $enhanced;
+    }
+
+    /**
+     * Find the auto-generated (ASR) caption track matching a language.
+     *
+     * @param array $tracks the caption tracks
+     * @param string $lang the language code to match, e.g. 'en-GB'
+     * @return array|null the ASR track, or null if there is no usable match
+     */
+    protected static function pick_asr_track(array $tracks, string $lang): ?array {
+        $asrtracks = array_values(array_filter($tracks, function ($track) {
+            return ($track['kind'] ?? '') === 'asr' && !empty($track['baseUrl']);
+        }));
+        foreach ($asrtracks as $track) {
+            if (($track['languageCode'] ?? '') === $lang) {
+                return $track;
+            }
+        }
+        // Fall back to a base-language match, e.g. a manual 'en-GB' track with an 'en' ASR track.
+        $base = strtolower(explode('-', $lang)[0]);
+        if ($base !== '') {
+            foreach ($asrtracks as $track) {
+                if (strtolower(explode('-', $track['languageCode'] ?? '')[0]) === $base) {
+                    return $track;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Download a caption track in the given format.
      *
      * @param string $baseurl the track's timedtext URL from the player response
@@ -212,6 +291,40 @@ class youtubetranscript {
             throw new \moodle_exception('error:youtubefetchfailed', constants::M_COMPONENT);
         }
         return (string)$response;
+    }
+
+    /**
+     * Number every cue with a "line-number: NN" cue identifier, so activity
+     * authors can see which line number to refer to in line-based settings.
+     * Any existing cue identifiers are replaced.
+     *
+     * @param string $vtt the WebVTT text
+     * @return string the WebVTT text with numbered cue identifiers
+     */
+    public static function add_cue_identifiers(string $vtt): string {
+        $vtt = str_replace(["\r\n", "\r"], "\n", $vtt);
+        $blocks = preg_split('/\n{2,}/', trim($vtt));
+        $timingregex = '/^\s*(?:\d{1,2}:)?\d{1,2}:\d{2}[\.,]\d{1,3}\s*-->/';
+
+        $lineno = 0;
+        foreach ($blocks as $i => $block) {
+            $lines = explode("\n", trim($block));
+            $timingline = -1;
+            foreach ($lines as $j => $line) {
+                if (preg_match($timingregex, $line)) {
+                    $timingline = $j;
+                    break;
+                }
+            }
+            if ($timingline === -1) {
+                // Not a cue (header, NOTE, STYLE...) - leave it alone.
+                continue;
+            }
+            $lineno++;
+            $identifier = sprintf('line-number: %02d', $lineno);
+            $blocks[$i] = $identifier . "\n" . implode("\n", array_slice($lines, $timingline));
+        }
+        return implode("\n\n", $blocks) . "\n";
     }
 
     /**

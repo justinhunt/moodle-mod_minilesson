@@ -476,6 +476,30 @@ class utils {
         return $result;
     }
 
+    /**
+     * Call a Cloud Poodll web service function and return the JSON decoded response.
+     *
+     * @param string $functionname the web service function to call
+     * @param array $params parameters to pass to the web service function
+     * @return mixed JSON decoded response object, or false if credentials or token are unavailable
+     */
+    public static function call_cloudpoodll($functionname, $params = []) {
+        $conf = get_config(constants::M_COMPONENT);
+        if (empty($conf->apiuser) || empty($conf->apisecret)) {
+            return false;
+        }
+        $token = self::fetch_token($conf->apiuser, $conf->apisecret);
+        if (empty($token)) {
+            return false;
+        }
+        $url = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
+        $params['wstoken'] = $token;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $resp = self::curl_fetch($url, $params);
+        return json_decode($resp);
+    }
+
     // This is called from the settings page and we do not want to make calls out to cloud.poodll.com on settings
     // page load, for performance and stability issues. So if the cache is empty and/or no token, we just show a
     // "refresh token" links

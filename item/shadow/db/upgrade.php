@@ -15,18 +15,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for Video Shadowing
+ * Upgrade steps for Video Shadowing
  *
  * @package    minilessonitem_shadow
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Execute the minilessonitem_shadow upgrade steps from the given old version.
+ *
+ * @param int $oldversion the currently installed version
+ * @return bool
+ */
+function xmldb_minilessonitem_shadow_upgrade($oldversion) {
+    global $DB;
 
-$plugin->component    = 'minilessonitem_shadow';
-$plugin->release      = '1.0';
-$plugin->version      = 2026061200;
-$plugin->requires     = 2022041900;
-$plugin->supported    = [400, 501];
-$plugin->maturity     = MATURITY_STABLE;
+    if ($oldversion < 2026061200) {
+        // The per-word highlighting setting was added (on by default). Existing
+        // shadow items predate it and were highlighting per word, so keep them on.
+        $DB->set_field(
+            \mod_minilesson\constants::M_QTABLE,
+            \minilessonitem_shadow\itemtype::WORDHIGHLIGHT,
+            1,
+            ['type' => \mod_minilesson\constants::TYPE_SHADOW]
+        );
+        upgrade_plugin_savepoint(true, 2026061200, 'minilessonitem', 'shadow');
+    }
+
+    return true;
+}

@@ -82,10 +82,31 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log', 'mod
                 }
             },
 
+            set_button_busy: function(busy) {
+                var button = $('#' + this.opts.buttonid);
+                if (busy) {
+                    button.data('idlecaption', button.html());
+                    button.prop('disabled', true);
+                    Str.get_string('fetchvtt_fetching', 'minilessonitem_shadow').then(function(fetching) {
+                        button.html('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i> ' + fetching);
+                        return fetching;
+                    }).catch(Notification.exception);
+                } else {
+                    button.html(button.data('idlecaption'));
+                    button.prop('disabled', false);
+                }
+            },
+
             do_fetch: function(url) {
                 var self = this;
-                var button = $('#' + self.opts.buttonid);
-                button.prop('disabled', true);
+                self.set_button_busy(true);
+
+                // With per-word highlighting off there is no point fetching word timestamps.
+                var wordtimestamps = true;
+                var highlightbox = $('#' + self.opts.wordhighlightid);
+                if (highlightbox.length) {
+                    wordtimestamps = highlightbox.prop('checked');
+                }
 
                 Ajax.call([{
                     methodname: 'mod_minilesson_fetch_youtube_transcript',
@@ -93,9 +114,10 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log', 'mod
                         contextid: self.opts.contextid,
                         url: url,
                         lang: self.opts.lang,
+                        wordtimestamps: wordtimestamps,
                     },
                 }])[0].then(function(response) {
-                    button.prop('disabled', false);
+                    self.set_button_busy(false);
                     if (response.success) {
                         self.set_editor_content(response.vtt);
                     } else {
@@ -106,7 +128,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log', 'mod
                     }
                     return response;
                 }).catch(function(err) {
-                    button.prop('disabled', false);
+                    self.set_button_busy(false);
                     Notification.exception(err);
                 });
             },

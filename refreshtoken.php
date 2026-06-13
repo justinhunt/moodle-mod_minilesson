@@ -40,4 +40,4 @@ if (has_capability('moodle/site:config', $systemcontext)) {
         utils::fetch_token($apiuser, $apisecret, $force);
     }
 }
-redirect($CFG->wwwroot . '/admin/settings.php?section=modsettingminilessonmain');
+redirect($CFG->wwwroot . '/admin/settings.php?section=modsettingminilesson');

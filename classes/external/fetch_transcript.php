@@ -31,7 +31,6 @@ use mod_minilesson\youtubetranscript;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class fetch_transcript extends external_api {
-
     /**
      * Returns description of method parameters.
      *
@@ -42,6 +41,7 @@ class fetch_transcript extends external_api {
             'contextid' => new external_value(PARAM_INT, 'The module context id'),
             'url' => new external_value(PARAM_RAW_TRIMMED, 'The YouTube video URL or ID'),
             'lang' => new external_value(PARAM_TEXT, 'Preferred subtitle language, e.g. en-US', VALUE_DEFAULT, ''),
+            'wordtimestamps' => new external_value(PARAM_BOOL, 'Include word-level timestamps', VALUE_DEFAULT, true),
         ]);
     }
 
@@ -51,11 +51,14 @@ class fetch_transcript extends external_api {
      * @param int $contextid the module context id
      * @param string $url the YouTube video URL or ID
      * @param string $lang preferred subtitle language
+     * @param bool $wordtimestamps whether to include word-level timestamps
      * @return array success flag, vtt content and error message
      */
-    public static function execute($contextid, $url, $lang = '') {
-        $params = self::validate_parameters(self::execute_parameters(),
-            ['contextid' => $contextid, 'url' => $url, 'lang' => $lang]);
+    public static function execute($contextid, $url, $lang = '', $wordtimestamps = true) {
+        $params = self::validate_parameters(
+            self::execute_parameters(),
+            ['contextid' => $contextid, 'url' => $url, 'lang' => $lang, 'wordtimestamps' => $wordtimestamps]
+        );
 
         $context = context::instance_by_id($params['contextid']);
         self::validate_context($context);
@@ -84,7 +87,8 @@ class fetch_transcript extends external_api {
 
         try {
             $fetcher = new youtubetranscript();
-            $result = $fetcher->fetch($videoid, youtubetranscript::FORMAT_VTT, $preflangs);
+            $wordtimestamps = !empty($params['wordtimestamps']);
+            $result = $fetcher->fetch($videoid, youtubetranscript::FORMAT_VTT, $preflangs, $wordtimestamps);
             return ['success' => true, 'vtt' => $result['vtt'], 'message' => ''];
         } catch (\moodle_exception $e) {
             return ['success' => false, 'vtt' => '', 'message' => $e->getMessage()];

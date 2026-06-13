@@ -44,6 +44,9 @@ class itemtype extends item {
     /** @var string the column holding the pause between shadow attempts (milliseconds) */
     public const SHADOWPAUSE = 'customint2';
 
+    /** @var string the column holding the per-word highlighting flag (1 = on) */
+    public const WORDHIGHLIGHT = 'customint3';
+
     /** @var int default pause between shadow attempts (milliseconds) */
     public const DEFAULT_SHADOWPAUSE = 2000;
 
@@ -86,6 +89,15 @@ class itemtype extends item {
             }
             return true;
         }));
+
+        // With per-word highlighting off, any word timings in the VTT are dropped
+        // so the player highlights whole lines only.
+        if (empty($this->itemrecord->{self::WORDHIGHLIGHT})) {
+            foreach ($cues as $i => $unused) {
+                $cues[$i]['haswordtimings'] = false;
+                $cues[$i]['words'] = [];
+            }
+        }
 
         // All remaining cues show as watch-mode subtitles, but only the selected
         // lines are shadowed in loop mode.
@@ -219,6 +231,7 @@ class itemtype extends item {
         $keycols['text2'] = ['jsonname' => 'shadowlines', 'type' => 'string', 'optional' => true, 'default' => self::ALLLINES, 'dbname' => self::SHADOWLINES];
         $keycols['int1'] = ['jsonname' => 'loopcount', 'type' => 'int', 'optional' => true, 'default' => self::DEFAULT_LOOPCOUNT, 'dbname' => self::LOOPCOUNT];
         $keycols['int2'] = ['jsonname' => 'shadowpause', 'type' => 'int', 'optional' => true, 'default' => self::DEFAULT_SHADOWPAUSE, 'dbname' => self::SHADOWPAUSE];
+        $keycols['int3'] = ['jsonname' => 'wordhighlight', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::WORDHIGHLIGHT];
         return $keycols;
     }
 }

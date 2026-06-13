@@ -1332,3 +1332,23 @@ $string['progress'] = 'Progress';
 $string['notfound'] = 'Not found';
 $string['jobnotfound'] = 'The job with that id could not be found';
 $string['notaccess'] = 'You have no permission to see status';
+
+// Account dashboard.
+$string['accountdashboard'] = 'Account Dashboard';
+$string['audio'] = 'Audio';
+$string['end'] = 'Expiration';
+$string['failedfetchsubreport'] = 'Failed to fetch subscription report';
+$string['maxmonth'] = 'Highest Month';
+$string['ninety_days'] = '90 Days';
+$string['no_subscriptions'] = 'No subscriptions.';
+$string['oneeighty_days'] = '180 Days';
+$string['per_plugin'] = 'Per Plugin (Last Yr)';
+$string['per_recording_type'] = 'Per recording type';
+$string['poodll_users'] = 'Poodll Users';
+$string['recording_min'] = 'Recording minutes';
+$string['recordings'] = 'Recordings';
+$string['start'] = 'Start';
+$string['subscription'] = 'Subscription';
+$string['thirty_days'] = '30 Days';
+$string['threehundredsixtyfive_days'] = '365 Days';
+$string['video'] = 'Video';

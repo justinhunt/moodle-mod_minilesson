@@ -41,8 +41,10 @@ if ($hassiteconfig) {
     $ADMIN->add('modsettings', $minilessoncat);
 
     //create main settings page
+    // The page name must be 'modsettingminilesson' (the section name core expects for this module)
+    // so that the settings link shows on admin/plugins.php. This is how mod_quiz does it too.
     $pagetitle = get_string('generalsettings', 'admin');
-    $mainsettings = new admin_settingpage('modsettingminilessonmain', $pagetitle, 'moodle/site:config');
+    $mainsettings = new admin_settingpage('modsettingminilesson', $pagetitle, 'moodle/site:config');
 
     // Add all the main settings
     $mainsettings->add(new admin_setting_configtext(
@@ -467,6 +469,16 @@ if ($hassiteconfig) {
 
         $ADMIN->add('modsettingsminilessoncat', $aimanagersettings);
     }
+
+    // Account Dashboard.
+    // The page name is prefixed with the component because admin tree node names are global
+    // and filter_poodll already registers a page named 'accountdashboard'.
+    $accountdashboard = new admin_externalpage(
+        'mod_minilesson_accountdashboard',
+        get_string('accountdashboard', constants::M_COMPONENT),
+        $CFG->wwwroot . constants::M_URL . '/accountdashboard.php'
+    );
+    $ADMIN->add('modsettingsminilessoncat', $accountdashboard);
 
     $plugins = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
     foreach ($plugins as $plugin) {

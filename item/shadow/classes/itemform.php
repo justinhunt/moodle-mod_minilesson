@@ -62,6 +62,16 @@ class itemform extends baseform {
         $mform->setType(constants::YTVIDEOSTART, PARAM_TEXT);
         $mform->setType(constants::YTVIDEOEND, PARAM_TEXT);
 
+        // Whether words are highlighted individually as they are spoken. YouTube's
+        // word timings are patchy on some videos, so the author can turn this off;
+        // fetching then skips word timestamps and the player highlights whole lines.
+        $this->add_checkbox(
+            itemtype::WORDHIGHLIGHT,
+            get_string('wordhighlight', 'minilessonitem_shadow'),
+            get_string('wordhighlight_details', 'minilessonitem_shadow'),
+            1
+        );
+
         // The WebVTT subtitles, edited in a code editor. The transcriptfetch module
         // sets up the code editor itself (so it can write fetched VTT into it) and
         // wires the fetch-from-youtube button.
@@ -74,6 +84,7 @@ class itemform extends baseform {
             ['id_' . itemtype::VTT, [
                 'buttonid' => 'id_fetchvtt',
                 'ytfieldid' => 'id_' . constants::YTVIDEOID,
+                'wordhighlightid' => 'id_' . itemtype::WORDHIGHLIGHT,
                 'contextid' => $this->context->id,
                 'lang' => $this->moduleinstance->ttslanguage,
             ]]
