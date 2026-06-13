@@ -1,0 +1,40 @@
+{{> mod_minilesson/questionheader}}
+{{> mod_minilesson/progresstimer}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+
+<div class="swiper minilesson-df_fl">
+    <ul class="swiper-wrapper minilesson-definition_flashcards_ul">
+        {{#sentences}}
+        <li class="swiper-slide">
+            <div class="minilesson-flip-card mx-auto">
+                <div class="wc-faces minilesson-flip-card-inner">
+                    <div class="minilesson-flip-card-front position-relative">
+                        <div class="term" data-termid="{{{ index }}}">
+                            <div class="term-title">{{{ prompt }}}</div>
+                            <div class="term-sentence">{{{ sentence }}}</div>
+                            <div class="term-displayprompt">{{{ displayprompt }}}</div>
+                            {{#imageurl}}
+                            <div class="term-image term-image-9">
+                                <img src="{{{ . }}}" class="minilesson-flash_img img-responsive" alt="">
+                            </div>
+                            {{/imageurl}}
+                            {{#audiourl}}
+                                {{>mod_minilesson/samplettsaudio}}
+                            {{/audiourl}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        {{/sentences}}
+    </ul>
+
+    <div class="swiper-pagination minilesson-wc_cardsprogress"></div>
+
+    <div class="minilesson-df_fl_control">
+        <button class="cards-prev-btn swiper-button-prev"></button>
+        <button class="cards-next-btn swiper-button-next"></button>
+    </div>
+</div>
+{{> mod_minilesson/questionfooter}}
