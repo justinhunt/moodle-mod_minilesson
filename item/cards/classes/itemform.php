@@ -31,13 +31,31 @@ class itemform extends baseform {
     public function custom_definition() {
         $mform = $this->_form;
 
+        // Set default instructions in the standard instructions area
+        $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('cards_instructions1', 'minilessonitem_cards'));
+
+        // Add Item Settings Heading - to separate cards specific fields from standard fields
         $this->add_itemsettings_heading();
 
+        // Add Instructions for using this form
+        $this->add_static_text('instructions', '', get_string('cardsforminstructions', 'minilessonitem_cards'));
+
+        // This is the main area for words/phrases and related text on the screen.
+        // A single line equals a card. Multiple display lines are separated with | characters.
+        // Those details need to be explained to users
+        $this->add_static_text('instructions', '', get_string('cardtextinstructions', 'minilessonitem_cards'));
+        $this->add_sentenceprompt(1, get_string('cardtext', 'minilessonitem_cards'), true);
+
+        // The image shown on the card (left aligned)
+        $label = get_string('cardimage', 'minilessonitem_cards');
+        $this->add_sentenceimage(1, $label, false);
+
+        // Say the prompt - audio only
         $mform->addElement(
             'advcheckbox',
             constants::READSENTENCE,
-            get_string('readsentences', constants::M_COMPONENT),
-            get_string('readsentences_desc', constants::M_COMPONENT),
+            get_string('readcardtext', 'minilessonitem_cards'),
+            get_string('readcardtext_desc', 'minilessonitem_cards'),
             [],
             [0, 1]
         );
@@ -57,11 +75,8 @@ class itemform extends baseform {
             0,
             $nossml
         );
-
-        $this->add_sentenceprompt(1, get_string('sentenceprompts', constants::M_COMPONENT), true);
-
-        $this->add_sentenceimage(1, null, false);
-        $this->add_sentenceaudio(1, null, false);
+        $label = get_string('cardaudio', 'minilessonitem_cards');
+        $this->add_sentenceaudio(1, $label, false);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
 
     }

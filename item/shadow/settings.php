@@ -36,6 +36,6 @@ $settings->add(
         'minilessonitem_shadow/enablesubtitlefetch',
         get_string('enablesubtitlefetch', 'minilessonitem_shadow'),
         get_string('enablesubtitlefetch_details', 'minilessonitem_shadow'),
-        0
+        1
     )
 );

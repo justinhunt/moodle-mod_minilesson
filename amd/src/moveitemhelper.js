@@ -3,7 +3,6 @@
  *
  * @module     mod_minilesson/moveitemhelper
  * @class      moveitemhelper
- * @package    mod_minilesson
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -16,7 +15,6 @@ define(
          *
          * @param {String} selector used to find triggers for the new group modal.
          * @param {int} contextid
-         * @param {String} formname The key/name of the form for this instance
          * @param {Object} callback The function to call after successful deletion (for UI updates)
          *
          * Each call to init gets it's own instance of this class.

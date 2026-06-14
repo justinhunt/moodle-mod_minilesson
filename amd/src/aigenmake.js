@@ -37,7 +37,7 @@ define(
                 var self = this;
 
                 //On clicking the make aigen button
-                 self.controls.aigenmakebtn.on('click', function (e) {
+                 self.controls.aigenmakebtn.on('click', function () {
                     var items = [];
                     var itemcontrols = $('.ml_aigen_item');
                     // Get the lesson title and description
@@ -67,7 +67,8 @@ define(
                             generateField.name = $(this).attr('name');
                             generateField.generate  = $(this).is(':checked') ? 1 : 0;
                             if (itemdata.generatemethod == "reuse" && generateField.generate) {
-                                generateField.mapping = $(itemcontrol).find('select[name="' + generateField.name + '_mapping"]').val();
+                                generateField.mapping = $(itemcontrol)
+                                    .find('select[name="' + generateField.name + '_mapping"]').val();
                             } else {
                                 generateField.mapping = '';
                             }
@@ -76,20 +77,23 @@ define(
                         itemdata.generatefields = generateFields;
 
                          //get the file areas
-                        var generateFileareasCheckboxes = $(itemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"]');
+                        var generateFileareasCheckboxes = $(itemcontrol)
+                            .find('.aigen_fileareas-to-generate input[type="checkbox"]');
                         var generateFileareas = [];
                         generateFileareasCheckboxes.each(function () {
                             var generateFilearea = {};
                             generateFilearea.name = $(this).attr('name');
                             generateFilearea.generate  = $(this).is(':checked') ? 1 : 0;
                             if (generateFilearea.generate) {
-                                generateFilearea.mapping = $(itemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]').val();
+                                generateFilearea.mapping = $(itemcontrol)
+                                    .find('select[name="' + generateFilearea.name + '_mapping"]').val();
                             }
                             generateFileareas.push(generateFilearea);
                         });
                         itemdata.generatefileareas = generateFileareas;
 
-                        //Get the overall image context for the item (if any) e.g "user_topic" - "A man and a boy are walking in a park"
+                        //Get the overall image context for the item (if any) e.g "user_topic"
+                        // - "A man and a boy are walking in a park"
                         var overallimagecontext = $(itemcontrol).find('select[name="overall_image_context"]').val();
                         itemdata.overallimagecontext = overallimagecontext;
 
@@ -123,7 +127,7 @@ define(
                  });
 
                 //On reload of the prompt field to contextdata mapping
-                $(document).on('click','.aigen-reload-button', function (e, data) {
+                $(document).on('click','.aigen-reload-button', function (e) {
                     e.preventDefault();
 
                     //get the prompt text area
@@ -141,7 +145,7 @@ define(
                     };
                     var promptfieldmappingsDiv = $(this).closest('.ml_aigen_item').find('.aigen_promptfield-mappings');
                     templates.render('mod_minilesson/aigenpromptfieldmappings',mappingsdata).then(
-                        function (html,js) {
+                        function (html) {
                             promptfieldmappingsDiv.html(html);
                         }
                     );// End of templates
@@ -193,13 +197,13 @@ define(
 
                 // Render mappings first, then render file areas after mappings has finished.
                 templates.render('mod_minilesson/aigenmappings', mappingsdata)
-                .then(function (html, js) {
+                .then(function (html) {
                     log.debug('redoing mappingsdiv: ');
                     mappingsDiv.html(html);
                     // Chain the second render so it runs after the first is done
                     return templates.render('mod_minilesson/aigenfilemappings', fileareasData);
                 })
-                .then(function (html, js) {
+                .then(function (html) {
                     log.debug('redoing fileareadata: ');
                     fileareasDiv.html(html);
                 }).then(function () {
@@ -215,7 +219,8 @@ define(
 
                 //get the generate fields
                 theitemdata.generatefields.forEach(function (generateField) {
-                    var $generateCheckbox = $(theitemcontrol).find('.aigen_fields-to-generate input[type="checkbox"][name="' + generateField.name + '"]');
+                    var $generateCheckbox = $(theitemcontrol)
+                        .find('.aigen_fields-to-generate input[type="checkbox"][name="' + generateField.name + '"]');
                     $generateCheckbox.prop('checked', generateField.generate);
                     if (generateField.generate) {
                         if (theitemdata.generatemethod == "reuse") {
@@ -227,7 +232,8 @@ define(
 
                 //set the file areas
                 theitemdata.generatefileareas.forEach(function (generateFilearea) {
-                    var $generateFileareasCheckbox = $(theitemcontrol).find('.aigen_fileareas-to-generate input[type="checkbox"][name="' + generateFilearea.name + '"]');
+                    var $generateFileareasCheckbox = $(theitemcontrol)
+                        .find('.aigen_fileareas-to-generate input[type="checkbox"][name="' + generateFilearea.name + '"]');
                     $generateFileareasCheckbox.prop('checked', generateFilearea.generate);
                     if (generateFilearea.generate) {
                         var $mappingSelect = $(theitemcontrol).find('select[name="' + generateFilearea.name + '_mapping"]');
@@ -241,7 +247,8 @@ define(
 
                 //set the prompt field mappings div
                 theitemdata.promptfields.forEach(function (promptField) {
-                    var $mappingsSelect = $(theitemcontrol).find('.aigen_promptfield-mappings select[data-name="' + promptField.name + '"]');
+                    var $mappingsSelect = $(theitemcontrol)
+                        .find('.aigen_promptfield-mappings select[data-name="' + promptField.name + '"]');
                     $mappingsSelect.val(promptField.mapping);
                 });
             },
@@ -281,7 +288,7 @@ define(
                 if (!datafield || datafield.trim() === '') {
                     return [];
                 } else {
-                    return datafield.split(',').filter(element => element.trim() !== "")
+                    return datafield.split(',').filter(element => element.trim() !== "");
                 }
             },
 

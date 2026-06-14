@@ -47,7 +47,7 @@ define(
                 });
                 $("#" + itemdata.uniqueid + "_container").on("showElement", async(e) => {
                     if (!self.instance) {
-                        self.instance = await RevealImplement.init(e.target.querySelector('.reveal'), itemdata.region, itemdata.selectedtheme);
+                        self.instance = await RevealImplement.init(e.target.querySelector('.reveal'), itemdata.selectedtheme);
                         self.instance.initialize();
                     }
 

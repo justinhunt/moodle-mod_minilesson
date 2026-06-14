@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 define(['jquery', 'core/log'], function ($, log) {
     "use strict"; // jshint ;_;
     /*
@@ -92,7 +93,7 @@ define(['jquery', 'core/log'], function ($, log) {
                 }
             };
 
-            this.socket.onopen = (event) => {
+            this.socket.onopen = () => {
                 log.debug('TT Streamer socket opened');
                 that.finaltext = '';
                 that.finals = [];
@@ -120,7 +121,6 @@ define(['jquery', 'core/log'], function ($, log) {
         },
 
         audioprocess: function (stereodata) {
-            var that = this;
             var int16data = this.convertflattoint16(stereodata[0]);
 
             //this would be an event that occurs after recorder has stopped or before we are ready
@@ -145,15 +145,14 @@ define(['jquery', 'core/log'], function ($, log) {
         },
 
         convertflattoint16: function (monoaudiodata) {
-            var that = this;
 
             //convert to 16 bit pcm
-            var tempbuffer = []
+            var tempbuffer = [];
             for (let i = 0; i < monoaudiodata.length; i++) {
-                const sample = Math.max(-1, Math.min(1, monoaudiodata[i]))
-                const intSample = sample < 0 ? sample * 0x8000 : sample * 0x7fff
-                tempbuffer.push(intSample & 0xff)
-                tempbuffer.push((intSample >> 8) & 0xff)
+                const sample = Math.max(-1, Math.min(1, monoaudiodata[i]));
+                const intSample = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
+                tempbuffer.push(intSample & 0xff);
+                tempbuffer.push((intSample >> 8) & 0xff);
             }
             return new Uint8Array(tempbuffer);
         },
@@ -166,7 +165,7 @@ define(['jquery', 'core/log'], function ($, log) {
             }
         },
 
-        finish: function (mimeType) {
+        finish: function () {
             var that = this;
 
             //this would be an event that occurs after recorder has stopped lets just ignore it
@@ -209,21 +208,20 @@ define(['jquery', 'core/log'], function ($, log) {
                     // Send termination message if possible
                     if (that.socket.readyState === WebSocket.OPEN) {
                         const terminateMessage = { type: "Terminate" };
-                        console.log(
+                        log.debug(
                             `Sending termination message: ${JSON.stringify(terminateMessage)}`
                         );
                         that.socket.send(JSON.stringify(terminateMessage));
                     }
                     that.socket.close();
                 } catch (error) {
-                    console.error(`Error closing WebSocket: ${error}`);
+                    log.error(`Error closing WebSocket: ${error}`);
                 }
                 that.socket = null;
             }
         },
 
         handlesessioncreated: function () {
-            var that = this;
             log.debug('TT Streamer session created');
             this.ready = true;
             if (this.earlyaudio.length > 0) {

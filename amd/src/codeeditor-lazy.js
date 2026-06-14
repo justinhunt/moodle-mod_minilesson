@@ -30391,6 +30391,12 @@ var CodeEditor = (() => {
       const newLang = e.detail.language;
       element.dispatchEvent(new CustomEvent("ml_codeeditor_set_language", { detail: { language: newLang } }));
     });
+    element.addEventListener("ml_codeeditor_set_content", (e) => {
+      const newContent = e.detail.content || "";
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: newContent }
+      });
+    });
     return view;
   }
   function addAIHelperButton(container, view, config2) {

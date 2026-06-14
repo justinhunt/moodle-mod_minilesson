@@ -257,7 +257,8 @@ switch ($format) {
             $allrowscount = $report->fetch_all_rows_count();
 
             //css must be required before header sent out
-            $PAGE->requires->css(new \moodle_url('https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css'));
+            //DataTables CSS is shipped with the plugin (see mod/minilesson/css/) rather than loaded from a CDN.
+            $PAGE->requires->css(new \moodle_url('/mod/minilesson/css/jquery.dataTables.min.css'));
             echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('reports', constants::M_COMPONENT));
             //echo $renderer->heading($pagetitle);
             //echo $renderer->navigation($moduleinstance, 'reports');

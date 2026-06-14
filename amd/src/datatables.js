@@ -1,5 +1,5 @@
 define(
-    ['jquery', 'core/str', 'core/log', 'core/modal_save_cancel', 'core/modal_events', 'https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js'],
+    ['jquery', 'core/str', 'core/log', 'core/modal_save_cancel', 'core/modal_events', 'mod_minilesson/external/datatables'],
     function ($, str, log, ModalSaveCancel, ModalEvents) {
         "use strict"; // jshint ;_;
 
@@ -28,7 +28,7 @@ define(
                 var bulkdelete_btn = $('#mod_minilesson_deleteconfirmation');
 
                 //handle the click event
-                bulkdelete_btn.on('click', function (e) {
+                bulkdelete_btn.on('click', function () {
                     var btn = bulkdelete_btn[0];
 
                     ModalSaveCancel.create({

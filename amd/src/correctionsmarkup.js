@@ -190,11 +190,14 @@ define(['jquery', 'core/log'], function ($, log) {
         markup_suggestedwords: function () {
             var m = this;
             $.each(m.options.suggestedwords, function (index) {
-                  m.controls.correctionscontainer.find(' #' + m.cd.wordclass + '_' + (m.options.suggestedwords[index].wordnumber)).addClass(m.cd.suggestionclass);
+                  m.controls.correctionscontainer
+                      .find(' #' + m.cd.wordclass + '_' + (m.options.suggestedwords[index].wordnumber))
+                      .addClass(m.cd.suggestionclass);
             });
             //sadly the above code only takes us to the last match. NOT to the last suggestion
             //so from the last match to the end of passage (if there are any words left) we mark those up too
-            //we use the insertion count to guess the transcript indexes of end words. This is used to highlight passage on mouseover in view summary
+            //we use the insertion count to guess the transcript indexes of end words.
+            //This is used to highlight passage on mouseover in view summary
             //m.options.grammarmatches is js object, so we can't use array functions on it.
             if (Object.keys(m.options.grammarmatches).length > 0) {
                 var lastpposition = 0;
@@ -252,13 +255,15 @@ define(['jquery', 'core/log'], function ($, log) {
                             //if it's just a missing word(s) with no corrections, we simply mark up the space with the tpositions
                             var p_gapcount = (match.pposition - prevmatch.pposition) - 1;
                             if (p_gapcount === 0) {
-                                $('#' + that.cd.spaceclass + '_' + missingwordspacenumber).attr('data-tpositions', tpositions.join(','));
+                                $('#' + that.cd.spaceclass + '_' + missingwordspacenumber)
+                                    .attr('data-tpositions', tpositions.join(','));
                             } else {
                                 for (var z = prevmatch.pposition + 1; z < match.pposition; z++) {
                                     $('#' + that.cd.spaceclass + '_' + z).attr('data-tpositions', tpositions.join(','));
                                     $('#' + that.cd.wordclass + '_' + z).attr('data-tpositions', tpositions.join(','));
                                  //   $('#' + that.cd.originalprewordclass + '_' + z).attr('data-tpositions', tpositions.join(','));
-                                 //   $('#' + that.cd.originalpostwordclass + '_' + z).attr('data-tpositions', tpositions.join(','));
+                                 //   $('#' + that.cd.originalpostwordclass + '_' + z)
+                                 //       .attr('data-tpositions', tpositions.join(','));
                                 }
                             }
                         }
@@ -266,12 +271,15 @@ define(['jquery', 'core/log'], function ($, log) {
                         //if there is a gap in the pposition, then we have an extra word in the corrected text
                         //we want to highlight the space where the extra word would have been in the original text
                         //eg original "one two three four five" corrected to "one two twopointfive three four five"
-                        // we want to highlight the space between "two" and "three" in original since the p position has jumped by more than one
+                        // we want to highlight the space between "two" and "three" in original
+                        // since the p position has jumped by more than one
                         for (var insertedword = prevmatch.pposition + 1; insertedword < match.pposition; insertedword++) {
                             $('#' + that.cd.wordclass + '_' + insertedword).addClass(that.cd.insertionclass);
                             $('#' + that.cd.wordclass + '_' + insertedword).attr('data-tpositions', prevmatch.tposition);
-                          //  $('#' + that.cd.originalprewordclass + '_' + insertedword).attr('data-tpositions', prevmatch.tposition);
-                          //  $('#' + that.cd.originalpostwordclass + '_' + insertedword).attr('data-tpositions', prevmatch.tposition);
+                          //  $('#' + that.cd.originalprewordclass + '_' + insertedword)
+                          //      .attr('data-tpositions', prevmatch.tposition);
+                          //  $('#' + that.cd.originalpostwordclass + '_' + insertedword)
+                          //      .attr('data-tpositions', prevmatch.tposition);
                         }
                     }
 
@@ -321,7 +329,8 @@ define(['jquery', 'core/log'], function ($, log) {
                         var originaltext = originalwords.join(' ') + '->';
                         if ($(this).hasClass(that.cd.suggestionclass) && $(this).hasClass(that.cd.insertionclass)) {
                             //if it is an inserted word a underscore(since original does not exist) shows before the current word
-                            //a space would be better, but then it would be 2 spaces which html collapses to 1 so it would be invisible
+                            //a space would be better, but then it would be 2 spaces which html
+                            //collapses to 1 so it would be invisible
                             $('#' + that.cd.originalprewordclass + '_' + wordnumber).text('_->');
                             $('#' + that.cd.originalprewordclass + '_' + (wordnumber)).attr('data-tpositions', '');
                         } else if ($(this).hasClass(that.cd.suggestionclass)) {

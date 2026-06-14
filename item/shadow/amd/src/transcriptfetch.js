@@ -14,17 +14,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Sets up the VTT code editor on the shadow item form and wires the
- * "Fetch subtitles" button, which pulls the WebVTT of the configured
- * YouTube video over ajax and writes it into the editor.
+ * Wires the "Fetch subtitles" button on the shadow item form, which pulls the
+ * WebVTT of the configured YouTube video over ajax and writes it into the
+ * code editor.
+ *
+ * The code editor itself is set up by a separate setupCodeEditor call (the same
+ * way fiction and slides do it). This module reads the current content from the
+ * underlying textarea and writes fetched content back via the editor's
+ * ml_codeeditor_set_content custom event, so it never needs the editor view.
  *
  * @module     minilessonitem_shadow/transcriptfetch
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log', 'mod_minilesson/codeeditor-lazy'],
-    function($, Ajax, Notification, Str, log, codeEditor) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log'],
+    function($, Ajax, Notification, Str, log) {
 
         "use strict"; // jshint ;_;
 
@@ -37,17 +42,28 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log', 'mod
 
         return {
 
-            view: null,
             opts: null,
 
-            init: function(editorid, opts) {
+            init: function(opts) {
                 var self = this;
                 self.opts = opts;
-                self.view = codeEditor.setupCodeEditor(editorid, {language: 'vtt'});
                 $('#' + opts.buttonid).on('click', function(e) {
                     e.preventDefault();
                     self.handle_click();
                 });
+            },
+
+            // The editor keeps the underlying textarea in sync, so its value is the
+            // current editor content.
+            get_editor_content: function() {
+                return $.trim($('#' + this.opts.editorid).val() || '');
+            },
+
+            set_editor_content: function(content) {
+                var element = document.getElementById(this.opts.editorid);
+                if (element) {
+                    element.dispatchEvent(new CustomEvent('ml_codeeditor_set_content', {detail: {content: content}}));
+                }
             },
 
             handle_click: function() {
@@ -65,7 +81,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log', 'mod
                     return;
                 }
 
-                if (self.view !== null && $.trim(self.view.state.doc.toString()) !== '') {
+                if (self.get_editor_content() !== '') {
                     Str.get_strings([
                         {key: 'fetchvtt_overwrite_title', component: 'minilessonitem_shadow'},
                         {key: 'fetchvtt_overwrite', component: 'minilessonitem_shadow'},
@@ -130,14 +146,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log', 'mod
                 }).catch(function(err) {
                     self.set_button_busy(false);
                     Notification.exception(err);
-                });
-            },
-
-            set_editor_content: function(content) {
-                var self = this;
-                // The editor's update listener syncs the underlying textarea for us.
-                self.view.dispatch({
-                    changes: {from: 0, to: self.view.state.doc.length, insert: content},
                 });
             },
 

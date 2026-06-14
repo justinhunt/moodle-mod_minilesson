@@ -234,4 +234,36 @@ class itemtype extends item {
         $keycols['int3'] = ['jsonname' => 'wordhighlight', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::WORDHIGHLIGHT];
         return $keycols;
     }
+
+    /**
+     * Builds the prompt for the AI helper in the code editor.
+     *
+     * The editor holds WebVTT subtitles, so the AI must only touch the spoken
+     * text and leave the cue structure (timing lines, identifiers, inline word
+     * timestamps) intact.
+     *
+     * @param string $language The language of the code (always 'vtt' here).
+     * @param string $prompt The user's instruction.
+     * @param string $currentcode The current WebVTT in the editor.
+     * @return string The full prompt for the AI.
+     */
+    public static function codeeditor_build_prompt($language, $prompt, $currentcode) {
+        $fullprompt = "You are an assistant helping a teacher clean up WebVTT subtitles for a "
+            . "language-learning video shadowing exercise." . PHP_EOL . PHP_EOL;
+
+        $fullprompt .= "### STRICT RULES ###" . PHP_EOL;
+        $fullprompt .= "- Output valid WebVTT only. Keep the 'WEBVTT' header and any 'Kind'/'Language' lines." . PHP_EOL;
+        $fullprompt .= "- Do NOT change, add or remove any timing line (e.g. '00:00:01.200 --> 00:00:03.360')." . PHP_EOL;
+        $fullprompt .= "- Keep every cue identifier line exactly as is (e.g. 'line-number: 01'). Do not renumber them." . PHP_EOL;
+        $fullprompt .= "- Preserve any inline word timestamps (e.g. '<00:00:10.100>') and their positions within the text." . PHP_EOL;
+        $fullprompt .= "- Keep the same number of cues, in the same order. Only edit the spoken text of each cue." . PHP_EOL;
+        $fullprompt .= "- Do not translate the text or change its meaning." . PHP_EOL . PHP_EOL;
+
+        $fullprompt .= "The teacher's instruction (e.g. add punctuation, fix spelling and capitalization): "
+            . $prompt . PHP_EOL . PHP_EOL;
+
+        $fullprompt .= "The current WebVTT is:" . PHP_EOL . "---" . PHP_EOL . $currentcode . PHP_EOL . "---" . PHP_EOL;
+        $fullprompt .= "Return only the full updated WebVTT, without any explanations or markdown code blocks.";
+        return $fullprompt;
+    }
 }

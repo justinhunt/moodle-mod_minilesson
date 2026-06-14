@@ -52,6 +52,9 @@ define(['jquery', 'core/log'], function ($, log) {
                 lastDelay = time,
                 outp = {};
 
+            /**
+             * Internal tick handler that fires the wrapped callback on schedule.
+             */
             function tick()
             {
                 var now = Date.now(),

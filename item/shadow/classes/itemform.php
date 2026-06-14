@@ -54,13 +54,54 @@ class itemform extends baseform {
         $ytarray[] =& $mform->createElement('html', ' - ');
         $ytarray[] =& $mform->createElement('text', constants::YTVIDEOEND, get_string('itemytend', constants::M_COMPONENT),
             ['size' => 8, 'placeholder' => '00:00:00']);
-        if (!empty(get_config('minilessonitem_shadow', 'enablesubtitlefetch'))) {
+        $subtitlefetchenabled = !empty(get_config('minilessonitem_shadow', 'enablesubtitlefetch'));
+        if ($subtitlefetchenabled) {
             $ytarray[] =& $mform->createElement('button', 'fetchvtt', get_string('fetchvtt', 'minilessonitem_shadow'));
         }
         $mform->addGroup($ytarray, 'shadowytclip', get_string('ytclipdetails', 'minilessonitem_shadow'), [' '], false);
         $mform->setType(constants::YTVIDEOID, PARAM_RAW);
         $mform->setType(constants::YTVIDEOSTART, PARAM_TEXT);
         $mform->setType(constants::YTVIDEOEND, PARAM_TEXT);
+
+        // Let authors know why there is no fetch button when the utility is disabled.
+        if (!$subtitlefetchenabled) {
+            $this->add_static_text('fetchdisabled', '',
+                get_string('fetchvtt_disabled', 'minilessonitem_shadow'));
+        }
+
+        // The WebVTT subtitles, edited in a code editor. The editor is set up the
+        // same way as fiction/slides (direct setupCodeEditor call) with the AI
+        // wizard enabled; the transcriptfetch module then wires the
+        // fetch-from-youtube button and writes fetched VTT into the editor.
+        $this->add_static_text('shadowvtt_desc', '', get_string('shadowvtt_desc', 'minilessonitem_shadow'));
+        $fixedwidthfont = true;
+        $this->add_textarearesponse(itemtype::VTT, get_string('shadowvtt', 'minilessonitem_shadow'), true, $fixedwidthfont);
+        $PAGE->requires->js_call_amd(
+            constants::M_COMPONENT . '/codeeditor-lazy',
+            'setupCodeEditor',
+            [
+                'id_' . itemtype::VTT,
+                [
+                    'language' => 'vtt',
+                    'aihelper' => true,
+                    'itemtype' => 'shadow',
+                    'contextid' => $this->context->id,
+                    'ai_placeholder' => get_string('aihelper_placeholder_shadow', 'minilessonitem_shadow'),
+                ],
+            ]
+        );
+        $PAGE->requires->js_call_amd(
+            'minilessonitem_shadow/transcriptfetch',
+            'init',
+            [[
+                'editorid' => 'id_' . itemtype::VTT,
+                'buttonid' => 'id_fetchvtt',
+                'ytfieldid' => 'id_' . constants::YTVIDEOID,
+                'wordhighlightid' => 'id_' . itemtype::WORDHIGHLIGHT,
+                'contextid' => $this->context->id,
+                'lang' => $this->moduleinstance->ttslanguage,
+            ]]
+        );
 
         // Whether words are highlighted individually as they are spoken. YouTube's
         // word timings are patchy on some videos, so the author can turn this off;
@@ -70,24 +111,6 @@ class itemform extends baseform {
             get_string('wordhighlight', 'minilessonitem_shadow'),
             get_string('wordhighlight_details', 'minilessonitem_shadow'),
             1
-        );
-
-        // The WebVTT subtitles, edited in a code editor. The transcriptfetch module
-        // sets up the code editor itself (so it can write fetched VTT into it) and
-        // wires the fetch-from-youtube button.
-        $this->add_static_text('shadowvtt_desc', '', get_string('shadowvtt_desc', 'minilessonitem_shadow'));
-        $fixedwidthfont = true;
-        $this->add_textarearesponse(itemtype::VTT, get_string('shadowvtt', 'minilessonitem_shadow'), true, $fixedwidthfont);
-        $PAGE->requires->js_call_amd(
-            'minilessonitem_shadow/transcriptfetch',
-            'init',
-            ['id_' . itemtype::VTT, [
-                'buttonid' => 'id_fetchvtt',
-                'ytfieldid' => 'id_' . constants::YTVIDEOID,
-                'wordhighlightid' => 'id_' . itemtype::WORDHIGHLIGHT,
-                'contextid' => $this->context->id,
-                'lang' => $this->moduleinstance->ttslanguage,
-            ]]
         );
 
         // How many times the student shadows each line.

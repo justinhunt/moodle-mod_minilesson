@@ -1,4 +1,5 @@
 /* jshint ignore:start */
+/* global webkitSpeechRecognition, webkitSpeechGrammarList */
 define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, wavencoder) {
 
     "use strict"; // jshint ;_;
@@ -36,13 +37,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             return $.extend(true, {}, this);
         },
 
-        will_work_ok: function (opts) {
-            //let's check if we are in an iframe
-            var is_iframe = false;
-            if (window.self !== window.top) {
-                is_iframe = true;
-            }
-
+        will_work_ok: function () {
             //is mobileapp ?
             var is_mobileapp = false;
             if (navigator.userAgent.indexOf("MoodleMobile") > -1) {
@@ -72,7 +67,6 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
             }
 
             //This is feature detection, and for chrome it can be trusted.
-            var is_android = navigator.userAgent.indexOf("Android") > -1;
             var hasspeechrec = ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window);
             if (hasspeechrec && this.browsertype === '' && has_chrome) {
                 this.browsertype = 'chrome';
@@ -326,7 +320,7 @@ define(['jquery', 'core/log', 'mod_minilesson/ttwavencoder'], function ($, log, 
         onfinalspeechcapture: function (speechtext) {
             log.debug(speechtext);
         },
-        oninterimspeechcapture: function (speechtext) {
+        oninterimspeechcapture: function () {
             // log.debug(speechtext);
         }
 

@@ -66,7 +66,7 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                 var xhr = new XMLHttpRequest();
 
                 //set up our handler for the response
-                xhr.onreadystatechange = function (e) {
+                xhr.onreadystatechange = function () {
                     if (this.readyState === 4) {
                         if (xhr.status == 200) {
                             //get a yes or forgetit or tryagain
@@ -112,7 +112,8 @@ define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, d
                         //fetch slightly slower version of speech
                         //rate = 'slow' or 'x-slow' or 'medium'
                         speaktext = that.clean_ssml_chars(speaktext);
-                        speaktext = '<speak><break time="1000ms"></break><prosody rate="x-slow">' + speaktext + '</prosody></speak>';
+                        speaktext = '<speak><break time="1000ms"></break><prosody rate="x-slow">'
+                            + speaktext + '</prosody></speak>';
                         break;
                     //ssml
                     case 3:

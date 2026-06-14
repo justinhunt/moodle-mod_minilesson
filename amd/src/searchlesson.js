@@ -56,19 +56,6 @@ export const registerFilter = (opts) => {
         return '';
     };
 
-    const getPreviewIframe = (url) => {
-        const template = document.getElementById('mod_minilesson-preview-iframe');
-        if (template) {
-            const content = template.content.cloneNode(true);
-            const iframe = content.querySelector('iframe');
-            if (iframe) {
-                iframe.src = url;
-            }
-            return content;
-        }
-        return '';
-    };
-
     const getSentinel = () => {
         let sentinel = cardsContainer.querySelector('.lbsf-sentinel');
         if (!sentinel) {

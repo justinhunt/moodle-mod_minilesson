@@ -12,7 +12,6 @@ define(['jquery', 'core/log','https://player.vimeo.com/api/player.js'], function
         },
 
         loadPlayer: function (container) {
-            var that = this;
             var theDiv = $("#" + container);
             var startSeconds = theDiv.data('start');
             var endSeconds = theDiv.data('end');

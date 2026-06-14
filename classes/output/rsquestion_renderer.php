@@ -144,8 +144,9 @@ class rsquestion_renderer extends \plugin_renderer_base
         $opts['tableid'] = $tableid;
         $opts['tableprops'] = $tableprops;
         $this->page->requires->js_call_amd(constants::M_COMPONENT . "/datatables", 'init', [$opts]);
-        $this->page->requires->css(new \moodle_url('https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css'));
-        $this->page->requires->css(new \moodle_url('https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.min.css'));
+        // DataTables CSS is shipped with the plugin (see mod/minilesson/css/) rather than loaded from a CDN.
+        $this->page->requires->css(new \moodle_url('/mod/minilesson/css/jquery.dataTables.min.css'));
+        $this->page->requires->css(new \moodle_url('/mod/minilesson/css/buttons.dataTables.min.css'));
         $this->page->requires->strings_for_js(['bulkdelete', 'bulkdeletequestion'], constants::M_COMPONENT);
     }
 

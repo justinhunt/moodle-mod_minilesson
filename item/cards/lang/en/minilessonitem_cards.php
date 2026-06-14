@@ -25,8 +25,17 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'Flexible Layout Card';
-$string['cards'] = 'Flexible Layout Card';
-$string['item_desc'] = 'The Flexible Layout Card item is a placeholder for an item type that has not been developed yet.';
-$string['pluginname'] = 'Flexible Layout Card';
-$string['privacy:metadata'] = 'The Flexible Layout Card plugin doesn\'t store any personal data.';
+$string['additem'] = 'Cards';
+$string['cards'] = 'Cards';
+$string['item_desc'] = 'The Cards item shows a series of cards that can include: text, pictures and audio. It is suitable for introducing new phrases or vocabulary.';
+$string['pluginname'] = 'Cards';
+$string['privacy:metadata'] = 'The Cards item type plugin for mod_minilesson doesn\'t store any personal data.';
+$string['cardsforminstructions'] = 'Enter a list of words or phrases and any associated images or audio assets on this form. They will be assembled into interactive cards when displayed.';
+$string['cards_instructions1'] = 'Review the cards on screen. You can use the next and back buttons to see other cards.';
+$string['cardimage'] = "Card image";
+$string['cardaudio'] = "Card audio";
+$string['cardtext'] = "Card text";
+$string['cardtextinstructions'] = 'Enter a list of words/phrases in the text area below. Each item should be a on a new line. Optionally add more text lines to a card (definition, model sentence etc) by separating each line with a pipe "|" character. e.g. Hello | Bonjour | We should say hello.';
+$string['readcardtext'] = 'Read cart text (TTS)';
+$string['readcardtext_desc'] = 'If checked the card text (first line) will be read aloud.';
+

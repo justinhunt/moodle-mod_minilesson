@@ -87,7 +87,6 @@ define(['jquery', 'core/log', 'core/notification', 'core/str'], function ($, log
             fieldset_close.on('click', function () {
                 var thefieldset = $(this).closest('fieldset');
                 var keyfieldname = thefieldset.data('keyfield');
-                var mediaprompt = thefieldset.data('mediaprompt');
                 //fetch the input of name keyfield nested under thefieldset
                 switch (keyfieldname) {
                     case 'itemttsdialog':
@@ -119,7 +118,7 @@ define(['jquery', 'core/log', 'core/notification', 'core/str'], function ($, log
                     //re-enable the select option
                     var mediaprompt = thefieldset.data('mediaprompt');
                     that.controls.select.find('option[value="' + mediaprompt + '"]').prop('disabled', false);
-                }
+                };
 
                 switch (keyfieldname) {
                     case 'itemmedia':

@@ -26,6 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Video Shadowing';
+$string['aihelper_placeholder_shadow'] = 'e.g. Add punctuation and fix any spelling and capitalization mistakes';
 $string['enablesubtitlefetch'] = 'Enable subtitle fetch button';
 $string['enablesubtitlefetch_details'] = 'Shows a "Fetch subtitles" button on the item form that downloads a YouTube video\'s subtitles into the subtitle editor. Note: fetching subtitles will not always work, and may stop working at any time. It is a utility tool that Poodll does not guarantee will always be available.';
 $string['error:badtimestamp'] = 'Clip start and end times must be in hh:mm:ss format, e.g. 00:01:30.';
@@ -34,6 +35,7 @@ $string['error:badshadowlines'] = 'Lines to shadow must be * (all lines) or a co
 $string['error:badvtt'] = 'The subtitles could not be parsed. Enter valid WebVTT with at least one timed cue.';
 $string['error:noshadowlines'] = 'None of the selected line numbers match a subtitle line inside the clip start and end times.';
 $string['fetchvtt'] = 'Fetch subtitles';
+$string['fetchvtt_disabled'] = 'Automatic fetch of subtitles is currently disabled';
 $string['fetchvtt_failed'] = 'Could not fetch subtitles from YouTube.';
 $string['fetchvtt_fetching'] = 'Fetching...';
 $string['fetchvtt_invalidurl'] = 'Enter a valid YouTube URL or 11 character video ID first.';
@@ -56,9 +58,9 @@ $string['shadowlines'] = 'Lines to shadow';
 $string['shadowpause'] = 'Pause between shadows (seconds)';
 $string['shadowlines_desc'] = 'Subtitle line numbers to shadow, counted from 1 in the subtitles below, e.g. 1,4,5,6. Use * to shadow all lines. Other lines still display while watching.';
 $string['shadowvtt'] = 'Subtitles (WebVTT)';
-$string['shadowvtt_desc'] = 'Paste or edit the WebVTT subtitles for the clip. Word-level inline timestamps (e.g. &lt;00:00:10.100&gt;word) enable per-word highlighting; plain cues highlight the whole line.';
+$string['shadowvtt_desc'] = 'Paste or edit the WebVTT subtitles for the clip in the area below.';
 $string['startshadowing'] = 'Start shadowing';
 $string['watchhint'] = 'Press play and watch the clip. When it finishes, press "Start shadowing".';
 $string['wordhighlight'] = 'Enable per-word highlighting';
-$string['wordhighlight_details'] = 'Highlight each word as it is spoken, using word timestamps in the subtitles. YouTube\'s word timings are unreliable on some videos - turn this off to highlight whole lines instead. When off, fetching subtitles also skips word timestamps.';
+$string['wordhighlight_details'] = 'Highlight each word as it is spoken, using word timestamps in the subtitles. YouTube\'s word timings are unreliable on some videos - turn this off to highlight whole lines instead. When off, fetching subtitles also skips fetching word timestamps.';
 $string['ytclipdetails'] = 'YouTube clip (ID/URL, start and end seconds)';

@@ -1,3 +1,4 @@
+/* eslint-disable no-bitwise */
 define(['jquery', 'core/log'], function ($, log) {
     "use strict"; // jshint ;_;
     /*
@@ -44,7 +45,8 @@ define(['jquery', 'core/log'], function ($, log) {
 
         preparesocket: async function () {
             var that = this;
-            var url = `wss://${this.region}.stt.speech.${this.apidomain}/speech/recognition/conversation/cognitiveservices/v1?language=${this.lang}`;
+            var url = `wss://${this.region}.stt.speech.${this.apidomain}`
+                + `/speech/recognition/conversation/cognitiveservices/v1?language=${this.lang}`;
             url += `&format=simple`;
             // Using the token as a query param is the only easy way without headers
             url += `&Authorization=Bearer ${this.speechtoken}`;
@@ -85,16 +87,16 @@ define(['jquery', 'core/log'], function ($, log) {
                                 let msg = res.DisplayText;
                                 that.finaltext += ' ' + msg;
                                 that.audiohelper.oninterimspeechcapture(that.finaltext);
-                                console.debug('Azure final: ' + msg);
+                                log.debug('Azure final: ' + msg);
                             }
                         }
                     } catch (e) {
-                        console.error("Error parsing Azure message:", e);
+                        log.error("Error parsing Azure message:", e);
                     }
                 }
             };
 
-            this.socket.onopen = (event) => {
+            this.socket.onopen = () => {
                 log.debug('TT Azure Streamer socket opened');
                 that.ready = true;
                 that.sentHeader = false; // Reset on new connection
@@ -123,7 +125,6 @@ define(['jquery', 'core/log'], function ($, log) {
         },
 
         audioprocess: function (stereodata) {
-            var that = this;
             const base64data = this.binarytobase64(stereodata[0]);
 
             if (this.ready === undefined || !this.ready) {
@@ -150,12 +151,12 @@ define(['jquery', 'core/log'], function ($, log) {
         },
 
         binarytobase64: function (monoaudiodata) {
-            var tempbuffer = []
+            var tempbuffer = [];
             for (let i = 0; i < monoaudiodata.length; i++) {
-                const sample = Math.max(-1, Math.min(1, monoaudiodata[i]))
-                const intSample = sample < 0 ? sample * 0x8000 : sample * 0x7fff
-                tempbuffer.push(intSample & 0xff)
-                tempbuffer.push((intSample >> 8) & 0xff)
+                const sample = Math.max(-1, Math.min(1, monoaudiodata[i]));
+                const intSample = sample < 0 ? sample * 0x8000 : sample * 0x7fff;
+                tempbuffer.push(intSample & 0xff);
+                tempbuffer.push((intSample >> 8) & 0xff);
             }
             // Return Unit8Array
             return new Uint8Array(tempbuffer);
@@ -244,7 +245,7 @@ define(['jquery', 'core/log'], function ($, log) {
             }
         },
 
-        finish: function (mimeType) {
+        finish: function () {
             // Azure auto-detects silence usually, but we can close.
             if (this.socket) {
                 // Maybe send end of stream?

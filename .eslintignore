@@ -1,1 +1,9 @@
+amd/src/codeeditor-lazy.js
+amd/src/progresstimer.js
 amd/src/external/yarn-bound.js
+amd/src/external/keyboardlayouts-lazy.js
+amd/src/external/simplekeyboard-lazy.js
+amd/src/external/swiper-lazy.js
+amd/src/external/datatables.js
+amd/src/external/reveal.js
+amd/src/external/reveal-markdown.js

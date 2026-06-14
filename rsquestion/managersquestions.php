@@ -50,16 +50,8 @@ require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/minilesson:itemedit', $context);
 
-// Load the slides CSS.
-switch ($minilesson->region) {
-    case 'ningxia':
-        // If Ningxia region, load CSS from different CDN.
-        $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
-        break;
-    default:
-        $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.min.css'));
-        break;
-}
+// Load the slides (reveal.js) CSS, which is now shipped with the plugin instead of loaded from a CDN.
+$PAGE->requires->css(new moodle_url('/mod/minilesson/item/slides/css/reveal.min.css'));
 
 
 // Set up the page object.
