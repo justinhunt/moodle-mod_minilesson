@@ -17,10 +17,15 @@
 {{!
     @template minilessonitem_fiction/fiction_charactermessage
 
-    TODO describe template fiction_charactermessage
+    A single character/narrator message bubble (plain & mobilechat modes).
 
     Example context (json):
     {
+        "charactername": "Narrator",
+        "charactertext": "Once upon a time...",
+        "taptotranslate": true,
+        "taptotranslatearia": "Translate this text",
+        "translatesource": "Once upon a time..."
     }
 }}
 <div class="d-flex chat-window">
@@ -42,5 +47,11 @@
         {{#charactertext}}
             <div class="charactertext">{{{ . }}}</div>
         {{/charactertext}}
+        {{#taptotranslate}}
+            <button type="button" class="fiction-translate-icon" aria-label="{{taptotranslatearia}}"
+                title="{{taptotranslatearia}}" data-translatetext="{{translatesource}}">
+                <i class="fa fa-language" aria-hidden="true"></i>
+            </button>
+        {{/taptotranslate}}
     </div>
 </div>

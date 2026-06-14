@@ -105,5 +105,12 @@ class itemform extends baseform {
         ], 0);
         $this->add_static_text('shownonoptions_desc', '', get_string('shownonoptions_desc', constants::M_COMPONENT));
 
+        $this->add_dropdown(itemtype::TAP_TO_TRANSLATE, get_string('fiction:taptotranslate', constants::M_COMPONENT),
+         [
+            0 => get_string('no'),
+            1 => get_string('yes'),
+        ], 0);
+        $this->add_static_text('taptotranslate_desc', '', get_string('fiction:taptotranslate_desc', constants::M_COMPONENT));
+
     }
 }

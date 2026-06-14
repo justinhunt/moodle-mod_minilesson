@@ -616,6 +616,56 @@
   }
 }
 
+// Tap-to-translate: per text-node translate icon and the inserted translation.
+.minilesson_fiction_yarncontainer {
+
+  // The source text-block wrappers must be positioned for the lower-right icon.
+  .story-paragraph {
+    position: relative;
+  }
+
+  .fiction-translate-icon {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    padding: 0;
+    width: 22px;
+    height: 22px;
+    line-height: 1;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: $fiction-book-accent;
+    opacity: 0.55;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover,
+    &.is-active {
+      opacity: 1;
+    }
+  }
+
+  .fiction-translated-text {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 4px 0 8px 10px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-style: italic;
+    color: $fiction-book-dark;
+    border-left: 3px solid $fiction-book-divider;
+
+    .fiction-translated-text-marker {
+      opacity: 0.6;
+    }
+  }
+}
+
 #scrolldownbtn {
   position: fixed;
   bottom: 20px;

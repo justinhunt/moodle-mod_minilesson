@@ -931,7 +931,7 @@ $string['notsubmit'] = 'Not Submitted';
 $string['notsubmitted'] = 'You have not submitted your answer. Submit now?';
 $string['submitnow'] = 'Submit';
 $string['enablenativelanguage'] = "Enable Native Language";
-$string['enablenativelanguage_details'] = 'If set, the student can choose their native language, this will override the default language of the feedback language that AI returns with the results. The language must currently be <a href="https://support.poodll.com/en/support/solutions/articles/19000163890-definitions-in-user-s-native-language">set in Poodll WordCards</a>, and it is picked up here.';
+$string['enablenativelanguage_details'] = 'If set, the student can choose their native language, this will override the default language of the feedback language that AI returns with the results.';
 $string['nopasting'] = "Disable copy/paste";
 $string['nopasting_desc'] = "Disable copy/paste into the text area. This is to prevent students from pasting in answers from elsewhere.";
 $string['attemptfor'] = 'Attempt: {$a}';
@@ -1281,6 +1281,9 @@ $string['presentationmode_mobile_chat'] = 'Mobile Chat';
 $string['presentationmode_storymode'] = 'Story Mode';
 
 $string['fiction:syntaxcheckbutton'] = 'Syntax Check';
+$string['fiction:taptotranslate'] = 'Enable tap to translate';
+$string['fiction:taptotranslate_desc'] = 'If enabled, a translate icon appears in the lower right of each story text node. Tapping it translates that text into the learner\'s native language and shows the translation directly beneath the text. (Requires a browser with on-device translation support. i.e Chrome.)';
+$string['fiction:taptranslatearia'] = 'Translate this text';
 $string['yarnsyntaxok'] = 'Yarn Syntax Ok';
 $string['yarnsyntaxnotok'] = 'Yarn Syntax Not Ok';
 

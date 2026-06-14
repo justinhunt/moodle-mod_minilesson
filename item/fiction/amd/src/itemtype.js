@@ -56,6 +56,8 @@ define([
             this.presentationmode = itemdata.presention_mobilechat ? 'mobilechat'
                 : (itemdata.presention_storymode ? 'storymode' : 'plain');
             this.flowthroughmode = itemdata.flowthroughmode;
+            this.taptotranslate = itemdata.taptotranslate;
+            this.taptotranslatearia = itemdata.taptotranslatearia;
             this.filenamesmap = itemdata.filenamesmap;
             this.preload_images();
             // Initial user and other data
@@ -228,6 +230,7 @@ define([
                 this.chatdata.picturesrc = yarncontent.yarntext.md?.character?.picturesrc;
                 this.chatdata.charactername = yarncontent.yarntext.md?.character?.name;
                 this.chatdata.charactertext = yarncontent.yarntext.text;
+                this.set_translate_data(this.chatdata, yarncontent.yarntext.text);
 
                 this.post_message_to_story(this.chatdata, currentResult);
 
@@ -269,6 +272,7 @@ define([
                     that.chatdata.picturesrc = yarncontent.yarnoptions.md?.character?.picturesrc;
                     that.chatdata.charactername = yarncontent.yarnoptions.md?.character?.name;
                     that.chatdata.charactertext = yarncontent.yarnoptions.text;
+                    this.set_translate_data(this.chatdata, yarncontent.yarnoptions.text);
                     this.post_message_to_story(this.chatdata, currentResult, false);
                 } else {
                     that.controls.yarntext.html('');
@@ -757,6 +761,13 @@ define([
                 }
             });
 
+            // Tap-to-translate: delegate clicks on the per-node translate icons.
+            this.controls.chatwrapper.on('click', '.fiction-translate-icon', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                self.tap_translate($(this));
+            });
+
             let scrollbtn = $("#" + itemdata.uniqueid + "_container #scroll-bottom-btn");
 
             this.controls.chatwrapper.on("scroll", function () {
@@ -916,7 +927,85 @@ define([
                 charactertext: null,
                 picturesrc: null,
                 playertext: null,
+                taptotranslate: false,
+                taptotranslatearia: null,
+                translatesource: null,
             };
+        },
+
+        /**
+         * Decorate message data with the tap-to-translate icon, if the setting is
+         * on and on-device translation is available for this language pair.
+         *
+         * @param {object} messagedata The message data passed to the message template.
+         * @param {string} text The displayed text node content (may contain HTML).
+         */
+        set_translate_data: function (messagedata, text) {
+            if (!this.taptotranslate || !this.storydata.get('cantranslate') || !text) {
+                messagedata.taptotranslate = false;
+                return;
+            }
+            // Translate the plain text only, stripping any inline HTML (eg inline translate spans).
+            var tmp = document.createElement('div');
+            tmp.innerHTML = text;
+            var plaintext = (tmp.textContent || tmp.innerText || '').trim();
+            if (!plaintext) {
+                messagedata.taptotranslate = false;
+                return;
+            }
+            messagedata.taptotranslate = true;
+            messagedata.taptotranslatearia = this.taptotranslatearia;
+            messagedata.translatesource = plaintext;
+        },
+
+        /**
+         * Handle a tap on a text node's translate icon. Translates the source text and
+         * inserts (or toggles off) the translation directly beneath the source node,
+         * behaving as though <<translate "...">> had been called for that node.
+         *
+         * @param {jQuery} iconbtn The clicked translate icon button.
+         */
+        tap_translate: function (iconbtn) {
+            var that = this;
+            // The source text node is the icon's nearest text-block wrapper.
+            var sourcenode = iconbtn.closest('.story-paragraph, .chat-window');
+            if (!sourcenode.length) {
+                return;
+            }
+
+            // Toggle: if a translation already follows this node, remove it and stop.
+            var existing = sourcenode.next('.fiction-translated-text');
+            if (existing.length) {
+                existing.remove();
+                iconbtn.removeClass('is-active');
+                return;
+            }
+
+            var text = iconbtn.data('translatetext');
+            if (!text) {
+                return;
+            }
+            text = text.toString();
+
+            iconbtn.addClass('is-active');
+
+            // Insert a loading placeholder directly beneath the source node.
+            Templates.render('minilessonitem_fiction/fiction_translatedmessage', {
+                content: '<span class="chat-loader"></span>'
+            }).then(function (html, js) {
+                var inserted = $(html);
+                sourcenode.after(inserted);
+                Templates.runTemplateJS(js);
+
+                var messageCallback = function (message) {
+                    inserted.find('.fiction-translated-text-content').html(message);
+                };
+                that.call_translate(that.sourceLang, that.destLang, text, messageCallback);
+                return true;
+            }).catch(function (e) {
+                log.debug(e);
+                return false;
+            });
         },
 
         scrolltobottom: function () {

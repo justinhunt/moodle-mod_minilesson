@@ -35,6 +35,7 @@ class itemtype extends item {
     public const PRESENTATION_MODE = 'customint1';
     public const FLOWTHROUGH_MESSAGES = 'customint2';
     public const SHOW_NONOPTIONS = 'customint3';
+    public const TAP_TO_TRANSLATE = 'customint4';
     public const FILES = 'customfile1';
 
     /** @var string */
@@ -179,6 +180,10 @@ class itemtype extends item {
         // Show non-options.
         $testitem->shownonoptions = $this->itemrecord->{ self::SHOW_NONOPTIONS} ? true : false;
 
+        // Tap to translate.
+        $testitem->taptotranslate = $this->itemrecord->{ self::TAP_TO_TRANSLATE} ? true : false;
+        $testitem->taptotranslatearia = get_string('fiction:taptranslatearia', constants::M_COMPONENT);
+
         // Pass in user data for display in the story
         $testitem->userfirstname = $USER->firstname;
         $testitem->userlastname = $USER->lastname;
@@ -283,6 +288,14 @@ class itemtype extends item {
             'optional' => true,
             'default' => 0,
             'dbname' => self::SHOW_NONOPTIONS,
+        ];
+
+        $keycols['int4'] = [
+            'jsonname' => 'taptotranslate',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => self::TAP_TO_TRANSLATE,
         ];
 
         $keycols[self::FILES] = [

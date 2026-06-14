@@ -4898,6 +4898,46 @@ span.wrongitem {
   color: #5b4d3b;
 }
 
+.minilesson_fiction_yarncontainer .story-paragraph {
+  position: relative;
+}
+.minilesson_fiction_yarncontainer .fiction-translate-icon {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  padding: 0;
+  width: 22px;
+  height: 22px;
+  line-height: 1;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #8b7d6b;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.minilesson_fiction_yarncontainer .fiction-translate-icon:hover, .minilesson_fiction_yarncontainer .fiction-translate-icon.is-active {
+  opacity: 1;
+}
+.minilesson_fiction_yarncontainer .fiction-translated-text {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 4px 0 8px 10px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-style: italic;
+  color: #5b4d3b;
+  border-left: 3px solid #e0d8c3;
+}
+.minilesson_fiction_yarncontainer .fiction-translated-text .fiction-translated-text-marker {
+  opacity: 0.6;
+}
+
 #scrolldownbtn {
   position: fixed;
   bottom: 20px;
