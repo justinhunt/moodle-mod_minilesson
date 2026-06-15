@@ -149,6 +149,7 @@ class constants {
     const TYPE_SLIDES = 'slides';
     const TYPE_FICTION = 'fiction';
     const TYPE_SHADOW = 'shadow';
+    const TYPE_CARDS = 'cards';
     const AUDIOSTORYMETA = 'itemaudiofname';
     const AUDIOSTORYZOOMANDPAN = 'itemaudiostoryzoom';
     const ZOOMANDPAN_NONE = 0;

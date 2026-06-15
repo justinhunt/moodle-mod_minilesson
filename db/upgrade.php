@@ -1075,6 +1075,9 @@ function xmldb_minilesson_upgrade($oldversion) {
             if (!in_array(constants::TYPE_SHADOW, $items)) {
                 $items[] = constants::TYPE_SHADOW;
             }
+            if (!in_array(constants::TYPE_CARDS, $items)) {
+                $items[] = constants::TYPE_CARDS;
+            }
             set_config('enableditems', implode(',', $items), constants::M_MODNAME);
         }
 
