@@ -282,6 +282,15 @@
           color: $grey-900;
         }
 
+        // Keep the loader in the chat flow (covers the loading bubble, which has no .hasmedia class).
+        .mediacontainer .chat-loader {
+          position: relative;
+          transform: none;
+          left: auto;
+          top: auto;
+          margin: 10px auto;
+        }
+
         &.hasmedia {
           display: flex;
           flex-direction: row;
@@ -624,6 +633,16 @@
     position: relative;
   }
 
+  // Reserve space at the bottom of nodes that carry the icon so the last line
+  // of text never flows underneath it. The selectors are mode-explicit so they
+  // out-specify the per-mode .charactercontainer padding (which is duplicated in
+  // scss/migration/_head_new_styles.scss and compiled after this file).
+  &.mobilechat .chat-wrapper .charactercontainer:has(.fiction-translate-icon),
+  &.plain .chat-wrapper .charactercontainer:has(.fiction-translate-icon),
+  &.storymode .story-paragraph:has(.fiction-translate-icon) {
+    padding-bottom: 28px;
+  }
+
   .fiction-translate-icon {
     position: absolute;
     bottom: 4px;
@@ -671,6 +690,94 @@
   bottom: 20px;
   right: 20px;
   display: none;
+}
+
+// Fullscreen toggle container & button for the fiction player.
+.yarn-player-wrapper {
+  position: relative;
+  background: $white;
+  border: 1px solid #ddd;
+  transition: all 0.3s ease;
+
+  // Fullscreen mode (native + pseudo).
+  &:fullscreen,
+  &.is-pseudo-fullscreen {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #000; // Better for focus/immersion.
+    box-sizing: border-box;
+  }
+
+  &.is-pseudo-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+  }
+
+  // Fallback for Safari/iOS (kept separate so an unknown pseudo doesn't void the rule above).
+  &:-webkit-full-screen {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #000;
+    box-sizing: border-box;
+  }
+}
+
+// Expand the inner container to full height in fullscreen so options anchor to the bottom.
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer,
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson_fiction_yarncontainer {
+  height: 100%;
+  max-height: none !important;
+  max-width: 100% !important;
+  border-radius: 0;
+  margin: 0;
+  box-sizing: border-box;
+  min-height: 0;
+}
+
+// Allow the chat area to shrink so expanding options don't clip.
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer .chat-wrapper,
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer .chat-wrapper,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson_fiction_yarncontainer .chat-wrapper {
+  min-height: 0;
+}
+
+// Mobile-chat chat area fills the available fullscreen height.
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper,
+.yarn-player-wrapper:-webkit-full-screen .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper {
+  height: auto;
+  flex-grow: 1;
+}
+
+.fullscreen-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  // Hide button text on small screens to save space.
+  @media (max-width: 576px) {
+    span {
+      display: none;
+    }
+  }
 }
 
 @keyframes l3 {
