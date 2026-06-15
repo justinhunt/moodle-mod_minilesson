@@ -40,6 +40,19 @@
     font-size: 26px;
   }
 }
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline1 {
+  font-weight: 600;
+}
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline2,
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline3 {
+  font-size: 0.7em;
+  font-weight: 400;
+  color: #80859d;
+}
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline3 {
+  font-size: 0.6em;
+  font-style: italic;
+}
 .path-mod-minilesson .cards-item-box .minilesson-df_fl {
   width: 100%;
   display: flex;

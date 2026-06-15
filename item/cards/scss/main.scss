@@ -43,6 +43,22 @@
                 @media screen and (min-width:480px) {
                     font-size: 26px;
                 }
+
+                .cardline1 {
+                    font-weight: 600;
+                }
+
+                .cardline2,
+                .cardline3 {
+                    font-size: 0.7em;
+                    font-weight: 400;
+                    color: $text-muted;
+                }
+
+                .cardline3 {
+                    font-size: 0.6em;
+                    font-style: italic;
+                }
             }
         }
     }
