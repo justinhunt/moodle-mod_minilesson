@@ -324,7 +324,7 @@ class constants {
             'Matthew' => 'Matthew',
             'en-US-Chirp3-HD-Achird' => 'Achird++',
             'en-US-LemonFox-puck' => 'Puck++',
-            'en-US-Chirp3-HD-Lapetus' => 'Lapetus++',
+            'en-US-Chirp3-HD-Fenrir' => 'Fenrir++',
             'en-US-Chirp3-HD-Charon' => 'Charon++',
             'Ivy' => 'Ivy',
             'Joanna' => 'Joanna',

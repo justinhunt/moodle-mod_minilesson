@@ -30,7 +30,7 @@ use Override;
  */
 class itemtype extends item {
 
-    protected $needsspeechrec = true;
+    protected $needsspeechrec = false;
 
     protected $nofile = "nofile";
 
@@ -52,60 +52,101 @@ class itemtype extends item {
 
         $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE} == 1;
 
-        // Correct threshold.
-        $testitem->correctthreshold = (int) $this->itemrecord->{constants::FLUENCYCORRECTTHRESHOLD};
-
         // Cloud Poodll.
         $maxtime = 0;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
-        // In the case of Norwegian, we set the language to Norwegian Bokmal for speech recognition.
-        if ($testitem->language == 'no-NO') {
-            $testitem->language = 'nb-NO';
-        }
-
-        // add a few things to enable the saving of uploaded audio (on S3)
-        $testitem->savemedia = 1;
-        $testitem->transcode = 1;
-        $testitem->expiredays = 365;
-
-        // MS token and region.
-        $tokenobject = utils::fetch_msspeech_token($this->moduleinstance->region);
-        if ($tokenobject) {
-            $testitem->speechtoken = $tokenobject->token;
-            $testitem->speechtokenvalidseconds = $tokenobject->validseconds;
-            $testitem->speechtokentype = 'msspeech';
-        } else {
-            $testitem->speechtoken = false;
-            $testitem->speechtokenvalidseconds = 0;
-            $testitem->speechtokentype = '';
-        }
-
-        // We overwrite our regular poodll region with the MS region, eg useast1 becomes eastus, frankfurt becomes westeurope.
-        $testitem->region = $tokenobject->region;
-        $testitem->speechtokenregion = $tokenobject->region;
-        $testitem->savemediaregion = $this->moduleinstance->region;
 
         // Build sentence objects.
-        /* We do this right now so we get character level arrays. So  we can match mspeech per char results
-        ultimately we want to do this in a way that suits fluency rather than piggy back on sgapfill. */
         $sentences = [];
         if (isset($testitem->customtext1)) {
             $sentences = explode(PHP_EOL, $testitem->customtext1);
         }
 
-        $testitem->sentences = $this->process_spoken_sentences($sentences, []);
+        $testitem->sentences = $this->process_card_lines($sentences, []);
         foreach ($testitem->sentences as $sentence) {
             $sentence->uniqid = uniqid('audio-' . $sentence->index . '-');
             $sentence->ttsautoplay = $sentence->audiourl == $this->nofile ? 0 : 1;
             $sentence->ttsaudiovoice = $testitem->usevoice;
             $sentence->audiosrc = $sentence->audiourl;
             $sentence->audiourl = $sentence->audiourl == $this->nofile ? null : $sentence->audiourl;
-            if ($sentence->displayprompt === $sentence->prompt) {
-                $sentence->displayprompt = null;
-            }
         }
         return $testitem;
     }
+
+    /**
+     * Process the card lines.
+     *
+     * @param array $sentences array of sentences.
+     * @return array array of sentence objects.
+     */
+    protected function process_card_lines($sentences) {
+        // build a sentences object for mustache and JS
+        $index = 0;
+        $sentenceobjects = [];
+
+        // Prepare sentence media.
+        $sentenceimages = $this->fetch_sentence_media('image', 1);
+        $sentenceaudio = $this->fetch_sentence_media('audio', 1);
+
+        $sentenceindex = 0;
+        foreach ($sentences as $sentence) {
+            $sentence = utils::super_trim($sentence);
+            if (empty($sentence)) {
+                continue;
+            }
+            // Sentence index starts at 1 and keys with sentenceaudios and sentenceimages
+            $sentenceindex++;
+
+            // Default card lines
+            $cardline1 = "";
+            $cardline2 = "";
+            $cardline3 = "";
+
+            // if we have a pipe prompt = array[0] and response = array[1]
+            $cardlines = explode('|', $sentence);
+            if (count($cardlines) > 1) {
+                $cardline1 = utils::super_trim($cardlines[0]);
+                $cardline2 = utils::super_trim($cardlines[1]);
+                if (count($cardlines) > 2) {
+                    $cardline3 = utils::super_trim($cardlines[2]);
+                }
+            } else {
+                $cardline1 = $sentence;
+            }
+
+            // We prepare the audio url.
+            if (isset($sentenceaudio[$sentenceindex])) {
+                $theaudiourl = $sentenceaudio[$sentenceindex];
+            } else {
+                // If we have no custom audio then we use the polly audio.
+                $theaudiourl = utils::fetch_polly_url(
+                    $this->token,
+                    $this->region,
+                    $cardline1,
+                    $this->itemrecord->{constants::POLLYOPTION},
+                    $this->itemrecord->{constants::POLLYVOICE},
+                    $this->moduleinstance->id
+                );
+            }
+
+            // Build the sentence object.
+            $s = new \stdClass();
+            $s->index = $index;
+            $s->indexplusone = $index + 1;
+            $s->sentence = $sentence;
+            $s->cardline1 = $cardline1;
+            $s->cardline2 = $cardline2;
+            $s->cardline3 = $cardline3;
+            $s->length = \core_text::strlen($s->sentence);
+            $s->imageurl = isset($sentenceimages[$sentenceindex]) ? $sentenceimages[$sentenceindex] : false;
+            $s->audiourl = $theaudiourl;
+
+            $index++;
+            $sentenceobjects[] = $s;
+        }
+        return $sentenceobjects;
+    }
+
 
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
