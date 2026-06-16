@@ -1,3 +1,6 @@
+Version 1.1.40 (Build 20260616xx)
+- Added Ai Generate Vocab Cards template
+
 Version 1.1.39 (Build 2026061102)
 - Added Cards and Video Shadowing item types
 - JS Tidy up

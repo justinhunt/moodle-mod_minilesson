@@ -1,7 +1,7 @@
 define(
     ['jquery','core/log','core/templates','core/fragment','core/modal_save_cancel',
-        'core/str','core/config', 'core/modal_events', 'core_table/dynamic', 'core/ajax'],
-    function ($,log,templates,Fragment,ModalSaveCancel,Str,Config, ModalEvents, DyanamicTable, Ajax) {
+        'core/str','core/config', 'core/modal_events', 'core_table/dynamic', 'core/ajax', 'core/modal'],
+    function ($,log,templates,Fragment,ModalSaveCancel,Str,Config, ModalEvents, DyanamicTable, Ajax, Modal) {
         "use strict"; // jshint ;_;
 
     /*
@@ -334,6 +334,40 @@ define(
                     });
                     self.checkProgressBar(wrapper.dataset.tableuniqueid);
                 }
+                self.registerDetailsAction();
+            },
+
+            /**
+             * Register a delegated click handler that opens a modal showing a template's details.
+             * Delegated on the wrapper because the templates region is re-rendered on filter change.
+             */
+            registerDetailsAction: function () {
+                // Guard against double-binding if this runs more than once.
+                if (this.detailsActionRegistered) {
+                    return;
+                }
+                this.detailsActionRegistered = true;
+
+                $(document).on('click', '.minilesson_templates_card_details[data-action="showdetails"]', function (e) {
+                    e.preventDefault();
+                    var link = e.currentTarget;
+                    var title = link.dataset.title;
+                    var context;
+                    try {
+                        context = JSON.parse(link.dataset.details);
+                    } catch (error) {
+                        log.debug('Invalid template details data');
+                        log.debug(error);
+                        return;
+                    }
+                    Modal.create({
+                        title: title,
+                        body: templates.render('mod_minilesson/aigentemplatedetails', context),
+                        large: true,
+                        removeOnClose: true,
+                        show: true
+                    });
+                });
             },
 
             callAiGenerateContextFormApi: function (form) {

@@ -228,4 +228,34 @@ class itemtype extends item {
         }
         return $media;
     }
+
+      /*
+    * This function return the prompt that the generate method requires for creating card items.
+    */
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
+        switch ($generatemethod) {
+            case 'extract':
+                $prompt = "Create a one dimensional array of pipe delimited strings (sentences), of the following pattern: keyword|keyword-translation|keyword-examplesentence";
+                $prompt .= " The keywords to use should be extracted from the following passage of text: [{textpassage}]. ";
+                $prompt .= " The translation language is: {nativelanguage}. The keyword and example sentence language is: {targetlanguage}";
+                $prompt .= " Also create a matching one dimensional array of image generation prompts to illustrate the keyword's in the same sense as it is used in the example sentence. The images should be of style: {imagestyle}. ";
+                break;
+
+            case 'reuse':
+                // This is a special case where we reuse the existing data, so we do not need a prompt.
+                // We don't call AI. So will just return an empty string.
+                $prompt = "";
+                break;
+
+            case 'generate':
+            default:
+                $prompt = "Create a one dimensional array of pipe delimited strings (sentences), of the following pattern: keyword|keyword-translation|keyword-examplesentence";
+                $prompt .= " The keywords to use are contained in this list: [{keywords}]. ";
+                $prompt .= " The translation language is: {nativelanguage}. The keyword and example sentence language is: {targetlanguage}";
+                $prompt .= " Also create a matching one dimensional array of image generation prompts to illustrate the keyword's in the same sense as it is used in the example sentence. The images should be of style: {imagestyle}. ";
+                break;
+        }
+        return $prompt;
+    }
+
 }

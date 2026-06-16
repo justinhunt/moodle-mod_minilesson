@@ -51,6 +51,7 @@ class aigen {
         '6960baa71fa35' => 'fiction_withpics',
         '696105abf2b2a' => 'fiction_nopics',
         '6979e4ab51d53' => 'narrativefiction_withpics',
+        '6a30d8d44b6fa' => 'vocabcards',
     ];
     /** @var \stdClass|null */
     private $moduleinstance = null;
@@ -570,7 +571,7 @@ class aigen {
 
         // Second attempt responses.
         if (count($secondattemptrequests) > 0) {
-            $responses = $curl->multirequest($secondattemptrequests);
+            $responses = $curl->multirequest($secondattemptrequests, $curlopts);
             foreach ($responses as $i => $resp) {
                 $imagenumber = $secondattemptimagenumbers[$i];
                 $processedimage = $this->process_generate_image_response($resp);

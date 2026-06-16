@@ -1,0 +1,68 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/aigentemplatedetails
+
+    Details view (modal body) for an AIGEN lesson template.
+
+    Example context (json):
+    {
+        "description": "A lesson for practising vocabulary.",
+        "itemcount": 3,
+        "hasitemtypes": true,
+        "itemtypes": [
+            {"label": "Multiple choice", "count": 2},
+            {"label": "Dictation", "count": 1}
+        ],
+        "hastags": true,
+        "tags": [
+            {"label": "Vocabulary Practice"},
+            {"label": "Multi-Item"}
+        ]
+    }
+}}
+<div class="minilesson_templatedetails">
+    {{#description}}
+        <p class="minilesson_templatedetails_description">{{{description}}}</p>
+    {{/description}}
+
+    <div class="minilesson_templatedetails_itemcount mb-2">
+        <strong>{{#str}} itemcount, mod_minilesson {{/str}}</strong> {{itemcount}}
+    </div>
+
+    {{#hasitemtypes}}
+        <div class="minilesson_templatedetails_itemtypes mb-2">
+            <h5>{{#str}} aigentemplate_itemtypes, mod_minilesson {{/str}}</h5>
+            <ul class="list-unstyled mb-0">
+                {{#itemtypes}}
+                    <li>{{label}} <span class="badge badge-secondary">&times;{{count}}</span></li>
+                {{/itemtypes}}
+            </ul>
+        </div>
+    {{/hasitemtypes}}
+
+    {{#hastags}}
+        <div class="minilesson_templatedetails_tags">
+            <h5>{{#str}} aigentemplate_tags, mod_minilesson {{/str}}</h5>
+            <div class="minilesson_templatedetails_taglist">
+                {{#tags}}
+                    <span class="badge badge-info">{{label}}</span>
+                {{/tags}}
+            </div>
+        </div>
+    {{/hastags}}
+</div>

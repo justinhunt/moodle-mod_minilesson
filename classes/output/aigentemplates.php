@@ -94,12 +94,44 @@ class aigentemplates implements \renderable, \templatable
                 ),
                 get_string('aigen', constants::M_COMPONENT)
             );
+
+            // Build the item types breakdown (label and count) for the details view.
+            $itemtypecounts = array_count_values(array_column($lessontemplate['template']->items, 'type'));
+            $itemtypes = [];
+            foreach ($itemtypecounts as $itemtype => $count) {
+                $stringkey = $itemtype;
+                $label = get_string_manager()->string_exists($stringkey, constants::M_COMPONENT)
+                    ? get_string($stringkey, constants::M_COMPONENT) : $itemtype;
+                $itemtypes[] = ['label' => $label, 'count' => $count];
+            }
+
+            // Build the non-item-type tags (predefined and single/multi) for the details view.
+            $tags = [];
+            $tagrecords = array_merge(
+                template_tag_manager::get_current_tags($templateid, template_tag_manager::TYPE_SINGLEORMULTI),
+                template_tag_manager::get_current_tags($templateid, template_tag_manager::TYPE_PREDEFINED)
+            );
+            foreach ($tagrecords as $tagrecord) {
+                $tags[] = ['label' => $tagrecord->tagname];
+            }
+
+            $detailsdata = [
+                'title' => $templatetitle,
+                'description' => $templatedescription,
+                'itemcount' => $templatecount,
+                'itemtypes' => $itemtypes,
+                'hasitemtypes' => !empty($itemtypes),
+                'tags' => $tags,
+                'hastags' => !empty($tags),
+            ];
+
             $buttondata[] = [
                 'templateid' => $templateid,
                 'title' => $templatetitle,
                 'description' => $templatedescription,
                 'itemcount' => $templatecount,
                 'thebutton' => $thebutton->export_for_template($output),
+                'detailsdata' => json_encode($detailsdata),
             ];
         }
 

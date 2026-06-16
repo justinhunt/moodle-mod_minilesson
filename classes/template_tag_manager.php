@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -26,8 +25,8 @@ use stdClass;
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class template_tag_manager
-{
+class template_tag_manager {
+
     /**
      * @var string Template tag table name
      */
@@ -52,8 +51,7 @@ class template_tag_manager
      * get predefined tags
      * @return array
      */
-    public static function get_predefined_tags()
-    {
+    public static function get_predefined_tags() {
         return [
             'Speaking',
             'Listening',
@@ -67,8 +65,7 @@ class template_tag_manager
      * get single or multiple tags
      * @return array
      */
-    public static function get_singleormulti_tags()
-    {
+    public static function get_singleormulti_tags() {
         return [
             'Single-Item',
             'Multi-Item',
@@ -79,8 +76,7 @@ class template_tag_manager
      * get itrmtype tags
      * @return array
      */
-    public static function get_itemtype_tags()
-    {
+    public static function get_itemtype_tags() {
         return [
             constants::TYPE_MULTICHOICE,
             constants::TYPE_MULTIAUDIO,
@@ -104,6 +100,8 @@ class template_tag_manager
             constants::TYPE_SCATTER,
             constants::TYPE_SLIDES,
             constants::TYPE_FICTION,
+            constants::TYPE_CARDS,
+            constants::TYPE_SHADOW,
         ];
     }
 
@@ -114,8 +112,7 @@ class template_tag_manager
      *  selected from predefined tags {@see template_tag_manager::get_predefined_tags()}
      * @return void
      */
-    public static function store_template_tags(stdClass $template, array $predefinedtags = [])
-    {
+    public static function store_template_tags(stdClass $template, array $predefinedtags = []) {
         global $DB;
 
         if (!empty($template->id)) {
@@ -133,7 +130,7 @@ class template_tag_manager
                     $tagrecord->timecreated = time();
                     $tagrecord->tagname = $tagtype;
                     $tagrecord->id = $DB->insert_record(self::DBTABLE, $tagrecord);
-                } elseif ($tagrecord->tagname != $tagtype) {
+                } else if ($tagrecord->tagname != $tagtype) {
                     $tagrecord->tagname = $tagtype;
                     $tagrecord->timemodified = time();
                     $DB->update_record(self::DBTABLE, $tagrecord);
@@ -204,8 +201,7 @@ class template_tag_manager
      * @param int $type The tag type
      * @return string[] Array of tag objects
      */
-    public static function get_current_tags($templateid, $type = self::TYPE_PREDEFINED)
-    {
+    public static function get_current_tags($templateid, $type = self::TYPE_PREDEFINED) {
         global $DB;
         return $DB->get_records_select(
             self::DBTABLE,

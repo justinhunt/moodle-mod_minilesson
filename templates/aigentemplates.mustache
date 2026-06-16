@@ -38,8 +38,12 @@
                         {{> core/single_button }}
                     {{/thebutton}}
                 </div>
-                <div class="minilesson_templates_card_itemcount">
-                    <span>{{#str}} itemcount, mod_minilesson {{/str}} {{itemcount}}</span>
+                <div class="minilesson_templates_card_itemcount text-right">
+                    <div><span>{{#str}} itemcount, mod_minilesson {{/str}} {{itemcount}}</span></div>
+                    <a href="#" class="minilesson_templates_card_details" data-action="showdetails"
+                        data-title="{{title}}" data-details="{{detailsdata}}">
+                        {{#str}} details, mod_minilesson {{/str}}
+                    </a>
                 </div>
             </div>
         </div>
