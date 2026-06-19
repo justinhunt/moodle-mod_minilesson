@@ -52,10 +52,14 @@ class template_tag_manager {
      * @return array
      */
     public static function get_predefined_tags() {
+        // Note it is not safe to edit or remove tags because they are effectively keys on existing templates
         return [
             'Speaking',
             'Listening',
+            'Reading',
+            'Writing',
             'Vocabulary Practice',
+            'Pronunciation',
             'Video',
             'Grammar Instruction',
         ];

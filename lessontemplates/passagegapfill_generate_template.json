@@ -1,0 +1,19 @@
+{
+    "items": [
+        {
+            "type": "passagegapfill",
+            "name": "Item: Passage GapFill",
+            "instructions": "Fill in each of the missing words.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "passage": "I [like] you",
+            "promptvoice": "Kevin",
+            "promptvoiceopt": "normal",
+            "hidestartpage": "yes"
+        }
+    ],
+    "files": {}
+}

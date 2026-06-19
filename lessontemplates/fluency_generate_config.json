@@ -1,0 +1,175 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Create a one dimensional array of grammatically correct sentences (sentences) in {language} suitable for {level} level learners from the following keywords [{keywords}]",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctthreshold",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "sentences"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Fluency (generate sentences)",
+    "lessonDescription": "Create a Fluency item by supplying  up to 10 sentences which students practice saying aloud.. A picture will be generated to go with each sentence in the item.",
+    "uniqueid": "6a33957b46df0",
+    "version": "1",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "User Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": " A comma separated list of keywords for the activity.",
+            "type": "textarea"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Speaking"
+    ]
+}

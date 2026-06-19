@@ -29,6 +29,9 @@ use moodle_url;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class itemtype extends item {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_CONTENT];
+
 
     public const MARKDOWN = 'customtext1';
     public const FULLSCREEN = 'customint1';

@@ -1,0 +1,107 @@
+{
+    "items": [
+        {
+            "type": "page",
+            "name": "Item: Content Page",
+            "instructions": "Listen to the Story",
+            "tts": "Once upon a time, there was a tree climbing race at the college. The director of the sports department organized it. Many students wanted to join because the winner would gain a special prize. The purpose of the race was to see who could climb the tree the fastest. Everyone was excited and ready to try their best. However, one student decided to cheat. He thought he could find success by taking a shortcut. He climbed through a window to reach the top of the tree faster. Clearly, this was not fair. The other students did not recognize his trick at first. But during the review of the race, the director noticed the lack of honesty. The director said, 'We depend on fairness in our races.' The student who cheated was disqualified. The director told everyone, 'True success comes from hard work, not cheating.' The race was held again the next day, and everyone promised to be fair. Tomorrow, they would climb with honesty and respect for each other.",
+            "ttsvoice": "Kevin",
+            "audiofname": "00:00:00\r\n00:00:15\r\n00:00:30\r\n00:00:45",
+            "ttsdialog": [
+                ""
+            ],
+            "layout": "vertical",
+            "filesid": 1
+        },
+        {
+            "type": "passagegapfill",
+            "name": "Item: Passage GapFill",
+            "instructions": "Fill in each of the missing words.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "passage": "Once upon a time, there was a [tree] climbing [race] at the [college]. The [director] of the sports [department] organized it. Many students wanted to join because the winner would [gain] a special prize. The [purpose] of the [race] was to see who could climb the [tree] the fastest. Everyone was excited and ready to try their best. However, one student decided to cheat. He thought he could find [success] by taking a shortcut. He climbed through a [window] to reach the top of the [tree] faster. [Clearly], this was not fair. The other students did not [recognize] his trick at first. But during the [review] of the [race], the [director] noticed the [lack] of honesty. The [director] said, 'We [depend] on fairness in our [races].' The student who cheated was disqualified. The [director] told everyone, 'True [success] comes from hard work, not cheating.' The [race] was held again the next day, and everyone promised to be fair. [Tomorrow], they would climb with honesty and respect for each other.",
+            "promptvoice": "Kevin",
+            "promptvoiceopt": "normal",
+            "hidestartpage": "yes"
+        },
+        {
+            "type": "fluency",
+            "name": "Item: Fluency",
+            "instructions": "Read the sentences aloud. Click the microphone icon to start recording.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "The director organized the race.",
+                "Many students wanted to join.",
+                "One student decided to cheat.",
+                "True success comes from hard work."
+            ],
+            "promptvoice": "Matthew",
+            "correctthreshold": "90",
+            "promptvoiceopt": "normal",
+            "filesid": 3
+        },
+        {
+            "type": "passagereading",
+            "name": "Item: Passage Reading",
+            "instructions": "Use the microphone to record yourself reading the passage.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "passage": "Once upon a time, there was a tree climbing race at the college. The director of the sports department organized it. Many students wanted to join because the winner would gain a special prize. The purpose of the race was to see who could climb the tree the fastest. Everyone was excited and ready to try their best. However, one student decided to cheat. He thought he could find success by taking a shortcut. He climbed through a window to reach the top of the tree faster. Clearly, this was not fair. The other students did not recognize his trick at first. But during the review of the race, the director noticed the lack of honesty. The director said, 'We depend on fairness in our races.' The student who cheated was disqualified. The director told everyone, 'True success comes from hard work, not cheating.' The race was held again the next day, and everyone promised to be fair. Tomorrow, they would climb with honesty and respect for each other.",
+            "alternates": [
+                ""
+            ],
+            "totalmarks": "20"
+        },
+        {
+            "type": "freespeaking",
+            "name": "Item: Free Speaking",
+            "instructions": "Use the microphone to record your answer to the question.",
+            "text": "Have you ever seen someone cheat in a game or race? What do you think about someone who cheats to win, like in a tree climbing race?",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "aigradefeedback": "Explain each grammar mistake in simple language. Do not comment on spelling or punctuation.",
+            "aigradeinstructions": "Deduct 3 points for each grammar mistake. Do not penalize for spelling or punctuation errors.",
+            "totalmarks": "20",
+            "relevance": "1",
+            "targetwordcount": "30",
+            "layout": "vertical",
+            "filesid": 5
+        }
+    ],
+    "files": {
+        "1": {
+            "itemaudiostory": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ"
+            }
+        },
+        "3": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ"
+            }
+        },
+        "5": {
+            "itemmedia": {
+                "2_small.png": "QQQQ"
+            }
+        }
+    }
+}

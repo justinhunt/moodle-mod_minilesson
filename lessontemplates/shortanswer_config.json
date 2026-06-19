@@ -1,0 +1,182 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Create a closed question (text) and a 1 dimensional array of  grammatically correct answers (sentences) on the topic of: [{topic}] The question and answers should be in {language} and suitable for {level} level learners. ",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "partiallymarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "responsetype",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 1,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "target_language",
+            "promptfields": [
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Short Answer",
+    "lessonDescription": "Enter a topic and language level. A short answer question will be created",
+    "uniqueid": "6a337f919d299",
+    "version": "0",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "Topic",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": []
+}

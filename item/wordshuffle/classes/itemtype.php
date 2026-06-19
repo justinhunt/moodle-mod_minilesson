@@ -30,6 +30,9 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class itemtype extends item {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_GRAMMAR];
+
 
     // the item type
     /**
@@ -149,6 +152,17 @@ class itemtype extends item {
             }
         }
 
+        // If shuffle order is on, randomize the order the sentence sets are delivered in.
+        // The image/audio/gapwords are already bound to each sentence object, so they travel with it.
+        // We only need to renumber index/indexplusone so the DOM wordset order stays in sync with the JS pointer.
+        if (!empty($itemrecord->{constants::WORDSHUFFLESHUFFLEORDER})) {
+            shuffle($testitem->sentences);
+            foreach ($testitem->sentences as $newindex => $thesentence) {
+                $thesentence->index = $newindex;
+                $thesentence->indexplusone = $newindex + 1;
+            }
+        }
+
         // WordShuffle also has hide startpage and allow retry
         $testitem->hidestartpage = $itemrecord->{constants::WORDSHUFFLEHIDESTARTPAGE} == 1;
         $testitem->allowretry = $itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
@@ -197,6 +211,7 @@ class itemtype extends item {
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::WORDSHUFFLEHIDESTARTPAGE];
         $keycols['int6'] = ['jsonname' => 'hintrtl', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::WORDSHUFFLEHINTRTL];
+        $keycols['int1'] = ['jsonname' => 'shuffleorder', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::WORDSHUFFLESHUFFLEORDER];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
 
@@ -209,8 +224,9 @@ class itemtype extends item {
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
-                $prompt = "Extract a one dimensional array of 4 short sentences (sentences) in {language} suitable for {level} level learners from the following passage: [{text}] ";
-                $prompt .= "In each sentence surround all but the first two words with square brackets, e.g [word]. ";
+                $prompt = "Extract a one dimensional array of 4 short sentences (sentences) in {language} suitable for {level} level learners from the following passage: [{text}] " . PHP_EOL;
+                $prompt .= "In each sentence surround all but the first two words with square brackets, e.g [word]. " . PHP_EOL;
+                $prompt .= "Create a second array (data2) using the same sentences but without the square brackets." . PHP_EOL;
                 break;
 
             case 'reuse':
@@ -221,8 +237,9 @@ class itemtype extends item {
 
             case 'generate':
             default:
-                $prompt = "Create a one dimensional array of 4 sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners  on the topic of: [{topic}] ";
-                $prompt .= "In each sentence surround all but the first two words with square brackets, e.g [word]. ";
+                $prompt = "Create a one dimensional array of 4 sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners  on the topic of: [{topic}] " . PHP_EOL;
+                $prompt .= "In each sentence surround all but the first two words with square brackets, e.g [word]. " . PHP_EOL;
+                $prompt .= "Create a second array (data2) using the same sentences but without the square brackets." . PHP_EOL;
                 break;
         }
         return $prompt;

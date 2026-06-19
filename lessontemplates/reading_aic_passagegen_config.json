@@ -109,8 +109,8 @@
             "generatefields": [
                 {
                     "name": "textarea",
-                    "generate": 1,
-                    "mapping": "item0_ttspassage"
+                    "generate": 0,
+                    "mapping": ""
                 },
                 {
                     "name": "audiochatrole",
@@ -182,10 +182,10 @@
             "promptfields": []
         }
     ],
-    "lessonTitle": "Reading + Chat (AI passage)",
-    "lessonDescription": "This will take a topic and learner level and generate a reading passage that will be used in a passage reading and then an audio chat session",
+    "lessonTitle": "Reading + AI Chat (Generated passage)",
+    "lessonDescription": "This will take a topic and learner level and generate a reading passage that will be used in a passage reading and then an audio chat session that is based on the reading passage.",
     "uniqueid": "6899607f96fb7",
-    "version": "5",
+    "version": "7",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -242,8 +242,50 @@
             "title": "",
             "description": "",
             "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
         }
-    }, 
+    },
     "tags": [
         "Speaking"
     ]

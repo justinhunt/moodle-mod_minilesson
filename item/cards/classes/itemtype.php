@@ -29,6 +29,9 @@ use Override;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class itemtype extends item {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_VOCABULARY];
+
 
     protected $needsspeechrec = false;
 
@@ -63,6 +66,18 @@ class itemtype extends item {
         }
 
         $testitem->sentences = $this->process_card_lines($sentences, []);
+
+        // If shuffle order is on, randomize the order the cards are delivered in.
+        // The image/audio and card text are already bound to each sentence object, so they travel with it.
+        // We renumber index/indexplusone before the loop below so the uniqid and DOM order stay in sync.
+        if (!empty($this->itemrecord->{constants::CARDSSHUFFLEORDER})) {
+            shuffle($testitem->sentences);
+            foreach ($testitem->sentences as $newindex => $thesentence) {
+                $thesentence->index = $newindex;
+                $thesentence->indexplusone = $newindex + 1;
+            }
+        }
+
         foreach ($testitem->sentences as $sentence) {
             $sentence->uniqid = uniqid('audio-' . $sentence->index . '-');
             $sentence->ttsautoplay = $sentence->audiourl == $this->nofile ? 0 : 1;
@@ -171,6 +186,13 @@ class itemtype extends item {
             'default' => 0,
             'dbname' => constants::READSENTENCE,
         ];
+        $keycolumns['int1'] = [
+            'jsonname' => 'shuffleorder',
+            'type' => 'boolean',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => constants::CARDSSHUFFLEORDER,
+        ];
         $keycolumns['int4'] = [
             'jsonname' => 'promptvoiceopt',
             'type' => 'voiceopts',
@@ -235,10 +257,10 @@ class itemtype extends item {
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
-                $prompt = "Create a one dimensional array of pipe delimited strings (sentences), of the following pattern: keyword|keyword-translation|keyword-examplesentence";
-                $prompt .= " The keywords to use should be extracted from the following passage of text: [{textpassage}]. ";
-                $prompt .= " The translation language is: {nativelanguage}. The keyword and example sentence language is: {targetlanguage}";
-                $prompt .= " Also create a matching one dimensional array of image generation prompts to illustrate the keyword's in the same sense as it is used in the example sentence. The images should be of style: {imagestyle}. ";
+                $prompt = "Create a one dimensional array of pipe delimited strings (sentences), of the following pattern: keyword|keyword-translation|keyword-examplesentence" . PHP_EOL;
+                $prompt .= " The keywords to use should be extracted from the following passage of text: [{textpassage}]. " . PHP_EOL;
+                $prompt .= " The translation language is: {nativelanguage}. The keyword and example sentence language is: {targetlanguage}" . PHP_EOL;
+                $prompt .= " Also create a matching one dimensional array of image generation prompts to illustrate the keyword's in the same sense as it is used in the example sentence. The images should be of style: {imagestyle}. " . PHP_EOL;
                 break;
 
             case 'reuse':
@@ -249,10 +271,10 @@ class itemtype extends item {
 
             case 'generate':
             default:
-                $prompt = "Create a one dimensional array of pipe delimited strings (sentences), of the following pattern: keyword|keyword-translation|keyword-examplesentence";
-                $prompt .= " The keywords to use are contained in this list: [{keywords}]. ";
-                $prompt .= " The translation language is: {nativelanguage}. The keyword and example sentence language is: {targetlanguage}";
-                $prompt .= " Also create a matching one dimensional array of image generation prompts to illustrate the keyword's in the same sense as it is used in the example sentence. The images should be of style: {imagestyle}. ";
+                $prompt = "Create a one dimensional array of pipe delimited strings (sentences), of the following pattern: keyword|keyword-translation|keyword-examplesentence" . PHP_EOL;
+                $prompt .= " The keywords to use are contained in this list: [{keywords}]. " . PHP_EOL;
+                $prompt .= " The translation language is: {nativelanguage}. The keyword and example sentence language is: {targetlanguage}" . PHP_EOL;
+                $prompt .= " Also create a matching one dimensional array of image generation prompts to illustrate the keyword's in the same sense as it is used in the example sentence. The images should be of style: {imagestyle}. " . PHP_EOL;
                 break;
         }
         return $prompt;

@@ -30,6 +30,9 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class itemtype extends item {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_LISTENING, constants::SKILL_SPEAKING];
+
 
     public const PARTIALLYRESPONSE = 'customtext3';
     public const TOTALMARKS = 'customint1';

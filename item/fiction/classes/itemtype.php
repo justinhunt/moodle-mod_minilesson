@@ -29,6 +29,9 @@ use mod_minilesson\utils;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class itemtype extends item {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_READING];
+
 
     public const YARN = 'customtext1';
     public const YARN_DEFAULT = "title: Start\n---\nNarrator: We're going to go on an adventure!\n\n<<jump Cave>>\n===\n\ntitle: Cave\n---\nNarrator: Let's look inside the spooky cave...\n<<jump theend>>\n===\n\ntitle: theend\n---\nNarrator: The end...\n===";

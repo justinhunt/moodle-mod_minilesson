@@ -1,0 +1,145 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": "user_text"
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        }
+    ],
+    "lessonTitle": "Passage Reading (upload passage)",
+    "lessonDescription": "Upload a passage of text, AI will prepare a passage reading activity from it.",
+    "uniqueid": "6a338aa0467b5",
+    "version": "1",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Text Passage",
+            "description": "Enter a passage of text.",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": []
+}

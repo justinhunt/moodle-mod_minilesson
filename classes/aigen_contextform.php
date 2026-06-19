@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Setup Tab for Poodll minilesson
+ * The form users fill in for AI generating a lesson from a template in Poodll minilesson
  *
  * @package    mod_minilesson
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
@@ -70,14 +70,21 @@ class aigen_contextform extends moodleform {
         foreach ($mappings as $fieldname => $fieldmapping) {
             if (!empty($fieldmapping->enabled)) {
                 switch ($fieldmapping->type) {
-                    case 'dropdown':
+                    case aigen_form::TYPE_DROPDOWN:
                         $options = array_combine($fieldmapping->options, $fieldmapping->options);
                         $mform->addElement('select', $fieldname, $fieldmapping->title, $options);
                         break;
-                    case 'textarea':
+                    case aigen_form::TYPE_TEXTAREA:
                         $mform->addElement('textarea', $fieldname, $fieldmapping->title);
                         break;
-                    case 'text':
+                    case aigen_form::TYPE_TOOL:
+                        // Add a hidden field with the specified options as the value
+                        // Later this will be picked up
+                        $options_str = implode(PHP_EOL, $fieldmapping->options);
+                        $mform->addElement('hidden', 'tool_' . $fieldname, $options_str);
+                        $mform->setType('tool_' . $fieldname, PARAM_RAW);
+                        break;
+                    case aigen_form::TYPE_TEXT:
                     default:
                         $mform->addElement('text', $fieldname, $fieldmapping->title);
                         break;
@@ -114,11 +121,14 @@ class aigen_contextform extends moodleform {
                 // User custom data.
                 // Fields like user_topic, user_level, user_text, user_keywords, user_customdata1...n
                 // These are the fields that the user will type into the form and later we include in the prompt.
-                $contextdata = utils::fetch_usercontext_fields($moduleinstance->ttslanguage);
+                    $contextdata = utils::fetch_usercontext_fields($moduleinstance->ttslanguage);
 
+                // Add the context data as passed from the user submitted form
                 foreach (aigen_form::mappings() as $fieldname) {
                     if (isset($formdata->{$fieldname})) {
                         $contextdata[$fieldname] = $formdata->{$fieldname};
+                    } else if (isset($formdata->{'tool_' . $fieldname})) {
+                        $contextdata['tool_' . $fieldname] = $formdata->{'tool_' . $fieldname};
                     }
                 }
 

@@ -28,6 +28,9 @@ use mod_minilesson\constants;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class itemtype extends item {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_LISTENING, constants::SKILL_SPEAKING, constants::SKILL_PRONUNCIATION];
+
 
     /** @var string the column holding the WebVTT subtitle text */
     public const VTT = 'customtext1';

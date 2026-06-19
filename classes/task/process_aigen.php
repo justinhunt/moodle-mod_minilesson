@@ -19,6 +19,7 @@ namespace mod_minilesson\task;
 use context_module;
 use core\task\adhoc_task;
 use mod_minilesson\aigen;
+use mod_minilesson\aigen_tool;
 use mod_minilesson\constants;
 use mod_minilesson\import;
 use mod_minilesson\local\exception\textgenerationfailed;
@@ -78,6 +79,28 @@ class process_aigen extends adhoc_task {
 
             // Make the AI generator object.
             $aigen = new aigen($cm, $progressbar);
+
+            // Call any tools whose results need to be added to the context data
+            // Loop through contextdata looking for fields that start with tool_
+            // It will be like tool_user_custonmdata2 with value "fetch_vtt PHP_EOL user_customdata1"
+            // That will tell the tool to call the fetch_vtt function with the value of the usercustomdata1 field.
+            foreach ($contextdata as $fieldname => $fieldvalue) {
+                if (strpos($fieldname, 'tool_') === 0) {
+                    // Get the options, e.g ["fetch_vtt", "user_customdata1"]
+                    $fieldoptions = $contextdata[$fieldname];
+                    // Get the true field name, eg'tool_user_customdata2' -> 'user_customdata2'
+                    $truefieldname = substr($fieldname, 5);
+
+                    if (!empty($fieldoptions)) {
+                        $tooloptions = explode(PHP_EOL, $fieldoptions);
+                        $tool = new aigen_tool($tooloptions, $contextdata);
+                        $toolresult = $tool->run();
+                        $contextdata[$truefieldname] = $toolresult;
+                    }
+                    // Remove any  context data with tool_ its useless from here on
+                    unset($contextdata[$fieldname]);
+                }
+            }
 
             try {
                 $importdata = $aigen->make_import_data(

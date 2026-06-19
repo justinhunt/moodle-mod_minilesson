@@ -284,6 +284,10 @@ define(
                 self.clear_highlights();
                 if (!self.current_cue_has_words()) {
                     self.get_caption(self.cueindex).find('.ml_shadow_wholeline').addClass('active');
+                } else {
+                    // Light the first word straight away, so it is never missed in the
+                    // gap between play() starting and the first poll tick firing.
+                    self.get_caption(self.cueindex).find('.ml_shadow_word').first().addClass('active');
                 }
                 self.play_segment(cue);
             },
@@ -387,10 +391,13 @@ define(
                         activeindex = i;
                     }
                 });
-                words.removeClass('active');
-                if (activeindex > -1) {
-                    words.eq(activeindex).addClass('active');
+                // Before any timed word has started (now is still in the cue's lead-in),
+                // keep the first word lit as the word about to be spoken.
+                if (activeindex === -1) {
+                    activeindex = 0;
                 }
+                words.removeClass('active');
+                words.eq(activeindex).addClass('active');
             },
 
             clear_highlights: function() {
@@ -414,6 +421,10 @@ define(
             run_countdown: function(duration, callback) {
                 var self = this;
                 self.clear_countdown();
+                // The pause is a rest between attempts, so the line shows in its
+                // resting (unhighlighted) colour rather than keeping the last
+                // attempt's red highlight.
+                self.clear_highlights();
                 var started = Date.now();
                 self.set_countdown_progress(0);
                 self.controls.countdown.show();

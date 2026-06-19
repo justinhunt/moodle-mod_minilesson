@@ -170,6 +170,13 @@ $functions = [
             'type' => 'write',
             'loginrequired' => true,
         ],
+        'mod_minilesson_aigen_list_itemtypes' => [
+            'classname' => 'mod_minilesson\external\aigen_list_itemtypes',
+            'methodname' => 'execute',
+            'description' => 'Lists available minilesson item types and their descriptions',
+            'type' => 'read',
+            'loginrequired' => true,
+        ],
         'mod_minilesson_aigen_list_minilessons' => [
             'classname' => 'mod_minilesson\external\aigen_list_minilessons',
             'methodname' => 'execute',
@@ -207,6 +214,7 @@ $services = [
         'shortname' => 'aigenservice',
         'functions' => [
             'mod_minilesson_aigen_list_templates',
+            'mod_minilesson_aigen_list_itemtypes',
             'mod_minilesson_aigen_create_empty_lesson',
             'mod_minilesson_aigen_create_add_items_to_lesson',
             'mod_minilesson_aigen_list_minilessons',

@@ -1,0 +1,168 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Generate a 1 dimensional array of 'sentences' of format 'keyword|keyword translation' from the following keywords: [{keywords}].\nThe translations should be in {native_language}.",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "int10",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "native_language",
+                    "mapping": "user_customdata1"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Scatter",
+    "lessonDescription": "Enter 4 - 10 keywords\/phrases. The keywords\/phrases will be used to generate a scatter activity with matching cards translated into the user's native language. ",
+    "uniqueid": "6a31062973acc",
+    "version": "0",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": " A comma separated list of keywords for the activity",
+            "type": "textarea"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Native language",
+            "description": "The language the keyword definitions should be in.",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": []
+}

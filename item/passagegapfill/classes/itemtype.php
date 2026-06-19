@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,25 +29,26 @@ use stdClass;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
+class itemtype extends item {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_LISTENING, constants::SKILL_READING, constants::SKILL_WRITING];
+
+
     public const PASSAGE = 'customtext1';
     public const HINTS = 'customint5';
 
-    //the item type
+    // the item type
     /**
      * Export the data for the mustache template.
      *
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
 
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
-
 
         // Passage Text
         $passagetext = $this->itemrecord->{self::PASSAGE};
@@ -66,10 +66,10 @@ class itemtype extends item
             if ($chunk === '[') {
                 $inside = true;
                 continue;
-            } elseif ($chunk === ']') {
+            } else if ($chunk === ']') {
                 $inside = false;
                 continue;
-            } elseif ($inside) {
+            } else if ($inside) {
                 // This is the bracketed word – create placeholder
                 $placeholder = \core_text::substr($chunk, 0, 1) . str_repeat('&#x2022;', mb_strlen($chunk) - 1);
                 $text = $chunk;
@@ -107,7 +107,7 @@ class itemtype extends item
         $passagedata = ['rawtext' => $passagetext, 'plaintext' => $plaintext, 'chunks' => $parsedchunks];
         $testitem->passagedata = $passagedata;
 
-        //Item audio
+        // Item audio
         if ($this->itemrecord->{constants::POLLYOPTION} != constants::TTS_NOTTS) {
             $testitem->passageaudio = utils::fetch_polly_url(
                 $this->token,
@@ -135,8 +135,7 @@ class itemtype extends item
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -147,16 +146,15 @@ class itemtype extends item
             return $error;
         }
 
-        //return false to indicate no error
+        // return false to indicate no error
         return false;
     }
 
     /*
- * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
- */
-    public static function get_keycolumns()
-    {
-        //get the basic key columns and customize a little for instances of this item type
+    * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
+    */
+    public static function get_keycolumns() {
+        // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
@@ -170,8 +168,7 @@ class itemtype extends item
     /*
     This function return the prompt that the generate method requires.
     */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Choose 8 keywords from the following {language} text. ";
@@ -188,8 +185,10 @@ class itemtype extends item
             case 'generate':
             default:
                 $prompt = "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] " . PHP_EOL;
-                $prompt .= "The passage should be about 6 sentences long. ";
-                $prompt .= "Choose 8 keywords from the passage and surround each with square brackets, e.g [word].  ";
+                $prompt .= "The passage should be about 6 sentences long. " . PHP_EOL;
+                $prompt .= "The passage of text should contain the following keywords: [{keywords}] " . PHP_EOL;
+                $prompt .= "Each instance of a keyword in the passage should be surrounded with square brackets, e.g [word].  " . PHP_EOL;
+                $prompt .= "The passage should be engaging and appropriate for the target audience." . PHP_EOL;
                 break;
         }
         return $prompt;

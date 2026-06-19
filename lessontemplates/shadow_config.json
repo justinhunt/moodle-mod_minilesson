@@ -1,0 +1,185 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Set the YouTube ID (ytid) to {YouTubeID} and set the VTT (vtt) to {toolresult_vtt} and set  the transcript (data1) to {toolresult_transcript}",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "ytid",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "ytstart",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ytend",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "vtt",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "loopcount",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "YouTubeID",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "toolresult_vtt",
+                    "mapping": "user_customdata2"
+                },
+                {
+                    "name": "toolresult_transcript",
+                    "mapping": "user_customdata3"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Shadow",
+    "lessonDescription": "Enter a YouTube URL or ID and it will be turned into an interactive shadowing exercise. ",
+    "uniqueid": "6a334d1c7f9c8",
+    "version": "1",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "YouTube",
+            "description": "Enter the YouTube ID or URL",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": true,
+            "title": "VTT",
+            "description": "",
+            "type": "tool",
+            "options": [
+                "fetch_vtt",
+                "user_customdata1"
+            ]
+        },
+        "user_customdata3": {
+            "enabled": true,
+            "title": "Transcript",
+            "description": "",
+            "type": "tool",
+            "options": [
+                "fetch_transcript",
+                "user_customdata1"
+            ]
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Speaking",
+        "Video"
+    ]
+}

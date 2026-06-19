@@ -1,0 +1,464 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Generate a short story (tts) in {language} suitable for {level} level learners based on the following synopsis: [{topic}].\nAlso generate a one dimensional array (data1) of descriptions of key scenes from the story that can be used as image prompts. The image style should be specified in each prompt as {image_style}. There should be no more than 4 images.\n",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "tts",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "audiostoryzoom",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemaudiostory",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_text"
+                },
+                {
+                    "name": "image_style",
+                    "mapping": "user_customdata2"
+                }
+            ]
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "Choose 12 different keywords from the following {language} text. Surround each instance of the keywords in the passage with square brackets, e.g [word].  NB If the same keyword appears multiple times in the passage, it should be surrounded with square brackets on each ocurrence,\n {text}. ",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "penalizehints",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "hidestartpage",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "text",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 2,
+            "prompt": "Create a multichoice question(text) and 1 dimensional array of 4 answers (answers) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}]. Also specify the correct answer as a number 1-4 in 'correctanswer'.  Also generate a 1 dimensional array of image generation prompts (data1) to illustrate the answers you created . There should 1 image prompt per answer. ",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "answers",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "listenorread",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "shuffleanswer",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "hideanswertext",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "correctanswer",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "text",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 3,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "ytid",
+                    "generate": 1,
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 4,
+            "prompt": "Generate a writing question (text) suitable for {level} level learners of {language} related to the story they have just been studying (freewritingtopic). The question might ask how the learner would behave in such a situation, or what the learner thinks will happen next, or some other topic related to the story: {\"story_being_studied\": \"{story}\"} ",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "enablevkeyboard",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedback",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedbacklanguage",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "freewritingtopic",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradeinstructions",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "story",
+                    "mapping": "user_text"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "YouTube Finale (listen and free write)",
+    "lessonDescription": "This is a lesson based on a YouTube video story. A related but simplified story is prepared and comprehension, and a writing activity are built on the story. ",
+    "uniqueid": "6a2504c6d2e93",
+    "version": "0",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "Scene Description",
+            "description": "A brief description of the scene to help AI generate consistent images",
+            "type": "textarea"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "User's Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Video Story",
+            "description": "Enter the story that the YouTube video tells in text format. It will form the basis of the reading and speaking activities. The YouTube video will be shown to students at the very end",
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "YouTube Video ID",
+            "description": "Set the YouTube video id (11 chars) or the YouTube URL of the video",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Listening",
+        "Video"
+    ]
+}

@@ -1,5 +1,6 @@
-Version 1.1.40 (Build 20260616xx)
-- Added Ai Generate Vocab Cards template
+Version 1.1.40 (Build 20260619xx)
+- Added many new AI Generate templates
+- Added random feature to wordshuffle, gapfills, and cards
 
 Version 1.1.39 (Build 2026061102)
 - Added Cards and Video Shadowing item types

@@ -1,0 +1,154 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Create a one dimensional array of grammatically correct sentences (sentences) from the following text : {text}. ",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "sentences"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "text",
+                    "mapping": "user_text"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Dictation Chat (upload sentences)",
+    "lessonDescription": "Create a Dictation Chat item by supplying  up to 5 sentences. A picture will be generated to go with each sentence in the item.",
+    "uniqueid": "6a33925f3c59f",
+    "version": "0",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "Topic",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Sentences",
+            "description": "Enter a set of up to 5 sentences, each on a new line.",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Listening"
+    ]
+}

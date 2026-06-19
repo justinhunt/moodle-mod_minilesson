@@ -1,0 +1,178 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Create a one dimensional array of grammatically correct sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}].\nIn each sentence select three of the words, and surround them each with square brackets. But do not select either of the first two words in the sentence. \nCreate a second array (data2) using the same sentences but without the square brackets.",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "int10",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "data2"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Word Shuffle (generate sentences)",
+    "lessonDescription": "Create a Word Shuffle activity by entering 4 - 10 keywords. The keywords will also be used to generate sentences, and a picture to go with each sentence in the shuffle activity.",
+    "uniqueid": "6a31023c2bd88",
+    "version": "1",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": " A comma separated list of keywords for the activity",
+            "type": "textarea"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "Native language",
+            "description": "The language the keyword definitions should be in.",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": []
+}

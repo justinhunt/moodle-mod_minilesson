@@ -225,6 +225,9 @@ class constants {
     const NOPASTING = 'customint4';
     const GAPFILLHIDESTARTPAGE = 'customint5';
     const WORDSHUFFLEHIDESTARTPAGE = 'customint5';
+    const WORDSHUFFLESHUFFLEORDER = 'customint1';
+    const GAPFILLSHUFFLEORDER = 'customint1';
+    const CARDSSHUFFLEORDER = 'customint1';
     const SG_INCLUDEMATCHING = 'customint3';
     const SG_ALIENCOUNT_MULTICHOICE = 'customint1';
     const SG_ALIENCOUNT_MATCHING = 'customint2';
@@ -705,6 +708,29 @@ class constants {
       // constants::TYPE_SMARTFRAME,
       // constants::TYPE_COMPQUIZ,
       // constants::TYPE_CONVERSATION,
+    ];
+
+    // Language skills (and "content") that an item type can focus on.
+    // "content" is not a skill: it applies to item types (e.g. slides, page) that present
+    // material without setting the student a task.
+    const SKILL_LISTENING = 'listening';
+    const SKILL_SPEAKING = 'speaking';
+    const SKILL_READING = 'reading';
+    const SKILL_WRITING = 'writing';
+    const SKILL_PRONUNCIATION = 'pronunciation';
+    const SKILL_VOCABULARY = 'vocabulary';
+    const SKILL_GRAMMAR = 'grammar';
+    const SKILL_CONTENT = 'content';
+
+    const SKILLS = [
+        self::SKILL_LISTENING,
+        self::SKILL_SPEAKING,
+        self::SKILL_READING,
+        self::SKILL_WRITING,
+        self::SKILL_PRONUNCIATION,
+        self::SKILL_VOCABULARY,
+        self::SKILL_GRAMMAR,
+        self::SKILL_CONTENT,
     ];
 
     const RESPONSE_TYPE = [

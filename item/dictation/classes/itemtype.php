@@ -31,6 +31,9 @@ use stdClass;
  */
 class itemtype extends item
 {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_LISTENING, constants::SKILL_WRITING];
+
     //the item type
     /**
      * Export the data for the mustache template.

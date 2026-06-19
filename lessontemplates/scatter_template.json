@@ -1,0 +1,24 @@
+{
+    "items": [
+        {
+            "type": "scatter",
+            "name": "Item: Scatter",
+            "instructions": "Choose the word pairs",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "egg|igg\r",
+                "cat|kat\r",
+                "dog|dok\r",
+                "mouse|mowse\r",
+                "house|howse"
+            ],
+            "allowretry": "yes",
+            "int10": "1"
+        }
+    ],
+    "files": {}
+}

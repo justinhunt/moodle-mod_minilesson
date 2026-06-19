@@ -23,6 +23,8 @@ use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use mod_minilesson\aigen;
+use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 /**
  * Class aigen_list_templates
@@ -73,6 +75,8 @@ class aigen_list_templates extends external_api {
             }
             $outputitems = [];
             $imagecount = 0;
+            // The template's skills are auto derived from the skills of the item types it contains.
+            $skills = [];
             foreach ($items as $item) {
                 $totalfiles = 0;
                 if (!empty($templateitems)) {
@@ -89,7 +93,20 @@ class aigen_list_templates extends external_api {
                         'type' => $type,
                         'description' => $description
                     ];
+
+                    $itemtypeclass = utils::fetch_itemtype_classname($type);
+                    if ($itemtypeclass && isset($itemtypeclass::$skills)) {
+                        $skills = array_merge($skills, $itemtypeclass::$skills);
+                    }
                 }
+            }
+            $skills = array_values(array_unique($skills));
+            // "content" is not a real skill, so only keep it when it is the template's sole skill
+            // (a pure content template). Otherwise it just adds noise to multi-item templates.
+            if (count($skills) > 1) {
+                $skills = array_values(array_filter($skills, function($skill) {
+                    return $skill !== constants::SKILL_CONTENT;
+                }));
             }
 
             $outputs[] = [
@@ -97,10 +114,12 @@ class aigen_list_templates extends external_api {
                 'items' => $outputitems,
                 'imagecount' => $imagecount,
             ];
+
             $responsetemplates[] = [
                 'id' => $thetemplate['id'],
                 'name' => $thetemplate['name'],
                 'description' => $thetemplate['description'],
+                'skills' => $skills,
                 'inputs' => $inputs,
                 'outputs' => $outputs,
             ];
@@ -118,6 +137,11 @@ class aigen_list_templates extends external_api {
                 'id' => new external_value(PARAM_INT, 'Id'),
                 'name' => new external_value(PARAM_TEXT, 'Name'),
                 'description' => new external_value(PARAM_RAW, 'Description'),
+                'skills' => new external_multiple_structure(
+                    new external_value(PARAM_ALPHA, 'A language skill (listening, speaking, reading, writing, '
+                        . 'pronunciation, vocabulary, grammar) or "content" for display-only item types'),
+                    'The language skills this template focuses on, auto derived from the item types it contains'
+                ),
                 'inputs' => new external_multiple_structure(
                     new external_single_structure([
                         'fieldname' => new external_value(PARAM_TEXT, 'Field Name'),

@@ -1,0 +1,20 @@
+{
+    "items": [
+        {
+            "type": "passagereading",
+            "name": "Item: Passage Reading",
+            "instructions": "Use the microphone to record yourself reading the passage.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "passage": "A girl named Hannah wanted to help her community. One particular morning, she stood in front of her school and saw a sign on the door.\nIt said: \u201cPlease help us raise food in the garden. Call this number to join the project.\u201d\nHannah made a phone call and said, \u201cI would like to help.\u201d The woman said, \u201cWe need someone to take the role of planting flowers and vegetables.\u201d\nAt the garden, Hannah met people from many places.",
+            "alternates": [
+                ""
+            ],
+            "totalmarks": "20"
+        }
+    ],
+    "files": {}
+}

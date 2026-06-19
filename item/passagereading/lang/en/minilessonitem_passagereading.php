@@ -26,6 +26,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Passage Reading';
-$string['item_desc'] = 'The passagereading item displays a multi choice question with up to 4 possible answers, only one of which is correct. Answer options can be text, audio or images';
+$string['item_desc'] = 'The passagereading item displays a passage of text. The student reads it aloud while the microphone records, and their reading is scored.';
 $string['pluginname'] = 'Passage Reading';
 $string['privacy:metadata'] = 'The Passage Reading plugin doesn\'t store any personal data.';

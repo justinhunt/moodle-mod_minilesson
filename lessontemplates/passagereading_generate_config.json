@@ -1,0 +1,173 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Generate a passage of text (passage) in {language} suitable for {level} level learners on the topic of: [{topic}] .\nThe passage should be about 6 sentences long. \nThe passage of text should contain the following keywords: [{keywords}]\nThe passage should be engaging and appropriate for the target audience.",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Passage Reading (generate passage)",
+    "lessonDescription": "Enter a list of keywords, the language level and a topic, AI will generate a reading passage for a read aloud activity.",
+    "uniqueid": "6a30fdf7bb4bb",
+    "version": "1",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "Story\/Article Topic",
+            "description": "Enter a story outline or article topic for AI to use to generate a reading passage.",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "User Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": "Enter a short comma separated list of keywords that should be in the passage",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Speaking"
+    ]
+}

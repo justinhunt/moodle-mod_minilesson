@@ -448,20 +448,27 @@ $agentinstructions = <<<JSON
         "typical_workflow": [
             {
                 "step": 1,
+                "name": "List Item Types",
+                "call": "GET /mod_minilesson_aigen_list_itemtypes",
+                "purpose": "Discover the available item types and their descriptions to understand what each template can produce and to choose the right template for the user's request",
+                "required_params": ["wstoken"]
+            },
+            {
+                "step": 2,
                 "name": "List Templates",
                 "call": "GET /mod_minilesson_aigen_list_templates",
                 "purpose": "Discover available AI generation templates",
                 "required_params": ["wstoken"]
             },
             {
-                "step": 2,
+                "step": 3,
                 "name": "List Minilessons",
                 "call": "GET /mod_minilesson_aigen_list_minilessons",
                 "purpose": "See existing lessons in course (optional)",
                 "required_params": ["wstoken", "courseid"]
             },
             {
-                "step": 3,
+                "step": 4,
                 "name": "Create Empty Lesson",
                 "call": "POST /mod_minilesson_aigen_create_empty_lesson",
                 "purpose": "Create empty lesson container",
@@ -469,7 +476,7 @@ $agentinstructions = <<<JSON
                 "required_params": ["wstoken", "courseid", "title"]
             },
             {
-                "step": 4,
+                "step": 5,
                 "name": "Create and Add Items",
                 "call": "POST /mod_minilesson_aigen_create_add_items_to_lesson",
                 "purpose": "Generate AI content and add to lesson",
@@ -477,7 +484,7 @@ $agentinstructions = <<<JSON
                 "required_params": ["wstoken", "cmid", "templateid", "contextdata"]
             },
             {
-                "step": 5,
+                "step": 6,
                 "name": "Check Status",
                 "call": "POST /mod_minilesson_aigen_fetch_create_items_status",
                 "purpose": "Poll job completion status",

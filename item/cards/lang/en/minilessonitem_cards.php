@@ -38,4 +38,6 @@ $string['cardtext'] = "Card text";
 $string['cardtextinstructions'] = 'Enter a list of words/phrases in the text area below. Each item should be a on a new line. Optionally add more text lines to a card (definition, model sentence etc) by separating each line with a pipe "|" character. e.g. Hello | Bonjour | We should say hello.';
 $string['readcardtext'] = 'Read cart text (TTS)';
 $string['readcardtext_desc'] = 'If checked the card text (first line) will be read aloud.';
+$string['cards_shuffleorder'] = 'Shuffle card order';
+$string['cards_shuffleorder_desc'] = 'If checked, the order in which the cards are presented to the student is randomized. Each card keeps its matching image and audio.';
 

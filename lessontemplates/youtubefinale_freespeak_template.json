@@ -1,0 +1,104 @@
+{
+    "items": [
+        {
+            "type": "page",
+            "name": "Item: Content Page",
+            "instructions": "Listen to the Story",
+            "text": "Listen to the story and then answer the questions",
+            "tts": "A small boy walks to a vending machine. He puts money into the machine and buys a can of coke. Then he puts money into the machine again, and buys another can of coke. Finally, without drinking them, he puts both cans on the ground. He stands with one foot on each. Then he puts money into the machine again. This time he buys a can of pepsi, which he had always wanted. But it had been too high to reach.",
+            "ttsvoice": "auto",
+            "ttsoption": "slow",
+            "audiofname": "00:00:00\r\n00:00:10\r\n00:00:20\r\n00:00:30",
+            "audiostoryzoom": "0",
+            "ttsdialog": [
+                ""
+            ],
+            "filesid": 1
+        },
+        {
+            "type": "passagegapfill",
+            "name": "Item: Passage GapFill",
+            "instructions": "Fill in each of the missing words.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "passage": "A small boy walks to a [vending] machine. He puts [money] into the machine and buys a can of [coke]. Then he puts money into the machine again, and buys another can of coke. Finally, without drinking them, he puts both cans on the [ground]. He stands with one foot on each. Then he puts money into the machine again. This time he buys a can of [pepsi], which he had always wanted. But it had been too [high] to reach.",
+            "promptvoice": "auto",
+            "penalizehints": "yes",
+            "promptvoiceopt": "normal",
+            "hidestartpage": "yes"
+        },
+        {
+            "type": "multichoice",
+            "name": "Answer the question I (multichoice + image)",
+            "instructions": "Choose the correct answer.",
+            "text": "What does the boy do with the two cans of coke at the end?",
+            "ttsvoice": "Matthew",
+            "ttsdialog": [
+                ""
+            ],
+            "answers": [
+                "He drinks both cans.",
+                "He puts them on the ground and stands on them.",
+                "He gives them to a friend.",
+                "He throws them away."
+            ],
+            "promptvoice": "Kendra",
+            "listenorread": "3",
+            "promptvoiceopt": "slow",
+            "shuffleanswer": "0",
+            "hideanswertext": "1",
+            "correctanswer": "2",
+            "filesid": 3
+        },
+        {
+            "type": "page",
+            "name": "Watch the Video (content page)",
+            "text": "Good Job!  Now watch the video.",
+            "ttsvoice": "Kendra",
+            "ytid": "XINImbZzU7I",
+            "ttsdialog": [
+                ""
+            ]
+        },
+        {
+            "type": "freespeaking",
+            "name": "Item: Free Speaking",
+            "instructions": "Record your answer to the question below.",
+            "text": "What do you think the boy will do with the two coke cans next? Why do you think so?",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "enablevkeyboard": "0",
+            "aigradefeedback": "Explain each mistake simply.",
+            "aigradefeedbacklanguage": "ja-JP",
+            "freespeakingtopic": "A small boy walks to a vending machine. He puts money into the machine and buys a can of coke. Then he puts money into the machine again, and buys another can of coke. Finally, without drinking them, he puts both cans on the ground. He stands with one foot on each. Then he puts money into the machine again. This time he buys a can of pepsi, which he had always wanted. But it had been too high to reach.",
+            "aigradeinstructions": "Deduct 1 point for each grammar, spelling or punctuation error. Give 1 point for each full sentence that has no mistakes.",
+            "freespeakingaidata2": "",
+            "totalmarks": "5",
+            "layout": "vertical"
+        }
+    ],
+    "files": {
+        "1": {
+            "itemaudiostory": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ"
+            }
+        },
+        "3": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ"
+            }
+        }
+    }
+}

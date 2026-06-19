@@ -1,0 +1,159 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Rewrite the following {language} text (passage), so that each instance of one of the keywords below is surrounded with square brackets, e.g The [purple] people [eater] is a song. \n\nKeywords:\n{keywords}\n \nText:\n{text}",
+            "generatemethod": "extract",
+            "generatefields": [
+                {
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "hidestartpage",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "text",
+                    "mapping": "user_text"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Passage Gapfill (upload passage and keywords)",
+    "lessonDescription": "Enter a text passage, and a list of keywords,  AI will create add number of \"gaps\" in the passage for students to complete.",
+    "uniqueid": "6a33dfac8eb34",
+    "version": "1",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "textarea"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Text Passage",
+            "description": "Enter a passage of text",
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": "Enter a CSV list of keywords that will be used as \"gaps\"",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": []
+}

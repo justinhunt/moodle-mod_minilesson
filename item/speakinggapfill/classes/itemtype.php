@@ -30,6 +30,9 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class itemtype extends item {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_SPEAKING, constants::SKILL_GRAMMAR];
+
 
     // the item type
     /**
@@ -61,6 +64,18 @@ class itemtype extends item {
         }
 
         $testitem->sentences = $this->process_speakinggapfill_sentences($sentences);
+
+        // If shuffle order is on, randomize the order the sentences are delivered in.
+        // The audio, phonetics and gap data are already bound to each sentence object, so they travel with it.
+        // We only renumber index/indexplusone so the DOM order stays in sync with the JS pointer.
+        if (!empty($this->itemrecord->{constants::GAPFILLSHUFFLEORDER})) {
+            shuffle($testitem->sentences);
+            foreach ($testitem->sentences as $newindex => $thesentence) {
+                $thesentence->index = $newindex;
+                $thesentence->indexplusone = $newindex + 1;
+            }
+        }
+
         $testitem->hintrtl = $this->itemrecord->{constants::GAPFILLHINTRTL} == 1;
         $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE} == 1;
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
@@ -148,6 +163,7 @@ class itemtype extends item {
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
+        $keycols['int1'] = ['jsonname' => 'shuffleorder', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLSHUFFLEORDER];
         $keycols['int2'] = ['jsonname' => 'dictationstyle', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::READSENTENCE];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
