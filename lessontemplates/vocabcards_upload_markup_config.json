@@ -1,0 +1,154 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": "user_text"
+                },
+                {
+                    "name": "dictationstyle",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "user_customdata1"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": []
+        }
+    ],
+    "lessonTitle": "Vocab Cards (upload with markup)",
+    "lessonDescription": "A set of vocabulary cards. Each card can have up to 3 lines of text: usually keyword | keyword-translation | keyword-examplesentence.\r\nAn image will be generated for each card ",
+    "uniqueid": "6a3546ed4f010",
+    "version": "1",
+    "agentonly": 1,
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Card text lines",
+            "description": "Enter a list of words\/phrases in the text area below. Each item should be a on a new line. Each item can have up to 3 separate strings separated by a pipe character. These will be expanded into 3 text lines on the one card (eg new word, definition, example sentence).  \r\nSeparate each of the separate strings with a pipe \"|\" character. e.g. Hello | Bonjour | We should say hello.",
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "textarea"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Image text",
+            "description": "a  1 dimensional json array of words\/phrases that an image will be generated for.",
+            "type": "textarea"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": []
+}

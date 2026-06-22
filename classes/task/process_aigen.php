@@ -108,7 +108,8 @@ class process_aigen extends adhoc_task {
                     $template,
                     $contextdata
                 );
-                $aigen->add_custom_field_data($importdata);
+                // Make custom field data (if we are a lessonbank and data has not been made yet)
+                $aigen->add_custom_field_data($importdata, $contextdata, $usage->templateid);
             } catch (textgenerationfailed $e) {
                 $usage->progress = -1;
                 $usage->error = $e->getMessage();

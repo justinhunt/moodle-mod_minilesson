@@ -1,4 +1,10 @@
 <div class="aigen_fileareas-to-generate" style="padding: 5px; border: 1px grey solid; margin: 3px">
+<label>Image Generate Method</label>
+<select name="generatefileareasmethod" class="ml_aigen_filearea_method">
+    <option value="generate"{{#methodgenerate}} selected="selected"{{/methodgenerate}}>Generate</option>
+    <option value="extract"{{#methodextract}} selected="selected"{{/methodextract}}>Extract</option>
+    <option value="reuse"{{#methodreuse}} selected="selected"{{/methodreuse}}>Re-use</option>
+</select><br />
 {{#methodreuse}}
 <label>File areas that AI should re-use (map to earlier item field) </label><br />
   {{#aigenfileareas}}

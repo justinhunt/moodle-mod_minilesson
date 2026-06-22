@@ -742,7 +742,7 @@ $string['timelimit'] = 'Time limit';
 $string['gapfillitemsdesc'] = 'Enter the list of items in the text area below. Each item should be on a new line. The letter gaps should be enclosed in square brackets: [ ].The format is:<br>Text prompt | hint<br>.e.g  This is my d[og]| a common pet';
 $string['gapfill_shuffleorder'] = 'Shuffle sentence order';
 $string['gapfill_shuffleorder_desc'] = 'If checked, the order in which the sentences are presented to the student is randomized. Each sentence keeps its matching image and audio.';
-$string['listeninggapfillitemsdesc'] = 'Enter the list of items in the text area below. Each item should be on a new line. The letter gaps should be enclosed in square brackets: [ ]. The format is:<br>Text prompt<br>.e.g  This is my d[og]';
+$string['listeninggapfillitemsdesc'] = 'Enter the list of items in the text area below. Each item should be on a new line. The letter gaps should be enclosed in square brackets: [ ]. The format is:<br>Text prompt | hint<br>.e.g  This is my d[og].| A common pet.';
 $string['readsentences'] = 'Read Sentences (TTS)';
 $string['readsentences_desc'] = 'If checked each sentence will be read aloud. It will be a form of dictation';
 $string['allowretry'] = 'Allow retry';
@@ -981,6 +981,7 @@ $string['contextmapping:type'] = 'Field type';
 $string['contextmapping:options'] = 'Field options';
 $string['contextmapping:options_desc'] = 'Input Field Options';
 $string['aigenmodaltitle'] = 'Enter data for AI Generate';
+$string['generatingitemdata'] = 'Generating item: {$a}';
 $string['generatingtextdata'] = 'Making text data for: {$a}';
 $string['generatingimagedata'] = 'Making image data for: {$a}';
 $string['aigenpageimporting'] = 'Importing AI generated items';
@@ -1015,15 +1016,15 @@ $string['action:uploadtemplate'] = 'Upload';
 $string['aigentemplatename:passagereading'] = 'Reading and Speaking (generate story)';
 $string['aigentemplatename:ayoutubelesson'] = 'YouTube Lesson';
 $string['aigentemplatename:youtubefinalelesson'] = 'YouTube Finale (listen and speak)';
-$string['aigentemplatename:wordpractice'] = 'Word Practice';
-$string['aigentemplatename:wordpractice2'] = 'Word Practice 2';
+$string['aigentemplatename:wordpractice'] = 'Word Practice v1';
+$string['aigentemplatename:wordpractice2'] = 'Word Practice v2';
 $string['aigentemplatename:audiostory'] = 'Listen to the Story (generate story)';
 $string['aigentemplatename:set_of_slides'] = 'Set of Slides';
 $string['aigentemplatename:set_of_slides_nopics'] = 'Set of Slides (no images)';
 $string['aigentemplatename:reading_aic_passagegen'] = 'Reading + AI Chat (Generated passage)';
 $string['aigentemplatename:reading_aic_passageupload'] = 'Reading + AI Chat (Uploaded passage)';
 $string['aigentemplatename:keywords_to_ws_sc'] = 'Keywords to Word Shuffle and Scatter';
-$string['aigentemplatename:keywords_to_ws_sc_sg'] = 'Keywords to Word Shuffle and Scatter and Space Game';
+$string['aigentemplatename:keywords_to_ws_sc_sg'] = 'Word Practice v3';
 $string['aigentemplatename:keywordstogapfillsfluency'] = 'Keywords to GapFills / Fluency';
 $string['aigentemplatename:dialog_multichoice'] = 'Listen to 4 conversations';
 $string['aigentemplatename:image_slides'] = 'Image Slides (5)';
@@ -1035,7 +1036,7 @@ $string['aigentemplatename:vocabcards'] = 'Vocab Cards';
 $string['aigentemplatedescription:passagereading'] = 'Enter a list of keywords and a topic, AI will prepare a passage of text and some reading and speaking activities based on it.';
 $string['aigentemplatedescription:ayoutubelesson'] = 'Enter a YouTube video id (or URL) and summaries. Poodll will generate a short lesson with multi-choice and speaking activities';
 $string['aigentemplatedescription:youtubefinalelesson'] = 'This is a lesson based on a YouTube video story. A related but simplified story is prepared and comprehension, and speaking actvities are built on the story. Finally the student sees the original video that they have been studying';
-$string['aigentemplatedescription:wordpractice'] = 'Enter a list of words (5) and Poodll will make a short activity for students to practice those words';
+$string['aigentemplatedescription:wordpractice'] = 'Enter a list of words (5) and a topic, Poodll will make a activity with vocab cards, listening and typing gapfills, a space game a free writing activity';
 $string['aigentemplatedescription:wordpractice2'] = 'Given a list of words, example sentences and the students native language, this template will generate a set of practice activities with images and native language hints. You can use up to 9 words.';
 $string['aigentemplatedescription:audiostory'] = 'Enter a topic, the learners language level and a type of story. AI will prepare an audio story with listening and speaking activities.';
 $string['aigentemplatedescription:set_of_slides'] = 'This template will create a tutorial slides that are based on a description of what you want to teach.';
@@ -1044,7 +1045,7 @@ $string['aigentemplatedescription:keywordstogapfillsfluency'] = 'Enter a list of
 $string['aigentemplatedescription:reading_aic_passagegen'] = 'This will take a topic and learner level and generate a reading passage that will be used in a passage reading and then an audio chat session that is based on the reading passage.';
 $string['aigentemplatedescription:reading_aic_passageupload'] = 'Paste in a reading passage, and 4 short answer questions. These will be used in a passage reading exercise and then an audio chat session that is based on the reading passage.';
 $string['aigentemplatedescription:keywords_to_ws_sc'] = 'Enter 4 - 10 keywords. The keywords will be used to generate a word shuffle and scatter activity. The keywords will also be used to generate a picture of each keyword on a blackboard.';
-$string['aigentemplatedescription:keywords_to_ws_sc_sg'] = 'Enter 4 - 10 keywords. The keywords will be used to generate a word shuffle and scatter activity, and a space game activity. The keywords will also be used to generate a picture of each keyword on a blackboard.';
+$string['aigentemplatedescription:keywords_to_ws_sc_sg'] = 'Enter 4 - 10 keywords. The keywords will be used to generate a set of vocab cards, word shuffle, scatter activity, and space game items.';
 $string['aigentemplatedescription:dialog_multichoice'] = 'Enter 4 dialogs. They will form 4 multi choice questions where the choice of answer is an image representing the currently playing Dialog. The dialogs are in TTS Dialog format. e.g A) I like toast. [new line]  B) Me too.';
 $string['aigentemplatedescription:image_slides'] = 'Enter 5 image descriptions and an image style to get 5 image slides';
 $string['aigentemplatedescription:choose_best_reply'] = 'Student hears 10 short conversations and must choose the best next reply from the 3 options offered. Each question has a picture. It is based on the Eiken Level 3 English test listening section. You need to enter the  location and situation (usually a problem) for each conversation. eg "two friends at the beach and one has lost their wallet"';
@@ -1059,7 +1060,7 @@ $string['aigentemplatedescription:youtubefinale_freespeak'] = 'This is a lesson 
 $string['aigentemplatename:passagegapfill_generate'] = 'Passage Gapfill (generate passage)';
 $string['aigentemplatedescription:passagegapfill_generate'] = 'Enter a list of keywords, the language level and a topic, AI will generate a passage and a number of "gaps" for students to complete.';
 $string['aigentemplatename:fluency_upload'] = 'Fluency (upload sentences)';
-$string['aigentemplatedescription:fluency_upload'] = 'Upload up to 10 sentences to create a a Fluency item where students practice saying the sentences aloud.';
+$string['aigentemplatedescription:fluency_upload'] = 'Create a Fluency item by supplying  up to 10 sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item.';
 $string['aigentemplatename:passagereading_generate'] = 'Passage Reading (generate passage)';
 $string['aigentemplatedescription:passagereading_generate'] = 'Enter a list of keywords, the language level and a topic, AI will generate a reading passage for a read aloud activity.';
 $string['aigentemplatename:freespeaking'] = 'Free Speaking';
@@ -1067,7 +1068,7 @@ $string['aigentemplatedescription:freespeaking'] = 'A Free Speaking activity abo
 $string['aigentemplatename:wordshuffle_generate'] = 'Word Shuffle (generate sentences)';
 $string['aigentemplatedescription:wordshuffle_generate'] = 'Create a Word Shuffle activity by entering 4 - 10 keywords. The keywords will also be used to generate sentences, and a picture to go with each sentence in the shuffle activity.';
 $string['aigentemplatename:wordshuffle_keywords_generate'] = 'Choose the correct word (generate sentences)';
-$string['aigentemplatedescription:wordshuffle_keywords_generate'] = 'Create a choose-the-correct-word activity using a Word Shuffle item. Enter 4 - 10 keywords. The keywords will also be used to generate sentences each with a gap and 4 possible word choices. A native language sentence translation and a picture will be generated for each sentence.';
+$string['aigentemplatedescription:wordshuffle_keywords_generate'] = 'Create a choose-the-correct-word activity using a Word Shuffle item. Enter 4 - 10 keywords. The keywords will be used to generate sentences each with a gap and 4 possible word choices. A native language sentence translation and a picture will be generated for each sentence.';
 $string['aigentemplatename:scatter'] = 'Scatter';
 $string['aigentemplatedescription:scatter'] = 'Enter 4 - 10 keywords/phrases. The keywords/phrases will be used to generate a scatter activity with matching cards translated into the user\'s native language.';
 $string['aigentemplatename:spacegame'] = 'Space Game';
@@ -1075,7 +1076,7 @@ $string['aigentemplatedescription:spacegame'] = 'Enter 4 - 10 keywords/phrases. 
 $string['aigentemplatename:multichoice_image'] = 'Multi choice (image choices)';
 $string['aigentemplatedescription:multichoice_image'] = 'An image multi choice question that is created to test comprehension of a passage of text. You need to supply the text passage, user\'s language level, a brief description of the scene/context and an image style';
 $string['aigentemplatename:freewriting'] = 'Free Writing';
-$string['aigentemplatedescription:freewriting'] = 'A Free Writing activity about the topic that you choose.';
+$string['aigentemplatedescription:freewriting'] = 'A Free Writing activity about the specified topic.';
 $string['aigentemplatename:listeninggapfill_generate'] = 'Listening GapFill (generate sentences)';
 $string['aigentemplatedescription:listeninggapfill_generate'] = 'Creates a Listening GapFill activity from a list of keywords (maximum 30).';
 $string['aigentemplatename:speakinggapfill_generate'] = 'Speaking GapFill (generate sentences)';
@@ -1113,7 +1114,7 @@ $string['aigentemplatedescription:dictationchat_upload'] = 'Create a Dictation C
 $string['aigentemplatename:audiostory_upload'] = 'Audio Story (upload story)';
 $string['aigentemplatedescription:audiostory_upload'] = 'Enter a passage of text as the story. AI will prepare a short narrated slide show with images using text to speech to narrate the story.';
 $string['aigentemplatename:fluency_generate'] = 'Fluency (generate sentences)';
-$string['aigentemplatedescription:fluency_generate'] = 'Create a Fluency item by supplying  up to 10 sentences which students practice saying aloud.. A picture will be generated to go with each sentence in the item.';
+$string['aigentemplatedescription:fluency_generate'] = 'Create a Fluency item of up to 10 sentences by supplying keywords and the user\'s language level. Students will practice saying the sentences aloud. A picture will be generated to go with each sentence in the item.';
 $string['aigentemplatename:typinggapfill_upload'] = 'Typing GapFill (upload sentences)';
 $string['aigentemplatedescription:typinggapfill_upload'] = 'Creates a Typing GapFill by supplying up to 30 sentences. A picture will be generated to go with each sentence in the item.';
 $string['aigentemplatename:speakinggapfill_upload'] = 'Speaking GapFill (upload sentences)';
@@ -1124,6 +1125,53 @@ $string['aigentemplatename:reading_speaking_upload'] = 'Reading and Speaking (up
 $string['aigentemplatedescription:reading_speaking_upload'] = 'Supply a short text story, and some keywords from the story. AI will prepare a simple text to speech narration, and some reading and speaking activities based on the story.';
 $string['aigentemplatename:listentothestory_upload'] = 'Listen to the Story (upload story)';
 $string['aigentemplatedescription:listentothestory_upload'] = 'Upload a short story and the learners language level. AI will prepare an narrated audio story with images, and some listening and speaking activities.';
+$string['aigentemplatename:wordshuffle_upload_markup'] = 'Word Shuffle (upload with markup)';
+$string['aigentemplatedescription:wordshuffle_upload_markup'] = 'Create a Word Shuffle item by supplying:
+ i)  4 - 10 sentences already marked up with shuffle words, hints and distractors.
+ii) The same sentences with no mark up, hints or distractors.
+ A picture will be generated to go with each sentence in the Word Shuffle item.';
+$string['aigentemplatename:listeninggapfill_upload_markup'] = 'Listening GapFill (upload sentences with markup)';
+$string['aigentemplatedescription:listeninggapfill_upload_markup'] = 'Create a Listening GapFill item by supplying:
+ i)  1 - 30 sentences already marked up with gap words and hints (optional).
+ii) The same sentences with no mark up or hints.
+ A picture will be generated to go with each sentence in the Listening GapFill item.';
+$string['aigentemplatename:speakinggapfill_upload_markup'] = 'Speaking GapFill (upload sentences with markup)';
+$string['aigentemplatedescription:speakinggapfill_upload_markup'] = 'Create a Speaking GapFill item by supplying:
+ i)  1 - 30 sentences already marked up with gap words and hints (optional).
+ii) The same sentences with no mark up or hints.
+ A picture will be generated to go with each sentence in the Speaking GapFill item.';
+$string['aigentemplatename:typinggapfill_upload_markup'] = 'Typing GapFill (upload sentences with markup)';
+$string['aigentemplatedescription:typinggapfill_upload_markup'] = 'Create a Typing GapFill item by supplying:
+ i)  1 - 30 sentences already marked up with gap words and hints (optional).
+ii) The same sentences with no mark up or hints.
+ A picture will be generated to go with each sentence in the Typing GapFill item.';
+$string['aigentemplatename:listenandspeak_upload_markup'] = 'Listen and Speak (upload sentences with markup)';
+$string['aigentemplatedescription:listenandspeak_upload_markup'] = 'Create a Listen and Speak activity by supplying  up to 5 sentences. Optionally also supply  "correct response"s and "display sentence"s, for where the audio prompt to the user differs to what they see or are expected to say in response. A picture will be generated to go with each sentence in the activity.';
+$string['aigentemplatename:spacegame_upload'] = 'Space Game (upload)';
+$string['aigentemplatedescription:spacegame_upload'] = 'Enter up to ten matching pairs that will be used to make a Space Game item where students will match the pair by shooting the correct alien.';
+$string['aigentemplatename:scatter_upload'] = 'Scatter (upload)';
+$string['aigentemplatedescription:scatter_upload'] = 'Enter up to ten matching pairs that will be used to make a Scatter item where students will match the pairs by tapping the correct cards.';
+$string['aigentemplatename:vocabcards_upload_markup'] = 'Vocab Cards (upload with markup)';
+$string['aigentemplatedescription:vocabcards_upload_markup'] = 'A set of vocabulary cards. Each card can have up to 3 lines of text: usually keyword | keyword-translation | keyword-examplesentence.
+An image will be generated for each card ';
+$string['aigentemplatename:fluency_upload_markup'] = 'Fluency (upload sentences with markup)';
+$string['aigentemplatedescription:fluency_upload_markup'] = 'Create a Fluency item by supplying  up to 10 sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item.';
+$string['aigentemplatename:freewriting_upload'] = 'Free Writing (Upload question)';
+$string['aigentemplatedescription:freewriting_upload'] = 'Enter a question or topic about which students will write.';
+$string['aigentemplatename:freespeaking_upload'] = 'Free Speaking (upload question)';
+$string['aigentemplatedescription:freespeaking_upload'] = 'Enter a question or topic about which students will speak.';
+$string['aigentemplatename:audiochat_generate'] = 'Audio Chat (Generate question)';
+$string['aigentemplatedescription:audiochat_generate'] = 'Enter a topic and the user\'s language level, AI will generate a discussion question suitable for the learner to chat about.';
+$string['aigentemplatename:audiochat_upload'] = 'Audio Chat (Upload discussion question)';
+$string['aigentemplatedescription:audiochat_upload'] = 'Enter a discussion question that will be used in an Audio Chat for the user and AI to talk about';
+$string['aigentemplatename:grammar_slides'] = 'Grammar Explanation Slides';
+$string['aigentemplatedescription:grammar_slides'] = 'This template will create a set of slides to teach the specified grammar point. The target language of the MiniLesson will be used for examples, and the instruction language you specify will the language used to do the explaining.';
+$string['aigentemplatename:grammar_choosewords_v1'] = 'Grammar Lesson (slides+choose words V1)';
+$string['aigentemplatedescription:grammar_choosewords_v1'] = 'Provide the grammar point, up to 6 keywords/keyphrases and the language of instruction. A  lesson with a slides tutorial, choose-the-word item and type-the-word item will be created. Use this template for grammar points where the correct choice of word/phrase is important. (e.g \'by\' or \'until\'). For this template the choose-the-word choices should be the same for each sentence. ';
+$string['aigentemplatename:grammar_shufflewords'] = 'Grammar Lesson (slides+shuffle words)';
+$string['aigentemplatedescription:grammar_shufflewords'] = 'Provide the grammar point, keywords and the language of instruction and a lesson with a slides tutorial and shuffle-the-words item and type-the-word item will be created. Use this template for grammar points where word order in the sentence is important. It is also a generally useful template because it can be used with most sets of sentences.';
+$string['aigentemplatename:grammar_choosewords_v2'] = 'Grammar Lesson (slides+choose words V2)';
+$string['aigentemplatedescription:grammar_choosewords_v2'] = 'Provide the grammar point, language level, and the language of instruction. A  lesson with a slides tutorial, choose-the-word item and type-the-word item will be created (6 sentences each). Use this template for grammar points where phrase-composition/word-form is important (e.g  comparatives  "more X" vs "Xer"). For this template choose-the-word choices should be different for each sentence. ';
 $string['generationnotice'] = '<p>NB: After pressing save changes, please be patient. It may take a minute or two to complete</p>';
 $string['processaigentask'] = 'Process AI template generation task';
 $string['successful'] = 'Successful';
@@ -1333,6 +1381,8 @@ $string['flowthroughmessages_desc'] = 'If \'yes\' sequential messages from the s
 $string['enterfictionyarn'] = 'Enter the story in Yarn format. Yarn format is a sort of shorthand syntax for creating interactive stories. See the <a href="https://docs.yarnspinner.dev/beginners-guide" target="_blank">Yarn Guide</a> for details. Also see the <a href="https://support.poodll.com/en/support/solutions/articles/19000171644-item-type-fiction" target="_blank">Poodll documentation.</a>';
 $string['fictionyarn'] = 'Fiction Yarn';
 $string['templatetags'] = 'Template tags';
+$string['templateagentonly'] = 'Agent only (hidden)';
+$string['templateagentonly_help'] = 'If set to Yes, this template is hidden from the AI generation page that users see. It remains available to agents and to anyone using it directly. Use this for templates that are intended for automated/agent use or that would not commonly be needed.';
 
 $string['hideanswertext'] = 'Hide Answer Text';
 $string['hideanswertext_detail'] = 'When using images or audio as answers, check this option to hide the answer text from the

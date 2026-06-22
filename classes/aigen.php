@@ -55,7 +55,7 @@ class aigen {
         '6a2504c6d2e93' => 'youtubefinale_freewrite',
         '6a2518a50b676' => 'youtubefinale_freespeak',
         '6a30f621d30b1' => 'passagegapfill_generate',
-        '6a30fb4890875' => 'fluency_upload',
+        '6a3545b0af700' => 'fluency_upload',
         '6a30fdf7bb4bb' => 'passagereading_generate',
         '6a30fef2641af' => 'freespeaking',
         '6a31023c2bd88' => 'wordshuffle_generate',
@@ -88,6 +88,23 @@ class aigen {
         '6a339bf11eff6' => 'listentothestory_upload',
         '6a33dfac8eb34' => 'passagegapfill_upload_keywords',
         '6a349d7edd597' => 'wordshuffle_keywords_generate',
+        '6a34d7bfb6e6c' => 'wordshuffle_upload_markup',
+        '6a354513e1b8e' => 'listeninggapfill_upload_markup',
+        '6a35453bb06b9' => 'speakinggapfill_upload_markup',
+        '6a35457039d98' => 'typinggapfill_upload_markup',
+        '6a3545ea4c8c0' => 'listenandspeak_upload_markup',
+        '6a35465198ab9' => 'spacegame_upload',
+        '6a35469964a00' => 'scatter_upload',
+        '6a3546ed4f010' => 'vocabcards_upload_markup',
+        '6a35dd77d6c9b' => 'fluency_upload_markup',
+        '6a35e28b48614' => 'freewriting_upload',
+        '6a35e2a3a4cb6' => 'freespeaking_upload',
+        '6a35e6ce88a31' => 'audiochat_generate',
+        '6a35e70e9773b' => 'audiochat_upload',
+        '6a362aeb558cb' => 'grammar_slides',
+        '6a36351da64e3' => 'grammar_choosewords_v1',
+        '6a363a03964a0' => 'grammar_shufflewords',
+        '6a38ad44e9b60' => 'grammar_choosewords_v2',
     ];
     /** @var \stdClass|null */
     private $moduleinstance = null;
@@ -158,6 +175,18 @@ class aigen {
             // This holds data not in the import item that we generate or use for generation.
             $dataitem = new \stdClass();
 
+            // Wrap each item's work in its own indeterminate progress section.
+            // An indeterminate parent is not auto-incremented by its children's end_progress() calls
+            // (see core\progress\base) and enforces no max, so the variable number of nested text/image
+            // sub-steps below are absorbed cleanly. Closing this wrapper advances the outer determinate
+            // progress bar by exactly one per item, which avoids the "progress() value may not go backwards"
+            // (and "parent progress would exceed max") coding exceptions.
+            if ($this->progressbar) {
+                $this->progressbar->start_progress(
+                    get_string('generatingitemdata', constants::M_COMPONENT, $importitem->name)
+                );
+            }
+
             switch ($configitem->generatemethod) {
                 case 'generate':
                 case 'extract':
@@ -195,6 +224,7 @@ class aigen {
                         $useprompt,
                         true, // Enable caching.
                     );
+                    // Add a breakpoint here to inspect the result of AI generation (text)
                     if ($genresult && $genresult->success) {
                         $genpayload = $genresult->payload;
                         // Now map the generated data to the importitem.
@@ -218,7 +248,33 @@ class aigen {
                         );
                     }
 
-                    // Generate the file areas if needed
+                    if ($this->progressbar) {
+                        $this->progressbar->end_progress();
+                    }
+
+                    break;
+
+                case 'reuse':
+                    foreach ($configitem->generatefields as $generatefield) {
+                        if (
+                            isset($importitem->{$generatefield->name}) &&
+                            !empty($generatefield->mapping && isset($contextdata[$generatefield->mapping]))
+                        ) {
+                            $importitem->{$generatefield->name} = $contextdata[$generatefield->mapping];
+                        }
+                    }
+                    break;
+            }
+
+            // Handle the image file mapping fieldset. It has its own generate method which may differ
+            // from the item-level method. Default to the item-level method for back-compat with configs
+            // saved before the per-fieldset method existed.
+            $fileareasmethod = '';
+            // DEVELOPER: Comment this line if testing and don't want to needlessly create images.
+            $fileareasmethod = $configitem->generatefileareasmethod ?? $configitem->generatemethod;
+            switch ($fileareasmethod) {
+                case 'generate':
+                case 'extract':
                     // First collect overall image context which is just used to encourage AI to make consistent images.
                     $overallimagecontext = false;
                     if (
@@ -260,6 +316,19 @@ class aigen {
                                 $imagepromptdata = $contextdata[$generatefilearea->mapping];
                             }
 
+                            // If the resolved mapping is a JSON-encoded array (e.g. supplied via a
+                            // contextdata field as a string), decode it so generate_images() iterates
+                            // per element instead of treating the whole blob as a single prompt.
+                            if (is_string($imagepromptdata)) {
+                                $trimmed = ltrim($imagepromptdata);
+                                if ($trimmed !== '' && $trimmed[0] === '[') {
+                                    $decoded = json_decode($imagepromptdata, true);
+                                    if (is_array($decoded)) {
+                                        $imagepromptdata = $decoded;
+                                    }
+                                }
+                            }
+
                             $importitemfileareas->{$generatefilearea->name} =
                                 $this->aimanager->generate_images(
                                     $importitemfileareas->{$generatefilearea->name},
@@ -272,23 +341,9 @@ class aigen {
                             }
                         }
                     }
-
-                    if ($this->progressbar) {
-                        $this->progressbar->end_progress();
-                    }
-
                     break;
 
                 case 'reuse':
-                    foreach ($configitem->generatefields as $generatefield) {
-                        if (
-                            isset($importitem->{$generatefield->name}) &&
-                            !empty($generatefield->mapping && isset($contextdata[$generatefield->mapping]))
-                        ) {
-                            $importitem->{$generatefield->name} = $contextdata[$generatefield->mapping];
-                        }
-                    }
-
                     foreach ($configitem->generatefileareas as $generatefilearea) {
                         if (
                             $importitemfileareas &&
@@ -298,6 +353,7 @@ class aigen {
                             $importitemfileareas->{$generatefilearea->name} = $contextfileareas[$generatefilearea->mapping];
                         }
                     }
+                    break;
             }
 
             // Update the context data with import item data or dataitem data.
@@ -349,8 +405,9 @@ class aigen {
                 $importlessonfiles->{$importitem->filesid} = $importitemfileareas;
             }
 
+            // Close the per-item wrapper section. This advances the outer determinate progress bar by one.
             if ($this->progressbar) {
-                $this->progressbar->progress($currentitemcount);
+                $this->progressbar->end_progress();
             }
         }
 
@@ -360,7 +417,19 @@ class aigen {
         return $thereturn;
     }
 
-    public function add_custom_field_data(\stdClass $importdata) {
+    /**
+     * Generate and store the lessonbank custom field data for the lesson.
+     *
+     * The values are AI-generated from the lesson content, then post-processed with
+     * authoritative sources already known at generation time: the generation context
+     * ($contextdata) and the aigen template's predefined tags.
+     *
+     * @param \stdClass $importdata The import data (items/files) for the generated lesson.
+     * @param array $contextdata The lesson generation context data.
+     * @param int|null $templateid The aigen template id, used to read its predefined tags.
+     * @return \stdClass The import data.
+     */
+    public function add_custom_field_data(\stdClass $importdata, array $contextdata = [], $templateid = null) {
         global $CFG;
         require_once($CFG->libdir . '/filelib.php');
         $pluginman = \core_plugin_manager::instance();
@@ -429,6 +498,16 @@ class aigen {
                 // if all good, then lets do the embed
             } else if ($payloadobject->returnCode === 0) {
                 $fielddatas = json_decode($payloadobject->returnMessage, true);
+
+                // Post-process the AI-generated field data with authoritative sources that are
+                // already known: the generation context (user_level / user_keywords / user_topic)
+                // and the aigen template's predefined tags. Each merge/override is validated
+                // against the field's *current* allowed options (the lessonbank allowed lists are
+                // configurable and are not guaranteed to match the template tags / context values),
+                // so anything that no longer maps to a valid option simply falls back to the AI
+                // value rather than being blanked.
+                $fielddatas = $this->apply_authoritative_customfields($fielddatas, $fields, $contextdata, $templateid);
+
                 $errors = [];
                 foreach ($fielddatas as $fieldshortname => $fielddata) {
                     if (!empty($fields[$fieldshortname])) {
@@ -457,7 +536,19 @@ class aigen {
                 if (!empty($errors)) {
                     mtrace('Custom field generation errors -> ' . var_export($errors, true));
                 } else if (!empty($importdata->customfields)) {
+                    // Existing values (keyed by shortname) so we never overwrite data already on the
+                    // lesson. export_value() returns null when a field has no stored value.
+                    $existingvalues = [];
+                    foreach ($modcustomfieldhandler->get_instance_data($this->cm->id, true) as $datacontroller) {
+                        $existingvalues[$datacontroller->get_field()->get('shortname')] = $datacontroller->export_value();
+                    }
                     foreach ($importdata->customfields as $fieldshortname => $fielddata) {
+                        // Skip fields that already have a value. instance_form_save() leaves any
+                        // customfield_* property we do not set on the instance untouched.
+                        $existing = $existingvalues[$fieldshortname] ?? null;
+                        if ($existing !== null && $existing !== '') {
+                            continue;
+                        }
                         $this->cm->{'customfield_' . $fieldshortname} = $fielddata;
                     }
                     $modcustomfieldhandler->instance_form_save($this->cm, true);
@@ -467,6 +558,133 @@ class aigen {
             }
         }
         return $importdata;
+    }
+
+    /**
+     * Post-process AI-generated custom field data with authoritative sources (generation
+     * context + aigen template tags). Values are injected into $fielddatas in the same shape
+     * the AI returns them (option display text for option fields), so the existing
+     * option-intersection and validation in add_custom_field_data() applies uniformly and any
+     * value that does not map to a current option falls back to the AI value.
+     *
+     * @param array|null $fielddatas The AI-decoded field data (fieldshortname => value).
+     * @param field_controller[] $fields The custom fields keyed by shortname.
+     * @param array $contextdata The lesson generation context data.
+     * @param int|null $templateid The aigen template id (for predefined tags).
+     * @return array The adjusted field data.
+     */
+    protected function apply_authoritative_customfields($fielddatas, array $fields, array $contextdata, $templateid) {
+        $fielddatas = (array) $fielddatas;
+
+        // Override languagelevel from context user_level (only when it maps to a current option).
+        $this->set_customfield_source($fielddatas, $fields, 'languagelevel', $contextdata['user_level'] ?? null, false);
+
+        // Override topic from context user_topic (when present).
+        $this->set_customfield_source($fielddatas, $fields, 'topic', $contextdata['user_topic'] ?? null, false);
+
+        // Merge keyvocabulary from context user_keywords with AI (key vocabulary, NOT search keywords).
+        $this->set_customfield_source($fielddatas, $fields, 'keyvocabulary', $contextdata['user_keywords'] ?? null, true);
+
+        // Merge skills from the aigen template predefined tags with AI.
+        if (!empty($templateid)) {
+            $tags = array_column(template_tag_manager::get_current_tags($templateid), 'tagname');
+            $this->set_customfield_source($fielddatas, $fields, 'skills', $tags, true);
+        }
+
+        return $fielddatas;
+    }
+
+    /**
+     * Inject an authoritative value into the AI field data for a single custom field.
+     *
+     * For option fields (select/multiselect) the candidates and AI values are option display
+     * text, matched case-insensitively against the current options and stored as the option's
+     * canonical text; candidates that do not match a current option are discarded, and if none
+     * match the AI value is left untouched (fallback). For free-text fields the value is overridden or
+     * (when merging) term-merged and de-duplicated with the AI value.
+     *
+     * @param array $fielddatas The AI field data, modified in place.
+     * @param field_controller[] $fields The custom fields keyed by shortname.
+     * @param string $shortname The target field shortname.
+     * @param mixed $candidates The authoritative value(s) from context/tags.
+     * @param bool $merge True to merge with the AI value, false to override it.
+     */
+    protected function set_customfield_source(array &$fielddatas, array $fields, $shortname, $candidates, $merge) {
+        if (empty($fields[$shortname]) || $candidates === null || $candidates === '' || $candidates === []) {
+            return;
+        }
+        $field = $fields[$shortname];
+        $fieldtype = $field->get('type');
+
+        if ($fieldtype === 'select' || $fieldtype === 'multiselect') {
+            // Build a lowercased-text -> canonical-text map of the field's *current* allowed
+            // options, so matching is case-insensitive but we always store the option's exact text.
+            $optionmap = [];
+            foreach (self::get_customfield_options($field) as $optiontext) {
+                $optionmap[\core_text::strtolower($optiontext)] = $optiontext;
+            }
+            $resolve = function ($values) use ($optionmap) {
+                $resolved = [];
+                foreach ((array) $values as $value) {
+                    $key = \core_text::strtolower(trim((string) $value));
+                    if ($key !== '' && isset($optionmap[$key])) {
+                        $resolved[] = $optionmap[$key];
+                    }
+                }
+                return $resolved;
+            };
+
+            $valid = $resolve($candidates);
+            if (empty($valid)) {
+                // Nothing maps to a current option -> keep the AI value.
+                return;
+            }
+            if ($merge) {
+                // Canonicalise the AI values too so casing drift does not drop them downstream.
+                $valid = array_merge($resolve($fielddatas[$shortname] ?? []), $valid);
+            }
+            $valid = array_values(array_unique($valid));
+            $fielddatas[$shortname] = $fieldtype === 'select' ? reset($valid) : $valid;
+        } else {
+            // Free-text field.
+            if ($merge) {
+                $fielddatas[$shortname] = self::merge_terms($fielddatas[$shortname] ?? '', $candidates);
+            } else {
+                $fielddatas[$shortname] = is_array($candidates) ? implode(', ', $candidates) : (string) $candidates;
+            }
+        }
+    }
+
+    /**
+     * Merge two comma/newline-separated term lists, trimming and de-duplicating case-insensitively.
+     *
+     * @param mixed $aivalue The AI-generated value (string or array).
+     * @param mixed $uservalue The user/context value (string or array).
+     * @return string The merged, comma-separated term list.
+     */
+    protected static function merge_terms($aivalue, $uservalue): string {
+        $split = function ($value) {
+            $parts = [];
+            foreach ((array) $value as $item) {
+                $parts = array_merge($parts, preg_split('/[,;\n]+/', (string) $item));
+            }
+            return $parts;
+        };
+        $result = [];
+        $seen = [];
+        foreach (array_merge($split($aivalue), $split($uservalue)) as $term) {
+            $term = trim($term);
+            if ($term === '') {
+                continue;
+            }
+            $key = \core_text::strtolower($term);
+            if (isset($seen[$key])) {
+                continue;
+            }
+            $seen[$key] = true;
+            $result[] = $term;
+        }
+        return implode(', ', $result);
     }
 
     public static function create_draft_file($filedata = []): \stored_file {
@@ -509,121 +727,6 @@ class aigen {
     }
 
     /**
-     * Generates images using the CloudPoodll service.
-     *
-     * @param array $fileareatemplate An associative array where keys are filenames and values are file contents.
-     * @param string|array $imagepromptdata The prompt or array of prompts to generate images for.
-     * @param string|false $overallimagecontext Overall context to guide image generation.
-     * @return array An associative array where keys are filenames and values are base64 encoded image data.
-     */
-    public function generate_images($fileareatemplate, $imagepromptdata, $overallimagecontext) {
-        $requests = $filenametrack = $imageurls = [];
-        $url = utils::get_cloud_poodll_server() . "/webservice/rest/server.php";
-        $token = utils::fetch_token($this->conf->apiuser, $this->conf->apisecret);
-
-        if (empty($token)) {
-            return [];
-        }
-
-        $imagecnt = 0;
-        foreach ($fileareatemplate as $filename => $filecontent) {
-            if (!is_array($imagepromptdata)) {
-                $prompt = $imagepromptdata;
-            } else if (array_key_exists($imagecnt, $imagepromptdata)) {
-                $prompt = $imagepromptdata[$imagecnt];
-            } else {
-                // This is a problem, we have no context data for this image.
-                continue;
-            }
-
-            // Add the style and create context
-            // If the style of the prompt is specified in the prompt then use it as is, if not add a little style instruction
-            // Does the prompt contain style keywords? - cartoon, illustration, photo, painting, sketch, drawing, realistic.
-            $stylekeywords = [
-                'flat vector illustration',
-                'cartoon',
-                'illustration',
-                'photorealistic',
-                'digital painting',
-                'sketch',
-                'line drawing',
-                'realistic',
-                'infographic',
-                '3d render',
-            ];
-            $stylefound = false;
-            foreach ($stylekeywords as $stylekeyword) {
-                if (stripos(mb_strtolower($prompt), $stylekeyword) !== false) {
-                    $stylefound = true;
-                    break;
-                }
-            }
-            if (!$stylefound) {
-                $prompt = "Give me a simple cute cartoon image, with no text on it, depicting: " . $prompt;
-            }
-
-            if ($overallimagecontext && !empty($overallimagecontext) && $overallimagecontext !== "--") {
-                $prompt .= PHP_EOL . " in the context of the following topic: " . $overallimagecontext;
-            }
-
-            // Do the image generation.
-            $payload = $this->prepare_generate_image_payload($prompt, $token);
-            if (is_array($payload)) {
-                $requests[] = [
-                    'url' => $url,
-                    'postfields' => format_postdata_for_curlcall($payload),
-                ];
-                $filenametrack[utils::array_key_last($requests)] = $filename;
-            }
-
-            // Increment file counter.
-            $imagecnt++;
-        }
-        if (empty($requests)) {
-            return [];
-        }
-
-        $curl = new curl();
-        $curlopts = [];
-        $curlopts['CURLOPT_TIMEOUT'] = 240; // This might be unnecessary or even counter productive.
-
-        // Update the progress bar.
-        if ($this->progressbar) {
-            $this->progressbar->start_progress("Generate images: {" . count($requests) . "} ");
-        }
-
-        $responses = $curl->multirequest($requests, $curlopts);
-        $secondattemptrequests = [];
-        $secondattemptimagenumbers = [];
-        foreach ($responses as $i => $resp) {
-            $processedimage = $this->process_generate_image_response($resp);
-            if ($processedimage) {
-                $imageurls[$filenametrack[$i]] = $processedimage;
-            } else {
-                $secondattemptrequests[] = $requests[$i];
-                $secondattemptimagenumbers[] = $i;
-            }
-        }
-
-        // Second attempt responses.
-        if (count($secondattemptrequests) > 0) {
-            $responses = $curl->multirequest($secondattemptrequests, $curlopts);
-            foreach ($responses as $i => $resp) {
-                $imagenumber = $secondattemptimagenumbers[$i];
-                $processedimage = $this->process_generate_image_response($resp);
-                if ($processedimage) {
-                    $imageurls[$filenametrack[$imagenumber]] = $processedimage;
-                }
-            }
-        }
-
-        // Update the progress bar.
-        if ($this->progressbar) {
-            $this->progressbar->end_progress();
-        }
-        return $imageurls;
-    }
-    /**
      * Resizes image data to smaller dimensions.
      *
      * @param string $imagedata The raw image data.
@@ -650,10 +753,12 @@ class aigen {
     /**
      * Fetches the lesson templates from the lesson templates directory.
      *
+     * @param array $filtertags Optional list of tags to filter the templates by.
+     * @param bool $includeagentonly Whether to include agent-only templates (hidden from the human picker). Default true.
      * @return array An associative array of lesson templates,
      *  where the key is the template name and the value is an array containing 'config' and 'template' objects.
      */
-    public static function fetch_lesson_templates($filtertags = []) {
+    public static function fetch_lesson_templates($filtertags = [], $includeagentonly = true) {
         global $DB;
 
         $fields = 't.*';
@@ -662,6 +767,11 @@ class aigen {
         $groupby = 't.id';
         $orderby = 't.id';
         $params = [];
+
+        // Agent-only templates are hidden from the human AI generation picker.
+        if (!$includeagentonly) {
+            $where .= ' AND t.agentonly = 0';
+        }
 
         $predefinedtags = template_tag_manager::get_predefined_tags();
         $singleormultitags = template_tag_manager::get_singleormulti_tags();

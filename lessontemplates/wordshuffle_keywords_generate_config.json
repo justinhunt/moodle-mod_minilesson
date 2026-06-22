@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Create a one dimensional array of grammatically correct sentences (data1), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}].\n\nCreate a second array of the same sentences (sentences), but for each sentence:\ni) surround the keyword with square brackets.\nii) create a translation of the sentence in {nativelanguage}\niii)  select 3 of the other keywords, and make a csv string with them\nAnd combine those three elements into a single pipe delimited string.\ne.g\nI watch [movies] at night|\u79c1\u306f\u591c\u306b\u6620\u753b\u3092\u898b\u308b\u3002|soccer,cake,healthy \nCreate a second array (data2) using the same sentences but without the square brackets.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -27,7 +28,7 @@
                 },
                 {
                     "name": "data2",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
@@ -75,9 +76,10 @@
         }
     ],
     "lessonTitle": "Choose the correct word (generate sentences) ",
-    "lessonDescription": "Create a choose-the-correct-word activity using a Word Shuffle item. Enter 4 - 10 keywords. The keywords will also be used to generate sentences each with a gap and 4 possible word choices. A native language sentence translation and a picture will be generated for each sentence.",
+    "lessonDescription": "Create a choose-the-correct-word activity using a Word Shuffle item. Enter 4 - 10 keywords. The keywords will be used to generate sentences each with a gap and 4 possible word choices. A native language sentence translation and a picture will be generated for each sentence.",
     "uniqueid": "6a349d7edd597",
-    "version": "1",
+    "version": "2",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,

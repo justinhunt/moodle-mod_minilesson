@@ -302,7 +302,7 @@ class aimanager {
     }
 
     public function generate_customfield(array $fields, array $importjson) {
-        $actionconst = static::FUNC_GENERATE_CUSTOMFIELD;
+        global $USER;
         $aiactionclass = local\aiactions\generate_customfield_value::class;
         $response = self::call_ai_provider_action($aiactionclass, [
             'contextid' => $this->contextid,
@@ -310,17 +310,15 @@ class aimanager {
             'importjson' => $importjson,
         ]);
         if ($response === null) {
-            $cpfields = [];
-            foreach ($fields as $fieldshortname => $field) {
-                $cpfields[$fieldshortname] = [
-                    'type' => $field->get('type'),
-                    'description' => $field->get('description'),
-                    'options' => \mod_minilesson\aigen::get_customfield_options($field),
-                ];
-            }
-            $params['action'] = $actionconst;
-            $params['fields'] = json_encode($cpfields);
-            $params['importjson'] = json_encode($importjson);
+            // Cloud Poodll only accepts action/subject/prompt/language/region (plus
+            // appid/owner/wstoken added in call_cp_api). Build the full prompt the same
+            // way the AI provider action does and send it as a single 'prompt' string.
+            $contextid = $this->contextid ?? \context_system::instance()->id;
+            $action = new $aiactionclass($contextid, $USER->id, '', $fields, $importjson);
+            $params = [];
+            $params['action'] = 'generate_structured_content';
+            $params['prompt'] = $action->generate_prompt();
+            $params['language'] = $this->ttslanguage;
             $params['subject'] = 'none';
             $params['region'] = $this->region;
             $response = self::call_cp_api($params);
@@ -522,6 +520,15 @@ class aimanager {
         return null;
     }
 
+    /**
+     * Generate one image per file area entry, firing all the CloudPoodll requests in parallel.
+     *
+     * @param array $fileareatemplate Map of filename => placeholder content; one image per entry.
+     * @param string|array $imagepromptdata A single prompt, or an array of prompts indexed per image.
+     * @param string|false $overallimagecontext Optional overall topic context added to each prompt.
+     * @param bool $cache Whether to read/write generated images from the AI cache.
+     * @return array Map of filename => base64-encoded image data for successfully generated images.
+     */
     public function generate_images(
         $fileareatemplate,
         $imagepromptdata,
@@ -531,6 +538,14 @@ class aimanager {
         $imageurls = [];
         $imagecnt = 0;
 
+        $token = static::get_cp_token();
+        if (!$token) {
+            return [];
+        }
+        $url = utils::get_cloud_poodll_server() . '/webservice/rest/server.php';
+
+        // Build one CloudPoodll request per image so they can all be fired in parallel below.
+        $requests = $filenametrack = $prompttrack = [];
         foreach ($fileareatemplate as $filename => $filecontent) {
             if (!is_array($imagepromptdata)) {
                 $prompt = $imagepromptdata;
@@ -539,10 +554,12 @@ class aimanager {
             } else {
                 continue;
             }
+            $imagecnt++;
 
             $stylekeywords = [
                 'flat vector illustration',
                 'cartoon',
+                'action comic',
                 'illustration',
                 'photorealistic',
                 'digital painting',
@@ -550,6 +567,8 @@ class aimanager {
                 'line drawing',
                 'realistic',
                 'infographic',
+                'black and white movie',
+                'hand drawn',
                 '3d render',
             ];
             $stylefound = false;
@@ -567,21 +586,105 @@ class aimanager {
                 $prompt .= PHP_EOL . " in the context of the following topic: " . $overallimagecontext;
             }
 
-            $base64image = $this->generate_image($prompt, $cache);
-
-            // Second attempt if failed
-            if (!$base64image) {
-                $base64image = $this->generate_image($prompt, $cache);
+            // Serve from cache if we already generated this exact image prompt.
+            if ($cache) {
+                $cached = self::check_cache('generate_images', $prompt, 'cloud poodll');
+                if ($cached !== false) {
+                    $imageurls[$filename] = $cached;
+                    continue;
+                }
             }
 
-            if ($base64image) {
-                $imageurls[$filename] = $base64image;
-            }
+            $params = $this->prepare_image_request_params($prompt, $token);
+            $requests[] = ['url' => $url, 'postfields' => format_postdata_for_curlcall($params)];
+            $idx = utils::array_key_last($requests);
+            $filenametrack[$idx] = $filename;
+            $prompttrack[$idx] = $prompt;
+        }
 
-            $imagecnt++;
+        if (empty($requests)) {
+            return $imageurls;
+        }
+
+        // Fire all the image requests at once (curl_multi), then retry any that failed once.
+        $curl = new curl();
+        $curlopts = ['CURLOPT_TIMEOUT' => 240];
+        $retryrequests = $retryidx = [];
+        foreach ($curl->multirequest($requests, $curlopts) as $i => $resp) {
+            if ($image = self::process_image_response($resp)) {
+                $imageurls[$filenametrack[$i]] = $image;
+                if ($cache) {
+                    self::set_cache('generate_images', $prompttrack[$i], 'cloud poodll', $image);
+                }
+            } else {
+                $retryrequests[] = $requests[$i];
+                $retryidx[] = $i;
+            }
+        }
+        if (!empty($retryrequests)) {
+            foreach ($curl->multirequest($retryrequests, $curlopts) as $j => $resp) {
+                $i = $retryidx[$j];
+                if ($image = self::process_image_response($resp)) {
+                    $imageurls[$filenametrack[$i]] = $image;
+                    if ($cache) {
+                        self::set_cache('generate_images', $prompttrack[$i], 'cloud poodll', $image);
+                    }
+                }
+            }
         }
 
         return $imageurls;
+    }
+
+    /**
+     * Build the CloudPoodll webservice parameters for a single image-generation request.
+     *
+     * @param string $prompt The image prompt.
+     * @param string $token The CloudPoodll web service token.
+     * @return array The request parameters.
+     */
+    protected function prepare_image_request_params($prompt, $token) {
+        global $USER;
+        return [
+            'wstoken' => $token,
+            'wsfunction' => 'local_cpapi_call_ai',
+            'moodlewsrestformat' => 'json',
+            'appid' => static::get_component_from_classname(static::class),
+            'owner' => hash('md5', $USER->username),
+            'action' => 'generate_images',
+            'subject' => '1',
+            'prompt' => $prompt,
+            'language' => $this->ttslanguage,
+            'region' => $this->region,
+        ];
+    }
+
+    /**
+     * Turn a raw CloudPoodll image-generation response into resized base64 image data.
+     *
+     * @param string $responsestring The raw web service response body.
+     * @return string|null The base64-encoded resized image, or null on failure.
+     */
+    protected static function process_image_response($responsestring) {
+        if (!utils::is_json($responsestring)) {
+            return null;
+        }
+        $response = json_decode($responsestring);
+        if (!isset($response->returnCode) || $response->returnCode != '0') {
+            return null;
+        }
+        $payload = json_decode($response->returnMessage);
+        if (isset($payload[0]->url)) {
+            $rawdata = file_get_contents($payload[0]->url);
+        } else if (isset($payload[0]->b64_json)) {
+            $rawdata = base64_decode($payload[0]->b64_json);
+        } else {
+            return null;
+        }
+        if ($rawdata === false) {
+            return null;
+        }
+        return base64_encode(self::make_image_smaller($rawdata));
     }
 
     public static function make_image_smaller($imagedata) {

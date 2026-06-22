@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -31,8 +30,8 @@ namespace mod_minilesson;
  * @copyright 2023 Justin Hunt <justin@poodll.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class import
-{
+class import {
+
     private $itemsfromjson = false;
     private $cir;
     private $isjson = false;
@@ -55,8 +54,7 @@ class import
      * @param string|null $progresstrackerclass
      * @throws \coding_exception
      */
-    public function __construct($moduleinstance, $modulecontext, $course, $cm)
-    {
+    public function __construct($moduleinstance, $modulecontext, $course, $cm) {
         $this->moduleinstance = $moduleinstance;
         $this->modulecontext = $modulecontext;
         $this->course = $course;
@@ -71,8 +69,7 @@ class import
         $today = make_timestamp(date('Y', $today), date('m', $today), date('d', $today), 0, 0, 0);
     }
 
-    public function set_reader($reader, $isjson = false)
-    {
+    public function set_reader($reader, $isjson = false) {
         if ($isjson) {
             $this->isjson = true;
             $this->itemsfromjson = $reader->items;
@@ -82,8 +79,7 @@ class import
         }
     }
 
-    public function import_process()
-    {
+    public function import_process() {
         $this->errors = 0;
         $this->upt = new import_tracker($this->keycolumns);
         $this->upt->start(); // Start table.
@@ -116,8 +112,7 @@ class import
         $this->upt->close(); // Close table.
     }
 
-    public function map_json_to_csv($itemdata)
-    {
+    public function map_json_to_csv($itemdata) {
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemdata->type);
         $keycolumns = $itemtypeclass::get_keycolumns();
         $line = [];
@@ -125,15 +120,23 @@ class import
             if (isset($itemdata->{$coldef['jsonname']})) {
                 if ($coldef['type'] == 'stringarray') {
                     if (!is_array($itemdata->{$coldef['jsonname']})) {
-                        // If generation failed for some reason, fall back (so we dont lose it all).
-                        // First lets see if its array-like string (eg "line1,line2,line3") because it happens.
-                        $commacount = substr_count($itemdata->{$coldef['jsonname']}, ',');
-                        if ($commacount > 2) {
-                            $line[] = str_replace(',', PHP_EOL, $itemdata->{$coldef['jsonname']});
+                        // Perhaps its an object? It should not really be ..
+                        if (is_object($itemdata->{$coldef['jsonname']})) {
+                            $itemdata->{$coldef['jsonname']} = (array)$itemdata->{$coldef['jsonname']};
+                            $line[] = join(PHP_EOL, $itemdata->{$coldef['jsonname']});
                         } else {
-                            // If its hopeless just put the string in one line and hope the teacher can fix it up.
-                            $line[] = $itemdata->{$coldef['jsonname']};
+                            // If generation failed for some reason, fall back (so we dont lose it all).
+                            // First lets see if its array-like string (eg "line1,line2,line3") because it happens.
+                            $commacount = substr_count($itemdata->{$coldef['jsonname']}, ',');
+                            if ($commacount > 2) {
+                                $line[] = str_replace(',', PHP_EOL, $itemdata->{$coldef['jsonname']});
+                            } else {
+                                // If its hopeless just put the string in one line and hope the teacher can fix it up.
+                                $line[] = $itemdata->{$coldef['jsonname']};
+                            }
+
                         }
+
                     } else {
                         // This is the normal case. Just join the array into lines. That is how we store stringarrays in CSV.
                         $line[] = join(PHP_EOL, $itemdata->{$coldef['jsonname']});
@@ -160,8 +163,7 @@ class import
      * @throws \dml_exception
      * @throws \moodle_exception
      */
-    public function import_process_line($itemdata)
-    {
+    public function import_process_line($itemdata) {
         global $DB, $CFG, $SESSION;
 
         if ($this->isjson) {
@@ -270,8 +272,7 @@ class import
         // Do what we have to do
     }
 
-    public function perform_import_validation($newrecord, $cm)
-    {
+    public function perform_import_validation($newrecord, $cm) {
         global $DB;
         $itemtype = $newrecord->type;
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemtype);
@@ -284,8 +285,7 @@ class import
         return false;
     }
 
-    public function preprocess_import_data($line, $keycolumns)
-    {
+    public function preprocess_import_data($line, $keycolumns) {
 
         // return value init
         $newrecord = [];
@@ -330,7 +330,7 @@ class import
                     } else {
                         if (array_key_exists(strtolower($value), $this->allvoices)) {
                             $value = $this->allvoices[strtolower($value)];
-                        } elseif (in_array(strtolower($value) . '_g', $this->allvoices)) {
+                        } else if (in_array(strtolower($value) . '_g', $this->allvoices)) {
                             $value = $this->allvoices[strtolower($value) . '_g'];
                         } else {
                             // not sure how to get this to user
@@ -413,8 +413,7 @@ class import
         return $newrecord;
     }
 
-    public function call_translate($itemsjson, $fromlang, $tolang)
-    {
+    public function call_translate($itemsjson, $fromlang, $tolang) {
         $aigen = new aigen($this->cm);
         $prompt = "Translate any instances of language: $fromlang , into language: $tolang in the JSON string that follows." . PHP_EOL;
         $prompt .= "Return results in the format: {translatedjson: thetranslatedjson}" . PHP_EOL;
@@ -441,8 +440,7 @@ class import
         }
     }
 
-    public function translate_and_export_items($fromlang, $tolang)
-    {
+    public function translate_and_export_items($fromlang, $tolang) {
         $jsonformat = false;
         $exportobj = $this->export_items($jsonformat);
         $itemsjson = json_encode($exportobj->items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -462,8 +460,7 @@ class import
         }
     }
 
-    public function export_items($jsonformat = true)
-    {
+    public function export_items($jsonformat = true) {
         global $DB;
         $allitems = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->moduleinstance->id], 'itemorder ASC');
         $exportobj = new \stdClass();
@@ -496,8 +493,7 @@ class import
         }
     }
 
-    public function export_item_as_jsonobj($itemrecord)
-    {
+    public function export_item_as_jsonobj($itemrecord) {
         // get item type
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemrecord->type);
         if (!$itemtypeclass) {

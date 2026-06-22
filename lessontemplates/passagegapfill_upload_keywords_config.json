@@ -62,7 +62,7 @@
     "lessonTitle": "Passage Gapfill (upload passage and keywords)",
     "lessonDescription": "Enter a text passage, and a list of keywords,  AI will create add number of \"gaps\" in the passage for students to complete.",
     "uniqueid": "6a33dfac8eb34",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -155,5 +155,6 @@
             "type": "text"
         }
     },
-    "tags": []
+    "tags": [],
+    "agentonly": 1
 }

@@ -34,7 +34,7 @@ class itemtype extends item {
     public static $skills = [constants::SKILL_GRAMMAR];
 
 
-    // the item type
+    // The item type.
     /**
      * Export the data for the mustache template.
      *
@@ -145,7 +145,9 @@ class itemtype extends item {
                 );
                 $gapsanddistractors = $gaps;
                 foreach ($processedsentence->extrawords as $extraword) {
-                    $gapsanddistractors[] = ['word' => $extraword, 'isgap' => true, 'gapindex' => 9999];
+                    if (!empty($extraword)) {
+                        $gapsanddistractors[] = ['word' => $extraword, 'isgap' => true, 'gapindex' => 9999];
+                    }
                 }
                 shuffle($gapsanddistractors);
                 $testitem->sentences[$processedsentence->index]->randomgaps = $gapsanddistractors;
@@ -238,7 +240,7 @@ class itemtype extends item {
             case 'generate':
             default:
                 $prompt = "Create a one dimensional array of 4 sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners  on the topic of: [{topic}] " . PHP_EOL;
-                $prompt .= "In each sentence surround all but the first two words with square brackets, e.g [word]. " . PHP_EOL;
+                $prompt .= "In each sentence select three  words, and surround them each with square brackets. One of the words selected must be a keyword. e.g The [purple] [people] [eater] is a song." . PHP_EOL;
                 $prompt .= "Create a second array (data2) using the same sentences but without the square brackets." . PHP_EOL;
                 break;
         }

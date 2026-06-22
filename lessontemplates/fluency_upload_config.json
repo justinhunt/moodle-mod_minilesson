@@ -2,8 +2,9 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Extract a 1 dimensional array of sentences (sentences) from the following {language} text: [{text}]. ",
+            "prompt": "Extract a 1 dimensional array of sentences (sentences) from the following {language} text: [{text}].",
             "generatemethod": "extract",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -62,9 +63,10 @@
         }
     ],
     "lessonTitle": "Fluency (upload sentences)",
-    "lessonDescription": "Upload up to 10 sentences to create a a Fluency item where students practice saying the sentences aloud.",
-    "uniqueid": "6a30fb4890875",
-    "version": "1",
+    "lessonDescription": "Create a Fluency item by supplying  up to 10 sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item.",
+    "uniqueid": "6a3545b0af700",
+    "version": "0",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -74,34 +76,26 @@
         },
         "user_topic": {
             "enabled": false,
-            "title": "Story\/Article Topic",
-            "description": "Enter a story outline or article topic for AI to use to generate a reading passage.",
-            "type": "textarea"
+            "title": "",
+            "description": "",
+            "type": "text"
         },
         "user_level": {
             "enabled": false,
-            "title": "User Language Level",
+            "title": "",
             "description": "",
-            "type": "dropdown",
-            "options": [
-                "CEFR A1",
-                "CEFR A2",
-                "CEFR B1",
-                "CEFR B2",
-                "CEFR C1",
-                "CEFR C2"
-            ]
+            "type": "text"
         },
         "user_text": {
             "enabled": true,
             "title": "Sentences",
-            "description": "Enter the sentences that will be used for Fluency practice.",
+            "description": "Enter a list of sentences. Each sentence should be on a new line. ",
             "type": "textarea"
         },
         "user_keywords": {
             "enabled": false,
-            "title": "Keywords",
-            "description": "Enter a short comma separated list of keywords that should be in the passage",
+            "title": "",
+            "description": "",
             "type": "text"
         },
         "user_customdata1": {
@@ -166,6 +160,7 @@
         }
     },
     "tags": [
-        "Speaking"
+        "Speaking",
+        "Pronunciation"
     ]
 }

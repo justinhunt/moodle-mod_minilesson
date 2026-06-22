@@ -1,0 +1,107 @@
+{
+    "items": [
+        {
+            "type": "slides",
+            "name": "Item: Slides",
+            "instructions": "Click > or < to go forward or backward through the slides.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "slidesmarkdown": "<section>\n  <section>\n    <h2>\u300csay\u300d\u3068\u300ctell\u300d\u306e\u4f7f\u3044\u5206\u3051<\/h2>\n    <p>\u5831\u544a\u8a71\u6cd5\uff08reported speech\uff09\u3067\u8ff7\u3044\u3084\u3059\u3044\u30dd\u30a4\u30f3\u30c8\u3092\u3001\u30b7\u30f3\u30d7\u30eb\u306b\u6574\u7406\u3057\u307e\u3059\u3002<\/p>\n    <ul>\n      <li><strong>say<\/strong> = \u300c\u4f55\u3092\u8a00\u3063\u305f\u304b\u300d<\/li>\n      <li><strong>tell<\/strong> = \u300c\u8ab0\u306b\u8a00\u3063\u305f\u304b\u300d<\/li>\n    <\/ul>\n  <\/section>\n\n  <section>\n    <h2>\u57fa\u672c\u30eb\u30fc\u30eb<\/h2>\n    <ul>\n      <li><strong>say<\/strong> \u306f\u3001\u5185\u5bb9\u3092\u305d\u306e\u307e\u307e\u4f1d\u3048\u308b\u3068\u304d\u306b\u4f7f\u3044\u307e\u3059\u3002<\/li>\n      <li><strong>tell<\/strong> \u306f\u3001\u76f8\u624b\uff08\u4eba\uff09\u3092\u5165\u308c\u3066\u4f1d\u3048\u308b\u3068\u304d\u306b\u4f7f\u3044\u307e\u3059\u3002<\/li>\n    <\/ul>\n    <p>\u899a\u3048\u65b9\uff1a<strong>say = content<\/strong> \/ <strong>tell = person<\/strong><\/p>\n  <\/section>\n\n  <section>\n    <h2>say \u306e\u5f62<\/h2>\n    <ul>\n      <li>say + that\u7bc0<\/li>\n      <li>say + \u76f4\u63a5\u8a71\u6cd5\u306e\u5185\u5bb9<\/li>\n    <\/ul>\n    <p>\u4f8b:<\/p>\n    <ul>\n      <li>She <strong>said that<\/strong> she was tired.<\/li>\n      <li>He <strong>said<\/strong>, \u201cI\u2019m busy.\u201d<\/li>\n    <\/ul>\n  <\/section>\n\n  <section>\n    <h2>tell \u306e\u5f62<\/h2>\n    <ul>\n      <li>tell + \u4eba + that\u7bc0<\/li>\n      <li>tell + \u4eba + to + \u52d5\u8a5e<\/li>\n    <\/ul>\n    <p>\u4f8b:<\/p>\n    <ul>\n      <li>She <strong>told me that<\/strong> she was tired.<\/li>\n      <li>He <strong>told us to<\/strong> wait.<\/li>\n    <\/ul>\n  <\/section>\n\n  <section>\n    <h2>\u3088\u304f\u3042\u308b\u9593\u9055\u3044<\/h2>\n    <ul>\n      <li>\u274c She said me that she was tired.<\/li>\n      <li>\u2705 She told me that she was tired.<\/li>\n      <li>\u274c He told that he was busy.<\/li>\n      <li>\u2705 He said that he was busy.<\/li>\n    <\/ul>\n  <\/section>\n\n  <section>\n    <h2>\u307e\u3068\u3081<\/h2>\n    <ul>\n      <li><strong>say<\/strong> = \u5185\u5bb9\u3092\u8a00\u3046<\/li>\n      <li><strong>tell<\/strong> = \u4eba\u306b\u8a00\u3046<\/li>\n      <li>\u8ff7\u3063\u305f\u3089\u3001<strong>\u4eba\u304c\u3042\u308b\u306a\u3089 tell<\/strong> \u3092\u30c1\u30a7\u30c3\u30af<\/li>\n    <\/ul>\n    <p>\u4f8b\u6587\u3092\u58f0\u306b\u51fa\u3057\u3066\u7df4\u7fd2\u3059\u308b\u3068\u3001\u81ea\u7136\u306b\u4f7f\u3044\u5206\u3051\u3089\u308c\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3059\u3002<\/p>\n  <\/section>\n<\/section>",
+            "slidestheme": "dracula",
+            "slidesfontsize": "32",
+            "slidescontenttype": "1",
+            "filesid": 1
+        },
+        {
+            "type": "wordshuffle",
+            "name": "Item: WordShuffle",
+            "instructions": "Choose the correct word to complete the sentence.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "John [said] that you were in hospital.|\u30b8\u30e7\u30f3\u306f\u79c1\u306b\u3042\u306a\u305f\u306f\u75c5\u9662\u306b\u3044\u308b\u3068\u8a00\u3044\u307e\u3057\u305f\u3002|told\r",
+                "John [told] me you were in hospital.|\u30b8\u30e7\u30f3\u304c\u3042\u306a\u305f\u306f\u75c5\u9662\u306b\u3044\u308b\u3068\u8a00\u3044\u307e\u3057\u305f\u3002|said"
+            ],
+            "promptvoice": "Joey",
+            "promptvoiceopt": "normal",
+            "layout": "vertical",
+            "filesid": 2
+        },
+        {
+            "type": "typinggapfill",
+            "name": "Item: Typing GapFill",
+            "instructions": "Fill in the missing words or letters",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "The [military] has a big parade today.",
+                "We watched the [parade] in the city.",
+                "There is no [evidence] of rain today.",
+                "She found a [fortune] in the old box.",
+                "I cooked eggs in the [frypan].",
+                "The weather is [terrible] today.",
+                "The artist used [ochre] to paint the sun.",
+                "The old building was destroyed with [dynamite].",
+                "The [wild] animals live in the forest.",
+                "Do not [waste] your food."
+            ],
+            "promptvoice": "Matthew",
+            "allowretry": "yes",
+            "promptvoiceopt": "normal",
+            "filesid": 3
+        }
+    ],
+    "files": {
+        "1": {
+            "customfile1": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ"
+            }
+        },
+        "2": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ"
+            }
+        },
+        "3": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ"
+            }
+        }
+    }
+}

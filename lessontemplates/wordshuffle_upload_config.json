@@ -27,7 +27,7 @@
                 },
                 {
                     "name": "data2",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
@@ -65,7 +65,8 @@
     "lessonTitle": "Word Shuffle (upload sentences) ",
     "lessonDescription": "Create a Word Shuffle activity by supplying  4 - 10 sentences. A picture will be generated to go with each sentence in the shuffle activity.",
     "uniqueid": "6a338cfe5bca3",
-    "version": "2",
+    "version": "3",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,

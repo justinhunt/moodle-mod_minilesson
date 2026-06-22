@@ -160,6 +160,7 @@
             <FIELD NAME="template" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
             <FIELD NAME="uniqueid" TYPE="char" LENGTH="250" NOTNULL="true" SEQUENCE="false"/>
             <FIELD NAME="version" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+            <FIELD NAME="agentonly" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="If 1, the template is hidden from the human AI generation picker (agent/uncommon use only)."/>
             <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
             <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
         </FIELDS>

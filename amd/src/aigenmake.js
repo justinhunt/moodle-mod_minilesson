@@ -59,6 +59,10 @@ define(
                         var generateMethodSelect = $(itemcontrol).find('select[name="generatemethod"]');
                         itemdata.generatemethod = generateMethodSelect.val();
 
+                        //get the image file mapping fieldset's own generate method
+                        var fileareasMethodSelect = $(itemcontrol).find('select[name="generatefileareasmethod"]');
+                        itemdata.generatefileareasmethod = fileareasMethodSelect.val();
+
                         //get the generate fields
                         var generateFieldsCheckboxes = $(itemcontrol).find('.aigen_fields-to-generate input[type="checkbox"]');
                         var generateFields = [];
@@ -151,10 +155,19 @@ define(
                     );// End of templates
                 });
 
-                //On change of the select, update the config
+                //On change of the item-level generate method select, update the config.
                 self.controls.selectgenerate.on('change', function () {
                     self.regenerate_item_form(this);
                 });
+
+                //On change of the filearea-level generate method select, re-render only the filearea
+                //fieldset (delegated, because the fieldset is re-rendered on the fly). This does not
+                //affect the item-level generate method (requirement ii).
+                $(document).on('change', '.ml_aigen_filearea_mappings select[name="generatefileareasmethod"]',
+                    function () {
+                        var itemcontainer = $(this).closest('.ml_aigen_item');
+                        self.renderFileareas(itemcontainer, $(this).val());
+                    });
 
             },  // end of register_events
 
@@ -185,33 +198,58 @@ define(
                     aigenpromptfields: mappingsDiv.data('promptfields').split(',').filter(element => element.trim() !== ""),
                 };
 
-                //prepare the files areas div data
-                var fileareasDiv = $(selectgenerateelement).closest('.ml_aigen_item').find('.ml_aigen_filearea_mappings');
-                var fileareasData = {
-                    methodreuse: selectedValue === 'reuse',
-                    aigenplaceholders: self.splitDataField(fileareasDiv.data('aigenplaceholders')),
-                    contextfileareas: self.splitDataField(fileareasDiv.data('contextfileareas')),
-                    aigenfileareas: self.splitDataField(fileareasDiv.data('aigenfileareas')),
-                    availablecontext: self.splitDataField(fileareasDiv.data('availablecontext')),
-                };
+                // The image file mapping fieldset has its own generate method. When the item-level
+                // method changes it cascades down to the filearea method (requirement i). When we are
+                // restoring saved data, use the stored filearea method (defaulting to the item method
+                // for back-compat with configs saved before the per-fieldset method existed).
+                var fileareamethod = selectedValue;
+                if (itemdata && itemdata.generatefileareasmethod) {
+                    fileareamethod = itemdata.generatefileareasmethod;
+                }
+
+                var itemcontainer = $(selectgenerateelement).closest('.ml_aigen_item');
 
                 // Render mappings first, then render file areas after mappings has finished.
                 templates.render('mod_minilesson/aigenmappings', mappingsdata)
                 .then(function (html) {
                     log.debug('redoing mappingsdiv: ');
                     mappingsDiv.html(html);
-                    // Chain the second render so it runs after the first is done
-                    return templates.render('mod_minilesson/aigenfilemappings', fileareasData);
-                })
-                .then(function (html) {
-                    log.debug('redoing fileareadata: ');
-                    fileareasDiv.html(html);
+                    // Chain the second render so it runs after the first is done.
+                    return self.renderFileareas(itemcontainer, fileareamethod);
                 }).then(function () {
                 // If we have itemdata, set the fields accordingly
                     if (itemdata && itemcontrol) {
                         log.debug('updating after regenerating form');
                         self.updateTheFields(itemdata, itemcontrol);
                     }
+                });
+            },
+
+            /**
+             * Render the image file mapping fieldset for an item using the supplied generate method.
+             * This is independent of the item-level generate method (requirement ii).
+             *
+             * @param {jQuery} itemcontainer The .ml_aigen_item element.
+             * @param {String} fileareamethod The generate method for the filearea fieldset.
+             * @return {Promise}
+             */
+            renderFileareas: function (itemcontainer, fileareamethod) {
+                var self = this;
+                var fileareasDiv = $(itemcontainer).find('.ml_aigen_filearea_mappings');
+                var fileareasData = {
+                    methodgenerate: fileareamethod === 'generate',
+                    methodextract: fileareamethod === 'extract',
+                    methodreuse: fileareamethod === 'reuse',
+                    aigenplaceholders: self.splitDataField(fileareasDiv.data('aigenplaceholders')),
+                    contextfileareas: self.splitDataField(fileareasDiv.data('contextfileareas')),
+                    aigenfileareas: self.splitDataField(fileareasDiv.data('aigenfileareas')),
+                    availablecontext: self.splitDataField(fileareasDiv.data('availablecontext')),
+                };
+                return templates.render('mod_minilesson/aigenfilemappings', fileareasData)
+                .then(function (html) {
+                    log.debug('redoing fileareadata: ');
+                    fileareasDiv.html(html);
+                    return html;
                 });
             },
 

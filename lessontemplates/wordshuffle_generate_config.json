@@ -2,8 +2,9 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Create a one dimensional array of grammatically correct sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}].\nIn each sentence select three of the words, and surround them each with square brackets. But do not select either of the first two words in the sentence. \nCreate a second array (data2) using the same sentences but without the square brackets.",
+            "prompt": "Create a one dimensional array of grammatically correct sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}].\nIn each sentence select three  words, and surround them each with square brackets. One of the words selected must be a keyword. e.g \"The [purple] [people] [eater] is a song.\"\nCreate a second array (data2) using the same sentences but without the square brackets.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -27,7 +28,7 @@
                 },
                 {
                     "name": "data2",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
@@ -73,7 +74,8 @@
     "lessonTitle": "Word Shuffle (generate sentences)",
     "lessonDescription": "Create a Word Shuffle activity by entering 4 - 10 keywords. The keywords will also be used to generate sentences, and a picture to go with each sentence in the shuffle activity.",
     "uniqueid": "6a31023c2bd88",
-    "version": "1",
+    "version": "2",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,

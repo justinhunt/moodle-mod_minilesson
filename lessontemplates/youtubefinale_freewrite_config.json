@@ -347,7 +347,7 @@
     "lessonTitle": "YouTube Finale (listen and free write)",
     "lessonDescription": "This is a lesson based on a YouTube video story. A related but simplified story is prepared and comprehension, and a writing activity are built on the story. ",
     "uniqueid": "6a2504c6d2e93",
-    "version": "0",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -458,7 +458,9 @@
         }
     },
     "tags": [
-        "Listening",
-        "Video"
-    ]
+        "Video",
+        "Reading",
+        "Writing"
+    ],
+    "agentonly": 0
 }

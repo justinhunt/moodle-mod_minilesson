@@ -67,8 +67,8 @@ class aigentemplates implements \renderable, \templatable
         $tags = self::get_alltags();
         $tags = array_intersect($this->filters, $tags);
 
-        // Fetch templates.
-        $lessontemplates = aigen::fetch_lesson_templates($tags);
+        // Fetch templates. Agent-only templates are hidden from the human picker.
+        $lessontemplates = aigen::fetch_lesson_templates($tags, false);
 
         $buttondata = [];
         foreach ($lessontemplates as $templateid => $lessontemplate) {
@@ -134,6 +134,11 @@ class aigentemplates implements \renderable, \templatable
                 'detailsdata' => json_encode($detailsdata),
             ];
         }
+
+        // Sort the templates alphabetically by title (case-insensitive).
+        usort($buttondata, function($a, $b) {
+            return strcasecmp($a['title'], $b['title']);
+        });
 
         return [
             'buttons' => $buttondata,

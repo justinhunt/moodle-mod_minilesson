@@ -1,15 +1,29 @@
 {
     "items": [
         {
-            "type": "page",
-            "name": "Item: Content Page",
-            "instructions": "Practice New Words",
+            "type": "cards",
+            "name": "Item: Cards",
+            "instructions": "Review the cards on screen. You can use the next and back buttons to see other cards.",
             "ttsvoice": "Joey",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
             ],
-            "int10": "1",
+            "sentences": [
+                "body|Cuerpo|My body is young and strong.\r",
+                "require|Requerir|Will the company require you to move to Tokyo?\r",
+                "wait|Esperar|Let's wait to see the movie until tomorrow.\r",
+                "general|General|Her novels are for a general audience.\r",
+                "appear|Aparecer|When you see the train appear, let me know.\r",
+                "toward|Hacia|In the morning look toward the East to see the sun rise.\r",
+                "team|Equipo|The team is ready for the big game tomorrow.\r",
+                "easy|F\u00e1cil|I read an easy book today.\r",
+                "individual|Individuo| While it's important to be an individual, it is more important to be a member of society.\r",
+                "full|Lleno|My parents left for a couple of days and left the fridge full of food."
+            ],
+            "promptvoice": "auto",
+            "dictationstyle": "yes",
+            "promptvoiceopt": "normal",
             "layout": "vertical",
             "filesid": 1
         },
@@ -72,8 +86,27 @@
     ],
     "files": {
         "1": {
-            "itemmedia": {
-                "1.png": "QQQQ"
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ",
+                "11.png": "QQQQ",
+                "12.png": "QQQQ",
+                "13.png": "QQQQ",
+                "14.png": "QQQQ",
+                "15.png": "QQQQ",
+                "16.png": "QQQQ",
+                "17.png": "QQQQ",
+                "18.png": "QQQQ",
+                "19.png": "QQQQ",
+                "20.png": "QQQQ"
             }
         },
         "2": {

@@ -190,6 +190,9 @@ class aigen_uploadform extends moodleform
             if (isset($jsonconfig->version)) {
                 $template->version = $jsonconfig->version;
             }
+            if (isset($jsonconfig->agentonly)) {
+                $template->agentonly = (int) $jsonconfig->agentonly;
+            }
             $template->uniqueid = $jsonconfig->uniqueid;
         }
         $jsontemplate = json_decode($template->template);
@@ -215,6 +218,9 @@ class aigen_uploadform extends moodleform
         if (!isset($template->version)) {
             $template->version = 0;
         }
+        if (!isset($template->agentonly)) {
+            $template->agentonly = 0;
+        }
 
         // Save the template.
         if (
@@ -232,6 +238,7 @@ class aigen_uploadform extends moodleform
                 $temp->config = $template->config;
                 $temp->template = $template->template;
                 $temp->version = $template->version;
+                $temp->agentonly = $template->agentonly;
                 $template = $temp;
                 break;
             }

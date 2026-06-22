@@ -142,9 +142,14 @@ class aigen_form extends \moodleform {
                 $tdata['items'][$itemnumber]['itemnumber'] = $itemnumber;
 
                 // Get the generatemethod.
-                $tdata['items'][$itemnumber]['methodreuse'] = $this->get_element_value(
-                    'generatemethod[' . $itemnumber . ']'
-                ) == 'reuse';
+                $itemmethod = $this->get_element_value('generatemethod[' . $itemnumber . ']');
+                $tdata['items'][$itemnumber]['methodreuse'] = $itemmethod == 'reuse';
+
+                // The image file mapping fieldset has its own generate method. On initial render it
+                // defaults to the item-level method; JS (set_data) overrides it from any saved config.
+                $fileareamethod = $itemmethod ?: 'generate';
+                $tdata['items'][$itemnumber]['methodgenerate'] = $fileareamethod == 'generate';
+                $tdata['items'][$itemnumber]['methodextract'] = $fileareamethod == 'extract';
 
                 // Fetch the prompt.
                 $generatemethods = ['generate', 'extract'];
@@ -337,6 +342,18 @@ class aigen_form extends \moodleform {
         $mform->setType('version', PARAM_INT);
         $mform->addRule('version', get_string('required'), 'required');
 
+        $mform->addElement(
+            'selectyesno',
+            'agentonly',
+            get_string('templateagentonly', constants::M_COMPONENT)
+        );
+        $mform->setType('agentonly', PARAM_INT);
+        // Note: do not call setDefault() here. definition_after_data() runs *after*
+        // set_data_for_dynamic_submission(), so a setDefault would clobber the value loaded
+        // from the DB when editing an existing template (making it always show "No").
+        // An empty selectyesno already defaults to "No" for new templates.
+        $mform->addHelpButton('agentonly', 'templateagentonly', constants::M_COMPONENT);
+
         $mform->addElement('submit', 'savestep4', 'Create JSON Config');
         $mform->setExpanded('step4');
         $mform->addElement('cancel', 'back', get_string('back'));
@@ -365,6 +382,7 @@ class aigen_form extends \moodleform {
             $formdata['step1done'] = $formdata['step2done'] = $formdata['step3done'] = 1;
             $formdata['uniqueid'] = $template->uniqueid;
             $formdata['version'] = $template->version;
+            $formdata['agentonly'] = $template->agentonly;
             if (
                 $DB->record_exists_select(
                     'minilesson_templates',
@@ -433,6 +451,7 @@ class aigen_form extends \moodleform {
             $template->config = $formdata->aigen_config;
             $template->uniqueid = $formdata->uniqueid;
             $template->version = $formdata->version;
+            $template->agentonly = (int) $formdata->agentonly;
             $template->template = $this->get_file_content('importjson');
             $jsonconfig = json_decode($template->config);
             if (!json_last_error()) {
@@ -440,6 +459,7 @@ class aigen_form extends \moodleform {
                 $jsonconfig->lessonDescription = $template->description;
                 $jsonconfig->uniqueid = $template->uniqueid;
                 $jsonconfig->version = $template->version;
+                $jsonconfig->agentonly = $template->agentonly;
                 $availablecontext = self::mappings();
                 $typeoptions = self::type_options();
                 $fielddatas = array_filter((array) $formdata, function ($k) use ($availablecontext) {

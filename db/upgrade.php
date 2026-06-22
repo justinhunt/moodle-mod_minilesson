@@ -1086,11 +1086,37 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026061900) {
-        // Update default templates - templates updated
+        // Update default templates - templates updated.
         \mod_minilesson\aigen::create_default_templates();
 
         // Minilesson savepoint reached.
         upgrade_mod_savepoint(true, 2026061900, 'minilesson');
+    }
+
+    if ($oldversion < 2026061902) {
+        // Add the "agentonly" flag to the templates table. When set, the template is hidden
+        // from the human AI generation picker (it is intended for agents or uncommon use).
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('agentonly', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'version');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Re-seed default templates so any agentonly designations in the template files are applied.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026061902, 'minilesson');
+    }
+
+    if ($oldversion < 2026062200) {
+        // Register a batch of newly added default AI-generation templates (markup-based
+        // upload variants, Scatter/Space Game uploads, Audio Chat, Free Writing/Speaking
+        // uploads and the Grammar Lesson templates). Re-seeding is idempotent.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026062200, 'minilesson');
     }
 
     return true;

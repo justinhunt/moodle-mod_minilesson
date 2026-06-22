@@ -48,6 +48,7 @@ class templates extends dynamictable
 
         $cols['id'] = get_string('col:templateid', constants::M_COMPONENT);
         $cols['name'] = get_string('col:name', constants::M_COMPONENT);
+        $cols['agentonly'] = get_string('templateagentonly', constants::M_COMPONENT);
         $cols['timemodified'] = get_string('col:timemodified', constants::M_COMPONENT);
         $cols['action'] = get_string('col:action', constants::M_COMPONENT);
         $this->define_columns(array_keys($cols));
@@ -107,6 +108,11 @@ class templates extends dynamictable
         $o[] = $this->renderer->render($deletebutton);
 
         return join(' ', $o);
+    }
+
+    public function col_agentonly(stdClass $record)
+    {
+        return !empty($record->agentonly) ? get_string('yes') : get_string('no');
     }
 
     public function col_timemodified(stdClass $record)
