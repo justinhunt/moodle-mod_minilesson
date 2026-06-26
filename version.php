@@ -29,4 +29,4 @@ $plugin->version = 2026062200;
 $plugin->requires = 2023100900; // Requires Moodle 4.3.
 $plugin->component = 'mod_minilesson';
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Version 1.1.42 (Build 2026062200)';
+$plugin->release = 'Version 1.1.40 (Build 2026062200)';

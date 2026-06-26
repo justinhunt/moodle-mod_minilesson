@@ -851,7 +851,7 @@ class utils {
         }
     }
 
-    public static function fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad) {
+    public static function fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad, $resumehandle = '') {
 
         $cloudpoodlltoken = false;
         $conf = get_config(constants::M_COMPONENT);
@@ -876,6 +876,11 @@ class utils {
         $params['region'] = $poodllregion;
         $params['voice'] = $voice;
         $params['disablevad'] = $disablevad;
+        // Resume handle for session resumption; the cloud endpoint must bake this
+        // into the token's bidiGenerateContentSetup for the Constrained endpoint.
+        if ($resumehandle !== '') {
+            $params['resumehandle'] = $resumehandle;
+        }
 
         $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = self::curl_fetch($serverurl, $params);

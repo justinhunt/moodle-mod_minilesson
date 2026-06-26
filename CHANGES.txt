@@ -1,6 +1,8 @@
-Version 1.1.40 (Build 20260619xx)
+Version 1.1.40 (Build 2026062200)
 - Added many new AI Generate templates
 - Added random feature to wordshuffle, gapfills, and cards
+- Fixed audiochat question text  when missing question text 
+- Fixed audiochat sessions that cut out at 10 mins with gemini/cloudpoodll
 
 Version 1.1.39 (Build 2026061102)
 - Added Cards and Video Shadowing item types
@@ -26,7 +28,7 @@ Version 1.1.34 (Build 2026050100)
 - Added AI Helper to slides and fiction item type forms.
 
 Version 1.1.33 (Build 2026042200)
-- Fix for issue where grade propery sometimes not present in session results
+- Fix for issue where grade property sometimes not present in session results
 - Fix for broken syntax check in fiction item.
 - Attempted fix for issue where Audio Chat sometimes was not graded.
 - Added HTML format as an option alongside Markdown for Slides item.

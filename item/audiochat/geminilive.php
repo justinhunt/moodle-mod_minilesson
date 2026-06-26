@@ -32,6 +32,9 @@ require_once($CFG->libdir . '/filelib.php');
 $contextid = required_param('contextid', PARAM_INT);
 $voice = optional_param('voice', 'Aoede', PARAM_ALPHANUMEXT);
 $disablevad = optional_param('disablevad', false, PARAM_BOOL);
+// Opaque session-resumption handle (from a previous connection's
+// sessionResumptionUpdate). Sent only when reconnecting to resume the session.
+$resumehandle = optional_param('resumehandle', '', PARAM_RAW_TRIMMED);
 
 $context = context::instance_by_id($contextid);
 $PAGE->set_context($context);
@@ -43,7 +46,7 @@ require_sesskey();
 // For cloudpoodll we get it from our cloud poodll server.
 $provider = get_config(constants::M_COMPONENT, 'provider');
 if ($provider == itemtype::PROVIDER_CLOUDPOODLL) {
-    $jsontoken = \mod_minilesson\utils::fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad);
+    $jsontoken = \mod_minilesson\utils::fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad, $resumehandle);
     if ($jsontoken) {
         header('Content-Type: application/json');
         echo $jsontoken;
@@ -79,6 +82,17 @@ $payload = [
             'automaticActivityDetection' => [
                 'disabled' => $disablevad,
             ],
+        ],
+        // Allow the session to outlive a single connection (resumption) and the
+        // raw context window (sliding-window compression), so long conversations
+        // do not stall at the ~10 minute connection limit. On a reconnect the
+        // resume handle is baked in here so the Constrained endpoint restores the
+        // prior conversation rather than starting fresh.
+        'sessionResumption' => $resumehandle !== ''
+            ? ['handle' => $resumehandle]
+            : new \stdClass(),
+        'contextWindowCompression' => [
+            'slidingWindow' => new \stdClass(),
         ],
         'inputAudioTranscription' => new \stdClass(),
         'outputAudioTranscription' => new \stdClass(),

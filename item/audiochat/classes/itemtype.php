@@ -129,9 +129,9 @@ class itemtype extends item {
         // Native language of the student.
         $nativelanguage = $this->itemrecord->{self::NATIVE_LANGUAGE};
         if ($nativelanguage == constants::AIGRADE_FEEDBACK_TARGET_LANGUAGE) {
-            $nativelanguage = $moduleinstance->ttslanguage;
+            $nativelanguage = $this->moduleinstance->ttslanguage;
         } else if ($nativelanguage == constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE) {
-            $nativelanguage = $moduleinstance->nativelang;
+            $nativelanguage = $this->moduleinstance->nativelang;
         }
         // If that did not work, set it en-US
         if (empty($nativelanguage)) {
@@ -159,9 +159,9 @@ class itemtype extends item {
         }
 
         // The item text is what is shown to the student, the topic is what is passed to AI to be used in the prompt.
-        // We need to show something to student, so if its empty we show the topic
-        if (empty($this->itemrecord->itemtext)) {
-            $this->itemrecord->itemtext = $this->itemrecord->{self::TOPIC};
+        // We need to show something to student, so if its empty we show the topic.
+        if (empty($testitem->itemtext)) {
+            $testitem->itemtext = $this->itemrecord->{self::TOPIC};
         }
 
         // Set up the audiochat instructions.

@@ -52,6 +52,9 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         sourceNode: null,
         _micEnabled: false,
         _setupComplete: false,
+        // True when WE are closing the socket on purpose (stop/grading/reconnect),
+        // so the onclose handler does not treat it as an expiry to recover from.
+        _intentionalClose: false,
 
         // Conversation state.
         items: {},
@@ -92,11 +95,20 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 }
             },
             sessionResumption: {},
+            // Lets the session outlive the raw context window so resumption is not
+            // defeated by the context limit a little after the connection limit.
+            contextWindowCompression: {
+                slidingWindow: {}
+            },
             inputAudioTranscription: {},
             outputAudioTranscription: {}
         },
         sessionResumptionToken: null,
         resumingSession: false,
+        // After a reconnect, the interrupted turn never sends turnComplete on the new
+        // socket, so the mic would stay muted. This flag tells the setupComplete
+        // handler to hand the turn back to the user once the resume is established.
+        _restoreMicOnResume: false,
 
         clone: function () {
             return $.extend(true, {}, this);
@@ -164,16 +176,56 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             self.autocreateresponse = enabled;
             log.debug('Gemini driver: autocreate response toggled:');
             log.debug(enabled);
-            self._fetchSessionInfo().then(function(sessionInfo) {
-                if (self.ws && self.ws.readyState === WebSocket.OPEN) {
-                    self.ws.close();
-                }
-                self.resumingSession = true;
-                self.currentUserItemId = null;
-                self.currentAssistantItemId = null;
-                return self._openWebSocket(sessionInfo).then(function() {
+            // Toggling VAD requires a new setup, so resume the session on a fresh socket.
+            self._reconnectSession();
+        },
+
+        /**
+         * Open a fresh WebSocket and resume the current session using the stored
+         * resumption handle. Used both when the connection limit is hit
+         * (goAway / unexpected close) and when a setting change (VAD toggle)
+         * requires a new setup. A fresh ephemeral token is fetched because the
+         * token minted by geminilive.php is single-use.
+         * @return {Promise|undefined}
+         */
+        _reconnectSession: function () {
+            var self = this;
+            if (self.resumingSession) {
+                log.debug('Gemini: reconnect already in progress, skipping');
+                return;
+            }
+            log.debug('Gemini: reconnecting session (resumption handle: ' +
+                (self.sessionResumptionToken ? 'present' : 'none') + ')');
+            self.resumingSession = true;
+            self._setupComplete = false;
+            self._restoreMicOnResume = true;
+            self.currentUserItemId = null;
+            self.currentAssistantItemId = null;
+            self._fire('onStateChange', 'connecting');
+            // Close the old socket BEFORE minting the new token, so no further
+            // sessionResumptionUpdate can change the handle between the token mint
+            // (_fetchSessionInfo) and the wire setup (_sendSetupAndFirstTurn).
+            // Both must carry the same handle for the Constrained endpoint to resume.
+            if (self.ws && self.ws.readyState === WebSocket.OPEN) {
+                self._intentionalClose = true;
+                try { self.ws.close(); } catch (e) { log.debug(e); }
+            }
+            return self._fetchSessionInfo().then(function (sessionInfo) {
+                self._intentionalClose = false;
+                return self._openWebSocket(sessionInfo).then(function () {
+                    // _sendSetupAndFirstTurn attaches sessionResumptionToken as the
+                    // resumption handle and, because resumingSession is true, skips
+                    // re-sending the intro turn. The mic pipeline is still alive, so
+                    // audio frames resume flowing as soon as the socket is open.
                     self._sendSetupAndFirstTurn(sessionInfo.model);
+                    self._fire('onStateChange', 'connected');
                 });
+            }).catch(function (err) {
+                log.debug('Gemini: reconnect failed');
+                log.debug(err);
+                self.resumingSession = false;
+                self._fire('onStateChange', 'error');
+                self._fire('onError', err);
             });
         },
 
@@ -193,6 +245,9 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             self.items = {};
             self.loadingMessages = new Set();
             self._setupComplete = false;
+            self._intentionalClose = false;
+            self.resumingSession = false;
+            self.sessionResumptionToken = null;
             self._notifyItems();
 
             // 1. Acquire mic.
@@ -256,6 +311,13 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             formData.append('sesskey', M.cfg.sesskey);
             formData.append('voice', self.audiochat_voice);
             formData.append('disablevad', !self.autocreateresponse);
+            // When resuming, the handle MUST be baked into the ephemeral token's
+            // bidiGenerateContentSetup: the Constrained endpoint honours the token's
+            // setup, not handle fields we add over the wire, so without this the
+            // session restarts fresh and loses all prior conversation.
+            if (self.sessionResumptionToken) {
+                formData.append('resumehandle', self.sessionResumptionToken);
+            }
             // Ideally this should be an AJAX request to a minilesson web service method,
             // but to keep things "in subplugin" for now we call a subplugin helper file
             return fetch(
@@ -296,6 +358,15 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                     log.debug(ev.code);
                     log.debug(ev.reason);
                     self.loadingMessages.clear();
+                    // The Live API caps a single connection (~10 min for audio). When it
+                    // expires the server closes the socket; recover transparently by
+                    // resuming the session on a fresh connection. Skip when WE closed it
+                    // (stop / grading / a reconnect already underway).
+                    if (!self._intentionalClose && !self.resumingSession &&
+                            self.sessionResumptionToken) {
+                        log.debug('Gemini: unexpected close, attempting session resumption');
+                        self._reconnectSession();
+                    }
                 };
                 self.ws.onmessage = function (ev) { self._handleWSMessage(ev); };
             });
@@ -428,7 +499,12 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
 
         _processAudioFrame: function (event) {
             var self = this;
-            if (!self._micEnabled || !self.ws || self.ws.readyState !== WebSocket.OPEN) {
+            // Do not stream audio until the setup handshake for the CURRENT connection
+            // is complete. After a reconnect (goAway/expiry) the mic pipeline is still
+            // running, and sending an audio frame before the setup message makes the
+            // server reject the socket with 1007 "setup must be the first message".
+            if (!self._micEnabled || !self._setupComplete ||
+                    !self.ws || self.ws.readyState !== WebSocket.OPEN) {
                 return;
             }
             var input = event.inputBuffer.getChannelData(0);
@@ -560,10 +636,30 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 if (self._pendingFirstMessage) {
                     self._flushPendingFirstMessage();
                 }
+                if (self._restoreMicOnResume) {
+                    self._restoreMicOnResume = false;
+                    // The turn interrupted by the reconnect will never send turnComplete
+                    // on this new socket, so explicitly hand the turn back to the user.
+                    // onOutputAudioStopped re-opens the mic only if it is not already
+                    // active, so a mic that was live across the reconnect is unaffected.
+                    self.loadingMessages.clear();
+                    self._notifyItems();
+                    self._fire('onOutputAudioStopped');
+                }
                 return;
             }
 
             if (msg.toolCall || msg.toolCallCancellation) {
+                return;
+            }
+
+            // The server warns with goAway (carrying timeLeft) shortly before it
+            // terminates the connection at the duration limit. Reconnect proactively
+            // so the conversation continues without the user noticing a drop.
+            if (msg.goAway) {
+                log.debug('Gemini: goAway received, timeLeft=' +
+                    (msg.goAway.timeLeft || 'unknown'));
+                self._reconnectSession();
                 return;
             }
 
@@ -825,6 +921,9 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
 
         _teardownConnection: function () {
             var self = this;
+            // This is a deliberate teardown (stop / grading / error / release),
+            // so the onclose handler must not try to resume the session.
+            self._intentionalClose = true;
             if (self.ws && !self._gradingPending) {
                 try { self.ws.close(); } catch (e) { log.debug('Gemini: ws close error');log.debug(e); }
                 self.ws = null;
