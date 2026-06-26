@@ -913,7 +913,16 @@ abstract class item implements \templatable, \renderable {
             if ($phonetics && array_key_exists($i, $phonetics)) {
                 $ps = utils::super_trim($phonetics[$i]);
                 $psarray = explode('|#', $ps);
-                $sentence->phonetic = array_key_exists(0, $psarray) ? utils::super_trim($psarray[0]) : '';
+                // Phonetics needs to be stored at the word level as are sentence->words
+                // currently it is just the entire phonetics string is sent up
+                // so the transcript vs passage match will always match phonetically partially
+                // ie words match like this: [extraction] <--> I am doing an explanation
+                // but phonetics match like this: ai im doiz za extactshin ---> ai im doiz za explanashin
+                // ie there will always be a match and its meaningless
+                // So until we can reliably do this (multi word gaps etc) we are turning it off
+                // $sentence->phonetic = array_key_exists(0, $psarray) ? utils::super_trim($psarray[0]) : '';
+                $sentence->phonetic = "";
+
                 $sentence->segmentedsentence = array_key_exists(1, $psarray) ? utils::super_trim($psarray[1]) : '';
                 if (empty($sentence->segmentedsentence)) {
                     list($phones, $segmentedsentence) = utils::fetch_phones_and_segments(
