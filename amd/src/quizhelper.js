@@ -64,20 +64,22 @@ define(
                 var dd = this;
                 $.each(quizdata, function (index, item) {
                     dd.loadpromises.push(new Promise(resolve => require(
-                            [`${def.get_sub_component(item.type)}/itemtype`],
-                            module => {
-                                resolve(module.clone().init(index, item, dd, polly));
-                            })
-                        )
+                        [`${def.get_sub_component(item.type)}/itemtype`],
+                        module => {
+                            resolve(module.clone().init(index, item, dd, polly));
+                        })
+                    )
                     );
                 });
 
-                //TTS in question headers
+                // TTS in question headers.
                 $("audio.mod_minilesson_itemttsaudio").each(function () {
                     var that = this;
-                    if (that.src !== '') {
+                    // if the URL is set (it should be set) continue.
+                    if ($(that).attr('src')) {
                         return;
                     }
+                    // If it is not set, fetch it now.
                     polly.fetch_polly_url(
                         $(this).data('text'),
                         $(this).data('ttsoption'),
@@ -113,7 +115,7 @@ define(
                     slice.forEach(function (i) {
                         innerclass = i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
                         innerhtml = (i !== (slice.length - 1)) ?
-                        "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>" : "";
+                            "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>" : "";
                         if (i === current) {
                             html += "<div class='minilesson_quiz_progress_current'>";
                         }
@@ -141,11 +143,11 @@ define(
                             html += "<div class='minilesson_quiz_progress_current'>";
                         }
                         html += "<div class='minilesson_quiz_progress_item " +
-                        (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " +
-                        (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" +
-                        (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>";
+                            (i === current ? 'minilesson_quiz_progress_item_current' : '') + " " +
+                            (i < current ? 'minilesson_quiz_progress_item_completed' : '') + "'>" +
+                            (i < current ? '<i class="fa fa-check"></i>' : i + 1) + "</div>";
                         innerclass = (i === lastvalue && i < total - 2) ? "minilesson_quiz_progress_dashedline" :
-                        i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
+                            i < current ? "minilesson_quiz_progress_completed" : "minilesson_quiz_progress_incompleted";
                         innerhtml = "<div class='" + innerclass + "' style='width: " + itemWidth + "%; '></div>";
                         if (i === current) {
                             html += "</div>";

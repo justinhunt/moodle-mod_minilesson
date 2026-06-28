@@ -508,6 +508,15 @@ abstract class item implements \templatable, \renderable {
             $testitem->itemttsaudiovoice = $itemrecord->{constants::TTSQUESTIONVOICE};
             $testitem->itemttsoption = $itemrecord->{constants::TTSQUESTIONOPTION};
             $testitem->itemttsautoplay = $itemrecord->{constants::TTSAUTOPLAY};
+            // Fetch Audio URL.
+            $testitem->itemttsaudiourl = utils::fetch_polly_url(
+                    $this->token,
+                    $this->region,
+                    $testitem->itemttsaudio,
+                    $testitem->itemttsoption,
+                    $testitem->itemttsaudiovoice,
+                    $this->moduleinstance->id
+                );
         }
 
         // YT Clip
