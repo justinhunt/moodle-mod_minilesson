@@ -18,7 +18,7 @@
  * Form for creating/editing a fiction item in a MiniLesson activity.
  *
  * @package    mod_minilesson
- * @copyright  2023 Your Name <your@email.com>
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,8 +28,8 @@ use mod_minilesson\local\itemform\baseform;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 
-class itemform extends baseform
-{
+class itemform extends baseform {
+
     /**
      * Add any form fields specific to this item type.
      */
@@ -48,18 +48,27 @@ class itemform extends baseform
 
         // Initialize CodeMirror generic Editor for Yarn
         $PAGE->requires->js_call_amd(
-            constants::M_COMPONENT . '/codeeditor',
+            constants::M_COMPONENT . '/codeeditor-lazy',
             'setupCodeEditor',
-            ['id_' . itemtype::YARN, ['language' => 'yarn']]
+            [
+                'id_' . itemtype::YARN,
+                [
+                    'language' => 'yarn',
+                    'aihelper' => true,
+                    'itemtype' => 'fiction',
+                    'contextid' => $this->context->id,
+                    'ai_placeholder' => get_string('aihelper_placeholder_fiction', constants::M_COMPONENT),
+                ],
+            ]
         );
 
         // Syntax Checker
         $mform->registerNoSubmitButton('syntaxcheckbutton');
         $buttonid = 'syntaxcheckbutton_' . random_string(10);
-        $mform->addElement('submit', 'syntaxcheckbutton', 
-            get_string('fiction:syntaxcheckbutton', constants::M_COMPONENT), 
+        $mform->addElement('submit', 'syntaxcheckbutton',
+            get_string('fiction:syntaxcheckbutton', constants::M_COMPONENT),
             ['id' => $buttonid]
-        );        
+        );
         $PAGE->requires->js_call_amd(
             'minilessonitem_fiction/itemtype',
             'register_syntaxcheckbutton',
@@ -95,6 +104,13 @@ class itemform extends baseform
             1 => get_string('yes'),
         ], 0);
         $this->add_static_text('shownonoptions_desc', '', get_string('shownonoptions_desc', constants::M_COMPONENT));
+
+        $this->add_dropdown(itemtype::TAP_TO_TRANSLATE, get_string('fiction:taptotranslate', constants::M_COMPONENT),
+         [
+            0 => get_string('no'),
+            1 => get_string('yes'),
+        ], 0);
+        $this->add_static_text('taptotranslate_desc', '', get_string('fiction:taptotranslate_desc', constants::M_COMPONENT));
 
     }
 }

@@ -34,7 +34,7 @@ $maxprompts = constants::MAX_AI_PROMPTS;
 
 for ($i = 0; $i < $maxprompts; $i++) {
     // Free Writing instructions prompt.
-    $defaults = 3;
+    $defaults = 4;
     $name = 'freewriting_gradingpromptheading_' . ($i + 1);
     $label = get_string('gradingprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
     $details = '';
@@ -59,7 +59,7 @@ for ($i = 0; $i < $maxprompts; $i++) {
 }
 for ($i = 0; $i < $maxprompts; $i++) {
     // Free Writing Feedback Prompt.
-    $defaults = 2;
+    $defaults = 3;
     $name = 'freewriting_feedbackpromptheading_' . ($i + 1);
     $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
     $details = '';

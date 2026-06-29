@@ -7,8 +7,9 @@ define(['jquery',
       'mod_minilesson/animatecss',
       'core/templates',
       'core/str',
-      'core/notification'
-    ], function ($, log, ajax, def, polly, ttrecorder, anim, templates,str,notification) {
+      'core/notification',
+      'mod_minilesson/progresstimer'
+    ], function ($, log, ajax, def, polly, ttrecorder, anim, templates,str,notification,progresstimer) {
         "use strict"; // jshint ;_;
 
         log.debug('MiniLesson listen and repeat: initialising');

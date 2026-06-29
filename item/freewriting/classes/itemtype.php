@@ -31,6 +31,9 @@ use stdClass;
  */
 class itemtype extends item
 {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_WRITING];
+
     public const TOPIC = 'customtext5';
     public const AIDATA1 = 'customdata1';
     public const AIDATA2 = 'customdata2';

@@ -476,38 +476,28 @@ class utils {
         return $result;
     }
 
-    // We forward an OpenAI RTC offer to the OpenAI API.
-    // This is called from: openairtc.php
-    // Which is called from the OpenAI RTC client side code in audiochat.
-    // (in which we dont want to expose our openai key)
-    // It expects an SDP offer in the request body and returns an SDP answer.
-    public static function openai_forward_offer() {
-        global $CFG;
-            require_once($CFG->libdir . '/filelib.php');
-
-        // Get the secret from config.
-        $apikey = get_config(constants::M_COMPONENT, 'openaikey');
-        if (empty($apikey)) {
+    /**
+     * Call a Cloud Poodll web service function and return the JSON decoded response.
+     *
+     * @param string $functionname the web service function to call
+     * @param array $params parameters to pass to the web service function
+     * @return mixed JSON decoded response object, or false if credentials or token are unavailable
+     */
+    public static function call_cloudpoodll($functionname, $params = []) {
+        $conf = get_config(constants::M_COMPONENT);
+        if (empty($conf->apiuser) || empty($conf->apisecret)) {
             return false;
         }
-
-        $offer = file_get_contents("php://input");
-        $model = "gpt-4o-mini-realtime-preview";
-        $serverurl = "https://api.openai.com/v1/realtime/calls";
-
-        $curl = new \curl();
-        $curl->setHeader('Authorization: Bearer ' . $apikey);
-        // $curl->setHeader(['Content-type: application/sdp']);
-        $result = $curl->post($serverurl, [
-            'sdp' => $offer,
-            'session' => json_encode([
-                'type' => 'realtime',
-                'model' => $model,
-            ]),
-        ]);
-        header("Content-Type: application/sdp");
-        echo $result;
-        die;
+        $token = self::fetch_token($conf->apiuser, $conf->apisecret);
+        if (empty($token)) {
+            return false;
+        }
+        $url = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
+        $params['wstoken'] = $token;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $resp = self::curl_fetch($url, $params);
+        return json_decode($resp);
     }
 
     // This is called from the settings page and we do not want to make calls out to cloud.poodll.com on settings
@@ -861,8 +851,55 @@ class utils {
         }
     }
 
+    public static function fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad, $resumehandle = '') {
 
-    // Fetch the streaming token for the region and language
+        $cloudpoodlltoken = false;
+        $conf = get_config(constants::M_COMPONENT);
+        if (!empty($conf->apiuser) && !empty($conf->apisecret)) {
+            $cloudpoodlltoken = self::fetch_token($conf->apiuser, $conf->apisecret);
+        }
+        if (!$cloudpoodlltoken || empty($cloudpoodlltoken)) {
+            return false;
+        }
+
+        // Poodll region.
+        $poodllregion = $conf->awsregion;
+
+        // The REST API we are calling.
+        $functionname = 'local_cpapi_fetch_geminilive_token';
+
+        // log.debug(params);
+        $params = [];
+        $params['wstoken'] = $cloudpoodlltoken;
+        $params['wsfunction'] = $functionname;
+        $params['moodlewsrestformat'] = 'json';
+        $params['region'] = $poodllregion;
+        $params['voice'] = $voice;
+        $params['disablevad'] = $disablevad;
+        // Resume handle for session resumption; the cloud endpoint must bake this
+        // into the token's bidiGenerateContentSetup for the Constrained endpoint.
+        if ($resumehandle !== '') {
+            $params['resumehandle'] = $resumehandle;
+        }
+
+        $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';
+        $response = self::curl_fetch($serverurl, $params);
+
+        if (!self::is_json($response)) {
+            return false;
+        } else {
+            $payloadobject = json_decode($response);
+            if (isset($payloadobject->returnCode) && $payloadobject->returnCode == 0 && isset($payloadobject->returnMessage)) {
+                $thetoken = $payloadobject->returnMessage;
+                return $thetoken;
+            } else {
+                return false;
+            }
+        }
+    }
+
+
+    // Fetch the streaming token for the region and language.
     public static function fetch_streaming_token($poodllregion) {
         global $CFG;
 
@@ -945,7 +982,7 @@ class utils {
 
             case 'capetown':
             case 'southafricanorth':
-          //      return 'southafricanorth';
+                // return 'southafricanorth';
 
             case 'bahrain':
             case 'dublin':
@@ -1065,6 +1102,12 @@ class utils {
 
         // Feedback language for AI instructions
         $feedbacklanguage = $item->{constants::AIGRADE_FEEDBACK_LANGUAGE};
+        if ($feedbacklanguage == constants::AIGRADE_FEEDBACK_TARGET_LANGUAGE) {
+            $feedbacklanguage = $moduleinstance->ttslanguage;
+        } else if ($feedbacklanguage == constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE) {
+            $feedbacklanguage = $moduleinstance->nativelang;
+        }
+
         if ($conf->setnativelanguage) {
             $userprefdeflanguage = get_user_preferences(constants::NATIVELANG_PREF);
             if (!empty($userprefdeflanguage)) {
@@ -2390,8 +2433,8 @@ class utils {
     }
 
     // fetch the MP3 URL of the text we want read aloud
-    public static function fetch_polly_url($token, $region, $speaktext, $voiceoption, $voice) {
-        global $USER;
+    public static function fetch_polly_url($token, $region, $speaktext, $voiceoption, $voice, $minilessonid = 0) {
+        global $USER, $DB;
 
         // Do a little sanity check
         if (empty($speaktext) || empty($voice) || empty($token)) {
@@ -2413,6 +2456,13 @@ class utils {
         $pollyurl = $cache->get($key);
         if ($pollyurl && !empty($pollyurl)) {
             return $pollyurl;
+        }
+
+        // check minilesson_media_cache
+        $dbcache = $DB->get_record(constants::M_MEDIA_CACHE_TABLE, ['hashkey' => $key], '*', IGNORE_MULTIPLE);
+        if ($dbcache) {
+            $cache->set($key, $dbcache->url);
+            return $dbcache->url;
         }
 
         switch ((int) ($voiceoption)) {
@@ -2476,7 +2526,14 @@ class utils {
             $pollyurl = $payloadobject->returnMessage;
             // if its an S3 URL  then we cache it, yay
             if (\core_text::strpos($pollyurl, 'pollyfile') > 0) {
+                // First cache in Moodle Cache
                 $cache->set($key, $pollyurl);
+                // Then cache in minilesson db cache
+                $dbcache = new \stdClass();
+                $dbcache->hashkey = $key;
+                $dbcache->url = $pollyurl;
+                $dbcache->minilesson = $minilessonid;
+                $DB->insert_record(constants::M_MEDIA_CACHE_TABLE, $dbcache);
             }
             return $pollyurl;
         } else {
@@ -2902,5 +2959,13 @@ class utils {
 
     public static function get_sub_component($type = null, $subplugintype = constants::SUBPLUGINTYPES['item']) {
         return rtrim(sprintf("%s_%s", $subplugintype, (string) $type), '_');
+    }
+
+    public static function get_subitem_name($type = null, $subplugintype = constants::SUBPLUGINTYPES['item']) {
+        $itemtypename = get_string('pluginname', self::get_sub_component($type, $subplugintype));
+        if (get_string_manager()->string_exists($type, constants::M_COMPONENT)) {
+            $itemtypename = get_string($type, constants::M_COMPONENT);
+        }
+        return $itemtypename;
     }
 }

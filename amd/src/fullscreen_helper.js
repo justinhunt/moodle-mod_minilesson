@@ -1,10 +1,12 @@
-define(['jquery'], function ($) {
+define([], function () {
     return {
         init: function (containerId, btnId) {
             const container = document.getElementById(containerId);
             const btn = document.getElementById(btnId);
 
-            if (!container || !btn) return;
+            if (!container || !btn) {
+                return;
+            }
 
             // Check for native support
             const supportsNative = !!(container.requestFullscreen || container.webkitRequestFullscreen);
@@ -19,7 +21,7 @@ define(['jquery'], function ($) {
                 btn.innerHTML = isFS
                     ? '<i class="fa fa-compress"></i>'
                     : '<i class="fa fa-expand"></i>';
-                    
+
                 // Dispatch event so layout handlers can run after dom repaints
                 setTimeout(() => {
                     container.dispatchEvent(new CustomEvent('minilesson:fullscreenchange', { detail: { isFullscreen: isFS } }));

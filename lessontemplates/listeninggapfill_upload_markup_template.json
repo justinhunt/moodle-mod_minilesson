@@ -1,0 +1,67 @@
+{
+    "items": [
+        {
+            "type": "listeninggapfill",
+            "name": "Item: Listening GapFill",
+            "instructions": "Listen and fill in the gaps",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "The [military] has a big parade today.",
+                "We watched the [parade] in the city.",
+                "There is no [evidence] of rain today.",
+                "She found a [fortune] in the old box.",
+                "I cooked eggs in the [frypan].",
+                "The weather is [terrible] today.",
+                "The artist used [ochre] to paint the sun.",
+                "The old building was destroyed with [dynamite].",
+                "The [wild] animals live in the forest.",
+                "Do not [waste] your food."
+            ],
+            "promptvoice": "Matthew",
+            "allowretry": "yes",
+            "promptvoiceopt": "normal",
+            "timelimit": "12",
+            "filesid": 1
+        }
+    ],
+    "files": {
+        "1": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ",
+                "11.png": "QQQQ",
+                "12.png": "QQQQ",
+                "13.png": "QQQQ",
+                "14.png": "QQQQ",
+                "15.png": "QQQQ",
+                "16.png": "QQQQ",
+                "17.png": "QQQQ",
+                "18.png": "QQQQ",
+                "19.png": "QQQQ",
+                "20.png": "QQQQ",
+                "21.png": "QQQQ",
+                "22.png": "QQQQ",
+                "23.png": "QQQQ",
+                "24.png": "QQQQ",
+                "25.png": "QQQQ",
+                "26.png": "QQQQ",
+                "27.png": "QQQQ",
+                "28.png": "QQQQ",
+                "29.png": "QQQQ",
+                "30.png": "QQQQ"
+            }
+        }
+    }
+}

@@ -1,0 +1,161 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": "user_text"
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "int10",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "user_customdata1"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": []
+        }
+    ],
+    "lessonTitle": "Word Shuffle (upload with markup)",
+    "lessonDescription": "Create a Word Shuffle item by supplying:\r\n i)  4 - 10 sentences already marked up with shuffle words, hints and distractors.\r\nii) The same sentences with no mark up, hints or distractors.\r\n A picture will be generated to go with each sentence in the Word Shuffle item.",
+    "uniqueid": "6a34d7bfb6e6c",
+    "version": "4",
+    "agentonly": 1,
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Marked Up Sentences",
+            "description": "Enter a list of sentences. Each sentence should be on a new line. Surround words that should be shuffled with square brackets: [ ]. Add a hint\/translation (optional) after the sentence by first placing a pipe character: |. Add distractor words (optional) after the hint by placing another pipe character. The format is:\r\nSentence with [word1] and [word2] to shuffle.| a hint | distractor1 distractor2\r\ne.g The [cat] sat on the [mat].| NB subject comes first | fat yat",
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Clean Sentences",
+            "description": "a  1 dimensional json array of sentences that an image will be generated for. Each sentence should not be marked up with any brackets, hints or distractors.",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Vocabulary Practice"
+    ]
+}

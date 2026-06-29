@@ -2,11 +2,17 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Create an image generation prompt (data1) to generate a single picture of each of the following keywords written on a classroom blackboard: [{keywords}]",
+            "prompt": "Create a one dimensional array of pipe delimited strings (sentences), of the following pattern: keyword|keyword-translation|keyword-examplesentence \nThe keywords to use are contained in this list: [{keywords}].  \n The translation language is: {nativelanguage}. The keyword and example sentence language is: {targetlanguage}\nAlso create a matching one dimensional array of image generation prompts (data1) to illustrate the keyword's in the same sense as it is used in the example sentence.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
-                    "name": "int10",
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "dictationstyle",
                     "generate": 0,
                     "mapping": ""
                 },
@@ -38,16 +44,24 @@
             ],
             "generatefileareas": [
                 {
-                    "name": "itemmedia",
+                    "name": "customfile1_image",
                     "generate": 1,
                     "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "target_language",
+            "overallimagecontext": "--",
             "promptfields": [
                 {
                     "name": "keywords",
                     "mapping": "user_keywords"
+                },
+                {
+                    "name": "nativelanguage",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "targetlanguage",
+                    "mapping": "target_language"
                 }
             ]
         },
@@ -55,6 +69,7 @@
             "itemnumber": 1,
             "prompt": "Create a one dimensional array of grammatically correcct sentences (sentences), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}]. In each sentence surround all but the first two words with square brackets, e.g [word].  Create a second array (data2) using the same sentences but without the square brackets.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -124,6 +139,7 @@
             "itemnumber": 2,
             "prompt": "Generate a 1 dimensional array of 'sentences' of format 'keyword|keyword translation' from the following keywords: [{keywords}].\nThe translations should be in {native_language}.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -170,10 +186,6 @@
             "overallimagecontext": "--",
             "promptfields": [
                 {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
                     "name": "keywords",
                     "mapping": "user_keywords"
                 },
@@ -187,6 +199,7 @@
             "itemnumber": 3,
             "prompt": "",
             "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -228,10 +241,11 @@
             "promptfields": []
         }
     ],
-    "lessonTitle": "Keywords to Word Shuffle and Scatter and Space Game",
-    "lessonDescription": "Enter 4 - 10 keywords. The keywords will be used to generate a word shuffle and scatter activity, and a space game activity. The keywords will also be used to generate a picture of each keyword on a blackboard.",
+    "lessonTitle": "Word Practice v3",
+    "lessonDescription": "Enter 4 - 10 keywords. The keywords will be used to generate a set of vocab cards, word shuffle, scatter activity, and space game items. ",
     "uniqueid": "68a0422070f05",
-    "version": "5",
+    "version": "6",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -331,7 +345,7 @@
             "description": "",
             "type": "text"
         }
-    }, 
+    },
     "tags": [
         "Vocabulary Practice"
     ]

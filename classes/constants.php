@@ -36,6 +36,8 @@ class constants {
     const M_ATTEMPTSTABLE = 'minilesson_attempt';
     const M_AITABLE = 'minilesson_ai_result';
     const M_QTABLE = 'minilesson_rsquestions';
+    const M_MEDIA_CACHE_TABLE = 'minilesson_media_cache';
+    const M_TEMPL_USAGES_TABLE = 'minilesson_template_usages';
     const M_AUTHTABLE = 'minilesson_auth';
     const M_CORRECTPHONES_TABLE = 'minilesson_correctphones';
     const M_MODNAME = 'minilesson';
@@ -146,6 +148,8 @@ class constants {
     const TYPE_SCATTER = 'scatter';
     const TYPE_SLIDES = 'slides';
     const TYPE_FICTION = 'fiction';
+    const TYPE_SHADOW = 'shadow';
+    const TYPE_CARDS = 'cards';
     const AUDIOSTORYMETA = 'itemaudiofname';
     const AUDIOSTORYZOOMANDPAN = 'itemaudiostoryzoom';
     const ZOOMANDPAN_NONE = 0;
@@ -199,6 +203,10 @@ class constants {
     const AIGRADE_FEEDBACK_LANGUAGE = 'customtext4';
     const AIGRADE_MODELANSWER = 'customtext3';
 
+    // Markers for grading dropdown lists that tell MiniLesson to use activity lang for feedback
+    const AIGRADE_FEEDBACK_TARGET_LANGUAGE = 'target';
+    const AIGRADE_FEEDBACK_NATIVE_LANGUAGE = 'native';
+
     const PENALIZEHINTS = 'customint2';
     const GAPFILLHINTRTL = 'customint6';
     const WORDSHUFFLEHINTRTL = 'customint6';
@@ -217,6 +225,9 @@ class constants {
     const NOPASTING = 'customint4';
     const GAPFILLHIDESTARTPAGE = 'customint5';
     const WORDSHUFFLEHIDESTARTPAGE = 'customint5';
+    const WORDSHUFFLESHUFFLEORDER = 'customint1';
+    const GAPFILLSHUFFLEORDER = 'customint1';
+    const CARDSSHUFFLEORDER = 'customint1';
     const SG_INCLUDEMATCHING = 'customint3';
     const SG_ALIENCOUNT_MULTICHOICE = 'customint1';
     const SG_ALIENCOUNT_MATCHING = 'customint2';
@@ -315,16 +326,22 @@ class constants {
             'Justin' => 'Justin',
             'Kevin' => 'Kevin',
             'Matthew' => 'Matthew',
-            'en-US-LemonFox-puck' => 'Puck',
+            'en-US-Chirp3-HD-Achird' => 'Achird++',
+            'en-US-LemonFox-puck' => 'Puck++',
+            'en-US-Chirp3-HD-Fenrir' => 'Fenrir++',
+            'en-US-Chirp3-HD-Charon' => 'Charon++',
             'Ivy' => 'Ivy',
             'Joanna' => 'Joanna',
             'Kendra' => 'Kendra',
             'Kimberly' => 'Kimberly',
             'Salli' => 'Salli',
-            'en-US-Whisper-alloy' => 'Ricky',
-            'en-US-Whisper-onyx' => 'Ed',
-            'en-US-Whisper-nova' => 'Tiffany',
-            'en-US-Whisper-shimmer' => 'Tammy',
+            'en-US-Whisper-alloy' => 'Ricky++',
+            'en-US-Whisper-onyx' => 'Ed++',
+            'en-US-Whisper-nova' => 'Tiffany++',
+            'en-US-Whisper-shimmer' => 'Tammy++',
+            'en-US-Chirp3-HD-Despina' => 'Despina++',
+            'en-US-Chirp3-HD-Aoede' => 'Aoede++',
+            'en-US-Chirp3-HD-Sulafat' => 'Sulafat++',
         ],
         self::M_LANG_ENGB => ['Brian' => 'Brian', 'Amy' => 'Amy', 'Emma' => 'Emma', 'Arthur' => 'Arthur'],
         self::M_LANG_ENAU => ['Russell' => 'Russell', 'Nicole' => 'Nicole', 'Olivia' => 'Olivia'],
@@ -687,9 +704,33 @@ class constants {
         self::TYPE_DICTATIONCHAT,
         self::TYPE_SLIDES,
         self::TYPE_FICTION,
+        self::TYPE_SHADOW,
       // constants::TYPE_SMARTFRAME,
       // constants::TYPE_COMPQUIZ,
       // constants::TYPE_CONVERSATION,
+    ];
+
+    // Language skills (and "content") that an item type can focus on.
+    // "content" is not a skill: it applies to item types (e.g. slides, page) that present
+    // material without setting the student a task.
+    const SKILL_LISTENING = 'listening';
+    const SKILL_SPEAKING = 'speaking';
+    const SKILL_READING = 'reading';
+    const SKILL_WRITING = 'writing';
+    const SKILL_PRONUNCIATION = 'pronunciation';
+    const SKILL_VOCABULARY = 'vocabulary';
+    const SKILL_GRAMMAR = 'grammar';
+    const SKILL_CONTENT = 'content';
+
+    const SKILLS = [
+        self::SKILL_LISTENING,
+        self::SKILL_SPEAKING,
+        self::SKILL_READING,
+        self::SKILL_WRITING,
+        self::SKILL_PRONUNCIATION,
+        self::SKILL_VOCABULARY,
+        self::SKILL_GRAMMAR,
+        self::SKILL_CONTENT,
     ];
 
     const RESPONSE_TYPE = [

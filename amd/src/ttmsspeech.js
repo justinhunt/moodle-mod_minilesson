@@ -35,7 +35,8 @@ define(
                     var sdkurl;
                     if (msregion.startsWith('china')) {
                         // We host the file on S3 in China as CDN is not reliable there
-                        sdkurl = 'https://poodll-assets.s3.cn-northwest-1.amazonaws.com.cn/ms-speech-sdk/microsoft.cognitiveservices.speech.sdk.bundle.js';
+                        sdkurl = 'https://poodll-assets.s3.cn-northwest-1.amazonaws.com.cn'
+                            + '/ms-speech-sdk/microsoft.cognitiveservices.speech.sdk.bundle.js';
                     } else {
                         sdkurl = 'https://aka.ms/csspeech/jsbrowserpackageraw';
                     }
@@ -75,28 +76,27 @@ define(
                 paconfig.enableProsodyAssessment = true;
                 paconfig.showPhonemeLevelResult = true;
                 paconfig.enableMiscue = true;
-                const pronunciationAssessmentConfig = that.speechsdk.PronunciationAssessmentConfig.fromJSON(JSON.stringify(paconfig));
+                const pronunciationAssessmentConfig =
+                    that.speechsdk.PronunciationAssessmentConfig.fromJSON(JSON.stringify(paconfig));
 
 
               // create the speech recognizer.
                 var reco = new that.speechsdk.SpeechRecognizer(speechConfig, audioConfig);
               // (Optional) get the session ID
                 reco.sessionStarted = (_s, e) => {
-                    console.log(`SESSION ID: ${e.sessionId}`);
+                    log.debug(`SESSION ID: ${e.sessionId}`);
                 };
                 pronunciationAssessmentConfig.applyTo(reco);
 
                 reco.recognizeOnceAsync(
                     function (speechRecognitionResult) {
                         // The pronunciation assessment result as a Speech SDK object
-                        var pronunciationAssessmentResult = that.speechsdk.PronunciationAssessmentResult.fromResult(speechRecognitionResult);
-                        // The pronunciation assessment result as a JSON string
-                        //var pronunciationAssessmentResultJson = speechRecognitionResult.properties.getProperty(SpeechSDK.PropertyId.SpeechServiceResponse_JsonResult);
+                        var pronunciationAssessmentResult =
+                            that.speechsdk.PronunciationAssessmentResult.fromResult(speechRecognitionResult);
                         callback(pronunciationAssessmentResult);
                     },
                     function (err) {
-                        console.log("ERROR: " + err);
-                        exit();
+                        log.debug("ERROR: " + err);
                     }
                 );
             },
@@ -109,7 +109,7 @@ define(
 
             },
 
-        }
+        };
 
     }
 );

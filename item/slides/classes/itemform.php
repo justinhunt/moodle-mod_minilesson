@@ -28,8 +28,8 @@ use mod_minilesson\local\itemform\baseform;
 
 use mod_minilesson\constants;
 
-class itemform extends baseform
-{
+class itemform extends baseform {
+
     // Got list from https://api.github.com/repos/hakimel/reveal.js/contents/css/theme/source?ref=5.2.1
     const THEMES = [
         'beige',
@@ -52,8 +52,7 @@ class itemform extends baseform
     /**
      * Add any form fields specific to this item type.
      */
-    public function custom_definition()
-    {
+    public function custom_definition() {
         global $PAGE;
         $mform = $this->_form;
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('slides_instructions1', constants::M_COMPONENT));
@@ -83,30 +82,33 @@ class itemform extends baseform
         $slidescontenttype = $this->_customdata['item']->{itemtype::CONTENTTYPE} ?? itemtype::CONTENTTYPE_MARKDOWN;
         $initiallanguage = $slidescontenttype == itemtype::CONTENTTYPE_HTML ? 'html' : 'markdown';
         $PAGE->requires->js_call_amd(
-            constants::M_COMPONENT . '/codeeditor',
+            constants::M_COMPONENT . '/codeeditor-lazy',
             'setupCodeEditor',
-            ['id_' . itemtype::MARKDOWN, ['language' => $initiallanguage]]
+            [
+                'id_' . itemtype::MARKDOWN,
+                [
+                    'language' => $initiallanguage,
+                    'aihelper' => true,
+                    'itemtype' => 'slides',
+                    'contextid' => $this->context->id,
+                    'ai_placeholder' => get_string('aihelper_placeholder_slides', constants::M_COMPONENT),
+                ],
+            ],
         );
 
         // Add JS to switch editor language when Content Mode changes.
-        $js = "
-            (function() {
-                const selectElement = document.querySelector('[data-control=\"slidescontenttype\"]');
-                if (selectElement) {
-                    selectElement.addEventListener('change', function() {
-                        const lang = this.value == " . itemtype::CONTENTTYPE_HTML . " ? 'html' : 'markdown';
-                        // The codeeditor AMD module should have a way to refresh or we just re-init if possible.
-                        // However, Moodle's AMD may not easily allow re-calling setupCodeEditor on the same ID.
-                        // Usually, the best way in mod_minilesson's generic codeeditor is to refresh it.
-                        // Let's assume for now that we might need an update to codeeditor.js or a specific call.
-                        // For this implementation, we will try to dispatch a custom event that codeeditor.js can listen to.
-                        const event = new CustomEvent('ml_slides_contenttype_change', { detail: { language: lang } });
-                        document.getElementById('id_" . itemtype::MARKDOWN . "').dispatchEvent(event);
-                    });
-                }
-            })();
-        ";
-        $PAGE->requires->js_amd_inline($js);
+        $contenttypeel = $mform->getElement(itemtype::CONTENTTYPE);
+        $contenttypeel->_generateId();
+        $contenttypeid = $contenttypeel->getAttribute('id');
+        $PAGE->requires->js_call_amd(
+            'minilessonitem_slides/itemtype',
+            'register_format_switcher',
+            [
+                $contenttypeid,
+                'id_' . itemtype::MARKDOWN,
+                itemtype::CONTENTTYPE_HTML,
+            ]
+        );
 
         // Files upload area.
         $this->add_media_upload(constants::FILEANSWER . '1', get_string('slides:attachments', constants::M_COMPONENT), false, 'image,audio,video', -1);
@@ -136,7 +138,6 @@ class itemform extends baseform
             ],
             0
         );
-
 
         $mform->registerNoSubmitButton('previewbutton');
         $previewbtn = $mform->addElement('submit', 'previewbutton', get_string('slides:preview', constants::M_COMPONENT));

@@ -22,7 +22,6 @@ define(['jquery', 'core/log'], function ($, log) {
         },
 
         registerEvents: function () {
-            var that = this;
             // Events here.
         },
 
@@ -37,7 +36,7 @@ define(['jquery', 'core/log'], function ($, log) {
             var that = this;
 
             //set up our handler for the response
-            xhr.onreadystatechange = function (e) {
+            xhr.onreadystatechange = function () {
                 if (this.readyState === 4) {
                     if (xhr.status === 200) {
                         // Get a yes or forget-it or try-again.

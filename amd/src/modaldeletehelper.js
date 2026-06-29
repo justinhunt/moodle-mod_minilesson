@@ -3,7 +3,6 @@
  *
  * @module     mod_minilesson/modaldeletehelper
  * @class      modaldeletehelper
- * @package    mod_minilesson
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -74,7 +73,6 @@ define(
          * @return {Promise}
          */
         TheForm.prototype.preinit = function (selector) {
-            var triggers = $(selector);
             var dd = this;
             Str.get_string(this.formname , 'mod_minilesson').then(function (title) {
                 dd.formtitle = title;});

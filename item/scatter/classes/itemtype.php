@@ -30,6 +30,9 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class itemtype extends item {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_VOCABULARY];
+
     public const ALLOWRETRY = 'customint4';
 
 
@@ -97,7 +100,7 @@ class itemtype extends item {
         $keycols = parent::get_keycolumns();
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['int6'] = ['jsonname' => 'hintrtl', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::SCATTERHINTRTL];
-        $keycols['int4'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => \minilessonitem_scatter\itemtype::ALLOWRETRY];
+        $keycols['int4'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => self::ALLOWRETRY];
         return $keycols;
     }
 
@@ -107,7 +110,8 @@ class itemtype extends item {
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
-                $prompt = "Select 5 keywords from the following text, and create a 1 dimensional array of 'sentences' of format 'short_keyword_definition|keyword' in {language}: [{text}]. ";
+                $prompt = "Select 5 keywords from the following text, and create a 1 dimensional array of 'sentences' of format 'keyword|keyword translation': [{text}]. " . PHP_EOL;
+                $prompt .= "The translations should be in {native_language}." . PHP_EOL;
                 break;
 
             case 'reuse':
@@ -118,7 +122,8 @@ class itemtype extends item {
 
             case 'generate':
             default:
-                $prompt = "Generate a 1 dimensional array of 5 'sentences' of format 'short_keyword_definition|keyword' in {language} from the following keywords: [{keywords}]";
+                $prompt = "Generate a 1 dimensional array of 'sentences' of format 'keyword|keyword translation' from the following keywords: [{keywords}]" . PHP_EOL;
+                $prompt .= "The translations should be in {native_language}." . PHP_EOL;
                 break;
         }
         return $prompt;

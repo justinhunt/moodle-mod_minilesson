@@ -18,7 +18,8 @@ namespace mod_minilesson;
 
 use core\di;
 use core_ai\aiactions\base;
-use core_ai\aiactions\generate_text;
+use core_ai\aiactions\generate_text as core_generate_text;
+use mod_minilesson\local\aiactions\generate_text;
 use core_ai\manager;
 use core_ai\provider;
 
@@ -40,6 +41,12 @@ class aimanager {
     /** @var string|null */
     protected $ttslanguage;
 
+    /** @var string|null */
+    protected $errormessage;
+
+    /** @var string|null */
+    protected $lastprovider;
+
     /**
      * aimanager constructor.
      * @param int|null $contextid
@@ -50,6 +57,16 @@ class aimanager {
         $this->contextid = $contextid;
         $this->region = $region;
         $this->ttslanguage = $ttslanguage;
+        $this->errormessage = '';
+        $this->lastprovider = '';
+    }
+
+    public function get_last_provider() {
+        return $this->lastprovider;
+    }
+
+    public function get_error_message() {
+        return $this->errormessage;
     }
 
     /** @var int */
@@ -89,6 +106,10 @@ class aimanager {
 
     public const FUNC_GET_EMBEDDING = 'get_embedding';
 
+    /** @var string */
+
+    public const FUNC_GENERATE_CUSTOMFIELD = 'generate_customfield';
+
     /** @var array */
     public const OPTION_MAPPING = [
         self::FUNC_EVALUATE_PASSAGE => self::OPTION_GRADE_STUDENT_SUBMISSION,
@@ -99,10 +120,11 @@ class aimanager {
         self::FUNC_GET_TOPIC_RELEVANCE => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_PREDICT_CEFR => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_COUNT_UNIQUE_IDEAS => self::OPTION_GRADE_STUDENT_SUBMISSION,
+        self::FUNC_GENERATE_CUSTOMFIELD => self::OPTION_GRADE_STUDENT_SUBMISSION,
     ];
 
     public const AIMANAGER_ACTIONS = [
-        self::OPTION_GRADE_STUDENT_SUBMISSION => generate_text::class,
+        self::OPTION_GRADE_STUDENT_SUBMISSION => core_generate_text::class,
     ];
 
     /**
@@ -112,11 +134,12 @@ class aimanager {
     public static function get_action_options() {
         $options[self::OPTION_GRADE_STUDENT_SUBMISSION] =
             [
-            'name' => get_string('grade_student_submission' , constants::M_COMPONENT),
-            'description' => get_string('grade_student_submission_desc' , constants::M_COMPONENT),
+                'name' => get_string('grade_student_submission', constants::M_COMPONENT),
+                'description' => get_string('grade_student_submission_desc', constants::M_COMPONENT),
             ];
         return $options;
     }
+
 
     public static function get_action_settingname($actiontype) {
         return constants::M_COMPONENT . "/aiaction_{$actiontype}";
@@ -133,7 +156,6 @@ class aimanager {
      *
      */
     public static function evaluate_passage() {
-
     }
 
     /**
@@ -279,6 +301,31 @@ class aimanager {
         return $response;
     }
 
+    public function generate_customfield(array $fields, array $importjson) {
+        global $USER;
+        $aiactionclass = local\aiactions\generate_customfield_value::class;
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $this->contextid,
+            'fields' => $fields,
+            'importjson' => $importjson,
+        ]);
+        if ($response === null) {
+            // Cloud Poodll only accepts action/subject/prompt/language/region (plus
+            // appid/owner/wstoken added in call_cp_api). Build the full prompt the same
+            // way the AI provider action does and send it as a single 'prompt' string.
+            $contextid = $this->contextid ?? \context_system::instance()->id;
+            $action = new $aiactionclass($contextid, $USER->id, '', $fields, $importjson);
+            $params = [];
+            $params['action'] = 'generate_structured_content';
+            $params['prompt'] = $action->generate_prompt();
+            $params['language'] = $this->ttslanguage;
+            $params['subject'] = 'none';
+            $params['region'] = $this->region;
+            $response = self::call_cp_api($params);
+        }
+        return $response;
+    }
+
     private static function check_cache($action, $prompt, $provider) {
         global $DB;
         $hashkey = md5($action . '|' . $prompt . '|' . $provider);
@@ -371,6 +418,58 @@ class aimanager {
         return $ret;
     }
 
+    /**
+     * Generate text using the configured AI provider.
+     * @param string $prompt
+     * @param int $contextid
+     * @return string|null
+     */
+    public function generate_text($prompt, $contextid = null) {
+        $contextid = $contextid ?? $this->contextid;
+        $aiactionclass = generate_text::class;
+        $response = self::call_ai_provider_action($aiactionclass, [
+            'contextid' => $contextid,
+            'prompttext' => $prompt,
+        ]);
+        if ($response !== null) {
+            if ($response->returnCode == '0') {
+                $this->lastprovider = 'Moodle AI';
+                return $response->returnMessage;
+            } else {
+                $this->errormessage = $response->returnMessage;
+                // If Moodle AI failed, we still try CloudPoodll fallback.
+            }
+        }
+
+        // Fallback to Cloud Poodll if Moodle AI not configured
+        $this->lastprovider = 'CloudPoodll';
+        $params = [];
+        $params['action'] = 'generate_structured_content';
+        $generateformat = new \stdClass();
+        $generateformat->response = 'string';
+        $generateformatjson = json_encode($generateformat);
+        $params['prompt'] = $prompt . PHP_EOL . 'Generate the data in this JSON format: ' . $generateformatjson;
+        $params['language'] = $this->ttslanguage;
+        $params['region'] = $this->region;
+        $params['subject'] = 'none';
+
+        $cpresponse = self::call_cp_api($params);
+        if ($cpresponse && isset($cpresponse->returnCode) && $cpresponse->returnCode == '0') {
+            $data = json_decode($cpresponse->returnMessage);
+            if ($data && isset($data->response)) {
+                return $data->response;
+            }
+            // If it's not JSON, maybe it's just the string.
+            return $cpresponse->returnMessage;
+        } else if ($cpresponse && isset($cpresponse->returnMessage)) {
+            $this->errormessage = $cpresponse->returnMessage;
+        } else {
+            $this->errormessage = 'No response from CloudPoodll or Moodle AI provider.';
+        }
+
+        return false;
+    }
+
     public function generate_image($prompt, $cache = false) {
         $actionconst = 'generate_images';
         $provider = 'cloud poodll';
@@ -421,6 +520,15 @@ class aimanager {
         return null;
     }
 
+    /**
+     * Generate one image per file area entry, firing all the CloudPoodll requests in parallel.
+     *
+     * @param array $fileareatemplate Map of filename => placeholder content; one image per entry.
+     * @param string|array $imagepromptdata A single prompt, or an array of prompts indexed per image.
+     * @param string|false $overallimagecontext Optional overall topic context added to each prompt.
+     * @param bool $cache Whether to read/write generated images from the AI cache.
+     * @return array Map of filename => base64-encoded image data for successfully generated images.
+     */
     public function generate_images(
         $fileareatemplate,
         $imagepromptdata,
@@ -430,6 +538,14 @@ class aimanager {
         $imageurls = [];
         $imagecnt = 0;
 
+        $token = static::get_cp_token();
+        if (!$token) {
+            return [];
+        }
+        $url = utils::get_cloud_poodll_server() . '/webservice/rest/server.php';
+
+        // Build one CloudPoodll request per image so they can all be fired in parallel below.
+        $requests = $filenametrack = $prompttrack = [];
         foreach ($fileareatemplate as $filename => $filecontent) {
             if (!is_array($imagepromptdata)) {
                 $prompt = $imagepromptdata;
@@ -438,10 +554,12 @@ class aimanager {
             } else {
                 continue;
             }
+            $imagecnt++;
 
             $stylekeywords = [
                 'flat vector illustration',
                 'cartoon',
+                'action comic',
                 'illustration',
                 'photorealistic',
                 'digital painting',
@@ -449,6 +567,8 @@ class aimanager {
                 'line drawing',
                 'realistic',
                 'infographic',
+                'black and white movie',
+                'hand drawn',
                 '3d render',
             ];
             $stylefound = false;
@@ -466,21 +586,105 @@ class aimanager {
                 $prompt .= PHP_EOL . " in the context of the following topic: " . $overallimagecontext;
             }
 
-            $base64image = $this->generate_image($prompt, $cache);
-
-            // Second attempt if failed
-            if (!$base64image) {
-                $base64image = $this->generate_image($prompt, $cache);
+            // Serve from cache if we already generated this exact image prompt.
+            if ($cache) {
+                $cached = self::check_cache('generate_images', $prompt, 'cloud poodll');
+                if ($cached !== false) {
+                    $imageurls[$filename] = $cached;
+                    continue;
+                }
             }
 
-            if ($base64image) {
-                $imageurls[$filename] = $base64image;
-            }
+            $params = $this->prepare_image_request_params($prompt, $token);
+            $requests[] = ['url' => $url, 'postfields' => format_postdata_for_curlcall($params)];
+            $idx = utils::array_key_last($requests);
+            $filenametrack[$idx] = $filename;
+            $prompttrack[$idx] = $prompt;
+        }
 
-            $imagecnt++;
+        if (empty($requests)) {
+            return $imageurls;
+        }
+
+        // Fire all the image requests at once (curl_multi), then retry any that failed once.
+        $curl = new curl();
+        $curlopts = ['CURLOPT_TIMEOUT' => 240];
+        $retryrequests = $retryidx = [];
+        foreach ($curl->multirequest($requests, $curlopts) as $i => $resp) {
+            if ($image = self::process_image_response($resp)) {
+                $imageurls[$filenametrack[$i]] = $image;
+                if ($cache) {
+                    self::set_cache('generate_images', $prompttrack[$i], 'cloud poodll', $image);
+                }
+            } else {
+                $retryrequests[] = $requests[$i];
+                $retryidx[] = $i;
+            }
+        }
+        if (!empty($retryrequests)) {
+            foreach ($curl->multirequest($retryrequests, $curlopts) as $j => $resp) {
+                $i = $retryidx[$j];
+                if ($image = self::process_image_response($resp)) {
+                    $imageurls[$filenametrack[$i]] = $image;
+                    if ($cache) {
+                        self::set_cache('generate_images', $prompttrack[$i], 'cloud poodll', $image);
+                    }
+                }
+            }
         }
 
         return $imageurls;
+    }
+
+    /**
+     * Build the CloudPoodll webservice parameters for a single image-generation request.
+     *
+     * @param string $prompt The image prompt.
+     * @param string $token The CloudPoodll web service token.
+     * @return array The request parameters.
+     */
+    protected function prepare_image_request_params($prompt, $token) {
+        global $USER;
+        return [
+            'wstoken' => $token,
+            'wsfunction' => 'local_cpapi_call_ai',
+            'moodlewsrestformat' => 'json',
+            'appid' => static::get_component_from_classname(static::class),
+            'owner' => hash('md5', $USER->username),
+            'action' => 'generate_images',
+            'subject' => '1',
+            'prompt' => $prompt,
+            'language' => $this->ttslanguage,
+            'region' => $this->region,
+        ];
+    }
+
+    /**
+     * Turn a raw CloudPoodll image-generation response into resized base64 image data.
+     *
+     * @param string $responsestring The raw web service response body.
+     * @return string|null The base64-encoded resized image, or null on failure.
+     */
+    protected static function process_image_response($responsestring) {
+        if (!utils::is_json($responsestring)) {
+            return null;
+        }
+        $response = json_decode($responsestring);
+        if (!isset($response->returnCode) || $response->returnCode != '0') {
+            return null;
+        }
+        $payload = json_decode($response->returnMessage);
+        if (isset($payload[0]->url)) {
+            $rawdata = file_get_contents($payload[0]->url);
+        } else if (isset($payload[0]->b64_json)) {
+            $rawdata = base64_decode($payload[0]->b64_json);
+        } else {
+            return null;
+        }
+        if ($rawdata === false) {
+            return null;
+        }
+        return base64_encode(self::make_image_smaller($rawdata));
     }
 
     public static function make_image_smaller($imagedata) {
@@ -570,6 +774,7 @@ class aimanager {
         }
         $providerdata = static::get_provider_and_check_enabled($setting, $actionclass);
         if (empty($providerdata)) {
+            $this->errormessage = 'Provider not found or not enabled for this action.';
             return null;
         }
 
@@ -579,14 +784,11 @@ class aimanager {
         $params['prompttext'] = $params['prompttext'] ?? '';
         $action = new $actionclass(...$params);
         $result = static::call_and_store_action($manager, $providerinstance, $action);
-        if ($result === false) {
-            return null;
-        }
         $response = $result->get_response_data();
         $returnmessage = isset($response['jsondata']) ? $response['jsondata'] : $response['generatedcontent'];
         return (object) [
-            'returnCode' => 0,
-            'returnMessage' => $returnmessage,
+            'returnCode' => $result->get_success() ? 0 : 1,
+            'returnMessage' => $result->get_success() ? $returnmessage : $result->get_error_message(),
         ];
     }
 
@@ -604,10 +806,6 @@ class aimanager {
 
         $reflmethod2 = $reflclass->getMethod('store_action_result');
         $reflmethod2->invoke($manager, $providerinstance, $action, $result);
-
-        if (!$result->get_success()) {
-            return false;
-        }
 
         return $result;
     }
@@ -644,9 +842,10 @@ class aimanager {
         $options = [static::CLOUDPOODLL_OPTION => get_string('cloudpoodll', constants::M_COMPONENT)];
         $manager = static::get_ai_manager();
         if (!empty($manager)) {
-            $allproviders = $manager->get_providers_for_actions([$actionclass], true);
-            if (!empty($allproviders[$actionclass])) {
-                foreach ($allproviders[$actionclass] as $aiprovider) {
+            $mapactionclass = static::get_action_parentclass($actionclass);
+            $allproviders = $manager->get_providers_for_actions([$mapactionclass], true);
+            if (!empty($allproviders[$mapactionclass])) {
+                foreach ($allproviders[$mapactionclass] as $aiprovider) {
                     if ($CFG->branch < 500) {
                         $options[$aiprovider->get_name()] = $aiprovider->get_name();
                     } else {
@@ -695,7 +894,7 @@ class aimanager {
                 foreach ($providerinstances[$mapactionclass] as $provider) {
                     if ($provider->get_name() == $providerid) {
                         $providerinstance = $provider;
-                        $component = static::get_component_from_classname(get_class($provider));
+                        $component = \core\component::get_component_from_classname(get_class($provider));
                         $CFG->forced_plugin_settings[$component]['action_generate_text_systeminstruction'] = $actionclass::get_system_instruction();
                         $providerenabled = manager::is_action_enabled(
                             $providerid,
@@ -713,6 +912,8 @@ class aimanager {
                     function ($record) use ($actionclass, $mapactionclass): ?provider {
                         // Check if the provider class specified in the record exists.
                         if (class_exists($record->provider)) {
+                            $actionclass = ltrim($actionclass, '\\');
+                            $mapactionclass = ltrim($mapactionclass, '\\');
                             $actionconfig = !empty($record->actionconfig) ? json_decode($record->actionconfig, true) : '';
                             if (!empty($actionconfig) && isset($actionconfig[$mapactionclass])) {
                                 // Copy parent class settings to action class.
@@ -720,7 +921,10 @@ class aimanager {
                                 // For Moodle version 5 or later.
                                 $actionconfig[$actionclass]['settings']['systeminstruction'] = $actionclass::get_system_instruction();
                                 // Set Modal Config.
-                                $plugintypename = str_replace('aiprovider_', '', strstr($record->provider, '\\', true));
+                                $plugintypename = str_replace('aiprovider_', '', ltrim(strstr($record->provider, '\\', true), '\\'));
+                                if (empty($plugintypename)) {
+                                    $plugintypename = str_replace('aiprovider_', '', $record->provider);
+                                }
                                 $actionconfig[$actionclass]['settings']['modelextraparams'] = json_encode(
                                     $actionclass::get_model_parameters($plugintypename)
                                 );
@@ -728,11 +932,16 @@ class aimanager {
                             }
                             // Instantiate the provider class with the record's data.
                             return new $record->provider(
-                                /* enabled:  */$record->enabled,
-                                /* name:  */$record->name,
-                                /* config:  */$record->config,
-                                /* actionconfig:  */$record->actionconfig,
-                                /* id:  */$record->id
+                                /* enabled:  */
+                                $record->enabled,
+                                /* name:  */
+                                $record->name,
+                                /* config:  */
+                                $record->config,
+                                /* actionconfig:  */
+                                $record->actionconfig,
+                                /* id:  */
+                                $record->id
                             );
                         }
                         return null;
@@ -744,7 +953,7 @@ class aimanager {
             $providerinstance = reset($providerinstances);
             $providerenabled = !empty($providerinstance) &&
                 $manager->is_action_enabled(
-                    $providerinstance->provider,
+                    ltrim($providerinstance->provider, '\\'),
                     $mapactionclass,
                     $providerinstance->id
                 );
@@ -761,6 +970,6 @@ class aimanager {
     }
 
     public static function get_component_from_classname($classname): string {
-        return strstr($classname, '\\', true);
+        return \core\component::get_component_from_classname($classname) ?? strstr(ltrim($classname, '\\'), '\\', true);
     }
 }

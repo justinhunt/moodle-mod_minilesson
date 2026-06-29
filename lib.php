@@ -601,6 +601,10 @@ function minilesson_delete_instance($id)
     }
 
     // Delete any dependent records here #.
+    $DB->delete_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $minilesson->id]);
+    $DB->delete_records(constants::M_QTABLE, ['minilesson' => $minilesson->id]);
+    $DB->delete_records(constants::M_TEMPL_USAGES_TABLE, ['minilessonid' => $minilesson->id]);
+    $DB->delete_records(constants::M_MEDIA_CACHE_TABLE, ['minilesson' => $minilesson->id]);
 
     $DB->delete_records(constants::M_TABLE, ['id' => $minilesson->id]);
 
@@ -1125,12 +1129,28 @@ function mod_minilesson_get_fontawesome_icon_map()
  */
 function mod_minilesson_cm_info_dynamic(cm_info $cm)
 {
-    global $USER, $DB;
+    $starttime = 0;
+    if (mod_minilesson_perf_enabled()) {
+        $starttime = microtime(true);
+        mod_minilesson_perf_accumulate('cm_info_dynamic_calls', 1);
+    }
 
-    $moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
-    if (method_exists($cm, 'override_customdata')) {
-        $cm->override_customdata('duedate', $moduleinstance->viewend);
-        $cm->override_customdata('allowsubmissionsfromdate', $moduleinstance->viewstart);
+    if (!method_exists($cm, 'override_customdata')) {
+        if ($starttime) {
+            mod_minilesson_perf_accumulate('cm_info_dynamic_time_ms', (microtime(true) - $starttime) * 1000);
+        }
+        return;
+    }
+
+    if (isset($cm->customdata['duedate'])) {
+        $cm->override_customdata('duedate', (int)$cm->customdata['duedate']);
+    }
+    if (isset($cm->customdata['allowsubmissionsfromdate'])) {
+        $cm->override_customdata('allowsubmissionsfromdate', (int)$cm->customdata['allowsubmissionsfromdate']);
+    }
+
+    if ($starttime) {
+        mod_minilesson_perf_accumulate('cm_info_dynamic_time_ms', (microtime(true) - $starttime) * 1000);
     }
 }
 /**
@@ -1144,7 +1164,16 @@ function minilesson_get_coursemodule_info($coursemodule)
 {
     global $DB;
 
+    $starttime = 0;
+    if (mod_minilesson_perf_enabled()) {
+        $starttime = microtime(true);
+        mod_minilesson_perf_accumulate('get_coursemodule_info_calls', 1);
+    }
+
     if (!$moduleinstance = $DB->get_record('minilesson', ['id' => $coursemodule->instance], '*')) {
+        if ($starttime) {
+            mod_minilesson_perf_accumulate('get_coursemodule_info_time_ms', (microtime(true) - $starttime) * 1000);
+        }
         return false;
     }
     $result = new cached_cm_info();
@@ -1163,7 +1192,50 @@ function minilesson_get_coursemodule_info($coursemodule)
 
     $result->customdata['duedate'] = $moduleinstance->viewend;
     $result->customdata['allowsubmissionsfromdate'] = $moduleinstance->viewstart;
+
+    if ($starttime) {
+        mod_minilesson_perf_accumulate('get_coursemodule_info_time_ms', (microtime(true) - $starttime) * 1000);
+    }
+
     return $result;
+}
+
+function mod_minilesson_perf_enabled(): bool
+{
+    global $CFG;
+    return !empty($CFG->minilesson_perflog);
+}
+
+function mod_minilesson_perf_accumulate(string $key, float $value): void
+{
+    static $metrics = [];
+    static $registered = false;
+
+    $metrics[$key] = ($metrics[$key] ?? 0) + $value;
+
+    if ($registered) {
+        return;
+    }
+
+    $registered = true;
+
+    register_shutdown_function(function () use (&$metrics) {
+        if (empty($metrics)) {
+            return;
+        }
+
+        $summary = [
+            'request' => $_SERVER['REQUEST_METHOD'] . ' ' . ($_SERVER['REQUEST_URI'] ?? ''),
+            'script' => $_SERVER['SCRIPT_NAME'] ?? '',
+            'sapi' => PHP_SAPI,
+            'userid' => $GLOBALS['USER']->id ?? 0,
+            'metrics' => array_map(function ($v) {
+                return round($v, 3);
+            }, $metrics),
+        ];
+
+        error_log('mod_minilesson_perf ' . json_encode($summary));
+    });
 }
 
 /**
@@ -1330,29 +1402,6 @@ function minilesson_output_fragment_templates($args)
     $filters = !empty($args->filters) ? json_decode($args->filters, true) : [];
     $renderable = new mod_minilesson\output\aigentemplates($cm, $filters);
     return $OUTPUT->render($renderable);
-}
-
-/**
- * Fetches a student's submission in a previous freeewriting or freespeaking in the current attempt
- * for passing into an audiochat session. This must be done via AJAX because its not available until
- * after the attempt has started.
- * @param array $args
- * @return stdClass|null
- */
-function minilesson_output_fragment_audiochat_fetchstudentsubmission($args)
-{
-    global $DB;
-    $args = (object) $args;
-    $cm = $DB->get_record('course_modules', ['id' => $args->context->instanceid], '*', MUST_EXIST);
-    $minilesson = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
-    $itemrecord = $DB->get_record(constants::M_QTABLE, ['id' => $args->itemid]);
-
-    $theaudiochat = utils::fetch_item_from_itemrecord($itemrecord, $minilesson, $args->context);
-    if (empty($theaudiochat)) {
-        throw new moodle_exception('Item type handler plugin not found');
-    }
-    $studentsubmission = $theaudiochat->fetch_student_submission();
-    return $studentsubmission;
 }
 
 /**

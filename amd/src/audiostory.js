@@ -105,7 +105,6 @@ define(['jquery','core/log'], function ($,log) {
             var self = this;
             const audio = self.controls.aplayer[0];
             const captionDiv = self.controls.captioncontainer[0];
-            const layers = self.controls.layers;
             var doUpdate = function (timestamp) {
                 const audio = self.controls.aplayer[0];
                 const layers = self.controls.layers;
@@ -198,8 +197,6 @@ define(['jquery','core/log'], function ($,log) {
         animateCurrentImage: function (timestamp) {
             var self = this;
             var layers = self.controls.layers;
-            var entryTimes = self.controls.entryTimes;
-            var audio = self.controls.aplayer[0];
 
             if (self.currentIndex < 0 || self.currentIndex >= layers.length) {
                 return;
@@ -215,7 +212,7 @@ define(['jquery','core/log'], function ($,log) {
             }
 
 
-            if (animation.lastTimestamp != null) {
+            if (animation.lastTimestamp !== null) {
                 const delta = timestamp - animation.lastTimestamp;
                 // Set zoom timing
                 const duration = self.secondsPerImage * 1000; // adjust as needed

@@ -32,6 +32,9 @@ use stdClass;
  */
 class itemtype extends item
 {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_READING, constants::SKILL_LISTENING];
+
     public const SHUFFLEANSWER = 'customint5';
     public const CORRECTFEEDBACK = 'customtext6';
     public const HIDEANSWERTEXT = 'customint6';
@@ -119,7 +122,8 @@ class itemtype extends item
                             $this->region,
                             $sentencetext,
                             $this->itemrecord->{constants::POLLYOPTION},
-                            $this->itemrecord->{constants::POLLYVOICE}
+                            $this->itemrecord->{constants::POLLYVOICE},
+                            $this->moduleinstance->id
                         );
                     }
                 }

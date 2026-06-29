@@ -1,0 +1,195 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Generate a short story (tts) in {language} suitable for {level} level learners on the topic of: [{topic}] The short story should take about 1 minute to read aloud. \nThe short story should be interesting and {storystyle} . Also generate a one dimensional array (data1) of descriptions of key scenes from the story that can be used as image prompts. The image style should be specified in each prompt as {image_style}. There should be no more than 4 images.",
+            "generatemethod": "generate",
+            "generatefields": [
+                {
+                    "name": "tts",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemaudiostory",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "storystyle",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "image_style",
+                    "mapping": "user_customdata2"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Audio Story (generate story)",
+    "lessonDescription": "Enter a topic, the learners language level and a type of story. AI will prepare a story and images which is like a short narrated slide show using text to speech to narrate the story.",
+    "uniqueid": "6a329e299a1f8",
+    "version": "2",
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "Story\/Article Topic",
+            "description": "Enter a detailed outline  for AI to use to generate a story.",
+            "type": "textarea"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "User Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "Keywords",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Story Style",
+            "description": "Choose the type of story that AI should generate",
+            "type": "dropdown",
+            "options": [
+                "funny",
+                "scary",
+                "thought provoking",
+                "zany",
+                "romantic",
+                "unbelievable"
+            ]
+        },
+        "user_customdata2": {
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Listening"
+    ]
+}

@@ -51,7 +51,7 @@ define(
                 var dd = this;
                 dd.rowIds = [];
 
-                dd.controls.questionstable.rows().every(function ( rowindex, tableLoop, rowLoop ) {
+                dd.controls.questionstable.rows().every(function ( rowindex ) {
                     var itemorder = dd.controls.questionstable.cell({row:rowindex, column:1}).data();
                     dd.rowIds[itemorder] = rowindex;
                 });
@@ -141,7 +141,7 @@ define(
                     item.up = {'key': 't/up','component': 'moodle','title': 'up'};
                     item.down = {'key': 't/down','component': 'moodle','title': 'down'};
                     templates.render('mod_minilesson/itemlistitem',item).then(
-                        function (html,js) {
+                        function (html) {
                             //add row move to the last page so we can see the new row if its off page
                             dd.controls.questionstable.row.add($(html)[0]).page('last').draw(false);
                             dd.collate_rowids();
@@ -164,7 +164,7 @@ define(
                     item.up = {'key': 't/up','component': 'moodle','title': 'up'};
                     item.down = {'key': 't/down','component': 'moodle','title': 'down'};
                     templates.render('mod_minilesson/itemlistitem',item).then(
-                        function (html,js) {
+                        function (html) {
                             //add row move to the last page so we can see the new row if its off page
                             dd.controls.questionstable.row.add($(html)[0]).page('last').draw(false);
                             dd.collate_rowids();
@@ -188,26 +188,22 @@ define(
                         dd.controls.questionscontainer.hide();
                     }
                 };
-                var after_questionpreview = function (itemid) {
+                var after_questionpreview = function () {
                     log.debug('after preview');
-                    //we want to remove the question from DOM ... its still there and on subsequent shows, id will match on 2 elements and question will fail to unhide
+                    //we want to remove the question from DOM ... its still there and on subsequent
+                    //shows, id will match on 2 elements and question will fail to unhide
                     $('#mod_minilesson_quiz_cont').remove();
                 };
 
             //register ajax modal handler
-                var editcallback = function (item, itemid) {
-                    console.log(item);};
-                var deletecallback = function (itemid) {
-                    console.log(itemid);};
-                var addcallback = function (itemid) {
-                    console.log(itemid);};
                 if (dd.modaleditform) {
                     mfh.init('.' + def.component + '_addlink', dd.contextid, after_questionadd);
                     //edit form helper
                     mfh.init('.' + def.itemrow + '_editlink', dd.contextid, after_questionedit);
                 } else {
                     $('.mod_minilesson_qpanel').on('click','.' + def.itemrow + '_editlink',function () {
-                        var editurl = dd.wwwroot + '/mod/minilesson/rsquestion/managersquestions.php?id=' + dd.cmid + '&itemid=' + $(this).data('id');
+                        var editurl = dd.wwwroot + '/mod/minilesson/rsquestion/managersquestions.php?id='
+                            + dd.cmid + '&itemid=' + $(this).data('id');
                         log.debug('editurl ' + editurl);
                         window.location.href = editurl;
                         return false;
@@ -283,7 +279,7 @@ define(
                             });
 
                             // If they click the add button , lets turn it into a spinner
-                            modalRoot.on('click', 'a.addbtn', function (e) {
+                            modalRoot.on('click', 'a.addbtn', function () {
 
                                 const addbtn = $(this);
                                 if (addbtn.hasClass('ml_loading')) {

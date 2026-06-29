@@ -31,6 +31,9 @@ use stdClass;
  */
 class itemtype extends item
 {
+    /** @var array Language skills (or "content") this item type focuses on. */
+    public static $skills = [constants::SKILL_LISTENING, constants::SKILL_WRITING];
+
     public const ENABLEVKEYBOARD = 'customtext6';
     public const CUSTOMKEYS = 'customtext7';
 
@@ -54,6 +57,18 @@ class itemtype extends item
         }
 
         $testitem->sentences = $this->process_listeninggapfill_sentences($sentences);
+
+        // If shuffle order is on, randomize the order the sentences are delivered in.
+        // The image/audio and gap data are already bound to each sentence object, so they travel with it.
+        // We only renumber index/indexplusone so the DOM order stays in sync with the JS pointer.
+        if (!empty($this->itemrecord->{constants::GAPFILLSHUFFLEORDER})) {
+            shuffle($testitem->sentences);
+            foreach ($testitem->sentences as $newindex => $thesentence) {
+                $thesentence->index = $newindex;
+                $thesentence->indexplusone = $newindex + 1;
+            }
+        }
+
         $testitem->hintrtl = $this->itemrecord->{constants::GAPFILLHINTRTL} == 1;
         $testitem->allowretry = $this->itemrecord->{constants::GAPFILLALLOWRETRY} == 1;
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
@@ -105,6 +120,7 @@ class itemtype extends item
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['int3'] = ['jsonname' => 'allowretry', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLALLOWRETRY];
+        $keycols['int1'] = ['jsonname' => 'shuffleorder', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::GAPFILLSHUFFLEORDER];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text6'] = ['jsonname' => 'enablevkeyboard', 'type' => 'string', 'optional' => true, 'default' => 0, 'dbname' => self::ENABLEVKEYBOARD];
         $keycols['text7'] = ['jsonname' => 'customkeys', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => self::CUSTOMKEYS];

@@ -1,0 +1,27 @@
+{
+    "items": [
+        {
+            "type": "page",
+            "name": "Item: Content Page",
+            "instructions": "Listen to the Story",
+            "tts": "Once upon a time, there was a tree climbing race at the college. The director of the sports department organized it. Many students wanted to join because the winner would gain a special prize. The purpose of the race was to see who could climb the tree the fastest. Everyone was excited and ready to try their best. However, one student decided to cheat. He thought he could find success by taking a shortcut. He climbed through a window to reach the top of the tree faster. Clearly, this was not fair. The other students did not recognize his trick at first. But during the review of the race, the director noticed the lack of honesty. The director said, 'We depend on fairness in our races.' The student who cheated was disqualified. The director told everyone, 'True success comes from hard work, not cheating.' The race was held again the next day, and everyone promised to be fair. Tomorrow, they would climb with honesty and respect for each other.",
+            "ttsvoice": "Kevin",
+            "audiofname": "00:00:00\r\n00:00:15\r\n00:00:30\r\n00:00:45",
+            "ttsdialog": [
+                ""
+            ],
+            "layout": "vertical",
+            "filesid": 1
+        }
+    ],
+    "files": {
+        "1": {
+            "itemaudiostory": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ"
+            }
+        }
+    }
+}

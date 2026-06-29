@@ -9,7 +9,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
         /**
          * Check if translation is available and get availability status.
-         * 
+         *
          * @param {string} sourceLang Source language code
          * @param {string} destLang Destination language code
          * @returns {Promise<string>} 'ready', 'download_needed', or 'unavailable'
@@ -44,9 +44,10 @@ define(['jquery', 'core/log'], function ($, log) {
 
         /**
          * Create translation session. MUST be called from user gesture if download needed.
-         * 
+         *
          * @param {string} sourceLang Source language code
          * @param {string} destLang Destination language code
+         * @param {Function} progressCallback Optional callback invoked with model download progress.
          * @returns {Promise<boolean>} True if session created successfully
          */
         create_session: async function (sourceLang, destLang, progressCallback) {
@@ -98,7 +99,7 @@ define(['jquery', 'core/log'], function ($, log) {
 
         /**
          * Translate text using the browser's native translation API.
-         * 
+         *
          * @param {string} text The text to translate.
          * @returns {Promise<string|boolean>} The translated text or false if failed.
          */

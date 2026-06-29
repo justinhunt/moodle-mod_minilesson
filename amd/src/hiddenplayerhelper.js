@@ -12,7 +12,7 @@ define(['jquery','core/log','mod_minilesson/definitions'], function ($,log,def) 
         hiddenplayerbuttonpaused: def.hiddenplayerbuttonpaused,
         hiddenplayerbuttonplaying: def.hiddenplayerbuttonpaused,
 
-        init: function (opts) {
+        init: function () {
             this.register_controls();
             this.register_events();
         },
@@ -26,7 +26,7 @@ define(['jquery','core/log','mod_minilesson/definitions'], function ($,log,def) 
             var that = this;
             var audioplayer = this.controls.hiddenplayer;
             //handle the button click
-            this.controls.hiddenplayerbutton.click(function (e) {
+            this.controls.hiddenplayerbutton.click(function () {
                 var audiosrc = $(this).attr('data-audiosource');
                 if (audiosrc == audioplayer.attr('src') && !(audioplayer.prop('paused'))) {
                     that.dohiddenstop();
@@ -48,7 +48,7 @@ define(['jquery','core/log','mod_minilesson/definitions'], function ($,log,def) 
             if (pp !== undefined) {
                 pp.then(function () {
                     // Yay we are playing
-                }).catch(function (error) {
+                }).catch(function () {
                     // somethings up ... but we can ignore it
                 });
             }
@@ -67,7 +67,7 @@ define(['jquery','core/log','mod_minilesson/definitions'], function ($,log,def) 
             if (!theaudiosrc) {
                 theaudiosrc = audioplayer.attr('src');
             }
-            m.controls.hiddenplayerbutton.each(function (index) {
+            m.controls.hiddenplayerbutton.each(function () {
                 var audiosrc = $(this).attr('data-audiosource');
                 if (audiosrc == theaudiosrc) {
                     $(this).addClass(m.activebutton);

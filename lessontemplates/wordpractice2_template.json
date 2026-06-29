@@ -33,7 +33,7 @@
                 "There is [much] milk in the fridge.|\u51b7\u8535\u5eab\u306b\u725b\u4e73\u306f\u3044\u3063\u3071\u3044\u3042\u308a\u307e\u3059\u3002|many lot"
             ],
             "promptvoice": "Joey",
-            "allowretry": "yes",
+            "confirmchoice": "yes",
             "promptvoiceopt": "normal",
             "filesid": 2
         },
@@ -70,7 +70,7 @@
             "aigradefeedback": "Explain each mistake simply.",
             "aigradefeedbacklanguage": "ar-AE",
             "freewritingtopic": "",
-            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 2 marks if a sentence is exactly the same as a previously studied sentence.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \r\nTarget word\/phrases: \r\n{ai data1}\r\n\r\nPreviously studied sentences:\r\n{ai data2}",
+            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \r\nTarget word\/phrases: \r\n{ai data1}\r\n\r\nPreviously studied sentences:\r\n{ai data2}",
             "freewritingaidata1": "much",
             "freewritingaidata2": "I do not have much money.\r\nThere is much milk in the fridge.",
             "totalmarks": "3"
@@ -88,7 +88,7 @@
             "aigradefeedback": "Explain each mistake simply.",
             "aigradefeedbacklanguage": "ja-JP",
             "freewritingtopic": "",
-            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 2 marks if a sentence is exactly the same as a previously studied sentence.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \nTarget word\/phrases: \n{ai data1}\n\nPreviously studied sentences:\n{ai data2}",
+            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \nTarget word\/phrases: \n{ai data1}\n\nPreviously studied sentences:\n{ai data2}",
             "freewritingaidata1": "a lot of",
             "freewritingaidata2": "I have a lot of time to study this weekend.\nI have a lot of friends.",
             "totalmarks": "3"
@@ -106,7 +106,7 @@
             "aigradefeedback": "Explain each mistake simply.",
             "aigradefeedbacklanguage": "ja-JP",
             "freewritingtopic": "",
-            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 2 marks if a sentence is exactly the same as a previously studied sentence.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \nTarget word\/phrases: \n{ai data1}\n\nPreviously studied sentences:\n{ai data2}",
+            "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \nTarget word\/phrases: \n{ai data1}\n\nPreviously studied sentences:\n{ai data2}",
             "freewritingaidata1": "many",
             "freewritingaidata2": "There are many apples in the box.\nShe has many pencils.",
             "totalmarks": "3"

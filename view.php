@@ -180,11 +180,10 @@ if (empty($attemptid) && empty($newattempt) && !empty($attempts) && !empty($modu
     die;
 }
 
-// This library is licensed with the hippocratic license (https://github.com/EthicalSource/hippocratic-license/).
-// Which is not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN.
-if ($config->animations == constants::M_ANIM_FANCY) {
-    $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
-}
+// The "fancy" animations (animate__* classes) are now shipped with the plugin as our own GPL3
+// reimplementation in scss/base/_animations.scss (compiled into styles.css), so there is no longer
+// a CDN dependency here. The animations config still gates whether JS applies the fancy effects
+// (see useanimatecss in quizhelper.js / animatecss.js).
 
 // If we need a non standard font we can do that from here.
 if (!empty($moduleinstance->lessonfont)) {
@@ -197,19 +196,10 @@ if (!empty($moduleinstance->lessonfont)) {
 $comptest = new \mod_minilesson\comprehensiontest($cm);
 $itemcount = $comptest->fetch_item_count();
 
-// If we have slides, load the CSS
+// If we have slides, load the (locally shipped) reveal.js CSS. The theme CSS is loaded lazily by
+// the slides item JS (item/slides/amd/src/reveal.js) from the same local css directory.
 if ($comptest->has_slides_items()) {
-    switch ($moduleinstance->region) {
-        case 'ningxia':
-            // If Ningxia region, load CSS from different CDN
-            $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
-            //$PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/theme/beige.min.css'));
-            break;
-        default:
-            $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.min.css'));
-            //$PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/dist/theme/beige.min.css'));
-            break;
-    }
+    $PAGE->requires->css(new moodle_url('/mod/minilesson/item/slides/css/reveal.min.css'));
 }
 
 // From here we actually display the page.

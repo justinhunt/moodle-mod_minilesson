@@ -57,6 +57,8 @@ class itemform extends baseform
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         $this->add_allowretry(constants::GAPFILLALLOWRETRY, get_string('allowretry_desc', constants::M_COMPONENT));
         $this->add_virtualkeyboard(itemtype::ENABLEVKEYBOARD, itemtype::CUSTOMKEYS);
+        $this->add_checkbox(constants::GAPFILLSHUFFLEORDER, get_string('gapfill_shuffleorder', constants::M_COMPONENT),
+            get_string('gapfill_shuffleorder_desc', constants::M_COMPONENT));
         $this->add_hidestartpage(constants::GAPFILLHIDESTARTPAGE, get_string('hidestartpage_desc', constants::M_COMPONENT));
     }
 }

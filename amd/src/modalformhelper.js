@@ -3,7 +3,6 @@
  *
  * @module     mod_minilesson/modalformhelper
  * @class      modalformhelper
- * @package    mod_minilesson
  * @copyright  2020 Justin Hunt <poodllsupport@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -16,7 +15,6 @@ define(
          *
          * @param {String} selector used to find triggers for the new group modal.
          * @param {int} contextid
-         * @param {String} formname The key/name of the form for this instance
          * @param {Object} callback The function to call after successful deletion (for UI updates)
          *
          * Each call to init gets it's own instance of this class.
@@ -65,7 +63,6 @@ define(
          * @return {Promise}
          */
         TheForm.prototype.preinit = function (selector) {
-            var triggers = $(selector);
             var dd = this;
 
             $('body').on('click',selector,function (e) {
@@ -115,6 +112,7 @@ define(
 
         /**
          * @method getBody
+         * @param {Object} formdata The form data to seed the modal body with.
          * @private
          * @return {Promise}
          */
@@ -130,6 +128,8 @@ define(
 
         /**
          * @method handleFormSubmissionResponse
+         * @param {string} formData The original serialised form data.
+         * @param {string} ajaxresult The JSON string returned by the server.
          * @private
          * @return {Promise}
          */
@@ -170,6 +170,7 @@ define(
 
         /**
          * @method handleFormSubmissionFailure
+         * @param {Object} data The form data to re-render with errors.
          * @private
          * @return {Promise}
          */

@@ -1,0 +1,29 @@
+{
+    "items": [
+        {
+            "type": "freewriting",
+            "name": "Item: Free Writing",
+            "instructions": "Type your answer to the question.",
+            "text": "Do you think young people should grow food in the garden? Give a reason for your answer. (30 words or more)",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "aigradefeedback": "Explain each grammar mistake in simple language. Do not comment on spelling or punctuation.",
+            "aigradeinstructions": "Deduct 3 points for each grammar mistake. Do not penalize for spelling or punctuation errors.",
+            "totalmarks": "20",
+            "relevance": "1",
+            "targetwordcount": "30",
+            "layout": "vertical",
+            "filesid": 1
+        }
+    ],
+    "files": {
+        "1": {
+            "itemmedia": {
+                "2_small.png": "QQQQ"
+            }
+        }
+    }
+}

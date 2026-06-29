@@ -1,3 +1,4 @@
+/* global YT */
 define(['jquery','core/log'], function ($,log) {
     "use strict"; // jshint ;_;
 
@@ -26,7 +27,6 @@ define(['jquery','core/log'], function ($,log) {
         }, //end of init video
 
         loadPlayer: function (container) {
-            var that = this;
             var theDiv = $("#" + container);
             var startSeconds = theDiv.data('start');
             var endSeconds  = theDiv.data('end');
@@ -46,7 +46,7 @@ define(['jquery','core/log'], function ($,log) {
                     onReady: function (e) {
                         var videocue = {videoId: theDiv.data('video')};
                         if (!isNaN(startSeconds) && startSeconds > 0) {
-                            videocue.startSeconds = startSeconds
+                            videocue.startSeconds = startSeconds;
                         } else {
                             startSeconds = 0;
                         }

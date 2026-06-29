@@ -8,6 +8,7 @@
 @use 'base/reset';
 @use 'base/typography';
 @use 'base/shakerotate';
+@use 'base/animations';
 @use 'base/utility';
 
 // Layout
@@ -38,6 +39,7 @@
 @use 'components/common/questioncontainer';
 @use 'components/common/itemcontainer';
 @use 'components/common/noitem';
+@use 'components/common/aihelper';
 
 // Components - Items (activity types)
 @use 'components/items/audiochat';
@@ -57,6 +59,7 @@
 @use 'components/items/multichoice';
 @use 'components/items/shortanswer';
 @use 'components/items/slides';
+@use 'components/items/shadow';
 
 // Pages
 @use 'pages/activity';

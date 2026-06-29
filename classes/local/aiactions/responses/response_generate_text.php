@@ -29,6 +29,9 @@ class response_generate_text extends \core_ai\aiactions\responses\response_gener
 
     #[\Override]
     public function set_response_data(array $response): void {
+        if (!is_scalar($response['generatedcontent'])) {
+            $response['generatedcontent'] = json_encode($response['generatedcontent']);
+        }
         parent::set_response_data($response);
         $response = (object) $this->get_response_data();
         if (!empty($response->generatedcontent) && preg_match('/\{[\s\S]*?\}/', $response->generatedcontent, $m)) {
@@ -42,5 +45,4 @@ class response_generate_text extends \core_ai\aiactions\responses\response_gener
             'jsondata' => $this->jsondata ?? '{}'
         ];
     }
-
 }

@@ -29,7 +29,7 @@ use single_button;
  * Class aigentemplates
  *
  * @package    mod_minilesson
- * @copyright  2025 YOUR NAME <your@email.com>
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class aigentemplates implements \renderable, \templatable
@@ -67,8 +67,8 @@ class aigentemplates implements \renderable, \templatable
         $tags = self::get_alltags();
         $tags = array_intersect($this->filters, $tags);
 
-        // Fetch templates.
-        $lessontemplates = aigen::fetch_lesson_templates($tags);
+        // Fetch templates. Agent-only templates are hidden from the human picker.
+        $lessontemplates = aigen::fetch_lesson_templates($tags, false);
 
         $buttondata = [];
         foreach ($lessontemplates as $templateid => $lessontemplate) {
@@ -94,14 +94,51 @@ class aigentemplates implements \renderable, \templatable
                 ),
                 get_string('aigen', constants::M_COMPONENT)
             );
+
+            // Build the item types breakdown (label and count) for the details view.
+            $itemtypecounts = array_count_values(array_column($lessontemplate['template']->items, 'type'));
+            $itemtypes = [];
+            foreach ($itemtypecounts as $itemtype => $count) {
+                $stringkey = $itemtype;
+                $label = get_string_manager()->string_exists($stringkey, constants::M_COMPONENT)
+                    ? get_string($stringkey, constants::M_COMPONENT) : $itemtype;
+                $itemtypes[] = ['label' => $label, 'count' => $count];
+            }
+
+            // Build the non-item-type tags (predefined and single/multi) for the details view.
+            $tags = [];
+            $tagrecords = array_merge(
+                template_tag_manager::get_current_tags($templateid, template_tag_manager::TYPE_SINGLEORMULTI),
+                template_tag_manager::get_current_tags($templateid, template_tag_manager::TYPE_PREDEFINED)
+            );
+            foreach ($tagrecords as $tagrecord) {
+                $tags[] = ['label' => $tagrecord->tagname];
+            }
+
+            $detailsdata = [
+                'title' => $templatetitle,
+                'description' => $templatedescription,
+                'itemcount' => $templatecount,
+                'itemtypes' => $itemtypes,
+                'hasitemtypes' => !empty($itemtypes),
+                'tags' => $tags,
+                'hastags' => !empty($tags),
+            ];
+
             $buttondata[] = [
                 'templateid' => $templateid,
                 'title' => $templatetitle,
                 'description' => $templatedescription,
                 'itemcount' => $templatecount,
                 'thebutton' => $thebutton->export_for_template($output),
+                'detailsdata' => json_encode($detailsdata),
             ];
         }
+
+        // Sort the templates alphabetically by title (case-insensitive).
+        usort($buttondata, function($a, $b) {
+            return strcasecmp($a['title'], $b['title']);
+        });
 
         return [
             'buttons' => $buttondata,

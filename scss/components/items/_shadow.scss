@@ -1,0 +1,147 @@
+// Video Shadowing (minilessonitem_shadow) item styles.
+
+.minilesson-shadow-container {
+
+  .poodll-shadowing-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  // The youtube player canvas. Must always remain visible while in use
+  // (YouTube API compliance), in its own container, fixed 16:9.
+  .ml_shadow_videobox {
+    width: 100%;
+    max-width: 640px;
+    min-width: 200px;
+    margin: 0 auto;
+
+    .ml_shadow_player,
+    iframe {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      min-height: 200px;
+      display: block;
+    }
+  }
+
+  .ml_shadow_captionbox {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    border-radius: 8px;
+    background: #f5f5f5;
+    text-align: center;
+    transition: background-color 0.3s ease;
+
+    // The student's turn to shadow.
+    &.ml_shadow_yourturn {
+      background: #ffe0b2;
+      border: 2px solid #fb8c00;
+    }
+  }
+
+  .ml_shadow_loopindicator {
+    font-size: 18px;
+    font-weight: 700;
+    color: #d32f2f;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .ml_shadow_countdown {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+
+    .ml_shadow_countdown_pie {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: conic-gradient(#d32f2f 0%, #e0e0e0 0%);
+    }
+  }
+
+  .ml_shadow_watchhint {
+    font-size: 16px;
+    color: #555555;
+  }
+
+  .ml_shadow_caption {
+    display: none;
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.5;
+
+    &.active {
+      display: block;
+    }
+  }
+
+  .ml_shadow_word,
+  .ml_shadow_wholeline {
+    color: #222222;
+
+    &.active {
+      color: #d32f2f;
+    }
+  }
+
+  .ml_shadow_actiondrawer {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .poodll-orientation-shield {
+    display: none;
+  }
+}
+
+// Mobile portrait: tighter type, thumb-friendly full-width stacked buttons.
+@media screen and (max-width: 576px) {
+  .minilesson-shadow-container {
+    .ml_shadow_caption {
+      font-size: 18px;
+    }
+
+    .ml_shadow_actiondrawer {
+      flex-direction: column;
+      align-items: stretch;
+
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Mobile landscape is not supported: hide the activity and show the shield.
+@media screen and (orientation: landscape) and (max-device-width: 932px) {
+  .minilesson-shadow-container {
+    .poodll-shadowing-wrapper {
+      display: none;
+    }
+
+    .poodll-orientation-shield {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #111111;
+      color: #ffffff;
+      text-align: center;
+      padding-top: 25vh;
+      z-index: 9999;
+    }
+  }
+}

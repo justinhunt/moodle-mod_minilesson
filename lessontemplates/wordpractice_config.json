@@ -2,17 +2,23 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "",
-            "generatemethod": "reuse",
+            "prompt": "Create a one dimensional array of pipe delimited strings (sentences), of the following pattern: keyword|keyword-translation|keyword-examplesentence \nThe keywords to use are contained in this list: [{keywords}].  \n The translation language is: {nativelanguage}. The keyword and example sentence language is: {targetlanguage}\nAlso create a matching one dimensional array of image generation prompts (data1) to illustrate the keyword's in the same sense as it is used in the example sentence. \n",
+            "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
-                    "name": "text",
+                    "name": "sentences",
                     "generate": 1,
-                    "mapping": "user_keywords"
+                    "mapping": ""
+                },
+                {
+                    "name": "dictationstyle",
+                    "generate": 0,
+                    "mapping": ""
                 },
                 {
                     "name": "data1",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
@@ -36,13 +42,34 @@
                     "mapping": ""
                 }
             ],
-            "generatefileareas": [],
-            "promptfields": []
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "nativelanguage",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "targetlanguage",
+                    "mapping": "target_language"
+                }
+            ]
         },
         {
             "itemnumber": 1,
             "prompt": "Generate a 1 dimensional array of 5 example sentences in {language} suitable for {level} level learners using the following keywords [{keywords}]. In each sentence surround one keyword with square brackets, e.g [word]. ",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -112,6 +139,7 @@
             "itemnumber": 2,
             "prompt": "",
             "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -167,6 +195,7 @@
             "itemnumber": 3,
             "prompt": "Generate a 1 dimensional array of 5 'sentences' of format 'keyword | {native_language} translation' from the following  {language} keywords: [{keywords}]",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -220,6 +249,7 @@
             "itemnumber": 4,
             "prompt": "Generate a short writing question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] . Set the aigradefeedbacklanguage to {native_language}. Also generate instructions for the AI grader (aigradeinstructions) that tell it to penalize 1 mark per grammar mistake and to give one mark for each use of a keyword: [{keywords}]",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "text",
@@ -303,10 +333,11 @@
             ]
         }
     ],
-    "lessonTitle": "Word Practice",
-    "lessonDescription": "Enter a list of words (5) and Poodll will make a short activity for students to practice those words",
+    "lessonTitle": "Word Practice v1",
+    "lessonDescription": "Enter a list of words (5) and a topic, Poodll will make a activity with vocab cards, listening and typing gapfills, a space game a free writing activity",
     "uniqueid": "6874e6ca1c71a",
-    "version": "2",
+    "version": "4",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -363,9 +394,52 @@
             "title": "",
             "description": "",
             "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
         }
-    }, 
+    },
     "tags": [
-        "Vocabulary Practice"
+        "Vocabulary Practice",
+        "Writing"
     ]
 }

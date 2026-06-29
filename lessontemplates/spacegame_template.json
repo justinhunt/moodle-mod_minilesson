@@ -1,0 +1,20 @@
+{
+    "items": [
+        {
+            "type": "spacegame",
+            "name": "Item: Space Game",
+            "instructions": "Shoot the aliens by selecting the correct answer.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "house|maison"
+            ],
+            "includematching": "no",
+            "int10": "1"
+        }
+    ],
+    "files": {}
+}

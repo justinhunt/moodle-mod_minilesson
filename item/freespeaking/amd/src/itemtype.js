@@ -1,12 +1,12 @@
 define(
-    ['jquery', 'core/log', 'mod_minilesson/definitions',
-    'mod_minilesson/ttrecorder', 'mod_minilesson/correctionsmarkup', 'core/templates'],
-    function ($, log, def, ttrecorder, correctionsmarkup, templates) {
+    ['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/progresstimer',
+        'mod_minilesson/ttrecorder', 'mod_minilesson/correctionsmarkup', 'core/templates'],
+    function ($, log, def, progresstimer, ttrecorder, correctionsmarkup, templates) {
         "use strict"; // jshint ;_;
 
-      /*
-      This file is to manage the free speaking item type
-       */
+        /*
+        This file is to manage the free speaking item type
+         */
 
         log.debug('MiniLesson FreeSpeaking: initialising');
 
@@ -19,7 +19,7 @@ define(
             mediaurl: false,
             bloburl: false,
 
-          //for making multiple instances
+            //for making multiple instances
             clone: function () {
                 return $.extend(true, {}, this);
             },
@@ -42,7 +42,7 @@ define(
                 stepdata.totalitems = self.itemdata.totalmarks;
                 stepdata.correctitems = self.rawscore > 0 ? self.rawscore : 0;
                 stepdata.grade = self.percentscore;
-              //Add media url to transcript evaluation before we save it
+                //Add media url to transcript evaluation before we save it
                 if (self.transcript_evaluation && self.mediaurl) {
                     self.transcript_evaluation.mediaurl = self.mediaurl;
                 }
@@ -57,22 +57,24 @@ define(
                     return 0;
                 }
 
-              //words ratio
+                //words ratio
                 var wordsratio = 1;
                 if (self.itemdata.countwords) {
                     wordsratio = transcript_evaluation.stats.words / self.itemdata.targetwordcount;
                     if (wordsratio > 1) {
-                        wordsratio = 1; }
+                        wordsratio = 1;
+                    }
                 }
 
-              //relevance
+                //relevance
                 var relevanceratio = 1;
                 if (self.itemdata.relevance > 0) {
                     relevanceratio = (transcript_evaluation.stats.relevance + 10) / 100;
                     if (relevanceratio > 1) {
-                        relevanceratio = 1; }
+                        relevanceratio = 1;
+                    }
                 }
-              //calculate score based on AI grade * relevance * wordcount
+                //calculate score based on AI grade * relevance * wordcount
                 var score = Math.round(transcript_evaluation.marks * relevanceratio * wordsratio);
                 return score;
             },
@@ -98,7 +100,7 @@ define(
                             onFinish: function () {
                                 self.ontimelimitreached();
                             }
-                          });
+                        });
                     }
                 });
 
@@ -137,38 +139,38 @@ define(
                 self.iteminstructions = $("#" + self.itemdata.uniqueid + "_container div.mod_minilesson_iteminstructions");
                 self.itemtext = $("#" + self.itemdata.uniqueid + "_container div.mod_minilesson_itemtext");
                 self.finishedmessage = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_finishedmessage");
-              // Callback: Recorder updates.
+                // Callback: Recorder updates.
                 var recorderCallback = function (message) {
 
                     switch (message.type) {
                         case 'recording':
-                        break;
+                            break;
 
                         case 'interimspeech':
                             var wordcount = self.quizhelper.count_words(message.capturedspeech);
                             self.wordcount.text(wordcount);
-                        break;
+                            break;
 
                         case 'speech':
                             var speechtext = message.capturedspeech;
 
-                          //update the wordcount
+                            //update the wordcount
                             var wordcount = self.quizhelper.count_words(speechtext);
                             self.wordcount.text(wordcount);
                             self.do_evaluation(speechtext);
-                        break;
+                            break;
 
                         case 'mediasaved':
                             log.debug('Mediaurl saved at passage reading: ' + message.mediaurl);
                             self.mediaurl = message.mediaurl;
                             self.bloburl = message.bloburl;
-                        break;
+                            break;
                     } //end of switch message type
                 };
 
 
 
-              //init tt recorder
+                //init tt recorder
                 var opts = {};
                 opts.uniqueid = itemdata.uniqueid;
                 opts.callback = recorderCallback;
@@ -180,8 +182,8 @@ define(
 
             do_corrections_markup: function (grammarerrors, grammarmatches, insertioncount) {
                 var self = this;
-              //corrected text container is created at runtime, so it wont exist at init_components time
-              //thats we find it here
+                //corrected text container is created at runtime, so it wont exist at init_components time
+                //thats we find it here
                 var correctionscontainer = self.resultsbox.find('.mlfsr_correctedtext');
                 correctionsmarkup.init({
                     "correctionscontainer": correctionscontainer,
@@ -194,17 +196,17 @@ define(
             do_evaluation: function (speechtext) {
                 var self = this;
 
-              //show a spinner while we do the AI stuff
+                //show a spinner while we do the AI stuff
                 self.resultsbox.hide();
                 self.actionbox.hide();
                 self.pendingbox.show();
 
-              //do evaluation
+                //do evaluation
                 this.quizhelper.evaluateTranscript(speechtext, this.itemdata.itemid).then(function (ajaxresult) {
                     var transcript_evaluation = JSON.parse(ajaxresult);
                     if (transcript_evaluation) {
                         transcript_evaluation.reviewsettings = self.itemdata.reviewsettings;
-                      //calculate raw score and percent score
+                        //calculate raw score and percent score
                         transcript_evaluation.rawscore = self.calculate_score(transcript_evaluation);
                         self.rawscore = self.calculate_score(transcript_evaluation);
                         self.percentscore = 0;
@@ -214,19 +216,19 @@ define(
                         if (isNaN(self.percentscore)) {
                             self.percentscore = 0;
                         }
-                      //add raw and percent score to trancript_evaluation for mustache
+                        //add raw and percent score to trancript_evaluation for mustache
                         transcript_evaluation.rawscore = self.rawscore;
                         transcript_evaluation.percentscore = self.percentscore;
                         transcript_evaluation.rawspeech = speechtext;
                         transcript_evaluation.maxscore = self.itemdata.totalmarks;
 
-                      // If we have a media url from our recording lets use it
-                      // We will just use the blob version here (its local and s3/mp3 may not be ready)
+                        // If we have a media url from our recording lets use it
+                        // We will just use the blob version here (its local and s3/mp3 may not be ready)
                         if (self.bloburl) {
                             transcript_evaluation.mediaurl = self.bloburl;
                         }
 
-                      // And save it upstairs
+                        // And save it upstairs
                         self.transcript_evaluation = transcript_evaluation;
 
                         var ystarcnt = 0;
@@ -253,11 +255,11 @@ define(
                         }
 
                         log.debug(templatedata);
-                      //display results or move next if not show item review
+                        //display results or move next if not show item review
                         if (!self.quizhelper.showitemreview && !self.autosubmitmode) {
                             self.next_question();
                         } else {
-                          //display results
+                            //display results
                             templates.render('minilessonitem_freespeaking/freespeakingresults', templatedata).then(
                                 function (html, js) {
                                     self.resultsbox.html(html);
@@ -291,7 +293,7 @@ define(
                                 var timerelement = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer");
                                 var timerinterval = timerelement.attr('timer');
                                 if (timerinterval) {
-                                      clearInterval(timerinterval);
+                                    clearInterval(timerinterval);
                                 }
                             }
                         } //end of if show item review

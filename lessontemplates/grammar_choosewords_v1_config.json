@@ -1,0 +1,310 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "You are an expert educational content designer who creates engaging Reveal.js presentations.\nThe slides_format is: {slidestype}\n\n## Your Task:\n\n1. Create a Reveal.js presentation in {slidestype} format to summarize and explain the following grammar point for learners of {targetlanguage}:\n[{grammarpoint}]\n2. Output a JSON object with three top-level keys: `slidesmarkdown`, `slidescontenttype` (0 or 1), and `data1` (a 1-dimensional array of image descriptions).\n\n## Step 1: Planning Phase\nFirst, create a structured plan. List every slide you intend to create (Content slides and Image slides).\n* Identify which Content slides need an associated Image slide\n* Map each image to a specific filename (e.g., \"1.png\", \"2.png\").\n* Ensure you have between 0 and 5 image slides, and that they immediately follow or precede their related content slide.\n\n**Important**: The plan itself is for internal use and should not be included on the slides.\n\n## Step 2: Building Phase\nUsing your plan from Step 1, generate a single JSON object. The JSON must contain the final presentation code and the data array.\n\n###  JSON Structure Requirements:\n\n1. `slidesmarkdown` \u2014 A string containing the full Reveal.js presentation.\n2. `slidescontenttype` \u2014 0 (Markdown) or 1 (HTML).\n3. `data1` \u2014 A 1-dimensional array of image descriptions, corresponding to the filenames \"1.png\", \"2.png\", etc.\n\n### Formatting & Structural Rules:\n* **Language of instruction:** :  {instructionlanguage}\n* **Language for examples:** :   {targetlanguage}\n* **Content Slide content:** may contain text, emojis, tables. Image slides contain text and an image\n* **Image Slide Placement:** Image slides must immediately follow\/precede the relevant content slide.\n* **Image Syntax (Strict):**\n* **Markdown:** Use `## [Title]` followed by `![[Description]]([N].png)`.\n* **HTML:** Use `<section><h2>[Title]<\/h2><img src=\"[N].png\" alt=\"[Description]\"><\/section>`.\n\n* **Style Constraints:**\n* Image slide headings must NOT contain \"Image\", \"Picture\", \"Photo\", etc.\n* The presentation must NOT start with `---`.\n* HTML rules: No inline CSS (`style` attributes); use semantic `<h2>`, `<p>`, `<ul>`.\n\n## Output Instructions:\n\n* Begin your response with the **Planning Pass** (as a numbered list).\n* Follow it immediately with the **Building Pass** (the final JSON object).\n* Ensure the filenames in `slidesmarkdown` exactly match the order of descriptions in `data1`.\n",
+            "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
+            "generatefields": [
+                {
+                    "name": "slidesmarkdown",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "slidestheme",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "slidescontenttype",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "slidestype",
+                    "mapping": "user_customdata2"
+                },
+                {
+                    "name": "targetlanguage",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "grammarpoint",
+                    "mapping": "user_text"
+                },
+                {
+                    "name": "instructionlanguage",
+                    "mapping": "user_customdata1"
+                }
+            ]
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "You are designer of language learning activities. Today you are creating an activity where the learner will choose the correct word (or phrase) to complete a sentence. \n\nStep 1\nCreate a one dimensional array of grammatically correct sentences (data1), of between 4 and 8 words per sentence, in {language} suitable for {level} level learners from the following keywords\/keyphrases [{keywords}]. There should be a total of 6 sentences. The sentences must all be examples of the following grammar point:\n{grammarpoint}\n\nStep 2\nCreate a second array of the same sentences (sentences), but for each sentence:\ni) surround the keyword\/keyphrase in the sentence with square brackets.\nii) create a translation of the sentence in {nativelanguage}\niii) Make a csv string with the remaining keywords\/keyphrases (ie those not in the sentence)\nAnd combine those three elements into a  pipe delimited string.\ne.g\nI watch [movies] at night|\u79c1\u306f\u591c\u306b\u6620\u753b\u3092\u898b\u308b\u3002|soccer,cake,healthy ",
+            "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "grammarpoint",
+                    "mapping": "user_text"
+                },
+                {
+                    "name": "nativelanguage",
+                    "mapping": "user_customdata1"
+                }
+            ]
+        },
+        {
+            "itemnumber": 2,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": "item1_sentences"
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "item1_customfile1_image"
+                }
+            ],
+            "promptfields": []
+        }
+    ],
+    "lessonTitle": "Grammar Lesson (slides+choose words V1)",
+    "lessonDescription": "Provide the grammar point, up to 6 keywords\/keyphrases and the language of instruction. A  lesson with a slides tutorial, choose-the-word item and type-the-word item will be created. Use this template for grammar points where the correct choice of word\/phrase is important. (e.g 'by' or 'until'). For this template the choose-the-word choices should be the same for each sentence. ",
+    "uniqueid": "6a36351da64e3",
+    "version": "1",
+    "agentonly": 0,
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "Language Level",
+            "description": "The language level of the learner",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Grammar point",
+            "description": "A brief description of the grammar point you want the lesson to explain and provide practice for",
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": "A comma separated list of up to 6 keywords that will be used when making sentences as examples.",
+            "type": "textarea"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Instruction language",
+            "description": "The language of instruction, and translations in the lesson.",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": true,
+            "title": "Slides type",
+            "description": "The output format of the slides. Markdown is easier to edit by hand (but still techy). HTML can produce better layouts but its  not easy to edit by hand.",
+            "type": "dropdown",
+            "options": [
+                "Markdown",
+                "HTML"
+            ]
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Vocabulary Practice",
+        "Grammar Instruction"
+    ]
+}

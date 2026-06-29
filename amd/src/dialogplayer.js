@@ -9,9 +9,8 @@ This file contains class and ID definitions.
 
     return{
         //pass in config, amd set up table
-        init: function (props) {
+        init: function () {
             //pick up opts from html
-            var that = this;
 
         },
 

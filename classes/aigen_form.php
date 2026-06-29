@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -34,13 +33,17 @@ use stored_file;
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class aigen_form extends \moodleform
-{
+class aigen_form extends \moodleform {
+
+    public const TYPE_TEXT = 'text';
+    public const TYPE_TEXTAREA = 'textarea';
+    public const TYPE_DROPDOWN = 'dropdown';
+    public const TYPE_TOOL = 'tool';
+
     /**
      * Form definition
      */
-    public function definition()
-    {
+    public function definition() {
         $mform = $this->_form;
         $mform->addElement('hidden', 'id');
         $mform->setType('id', PARAM_INT);
@@ -73,8 +76,7 @@ class aigen_form extends \moodleform
     /**
      * Definition after data
      */
-    public function definition_after_data()
-    {
+    public function definition_after_data() {
         global $DB, $PAGE;
         $mform = $this->_form;
         $id = $this->get_element_value('id');
@@ -140,9 +142,14 @@ class aigen_form extends \moodleform
                 $tdata['items'][$itemnumber]['itemnumber'] = $itemnumber;
 
                 // Get the generatemethod.
-                $tdata['items'][$itemnumber]['methodreuse'] = $this->get_element_value(
-                    'generatemethod[' . $itemnumber . ']'
-                ) == 'reuse';
+                $itemmethod = $this->get_element_value('generatemethod[' . $itemnumber . ']');
+                $tdata['items'][$itemnumber]['methodreuse'] = $itemmethod == 'reuse';
+
+                // The image file mapping fieldset has its own generate method. On initial render it
+                // defaults to the item-level method; JS (set_data) overrides it from any saved config.
+                $fileareamethod = $itemmethod ?: 'generate';
+                $tdata['items'][$itemnumber]['methodgenerate'] = $fileareamethod == 'generate';
+                $tdata['items'][$itemnumber]['methodextract'] = $fileareamethod == 'extract';
 
                 // Fetch the prompt.
                 $generatemethods = ['generate', 'extract'];
@@ -265,7 +272,10 @@ class aigen_form extends \moodleform
                 ['placeholder' => get_string('contextmapping:options_desc', constants::M_COMPONENT)]
             );
             $mform->setType("{$fieldname}[title]", PARAM_TEXT);
-            $mform->disabledIf("{$fieldname}[options]", "{$fieldname}[type]", 'neq', end($typeoptions));
+            // Disable the options field for types text or textarea.
+            // We need options for types dropdown and tool
+            $mform->disabledIf("{$fieldname}[options]", "{$fieldname}[type]", 'eq', self::TYPE_TEXT);
+            $mform->disabledIf("{$fieldname}[options]", "{$fieldname}[type]", 'eq', self::TYPE_TEXTAREA);
             $mform->addGroup($controls, $fieldname, $fieldname);
         }
 
@@ -332,6 +342,18 @@ class aigen_form extends \moodleform
         $mform->setType('version', PARAM_INT);
         $mform->addRule('version', get_string('required'), 'required');
 
+        $mform->addElement(
+            'selectyesno',
+            'agentonly',
+            get_string('templateagentonly', constants::M_COMPONENT)
+        );
+        $mform->setType('agentonly', PARAM_INT);
+        // Note: do not call setDefault() here. definition_after_data() runs *after*
+        // set_data_for_dynamic_submission(), so a setDefault would clobber the value loaded
+        // from the DB when editing an existing template (making it always show "No").
+        // An empty selectyesno already defaults to "No" for new templates.
+        $mform->addHelpButton('agentonly', 'templateagentonly', constants::M_COMPONENT);
+
         $mform->addElement('submit', 'savestep4', 'Create JSON Config');
         $mform->setExpanded('step4');
         $mform->addElement('cancel', 'back', get_string('back'));
@@ -341,8 +363,7 @@ class aigen_form extends \moodleform
      * Set data for dynamic submission
      * @return void
      */
-    public function set_data_for_dynamic_submission()
-    {
+    public function set_data_for_dynamic_submission() {
         global $DB, $USER;
         $fs = get_file_storage();
 
@@ -361,6 +382,7 @@ class aigen_form extends \moodleform
             $formdata['step1done'] = $formdata['step2done'] = $formdata['step3done'] = 1;
             $formdata['uniqueid'] = $template->uniqueid;
             $formdata['version'] = $template->version;
+            $formdata['agentonly'] = $template->agentonly;
             if (
                 $DB->record_exists_select(
                     'minilesson_templates',
@@ -410,8 +432,7 @@ class aigen_form extends \moodleform
      *
      * @return stdClass|false
      */
-    public function process_dynamic_submission()
-    {
+    public function process_dynamic_submission() {
         global $DB;
         if (!$this->is_cancelled() && $this->is_submitted() && $this->is_validated()) {
             $formdata = $this->get_data();
@@ -430,6 +451,7 @@ class aigen_form extends \moodleform
             $template->config = $formdata->aigen_config;
             $template->uniqueid = $formdata->uniqueid;
             $template->version = $formdata->version;
+            $template->agentonly = (int) $formdata->agentonly;
             $template->template = $this->get_file_content('importjson');
             $jsonconfig = json_decode($template->config);
             if (!json_last_error()) {
@@ -437,6 +459,7 @@ class aigen_form extends \moodleform
                 $jsonconfig->lessonDescription = $template->description;
                 $jsonconfig->uniqueid = $template->uniqueid;
                 $jsonconfig->version = $template->version;
+                $jsonconfig->agentonly = $template->agentonly;
                 $availablecontext = self::mappings();
                 $typeoptions = self::type_options();
                 $fielddatas = array_filter((array) $formdata, function ($k) use ($availablecontext) {
@@ -444,7 +467,7 @@ class aigen_form extends \moodleform
                 }, ARRAY_FILTER_USE_KEY);
                 foreach ($fielddatas as $fieldname => $fielddata) {
                     $fielddatas[$fieldname]['enabled'] = !empty($fielddata['enabled']);
-                    if ($fielddata['type'] === end($typeoptions)) {
+                    if (in_array($fielddata['type'], [self::TYPE_TOOL, self::TYPE_DROPDOWN])) {
                         $fieldoptions = explode(PHP_EOL, $fielddata['options']);
                         $fieldoptions = array_map('trim', $fieldoptions);
                         $fieldoptions = array_filter($fieldoptions, 'trim');
@@ -498,8 +521,7 @@ class aigen_form extends \moodleform
      * @param string $elname
      * @return string|null
      */
-    public function get_element_value($elname)
-    {
+    public function get_element_value($elname) {
         $mform = $this->_form;
         return $mform->elementExists($elname) ? $mform->getElement($elname)->getValue() : null;
     }
@@ -511,8 +533,7 @@ class aigen_form extends \moodleform
      * @param array $files
      * @return array
      */
-    public function validation($data, $files)
-    {
+    public function validation($data, $files) {
         global $DB;
         $errors = parent::validation($data, $files);
         if ($record = $DB->get_record('minilesson_templates', ['uniqueid' => $data['uniqueid']])) {
@@ -528,8 +549,7 @@ class aigen_form extends \moodleform
      *
      * @return array
      */
-    public static function mappings()
-    {
+    public static function mappings() {
         // This will return a 1D list of field names, eg 'user_topic', 'user_level', 'user_text', etc.
         $contextdata = utils::fetch_usercontext_fields();
         $availablecontext = array_keys($contextdata);
@@ -541,9 +561,9 @@ class aigen_form extends \moodleform
      *
      * @return array
      */
-    public static function type_options()
-    {
-        $types = ['text', 'textarea', 'dropdown'];
+    public static function type_options() {
+        $types = [self::TYPE_TEXT, self::TYPE_TEXTAREA, self::TYPE_DROPDOWN, self::TYPE_TOOL];
+        // Create an associative array where the key=>value are the same
         return array_combine($types, $types);
     }
 }

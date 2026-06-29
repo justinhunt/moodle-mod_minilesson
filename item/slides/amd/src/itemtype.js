@@ -1,9 +1,9 @@
 define(
     [
     'jquery', 'core/log', 'mod_minilesson/definitions', 'minilessonitem_slides/reveal',
-    'core/str', 'core/modal_cancel', 'core/fragment', 'mod_minilesson/fullscreen_helper'
+    'core/str', 'core/modal_cancel', 'core/fragment', 'mod_minilesson/fullscreen_helper', 'mod_minilesson/progresstimer'
     ],
-    function ($, log, def, RevealImplement, Str, ModalCancel, Fragment, FullscreenHelper) {
+    function ($, log, def, RevealImplement, Str, ModalCancel, Fragment, FullscreenHelper, progresstimer) {
 
         "use strict"; // jshint ;_;
 
@@ -47,7 +47,7 @@ define(
                 });
                 $("#" + itemdata.uniqueid + "_container").on("showElement", async(e) => {
                     if (!self.instance) {
-                        self.instance = await RevealImplement.init(e.target.querySelector('.reveal'), itemdata.region, itemdata.selectedtheme);
+                        self.instance = await RevealImplement.init(e.target.querySelector('.reveal'), itemdata.selectedtheme);
                         self.instance.initialize();
                     }
 
@@ -146,6 +146,24 @@ define(
                         });
                         RevealImplement.setTheme(themeselect.value);
                     }
+                }
+            },
+
+            register_format_switcher: function(selectid, editorid, htmlvalue) {
+                var selectElement = document.getElementById(selectid);
+                if (selectElement) {
+                    selectElement.addEventListener('change', function() {
+                        var lang = this.value == htmlvalue ? 'html' : 'markdown';
+                        var event = new CustomEvent('ml_slides_contenttype_change', {
+                            detail: {
+                                language: lang
+                            }
+                        });
+                        var editor = document.getElementById(editorid);
+                        if (editor) {
+                            editor.dispatchEvent(event);
+                        }
+                    });
                 }
             }
         }; //end of return value

@@ -38,17 +38,9 @@ $minilesson = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_E
 $comprehensiontest = new \mod_minilesson\comprehensiontest($cm);
 $items = $comprehensiontest->fetch_items();
 
-// If we have slides, load the CSS.
+// If we have slides, load the (locally shipped) reveal.js CSS.
 if ($comprehensiontest->has_slides_items()) {
-    switch ($minilesson->region) {
-        case 'ningxia':
-            // If Ningxia region, load CSS from different CDN.
-            $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
-            break;
-        default:
-            $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.min.css'));
-            break;
-    }
+    $PAGE->requires->css(new moodle_url('/mod/minilesson/item/slides/css/reveal.min.css'));
 }
 
 // Mode is necessary for tabs.
@@ -73,10 +65,8 @@ if ($minilesson->foriframe == 1  || $minilesson->pagelayout == 'embedded') {
 }
 
 
-// Not GPL3 compat. so cant be distributed with plugin. Hence we load it from CDN.
-if ($config->animations == constants::M_ANIM_FANCY) {
-    $PAGE->requires->css(new moodle_url('https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css'));
-}
+// The animate__* effect classes are now shipped with the plugin (our own GPL3 reimplementation in
+// scss/base/_animations.scss, compiled into styles.css), so no CDN load is required here.
 
 $renderer = $PAGE->get_renderer('mod_minilesson');
 $rsquestionrenderer = $PAGE->get_renderer('mod_minilesson', 'rsquestion');

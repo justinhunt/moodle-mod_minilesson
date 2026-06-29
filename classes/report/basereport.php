@@ -21,7 +21,7 @@ namespace mod_minilesson\report;
  *  Report Classes.
  *
  * @package    mod_minilesson
- * @copyright  minilesson
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,7 +39,7 @@ use mod_minilesson\constants;
  * The allusers report is the simplest example
  *
  * @package    mod_minilesson
- * @copyright  minilesson
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class basereport

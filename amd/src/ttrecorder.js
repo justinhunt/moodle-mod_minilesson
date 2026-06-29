@@ -134,7 +134,7 @@ define(
 
                 // Callback: Recording stopped.
                 var on_stopped = function (blob) {
-                    that.timer.stop()
+                    that.timer.stop();
 
                     //if the blob is undefined then the user is super clicking or something
                     if (blob === undefined) {
@@ -357,7 +357,7 @@ define(
                         setTimeout(function () {
                             // Refresh the token
                             log.debug('Refreshing streaming token...');
-                            var ajaxresult = ajax.call([{
+                            ajax.call([{
                                 methodname: 'mod_minilesson_refresh_token',
                                 args: {
                                     'type': that.speechtokentype,
@@ -449,12 +449,6 @@ define(
                         this.controls.recorderbutton.removeClass('ttrec_waiting');
                         this.controls.recorderbutton.removeClass('ttrec_engaged');
                         this.controls.recorderbutton.addClass('ttrec_isrecording');
-                    } else if (that.audio.isWaiting && false) {
-                        this.controls.recorderbutton.removeClass('ttrec_engaged');
-                        this.controls.recorderbutton.removeClass('ttrec_ready');
-                        this.controls.recorderbutton.removeClass('ttrec_isrecording');
-                        this.controls.recorderbutton.addClass('ttrec_waiting');
-                        this.controls.waveform.addClass('ttrec_waiting');
                     } else {
                         this.controls.recorderbutton.removeClass('ttrec_engaged');
                         this.controls.recorderbutton.removeClass('ttrec_waiting');
@@ -606,8 +600,8 @@ define(
 
                 var oReq = new XMLHttpRequest();
                 oReq.open("POST", this.asrurl, true);
-                oReq.onUploadProgress = function (progressEvent) { };
-                oReq.onload = function (oEvent) {
+                oReq.onUploadProgress = function () { };
+                oReq.onload = function () {
                     if (oReq.status === 200) {
                         callback(JSON.parse(oReq.response));
                     } else {
@@ -624,7 +618,7 @@ define(
             },
 
             do_msspeech: function (blob, callback) {
-                this.msspeech_instance.recognize(blob, callback)
+                this.msspeech_instance.recognize(blob, callback);
             },
 
         };//end of return value

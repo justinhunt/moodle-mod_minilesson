@@ -34,7 +34,7 @@ $maxprompts = constants::MAX_AI_PROMPTS;
 
 for ($i = 0; $i < $maxprompts; $i++) {
     // Free Speaking instructions prompt.
-    $defaults = 3;
+    $defaults = 4;
     $name = 'freespeaking_gradingpromptheading_' . ($i + 1);
     $label = get_string('gradingprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
     $details = '';
@@ -59,7 +59,7 @@ for ($i = 0; $i < $maxprompts; $i++) {
 }
 for ($i = 0; $i < $maxprompts; $i++) {
     // Free Speaking Feedback Prompt.
-    $defaults = 2;
+    $defaults = 3;
     $name = 'freespeaking_feedbackpromptheading_' . ($i + 1);
     $label = get_string('feedbackprompt_header', constants::M_COMPONENT) . ' ' . ($i + 1);
     $details = '';

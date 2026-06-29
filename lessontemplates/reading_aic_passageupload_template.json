@@ -16,7 +16,6 @@
       "type": "passagereading",
       "name": "Item: Passage Reading",
       "instructions": "Use the microphone to record yourself reading the passage.",
-      "text": "Reduce, Reuse, Recycle ",
       "ttsvoice": "Joey",
       "audiofname": "00:00:00",
       "ttsdialog": [
@@ -33,7 +32,6 @@
       "name": "Item: Audio Chat",
       "instructions": "Practice speaking with your AI partner about the topic.",
       "ttsvoice": "Joey",
-      "textarea": "<p dir=\"ltr\" style=\"text-align: left;\"><strong>Reduce, Reuse, Recycle<\/strong><\/p>\r\n<p dir=\"ltr\" style=\"text-align: left;\">There are 3 ways to make the Earth a green place. Reduce, Reuse and Recycle. When people reduce, it means they are using less of something. This means less waste. Turning off the water when we brush our teeth is the way of reducing. We don't waste water by doing this. Reusing is to use the things we already have again. We can use reusable shopping bags made of cloth instead of plastic bags when we go to a supermarket. Using both sides of the paper is also a way of reusing.<\/p>",
       "audiofname": "00:00:00",
       "ttsdialog": [
         ""

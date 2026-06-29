@@ -33,7 +33,7 @@ if (class_exists('\core_courseformat\activityoverviewbase')) {
      * Class overview
      *
      * @package    mod_minilesson
-     * @copyright  2025 Poodll
+     * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
      * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
      */
     class overview extends \core_courseformat\activityoverviewbase

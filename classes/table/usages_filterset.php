@@ -23,7 +23,7 @@ use core_table\local\filter\integer_filter;
  * Class usages_filterset
  *
  * @package    mod_minilesson
- * @copyright  2025 YOUR NAME <your@email.com>
+ * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class usages_filterset extends templates_filterset

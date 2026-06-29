@@ -1,0 +1,37 @@
+.mod_minilesson_aihelper_btn {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        background-color: #5a6268;
+    }
+}
+
+.mod_minilesson_aihelper_modal {
+    .mod_minilesson_aihelper_response_container {
+        margin-top: 1.5rem;
+        animation: fadeIn 0.5s ease;
+    }
+    
+    #mod_minilesson_aihelper_response {
+        white-space: pre-wrap;
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size: 0.9rem;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+    }
+    
+    .mod_minilesson_aihelper_loading {
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

@@ -127,11 +127,11 @@ foreach (constants::ITEMTYPES as $itemtype) {
 $PAGE->requires->js_call_amd('mod_minilesson/searchlesson', 'registerFilter', [
     'opts' => [
         'nativelang' => $moduleinstance->nativelang,
-        'itemtypeiconmap' => $itemtypeiconmap,
     ],
 ]);
 $lessonbankcontrolsdata = [
     'lessonbankitemcount' => get_string('foundlessons', constants::M_COMPONENT, 0),
+    'itemtypeiconmap' => json_encode($itemtypeiconmap),
 ];
 
 echo $renderer->header($moduleinstance, $cm, 'lessonbank', null, get_string('lessonbank', constants::M_COMPONENT));

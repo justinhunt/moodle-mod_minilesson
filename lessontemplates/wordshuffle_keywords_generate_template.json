@@ -1,0 +1,62 @@
+{
+    "items": [
+        {
+            "type": "wordshuffle",
+            "name": "Item: WordShuffle",
+            "instructions": "Choose the correct word to complete the sentence.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "I have [a pen].\r",
+                "I am [happy].\r",
+                "You are [good].\r",
+                "This is [fun].\r",
+                "We are [nice]."
+            ],
+            "promptvoice": "Joey",
+            "allowretry": "yes",
+            "promptvoiceopt": "normal",
+            "int10": "1",
+            "filesid": 1
+        }
+    ],
+    "files": {
+        "1": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ",
+                "11.png": "QQQQ",
+                "12.png": "QQQQ",
+                "13.png": "QQQQ",
+                "14.png": "QQQQ",
+                "15.png": "QQQQ",
+                "16.png": "QQQQ",
+                "17.png": "QQQQ",
+                "18.png": "QQQQ",
+                "19.png": "QQQQ",
+                "20.png": "QQQQ",
+                "21.png": "QQQQ",
+                "22.png": "QQQQ",
+                "23.png": "QQQQ",
+                "24.png": "QQQQ",
+                "25.png": "QQQQ",
+                "26.png": "QQQQ",
+                "27.png": "QQQQ",
+                "28.png": "QQQQ",
+                "29.png": "QQQQ",
+                "30.png": "QQQQ"
+            }
+        }
+    }
+}

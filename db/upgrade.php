@@ -1043,5 +1043,81 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026042200, 'minilesson');
     }
 
+    if ($oldversion < 2026052200.03) {
+        $table = new xmldb_table('minilesson_media_cache');
+
+        // Adding fields to table minilesson_media_cache.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('hashkey', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('url', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+        $table->add_field('minilesson', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table minilesson_media_cache.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Adding indexes.
+        $table->add_index('idx_hashkey', XMLDB_INDEX_NOTUNIQUE, ['hashkey']);
+        $table->add_index('idx_minilesson', XMLDB_INDEX_NOTUNIQUE, ['minilesson']);
+
+        // Create table if it does not exist.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        upgrade_mod_savepoint(true, 2026052200.03, 'minilesson');
+    }
+
+    if ($oldversion < 2026061100) {
+        // Add the shadow (video shadowing) item type to the config enableditems.
+        $enableditems = get_config(constants::M_MODNAME, 'enableditems');
+        if ($enableditems !== false) {
+            $items = empty($enableditems) ? [] : explode(',', $enableditems);
+            if (!in_array(constants::TYPE_SHADOW, $items)) {
+                $items[] = constants::TYPE_SHADOW;
+            }
+            if (!in_array(constants::TYPE_CARDS, $items)) {
+                $items[] = constants::TYPE_CARDS;
+            }
+            set_config('enableditems', implode(',', $items), constants::M_MODNAME);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026061100, 'minilesson');
+    }
+
+    if ($oldversion < 2026061900) {
+        // Update default templates - templates updated.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026061900, 'minilesson');
+    }
+
+    if ($oldversion < 2026061902) {
+        // Add the "agentonly" flag to the templates table. When set, the template is hidden
+        // from the human AI generation picker (it is intended for agents or uncommon use).
+        $table = new xmldb_table('minilesson_templates');
+        $field = new xmldb_field('agentonly', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'version');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Re-seed default templates so any agentonly designations in the template files are applied.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026061902, 'minilesson');
+    }
+
+    if ($oldversion < 2026062200) {
+        // Register a batch of newly added default AI-generation templates (markup-based
+        // upload variants, Scatter/Space Game uploads, Audio Chat, Free Writing/Speaking
+        // uploads and the Grammar Lesson templates). Re-seeding is idempotent.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026062200, 'minilesson');
+    }
+
     return true;
 }

@@ -68,7 +68,7 @@
                     "mapping": ""
                 },
                 {
-                    "name": "allowretry",
+                    "name": "confirmchoice",
                     "generate": 0,
                     "mapping": ""
                 },
@@ -379,10 +379,10 @@
             "promptfields": []
         }
     ],
-    "lessonTitle": "Word Practice 2",
+    "lessonTitle": "Word Practice v2",
     "lessonDescription": "Given a list of words, example sentences and the students native language, this template will generate a set of practice activities with images and native language hints. You can use up to 9 words.",
     "uniqueid": "691ad9a15f203",
-    "version": "2",
+    "version": "5",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -476,6 +476,8 @@
         }
     },
     "tags": [
-        "Vocabulary Practice"
-    ]
+        "Vocabulary Practice",
+        "Writing"
+    ],
+    "agentonly": 0
 }

@@ -4,8 +4,7 @@ define(['jquery',
     'mod_minilesson/definitions',
     'mod_minilesson/pollyhelper',
     'mod_minilesson/ttrecorder',
-    'mod_minilesson/animatecss',
-], function ($,  log, Ajax, def, polly, ttrecorder, anim) {
+], function ($,  log, Ajax, def, polly, ttrecorder) {
     "use strict"; // jshint ;_;
 
   /*
@@ -118,7 +117,7 @@ define(['jquery',
                 }
                 // Call the submit function with the Blob as an argument
                 app.convertMP3ToWAV(blob).then(wavblob => {
-                    submitFunction(wavblob)
+                    submitFunction(wavblob);
                 });
             })
             .catch(error => {
@@ -158,8 +157,8 @@ define(['jquery',
 
             var oReq = new XMLHttpRequest();
             oReq.open("POST", app.activitydata.asrurl, true);
-            oReq.onUploadProgress = function (progressEvent) {};
-            oReq.onload = function (oEvent) {
+            oReq.onUploadProgress = function () {};
+            oReq.onload = function () {
                 if (oReq.status === 200) {
                     var respObject = JSON.parse(oReq.response);
                     if (respObject.data.hasOwnProperty('transcript')) {
@@ -233,7 +232,6 @@ define(['jquery',
                     audioContext.decodeAudioData(arrayBuffer)
                     .then((audioBuffer) => {
                         const numberOfChannels = audioBuffer.numberOfChannels;
-                        const length = audioBuffer.length * numberOfChannels;
                         const sampleRate = audioBuffer.sampleRate;
                         const buffer = audioContext.createBuffer(numberOfChannels, audioBuffer.length, sampleRate);
 
@@ -251,7 +249,7 @@ define(['jquery',
                 };
                 reader.onerror = (error) => {
                     reject(error);
-                }
+                };
                 reader.readAsArrayBuffer(mp3Blob);
             });
         },
@@ -292,6 +290,13 @@ define(['jquery',
             writeString(view, pos, 'data'); pos += 4;
             writeUint32(view, pos, length - pos - 4); pos += 4;
 
+            /**
+             * Write float audio samples to a DataView as 16-bit PCM.
+             *
+             * @param {DataView} output destination view.
+             * @param {Number} offset byte offset to start writing at.
+             * @param {Array} input float samples in the range -1..1.
+             */
             function floatTo16BitPCM(output, offset, input)
             {
                 for (let i = 0; i < input.length; i++, offset += 2) {

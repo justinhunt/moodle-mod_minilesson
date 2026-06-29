@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -41,6 +40,7 @@ use mod_minilesson\constants;
 use mod_minilesson\diff;
 use mod_minilesson\alphabetconverter;
 use mod_minilesson\curl;
+use mod_minilesson\aimanager;
 
 /**
  * External class.
@@ -48,14 +48,13 @@ use mod_minilesson\curl;
  * @package mod_minilesson
  * @author  Justin Hunt - poodll.com
  */
-class mod_minilesson_external extends external_api
-{
+class mod_minilesson_external extends external_api {
+
     /**
      * create new instance parameters
      * @return external_function_parameters
      */
-    public static function create_instance_parameters()
-    {
+    public static function create_instance_parameters() {
         return new external_function_parameters([
             'courseid' => new external_value(PARAM_INT, 'The course id', VALUE_REQUIRED),
             'moduledata' => new external_value(PARAM_TEXT, 'The module data in JSON format', VALUE_REQUIRED),
@@ -68,8 +67,7 @@ class mod_minilesson_external extends external_api
      * @param string $moduledata
      * @return array
      */
-    public static function create_instance($courseid, $moduledata)
-    {
+    public static function create_instance($courseid, $moduledata) {
         global $DB, $USER;
 
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
@@ -110,8 +108,7 @@ class mod_minilesson_external extends external_api
      * Create new instance returns
      * @return external_single_structure
      */
-    public static function create_instance_returns()
-    {
+    public static function create_instance_returns() {
         return new external_single_structure(
             [
                 'cmid' => new external_value(PARAM_INT, 'cmid of new instance'),
@@ -123,8 +120,7 @@ class mod_minilesson_external extends external_api
      * check phonetic parameters
      * @return external_function_parameters
      */
-    public static function check_by_phonetic_parameters()
-    {
+    public static function check_by_phonetic_parameters() {
         return new external_function_parameters(
             [
                 'spoken' => new external_value(PARAM_TEXT, 'The spoken phrase'),
@@ -147,8 +143,7 @@ class mod_minilesson_external extends external_api
      * @param int $cmid
      * @return float|int
      */
-    public static function check_by_phonetic($spoken, $correct, $phonetic, $language, $region, $cmid)
-    {
+    public static function check_by_phonetic($spoken, $correct, $phonetic, $language, $region, $cmid) {
         $segmented = true;
         $shortlang = utils::fetch_short_lang($language);
         switch ($language) {
@@ -201,8 +196,7 @@ class mod_minilesson_external extends external_api
      * check phonetic returns
      * @return external_value
      */
-    public static function check_by_phonetic_returns()
-    {
+    public static function check_by_phonetic_returns() {
         return new external_value(PARAM_INT, 'how close is spoken to correct, 0 - 100');
     }
 
@@ -210,8 +204,7 @@ class mod_minilesson_external extends external_api
      * step grade report parameters
      * @return external_function_parameters
      */
-    public static function report_step_grade_parameters()
-    {
+    public static function report_step_grade_parameters() {
         return new external_function_parameters([
                 'cmid' => new external_value(PARAM_INT),
                 'step' => new external_value(PARAM_RAW),
@@ -224,8 +217,7 @@ class mod_minilesson_external extends external_api
      * @param mixed $step
      * @return bool|string
      */
-    public static function report_step_grade($cmid, $step)
-    {
+    public static function report_step_grade($cmid, $step) {
         $stepdata = json_decode($step);
         [$success, $message, $returndata] = utils::update_step_grade($cmid, $stepdata);
         return $success;
@@ -234,8 +226,7 @@ class mod_minilesson_external extends external_api
      * report step grade returns
      * @return external_value
      */
-    public static function report_step_grade_returns()
-    {
+    public static function report_step_grade_returns() {
         return new external_value(PARAM_BOOL);
     }
 
@@ -244,8 +235,7 @@ class mod_minilesson_external extends external_api
      * compare passage to transcript parameters
      * @return external_function_parameters
      */
-    public static function compare_passage_to_transcript_parameters()
-    {
+    public static function compare_passage_to_transcript_parameters() {
         return new external_function_parameters(
             ['transcript' => new external_value(PARAM_TEXT, 'The spoken phrase', VALUE_REQUIRED),
                         'passage' => new external_value(PARAM_TEXT, 'The correct phrase', VALUE_REQUIRED),
@@ -382,8 +372,7 @@ class mod_minilesson_external extends external_api
      * compare passage to transcript returns
      * @return external_value
      */
-    public static function compare_passage_to_transcript_returns()
-    {
+    public static function compare_passage_to_transcript_returns() {
         return new external_value(PARAM_RAW);
     }
 
@@ -391,8 +380,7 @@ class mod_minilesson_external extends external_api
      * evaluate transcript parameters
      * @return external_function_parameters
      */
-    public static function evaluate_transcript_parameters()
-    {
+    public static function evaluate_transcript_parameters() {
         return new external_function_parameters(
             [
                 'transcript' => new external_value(PARAM_TEXT, 'The transcript of speaking or writing', VALUE_REQUIRED),
@@ -409,8 +397,7 @@ class mod_minilesson_external extends external_api
      * @param int $cmid
      * @return string
      */
-    public static function evaluate_transcript($transcript, $itemid, $cmid)
-    {
+    public static function evaluate_transcript($transcript, $itemid, $cmid) {
         global $DB;
         $ret = utils::evaluate_transcript($transcript, $itemid, $cmid);
         return json_encode($ret);
@@ -420,8 +407,7 @@ class mod_minilesson_external extends external_api
      * evaluate transcript returns
      * @return external_value
      */
-    public static function evaluate_transcript_returns()
-    {
+    public static function evaluate_transcript_returns() {
         return new external_value(PARAM_RAW);
     }
 
@@ -429,8 +415,7 @@ class mod_minilesson_external extends external_api
      * submit mform parameters
      * @return external_function_parameters
      */
-    public static function submit_mform_parameters()
-    {
+    public static function submit_mform_parameters() {
         return new external_function_parameters(
             [
                 'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
@@ -450,8 +435,7 @@ class mod_minilesson_external extends external_api
      * @param string $formname
      * @return string
      */
-    public static function submit_mform($contextid, $jsonformdata, $formname)
-    {
+    public static function submit_mform($contextid, $jsonformdata, $formname) {
         global $CFG, $DB, $USER;
 
         // We always must pass webservice params through validate_parameters.
@@ -556,8 +540,7 @@ class mod_minilesson_external extends external_api
      * submit mform returns
      * @return external_value
      */
-    public static function submit_mform_returns()
-    {
+    public static function submit_mform_returns() {
         return new external_value(PARAM_RAW);
     }
 
@@ -565,8 +548,7 @@ class mod_minilesson_external extends external_api
      * delete item parameters
      * @return external_function_parameters
      */
-    public static function delete_item_parameters()
-    {
+    public static function delete_item_parameters() {
         return new external_function_parameters(
             [
                 'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
@@ -583,8 +565,7 @@ class mod_minilesson_external extends external_api
      * @param string $formname
      * @return string
      */
-    public static function delete_item($contextid, $itemid, $formname)
-    {
+    public static function delete_item($contextid, $itemid, $formname) {
         global $CFG, $DB, $USER;
 
         // We always must pass webservice params through validate_parameters.
@@ -614,8 +595,7 @@ class mod_minilesson_external extends external_api
      * delete item returns
      * @return external_value
      */
-    public static function delete_item_returns()
-    {
+    public static function delete_item_returns() {
         return new external_value(PARAM_RAW);
     }
 
@@ -623,8 +603,7 @@ class mod_minilesson_external extends external_api
      * move item parameters
      * @return external_function_parameters
      */
-    public static function move_item_parameters()
-    {
+    public static function move_item_parameters() {
         return new external_function_parameters(
             [
                 'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
@@ -641,8 +620,7 @@ class mod_minilesson_external extends external_api
      * @param string $direction
      * @return string
      */
-    public static function move_item($contextid, $itemid, $direction)
-    {
+    public static function move_item($contextid, $itemid, $direction) {
         global $CFG, $DB, $USER;
 
         // We always must pass webservice params through validate_parameters.
@@ -672,8 +650,7 @@ class mod_minilesson_external extends external_api
      * move item returns
      * @return external_value
      */
-    public static function move_item_returns()
-    {
+    public static function move_item_returns() {
         return new external_value(PARAM_RAW);
     }
 
@@ -681,8 +658,7 @@ class mod_minilesson_external extends external_api
      * duplicate item parameters
      * @return external_function_parameters
      */
-    public static function duplicate_item_parameters()
-    {
+    public static function duplicate_item_parameters() {
         return new external_function_parameters(
             [
                 'contextid' => new external_value(PARAM_INT, 'The context id for the course'),
@@ -697,8 +673,7 @@ class mod_minilesson_external extends external_api
      * @param string $itemid
      * @return string
      */
-    public static function duplicate_item($contextid, $itemid)
-    {
+    public static function duplicate_item($contextid, $itemid) {
         global $CFG, $DB, $USER;
 
         // We always must pass webservice params through validate_parameters.
@@ -741,8 +716,7 @@ class mod_minilesson_external extends external_api
      * duplicate item returns
      * @return external_value
      */
-    public static function duplicate_item_returns()
-    {
+    public static function duplicate_item_returns() {
         return new external_value(PARAM_RAW);
     }
 
@@ -753,8 +727,7 @@ class mod_minilesson_external extends external_api
      * @param string $language
      * @return string
      */
-    public static function check_grammar($text, $language)
-    {
+    public static function check_grammar($text, $language) {
         global $DB, $USER;
 
         $params = self::validate_parameters(self::check_grammar_parameters(), [
@@ -789,8 +762,7 @@ class mod_minilesson_external extends external_api
      * check grammar parameters
      * @return external_function_parameters
      */
-    public static function check_grammar_parameters()
-    {
+    public static function check_grammar_parameters() {
         return new external_function_parameters([
             'text' => new external_value(PARAM_TEXT),
             'language' => new external_value(PARAM_TEXT),
@@ -801,24 +773,21 @@ class mod_minilesson_external extends external_api
      * check grammar returns
      * @return external_value
      */
-    public static function check_grammar_returns()
-    {
+    public static function check_grammar_returns() {
         return new external_value(PARAM_RAW);
     }
 
 
-    public static function set_user_preference_parameters()
-    {
+    public static function set_user_preference_parameters() {
         return new external_function_parameters([
             'name' => new external_value(PARAM_TEXT, 'The user preference name'),
             'value' => new external_value(PARAM_TEXT, 'The user preference value'),
         ]);
     }
 
-    public static function set_user_preference($name, $value)
-    {
+    public static function set_user_preference($name, $value) {
 
-        //set the user preference
+        // set the user preference
         switch ($name) {
             case constants::NATIVELANG_PREF:
                 if (empty($value)) {
@@ -832,8 +801,7 @@ class mod_minilesson_external extends external_api
         }
     }
 
-    public static function set_user_preference_returns()
-    {
+    public static function set_user_preference_returns() {
         return new external_value(PARAM_BOOL);
     }
 
@@ -843,8 +811,7 @@ class mod_minilesson_external extends external_api
      * @param string $region
      * @return string
      */
-    public static function refresh_token($type, $region)
-    {
+    public static function refresh_token($type, $region) {
         global $DB, $USER;
         $fulltoken = false;
         $params = self::validate_parameters(self::refresh_token_parameters(), [
@@ -873,8 +840,7 @@ class mod_minilesson_external extends external_api
      * refresh token parameters
      * @return external_function_parameters
      */
-    public static function refresh_token_parameters()
-    {
+    public static function refresh_token_parameters() {
         return new external_function_parameters([
             'type' => new external_value(PARAM_TEXT),
             'region' => new external_value(PARAM_TEXT),
@@ -885,8 +851,7 @@ class mod_minilesson_external extends external_api
      * refresh token returns
      * @return external_value
      */
-    public static function refresh_token_returns()
-    {
+    public static function refresh_token_returns() {
         return new external_value(PARAM_RAW);
     }
 
@@ -894,8 +859,7 @@ class mod_minilesson_external extends external_api
      * lesson bank parameters
      * @return external_function_parameters
      */
-    public static function lessonbank_parameters()
-    {
+    public static function lessonbank_parameters() {
         return new external_function_parameters([
             'function' => new external_value(PARAM_TEXT),
             'args' => new external_value(PARAM_TEXT, '', VALUE_DEFAULT, ''),
@@ -908,8 +872,7 @@ class mod_minilesson_external extends external_api
      * @param string $args
      * @return stdClass
      */
-    public static function lessonbank($function, $args = '')
-    {
+    public static function lessonbank($function, $args = '') {
         $params = self::validate_parameters(self::lessonbank_parameters(), [
             'function' => $function,
             'args' => $args,
@@ -938,7 +901,7 @@ class mod_minilesson_external extends external_api
             $ret1 = $result[0];
             if (empty($ret1['error'])) {
                 $ret->data = json_encode($ret1['data']);
-            } elseif (!empty($ret1['exception'])) {
+            } else if (!empty($ret1['exception'])) {
                 $ret->error = $ret1['exception']['message'];
             } else {
                 $ret->error = true;
@@ -951,11 +914,90 @@ class mod_minilesson_external extends external_api
      * lesson bank returns
      * @return external_single_structure
      */
-    public static function lessonbank_returns()
-    {
+    public static function lessonbank_returns() {
         return new external_single_structure([
             'error' => new external_value(PARAM_BOOL, 'has error', VALUE_DEFAULT, false),
             'data' => new external_value(PARAM_RAW, 'json encoded data', VALUE_DEFAULT),
         ]);
+    }
+
+    /**
+     * Returns description of fetch_codeeditor_aihelp parameters
+     * @return external_function_parameters
+     */
+    public static function fetch_codeeditor_aihelp_parameters() {
+        return new external_function_parameters(
+            [
+                'itemtype' => new external_value(PARAM_ALPHANUMEXT, 'The item type'),
+                'language' => new external_value(PARAM_ALPHANUMEXT, 'The language of the code'),
+                'prompt' => new external_value(PARAM_RAW, 'The user prompt'),
+                'currentcode' => new external_value(PARAM_RAW, 'The current code in the editor'),
+                'contextid' => new external_value(PARAM_INT, 'The context id'),
+            ]
+        );
+    }
+
+    /**
+     * Fetches AI help for the code editor
+     * @param string $itemtype
+     * @param string $language
+     * @param string $prompt
+     * @param string $currentcode
+     * @param int $contextid
+     * @return array
+     */
+    public static function fetch_codeeditor_aihelp($itemtype, $language, $prompt, $currentcode, $contextid) {
+        global $DB;
+
+        $params = self::validate_parameters(self::fetch_codeeditor_aihelp_parameters(),
+            ['itemtype' => $itemtype, 'language' => $language, 'prompt' => $prompt,
+                'currentcode' => $currentcode, 'contextid' => $contextid]);
+
+        $context = \context::instance_by_id($params['contextid']);
+        self::validate_context($context);
+
+        $region = null;
+        $ttslanguage = null;
+        if ($context->contextlevel == CONTEXT_MODULE) {
+            $cm = get_coursemodule_from_id('minilesson', $context->instanceid);
+            if ($cm) {
+                $minilesson = $DB->get_record('minilesson', ['id' => $cm->instance]);
+                if ($minilesson) {
+                    $region = $minilesson->region;
+                    $ttslanguage = $minilesson->ttslanguage;
+                }
+            }
+        }
+
+        $itemclass = '\minilessonitem_' . $params['itemtype'] . '\itemtype';
+        if (!class_exists($itemclass)) {
+            throw new \moodle_exception('invaliditemtype', 'mod_minilesson', '', $params['itemtype']);
+        }
+
+        $fullprompt = $itemclass::codeeditor_build_prompt($params['language'], $params['prompt'], $params['currentcode']);
+
+        $aimanager = new aimanager($params['contextid'], $region, $ttslanguage);
+        $response = $aimanager->generate_text($fullprompt);
+
+        if ($response) {
+            return ['status' => true, 'response' => $response, 'provider' => $aimanager->get_last_provider()];
+        } else {
+            return ['status' => false, 'response' => '', 'message' => $aimanager->get_error_message(), 'provider' => $aimanager->get_last_provider()];
+        }
+    }
+
+    /**
+     * Returns description of fetch_codeeditor_aihelp returns
+     * @return external_single_structure
+     */
+    public static function fetch_codeeditor_aihelp_returns() {
+        return new external_single_structure(
+            [
+                'status' => new external_value(PARAM_BOOL, 'Status of the request'),
+                'response' => new external_value(PARAM_RAW, 'The response from the AI'),
+                'message' => new external_value(PARAM_RAW, 'The error message', VALUE_OPTIONAL),
+                'provider' => new external_value(PARAM_TEXT, 'The provider used', VALUE_OPTIONAL),
+            ]
+        );
     }
 }

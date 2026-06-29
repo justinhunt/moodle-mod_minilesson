@@ -18,7 +18,6 @@ define(['jquery','core/log'], function ($,log) {
             //audio player declarations
             var aplayer = $('#' + PASSAGEID + '_ttspassageaudio');
             var thebutton = $('#' + PASSAGEID + '_ttspassagebutton');
-            var textblock = $('#' + PASSAGEID + '_textblock');
             var fa = $('#' + PASSAGEID + '_ttspassagebutton .fa');
 
             //some common selectors

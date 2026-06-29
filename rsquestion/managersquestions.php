@@ -50,16 +50,8 @@ require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/minilesson:itemedit', $context);
 
-// Load the slides CSS.
-switch ($minilesson->region) {
-    case 'ningxia':
-        // If Ningxia region, load CSS from different CDN.
-        $PAGE->requires->css(new moodle_url('https://cdn.bootcdn.net/ajax/libs/reveal.js/5.2.1/reveal.min.css'));
-        break;
-    default:
-        $PAGE->requires->css(new moodle_url('https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.min.css'));
-        break;
-}
+// Load the slides (reveal.js) CSS, which is now shipped with the plugin instead of loaded from a CDN.
+$PAGE->requires->css(new moodle_url('/mod/minilesson/item/slides/css/reveal.min.css'));
 
 
 // Set up the page object.
@@ -118,6 +110,7 @@ if ($action == 'confirmdelete') {
 // Get filechooser and html editor options.
 $editoroptions = \mod_minilesson\local\itemtype\item::fetch_editor_options($course, $context);
 $filemanageroptions = \mod_minilesson\local\itemtype\item::fetch_filemanager_options($course, 3);
+$itemtypename = utils::get_subitem_name($type);
 
 $itemformclass  = utils::fetch_itemform_classname($type);
 if (!$itemformclass) {
@@ -369,14 +362,14 @@ if ($edit) {
 
     $mform->set_data($data);
     $PAGE->navbar->add(get_string('edit'), new moodle_url('/mod/minilesson/rsquestion/rsquestions.php', ['id' => $id]));
-    $PAGE->navbar->add(get_string('editingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
+    $PAGE->navbar->add(get_string('editingitem', constants::M_COMPONENT, $itemtypename));
     $renderer = $PAGE->get_renderer('mod_minilesson');
     $mode = 'rsquestions';
     echo $renderer->header($minilesson, $cm, $mode, null, get_string('edit', constants::M_COMPONENT));
 if ($edit) {
-       echo $renderer->heading(get_string('editingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
+    echo $renderer->heading(get_string('editingitem', constants::M_COMPONENT, $itemtypename));
 } else {
-    echo $renderer->heading(get_string('addingitem', constants::M_COMPONENT, get_string($mform->type, constants::M_COMPONENT)));
+    echo $renderer->heading(get_string('addingitem', constants::M_COMPONENT, $itemtypename));
 }
     $mform->display();
     echo $renderer->footer();

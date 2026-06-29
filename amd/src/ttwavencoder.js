@@ -49,7 +49,7 @@ define(['jquery', 'core/log'], function ($, log) {
             }
         },
 
-        finish: function (mimeType) {
+        finish: function () {
 
             //this would be an event that occurs after recorder has stopped lets just ignore it
             if (this.dataViews === undefined) {

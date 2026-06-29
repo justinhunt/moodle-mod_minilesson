@@ -64,8 +64,8 @@ define(
             onStream: function () { },
             onSocketReady: function () { },
             onError: function () { },
-            onfinalspeechcapture: function (speechtext) { },
-            oninterimspeechcapture: function (speechtext) { },
+            onfinalspeechcapture: function () { },
+            oninterimspeechcapture: function () { },
 
 
             prepare_html: function () {
@@ -173,7 +173,7 @@ define(
                 //for ios we need to do this to keep playback volume high
                 if ("audioSession" in navigator) {
                     navigator.audioSession.type = 'play-and-record';
-                    console.log("AudioSession API is supported");
+                    log.debug("AudioSession API is supported");
                 }
 
                 // Mic permission
