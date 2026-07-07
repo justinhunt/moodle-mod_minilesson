@@ -1,7 +1,8 @@
 define(
     ['jquery', 'core/log','core/modal_save_cancel','core/str', 'core/modal_events',
-        'mod_minilesson/definitions','core/templates', 'mod_minilesson/correctionsmarkup'],
-    function ($, log,ModalSaveCancel, str, ModalEvents, def, templates, correctionsmarkup) {
+        'mod_minilesson/definitions','core/templates', 'mod_minilesson/correctionsmarkup',
+        'mod_minilesson/communitypage'],
+    function ($, log,ModalSaveCancel, str, ModalEvents, def, templates, correctionsmarkup, communitypage) {
         "use strict"; // jshint ;_;
 
     /*
@@ -62,6 +63,31 @@ define(
                             showbutton.textContent = showbutton.dataset.showText;
                         }
                     }
+                });
+
+                $('body').on('click','.mod_minilesson_finishedcpagelink',function (e) {
+                    e.preventDefault();
+                    var itemid = $(this).data('itemid');
+                    var thetarget = $(this).data('target');
+                    if (thetarget === undefined) {
+                        return;
+                    }
+                    var container = $('#' + thetarget);
+                    if (container.length === 0) {
+                        return;
+                    }
+                    if (container.is(':visible')) {
+                        container.hide();
+                        return;
+                    }
+                    var instance = container.data('cpageinstance');
+                    if (!instance) {
+                        instance = communitypage.clone();
+                        instance.init(container, itemid, {});
+                        container.data('cpageinstance', instance);
+                    }
+                    //always (re)load, so submissions shared since the page was opened show up
+                    instance.load();
                 });
 
                 $('body').on('click','.mod_minilesson_finishedanswerdetailslink',function (e) {

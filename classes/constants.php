@@ -40,6 +40,8 @@ class constants {
     const M_TEMPL_USAGES_TABLE = 'minilesson_template_usages';
     const M_AUTHTABLE = 'minilesson_auth';
     const M_CORRECTPHONES_TABLE = 'minilesson_correctphones';
+    const M_CPAGESUBMISSIONS_TABLE = 'minilesson_cpagesubmissions';
+    const M_CPAGELIKES_TABLE = 'minilesson_cpagelikes';
     const M_MODNAME = 'minilesson';
     const M_URL = '/mod/minilesson';
     const M_PATH = '/mod/minilesson';
@@ -236,7 +238,7 @@ class constants {
     const MAXANSWERS = 4;
     const MAXCUSTOMTEXT = 7;
     const MAXCUSTOMDATA = 5;
-    const MAXCUSTOMINT = 9;
+    const MAXCUSTOMINT = 10;
 
     const ITEMTEXTAREA_EDOPTIONS = ['trusttext' => 0, 'noclean' => 1, 'maxfiles' => 0];
     const READSENTENCE = 'customint2';

@@ -1,7 +1,8 @@
 define(
     ['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/progresstimer',
-        'mod_minilesson/ttrecorder', 'mod_minilesson/correctionsmarkup', 'core/templates'],
-    function ($, log, def, progresstimer, ttrecorder, correctionsmarkup, templates) {
+        'mod_minilesson/ttrecorder', 'mod_minilesson/correctionsmarkup', 'mod_minilesson/communitypage',
+        'core/templates'],
+    function ($, log, def, progresstimer, ttrecorder, correctionsmarkup, communitypage, templates) {
         "use strict"; // jshint ;_;
 
         /*
@@ -18,6 +19,8 @@ define(
             autosubmitmode: false,
             mediaurl: false,
             bloburl: false,
+            communitypageshown: false,
+            cpage: null,
 
             //for making multiple instances
             clone: function () {
@@ -86,8 +89,21 @@ define(
                 self.quizhelper = quizhelper;
                 var nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
 
-                nextbutton.on('click', function (e) {
-                    self.next_question();
+                nextbutton.on('click', function () {
+                    // When the community page is on, it is shown once, between
+                    // the results page and moving on. Grade reporting happens in
+                    // next_question() in both flows, exactly once.
+                    if (itemdata.communitypage && !self.communitypageshown) {
+                        self.show_community_page();
+                    } else {
+                        self.next_question();
+                    }
+                });
+
+                var container = $("#" + itemdata.uniqueid + "_container");
+                // Keep our consent state in sync with the toggle on the results page.
+                container.on('change', '.ml_cpage_consent_checkbox', function (e) {
+                    self.itemdata.cpageconsent = e.target.checked;
                 });
 
                 $("#" + itemdata.uniqueid + "_container").on('showElement', () => {
@@ -104,6 +120,54 @@ define(
                     }
                 });
 
+            },
+
+            show_community_page: function () {
+                var self = this;
+                self.communitypageshown = true;
+                self.iteminstructions.hide();
+                self.itemtext.hide();
+                self.finishedmessage.hide();
+                self.actionbox.hide();
+                self.resultsbox.hide();
+                self.pendingbox.show();
+                if (!self.cpage) {
+                    self.cpage = communitypage.clone();
+                    self.cpage.init(self.resultsbox, self.itemdata.itemid, {
+                        //at this point in the quiz our own step may not be saved on the server yet,
+                        //so the local score also decides whether the share-this toggle shows
+                        localcanshare: self.percentscore >= self.itemdata.cpagethreshold,
+                        //and for the same reason, our own fresh submission is
+                        //built from the data we already have in the browser
+                        localentry: function () {
+                            if (self.percentscore < self.itemdata.cpagethreshold || !self.transcript_evaluation) {
+                                return null;
+                            }
+                            return {
+                                fullname: self.itemdata.myfullname,
+                                profileimageurl: self.itemdata.myprofileimageurl,
+                                country: self.itemdata.mycountry,
+                                transcript: self.transcript_evaluation.rawspeech,
+                                //prefer the cloud mp3 if the upload has already finished
+                                mediaurl: self.mediaurl ? self.mediaurl : self.bloburl,
+                                likes: 0,
+                                submitdate: '',
+                                likedbyme: false
+                            };
+                        },
+                        //if the community page cannot be fetched, just move on
+                        onunavailable: function () {
+                            self.pendingbox.hide();
+                            self.next_question();
+                        }
+                    });
+                }
+                self.cpage.load('date').then(function () {
+                    self.pendingbox.hide();
+                    return true;
+                }).catch(function (err) {
+                    log.debug(err);
+                });
             },
 
             ontimelimitreached: function () {
@@ -174,7 +238,7 @@ define(
                 var opts = {};
                 opts.uniqueid = itemdata.uniqueid;
                 opts.callback = recorderCallback;
-                opts.stt_guided = false
+                opts.stt_guided = false;
                 self.ttrec = ttrecorder.clone();
                 self.ttrec.init(opts);
 
@@ -234,6 +298,14 @@ define(
                         var ystarcnt = 0;
                         var gstarcnt;
                         const templatedata = Object.assign({}, transcript_evaluation);
+                        //community page share-this prompt (only when eligible)
+                        if (self.itemdata.communitypage) {
+                            templatedata.cpage = {
+                                itemid: self.itemdata.itemid,
+                                canshare: self.percentscore >= self.itemdata.cpagethreshold,
+                                consent: self.itemdata.cpageconsent === true
+                            };
+                        }
                         if (transcript_evaluation.reviewsettings.showscorestarrating) {
                             if (self.percentscore == 0) {
                                 ystarcnt = 0;
@@ -288,9 +360,11 @@ define(
                                 }
                             );// End of templates
                             if (self.itemdata.timelimit > 0) {
-                                let timerelementcontainer = $("#" + self.itemdata.uniqueid + "_container .progress-container");
+                                let timerelementcontainer =
+                                    $("#" + self.itemdata.uniqueid + "_container .progress-container");
                                 timerelementcontainer.hide();
-                                var timerelement = $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer");
+                                var timerelement =
+                                    $("#" + self.itemdata.uniqueid + "_container .progress-container #progresstimer");
                                 var timerinterval = timerelement.attr('timer');
                                 if (timerinterval) {
                                     clearInterval(timerinterval);

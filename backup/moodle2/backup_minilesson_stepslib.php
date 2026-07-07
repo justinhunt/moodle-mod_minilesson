@@ -83,6 +83,16 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
                 'customint6', 'customint7', 'customint8', 'customint9', 'customint10', 'layout', 'correctanswer', 'timelimit', 'itemaudiostoryzoom',
             'timemodified', 'rsquestionkey', 'passagehash', 'alternatives', 'phonetic', 'createdby', 'modifiedby']);
 
+        // community page submissions (consent + likes), nested under each question
+        $cpagesubmissions = new backup_nested_element('cpagesubmissions');
+        $cpagesubmission = new backup_nested_element('cpagesubmission', ['id'], [
+            'itemid', 'userid', 'consent', 'likes', 'timecreated', 'timemodified',
+        ]);
+        $cpagelikes = new backup_nested_element('cpagelikes');
+        $cpagelike = new backup_nested_element('cpagelike', ['id'], [
+            'submissionid', 'userid', 'timecreated',
+        ]);
+
         // Build the tree.
         $oneactivity->add_child($attempts);
         $attempts->add_child($attempt);
@@ -93,6 +103,11 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
         // questions
         $oneactivity->add_child($rsquestions);
         $rsquestions->add_child($rsquestion);
+
+        $rsquestion->add_child($cpagesubmissions);
+        $cpagesubmissions->add_child($cpagesubmission);
+        $cpagesubmission->add_child($cpagelikes);
+        $cpagelikes->add_child($cpagelike);
 
         // Define sources.
         $oneactivity->set_source_table(constants::M_TABLE, ['id' => backup::VAR_ACTIVITYID]);
@@ -111,10 +126,20 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
                 constants::M_ATTEMPTSTABLE,
                 ['moduleid' => backup::VAR_PARENTID]
             );
+            $cpagesubmission->set_source_table(
+                constants::M_CPAGESUBMISSIONS_TABLE,
+                ['itemid' => backup::VAR_PARENTID]
+            );
+            $cpagelike->set_source_table(
+                constants::M_CPAGELIKES_TABLE,
+                ['submissionid' => backup::VAR_PARENTID]
+            );
         }
 
         // Define id annotations.
         $attempt->annotate_ids('user', 'userid');
+        $cpagesubmission->annotate_ids('user', 'userid');
+        $cpagelike->annotate_ids('user', 'userid');
 
         // Define file annotations.
         // intro file area has 0 itemid.

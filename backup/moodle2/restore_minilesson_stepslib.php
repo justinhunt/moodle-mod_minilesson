@@ -78,6 +78,15 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
          );
         $paths[] = $attempts;
 
+        // community page submissions (consent + likes)
+        $paths[] = new restore_path_element(
+            constants::M_CPAGESUBMISSIONS_TABLE,
+            '/activity/minilesson/rsquestions/rsquestion/cpagesubmissions/cpagesubmission'
+        );
+        $paths[] = new restore_path_element(
+            constants::M_CPAGELIKES_TABLE,
+            '/activity/minilesson/rsquestions/rsquestion/cpagesubmissions/cpagesubmission/cpagelikes/cpagelike'
+        );
 
         // Return the paths wrapped into standard activity structure
         return $this->prepare_activity_structure($paths);
@@ -146,6 +155,30 @@ class restore_minilesson_activity_structure_step extends restore_activity_struct
         //'we would need to use the "key" later when calling add_related_files for the itemid in the moodle files area
         //IF we had files for this set of data. )
         $this->set_mapping(constants::M_ATTEMPTSTABLE, $oldid, $newitemid, true);
+    }
+
+    protected function process_minilesson_cpagesubmissions($data)
+    {
+        global $DB;
+
+        $data = (object)$data;
+        $oldid = $data->id;
+
+        $data->itemid = $this->get_new_parentid(constants::M_QTABLE);
+        $data->userid = $this->get_mappingid('user', $data->userid);
+        $newitemid = $DB->insert_record(constants::M_CPAGESUBMISSIONS_TABLE, $data);
+        $this->set_mapping(constants::M_CPAGESUBMISSIONS_TABLE, $oldid, $newitemid, false);
+    }
+
+    protected function process_minilesson_cpagelikes($data)
+    {
+        global $DB;
+
+        $data = (object)$data;
+
+        $data->submissionid = $this->get_new_parentid(constants::M_CPAGESUBMISSIONS_TABLE);
+        $data->userid = $this->get_mappingid('user', $data->userid);
+        $DB->insert_record(constants::M_CPAGELIKES_TABLE, $data);
     }
 
     protected function after_execute()

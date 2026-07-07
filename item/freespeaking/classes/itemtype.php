@@ -19,6 +19,7 @@ namespace minilessonitem_freespeaking;
 use mod_minilesson\local\itemtype\item;
 
 use mod_minilesson\constants;
+use mod_minilesson\local\cpage;
 use mod_minilesson\utils;
 use stdClass;
 
@@ -44,6 +45,8 @@ class itemtype extends item {
     public const HIDECORRECTION = 'customint6';
     public const SHOWGRADE = 'customint7';
     public const SHOWRESULT = 'customint8';
+    public const COMMUNITYPAGE = 'customint9';
+    public const COMMUNITYLIKES = 'customint10';
 
     // The item type.
     /**
@@ -125,11 +128,61 @@ class itemtype extends item {
         $testitem->expiredays = 365;
         $testitem->savemediaregion = $this->moduleinstance->region;
 
+        // Community page.
+        $testitem->communitypage = $this->community_page_enabled();
+        $testitem->communitylikes = $this->community_likes_enabled();
+        if ($testitem->communitypage) {
+            global $USER, $PAGE;
+            $submission = cpage::get_submission($this->itemrecord->id, $USER->id);
+            $testitem->cpageconsent = $submission && !empty($submission->consent);
+            $testitem->cpagethreshold = $this->community_eligibility_grade();
+            // The user's own display data, so their fresh submission can be
+            // shown on the community page before it is saved server side.
+            $userpicture = new \user_picture($USER);
+            $userpicture->size = 64;
+            $testitem->myfullname = fullname($USER);
+            $testitem->myprofileimageurl = $userpicture->get_url($PAGE)->out(false);
+            $countries = get_string_manager()->get_list_of_countries(true);
+            $testitem->mycountry = isset($countries[$USER->country]) ? $countries[$USER->country] : '';
+        }
+
         // Cloudpoodll.
         $maxtime = $this->itemrecord->timelimit;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
 
         return $testitem;
+    }
+
+    /**
+     * Is the community page on for this item (site setting AND item setting)?
+     *
+     * @return bool
+     */
+    public function community_page_enabled() {
+        return cpage::is_enabled_sitewide() && !empty($this->itemrecord->{self::COMMUNITYPAGE});
+    }
+
+    /**
+     * Are likes allowed on this item's community page?
+     *
+     * @return bool
+     */
+    public function community_likes_enabled() {
+        return $this->community_page_enabled() && !empty($this->itemrecord->{self::COMMUNITYLIKES});
+    }
+
+    /**
+     * The minimum step grade (percent) for a submission to be eligible.
+     *
+     * The COMMUNITYPAGE column stores the threshold itself: 0 = disabled,
+     * otherwise the minimum grade. A legacy value of 1 (from when the column
+     * was a checkbox) means the default threshold.
+     *
+     * @return int
+     */
+    public function community_eligibility_grade() {
+        $value = (int) $this->itemrecord->{self::COMMUNITYPAGE};
+        return $value > 1 ? $value : cpage::ELIGIBLE_GRADE;
     }
 
     public static function validate_import($newrecord, $cm) {
@@ -167,6 +220,8 @@ class itemtype extends item {
         $keycols['int6'] = ['jsonname' => 'hidecorrections', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => self::HIDECORRECTION];
         $keycols['int7'] = ['jsonname' => 'showgrade', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::SHOWGRADE];
         $keycols['int8'] = ['jsonname' => 'showresult', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::SHOWRESULT];
+        $keycols['int9'] = ['jsonname' => 'communitypage', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => self::COMMUNITYPAGE];
+        $keycols['int10'] = ['jsonname' => 'communitylikes', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => self::COMMUNITYLIKES];
         $keycols['text6'] = ['jsonname' => 'aigradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_INSTRUCTIONS];
         $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
         $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];
@@ -223,10 +278,30 @@ class itemtype extends item {
         $result->questext = str_replace($search, $replace, $result->questext);
         $result->hascorrectanswer = false;
         $result->hasincorrectanswer = false;
+        // Community page button on the item's results header on the quiz finished page.
+        if ($this->community_page_enabled()) {
+            $result->hascommunitypage = true;
+            $result->cpageitemid = $items->id;
+        }
         if (isset($result->resultsdata)) {
             $result->hasanswerdetails = true;
             // The free writing and reading both need to be told to show no reattempt button.
             $result->resultsdata->noreattempt = true;
+            // Community page consent toggle on the quiz finished page.
+            if ($this->community_page_enabled()) {
+                global $USER;
+                $cpagedata = new stdClass();
+                $cpagedata->itemid = $items->id;
+                $cpagedata->canshare = cpage::can_share(
+                    $items,
+                    $this->moduleinstance,
+                    $USER->id,
+                    $this->community_eligibility_grade()
+                );
+                $submission = cpage::get_submission($items->id, $USER->id);
+                $cpagedata->consent = $submission && !empty($submission->consent);
+                $result->resultsdata->cpage = $cpagedata;
+            }
             $result->resultsdatajson = json_encode(
                 $result->resultsdata,
                 JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE

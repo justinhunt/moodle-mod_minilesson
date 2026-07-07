@@ -77,6 +77,19 @@
     {{/feedback}}
   </ul>
 </div>
+{{#cpage}}
+  {{^teacherreport}}
+    {{#canshare}}
+      <div class="ml_cpage_consent form-check" data-itemid="{{itemid}}">
+        <input class="form-check-input ml_cpage_consent_checkbox" type="checkbox"
+               id="{{uniqid}}_cpage_consent" {{#consent}}checked{{/consent}}>
+        <label class="form-check-label" for="{{uniqid}}_cpage_consent">
+          <b>{{#str}}cpage_sharethis, mod_minilesson{{/str}}</b>: {{#str}}cpage_sharethis_details, mod_minilesson{{/str}}
+        </label>
+      </div>
+    {{/canshare}}
+  {{/teacherreport}}
+{{/cpage}}
 {{^noreattempt}}
   <div class="minilesson_actionbutton">
     <a class="btn center reattempt_btn" href="#" id = "{{uniqid}}_reattempt">
@@ -88,7 +101,15 @@
 
 {{^element.frozen}}
   {{#js}}
-      require(['jquery', 'core/notification', 'core/log'], function($, notification, log) {
+      require(['jquery', 'core/notification', 'core/log', 'core/ajax'], function($, notification, log, Ajax) {
+        var consentbox = $('#{{uniqid}}_cpage_consent');
+        consentbox.on('change', function(e) {
+          var itemid = consentbox.closest('.ml_cpage_consent').data('itemid');
+          Ajax.call([{
+              methodname: 'mod_minilesson_set_cpage_consent',
+              args: {itemid: itemid, consent: e.target.checked}
+          }])[0].fail(notification.exception);
+        });
         var reattemptbutton = $('#{{uniqid}}_reattempt');
         reattemptbutton.on('click',function(e){
           e.preventDefault();

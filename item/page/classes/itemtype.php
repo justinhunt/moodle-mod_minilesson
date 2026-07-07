@@ -33,6 +33,9 @@ class itemtype extends item
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_CONTENT];
 
+    /** @var bool this item type produces no grade/result. */
+    public $gradeable = false;
+
     //the item type
     /**
      * Export the data for the mustache template.

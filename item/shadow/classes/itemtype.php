@@ -31,6 +31,8 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_LISTENING, constants::SKILL_SPEAKING, constants::SKILL_PRONUNCIATION];
 
+    /** @var bool this item type produces no grade/result. */
+    public $gradeable = false;
 
     /** @var string the column holding the WebVTT subtitle text */
     public const VTT = 'customtext1';

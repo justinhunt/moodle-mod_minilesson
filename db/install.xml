@@ -232,5 +232,37 @@
               <INDEX NAME="idx_minilesson" UNIQUE="false" FIELDS="minilesson"/>
           </INDEXES>
       </TABLE>
+      <TABLE NAME="minilesson_cpagesubmissions" COMMENT="Community page sharing consent and like counts, one row per item + user">
+          <FIELDS>
+              <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+              <FIELD NAME="itemid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="id of the minilesson_rsquestions row (lesson item)"/>
+              <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="id of the submitting user"/>
+              <FIELD NAME="consent" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="1 if the user consented to sharing their submission"/>
+              <FIELD NAME="likes" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="denormalized count of likes for this submission"/>
+              <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+              <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+          </FIELDS>
+          <KEYS>
+              <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+          </KEYS>
+          <INDEXES>
+              <INDEX NAME="idx_itemid_userid" UNIQUE="true" FIELDS="itemid, userid"/>
+          </INDEXES>
+      </TABLE>
+      <TABLE NAME="minilesson_cpagelikes" COMMENT="Which user liked which community page submission">
+          <FIELDS>
+              <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+              <FIELD NAME="submissionid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="id of the minilesson_cpagesubmissions row"/>
+              <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="id of the user who liked the submission"/>
+              <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+          </FIELDS>
+          <KEYS>
+              <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+              <KEY NAME="fksubmissionid" TYPE="foreign" FIELDS="submissionid" REFTABLE="minilesson_cpagesubmissions" REFFIELDS="id"/>
+          </KEYS>
+          <INDEXES>
+              <INDEX NAME="idx_submission_userid" UNIQUE="true" FIELDS="submissionid, userid"/>
+          </INDEXES>
+      </TABLE>
   </TABLES>
 </XMLDB>

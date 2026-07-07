@@ -601,6 +601,37 @@ $string['choosenativelanguage'] = 'Choose Native Language';
 $string['audiostorytimes'] = 'Image Entry Times';
 $string['audiostoryfiles'] = 'Audio Story Files';
 
+// Community page.
+$string['enablecommunitypage'] = 'Enable community page';
+$string['enablecommunitypage_details'] = 'Allow item types that support it (e.g. Free Speaking) to show a community page, where students can hear submissions that other students scored well on and consented to share.';
+$string['cpage_enable'] = 'Community page';
+$string['cpage_enable_details'] = 'Show a community page after the results page, where students can hear submissions that other students consented to share. Only submissions that scored at or above the selected grade are shown.';
+$string['cpage_disabled'] = 'Disabled';
+$string['cpage_threshold_option'] = 'Enabled: submissions scoring {$a}% or more are shown';
+$string['cpage_enablelikes'] = 'Allow likes on community page';
+$string['cpage_enablelikes_details'] = 'Show a like button under each shared submission, and allow sorting by like count.';
+$string['cpage_title'] = 'Community page';
+$string['cpage_intro'] = 'Listen to submissions shared by other students.';
+$string['cpage_nosubmissions'] = 'There are currently no shared submissions to view.';
+$string['cpage_sharethis'] = 'Share this';
+$string['cpage_sharethis_details'] = 'I consent to my submission, including my voice recording, being shared with other students on the community page.';
+$string['cpage_consentsaved'] = 'Your sharing preference was saved.';
+$string['cpage_yoursubmission'] = 'Your submission';
+$string['cpage_like'] = 'Like';
+$string['cpage_more'] = 'more...';
+$string['cpage_sortby'] = 'Sort by';
+$string['cpage_sortdate'] = 'Newest';
+$string['cpage_sortlikes'] = 'Most liked';
+$string['privacy:metadata:cpagesubmissionstable'] = 'Stores whether a user consented to sharing their submission on the community page, and its like count.';
+$string['privacy:metadata:cpagesubmissions:itemid'] = 'The lesson item the consent applies to';
+$string['privacy:metadata:cpagesubmissions:userid'] = 'The user who gave or withheld consent';
+$string['privacy:metadata:cpagesubmissions:consent'] = 'Whether the user consented to sharing their submission';
+$string['privacy:metadata:cpagesubmissions:likes'] = 'The number of likes the shared submission received';
+$string['privacy:metadata:cpagelikestable'] = 'Stores which community page submissions a user liked.';
+$string['privacy:metadata:cpagelikes:submissionid'] = 'The shared submission that was liked';
+$string['privacy:metadata:cpagelikes:userid'] = 'The user who liked the submission';
+$string['privacy:metadata:cpagelikes:timecreated'] = 'When the like was given';
+
 // showtextprompt
 $string['enablesetuptab'] = "Enable setup tab";
 $string['enablesetuptab_details'] = "Don't check this. It will show a tab containing the activity instance settings to admins. This is for a special use case and minilesson pages will show without headers,footers or blocks.";
@@ -748,6 +779,8 @@ $string['readsentences_desc'] = 'If checked each sentence will be read aloud. It
 $string['allowretry'] = 'Allow retry';
 $string['allowretry_desc'] = 'If checked allows students to submit new attempts, if their previous response was not correct.';
 $string['audiochatretry_desc'] = 'If checked students can re-start the chat session again immediately after they finish.';
+$string['audiochat_topic_instructions'] = 'Set the topic field that will be used in the AI prompt here. This field is for use by AI but it will also be displayed to the user as the discussion topic if the Item text/question field is empty.';
+$string['audiochat_role_instructions'] = 'Set the role that the AI chat bot will take in the conversation. e.g a kind teacher.';
 $string['eventminilessonstepsubmitted'] = 'Minilesson step submitted';
 $string['eventminilessonattemptsubmitted'] = 'Minilesson attempt submitted';
 $string['import'] = 'Import';

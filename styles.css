@@ -3393,6 +3393,96 @@ span.wrongitem {
     transform: translateY(0);
   }
 }
+.ml_qf_cpage {
+  padding: 12px;
+  border-top: 1px solid #dddff1;
+}
+
+.ml_cpage {
+  width: 100%;
+  text-align: left;
+}
+.ml_cpage .ml_cpage_title {
+  color: #414C81;
+}
+.ml_cpage .ml_cpage_consent {
+  background-color: #F3F5FD;
+  border: 1px solid #DEE2FC;
+  border-radius: 6px;
+  padding: 12px 12px 12px 36px;
+  margin-bottom: 16px;
+}
+.ml_cpage .ml_cpage_entries {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 767px) {
+  .ml_cpage .ml_cpage_entries {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.ml_cpage .ml_cpage_entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid #dddff1;
+  border-radius: 6px;
+  padding: 12px;
+  background-color: #FFFFFF;
+}
+.ml_cpage .ml_cpage_entry.ml_cpage_entry_own {
+  border-color: #C7D2FF;
+  background-color: #FBFBFE;
+}
+.ml_cpage .ml_cpage_entry_avatar {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #E6E9FD;
+}
+.ml_cpage .ml_cpage_entry_body {
+  flex-grow: 1;
+  min-width: 0;
+}
+.ml_cpage .ml_cpage_entry_meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.ml_cpage .ml_cpage_entry_meta .ml_cpage_entry_fullname {
+  font-weight: 600;
+  color: #414C81;
+}
+.ml_cpage .ml_cpage_entry_meta .ml_cpage_entry_country,
+.ml_cpage .ml_cpage_entry_meta .ml_cpage_entry_date {
+  color: #57578F;
+  font-size: 0.85em;
+}
+.ml_cpage .ml_cpage_entry_transcript {
+  margin: 6px 0 0;
+  color: #57578F;
+  font-size: 0.9em;
+}
+.ml_cpage .ml_cpage_entry_transcript p {
+  margin: 0;
+}
+.ml_cpage .ml_cpage_entry_transcript .ml_cpage_transcript_morelink {
+  font-size: 0.85em;
+}
+.ml_cpage .ml_cpage_entry_likes {
+  margin-top: 6px;
+}
+.ml_cpage .ml_cpage_entry_likes .ml_cpage_likebtn.active {
+  background-color: #E6E9FD;
+  border-color: #C7D2FF;
+  color: #3C51DA;
+}
+
 .minilesson_audiochat_box {
   box-shadow: none;
   width: 100%;

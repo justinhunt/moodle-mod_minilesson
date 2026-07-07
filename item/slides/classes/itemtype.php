@@ -32,6 +32,8 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_CONTENT];
 
+    /** @var bool this item type produces no grade/result. */
+    public $gradeable = false;
 
     public const MARKDOWN = 'customtext1';
     public const FULLSCREEN = 'customint1';

@@ -290,6 +290,14 @@ if ($hassiteconfig) {
         0
     ));
 
+    // Community page (shared student submissions on supporting item types).
+    $mainsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/enablecommunitypage',
+        get_string('enablecommunitypage', constants::M_COMPONENT),
+        get_string('enablecommunitypage_details', constants::M_COMPONENT),
+        0
+    ));
+
     // Native Language Setting
     $mainsettings->add(new admin_setting_configcheckbox(
         constants::M_COMPONENT .  '/setnativelanguage',

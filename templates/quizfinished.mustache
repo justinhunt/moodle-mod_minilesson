@@ -20,8 +20,14 @@
     <div class="panel-group" id="accordion">
         <div class="btn-primary mod_minilesson_result_index">{{index}}</div>
         <div class="panel panel-default">
-            <div class="panel-heading">
+            <div class="panel-heading d-flex justify-content-between align-items-center">
                 <h4 class="panel-title"> <a class="accordion-toggle mod_minilesson_result_title " data-bs-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#accordion{{index}}">  {{title}}</a> </h4>
+                {{#hascommunitypage}}
+                    <button type="button" class="btn btn-secondary btn-sm mod_minilesson_finishedcpagelink"
+                            data-itemid="{{cpageitemid}}" data-target="ml_cpage_container_{{index}}">
+                        {{#str}}cpage_title, mod_minilesson{{/str}}
+                    </button>
+                {{/hascommunitypage}}
             </div>
             <div id="accordion{{index}}" class="panel-collapse collapse show in">
                 <div class="panel-body">
@@ -62,6 +68,9 @@
                     <div id="ml_answerdetails_container_{{index}}" class="ml_qf_itemresults" style="display: none"></div>
                 </div>
             </div>
+            {{#hascommunitypage}}
+                <div id="ml_cpage_container_{{index}}" class="ml_qf_cpage" style="display: none"></div>
+            {{/hascommunitypage}}
         </div>
     </div>
 </div>

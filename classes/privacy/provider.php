@@ -86,6 +86,19 @@ class provider implements
         ];
         $collection->add_database_table(constants::M_ATTEMPTSTABLE, $userdetail, 'privacy:metadata:attempttable');
 
+        $collection->add_database_table(constants::M_CPAGESUBMISSIONS_TABLE, [
+            'itemid' => 'privacy:metadata:cpagesubmissions:itemid',
+            'userid' => 'privacy:metadata:cpagesubmissions:userid',
+            'consent' => 'privacy:metadata:cpagesubmissions:consent',
+            'likes' => 'privacy:metadata:cpagesubmissions:likes',
+        ], 'privacy:metadata:cpagesubmissionstable');
+
+        $collection->add_database_table(constants::M_CPAGELIKES_TABLE, [
+            'submissionid' => 'privacy:metadata:cpagelikes:submissionid',
+            'userid' => 'privacy:metadata:cpagelikes:userid',
+            'timecreated' => 'privacy:metadata:cpagelikes:timecreated',
+        ], 'privacy:metadata:cpagelikestable');
+
         $collection->add_external_location_link('cloud.poodll.com', [
             'userid' => 'privacy:metadata:cloudpoodllcom:userid'
         ], 'privacy:metadata:cloudpoodllcom');
@@ -116,6 +129,29 @@ class provider implements
             ] ;
 
         $contextlist = new contextlist();
+        $contextlist->add_from_sql($sql, $params);
+
+        // Community page consent rows.
+        $sql = "SELECT c.id
+                  FROM {context} c
+            INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+            INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+            INNER JOIN {" . constants::M_TABLE . "} actt ON actt.id = cm.instance
+            INNER JOIN {" . constants::M_QTABLE . "} q ON q.minilesson = actt.id
+            INNER JOIN {" . constants::M_CPAGESUBMISSIONS_TABLE . "} sub ON sub.itemid = q.id
+                 WHERE sub.userid = :theuserid";
+        $contextlist->add_from_sql($sql, $params);
+
+        // Community page likes given by the user.
+        $sql = "SELECT c.id
+                  FROM {context} c
+            INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+            INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+            INNER JOIN {" . constants::M_TABLE . "} actt ON actt.id = cm.instance
+            INNER JOIN {" . constants::M_QTABLE . "} q ON q.minilesson = actt.id
+            INNER JOIN {" . constants::M_CPAGESUBMISSIONS_TABLE . "} sub ON sub.itemid = q.id
+            INNER JOIN {" . constants::M_CPAGELIKES_TABLE . "} lk ON lk.submissionid = sub.id
+                 WHERE lk.userid = :theuserid";
         $contextlist->add_from_sql($sql, $params);
 
         return $contextlist;
@@ -150,6 +186,29 @@ class provider implements
             'modname' => constants::M_MODNAME,
         ];
 
+        $userlist->add_from_sql('userid', $sql, $params);
+
+        // Community page consent rows.
+        $sql = "SELECT sub.userid
+                  FROM {context} c
+                  JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+                  JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+                  JOIN {" . constants::M_TABLE . "} actt ON actt.id = cm.instance
+                  JOIN {" . constants::M_QTABLE . "} q ON q.minilesson = actt.id
+                  JOIN {" . constants::M_CPAGESUBMISSIONS_TABLE . "} sub ON sub.itemid = q.id
+                 WHERE c.id = :contextid";
+        $userlist->add_from_sql('userid', $sql, $params);
+
+        // Community page likes.
+        $sql = "SELECT lk.userid
+                  FROM {context} c
+                  JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+                  JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+                  JOIN {" . constants::M_TABLE . "} actt ON actt.id = cm.instance
+                  JOIN {" . constants::M_QTABLE . "} q ON q.minilesson = actt.id
+                  JOIN {" . constants::M_CPAGESUBMISSIONS_TABLE . "} sub ON sub.itemid = q.id
+                  JOIN {" . constants::M_CPAGELIKES_TABLE . "} lk ON lk.submissionid = sub.id
+                 WHERE c.id = :contextid";
         $userlist->add_from_sql('userid', $sql, $params);
     }
 
@@ -203,6 +262,66 @@ class provider implements
                 self::export_attempt_data_for_user($attemptdata, $context, $user);
         }
         $attempts->close();
+
+        self::export_cpage_data_for_user($contextsql, $contextparams, $user);
+    }
+
+    /**
+     * Export the user's community page consents and likes for the given contexts.
+     *
+     * @param string $contextsql sql fragment matching the approved contexts
+     * @param array $contextparams params for the fragment
+     * @param \stdClass $user the user record
+     */
+    protected static function export_cpage_data_for_user($contextsql, $contextparams, $user)
+    {
+        global $DB;
+
+        $baseparams = [
+                'userid' => $user->id,
+                'modulename' => constants::M_MODNAME,
+                'contextlevel' => CONTEXT_MODULE
+            ] + $contextparams;
+
+        // Consent rows.
+        $sql = "SELECT sub.id, cm.id AS cmid, sub.itemid, sub.consent, sub.likes, sub.timemodified
+                  FROM {" . constants::M_CPAGESUBMISSIONS_TABLE . "} sub
+                  JOIN {" . constants::M_QTABLE . "} q ON q.id = sub.itemid
+                  JOIN {" . constants::M_TABLE . "} actt ON actt.id = q.minilesson
+                  JOIN {course_modules} cm ON actt.id = cm.instance
+                  JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
+                  JOIN {context} c ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+                 WHERE c.id {$contextsql}
+                   AND sub.userid = :userid";
+        $cpagedata = [];
+        foreach ($DB->get_records_sql($sql, $baseparams) as $submission) {
+            $submission->timemodified = \core_privacy\local\request\transform::datetime($submission->timemodified);
+            $cpagedata[$submission->cmid]['submissions'][] = get_object_vars($submission);
+        }
+
+        // Likes the user gave.
+        $sql = "SELECT lk.id, cm.id AS cmid, sub.itemid, lk.submissionid, lk.timecreated
+                  FROM {" . constants::M_CPAGELIKES_TABLE . "} lk
+                  JOIN {" . constants::M_CPAGESUBMISSIONS_TABLE . "} sub ON sub.id = lk.submissionid
+                  JOIN {" . constants::M_QTABLE . "} q ON q.id = sub.itemid
+                  JOIN {" . constants::M_TABLE . "} actt ON actt.id = q.minilesson
+                  JOIN {course_modules} cm ON actt.id = cm.instance
+                  JOIN {modules} m ON cm.module = m.id AND m.name = :modulename
+                  JOIN {context} c ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+                 WHERE c.id {$contextsql}
+                   AND lk.userid = :userid";
+        foreach ($DB->get_records_sql($sql, $baseparams) as $like) {
+            $like->timecreated = \core_privacy\local\request\transform::datetime($like->timecreated);
+            $cpagedata[$like->cmid]['likesgiven'][] = get_object_vars($like);
+        }
+
+        foreach ($cpagedata as $cmid => $data) {
+            $context = \context_module::instance($cmid);
+            writer::with_context($context)->export_data(
+                [get_string('cpage_title', constants::M_COMPONENT)],
+                (object) $data
+            );
+        }
     }
 
     /**
@@ -249,6 +368,58 @@ class provider implements
 
         // Now delete all attempts
         $DB->delete_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $instanceid]);
+
+        // And all community page data for the activity's items.
+        $itemids = $DB->get_fieldset_select(constants::M_QTABLE, 'id', 'minilesson = ?', [$instanceid]);
+        if ($itemids) {
+            list($insql, $inparams) = $DB->get_in_or_equal($itemids);
+            $subids = $DB->get_fieldset_select(constants::M_CPAGESUBMISSIONS_TABLE, 'id', "itemid $insql", $inparams);
+            if ($subids) {
+                list($subinsql, $subinparams) = $DB->get_in_or_equal($subids);
+                $DB->delete_records_select(constants::M_CPAGELIKES_TABLE, "submissionid $subinsql", $subinparams);
+                $DB->delete_records_select(constants::M_CPAGESUBMISSIONS_TABLE, "id $subinsql", $subinparams);
+            }
+        }
+    }
+
+    /**
+     * Delete community page data (consents + likes) for a set of users in one activity instance.
+     *
+     * @param int $instanceid the minilesson instance id
+     * @param array $userids the users to delete for
+     */
+    protected static function delete_cpage_data_for_users($instanceid, array $userids)
+    {
+        global $DB;
+
+        $itemids = $DB->get_fieldset_select(constants::M_QTABLE, 'id', 'minilesson = ?', [$instanceid]);
+        if (!$itemids || !$userids) {
+            return;
+        }
+        list($iteminsql, $iteminparams) = $DB->get_in_or_equal($itemids, SQL_PARAMS_NAMED, 'item');
+        list($userinsql, $userinparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED, 'usr');
+        $params = $iteminparams + $userinparams;
+
+        // Likes the users gave on any submission in this activity.
+        $DB->delete_records_select(
+            constants::M_CPAGELIKES_TABLE,
+            "userid $userinsql AND submissionid IN (
+                SELECT id FROM {" . constants::M_CPAGESUBMISSIONS_TABLE . "} WHERE itemid $iteminsql)",
+            $params
+        );
+
+        // The users' own submissions, and any likes on them.
+        $subids = $DB->get_fieldset_select(
+            constants::M_CPAGESUBMISSIONS_TABLE,
+            'id',
+            "userid $userinsql AND itemid $iteminsql",
+            $params
+        );
+        if ($subids) {
+            list($subinsql, $subinparams) = $DB->get_in_or_equal($subids);
+            $DB->delete_records_select(constants::M_CPAGELIKES_TABLE, "submissionid $subinsql", $subinparams);
+            $DB->delete_records_select(constants::M_CPAGESUBMISSIONS_TABLE, "id $subinsql", $subinparams);
+        }
     }
 
     /**
@@ -268,6 +439,8 @@ class provider implements
         foreach ($contextlist->get_contexts() as $context) {
             if ($context->contextlevel == CONTEXT_MODULE) {
                 $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
+
+                self::delete_cpage_data_for_users($instanceid, [$userid]);
 
                 $entries = $DB->get_records(
                     constants::M_ATTEMPTSTABLE,
@@ -300,6 +473,9 @@ class provider implements
         $context = $userlist->get_context();
         $userids = $userlist->get_userids();
         $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
+
+        self::delete_cpage_data_for_users($instanceid, $userids);
+
         list($userinsql, $userinparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
 
         $attemptswhere = "moduleid = :instanceid AND userid {$userinsql}";

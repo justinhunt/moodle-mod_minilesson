@@ -71,6 +71,9 @@ abstract class item implements \templatable, \renderable {
     // NEEDS SPEECH REC
     protected $needsspeechrec = false;
 
+    /** @var bool whether this item type produces a grade/result. */
+    public $gradeable = true;
+
     /** @var bool show itemreview */
     protected $showitemreview = true;
 
@@ -1834,6 +1837,49 @@ abstract class item implements \templatable, \renderable {
         $result->hasanswerdetails = false;
         $result->correctans = [];
         $result->incorrectans = [];
+    }
+
+    /**
+     * Is the community page (shared student submissions) on for this item?
+     * Item types that support it (e.g. free speaking) override this.
+     *
+     * @return bool
+     */
+    public function community_page_enabled() {
+        return false;
+    }
+
+    /**
+     * Are likes allowed on this item's community page?
+     * Item types that support it (e.g. free speaking) override this.
+     *
+     * @return bool
+     */
+    public function community_likes_enabled() {
+        return false;
+    }
+
+    /**
+     * The minimum step grade (percent) for a submission to be eligible for
+     * this item's community page. Item types that make it configurable
+     * (e.g. free speaking) override this.
+     *
+     * @return int
+     */
+    public function community_eligibility_grade() {
+        return \mod_minilesson\local\cpage::ELIGIBLE_GRADE;
+    }
+
+    /**
+     * Does a community page submission for this item need an audio recording?
+     * True for spoken item types (the recording is the submission); written
+     * item types (e.g. free writing) override this to return false, and their
+     * community page shows the text with a "more" link instead.
+     *
+     * @return bool
+     */
+    public function community_needs_media() {
+        return true;
     }
 
     public static function is_configured() {

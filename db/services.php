@@ -222,6 +222,30 @@ $functions = [
             'type' => 'read',
             'ajax' => true,
         ],
+        'mod_minilesson_set_cpage_consent' => [
+            'classname' => 'mod_minilesson\external\set_cpage_consent',
+            'methodname' => 'execute',
+            'description' => 'Saves the current user\'s consent to share their submission on the community page',
+            'capabilities' => 'mod/minilesson:view',
+            'type' => 'write',
+            'ajax' => true,
+        ],
+        'mod_minilesson_get_cpage_submissions' => [
+            'classname' => 'mod_minilesson\external\get_cpage_submissions',
+            'methodname' => 'execute',
+            'description' => 'Returns the shared submissions for an item\'s community page',
+            'capabilities' => 'mod/minilesson:view',
+            'type' => 'read',
+            'ajax' => true,
+        ],
+        'mod_minilesson_toggle_cpage_like' => [
+            'classname' => 'mod_minilesson\external\toggle_cpage_like',
+            'methodname' => 'execute',
+            'description' => 'Toggles the current user\'s like on a community page submission',
+            'capabilities' => 'mod/minilesson:view',
+            'type' => 'write',
+            'ajax' => true,
+        ],
 ];
 
 $services = [

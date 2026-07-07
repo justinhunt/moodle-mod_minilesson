@@ -60,10 +60,14 @@ class itemform extends baseform {
         // The topic for the audio chat.
         $this->add_textarearesponse(itemtype::TOPIC, get_string('audiochat_topic', constants::M_COMPONENT), true);
         $mform->setDefault(itemtype::TOPIC, get_string('audiochat_topic_default', constants::M_COMPONENT));
+        // add some instructions for topic
+        $this->add_static_text('audiochat_topic_instructions', '', get_string('audiochat_topic_instructions', constants::M_COMPONENT));
 
         // The role of the AI.
         $this->add_textarearesponse(itemtype::ROLE, get_string('audiochat_role', constants::M_COMPONENT), true);
         $mform->setDefault(itemtype::ROLE, get_string('audiochat_role_default', constants::M_COMPONENT));
+        // add some instructions for role
+        $this->add_static_text('role_instructions', '', get_string('audiochat_role_instructions', constants::M_COMPONENT));
 
         // The voice of the AI.
         $options = ['alloy' => 'Alloy', 'ash' => 'Ash', 'ballad' => 'Ballad',

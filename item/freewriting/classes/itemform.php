@@ -146,6 +146,30 @@ class itemform extends baseform {
         $this->add_dropdown(itemtype::SHOWRESULT, get_string('showresult', constants::M_COMPONENT), $options, 1);
         $this->add_checkbox(itemtype::HIDECORRECTION, get_string('hidecorrection', constants::M_COMPONENT), null, 0);
 
+        // Community page (only offered when the site admin has enabled the feature).
+        // The dropdown value is the minimum grade for a submission to be eligible
+        // for display on the community page (0 = community page disabled).
+        if (\mod_minilesson\local\cpage::is_enabled_sitewide()) {
+            $options = [0 => get_string('cpage_disabled', constants::M_COMPONENT)];
+            foreach ([90, 80, 70, 60, 50, 40] as $threshold) {
+                $options[$threshold] = get_string('cpage_threshold_option', constants::M_COMPONENT, $threshold);
+            }
+            $this->add_dropdown(
+                itemtype::COMMUNITYPAGE,
+                get_string('cpage_enable', constants::M_COMPONENT),
+                $options,
+                0
+            );
+            $this->add_static_text('cpage_instructions', '', get_string('cpage_enable_details', constants::M_COMPONENT));
+            $this->add_checkbox(
+                itemtype::COMMUNITYLIKES,
+                get_string('cpage_enablelikes', constants::M_COMPONENT),
+                get_string('cpage_enablelikes_details', constants::M_COMPONENT),
+                0
+            );
+            $mform->disabledIf(itemtype::COMMUNITYLIKES, itemtype::COMMUNITYPAGE, 'eq', 0);
+        }
+
         // The custom AI data fields
         $mform->addElement('header', 'aicontextheading', get_string('aicontextheading', constants::M_COMPONENT));
         $mform->setExpanded('aicontextheading');

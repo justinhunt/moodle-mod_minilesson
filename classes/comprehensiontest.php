@@ -124,6 +124,7 @@ class comprehensiontest
         // prepare data array for test
         $testitems = [];
         $currentitem = 0;
+        $singletitem = null;
         foreach ($items as $item) {
             $currentitem++;
             $titem = utils::fetch_item_from_itemrecord($item, $this->mod, $this->context);
@@ -137,7 +138,15 @@ class comprehensiontest
                 $renderer = $OUTPUT;
             }
             $testitems[] = $titem->export_for_template($renderer);
+            $singletitem = $titem;
         }//end of loop
+
+        // If the lesson is a single ungradeable item, there are no results to show
+        // and nothing to reset, so there is no quizfinished page to advance to. Hide
+        // the "next" button (the questionfooter partial inherits the item's context).
+        if (count($testitems) === 1 && $singletitem !== null && !$singletitem->gradeable) {
+            $testitems[0]->hidenextbutton = true;
+        }
 
         //Store the test items in the class property for later use
         $this->quizdata = $testitems;

@@ -51,10 +51,13 @@ define(['jquery', 'mod_minilesson/progresstimer'], function ($) {
         },
 
         register_events() {
-            this.nextbutton.addEventListener('click', e => {
-                e.preventDefault();
-                this.next_question();
-            });
+            // The next button is absent for a single ungradeable item (no quizfinished page).
+            if (this.nextbutton) {
+                this.nextbutton.addEventListener('click', e => {
+                    e.preventDefault();
+                    this.next_question();
+                });
+            }
             this.$container.on('showElement', () => {
                 this.load_swiper(Swiper => this.init_swiper(Swiper));
             });
@@ -129,7 +132,9 @@ define(['jquery', 'mod_minilesson/progresstimer'], function ($) {
                     height: '5px',
                     timeLimit: this.itemdata.timelimit,
                     onFinish: () => {
-                        this.nextbutton.click();
+                        if (this.nextbutton) {
+                            this.nextbutton.click();
+                        }
                     }
                 });
             }
