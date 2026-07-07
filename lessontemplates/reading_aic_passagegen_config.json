@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Generate a passage of text (ttspassage) in {language} suitable for {level} level learners on the topic of: [{topic}] The passage should take about 1 minute to read aloud. \nThe passage should be engaging and appropriate for the target audience. Also generate a short title for the text (data1). Also generate 4 open short answer questions (data2) each on a new line, suitable for {level} learners of {language}, to check the learners understanding of the passage.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "ttspassage",
@@ -57,12 +58,8 @@
             "itemnumber": 1,
             "prompt": "",
             "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
-                {
-                    "name": "text",
-                    "generate": 1,
-                    "mapping": "item0_data1"
-                },
                 {
                     "name": "passage",
                     "generate": 1,
@@ -106,11 +103,12 @@
             "itemnumber": 2,
             "prompt": "",
             "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
-                    "name": "textarea",
-                    "generate": 0,
-                    "mapping": ""
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": "item0_data1"
                 },
                 {
                     "name": "audiochatrole",
@@ -185,7 +183,8 @@
     "lessonTitle": "Reading + AI Chat (Generated passage)",
     "lessonDescription": "This will take a topic and learner level and generate a reading passage that will be used in a passage reading and then an audio chat session that is based on the reading passage.",
     "uniqueid": "6899607f96fb7",
-    "version": "7",
+    "version": "8",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,

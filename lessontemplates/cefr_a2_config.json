@@ -1,0 +1,544 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Create a one dimensional array of pipe delimited strings (sentences), of the following pattern: keyword|keyword-translation|keyword-examplesentence \nThe keywords to use are contained in this list: [{keywords}].  \n The translation language is: {nativelanguage}. The keyword and example sentence language is: {targetlanguage}\nAlso create a matching one dimensional array of image generation prompts (data1) to illustrate the keyword's in the same sense as it is used in the example sentence.",
+            "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "dictationstyle",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "nativelanguage",
+                    "mapping": "user_customdata1"
+                },
+                {
+                    "name": "targetlanguage",
+                    "mapping": "target_language"
+                }
+            ]
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "You are an ESL activity designer. You are designing a question where students choose the correct words to complete sentences.\n\nCreate a one dimensional array of grammatically correct sentences (data1), of between 4 and 10 words per sentence, in {language} suitable for {level} level learners from the following keywords [{keywords}].\n\nCreate a second array of the same sentences (sentences), but for each sentence:\ni) surround the keyword in the sentence with square brackets.\nii) create a translation of the sentence in {nativelanguage}\niii)  select 3 of the other keywords, and make a csv string with them. These will be the distractors.\niv) combine i), ii) and iii) into a single pipe delimited string.  e.g I watch [movies] at night|\u79c1\u306f\u591c\u306b\u6620\u753b\u3092\u898b\u308b\u3002|soccer,cake,healthy ",
+            "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "nativelanguage",
+                    "mapping": "user_customdata1"
+                }
+            ]
+        },
+        {
+            "itemnumber": 2,
+            "prompt": "Rewrite the following {language} text (passage), so that each instance of one of the keywords below is surrounded with square brackets, e.g The [purple] people [eater] is a song. \nKeywords:\n{keywords}\n \nText:\n{text}",
+            "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
+            "generatefields": [
+                {
+                    "name": "passage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "hidestartpage",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "keywords",
+                    "mapping": "user_keywords"
+                },
+                {
+                    "name": "text",
+                    "mapping": "user_text"
+                }
+            ]
+        },
+        {
+            "itemnumber": 3,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "sentences",
+                    "generate": 1,
+                    "mapping": "item1_data2"
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1_image",
+                    "generate": 1,
+                    "mapping": "item1_customfile1_image"
+                }
+            ],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 4,
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "audiochatrole",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "audiochatvoice",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "audiochatnativelanguage",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "audiochattopic",
+                    "generate": 1,
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "audiochatinstructions",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "audiochataidata1",
+                    "generate": 1,
+                    "mapping": "user_customdata2"
+                },
+                {
+                    "name": "audiochatgradeinstructions",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "targetwordcount",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "autoresponse",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "allowretry",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "feedbackselection",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "audioavatar",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [],
+            "promptfields": []
+        },
+        {
+            "itemnumber": 5,
+            "prompt": "Generate an oral discussion question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] ",
+            "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
+            "generatefields": [
+                {
+                    "name": "text",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedback",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradefeedbacklanguage",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "aigradeinstructions",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "totalmarks",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "relevance",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "targetwordcount",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "text"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "level",
+                    "mapping": "user_level"
+                },
+                {
+                    "name": "language",
+                    "mapping": "target_language"
+                },
+                {
+                    "name": "topic",
+                    "mapping": "user_customdata3"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "CEFR A2 Template",
+    "lessonDescription": "Enter 4 - 10 keywords, the native language to translate words into, a passage of text that uses those keywords and some related questions and topic for an audio chat, and a scene or situation to help make consistent images. Those inputs will be used to generate a set of vocab cards, word shuffle, listen and speak , audio chat and free speaking.",
+    "uniqueid": "6a4909ba67c08",
+    "version": "2",
+    "agentonly": 1,
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "A scene or situation",
+            "description": "Enter a scene or situation (e.g a party or a picnic) that will be used to guide content creation and image generation.",
+            "type": "text"
+        },
+        "user_level": {
+            "enabled": true,
+            "title": "Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Text Passage",
+            "description": "Enter a passage of text about 12 sentences long",
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": true,
+            "title": "Keywords",
+            "description": " A comma separated list of keywords for the activity",
+            "type": "textarea"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Native language",
+            "description": "The language the keyword definitions should be in.",
+            "type": "text"
+        },
+        "user_customdata2": {
+            "enabled": true,
+            "title": "Chat questions",
+            "description": "Enter a list of between 3 and 5 short answer questions, that the AI avatar will ask the student in an audio chat session.",
+            "type": "textarea"
+        },
+        "user_customdata3": {
+            "enabled": true,
+            "title": "Chat topic",
+            "description": "The topic that will be displayed to users when entering chat eg \"Meeting new people at a party\"",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": []
+}

@@ -1,0 +1,104 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/communitypage
+
+    Community page: anonymous shared submissions from other students on this item.
+
+    Context variables required for this template:
+    * itemid - the lesson item id
+    * entries - array of {submissionid, fullname, profileimageurl, country, transcript,
+      mediaurl, likes, submitdate, isowner, likedbyme}
+    * hasentries - whether there are entries to show
+    * showmore - whether to show a "more" link that expands the shortened transcript
+      to the full one (off for free speaking, where students should listen instead)
+    * likesenabled - whether the like button/sorting is on
+    * sortdate/sortlikes - which sort is active
+    * showconsent - whether to show the viewer's own share-this toggle
+    * myconsent - the viewer's current consent state
+}}
+<div class="ml_cpage" data-itemid="{{itemid}}">
+  <h4 class="ml_cpage_title">{{#str}}cpage_title, mod_minilesson{{/str}}</h4>
+  <p class="ml_cpage_intro">{{#str}}cpage_intro, mod_minilesson{{/str}}</p>
+  {{#showconsent}}
+    <div class="ml_cpage_consent form-check">
+      <input class="form-check-input ml_cpage_myconsent" type="checkbox"
+             id="{{uniqid}}_cpage_myconsent" {{#myconsent}}checked{{/myconsent}}>
+      <label class="form-check-label" for="{{uniqid}}_cpage_myconsent">
+        <b>{{#str}}cpage_sharethis, mod_minilesson{{/str}}</b>: {{#str}}cpage_sharethis_details, mod_minilesson{{/str}}
+      </label>
+    </div>
+  {{/showconsent}}
+  {{#likesenabled}}
+    {{#hasentries}}
+      <div class="ml_cpage_sort form-inline mb-3">
+        <label class="mr-2" for="{{uniqid}}_cpage_sort">{{#str}}cpage_sortby, mod_minilesson{{/str}}</label>
+        <select class="custom-select ml_cpage_sortselect" id="{{uniqid}}_cpage_sort">
+          <option value="date" {{#sortdate}}selected{{/sortdate}}>{{#str}}cpage_sortdate, mod_minilesson{{/str}}</option>
+          <option value="likes" {{#sortlikes}}selected{{/sortlikes}}>{{#str}}cpage_sortlikes, mod_minilesson{{/str}}</option>
+        </select>
+      </div>
+    {{/hasentries}}
+  {{/likesenabled}}
+  {{#hasentries}}
+    <div class="ml_cpage_entries">
+      {{#entries}}
+        <div class="ml_cpage_entry {{#isowner}}ml_cpage_entry_own{{/isowner}}" data-submissionid="{{submissionid}}">
+          <img class="ml_cpage_entry_avatar" src="{{profileimageurl}}" alt="">
+          <div class="ml_cpage_entry_body">
+            <div class="ml_cpage_entry_meta">
+              <span class="ml_cpage_entry_fullname">{{fullname}}</span>
+              {{#country}}<span class="ml_cpage_entry_country">{{country}}</span>{{/country}}
+              <span class="ml_cpage_entry_date">{{submitdate}}</span>
+              {{#isowner}}
+                <span class="badge badge-info">{{#str}}cpage_yoursubmission, mod_minilesson{{/str}}</span>
+              {{/isowner}}
+            </div>
+            {{#mediaurl}}
+              <audio controls preload="none" class="w-100">
+                <source src="{{mediaurl}}" type="audio/mpeg">
+              </audio>
+            {{/mediaurl}}
+            {{#transcript}}
+              <div class="ml_cpage_entry_transcript">
+                <p class="ml_cpage_entry_transcript_short">{{#shortentext}} 350, {{transcript}} {{/shortentext}}</p>
+                <p class="ml_cpage_entry_transcript_full" style="display: none;">{{transcript}}</p>
+                {{#showmore}}
+                  <a href="#" class="ml_cpage_transcript_morelink">{{#str}}cpage_more, mod_minilesson{{/str}}</a>
+                {{/showmore}}
+              </div>
+            {{/transcript}}
+            {{#likesenabled}}
+              <div class="ml_cpage_entry_likes">
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary ml_cpage_likebtn {{#likedbyme}}active{{/likedbyme}}"
+                        {{#isowner}}disabled{{/isowner}}>
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                  {{#str}}cpage_like, mod_minilesson{{/str}}
+                  <span class="ml_cpage_likecount badge badge-light">{{likes}}</span>
+                </button>
+              </div>
+            {{/likesenabled}}
+          </div>
+        </div>
+      {{/entries}}
+    </div>
+  {{/hasentries}}
+  {{^hasentries}}
+    <div class="ml_cpage_empty alert alert-info">{{#str}}cpage_nosubmissions, mod_minilesson{{/str}}</div>
+  {{/hasentries}}
+</div>

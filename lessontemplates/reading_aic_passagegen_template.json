@@ -31,6 +31,7 @@
       "type": "audiochat",
       "name": "Item: Audio Chat",
       "instructions": "Practice speaking with your AI partner about the topic.",
+	  "text": "Practice speaking with your AI partner about the topic.",
       "ttsvoice": "Joey",
       "audiofname": "00:00:00",
       "ttsdialog": [

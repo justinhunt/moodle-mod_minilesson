@@ -1,0 +1,109 @@
+@use '../../abstracts/variables' as *;
+
+// Community page (shared student submissions, e.g. after free speaking results)
+
+// Container on the quiz finished page (below an item's results panel).
+.ml_qf_cpage {
+  padding: 12px;
+  border-top: 1px solid $primary-border-pale;
+}
+
+.ml_cpage {
+  width: 100%;
+  text-align: left;
+
+  .ml_cpage_title {
+    color: $heading-navy;
+  }
+
+  .ml_cpage_consent {
+    background-color: $primary-lightest;
+    border: 1px solid $primary-border;
+    border-radius: 6px;
+    padding: 12px 12px 12px 36px;
+    margin-bottom: 16px;
+  }
+
+  // Two columns on desktop, one column on smaller screens.
+  .ml_cpage_entries {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+
+    @media (max-width: 767px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .ml_cpage_entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    border: 1px solid $primary-border-pale;
+    border-radius: 6px;
+    padding: 12px;
+    background-color: $white;
+
+    &.ml_cpage_entry_own {
+      border-color: $primary-border-medium;
+      background-color: $primary-ghost;
+    }
+  }
+
+  .ml_cpage_entry_avatar {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: $primary-light;
+  }
+
+  .ml_cpage_entry_body {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  .ml_cpage_entry_meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+
+    .ml_cpage_entry_fullname {
+      font-weight: 600;
+      color: $heading-navy;
+    }
+
+    .ml_cpage_entry_country,
+    .ml_cpage_entry_date {
+      color: $text-indigo;
+      font-size: 0.85em;
+    }
+  }
+
+  .ml_cpage_entry_transcript {
+    margin: 6px 0 0;
+    color: $text-indigo;
+    font-size: 0.9em;
+
+    p {
+      margin: 0;
+    }
+
+    .ml_cpage_transcript_morelink {
+      font-size: 0.85em;
+    }
+  }
+
+  .ml_cpage_entry_likes {
+    margin-top: 6px;
+
+    .ml_cpage_likebtn.active {
+      background-color: $primary-light;
+      border-color: $primary-border-medium;
+      color: $primary-dark;
+    }
+  }
+}

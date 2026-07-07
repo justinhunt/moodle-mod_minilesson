@@ -2,18 +2,19 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Generate a passage of text in {language} suitable for {level} level learners on the topic of: [{topic}] The passage should take about 1 minute to read aloud. \nThe passage should be engaging and appropriate for the target audience. Also generate 4 open short answer questions (data1) each on a new line, suitable for {level} learners of {language}, to check the learners understanding of the passage.",
-            "generatemethod": "generate",
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "ttspassage",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "user_topic"
                 },
                 {
                     "name": "data1",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "user_text"
                 },
                 {
                     "name": "data2",
@@ -37,32 +38,14 @@
                 }
             ],
             "generatefileareas": [],
-            "overallimagecontext": "target_language",
-            "promptfields": [
-                {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
-                    "name": "level",
-                    "mapping": "user_level"
-                },
-                {
-                    "name": "topic",
-                    "mapping": "user_topic"
-                }
-            ]
+            "promptfields": []
         },
         {
             "itemnumber": 1,
             "prompt": "",
             "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
-                {
-                    "name": "text",
-                    "generate": 0,
-                    "mapping": ""
-                },
                 {
                     "name": "passage",
                     "generate": 1,
@@ -104,12 +87,13 @@
         },
         {
             "itemnumber": 2,
-            "prompt": "",
-            "generatemethod": "reuse",
+            "prompt": "You are a language designing an audio chat with AI session. The topic being discussed is the passage of text that follows. Give that passage of text a brief title and set that to the \"text\" field. Set the full passage to the \"audiochattopic\" field. Set the discussion questions that follow to the \"audiochataidata1\" field. \npassage:\n{passage}\n\nquestions:\n{questions}",
+            "generatemethod": "extract",
+            "generatefileareasmethod": "extract",
             "generatefields": [
                 {
-                    "name": "textarea",
-                    "generate": 0,
+                    "name": "text",
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
@@ -125,7 +109,7 @@
                 {
                     "name": "audiochattopic",
                     "generate": 1,
-                    "mapping": "item0_ttspassage"
+                    "mapping": ""
                 },
                 {
                     "name": "audiochatinstructions",
@@ -135,7 +119,7 @@
                 {
                     "name": "audiochataidata1",
                     "generate": 1,
-                    "mapping": "item0_data1"
+                    "mapping": ""
                 },
                 {
                     "name": "audiochatgradeinstructions",
@@ -179,13 +163,24 @@
                 }
             ],
             "generatefileareas": [],
-            "promptfields": []
+            "overallimagecontext": "--",
+            "promptfields": [
+                {
+                    "name": "passage",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "questions",
+                    "mapping": "user_text"
+                }
+            ]
         }
     ],
     "lessonTitle": "Reading + AI Chat (Uploaded passage) ",
     "lessonDescription": "Paste in a reading passage, and 4 short answer questions. These will be used in a passage reading exercise and then an audio chat session that is based on the reading passage.",
     "uniqueid": "68996c17d07f5",
-    "version": "5",
+    "version": "6",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -200,7 +195,7 @@
             "type": "textarea"
         },
         "user_level": {
-            "enabled": false,
+            "enabled": true,
             "title": "Language Level",
             "description": "",
             "type": "dropdown",

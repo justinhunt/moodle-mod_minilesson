@@ -1165,5 +1165,14 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026070600, 'minilesson');
     }
 
+    if ($oldversion < 2026070700) {
+        // Register the new CEFR A2 default AI-generation template and pick up
+        // edits to existing default templates. Re-seeding is idempotent.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026070700, 'minilesson');
+    }
+
     return true;
 }
