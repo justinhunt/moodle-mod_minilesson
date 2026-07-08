@@ -61,6 +61,64 @@ define(['jquery', 'mod_minilesson/progresstimer'], function ($) {
             this.$container.on('showElement', () => {
                 this.load_swiper(Swiper => this.init_swiper(Swiper));
             });
+            this.init_card_audio();
+        },
+
+        /**
+         * Wire up the per-card audio players: mutual exclusion between the line 1 and line 3
+         * players, icon state syncing, and tap-to-play on card line 3.
+         */
+        init_card_audio() {
+            this.container.querySelectorAll('.swiper-slide').forEach((slide) => {
+                const audios = Array.from(slide.querySelectorAll('audio'));
+
+                // Only one player per card should sound at a time: starting one pauses the others.
+                audios.forEach((audio) => {
+                    audio.addEventListener('play', () => {
+                        audios.forEach((other) => {
+                            if (other !== audio) {
+                                other.pause();
+                            }
+                        });
+                    });
+                });
+
+                // Keep the line 1 round button icon in sync when its player is paused externally
+                // (mod_minilesson/ttsaudio only updates the icon on its own click and on 'ended').
+                const line1audio = slide.querySelector('audio.mod_minilesson_itemttsaudio');
+                if (line1audio) {
+                    line1audio.addEventListener('pause', () => {
+                        const icon = slide.querySelector('.samplettsaudio .fa');
+                        if (icon) {
+                            icon.classList.remove('fa-stop');
+                            icon.classList.add('fa-volume-up');
+                        }
+                    });
+                }
+
+                // Line 3: tapping the line or its speaker icon toggles playback of the hidden player.
+                const line3 = slide.querySelector('.cardline3-playable');
+                if (line3) {
+                    const audio = line3.querySelector('audio.cardline3-audio');
+                    const icon = line3.querySelector('.cardline3-audio-btn .fa');
+                    const showplaying = (playing) => {
+                        icon.classList.toggle('fa-stop', playing);
+                        icon.classList.toggle('fa-volume-up', !playing);
+                    };
+                    audio.addEventListener('play', () => showplaying(true));
+                    audio.addEventListener('pause', () => showplaying(false));
+                    audio.addEventListener('ended', () => showplaying(false));
+                    line3.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (!audio.paused && !audio.ended) {
+                            audio.pause();
+                            audio.currentTime = 0;
+                        } else {
+                            audio.play();
+                        }
+                    });
+                }
+            });
         },
 
         /**
@@ -141,17 +199,14 @@ define(['jquery', 'mod_minilesson/progresstimer'], function ($) {
         },
 
         settleAudioPlayback(slideEl, play) {
-            const audio = slideEl.querySelector('audio');
-            if (!audio) {
-                return;
-            }
             if (!play) {
-                audio.pause();
+                slideEl.querySelectorAll('audio').forEach((audio) => audio.pause());
                 return;
             }
-            if (audio.dataset.autoplay === '1') {
-                audio.play();
-                return;
+            // Only the line 1 player ever autoplays; line 3 audio is strictly tap-to-play.
+            const line1audio = slideEl.querySelector('audio.mod_minilesson_itemttsaudio');
+            if (line1audio && line1audio.dataset.autoplay === '1') {
+                line1audio.play();
             }
         }
     };

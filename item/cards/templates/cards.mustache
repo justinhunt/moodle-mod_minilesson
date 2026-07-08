@@ -14,8 +14,19 @@
                             <div class="cardline2">{{{ cardline2 }}}</div>
                             {{/cardline2}}
                             {{#cardline3}}
-                            <div class="cardline3">{{{ cardline3 }}}</div>
+                            <div class="cardline3{{#line3audiourl}} cardline3-playable{{/line3audiourl}}">
+                                <span class="cardline3-text">{{{ cardline3 }}}</span>
+                                {{#line3audiourl}}
+                                <button type="button" class="cardline3-audio-btn" aria-label="{{#str}} playline3audio, minilessonitem_cards {{/str}}">
+                                    <i class="fa fa-volume-up" aria-hidden="true"></i>
+                                </button>
+                                <audio class="cardline3-audio" preload="none" src="{{{ line3audiourl }}}"></audio>
+                                {{/line3audiourl}}
+                            </div>
                             {{/cardline3}}
+                            {{#cardline4}}
+                            <div class="cardline4">{{{ cardline4 }}}</div>
+                            {{/cardline4}}
                             {{#imageurl}}
                             <div class="term-image term-image-9">
                                 <img src="{{{ . }}}" class="minilesson-flash_img img-responsive" alt="">

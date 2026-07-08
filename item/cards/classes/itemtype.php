@@ -37,9 +37,6 @@ class itemtype extends item {
 
     protected $needsspeechrec = false;
 
-    protected $nofile = "nofile";
-
-
     /**
      * Export the data for the mustache template.
      *
@@ -82,10 +79,9 @@ class itemtype extends item {
 
         foreach ($testitem->sentences as $sentence) {
             $sentence->uniqid = uniqid('audio-' . $sentence->index . '-');
-            $sentence->ttsautoplay = $sentence->audiourl == $this->nofile ? 0 : 1;
+            $sentence->ttsautoplay = empty($sentence->audiourl) ? 0 : 1;
             $sentence->ttsaudiovoice = $testitem->usevoice;
             $sentence->audiosrc = $sentence->audiourl;
-            $sentence->audiourl = $sentence->audiourl == $this->nofile ? null : $sentence->audiourl;
         }
         return $testitem;
     }
@@ -101,9 +97,12 @@ class itemtype extends item {
         $index = 0;
         $sentenceobjects = [];
 
-        // Prepare sentence media.
+        // Prepare sentence media. Line 1 audio lives in customfile1_audio, line 3 audio in customfile2_audio.
         $sentenceimages = $this->fetch_sentence_media('image', 1);
         $sentenceaudio = $this->fetch_sentence_media('audio', 1);
+        $line3audio = $this->fetch_sentence_media('audio', 2);
+
+        $readsentence = !empty($this->itemrecord->{constants::READSENTENCE});
 
         $sentenceindex = 0;
         foreach ($sentences as $sentence) {
@@ -118,6 +117,7 @@ class itemtype extends item {
             $cardline1 = "";
             $cardline2 = "";
             $cardline3 = "";
+            $cardline4 = "";
 
             // if we have a pipe prompt = array[0] and response = array[1]
             $cardlines = explode('|', $sentence);
@@ -127,15 +127,17 @@ class itemtype extends item {
                 if (count($cardlines) > 2) {
                     $cardline3 = utils::super_trim($cardlines[2]);
                 }
+                if (count($cardlines) > 3) {
+                    $cardline4 = utils::super_trim($cardlines[3]);
+                }
             } else {
                 $cardline1 = $sentence;
             }
 
-            // We prepare the audio url.
+            // Card (line 1) audio: an uploaded file always wins, otherwise TTS when "read card text" is on.
             if (isset($sentenceaudio[$sentenceindex])) {
                 $theaudiourl = $sentenceaudio[$sentenceindex];
-            } else {
-                // If we have no custom audio then we use the polly audio.
+            } else if ($readsentence) {
                 $theaudiourl = utils::fetch_polly_url(
                     $this->token,
                     $this->region,
@@ -144,6 +146,24 @@ class itemtype extends item {
                     $this->itemrecord->{constants::POLLYVOICE},
                     $this->moduleinstance->id
                 );
+            } else {
+                $theaudiourl = false;
+            }
+
+            // Line 3 audio: same rule, but it never autoplays (tap the line/speaker icon to play).
+            if (isset($line3audio[$sentenceindex])) {
+                $line3audiourl = $line3audio[$sentenceindex];
+            } else if ($readsentence && $cardline3 !== '') {
+                $line3audiourl = utils::fetch_polly_url(
+                    $this->token,
+                    $this->region,
+                    $cardline3,
+                    $this->itemrecord->{constants::POLLYOPTION},
+                    $this->itemrecord->{constants::POLLYVOICE},
+                    $this->moduleinstance->id
+                );
+            } else {
+                $line3audiourl = false;
             }
 
             // Build the sentence object.
@@ -154,9 +174,11 @@ class itemtype extends item {
             $s->cardline1 = $cardline1;
             $s->cardline2 = $cardline2;
             $s->cardline3 = $cardline3;
+            $s->cardline4 = $cardline4;
             $s->length = \core_text::strlen($s->sentence);
             $s->imageurl = isset($sentenceimages[$sentenceindex]) ? $sentenceimages[$sentenceindex] : false;
             $s->audiourl = $theaudiourl;
+            $s->line3audiourl = $line3audiourl;
 
             $index++;
             $sentenceobjects[] = $s;
@@ -223,6 +245,13 @@ class itemtype extends item {
             'default' => null,
             'dbname' => false,
         ];
+        $keycolumns['fileanswer2_audio'] = [
+            'jsonname' => constants::FILEANSWER . '2_audio',
+            'type' => 'anonymousfile',
+            'optional' => true,
+            'default' => null,
+            'dbname' => false,
+        ];
         $keycolumns['fileanswer_image'] = [
             'jsonname' => constants::FILEANSWER . '1_image',
             'type' => 'anonymousfile',
@@ -231,26 +260,6 @@ class itemtype extends item {
             'dbname' => false,
         ];
         return $keycolumns;
-    }
-
-    protected function fetch_sentence_media($mediatype, $index) {
-        $media = parent::fetch_sentence_media($mediatype, $index);
-        if ($mediatype == 'image') {
-            return $media;
-        }
-
-        $sentences = [];
-        if (isset($this->itemrecord->customtext1)) {
-            $sentences = explode(PHP_EOL, $this->itemrecord->customtext1);
-        }
-
-        foreach ($sentences as $key => $sentence) {
-            $mediacount = $key + 1;
-            if (!isset($media[$mediacount]) && empty($this->itemrecord->{constants::READSENTENCE})) {
-                $media[$mediacount] = $this->nofile;
-            }
-        }
-        return $media;
     }
 
       /*

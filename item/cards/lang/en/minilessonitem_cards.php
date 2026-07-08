@@ -33,11 +33,13 @@ $string['privacy:metadata'] = 'The Cards item type plugin for mod_minilesson doe
 $string['cardsforminstructions'] = 'Enter a list of words or phrases and any associated images or audio assets on this form. They will be assembled into interactive cards when displayed.';
 $string['cards_instructions1'] = 'Review the cards on screen. You can use the next and back buttons to see other cards.';
 $string['cardimage'] = "Card image";
-$string['cardaudio'] = "Card audio";
+$string['cardaudio'] = "Audio Line 1";
+$string['cardaudioline3'] = "Audio Line 3";
 $string['cardtext'] = "Card text";
-$string['cardtextinstructions'] = 'Enter a list of words/phrases in the text area below. Each item should be a on a new line. Optionally add more text lines to a card (definition, model sentence etc) by separating each line with a pipe "|" character. e.g. Hello | Bonjour | We should say hello.';
-$string['readcardtext'] = 'Read cart text (TTS)';
-$string['readcardtext_desc'] = 'If checked the card text (first line) will be read aloud.';
+$string['cardtextinstructions'] = 'Enter a list of words/phrases in the text area below. Each item should be a on a new line. Optionally add more text lines to a card (translation, model sentence, model sentence translation etc) by separating each line with a pipe "|" character, up to four lines per card. e.g. Hello | Bonjour | We should say hello. | Nous devrions dire bonjour.';
+$string['playline3audio'] = 'Play audio';
+$string['readcardtext'] = 'Read card text (TTS)';
+$string['readcardtext_desc'] = 'If checked the card text (first and third lines) can be read aloud.';
 $string['cards_shuffleorder'] = 'Shuffle card order';
 $string['cards_shuffleorder_desc'] = 'If checked, the order in which the cards are presented to the student is randomized. Each card keeps its matching image and audio.';
 

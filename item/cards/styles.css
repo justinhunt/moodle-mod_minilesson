@@ -33,7 +33,7 @@
   flex-direction: column;
   align-items: stretch;
   justify-content: space-around;
-  padding: 50px 20px;
+  padding: 30px 20px;
 }
 @media screen and (min-width: 480px) {
   .path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front {
@@ -44,14 +44,34 @@
   font-weight: 600;
 }
 .path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline2,
-.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline3 {
-  font-size: 0.7em;
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline3,
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline4 {
   font-weight: 400;
+}
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline2 {
+  font-size: 0.7em;
   color: #80859d;
 }
 .path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline3 {
+  font-size: 0.65em;
+}
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline3.cardline3-playable {
+  cursor: pointer;
+}
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline3 .cardline3-audio-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-inline-start: 0.4em;
+  font-size: 0.9em;
+  color: #506DFF;
+  cursor: pointer;
+  vertical-align: baseline;
+}
+.path-mod-minilesson .cards-item-box .minilesson-flip-card .minilesson-flip-card-inner .minilesson-flip-card-front .cardline4 {
   font-size: 0.6em;
   font-style: italic;
+  color: #80859d;
 }
 .path-mod-minilesson .cards-item-box .minilesson-df_fl {
   width: 100%;
@@ -75,7 +95,13 @@
   object-fit: contain;
   border-radius: 6px;
   max-width: 80%;
+  max-height: 120px;
   margin: 10px auto;
+}
+@media screen and (min-width: 480px) {
+  .path-mod-minilesson .cards-item-box .minilesson-df_fl .minilesson-flash_img {
+    max-height: 180px;
+  }
 }
 .path-mod-minilesson .cards-item-box .minilesson-df_fl .minilesson-df_fl_control {
   display: flex;
