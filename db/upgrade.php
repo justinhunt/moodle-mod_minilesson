@@ -1174,5 +1174,20 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026070700, 'minilesson');
     }
 
+    if ($oldversion < 2026070900) {
+        // Add the wordcards item type to the config enableditems.
+        $enableditems = get_config(constants::M_MODNAME, 'enableditems');
+        if ($enableditems !== false) {
+            $items = empty($enableditems) ? [] : explode(',', $enableditems);
+            if (!in_array(constants::TYPE_WORDCARDS, $items)) {
+                $items[] = constants::TYPE_WORDCARDS;
+            }
+            set_config('enableditems', implode(',', $items), constants::M_MODNAME);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026070900, 'minilesson');
+    }
+
     return true;
 }

@@ -1,0 +1,99 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_wordcards/wordcards
+
+    Word Cards item: a study grid of flippable term/definition cards, followed by a
+    per-word practice task (listen/definition prompt, type/choose answer).
+
+    Context (see itemtype::export_for_template): uniqueid, iteminstructions, timelimit,
+    words[] {term, definition, audiourl, imageurl}, islistenmode, isdefmode, istypemode,
+    ischoosemode, hidestartpage.
+}}
+{{< mod_minilesson/questionheader}}
+    {{$slashscreen}}
+    {{^hidestartpage}}
+    <div class="wordcards_startscreen startmodule_splashscreen" data-region="splashscreen">
+        <div class="startmodule_title wordcards_title">{{#str}}wordcards, mod_minilesson{{/str}}</div>
+        <div class="startmodule_description wordcards_description">{{iteminstructions}}</div>
+        <div class="wordcards_flipinstructions">{{#str}}flipinstructions, minilessonitem_wordcards{{/str}}</div>
+        <div class="wordcards_flipgrid">
+            {{#words}}
+            <div class="minilesson-flip-card wordcards_flipcard" tabindex="0" role="button" aria-pressed="false">
+                <div class="minilesson-flip-card-inner">
+                    <div class="minilesson-flip-card-front">
+                        <span class="wordcards_cardterm">{{term}}</span>
+                    </div>
+                    <div class="minilesson-flip-card-back">
+                        <span class="wordcards_carddefinition">{{definition}}</span>
+                    </div>
+                </div>
+            </div>
+            {{/words}}
+        </div>
+        <div class="start_mainmenu wordcards_mainmenu">
+            <button class="btn wordcards_start_btn startmodule_btn" data-action="startmodule">
+                {{#str}}start, mod_minilesson{{/str}} <i class="fa fa-play ml-1"></i>
+            </button>
+        </div>
+    </div>
+    {{/hidestartpage}}
+    {{/slashscreen}}
+{{/ mod_minilesson/questionheader}}
+{{#timelimit}}
+{{> mod_minilesson/progresstimer }}
+{{/timelimit}}
+<div class="wordcards_gamebox item-container">
+    <div class="wordcards_progress" aria-hidden="true"></div>
+
+    <div class="wordcards_question">
+        {{#islistenmode}}
+        <div style="display:none;" class="wordcards_listen_cont">
+            <button class="btn animatesoundbtn position-relative wordcards_listen_btn">
+                <div class='soundWave'>
+                    <div class='bar'></div>
+                    <div class='bar'></div>
+                    <div class='bar'></div>
+                    <div class='bar'></div>
+                    <div class='bar'></div>
+                </div>
+            </button>
+        </div>
+        {{/islistenmode}}
+        {{#isdefmode}}
+        <div style="display:none;" class="wordcards_definition_prompt"></div>
+        {{/isdefmode}}
+        <div style="display:none;" class="wordcards_image_hint minilesson_sentence_image">
+            <div class="minilesson_padded_image">
+                <img src="" alt="">
+            </div>
+        </div>
+    </div>
+
+    <div class="wordcards_answers">
+        <div style="display:none;" class="wordcards_submitted"></div>
+        {{#ischoosemode}}
+        <div class="wordcards_options"></div>
+        {{/ischoosemode}}
+        {{#istypemode}}
+        <div class="wordcards_keyboard"></div>
+        {{/istypemode}}
+    </div>
+
+    <div class="resultscontainer wordcards_resultscontainer"></div>
+</div>
+{{> mod_minilesson/questionfooter}}

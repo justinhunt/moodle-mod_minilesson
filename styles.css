@@ -506,8 +506,8 @@
   max-width: 100%;
 }
 
-:is(.freespeaking-item-box, .freewriting-item-box, .scatter-item-box, .audiochat-item-box, .shadow-item-box) .activity-wrapper,
-:is(.freespeaking-item-box, .freewriting-item-box, .scatter-item-box, .audiochat-item-box, .shadow-item-box) .startmodule_splashscreen {
+:is(.freespeaking-item-box, .freewriting-item-box, .scatter-item-box, .audiochat-item-box, .shadow-item-box, .wordcards-item-box) .activity-wrapper,
+:is(.freespeaking-item-box, .freewriting-item-box, .scatter-item-box, .audiochat-item-box, .shadow-item-box, .wordcards-item-box) .startmodule_splashscreen {
   box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.12);
   position: relative;
   margin: auto;

@@ -453,6 +453,7 @@ $string['slides'] = 'Slides';
 $string['fiction'] = 'Fiction';
 $string['shadow'] = 'Video Shadowing';
 $string['cards'] = 'Cards';
+$string['wordcards'] = 'Word Cards';
 $string['error:invalidyoutubeurl'] = 'The YouTube URL or video ID is not valid.';
 $string['error:noyoutubetranscript'] = 'No subtitles are available for this YouTube video.';
 $string['error:youtubefetchfailed'] = 'Could not fetch data from YouTube. Please try again later.';

@@ -1,0 +1,45 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_wordcards/keyboard
+
+    Minimised onscreen keyboard: the letters of the target word plus a few distractor
+    letters. Ported from mod_wordcards, with class-based selectors so several instances
+    can exist on one page, and literal characters (not charcodes) in data-val.
+
+    Context: letters[] {letter, isspace}.
+}}
+<div class="wordcards_kb">
+    <div class="wordcards_kb_typed">
+        <div class="wordcards_kb_typed_inner"></div>
+    </div>
+    <div class="wordcards_kb_keys">
+        {{#letters}}
+        <button type="button" class="wordcards_kb_key" data-val="{{letter}}">
+            <span class="wordcards_kb_key_inner">{{#isspace}}&nbsp;{{/isspace}}{{^isspace}}{{letter}}{{/isspace}}</span>
+        </button>
+        {{/letters}}
+    </div>
+    <div class="wordcards_kb_controls">
+        <button type="button" class="btn wordcards_kb_del" aria-label="{{#str}}delete{{/str}}">
+            <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn wordcards_kb_submit" aria-label="{{#str}}check, mod_minilesson{{/str}}">
+            <i class="fa fa-check" aria-hidden="true"></i>
+        </button>
+    </div>
+</div>

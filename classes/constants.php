@@ -152,6 +152,7 @@ class constants {
     const TYPE_FICTION = 'fiction';
     const TYPE_SHADOW = 'shadow';
     const TYPE_CARDS = 'cards';
+    const TYPE_WORDCARDS = 'wordcards';
     const AUDIOSTORYMETA = 'itemaudiofname';
     const AUDIOSTORYZOOMANDPAN = 'itemaudiostoryzoom';
     const ZOOMANDPAN_NONE = 0;
@@ -707,6 +708,7 @@ class constants {
         self::TYPE_SLIDES,
         self::TYPE_FICTION,
         self::TYPE_SHADOW,
+        self::TYPE_WORDCARDS,
       // constants::TYPE_SMARTFRAME,
       // constants::TYPE_COMPQUIZ,
       // constants::TYPE_CONVERSATION,

@@ -1,0 +1,251 @@
+.path-mod-minilesson .wordcards-item-box .wordcards_flipinstructions {
+  color: #80859d;
+  text-align: center;
+  padding: 0 16px;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_flipgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  width: 100%;
+  padding: 16px 8px;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_flipcard {
+  background-color: transparent;
+  perspective: 1000px;
+  cursor: pointer;
+  height: 120px;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_flipcard .minilesson-flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_flipcard.flipped .minilesson-flip-card-inner {
+  transform: rotateY(180deg);
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_flipcard .minilesson-flip-card-front,
+.path-mod-minilesson .wordcards-item-box .wordcards_flipcard .minilesson-flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  overflow: hidden;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_flipcard .minilesson-flip-card-front {
+  background-color: #FFFFFF;
+  border: 1px solid #DEE2FC;
+  color: #1F2334;
+  font-size: 20px;
+  font-weight: 600;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_flipcard .minilesson-flip-card-back {
+  background-color: #F3F5FD;
+  border: 1px solid #DEE2FC;
+  color: #1F2334;
+  font-size: 16px;
+  transform: rotateY(180deg);
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_gamebox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(700px, 100%);
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_progress {
+  text-align: center;
+  padding: 10px 0;
+  font-size: 20px;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_question {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_listen_cont {
+  text-align: center;
+  padding: 10px 0;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_definition_prompt {
+  background-color: #F3F5FD;
+  border: 1px solid #DEE2FC;
+  border-radius: 8px;
+  color: #1F2334;
+  font-size: 20px;
+  padding: 15px 25px;
+  margin: 10px 0;
+  text-align: center;
+  max-width: 600px;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_image_hint {
+  margin: 10px 0;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_image_hint img {
+  max-width: 220px;
+  max-height: 160px;
+  border-radius: 8px;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_answers {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_submitted {
+  min-height: 54px;
+  padding: 10px;
+  margin: 10px auto;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 600;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_submitted.wordcards_submitted_correct {
+  background-color: #F2FBF0;
+  border: 1px solid #74DC72;
+  color: #099506;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_submitted.wordcards_submitted_incorrect {
+  background-color: #f8d7da;
+  border: 1px solid #FB6363;
+  color: #842029;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0 20px;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_options .wordcards_option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #FFFFFF;
+  border: 1px solid #DEE2FC;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  color: #1F2334;
+  font-size: 18px;
+  padding: 12px 20px;
+  text-align: left;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_options .wordcards_option:hover {
+  background-color: #F3F5FD;
+  border-color: #C7D2FF;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_options .wordcards_option .wordcards_option_icon {
+  margin-inline-start: 10px;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_options .wordcards_option.wordcards_option_correct {
+  background-color: #F2FBF0;
+  border-color: #74DC72;
+  color: #099506;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_options .wordcards_option.wordcards_option_incorrect {
+  background-color: #f8d7da;
+  border-color: #FB6363;
+  color: #842029;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_options.wordcards_options_locked .wordcards_option {
+  pointer-events: none;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb {
+  width: 100%;
+  margin: 0 auto 20px;
+  border: 1px solid #DEE2FC;
+  border-radius: 8px;
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb.wordcards_kb_disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_typed {
+  border-bottom: 1px solid #DEE2FC;
+  background-color: #F5F5FE;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_typed_inner {
+  min-height: 48px;
+  font-size: 26px;
+  line-height: 48px;
+  width: 100%;
+  overflow-x: auto;
+  text-align: center;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_typed_inner.wordcards_kb_flash {
+  background-color: #ffcaca;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_keys {
+  padding: 10px;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_key {
+  width: 50px;
+  height: 50px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  border: 1px solid #C7D2FF;
+  margin: 4px;
+  display: inline-block;
+  cursor: pointer;
+  padding: 0;
+  vertical-align: middle;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_key.wordcards_kb_pressed {
+  background-color: #E6E9FD;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_key_inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 28px;
+  color: #1F2334;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_controls {
+  display: flex;
+  border-top: 1px solid #DEE2FC;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_controls .wordcards_kb_del,
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_controls .wordcards_kb_submit {
+  flex: 1 1 50%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_controls .wordcards_kb_del {
+  background-color: #f8f9fa;
+  color: #80859d;
+  border-inline-end: 1px solid #DEE2FC;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_controls .wordcards_kb_del:hover {
+  background-color: #f0f0f0;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_controls .wordcards_kb_submit {
+  background-color: #506DFF;
+  color: #FFFFFF;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_kb_controls .wordcards_kb_submit:hover {
+  background-color: #2642CD;
+}
+.path-mod-minilesson .wordcards-item-box .wordcards_resultscontainer {
+  width: 100%;
+}
