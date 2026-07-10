@@ -3393,6 +3393,73 @@ span.wrongitem {
     transform: translateY(0);
   }
 }
+.minilesson_langchooser {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  margin: 8px 0;
+  background: #FFFFFF;
+  border: 1px solid #dfe4e9;
+  border-radius: 8px;
+}
+.minilesson_langchooser .minilesson_langchooser_instructions {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #1F2334;
+}
+.minilesson_langchooser .minilesson_langchooser_row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.minilesson_langchooser .minilesson_langchooser_select {
+  flex: 1 1 auto;
+  min-width: 200px;
+  padding: 8px 36px 8px 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #1F2334;
+  background-color: #FFFFFF;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%236E738E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.minilesson_langchooser .minilesson_langchooser_select:hover {
+  border-color: #C7D2FF;
+}
+.minilesson_langchooser .minilesson_langchooser_select:focus {
+  outline: none;
+  border-color: #506DFF;
+  box-shadow: 0 0 0 3px #E6E9FD;
+}
+.minilesson_langchooser .btn.minilesson_langchooser_btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #FFFFFF;
+  background-color: #506DFF;
+  border: 1px solid #506DFF;
+  border-radius: 4px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.minilesson_langchooser .btn.minilesson_langchooser_btn:hover {
+  background-color: #2642CD;
+  border-color: #2642CD;
+  color: #FFFFFF;
+}
+.minilesson_langchooser .btn.minilesson_langchooser_btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px #E6E9FD;
+}
+
 .minilesson_audiochat_box {
   box-shadow: none;
   width: 100%;
@@ -4437,6 +4504,18 @@ span.wrongitem {
   flex-grow: 1;
   min-height: 0;
   position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: #c4beb4 transparent;
+}
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper::-webkit-scrollbar-thumb {
+  background-color: #c4beb4;
+  border-radius: 999px;
 }
 .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer {
   display: flex;
@@ -4463,6 +4542,9 @@ span.wrongitem {
   font-weight: bold;
   font-size: 14px;
 }
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .charactertext {
+  padding-top: 10px;
+}
 .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer .mediacontainer {
   margin: 8px 0;
 }
@@ -4485,7 +4567,7 @@ span.wrongitem {
   align-items: flex-end;
 }
 .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .playercontainer .playertext:not(:empty) {
-  background-color: #dcf8c6;
+  background-color: #dcffc1;
   padding: 10px 14px;
   border-radius: 12px 0 12px 12px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -4501,11 +4583,10 @@ span.wrongitem {
   right: 6px;
   border-width: 0px 0 10px 10px;
   border-style: solid;
-  border-color: transparent transparent transparent #dcf8c6;
+  border-color: transparent transparent transparent #dcffc1;
 }
 .minilesson_fiction_yarncontainer.mobilechat .yarnchoicescontainer {
   padding: 15px;
-  border-top: 1px solid #ddd;
   min-height: 88px;
   flex-shrink: 0;
 }
@@ -4519,6 +4600,9 @@ span.wrongitem {
   background-color: #FFFFFF;
   cursor: pointer;
   height: max-content;
+}
+.minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_yarnoptions .fa-paper-plane {
+  color: #192f7f;
 }
 .minilesson_fiction_yarncontainer.mobilechat .minilesson_fiction_continuebutton {
   background-color: #FFFFFF;
@@ -4534,6 +4618,21 @@ span.wrongitem {
 }
 .minilesson_fiction_yarncontainer.mobilechat .option_container:has(button[style*="display: none"]), .minilesson_fiction_yarncontainer.mobilechat .option_container:has(button.hidden) {
   display: none;
+}
+.minilesson_fiction_yarncontainer.mobilechat .option_container.minilesson_fiction_continuebutton {
+  background: #192f7f;
+  width: fit-content;
+  min-width: 120px;
+  margin: 0 auto;
+  justify-content: center;
+  gap: 8px;
+}
+.minilesson_fiction_yarncontainer.mobilechat .option_container.minilesson_fiction_continuebutton .optiontext {
+  color: white;
+  font-weight: 600;
+}
+.minilesson_fiction_yarncontainer.mobilechat .option_container.minilesson_fiction_continuebutton .fa-paper-plane {
+  color: white;
 }
 .minilesson_fiction_yarncontainer.mobilechat #scroll-bottom-btn {
   position: absolute;
@@ -4561,53 +4660,84 @@ span.wrongitem {
   background-size: 25% 50%;
   animation: l3 1s infinite linear;
 }
+.minilesson_fiction_yarncontainer.plain, .minilesson_fiction_yarncontainer.storymode, .minilesson_fiction_yarncontainer.mobilechat {
+  border-radius: 11px;
+}
 .minilesson_fiction_yarncontainer.plain {
-  background-color: #e6eef6;
+  --ds-primary: #506dff;
+  --ds-primary-hover: #2642cd;
+  --ds-primary-light: #e6e9fd;
+  --ds-primary-bg: #f5f5fe;
+  --ds-text: #1f2334;
+  --ds-heading: #414c81;
+  --ds-muted: #80859d;
+  --ds-surface: #fff;
+  --ds-border: #dddff1;
+  --ds-neutral-300: #ddd;
+  --ds-success: #74dc72;
+  --ds-success-bg: #dbf6db;
+  --ds-error: #ff4747;
+  --ds-error-bg: #f8d7da;
+  background-color: #fafafa;
   padding: 20px;
+  padding-top: 40px;
   height: 600px;
   display: flex;
   flex-direction: column;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--ds-text);
 }
 .minilesson_fiction_yarncontainer.plain .chat-wrapper {
   display: flex;
   flex-direction: column;
   gap: 15px;
   padding-bottom: 20px;
+  padding-right: 8px;
   flex-grow: 1;
   overflow-y: auto;
   min-height: 0;
   max-height: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ds-neutral-300) transparent;
+}
+.minilesson_fiction_yarncontainer.plain .chat-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+.minilesson_fiction_yarncontainer.plain .chat-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+.minilesson_fiction_yarncontainer.plain .chat-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--ds-neutral-300);
+  border-radius: 999px;
 }
 .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer {
-  background-color: #FFFFFF;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07);
   position: relative;
-  border-left: 4px solid transparent;
-}
-.minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer:not(.has-charactername) {
-  background-color: #FFFFFF;
-  border-left: none;
 }
 .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.has-charactername {
-  background-color: #e1e6f2;
-  border-left: 4px solid #5a6b8c;
+  background-color: var(--ds-primary-bg);
+  border-color: var(--ds-primary-light);
+  border-left: 4px solid var(--ds-primary);
   margin-top: 20px;
 }
 .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer .charactername {
   position: absolute;
   top: -25px;
   left: 0;
-  font-weight: bold;
-  color: #5a6b8c;
-  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--ds-heading);
+  font-size: 12px;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer .charactertext {
-  font-size: 1.1em;
+  font-size: 16px;
   line-height: 1.5;
-  color: #333;
+  color: var(--ds-text);
 }
 .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer .mediacontainer .chat-loader {
   position: relative;
@@ -4630,7 +4760,7 @@ span.wrongitem {
 .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.hasmedia .mediacontainer video {
   width: 100%;
   height: auto;
-  border-radius: 4px;
+  border-radius: 8px;
   display: block;
 }
 .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer.hasmedia .mediacontainer .chat-loader {
@@ -4663,8 +4793,6 @@ span.wrongitem {
   object-fit: cover;
 }
 .minilesson_fiction_yarncontainer.plain .yarnchoicescontainer {
-  margin-top: 20px;
-  border-top: 1px solid #ccc;
   padding-top: 20px;
   flex-shrink: 0;
   min-height: 55px;
@@ -4672,49 +4800,60 @@ span.wrongitem {
 .minilesson_fiction_yarncontainer.plain .minilesson_fiction_yarnoptions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 .minilesson_fiction_yarncontainer.plain .option_container {
   cursor: pointer;
 }
 .minilesson_fiction_yarncontainer.plain .minilesson_fiction_optionbutton {
-  background-color: #FFFFFF;
-  border: 1px solid #dcdcdc;
-  border-radius: 5px;
-  padding: 15px;
-  transition: background-color 0.2s, box-shadow 0.2s;
+  background-color: var(--ds-surface);
+  border: 1px solid var(--ds-neutral-300);
+  border-radius: 8px;
+  padding: 12px;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 .minilesson_fiction_yarncontainer.plain .minilesson_fiction_optionbutton:hover {
-  background-color: #f8f9fa;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  border-color: #b0b0b0;
+  background-color: var(--ds-primary-bg);
+  border-color: var(--ds-primary-light);
 }
 .minilesson_fiction_yarncontainer.plain .minilesson_fiction_fakeoptionbutton {
   cursor: default;
-  opacity: 0.6;
-  background-color: #ccc;
-  border: 1px solid #dcdcdc;
-  border-radius: 5px;
-  padding: 15px;
-  transition: background-color 0.2s, box-shadow 0.2s;
+  opacity: 0.5;
+  background-color: #f5f5f5;
+  border: 1px solid var(--ds-neutral-300);
+  border-radius: 8px;
+  padding: 12px;
+}
+.minilesson_fiction_yarncontainer.plain .minilesson_fiction_option_number {
+  border: none;
+  border-radius: 4px;
+  background-color: var(--ds-primary);
+  color: #fff;
 }
 .minilesson_fiction_yarncontainer.plain .optiontext {
-  font-size: 1.1em;
-  color: #444;
+  font-size: 16px;
+  color: var(--ds-text);
 }
 .minilesson_fiction_yarncontainer.plain .minilesson_fiction_continuebutton {
-  margin-top: 15px;
+  margin: 16px auto 0;
   cursor: pointer;
-  background-color: #FFFFFF;
-  border: 1px solid #dcdcdc;
-  border-radius: 5px;
-  padding: 10px 20px;
-  display: inline-block;
-  width: 100%;
+  background-color: var(--ds-primary);
+  border: 1px solid var(--ds-primary);
+  border-radius: 8px;
+  padding: 12px 24px;
+  display: block;
+  width: fit-content;
+  min-width: 120px;
   text-align: center;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.minilesson_fiction_yarncontainer.plain .minilesson_fiction_continuebutton .optiontext {
+  color: #fff;
+  font-weight: 500;
 }
 .minilesson_fiction_yarncontainer.plain .minilesson_fiction_continuebutton:hover {
-  background-color: #f0f0f0;
+  background-color: var(--ds-primary-hover);
+  border-color: var(--ds-primary-hover);
 }
 .minilesson_fiction_yarncontainer.plain #scroll-bottom-btn {
   position: absolute;
@@ -4723,31 +4862,34 @@ span.wrongitem {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid #ccc;
-  background-color: #FFFFFF;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--ds-border);
+  background-color: var(--ds-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #555;
+  color: var(--ds-muted);
   transition: all 0.2s;
   z-index: 10;
 }
 .minilesson_fiction_yarncontainer.plain #scroll-bottom-btn:hover {
-  background-color: #f0f0f0;
+  background-color: var(--ds-primary-bg);
   transform: translateY(-2px);
 }
 .minilesson_fiction_yarncontainer.plain #scroll-bottom-btn i {
   font-size: 1.2em;
 }
 .minilesson_fiction_yarncontainer.plain .playertext {
-  width: 80%;
+  width: 100%;
   margin: auto;
   text-align: center;
-  background-color: aliceblue;
-  padding-top: 2px;
-  padding-bottom: 2px;
+  background-color: #e9e6f9;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 6px;
+  font-style: italic;
+  color: #574c96;
 }
 .minilesson_fiction_yarncontainer.plain .chat-loader {
   display: inline-block;
@@ -4765,18 +4907,19 @@ span.wrongitem {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #5a6b8c;
+  background-color: var(--ds-primary);
   margin: 0 auto;
-  box-shadow: -12px 0 #5a6b8c, 12px 0 #5a6b8c;
+  box-shadow: -12px 0 var(--ds-primary), 12px 0 var(--ds-primary);
   animation: minilesson_fiction_plain_dots 1s infinite linear alternate;
 }
 .minilesson_fiction_yarncontainer.storymode {
   background-color: #fdf6e3;
   color: #3b3b3b;
   font-family: "Georgia", "Times New Roman", serif;
-  line-height: 1.8;
+  line-height: 1.6;
   font-size: 1.2rem;
   padding: 20px;
+  padding-top: 36px;
   height: 600px;
   display: flex;
   flex-direction: column;
@@ -4788,16 +4931,18 @@ span.wrongitem {
   max-width: 800px;
   margin: 0 auto;
   width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #c4beb4 transparent;
 }
 .minilesson_fiction_yarncontainer.storymode .chat-wrapper::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 .minilesson_fiction_yarncontainer.storymode .chat-wrapper::-webkit-scrollbar-track {
-  background: #fdf6e3;
+  background: transparent;
 }
 .minilesson_fiction_yarncontainer.storymode .chat-wrapper::-webkit-scrollbar-thumb {
-  background-color: #d3c6a6;
-  border-radius: 4px;
+  background-color: #c4beb4;
+  border-radius: 999px;
 }
 .minilesson_fiction_yarncontainer.storymode .story-paragraph {
   margin-bottom: 1.5em;
@@ -4817,28 +4962,31 @@ span.wrongitem {
 }
 .minilesson_fiction_yarncontainer.storymode .story-paragraph.player-choice {
   text-align: center;
-  color: #8b7d6b;
+  color: #736554;
   font-style: italic;
   margin-top: 2rem;
   margin-bottom: 2rem;
-  position: relative;
-  padding: 10px;
-  border-top: 1px solid #e0d8c3;
-  border-bottom: 1px solid #e0d8c3;
+}
+.minilesson_fiction_yarncontainer.storymode .story-paragraph.player-choice::before, .minilesson_fiction_yarncontainer.storymode .story-paragraph.player-choice::after {
+  content: "";
+  display: block;
+  width: 100%;
+  max-width: 213px;
+  height: 8px;
+  margin: 0 auto;
+  background: url([[pix:minilessonitem_fiction|book-detail]]) center center/contain no-repeat;
 }
 .minilesson_fiction_yarncontainer.storymode .story-paragraph.player-choice::before {
-  content: "❧";
-  display: block;
-  font-size: 1.5rem;
-  margin-bottom: 5px;
-  color: #d3c6a6;
+  margin-bottom: 1.5rem;
+}
+.minilesson_fiction_yarncontainer.storymode .story-paragraph.player-choice::after {
+  margin-top: 1.5rem;
 }
 .minilesson_fiction_yarncontainer.storymode .yarnchoicescontainer {
   max-width: 800px;
   margin: 0 auto;
   width: 100%;
   padding-top: 20px;
-  border-top: 2px solid #e0d8c3;
   margin-top: 10px;
   flex-shrink: 0;
   min-height: 74px;
@@ -4851,20 +4999,34 @@ span.wrongitem {
 }
 .minilesson_fiction_yarncontainer.storymode .minilesson_fiction_optionbutton {
   background-color: transparent;
-  border: 2px solid #8b7d6b;
+  border: 1px solid #8b7d6b;
   color: #5b4d3b;
-  font-family: inherit;
-  padding: 10px 20px;
+  font-family: sans-serif;
+  padding: 9px 20px 10px 15px;
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 600;
 }
 .minilesson_fiction_yarncontainer.storymode .minilesson_fiction_optionbutton:hover {
   background-color: #8b7d6b;
   color: #fdf6e3;
   border-color: #8b7d6b;
+}
+.minilesson_fiction_yarncontainer.storymode .minilesson_fiction_yarnoptions .minilesson_fiction_option_number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  border: 1px solid #5b4e3b;
+  border-radius: 14px;
+  background-color: #5b4e3b;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #fff;
 }
 .minilesson_fiction_yarncontainer.storymode .minilesson_fiction_continuebutton {
   display: block;
@@ -4873,12 +5035,12 @@ span.wrongitem {
   background-color: #5b4d3b;
   color: #fdf6e3;
   padding: 10px 30px;
-  border-radius: 4px;
-  font-family: inherit;
+  border-radius: 13px;
   cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 0.9rem;
+  letter-spacing: 0;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: sans-serif;
 }
 .minilesson_fiction_yarncontainer.storymode .minilesson_fiction_continuebutton:hover {
   background-color: #3b3b3b;
@@ -4904,34 +5066,871 @@ span.wrongitem {
   background-color: #FFFFFF;
   color: #5b4d3b;
 }
+.minilesson_fiction_yarncontainer.immersivedark, .minilesson_fiction_yarncontainer.immersivebright, .minilesson_fiction_yarncontainer.immersivepaper {
+  --im-bg: #0c0c0e;
+  --im-card-radius: 24px;
+  --im-text: #f3f3f3;
+  --im-muted: #cfcfcf;
+  --im-option-bg: #1a1a1d;
+  --im-option-border: #2a2a2e;
+  --im-option-hover-bg: #25252a;
+  --im-option-hover-border: #3a3a3f;
+  --im-button-bg: #2a2a2e;
+  --im-button-bg-hover: #3a3a3f;
+  --im-accent: #f3f3f3;
+  --im-accent-fg: #0c0c0e;
+}
+.minilesson_fiction_yarncontainer.immersivedark .chat-wrapper,
+.minilesson_fiction_yarncontainer.immersivedark #scroll-bottom-btn, .minilesson_fiction_yarncontainer.immersivebright .chat-wrapper,
+.minilesson_fiction_yarncontainer.immersivebright #scroll-bottom-btn, .minilesson_fiction_yarncontainer.immersivepaper .chat-wrapper,
+.minilesson_fiction_yarncontainer.immersivepaper #scroll-bottom-btn {
+  display: none !important;
+}
+.minilesson_fiction_yarncontainer.immersivedark, .minilesson_fiction_yarncontainer.immersivebright, .minilesson_fiction_yarncontainer.immersivepaper {
+  font-family: "Jost", "Helvetica Neue", Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 24px 12px;
+  background: transparent;
+  color: var(--im-text);
+}
+.minilesson_fiction_yarncontainer.immersivedark .card, .minilesson_fiction_yarncontainer.immersivebright .card, .minilesson_fiction_yarncontainer.immersivepaper .card {
+  width: 480px;
+  max-width: 100%;
+  min-height: 725px;
+  flex: 0 0 auto;
+  border-radius: var(--im-card-radius);
+  overflow: hidden;
+  background: var(--im-bg);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card::after, .minilesson_fiction_yarncontainer.immersivebright .card::after, .minilesson_fiction_yarncontainer.immersivepaper .card::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 308px;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(12, 12, 14, 0) 0px, rgba(12, 12, 14, 0) 60px, rgb(12, 12, 14) 172px);
+  pointer-events: none;
+  z-index: 1;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__media, .minilesson_fiction_yarncontainer.immersivebright .card__media, .minilesson_fiction_yarncontainer.immersivepaper .card__media {
+  width: 100%;
+  aspect-ratio: 1/1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #000;
+  transition: background-image 300ms ease;
+  position: relative;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__media video,
+.minilesson_fiction_yarncontainer.immersivedark .card__media audio, .minilesson_fiction_yarncontainer.immersivebright .card__media video,
+.minilesson_fiction_yarncontainer.immersivebright .card__media audio, .minilesson_fiction_yarncontainer.immersivepaper .card__media video,
+.minilesson_fiction_yarncontainer.immersivepaper .card__media audio {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 2;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__media video, .minilesson_fiction_yarncontainer.immersivebright .card__media video, .minilesson_fiction_yarncontainer.immersivepaper .card__media video {
+  top: 0;
+  height: 100%;
+  object-fit: cover;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__mute,
+.minilesson_fiction_yarncontainer.immersivedark .card__history, .minilesson_fiction_yarncontainer.immersivebright .card__mute,
+.minilesson_fiction_yarncontainer.immersivebright .card__history, .minilesson_fiction_yarncontainer.immersivepaper .card__mute,
+.minilesson_fiction_yarncontainer.immersivepaper .card__history {
+  position: absolute;
+  top: 16px;
+  z-index: 6;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(100, 100, 100, 0.55);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: background 150ms ease, transform 150ms ease;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__mute:hover,
+.minilesson_fiction_yarncontainer.immersivedark .card__history:hover, .minilesson_fiction_yarncontainer.immersivebright .card__mute:hover,
+.minilesson_fiction_yarncontainer.immersivebright .card__history:hover, .minilesson_fiction_yarncontainer.immersivepaper .card__mute:hover,
+.minilesson_fiction_yarncontainer.immersivepaper .card__history:hover {
+  background: rgba(100, 100, 100, 0.75);
+  transform: scale(1.06);
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__mute, .minilesson_fiction_yarncontainer.immersivebright .card__mute, .minilesson_fiction_yarncontainer.immersivepaper .card__mute {
+  left: 16px;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history, .minilesson_fiction_yarncontainer.immersivebright .card__history, .minilesson_fiction_yarncontainer.immersivepaper .card__history {
+  right: 16px;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__mute-icon--off, .minilesson_fiction_yarncontainer.immersivebright .card__mute-icon--off, .minilesson_fiction_yarncontainer.immersivepaper .card__mute-icon--off {
+  display: none;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__mute.is-muted .card__mute-icon--on, .minilesson_fiction_yarncontainer.immersivebright .card__mute.is-muted .card__mute-icon--on, .minilesson_fiction_yarncontainer.immersivepaper .card__mute.is-muted .card__mute-icon--on {
+  display: none;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__mute.is-muted .card__mute-icon--off, .minilesson_fiction_yarncontainer.immersivebright .card__mute.is-muted .card__mute-icon--off, .minilesson_fiction_yarncontainer.immersivepaper .card__mute.is-muted .card__mute-icon--off {
+  display: inline-block;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__panel, .minilesson_fiction_yarncontainer.immersivebright .card__panel, .minilesson_fiction_yarncontainer.immersivepaper .card__panel {
+  position: relative;
+  z-index: 2;
+  padding: 36px 34.6px 27px;
+  display: flex;
+  flex-direction: column;
+  gap: 27px;
+  flex: 1;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__text-wrap, .minilesson_fiction_yarncontainer.immersivebright .card__text-wrap, .minilesson_fiction_yarncontainer.immersivepaper .card__text-wrap {
+  position: relative;
+  display: block;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__text, .minilesson_fiction_yarncontainer.immersivebright .card__text, .minilesson_fiction_yarncontainer.immersivepaper .card__text {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--im-text);
+  letter-spacing: 0.01em;
+  min-height: 1.45em;
+  padding-right: 36px;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__text.is-typing, .minilesson_fiction_yarncontainer.immersivebright .card__text.is-typing, .minilesson_fiction_yarncontainer.immersivepaper .card__text.is-typing {
+  cursor: pointer;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__text.is-typing::after, .minilesson_fiction_yarncontainer.immersivebright .card__text.is-typing::after, .minilesson_fiction_yarncontainer.immersivepaper .card__text.is-typing::after {
+  content: "▮";
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--im-text);
+  animation: im-caret-blink 900ms steps(2, end) infinite;
+  transform: translateY(1px);
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__translation, .minilesson_fiction_yarncontainer.immersivebright .card__translation, .minilesson_fiction_yarncontainer.immersivepaper .card__translation {
+  margin: 12px 0 0;
+  padding-right: 36px;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--im-muted);
+  letter-spacing: 0.01em;
+  display: none;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__translation.is-visible, .minilesson_fiction_yarncontainer.immersivebright .card__translation.is-visible, .minilesson_fiction_yarncontainer.immersivepaper .card__translation.is-visible {
+  display: block;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__translate, .minilesson_fiction_yarncontainer.immersivebright .card__translate, .minilesson_fiction_yarncontainer.immersivepaper .card__translate {
+  position: absolute;
+  bottom: -4px;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--im-option-border);
+  border-radius: 8px;
+  background: var(--im-option-bg);
+  color: var(--im-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: background 150ms ease, border-color 150ms ease, opacity 220ms ease, transform 220ms ease;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__translate.is-ready, .minilesson_fiction_yarncontainer.immersivebright .card__translate.is-ready, .minilesson_fiction_yarncontainer.immersivepaper .card__translate.is-ready {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__translate.is-ready:hover, .minilesson_fiction_yarncontainer.immersivebright .card__translate.is-ready:hover, .minilesson_fiction_yarncontainer.immersivepaper .card__translate.is-ready:hover {
+  background: var(--im-option-hover-bg);
+  border-color: var(--im-option-hover-border);
+  transform: translateY(0) scale(1.05);
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__translate.is-active, .minilesson_fiction_yarncontainer.immersivebright .card__translate.is-active, .minilesson_fiction_yarncontainer.immersivepaper .card__translate.is-active {
+  background: var(--im-accent);
+  border-color: var(--im-accent);
+  color: var(--im-accent-fg);
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__translate.is-active:hover, .minilesson_fiction_yarncontainer.immersivebright .card__translate.is-active:hover, .minilesson_fiction_yarncontainer.immersivepaper .card__translate.is-active:hover {
+  background: #fff;
+  border-color: #fff;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__actions, .minilesson_fiction_yarncontainer.immersivebright .card__actions, .minilesson_fiction_yarncontainer.immersivepaper .card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+}
+.minilesson_fiction_yarncontainer.immersivedark .yarnchoicescontainer, .minilesson_fiction_yarncontainer.immersivebright .yarnchoicescontainer, .minilesson_fiction_yarncontainer.immersivepaper .yarnchoicescontainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions, .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions, .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container,
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton, .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container,
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton, .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container,
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton {
+  appearance: none;
+  cursor: pointer;
+  background: var(--im-option-bg);
+  border: 1px solid var(--im-option-border);
+  color: var(--im-text);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 400;
+  font-family: inherit;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 150ms ease, border-color 150ms ease;
+  opacity: 0;
+  transform: translateY(6px);
+  animation: im-option-fade-in 260ms ease-out forwards;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:nth-child(1),
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(1), .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:nth-child(1),
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(1), .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:nth-child(1),
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(1) {
+  animation-delay: 0ms;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:nth-child(2),
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(2), .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:nth-child(2),
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(2), .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:nth-child(2),
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(2) {
+  animation-delay: 55ms;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:nth-child(3),
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(3), .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:nth-child(3),
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(3), .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:nth-child(3),
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(3) {
+  animation-delay: 110ms;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:nth-child(4),
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(4), .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:nth-child(4),
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(4), .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:nth-child(4),
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(4) {
+  animation-delay: 165ms;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:nth-child(5),
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(5), .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:nth-child(5),
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(5), .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:nth-child(5),
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(5) {
+  animation-delay: 220ms;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:nth-child(6),
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(6), .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:nth-child(6),
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(6), .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:nth-child(6),
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(6) {
+  animation-delay: 275ms;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:nth-child(7),
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(7), .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:nth-child(7),
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(7), .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:nth-child(7),
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(7) {
+  animation-delay: 330ms;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:nth-child(8),
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(8), .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:nth-child(8),
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(8), .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:nth-child(8),
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(8) {
+  animation-delay: 385ms;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:nth-child(9),
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(9), .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:nth-child(9),
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(9), .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:nth-child(9),
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:nth-child(9) {
+  animation-delay: 440ms;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .option_container:hover,
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:hover, .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .option_container:hover,
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:hover, .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container:hover,
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton:hover {
+  background: var(--im-option-hover-bg);
+  border-color: var(--im-option-hover-border);
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_yarnoptions .minilesson_fiction_option_number, .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_option_number, .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_option_number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 4px;
+  background-color: #303031;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #d8d8d8;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_continuebutton, .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_continuebutton, .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_continuebutton {
+  align-self: center;
+  background: var(--im-button-bg);
+  border: 1px solid var(--im-button-bg);
+  color: var(--im-text);
+  padding: 8px 20px;
+  border-radius: 999px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 120px;
+  text-align: center;
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_continuebutton:hover, .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_continuebutton:hover, .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_continuebutton:hover {
+  background: var(--im-button-bg-hover);
+  border-color: var(--im-button-bg-hover);
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_continuebutton:active, .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_continuebutton:active, .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_continuebutton:active {
+  transform: scale(0.98);
+}
+.minilesson_fiction_yarncontainer.immersivedark .minilesson_fiction_continuebutton .optiontext, .minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_continuebutton .optiontext, .minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_continuebutton .optiontext {
+  display: inline-block;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start, .minilesson_fiction_yarncontainer.immersivebright .card__start, .minilesson_fiction_yarncontainer.immersivepaper .card__start {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  color: var(--im-text);
+  cursor: pointer;
+  text-align: left;
+  transition: opacity 250ms ease;
+  overflow: hidden;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start.is-hidden, .minilesson_fiction_yarncontainer.immersivebright .card__start.is-hidden, .minilesson_fiction_yarncontainer.immersivepaper .card__start.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start::after, .minilesson_fiction_yarncontainer.immersivebright .card__start::after, .minilesson_fiction_yarncontainer.immersivepaper .card__start::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 308px;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(12, 12, 14, 0) 0px, rgba(12, 12, 14, 0) 60px, rgb(12, 12, 14) 172px);
+  pointer-events: none;
+  z-index: 1;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start-image, .minilesson_fiction_yarncontainer.immersivebright .card__start-image, .minilesson_fiction_yarncontainer.immersivepaper .card__start-image {
+  width: 100%;
+  aspect-ratio: 1/1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #111;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start-content, .minilesson_fiction_yarncontainer.immersivebright .card__start-content, .minilesson_fiction_yarncontainer.immersivepaper .card__start-content {
+  position: relative;
+  z-index: 2;
+  padding: 36px 34.6px 27px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  flex: 1;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start-title, .minilesson_fiction_yarncontainer.immersivebright .card__start-title, .minilesson_fiction_yarncontainer.immersivepaper .card__start-title {
+  margin: 0;
+  font-size: 38px;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -1px;
+  color: var(--im-text);
+  text-align: center;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start-cta, .minilesson_fiction_yarncontainer.immersivebright .card__start-cta, .minilesson_fiction_yarncontainer.immersivepaper .card__start-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--im-button-bg);
+  color: var(--im-text);
+  padding: 10px 18px 10px 12px;
+  border-radius: 999px;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: background 150ms ease, transform 150ms ease;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start:hover .card__start-cta, .minilesson_fiction_yarncontainer.immersivebright .card__start:hover .card__start-cta, .minilesson_fiction_yarncontainer.immersivepaper .card__start:hover .card__start-cta {
+  background: var(--im-button-bg-hover);
+  transform: translateY(-1px);
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start-icon, .minilesson_fiction_yarncontainer.immersivebright .card__start-icon, .minilesson_fiction_yarncontainer.immersivepaper .card__start-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--im-accent-fg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start-icon svg, .minilesson_fiction_yarncontainer.immersivebright .card__start-icon svg, .minilesson_fiction_yarncontainer.immersivepaper .card__start-icon svg {
+  display: block;
+  margin-left: 2px;
+  margin-top: 1px;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__start-label, .minilesson_fiction_yarncontainer.immersivebright .card__start-label, .minilesson_fiction_yarncontainer.immersivepaper .card__start-label {
+  margin-top: 1px;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-overlay, .minilesson_fiction_yarncontainer.immersivebright .card__history-overlay, .minilesson_fiction_yarncontainer.immersivepaper .card__history-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #000;
+  color: var(--im-text);
+  overflow-y: auto;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-overlay[hidden], .minilesson_fiction_yarncontainer.immersivebright .card__history-overlay[hidden], .minilesson_fiction_yarncontainer.immersivepaper .card__history-overlay[hidden] {
+  display: none;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-close, .minilesson_fiction_yarncontainer.immersivebright .card__history-close, .minilesson_fiction_yarncontainer.immersivepaper .card__history-close {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--im-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10001;
+  transition: background 150ms ease;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-close:hover, .minilesson_fiction_yarncontainer.immersivebright .card__history-close:hover, .minilesson_fiction_yarncontainer.immersivepaper .card__history-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-log, .minilesson_fiction_yarncontainer.immersivebright .card__history-log, .minilesson_fiction_yarncontainer.immersivepaper .card__history-log {
+  padding: 80px 24px 40px;
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  font-family: "Jost", "Helvetica Neue", Arial, sans-serif;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-log .history-log__beat, .minilesson_fiction_yarncontainer.immersivebright .card__history-log .history-log__beat, .minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__beat {
+  margin: 0 0 32px;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-log .history-log__media, .minilesson_fiction_yarncontainer.immersivebright .card__history-log .history-log__media, .minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__media {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-log .history-log__text, .minilesson_fiction_yarncontainer.immersivebright .card__history-log .history-log__text, .minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--im-text);
+  font-weight: 400;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-log .history-log__translation, .minilesson_fiction_yarncontainer.immersivebright .card__history-log .history-log__translation, .minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__translation {
+  display: none;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-log .history-log__choice, .minilesson_fiction_yarncontainer.immersivebright .card__history-log .history-log__choice, .minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__choice {
+  margin: 0 0 24px;
+  padding: 8px 12px;
+  background: var(--im-option-bg);
+  border: 1px solid var(--im-option-border);
+  border-radius: 8px;
+  color: var(--im-muted);
+  font-size: 15px;
+  font-style: italic;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__history-log .history-log__empty, .minilesson_fiction_yarncontainer.immersivebright .card__history-log .history-log__empty, .minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__empty {
+  color: var(--im-muted);
+  text-align: center;
+  opacity: 0.5;
+}
+.minilesson_fiction_yarncontainer.immersivebright {
+  --im-bg: #FFFFFF;
+  --im-text: #1F2334;
+  --im-muted: #80859d;
+  --im-option-bg: #FFFFFF;
+  --im-option-border: #dddff1;
+  --im-option-hover-bg: #F5F5FE;
+  --im-option-hover-border: #E6E9FD;
+  --im-button-bg: #506DFF;
+  --im-button-bg-hover: #2642CD;
+  --im-accent: #506DFF;
+  --im-accent-fg: #FFFFFF;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card {
+  border: none;
+  box-shadow: 0 4px 30px rgba(31, 35, 52, 0.14);
+}
+.minilesson_fiction_yarncontainer.immersivebright .card::after {
+  content: none;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__media {
+  background-color: transparent;
+  margin: 16px 16px 0;
+  width: calc(100% - 32px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__mute,
+.minilesson_fiction_yarncontainer.immersivebright .card__history {
+  top: 24px;
+  background: rgba(255, 255, 255, 0.75);
+  color: #1F2334;
+  box-shadow: 0 1px 3px rgba(31, 35, 52, 0.08);
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__mute:hover,
+.minilesson_fiction_yarncontainer.immersivebright .card__history:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__mute {
+  left: 24px;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__history {
+  right: 24px;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__translate.is-active:hover {
+  background: #2642CD;
+  border-color: #2642CD;
+  color: #FFFFFF;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__translation {
+  color: #6E738E;
+}
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_yarnoptions .minilesson_fiction_option_number {
+  background-color: #E6E9FD;
+  color: #506DFF;
+}
+.minilesson_fiction_yarncontainer.immersivebright .minilesson_fiction_continuebutton {
+  color: #fff;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__start {
+  background: #FFFFFF;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__start::after {
+  content: none;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__start-image {
+  background-color: transparent;
+  margin: 16px 16px 0;
+  width: calc(100% - 32px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__start-content {
+  justify-content: center;
+  gap: 48px;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__start-title {
+  color: #414C81;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__start-cta {
+  color: #FFFFFF;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__start-icon {
+  background: #FFFFFF;
+  color: #506DFF;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__history-overlay {
+  background: #FFFFFF;
+  color: #1F2334;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__history-close {
+  background: rgba(31, 35, 52, 0.06);
+  color: #1F2334;
+}
+.minilesson_fiction_yarncontainer.immersivebright .card__history-close:hover {
+  background: rgba(31, 35, 52, 0.12);
+}
+.minilesson_fiction_yarncontainer.immersivepaper {
+  --im-bg: #f4ede1;
+  --im-text: #1a1a1a;
+  --im-muted: #6b5e50;
+  --im-option-bg: #f8f2e8;
+  --im-option-border: #e4d5c8;
+  --im-option-hover-bg: #eee4db;
+  --im-option-hover-border: #d9c5b3;
+  --im-button-bg: #eee4db;
+  --im-button-bg-hover: #e4d5c8;
+  --im-accent: #261d15;
+  --im-accent-fg: #f4ede1;
+  font-family: "Aleo", "Georgia", "Times New Roman", serif;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card {
+  border: 1px solid #e9e0d2;
+  box-shadow: 0 6px 24px rgba(74, 56, 40, 0.14);
+  background-color: #f4ede1;
+  background-image: url([[pix:minilessonitem_fiction|paper-tile]]);
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card::after {
+  content: none;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__media {
+  background-color: transparent;
+  margin: 16px 16px 0;
+  width: calc(100% - 32px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__mute,
+.minilesson_fiction_yarncontainer.immersivepaper .card__history {
+  top: 24px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #3b3b3b;
+  box-shadow: 0 1px 3px rgba(74, 56, 40, 0.15);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__mute:hover,
+.minilesson_fiction_yarncontainer.immersivepaper .card__history:hover {
+  background: rgba(255, 255, 255, 0.95);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__mute {
+  left: 24px;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__history {
+  right: 24px;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__text {
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.44;
+  font-weight: 400;
+  color: var(--im-text);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__translation {
+  color: var(--im-muted);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__translate {
+  background: var(--im-option-bg);
+  border-color: var(--im-option-border);
+  color: var(--im-accent);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__translate.is-active:hover {
+  background: var(--im-accent);
+  border-color: var(--im-accent);
+  color: var(--im-accent-fg);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .option_container,
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_optionbutton {
+  font-family: inherit;
+  font-size: 16px;
+  border-radius: 4px;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_yarnoptions .minilesson_fiction_option_number {
+  background-color: #e4d5c8;
+  color: #261d15;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_continuebutton {
+  background: var(--im-button-bg);
+  border: 1px solid var(--im-option-border);
+  color: var(--im-accent);
+  border-radius: 4px;
+  padding: 8px 16px 4px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  transition: background 150ms ease, transform 150ms ease;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .minilesson_fiction_continuebutton:hover {
+  background: var(--im-button-bg-hover);
+  filter: none;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__start {
+  background-color: #f4ede1;
+  background-image: url([[pix:minilessonitem_fiction|paper-tile]]);
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__start::after {
+  content: none;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__start-image {
+  background-color: transparent;
+  margin: 16px 16px 0;
+  width: calc(100% - 32px);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__start-content {
+  justify-content: center;
+  gap: 48px;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__start-title {
+  color: var(--im-accent);
+  font-family: "Jost", sans-serif;
+  font-weight: 600;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__start-cta {
+  background: var(--im-button-bg);
+  color: var(--im-accent);
+  border: 1px solid var(--im-option-border);
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Jost", sans-serif;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__start:hover .card__start-cta {
+  background: var(--im-button-bg-hover);
+  transform: none;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__start-icon {
+  background: var(--im-accent);
+  color: var(--im-button-bg);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__history-overlay {
+  background: #f4ede1;
+  color: var(--im-text);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__history-close {
+  background: rgba(74, 56, 40, 0.08);
+  color: var(--im-accent);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__history-close:hover {
+  background: rgba(74, 56, 40, 0.16);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__history-log {
+  font-family: inherit;
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__text {
+  color: var(--im-text);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__choice {
+  background: var(--im-option-bg);
+  border-color: var(--im-option-border);
+  color: var(--im-muted);
+}
+.minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__empty {
+  color: var(--im-muted);
+}
+
+@keyframes im-caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes im-option-fade-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+body.minilesson-fiction-im-noscroll {
+  overflow: hidden;
+}
+
+.yarn-player-wrapper:fullscreen:has(.immersivedark),
+.yarn-player-wrapper.is-pseudo-fullscreen:has(.immersivedark) {
+  background: #000;
+}
+.yarn-player-wrapper:fullscreen:has(.immersivebright),
+.yarn-player-wrapper.is-pseudo-fullscreen:has(.immersivebright) {
+  background: #FFFFFF;
+}
+.yarn-player-wrapper:fullscreen:has(.immersivepaper),
+.yarn-player-wrapper.is-pseudo-fullscreen:has(.immersivepaper) {
+  background: #f4ede1;
+}
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer.immersivedark,
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer.immersivebright,
+.yarn-player-wrapper:fullscreen .minilesson_fiction_yarncontainer.immersivepaper,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson_fiction_yarncontainer.immersivedark,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson_fiction_yarncontainer.immersivebright,
+.yarn-player-wrapper.is-pseudo-fullscreen .minilesson_fiction_yarncontainer.immersivepaper {
+  align-items: center;
+  min-height: 100vh;
+  padding: 24px 12px;
+}
 
 .minilesson_fiction_yarncontainer .story-paragraph {
   position: relative;
 }
 .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer:has(.fiction-translate-icon), .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer:has(.fiction-translate-icon), .minilesson_fiction_yarncontainer.storymode .story-paragraph:has(.fiction-translate-icon) {
-  padding-bottom: 28px;
+  padding-bottom: 36px;
 }
 .minilesson_fiction_yarncontainer .fiction-translate-icon {
   position: absolute;
   bottom: 4px;
   right: 4px;
+  width: 30px;
+  height: 30px;
   padding: 0;
-  width: 22px;
-  height: 22px;
-  line-height: 1;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: #8b7d6b;
-  opacity: 0.55;
-  cursor: pointer;
-  transition: opacity 0.15s ease;
+  border: 1px solid #dddff1;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f2334;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
-.minilesson_fiction_yarncontainer .fiction-translate-icon:hover, .minilesson_fiction_yarncontainer .fiction-translate-icon.is-active {
-  opacity: 1;
+.minilesson_fiction_yarncontainer .fiction-translate-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.minilesson_fiction_yarncontainer .fiction-translate-icon:hover {
+  background: #f5f5fe;
+  border-color: #e6e9fd;
+  transform: scale(1.05);
+}
+.minilesson_fiction_yarncontainer .fiction-translate-icon.is-active {
+  background: #506dff;
+  border-color: #506dff;
+  color: #fff;
+}
+.minilesson_fiction_yarncontainer.storymode .fiction-translate-icon {
+  background: transparent;
+  border-color: #ded3c2;
+}
+.minilesson_fiction_yarncontainer.storymode .fiction-translate-icon:hover {
+  background: #ddccb4;
+  border-color: #ddcdb4;
+}
+.minilesson_fiction_yarncontainer.storymode .fiction-translate-icon.is-active {
+  background: #ddccb4;
+  border-color: #ddcdb4;
+  color: #1f2334;
 }
 .minilesson_fiction_yarncontainer .fiction-translated-text {
   display: flex;
@@ -4939,13 +5938,13 @@ span.wrongitem {
   gap: 6px;
   margin: 4px 0 8px 10px;
   padding: 6px 10px;
-  font-size: 13px;
+  font-size: 14px;
   font-style: italic;
-  color: #5b4d3b;
-  border-left: 3px solid #e0d8c3;
+  color: #555555;
+  border-left: 3px solid rgba(80, 109, 255, 0.6392156863);
 }
-.minilesson_fiction_yarncontainer .fiction-translated-text .fiction-translated-text-marker {
-  opacity: 0.6;
+.minilesson_fiction_yarncontainer.mobilechat .fiction-translated-text {
+  border-left-color: #97a1c8;
 }
 
 #scrolldownbtn {
@@ -4960,6 +5959,13 @@ span.wrongitem {
   background: #FFFFFF;
   border: 1px solid #ddd;
   transition: all 0.3s ease;
+}
+.yarn-player-wrapper:has(.immersivedark), .yarn-player-wrapper:has(.immersivebright), .yarn-player-wrapper:has(.immersivepaper) {
+  background: transparent;
+  border: none;
+}
+.yarn-player-wrapper:has(.plain), .yarn-player-wrapper:has(.storymode), .yarn-player-wrapper:has(.mobilechat) {
+  border-radius: 12px;
 }
 .yarn-player-wrapper:fullscreen, .yarn-player-wrapper.is-pseudo-fullscreen {
   width: 100%;
@@ -5014,20 +6020,99 @@ span.wrongitem {
   flex-grow: 1;
 }
 
-.fullscreen-btn {
+.btn.btn-secondary.fullscreen-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 12px;
+  right: 12px;
   z-index: 1000;
-  opacity: 0.7;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 8px;
+  background-color: transparent;
+  border: 1px solid rgba(80, 109, 255, 0.19);
+  color: #506DFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease;
 }
-.fullscreen-btn:hover {
-  opacity: 1;
+.btn.btn-secondary.fullscreen-btn i,
+.btn.btn-secondary.fullscreen-btn span {
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn.btn-secondary.fullscreen-btn:hover, .btn.btn-secondary.fullscreen-btn:focus, .btn.btn-secondary.fullscreen-btn:focus-visible {
+  background-color: #506DFF;
+  border-color: #506DFF;
+  color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(80, 109, 255, 0.18);
+}
+.btn.btn-secondary.fullscreen-btn:active {
+  background-color: #2642CD;
+  border-color: #2642CD;
+  color: #FFFFFF;
+  transform: scale(0.95);
+}
+.btn.btn-secondary.fullscreen-btn.is-fullscreen {
+  background-color: #506DFF;
+  border-color: #506DFF;
+  color: #FFFFFF;
+}
+.btn.btn-secondary.fullscreen-btn.is-fullscreen:hover, .btn.btn-secondary.fullscreen-btn.is-fullscreen:focus {
+  background-color: #2642CD;
+  border-color: #2642CD;
+  color: #FFFFFF;
 }
 @media (max-width: 576px) {
-  .fullscreen-btn span {
+  .btn.btn-secondary.fullscreen-btn span {
     display: none;
   }
+}
+
+.yarn-player-wrapper:has(.immersivedark) .btn.btn-secondary.fullscreen-btn,
+.yarn-player-wrapper:has(.immersivebright) .btn.btn-secondary.fullscreen-btn,
+.yarn-player-wrapper:has(.immersivepaper) .btn.btn-secondary.fullscreen-btn {
+  display: none;
+}
+
+.yarn-player-wrapper:has(.plain) .btn.btn-secondary.fullscreen-btn,
+.yarn-player-wrapper:has(.mobilechat) .btn.btn-secondary.fullscreen-btn,
+.yarn-player-wrapper:has(.storymode) .btn.btn-secondary.fullscreen-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  border: none;
+}
+
+.yarn-player-wrapper:has(.plain) .btn.btn-secondary.fullscreen-btn:hover,
+.yarn-player-wrapper:has(.plain) .btn.btn-secondary.fullscreen-btn:focus,
+.yarn-player-wrapper:has(.plain) .btn.btn-secondary.fullscreen-btn:focus-visible,
+.yarn-player-wrapper:has(.mobilechat) .btn.btn-secondary.fullscreen-btn:hover,
+.yarn-player-wrapper:has(.mobilechat) .btn.btn-secondary.fullscreen-btn:focus,
+.yarn-player-wrapper:has(.mobilechat) .btn.btn-secondary.fullscreen-btn:focus-visible,
+.yarn-player-wrapper:has(.storymode) .btn.btn-secondary.fullscreen-btn:hover,
+.yarn-player-wrapper:has(.storymode) .btn.btn-secondary.fullscreen-btn:focus,
+.yarn-player-wrapper:has(.storymode) .btn.btn-secondary.fullscreen-btn:focus-visible {
+  background-color: transparent;
+  color: #506dff;
+  box-shadow: 0 0 0 3px rgba(80, 109, 255, 0.18);
+}
+
+.yarn-player-wrapper:has(.mobilechat) .btn.btn-secondary.fullscreen-btn,
+.yarn-player-wrapper:has(.mobilechat) .btn.btn-secondary.fullscreen-btn:hover,
+.yarn-player-wrapper:has(.mobilechat) .btn.btn-secondary.fullscreen-btn:focus,
+.yarn-player-wrapper:has(.mobilechat) .btn.btn-secondary.fullscreen-btn:focus-visible,
+.yarn-player-wrapper:has(.storymode) .btn.btn-secondary.fullscreen-btn,
+.yarn-player-wrapper:has(.storymode) .btn.btn-secondary.fullscreen-btn:hover,
+.yarn-player-wrapper:has(.storymode) .btn.btn-secondary.fullscreen-btn:focus,
+.yarn-player-wrapper:has(.storymode) .btn.btn-secondary.fullscreen-btn:focus-visible {
+  color: #979694;
 }
 
 @keyframes l3 {

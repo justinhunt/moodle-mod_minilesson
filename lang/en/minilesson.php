@@ -1411,6 +1411,17 @@ $string['presentationmode'] = 'Presentation Mode';
 $string['presentationmode_plain'] = 'Plain';
 $string['presentationmode_mobile_chat'] = 'Mobile Chat';
 $string['presentationmode_storymode'] = 'Story Mode';
+$string['presentationmode_immersivedark'] = 'Immersive Dark';
+$string['presentationmode_immersivebright'] = 'Immersive Bright';
+$string['presentationmode_immersivepaper'] = 'Immersive Paper';
+
+$string['fiction_start'] = 'Start';
+$string['fiction_restart'] = 'Restart';
+$string['fiction_mute'] = 'Mute sounds';
+$string['fiction_unmute'] = 'Unmute sounds';
+$string['fiction_translate'] = 'Show translation';
+$string['fiction_history'] = 'Show history';
+$string['fiction_history_close'] = 'Close history';
 
 $string['fiction:syntaxcheckbutton'] = 'Syntax Check';
 $string['fiction:taptotranslate'] = 'Enable tap to translate';

@@ -1,11 +1,13 @@
-<div id="minilesson_chooser_cont_{{uniqid}}" class="{{cssprefix}}_deflang_chooser m-2 p-3 border rounded">
-<div class="minilesson_langchooser_instructions">{{#str}}choosenativelanguageinstructions, mod_minilesson{{/str}}</div>
-    <select id="{{uniqid}}_langselect">
-        {{#nativelanglist}}
-        <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
-        {{/nativelanglist}}
-    </select>
-    <button type="button" class="btn btn-secondary" id="{{uniqid}}_langset">{{#str}}choosenativelanguage, mod_minilesson{{/str}}</button>
+<div id="minilesson_chooser_cont_{{uniqid}}" class="minilesson_langchooser {{cssprefix}}_deflang_chooser">
+    <div class="minilesson_langchooser_instructions">{{#str}}choosenativelanguageinstructions, mod_minilesson{{/str}}</div>
+    <div class="minilesson_langchooser_row">
+        <select id="{{uniqid}}_langselect" class="minilesson_langchooser_select">
+            {{#nativelanglist}}
+            <option value="{{value}}" {{#selected}}selected{{/selected}}>{{label}}</option>
+            {{/nativelanglist}}
+        </select>
+        <button type="button" class="btn minilesson_langchooser_btn" id="{{uniqid}}_langset">{{#str}}choosenativelanguage, mod_minilesson{{/str}}</button>
+    </div>
 </div>
 {{^element.frozen}}
     {{#js}}

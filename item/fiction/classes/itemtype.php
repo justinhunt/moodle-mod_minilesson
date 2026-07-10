@@ -176,6 +176,74 @@ class itemtype extends item {
         $testitem->presention_plain = empty($this->itemrecord->{ self::PRESENTATION_MODE});
         $testitem->presention_mobilechat = $this->itemrecord->{ self::PRESENTATION_MODE} == 1;
         $testitem->presention_storymode = $this->itemrecord->{ self::PRESENTATION_MODE} == 2;
+        $testitem->presention_immersivedark = $this->itemrecord->{ self::PRESENTATION_MODE} == 3;
+        $testitem->presention_immersivebright = $this->itemrecord->{ self::PRESENTATION_MODE} == 4;
+        $testitem->presention_immersivepaper = $this->itemrecord->{ self::PRESENTATION_MODE} == 5;
+
+        // Immersive (Dark/Bright/Paper) shared data: title, cover, sound + font URLs.
+        if ($testitem->presention_immersivedark || $testitem->presention_immersivebright
+            || $testitem->presention_immersivepaper) {
+            $imtitle = format_string($this->moduleinstance->name);
+            $imcover = '';
+            $imageexts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+            foreach ($files as $file) {
+                $ext = strtolower(pathinfo($file->get_filename(), PATHINFO_EXTENSION));
+                if (in_array($ext, $imageexts)) {
+                    $imcover = str_replace(
+                        '{filename}',
+                        rawurlencode($file->get_filename()),
+                        $imageserveurl
+                    );
+                    break;
+                }
+            }
+            $soundbase = '/mod/minilesson/item/fiction/pix/sounds/';
+            $keysoft = (new \moodle_url($soundbase . 'key-soft.mp3'))->out(false);
+            $keyhard = (new \moodle_url($soundbase . 'key-hard.mp3'))->out(false);
+            $button = (new \moodle_url($soundbase . 'button.wav'))->out(false);
+            $fontbase = '/mod/minilesson/item/fiction/pix/fonts/';
+            $fontregular = (new \moodle_url($fontbase . 'Jost-VariableFont_wght.ttf'))->out(false);
+            $fontitalic = (new \moodle_url($fontbase . 'Jost-Italic-VariableFont_wght.ttf'))->out(false);
+
+            if ($testitem->presention_immersivedark) {
+                $testitem->immersivedark_title = $imtitle;
+                $testitem->immersivedark_cover_url = $imcover;
+                $testitem->immersivedark_sound_key_soft = $keysoft;
+                $testitem->immersivedark_sound_key_hard = $keyhard;
+                $testitem->immersivedark_sound_button = $button;
+                $testitem->immersivedark_font_regular = $fontregular;
+                $testitem->immersivedark_font_italic = $fontitalic;
+            }
+            if ($testitem->presention_immersivebright) {
+                $testitem->immersivebright_title = $imtitle;
+                $testitem->immersivebright_cover_url = $imcover;
+                $testitem->immersivebright_sound_key_soft = $keysoft;
+                $testitem->immersivebright_sound_key_hard = $keyhard;
+                $testitem->immersivebright_sound_button = $button;
+                $testitem->immersivebright_font_regular = $fontregular;
+                $testitem->immersivebright_font_italic = $fontitalic;
+            }
+            if ($testitem->presention_immersivepaper) {
+                $testitem->immersivepaper_title = $imtitle;
+                $testitem->immersivepaper_cover_url = $imcover;
+                $testitem->immersivepaper_sound_key_soft = $keysoft;
+                $testitem->immersivepaper_sound_key_hard = $keyhard;
+                $testitem->immersivepaper_sound_button = $button;
+                // Paper uses Aleo (serif) for body — includes italic variant.
+                $testitem->immersivepaper_font_regular = (new \moodle_url(
+                    $fontbase . 'Aleo-VariableFont_wght.ttf'
+                ))->out(false);
+                $testitem->immersivepaper_font_italic = (new \moodle_url(
+                    $fontbase . 'Aleo-Italic-VariableFont_wght.ttf'
+                ))->out(false);
+                // Paper title uses Jost (sans-serif).
+                $testitem->immersivepaper_title_font_regular = $fontregular;
+                // Paper tile image, tiled at 100x100.
+                $testitem->immersivepaper_paper_url = (new \moodle_url(
+                    '/mod/minilesson/item/fiction/pix/paper-tile.png'
+                ))->out(false);
+            }
+        }
 
         // Flowthrough mode.
         $testitem->flowthroughmode = $this->itemrecord->{ self::FLOWTHROUGH_MESSAGES} ? true : false;
