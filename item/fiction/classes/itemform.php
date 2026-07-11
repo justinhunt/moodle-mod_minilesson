@@ -89,6 +89,9 @@ class itemform extends baseform {
             0 => get_string('presentationmode_plain', constants::M_COMPONENT),
             1 => get_string('presentationmode_mobile_chat', constants::M_COMPONENT),
             2 => get_string('presentationmode_storymode', constants::M_COMPONENT),
+            3 => get_string('presentationmode_immersivedark', constants::M_COMPONENT),
+            4 => get_string('presentationmode_immersivebright', constants::M_COMPONENT),
+            5 => get_string('presentationmode_immersivepaper', constants::M_COMPONENT),
         ], 0);
 
         $this->add_dropdown(itemtype::FLOWTHROUGH_MESSAGES, get_string('flowthroughmessages', constants::M_COMPONENT),
