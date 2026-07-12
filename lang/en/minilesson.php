@@ -512,7 +512,7 @@ $string['fluency_instructions1'] = 'Read the sentences aloud. Click the micropho
 $string['conversation_instructions1'] = 'replace these instructions.';
 $string['audiochat_instructions1'] = 'Practice speaking with your AI partner about the topic.';
 $string['wordshuffle_instructions1'] = 'Put the words in the correct order to form a sentence.';
-$string['scatter_instructions1'] = 'Choose the word pairs';
+$string['scatter_instructions1'] = 'Match the word pairs';
 $string['slides_instructions1'] = 'Click > or < to go forward or backward through the slides.';
 $string['fiction_instructions1'] = 'Follow the instructions and make good choices. Good luck.';
 

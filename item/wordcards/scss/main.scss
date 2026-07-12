@@ -115,11 +115,13 @@
 
     .wordcards_image_hint {
         margin: 10px 0;
+        text-align: center;
 
         img {
-            max-width: 220px;
-            max-height: 160px;
+            max-width: min(280px, 100%);
+            max-height: 200px;
             border-radius: 8px;
+            box-shadow: $subtle-shadow;
         }
     }
 
