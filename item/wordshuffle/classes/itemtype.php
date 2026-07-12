@@ -49,7 +49,7 @@ class itemtype extends item {
         // Do we need audio
         $testitem->readsentence = !empty($itemrecord->{constants::READSENTENCE});
 
-        // Prepare data arrays
+        // Prepare data arrays.
         $testitem->sentences = [];
         $testitem->imagecontent = true;
         $testitem->audiocontent = $testitem->readsentence;

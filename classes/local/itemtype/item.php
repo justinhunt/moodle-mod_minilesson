@@ -989,7 +989,10 @@ abstract class item implements \templatable, \renderable {
             // NB it will separate the part after ] as a separate word. [fath]er => ["[fath]", "er"]
             // if that is a problem, its probably better to fix the sentence.
             // if (preg_match_all('/\[[^\]]+\]|[^\s]+/', $sentence, $matches)) {
-            if (preg_match_all('/\[[^\]]+\][^\s]*|[^\s]+/', $sentence, $matches)) {
+            // We use a negated character class [^\s\.\,\!\?\;\:\)\}\"\]]* instead of [^\s]*
+            // so that standard punctuation (like ?) is NOT glued to the gap, but alphanumeric 
+            // suffixes (like in [fath]er) ARE glued.
+            if (preg_match_all('/\[[^\]]+\][^\s\.\,\!\?\;\:\)\}\"\]]*|[^\s]+/', $sentence, $matches)) {
                 $words = $matches[0];
             } else {
                 $words = [];
