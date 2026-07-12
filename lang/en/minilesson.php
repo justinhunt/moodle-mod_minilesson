@@ -31,8 +31,8 @@ $string['continuepreviousattempt'] = 'Continue Previous Attempt?';
 $string['allowcontinueattempts'] = 'Can continue previous attempt';
 $string['allowcontinueattempts_details'] = 'If enabled, students can resume a previous incomplete attempt from where they left off.';
 $string['allowcontinueattempts_help'] = 'If enabled, students can resume a previous incomplete attempt from where they left off.';
-$string['attemptreusequestion'] = "Do you want to continue your previous attempt (yes) ?<br>
-If you say no, your previous attempt will be deleted.";
+$string['attemptreusequestion'] = 'If you start again, your previous attempt will be deleted.';
+$string['startagain'] = 'Start again';
 $string['modulename'] = 'Poodll MiniLesson';
 $string['modulenameplural'] = 'Poodll MiniLessons';
 $string['modulename_help'] = 'Poodll MiniLesson combines several language learning activities into a simple, self-guided online lesson.

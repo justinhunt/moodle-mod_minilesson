@@ -1,0 +1,54 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/attempt_continue_progress
+
+    Progress indicator shown on the "continue previous attempt" screen.
+    Renders one numbered circle per lesson item (checked when completed),
+    a slim progress bar and a completed-count message.
+
+    Context variables required for this template:
+    * steps - array of steps, each with a number and a completed flag
+    * percent - completion percentage (0-100)
+    * countmessage - localised "completed x of y" message
+
+    Example context (json):
+    {
+        "steps": [
+            {"number": 1, "completed": true},
+            {"number": 2, "completed": true},
+            {"number": 3, "completed": false}
+        ],
+        "percent": 67,
+        "countmessage": "You have completed 2 out of 3 steps."
+    }
+}}
+<div class="ml-continue-progress">
+    <div class="ml-continue-progress-steps" aria-hidden="true">
+        {{#steps}}
+            <span class="ml-continue-progress-step {{#completed}}ml-completed{{/completed}}">
+                {{#completed}}<i class="fa fa-check"></i>{{/completed}}
+                {{^completed}}{{number}}{{/completed}}
+            </span>
+        {{/steps}}
+    </div>
+    <div class="progress ml-continue-progress-bar">
+        <div class="progress-bar" role="progressbar" style="width: {{percent}}%"
+             aria-valuenow="{{percent}}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+    <p class="ml-continue-progress-count">{{countmessage}}</p>
+</div>

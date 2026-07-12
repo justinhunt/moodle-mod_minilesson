@@ -691,7 +691,56 @@ li.hg-candidate-box-list-item:active {
 #page-mod-minilesson-view .restore_lesson {
   border: 1px solid #ccc;
   margin: 0 auto;
-  width: 470px;
+  max-width: 470px;
+  width: 100%;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continue-progress {
+  padding: 0 25px;
+  margin-top: 20px;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continue-progress-steps {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continue-progress-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #6c757d;
+  font-size: 0.8rem;
+  flex: 0 0 auto;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continue-progress-step.ml-completed {
+  background-color: #5067FF;
+  border-color: #5067FF;
+  color: #fff;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continue-progress-bar {
+  height: 8px;
+  margin-bottom: 10px;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continue-progress-bar .progress-bar {
+  background-color: #5067FF;
+}
+
+#page-mod-minilesson-view .restore_lesson .ml-continue-progress-count {
+  margin-bottom: 0;
 }
 
 #page-mod-minilesson-view .restore_lesson_header {

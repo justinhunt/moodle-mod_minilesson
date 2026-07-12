@@ -40,7 +40,7 @@ class attempt_continue_form extends \moodleform {
     }
 
     public function definition_after_data() {
-        global $DB, $PAGE;
+        global $DB, $PAGE, $OUTPUT;
         $mform = $this->_form;
         $attemptid = $this->get_element_value('attemptid');
 
@@ -50,31 +50,45 @@ class attempt_continue_form extends \moodleform {
 
         $mform->addElement('html', '<h3 class="restore_lesson_header">' . get_string('continuepreviousattempt', constants::M_COMPONENT) . '</h3>');
 
-        $lessoncountmessage = '';
         if (!empty($attemptid)) {
             $attemptrecord = $DB->get_record(constants::M_ATTEMPTSTABLE, ['id' => $attemptid]);
             if (!empty($attemptrecord)) {
                 $totallessonitems = $DB->count_records(constants::M_QTABLE, ['minilesson' => $attemptrecord->moduleid]);
-                $completedlessonitems = 0;
+                $steps = [];
                 if ($attemptrecord->sessiondata) {
-                    $completedlessonitems = count(json_decode($attemptrecord->sessiondata)->steps);
+                    $sessiondata = json_decode($attemptrecord->sessiondata);
+                    if (!empty($sessiondata->steps)) {
+                        $steps = utils::remake_steps_as_array($sessiondata->steps);
+                    }
                 }
+                $completedlessonitems = count($steps);
                 $count = [
                     'completed' => $completedlessonitems,
                     'totallessonitem' => $totallessonitems,
                 ];
-                $lessoncountmessage = get_string('attemptquestioncountmessage', constants::M_COMPONENT, $count) . '</br>';
+                $stepsdata = [];
+                for ($i = 0; $i < $totallessonitems; $i++) {
+                    $stepsdata[] = ['number' => $i + 1, 'completed' => isset($steps[$i])];
+                }
+                $percent = $totallessonitems > 0 ?
+                    min(100, round($completedlessonitems / $totallessonitems * 100)) : 0;
+                $progresshtml = $OUTPUT->render_from_template(constants::M_COMPONENT . '/attempt_continue_progress', [
+                    'steps' => $stepsdata,
+                    'percent' => $percent,
+                    'countmessage' => get_string('attemptquestioncountmessage', constants::M_COMPONENT, $count),
+                ]);
+                $mform->addElement('html', $progresshtml);
             }
         }
 
-        $mform->addElement('html', '<p class="restore_lesson_text"> '. $lessoncountmessage .
+        $mform->addElement('html', '<p class="restore_lesson_text">' .
             get_string('attemptreusequestion', constants::M_COMPONENT) . '</p>');
 
-        $deletebtn = $mform->createElement('submit', 'delete', get_string('no'));
+        $deletebtn = $mform->createElement('submit', 'delete', get_string('startagain', constants::M_COMPONENT));
         $deletebtn->_generateId();
         $buttons[] = $deletebtn;
 
-        $buttons[] = $mform->createElement('submit', 'continue', get_string('yes'));
+        $buttons[] = $mform->createElement('submit', 'continue', get_string('continue'));
         $group = $mform->addGroup($buttons, 'continueformbuttons', null, null, false, ['class' => 'ml-continueformbuttons']);
         // For prior to Moodle 4.4 to stick we need to set the class attribute like this
         $group->setAttributes(['class' => 'ml-continueformbuttons']);
