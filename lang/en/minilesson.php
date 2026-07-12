@@ -1476,6 +1476,7 @@ $string['downloadtranslationmodel'] = 'Download Translation Model';
 $string['downloadtranslationmodel_desc'] = 'This story uses translation features. Would you like to download the translation model? (This is a one-time download)';
 $string['download'] = 'Download';
 $string['downloadingtranslator'] = 'Downloading translator: {$a}%';
+$string['fiction:translating'] = 'Translating ...';
 $string['customlayout'] = 'Custom Layout';
 $string['customkeys'] = 'Custom Virtual Keys';
 $string['customkeys_help'] = 'Add space separated list of keys for the virtual keyboard. E.g. "à â æ ç"';

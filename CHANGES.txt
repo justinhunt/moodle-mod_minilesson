@@ -1,3 +1,11 @@
+Version 1.1.40 (Build 2026071201)
+- Added new item type "wordcards"
+- Added 3 new (and better) fiction item skins
+- improved fiction item translate feature
+- Added community page to free speaking / free writing
+- Restricted access to aigen_dev page to site managers
+- Improved the "continue attempt" dialog
+
 Version 1.1.40 (Build 2026062200)
 - Added many new AI Generate templates
 - Added random feature to wordshuffle, gapfills, and cards

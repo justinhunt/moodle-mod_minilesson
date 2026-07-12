@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'minilessonitem_fiction';
 $plugin->release      = '1.0';
-$plugin->version      = 2026041000;
+$plugin->version      = 2026071200;
 $plugin->requires     = 2022041900;
 $plugin->supported    = [400, 501];
 $plugin->maturity     = MATURITY_STABLE;

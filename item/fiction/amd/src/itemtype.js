@@ -76,10 +76,15 @@ define([
             this.storydata.set('userfullname', itemdata.userfullname);
             this.storydata.set('cantranslate', false);
 
-            // Set a flag to indicate that translation is possible
-            // set lang code to 2 char equivalent, eg en for en-us
-            this.sourceLang = this.itemdata.language.substring(0, 2);
-            this.destLang = this.itemdata.nativelanguage.substring(0, 2);
+            // Full locale tags (e.g. en-US -> pt-BR). nativelanguage is already resolved
+            // server side from the activity setting and the user's native language
+            // preference. The translate module degrades to base languages (pt) itself
+            // when the browser has no model for the regional variant.
+            this.sourceLang = this.itemdata.language;
+            this.destLang = this.itemdata.nativelanguage;
+            // Give the translate module what it needs for the web service fallback,
+            // used when the browser has no native translation API.
+            translate.init(quizhelper.cmid, itemdata.id);
             // We need to wait for the availability check before we start the story,
             // otherwise $cantranslate will be false in the first render's conditions.
             translate.check_availability(this.sourceLang, this.destLang).then(function (availability) {
@@ -100,16 +105,27 @@ define([
                             return Math.floor(Math.random() * sides) + 1;
                         },
                         translate: (text) => {
+                            if (that.isImmersive) {
+                                // Immersive cards strip inline HTML before the typewriter runs,
+                                // so an inline span can never be filled in. Instead offer the
+                                // text through the card's translation panel for this beat.
+                                if (that.storydata.get('cantranslate')) {
+                                    that.im_pendingInlineTranslate = text;
+                                }
+                                return "";
+                            }
                             var randomId = Math.random().toString(36).substring(2, 9);
-                            var updateStory = function (themessage) {
+                            var updateStory = function (themessage, attemptsleft) {
                                 var el = $("#ml-f-" + randomId);
                                 if (el.length) {
                                     el.html(themessage);
-                                } else {
-                                    setTimeout(updateStory, 100, themessage);
+                                } else if (attemptsleft > 0) {
+                                    setTimeout(updateStory, 100, themessage, attemptsleft - 1);
                                 }
                             };
-                            that.call_translate(that.sourceLang, that.destLang, text, updateStory);
+                            that.call_translate(that.sourceLang, that.destLang, text, function (themessage) {
+                                updateStory(themessage, 100);
+                            });
                             return "<span id='ml-f-" + randomId + "' class='ml-f-inline-translated-text'></span>";
                         }
                     }
@@ -183,6 +199,10 @@ define([
                     "key": "downloadingtranslator",
                     "component": 'mod_minilesson'
                 },
+                {
+                    "key": "fiction:translating",
+                    "component": 'mod_minilesson'
+                },
             ]).done(function (s) {
                 var i = 0;
                 self.strings.nextlessonitem = s[i++];
@@ -194,6 +214,7 @@ define([
                 self.strings.download = s[i++];
                 self.strings.skip = s[i++];
                 self.strings.downloadingtranslator = s[i++];
+                self.strings.translating = s[i++];
             });
         },
 
@@ -621,9 +642,23 @@ define([
                             });
                         },
                         function () {
-                            // User clicked "Skip"
+                            // User clicked "Skip" - fall back to remote translation if we can.
                             log.debug('User skipped translation model download');
-                            messageCallback("translation model not downloaded");
+                            if (translate.force_remote()) {
+                                translate.create_session(sourceLang, destLang).then(() => {
+                                    return translate.translate(text);
+                                }).then((translation) => {
+                                    if (translation) {
+                                        messageCallback(translation);
+                                    } else {
+                                        log.debug('translation failed');
+                                    }
+                                }).catch((e) => {
+                                    log.error("Translation error: " + e);
+                                });
+                            } else {
+                                messageCallback("translation model not downloaded");
+                            }
                         }
                     );
                 } else if (status === 'ready') {
@@ -1178,7 +1213,10 @@ define([
             this.im_typingTimer = null;
             this.im_finishTyping = null;
             this.im_soundLoopTimer = null;
-            this.im_currentTranslation = '';
+            this.im_translateSource = '';
+            this.im_translationResult = '';
+            this.im_currentHistoryEntry = null;
+            this.im_pendingInlineTranslate = null;
             this.im_currentMediaUrl = '';
             this.im_historylog = [];
             this.im_pendingOptions = null;
@@ -1253,7 +1291,7 @@ define([
             $c.on('click', '.card__translate', function (e) {
                 e.stopPropagation();
                 self.im_playButtonClick();
-                if (!self.im_currentTranslation) {
+                if (!self.im_translateSource) {
                     return;
                 }
                 var $panel = self.controls.im_translation;
@@ -1261,11 +1299,34 @@ define([
                 if ($panel.hasClass('is-visible')) {
                     $panel.removeClass('is-visible');
                     $btn.removeClass('is-active');
-                } else {
-                    $panel.text(self.im_currentTranslation);
-                    $panel.addClass('is-visible');
-                    $btn.addClass('is-active');
+                    return;
                 }
+                $panel.addClass('is-visible');
+                $btn.addClass('is-active');
+                if (self.im_translationResult) {
+                    $panel.text(self.im_translationResult);
+                    return;
+                }
+                // First open for this beat: fetch the translation.
+                $panel.text(self.strings.translating);
+                var source = self.im_translateSource;
+                var historyentry = self.im_currentHistoryEntry;
+                self.call_translate(self.sourceLang, self.destLang, source, function (message) {
+                    // Ignore late results if the story has moved on to another beat.
+                    if (self.im_translateSource !== source) {
+                        return;
+                    }
+                    // Model download progress updates arrive as HTML snippets.
+                    if (message.toString().indexOf('translation-download-progress') !== -1) {
+                        $panel.html(message);
+                        return;
+                    }
+                    self.im_translationResult = message;
+                    $panel.text(message);
+                    if (historyentry) {
+                        historyentry.translation = message;
+                    }
+                });
             });
 
             $c.on('click', '.card__text', function () {
@@ -1518,7 +1579,15 @@ define([
 
             // Seed translation panel data. Keep the translate button hidden
             // until the typewriter has finished revealing the text.
-            self.im_currentTranslation = messagedata.translatesource || '';
+            self.im_translateSource = messagedata.translatesource || '';
+            // An inline {translate("...")} in this line delivers its text through
+            // the translation panel, even when tap-to-translate is off.
+            if (self.im_pendingInlineTranslate) {
+                self.im_translateSource = self.im_pendingInlineTranslate;
+                self.im_pendingInlineTranslate = null;
+            }
+            self.im_translationResult = '';
+            self.im_currentHistoryEntry = null;
             self.controls.im_translation.text('').removeClass('is-visible');
             self.controls.im_translate.removeClass('is-active').removeClass('is-ready');
 
@@ -1529,17 +1598,20 @@ define([
             return new Promise(function (resolve) {
                 self.im_typeText(plaintext, function () {
                     // Reveal translate button once the text has finished appearing.
-                    if (self.im_currentTranslation) {
+                    if (self.im_translateSource) {
                         self.controls.im_translate.addClass('is-ready');
                     }
-                    // Push beat to history log.
-                    self.im_historylog.push({
+                    // Push beat to history log. The translation field is filled in
+                    // later if the user requests a translation of this beat.
+                    var historyentry = {
                         type: 'beat',
                         text: plaintext,
-                        translation: self.im_currentTranslation,
+                        translation: '',
                         mediaUrl: self.im_currentMediaUrl,
                         mediaType: messagedata.charactermedia_type || ''
-                    });
+                    };
+                    self.im_historylog.push(historyentry);
+                    self.im_currentHistoryEntry = historyentry;
                     self.reset_chat_data();
 
                     // Render pending options (if this was an OptionsResult with text).

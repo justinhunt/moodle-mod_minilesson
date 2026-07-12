@@ -246,6 +246,14 @@ $functions = [
             'type' => 'write',
             'ajax' => true,
         ],
+        'mod_minilesson_translate_message' => [
+            'classname' => 'mod_minilesson\external\translate_message',
+            'methodname' => 'execute',
+            'description' => 'Translates a lesson item message into the student\'s native language',
+            'capabilities' => 'mod/minilesson:view',
+            'type' => 'read',
+            'ajax' => true,
+        ],
 ];
 
 $services = [

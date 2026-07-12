@@ -419,6 +419,35 @@ class aimanager {
     }
 
     /**
+     * Translate a short piece of text from one language to another.
+     *
+     * Results are cached in minilesson_ai_cache, so repeated translations of the same
+     * text (e.g. by different students on the same lesson item) only hit the AI provider once.
+     *
+     * @param string $text The text to translate.
+     * @param string $fromlang The language code of the text, e.g. en-US.
+     * @param string $tolang The language code to translate into, e.g. ja-JP.
+     * @return string|false The translated text, or false on failure.
+     */
+    public function translate_text($text, $fromlang, $tolang) {
+        // The text goes in as JSON: with a plain text payload the model tends to reply with
+        // bare text instead of the requested JSON, which the Poodll API rejects.
+        $payload = json_encode(['text' => $text], JSON_UNESCAPED_UNICODE);
+        $prompt = "Translate the value of the text key in the JSON string that follows, ";
+        $prompt .= "from language: $fromlang, into language: $tolang." . PHP_EOL;
+        $prompt .= 'Return results in the format: {"translation": "thetranslatedtext"}' . PHP_EOL;
+        $prompt .= 'Return only the translation, with no explanations or alternatives.' . PHP_EOL;
+        $prompt .= $payload;
+
+        $ret = $this->generate_structured_content($prompt, true);
+        if ($ret->success && is_object($ret->payload)
+                && isset($ret->payload->translation) && is_string($ret->payload->translation)) {
+            return $ret->payload->translation;
+        }
+        return false;
+    }
+
+    /**
      * Generate text using the configured AI provider.
      * @param string $prompt
      * @param int $contextid

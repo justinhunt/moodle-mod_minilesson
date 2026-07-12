@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -47,148 +46,148 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
 
-    'mod/minilesson:addinstance' => array(
+    'mod/minilesson:addinstance' => [
             'riskbitmask' => RISK_XSS,
             'captype' => 'write',
             'contextlevel' => CONTEXT_COURSE,
-            'archetypes' => array(
+            'archetypes' => [
                     'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
-    'mod/minilesson:evaluate' => array(
+                    'manager' => CAP_ALLOW,
+            ],
+            'clonepermissionsfrom' => 'moodle/course:manageactivities',
+    ],
+    'mod/minilesson:evaluate' => [
         'riskbitmask' => RISK_SPAM | RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/course:markcomplete'
-    ),
-    'mod/minilesson:canpreview' => array(
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'moodle/course:markcomplete',
+    ],
+    'mod/minilesson:canpreview' => [
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/course:markcomplete'
-    ),
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'moodle/course:markcomplete',
+    ],
 
-    'mod/minilesson:canmanageattempts' => array(
+    'mod/minilesson:canmanageattempts' => [
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => array(
+        'archetypes' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/course:markcomplete'
-    ),
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'moodle/course:markcomplete',
+    ],
 
-    'mod/minilesson:manage' => array(
+    'mod/minilesson:manage' => [
             'riskbitmask' => RISK_XSS,
             'captype' => 'write',
             'contextlevel' => CONTEXT_COURSE,
-            'archetypes' => array(
+            'archetypes' => [
                     'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
+                    'manager' => CAP_ALLOW,
+            ],
+            'clonepermissionsfrom' => 'moodle/course:manageactivities',
+    ],
 
-    'mod/minilesson:itemedit' => array(
+    'mod/minilesson:itemedit' => [
             'riskbitmask' => RISK_XSS,
             'captype' => 'write',
             'contextlevel' => CONTEXT_COURSE,
-            'archetypes' => array(
+            'archetypes' => [
                     'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
+                    'manager' => CAP_ALLOW,
+            ],
+            'clonepermissionsfrom' => 'moodle/course:manageactivities',
+    ],
 
-    'mod/minilesson:itemview' => array(
+    'mod/minilesson:itemview' => [
             'riskbitmask' => RISK_XSS,
             'captype' => 'write',
             'contextlevel' => CONTEXT_COURSE,
-            'archetypes' => array(
+            'archetypes' => [
                     'editingteacher' => CAP_ALLOW,
                     'teacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
+                    'manager' => CAP_ALLOW,
+            ],
+            'clonepermissionsfrom' => 'moodle/course:manageactivities',
+    ],
 
-    'mod/minilesson:tts' => array(
+    'mod/minilesson:tts' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
+        'legacy' => [
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
-    'mod/minilesson:view' => array(
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'mod/minilesson:view' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
+        'legacy' => [
             'guest' => CAP_ALLOW,
             'student' => CAP_ALLOW,
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        )
-    ),
+            'manager' => CAP_ALLOW,
+        ],
+    ],
 
-    'mod/minilesson:submit' => array(
+    'mod/minilesson:submit' => [
         'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
-        'legacy' => array(
-            'student' => CAP_ALLOW
-        )
-    ),
+        'legacy' => [
+            'student' => CAP_ALLOW,
+        ],
+    ],
 
-    'mod/minilesson:managequestions' => array(
+    'mod/minilesson:managequestions' => [
             'riskbitmask' => RISK_SPAM | RISK_XSS,
             'captype' => 'write',
             'contextlevel' => CONTEXT_MODULE,
-            'archetypes' => array(
-                    'editingteacher' => CAP_ALLOW,
-                    'manager' => CAP_ALLOW
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
-
-    'mod/minilesson:canuseaigen' => array(
-            'riskbitmask' => RISK_SPAM | RISK_XSS,
-            'captype' => 'write',
-            'contextlevel' => CONTEXT_MODULE,
-            'archetypes' => array(
+            'archetypes' => [
                     'editingteacher' => CAP_ALLOW,
                     'manager' => CAP_ALLOW,
-            ),
-            'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
+            ],
+            'clonepermissionsfrom' => 'moodle/course:manageactivities',
+    ],
 
-    'mod/minilesson:export' => array(
+    'mod/minilesson:canuseaigen' => [
+            'riskbitmask' => RISK_SPAM | RISK_XSS,
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_MODULE,
+            'archetypes' => [
+                    'editingteacher' => CAP_ALLOW,
+                    'manager' => CAP_ALLOW,
+            ],
+            'clonepermissionsfrom' => 'moodle/course:manageactivities',
+    ],
+
+    'mod/minilesson:export' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
-        'archetypes' => array(
+        'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-        'clonepermissionsfrom' => 'moodle/course:manageactivities'
-    ),
+            'manager' => CAP_ALLOW,
+        ],
+        'clonepermissionsfrom' => 'moodle/course:manageactivities',
+    ],
 
     'mod/minilesson:push' => [
         'riskbitmask' => RISK_XSS,
@@ -197,16 +196,15 @@ $capabilities = array(
         'archetypes' => [
             'manager' => CAP_ALLOW,
         ],
-        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+        'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
 
     'mod/minilesson:managetemplate' => [
         'riskbitmask' => RISK_XSS,
         'captype' => 'write',
-        'contextlevel' => CONTEXT_COURSE,
+        'contextlevel' => CONTEXT_MODULE,
         'archetypes' => [
             'manager' => CAP_ALLOW,
         ],
-        'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ],
-);
+];

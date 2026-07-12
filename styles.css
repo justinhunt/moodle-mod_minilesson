@@ -5656,7 +5656,11 @@ span.wrongitem {
   font-weight: 400;
 }
 .minilesson_fiction_yarncontainer.immersivedark .card__history-log .history-log__translation, .minilesson_fiction_yarncontainer.immersivebright .card__history-log .history-log__translation, .minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__translation {
-  display: none;
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--im-muted);
 }
 .minilesson_fiction_yarncontainer.immersivedark .card__history-log .history-log__choice, .minilesson_fiction_yarncontainer.immersivebright .card__history-log .history-log__choice, .minilesson_fiction_yarncontainer.immersivepaper .card__history-log .history-log__choice {
   margin: 0 0 24px;

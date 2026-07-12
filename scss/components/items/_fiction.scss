@@ -1272,7 +1272,11 @@
       }
 
       .history-log__translation {
-        display: none;
+        margin: 6px 0 0;
+        font-size: 15px;
+        line-height: 1.5;
+        font-style: italic;
+        color: var(--im-muted);
       }
 
       .history-log__choice {
