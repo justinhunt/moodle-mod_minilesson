@@ -1,0 +1,14 @@
+// Multichoice quiz item (minilessonitem_multichoicequiz).
+// The answer options reuse the multichoice item styles (_multichoice.scss);
+// only the quiz-specific parts are styled here.
+
+.mcq_questiontext {
+  font-weight: bold;
+  margin: 1rem auto 0;
+  text-align: center;
+}
+
+.mcq_progressdots {
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+}

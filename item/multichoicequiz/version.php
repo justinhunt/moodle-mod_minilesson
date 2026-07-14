@@ -15,18 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version of minilesson
+ * Version information for Multichoice Quiz
  *
- *
- * @package    mod_minilesson
- * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
+ * @package    minilessonitem_multichoicequiz
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026071400;
-$plugin->requires = 2023100900; // Requires Moodle 4.3.
-$plugin->component = 'mod_minilesson';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'Version 1.1.42 (Build 2026071400)';
+$plugin->component    = 'minilessonitem_multichoicequiz';
+$plugin->release      = '1.0';
+$plugin->version      = 2026071400;
+$plugin->requires     = 2022041900;
+$plugin->supported    = [400, 501];
+$plugin->maturity     = MATURITY_STABLE;

@@ -126,6 +126,7 @@ class constants {
 
     const TYPE_MULTIAUDIO = 'multiaudio';
     const TYPE_MULTICHOICE = 'multichoice';
+    const TYPE_MULTICHOICEQUIZ = 'multichoicequiz';
     const TYPE_PAGE = 'page';
     const TYPE_DICTATIONCHAT = 'dictationchat';
     const TYPE_LGAPFILL = 'listeninggapfill';
@@ -709,6 +710,7 @@ class constants {
         self::TYPE_FICTION,
         self::TYPE_SHADOW,
         self::TYPE_WORDCARDS,
+        self::TYPE_MULTICHOICEQUIZ,
       // constants::TYPE_SMARTFRAME,
       // constants::TYPE_COMPQUIZ,
       // constants::TYPE_CONVERSATION,

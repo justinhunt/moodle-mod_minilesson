@@ -727,8 +727,17 @@ abstract class item implements \templatable, \renderable {
 
         // Question TextArea.
         if (!empty($itemrecord->{constants::QUESTIONTEXTAREA}) && !empty(trim($itemrecord->{constants::QUESTIONTEXTAREA}))) {
-            $testitem->itemtextarea = nl2br($itemrecord->{constants::QUESTIONTEXTAREA});
-            $testitem->itemtextarea = format_text($testitem->itemtextarea, FORMAT_MOODLE, $editoroptions);
+            $itemtextarea = $itemrecord->{constants::QUESTIONTEXTAREA};
+            // Editor content is stored as HTML, but imported/legacy content may be plain
+            // text whose line breaks would otherwise be lost.
+            if (
+                stripos($itemtextarea, '<p') === false
+                && stripos($itemtextarea, '<br') === false
+                && stripos($itemtextarea, '<div') === false
+            ) {
+                $itemtextarea = nl2br($itemtextarea);
+            }
+            $testitem->itemtextarea = format_text($itemtextarea, FORMAT_HTML, $editoroptions);
         }
 
         // Show text prompt or dots, for listen and repeat really.

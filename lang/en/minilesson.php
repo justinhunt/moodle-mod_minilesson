@@ -427,6 +427,7 @@ $string['wordshuffle_a11y_returned_to_bank'] = 'Returned "{$a}" to word bank';
 $string['wordshuffle_a11y_placed_in_slot'] = 'Placed "{$a}" in drop slot';
 
 $string['multichoice'] = 'Multi Choice';
+$string['multichoicequiz'] = 'Multichoice Quiz';
 $string['multiaudio'] = 'MC Audio';
 $string['dictation'] = 'Dictation';
 $string['dictationchat'] = 'Dictation Chat';

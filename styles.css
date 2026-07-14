@@ -7927,6 +7927,17 @@ div.mcaudiotranscript {
   object-fit: scale-down;
 }
 
+.mcq_questiontext {
+  font-weight: bold;
+  margin: 1rem auto 0;
+  text-align: center;
+}
+
+.mcq_progressdots {
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+}
+
 .mod_minilesson_spokenandcorrect {
   text-align: center;
   margin-left: auto;

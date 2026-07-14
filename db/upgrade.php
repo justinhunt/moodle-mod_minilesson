@@ -1189,5 +1189,20 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026070900, 'minilesson');
     }
 
+    if ($oldversion < 2026071400) {
+        // Add the multichoicequiz item type to the config enableditems.
+        $enableditems = get_config(constants::M_MODNAME, 'enableditems');
+        if ($enableditems !== false) {
+            $items = empty($enableditems) ? [] : explode(',', $enableditems);
+            if (!in_array(constants::TYPE_MULTICHOICEQUIZ, $items)) {
+                $items[] = constants::TYPE_MULTICHOICEQUIZ;
+            }
+            set_config('enableditems', implode(',', $items), constants::M_MODNAME);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026071400, 'minilesson');
+    }
+
     return true;
 }
