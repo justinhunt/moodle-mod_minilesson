@@ -1,3 +1,8 @@
+
+Version 1.1.42 (Build 2026071400)
+- Added new item type multichoice quiz
+- Altered textblock rendering so as not to double up new lines
+
 Version 1.1.41 (Build 2026071201)
 - Added new item type "wordcards"
 - Added 3 new (and better) fiction item skins
