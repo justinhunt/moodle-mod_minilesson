@@ -1462,7 +1462,7 @@ $string['fiction_history_close'] = 'Close history';
 
 $string['fiction:syntaxcheckbutton'] = 'Syntax Check';
 $string['fiction:taptotranslate'] = 'Enable tap to translate';
-$string['fiction:taptotranslate_desc'] = 'If enabled, a translate icon appears in the lower right of each story text node. Tapping it translates that text into the learner\'s native language and shows the translation directly beneath the text. (Requires a browser with on-device translation support. i.e Chrome.)';
+$string['fiction:taptotranslate_desc'] = 'If enabled, a translate icon appears in the lower right of each story text node. Tapping it translates that text into the learner\'s native language and shows the translation directly beneath the text.';
 $string['fiction:taptranslatearia'] = 'Translate this text';
 $string['yarnsyntaxok'] = 'Yarn Syntax Ok';
 $string['yarnsyntaxnotok'] = 'Yarn Syntax Not Ok';

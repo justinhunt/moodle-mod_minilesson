@@ -1577,6 +1577,12 @@ define([
             tmp.innerHTML = text;
             var plaintext = (tmp.textContent || tmp.innerText || '').trim();
 
+            // Prefix the speaking character's name, as the other presentation modes do.
+            // Yarn character labels cannot contain spaces, so underscores stand in for them.
+            if (messagedata.charactername && plaintext) {
+                plaintext = messagedata.charactername.replace(/_/g, ' ') + ': ' + plaintext;
+            }
+
             // Seed translation panel data. Keep the translate button hidden
             // until the typewriter has finished revealing the text.
             self.im_translateSource = messagedata.translatesource || '';
