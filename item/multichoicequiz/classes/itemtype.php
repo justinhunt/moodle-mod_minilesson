@@ -37,13 +37,7 @@ class itemtype extends item {
     public static $skills = [constants::SKILL_READING, constants::SKILL_LISTENING];
 
     /** @var int The maximum number of questions in one quiz item. */
-    public const MAXQUESTIONS = 4;
-
-    /** @var string Column prefix for question texts (customtext1 .. customtext4). */
-    public const QUESTIONTEXT = 'customtext';
-
-    /** @var string Column prefix for the answer options, one per line (customdata1 .. customdata4). */
-    public const QUESTIONANSWERS = 'customdata';
+    public const MAXQUESTIONS = 5;
 
     /** @var string Shared setting: shuffle the answer options of every question. */
     public const SHUFFLEANSWER = 'customint1';
@@ -52,9 +46,35 @@ class itemtype extends item {
     public const ALLOWRETRY = 'customint2';
 
     /**
+     * DB column holding the question text of the given question.
+     *
+     * Questions 1-4 use customtext1 .. customtext4. Question 5 uses customtext6,
+     * because customtext5 is conventionally pollyvoice.
+     *
+     * @param int $questionnumber 1-based question number
+     * @return string
+     */
+    public static function col_questiontext(int $questionnumber): string {
+        return $questionnumber <= 4 ? 'customtext' . $questionnumber : 'customtext6';
+    }
+
+    /**
+     * DB column holding the answer options (one per line) of the given question.
+     *
+     * Questions 1-4 use customdata1 .. customdata4. Question 5 uses customtext7,
+     * because customdata5 is conventionally the media iframe.
+     *
+     * @param int $questionnumber 1-based question number
+     * @return string
+     */
+    public static function col_answers(int $questionnumber): string {
+        return $questionnumber <= 4 ? 'customdata' . $questionnumber : 'customtext7';
+    }
+
+    /**
      * DB column holding the correct answer (1 - MAXANSWERS) of the given question.
      *
-     * Correct answers are stored in customint5 .. customint8, leaving
+     * Correct answers are stored in customint5 .. customint9, leaving
      * customint3 (confirmchoice) and customint4 (pollyoption) to their
      * conventional uses.
      *
@@ -84,8 +104,8 @@ class itemtype extends item {
         // The questions.
         $testitem->questions = [];
         for ($qnumber = 1; $qnumber <= self::MAXQUESTIONS; $qnumber++) {
-            $questiontext = utils::super_trim($itemrecord->{self::QUESTIONTEXT . $qnumber} ?? '');
-            $answersraw = $itemrecord->{self::QUESTIONANSWERS . $qnumber} ?? '';
+            $questiontext = utils::super_trim($itemrecord->{self::col_questiontext($qnumber)} ?? '');
+            $answersraw = $itemrecord->{self::col_answers($qnumber)} ?? '';
             $answers = array_values(array_filter(array_map(function ($sentence) {
                 return utils::super_trim($sentence);
             }, explode(PHP_EOL, $answersraw)), function ($sentence) {
@@ -127,13 +147,13 @@ class itemtype extends item {
         $error->col = '';
         $error->message = '';
 
-        if (utils::super_trim($newrecord->{self::QUESTIONTEXT . 1}) == '') {
-            $error->col = self::QUESTIONTEXT . 1;
+        if (utils::super_trim($newrecord->{self::col_questiontext(1)}) == '') {
+            $error->col = self::col_questiontext(1);
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
-        if (utils::super_trim($newrecord->{self::QUESTIONANSWERS . 1}) == '') {
-            $error->col = self::QUESTIONANSWERS . 1;
+        if (utils::super_trim($newrecord->{self::col_answers(1)}) == '') {
+            $error->col = self::col_answers(1);
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
@@ -153,12 +173,16 @@ class itemtype extends item {
         $keycols = parent::get_keycolumns();
         for ($qnumber = 1; $qnumber <= self::MAXQUESTIONS; $qnumber++) {
             $optional = $qnumber > 1;
-            $keycols['text' . $qnumber] = ['jsonname' => 'question' . $qnumber, 'type' => 'string',
-                'optional' => $optional, 'default' => '', 'dbname' => self::QUESTIONTEXT . $qnumber];
-            $keycols['data' . $qnumber] = ['jsonname' => 'answers' . $qnumber, 'type' => 'stringarray',
-                'optional' => $optional, 'default' => [], 'dbname' => self::QUESTIONANSWERS . $qnumber];
-            $keycols['int' . (4 + $qnumber)] = ['jsonname' => 'correctanswer' . $qnumber, 'type' => 'int',
-                'optional' => $optional, 'default' => 1, 'dbname' => self::col_correctanswer($qnumber)];
+            $questioncol = self::col_questiontext($qnumber);
+            $answerscol = self::col_answers($qnumber);
+            $correctanswercol = self::col_correctanswer($qnumber);
+            // The key is the column name without the 'custom' prefix, e.g. customtext1 => text1.
+            $keycols[substr($questioncol, 6)] = ['jsonname' => 'question' . $qnumber, 'type' => 'string',
+                'optional' => $optional, 'default' => '', 'dbname' => $questioncol];
+            $keycols[substr($answerscol, 6)] = ['jsonname' => 'answers' . $qnumber, 'type' => 'stringarray',
+                'optional' => $optional, 'default' => [], 'dbname' => $answerscol];
+            $keycols[substr($correctanswercol, 6)] = ['jsonname' => 'correctanswer' . $qnumber, 'type' => 'int',
+                'optional' => $optional, 'default' => 1, 'dbname' => $correctanswercol];
         }
         $keycols['int1'] = ['jsonname' => 'shuffleanswer', 'type' => 'boolean',
             'optional' => true, 'default' => 0, 'dbname' => self::SHUFFLEANSWER];
@@ -177,13 +201,13 @@ class itemtype extends item {
      * @return string the prompt
      */
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
-        $shape = "For each question N (N = 1 to 4) return the question text as 'questionN', ";
+        $shape = "For each question N (N = 1 to 5) return the question text as 'questionN', ";
         $shape .= "a one dimensional array of 4 answers as 'answersN', ";
         $shape .= "and the correct answer as a number 1-4 in 'correctanswerN'. ";
 
         switch ($generatemethod) {
             case 'extract':
-                $prompt = "Create 4 multichoice questions in {language} suitable for {level} level learners ";
+                $prompt = "Create 5 multichoice questions in {language} suitable for {level} level learners ";
                 $prompt .= "to test the learner's understanding of the following passage: [{text}] ";
                 $prompt .= $shape;
                 break;
@@ -196,7 +220,7 @@ class itemtype extends item {
 
             case 'generate':
             default:
-                $prompt = "Create 4 multichoice questions in {language} suitable for {level} level learners ";
+                $prompt = "Create 5 multichoice questions in {language} suitable for {level} level learners ";
                 $prompt .= "on the topic of: [{topic}] ";
                 $prompt .= $shape;
                 break;

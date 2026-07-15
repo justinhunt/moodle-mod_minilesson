@@ -63,11 +63,11 @@ class itemform extends baseform {
             $mform->addElement('header', 'questionheading' . $qnumber, get_string('questionno', self::fetch_component(), $qnumber));
             $mform->setExpanded('questionheading' . $qnumber, $required);
 
-            $questionfield = itemtype::QUESTIONTEXT . $qnumber;
+            $questionfield = itemtype::col_questiontext($qnumber);
             $this->add_textarearesponse($questionfield, get_string('questiontext', self::fetch_component()), $required);
             $mform->setType($questionfield, PARAM_RAW);
 
-            $answersfield = itemtype::QUESTIONANSWERS . $qnumber;
+            $answersfield = itemtype::col_answers($qnumber);
             $this->add_sentenceprompt($answersfield, get_string('questionanswers', self::fetch_component()), $required);
 
             $this->add_dropdown(
@@ -98,20 +98,20 @@ class itemform extends baseform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         for ($qnumber = 1; $qnumber <= itemtype::MAXQUESTIONS; $qnumber++) {
-            $questiontext = trim($data[itemtype::QUESTIONTEXT . $qnumber] ?? '');
-            $answersraw = trim($data[itemtype::QUESTIONANSWERS . $qnumber] ?? '');
+            $questiontext = trim($data[itemtype::col_questiontext($qnumber)] ?? '');
+            $answersraw = trim($data[itemtype::col_answers($qnumber)] ?? '');
             if ($questiontext === '' && $answersraw === '') {
                 continue;
             }
             if ($questiontext === '') {
-                $errors[itemtype::QUESTIONTEXT . $qnumber] = get_string('required');
+                $errors[itemtype::col_questiontext($qnumber)] = get_string('required');
                 continue;
             }
             $answers = array_filter(array_map('trim', explode(PHP_EOL, $answersraw)), function ($answer) {
                 return $answer !== '';
             });
             if (count($answers) < 2) {
-                $errors[itemtype::QUESTIONANSWERS . $qnumber] = get_string('error:needtwoanswers', self::fetch_component());
+                $errors[itemtype::col_answers($qnumber)] = get_string('error:needtwoanswers', self::fetch_component());
                 continue;
             }
             $correctanswer = (int)($data[itemtype::col_correctanswer($qnumber)] ?? 1);
