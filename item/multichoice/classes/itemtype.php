@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,8 +29,8 @@ use stdClass;
  * @copyright  2023 Justin Hunt <justin@poodll.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class itemtype extends item
-{
+class itemtype extends item {
+
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_READING, constants::SKILL_LISTENING];
 
@@ -41,16 +40,26 @@ class itemtype extends item
     public const ANSWERLAYOUT = 'customint7';
     public const ANSWERLAYOUT_DEFAULT = 1;
     public const ANSWERLAYOUT_TWOCOLUMN = 2;
+    public const HIDEANSWER_NO = 0;
+    public const HIDEANSWER_YES = 1;
+    public const HIDEANSWER_ABCD = 2;
+    /** @var string Setting: hide the question text during the quiz (it still shows with the results). */
+    public const HIDEQUESTIONTEXT = 'customint11';
 
-    //the item type
+    /** @var int Show the question text (default). */
+    public const HIDEQUESTION_NO = 0;
+
+    /** @var int Hide the question text during the quiz. */
+    public const HIDEQUESTION_YES = 1;
+
+    // the item type
     /**
      * Export the data for the mustache template.
      *
      * @param \renderer_base $output renderer to be used to render the action bar elements.
      * @return array
      */
-    public function export_for_template(\renderer_base $output)
-    {
+    public function export_for_template(\renderer_base $output) {
         $itemrecord = $this->itemrecord;
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
@@ -59,11 +68,17 @@ class itemtype extends item
         $testitem->sentences = [];
         $testitem->imagecontent = false;
         $testitem->audiocontent = false;
-        $testitem->hideanswertext = !empty($itemrecord->{itemtype::HIDEANSWERTEXT});
-        $testitem->answerlayout = $itemrecord->{itemtype::ANSWERLAYOUT};
+        $testitem->hideanswertext = $itemrecord->{self::HIDEANSWERTEXT};
+        $testitem->answerlayout = $itemrecord->{self::ANSWERLAYOUT};
+
+        // The question may be spoken in the item audio, in which case the question text can be hidden.
+        // The quiz finished results screen builds its question text from the db record, so it still shows there.
+        if (!empty($itemrecord->{self::HIDEQUESTIONTEXT})) {
+            unset($testitem->itemtext);
+        }
 
         $testitem->layoutclassname = '';
-        if ($itemrecord->{constants::LISTENORREAD} != constants::LISTENORREAD_IMAGE && $testitem->answerlayout == itemtype::ANSWERLAYOUT_TWOCOLUMN) {
+        if ($itemrecord->{constants::LISTENORREAD} != constants::LISTENORREAD_IMAGE && $testitem->answerlayout == self::ANSWERLAYOUT_TWOCOLUMN) {
             $testitem->layoutclassname = "multichoice_twocolumnlayout";
         }
 
@@ -142,11 +157,19 @@ class itemtype extends item
                 if ($itemrecord->{constants::LISTENORREAD} == constants::LISTENORREAD_LISTEN) {
                     $s->prompt = $this->dottify_text($sentence);
                 } else {
-                    $s->prompt = $sentence;
-                    if ($itemrecord->{constants::LISTENORREAD} == constants::LISTENORREAD_LISTENANDREAD || $itemrecord->{constants::LISTENORREAD} == constants::LISTENORREAD_IMAGE) {
-                        if (!empty($testitem->hideanswertext)) {
+                    switch($testitem->hideanswertext) {
+                        case self::HIDEANSWER_NO:
+                            $s->prompt = $sentence;
+                            break;
+                        case self::HIDEANSWER_YES:
                             $s->prompt = '';
-                        }
+                            break;
+                        case self::HIDEANSWER_ABCD:
+                            // In listening tests we may just show A, B, C or D in place of the text, so we prepare that here.
+                            // In that case shuffleanswer would shuffle the order of A, B, C or D. - so shuffling is suppressed in this mode
+                            $abcd = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+                            $s->prompt = $abcd[$anumber - 1];
+                            break;
                     }
                 }
                 if (!empty($theimageurl)) {
@@ -161,16 +184,18 @@ class itemtype extends item
 
         // Question Point
         // Rich text feedback explaining the correct answer.
-        $testitem->correctfeedback = $itemrecord->{itemtype::CORRECTFEEDBACK};
+        $testitem->correctfeedback = $itemrecord->{self::CORRECTFEEDBACK};
 
         // Multichoice also has a confirm choice option we need to include.
         $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
-        $testitem->shuffleanswers = !empty($itemrecord->{itemtype::SHUFFLEANSWER});
+        // In A,B,C,D mode the on-screen letters must keep the order the author (and any audio) gave them,
+        // so shuffling is suppressed.
+        $testitem->shuffleanswers = !empty($itemrecord->{self::SHUFFLEANSWER})
+            && $testitem->hideanswertext != self::HIDEANSWER_ABCD;
         return $testitem;
     }
 
-    public static function validate_import($newrecord, $cm)
-    {
+    public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
@@ -193,36 +218,35 @@ class itemtype extends item
                     return $error;
                 }
         */
-        //return false to indicate no error
+        // return false to indicate no error
         return false;
     }
 
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type
      */
-    public static function get_keycolumns()
-    {
-        //get the basic key columns and customize a little for instances of this item type
+    public static function get_keycolumns() {
+        // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['int3'] = ['jsonname' => 'confirmchoice', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::CONFIRMCHOICE];
-        $keycols['int2'] = ['jsonname' => 'listenorread', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::LISTENORREAD]; //not boolean ..
+        $keycols['int2'] = ['jsonname' => 'listenorread', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => constants::LISTENORREAD]; // not boolean ..
         $keycols['text1'] = ['jsonname' => 'answers', 'type' => 'stringarray', 'optional' => false, 'default' => [], 'dbname' => 'customtext1'];
-        $keycols['text6'] = ['jsonname' => 'correctfeedback', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => itemtype::CORRECTFEEDBACK];
+        $keycols['text6'] = ['jsonname' => 'correctfeedback', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => self::CORRECTFEEDBACK];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
-        $keycols['int5'] = ['jsonname' => 'shuffleanswer', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => itemtype::SHUFFLEANSWER];
-        $keycols['int6'] = ['jsonname' => 'hideanswertext', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => itemtype::HIDEANSWERTEXT];
-        $keycols['int7'] = ['jsonname' => 'answerlayout', 'type' => 'int', 'optional' => true, 'default' => itemtype::ANSWERLAYOUT_DEFAULT, 'dbname' => itemtype::HIDEANSWERTEXT];
+        $keycols['int5'] = ['jsonname' => 'shuffleanswer', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => self::SHUFFLEANSWER];
+        $keycols['int6'] = ['jsonname' => 'hideanswertext', 'type' => 'int', 'optional' => true, 'default' => null, 'dbname' => self::HIDEANSWERTEXT];
+        $keycols['int7'] = ['jsonname' => 'answerlayout', 'type' => 'int', 'optional' => true, 'default' => self::ANSWERLAYOUT_DEFAULT, 'dbname' => self::ANSWERLAYOUT];
+        $keycols['int11'] = ['jsonname' => 'hidequestiontext', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => self::HIDEQUESTIONTEXT];
         return $keycols;
     }
 
     /*
      * This function return the prompt that the generate method requires for multichoice.
      */
-    public static function aigen_fetch_prompt($itemtemplate, $generatemethod)
-    {
+    public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         switch ($generatemethod) {
             case 'extract':
                 $prompt = "Create a multichoice question(text) and a one dimensional array of 4 answers (answers) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}] ";
@@ -244,8 +268,7 @@ class itemtype extends item
         return $prompt;
     }
 
-    public function upgrade_item($oldversion)
-    {
+    public function upgrade_item($oldversion) {
         global $DB;
 
         $success = true;

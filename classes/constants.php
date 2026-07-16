@@ -240,7 +240,7 @@ class constants {
     const MAXANSWERS = 4;
     const MAXCUSTOMTEXT = 7;
     const MAXCUSTOMDATA = 5;
-    const MAXCUSTOMINT = 10;
+    const MAXCUSTOMINT = 15;
 
     const ITEMTEXTAREA_EDOPTIONS = ['trusttext' => 0, 'noclean' => 1, 'maxfiles' => 0];
     const READSENTENCE = 'customint2';

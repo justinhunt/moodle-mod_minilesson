@@ -220,6 +220,11 @@ abstract class item implements \templatable, \renderable {
         $keycolumns['int8'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint8'];
         $keycolumns['int9'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint9'];
         $keycolumns['int10'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint10'];
+        $keycolumns['int11'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint11'];
+        $keycolumns['int12'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint12'];
+        $keycolumns['int13'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint13'];
+        $keycolumns['int14'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint14'];
+        $keycolumns['int15'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'customint15'];
         $keycolumns['timelimit'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'timelimit'];
         $keycolumns['layout'] = ['type' => 'layout', 'optional' => true, 'default' => 0, 'dbname' => 'layout'];
         $keycolumns['correctanswer'] = ['type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => 'correctanswer'];

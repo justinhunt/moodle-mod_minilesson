@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,10 +27,9 @@ use mod_minilesson\local\itemform\baseform;
 
 use mod_minilesson\constants;
 
-class itemform extends baseform
-{
-    public function custom_definition()
-    {
+class itemform extends baseform {
+
+    public function custom_definition() {
         $mform = $this->_form;
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('multichoice_instructions1', constants::M_COMPONENT));
         // add a heading for this form
@@ -63,7 +61,23 @@ class itemform extends baseform
 
         $this->add_checkbox(itemtype::SHUFFLEANSWER, get_string('shuffleanswer', constants::M_COMPONENT));
 
-        $this->add_checkbox(itemtype::HIDEANSWERTEXT, get_string('hideanswertext', constants::M_COMPONENT), get_string('hideanswertext_detail', constants::M_COMPONENT));
+        $hideansweroptions = [
+            itemtype::HIDEANSWER_NO => get_string('no'),
+            itemtype::HIDEANSWER_YES => get_string('yes'),
+            itemtype::HIDEANSWER_ABCD => get_string('hideanswer_abcd', constants::M_COMPONENT),
+        ];
+        $this->add_dropdown(itemtype::HIDEANSWERTEXT, get_string('hideanswertext', constants::M_COMPONENT), $hideansweroptions, itemtype::HIDEANSWER_NO);
+        $this->add_static_text('instructionshideanswertext', '', get_string('hideanswertext_detail', constants::M_COMPONENT));
+        // Shuffling is suppressed in A,B,C,D mode (the letters must keep the author's order).
+        $mform->disabledIf(itemtype::SHUFFLEANSWER, itemtype::HIDEANSWERTEXT, 'eq', itemtype::HIDEANSWER_ABCD);
+
+        // When the question is spoken in the item audio, the question text can be hidden during the quiz.
+        // It is still shown with the results at the end of the quiz.
+        $hidequestionoptions = [
+            itemtype::HIDEQUESTION_NO => get_string('hidequestion_no', constants::M_COMPONENT),
+            itemtype::HIDEQUESTION_YES => get_string('hidequestion_yes', constants::M_COMPONENT),
+        ];
+        $this->add_dropdown(itemtype::HIDEQUESTIONTEXT, get_string('hidequestiontext', constants::M_COMPONENT), $hidequestionoptions, itemtype::HIDEQUESTION_NO);
 
         $layoutoptions = [
             itemtype::ANSWERLAYOUT_DEFAULT => get_string('default'),

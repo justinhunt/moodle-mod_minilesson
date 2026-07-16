@@ -42,7 +42,12 @@ define(['jquery',
             self.init_strings();
             self.init_items();
             self.register_events();
-            self.show_question(0);
+            if (self.itemdata.showallquestions) {
+                //all questions are already visible; nothing to reveal
+                self.updateProgressDots();
+            } else {
+                self.show_question(0);
+            }
         },
 
         init_controls: function () {
@@ -78,10 +83,11 @@ define(['jquery',
             var self = this;
             self.items = self.itemdata.questions.map(function (question) {
                 //the text of the correct answer, for the results screen
+                //(resulttext carries the A/B/C/D letter prefix when the answer text is hidden)
                 var correctsentence = question.sentences.filter(function (sentence) {
                     return sentence.indexplusone === question.correctanswer;
                 }).map(function (sentence) {
-                    return sentence.sentence;
+                    return sentence.resulttext;
                 }).join('');
                 return {
                     qindex: question.qindex,
@@ -130,8 +136,12 @@ define(['jquery',
             //on tapping of a response, we either action the choice or show a confirmation button
             self.controls.container.on('click', '.minilesson_mc_response', function () {
                 var chosen = $(this);
-                //only respond to taps on the current question
-                if (chosen.closest('.mcq_question').data('qindex') !== self.pointer) {
+                var qindex = chosen.closest('.mcq_question').data('qindex');
+                if (self.itemdata.showallquestions) {
+                    //every question is live at once; the tapped question becomes the current one
+                    self.pointer = qindex;
+                } else if (qindex !== self.pointer) {
+                    //only respond to taps on the current question
                     return;
                 }
                 //if disabled => just return (already answered / already tried this option)
@@ -223,6 +233,18 @@ define(['jquery',
 
         move_on: function () {
             var self = this;
+            if (self.itemdata.showallquestions) {
+                //the questions all stay on the page; once the last one is answered, finish up
+                var allanswered = self.items.every(function (item) {
+                    return item.answered;
+                });
+                if (allanswered) {
+                    setTimeout(function () {
+                        self.end();
+                    }, 1600);
+                }
+                return;
+            }
             setTimeout(function () {
                 if (self.pointer < self.items.length - 1) {
                     self.current_question().hide();
@@ -266,7 +288,7 @@ define(['jquery',
         time_up: function () {
             var self = this;
             //the time limit is up: no more answering, straight to the results
-            self.current_question().find('.minilesson_mc_response').addClass('minilesson_mc_disabled');
+            self.controls.container.find('.minilesson_mc_response').addClass('minilesson_mc_disabled');
             self.end();
         },
 

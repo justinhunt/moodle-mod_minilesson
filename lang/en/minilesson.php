@@ -1424,6 +1424,10 @@ $string['templateagentonly_help'] = 'If set to Yes, this template is hidden from
 $string['hideanswertext'] = 'Hide Answer Text';
 $string['hideanswertext_detail'] = 'When using images or audio as answers, check this option to hide the answer text from the
 student. The answer text will be used when displaying results';
+$string['hideanswer_abcd'] = 'Show A,B,C,D in place of text';
+$string['hidequestiontext'] = 'Hide Question Text';
+$string['hidequestion_no'] = 'No - show the question';
+$string['hidequestion_yes'] = 'Yes - hide the question';
 
 $string['answerlayout'] = "Answer Layout";
 $string['twocolumn'] = "2 Column";

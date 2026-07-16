@@ -80,7 +80,9 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
             'customtext3format', 'customtext4', 'customtext4format', 'customtext5', 'customtext5format', 'customtext6', 'customtext6format',
                 'customtext7', 'customtext7format', 'customdata1', 'customdata2', 'customdata3', 'customdata4', 'customdata5',
                 'customint1', 'customint2', 'customint3', 'customint4', 'customint5',
-                'customint6', 'customint7', 'customint8', 'customint9', 'customint10', 'layout', 'correctanswer', 'timelimit', 'itemaudiostoryzoom',
+                'customint6', 'customint7', 'customint8', 'customint9', 'customint10',
+                'customint11', 'customint12', 'customint13', 'customint14', 'customint15',
+                'layout', 'correctanswer', 'timelimit', 'itemaudiostoryzoom',
             'timemodified', 'rsquestionkey', 'passagehash', 'alternatives', 'phonetic', 'createdby', 'modifiedby']);
 
         // community page submissions (consent + likes), nested under each question

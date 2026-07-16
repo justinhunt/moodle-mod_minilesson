@@ -1,7 +1,9 @@
 
-Version 1.1.42 (Build 2026071400)
+Version 1.1.42 (Build 2026071600)
 - Added new item type multichoice quiz
 - Altered textblock rendering so as not to double up new lines
+- Added extra int fields
+- Added ABCD display option to multichoicequiz and multichoice item
 
 Version 1.1.41 (Build 2026071201)
 - Added new item type "wordcards"

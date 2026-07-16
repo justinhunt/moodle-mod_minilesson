@@ -50,9 +50,29 @@ class itemform extends baseform {
 
         // Settings shared by all the questions in the quiz.
         $this->add_itemsettings_heading();
+        $this->add_checkbox(
+            itemtype::SHOWALLQUESTIONS,
+            get_string('showallquestions', self::fetch_component()),
+            get_string('showallquestions_details', self::fetch_component())
+        );
         $this->add_confirmchoice(constants::CONFIRMCHOICE, get_string('confirmchoice_formlabel', constants::M_COMPONENT));
+        // With all the questions on the page at once, a tap is the answer - confirm choice does not apply.
+        $mform->disabledIf(constants::CONFIRMCHOICE, itemtype::SHOWALLQUESTIONS, 'checked');
         $this->add_checkbox(itemtype::SHUFFLEANSWER, get_string('shuffleanswer', constants::M_COMPONENT));
         $this->add_allowretry(itemtype::ALLOWRETRY, get_string('allowretry_details', self::fetch_component()));
+        $hideansweroptions = [
+            itemtype::HIDEANSWER_NO => get_string('no'),
+            itemtype::HIDEANSWER_ABCD => get_string('hideanswer_abcd', constants::M_COMPONENT),
+        ];
+        $this->add_dropdown(
+            itemtype::HIDEANSWERTEXT,
+            get_string('hideanswertext', constants::M_COMPONENT),
+            $hideansweroptions,
+            itemtype::HIDEANSWER_NO
+        );
+        $this->add_static_text('instructionshideanswertext', '', get_string('hideanswertext_detail', self::fetch_component()));
+        // Shuffling is suppressed in A,B,C,D mode (the letters must keep the author's order).
+        $mform->disabledIf(itemtype::SHUFFLEANSWER, itemtype::HIDEANSWERTEXT, 'eq', itemtype::HIDEANSWER_ABCD);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
 
         // The questions. Only question 1 is required.

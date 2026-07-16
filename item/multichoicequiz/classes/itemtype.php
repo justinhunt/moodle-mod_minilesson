@@ -45,6 +45,21 @@ class itemtype extends item {
     /** @var string Shared setting: on a wrong answer, let the student keep choosing until correct. */
     public const ALLOWRETRY = 'customint2';
 
+    /** @var string Shared setting: hide the answer text of every question (see the HIDEANSWER_* values). */
+    public const HIDEANSWERTEXT = 'customint10';
+
+    /** @var string Shared setting: show all the questions on the page at once, instead of one at a time. */
+    public const SHOWALLQUESTIONS = 'customint11';
+
+    /** @var int Show the answer text (default). */
+    public const HIDEANSWER_NO = 0;
+
+    /** @var int Hide the answer text completely. */
+    public const HIDEANSWER_YES = 1;
+
+    /** @var int Hide the answer text, showing A, B, C or D in its place (for audio-only answer options). */
+    public const HIDEANSWER_ABCD = 2;
+
     /**
      * DB column holding the question text of the given question.
      *
@@ -97,9 +112,16 @@ class itemtype extends item {
         $testitem = $this->set_layout($testitem);
 
         // Shared settings, applied to all questions in the quiz.
-        $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE} ? 1 : 0;
-        $testitem->shuffleanswers = !empty($itemrecord->{self::SHUFFLEANSWER});
+        $testitem->showallquestions = !empty($itemrecord->{self::SHOWALLQUESTIONS});
+        // When all the questions are on the page at once, a tap is the answer - there is
+        // no meaningful choice to confirm, so confirm choice is suppressed.
+        $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE} && !$testitem->showallquestions ? 1 : 0;
         $testitem->allowretry = !empty($itemrecord->{self::ALLOWRETRY});
+        $testitem->hideanswertext = (int)($itemrecord->{self::HIDEANSWERTEXT} ?? self::HIDEANSWER_NO);
+        // In A,B,C,D mode the on-screen letters must keep the order the author (and any audio) gave them,
+        // so shuffling is suppressed.
+        $testitem->shuffleanswers = !empty($itemrecord->{self::SHUFFLEANSWER})
+            && $testitem->hideanswertext != self::HIDEANSWER_ABCD;
 
         // The questions.
         $testitem->questions = [];
@@ -126,6 +148,23 @@ class itemtype extends item {
                 $s->index = $aindex;
                 $s->indexplusone = $aindex + 1;
                 $s->sentence = $sentence;
+                // The prompt is what is shown on the answer button; the resulttext is what
+                // is shown on the results screens.
+                switch ($testitem->hideanswertext) {
+                    case self::HIDEANSWER_YES:
+                        $s->prompt = '';
+                        $s->resulttext = $sentence;
+                        break;
+                    case self::HIDEANSWER_ABCD:
+                        $s->prompt = chr(65 + $aindex);
+                        $s->resulttext = $s->prompt . '. ' . $sentence;
+                        break;
+                    case self::HIDEANSWER_NO:
+                    default:
+                        $s->prompt = $sentence;
+                        $s->resulttext = $sentence;
+                        break;
+                }
                 $question->sentences[] = $s;
             }
             $testitem->questions[] = $question;
@@ -190,6 +229,10 @@ class itemtype extends item {
             'optional' => true, 'default' => 0, 'dbname' => self::ALLOWRETRY];
         $keycols['int3'] = ['jsonname' => 'confirmchoice', 'type' => 'boolean',
             'optional' => true, 'default' => 0, 'dbname' => constants::CONFIRMCHOICE];
+        $keycols['int10'] = ['jsonname' => 'hideanswertext', 'type' => 'int',
+            'optional' => true, 'default' => self::HIDEANSWER_NO, 'dbname' => self::HIDEANSWERTEXT];
+        $keycols['int11'] = ['jsonname' => 'showallquestions', 'type' => 'boolean',
+            'optional' => true, 'default' => 0, 'dbname' => self::SHOWALLQUESTIONS];
         return $keycols;
     }
 
@@ -244,7 +287,7 @@ class itemtype extends item {
         foreach ($itemquizdata->questions as $question) {
             foreach ($question->sentences as $sentence) {
                 if ($question->correctanswer == $sentence->indexplusone) {
-                    $correctanswers[] = ['sentence' => $question->questiontext . ' : ' . $sentence->sentence];
+                    $correctanswers[] = ['sentence' => $question->questiontext . ' : ' . $sentence->resulttext];
                     break;
                 }
             }

@@ -1204,5 +1204,26 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026071400, 'minilesson');
     }
 
+    if ($oldversion < 2026071600) {
+        // Add customint11 - customint15 to the minilesson question table.
+        $table = new xmldb_table(constants::M_QTABLE);
+
+        $fields = [];
+        $fields[] = new xmldb_field('customint11', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('customint12', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('customint13', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('customint14', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+        $fields[] = new xmldb_field('customint15', XMLDB_TYPE_INTEGER, '10', null, null, null, '0');
+
+        foreach ($fields as $field) {
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026071600, 'minilesson');
+    }
+
     return true;
 }
