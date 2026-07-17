@@ -186,6 +186,35 @@ class renderer extends \plugin_renderer_base
         return $ret;
     }
 
+    /**
+     * back to lesson items button
+     * @param object $cm
+     * @return string
+     */
+    public function back_to_items_button($cm)
+    {
+        $button = $this->output->single_button(new \moodle_url(
+            constants::M_PATH . '/rsquestion/rsquestions.php',
+            ['id' => $cm->id]
+        ), get_string('backtoitems', constants::M_COMPONENT));
+
+        $ret = \html_writer::div($button, constants::M_CLASS . '_backtoitems_cont');
+        return $ret;
+    }
+
+    /**
+     * Table of items which failed to import
+     * @param array $errors failure entries with itemnum, type, name and message fields
+     * @return string
+     */
+    public function import_failures($errors)
+    {
+        return $this->render_from_template(
+            constants::M_COMPONENT . '/importfailures',
+            ['errors' => array_values($errors)]
+        );
+    }
+
 
     /**
      * reattempt button

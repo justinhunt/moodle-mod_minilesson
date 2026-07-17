@@ -104,8 +104,16 @@ if (!empty($translateimportid) || ($restore && confirm_sesskey())) {
             $theimport->set_reader($importdata, true);
         }
         if (empty($errormessage)) {
-            $theimport->import_process();
-            redirect($url, get_string('lessonitemcreate', constants::M_COMPONENT), null, 'success');
+            $results = $theimport->import_process();
+            if ($results->failed == 0) {
+                redirect($url, get_string('lessonitemcreate', constants::M_COMPONENT), null, 'success');
+            }
+            $partialmessage = get_string(
+                'importpartial',
+                constants::M_COMPONENT,
+                ['imported' => $results->imported, 'total' => $results->total]
+            );
+            redirect($url, $partialmessage, null, 'warning');
         }
         redirect($url, $errormessage, null, 'warning');
     } else {

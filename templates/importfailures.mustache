@@ -1,0 +1,25 @@
+{{!
+    Table of items which failed to import.
+    Context: { "errors": [ { "itemnum": 2, "type": "dictation", "name": "My item", "message": "sentences: This field is required" } ] }
+}}
+<h4>{{#str}} importfailures, mod_minilesson {{/str}}</h4>
+<table class="generaltable mod_minilesson_importfailures">
+    <thead>
+        <tr>
+            <th scope="col">{{#str}} importitemnumber, mod_minilesson {{/str}}</th>
+            <th scope="col">{{#str}} itemtype, mod_minilesson {{/str}}</th>
+            <th scope="col">{{#str}} itemname, mod_minilesson {{/str}}</th>
+            <th scope="col">{{#str}} importproblem, mod_minilesson {{/str}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#errors}}
+        <tr>
+            <td>{{itemnum}}</td>
+            <td>{{type}}</td>
+            <td>{{name}}</td>
+            <td>{{message}}</td>
+        </tr>
+        {{/errors}}
+    </tbody>
+</table>

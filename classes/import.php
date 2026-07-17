@@ -40,11 +40,10 @@ class import {
     private $modulecontext;
     private $course;
     private $cm;
-    private $errors;
-    private $upt;
     private $currentheader;
     private $keycolumns;
     private $allvoices;
+    private $preprocesserrors = [];
 
 
     /**
@@ -60,7 +59,6 @@ class import {
         $this->course = $course;
         $this->allvoices = [];
         $this->cm = $cm;
-        $this->errors = 0;
         $this->currentheader = [];
         $this->keycolumns = local\itemtype\item::get_keycolumns();
 
@@ -79,18 +77,22 @@ class import {
         }
     }
 
+    /**
+     * Run the import and return a summary of the results.
+     *
+     * @return \stdClass with total, imported and failed counts, plus an errors array
+     *         of {itemnum, type, name, message} objects (one per failed item)
+     */
     public function import_process() {
-        $this->errors = 0;
-        $this->upt = new import_tracker($this->keycolumns);
-        $this->upt->start(); // Start table.
+        $results = new \stdClass();
+        $results->total = 0;
+        $results->imported = 0;
+        $results->failed = 0;
+        $results->errors = [];
 
         if ($this->isjson) {
-            $linenum = 0;
             foreach ($this->itemsfromjson as $item) {
-                $linenum++;
-                $this->upt->flush();
-                $this->upt->track('line', $linenum);
-                $this->import_process_line($item);
+                $this->process_and_tally($item, $results);
             }
         } else {
             // Init csv import helper.
@@ -99,17 +101,67 @@ class import {
             // get the header line
             $this->currentheader = $this->cir->get_columns();
 
-            $linenum = 1; // Column header is first line.
             while ($item = $this->cir->next()) {
-                $linenum++;
-                $this->upt->flush();
-                $this->upt->track('line', $linenum);
-                $this->import_process_line($item);
+                $this->process_and_tally($item, $results);
             }
             $this->cir->close();
             $this->cir->cleanup(true);
         }
-        $this->upt->close(); // Close table.
+        return $results;
+    }
+
+    /**
+     * Import a single item and add the outcome to the results summary.
+     *
+     * @param object|array $itemdata one JSON item object or one CSV line
+     * @param \stdClass $results the running summary to update
+     */
+    private function process_and_tally($itemdata, $results) {
+        $results->total++;
+        $outcome = $this->import_process_line($itemdata);
+        if ($outcome === true) {
+            $results->imported++;
+        } else {
+            $outcome->itemnum = $results->total;
+            $results->failed++;
+            $results->errors[] = $outcome;
+        }
+    }
+
+    /**
+     * Build a failure entry for the import results summary.
+     *
+     * @param string $itemtype
+     * @param string $itemname
+     * @param string $message
+     * @return \stdClass
+     */
+    private function line_error($itemtype, $itemname, $message) {
+        $error = new \stdClass();
+        $error->type = $itemtype;
+        $error->name = $itemname;
+        $error->message = $message;
+        return $error;
+    }
+
+    /**
+     * Map a DB column name (eg customtext1) used in a validation error to the
+     * import field name (eg sentences) that the user would recognise.
+     *
+     * @param string $itemtypeclass the itemtype classname
+     * @param string $col the DB column name from the validation error
+     * @return string
+     */
+    private function get_col_label($itemtypeclass, $col) {
+        if (empty($col)) {
+            return '';
+        }
+        foreach ($itemtypeclass::get_keycolumns() as $coldef) {
+            if ($coldef['dbname'] === $col) {
+                return $coldef['jsonname'];
+            }
+        }
+        return $col;
     }
 
     public function map_json_to_csv($itemdata) {
@@ -158,7 +210,8 @@ class import {
     /**
      * Process one line of CSV or JSON
      *
-     * @param array $line
+     * @param object|array $itemdata one JSON item object or one CSV line
+     * @return true|\stdClass true on success, or a failure entry (see line_error())
      * @throws \coding_exception
      * @throws \dml_exception
      * @throws \moodle_exception
@@ -167,19 +220,23 @@ class import {
         global $DB, $CFG, $SESSION;
 
         if ($this->isjson) {
-            $itemtype = $itemdata->type;
-            $line = $this->map_json_to_csv($itemdata);
+            $itemtype = $itemdata->type ?? '';
+            $itemname = $itemdata->name ?? '';
         } else {
-            $line = $itemdata;
-            $itemtype = $line[0];
+            $itemtype = $itemdata[0];
+            $itemname = '';
         }
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemtype);
 
         // if the item type is invalid, we can't continue, just exit
         if (!$itemtypeclass) {
-            $this->upt->track('status', get_string('error:failed', constants::M_COMPONENT), 'error', true);
-            $this->upt->track('type', get_string('error:invaliditemtype', constants::M_COMPONENT), 'error');
-            return false;
+            return $this->line_error($itemtype, $itemname, get_string('error:invaliditemtype', constants::M_COMPONENT));
+        }
+
+        if ($this->isjson) {
+            $line = $this->map_json_to_csv($itemdata);
+        } else {
+            $line = $itemdata;
         }
 
         // here we get the item specific keycolumns (it's the same columns, but with item specific col info for validation and data preprocessing)
@@ -197,7 +254,11 @@ class import {
         }
 
         // Pre-Process Import Data, and turn into DB Ready data.
+        $this->preprocesserrors = [];
         $newrecord = $this->preprocess_import_data($line, $keycolumns);
+        if (!empty($this->preprocesserrors)) {
+            return $this->line_error($itemtype, $itemname, implode('; ', $this->preprocesserrors));
+        }
 
         // set the defaults
         foreach ($keycolumns as $colname => $coldef) {
@@ -239,9 +300,12 @@ class import {
         // call the itemtype specific import validation function
         $error = $this->perform_import_validation($newrecord, $this->cm);
         if ($error) {
-            $this->upt->track('status', get_string('error:failed', constants::M_COMPONENT), 'error', true);
-            $this->upt->track($error->col, $error->message, 'error');
-            return false;
+            $message = $error->message;
+            $collabel = $this->get_col_label($itemtypeclass, $error->col);
+            if ($collabel !== '') {
+                $message = $collabel . ': ' . $message;
+            }
+            return $this->line_error($itemtype, $newrecord->name, $message);
         }
 
         // get itemorder
@@ -262,14 +326,11 @@ class import {
 
         // finally do the update
         $result = $theitem->update_insert_item();
-        if ($result) {
-            $this->upt->track('status', 'Success', 'normal');
-        } else {
-            $this->upt->track('status', 'Failed', 'error');
+        if ($result && !empty($result->error)) {
+            return $this->line_error($itemtype, $newrecord->name, $result->message);
         }
 
         return true;
-        // Do what we have to do
     }
 
     public function perform_import_validation($newrecord, $cm) {
@@ -304,10 +365,8 @@ class import {
             }
 
             if (!isset($keycolumns[$colname])) {
-                // This should not happen.
-
-                $this->upt->track('status', 'unknown column ' . $colname, 'error');
-                $this->errors++;
+                // This should not happen, but a CSV file with a bad header row could cause it.
+                $this->preprocesserrors[] = get_string('error:unknowncolumn', constants::M_COMPONENT, s($colname));
                 continue;
             }
             $coldef = $keycolumns[$colname];
@@ -333,8 +392,7 @@ class import {
                         } else if (in_array(strtolower($value) . '_g', $this->allvoices)) {
                             $value = $this->allvoices[strtolower($value) . '_g'];
                         } else {
-                            // not sure how to get this to user
-                            $this->upt->track($colname, 'UNKNOWN VOICE' . $value, 'warning');
+                            // Unknown voice, so fall back to the auto voice for the lesson language.
                             $value = utils::fetch_auto_voice($this->moduleinstance->ttslanguage);
                         }
                     }
@@ -399,15 +457,6 @@ class import {
                     $value = '';
             }
 
-            // set default values
-            if (in_array($colname, $this->upt->columns)) {
-                // Default value in progress tracking table, can be changed later.
-                if (is_array($value)) {
-                    $this->upt->track($colname, join(PHP_EOL, $value), 'normal');
-                } else {
-                    $this->upt->track($colname, s($value), 'normal');
-                }
-            }
             $newrecord[$coldef['dbname']] = $value;
         }
         return $newrecord;

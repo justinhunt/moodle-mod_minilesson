@@ -81,20 +81,20 @@ class aigen_import_items_json extends external_api {
 
         $theimport = new import($moduleinstance, $modulecontext, $course, $cm);
         $theimport->set_reader($importdata, true);
+        $results = $theimport->import_process();
 
-        // import_process() writes a results table to output; swallow it so the
-        // web service response stays valid JSON.
-        ob_start();
-        try {
-            $theimport->import_process();
-        } finally {
-            ob_end_clean();
-        }
-
-        return [
+        $ret = [
             'success' => true,
-            'itemcount' => count($importdata->items),
+            'itemcount' => $results->imported,
         ];
+        if ($results->failed > 0) {
+            $ret['errormsg'] = get_string(
+                'importpartial',
+                constants::M_COMPONENT,
+                ['imported' => $results->imported, 'total' => $results->total]
+            );
+        }
+        return $ret;
     }
 
     public static function execute_returns() {

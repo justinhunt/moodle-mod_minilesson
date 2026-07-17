@@ -121,7 +121,12 @@ class process_aigen extends adhoc_task {
             // Do the import.
             $theimport = new import($moduleinstance, $modulecontext, $course, $cm);
             $theimport->set_reader($importdata, true);
-            $theimport->import_process();
+            $results = $theimport->import_process();
+            mtrace("mod_minilesson aigen: imported {$results->imported} of {$results->total} items");
+            foreach ($results->errors as $importerror) {
+                mtrace("mod_minilesson aigen: item {$importerror->itemnum} ({$importerror->type}) failed: "
+                    . $importerror->message);
+            }
 
             // Complete Progress bar.
             $progressbar->end_progress();

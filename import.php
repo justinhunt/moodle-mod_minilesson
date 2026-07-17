@@ -126,14 +126,44 @@ if ($data = $form->get_data()) {
     }
 
 
+    // If the file could not be parsed at all, go back to the import page and say why.
+    if (!empty($errormessage)) {
+        redirect($baseurl, $errormessage, null, \core\output\notification::NOTIFY_ERROR);
+    }
+
+    $results = $theimport->import_process();
+
+    if ($results->total === 0) {
+        redirect(
+            $baseurl,
+            get_string('importnoitems', constants::M_COMPONENT),
+            null,
+            \core\output\notification::NOTIFY_WARNING
+        );
+    }
+
+    // On complete success, send the user to the lesson items page.
+    if ($results->failed === 0) {
+        $itemsurl = new moodle_url('/mod/minilesson/rsquestion/rsquestions.php', ['id' => $cm->id]);
+        redirect(
+            $itemsurl,
+            get_string('importcompleted', constants::M_COMPONENT, $results->imported),
+            null,
+            \core\output\notification::NOTIFY_SUCCESS
+        );
+    }
+
+    // Some items failed to import, so show the counts and a table of failures.
     echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('importing', constants::M_COMPONENT));
     echo $renderer->heading($pagetitle);
-    echo $renderer->box(get_string('importresults', constants::M_COMPONENT), 'generalbox minilesson_importintro', 'intro');
-    if (empty($errormessage)) {
-        $theimport->import_process();
-    } else {
-        echo $renderer->box($errormessage, 'generalbox minilesson_importintro', 'intro');
-    }
+    $partialmessage = get_string(
+        'importpartial',
+        constants::M_COMPONENT,
+        ['imported' => $results->imported, 'total' => $results->total]
+    );
+    echo $OUTPUT->notification($partialmessage, \core\output\notification::NOTIFY_WARNING);
+    echo $renderer->import_failures($results->errors);
+    echo $renderer->back_to_items_button($cm);
     echo $renderer->back_to_import_button($cm);
     echo $renderer->footer();
     die;
