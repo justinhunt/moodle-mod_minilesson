@@ -477,7 +477,11 @@ abstract class item implements \templatable, \renderable {
                 'example' => 'Choose the correct answer.',
             ],
             'text' => [
-                'description' => 'The main text of the item. Its role depends on the item type (see the item type usage notes).',
+                'description' => 'The main text of the item, usually the question. It normally renders as a short, '
+                    . 'centered heading-style line above the activity, so keep it to a single line: multi-line '
+                    . 'content such as a two-speaker dialog looks poor centered. For multi-line or dialog content '
+                    . 'use the "textarea" text block instead, where the item type offers it. Its exact role '
+                    . 'depends on the item type (see the item type usage notes).',
             ],
             'tts' => [
                 'description' => 'Text read aloud to the learner as a text-to-speech (TTS) audio prompt at the top of the item. '
@@ -530,10 +534,10 @@ abstract class item implements \templatable, \renderable {
                 ],
             ],
             'textarea' => [
-                'description' => 'A rich text content panel shown in the item content area (HTML or plain text; '
-                    . 'plain text line breaks are preserved). Use this for longer content such as a reading '
-                    . 'passage - "text" renders as heading-level text above the activity, this renders as a '
-                    . 'content block within it.',
+                'description' => 'A rich text content block shown within the item content area, left-aligned with '
+                    . 'line breaks preserved (HTML or plain text). Prefer this over "text" for anything longer than '
+                    . 'a single line - a reading passage, or a dialog with speaker turns - which renders poorly in '
+                    . 'the centered "text" heading.',
             ],
             'ttspassage' => [
                 'description' => 'A reading passage displayed sentence by sentence, each sentence with its own '

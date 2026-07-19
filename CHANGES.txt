@@ -1,3 +1,5 @@
+Version 1.1.43 (Build 2026071800)
+- Added new APIs for agents so they can create import files directly
 
 Version 1.1.42 (Build 2026071600)
 - Added new item type multichoice quiz

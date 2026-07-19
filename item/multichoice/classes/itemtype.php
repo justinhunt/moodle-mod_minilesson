@@ -329,12 +329,15 @@ class itemtype extends item {
 
         // Shared fields (type/required/default seeded from get_keycolumns; prose from the base catalog).
         $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
+            'textarea',
             'tts', 'ttsvoice', 'ttsoption', 'ttsautoplay',
             'ttsdialog', 'ttsdialogvoicea', 'ttsdialogvoiceb', 'ttsdialogvoicec', 'ttsdialogvisible',
             'timelimit', 'layout']);
         $fields['type']['example'] = 'multichoice';
-        $fields['text']['description'] = 'The question text. Can be omitted when the question is delivered '
-            . 'by the tts audio or ttsdialog.';
+        $fields['text']['description'] = 'The question text, shown as a short centered heading above the answers, '
+            . 'so keep it to a single line. Can be omitted when the question is delivered by the tts audio or '
+            . 'ttsdialog. For multi-line question content such as a two-speaker dialog, put it in "textarea" '
+            . '(the text block) instead, which is left-aligned and preserves line breaks.';
 
         // Multichoice specific fields.
         $ownfields = [
