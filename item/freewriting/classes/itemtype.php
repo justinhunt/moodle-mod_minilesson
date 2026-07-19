@@ -178,26 +178,242 @@ class itemtype extends item
         return false;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm)
     {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{constants::AIGRADE_INSTRUCTIONS} == '') {
+        if (trim((string) $newrecord->{constants::AIGRADE_INSTRUCTIONS}) == '') {
             $error->col = constants::AIGRADE_INSTRUCTIONS;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
-        if ($newrecord->{constants::AIGRADE_FEEDBACK} == '') {
+        if (trim((string) $newrecord->{constants::AIGRADE_FEEDBACK}) == '') {
             $error->col = constants::AIGRADE_FEEDBACK;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
+        // Option value checks: reject impossible values. Absent JSON fields and blank CSV cells arrive here as 0,
+        // and the runtime treats 0 as the default for showgrade/showresult (see export_for_template), so 0 is allowed.
+        $optionchecks = [
+            constants::RELEVANCE => [constants::RELEVANCETYPE_NONE, constants::RELEVANCETYPE_QUESTION,
+                constants::RELEVANCETYPE_MODELANSWER],
+            self::SHOWGRADE => [0, 1, 2],
+            self::SHOWRESULT => [0, 1, 2],
+        ];
+        foreach ($optionchecks as $col => $allowed) {
+            if (isset($newrecord->{$col}) && !in_array((int) $newrecord->{$col}, $allowed)) {
+                $error->col = $col;
+                $error->message = get_string(
+                    'error:invalidoptionvalue',
+                    constants::M_COMPONENT,
+                    ['value' => $newrecord->{$col}, 'allowed' => implode(',', $allowed)]
+                );
+                return $error;
+            }
+        }
+
         // return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'An open writing task graded by AI. The learner types their answer; the AI marks it against your '
+            . 'grading instructions and writes feedback. Use it for free or guided writing practice, opinion '
+            . 'questions, picture descriptions, or any task where the answer wording cannot be predicted. '
+            . 'For questions with predictable short answers use shortanswer instead.';
+    }
+
+    /**
+     * The agent-facing import field spec for freewriting. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
+            'tts', 'ttsvoice', 'ttsoption', 'ttsautoplay', 'timelimit', 'layout']);
+        $fields['type']['example'] = 'freewriting';
+        $fields['text']['description'] = 'The writing question or prompt shown to the learner. May contain the '
+            . 'placeholders {topic}, {ai data1} and {ai data2}, which are filled from freewritingtopic, '
+            . 'freewritingaidata1 and freewritingaidata2.';
+
+        $ownfields = [
+            'aigradeinstructions' => [
+                'description' => 'The mark scheme the AI grader applies to the writing. Write it so points are '
+                    . 'assigned from 0 (or deducted from the maximum) such that a great answer scores exactly '
+                    . 'totalmarks, e.g. "Deduct 3 points for each grammar mistake. Do not penalize spelling." '
+                    . 'May contain the {topic}, {ai data1} and {ai data2} placeholders.',
+                'example' => 'Deduct 3 points for each grammar mistake. Do not penalize for spelling or punctuation errors.',
+            ],
+            'aigradefeedback' => [
+                'description' => 'Instructions the AI follows when writing feedback to the learner, '
+                    . 'e.g. "Explain each grammar mistake in simple language." '
+                    . 'May contain the {topic}, {ai data1} and {ai data2} placeholders.',
+                'example' => 'Explain each grammar mistake in simple language. Do not comment on spelling or punctuation.',
+            ],
+            'aigradefeedbacklanguage' => [
+                'description' => 'The language the AI writes its feedback in: "target" (the lesson language), '
+                    . '"native" (the learner\'s native language, when the lesson has one set), '
+                    . 'or a specific language code such as "en-US".',
+                'example' => 'native',
+            ],
+            'totalmarks' => [
+                'description' => 'The marks this item is graded out of. Set this explicitly (e.g. 10 or 20): '
+                    . 'the import default is 0 but the authoring form uses 5.',
+                'example' => '20',
+            ],
+            'targetwordcount' => [
+                'description' => 'Target length of the writing in words; shows a live word counter to the '
+                    . 'learner AND scales the grade down for short answers: the score is multiplied by '
+                    . '(words used / targetwordcount), capped at 100%. 0 disables the word count factor.',
+                'example' => '30',
+            ],
+            'relevance' => [
+                'description' => 'Whether an AI relevance check is applied. The relevance score multiplies the '
+                    . 'grade as a percentage; minor irrelevance is not harshly penalised.',
+                'options' => [
+                    ['value' => (string) constants::RELEVANCETYPE_NONE,
+                        'meaning' => 'Do not check relevance (default)'],
+                    ['value' => (string) constants::RELEVANCETYPE_QUESTION,
+                        'meaning' => 'The answer must be relevant to the question text'],
+                    ['value' => (string) constants::RELEVANCETYPE_MODELANSWER,
+                        'meaning' => 'The answer must be relevant to the modelanswer text'],
+                ],
+            ],
+            'modelanswer' => [
+                'description' => 'A model answer used for the relevance check when relevance=2.',
+            ],
+            'nopasting' => [
+                'description' => 'Whether pasting text into the answer box is blocked.',
+                'options' => [
+                    ['value' => '1', 'meaning' => 'Block pasting (default)'],
+                    ['value' => '0', 'meaning' => 'Allow pasting'],
+                ],
+            ],
+            'enablevkeyboard' => [
+                'description' => 'On-screen virtual keyboard for typing accented/special characters.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'No virtual keyboard (default)'],
+                    ['value' => '1', 'meaning' => 'Full keyboard layout for the lesson language'],
+                    ['value' => '2', 'meaning' => 'Compact layout: just the special characters of the lesson language'],
+                    ['value' => '3', 'meaning' => 'Custom keys, supplied in customkeys'],
+                ],
+            ],
+            'customkeys' => [
+                'description' => 'Space-separated characters for the custom virtual keyboard (enablevkeyboard=3).',
+                'example' => 'á é í ó ú ü ñ',
+            ],
+            'hidecorrection' => [
+                'description' => 'Whether the AI\'s corrections are hidden in the results screen '
+                    . '(useful when it is not a language learning course).',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Show corrections (default)'],
+                    ['value' => '1', 'meaning' => 'Hide corrections'],
+                ],
+            ],
+            'showgrade' => [
+                'description' => 'How the grade is displayed to the learner.',
+                'options' => [
+                    ['value' => '1', 'meaning' => 'Star rating (default)'],
+                    ['value' => '2', 'meaning' => 'Percentage score'],
+                ],
+            ],
+            'showresult' => [
+                'description' => 'How much result detail the learner sees.',
+                'options' => [
+                    ['value' => '1', 'meaning' => 'Detailed results (default)'],
+                    ['value' => '2', 'meaning' => 'Basic result only'],
+                ],
+            ],
+            'freewritingtopic' => [
+                'description' => 'Context text inserted wherever {topic} appears in the question text and '
+                    . 'AI grading/feedback instructions.',
+            ],
+            'freewritingaidata1' => [
+                'description' => 'Context text inserted wherever {ai data1} appears in the question text and '
+                    . 'AI grading/feedback instructions.',
+            ],
+            'freewritingaidata2' => [
+                'required' => false,
+                'description' => 'Context text inserted wherever {ai data2} appears in the question text and '
+                    . 'AI grading/feedback instructions.',
+            ],
+            'communitypage' => [
+                'description' => 'Class community page sharing: 0 = disabled, otherwise the minimum grade percent '
+                    . '(40-90) a submission needs to be shareable. Only takes effect when the site has the '
+                    . 'community page feature enabled.',
+            ],
+            'communitylikes' => [
+                'description' => 'Set to 1 to allow likes on shared community page submissions.',
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the item has an uploaded media prompt (e.g. a picture to describe).',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per writing task. Put the writing prompt in "text", the AI mark '
+                . 'scheme in "aigradeinstructions" and the AI feedback style in "aigradefeedback" (both required), '
+                . 'and set totalmarks. The grade combines three factors: the AI score (out of totalmarks), '
+                . 'a word count factor (words used / targetwordcount, when set) and a relevance percentage '
+                . '(when relevance is enabled). AI grades are indicative rather than authoritative assessments. '
+                . 'A picture description task can supply the picture in the '
+                . constants::MEDIAQUESTION . ' file area.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::MEDIAQUESTION,
+                    'description' => 'An uploaded image, audio or video shown as the prompt, '
+                        . 'e.g. a picture for the learner to describe.',
+                    'filenames' => 'Any filename; the extension decides how it renders: '
+                        . 'image (png/jpg/gif/svg), video (mp4/mov/webm) or audio (mp3/m4a/ogg/wav).',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'freewriting',
+                        'name' => 'Free writing',
+                        'instructions' => 'Type your answer to the question.',
+                        'text' => 'Do you think young people should grow food in the garden? '
+                            . 'Give a reason for your answer. (30 words or more)',
+                        'aigradeinstructions' => 'Deduct 3 points for each grammar mistake. '
+                            . 'Do not penalize for spelling or punctuation errors.',
+                        'aigradefeedback' => 'Explain each grammar mistake in simple language. '
+                            . 'Do not comment on spelling or punctuation.',
+                        'totalmarks' => 20,
+                        'targetwordcount' => 30,
+                        'relevance' => constants::RELEVANCETYPE_QUESTION,
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*

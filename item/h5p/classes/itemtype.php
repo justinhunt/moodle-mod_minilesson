@@ -68,14 +68,117 @@ class itemtype extends item
         return $testitem;
     }
 
+    /**
+     * Validates an import record for this item type. Runs after preprocessing, so any payload
+     * files are already attached to the record as filearea arrays.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm)
     {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
+        // The item is useless without an .h5p package in the files payload.
+        $haspackage = false;
+        if (!empty($newrecord->{self::FILE}) && is_array((array) $newrecord->{self::FILE})) {
+            foreach (array_keys((array) $newrecord->{self::FILE}) as $filename) {
+                if (strtolower(pathinfo($filename, PATHINFO_EXTENSION)) === 'h5p') {
+                    $haspackage = true;
+                    break;
+                }
+            }
+        }
+        if (!$haspackage) {
+            $error->col = self::FILE;
+            $error->message = get_string('error:noh5ppackage', constants::M_COMPONENT);
+            return $error;
+        }
+
         // return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'Embeds an interactive H5P activity (e.g. a crossword, interactive video or quiz) inside the '
+            . 'lesson; the H5P activity\'s own score contributes to the lesson grade, scaled by totalmarks. '
+            . 'Use it only when a ready-made .h5p package file is available to upload - composing H5P content '
+            . 'is outside the import API, so prefer the native item types unless the user has supplied a package.';
+    }
+
+    /**
+     * The agent-facing import field spec for h5p.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'layout']);
+        $fields['type']['example'] = 'h5p';
+
+        $ownfields = [
+            'totalmarks' => [
+                'description' => 'The number of points the H5P activity\'s score contributes to the lesson: '
+                    . 'the item grade is the learner\'s H5P score as a ratio of its maximum, scaled to this value. '
+                    . 'Set this explicitly (e.g. 5 or 10): the authoring form default is 5, but the import '
+                    . 'default is 0.',
+                'example' => '10',
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => true,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload, '
+                . 'which must contain the .h5p package. Required for this item type.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per H5P activity. The .h5p package file must be supplied '
+                . '(base64) in the ' . self::FILE . ' file area - the import cannot create H5P content or pull '
+                . 'it from the content bank, so only use this type when the user has provided a package. '
+                . 'Set totalmarks to the points the activity should contribute to the lesson.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => self::FILE,
+                    'description' => 'The H5P package to embed. Required.',
+                    'filenames' => 'A single file with the .h5p extension, e.g. "activity.h5p".',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'h5p',
+                        'name' => 'H5P activity',
+                        'instructions' => 'Complete the task below.',
+                        'totalmarks' => 10,
+                        'filesid' => 1,
+                    ],
+                ],
+                'files' => [
+                    '1' => [
+                        self::FILE => [
+                            'activity.h5p' => '<base64 of the .h5p package supplied by the user>',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*
@@ -85,6 +188,9 @@ class itemtype extends item
     {
         // get the basic key columns and customize a little for instances of this item type
         $keycols = parent::get_keycolumns();
+        // The jsonalias accepts data exported before the totalmarks jsonname was introduced.
+        $keycols['int1'] = ['jsonname' => 'totalmarks', 'jsonalias' => 'int1', 'type' => 'int',
+            'optional' => true, 'default' => 0, 'dbname' => constants::TOTALMARKS];
         $keycols[self::FILE] = ['jsonname' => self::FILE, 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
 
         return $keycols;

@@ -72,7 +72,8 @@ class itemform extends baseform {
         );
 
         $this->add_static_text('instructions', '', get_string('enterwordcardsitems', 'minilessonitem_wordcards'));
-        $this->add_textarearesponse(1, get_string('wordcardsitems', 'minilessonitem_wordcards'), true);
+        $this->add_sentenceprompt(1, get_string('wordcardsitems', 'minilessonitem_wordcards'), true);
+
         $this->add_sentenceimage(1, null, false);
         $this->add_sentenceaudio(1, null, false);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));

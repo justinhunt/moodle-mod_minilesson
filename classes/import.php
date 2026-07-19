@@ -169,6 +169,15 @@ class import {
         $keycolumns = $itemtypeclass::get_keycolumns();
         $line = [];
         foreach ($keycolumns as $colname => $coldef) {
+            // A keycolumn may declare a legacy alias (jsonalias) for its import name, so that
+            // data exported before the jsonname was introduced still imports correctly.
+            if (
+                !isset($itemdata->{$coldef['jsonname']})
+                && isset($coldef['jsonalias'])
+                && isset($itemdata->{$coldef['jsonalias']})
+            ) {
+                $itemdata->{$coldef['jsonname']} = $itemdata->{$coldef['jsonalias']};
+            }
             if (isset($itemdata->{$coldef['jsonname']})) {
                 if ($coldef['type'] == 'stringarray') {
                     if (!is_array($itemdata->{$coldef['jsonname']})) {

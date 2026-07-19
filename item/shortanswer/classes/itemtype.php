@@ -115,19 +115,133 @@ class itemtype extends item {
         return $testitem;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->customtext1 == '') {
+        $answers = array_filter(array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1)), function ($answer) {
+            return $answer !== '';
+        });
+        if (count($answers) == 0) {
             $error->col = 'customtext1';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
+        // Option value checks: reject impossible values. Absent fields arrive here as their column defaults.
+        $allowedresponsetypes = array_values(constants::RESPONSE_TYPE);
+        if (isset($newrecord->{self::RESPONSETYPE}) && !in_array((int) $newrecord->{self::RESPONSETYPE}, $allowedresponsetypes)) {
+            $error->col = self::RESPONSETYPE;
+            $error->message = get_string(
+                'error:invalidoptionvalue',
+                constants::M_COMPONENT,
+                ['value' => $newrecord->{self::RESPONSETYPE}, 'allowed' => implode(',', $allowedresponsetypes)]
+            );
+            return $error;
+        }
+
         // return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A single open question with a list of acceptable short answers. The learner answers by speaking '
+            . '(graded by speech recognition) or typing, and the response is matched against the answer list. '
+            . 'Use it for closed comprehension or knowledge questions whose answer is a word, phrase or short '
+            . 'sentence with predictable wording. For open questions with unpredictable answers use freespeaking '
+            . 'or freewriting instead.';
+    }
+
+    /**
+     * The agent-facing import field spec for shortanswer. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
+            'tts', 'ttsvoice', 'ttsoption', 'ttsautoplay', 'layout']);
+        $fields['type']['example'] = 'shortanswer';
+        $fields['text']['description'] = 'The question text. Add the same text to "tts" to have the question '
+            . 'read aloud as well.';
+
+        $ownfields = [
+            'sentences' => [
+                'required' => true,
+                'description' => 'The acceptable correct answers, as an array of strings, one answer per entry. '
+                    . 'The learner\'s response is matched against this list, so include the likely variants, '
+                    . 'e.g. ["yellow", "It is yellow."].',
+                'example' => '["yellow", "It is yellow."]',
+            ],
+            'partiallycorrectanswer' => [
+                'description' => 'Optional partially correct answers, as an array of strings. A response matching '
+                    . 'one of these earns partiallymarks instead of totalmarks.',
+                'example' => '["yellowish"]',
+            ],
+            'alternates' => [
+                'description' => 'Optional tuning for the speech recognition: acceptable alternative transcriptions '
+                    . 'for specific words. An array of strings, one word set per line in the format '
+                    . 'word|alternate1|alternate2, e.g. "their|there|they\'re". Only relevant when responsetype=1.',
+                'example' => '["their|there|they\'re"]',
+            ],
+            'totalmarks' => [
+                'description' => 'Marks awarded for a correct answer.',
+                'example' => '2',
+            ],
+            'partiallymarks' => [
+                'description' => 'Marks awarded for a partially correct answer. Should be less than totalmarks.',
+                'example' => '1',
+            ],
+            'responsetype' => [
+                'description' => 'How the learner answers the question.',
+                'options' => [
+                    ['value' => (string) constants::RESPONSE_TYPE['audiorecorder'],
+                        'meaning' => 'Speak the answer into the microphone (speech recognition, default)'],
+                    ['value' => (string) constants::RESPONSE_TYPE['text'],
+                        'meaning' => 'Type the answer into a text box'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        return [
+            'usage' => 'Compose one item object per question. Put the question in "text" and every acceptable '
+                . 'answer wording in "sentences". Choose responsetype 1 (speak) for speaking practice or 2 (type) '
+                . 'for writing practice. Answers are short, so keep them to a word, phrase or short sentence.',
+            'fields' => array_values($fields),
+            'fileareas' => [],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'shortanswer',
+                        'name' => 'Short answer check',
+                        'instructions' => 'Answer the question by using the mic.',
+                        'text' => 'What color is the middle part of an egg?',
+                        'tts' => 'What color is the middle part of an egg?',
+                        'ttsvoice' => 'auto',
+                        'sentences' => ['yellow', 'It is yellow.'],
+                        'totalmarks' => 2,
+                        'partiallymarks' => 1,
+                        'responsetype' => constants::RESPONSE_TYPE['audiorecorder'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*

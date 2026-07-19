@@ -172,8 +172,150 @@ class itemtype extends item {
             }
         }
 
+        // Option value check: reject impossible activity types.
+        $allowedtypes = [self::MODE_LISTENTYPE, self::MODE_LISTENCHOOSE, self::MODE_TYPEWORD, self::MODE_CHOOSEWORD];
+        if (isset($newrecord->{self::ACTIVITYTYPE}) && !in_array((int) $newrecord->{self::ACTIVITYTYPE}, $allowedtypes)) {
+            $error->col = self::ACTIVITYTYPE;
+            $error->message = get_string(
+                'error:invalidoptionvalue',
+                constants::M_COMPONENT,
+                ['value' => $newrecord->{self::ACTIVITYTYPE}, 'allowed' => implode(',', $allowedtypes)]
+            );
+            return $error;
+        }
+
         // Return false to indicate no error.
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A vocabulary practice item: the learner first reviews a grid of flip cards (word on the front, '
+            . 'definition on the back), then works through one question per word in the chosen practice mode - '
+            . 'typing or choosing each word from its audio or definition. Use it to practise a set of target '
+            . 'vocabulary; several wordcards items with the same words but different activitytype values make '
+            . 'a good progression (e.g. choose the word, then type the word, then listen and type).';
+    }
+
+    /**
+     * The agent-facing import field spec for wordcards. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'wordcards';
+        $fields['text']['description'] = 'Optional heading text shown above the activity, e.g. "Choose the word".';
+
+        $ownfields = [
+            'words' => [
+                'required' => true,
+                'description' => 'The words to practise, as an array of strings, one word per entry in the format '
+                    . '"word|definition". The definition can be a translation or a simple definition; words cannot '
+                    . 'contain the "|" character. At least 2 words are required; 4 to 8 works well for the '
+                    . 'choice-based practice types (choice questions offer the correct word plus up to 4 '
+                    . 'distractors drawn from the other words).',
+                'example' => '["family|the people you are related to", "mother|a female parent"]',
+            ],
+            'activitytype' => [
+                'description' => 'The practice mode used for the questions (one mode per item; use several '
+                    . 'wordcards items for several modes).',
+                'options' => [
+                    ['value' => (string) self::MODE_LISTENTYPE,
+                        'meaning' => 'Listen and type: the learner hears the word and types it (default)'],
+                    ['value' => (string) self::MODE_LISTENCHOOSE,
+                        'meaning' => 'Listen and choose: the learner hears the word and chooses it from a list of words'],
+                    ['value' => (string) self::MODE_TYPEWORD,
+                        'meaning' => 'Type the word: the learner sees the definition and types the word'],
+                    ['value' => (string) self::MODE_CHOOSEWORD,
+                        'meaning' => 'Choose the word: the learner sees the definition and chooses the word from a list'],
+                ],
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice that speaks each word (used by the listening practice types and '
+                    . 'the flip cards). A voice display name (case-insensitive), e.g. "Joey" (en-US) or "Mathieu" '
+                    . '(fr-FR), or "auto" to let the server pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the word TTS audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                ],
+            ],
+            'hidestartpage' => [
+                'description' => 'Whether the opening flip-card review grid is skipped, going straight to the '
+                    . 'practice questions.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Show the flip-card review grid first (default)'],
+                    ['value' => '1', 'meaning' => 'Skip straight to the questions'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the words have uploaded audio or images.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per practice set. Use the same word list across several items '
+                . 'with different activitytype values to build a practice progression from recognition to '
+                . 'production. TTS audio for the words is generated automatically from the promptvoice. '
+                . 'Optional images (shown as a hint during the questions) go in the '
+                . constants::FILEANSWER . '1_image file area, matched to words by line number.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded audio for the words (overrides the promptvoice TTS audio). '
+                        . 'Usually unnecessary: prefer TTS via promptvoice.',
+                    'filenames' => 'Name each file for its 1-based word line number: "1.mp3", "2.mp3", ...',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '1_image',
+                    'description' => 'Optional image for each word, shown as a visual hint during the questions.',
+                    'filenames' => 'Name each file for its 1-based word line number: '
+                        . '"1.png", "2.png", ... (.jpg is also fine).',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'wordcards',
+                        'name' => 'Word cards: family words',
+                        'instructions' => 'Complete the task for each word.',
+                        'text' => 'Choose the word',
+                        'words' => [
+                            'family|the people you are related to',
+                            'mother|a female parent',
+                            'father|a male parent',
+                            'brother|a male sibling',
+                            'sister|a female sibling',
+                        ],
+                        'activitytype' => self::MODE_CHOOSEWORD,
+                        'promptvoice' => 'auto',
+                        'promptvoiceopt' => 'normal',
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**

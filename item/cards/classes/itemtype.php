@@ -187,17 +187,149 @@ class itemtype extends item {
     }
 
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->customtext1 == '') {
+        $cards = array_filter(array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1)), function ($card) {
+            return $card !== '';
+        });
+        if (count($cards) == 0) {
             $error->col = 'customtext1';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A series of browsable cards, each showing a word or phrase with optional extra text lines '
+            . '(translation, model sentence, model sentence translation), an optional picture and optional audio. '
+            . 'There is no question and no grade. Use it to introduce new vocabulary or phrases before they are '
+            . 'practised by other item types.';
+    }
+
+    /**
+     * The agent-facing import field spec for cards. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'cards';
+
+        $ownfields = [
+            'sentences' => [
+                'required' => true,
+                'description' => 'The cards, as an array of strings, one card per entry with up to four '
+                    . 'pipe-separated text lines: "word|translation|model sentence|model sentence translation". '
+                    . 'Only the first line is required. Around 5 to 10 cards works well.',
+                'example' => '["airport|Flughafen|The airport is always busy.|Der Flughafen ist immer voll."]',
+            ],
+            'dictationstyle' => [
+                'description' => 'Whether the card word (line 1) and model sentence (line 3) are read aloud '
+                    . 'by TTS using the promptvoice.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'No TTS audio (default)'],
+                    ['value' => '1', 'meaning' => 'Read the word and model sentence aloud'],
+                ],
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice that reads the card text aloud (used with dictationstyle=1). '
+                    . 'A voice display name (case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), '
+                    . 'or "auto" to let the server pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the card TTS audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                ],
+            ],
+            'shuffleorder' => [
+                'description' => 'Whether the card order is randomized for each learner. Each card keeps its '
+                    . 'matching image and audio.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Keep the authored order (default)'],
+                    ['value' => '1', 'meaning' => 'Shuffle the card order'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the cards have images or uploaded audio.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per set of cards. Line 1 is the word or phrase in the lesson '
+                . 'language; add a translation, model sentence and model sentence translation as further pipe '
+                . 'separated lines where helpful. Set dictationstyle=1 so learners hear the words; card images '
+                . 'go in the ' . constants::FILEANSWER . '1_image file area, numbered by card.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::FILEANSWER . '1_image',
+                    'description' => 'A picture for each card.',
+                    'filenames' => 'Name each file for its 1-based card number: '
+                        . '"1.png", "2.png", ... (.jpg is also fine).',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded audio for card text line 1, the word/phrase '
+                        . '(overrides the dictationstyle TTS audio). Usually unnecessary: prefer TTS.',
+                    'filenames' => 'Name each file for its 1-based card number: "1.mp3", "2.mp3", ...',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '2_audio',
+                    'description' => 'Uploaded audio for card text line 3, the model sentence '
+                        . '(overrides the dictationstyle TTS audio). Usually unnecessary: prefer TTS.',
+                    'filenames' => 'Name each file for its 1-based card number: "1.mp3", "2.mp3", ...',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'cards',
+                        'name' => 'New vocabulary',
+                        'instructions' => 'Review the cards on screen. You can use the next and back buttons '
+                            . 'to see other cards.',
+                        'sentences' => [
+                            'airport|空港|The airport in that city is always busy.|その町にある空港はいつも人が多いです。',
+                            'brochure|パンフレット|This brochure has information about our company.|このパンフレットには当社の情報が書かれています。',
+                            'deadline|締め切り|The deadline for this project is in three hours.|このプロジェクトの締め切りは3時間後です。',
+                        ],
+                        'dictationstyle' => 1,
+                        'promptvoice' => 'auto',
+                    ],
+                ],
+            ],
+        ];
     }
 
     #[Override]

@@ -111,19 +111,169 @@ class itemtype extends item {
         return $testitem;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->customtext1 == '') {
+        $sentences = array_filter(array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1)), function ($sentence) {
+            return $sentence !== '';
+        });
+        if (count($sentences) == 0) {
             $error->col = 'customtext1';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
+        $threshold = (int) ($newrecord->{constants::FLUENCYCORRECTTHRESHOLD} ?? 0);
+        if ($threshold < 0 || $threshold > 100) {
+            $error->col = constants::FLUENCYCORRECTTHRESHOLD;
+            $error->message = get_string(
+                'error:invalidoptionvalue',
+                constants::M_COMPONENT,
+                ['value' => $threshold, 'allowed' => '0-100']
+            );
+            return $error;
+        }
+
         // Return false to indicate no error.
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A series of sentences the learner says aloud; the speech is scored for pronunciation accuracy '
+            . 'and each part of the spoken sentence is marked up as good, fair or poor, with a pass threshold. '
+            . 'Use it for focused pronunciation assessment of target sentences. It is stricter and more '
+            . 'diagnostic than listenrepeat (listen-then-repeat practice) or speechcards (light drilling). '
+            . 'Requires a lesson language with speech recognition support.';
+    }
+
+    /**
+     * The agent-facing import field spec for fluency. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'fluency';
+
+        $ownfields = [
+            'sentences' => [
+                'required' => true,
+                'description' => 'The sentences to speak, as an array of strings, one per entry. A hint or '
+                    . 'translation (shown to the learner) can follow the sentence after a pipe, '
+                    . 'e.g. "Hello|Hola". Around 3 to 6 sentences per item works well.',
+                'example' => '["Nice to meet you.|Encantado de conocerte.", "Where are you from?|¿De dónde eres?"]',
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice that provides model audio of each sentence. A voice display name '
+                    . '(case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), or "auto" to let the server '
+                    . 'pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the model TTS audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                ],
+            ],
+            'correctthreshold' => [
+                'description' => 'The pronunciation accuracy percentage (0-100) required to pass a sentence. '
+                    . 'Set this explicitly: the authoring form default is 85, but the import default is 0.',
+                'example' => '80',
+            ],
+            'hidewarning' => [
+                'description' => 'How the "almost correct" level is shown in the spoken-sentence markup.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Mark words as good (green), fair (orange) or poor (red) (default)'],
+                    ['value' => '1', 'meaning' => 'Only good (green) and poor (red); no orange level'],
+                ],
+            ],
+            'hidestartpage' => [
+                'description' => 'Whether the activity begins as soon as it has loaded, instead of showing a '
+                    . 'start/splash page first.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Show the start page (default)'],
+                    ['value' => '1', 'meaning' => 'Start immediately'],
+                ],
+            ],
+            'hintrtl' => [
+                'description' => 'Display the hints in right-to-left format (for hints written in an RTL language '
+                    . 'such as Arabic or Hebrew).',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Left-to-right hints (default)'],
+                    ['value' => '1', 'meaning' => 'Right-to-left hints'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the sentences have uploaded audio or images.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per set of sentences. The sentences should be in the lesson '
+                . 'language at the learner\'s level, and short enough to say in one breath. Set correctthreshold '
+                . '(around 80-85) to control how strict the pass mark is. Model TTS audio is generated '
+                . 'automatically from the promptvoice; hints/translations after a pipe work well for meaning support.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded model audio for the sentences (overrides the promptvoice TTS audio). '
+                        . 'Usually unnecessary: prefer TTS via promptvoice.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: "1.mp3", "2.mp3", ...',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '1_image',
+                    'description' => 'Optional image shown alongside each sentence.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: '
+                        . '"1.png", "2.png", ... (.jpg is also fine).',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'fluency',
+                        'name' => 'Say the sentences',
+                        'instructions' => 'Read the sentences aloud. Click the microphone icon to start recording.',
+                        'sentences' => [
+                            'He is visiting China.',
+                            'He is building a house.',
+                            'He is on a video call.',
+                        ],
+                        'promptvoice' => 'auto',
+                        'promptvoiceopt' => 'normal',
+                        'correctthreshold' => 80,
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*

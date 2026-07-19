@@ -164,26 +164,152 @@ class itemtype extends item {
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['int1'] = ['jsonname' => 'showtextprompt', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::SHOWTEXTPROMPT];
+        $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         return $keycols;
     }
 
-    /*
-     * This is for use with importing, validating submitted data in each column
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A multiple choice question where the learner answers by speaking their chosen answer aloud, '
+            . 'and speech recognition checks whether they said the correct option. The answer options are read '
+            . 'aloud by TTS. Use it to combine listening comprehension with speaking practice, e.g. a comprehension '
+            . 'check where the learner must produce the answer rather than click it. '
+            . 'Requires a lesson language with speech recognition support.';
+    }
+
+    /**
+     * The agent-facing import field spec for multiaudio. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
+            'tts', 'ttsvoice', 'ttsoption', 'ttsautoplay', 'timelimit', 'layout']);
+        $fields['type']['example'] = 'multiaudio';
+        $fields['text']['description'] = 'The question text. Add the same text to "tts" to have the question '
+            . 'read aloud as well.';
+
+        $ownfields = [
+            'answers' => [
+                'description' => 'The answer options, as an array of 2 to ' . constants::MAXANSWERS . ' strings. '
+                    . 'Each option is read aloud by the promptvoice, and the learner answers by saying one of them, '
+                    . 'so keep the options short and clearly distinguishable when spoken.',
+                'example' => '["He laughs and thanks the young man.", "He is surprised and confused.", '
+                    . '"He gets angry and shouts."]',
+            ],
+            'correctanswer' => [
+                'required' => true,
+                'description' => 'The 1-based index of the correct answer option.',
+                'example' => '2',
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice that reads the answer options aloud. A voice display name '
+                    . '(case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), or "auto" to let the server '
+                    . 'pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the answer option TTS audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                    ['value' => 'SSML', 'meaning' => 'Treat the answer options as SSML markup (this value is case-sensitive)'],
+                ],
+            ],
+            'showtextprompt' => [
+                'description' => 'Whether the text of each answer option is shown, or masked with dots so the '
+                    . 'learner must rely on the audio. Set this explicitly: when omitted the import defaults to dots.',
+                'options' => [
+                    ['value' => (string) constants::TEXTPROMPT_WORDS, 'meaning' => 'Show the full answer text'],
+                    ['value' => (string) constants::TEXTPROMPT_DOTS, 'meaning' => 'Mask the answer text with dots (default)'],
+                ],
+                'example' => '1',
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the item has uploaded answer audio.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per question. Supply 2 to ' . constants::MAXANSWERS . ' short '
+                . 'answer options and exactly one correctanswer index. The learner must say the correct option '
+                . 'aloud, so avoid options that differ only in punctuation or a single small word. '
+                . 'TTS audio for the options is generated automatically from the promptvoice.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded audio for the answer options (overrides the promptvoice TTS audio). '
+                        . 'Usually unnecessary: prefer TTS via promptvoice.',
+                    'filenames' => 'Name each file for its 1-based answer index: "1.mp3" .. "'
+                        . constants::MAXANSWERS . '.mp3".',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'multiaudio',
+                        'name' => 'Speak the answer',
+                        'instructions' => 'Choose the correct answer. Use the mic to read it aloud.',
+                        'text' => 'What is the big man\'s reaction after the car goes off the cliff?',
+                        'tts' => 'What is the big man\'s reaction after the car goes off the cliff?',
+                        'ttsvoice' => 'auto',
+                        'answers' => [
+                            'He laughs and thanks the young man.',
+                            'He is surprised and confused.',
+                            'He gets angry and shouts.',
+                        ],
+                        'correctanswer' => 2,
+                        'promptvoice' => 'auto',
+                        'promptvoiceopt' => 'normal',
+                        'showtextprompt' => 1,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
      */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->customtext1 == '') {
+        // The answers are stored newline-joined in customtext1 (the old format used one column per answer).
+        $answers = array_filter(array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1)), function ($answer) {
+            return $answer !== '';
+        });
+        if (count($answers) == 0) {
             $error->col = 'customtext1';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
-        if (!isset($newrecord->{'customtext' . $newrecord->correctanswer}) || $newrecord->{'customtext' . $newrecord->correctanswer} == '') {
+        if ($newrecord->correctanswer < 1 || $newrecord->correctanswer > count($answers)) {
             $error->col = 'correctanswer';
-            $error->message = get_string('error:correctanswer', constants::M_COMPONENT);
+            $error->message = get_string('error:correctanswerrange', constants::M_COMPONENT, count($answers));
             return $error;
         }
 

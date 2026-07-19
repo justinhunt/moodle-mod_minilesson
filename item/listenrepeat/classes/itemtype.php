@@ -127,19 +127,151 @@ class itemtype extends item {
         return $sentence;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->customtext1 == '') {
+        $sentences = array_filter(array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1)), function ($sentence) {
+            return $sentence !== '';
+        });
+        if (count($sentences) == 0) {
             $error->col = 'customtext1';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
+        // No option value checks needed: showtextprompt is a boolean keycolumn, so the import
+        // preprocessor already coerces any supplied value to 0 or 1.
+
         // return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'Plays a series of spoken sentences one at a time; the learner listens to each sentence and repeats '
+            . '(or responds to) it aloud, and speech recognition grades what they said. Use it for pronunciation and '
+            . 'speaking practice of target phrases, for drilling key sentences from a text or dialog, or for '
+            . 'question-and-response practice. Requires a lesson language with speech recognition support.';
+    }
+
+    /**
+     * The agent-facing import field spec for listenrepeat. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'listenrepeat';
+        $fields['text']['description'] = 'Optional heading text shown above the activity, e.g. "Listen and Repeat".';
+
+        $ownfields = [
+            'sentences' => [
+                'required' => true,
+                'description' => 'The sentences to practise, as an array of strings, one sentence per entry. '
+                    . 'Each sentence is read aloud by the promptvoice and the learner repeats it. '
+                    . 'For question-and-response practice an entry can use the format '
+                    . '"audio prompt|correct response|text prompt" where the second and third parts are optional, '
+                    . 'e.g. "How are you?|I am fine." plays the question and expects the response.',
+                'example' => '["Nice to meet you.", "Where are you from?", "See you tomorrow."]',
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice that reads each sentence aloud. A voice display name '
+                    . '(case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), or "auto" to let the server '
+                    . 'pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the sentence TTS audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                    ['value' => 'SSML', 'meaning' => 'Treat the sentences as SSML markup (this value is case-sensitive)'],
+                ],
+            ],
+            'showtextprompt' => [
+                'description' => 'Whether the text of each sentence is shown to the learner, or masked with dots '
+                    . 'so they must rely on the audio.',
+                'options' => [
+                    ['value' => (string) constants::TEXTPROMPT_WORDS, 'meaning' => 'Show the full sentence text (default)'],
+                    ['value' => (string) constants::TEXTPROMPT_DOTS, 'meaning' => 'Mask the sentence text with dots'],
+                ],
+            ],
+            'alternates' => [
+                'description' => 'Optional tuning for the speech recognition: acceptable alternative transcriptions '
+                    . 'for specific words. An array of strings, one word set per line in the format '
+                    . 'word|alternate1|alternate2, e.g. "their|there|they\'re".',
+                'example' => '["their|there|they\'re"]',
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the item has uploaded sentence audio or images.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per set of sentences to practise (around 3 to 6 sentences per item '
+                . 'works well). The sentences should be in the lesson language and match the learner level. '
+                . 'TTS audio for each sentence is generated automatically from the promptvoice; '
+                . 'only upload audio files when a specific recording is required.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded audio for the sentences (overrides the promptvoice TTS audio). '
+                        . 'Usually unnecessary: prefer TTS via promptvoice.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: "1.mp3", "2.mp3", ...',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '1_image',
+                    'description' => 'Optional image shown alongside each sentence.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: '
+                        . '"1.png", "2.png", ... (.jpg is also fine).',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'listenrepeat',
+                        'name' => 'Say the sentences',
+                        'instructions' => 'Listen and repeat each sentence.',
+                        'text' => 'Listen and Repeat',
+                        'sentences' => [
+                            'Nice to meet you.',
+                            'Where are you from?',
+                            'See you tomorrow.',
+                        ],
+                        'promptvoice' => 'auto',
+                        'promptvoiceopt' => 'normal',
+                        'showtextprompt' => 'yes',
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*

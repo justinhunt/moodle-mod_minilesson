@@ -199,14 +199,161 @@ class itemtype extends item {
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{self::MARKDOWN} == '') {
+        if (trim((string) $newrecord->{self::MARKDOWN}) == '') {
             $error->col = self::MARKDOWN;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
+        $allowedcontenttypes = [self::CONTENTTYPE_MARKDOWN, self::CONTENTTYPE_HTML];
+        if (isset($newrecord->{self::CONTENTTYPE}) && !in_array((int) $newrecord->{self::CONTENTTYPE}, $allowedcontenttypes)) {
+            $error->col = self::CONTENTTYPE;
+            $error->message = get_string(
+                'error:invalidoptionvalue',
+                constants::M_COMPONENT,
+                ['value' => $newrecord->{self::CONTENTTYPE}, 'allowed' => implode(',', $allowedcontenttypes)]
+            );
+            return $error;
+        }
+
         // Return false to indicate no error.
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A slide presentation (rendered with Reveal.js) the learner clicks through, with no question and '
+            . 'no grade. Use it to present structured content - an explanation, a story, a picture sequence or '
+            . 'a summary - when one page is not enough. For a single simple content screen use page instead.';
+    }
+
+    /**
+     * The agent-facing import field spec for slides. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'slides';
+
+        $ownfields = [
+            'slidesmarkdown' => [
+                'description' => 'The slide content. In markdown mode (default): start a new horizontal slide '
+                    . 'with "---" and a vertical sub-slide with "--", each alone on a LEFT-ALIGNED line with blank '
+                    . 'lines around it (the markdown is sensitive to indentation and newlines). Use # / ## / ### '
+                    . 'headings, **bold**, _italic_, - bullets, 1. numbered lists, pipe tables, "***" or "-----" '
+                    . 'for a horizontal rule, and images as ![alt](filename.png) where the file is uploaded to '
+                    . 'the ' . self::FILES . ' file area under that exact filename. Multi-column layouts: '
+                    . '"::: 2cols", "::: 3cols", "::: 4cols", "::: 2x2grid". '
+                    . 'In HTML mode (slidescontenttype=1): supply Reveal.js HTML with one <section> per slide.',
+                'example' => "# Slide 1 Title\n\nSome content.\n\n---\n\n# Slide 2 Title\n\n![A picture](1.png)",
+            ],
+            'slidescontenttype' => [
+                'description' => 'The format of the slidesmarkdown content.',
+                'options' => [
+                    ['value' => (string) self::CONTENTTYPE_MARKDOWN, 'meaning' => 'Markdown (default)'],
+                    ['value' => (string) self::CONTENTTYPE_HTML, 'meaning' => 'Reveal.js HTML, one <section> element per slide'],
+                ],
+            ],
+            'slidestheme' => [
+                'description' => 'The Reveal.js display theme.',
+                'options' => [
+                    ['value' => 'beige', 'meaning' => 'Light beige background'],
+                    ['value' => 'black', 'meaning' => 'Dark background (default)'],
+                    ['value' => 'black-contrast', 'meaning' => 'Dark, high contrast'],
+                    ['value' => 'blood', 'meaning' => 'Dark with red accents'],
+                    ['value' => 'dracula', 'meaning' => 'Dark purple palette'],
+                    ['value' => 'league', 'meaning' => 'Dark grey'],
+                    ['value' => 'moon', 'meaning' => 'Dark blue'],
+                    ['value' => 'night', 'meaning' => 'Black with bright text'],
+                    ['value' => 'serif', 'meaning' => 'Light, serif fonts'],
+                    ['value' => 'simple', 'meaning' => 'Plain white, minimal'],
+                    ['value' => 'sky', 'meaning' => 'Light blue'],
+                    ['value' => 'solarized', 'meaning' => 'Cream/solarized palette'],
+                    ['value' => 'white', 'meaning' => 'White background'],
+                    ['value' => 'white_contrast_compact_verbatim_headers', 'meaning' => 'White, compact headers'],
+                    ['value' => 'white-contrast', 'meaning' => 'White, high contrast'],
+                ],
+            ],
+            'slidesfontsize' => [
+                'description' => 'The base font size of the slide text, in pixels.',
+                'options' => [
+                    ['value' => '16', 'meaning' => 'Smallest'],
+                    ['value' => '24', 'meaning' => 'Smaller'],
+                    ['value' => '32', 'meaning' => 'Small (default)'],
+                    ['value' => '36', 'meaning' => 'Standard'],
+                    ['value' => '40', 'meaning' => 'Large'],
+                    ['value' => '44', 'meaning' => 'Larger'],
+                    ['value' => '48', 'meaning' => 'Largest'],
+                ],
+            ],
+            'slidesfullscreen' => [
+                'description' => 'Whether the learner can view the slides full screen.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'No full screen button (default)'],
+                    ['value' => '1', 'meaning' => 'Show a full screen button'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the slides reference uploaded images/audio/video.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per presentation. Keep each slide short - a heading and a few '
+                . 'bullets or one image; use more slides rather than crowded ones. Reference uploaded images '
+                . 'by their exact filename, e.g. ![Koala](2.png) with 2.png in the ' . self::FILES . ' file area. '
+                . 'Prefer markdown mode; use HTML mode only for layouts markdown cannot express.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => self::FILES,
+                    'description' => 'Images (or audio/video) referenced from the slide content by filename.',
+                    'filenames' => 'Any filename; it must exactly match the name used in the slide content, '
+                        . 'e.g. ![Koala](2.png) needs a file named "2.png".',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'slides',
+                        'name' => 'Native animals of Australia',
+                        'instructions' => 'Click > or < to go forward or backward through the slides.',
+                        'slidesmarkdown' => "# Native Animals of Australia\n\nA short picture tour\n\n---\n\n"
+                            . "# Koala in a Tree\n\n![Koala](1.png)\n\n---\n\n"
+                            . "# Facts\n\n- Koalas sleep up to 20 hours a day\n- They eat eucalyptus leaves",
+                        'slidestheme' => 'beige',
+                        'slidesfontsize' => '36',
+                        'slidesfullscreen' => 1,
+                        'filesid' => 1,
+                    ],
+                ],
+                'files' => [
+                    '1' => [
+                        self::FILES => [
+                            '1.png' => 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJ'
+                                . 'AAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type

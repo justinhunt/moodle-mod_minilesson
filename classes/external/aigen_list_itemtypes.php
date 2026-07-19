@@ -24,7 +24,9 @@ use core_external\external_api;
 use core_external\external_function_parameters;
 use core_external\external_value;
 use mod_minilesson\constants;
+use mod_minilesson\local\itemtype\item;
 use mod_minilesson\utils;
+use ReflectionMethod;
 
 /**
  * Class aigen_list_itemtypes
@@ -68,9 +70,18 @@ class aigen_list_itemtypes extends external_api {
             }
 
             $skills = [];
+            $usage = '';
+            $hasimportdocs = false;
             $itemtypeclass = utils::fetch_itemtype_classname($plugininfo->name);
             if ($itemtypeclass && isset($itemtypeclass::$skills)) {
                 $skills = $itemtypeclass::$skills;
+            }
+            if ($itemtypeclass) {
+                $usage = $itemtypeclass::aigen_fetch_usage();
+                // A documented type overrides aigen_fetch_import_spec(). Detect the override cheaply rather
+                // than building every type's full spec (with example payloads) just to null-test it here.
+                $hasimportdocs = (new ReflectionMethod($itemtypeclass, 'aigen_fetch_import_spec'))
+                    ->getDeclaringClass()->getName() !== item::class;
             }
 
             $responseitemtypes[] = [
@@ -78,6 +89,8 @@ class aigen_list_itemtypes extends external_api {
                 'name' => get_string('pluginname', $plugininfo->component),
                 'description' => $description,
                 'skills' => array_values($skills),
+                'usage' => $usage,
+                'hasimportdocs' => $hasimportdocs,
             ];
         }
 
@@ -98,6 +111,16 @@ class aigen_list_itemtypes extends external_api {
                     new external_value(PARAM_ALPHA, 'A language skill (listening, speaking, reading, writing, '
                         . 'pronunciation, vocabulary, grammar) or "content" for display-only item types'),
                     'The language skills this item type focuses on'
+                ),
+                'usage' => new external_value(
+                    PARAM_RAW,
+                    'Guidance on when to choose this item type when composing a lesson; may be empty'
+                ),
+                'hasimportdocs' => new external_value(
+                    PARAM_BOOL,
+                    'True if mod_minilesson_aigen_fetch_item_type_details returns a detailed import field spec '
+                    . 'for this type, so items of this type can be composed directly for '
+                    . 'mod_minilesson_aigen_import_items_json'
                 ),
             ])
         );

@@ -140,19 +140,145 @@ class itemtype extends item {
         return $sentence;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->customtext1 == '') {
+        $sentences = array_filter(array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1)), function ($sentence) {
+            return $sentence !== '';
+        });
+        if (count($sentences) == 0) {
             $error->col = 'customtext1';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
+            return $error;
+        }
+        if (!preg_match('/\[[^\]]+\]/', (string) $newrecord->customtext1)) {
+            $error->col = 'customtext1';
+            $error->message = get_string('error:nogaps', constants::M_COMPONENT);
             return $error;
         }
 
         // return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A set of sentences each with letters gapped out; the learner works out the missing letters '
+            . '(from the sentence, an optional hint, or - in dictation style - the sentence read aloud) and then '
+            . 'speaks the complete sentence into the microphone, graded by speech recognition. Use it for '
+            . 'speaking practice with a focus on target vocabulary or grammar in context. '
+            . 'Requires a lesson language with speech recognition support.';
+    }
+
+    /**
+     * The agent-facing import field spec for speakinggapfill. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'speakinggapfill';
+
+        $fields += static::aigen_gapfill_shared_field_specs();
+
+        $ownfields = [
+            'promptvoice' => [
+                'description' => 'The TTS voice that reads the sentences aloud (used in dictation style). '
+                    . 'A voice display name (case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), '
+                    . 'or "auto" to let the server pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the sentence TTS audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                ],
+            ],
+            'dictationstyle' => [
+                'description' => 'Whether each sentence is read aloud by TTS before the learner speaks it - '
+                    . 'a form of dictation.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'No audio: the learner works from the written sentence and hint (default)'],
+                    ['value' => '1', 'meaning' => 'Each sentence is read aloud first'],
+                ],
+            ],
+            'alternates' => [
+                'description' => 'Optional tuning for the speech recognition: acceptable alternative transcriptions '
+                    . 'for specific words. An array of strings, one word set per line in the format '
+                    . 'word|alternate1|alternate2, e.g. "their|there|they\'re".',
+                'example' => '["their|there|they\'re"]',
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the sentences have uploaded audio or images.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per set of sentences (around 5 to 8 works well). '
+                . 'In each sentence enclose the gap letters in square brackets and add a hint after a pipe '
+                . 'where helpful - hints in the learner\'s native language work well. The learner must say the '
+                . 'whole sentence aloud, so keep sentences short enough to speak comfortably.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded audio for the sentences (overrides the promptvoice TTS audio '
+                        . 'in dictation style). Usually unnecessary: prefer TTS via promptvoice.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: "1.mp3", "2.mp3", ...',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '1_image',
+                    'description' => 'Optional image shown alongside each sentence.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: '
+                        . '"1.png", "2.png", ... (.jpg is also fine).',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'speakinggapfill',
+                        'name' => 'Speaking gapfill',
+                        'instructions' => 'Listen to the audio, read the hint and then using the microphone '
+                            . 'read the complete sentence aloud.',
+                        'sentences' => [
+                            'Could you [spell] your name for me, please?|write out the letters',
+                            'Please pr[epare] the vegetables for lunch.|get ready',
+                            'Do you have time to di[scuss] it now?|talk about',
+                        ],
+                        'promptvoice' => 'auto',
+                        'promptvoiceopt' => 'normal',
+                        'dictationstyle' => 'yes',
+                    ],
+                ],
+            ],
+        ];
     }
         /*
     * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type

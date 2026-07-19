@@ -98,13 +98,23 @@ class itemtype extends item
         return $sentence;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm)
     {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->customtext1 == '') {
+        $sentences = array_filter(array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1)), function ($sentence) {
+            return $sentence !== '';
+        });
+        if (count($sentences) == 0) {
             $error->col = 'customtext1';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
@@ -112,6 +122,108 @@ class itemtype extends item
 
         //return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A chat-style dictation: sentences are presented one at a time as empty text boxes, and the '
+            . 'learner listens to each sentence and types it in full. Use it for listening and writing practice '
+            . 'of complete sentences. Related types: dictation shows all its sentences as a list on one screen; '
+            . 'listeninggapfill has the learner type only the gapped letters rather than the whole sentence.';
+    }
+
+    /**
+     * The agent-facing import field spec for dictationchat. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'layout']);
+        $fields['type']['example'] = 'dictationchat';
+
+        $ownfields = [
+            'sentences' => [
+                'required' => true,
+                'description' => 'The sentences to dictate, as an array of strings, one per entry. An entry can '
+                    . 'use up to three pipe-separated parts: "audio sentence|text to type|text prompt" - the '
+                    . 'second part when what the learner types differs from what they hear (e.g. a question and '
+                    . 'its answer), and the third as a visual cue such as a translation. Usually a plain sentence '
+                    . 'is all that is needed. Keep sentences short enough to hold in memory while typing.',
+                'example' => '["I am happy.", "How are you?|I am fine.|A greeting and its reply."]',
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice that reads each sentence aloud. A voice display name '
+                    . '(case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), or "auto" to let the server '
+                    . 'pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the sentence TTS audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                    ['value' => 'SSML', 'meaning' => 'Treat the sentences as SSML markup (this value is case-sensitive)'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the sentences have uploaded audio or images.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per set of sentences (around 3 to 6 works well). The sentences '
+                . 'should be in the lesson language and match the learner level. TTS audio for each sentence is '
+                . 'generated automatically from the promptvoice; only upload audio files when a specific '
+                . 'recording is required.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded audio for the sentences (overrides the promptvoice TTS audio). '
+                        . 'Usually unnecessary: prefer TTS via promptvoice.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: "1.mp3", "2.mp3", ...',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '1_image',
+                    'description' => 'Optional image shown alongside each sentence.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: '
+                        . '"1.png", "2.png", ... (.jpg is also fine).',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'dictationchat',
+                        'name' => 'Dictation chat',
+                        'instructions' => 'Listen and type the sentences you hear.',
+                        'sentences' => [
+                            'I am happy.',
+                            'I have a pen.',
+                            'Nobody does it better.',
+                        ],
+                        'promptvoice' => 'auto',
+                        'promptvoiceopt' => 'normal',
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*

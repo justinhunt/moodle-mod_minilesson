@@ -78,19 +78,113 @@ class itemtype extends item {
         return $testitem;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->customtext1 == '') {
+        $pairs = array_filter(array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1)), function ($pair) {
+            return $pair !== '';
+        });
+        if (count($pairs) == 0) {
             $error->col = 'customtext1';
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
+        foreach ($pairs as $pair) {
+            if (strpos($pair, '|') === false) {
+                $error->col = 'customtext1';
+                $error->message = get_string('error:needspipepair', constants::M_COMPONENT);
+                return $error;
+            }
+        }
 
         // return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A matching game: a grid of cards built from a set of term/match pairs. The learner clears the '
+            . 'grid by tapping matching pairs. Use it for vocabulary review - matching words to translations, '
+            . 'definitions, synonyms or collocations. It works best as a fun review of language already introduced.';
+    }
+
+    /**
+     * The agent-facing import field spec for scatter. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'scatter';
+        $fields['timelimit']['description'] = 'Time limit for clearing the grid, in seconds. 0 = no time limit. '
+            . 'A time limit (e.g. 60) makes the game more exciting.';
+
+        $ownfields = [
+            'sentences' => [
+                'required' => true,
+                'description' => 'The pairs to match, as an array of strings, one pair per entry in the format '
+                    . '"Term|Match". The match can be a translation, definition or synonym. Around 5 to 10 pairs '
+                    . 'works well; each pair becomes two cards in the grid.',
+                'example' => '["airport|a place where planes take off and land", "deadline|the time by which something must be done"]',
+            ],
+            'hintrtl' => [
+                'description' => 'Display the match/definition side in right-to-left format (for matches written '
+                    . 'in an RTL language such as Arabic or Hebrew).',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Left-to-right (default)'],
+                    ['value' => '1', 'meaning' => 'Right-to-left'],
+                ],
+            ],
+            'allowretry' => [
+                'description' => 'Whether the learner can retry the activity if they do not clear the grid.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'One attempt (default)'],
+                    ['value' => '1', 'meaning' => 'Allow retries'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        return [
+            'usage' => 'Compose one item object per matching game. One "Term|Match" pair per sentences entry; '
+                . 'terms in the lesson language, matches as translations (e.g. in the learner\'s native language) '
+                . 'or simple definitions. Keep terms and matches short so they fit on the cards.',
+            'fields' => array_values($fields),
+            'fileareas' => [],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'scatter',
+                        'name' => 'Match the word pairs',
+                        'instructions' => 'Match the word pairs',
+                        'sentences' => [
+                            'airport|a place where planes take off and land',
+                            'brochure|a small booklet with information',
+                            'deadline|the time by which something must be done',
+                            'invoice|a bill for goods or services',
+                        ],
+                        'timelimit' => 60,
+                    ],
+                ],
+            ],
+        ];
     }
     /*
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type

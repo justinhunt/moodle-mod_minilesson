@@ -408,6 +408,349 @@ abstract class item implements \templatable, \renderable {
     }
 
     /**
+     * Describes the shared files/filesid convention of the import payload. The web service layer
+     * appends this to the usage guidance of every item type that documents its import spec.
+     */
+    public const AIGEN_FILES_CONVENTION = 'Files (images/audio) are embedded in the import payload as base64. '
+        . 'Give the item a numeric "filesid" property, and add a top level "files" object to the payload: '
+        . '{"files": {"<filesid>": {"<filearea>": {"<filename>": "<base64 data>"}}}}. '
+        . 'The file areas accepted by each item type are listed in its import spec. '
+        . 'Prefer the tts fields over uploading audio files: tts audio is generated automatically by the server.';
+
+    /**
+     * A short description of when and why to choose this item type when composing a lesson.
+     * Item types should override this. Used by the aigen web services (agent-facing).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return '';
+    }
+
+    /**
+     * The machine readable import field spec for this item type, used by AI agents composing
+     * import JSON for the mod_minilesson_aigen_import_items_json web service.
+     * Returns null when the item type has not (yet) documented its import format.
+     * Shape: ['usage' => string, 'fields' => [fieldspec, ...], 'fileareas' => [...], 'example' => [...]]
+     * where a fieldspec is ['jsonname', 'type', 'required', 'default', 'description', 'options'?, 'example'?]
+     * and 'example' is a complete import payload as a PHP array (items + optionally files).
+     * Item types document themselves by overriding this; see minilessonitem_multichoice for a model.
+     *
+     * @return array|null the import spec, or null when this item type has no agent-facing import docs
+     */
+    public static function aigen_fetch_import_spec() {
+        return null;
+    }
+
+    /**
+     * Builds field specs (keyed by jsonname) for the requested common/shared import fields.
+     * type/required/default are read from get_keycolumns() so they cannot drift from the import code;
+     * the descriptions and option meanings are maintained here.
+     * Item type overrides of aigen_fetch_import_spec() call this for the shared fields they support,
+     * may tweak the descriptions, then append their own field specs.
+     *
+     * @param array $jsonnames the jsonnames of the shared fields to build specs for
+     * @return array field specs keyed by jsonname
+     */
+    protected static function aigen_common_import_field_specs($jsonnames) {
+        $keycolsbyjsonname = static::aigen_keycolumns_by_jsonname();
+
+        $voicenote = 'A voice display name (case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), '
+            . 'or "auto" to let the server pick a voice matching the lesson language.';
+        $catalog = [
+            'type' => [
+                'description' => 'The item type machine name, e.g. "multichoice".',
+            ],
+            'name' => [
+                'description' => 'A short title for the item. Shown in the lesson item list and at the top of the item screen.',
+                'example' => 'Comprehension check 1',
+            ],
+            'visible' => [
+                'description' => 'Whether the item is shown to learners.',
+                'options' => [
+                    ['value' => '1', 'meaning' => 'Visible (default)'],
+                    ['value' => '0', 'meaning' => 'Hidden from learners'],
+                ],
+            ],
+            'instructions' => [
+                'description' => 'One short sentence telling the learner what to do, shown near the top of the item.',
+                'example' => 'Choose the correct answer.',
+            ],
+            'text' => [
+                'description' => 'The main text of the item. Its role depends on the item type (see the item type usage notes).',
+            ],
+            'tts' => [
+                'description' => 'Text read aloud to the learner as a text-to-speech (TTS) audio prompt at the top of the item. '
+                    . 'Use this to add an audio prompt without uploading audio files.',
+                'example' => 'Which of these expressions is a greeting?',
+            ],
+            'ttsvoice' => [
+                'description' => 'The TTS voice that reads the "tts" text. ' . $voicenote,
+                'example' => 'auto',
+            ],
+            'ttsoption' => [
+                'description' => 'Reading speed / processing option for the "tts" audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                    ['value' => 'SSML', 'meaning' => 'Treat the tts text as SSML markup (this value is case-sensitive)'],
+                ],
+            ],
+            'ttsautoplay' => [
+                'description' => 'Whether the "tts" audio plays automatically when the item is shown.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Learner presses play (default)'],
+                    ['value' => '1', 'meaning' => 'Play automatically'],
+                ],
+            ],
+            'ttsdialog' => [
+                'description' => 'A two or three speaker dialog read aloud by TTS. An array of lines; start each line with '
+                    . '"A)", "B)" or "C)" to assign it to the matching speaker voice (ttsdialogvoicea/b/c). '
+                    . 'Lines without a prefix continue the previous speaker. A line starting with ">>" plays a named sound effect.',
+                'example' => '["A) Hello, how are you?", "B) Fine thanks. And you?"]',
+            ],
+            'ttsdialogvoicea' => [
+                'description' => 'TTS voice for dialog speaker A. ' . $voicenote,
+                'example' => 'auto',
+            ],
+            'ttsdialogvoiceb' => [
+                'description' => 'TTS voice for dialog speaker B. ' . $voicenote,
+                'example' => 'auto',
+            ],
+            'ttsdialogvoicec' => [
+                'description' => 'TTS voice for dialog speaker C. ' . $voicenote,
+                'example' => 'auto',
+            ],
+            'ttsdialogvisible' => [
+                'description' => 'Whether the dialog text is shown to the learner.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Audio only, dialog text is hidden (default)'],
+                    ['value' => '1', 'meaning' => 'Show the dialog text'],
+                ],
+            ],
+            'textarea' => [
+                'description' => 'A rich text content panel shown in the item content area (HTML or plain text; '
+                    . 'plain text line breaks are preserved). Use this for longer content such as a reading '
+                    . 'passage - "text" renders as heading-level text above the activity, this renders as a '
+                    . 'content block within it.',
+            ],
+            'ttspassage' => [
+                'description' => 'A reading passage displayed sentence by sentence, each sentence with its own '
+                    . 'TTS audio player so the learner can listen while reading. Use this (rather than "tts") '
+                    . 'for longer passages. Blank lines become paragraph breaks.',
+                'example' => 'The sun rises in the east. In the evening it sets in the west.',
+            ],
+            'ttspassagevoice' => [
+                'description' => 'The TTS voice that reads the ttspassage sentences. ' . $voicenote,
+                'example' => 'auto',
+            ],
+            'ttspassagespeed' => [
+                'description' => 'Reading speed for the ttspassage audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                ],
+            ],
+            'ytid' => [
+                'description' => 'A YouTube video to show as the item media prompt: a video id (e.g. "dQw4w9WgXcQ") '
+                    . 'or a full YouTube URL.',
+                'example' => 'dQw4w9WgXcQ',
+            ],
+            'ytstart' => [
+                'description' => 'Start point of the YouTube clip, in seconds from the beginning of the video.',
+                'example' => '30',
+            ],
+            'ytend' => [
+                'description' => 'End point of the YouTube clip, in seconds from the beginning of the video. '
+                    . '0 = play to the end.',
+                'example' => '90',
+            ],
+            'iframe' => [
+                'description' => 'Raw iframe/embed code to show as the item media prompt. '
+                    . 'Prefer ytid for YouTube videos and the tts fields for audio.',
+            ],
+            'audiofname' => [
+                'description' => 'Audio story image entry times: one HH:MM:SS timestamp per line, in image order, '
+                    . 'giving the point in the narration at which each numbered image (1.<ext>, 2.<ext>, ... in the '
+                    . constants::AUDIOSTORY . ' file area) should appear. Only used when the item is an audio story.',
+                'example' => "00:00:00\n00:00:10\n00:00:20",
+            ],
+            'audiostoryzoom' => [
+                'description' => 'Ken Burns style zoom and pan effect applied to the audio story images.',
+                'options' => [
+                    ['value' => (string) constants::ZOOMANDPAN_NONE, 'meaning' => 'No zoom or pan'],
+                    ['value' => (string) constants::ZOOMANDPAN_LITE, 'meaning' => 'Subtle zoom and pan (default)'],
+                    ['value' => (string) constants::ZOOMANDPAN_MEDIUM, 'meaning' => 'Medium zoom and pan'],
+                    ['value' => (string) constants::ZOOMANDPAN_MORE, 'meaning' => 'Strong zoom and pan'],
+                ],
+            ],
+            'nativelangchooser' => [
+                'description' => 'Whether to show a native language chooser on the item. When enabled the learner '
+                    . 'picks their first language, and that choice is remembered and reused for translations, '
+                    . 'definitions and feedback elsewhere in the activity. Accepts yes/no (or 1/0).',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'No native language chooser (default)'],
+                    ['value' => '1', 'meaning' => 'Show the native language chooser'],
+                ],
+            ],
+            'timelimit' => [
+                'description' => 'Time limit for the item in seconds. 0 = no time limit.',
+                'example' => '60',
+            ],
+            'layout' => [
+                'description' => 'Position of the media/prompt area relative to the item content.',
+                'options' => [
+                    ['value' => 'horizontal', 'meaning' => 'Media beside the content'],
+                    ['value' => 'vertical', 'meaning' => 'Media above the content'],
+                    ['value' => 'magazine', 'meaning' => 'Magazine style layout'],
+                    ['value' => 'auto', 'meaning' => 'Automatic (default; any unrecognised value also maps to auto)'],
+                ],
+            ],
+        ];
+
+        $specs = [];
+        foreach ($jsonnames as $jsonname) {
+            // Skip a requested field that has no prose entry, or that this item type does not have as a
+            // keycolumn (e.g. a subtype that removed a base column) - these are legitimate absences.
+            if (!isset($catalog[$jsonname]) || !isset($keycolsbyjsonname[$jsonname])) {
+                continue;
+            }
+            $specs[$jsonname] = static::aigen_seed_field_spec($jsonname, $catalog[$jsonname], $keycolsbyjsonname);
+        }
+        return $specs;
+    }
+
+    /**
+     * Builds a map of the item type's keycolumns keyed by their jsonname (import field name).
+     *
+     * @return array jsonname => keycolumn definition
+     */
+    protected static function aigen_keycolumns_by_jsonname() {
+        $map = [];
+        foreach (static::get_keycolumns() as $keycol) {
+            $map[$keycol['jsonname']] = $keycol;
+        }
+        return $map;
+    }
+
+    /**
+     * Builds the field specs (keyed by jsonname) shared by the sentence gapfill family
+     * (typinggapfill, listeninggapfill, speakinggapfill). Each type appends its own fields
+     * and may tweak these descriptions.
+     *
+     * @return array field specs keyed by jsonname
+     */
+    protected static function aigen_gapfill_shared_field_specs() {
+        $keycolsbyjsonname = static::aigen_keycolumns_by_jsonname();
+        $specs = [];
+        $shared = [
+            'sentences' => [
+                'required' => true,
+                'description' => 'The gapfill sentences, as an array of strings, one sentence per entry. '
+                    . 'In each sentence enclose the gap letters in square brackets - a whole word ("The [dog] barks") '
+                    . 'or part of a word ("This is my d[og]"). A hint can follow the sentence after a pipe, '
+                    . 'e.g. "This is my d[og]|a common pet". Hints can be in the learner\'s native language.',
+                'example' => '["Can you play any musical in[struments]?|things like guitars and pianos"]',
+            ],
+            'allowretry' => [
+                'description' => 'Whether the learner can submit new attempts when their response was not correct.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'One attempt (default)'],
+                    ['value' => '1', 'meaning' => 'Allow retries'],
+                ],
+            ],
+            'shuffleorder' => [
+                'description' => 'Whether the sentence order is randomized for each learner. Each sentence keeps '
+                    . 'its matching image and audio.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Keep the authored order (default)'],
+                    ['value' => '1', 'meaning' => 'Shuffle the sentence order'],
+                ],
+            ],
+            'hidestartpage' => [
+                'description' => 'Whether the activity begins as soon as it has loaded, instead of showing a '
+                    . 'start/splash page first.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Show the start page (default)'],
+                    ['value' => '1', 'meaning' => 'Start immediately'],
+                ],
+            ],
+            'hintrtl' => [
+                'description' => 'Display the hints in right-to-left format (for hints written in an RTL language '
+                    . 'such as Arabic or Hebrew).',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Left-to-right hints (default)'],
+                    ['value' => '1', 'meaning' => 'Right-to-left hints'],
+                ],
+            ],
+        ];
+        foreach ($shared as $jsonname => $overlay) {
+            // A gapfill subtype that does not have this shared keycolumn simply omits it.
+            if (!isset($keycolsbyjsonname[$jsonname])) {
+                continue;
+            }
+            $specs[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay, $keycolsbyjsonname);
+        }
+        return $specs;
+    }
+
+    /**
+     * Builds one field spec for the agent-facing import spec: type/required/default are seeded
+     * from get_keycolumns() (looked up by jsonname), then the overlay (description/options/example,
+     * and optionally a required override) is merged on top.
+     *
+     * A per-type override's own-field loop passes jsonnames it knows exist, so an unknown jsonname
+     * (a typo or a renamed keycolumn) is a coding error and throws - otherwise a null would reach the
+     * external structure and make the whole item type's details unfetchable. The shared helpers that
+     * may legitimately request an absent field membership-check before calling this.
+     *
+     * @param string $jsonname the import field name as used in get_keycolumns
+     * @param array $overlay description/options/example (and optionally a required override)
+     * @param array|null $keycolsbyjsonname prebuilt jsonname => keycolumn map (built here when null)
+     * @return array the field spec
+     * @throws \coding_exception if the jsonname is not a keycolumn of this item type
+     */
+    protected static function aigen_seed_field_spec($jsonname, $overlay, ?array $keycolsbyjsonname = null) {
+        if ($keycolsbyjsonname === null) {
+            $keycolsbyjsonname = static::aigen_keycolumns_by_jsonname();
+        }
+        if (!isset($keycolsbyjsonname[$jsonname])) {
+            throw new \coding_exception(
+                'aigen import spec references unknown import field "' . $jsonname . '" for ' . static::class
+            );
+        }
+        $keycol = $keycolsbyjsonname[$jsonname];
+        return array_merge([
+            'jsonname' => $jsonname,
+            'type' => $keycol['type'],
+            'required' => empty($keycol['optional']),
+            'default' => self::aigen_stringify_value($keycol['default']),
+        ], $overlay);
+    }
+
+    /**
+     * Renders a keycolumn default (which may be null, an array, a bool etc) as the string
+     * representation used in the agent-facing import spec.
+     *
+     * @param mixed $value the keycolumn default
+     * @return string
+     */
+    protected static function aigen_stringify_value($value) {
+        if ($value === null) {
+            return '';
+        }
+        if (is_array($value)) {
+            return json_encode($value);
+        }
+        if (is_bool($value)) {
+            return $value ? '1' : '0';
+        }
+        return (string) $value;
+    }
+
+    /**
      * Builds the prompt for the AI helper in the code editor.
      *
      * @param string $language The language of the code (e.g., 'yarn', 'markdown', 'html').

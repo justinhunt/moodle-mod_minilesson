@@ -264,23 +264,225 @@ class itemtype extends item {
         return $testitem;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{self::INSTRUCTIONS} == '') {
+        if (trim((string) $newrecord->{self::INSTRUCTIONS}) == '') {
             $error->col = self::INSTRUCTIONS;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
-        if ($newrecord->{self::ROLE} == '') {
+        if (trim((string) $newrecord->{self::ROLE}) == '') {
             $error->col = self::ROLE;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
+
+        if (trim((string) $newrecord->{self::TOPIC}) == '') {
+            $error->col = self::TOPIC;
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
+            return $error;
+        }
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A live spoken conversation with an AI chat partner: the learner talks with the AI about a topic, '
+            . 'an image or their own earlier submission, and afterwards the AI grades the conversation and gives '
+            . 'feedback. Use it for realistic conversation practice, guided question-and-answer about a picture '
+            . 'or passage, or as a follow-up discussion of a freewriting/freespeaking answer. It is the most '
+            . 'open-ended speaking item type; for controlled speaking practice use listenrepeat, speechcards '
+            . 'or speakinggapfill.';
+    }
+
+    /**
+     * The agent-facing import field spec for audiochat. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $placeholdernote = 'May contain the placeholders {ai role}, {ai voice}, {target language}, '
+            . '{native language}, {ai data1}, {ai data2}, {student submission} and {topic}.';
+
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'audiochat';
+        $fields['text']['description'] = 'Text shown above the chat, e.g. the question or topic. When empty, '
+            . 'the audiochattopic is shown instead. NOTE: the AI cannot see this text (or the name/instructions) - '
+            . 'anything the AI needs must be in audiochattopic, audiochatinstructions or the aidata fields.';
+
+        $ownfields = [
+            'audiochattopic' => [
+                'description' => 'The discussion topic, inserted where {topic} appears in the AI instructions. '
+                    . 'Also displayed to the learner when the "text" field is empty. For a picture discussion, '
+                    . 'describe the picture here so the AI knows what the learner is looking at.',
+                'example' => 'What did you do last weekend?',
+            ],
+            'audiochatrole' => [
+                'description' => 'The character the AI assumes in the conversation, inserted where {ai role} '
+                    . 'appears in the AI instructions.',
+                'example' => 'A helpful language teacher',
+            ],
+            'audiochatinstructions' => [
+                'description' => 'The instructions that drive the AI\'s side of the conversation: its role, '
+                    . 'what to discuss, how simply to speak, and how/when to end the chat (e.g. "after 3 speaking '
+                    . 'turns, thank them and ask them to press the end button"). ' . $placeholdernote,
+                'example' => 'You are {ai role}. You are teaching {target language}. The student is a native '
+                    . 'speaker of {native language}. Today the discussion topic is: {topic}. Speak simply and '
+                    . 'slowly, keep your responses brief, and give the student every opportunity to speak.',
+            ],
+            'audiochatgradeinstructions' => [
+                'required' => false,
+                'description' => 'Instructions for grading the finished conversation and writing feedback: '
+                    . 'the criteria for a score from 0-100, and the style/language of the feedback text. '
+                    . 'When empty, the grade is calculated from the words spoken over the targetwordcount. '
+                    . $placeholdernote,
+                'example' => 'For the score consider: relevance to the topic "{topic}", fluency and vocabulary '
+                    . 'usage. Feedback should be simple and in the student\'s native language: {native language}.',
+            ],
+            'audiochatvoice' => [
+                'description' => 'The AI\'s speaking voice, inserted where {ai voice} appears in the AI '
+                    . 'instructions (so the AI knows its own name).',
+                'options' => [
+                    ['value' => 'alloy', 'meaning' => 'Alloy (default)'],
+                    ['value' => 'ash', 'meaning' => 'Ash'],
+                    ['value' => 'ballad', 'meaning' => 'Ballad'],
+                    ['value' => 'coral', 'meaning' => 'Coral'],
+                    ['value' => 'echo', 'meaning' => 'Echo'],
+                    ['value' => 'sage', 'meaning' => 'Sage'],
+                    ['value' => 'shimmer', 'meaning' => 'Shimmer'],
+                    ['value' => 'verse', 'meaning' => 'Verse'],
+                    ['value' => 'marin', 'meaning' => 'Marin'],
+                    ['value' => 'cedar', 'meaning' => 'Cedar'],
+                ],
+            ],
+            'audiochatnativelanguage' => [
+                'description' => 'The learner\'s native language, inserted where {native language} appears: '
+                    . '"target" (the lesson language), "native" (the lesson\'s native language setting), '
+                    . 'or a specific language code such as "ja-JP".',
+                'example' => 'native',
+            ],
+            'audiochataidata1' => [
+                'required' => false,
+                'description' => 'Free text inserted where {ai data1} appears in the AI instructions, '
+                    . 'e.g. a numbered list of questions the AI should ask one at a time.',
+            ],
+            'audiochataidata2' => [
+                'required' => false,
+                'description' => 'Free text inserted where {ai data2} appears in the AI instructions.',
+            ],
+            'studentsubmission' => [
+                'description' => 'The id of another item in the same lesson (a freewriting or freespeaking item) '
+                    . 'whose response is inserted where {student submission} appears - for follow-up discussion '
+                    . 'of the learner\'s own answer. NOTE: item ids are site-specific, so when composing a new '
+                    . 'lesson leave this at 0; it can be wired up afterwards in the item editing form.',
+                'example' => '0',
+            ],
+            'totalmarks' => [
+                'description' => 'The marks this item is graded out of. Set this explicitly (e.g. 10 or 20): '
+                    . 'the import default is 0.',
+                'example' => '10',
+            ],
+            'targetwordcount' => [
+                'description' => 'Target number of words the learner should speak. Also the basis of the grade '
+                    . 'when audiochatgradeinstructions is empty.',
+                'example' => '30',
+            ],
+            'autoresponse' => [
+                'description' => 'Whether the learner\'s audio is auto-submitted when silence is detected. '
+                    . 'Many learners find auto-send difficult, so 0 is often the better choice.',
+                'options' => [
+                    ['value' => '1', 'meaning' => 'Auto-send on silence (default)'],
+                    ['value' => '0', 'meaning' => 'The learner presses a button to send each turn'],
+                ],
+            ],
+            'allowretry' => [
+                'description' => 'Whether the learner can redo the conversation.',
+                'options' => [
+                    ['value' => '1', 'meaning' => 'Allow retries (default)'],
+                    ['value' => '0', 'meaning' => 'One conversation only'],
+                ],
+            ],
+            'audioavatar' => [
+                'description' => 'The avatar image shown for the AI: "' . self::DEFAULT_AVATAR . '" (the default '
+                    . 'poodle) or one of the presets "audiochatavatar1.jpg", "audiochatavatar2.jpg", '
+                    . '"audiochatavatar3.png" .. "audiochatavatar12.png".',
+                'example' => self::DEFAULT_AVATAR,
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the chat is about an uploaded picture.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per conversation. Everything the AI needs to know must be in '
+                . 'audiochattopic, audiochatinstructions, audiochatgradeinstructions and the aidata fields - '
+                . 'the AI cannot see the item name, instructions or text. Always tell the AI to speak simply, '
+                . 'keep responses brief, and how to end the chat. For a picture discussion, upload the picture '
+                . 'in the ' . constants::MEDIAQUESTION . ' file area, describe it in audiochattopic, and put '
+                . 'the questions to ask in audiochataidata1.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::MEDIAQUESTION,
+                    'description' => 'An uploaded image shown to the learner, e.g. the picture the chat is about. '
+                        . 'The AI cannot see the image itself - describe it in audiochattopic.',
+                    'filenames' => 'Any filename with an image extension (png/jpg/gif/svg).',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'audiochat',
+                        'name' => 'Audio chat: last weekend',
+                        'instructions' => 'Practice speaking with your AI partner about the topic.',
+                        'text' => 'What did you do last weekend?',
+                        'audiochattopic' => 'What did you do last weekend?',
+                        'audiochatrole' => 'A helpful language teacher',
+                        'audiochatvoice' => 'sage',
+                        'audiochatnativelanguage' => 'native',
+                        'audiochatinstructions' => 'You are {ai role}. Your name is {ai voice}. You are teaching '
+                            . '{target language}. The student is a native speaker of {native language}. Today the '
+                            . 'discussion topic is: {topic}. Please discuss it with your student. Speak simply and '
+                            . 'slowly. Your responses should be brief. Your aim is to give the student opportunity '
+                            . 'to speak. After the student has had 3 speaking turns, thank them and ask them to '
+                            . 'press the end button.',
+                        'audiochatgradeinstructions' => 'For the score consider: relevance to the topic "{topic}", '
+                            . 'fluency and vocabulary usage. Feedback should be simple, and in the student\'s '
+                            . 'native language: {native language}.',
+                        'totalmarks' => 10,
+                        'targetwordcount' => 30,
+                        'autoresponse' => 0,
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*

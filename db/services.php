@@ -177,6 +177,14 @@ $functions = [
             'type' => 'read',
             'loginrequired' => true,
         ],
+        'mod_minilesson_aigen_fetch_item_type_details' => [
+            'classname' => 'mod_minilesson\external\aigen_fetch_item_type_details',
+            'methodname' => 'execute',
+            'description' => 'Returns the import field spec, file area info and an example payload for one item type, '
+                . 'so items of that type can be composed directly for mod_minilesson_aigen_import_items_json',
+            'type' => 'read',
+            'loginrequired' => true,
+        ],
         'mod_minilesson_aigen_list_minilessons' => [
             'classname' => 'mod_minilesson\external\aigen_list_minilessons',
             'methodname' => 'execute',
@@ -263,6 +271,7 @@ $services = [
         'functions' => [
             'mod_minilesson_aigen_list_templates',
             'mod_minilesson_aigen_list_itemtypes',
+            'mod_minilesson_aigen_fetch_item_type_details',
             'mod_minilesson_aigen_create_empty_lesson',
             'mod_minilesson_aigen_create_add_items_to_lesson',
             'mod_minilesson_aigen_list_minilessons',

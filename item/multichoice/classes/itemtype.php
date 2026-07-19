@@ -195,29 +195,85 @@ class itemtype extends item {
         return $testitem;
     }
 
+    /**
+     * Validates an import record for this item type. Runs after preprocessing, so int fields are
+     * already cast and any payload files are attached to the record as filearea arrays.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        /* The presence of images now means this check is not valid (no text + image is a possibility)
-                if($newrecord->customtext1==''){
-                    $error->col='customtext1';
-                    $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
-                    return $error;
-                }
-                if($newrecord->customtext2==''){
-                    $error->col='customtext2';
-                    $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
-                    return $error;
-                }
+        // Answers may be text lines in customtext1, or answer images (attached to the record when the
+        // import payload contained files for the customfile1_image area), or both. Image only answers are valid.
+        $answerlines = array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1));
+        $answers = array_filter($answerlines, function ($answer) {
+            return $answer !== '';
+        });
+        $imagefield = constants::FILEANSWER . '1_image';
+        $imagecount = isset($newrecord->{$imagefield}) ? count((array) $newrecord->{$imagefield}) : 0;
 
-                if(!isset($newrecord->{'customtext' . $newrecord->correctanswer}) || $newrecord->{'customtext' . $newrecord->correctanswer}==''){
-                    $error->col='correctanswer';
-                    $error->message=get_string('error:correctanswer',constants::M_COMPONENT);
-                    return $error;
-                }
-        */
+        if (count($answers) == 0 && $imagecount == 0) {
+            $error->col = 'customtext1';
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
+            return $error;
+        }
+        if (count($answers) > constants::MAXANSWERS) {
+            $error->col = 'customtext1';
+            $error->message = get_string('error:toomanyanswers', constants::M_COMPONENT, constants::MAXANSWERS);
+            return $error;
+        }
+
+        // Answers render at their 1-based line position (a blank line keeps later answers in place) and
+        // answer images render at their numeric filename ("3.png" is answer 3), so correctanswer must point
+        // at a position that actually holds an answer - matching how indexplusone is graded at runtime.
+        $imagenumbers = [];
+        if ($imagecount > 0) {
+            foreach (array_keys((array) $newrecord->{$imagefield}) as $filename) {
+                $imagenumbers[] = (int) pathinfo($filename, PATHINFO_FILENAME);
+            }
+        }
+        $maxanswerpos = $imagenumbers ? max($imagenumbers) : 0;
+        foreach ($answerlines as $i => $line) {
+            if ($line !== '') {
+                $maxanswerpos = max($maxanswerpos, $i + 1);
+            }
+        }
+        $correctpos = (int) $newrecord->correctanswer;
+        $hasanswer = (isset($answerlines[$correctpos - 1]) && $answerlines[$correctpos - 1] !== '')
+            || in_array($correctpos, $imagenumbers, true);
+        if ($correctpos < 1 || !$hasanswer) {
+            $error->col = 'correctanswer';
+            $error->message = get_string('error:correctanswerrange', constants::M_COMPONENT, $maxanswerpos);
+            return $error;
+        }
+
+        // Option value checks: reject impossible values. Absent fields arrive here as their column
+        // defaults (which all pass), and 0 is tolerated for answerlayout because empty CSV cells
+        // arrive as 0 and render as the default layout.
+        $optionchecks = [
+            constants::LISTENORREAD => [constants::LISTENORREAD_READ, constants::LISTENORREAD_LISTEN,
+                constants::LISTENORREAD_LISTENANDREAD, constants::LISTENORREAD_IMAGE],
+            self::HIDEANSWERTEXT => [self::HIDEANSWER_NO, self::HIDEANSWER_YES, self::HIDEANSWER_ABCD],
+            self::ANSWERLAYOUT => [0, self::ANSWERLAYOUT_DEFAULT, self::ANSWERLAYOUT_TWOCOLUMN],
+            self::SHUFFLEANSWER => [0, 1],
+        ];
+        foreach ($optionchecks as $col => $allowed) {
+            if (isset($newrecord->{$col}) && !in_array((int) $newrecord->{$col}, $allowed)) {
+                $error->col = $col;
+                $error->message = get_string(
+                    'error:invalidoptionvalue',
+                    constants::M_COMPONENT,
+                    ['value' => $newrecord->{$col}, 'allowed' => implode(',', $allowed)]
+                );
+                return $error;
+            }
+        }
+
         // return false to indicate no error
         return false;
     }
@@ -241,6 +297,219 @@ class itemtype extends item {
         $keycols['int7'] = ['jsonname' => 'answerlayout', 'type' => 'int', 'optional' => true, 'default' => self::ANSWERLAYOUT_DEFAULT, 'dbname' => self::ANSWERLAYOUT];
         $keycols['int11'] = ['jsonname' => 'hidequestiontext', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => self::HIDEQUESTIONTEXT];
         return $keycols;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A single multiple choice question with 2 to ' . constants::MAXANSWERS . ' answer options, '
+            . 'exactly one of which is correct. There is an optional media prompt (tts audio, tts dialog or an uploaded file), '
+            . 'and the answer options can be text, text read aloud by TTS, or images. '
+            . 'Use it as a comprehension check, a check on the meaning of a word or phrase, or - '
+            . 'with spoken answer options, or a tts dialog and A,B,C,D answer labels - as a listening exercise. '
+            . 'For several questions about one shared passage or audio, prefer multichoicequiz.';
+    }
+
+    /**
+     * The agent-facing import field spec for multichoice. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $ttsoptions = [
+            ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+            ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+            ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+            ['value' => 'SSML', 'meaning' => 'Treat the text as SSML markup (this value is case-sensitive)'],
+        ];
+
+        // Shared fields (type/required/default seeded from get_keycolumns; prose from the base catalog).
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
+            'tts', 'ttsvoice', 'ttsoption', 'ttsautoplay',
+            'ttsdialog', 'ttsdialogvoicea', 'ttsdialogvoiceb', 'ttsdialogvoicec', 'ttsdialogvisible',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'multichoice';
+        $fields['text']['description'] = 'The question text. Can be omitted when the question is delivered '
+            . 'by the tts audio or ttsdialog.';
+
+        // Multichoice specific fields.
+        $ownfields = [
+            'answers' => [
+                'description' => 'The answer options, as an array of up to ' . constants::MAXANSWERS . ' strings. '
+                    . 'In listen modes (listenorread=1 or 2) each option is also read aloud by the promptvoice. '
+                    . 'In image answer mode (listenorread=3) the images are the answer options and this array '
+                    . 'may contain empty strings.',
+                'example' => '["He drinks both cans.", "He stands on them to reach the shelf.", "He gives them to a friend."]',
+            ],
+            'correctanswer' => [
+                'required' => true,
+                'description' => 'The 1-based index of the correct answer option '
+                    . '(counting answer images in image answer mode).',
+                'example' => '2',
+            ],
+            'listenorread' => [
+                'description' => 'How the answer options are presented to the learner.',
+                'options' => [
+                    ['value' => (string) constants::LISTENORREAD_READ,
+                        'meaning' => 'Read: options are shown as plain text (default)'],
+                    ['value' => (string) constants::LISTENORREAD_LISTEN,
+                        'meaning' => 'Listen: each option is played as TTS audio read by promptvoice, '
+                            . 'and its text is masked with dots'],
+                    ['value' => (string) constants::LISTENORREAD_LISTENANDREAD,
+                        'meaning' => 'Listen and read: TTS audio players plus the option text'],
+                    ['value' => (string) constants::LISTENORREAD_IMAGE,
+                        'meaning' => 'Image: the answer options are images supplied in the customfile1_image file area'],
+                ],
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice that reads the answer options aloud in listen modes. '
+                    . 'A voice display name (case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), '
+                    . 'or "auto" to let the server pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the answer option TTS audio.',
+                'options' => $ttsoptions,
+            ],
+            'confirmchoice' => [
+                'description' => 'Whether the learner must answer to move on (no skipping the question).',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'The learner may skip the question (default)'],
+                    ['value' => '1', 'meaning' => 'The learner must choose an answer'],
+                ],
+            ],
+            'shuffleanswer' => [
+                'description' => 'Whether the display order of the answer options is shuffled. '
+                    . 'Ignored (never shuffled) when hideanswertext=2, so that the A,B,C,D labels keep the authored order.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Keep the authored order'],
+                    ['value' => '1', 'meaning' => 'Shuffle the answer options'],
+                ],
+            ],
+            'hideanswertext' => [
+                'description' => 'Controls display of the answer option text.',
+                'options' => [
+                    ['value' => (string) self::HIDEANSWER_NO,
+                        'meaning' => 'Show the answer text (default)'],
+                    ['value' => (string) self::HIDEANSWER_YES,
+                        'meaning' => 'Hide the answer text entirely, e.g. when the options are images'],
+                    ['value' => (string) self::HIDEANSWER_ABCD,
+                        'meaning' => 'Replace the answer text with the labels A,B,C,D, e.g. for listening questions '
+                            . 'where the audio refers to the options by letter; shuffleanswer is ignored in this mode'],
+                ],
+                'example' => '2',
+            ],
+            'answerlayout' => [
+                'description' => 'Layout of the answer options.',
+                'options' => [
+                    ['value' => (string) self::ANSWERLAYOUT_DEFAULT, 'meaning' => 'Single column (default)'],
+                    ['value' => (string) self::ANSWERLAYOUT_TWOCOLUMN, 'meaning' => 'Two column grid'],
+                ],
+            ],
+            'hidequestiontext' => [
+                'description' => 'Hide the question text during the quiz, e.g. when the tts audio or ttsdialog '
+                    . 'delivers the question. The text still shows on the results screen.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Show the question text (default)'],
+                    ['value' => '1', 'meaning' => 'Hide the question text'],
+                ],
+            ],
+            'correctfeedback' => [
+                'description' => 'Feedback shown to the learner after answering, explaining the correct answer.',
+                'example' => 'He stands on the cans to reach the shelf - watch the last scene again.',
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        // Pseudo field: filesid is a payload convention, not a keycolumn.
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the item has a question media prompt, answer images or uploaded answer audio.',
+            'example' => '1',
+        ];
+
+        // A tiny but valid 1x1 png, so the example files payload is genuinely importable.
+        $onepixelpng = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+
+        return [
+            'usage' => 'Compose one item object per question. Supply between 2 and ' . constants::MAXANSWERS
+                . ' answer options and exactly one correctanswer index. For a reading check use listenorread=0; '
+                . 'for a listening check use listenorread=1 (options read aloud by promptvoice) or a ttsdialog with '
+                . 'hideanswertext=2 so the audio can refer to options A,B,C,D; for picture questions use listenorread=3 '
+                . 'with images in the customfile1_image file area. You can also show a picture, audio or video '
+                . 'prompt above the question via the ' . constants::MEDIAQUESTION . ' file area.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::MEDIAQUESTION,
+                    'description' => 'An uploaded image, audio or video shown as the question media prompt, above '
+                        . 'the answer options.',
+                    'filenames' => 'Any single filename; the extension decides how it renders: '
+                        . 'image (png/jpg/gif/svg), video (mp4/mov/webm) or audio (mp3/m4a/ogg/wav).',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded audio for the answer options (overrides the promptvoice TTS audio '
+                        . 'in listen modes). Usually unnecessary: prefer TTS via promptvoice.',
+                    'filenames' => 'Name each file for its 1-based answer index: "1.mp3" .. "'
+                        . constants::MAXANSWERS . '.mp3".',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '1_image',
+                    'description' => 'Images used as the answer options (with listenorread=3).',
+                    'filenames' => 'Name each file for its 1-based answer index: "1.png" .. "'
+                        . constants::MAXANSWERS . '.png" (.jpg is also fine).',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'multichoice',
+                        'name' => 'Comprehension check',
+                        'instructions' => 'Choose the correct answer.',
+                        'text' => 'What does the boy do with the two cans at the end of the story?',
+                        'answers' => [
+                            'He drinks both cans.',
+                            'He stands on them to reach the shelf.',
+                            'He gives them to a friend.',
+                        ],
+                        'correctanswer' => 2,
+                        'listenorread' => constants::LISTENORREAD_READ,
+                        'shuffleanswer' => 1,
+                        'correctfeedback' => 'He stands on the cans to reach the shelf.',
+                    ],
+                    [
+                        'type' => 'multichoice',
+                        'name' => 'Picture question',
+                        'instructions' => 'Choose the correct picture.',
+                        'text' => 'Which picture shows a cat?',
+                        'answers' => ['', ''],
+                        'correctanswer' => 1,
+                        'listenorread' => constants::LISTENORREAD_IMAGE,
+                        'hideanswertext' => self::HIDEANSWER_YES,
+                        'filesid' => 1,
+                    ],
+                ],
+                'files' => [
+                    '1' => [
+                        constants::FILEANSWER . '1_image' => [
+                            '1.png' => $onepixelpng,
+                            '2.png' => $onepixelpng,
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*

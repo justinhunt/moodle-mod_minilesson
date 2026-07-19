@@ -313,14 +313,166 @@ class itemtype extends item {
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{ self::YARN} == '') {
+        $yarn = trim((string) $newrecord->{self::YARN});
+        if ($yarn == '') {
             $error->col = self::YARN;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
         }
 
+        // Basic structural sanity: a Start node, and the node header/body delimiters.
+        if (
+            !preg_match('/^title:\s*Start\s*$/m', $yarn)
+            || !preg_match('/^---\s*$/m', $yarn)
+            || !preg_match('/^===\s*$/m', $yarn)
+        ) {
+            $error->col = self::YARN;
+            $error->message = get_string('error:invalidyarn', constants::M_COMPONENT);
+            return $error;
+        }
+
         // Return false to indicate no error.
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'An interactive branching story ("choose your own adventure") written in Yarn Spinner format. '
+            . 'The learner reads the story and makes choices that change what happens; variables can track items, '
+            . 'score or time, leading to good or bad endings. Use it for extended, engaging reading practice - '
+            . 'a well built story gives around 20 minutes of reading. It is the most content-heavy item type '
+            . 'to compose: the whole activity is driven by the fictionyarn script.';
+    }
+
+    /**
+     * The agent-facing import field spec for fiction. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'fiction';
+
+        $yarnsyntax = 'Yarn Spinner syntax essentials: '
+            . 'A story is a series of nodes. Each node is "title: NodeName" (ASCII, no spaces) on its own line, '
+            . 'then "---" alone on a line, then the body, then "===" alone on a line. The first node must be '
+            . '"title: Start". Body lines: "CharacterName: dialogue" (no spaces in names) or plain narrator text. '
+            . 'Choices: "-> Option text" lines, each option\'s indented lines following it, and every option must '
+            . 'end by routing somewhere: "<<jump NodeName>>", or "<<detour SideNode>>" (side node ends with '
+            . '"<<return>>") followed by a jump. Every jump/detour target node must exist - no dead ends - and '
+            . 'consecutive choice sets must be separated by narrative text. '
+            . 'Variables: declare before use with "<<declare $var = value>>", change with "<<set $var = $var + 1>>" '
+            . '(compound operators like += are NOT supported), show in text as {$var}. '
+            . 'Conditionals: "<<if $cond>>", "<<elseif ...>>", "<<else>>", "<<endif>>"; conditional options: '
+            . '"-> Option text <<if $cond>>" (no endif). '
+            . 'Media: "<<picture file.png>>", "<<audio file.mp3>>", "<<video file.mp4>>" with the files uploaded '
+            . 'to the ' . self::FILES . ' file area. '
+            . 'Built-ins: dice(n), visited("NodeName"); system variables $userfirstname, $userfullname, $score.';
+
+        $ownfields = [
+            'fictionyarn' => [
+                'description' => 'The complete story script in Yarn Spinner format. ' . $yarnsyntax,
+                'example' => "title: Start\n---\n<<declare \$has_key = false>>\n"
+                    . "You wake up in a locked room. A small key glints under the bed.\n"
+                    . "-> Take the key\n    <<set \$has_key = true>>\n    <<jump Door>>\n"
+                    . "-> Ignore it and try the door\n    <<jump Door>>\n===\n"
+                    . "title: Door\n---\n<<if \$has_key>>\nThe key fits! You escape.\n"
+                    . "<<else>>\nThe door is locked. You are trapped forever.\n<<endif>>\n===",
+            ],
+            'presentationmode' => [
+                'description' => 'The visual style the story is presented in.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Plain (default)'],
+                    ['value' => '1', 'meaning' => 'Mobile Chat: story lines appear as chat bubbles'],
+                    ['value' => '2', 'meaning' => 'Story Mode'],
+                    ['value' => '3', 'meaning' => 'Immersive Dark: full-screen dark reading view'],
+                    ['value' => '4', 'meaning' => 'Immersive Bright: full-screen bright reading view'],
+                    ['value' => '5', 'meaning' => 'Immersive Paper: full-screen paper-style reading view'],
+                ],
+            ],
+            'flowthroughmode' => [
+                'description' => 'Whether sequential story lines flow through automatically without the learner '
+                    . 'pressing continue, until it is their turn to choose.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'The learner presses continue after each line (default)'],
+                    ['value' => '1', 'meaning' => 'Lines flow through automatically until a choice'],
+                ],
+            ],
+            'shownonoptions' => [
+                'description' => 'How story options whose <<if>> condition is not (yet) met are displayed.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Hide unavailable options completely (default)'],
+                    ['value' => '1', 'meaning' => 'Show unavailable options as disabled buttons'],
+                ],
+            ],
+            'taptotranslate' => [
+                'description' => 'Whether a translate icon appears on each story text node, letting the learner '
+                    . 'translate that text into their native language.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'No translate icon (default)'],
+                    ['value' => '1', 'meaning' => 'Show the tap-to-translate icon'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the story uses <<picture>>, <<audio>> or <<video>> commands.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per story. Recipe for a good story: write in the 2nd person '
+                . '("You"), at the learner\'s level; define a clear winning objective and a failing condition; '
+                . 'track progress with about three declared variables (e.g. two items to collect and one counter '
+                . 'like $health or $time_remaining); structure 5 to 9 chapters, and in each chapter offer choices - '
+                . 'some inconsequential (extra detail via <<detour>>, merging back), some consequential (changing '
+                . 'variables or branching toward an ending). Make each choice option one a reader might plausibly '
+                . 'pick, and do not repeat the option text as a question in the narrative before it. '
+                . 'Verify every jump target exists before submitting. Pictures referenced with <<picture 01.png>> '
+                . 'go in the ' . self::FILES . ' file area under the exact filename.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => self::FILES,
+                    'description' => 'Images/audio/video referenced from the yarn script by the <<picture>>, '
+                        . '<<audio>> and <<video>> commands.',
+                    'filenames' => 'Any filename; it must exactly match the name used in the command, '
+                        . 'e.g. <<picture 01.png>> needs a file named "01.png".',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'fiction',
+                        'name' => 'The locked room',
+                        'instructions' => 'Follow the instructions and make good choices. Good luck.',
+                        'fictionyarn' => "title: Start\n---\n<<declare \$has_key = false>>\n"
+                            . "You wake up in a locked room. A small key glints under the bed.\n"
+                            . "-> Take the key\n    <<set \$has_key = true>>\n    <<jump Door>>\n"
+                            . "-> Ignore it and try the door\n    <<jump Door>>\n===\n"
+                            . "title: Door\n---\n<<if \$has_key>>\nThe key fits! You escape into the sunshine.\n"
+                            . "<<else>>\nThe door is locked. You go back for the key.\n<<jump Start>>\n<<endif>>\n===",
+                        'presentationmode' => 1,
+                        'flowthroughmode' => 0,
+                        'taptotranslate' => 1,
+                    ],
+                ],
+            ],
+        ];
     }
     /**
      * This is for use with importing, telling import class each column's is, db col name, minilesson specific data type.

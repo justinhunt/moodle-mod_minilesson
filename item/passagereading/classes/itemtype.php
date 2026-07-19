@@ -96,12 +96,19 @@ class itemtype extends item {
         return $testitem;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{self::PASSAGE} == '') {
+        if (trim((string) $newrecord->{self::PASSAGE}) == '') {
             $error->col = self::PASSAGE;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
             return $error;
@@ -109,6 +116,78 @@ class itemtype extends item {
 
         // return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A passage of text the learner reads aloud into the microphone; speech recognition marks each '
+            . 'word as read correctly or not, and the score is the percentage read correctly. Use it for reading '
+            . 'fluency and pronunciation practice with a story or paragraph. For practising isolated sentences '
+            . 'use listenrepeat or speechcards instead. Requires a lesson language with speech recognition support.';
+    }
+
+    /**
+     * The agent-facing import field spec for passagereading. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'passagereading';
+
+        $ownfields = [
+            'passage' => [
+                'description' => 'The passage the learner reads aloud, as plain text. Blank lines separate '
+                    . 'paragraphs. Keep the length appropriate to the learner level - about a minute of reading '
+                    . 'works well. Avoid unusual symbols or formatting that would not be spoken.',
+                'example' => 'Mister Tanaka is the owner of a small public relations company in Japan. '
+                    . 'He is heading to a publishers conference in New York City.',
+            ],
+            'alternates' => [
+                'description' => 'Optional tuning for the speech recognition: acceptable alternative transcriptions '
+                    . 'for specific passage words. An array of strings, one word set per line in the format '
+                    . 'word|alternate1|alternate2, e.g. "their|there|they\'re".',
+                'example' => '["their|there|they\'re"]',
+            ],
+            'totalmarks' => [
+                'description' => 'The marks this item contributes. 0 (default) = the total marks equal the passage '
+                    . 'word count; any other value scales the score (the percentage of the passage read correctly) '
+                    . 'out of that value.',
+                'example' => '5',
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        return [
+            'usage' => 'Compose one item object per passage. Write the passage in the lesson language at the '
+                . 'learner\'s level. The learner must read the whole passage aloud, so keep it short for lower '
+                . 'levels. A timelimit can be set for fluency-focused reading.',
+            'fields' => array_values($fields),
+            'fileareas' => [],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'passagereading',
+                        'name' => 'Read the passage',
+                        'instructions' => 'Use the microphone to record yourself reading the passage.',
+                        'passage' => 'Mister Tanaka is the owner of a small public relations company in Japan. '
+                            . 'He is heading to a publishers conference in New York City to represent his client. '
+                            . "\n\n"
+                            . 'He arrives at the airport at about 8 o\'clock in the morning, three hours before '
+                            . 'his flight. He checks his memo to make sure that he has everything he needs.',
+                        'totalmarks' => 5,
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*

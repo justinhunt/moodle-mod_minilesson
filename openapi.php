@@ -445,12 +445,32 @@ $agentinstructions = <<<JSON
                 "note": "HTTP status is 200 in both cases; distinguish success from failure by presence of 'token' vs 'errorcode'."
             }
         },
+        "choosing_your_approach": {
+            "summary": "There are two ways to create items in a lesson: (A) the template workflow (typical_workflow), where you pick a template and the server generates the content with AI; and (B) the direct-compose workflow (direct_compose_workflow), where you author the item JSON yourself and import it. Decide per lesson, and read this section before starting either workflow. You may also combine both in one lesson - see hybrid_pattern.",
+            "prefer_templates_when": [
+                "A template returned by list_templates matches the request - check its description, skills and outputs before deciding no template fits",
+                "You want the content (text, questions, and any images) generated for you rather than authoring it yourself",
+                "The lesson needs generated images or audio: templates can produce media server-side (see each template's outputs.imagecount), whereas direct compose requires you to supply every media file yourself as base64",
+                "You just need a standard, well-formed lesson quickly and do not need precise control over each item"
+            ],
+            "prefer_direct_compose_when": [
+                "The user supplied exact content (a specific reading passage, vocabulary list, or dialog) that you must reproduce faithfully rather than regenerate",
+                "You need a specific sequence or mix of item types that no single template produces",
+                "You are converting an existing lesson plan, or round-tripping items from aigen_export_items_json (export, edit, re-import)",
+                "The user should review or adjust the proposed items before they are created",
+                "You want per-item error feedback to iterate: import_items_json returns an errors array you can act on and resubmit, whereas a template job is fire-and-forget plus status polling"
+            ],
+            "constraints": [
+                "Direct compose is only available for item types where list_itemtypes reports hasimportdocs=true; use a template for any other type",
+                "When both a template and direct compose would work, prefer the template unless the request needs the fidelity or item-by-item control that direct compose gives"
+            ]
+        },
         "typical_workflow": [
             {
                 "step": 1,
                 "name": "List Item Types",
                 "call": "GET /mod_minilesson_aigen_list_itemtypes",
-                "purpose": "Discover the available item types and their descriptions to understand what each template can produce and to choose the right template for the user's request",
+                "purpose": "Discover the available item types and their descriptions to understand what each template can produce and to choose the right template for the user's request. Also read choosing_your_approach to decide between the template and direct-compose workflows",
                 "required_params": ["wstoken"]
             },
             {
@@ -491,7 +511,60 @@ $agentinstructions = <<<JSON
                 "required_params": ["wstoken", "jobids[]"],
                 "polling": "Repeat every 2-5 seconds until status != 'Progress'"
             }
-        ]
+        ],
+        "direct_compose_workflow": {
+            "purpose": "Alternative to the template based typical_workflow: compose the lesson item JSON yourself and import it. Use this when you (the agent) are designing the lesson content - e.g. converting an existing lesson plan, or when the user should review/adjust the proposed items before they are created. Only item types with hasimportdocs=true can be composed this way; use templates for the rest.",
+            "steps": [
+                {
+                    "step": 1,
+                    "name": "List Item Types",
+                    "call": "GET /mod_minilesson_aigen_list_itemtypes",
+                    "purpose": "Choose item types matching the lesson design: read each type's description, usage and skills, and check hasimportdocs",
+                    "required_params": ["wstoken"]
+                },
+                {
+                    "step": 2,
+                    "name": "Fetch Item Type Details",
+                    "call": "GET /mod_minilesson_aigen_fetch_item_type_details",
+                    "purpose": "For each chosen item type, fetch the import field spec: field names, types, allowed values and their meanings, file areas, and a complete example payload (examplejson - parse it). Compose your items strictly from the documented fields",
+                    "required_params": ["wstoken", "itemtype"]
+                },
+                {
+                    "step": 3,
+                    "name": "Create Empty Lesson",
+                    "call": "POST /mod_minilesson_aigen_create_empty_lesson",
+                    "purpose": "Create the lesson container",
+                    "returns": "cmid (course module ID)",
+                    "required_params": ["wstoken", "courseid", "title"]
+                },
+                {
+                    "step": 4,
+                    "name": "Import Items",
+                    "call": "POST /mod_minilesson_aigen_import_items_json",
+                    "purpose": "Submit the composed items as one payload: {\\"items\\": [...], \\"files\\": {...}}. Inspect the per-item errors array in the response, fix the rejected items and resubmit only those (imported items must not be resubmitted)",
+                    "required_params": ["wstoken", "cmid", "itemsjson"]
+                }
+            ]
+        },
+        "hybrid_pattern": {
+            "purpose": "Both workflows add items to the same lesson, identified by its cmid, so one lesson can mix both. Generate the bulk of the lesson with one or more templates, then append bespoke items you compose yourself (or vice versa).",
+            "how": [
+                "Create the lesson once with create_empty_lesson to get a cmid",
+                "Run the template workflow against that cmid (create_add_items_to_lesson, then poll status until done)",
+                "Then call import_items_json with the same cmid to append your directly-composed items",
+                "Each call appends its items after the items already in the lesson, so order your calls to get the item order you want"
+            ]
+        },
+        "base_lesson_replication": {
+            "when": "Only when the user gives you an exported lesson (the itemsjson from aigen_export_items_json) and asks for more lessons like it on other topics. Ignore this section otherwise.",
+            "purpose": "Reuse the exported payload as a ready-made template and produce one new lesson per topic by changing only the content.",
+            "how": [
+                "Treat the exported itemsjson as a known-good example. Keep each item's type, layout, options and other settings exactly as they are, and rewrite only the wording (text, tts, questions, answers, sentences) for the new topic.",
+                "Do not supply audio files: spoken audio is regenerated from the text on import, so new wording produces new audio automatically.",
+                "Uploaded images will not match the new topic: any base64 files in the export are the original topic's images and cannot be regenerated. Drop them, keep them only if still suitable, or ask the user to provide new images.",
+                "For each topic, call create_empty_lesson to get a new cmid, then import_items_json with that cmid. Read the errors array and fix any rejected item (for example a correct-answer index or a gap marker that no longer matches the rewritten content) before moving on."
+            ]
+        }
     }
 }
 JSON;

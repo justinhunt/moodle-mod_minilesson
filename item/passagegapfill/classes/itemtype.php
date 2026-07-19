@@ -135,19 +135,138 @@ class itemtype extends item {
         return $testitem;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        if ($newrecord->{self::PASSAGE} == '') {
+        $passage = trim((string) $newrecord->{self::PASSAGE});
+        if ($passage == '') {
             $error->col = self::PASSAGE;
             $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
+            return $error;
+        }
+        if (!preg_match('/\[[^\]]+\]/', $passage)) {
+            $error->col = self::PASSAGE;
+            $error->message = get_string('error:nogaps', constants::M_COMPONENT);
             return $error;
         }
 
         // return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A passage of text with words gapped out; the learner listens to the passage read aloud by TTS '
+            . 'and types the missing words into the gaps. Use it for extended listening + writing practice with '
+            . 'a story or paragraph, e.g. to focus on key vocabulary in context. For independent single-sentence '
+            . 'gaps use typinggapfill, listeninggapfill or speakinggapfill instead.';
+    }
+
+    /**
+     * The agent-facing import field spec for passagegapfill. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'passagegapfill';
+
+        $ownfields = [
+            'passage' => [
+                'description' => 'The passage text, with each gapped word enclosed in square brackets, '
+                    . 'e.g. "This is my [dog] and my [cat]." The learner hears the full passage and types '
+                    . 'the bracketed words. Gap whole words, and keep the number of gaps reasonable '
+                    . '(roughly one per sentence).',
+                'example' => 'The [story] is about a girl. She leaves the ball at [midnight] and loses her [glass] slipper.',
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice that reads the passage aloud. A voice display name '
+                    . '(case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), or "auto" to let the server '
+                    . 'pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the passage TTS audio. '
+                    . '"slow" is often a good choice for gapfill listening.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                ],
+            ],
+            'hidestartpage' => [
+                'description' => 'Whether the activity begins as soon as it has loaded, instead of showing a '
+                    . 'start/splash page first.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Show the start page (default)'],
+                    ['value' => '1', 'meaning' => 'Start immediately'],
+                ],
+            ],
+            'penalizehints' => [
+                'description' => 'Whether using hints reduces the score.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Hints are free (default)'],
+                    ['value' => '1', 'meaning' => 'Using a hint costs marks'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the item has uploaded passage audio.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per passage. Write the passage in the lesson language with the '
+                . 'gap words in square brackets. TTS audio for the passage is generated automatically from the '
+                . 'promptvoice; only upload audio when a specific recording is required.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded audio recording of the passage (overrides the promptvoice TTS audio). '
+                        . 'Usually unnecessary: prefer TTS via promptvoice.',
+                    'filenames' => 'A single audio file, e.g. "1.mp3".',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'passagegapfill',
+                        'name' => 'Passage gapfill',
+                        'instructions' => 'Fill in each of the missing words.',
+                        'passage' => '"Cinderella" is a [fairy] tale. The [story] is about a girl who was treated '
+                            . 'badly. She leaves the ball at [midnight] and loses her [glass] slipper.',
+                        'promptvoice' => 'auto',
+                        'promptvoiceopt' => 'slow',
+                        'hidestartpage' => 'yes',
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*

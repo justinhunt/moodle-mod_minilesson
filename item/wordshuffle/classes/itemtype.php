@@ -173,31 +173,175 @@ class itemtype extends item {
         return $testitem;
     }
 
+    /**
+     * Validates an import record for this item type.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
     public static function validate_import($newrecord, $cm) {
         $error = new \stdClass();
         $error->col = '';
         $error->message = '';
 
-        /* The presence of images now means this check is not valid (no text + image is a possibility)
-                if($newrecord->customtext1==''){
-                    $error->col='customtext1';
-                    $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
-                    return $error;
-                }
-                if($newrecord->customtext2==''){
-                    $error->col='customtext2';
-                    $error->message=get_string('error:emptyfield',constants::M_COMPONENT);
-                    return $error;
-                }
+        $sentences = array_filter(array_map('trim', explode(PHP_EOL, (string) $newrecord->customtext1)), function ($sentence) {
+            return $sentence !== '';
+        });
+        if (count($sentences) == 0) {
+            $error->col = 'customtext1';
+            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
+            return $error;
+        }
+        if (!preg_match('/\[[^\]]+\]/', (string) $newrecord->customtext1)) {
+            $error->col = 'customtext1';
+            $error->message = get_string('error:nogaps', constants::M_COMPONENT);
+            return $error;
+        }
 
-                if(!isset($newrecord->{'customtext' . $newrecord->correctanswer}) || $newrecord->{'customtext' . $newrecord->correctanswer}==''){
-                    $error->col='correctanswer';
-                    $error->message=get_string('error:correctanswer',constants::M_COMPONENT);
-                    return $error;
-                }
-        */
         // return false to indicate no error
         return false;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'A set of sentences with the bracketed words removed and shown as shuffled tiles; the learner '
+            . 'taps the tiles in the right order to rebuild each sentence. With several bracketed words it is a '
+            . 'word-ordering exercise; with one bracketed word plus distractors it becomes a choose-the-correct-word '
+            . 'exercise. Use it for grammar (word order, verb forms) and vocabulary-in-context practice.';
+    }
+
+    /**
+     * The agent-facing import field spec for wordshuffle. Option meanings mirror the authoring form
+     * (see custom_definition in itemform.php); keep the two in sync when changing form options.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions',
+            'timelimit', 'layout']);
+        $fields['type']['example'] = 'wordshuffle';
+
+        $ownfields = [
+            'sentences' => [
+                'required' => true,
+                'description' => 'The sentences, as an array of strings, one per entry in the format '
+                    . '"Sentence with [word1] and [word2].|hint|distractor1,distractor2". The bracketed words '
+                    . 'become shuffled tiles the learner must place; a bracket can hold a multi-word phrase '
+                    . '(e.g. "[get up]"). The hint (optional, e.g. a translation) is shown with the sentence. '
+                    . 'The distractors (optional, comma or space separated) add extra wrong tiles - combine one '
+                    . 'bracketed word with distractors for a choose-the-correct-word exercise.',
+                'example' => '["I [get up] at seven o\'clock.|What I do first each day.|have breakfast,go to work"]',
+            ],
+            'readsentence' => [
+                'description' => 'Whether each sentence is read aloud by TTS (using promptvoice) - making the activity a form of dictation.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'No TTS audio (default)'],
+                    ['value' => '1', 'meaning' => 'Read each sentence aloud'],
+                ],
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice that reads the sentences aloud (used with readsentence=1). '
+                    . 'A voice display name (case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), '
+                    . 'or "auto" to let the server pick a voice matching the lesson language.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed / processing option for the sentence TTS audio.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                ],
+            ],
+            'allowretry' => [
+                'description' => 'Whether the learner can submit new attempts when their response was not correct.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'One attempt (default)'],
+                    ['value' => '1', 'meaning' => 'Allow retries'],
+                ],
+            ],
+            'shuffleorder' => [
+                'description' => 'Whether the sentence order is randomized for each learner. Each sentence keeps '
+                    . 'its matching image and audio.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Keep the authored order (default)'],
+                    ['value' => '1', 'meaning' => 'Shuffle the sentence order'],
+                ],
+            ],
+            'hidestartpage' => [
+                'description' => 'Whether the activity begins as soon as it has loaded, instead of showing a '
+                    . 'start/splash page first.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Show the start page (default)'],
+                    ['value' => '1', 'meaning' => 'Start immediately'],
+                ],
+            ],
+            'hintrtl' => [
+                'description' => 'Display the hints in right-to-left format (for hints written in an RTL language '
+                    . 'such as Arabic or Hebrew).',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Left-to-right hints (default)'],
+                    ['value' => '1', 'meaning' => 'Right-to-left hints'],
+                ],
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields['filesid'] = [
+            'jsonname' => 'filesid',
+            'type' => 'int',
+            'required' => false,
+            'default' => '',
+            'description' => 'Links this item to its entry in the top level "files" object of the payload. '
+                . 'Only needed when the sentences have uploaded audio or images.',
+            'example' => '1',
+        ];
+
+        return [
+            'usage' => 'Compose one item object per set of sentences (around 5 to 10 works well). '
+                . 'Enclose the words to shuffle in square brackets. For word-order practice bracket several words '
+                . 'or phrases per sentence; for choose-the-correct-word practice bracket one word and add '
+                . 'distractors after the second pipe. Hints in the learner\'s native language work well.',
+            'fields' => array_values($fields),
+            'fileareas' => [
+                [
+                    'filearea' => constants::FILEANSWER . '1_audio',
+                    'description' => 'Uploaded audio for the sentences (overrides the readsentence TTS audio). '
+                        . 'Usually unnecessary: prefer TTS via readsentence and promptvoice.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: "1.mp3", "2.mp3", ...',
+                ],
+                [
+                    'filearea' => constants::FILEANSWER . '1_image',
+                    'description' => 'Optional image shown alongside each sentence.',
+                    'filenames' => 'Name each file for its 1-based sentence line number: '
+                        . '"1.png", "2.png", ... (.jpg is also fine).',
+                ],
+            ],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'wordshuffle',
+                        'name' => 'Word shuffle',
+                        'instructions' => 'Put the words in the correct order to form a sentence.',
+                        'sentences' => [
+                            'I [get up] at seven o\'clock.|What I do first each day.|have breakfast,go to work',
+                            'I [have breakfast] with my family.|Our morning meal together.|get up,go home',
+                            'I [go to bed] at eleven.|The end of my day.|start work,have lunch',
+                        ],
+                        'readsentence' => 1,
+                        'promptvoice' => 'auto',
+                        'allowretry' => 'yes',
+                    ],
+                ],
+            ],
+        ];
     }
 
     /*
