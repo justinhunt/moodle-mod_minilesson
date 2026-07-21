@@ -106,6 +106,7 @@ class aigen {
         '6a363a03964a0' => 'grammar_shufflewords',
         '6a38ad44e9b60' => 'grammar_choosewords_v2',
         '6a4909ba67c08' => 'cefr_a2',
+        '6a5dc6971e891' => 'wordpractice_v4',
     ];
     /** @var \stdClass|null */
     private $moduleinstance = null;

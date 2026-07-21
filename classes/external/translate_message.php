@@ -89,7 +89,10 @@ class translate_message extends external_api {
             '*',
             MUST_EXIST
         );
-        if (!in_array($item->type, self::ALLOWED_ITEMTYPES)) {
+        // Translation is allowed for item types that offer it natively (e.g. fiction), or for
+        // any item that carries a TTS dialog media prompt (available on all item types).
+        $hasdialog = !empty($item->{constants::TTSDIALOG}) && trim($item->{constants::TTSDIALOG}) !== '';
+        if (!in_array($item->type, self::ALLOWED_ITEMTYPES) && !$hasdialog) {
             throw new \invalid_parameter_exception('Item type does not support translation');
         }
 

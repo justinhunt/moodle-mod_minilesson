@@ -1857,7 +1857,7 @@ class utils {
     public static function pack_ttsdialogopts($data) {
         $opts = new \stdClass();
         // more overcaution
-        if (isset($opts->{constants::TTSDIALOGVISIBLE})) {
+        if (isset($data->{constants::TTSDIALOGVISIBLE})) {
             $opts->{constants::TTSDIALOGVISIBLE} = $data->{constants::TTSDIALOGVISIBLE};
         } else {
             $opts->{constants::TTSDIALOGVISIBLE} = false;
@@ -1870,6 +1870,13 @@ class utils {
             } else {
                 $opts->{$slot} = "Salli";
             }
+        }
+
+        // Speaker labels. Store blank when not set; a blank label falls back to the
+        // speakera/b/c language string at display time.
+        $labelslots = [constants::TTSDIALOGLABELA, constants::TTSDIALOGLABELB, constants::TTSDIALOGLABELC];
+        foreach ($labelslots as $slot) {
+            $opts->{$slot} = isset($data->{$slot}) ? trim($data->{$slot}) : '';
         }
 
         $optsjson = json_encode($opts);
@@ -1895,6 +1902,12 @@ class utils {
             } else {
                 $data->{$slot} = "Salli";
             }
+        }
+
+        // Speaker labels (may be absent on older records; default to blank).
+        $labelslots = [constants::TTSDIALOGLABELA, constants::TTSDIALOGLABELB, constants::TTSDIALOGLABELC];
+        foreach ($labelslots as $slot) {
+            $data->{$slot} = isset($opts->{$slot}) ? $opts->{$slot} : '';
         }
 
         return $data;

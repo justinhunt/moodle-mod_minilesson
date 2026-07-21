@@ -1221,6 +1221,10 @@ function xmldb_minilesson_upgrade($oldversion) {
             }
         }
 
+        // Register the new AI-generation templates and pick up
+        // edits to existing default templates.
+        \mod_minilesson\aigen::create_default_templates();
+
         // Minilesson savepoint reached.
         upgrade_mod_savepoint(true, 2026071600, 'minilesson');
     }

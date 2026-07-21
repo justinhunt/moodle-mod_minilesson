@@ -189,6 +189,9 @@ abstract class item implements \templatable, \renderable {
         $keycolumns['ttsdialogvoicea'] = ['type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::TTSDIALOGVOICEA];
         $keycolumns['ttsdialogvoiceb'] = ['type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::TTSDIALOGVOICEB];
         $keycolumns['ttsdialogvoicec'] = ['type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::TTSDIALOGVOICEC];
+        $keycolumns['ttsdialoglabela'] = ['type' => 'string', 'optional' => true, 'default' => null, 'dbname' => constants::TTSDIALOGLABELA];
+        $keycolumns['ttsdialoglabelb'] = ['type' => 'string', 'optional' => true, 'default' => null, 'dbname' => constants::TTSDIALOGLABELB];
+        $keycolumns['ttsdialoglabelc'] = ['type' => 'string', 'optional' => true, 'default' => null, 'dbname' => constants::TTSDIALOGLABELC];
         $keycolumns['ttsdialogvisible'] = ['type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::TTSDIALOGVISIBLE];
         $keycolumns['ttspassage'] = ['type' => 'string', 'optional' => true, 'default' => null, 'dbname' => 'itemttspassage'];
         $keycolumns['ttspassageopts'] = ['type' => 'string', 'optional' => true, 'default' => null, 'dbname' => 'itemttspassageopts'];
@@ -525,6 +528,21 @@ abstract class item implements \templatable, \renderable {
             'ttsdialogvoicec' => [
                 'description' => 'TTS voice for dialog speaker C. ' . $voicenote,
                 'example' => 'auto',
+            ],
+            'ttsdialoglabela' => [
+                'description' => 'Display label shown above dialog speaker A\'s lines (only used when ttsdialogvisible=1). '
+                    . 'Leave blank to use the default "Speaker A".',
+                'example' => 'Waiter',
+            ],
+            'ttsdialoglabelb' => [
+                'description' => 'Display label shown above dialog speaker B\'s lines (only used when ttsdialogvisible=1). '
+                    . 'Leave blank to use the default "Speaker B".',
+                'example' => 'Customer',
+            ],
+            'ttsdialoglabelc' => [
+                'description' => 'Display label shown above dialog speaker C\'s lines (only used when ttsdialogvisible=1). '
+                    . 'Leave blank to use the default "Speaker C".',
+                'example' => 'Waiter 2',
             ],
             'ttsdialogvisible' => [
                 'description' => 'Whether the dialog text is shown to the learner.',
@@ -901,17 +919,17 @@ abstract class item implements \templatable, \renderable {
                     $startchars = \core_text::substr($theline, 0, 2);
                     switch ($startchars) {
                         case 'A)':
-                            $speaker = "a";
+                            $speaker = 'a';
                             $voice = $itemrecord->{constants::TTSDIALOGVOICEA};
                             $thetext = \core_text::substr($theline, 2);
                             break;
                         case 'B)':
-                            $speaker = "b";
+                            $speaker = 'b';
                             $voice = $itemrecord->{constants::TTSDIALOGVOICEB};
                             $thetext = \core_text::substr($theline, 2);
                             break;
                         case 'C)':
-                            $speaker = "c";
+                            $speaker = 'c';
                             $voice = $itemrecord->{constants::TTSDIALOGVOICEC};
                             $thetext = \core_text::substr($theline, 2);
                             break;
@@ -936,7 +954,31 @@ abstract class item implements \templatable, \renderable {
                         continue;
                     }
                     $lineset = new \stdClass();
+                    $lineset->index = count($linesdata);
                     $lineset->speaker = $speaker;
+                    $lineset->issoundeffect = ($speaker === "soundeffect");
+                    // Speaker blocks are left aligned; B) is indented, C) is indented half as much.
+                    // Sound effects are a small centered marker. Labels come from the speakera/b/c
+                    // language strings.
+                    switch ($speaker) {
+                        case 'b':
+                            $lineset->indentclass = 'ttsdialog_indent_b';
+                            $lineset->label = self::ttsdialog_label($itemrecord, constants::TTSDIALOGLABELB, 'speakerb');
+                            break;
+                        case 'c':
+                            $lineset->indentclass = 'ttsdialog_indent_c';
+                            $lineset->label = self::ttsdialog_label($itemrecord, constants::TTSDIALOGLABELC, 'speakerc');
+                            break;
+                        case 'soundeffect':
+                            $lineset->indentclass = '';
+                            $lineset->label = '';
+                            break;
+                        case 'a':
+                        default:
+                            $lineset->indentclass = '';
+                            $lineset->label = self::ttsdialog_label($itemrecord, constants::TTSDIALOGLABELA, 'speakera');
+                            break;
+                    }
                     $lineset->speakertext = $thetext;
                     $lineset->voice = $voice;
                     $voiceoptions = constants::TTS_NORMAL;
@@ -949,6 +991,28 @@ abstract class item implements \templatable, \renderable {
                 }
             }
             $testitem->ttsdialoglines = $linesdata;
+
+            // Translation support (mirrors the fiction item type). The translate icon
+            // per line lets a learner translate a line into their native language.
+            $ttsdialogsourcelang = $this->moduleinstance->ttslanguage;
+            $ttsdialognativelang = $this->moduleinstance->nativelang;
+            if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
+                $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
+                if (!empty($userprefnativelanguage)) {
+                    $ttsdialognativelang = $userprefnativelanguage;
+                }
+            }
+            $testitem->ttsdialogcmid = $this->context->instanceid;
+            $testitem->ttsdialogitemid = $this->itemrecord->id;
+            $testitem->ttsdialogsourcelang = $ttsdialogsourcelang;
+            $testitem->ttsdialognativelang = $ttsdialognativelang;
+            // Only offer translation when a native language is set and it differs from the target language.
+            $basesource = strtolower(explode('-', (string) $ttsdialogsourcelang)[0]);
+            $basedest = strtolower(explode('-', (string) $ttsdialognativelang)[0]);
+            $testitem->ttsdialogcantranslate = !empty($ttsdialognativelang) && $basesource !== $basedest;
+            // Translation panel direction follows the translation (native) language, which is
+            // independent of the dialog's target language direction (the {{rtl}} class).
+            $testitem->ttsdialognativelangrtl = utils::is_rtl($ttsdialognativelang) ? constants::M_CLASS . '_rtl' : '';
         } // end of tts dialog
 
         // Native Language Chooser.
@@ -1103,6 +1167,23 @@ abstract class item implements \templatable, \renderable {
         }
 
         return $testitem;
+    }
+
+    /**
+     * Resolve a TTS dialog speaker label: the author's custom label if set, otherwise
+     * the corresponding speakera/b/c language string.
+     *
+     * @param \stdClass $itemrecord The item record (already unpacked via unpack_ttsdialogopts).
+     * @param string $labelcolumn The TTSDIALOGLABEL* opts key.
+     * @param string $defaultstringkey The fallback language string key (speakera/b/c).
+     * @return string
+     */
+    protected static function ttsdialog_label($itemrecord, $labelcolumn, $defaultstringkey) {
+        $label = isset($itemrecord->{$labelcolumn}) ? trim($itemrecord->{$labelcolumn}) : '';
+        if ($label !== '') {
+            return $label;
+        }
+        return get_string($defaultstringkey, constants::M_COMPONENT);
     }
 
     protected function get_text_answer_elements($testitem) {
@@ -1351,7 +1432,7 @@ abstract class item implements \templatable, \renderable {
             // if that is a problem, its probably better to fix the sentence.
             // if (preg_match_all('/\[[^\]]+\]|[^\s]+/', $sentence, $matches)) {
             // We use a negated character class [^\s\.\,\!\?\;\:\)\}\"\]]* instead of [^\s]*
-            // so that standard punctuation (like ?) is NOT glued to the gap, but alphanumeric 
+            // so that standard punctuation (like ?) is NOT glued to the gap, but alphanumeric
             // suffixes (like in [fath]er) ARE glued.
             if (preg_match_all('/\[[^\]]+\][^\s\.\,\!\?\;\:\)\}\"\]]*|[^\s]+/', $sentence, $matches)) {
                 $words = $matches[0];

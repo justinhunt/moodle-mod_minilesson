@@ -184,6 +184,9 @@ class constants {
     const TTSDIALOGVOICEA = 'itemttsdialogvoicea';
     const TTSDIALOGVOICEB = 'itemttsdialogvoiceb';
     const TTSDIALOGVOICEC = 'itemttsdialogvoicec';
+    const TTSDIALOGLABELA = 'itemttsdialoglabela';
+    const TTSDIALOGLABELB = 'itemttsdialoglabelb';
+    const TTSDIALOGLABELC = 'itemttsdialoglabelc';
     const TTSDIALOGVISIBLE = 'itemttsdialogvisible';
     const TTSPASSAGEVOICE = 'itemttspassagevoice';
     const TTSPASSAGESPEED = 'itemttspassagespeed';

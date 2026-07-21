@@ -1,38 +1,210 @@
 @use '../../abstracts/variables' as *;
 
 // -----------------------------------------------------------------------------
-// TTS Dialog: text-to-speech conversation dialog with actor roles
+// TTS Dialog: text-to-speech conversation dialog with speaker roles.
+// Compact, left-aligned conversation cards. Speaker B is indented, C half as much.
+// The transport controls reuse the "speedyplayer" look (see _speedyplayer.scss),
+// which is the same style as the audiostory and passage-gapfill players.
 // -----------------------------------------------------------------------------
 
-.ttsdialog_actorplusline {
-  border: 1px solid darkgray;
-  background-color: $white;
-}
+$ttsdialog-indent: 4rem;
 
-.ttsdialog_text {
-  background-color: $white;
-  min-height: 30px;
-  display: flex;
-  align-items: center;
-}
+.ttsdialogplayer {
 
-.ttsdialog_actor {
-  margin: auto;
-  text-align: center;
+  // Transport controls, styled to match the speedyplayer bar.
+  .ttsdialog_controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: $white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba($black, 0.05);
+    max-width: 600px;
+    margin: 5px auto 1.25rem;
+  }
 
-  &.rolea {
+  .ttsdialog_ctrl {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    background: $player-blue;
+    color: $white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+
+    &:hover {
+      background: $player-blue-hover;
+    }
+
+    &.ttsdialog_stop {
+      background: $grey;
+
+      &:hover {
+        background: #6c6c6c;
+      }
+    }
+  }
+
+  .ttsdialog_controls_single .ttsdialog_ctrl {
+    min-width: 200px;
+  }
+
+  // Conversation stream.
+  .ttsdialog_blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    // RTL target language: mirror the whole layout (bubble side, indents, icon
+    // placement, main text). Logical properties below do the flipping.
+    &.mod_minilesson_rtl {
+      direction: rtl;
+    }
+  }
+
+  // A conversation line: a compact rounded card, left aligned by default.
+  .ttsdialog_block {
+    position: relative;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 75%;
+    padding: 0.6rem 1.1rem 0.75rem;
+    border: 1px solid darkgray;
+    border-radius: 14px;
+    background-color: $white;
+    box-shadow: 0 1px 3px rgba($black, 0.06);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
+    // Speaker B is indented; C is indented half as much (logical, so it flips in RTL).
+    &.ttsdialog_indent_b {
+      margin-inline-start: $ttsdialog-indent;
+    }
+
+    &.ttsdialog_indent_c {
+      margin-inline-start: calc(#{$ttsdialog-indent} / 2);
+    }
+
+    // Speaker colour accents on the leading edge.
+    &.rolea {
+      border-inline-start: 4px solid $blue;
+    }
+
+    &.roleb {
+      border-inline-start: 4px solid $green;
+    }
+
+    &.rolec {
+      border-inline-start: 4px solid $orange;
+    }
+
+    // The currently playing line.
+    &.ttsdialog_active {
+      border-color: $primary;
+      box-shadow: 0 0 0 2px rgba($primary, 0.35);
+    }
+  }
+
+  // Small uppercase speaker label at the top of the card, aligned to the
+  // leading edge (left, or right for RTL target languages).
+  .ttsdialog_label {
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: start;
+    color: $text-muted;
+  }
+
+  .rolea .ttsdialog_label {
     color: $blue;
   }
 
-  &.roleb {
+  .roleb .ttsdialog_label {
     color: $green;
   }
 
-  &.rolec {
+  .rolec .ttsdialog_label {
     color: $orange;
   }
 
-  &.rolenone {
-    opacity: 0;
+  // Text on the leading side, icon buttons on the trailing side.
+  .ttsdialog_block_main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .ttsdialog_block_text {
+    margin: 0;
+    text-align: start;
+  }
+
+  .ttsdialog_block_icons {
+    display: flex;
+    flex: none;
+    gap: 0.35rem;
+  }
+
+  // Small round icon buttons (translate / play this line).
+  .ttsdialog_iconbtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 1px solid darkgray;
+    border-radius: 50%;
+    background: $white;
+    color: $player-blue;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover,
+    &.ttsdialog_iconbtn_active {
+      background: $player-blue;
+      color: $white;
+    }
+  }
+
+  // Translation panel, below the text. Its direction follows the translation
+  // (native) language, which is independent of the dialog's target direction.
+  .ttsdialog_block_translation {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed lightgray;
+    color: $text-muted;
+    font-style: italic;
+    text-align: start;
+
+    &.mod_minilesson_rtl {
+      direction: rtl;
+      text-align: start;
+    }
+  }
+
+  // Sound-effect lines: a small, muted, centered marker.
+  .ttsdialog_soundeffect {
+    align-self: center;
+    width: auto;
+    max-width: 60%;
+    padding: 0.4rem 0.9rem;
+    border-style: dashed;
+    box-shadow: none;
+    background-color: transparent;
+    color: $text-muted;
+    font-size: 0.9em;
+    text-align: center;
   }
 }

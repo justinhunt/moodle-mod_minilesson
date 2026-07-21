@@ -2,8 +2,9 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Generate an written response question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] \n",
+            "prompt": "Generate a written response question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] \n",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "text",
@@ -86,9 +87,10 @@
         }
     ],
     "lessonTitle": "Free Writing",
-    "lessonDescription": "A Free Writing activity about the topic that you choose.",
+    "lessonDescription": "A Free Writing activity about the specified topic.",
     "uniqueid": "6a3141279b845",
-    "version": "0",
+    "version": "1",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -189,5 +191,7 @@
             "type": "text"
         }
     },
-    "tags": []
+    "tags": [
+        "Writing"
+    ]
 }

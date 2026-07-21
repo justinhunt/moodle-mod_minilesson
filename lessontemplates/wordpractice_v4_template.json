@@ -1,0 +1,237 @@
+{
+    "items": [
+        {
+            "type": "cards",
+            "name": "Item: Cards",
+            "instructions": "Review the cards on screen. You can use the next and back buttons to see other cards.",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "family|\u5bb6\u65cf|My family eats dinner together every Sunday.|\u79c1\u306e\u5bb6\u65cf\u306f\u6bce\u9031\u65e5\u66dc\u65e5\u306b\u4e00\u7dd2\u306b\u5915\u98df\u3092\u98df\u3079\u307e\u3059\u3002",
+                "mother|\u6bcd|My mother works at a hospital.|\u79c1\u306e\u6bcd\u306f\u75c5\u9662\u3067\u50cd\u3044\u3066\u3044\u307e\u3059\u3002",
+                "father|\u7236|My father likes to read the newspaper in the morning.|\u79c1\u306e\u7236\u306f\u671d\u306b\u65b0\u805e\u3092\u8aad\u3080\u306e\u304c\u597d\u304d\u3067\u3059\u3002",
+                "brother|\u5144\u5f1f|My brother plays soccer after school.|\u79c1\u306e\u5144\u306f\u653e\u8ab2\u5f8c\u306b\u30b5\u30c3\u30ab\u30fc\u3092\u3057\u307e\u3059\u3002",
+                "sister|\u59c9\u59b9|My sister is studying for her exams.|\u79c1\u306e\u59c9\u306f\u8a66\u9a13\u52c9\u5f37\u3092\u3057\u3066\u3044\u307e\u3059\u3002",
+                "grandparents|\u7956\u7236\u6bcd|My grandparents live in a small house near the park.|\u79c1\u306e\u7956\u7236\u6bcd\u306f\u516c\u5712\u306e\u8fd1\u304f\u306e\u5c0f\u3055\u306a\u5bb6\u306b\u4f4f\u3093\u3067\u3044\u307e\u3059\u3002",
+                "husband|\u592b|Her husband cooks dinner on weekends.|\u5f7c\u5973\u306e\u592b\u306f\u9031\u672b\u306b\u5915\u98df\u3092\u4f5c\u308a\u307e\u3059\u3002",
+                "wife|\u59bb|His wife teaches music at a school.|\u5f7c\u306e\u59bb\u306f\u5b66\u6821\u3067\u97f3\u697d\u3092\u6559\u3048\u3066\u3044\u307e\u3059\u3002",
+                "son|\u606f\u5b50|Their son is learning to ride a bicycle.|\u5f7c\u3089\u306e\u606f\u5b50\u306f\u81ea\u8ee2\u8eca\u306b\u4e57\u308b\u7df4\u7fd2\u3092\u3057\u3066\u3044\u307e\u3059\u3002",
+                "daughter|\u5a18|Our daughter drew a picture of our house.|\u79c1\u305f\u3061\u306e\u5a18\u306f\u79c1\u305f\u3061\u306e\u5bb6\u306e\u7d75\u3092\u63cf\u304d\u307e\u3057\u305f\u3002"
+            ],
+            "promptvoice": "Ivy",
+            "dictationstyle": "yes",
+            "promptvoiceopt": "normal",
+            "layout": "vertical",
+            "filesid": 1
+        },
+        {
+            "type": "scatter",
+            "name": "Item: Scatter",
+            "instructions": "Choose the word pairs",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "sentences": [
+                "family|\u5bb6\u65cf\r",
+                "mother|\u6bcd\r",
+                "father|\u7236\r",
+                "brother|\u5144\u5f1f\r",
+                "sister|\u59c9\u59b9\r",
+                "grandparents|\u7956\u7236\u6bcd\r",
+                "husband|\u592b\r",
+                "wife|\u59bb\r",
+                "son|\u606f\u5b50\r",
+                "daughter|\u5a18"
+            ],
+            "layout": "vertical"
+        },
+        {
+            "type": "wordcards",
+            "name": "Item: Word Cards - Listen and Choose",
+            "instructions": "Complete the task for each word.",
+            "text": "Listen and choose the word",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "words": [
+                "family|\u5bb6\u65cf\r",
+                "mother|\u6bcd\r",
+                "father|\u7236\r",
+                "brother|\u5144\u5f1f\r",
+                "sister|\u59c9\u59b9\r",
+                "grandparents|\u7956\u7236\u6bcd\r",
+                "husband|\u592b\r",
+                "wife|\u59bb\r",
+                "son|\u606f\u5b50\r",
+                "daughter|\u5a18"
+            ],
+            "promptvoice": "Joey",
+            "activitytype": "1",
+            "promptvoiceopt": "normal",
+            "layout": "vertical",
+            "filesid": 3
+        },
+        {
+            "type": "wordcards",
+            "name": "Item: Word Cards - Listen and Type",
+            "instructions": "Complete the task for each word.",
+            "text": "Listen and type the word",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "words": [
+                "family|\u5bb6\u65cf\r",
+                "mother|\u6bcd\r",
+                "father|\u7236\r",
+                "brother|\u5144\u5f1f\r",
+                "sister|\u59c9\u59b9\r",
+                "grandparents|\u7956\u7236\u6bcd\r",
+                "husband|\u592b\r",
+                "wife|\u59bb\r",
+                "son|\u606f\u5b50\r",
+                "daughter|\u5a18"
+            ],
+            "promptvoice": "Joey",
+            "promptvoiceopt": "normal",
+            "layout": "vertical",
+            "filesid": 4
+        },
+        {
+            "type": "wordcards",
+            "name": "Item: Word Cards - Choose the Word",
+            "instructions": "Complete the task for each word.",
+            "text": "Choose the word",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "words": [
+                "family|\u5bb6\u65cf\r",
+                "mother|\u6bcd\r",
+                "father|\u7236\r",
+                "brother|\u5144\u5f1f\r",
+                "sister|\u59c9\u59b9\r",
+                "grandparents|\u7956\u7236\u6bcd\r",
+                "husband|\u592b\r",
+                "wife|\u59bb\r",
+                "son|\u606f\u5b50\r",
+                "daughter|\u5a18"
+            ],
+            "promptvoice": "Joey",
+            "activitytype": "3",
+            "promptvoiceopt": "normal",
+            "layout": "vertical",
+            "filesid": 5
+        },
+        {
+            "type": "wordcards",
+            "name": "Item: Word Cards - Type the Word",
+            "instructions": "Complete the task for each word.",
+            "text": "Type the word",
+            "ttsvoice": "Joey",
+            "audiofname": "00:00:00",
+            "ttsdialog": [
+                ""
+            ],
+            "words": [
+                "family|\u5bb6\u65cf\r",
+                "mother|\u6bcd\r",
+                "father|\u7236\r",
+                "brother|\u5144\u5f1f\r",
+                "sister|\u59c9\u59b9\r",
+                "grandparents|\u7956\u7236\u6bcd\r",
+                "husband|\u592b\r",
+                "wife|\u59bb\r",
+                "son|\u606f\u5b50\r",
+                "daughter|\u5a18"
+            ],
+            "promptvoice": "Joey",
+            "activitytype": "2",
+            "promptvoiceopt": "normal",
+            "layout": "vertical",
+            "filesid": 6
+        }
+    ],
+    "files": {
+        "1": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ"
+            }
+        },
+        "3": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ"
+            }
+        },
+        "4": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ"
+            }
+        },
+        "5": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ"
+            }
+        },
+        "6": {
+            "customfile1_image": {
+                "1.png": "QQQQ",
+                "2.png": "QQQQ",
+                "3.png": "QQQQ",
+                "4.png": "QQQQ",
+                "5.png": "QQQQ",
+                "6.png": "QQQQ",
+                "7.png": "QQQQ",
+                "8.png": "QQQQ",
+                "9.png": "QQQQ",
+                "10.png": "QQQQ"
+            }
+        }
+    }
+}

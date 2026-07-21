@@ -56,7 +56,8 @@ class itemtype extends item
     public static function aigen_fetch_import_spec() {
         $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
             'tts', 'ttsvoice', 'ttsoption', 'ttsautoplay',
-            'ttsdialog', 'ttsdialogvoicea', 'ttsdialogvoiceb', 'ttsdialogvoicec', 'ttsdialogvisible',
+            'ttsdialog', 'ttsdialogvoicea', 'ttsdialogvoiceb', 'ttsdialogvoicec',
+            'ttsdialoglabela', 'ttsdialoglabelb', 'ttsdialoglabelc', 'ttsdialogvisible',
             'ttspassage', 'ttspassagevoice', 'ttspassagespeed',
             'audiofname', 'audiostoryzoom', 'nativelangchooser',
             'ytid', 'ytstart', 'ytend', 'iframe', 'timelimit', 'layout']);

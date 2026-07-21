@@ -2790,33 +2790,159 @@ span.wrongitem {
   text-align: center;
 }
 
-.ttsdialog_actorplusline {
-  border: 1px solid darkgray;
-  background-color: #FFFFFF;
-}
-
-.ttsdialog_text {
-  background-color: #FFFFFF;
-  min-height: 30px;
+.ttsdialogplayer .ttsdialog_controls {
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: #FFFFFF;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 5px auto 1.25rem;
 }
-
-.ttsdialog_actor {
-  margin: auto;
-  text-align: center;
+.ttsdialogplayer .ttsdialog_ctrl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  background: #4a90e2;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
 }
-.ttsdialog_actor.rolea {
+.ttsdialogplayer .ttsdialog_ctrl:hover {
+  background: #357ab8;
+}
+.ttsdialogplayer .ttsdialog_ctrl.ttsdialog_stop {
+  background: grey;
+}
+.ttsdialogplayer .ttsdialog_ctrl.ttsdialog_stop:hover {
+  background: #6c6c6c;
+}
+.ttsdialogplayer .ttsdialog_controls_single .ttsdialog_ctrl {
+  min-width: 200px;
+}
+.ttsdialogplayer .ttsdialog_blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.ttsdialogplayer .ttsdialog_blocks.mod_minilesson_rtl {
+  direction: rtl;
+}
+.ttsdialogplayer .ttsdialog_block {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 75%;
+  padding: 0.6rem 1.1rem 0.75rem;
+  border: 1px solid darkgray;
+  border-radius: 14px;
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.ttsdialogplayer .ttsdialog_block.ttsdialog_indent_b {
+  margin-inline-start: 4rem;
+}
+.ttsdialogplayer .ttsdialog_block.ttsdialog_indent_c {
+  margin-inline-start: calc(4rem / 2);
+}
+.ttsdialogplayer .ttsdialog_block.rolea {
+  border-inline-start: 4px solid blue;
+}
+.ttsdialogplayer .ttsdialog_block.roleb {
+  border-inline-start: 4px solid green;
+}
+.ttsdialogplayer .ttsdialog_block.rolec {
+  border-inline-start: 4px solid orange;
+}
+.ttsdialogplayer .ttsdialog_block.ttsdialog_active {
+  border-color: #506DFF;
+  box-shadow: 0 0 0 2px rgba(80, 109, 255, 0.35);
+}
+.ttsdialogplayer .ttsdialog_label {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: start;
+  color: #80859d;
+}
+.ttsdialogplayer .rolea .ttsdialog_label {
   color: blue;
 }
-.ttsdialog_actor.roleb {
+.ttsdialogplayer .roleb .ttsdialog_label {
   color: green;
 }
-.ttsdialog_actor.rolec {
+.ttsdialogplayer .rolec .ttsdialog_label {
   color: orange;
 }
-.ttsdialog_actor.rolenone {
-  opacity: 0;
+.ttsdialogplayer .ttsdialog_block_main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.ttsdialogplayer .ttsdialog_block_text {
+  margin: 0;
+  text-align: start;
+}
+.ttsdialogplayer .ttsdialog_block_icons {
+  display: flex;
+  flex: none;
+  gap: 0.35rem;
+}
+.ttsdialogplayer .ttsdialog_iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid darkgray;
+  border-radius: 50%;
+  background: #FFFFFF;
+  color: #4a90e2;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.ttsdialogplayer .ttsdialog_iconbtn:hover, .ttsdialogplayer .ttsdialog_iconbtn.ttsdialog_iconbtn_active {
+  background: #4a90e2;
+  color: #FFFFFF;
+}
+.ttsdialogplayer .ttsdialog_block_translation {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed lightgray;
+  color: #80859d;
+  font-style: italic;
+  text-align: start;
+}
+.ttsdialogplayer .ttsdialog_block_translation.mod_minilesson_rtl {
+  direction: rtl;
+  text-align: start;
+}
+.ttsdialogplayer .ttsdialog_soundeffect {
+  align-self: center;
+  width: auto;
+  max-width: 60%;
+  padding: 0.4rem 0.9rem;
+  border-style: dashed;
+  box-shadow: none;
+  background-color: transparent;
+  color: #80859d;
+  font-size: 0.9em;
+  text-align: center;
 }
 
 .mod_minilesson_itemttspassage_cont button.passage-audio-player {

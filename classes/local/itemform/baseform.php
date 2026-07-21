@@ -381,8 +381,17 @@ abstract class baseform extends \moodleform {
         // $this->add_static_text('ttsdialog_instructions',null,get_string('ttsdialoginstructions', constants::M_COMPONENT));
 
         $this->add_ttsaudioselect(constants::TTSDIALOGVOICEA, get_string('ttsdialogvoicea', constants::M_COMPONENT));
+        $mform->addElement('text', constants::TTSDIALOGLABELA, get_string('ttsdialoglabela', constants::M_COMPONENT),
+            ['placeholder' => get_string('speakera', constants::M_COMPONENT)]);
+        $mform->setType(constants::TTSDIALOGLABELA, PARAM_TEXT);
         $this->add_ttsaudioselect(constants::TTSDIALOGVOICEB, get_string('ttsdialogvoiceb', constants::M_COMPONENT));
+        $mform->addElement('text', constants::TTSDIALOGLABELB, get_string('ttsdialoglabelb', constants::M_COMPONENT),
+            ['placeholder' => get_string('speakerb', constants::M_COMPONENT)]);
+        $mform->setType(constants::TTSDIALOGLABELB, PARAM_TEXT);
         $this->add_ttsaudioselect(constants::TTSDIALOGVOICEC, get_string('ttsdialogvoicec', constants::M_COMPONENT));
+        $mform->addElement('text', constants::TTSDIALOGLABELC, get_string('ttsdialoglabelc', constants::M_COMPONENT),
+            ['placeholder' => get_string('speakerc', constants::M_COMPONENT)]);
+        $mform->setType(constants::TTSDIALOGLABELC, PARAM_TEXT);
         $mform->addElement('textarea', constants::TTSDIALOG, get_string('ttsdialog', constants::M_COMPONENT), ['wrap' => 'virtual', 'style' => 'width: 100%;', 'placeholder' => 'A) Hello&#10;B) Goodbye']);
         $mform->setType(constants::TTSDIALOG, PARAM_RAW);
         $mform->addElement('advcheckbox', constants::TTSDIALOGVISIBLE, get_string('ttsdialogvisible', constants::M_COMPONENT), get_string('ttsdialogvisible_desc', constants::M_COMPONENT));

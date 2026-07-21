@@ -1,33 +1,52 @@
-<div class="ttsdialogplayer container {{rtl}}"  id="{{uniqid}}_ttsdialogplayer">
+<div class="ttsdialogplayer container {{rtl}}"  id="{{uniqid}}_ttsdialogplayer"
+    data-cmid="{{ttsdialogcmid}}" data-itemid="{{ttsdialogitemid}}"
+    data-sourcelang="{{ttsdialogsourcelang}}" data-nativelang="{{ttsdialognativelang}}"
+    data-cantranslate="{{#ttsdialogcantranslate}}1{{/ttsdialogcantranslate}}{{^ttsdialogcantranslate}}0{{/ttsdialogcantranslate}}">
 
     {{#ttsdialoglines}}
-    <span class="hide ttsdialogline" data-voice="{{voice}}" data-speaker="{{speaker}}" data-audiourl="{{audiourl}}" data-speakertext="{{speakertext}}"></span>
+    <span class="hide ttsdialogline" data-index="{{index}}" data-voice="{{voice}}" data-speaker="{{speaker}}" data-audiourl="{{audiourl}}" data-speakertext="{{speakertext}}"></span>
     {{/ttsdialoglines}}
 
-    <div class="row">
-        {{#itemttsdialogvisible}}
-            <div class="col-md-1">
-                    <button class="ttsdialog_button btn btn-secondary" ><i class="fa fa-play"></i></button>
-            </div>
+    {{#itemttsdialogvisible}}
+        <div class="ttsdialog_controls">
+            <button type="button" class="ttsdialog_ctrl ttsdialog_back" aria-label="{{#str}}ttsdialog:back, mod_minilesson{{/str}}" title="{{#str}}ttsdialog:back, mod_minilesson{{/str}}"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
+            <button type="button" class="ttsdialog_ctrl ttsdialog_button ttsdialog_play" aria-label="{{#str}}ttsdialog:playpause, mod_minilesson{{/str}}" title="{{#str}}ttsdialog:playpause, mod_minilesson{{/str}}"><i class="fa fa-play" aria-hidden="true"></i></button>
+            <button type="button" class="ttsdialog_ctrl ttsdialog_forward" aria-label="{{#str}}ttsdialog:forward, mod_minilesson{{/str}}" title="{{#str}}ttsdialog:forward, mod_minilesson{{/str}}"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
+            <button type="button" class="ttsdialog_ctrl ttsdialog_stop" aria-label="{{#str}}ttsdialog:stop, mod_minilesson{{/str}}" title="{{#str}}ttsdialog:stop, mod_minilesson{{/str}}"><i class="fa fa-stop" aria-hidden="true"></i></button>
+        </div>
 
-            <div class="col-md-11">
-                <div class="row ttsdialog_actorplusline">
-                <div class="col-md-1 ttsdialog_actor rolenone"><i class="fa fa-lg fa-user" aria-hidden="true"></i></div>
-                <div class="col-md-11 ttsdialog_text"></div>
+        <div class="ttsdialog_blocks {{rtl}}">
+            {{#ttsdialoglines}}
+            {{#issoundeffect}}
+                <div class="ttsdialog_block ttsdialog_soundeffect" data-index="{{index}}">
+                    <div class="ttsdialog_block_body"><i class="fa fa-volume-up" aria-hidden="true"></i> <span class="ttsdialog_block_text">{{speakertext}}</span></div>
                 </div>
-            </div>
-        {{/itemttsdialogvisible}}
-        {{^itemttsdialogvisible}}
-            <div class="col-md-12" style="text-align: center">
-                <button class="ttsdialog_button btn btn-secondary" style="width: 200px;"><i class="fa fa-play"></i></button>
-            </div>
-            <div class="hide ttsdialog_text"></div>
-        {{/itemttsdialogvisible}}
-    </div>
+            {{/issoundeffect}}
+            {{^issoundeffect}}
+                <div class="ttsdialog_block {{indentclass}} role{{speaker}}" data-index="{{index}}">
+                    <span class="ttsdialog_label">{{label}}</span>
+                    <div class="ttsdialog_block_main">
+                        <p class="ttsdialog_block_text">{{speakertext}}</p>
+                        <div class="ttsdialog_block_icons">
+                            {{#ttsdialogcantranslate}}
+                            <button type="button" class="ttsdialog_iconbtn ttsdialog_translate" aria-label="{{#str}}ttsdialog:translate, mod_minilesson{{/str}}" title="{{#str}}ttsdialog:translate, mod_minilesson{{/str}}"><i class="fa fa-language" aria-hidden="true"></i></button>
+                            {{/ttsdialogcantranslate}}
+                            <button type="button" class="ttsdialog_iconbtn ttsdialog_speaker" aria-label="{{#str}}ttsdialog:playline, mod_minilesson{{/str}}" title="{{#str}}ttsdialog:playline, mod_minilesson{{/str}}"><i class="fa fa-play-circle" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                    <div class="ttsdialog_block_translation hide {{ttsdialognativelangrtl}}"></div>
+                </div>
+            {{/issoundeffect}}
+            {{/ttsdialoglines}}
+        </div>
+    {{/itemttsdialogvisible}}
+    {{^itemttsdialogvisible}}
+        <div class="ttsdialog_controls ttsdialog_controls_single">
+            <button type="button" class="ttsdialog_ctrl ttsdialog_button ttsdialog_play" aria-label="{{#str}}ttsdialog:playpause, mod_minilesson{{/str}}" title="{{#str}}ttsdialog:playpause, mod_minilesson{{/str}}"><i class="fa fa-play" aria-hidden="true"></i></button>
+        </div>
+    {{/itemttsdialogvisible}}
+
     <audio class="ttsdialog_audioplayer" ></audio>
-
-
-
 </div>
 {{^element.frozen}}
     {{#js}}

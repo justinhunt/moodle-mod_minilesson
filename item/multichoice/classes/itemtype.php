@@ -331,7 +331,8 @@ class itemtype extends item {
         $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
             'textarea',
             'tts', 'ttsvoice', 'ttsoption', 'ttsautoplay',
-            'ttsdialog', 'ttsdialogvoicea', 'ttsdialogvoiceb', 'ttsdialogvoicec', 'ttsdialogvisible',
+            'ttsdialog', 'ttsdialogvoicea', 'ttsdialogvoiceb', 'ttsdialogvoicec',
+            'ttsdialoglabela', 'ttsdialoglabelb', 'ttsdialoglabelc', 'ttsdialogvisible',
             'timelimit', 'layout']);
         $fields['type']['example'] = 'multichoice';
         $fields['text']['description'] = 'The question text, shown as a short centered heading above the answers, '
