@@ -15,7 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * OpenAPI Specs generation
+ * OpenAPI spec generation for the clean aigen REST facade.
+ *
+ * Emits an OpenAPI 3.1 document describing the mod_minilesson aigen functions as
+ * they are exposed by the clean REST facade (aigen_rest.php): one POST operation
+ * per function, at /<function-without-mod_minilesson-prefix>, taking the function's
+ * arguments as a JSON body and authenticated with an X-API-Key header. This is
+ * consumable by standard REST clients (ChatGPT custom GPT Actions, MCP servers),
+ * unlike Moodle's native server.php shape.
+ *
+ * The operation set and naming are generated from the aigenservice external service
+ * definition, so this spec and the aigen_rest.php dispatcher stay in sync
+ * automatically as functions are added or changed.
  *
  * @package mod_minilesson
  *
@@ -26,7 +37,6 @@ use mod_minilesson\constants;
 use core_external\external_api;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
-use core_external\external_value;
 
 define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true);
@@ -38,180 +48,96 @@ require_once($CFG->dirroot . '/webservice/lib.php');
 
 header('Content-Type: application/json; charset=utf-8');
 
+/**
+ * Map a Moodle PARAM_* type to an OpenAPI schema type.
+ *
+ * @param mixed $paramtype
+ * @return string
+ */
 function map_openapi_type($paramtype): string {
     switch ($paramtype) {
         case PARAM_INT:
             return 'integer';
-
         case PARAM_BOOL:
             return 'boolean';
-
         case PARAM_FLOAT:
             return 'number';
-
         default:
             return 'string';
     }
 }
 
-function build_schema_from_structure($structure, &$schemas, $name = '') {
-
+/**
+ * Build an OpenAPI schema (as a nested JSON object/array) from a Moodle external
+ * description structure. Unlike Moodle's native REST encoding, the facade takes a
+ * plain JSON body, so parameters map to natural nested JSON here.
+ *
+ * @param mixed $structure external_single_structure|external_multiple_structure|external_value
+ * @return array
+ */
+function build_schema_from_structure($structure): array {
     if ($structure instanceof external_single_structure) {
-
         $properties = [];
-
+        $required = [];
         foreach ($structure->keys as $key => $child) {
-            $properties[$key] = build_schema_from_structure(
-                $child,
-                $schemas,
-                ucfirst($key)
-            );
+            $properties[$key] = build_schema_from_structure($child);
+            if (isset($child->required) && !in_array($child->required, [VALUE_OPTIONAL, VALUE_DEFAULT])) {
+                $required[] = $key;
+            }
         }
-
-        return [
-            'type' => 'object',
-            'properties' => $properties,
-        ];
+        $schema = ['type' => 'object', 'properties' => $properties];
+        if (!empty($required)) {
+            $schema['required'] = $required;
+        }
+        return $schema;
     }
 
     if ($structure instanceof external_multiple_structure) {
-
         return [
             'type' => 'array',
-            'items' => build_schema_from_structure(
-                $structure->content,
-                $schemas,
-                $name . 'Item',
-            ),
+            'items' => build_schema_from_structure($structure->content),
         ];
     }
 
-    return [
-        'type' => map_openapi_type($structure->type ?? PARAM_TEXT),
-        'description' => $structure->desc ?? '',
-    ];
+    $schema = ['type' => map_openapi_type($structure->type ?? PARAM_TEXT)];
+    if (!empty($structure->desc)) {
+        $schema['description'] = $structure->desc;
+    }
+    return $schema;
 }
 
-function get_login_token_details() {
-    return [
-        'post' => [
-            'summary' => 'Get Moodle web service token',
-            'description' => 'Get Moodle web service token',
-            'operationId' => 'get_moodle_web_service_token',
-            'security' => [],
-            'requestBody' => [
-                'required' => true,
-                'content' => [
-                    'application/x-www-form-urlencoded' => [
-                        'schema' => [
-                            'type' => 'object',
-                            'properties' => [
-                                'username' => [
-                                    'type' => 'string',
-                                    'description' => 'Moodle username',
-                                ],
-                                'password' => [
-                                    'type' => 'string',
-                                    'description' => 'Moodle password',
-                                ],
-                                'service' => [
-                                    'type' => 'string',
-                                    'default' => 'aigenservice',
-                                    'description' => 'The Moodle web service name',
-                                ],
-                            ],
-                            'required' => ['username', 'password', 'service'],
-                        ],
-                    ],
-                ],
-            ],
-            'responses' => [
-                '200' => [
-                    'description' => 'Successful response (returns token or error details)',
-                    'content' => [
-                        'application/json' => [
-                            'schema' => [
-                                'type' => 'object',
-                                'properties' => [
-                                    'token' => [
-                                        'type' => 'string',
-                                        'description' => 'The web service token to pass as wstoken on subsequent calls',
-                                    ],
-                                    'privatetoken' => [
-                                        'type' => 'string',
-                                        'nullable' => true,
-                                    ],
-                                    'error' => [
-                                        'type' => 'string',
-                                    ],
-                                    'errorcode' => [
-                                        'type' => 'string',
-                                    ],
-                                    'stacktrace' => [
-                                        'type' => 'string',
-                                        'nullable' => true,
-                                    ],
-                                    'debuginfo' => [
-                                        'type' => 'string',
-                                        'nullable' => true,
-                                    ],
-                                    'reproductionlink' => [
-                                        'type' => 'string',
-                                        'nullable' => true,
-                                    ],
-                                ],
-                                'additionalProperties' => true,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ],
-    ];
-}
+// The clean facade base URL: the dispatcher script, which appends /<function>.
+$facadebase = $CFG->wwwroot . '/mod/minilesson/aigen_rest.php';
 
-
-// This is the procedural part where the code actually commences running
 $openapi = [
     'openapi' => '3.1.0',
-
     'info' => [
-        'title' => 'Moodle LMS',
+        'title' => 'Poodll MiniLesson aigen',
         'version' => '1.0.0',
-        'description' => 'AI Generation APIs',
+        'description' => 'AI generation and item import/export APIs for mod_minilesson, exposed as a clean REST '
+            . 'facade. Authenticate with your Moodle web service token in the X-API-Key header. Each operation is '
+            . 'POST /<function> with the function arguments as a JSON body.',
     ],
-
     'servers' => [
         [
-            'url' => $CFG->wwwroot . '/webservice/rest/server.php',
-            'description' => 'Moodle REST API',
+            'url' => $facadebase,
+            'description' => 'MiniLesson aigen REST facade',
         ],
     ],
-
     'paths' => [],
-
     'components' => [
         'securitySchemes' => [
-            'api_key' => [
+            'ApiKeyAuth' => [
                 'type' => 'apiKey',
-                'in' => 'query',
-                'name' => 'wstoken',
+                'in' => 'header',
+                'name' => 'X-API-Key',
+                'description' => 'A Moodle web service token for the aigenservice.',
             ],
         ],
-
-        'parameters' => [
-            'WSRestFormat' => [
-                'name' => 'moodlewsrestformat',
-                'in' => 'query',
-                'required' => false,
-                'schema' => [
-                    'type' => 'string',
-                    'default' => 'json',
-                ],
-            ],
-        ],
-
         'schemas' => [],
+    ],
+    'security' => [
+        ['ApiKeyAuth' => []],
     ],
 ];
 
@@ -222,166 +148,45 @@ $service = $DB->get_record('external_services', [
 ], '*', MUST_EXIST);
 
 $webservicemanager = new webservice();
-
 $functions = $webservicemanager->get_external_functions([$service->id]);
 
 foreach ($functions as $function) {
-
     $functioninfo = external_api::external_function_info($function->name);
 
-    // The path below is a bit of a hack and is not strictly valid, but claude and agents get it
-    // gpt will try to add it to the server url and fail though. so gpt wont work here
-    $path = '/' . $function->name;
-
-    $method = 'post';
-    if ($functioninfo->type == 'read'
-        && $function->name !== 'mod_minilesson_aigen_fetch_create_items_status') {
-        $method = 'get';
-    }
-
-    $parameters = [
-        [
-            'name' => 'wsfunction',
-            'in' => 'query',
-            'required' => true,
-            'schema' => [
-                'type' => 'string',
-                'default' => $function->name,
-            ],
-        ],
-        [
-            'name' => 'wstoken',
-            'in' => 'query',
-            'required' => true,
-            'schema' => [
-                'type' => 'string',
-            ],
-            'description' => 'Moodle web service token to auth requests',
-        ],
-        [
-            'name' => 'moodlewsrestformat',
-            'in' => 'query',
-            'required' => false,
-            'schema' => [
-                'type' => 'string',
-                'default' => 'json',
-            ],
-        ],
-    ];
-
-    $requestbodyproperties = [];
-    $requestbodyrequired = [];
-
-    if (!empty($functioninfo->parameters_desc->keys)) {
-
-        foreach ($functioninfo->parameters_desc->keys as $key => $param) {
-
-            $required = !in_array(
-                $param->required,
-                [VALUE_OPTIONAL, VALUE_DEFAULT]
-            );
-
-            $schema = build_schema_from_structure(
-                $param,
-                $openapi['components']['schemas'],
-                ucfirst($key)
-            );
-
-            if ($param instanceof external_single_structure) {
-
-                foreach ($param->keys as $subkey => $subparam) {
-
-                    $subrequired = !in_array(
-                        $subparam->required,
-                        [VALUE_OPTIONAL, VALUE_DEFAULT]
-                    );
-
-                    $requestbodyproperties[$key . '[' . $subkey . ']'] = [
-                        'type' => map_openapi_type(
-                            $subparam->type ?? PARAM_TEXT
-                        ),
-                        'description' => $subparam->desc ?? '',
-                    ];
-
-                    if ($subrequired) {
-                        $requestbodyrequired[] =
-                            $key . '[' . $subkey . ']';
-                    }
-                }
-            } else if ($param instanceof external_multiple_structure) {
-
-                if ($param->content instanceof external_value) {
-                    $requestbodyproperties[$key . '[]'] = [
-                        'type' => 'array',
-                        'items' => [
-                            'type' => map_openapi_type(
-                                $param->content->type ?? PARAM_TEXT
-                            ),
-                        ],
-                        'description' => $param->desc ?? '',
-                    ];
-
-                } else {
-
-                    $requestbodyproperties[$key . '[]'] = [
-                        'type' => 'array',
-                        'items' => build_schema_from_structure(
-                            $param->content,
-                            $openapi['components']['schemas'],
-                            ucfirst($key)
-                        ),
-                        'description' => $param->desc ?? '',
-                    ];
-                }
-
-                $requestbodyencoding[$key. '[]'] = [
-                    'style' => 'form',
-                    'explode' => true,
-                ];
-
-                if ($required) {
-                    $requestbodyrequired[] = $key . '[]';
-                }
-            } else {
-
-                $parameters[] = [
-                    'name' => $key,
-                    'in' => 'query',
-                    'required' => $required,
-                    'schema' => $schema,
-                    'description' => $param->desc ?? '',
-                ];
-            }
-        }
-    }
-
-    $schemaname = ucfirst(
-        str_replace('mod_minilesson_', '', $function->name)
-    ) . 'Response';
-
-    $responseschema = build_schema_from_structure(
-        $functioninfo->returns_desc,
-        $openapi['components']['schemas'],
-        $schemaname
-    );
-
-    $openapi['components']['schemas'][$schemaname] = $responseschema;
+    // Clean path: the function name without the component prefix. The dispatcher re-adds it.
+    $short = preg_replace('/^mod_minilesson_/', '', $function->name);
+    $path = '/' . $short;
 
     $operation = [
         'summary' => $functioninfo->description,
         'description' => $functioninfo->description,
-        'operationId' => $functioninfo->name,
-        'parameters' => $parameters,
-        'security' => [
-            ['api_key' => []],
-        ],
+        'operationId' => $function->name,
         'responses' => [
             '200' => [
-                'description' => 'Successful response',
+                'description' => 'Successful response.',
                 'content' => [
                     'application/json' => [
                         'schema' => [
-                            '$ref' => '#/components/schemas/' . $schemaname,
+                            'type' => 'object',
+                            'properties' => [
+                                'data' => $functioninfo->returns_desc !== null
+                                    ? build_schema_from_structure($functioninfo->returns_desc)
+                                    : ['description' => 'The function result.'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'default' => [
+                'description' => 'Error response.',
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'error' => ['type' => 'boolean'],
+                                'message' => ['type' => 'string'],
+                            ],
                         ],
                     ],
                 ],
@@ -389,68 +194,44 @@ foreach ($functions as $function) {
         ],
     ];
 
-    if (!empty($requestbodyproperties)) {
-
-        $requestbodyschema = [
-            'type' => 'object',
-            'properties' => $requestbodyproperties,
-        ];
-
-        if (!empty($requestbodyrequired)) {
-            $requestbodyschema['required'] = $requestbodyrequired;
-        }
-
+    // Request body: the function's arguments as a JSON object (only when it takes any).
+    if (!empty($functioninfo->parameters_desc->keys)) {
+        $bodyschema = build_schema_from_structure($functioninfo->parameters_desc);
         $operation['requestBody'] = [
-            'required' => true,
+            'required' => !empty($bodyschema['required']),
             'content' => [
-                'application/x-www-form-urlencoded' => [
-                    'schema' => $requestbodyschema,
+                'application/json' => [
+                    'schema' => $bodyschema,
                 ],
             ],
         ];
-
-        if (!empty($requestbodyencoding)) {
-            $operation['requestBody']['content']['application/x-www-form-urlencoded']['encoding'] = $requestbodyencoding;
-        }
     }
 
-    $openapi['paths'][$path] = [
-        $method => $operation,
-    ];
+    $openapi['paths'][$path] = ['post' => $operation];
 }
 
-// The login token path is a bit special (its not strictly speaking a web service but it is documented here)
-$openapi['paths']['/login/token.php'] = get_login_token_details();
-
+// Agent guidance. Standard OpenAPI x- extension, ignored by strict validators but read by agents.
 $agentinstructions = <<<JSON
 {
     "x-agent-instructions": {
-        "title": "Agent Workflow for Moodle AI Minilesson Generation APIs",
+        "title": "Agent workflow for the Poodll MiniLesson aigen APIs",
+        "entry_points": {
+            "summary": "User requests arrive as one of three kinds. Identify which, then follow the referenced workflow.",
+            "source_material": "The user uploads a PDF/doc/image or pastes a lesson plan and wants a lesson made from it. Reproduce it faithfully via direct_compose_workflow (OCR images/PDFs yourself first).",
+            "exported_lesson_as_template": "The user uploads an exported MiniLesson (itemsjson), or asks to base new lessons on an existing one, to reuse as a template for other topics. Follow base_lesson_replication. To reuse a lesson already on the site, pull it first with aigen_export_items_json.",
+            "described_lesson": "The user only describes the lesson they want (topic, skills, theme). Prefer typical_workflow: check list_templates first and use a template if one fits (templates can generate media server-side); fall back to direct_compose_workflow only if no template fits."
+        },
         "authentication": {
-            "step_1_obtain_token": "POST to {MOODLE_URL}/login/token.php with username, password, and service name 'aigenservice'",
-            "step_2_use_token": "Include wstoken parameter in all subsequent API calls",
-            "token_storage": "Store token securely using encrypted storage or environment variables",
-            "token_endpoint_response": {
-                "success": {
-                    "token": "string - the web service token to pass as wstoken on subsequent calls",
-                    "privatetoken": "string or null - secondary token used by some Moodle flows; usually ignored by API clients"
-                },
-                "error": {
-                    "error": "string - human-readable error message",
-                    "errorcode": "string - machine-readable code, e.g. 'invalidlogin', 'enablewsdescription'",
-                    "stacktrace": "string or null",
-                    "debuginfo": "string or null",
-                    "reproductionlink": "string or null"
-                },
-                "note": "HTTP status is 200 in both cases; distinguish success from failure by presence of 'token' vs 'errorcode'."
-            }
+            "how": "Send your Moodle web service token in the 'X-API-Key' request header on every call. Configure it once in your client.",
+            "getting_a_token": "Create a token in Moodle (Site administration > Server > Web services > Manage tokens) for the 'aigenservice', or POST username/password and service='aigenservice' to {MOODLE_URL}/login/token.php.",
+            "calls": "Every operation is POST /<function> (the function name without the 'mod_minilesson_' prefix), with the arguments as a JSON body. Read responses as {\\"data\\": ...} on success or {\\"error\\": true, \\"message\\": ...} on failure."
         },
         "choosing_your_approach": {
-            "summary": "There are two ways to create items in a lesson: (A) the template workflow (typical_workflow), where you pick a template and the server generates the content with AI; and (B) the direct-compose workflow (direct_compose_workflow), where you author the item JSON yourself and import it. Decide per lesson, and read this section before starting either workflow. You may also combine both in one lesson - see hybrid_pattern.",
+            "summary": "There are two ways to create items in a lesson: (A) the template workflow (typical_workflow), where you pick a template and the server generates the content with AI; and (B) the direct-compose workflow (direct_compose_workflow), where you author the item JSON yourself and import it. Decide per lesson. You may combine both in one lesson - see hybrid_pattern.",
             "prefer_templates_when": [
                 "A template returned by list_templates matches the request - check its description, skills and outputs before deciding no template fits",
                 "You want the content (text, questions, and any images) generated for you rather than authoring it yourself",
-                "The lesson needs generated images or audio: templates can produce media server-side (see each template's outputs.imagecount), whereas direct compose requires you to supply every media file yourself as base64",
+                "The lesson needs generated images or audio: templates can produce media server-side, whereas direct compose requires you to supply every media file yourself as base64",
                 "You just need a standard, well-formed lesson quickly and do not need precise control over each item"
             ],
             "prefer_direct_compose_when": [
@@ -466,115 +247,45 @@ $agentinstructions = <<<JSON
             ]
         },
         "typical_workflow": [
-            {
-                "step": 1,
-                "name": "List Item Types",
-                "call": "GET /mod_minilesson_aigen_list_itemtypes",
-                "purpose": "Discover the available item types and their descriptions to understand what each template can produce and to choose the right template for the user's request. Also read choosing_your_approach to decide between the template and direct-compose workflows",
-                "required_params": ["wstoken"]
-            },
-            {
-                "step": 2,
-                "name": "List Templates",
-                "call": "GET /mod_minilesson_aigen_list_templates",
-                "purpose": "Discover available AI generation templates",
-                "required_params": ["wstoken"]
-            },
-            {
-                "step": 3,
-                "name": "List Minilessons",
-                "call": "GET /mod_minilesson_aigen_list_minilessons",
-                "purpose": "See existing lessons in course (optional)",
-                "required_params": ["wstoken", "courseid"]
-            },
-            {
-                "step": 4,
-                "name": "Create Empty Lesson",
-                "call": "POST /mod_minilesson_aigen_create_empty_lesson",
-                "purpose": "Create empty lesson container",
-                "returns": "cmid (course module ID)",
-                "required_params": ["wstoken", "courseid", "title"]
-            },
-            {
-                "step": 5,
-                "name": "Create and Add Items",
-                "call": "POST /mod_minilesson_aigen_create_add_items_to_lesson",
-                "purpose": "Generate AI content and add to lesson",
-                "returns": "jobid (for tracking)",
-                "required_params": ["wstoken", "cmid", "templateid", "contextdata"]
-            },
-            {
-                "step": 6,
-                "name": "Check Status",
-                "call": "POST /mod_minilesson_aigen_fetch_create_items_status",
-                "purpose": "Poll job completion status",
-                "required_params": ["wstoken", "jobids[]"],
-                "polling": "Repeat every 2-5 seconds until status != 'Progress'"
-            }
+            {"step": 1, "name": "List item types", "call": "POST /aigen_list_itemtypes", "purpose": "Discover the available item types and what each can produce. Also read choosing_your_approach.", "body": {}},
+            {"step": 2, "name": "List templates", "call": "POST /aigen_list_templates", "purpose": "Discover available AI generation templates and their inputs.", "body": {}},
+            {"step": 3, "name": "List courses", "call": "POST /list_courses", "purpose": "Find the course to create the lesson in.", "body": {}},
+            {"step": 4, "name": "List minilessons", "call": "POST /aigen_list_minilessons", "purpose": "See existing lessons in a course (optional).", "body": {"courseid": "<id>"}},
+            {"step": 5, "name": "Create empty lesson", "call": "POST /aigen_create_empty_lesson", "purpose": "Create an empty lesson container.", "returns": "cmid", "body": {"courseid": "<id>", "title": "<title>"}},
+            {"step": 6, "name": "Create and add items", "call": "POST /aigen_create_add_items_to_lesson", "purpose": "Generate AI content and add it to the lesson.", "returns": "jobid", "body": {"cmid": "<cmid>", "templateid": "<id>", "contextdata": "<...>"}},
+            {"step": 7, "name": "Check status", "call": "POST /aigen_fetch_create_items_status", "purpose": "Poll job completion.", "polling": "Repeat every 2-5 seconds until status != 'Progress'.", "body": {"jobids": ["<jobid>"]}}
         ],
         "direct_compose_workflow": {
-            "purpose": "Alternative to the template based typical_workflow: compose the lesson item JSON yourself and import it. Use this when you (the agent) are designing the lesson content - e.g. converting an existing lesson plan, or when the user should review/adjust the proposed items before they are created. Only item types with hasimportdocs=true can be composed this way; use templates for the rest.",
+            "purpose": "Compose the lesson item JSON yourself and import it. Use when you are designing the content (e.g. converting a workbook page or lesson plan), or when the user should review items before they are created. Only item types with hasimportdocs=true can be composed this way.",
             "steps": [
-                {
-                    "step": 1,
-                    "name": "List Item Types",
-                    "call": "GET /mod_minilesson_aigen_list_itemtypes",
-                    "purpose": "Choose item types matching the lesson design: read each type's description, usage and skills, and check hasimportdocs",
-                    "required_params": ["wstoken"]
-                },
-                {
-                    "step": 2,
-                    "name": "Fetch Item Type Details",
-                    "call": "GET /mod_minilesson_aigen_fetch_item_type_details",
-                    "purpose": "For each chosen item type, fetch the import field spec: field names, types, allowed values and their meanings, file areas, and a complete example payload (examplejson - parse it). Compose your items strictly from the documented fields",
-                    "required_params": ["wstoken", "itemtype"]
-                },
-                {
-                    "step": 3,
-                    "name": "Create Empty Lesson",
-                    "call": "POST /mod_minilesson_aigen_create_empty_lesson",
-                    "purpose": "Create the lesson container",
-                    "returns": "cmid (course module ID)",
-                    "required_params": ["wstoken", "courseid", "title"]
-                },
-                {
-                    "step": 4,
-                    "name": "Import Items",
-                    "call": "POST /mod_minilesson_aigen_import_items_json",
-                    "purpose": "Submit the composed items as one payload: {\\"items\\": [...], \\"files\\": {...}}. Inspect the per-item errors array in the response, fix the rejected items and resubmit only those (imported items must not be resubmitted)",
-                    "required_params": ["wstoken", "cmid", "itemsjson"]
-                }
+                {"step": 1, "name": "List item types", "call": "POST /aigen_list_itemtypes", "purpose": "Choose item types matching the design; check hasimportdocs.", "body": {}},
+                {"step": 2, "name": "Fetch item type details", "call": "POST /aigen_fetch_item_type_details", "purpose": "For each chosen type, fetch its import field spec (fields, allowed values, file areas, examplejson). Compose items strictly from the documented fields.", "body": {"itemtype": "<type>"}},
+                {"step": 3, "name": "Create empty lesson", "call": "POST /aigen_create_empty_lesson", "purpose": "Create the lesson container.", "returns": "cmid", "body": {"courseid": "<id>", "title": "<title>"}},
+                {"step": 4, "name": "Import items", "call": "POST /aigen_import_items_json", "purpose": "Submit the composed items as one payload {\\"items\\": [...], \\"files\\": {...}} as the itemsjson argument. Inspect the per-item errors array, fix rejected items and resubmit only those (do not resubmit imported items).", "body": {"cmid": "<cmid>", "itemsjson": "<json string>"}}
             ]
         },
         "hybrid_pattern": {
-            "purpose": "Both workflows add items to the same lesson, identified by its cmid, so one lesson can mix both. Generate the bulk of the lesson with one or more templates, then append bespoke items you compose yourself (or vice versa).",
+            "purpose": "Both workflows add items to the same lesson (by cmid), so one lesson can mix both.",
             "how": [
-                "Create the lesson once with create_empty_lesson to get a cmid",
-                "Run the template workflow against that cmid (create_add_items_to_lesson, then poll status until done)",
-                "Then call import_items_json with the same cmid to append your directly-composed items",
-                "Each call appends its items after the items already in the lesson, so order your calls to get the item order you want"
+                "Create the lesson once with aigen_create_empty_lesson to get a cmid",
+                "Run the template workflow against that cmid (aigen_create_add_items_to_lesson, then poll status)",
+                "Then call aigen_import_items_json with the same cmid to append directly-composed items",
+                "Each call appends after the existing items, so order your calls to get the item order you want"
             ]
         },
         "base_lesson_replication": {
-            "when": "Only when the user gives you an exported lesson (the itemsjson from aigen_export_items_json) and asks for more lessons like it on other topics. Ignore this section otherwise.",
-            "purpose": "Reuse the exported payload as a ready-made template and produce one new lesson per topic by changing only the content.",
+            "when": "Only when the user gives you an exported lesson (itemsjson from aigen_export_items_json) and asks for more lessons like it on other topics.",
             "how": [
-                "Treat the exported itemsjson as a known-good example. Keep each item's type, layout, options and other settings exactly as they are, and rewrite only the wording (text, tts, questions, answers, sentences) for the new topic.",
-                "Do not supply audio files: spoken audio is regenerated from the text on import, so new wording produces new audio automatically.",
-                "Uploaded images will not match the new topic: any base64 files in the export are the original topic's images and cannot be regenerated. Drop them, keep them only if still suitable, or ask the user to provide new images.",
-                "For each topic, call create_empty_lesson to get a new cmid, then import_items_json with that cmid. Read the errors array and fix any rejected item (for example a correct-answer index or a gap marker that no longer matches the rewritten content) before moving on."
+                "Treat the exported itemsjson as a known-good example. Keep each item's type, layout, options and settings, and rewrite only the wording for the new topic.",
+                "Do not supply audio files: spoken audio is regenerated from the text on import.",
+                "Uploaded images will not match the new topic: drop them, keep only if still suitable, or ask the user for new ones.",
+                "For each topic, call aigen_create_empty_lesson for a new cmid, then aigen_import_items_json. Read the errors array and fix any rejected item before moving on."
             ]
         }
     }
 }
 JSON;
 
-$openapi = array_merge(
-    $openapi,
-    json_decode($agentinstructions, true)
-);
+$openapi = array_merge($openapi, json_decode($agentinstructions, true));
 
-echo json_encode(
-    $openapi,
-    JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES
-);
+echo json_encode($openapi, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
