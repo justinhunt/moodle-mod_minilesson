@@ -288,4 +288,10 @@ JSON;
 
 $openapi = array_merge($openapi, json_decode($agentinstructions, true));
 
+// An empty PHP array encodes as a JSON array ([]); components.schemas must be a JSON
+// object ({}) or the OpenAI custom GPT schema validator warns. Force an object when empty.
+if (empty($openapi['components']['schemas'])) {
+    $openapi['components']['schemas'] = new \stdClass();
+}
+
 echo json_encode($openapi, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
