@@ -34,18 +34,41 @@ use mod_minilesson\import;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class aigen_export_items_json extends external_api {
-
+    /**
+     * Describes the parameters for the export function.
+     *
+     * @return external_function_parameters
+     */
     public static function execute_parameters() {
         return new external_function_parameters([
             'cmid' => new external_value(PARAM_INT, 'Course Module ID'),
+            'exclude_files' => new external_value(
+                PARAM_BOOL,
+                'When true, each embedded media file\'s base64 content is replaced with the placeholder '
+                . '"QQQQ" (the files array, file areas and filenames are kept, only the bytes are dropped). '
+                . 'Set this to true when you do not need the actual media - to read or transform the lesson\'s '
+                . 'structure and text, to reuse the lesson as a template for other topics (where the original '
+                . 'images are dropped anyway), or to keep the response under a client size limit. Leave it false '
+                . '(the default) for a faithful, re-importable copy that includes the media.',
+                VALUE_DEFAULT,
+                false
+            ),
         ]);
     }
 
-    public static function execute($cmid) {
+    /**
+     * Exports a minilesson's items as a JSON string.
+     *
+     * @param int $cmid The course module id.
+     * @param bool $excludefiles When true, replace file base64 content with the "QQQQ" placeholder.
+     * @return array success flag and the items JSON.
+     */
+    public static function execute($cmid, $excludefiles = false) {
         global $DB;
 
         $params = self::validate_parameters(self::execute_parameters(), [
             'cmid' => $cmid,
+            'exclude_files' => $excludefiles,
         ]);
 
         $cm = get_coursemodule_from_id('minilesson', $params['cmid'], 0, false, MUST_EXIST);
@@ -59,12 +82,31 @@ class aigen_export_items_json extends external_api {
         $theimport = new import($moduleinstance, $modulecontext, $course, $cm);
         $itemsjson = $theimport->export_items(true);
 
+        // Optionally strip the (potentially large) base64 file bytes, keeping the files array shape.
+        // Same placeholder strategy as the AIGEN template flow (see aigen_uploadform.php).
+        if (!empty($params['exclude_files'])) {
+            $exportobj = json_decode($itemsjson);
+            if ($exportobj !== null && !empty($exportobj->files)) {
+                foreach ($exportobj->files as $fileareas) {
+                    foreach ($fileareas as $areaname => $filearea) {
+                        $fileareas->{$areaname} = array_fill_keys(array_keys((array) $filearea), 'QQQQ');
+                    }
+                }
+                $itemsjson = json_encode($exportobj, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+        }
+
         return [
             'success' => true,
             'itemsjson' => $itemsjson,
         ];
     }
 
+    /**
+     * Describes the return value of the export function.
+     *
+     * @return external_single_structure
+     */
     public static function execute_returns() {
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'True if export succeeded'),

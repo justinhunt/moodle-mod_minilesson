@@ -143,7 +143,7 @@ $agentinstructions = <<<JSON
         "entry_points": {
             "summary": "User requests arrive as one of three kinds. Identify which, then follow the referenced workflow.",
             "source_material": "The user uploads a PDF/doc/image or pastes a lesson plan and wants a lesson made from it. Reproduce it faithfully via direct_compose_workflow (OCR images/PDFs yourself first).",
-            "exported_lesson_as_template": "The user uploads an exported MiniLesson (itemsjson), or asks to base new lessons on an existing one, to reuse as a template for other topics. Follow base_lesson_replication. To reuse a lesson already on the site, pull it first with aigen_export_items_json.",
+            "exported_lesson_as_template": "The user uploads an exported MiniLesson (itemsjson), or asks to base new lessons on an existing one, to reuse as a template for other topics. Follow base_lesson_replication. To reuse a lesson already on the site, pull it first with aigen_export_items_json and set exclude_files=true (the original images are dropped for a new topic anyway, and it keeps the response small).",
             "described_lesson": "The user only describes the lesson they want (topic, skills, theme). Prefer typical_workflow: check list_templates first and use a template if one fits (templates can generate media server-side); fall back to direct_compose_workflow only if no template fits."
         },
         "authentication": {
@@ -201,6 +201,7 @@ $agentinstructions = <<<JSON
         "base_lesson_replication": {
             "when": "Only when the user gives you an exported lesson (itemsjson from aigen_export_items_json) and asks for more lessons like it on other topics.",
             "how": [
+                "If you pull the source lesson yourself, call aigen_export_items_json with exclude_files=true - you drop the original images for a new topic anyway, and it avoids an oversized response.",
                 "Treat the exported itemsjson as a known-good example. Keep each item's type, layout, options and settings, and rewrite only the wording for the new topic.",
                 "Do not supply audio files: spoken audio is regenerated from the text on import.",
                 "Uploaded images will not match the new topic: drop them, keep only if still suitable, or ask the user for new ones.",
