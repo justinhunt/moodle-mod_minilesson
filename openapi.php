@@ -17,26 +17,21 @@
 /**
  * OpenAPI spec generation for the clean aigen REST facade.
  *
- * Emits an OpenAPI 3.1 document describing the mod_minilesson aigen functions as
- * they are exposed by the clean REST facade (aigen_rest.php): one POST operation
- * per function, at /<function-without-mod_minilesson-prefix>, taking the function's
- * arguments as a JSON body and authenticated with an X-API-Key header. This is
- * consumable by standard REST clients (ChatGPT custom GPT Actions, MCP servers),
- * unlike Moodle's native server.php shape.
+ * Emits an OpenAPI 3.1 document describing the mod_minilesson aigen functions as they are
+ * exposed by the clean REST facade (aigen_rest.php): one POST operation per function, at
+ * /<function-without-mod_minilesson-prefix>, taking the function's arguments as a JSON body
+ * and authenticated with an X-API-Key header. Consumable by standard REST clients (ChatGPT
+ * custom GPT Actions, MCP servers), unlike Moodle's native server.php shape.
  *
- * The operation set and naming are generated from the aigenservice external service
- * definition, so this spec and the aigen_rest.php dispatcher stay in sync
- * automatically as functions are added or changed.
+ * The operation set, naming and schemas all come from \mod_minilesson\local\aigen\facade,
+ * which is shared with the aigen_rest.php and mcp.php front-ends, so they cannot drift.
  *
  * @package mod_minilesson
  *
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-use mod_minilesson\constants;
-use core_external\external_api;
-use core_external\external_multiple_structure;
-use core_external\external_single_structure;
+use mod_minilesson\local\aigen\facade;
 
 define('NO_DEBUG_DISPLAY', true);
 define('NO_MOODLE_COOKIES', true);
@@ -44,67 +39,8 @@ define('AJAX_SCRIPT', true);
 define('READ_ONLY_SESSION', true);
 
 require(dirname(__FILE__, 3) . '/config.php');
-require_once($CFG->dirroot . '/webservice/lib.php');
 
 header('Content-Type: application/json; charset=utf-8');
-
-/**
- * Map a Moodle PARAM_* type to an OpenAPI schema type.
- *
- * @param mixed $paramtype
- * @return string
- */
-function map_openapi_type($paramtype): string {
-    switch ($paramtype) {
-        case PARAM_INT:
-            return 'integer';
-        case PARAM_BOOL:
-            return 'boolean';
-        case PARAM_FLOAT:
-            return 'number';
-        default:
-            return 'string';
-    }
-}
-
-/**
- * Build an OpenAPI schema (as a nested JSON object/array) from a Moodle external
- * description structure. Unlike Moodle's native REST encoding, the facade takes a
- * plain JSON body, so parameters map to natural nested JSON here.
- *
- * @param mixed $structure external_single_structure|external_multiple_structure|external_value
- * @return array
- */
-function build_schema_from_structure($structure): array {
-    if ($structure instanceof external_single_structure) {
-        $properties = [];
-        $required = [];
-        foreach ($structure->keys as $key => $child) {
-            $properties[$key] = build_schema_from_structure($child);
-            if (isset($child->required) && !in_array($child->required, [VALUE_OPTIONAL, VALUE_DEFAULT])) {
-                $required[] = $key;
-            }
-        }
-        $schema = ['type' => 'object', 'properties' => $properties];
-        if (!empty($required)) {
-            $schema['required'] = $required;
-        }
-        return $schema;
-    }
-
-    if ($structure instanceof external_multiple_structure) {
-        return [
-            'type' => 'array',
-            'items' => build_schema_from_structure($structure->content),
-        ];
-    }
-
-    $schema = ['type' => map_openapi_type($structure->type ?? PARAM_TEXT)];
-    if (!empty($structure->desc)) {
-        $schema['description'] = $structure->desc;
-    }
-    return $schema;
-}
 
 // The clean facade base URL: the dispatcher script, which appends /<function>.
 $facadebase = $CFG->wwwroot . '/mod/minilesson/aigen_rest.php';
@@ -141,26 +77,14 @@ $openapi = [
     ],
 ];
 
-$service = $DB->get_record('external_services', [
-    'shortname' => 'aigenservice',
-    'component' => constants::M_COMPONENT,
-    'enabled' => 1,
-], '*', MUST_EXIST);
-
-$webservicemanager = new webservice();
-$functions = $webservicemanager->get_external_functions([$service->id]);
-
-foreach ($functions as $function) {
-    $functioninfo = external_api::external_function_info($function->name);
-
+foreach (facade::functions_info() as $name => $functioninfo) {
     // Clean path: the function name without the component prefix. The dispatcher re-adds it.
-    $short = preg_replace('/^mod_minilesson_/', '', $function->name);
-    $path = '/' . $short;
+    $path = '/' . facade::short_name($name);
 
     $operation = [
         'summary' => $functioninfo->description,
         'description' => $functioninfo->description,
-        'operationId' => $function->name,
+        'operationId' => $name,
         'responses' => [
             '200' => [
                 'description' => 'Successful response.',
@@ -170,7 +94,7 @@ foreach ($functions as $function) {
                             'type' => 'object',
                             'properties' => [
                                 'data' => $functioninfo->returns_desc !== null
-                                    ? build_schema_from_structure($functioninfo->returns_desc)
+                                    ? facade::build_schema_from_structure($functioninfo->returns_desc)
                                     : ['description' => 'The function result.'],
                             ],
                         ],
@@ -196,7 +120,7 @@ foreach ($functions as $function) {
 
     // Request body: the function's arguments as a JSON object (only when it takes any).
     if (!empty($functioninfo->parameters_desc->keys)) {
-        $bodyschema = build_schema_from_structure($functioninfo->parameters_desc);
+        $bodyschema = facade::build_schema_from_structure($functioninfo->parameters_desc);
         $operation['requestBody'] = [
             'required' => !empty($bodyschema['required']),
             'content' => [
@@ -211,6 +135,7 @@ foreach ($functions as $function) {
 }
 
 // Agent guidance. Standard OpenAPI x- extension, ignored by strict validators but read by agents.
+// phpcs:disable moodle.Files.LineLength -- Embedded agent-guidance JSON is kept as readable long lines.
 $agentinstructions = <<<JSON
 {
     "x-agent-instructions": {
@@ -285,6 +210,7 @@ $agentinstructions = <<<JSON
     }
 }
 JSON;
+// phpcs:enable moodle.Files.LineLength
 
 $openapi = array_merge($openapi, json_decode($agentinstructions, true));
 
