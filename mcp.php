@@ -106,6 +106,12 @@ function mcp_instructions(): string {
         '(3) A DESCRIBED LESSON: check aigen_list_templates first and use a template if one fits',
         '(templates can generate media); only hand-compose if none fits.',
         'Only item types where aigen_list_itemtypes reports hasimportdocs=true can be hand-composed.',
+        'PLAN FIRST: before calling any tool that creates or imports (aigen_create_empty_lesson,',
+        'aigen_create_add_items_to_lesson, aigen_import_items_json), show the user a plan and wait for',
+        'their approval. For direct-compose, list each item with its actual content (question, answers,',
+        'text); for templates, show the template and the inputs (topic, level, theme, keywords); and state',
+        'the target course/title. Create only after they approve, and fold in any changes they request.',
+        'Exception: if the user has said to just go ahead (or to skip the review), create without pausing.',
         'After importing, read the per-item errors array and resubmit only the rejected items.',
     ]);
 }

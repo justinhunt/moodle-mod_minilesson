@@ -146,6 +146,10 @@ $agentinstructions = <<<JSON
             "exported_lesson_as_template": "The user uploads an exported MiniLesson (itemsjson), or asks to base new lessons on an existing one, to reuse as a template for other topics. Follow base_lesson_replication. To reuse a lesson already on the site, pull it first with aigen_export_items_json and set exclude_files=true (the original images are dropped for a new topic anyway, and it keeps the response small).",
             "described_lesson": "The user only describes the lesson they want (topic, skills, theme). Prefer typical_workflow: check list_templates first and use a template if one fits (templates can generate media server-side); fall back to direct_compose_workflow only if no template fits."
         },
+        "review_before_creating": {
+            "rule": "Before calling any tool that creates or imports (aigen_create_empty_lesson, aigen_create_add_items_to_lesson, aigen_import_items_json), present a plan and wait for the user's approval. For direct-compose, list each item with its actual content (question, answers, text). For templates, show the chosen template and the inputs (topic, level, theme, keywords). State the target course and lesson title. Create only after the user approves, and incorporate any changes they request.",
+            "exception": "If the user has said to just go ahead, or to skip the review, create without pausing."
+        },
         "authentication": {
             "how": "Send your Moodle web service token in the 'X-API-Key' request header on every call. Configure it once in your client.",
             "getting_a_token": "Create a token in Moodle (Site administration > Server > Web services > Manage tokens) for the 'aigenservice', or POST username/password and service='aigenservice' to {MOODLE_URL}/login/token.php.",
