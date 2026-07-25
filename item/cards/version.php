@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'minilessonitem_cards';
 $plugin->release      = '1.0';
-$plugin->version      = 2026060500;
+$plugin->version      = 2026072500;
 $plugin->requires     = 2023100900;
 $plugin->supported    = [403, 502];
 $plugin->maturity     = MATURITY_STABLE;

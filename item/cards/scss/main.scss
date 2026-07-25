@@ -91,6 +91,10 @@
         width: 100%;
         display: flex;
         flex-direction: column;
+        // The Swiper viewport clips to the active card. Swiper's own stylesheet says the same
+        // thing, but repeating it here means the carousel still reads as a single card on any
+        // path that renders this markup without that stylesheet (e.g. the authoring preview).
+        overflow: hidden;
         background-image: url([[pix:minilessonitem_cards|sliderbg]]);
         background-repeat: no-repeat;
         background-size: cover;
@@ -194,6 +198,15 @@
             justify-items: center;
             margin-bottom: 0px;
             padding: 0;
+            width: 100%;
+
+            // One slide fills the viewport, and slides never shrink to fit alongside each other.
+            // Swiper applies the same sizing once it initialises; stating it up front stops the
+            // cards being laid out side by side in the meantime.
+            > li {
+                flex-shrink: 0;
+                width: 100%;
+            }
         }
 
         .roundmini-audio-player {

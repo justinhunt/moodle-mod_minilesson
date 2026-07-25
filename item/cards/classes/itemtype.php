@@ -38,6 +38,21 @@ class itemtype extends item {
     protected $needsspeechrec = false;
 
     /**
+     * Load the (locally shipped) Swiper CSS in the page head. The carousel markup relies on
+     * these rules to clip to a single card, and this item's own stylesheet makes the slide list
+     * a flex row from first paint, so fetching the Swiper CSS lazily would leave a window in
+     * which every card is laid out side by side. The Swiper library itself is still loaded
+     * lazily by this item's JS (amd/src/itemtype.js).
+     *
+     * @param \moodle_page $page The page to add requirements to.
+     * @return void
+     */
+    #[Override]
+    public static function page_requirements(\moodle_page $page) {
+        $page->requires->css(new \moodle_url('/mod/minilesson/item/cards/css/swiper-bundle.min.css'));
+    }
+
+    /**
      * Export the data for the mustache template.
      *
      * @param \renderer_base $output renderer to be used to render the action bar elements.
