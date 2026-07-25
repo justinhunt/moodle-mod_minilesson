@@ -1,0 +1,37 @@
+{
+  "dxt_version": "0.1",
+  "name": "poodll-minilesson",
+  "display_name": "Poodll MiniLesson",
+  "version": "1.0.0",
+  "description": "Create and manage Poodll MiniLessons on your Moodle site from Claude, using the aigen APIs.",
+  "author": {
+    "name": "Poodll"
+  },
+  "server": {
+    "type": "node",
+    "entry_point": "relay.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/relay.js"],
+      "env": {
+        "MOODLE_MCP_URL": "${user_config.moodle_url}",
+        "MOODLE_MCP_TOKEN": "${user_config.token}"
+      }
+    }
+  },
+  "user_config": {
+    "moodle_url": {
+      "type": "string",
+      "title": "Moodle site URL",
+      "description": "Your Moodle site base URL, e.g. https://school.example.com (no trailing slash).",
+      "required": true
+    },
+    "token": {
+      "type": "string",
+      "title": "Web service token",
+      "description": "An aigenservice web service token (Site administration > Server > Web services > Manage tokens).",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}

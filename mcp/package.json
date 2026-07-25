@@ -1,0 +1,8 @@
+{
+  "name": "poodll-minilesson-mcp",
+  "version": "1.0.0",
+  "description": "stdio<->HTTP MCP relay for the Poodll MiniLesson aigen endpoint (Claude Desktop extension).",
+  "main": "relay.js",
+  "license": "GPL-3.0-or-later",
+  "private": true
+}
