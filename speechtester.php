@@ -126,24 +126,8 @@ if ($stt_guided && $language == $moduleinstance->ttslanguage) {
     if ($longestitem) {
         $tdata['passagehash'] = $longesthash;
         $theitem = utils::fetch_item_from_itemrecord($longestitem, $moduleinstance, $modulecontext);
-        switch ($longestitem->type) {
-            case constants::TYPE_LGAPFILL:
-            case constants::TYPE_TGAPFILL:
-            case constants::TYPE_SGAPFILL:
-                $sentences = [];
-                $longesttext = "";
-                if (isset($longestitem->customtext1)) {
-                    $sentences = explode(PHP_EOL, $longestitem->customtext1);
-                    $sentencedatas = $theitem->parse_gapfill_sentences($sentences);
-                    foreach ($sentencedatas as $sentencedata) {
-                        $longesttext .= $sentencedata->sentence . '<br/>';
-                    }
-                }
-                break;
-            case constants::TYPE_LISTENREPEAT:
-            case constants::TYPE_SPEECHCARDS:
-            default:
-                break;
+        if ($theitem) {
+            $longesttext = $theitem->get_speechtester_text($longestitem, $longesttext);
         }
         $tdata['guidedusetext'] = $longesttext;
     }

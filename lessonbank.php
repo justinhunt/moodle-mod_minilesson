@@ -126,9 +126,9 @@ $searchform = new lessonbank_form($moduleinstance->ttslanguage);
 
 // Build item type icon map: label → icon URL.
 $itemtypeiconmap = [];
-foreach (constants::ITEMTYPES as $itemtype) {
-    $label = get_string($itemtype, constants::M_COMPONENT);
-    $iconurl = $OUTPUT->image_url('icon', 'minilessonitem_' . $itemtype)->out(false);
+foreach (utils::fetch_itemtypes() as $itemtype) {
+    $label = utils::get_subitem_name($itemtype);
+    $iconurl = $OUTPUT->image_url('icon', utils::get_sub_component($itemtype))->out(false);
     $itemtypeiconmap[$label] = $iconurl;
 }
 

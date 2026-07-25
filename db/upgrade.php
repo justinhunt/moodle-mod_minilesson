@@ -1229,5 +1229,31 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026071600, 'minilesson');
     }
 
+    if ($oldversion < 2026072500) {
+        // Item types used to be enabled by an allow list ('enableditems') held by the parent
+        // plugin, which meant an item type not named in that list - in particular a third party
+        // one - was invisible until an admin turned it on, and was switched off again whenever
+        // MiniLesson reseeded the list on upgrade. Item types are now enabled unless explicitly
+        // disabled, and the flag lives in the item type's own config namespace. Carry the
+        // existing choices over by disabling whatever the allow list left out.
+        // An unset or empty allow list meant "everything is enabled" under the old scheme, which
+        // is what the new scheme gives us for free, so there is only work to do when it has
+        // entries.
+        $enableditems = get_config(constants::M_MODNAME, 'enableditems');
+        if (!empty($enableditems)) {
+            $enabled = explode(',', $enableditems);
+            foreach (utils::fetch_itemtypes() as $itemtype) {
+                if (!in_array($itemtype, $enabled)) {
+                    set_config('disabled', 1, utils::get_sub_component($itemtype));
+                }
+            }
+        }
+        unset_config('enableditems', constants::M_MODNAME);
+        core_plugin_manager::reset_caches();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026072500, 'minilesson');
+    }
+
     return true;
 }

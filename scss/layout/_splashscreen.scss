@@ -1,8 +1,10 @@
 @use '../abstracts/variables' as *;
 
-// Box styling for splashscreen containers and activity wrappers
-:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box,.shadow-item-box,.wordcards-item-box) .activity-wrapper,
-:is(.freespeaking-item-box,.freewriting-item-box,.scatter-item-box,.audiochat-item-box,.shadow-item-box,.wordcards-item-box) .startmodule_splashscreen {
+// Box styling for splashscreen containers and activity wrappers.
+// Item types opt in by overriding item::uses_boxed_layout(), which adds .ml_item_boxed - do not
+// list item type names here.
+.ml_item_boxed .activity-wrapper,
+.ml_item_boxed .startmodule_splashscreen {
   box-shadow: $main-shadow;
   position: relative;
   margin: auto;

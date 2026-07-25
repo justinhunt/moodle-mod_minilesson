@@ -1310,81 +1310,43 @@ function mod_minilesson_output_fragment_ai_prompt($args)
 }
 
 /**
- * Renders preview slides from markdown input
+ * Renders an item type's preview of unsaved authoring form data.
  *
+ * The item type does the rendering (see item::render_preview()), so this stays generic and any
+ * item type can offer a preview without lib.php knowing anything about it.
+ *
+ * @param array $args Must carry 'itemtype' and the serialised 'formdata'.
+ * @return string HTML fragment
+ */
+function minilesson_output_fragment_preview_item($args)
+{
+    global $CFG;
+    require_once($CFG->libdir . '/externallib.php');
+    $args = (object) $args;
+
+    $itemtypeclass = \mod_minilesson\utils::fetch_itemtype_classname($args->itemtype ?? '');
+    if (!$itemtypeclass) {
+        return '';
+    }
+
+    $formdata = [];
+    parse_str($args->formdata, $formdata);
+    return $itemtypeclass::render_preview($formdata);
+}
+
+/**
+ * Renders preview slides from markdown input.
+ *
+ * @deprecated Use the generic 'preview_item' fragment instead. Kept so that any cached or third
+ * party caller of the old fragment name keeps working.
  * @param array $args
  * @return string HTML fragment
  */
 function minilesson_output_fragment_preview_slides($args)
 {
-    global $CFG, $OUTPUT;
-    require_once($CFG->libdir . '/externallib.php');
-    $formdata = [];
-    $args = (object) $args;
-    parse_str($args->formdata, $formdata);
-
-    $imageserveurl = moodle_url::make_draftfile_url(
-        $formdata[constants::FILEANSWER . '1'],
-        '/',
-        '{filename}'
-    );
-
-    $testitem = new stdClass();
-    $testitem->inajax = AJAX_SCRIPT;
-    $slidescontenttype = $formdata[\minilessonitem_slides\itemtype::CONTENTTYPE] ?? \minilessonitem_slides\itemtype::CONTENTTYPE_MARKDOWN;
-    $slidescontent = $formdata[\minilessonitem_slides\itemtype::MARKDOWN];
-
-    if ($slidescontenttype == \minilessonitem_slides\itemtype::CONTENTTYPE_MARKDOWN) {
-        $testitem->slidesmarkdown = preg_replace_callback(
-            '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
-            function ($matches) use ($imageserveurl) {
-                $filename = trim($matches['filename']);
-
-                // Skip if it's already a full URL (http/https).
-                if (preg_match('/^https?:\/\//', $filename)) {
-                    return $matches[0];
-                }
-
-                // Add base path (and escape spaces if needed).
-                $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
-
-                // Replace only the filename part.
-                return str_replace($filename, $newsrc, $matches[0]);
-            },
-            $slidescontent
-        );
-
-        // Standardize markdown output, applying layout formatting, before rendering the preview template.
-        $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::sanitize_markdown($testitem->slidesmarkdown);
-        $testitem->slidesmarkdown = \minilessonitem_slides\itemtype::process_layout_markdown($testitem->slidesmarkdown);
-    } else {
-        // HTML mode.
-        $testitem->slidesmarkdown = preg_replace_callback(
-            '/(src|data-background-image)=\"(?<filename>.*?)\"/',
-            function ($matches) use ($imageserveurl) {
-                $filename = trim($matches['filename']);
-
-                // Skip if it's already a full URL (http/https).
-                if (preg_match('/^https?:\/\//', $filename)) {
-                    return $matches[0];
-                }
-
-                // Add base path (and escape spaces if needed).
-                $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
-
-                // Replace only the filename part.
-                return str_replace($filename, $newsrc, $matches[0]);
-            },
-            $slidescontent
-        );
-    }
-
-    $testitem->slidescontenttype = $slidescontenttype;
-    $testitem->ishtml = $slidescontenttype == \minilessonitem_slides\itemtype::CONTENTTYPE_HTML;
-    $testitem->selectedtheme = $formdata[\minilessonitem_slides\itemtype::SLIDETHEME];
-    $testitem->selectedfontsize = $formdata[\minilessonitem_slides\itemtype::SLIDEFONTSIZE];
-
-    return $OUTPUT->render_from_template('minilessonitem_slides' . '/slidesinner', $testitem);
+    $args = (array) $args;
+    $args['itemtype'] = \mod_minilesson\constants::TYPE_SLIDES;
+    return minilesson_output_fragment_preview_item($args);
 }
 
 /**

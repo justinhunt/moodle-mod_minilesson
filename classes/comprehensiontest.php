@@ -68,10 +68,24 @@ class comprehensiontest
         }
     }
 
-    public function has_slides_items()
+    /**
+     * Let every item type used in this lesson add whatever it needs to the page (most often CSS
+     * or JS the item type ships itself). Asking the item types rather than naming them here
+     * means a new item type can carry its own page requirements.
+     *
+     * @param \moodle_page $page The page to add requirements to.
+     * @return void
+     */
+    public function add_item_page_requirements(\moodle_page $page)
     {
         global $DB;
-        return $DB->count_records(constants::M_QTABLE, ['minilesson' => $this->mod->id, 'type' => constants::TYPE_SLIDES]) > 0;
+        $types = $DB->get_fieldset_select(constants::M_QTABLE, 'DISTINCT type', 'minilesson = ?', [$this->mod->id]);
+        foreach ($types as $type) {
+            $itemtypeclass = utils::fetch_itemtype_classname($type);
+            if ($itemtypeclass) {
+                $itemtypeclass::page_requirements($page);
+            }
+        }
     }
 
     public function fetch_latest_attempt($userid)

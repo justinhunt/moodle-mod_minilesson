@@ -16,6 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 /**
  * This file replaces the legacy STATEMENTS section in db/install.xml,
@@ -41,13 +42,9 @@ function xmldb_minilesson_install()
         \mod_minilesson\aigen::create_default_templates();
     }
     // Add any other post-installation tasks here.
-    $qtypes = constants::ITEMTYPES;
-    //remove dictation chat
-    $key = array_search('dictationchat', $qtypes);
-    if ($key !== false) {
-        unset($qtypes[$key]);
-    }
-    set_config('enableditems', implode(',', $qtypes), 'minilesson');
+    // Item types are enabled unless explicitly disabled, so there is no list of enabled item
+    // types to seed here - we only need to record the ones that ship turned off.
+    set_config('disabled', 1, utils::get_sub_component(constants::TYPE_DICTATIONCHAT));
 }
 
 /**

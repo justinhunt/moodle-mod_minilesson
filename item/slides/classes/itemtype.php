@@ -35,6 +35,82 @@ class itemtype extends item {
     /** @var bool this item type produces no grade/result. */
     public $gradeable = false;
 
+    /**
+     * Load the (locally shipped) reveal.js CSS. The theme CSS is loaded lazily by this item's JS
+     * (amd/src/reveal.js) from the same local css directory.
+     *
+     * @param \moodle_page $page The page to add requirements to.
+     * @return void
+     */
+    public static function page_requirements(\moodle_page $page) {
+        $page->requires->css(new \moodle_url('/mod/minilesson/item/slides/css/reveal.min.css'));
+    }
+
+    /**
+     * Render a preview of the slides from unsaved authoring form data. Images are still in the
+     * draft file area at this point, so their filenames are rewritten to draft file URLs.
+     *
+     * @param array $formdata The parsed authoring form data.
+     * @return string HTML fragment
+     */
+    public static function render_preview($formdata) {
+        global $OUTPUT;
+
+        $imageserveurl = moodle_url::make_draftfile_url(
+            $formdata[constants::FILEANSWER . '1'],
+            '/',
+            '{filename}'
+        );
+
+        // Rewrite a relative filename in the matched markup to its draft file URL, leaving
+        // anything that is already an absolute URL alone.
+        $rewritefilename = function ($matches) use ($imageserveurl) {
+            $filename = trim($matches['filename']);
+
+            // Skip if it's already a full URL (http/https).
+            if (preg_match('/^https?:\/\//', $filename)) {
+                return $matches[0];
+            }
+
+            // Add base path (and escape spaces if needed).
+            $newsrc = str_replace('{filename}', rawurlencode($filename), urldecode($imageserveurl));
+
+            // Replace only the filename part.
+            return str_replace($filename, $newsrc, $matches[0]);
+        };
+
+        $testitem = new \stdClass();
+        $testitem->inajax = AJAX_SCRIPT;
+        $slidescontenttype = $formdata[self::CONTENTTYPE] ?? self::CONTENTTYPE_MARKDOWN;
+        $slidescontent = $formdata[self::MARKDOWN];
+
+        if ($slidescontenttype == self::CONTENTTYPE_MARKDOWN) {
+            $testitem->slidesmarkdown = preg_replace_callback(
+                '/!\[[^\]]*\]\((?<filename>.*?)(?=\"|\))(?<optionalpart>\".*\")?\)/',
+                $rewritefilename,
+                $slidescontent
+            );
+
+            // Standardize markdown output, applying layout formatting, before rendering the preview template.
+            $testitem->slidesmarkdown = self::sanitize_markdown($testitem->slidesmarkdown);
+            $testitem->slidesmarkdown = self::process_layout_markdown($testitem->slidesmarkdown);
+        } else {
+            // HTML mode.
+            $testitem->slidesmarkdown = preg_replace_callback(
+                '/(src|data-background-image)=\"(?<filename>.*?)\"/',
+                $rewritefilename,
+                $slidescontent
+            );
+        }
+
+        $testitem->slidescontenttype = $slidescontenttype;
+        $testitem->ishtml = $slidescontenttype == self::CONTENTTYPE_HTML;
+        $testitem->selectedtheme = $formdata[self::SLIDETHEME];
+        $testitem->selectedfontsize = $formdata[self::SLIDEFONTSIZE];
+
+        return $OUTPUT->render_from_template(self::get_component() . '/slidesinner', $testitem);
+    }
+
     public const MARKDOWN = 'customtext1';
     public const FULLSCREEN = 'customint1';
     public const MARKDOWN_DEFAULT = "# Slide 1 Title\n\nYour content here. Use markdown syntax to format text and add images.\n\n---\n\n# Slide 2 Title\n\nMore content here. You can add as many slides as you need.\n";

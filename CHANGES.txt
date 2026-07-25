@@ -1,5 +1,20 @@
+Version 1.1.44 (Build 2026072500)
+- Item types are now enabled unless explicitly disabled, so a newly installed item type works
+  immediately and is no longer switched off by a MiniLesson update
+- Item types are discovered from the installed subplugins rather than a list in the parent plugin,
+  and each item type now supplies its own display name
+- Added the missing admin capability and sesskey checks to the enable/disable item type action
+- Item types now declare their own behaviour (experimental, layout, AI grading, translation, page
+  requirements, splash screen styling) instead of the parent plugin special-casing them by name
+- Authoring form previews are now generic: an item type renders its own preview, so the slides
+  preview no longer lives in the parent plugin's lib.php
+- An item type can now be uninstalled if no lesson uses it (previously never)
+
 Version 1.1.43 (Build 2026071800)
 - Added new APIs for agents so they can create import files directly
+- Fixed issue with word counter in free speaking item when using AssemblyAI
+- Added support for MCP and Custom GPT by refactoring openapi.php (see https://support.poodll.com/en/support/solutions/articles/19000175579-using-ai-agents-to-generate-minilessons)
+- various AIGEN template tweaks
 
 Version 1.1.42 (Build 2026071600)
 - Added new item type multichoice quiz

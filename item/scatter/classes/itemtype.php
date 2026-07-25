@@ -33,6 +33,15 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_VOCABULARY];
 
+    /**
+     * This item type has a splash screen, drawn as a centred white card.
+     *
+     * @return bool
+     */
+    public function uses_boxed_layout() {
+        return true;
+    }
+
     public const ALLOWRETRY = 'customint4';
 
 

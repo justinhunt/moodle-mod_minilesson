@@ -100,10 +100,10 @@ class lessonbank_form {
      */
     private function get_itemtypes(): array {
         $itemtypes = [];
-        foreach (constants::ITEMTYPES as $itemtype) {
+        foreach (utils::fetch_itemtypes() as $itemtype) {
             $itemtypes[] = [
                 'value' => $itemtype,
-                'label' => get_string($itemtype, constants::M_COMPONENT),
+                'label' => utils::get_subitem_name($itemtype),
             ];
         }
         return $itemtypes;

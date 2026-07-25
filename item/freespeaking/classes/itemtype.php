@@ -34,6 +34,23 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_SPEAKING];
 
+    /**
+     * A free speaking response can be given to later items as context.
+     *
+     * @return bool
+     */
+    public static function produces_student_text() {
+        return true;
+    }
+
+    /**
+     * This item type has a splash screen, drawn as a centred white card.
+     *
+     * @return bool
+     */
+    public function uses_boxed_layout() {
+        return true;
+    }
 
     public const TOPIC = 'customtext5';
     public const AIDATA1 = 'customdata1';

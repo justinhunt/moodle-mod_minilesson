@@ -32,6 +32,15 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_SPEAKING, constants::SKILL_LISTENING];
 
+    /**
+     * This item type has a splash screen, drawn as a centred white card.
+     *
+     * @return bool
+     */
+    public function uses_boxed_layout() {
+        return true;
+    }
+
     /** Default image avatar */
     public const DEFAULT_AVATAR = 'cutepoodll_small.png';
 

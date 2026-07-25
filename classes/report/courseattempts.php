@@ -162,11 +162,11 @@ class courseattempts extends basereport
                     $thedata->itemcount = 0;
                     $thedata->correctcount = 0;
                 foreach ($results as $result) {
+                    // $results only holds steps that carry a grade, so ungraded item types
+                    // (e.g. content pages) are already excluded.
                     $result->type = $quizdata[$result->index]->type;
-                    if ($result->type !== constants::TYPE_PAGE) {
-                        $thedata->itemcount += $result->totalitems ;
-                        $thedata->correctcount += $result->correctitems;
-                    }
+                    $thedata->itemcount += $result->totalitems ;
+                    $thedata->correctcount += $result->correctitems;
                 }
 
                     //$this->rawdata = $results;

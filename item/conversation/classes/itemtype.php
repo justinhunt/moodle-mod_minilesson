@@ -33,6 +33,15 @@ class itemtype extends item
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_SPEAKING, constants::SKILL_LISTENING];
 
+    /**
+     * This item type is experimental.
+     *
+     * @return bool
+     */
+    public static function is_experimental() {
+        return true;
+    }
+
     //the item type
     /**
      * Export the data for the mustache template.

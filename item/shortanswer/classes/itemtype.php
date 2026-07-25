@@ -33,6 +33,14 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_LISTENING, constants::SKILL_SPEAKING];
 
+    /**
+     * A short answer item stays stacked vertically however much content it carries.
+     *
+     * @return bool
+     */
+    public function autolayout_prefers_vertical() {
+        return true;
+    }
 
     public const PARTIALLYRESPONSE = 'customtext3';
     public const TOTALMARKS = 'customint1';

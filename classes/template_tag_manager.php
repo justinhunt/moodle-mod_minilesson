@@ -77,36 +77,16 @@ class template_tag_manager {
     }
 
     /**
-     * get itrmtype tags
+     * Get the item type tags.
+     *
+     * These are the tags that identify a lesson template by the item types it uses, so this
+     * covers every installed item type (including disabled ones, whose tags may still be stored
+     * against existing templates).
+     *
      * @return array
      */
     public static function get_itemtype_tags() {
-        return [
-            constants::TYPE_MULTICHOICE,
-            constants::TYPE_MULTIAUDIO,
-            constants::TYPE_DICTATIONCHAT,
-            constants::TYPE_DICTATION,
-            constants::TYPE_SPEECHCARDS,
-            constants::TYPE_LISTENREPEAT,
-            constants::TYPE_PAGE,
-            constants::TYPE_SHORTANSWER,
-            constants::TYPE_SGAPFILL,
-            constants::TYPE_LGAPFILL,
-            constants::TYPE_TGAPFILL,
-            constants::TYPE_PGAPFILL,
-            constants::TYPE_SPACEGAME,
-            constants::TYPE_FREEWRITING,
-            constants::TYPE_FREESPEAKING,
-            constants::TYPE_FLUENCY,
-            constants::TYPE_PASSAGEREADING,
-            constants::TYPE_AUDIOCHAT,
-            constants::TYPE_WORDSHUFFLE,
-            constants::TYPE_SCATTER,
-            constants::TYPE_SLIDES,
-            constants::TYPE_FICTION,
-            constants::TYPE_CARDS,
-            constants::TYPE_SHADOW,
-        ];
+        return utils::fetch_itemtypes();
     }
 
     /**

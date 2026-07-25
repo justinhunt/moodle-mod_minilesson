@@ -687,6 +687,15 @@ class constants {
 
     const MAX_AI_PROMPTS = 6;
 
+    /**
+     * The item types that ship with MiniLesson.
+     *
+     * This is NOT the list of item types available on a site and must not be used as one - item
+     * types are subplugins, so a site can have item types that are not listed here, and listing
+     * an item type here does not install it. To enumerate item types use
+     * {@see \mod_minilesson\utils::fetch_itemtypes()}, which reads the installed subplugins.
+     * Retained for reference and for backwards compatibility with existing callers.
+     */
     const ITEMTYPES = [
         self::TYPE_PAGE,
         self::TYPE_MULTICHOICE,
@@ -712,6 +721,7 @@ class constants {
         self::TYPE_SLIDES,
         self::TYPE_FICTION,
         self::TYPE_SHADOW,
+        self::TYPE_CARDS,
         self::TYPE_WORDCARDS,
         self::TYPE_MULTICHOICEQUIZ,
       // constants::TYPE_SMARTFRAME,

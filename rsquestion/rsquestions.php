@@ -38,10 +38,8 @@ $minilesson = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_E
 $comprehensiontest = new \mod_minilesson\comprehensiontest($cm);
 $items = $comprehensiontest->fetch_items();
 
-// If we have slides, load the (locally shipped) reveal.js CSS.
-if ($comprehensiontest->has_slides_items()) {
-    $PAGE->requires->css(new moodle_url('/mod/minilesson/item/slides/css/reveal.min.css'));
-}
+// Let the item types used in this lesson add their own page requirements (CSS/JS they ship).
+$comprehensiontest->add_item_page_requirements($PAGE);
 
 // Mode is necessary for tabs.
 $mode = 'rsquestions';

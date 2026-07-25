@@ -32,12 +32,18 @@ use moodle_url;
  */
 class minilessonitem extends base {
     /**
-     * Do not allow users to uninstall these plugins as it could cause customcerts to break.
+     * Can this item type be uninstalled?
+     *
+     * Only while no lesson uses it - uninstalling an item type that has items would orphan those
+     * rows in the lesson items table and break the lessons holding them. An item type nobody uses
+     * is safe to remove, which is what lets a site drop a third party item type it has finished
+     * with. Admins who want to hide an item type without removing it should disable it instead.
      *
      * @return bool
      */
     public function is_uninstall_allowed(): bool {
-        return false;
+        global $DB;
+        return !$DB->record_exists(constants::M_QTABLE, ['type' => $this->name]);
     }
 
     /**
@@ -67,13 +73,30 @@ class minilessonitem extends base {
         $ADMIN->add($parentnodename, $settings);
     }
 
+    /**
+     * Get the enabled item types.
+     *
+     * Item types are enabled unless explicitly disabled, so that an item type installed after
+     * the parent plugin (in particular a third party one) works as soon as it is installed, and
+     * is never turned off by a MiniLesson update. Disabling is recorded as a 'disabled' config
+     * setting in the item type's own config namespace, so nothing about an item type is held by
+     * the parent plugin.
+     *
+     * @return array Item type name => item type name, for every enabled item type.
+     */
     public static function get_enabled_plugins() {
-        $enabledplugin = get_config(constants::M_MODNAME, 'enableditems');
-        if (empty($enabledplugin)) {
-            return null;;
+        $installed = \core_plugin_manager::instance()->get_installed_plugins(constants::SUBPLUGINTYPES['item']);
+        if (!$installed) {
+            return [];
         }
-        $enabledclass = explode(',', $enabledplugin);
-        return array_fill_keys($enabledclass, 1);
+        $enabled = [];
+        foreach ($installed as $name => $version) {
+            if (get_config(constants::SUBPLUGINTYPES['item'] . '_' . $name, 'disabled')) {
+                continue;
+            }
+            $enabled[$name] = $name;
+        }
+        return $enabled;
     }
 
     public function is_enabled() {

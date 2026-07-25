@@ -34,6 +34,25 @@ class itemtype extends item
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_WRITING, constants::SKILL_GRAMMAR];
 
+    /**
+     * The item text is one gapfill sentence per line, carrying gap markup, so strip the markup
+     * before handing it to the speech test.
+     *
+     * @param \stdClass $itemrecord The item's DB record.
+     * @param string $default The text the caller derived from the item record.
+     * @return string
+     */
+    public function get_speechtester_text($itemrecord, $default) {
+        $text = "";
+        if (isset($itemrecord->customtext1)) {
+            $sentences = explode(PHP_EOL, $itemrecord->customtext1);
+            foreach ($this->parse_gapfill_sentences($sentences) as $sentencedata) {
+                $text .= $sentencedata->sentence . '<br/>';
+            }
+        }
+        return $text;
+    }
+
     public const ENABLEVKEYBOARD = 'customtext6';
     public const CUSTOMKEYS = 'customtext7';
 

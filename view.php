@@ -196,11 +196,8 @@ if (!empty($moduleinstance->lessonfont)) {
 $comptest = new \mod_minilesson\comprehensiontest($cm);
 $itemcount = $comptest->fetch_item_count();
 
-// If we have slides, load the (locally shipped) reveal.js CSS. The theme CSS is loaded lazily by
-// the slides item JS (item/slides/amd/src/reveal.js) from the same local css directory.
-if ($comptest->has_slides_items()) {
-    $PAGE->requires->css(new moodle_url('/mod/minilesson/item/slides/css/reveal.min.css'));
-}
+// Let the item types used in this lesson add their own page requirements (CSS/JS they ship).
+$comptest->add_item_page_requirements($PAGE);
 
 // From here we actually display the page.
 // If we are teacher we see tabs. If student we just see the quiz.

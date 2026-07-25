@@ -35,6 +35,33 @@ class itemtype extends item
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_WRITING];
 
+    /**
+     * The graded response is written, not spoken.
+     *
+     * @return bool
+     */
+    public static function ai_grade_uses_speech() {
+        return false;
+    }
+
+    /**
+     * A free writing response can be given to later items as context.
+     *
+     * @return bool
+     */
+    public static function produces_student_text() {
+        return true;
+    }
+
+    /**
+     * This item type has a splash screen, drawn as a centred white card.
+     *
+     * @return bool
+     */
+    public function uses_boxed_layout() {
+        return true;
+    }
+
     public const TOPIC = 'customtext5';
     public const AIDATA1 = 'customdata1';
     public const AIDATA2 = 'customdata2';

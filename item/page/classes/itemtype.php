@@ -37,6 +37,15 @@ class itemtype extends item
     public $gradeable = false;
 
     /**
+     * A content page stays stacked vertically however much content it carries.
+     *
+     * @return bool
+     */
+    public function autolayout_prefers_vertical() {
+        return true;
+    }
+
+    /**
      * When and why to choose this item type (agent-facing, used by the aigen web services).
      *
      * @return string

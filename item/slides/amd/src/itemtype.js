@@ -129,7 +129,8 @@ define(
                             classes: 'minilesson-slides-preview-modal'
                         },
                         title: Str.get_string('slides:previewmodaltitle', 'mod_minilesson'),
-                        body: Fragment.loadFragment('mod_minilesson', 'preview_slides', M.cfg.contextid, {
+                        body: Fragment.loadFragment('mod_minilesson', 'preview_item', M.cfg.contextid, {
+                            itemtype: 'slides',
                             formdata: new URLSearchParams([...new FormData(form).entries()]).toString()
                         })
                     }).then(function (modal) {

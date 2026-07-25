@@ -23,6 +23,7 @@ use external_single_structure;
 use external_value;
 use mod_minilesson\aimanager;
 use mod_minilesson\constants;
+use mod_minilesson\utils;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -43,8 +44,6 @@ class translate_message extends external_api {
     /** @var int Longest message we will send for translation. */
     const MAX_TEXT_LENGTH = 2000;
 
-    /** @var string[] Item types allowed to request translations. */
-    const ALLOWED_ITEMTYPES = [constants::TYPE_FICTION];
 
     /**
      * Describes the parameters for the translate_message web service.
@@ -92,7 +91,9 @@ class translate_message extends external_api {
         // Translation is allowed for item types that offer it natively (e.g. fiction), or for
         // any item that carries a TTS dialog media prompt (available on all item types).
         $hasdialog = !empty($item->{constants::TTSDIALOG}) && trim($item->{constants::TTSDIALOG}) !== '';
-        if (!in_array($item->type, self::ALLOWED_ITEMTYPES) && !$hasdialog) {
+        $itemtypeclass = utils::fetch_itemtype_classname($item->type);
+        $supportsnatively = $itemtypeclass && $itemtypeclass::supports_translation();
+        if (!$supportsnatively && !$hasdialog) {
             throw new \invalid_parameter_exception('Item type does not support translation');
         }
 

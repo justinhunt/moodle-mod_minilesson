@@ -132,7 +132,7 @@ class attemptresults extends basereport
                 });
             foreach ($results as $result) {
                 $result->title = $quizdata[$result->index]->name;
-                $result->type = get_string($quizdata[$result->index]->type, constants::M_COMPONENT);
+                $result->type = utils::get_subitem_name($quizdata[$result->index]->type);
                 $result->index++;
             }
                 $this->rawdata = $results;

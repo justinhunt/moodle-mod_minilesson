@@ -1122,14 +1122,8 @@ class utils {
 
         // AI Grade
         $maxmarks = $item->{constants::TOTALMARKS};
-        switch ($item->type) {
-            case constants::TYPE_FREEWRITING:
-                $isspeech = false;
-                break;
-            case constants::TYPE_FREESPEAKING:
-            default:
-                $isspeech = true;
-        }
+        $itemtypeclass = self::fetch_itemtype_classname($item->type);
+        $isspeech = $itemtypeclass ? $itemtypeclass::ai_grade_uses_speech() : true;
         $instructions = new \stdClass();
         $instructions->feedbackscheme = $item->{constants::AIGRADE_FEEDBACK};
         $instructions->feedbacklanguage = $feedbacklanguage;
@@ -2790,19 +2784,23 @@ class utils {
             $itemorder = $DB->get_field(constants::M_QTABLE, 'itemorder', ['id' => $itemid]);
         }
 
-        [$in, $params] = $DB->get_in_or_equal(
-            [constants::TYPE_FREEWRITING, constants::TYPE_FREESPEAKING],
-            SQL_PARAMS_NAMED
-        );
-        $params['minilessonid'] = $lessonid;
-        $params['itemorder'] = $itemorder > 0 ? $itemorder : 0;
+        $params = [
+            'minilessonid' => $lessonid,
+            'itemorder' => $itemorder > 0 ? $itemorder : 0,
+        ];
         $alllessonitems = $DB->get_records_select(
             constants::M_QTABLE,
-            "minilesson = :minilessonid AND type {$in} AND itemorder < :itemorder",
+            "minilesson = :minilessonid AND itemorder < :itemorder",
             $params
         );
 
-        return $alllessonitems;
+        // Keep only the item types that collect a student response later items can be given as
+        // context. Asking the item types rather than naming them here means a new item type that
+        // collects one is included without the parent plugin knowing about it.
+        return array_filter($alllessonitems, function($lessonitem) {
+            $itemtypeclass = self::fetch_itemtype_classname($lessonitem->type);
+            return $itemtypeclass && $itemtypeclass::produces_student_text();
+        });
     }
 
     public static function latest_attempt($courseid, $lessonid) {
@@ -2974,11 +2972,47 @@ class utils {
         return rtrim(sprintf("%s_%s", $subplugintype, (string) $type), '_');
     }
 
-    public static function get_subitem_name($type = null, $subplugintype = constants::SUBPLUGINTYPES['item']) {
-        $itemtypename = get_string('pluginname', self::get_sub_component($type, $subplugintype));
-        if (get_string_manager()->string_exists($type, constants::M_COMPONENT)) {
-            $itemtypename = get_string($type, constants::M_COMPONENT);
+    /**
+     * Fetch the item types installed on this site.
+     *
+     * Item types are subplugins, so the installed set is whatever is present in item/ - it is
+     * never a list held by the parent plugin. Always use this rather than constants::ITEMTYPES,
+     * so that third party item types are included.
+     *
+     * @param bool $enabledonly Only return item types that are enabled (and configured) on this site.
+     * @return string[] Item type names, e.g. ['multichoice', 'page', ...].
+     */
+    public static function fetch_itemtypes($enabledonly = false) {
+        $plugins = \core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
+        $itemtypes = [];
+        foreach ($plugins as $plugin) {
+            if ($enabledonly && !$plugin->is_enabled()) {
+                continue;
+            }
+            $itemtypes[] = $plugin->name;
         }
-        return $itemtypename;
+        return $itemtypes;
+    }
+
+    /**
+     * Fetch the display name of an item type.
+     *
+     * The item type subplugin owns its own name (its 'pluginname' string). The parent plugin's
+     * lang file is only consulted as a legacy fallback, for the item types that were named there
+     * before item types became fully self describing.
+     *
+     * @param string $type The item type name, e.g. 'multichoice'.
+     * @param string $subplugintype The subplugin type, defaults to the item subplugin type.
+     * @return string
+     */
+    public static function get_subitem_name($type = null, $subplugintype = constants::SUBPLUGINTYPES['item']) {
+        $subcomponent = self::get_sub_component($type, $subplugintype);
+        if (get_string_manager()->string_exists('pluginname', $subcomponent)) {
+            return get_string('pluginname', $subcomponent);
+        }
+        if (get_string_manager()->string_exists($type, constants::M_COMPONENT)) {
+            return get_string($type, constants::M_COMPONENT);
+        }
+        return (string) $type;
     }
 }

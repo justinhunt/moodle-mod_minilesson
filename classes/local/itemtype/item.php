@@ -809,6 +809,7 @@ abstract class item implements \templatable, \renderable {
         $testitem->correctanswer = $this->itemrecord->correctanswer;
         $testitem->id = $this->itemrecord->id;
         $testitem->type = $this->itemrecord->type;
+        $testitem->boxedlayout = $this->uses_boxed_layout();
         $testitem->name = $this->itemrecord->name;
         $testitem->timelimit = $this->itemrecord->timelimit;
         if ($this->forcetitles) {
@@ -1217,8 +1218,8 @@ abstract class item implements \templatable, \renderable {
         // layout
         $testitem->layout = $this->itemrecord->{constants::LAYOUT};
         if ($testitem->layout == constants::LAYOUT_AUTO) {
-            // if its not a page or shortanswer, any big content item will make it horizontal layout
-            if ($testitem->type !== constants::TYPE_PAGE && $testitem->type !== constants::TYPE_SHORTANSWER) {
+            // unless the item type prefers to stay stacked, any big content item makes it horizontal layout
+            if (!$this->autolayout_prefers_vertical()) {
                 if ($textset || $imageset || $videoset || $iframeset || $ytclipset) {
                     $testitem->horizontal = true;
                 }
@@ -2327,16 +2328,115 @@ abstract class item implements \templatable, \renderable {
         return true;
     }
 
+    /**
+     * Is this item type experimental?
+     * Experimental item types are only available when $CFG->minilesson_experimental is set.
+     * Item types that are not ready for general use override this to return true.
+     *
+     * @return bool
+     */
+    public static function is_experimental() {
+        return false;
+    }
+
     public static function is_configured() {
         global $CFG;
-        $experimentalitems[] = constants::TYPE_SMARTFRAME;
-        $experimentalitems[] = constants::TYPE_COMPQUIZ;
-        $experimentalitems[] = constants::TYPE_CONVERSATION;
-        $experimentalitems[] = constants::TYPE_DICTATIONCHAT;
-        if (in_array(static::get_itemname(), $experimentalitems)) {
+        if (static::is_experimental()) {
             return !empty($CFG->minilesson_experimental);
         }
         return true;
+    }
+
+    /**
+     * When the item's layout is set to "auto", a big content element (text, image, video,
+     * iframe or YouTube clip) switches the item to horizontal layout. Item types whose content
+     * should stay stacked vertically no matter how much of it there is (e.g. content pages)
+     * override this to return true.
+     *
+     * @return bool
+     */
+    public function autolayout_prefers_vertical() {
+        return false;
+    }
+
+    /**
+     * Is this item type's response a spoken one, for the purposes of AI grading?
+     * True for spoken item types (the recording is graded); written item types
+     * (e.g. free writing) override this to return false.
+     *
+     * @return bool
+     */
+    public static function ai_grade_uses_speech() {
+        return true;
+    }
+
+    /**
+     * Does this item type collect an extended piece of student work (a spoken or written
+     * response) that later items can be given as context? Item types that do (e.g. free
+     * speaking, free writing) override this to return true.
+     *
+     * @return bool
+     */
+    public static function produces_student_text() {
+        return false;
+    }
+
+    /**
+     * Can this item type's content be sent for translation?
+     * Item types that offer translation natively (e.g. fiction) override this to return true.
+     * Note that any item carrying a TTS dialog media prompt is translatable regardless.
+     *
+     * @return bool
+     */
+    public static function supports_translation() {
+        return false;
+    }
+
+    /**
+     * Add anything this item type needs on a page that displays or edits it - most often CSS or
+     * JS shipped by the item type itself. Called once per item type present in the lesson.
+     * Item types with such requirements override this.
+     *
+     * @param \moodle_page $page The page to add requirements to.
+     * @return void
+     */
+    public static function page_requirements(\moodle_page $page) {
+    }
+
+    /**
+     * Should this item type's splash screen and activity wrapper be drawn as a centred white
+     * card (shadow, rounded corners) rather than filling the item area? Item types with a splash
+     * screen generally want this, and override it to return true.
+     *
+     * @return bool
+     */
+    public function uses_boxed_layout() {
+        return false;
+    }
+
+    /**
+     * Render a preview of this item from unsaved authoring form data, for the "preview" button
+     * on the item's authoring form. Item types that offer a preview (e.g. slides) override this;
+     * the default is no preview.
+     *
+     * @param array $formdata The parsed authoring form data.
+     * @return string HTML fragment, or '' for no preview.
+     */
+    public static function render_preview($formdata) {
+        return '';
+    }
+
+    /**
+     * Return the plain text of this item, for use by the speech test (which needs a sample of
+     * the lesson's language content). Item types whose text is not simply the item text
+     * (e.g. the gapfill types, whose text carries gap markup) override this.
+     *
+     * @param \stdClass $itemrecord The item's DB record.
+     * @param string $default The text the caller derived from the item record.
+     * @return string
+     */
+    public function get_speechtester_text($itemrecord, $default) {
+        return $default;
     }
 
     public static function get_plugininfo(): minilessonitem {

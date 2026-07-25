@@ -165,7 +165,7 @@ class helper
                 }
             }
         }
-        $typelabel = get_string($item->type, constants::M_COMPONENT);
+        $typelabel = utils::get_subitem_name($item->type);
         return [$newitemid,$item->name,$item->type,$typelabel];
     }//end of move item function
 
