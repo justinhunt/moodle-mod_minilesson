@@ -25,7 +25,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/log'], function($, log) {
+define(['jquery', 'core/log'], function ($, log) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson Shadow Player: initialising');
@@ -36,7 +36,7 @@ define(['jquery', 'core/log'], function($, log) {
         ready: false,
 
         //for making multiple instances
-        clone: function() {
+        clone: function () {
             return $.extend(true, {}, this);
         },
 
@@ -47,16 +47,16 @@ define(['jquery', 'core/log'], function($, log) {
          * @param {Object} opts {videoid, start, end}
          * @param {Object} callbacks {onReady, onPlaying, onPaused, onEnded}
          */
-        init: function(containerid, opts, callbacks) {
+        init: function (containerid, opts, callbacks) {
             var self = this;
             self.opts = opts;
             self.callbacks = callbacks || {};
-            this.load_api(function() {
+            this.load_api(function () {
                 self.create_player(containerid);
             });
         },
 
-        load_api: function(callback) {
+        load_api: function (callback) {
             if (typeof window.YT !== 'undefined' && typeof window.YT.Player !== 'undefined') {
                 callback();
                 return;
@@ -64,11 +64,11 @@ define(['jquery', 'core/log'], function($, log) {
             if (typeof window.mlShadowYTCallbacks === 'undefined') {
                 window.mlShadowYTCallbacks = [];
                 var previoushandler = window.onYouTubeIframeAPIReady;
-                window.onYouTubeIframeAPIReady = function() {
+                window.onYouTubeIframeAPIReady = function () {
                     if (typeof previoushandler === 'function') {
                         previoushandler();
                     }
-                    window.mlShadowYTCallbacks.forEach(function(cb) {
+                    window.mlShadowYTCallbacks.forEach(function (cb) {
                         cb();
                     });
                     window.mlShadowYTCallbacks = [];
@@ -80,7 +80,7 @@ define(['jquery', 'core/log'], function($, log) {
             }
         },
 
-        create_player: function(containerid) {
+        create_player: function (containerid) {
             var self = this;
             self.player = new window.YT.Player(containerid, {
                 playerVars: {
@@ -88,11 +88,13 @@ define(['jquery', 'core/log'], function($, log) {
                     controls: 1,
                     rel: 0,
                     playsinline: 1,
-                    modestbranding: 1
+                    modestbranding: 1,
+                    //captions off
+                    cc_load_policy: 0,
                 },
                 events: {
-                    onReady: function(e) {
-                        var videocue = {videoId: self.opts.videoid};
+                    onReady: function (e) {
+                        var videocue = { videoId: self.opts.videoid };
                         if (self.opts.start > 0) {
                             videocue.startSeconds = self.opts.start;
                         }
@@ -105,7 +107,7 @@ define(['jquery', 'core/log'], function($, log) {
                             self.callbacks.onReady();
                         }
                     },
-                    onStateChange: function(e) {
+                    onStateChange: function (e) {
                         switch (e.data) {
                             case window.YT.PlayerState.PLAYING:
                                 if (self.callbacks.onPlaying) {
@@ -129,32 +131,32 @@ define(['jquery', 'core/log'], function($, log) {
             });
         },
 
-        seek_to: function(seconds) {
+        seek_to: function (seconds) {
             if (this.ready) {
                 this.player.seekTo(seconds, true);
             }
         },
 
-        play: function() {
+        play: function () {
             if (this.ready) {
                 this.player.playVideo();
             }
         },
 
-        pause: function() {
+        pause: function () {
             if (this.ready) {
                 this.player.pauseVideo();
             }
         },
 
-        get_current_time: function() {
+        get_current_time: function () {
             if (this.ready && typeof this.player.getCurrentTime === 'function') {
                 return this.player.getCurrentTime();
             }
             return 0;
         },
 
-        is_playing: function() {
+        is_playing: function () {
             return this.ready && typeof this.player.getPlayerState === 'function' &&
                 this.player.getPlayerState() === window.YT.PlayerState.PLAYING;
         }

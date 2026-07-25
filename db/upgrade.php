@@ -1251,6 +1251,10 @@ function xmldb_minilesson_upgrade($oldversion) {
         unset_config('enableditems', constants::M_MODNAME);
         core_plugin_manager::reset_caches();
 
+        // Register the new AI-generation templates and pick up
+        // edits to existing default templates.
+        \mod_minilesson\aigen::create_default_templates();
+
         // Minilesson savepoint reached.
         upgrade_mod_savepoint(true, 2026072500, 'minilesson');
     }

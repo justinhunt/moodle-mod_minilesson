@@ -82,7 +82,7 @@ class process_aigen extends adhoc_task {
 
             // Call any tools whose results need to be added to the context data
             // Loop through contextdata looking for fields that start with tool_
-            // It will be like tool_user_custonmdata2 with value "fetch_vtt PHP_EOL user_customdata1"
+            // It will be like tool_user_customdata2 with value "fetch_vtt PHP_EOL user_customdata1"
             // That will tell the tool to call the fetch_vtt function with the value of the usercustomdata1 field.
             foreach ($contextdata as $fieldname => $fieldvalue) {
                 if (strpos($fieldname, 'tool_') === 0) {

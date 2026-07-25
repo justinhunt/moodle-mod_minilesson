@@ -2,13 +2,14 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Set the YouTube ID (ytid) to {YouTubeID} and set the VTT (vtt) to {toolresult_vtt} and set  the transcript (data1) to {toolresult_transcript}",
-            "generatemethod": "generate",
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "ytid",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "user_customdata1"
                 },
                 {
                     "name": "ytstart",
@@ -23,7 +24,7 @@
                 {
                     "name": "vtt",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "user_customdata2"
                 },
                 {
                     "name": "loopcount",
@@ -31,9 +32,14 @@
                     "mapping": ""
                 },
                 {
+                    "name": "wordhighlight",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
                     "name": "data1",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "user_customdata3"
                 },
                 {
                     "name": "data2",
@@ -57,27 +63,14 @@
                 }
             ],
             "generatefileareas": [],
-            "overallimagecontext": "--",
-            "promptfields": [
-                {
-                    "name": "YouTubeID",
-                    "mapping": "user_customdata1"
-                },
-                {
-                    "name": "toolresult_vtt",
-                    "mapping": "user_customdata2"
-                },
-                {
-                    "name": "toolresult_transcript",
-                    "mapping": "user_customdata3"
-                }
-            ]
+            "promptfields": []
         }
     ],
     "lessonTitle": "Shadow",
     "lessonDescription": "Enter a YouTube URL or ID and it will be turned into an interactive shadowing exercise. ",
     "uniqueid": "6a334d1c7f9c8",
-    "version": "1",
+    "version": "2",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
