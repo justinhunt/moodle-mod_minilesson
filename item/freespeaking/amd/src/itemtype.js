@@ -196,6 +196,7 @@ define(
                 self.allwords = $("#" + self.itemdata.uniqueid + "_container.mod_minilesson_mu_passage_word");
                 self.thebutton = "thettrbutton"; // To Do impl. this
                 self.wordcount = $("#" + self.itemdata.uniqueid + "_container span.ml_wordcount");
+                self.lastwordcount = 0;
                 self.actionbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_actionbox");
                 self.pendingbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_pendingbox");
                 self.resultsbox = $("#" + self.itemdata.uniqueid + "_container div.ml_freespeaking_resultsbox");
@@ -211,15 +212,21 @@ define(
                             break;
 
                         case 'interimspeech':
-                            var wordcount = self.quizhelper.count_words(message.capturedspeech);
-                            self.wordcount.text(wordcount);
+                            //a turn's unformatted partial can be replaced by a shorter formatted version,
+                            //so never let the displayed count go backwards mid utterance
+                            var interimcount = self.quizhelper.count_words(message.capturedspeech);
+                            if (interimcount > self.lastwordcount) {
+                                self.lastwordcount = interimcount;
+                                self.wordcount.text(interimcount);
+                            }
                             break;
 
                         case 'speech':
                             var speechtext = message.capturedspeech;
 
-                            //update the wordcount
+                            //update the wordcount, the final transcript is authoritative so it can go down
                             var wordcount = self.quizhelper.count_words(speechtext);
+                            self.lastwordcount = wordcount;
                             self.wordcount.text(wordcount);
                             self.do_evaluation(speechtext);
                             break;
@@ -353,6 +360,7 @@ define(
                                     templates.runTemplateJS(js);
                                     //reset timer and wordcount on this page, in case reattempt
                                     self.wordcount.text('0');
+                                    self.lastwordcount = 0;
                                     self.ttrec.timer.stop();
                                     self.ttrec.timer.reset();
                                     var displaytime = self.ttrec.timer.fetch_display_time();

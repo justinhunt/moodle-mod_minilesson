@@ -189,7 +189,7 @@ define(['jquery', 'core/log'], function ($, log) {
         cancel: function () {
             this.ready = false;
             this.earlyaudio = [];
-            this.finals = {};
+            this.finals = [];
             this.finaltext = '';
             if (this.socket) {
                 this.doclosesocket();
@@ -240,7 +240,8 @@ define(['jquery', 'core/log'], function ($, log) {
              //process finals
             that.finals[payload.turn_order] = thistranscript;
             that.finaltext = this.buildtranscript();
-            that.audiohelper.oninterimspeechcapture(thistranscript);
+            //the interim callback expects the cumulative transcript, not just this turn's text
+            that.audiohelper.oninterimspeechcapture(that.finaltext);
             log.debug('TT Streamer final transcript update: ' + thistranscript);
         },
 
