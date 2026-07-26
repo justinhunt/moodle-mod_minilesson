@@ -1,3 +1,6 @@
+Version 1.1.45 (Build 2026072600)
+- Added support for Camp-Registry and CI
+
 Version 1.1.44 (Build 2026072500)
 - Item types are now enabled unless explicitly disabled, so a newly installed item type works
   immediately and is no longer switched off by a MiniLesson update

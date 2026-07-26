@@ -90,7 +90,7 @@ define(['jquery', 'core/log'], function ($, log) {
                     playsinline: 1,
                     modestbranding: 1,
                     //captions off
-                    cc_load_policy: 0,
+                    cc_load_policy: 0
                 },
                 events: {
                     onReady: function (e) {
