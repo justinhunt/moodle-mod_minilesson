@@ -1,0 +1,16 @@
+# Keep development files out of camp distribution ZIPs (git archive semantics).
+# The canonical release artifact is `git archive` at the tag, so this file is
+# the only way to exclude something from what sites install.
+.github export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.camp export-ignore
+tests export-ignore
+node_modules export-ignore
+
+# Build inputs and tooling — the built outputs (amd/build, styles.css) ship.
+scss export-ignore
+js-src export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+.eslintignore export-ignore

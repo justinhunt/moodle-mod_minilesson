@@ -1,0 +1,46 @@
+# camp listing manifest — the descriptive content for this plugin's page on
+# camp-registry.org. Edit and commit as normal; camp ingests and hash-pins it
+# at each tagged release. Schema: https://camp-registry.org/schema/listing.schema.json
+name: Poodll MiniLesson
+summary: Self-guided, auto-graded language practice built from 27 item types — speaking, listening, reading, writing and vocabulary.
+description: |
+  A MiniLesson is a short lesson built from a sequence of *items* — each item is one screen that
+  presents content or sets the student a task. Students work through the items on their own, and
+  speaking, listening, reading, writing and vocabulary tasks are graded automatically, either
+  deterministically or using speech recognition and AI. Teachers get the score in the Moodle
+  gradebook, plus per-item reports and the students' recordings and transcripts for review.
+
+  **Item types (27)** include multiple choice, dictation, gap fills (typing, speaking, drag and
+  drop), read aloud and passage reading, listen and repeat, speech cards, fluency, video
+  shadowing, free speaking and free writing with AI feedback, live AI audio chat, vocabulary
+  games and interactive fiction.
+
+  **Building lessons:** author items by hand, import them from CSV or JSON, generate a whole
+  lesson with AI from a topic, a passage, a file or a YouTube video using one of ~75 lesson
+  templates, or pull a ready-made lesson out of the shared Lesson Bank.
+
+  **Also supported:** the Moodle mobile app, LTI launch, web services, over 60 speech
+  recognition and text-to-speech locales, and per-item completion and grading reports.
+
+  **Requires a Cloud Poodll account.** Audio recording, text to speech, speech recognition and
+  AI grading and generation run through the Cloud Poodll service, so the activity needs an API
+  user and secret from https://poodll.com to function. AI tasks can optionally be pointed at
+  your own OpenAI, Azure or Gemini keys instead.
+labels:
+  - paid-service
+  - external-account
+  - commercial-support-available
+category: activity
+# Raster only (png/jpg/webp — no SVG), max 10. The first is the lead image on
+# the plugin page. Add the files, then uncomment.
+# screenshots:
+#   - path: .camp/screenshots/lesson-view.png
+#     caption: A student working through a lesson item
+#   - path: .camp/screenshots/item-authoring.png
+#     caption: Authoring a speaking item
+#   - path: .camp/screenshots/ai-generate.png
+#     caption: Generating a lesson with AI from a topic
+links:
+  docs: https://support.poodll.com
+  issues: https://github.com/justinhunt/moodle-mod_minilesson/issues
+  changelog: https://github.com/justinhunt/moodle-mod_minilesson/blob/master/CHANGES.txt

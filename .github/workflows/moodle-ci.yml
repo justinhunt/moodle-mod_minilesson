@@ -1,0 +1,101 @@
+# Pre-flight for camp's release verification.
+#
+# camp's index CI runs moodle-plugin-ci against every release on the two
+# "endpoint" branches inside the range declared by $plugin->supported —
+# currently Moodle 4.5 (PHP 8.2) and 5.2 (PHP 8.3). The steps below are the
+# same ones, in the same order, so a green run here means a tag will not be
+# rejected on style or structure once it is public.
+#
+# Gating there and here: install, phplint, validate, savepoints.
+# Warn-only there and here: phpcs (code style), label heuristics, security lint.
+
+name: moodle-plugin-ci
+
+on:
+  push:
+    branches: ['**']   # any branch, so a throwaway branch can be tested without touching master
+  pull_request:
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    name: Moodle ${{ matrix.moodle-branch }} / PHP ${{ matrix.php }}
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - moodle-branch: MOODLE_405_STABLE
+            php: "8.2"
+          - moodle-branch: MOODLE_502_STABLE
+            php: "8.3"
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+    steps:
+      - name: Check out plugin
+        uses: actions/checkout@v7
+        with:
+          path: plugin
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install camp tools
+        run: pip install --quiet "git+https://github.com/camp-registry/camp-tools@v0.2.28"
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          ini-values: max_input_vars=5000
+          coverage: none
+
+      - name: Initialise moodle-plugin-ci
+        run: |
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^4
+          echo $(cd ci/bin; pwd) >> $GITHUB_PATH
+          echo $(cd ci/vendor/bin; pwd) >> $GITHUB_PATH
+          sudo locale-gen en_AU.UTF-8
+
+      - name: Install plugin into a fresh Moodle
+        run: moodle-plugin-ci install --plugin ./plugin --db-host=127.0.0.1
+        env:
+          DB: pgsql
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+
+      - name: Listing manifest present
+        if: ${{ !cancelled() }}
+        run: camp scaffold plugin --check
+
+      - name: Disclosure-label heuristics (warn-only)
+        if: ${{ !cancelled() }}
+        run: camp lint-labels plugin --declared "paid-service,external-account,commercial-support-available" || true
+
+      - name: Basic security lint (warn-only)
+        if: ${{ !cancelled() }}
+        run: camp audit plugin || true
+
+      - name: PHP Lint
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci phplint
+
+      - name: Moodle Code Checker (warn-only)
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: moodle-plugin-ci phpcs --max-warnings 0
+
+      - name: Validate plugin structure
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci validate
+
+      - name: Check upgrade savepoints
+        if: ${{ !cancelled() }}
+        run: moodle-plugin-ci savepoints
