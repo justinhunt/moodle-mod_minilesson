@@ -427,7 +427,8 @@ define(
                 self.clear_highlights();
                 var started = Date.now();
                 self.set_countdown_progress(0);
-                self.controls.countdown.show();
+                // Visibility only: the row keeps its space so nothing around it shifts.
+                self.controls.countdown.addClass('ml_shadow_countdown_visible');
                 self.countdownhandle = setInterval(function() {
                     var progress = (Date.now() - started) / duration;
                     if (progress >= 1) {
@@ -450,7 +451,7 @@ define(
                     clearInterval(this.countdownhandle);
                     this.countdownhandle = null;
                 }
-                this.controls.countdown.hide();
+                this.controls.countdown.removeClass('ml_shadow_countdown_visible');
             },
 
             /* ============ completion ============ */

@@ -52,16 +52,30 @@
     margin-bottom: 8px;
   }
 
+  // The countdown between shadow attempts. It renders below the line (see the
+  // template) so that appearing and disappearing never moves the text being read.
   .ml_shadow_countdown {
-    display: flex;
+    display: none;
     justify-content: center;
-    margin-bottom: 8px;
+    margin-top: 8px;
 
     .ml_shadow_countdown_pie {
       width: 36px;
       height: 36px;
       border-radius: 50%;
       background: conic-gradient(#d32f2f 0%, #e0e0e0 0%);
+    }
+  }
+
+  // Once shadowing is under way the row is always laid out and only its visibility
+  // is toggled, so the buttons below it stay put as the countdown comes and goes.
+  // In watch mode it is never used, so it takes no space at all.
+  .poodll-shadowing-wrapper[data-mode="loop"] .ml_shadow_countdown {
+    display: flex;
+    visibility: hidden;
+
+    &.ml_shadow_countdown_visible {
+      visibility: visible;
     }
   }
 

@@ -436,9 +436,16 @@ class youtubetranscript {
      * text, though some browsers put both on one line, so both shapes are accepted.
      *
      * The panel only shows whole seconds, and truncates rather than rounds, so a cue
-     * really starts somewhere in the second it names. Half a second is added to each
-     * start to centre that error rather than let every cue fire up to a second early.
-     * Each cue runs until the next one begins; the last is given a nominal length.
+     * really starts somewhere inside the second it names. The truncated value is used
+     * as-is, which keeps every cue start at or before the true one: the item seeks to
+     * cue start to play a line, so a start even slightly late lands mid-word and clips
+     * it, while a start early only adds a moment of lead-in. Nudging starts towards the
+     * middle of their second would lower the average error but make roughly half of
+     * them late, which is the trade the wrong way round.
+     *
+     * Each cue runs until the next begins, so the ends inherit the same truncation and
+     * can fall up to a second early. That cannot be helped without overlapping cues,
+     * which would break the item's active-cue lookup - it takes the first match.
      *
      * @param string $pasted the text copied from the transcript panel
      * @param float $lastcuelength seconds to allow for the final cue
@@ -458,7 +465,15 @@ class youtubetranscript {
             }
             if (preg_match($timestampregex, $line, $m)) {
                 $seconds = ((int)$m[1] * 3600) + ((int)$m[2] * 60) + (int)$m[3];
-                $cues[] = ['start' => $seconds + 0.5, 'text' => trim($m[4])];
+                $last = count($cues) - 1;
+                if ($last >= 0 && $cues[$last]['start'] === (float)$seconds) {
+                    // Two panel entries inside the same second. Emitting both would give the
+                    // first a zero length, which can never be the active cue and would end a
+                    // shadow segment the instant it started, so they become one cue.
+                    $cues[$last]['text'] = trim($cues[$last]['text'] . ' ' . trim($m[4]));
+                    continue;
+                }
+                $cues[] = ['start' => (float)$seconds, 'text' => trim($m[4])];
             } else if (!empty($cues)) {
                 // A continuation of the current cue's text.
                 $last = count($cues) - 1;

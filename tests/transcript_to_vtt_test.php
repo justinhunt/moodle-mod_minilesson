@@ -32,10 +32,10 @@ final class transcript_to_vtt_test extends \basic_testcase {
         $vtt = youtubetranscript::transcript_to_vtt("0:00\nbonjour les amis\n0:03\nnouvel episode\n");
 
         $this->assertStringStartsWith('WEBVTT', $vtt);
-        // Half a second is added to centre the panel's whole-second truncation.
-        $this->assertStringContainsString("00:00:00.500 --> 00:00:03.500\nbonjour les amis", $vtt);
+        // The panel's truncated value is used as-is, so a cue never starts late.
+        $this->assertStringContainsString("00:00:00.000 --> 00:00:03.000\nbonjour les amis", $vtt);
         // The last cue gets a nominal length.
-        $this->assertStringContainsString("00:00:03.500 --> 00:00:06.500\nnouvel episode", $vtt);
+        $this->assertStringContainsString("00:00:03.000 --> 00:00:06.000\nnouvel episode", $vtt);
         $this->assertStringContainsString('line-number: 01', $vtt);
         $this->assertStringContainsString('line-number: 02', $vtt);
     }
@@ -46,7 +46,7 @@ final class transcript_to_vtt_test extends \basic_testcase {
     public function test_timestamp_inline_with_text(): void {
         $vtt = youtubetranscript::transcript_to_vtt("0:00 bonjour les amis\n0:03 nouvel episode\n");
 
-        $this->assertStringContainsString("00:00:00.500 --> 00:00:03.500\nbonjour les amis", $vtt);
+        $this->assertStringContainsString("00:00:00.000 --> 00:00:03.000\nbonjour les amis", $vtt);
         $this->assertStringContainsString('nouvel episode', $vtt);
     }
 
@@ -56,7 +56,7 @@ final class transcript_to_vtt_test extends \basic_testcase {
     public function test_hours_and_wrapped_text(): void {
         $vtt = youtubetranscript::transcript_to_vtt("1:02:03\nune phrase\nqui continue\n1:02:10\nla suite\n");
 
-        $this->assertStringContainsString('01:02:03.500 --> 01:02:10.500', $vtt);
+        $this->assertStringContainsString('01:02:03.000 --> 01:02:10.000', $vtt);
         // The wrapped remainder joins the cue it belongs to.
         $this->assertStringContainsString('une phrase qui continue', $vtt);
     }
@@ -90,16 +90,58 @@ final class transcript_to_vtt_test extends \basic_testcase {
     }
 
     /**
-     * The panel truncates to whole seconds, so centring must keep the error
-     * within half a second of the true start in both directions.
+     * A cue must never start after the words do. The item seeks to cue start to play
+     * a line, so a late start lands mid-word and clips it; an early one merely adds
+     * lead-in. The panel truncates, so using its value as-is guarantees this.
      */
-    public function test_centring_bounds_the_error(): void {
-        // A cue truly starting at 3.9s is displayed by the panel as 0:03.
+    public function test_cue_never_starts_late(): void {
+        // The panel shows 0:03 for any true start from 3.000 up to but not including 4.000.
         $vtt = youtubetranscript::transcript_to_vtt("0:03\nune phrase\n0:09\nla suite\n");
 
-        $this->assertStringContainsString('00:00:03.500', $vtt);
-        // Worst case is half a second, whichever way the true start falls in its second.
-        $this->assertLessThanOrEqual(0.5, abs(3.5 - 3.9));
-        $this->assertLessThanOrEqual(0.5, abs(3.5 - 3.0));
+        $this->assertStringContainsString('00:00:03.000 --> 00:00:09.000', $vtt);
+
+        // Whatever the true start was inside that second, the cue begins at or before it.
+        foreach ([3.0, 3.1, 3.5, 3.9, 3.999] as $truestart) {
+            $this->assertLessThanOrEqual($truestart, 3.0,
+                'cue start must never be later than the true start');
+        }
+    }
+
+    /**
+     * The panel shows whole seconds, so two entries can share one. Emitting both would
+     * give the first a zero length - never the active cue, and a shadow segment that
+     * ends the instant it starts - so they are merged into one.
+     */
+    public function test_entries_in_the_same_second_are_merged(): void {
+        $vtt = youtubetranscript::transcript_to_vtt("0:03\nune phrase\n0:03\net la suite\n0:09\nfin\n");
+
+        $this->assertSame(2, substr_count($vtt, '-->'));
+        $this->assertStringContainsString("00:00:03.000 --> 00:00:09.000\nune phrase et la suite", $vtt);
+        // No cue may have equal start and end.
+        preg_match_all('/^(\S+) --> (\S+)$/m', $vtt, $matches, PREG_SET_ORDER);
+        foreach ($matches as $match) {
+            $this->assertNotSame($match[1], $match[2], 'a cue must never have zero length');
+        }
+    }
+
+    /**
+     * Cues stay contiguous. The item picks the first cue matching the playhead, so
+     * overlapping cues would keep an earlier line highlighted over a later one.
+     */
+    public function test_cues_are_contiguous_and_do_not_overlap(): void {
+        $vtt = youtubetranscript::transcript_to_vtt("0:00\nune\n0:03\ndeux\n0:07\ntrois\n");
+
+        preg_match_all('/^(\d\d):(\d\d):(\d\d\.\d\d\d) --> (\d\d):(\d\d):(\d\d\.\d\d\d)$/m',
+            $vtt, $matches, PREG_SET_ORDER);
+        $this->assertCount(3, $matches);
+
+        $tosecs = function ($h, $m, $s) {
+            return ($h * 3600) + ($m * 60) + (float)$s;
+        };
+        for ($i = 0; $i < count($matches) - 1; $i++) {
+            $end = $tosecs($matches[$i][4], $matches[$i][5], $matches[$i][6]);
+            $nextstart = $tosecs($matches[$i + 1][1], $matches[$i + 1][2], $matches[$i + 1][3]);
+            $this->assertSame($end, $nextstart, 'cue ' . $i . ' must end exactly where the next begins');
+        }
     }
 }
