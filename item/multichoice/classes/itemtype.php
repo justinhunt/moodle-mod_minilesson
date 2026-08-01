@@ -451,7 +451,8 @@ class itemtype extends item {
                 . 'for a listening check use listenorread=1 (options read aloud by promptvoice) or a ttsdialog with '
                 . 'hideanswertext=2 so the audio can refer to options A,B,C,D; for picture questions use listenorread=3 '
                 . 'with images in the customfile1_image file area. You can also show a picture, audio or video '
-                . 'prompt above the question via the ' . constants::MEDIAQUESTION . ' file area.',
+                . 'prompt above the question via the ' . constants::MEDIAQUESTION . '. '
+                . 'Set answerlayout=2 (ie a two-column layout) when listenorread=3 or when listenoread=1 and the answers are all just a few words long.',
             'fields' => array_values($fields),
             'fileareas' => [
                 [
