@@ -97,6 +97,7 @@ class aigen_tool {
             $result = $fetcher->fetch($videoid, youtubetranscript::FORMAT_VTT, youtubetranscript::DEFAULT_LANGS, true);
             return $result['vtt'] ?? '';
         } catch (\Exception $e) {
+            debugging('Could not fetch YouTube subtitles for ' . $videoid . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
             return '';
         }
     }
@@ -131,6 +132,7 @@ class aigen_tool {
             $result = $fetcher->fetch($videoid, youtubetranscript::FORMAT_TRANSCRIPT, youtubetranscript::DEFAULT_LANGS, true);
             return $result['transcript'] ?? '';
         } catch (\Exception $e) {
+            debugging('Could not fetch YouTube transcript for ' . $videoid . ': ' . $e->getMessage(), DEBUG_DEVELOPER);
             return '';
         }
     }

@@ -301,7 +301,7 @@
     "lessonTitle": "Reading and Speaking (upload story and keywords)",
     "lessonDescription": "Supply a short text story, and some keywords from the story. AI will prepare a simple text to speech narration, and some reading and speaking activities based on the story.",
     "uniqueid": "6a339bc64597f",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -405,5 +405,6 @@
     "tags": [
         "Speaking",
         "Reading"
-    ]
+    ],
+    "agentonly": 0
 }

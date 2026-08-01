@@ -458,6 +458,11 @@ $string['wordcards'] = 'Word Cards';
 $string['error:invalidyoutubeurl'] = 'The YouTube URL or video ID is not valid.';
 $string['error:noyoutubetranscript'] = 'No subtitles are available for this YouTube video.';
 $string['error:youtubefetchfailed'] = 'Could not fetch data from YouTube. Please try again later.';
+$string['error:youtubeblocked'] = 'YouTube is blocking subtitle requests from this server, so subtitles could not be fetched. This usually happens when the site is hosted with a cloud or datacentre provider. An administrator can set the "YouTube subtitle proxy" option in the MiniLesson general settings to work around it.';
+$string['error:youtubeagerestricted'] = 'This YouTube video is age restricted, so its subtitles cannot be fetched.';
+$string['error:youtubeunplayable'] = 'YouTube will not play this video, so its subtitles cannot be fetched. ({$a})';
+$string['youtubeproxy'] = 'YouTube subtitle proxy';
+$string['youtubeproxy_details'] = 'Optional outbound proxy used only for fetching YouTube subtitles, in the form <code>host:port</code>, or <code>user:password@host:port</code> if it needs authentication. Prefix with <code>socks5://</code> for a SOCKS5 proxy. Leave empty to connect to YouTube directly. Set this only if YouTube is blocking subtitle requests from this server\'s IP address.';
 
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';

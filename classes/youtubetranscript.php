@@ -56,6 +56,9 @@ class youtubetranscript {
     /** @var string[] default language preference order */
     const DEFAULT_LANGS = ['en', 'en-GB', 'en-US'];
 
+    /** @var string the playabilityStatus reason YouTube gives when it thinks we are a bot */
+    const BOTCHECK_REASON = "Sign in to confirm you're not a bot";
+
     /**
      * Extract the video ID from a YouTube URL, or accept a bare video ID.
      * Handles standard urls, shortened youtu.be urls, and embed urls.
@@ -146,19 +149,77 @@ class youtubetranscript {
 
         $curl = new \curl();
         $curl->setHeader(['Content-Type: application/json']);
-        $response = $curl->post(self::INNERTUBE_URL, $body, [
-            'CURLOPT_USERAGENT' => self::USERAGENT,
-            'CURLOPT_TIMEOUT' => 30,
-        ]);
+        $response = $curl->post(self::INNERTUBE_URL, $body, self::curl_options());
         if ($curl->get_errno() !== 0) {
             throw new \moodle_exception('error:youtubefetchfailed', constants::M_COMPONENT);
         }
 
+        // A rate limited or IP blocked request never reaches the player at all.
+        $httpcode = (int)($curl->get_info()['http_code'] ?? 0);
+        if ($httpcode === 429 || $httpcode === 403) {
+            throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT);
+        }
+
         $playerresponse = json_decode($response, true);
         if (!is_array($playerresponse)) {
+            // A challenge page rather than the API response we asked for.
+            if (stripos((string)$response, 'g-recaptcha') !== false) {
+                throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT);
+            }
             throw new \moodle_exception('error:youtubefetchfailed', constants::M_COMPONENT);
         }
+
+        self::assert_playable($playerresponse);
+
         return $playerresponse['captions']['playerCaptionsTracklistRenderer']['captionTracks'] ?? [];
+    }
+
+    /**
+     * Check the player response actually describes a playable video, and translate
+     * the ways it can refuse into distinct errors.
+     *
+     * Without this every refusal reaches the caller as an empty caption track list,
+     * which is indistinguishable from a video that genuinely has no subtitles - so a
+     * server blocked by YouTube reports "no subtitles are available" for every video.
+     *
+     * @param array $playerresponse the decoded InnerTube player response
+     * @return void
+     * @throws \moodle_exception error:youtubeblocked, error:youtubeagerestricted or error:youtubeunplayable
+     */
+    protected static function assert_playable(array $playerresponse): void {
+        $status = (string)($playerresponse['playabilityStatus']['status'] ?? '');
+        $reason = (string)($playerresponse['playabilityStatus']['reason'] ?? '');
+
+        if ($status === '' || $status === 'OK') {
+            return;
+        }
+
+        // The bot check arrives as LOGIN_REQUIRED, same as age restriction, so test the reason first.
+        if (stripos($reason, self::BOTCHECK_REASON) !== false) {
+            throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT);
+        }
+        if ($status === 'LOGIN_REQUIRED') {
+            throw new \moodle_exception('error:youtubeagerestricted', constants::M_COMPONENT);
+        }
+        throw new \moodle_exception('error:youtubeunplayable', constants::M_COMPONENT, '', $reason);
+    }
+
+    /**
+     * The curl options every YouTube request shares, including the optional
+     * outbound proxy that lets a site whose IP YouTube blocks keep working.
+     *
+     * @return array curl options for \curl::get() / \curl::post()
+     */
+    protected static function curl_options(): array {
+        $options = [
+            'CURLOPT_USERAGENT' => self::USERAGENT,
+            'CURLOPT_TIMEOUT' => 30,
+        ];
+        $proxy = trim((string)get_config(constants::M_COMPONENT, 'youtubeproxy'));
+        if ($proxy !== '') {
+            $options['CURLOPT_PROXY'] = $proxy;
+        }
+        return $options;
     }
 
     /**
@@ -283,12 +344,13 @@ class youtubetranscript {
         }
 
         $curl = new \curl();
-        $response = $curl->get($url, null, [
-            'CURLOPT_USERAGENT' => self::USERAGENT,
-            'CURLOPT_TIMEOUT' => 30,
-        ]);
+        $response = $curl->get($url, null, self::curl_options());
         if ($curl->get_errno() !== 0) {
             throw new \moodle_exception('error:youtubefetchfailed', constants::M_COMPONENT);
+        }
+        $httpcode = (int)($curl->get_info()['http_code'] ?? 0);
+        if ($httpcode === 429 || $httpcode === 403) {
+            throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT);
         }
         return (string)$response;
     }

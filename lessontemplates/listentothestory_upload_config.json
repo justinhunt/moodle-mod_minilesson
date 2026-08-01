@@ -301,7 +301,7 @@
     "lessonTitle": "Listen to the Story (upload story)",
     "lessonDescription": "Upload a short story and the learners language level. AI will prepare an narrated audio story with images, and some listening and speaking activities.",
     "uniqueid": "6a339bf11eff6",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -414,5 +414,6 @@
     "tags": [
         "Speaking",
         "Reading"
-    ]
+    ],
+    "agentonly": 0
 }

@@ -310,10 +310,10 @@
             ]
         }
     ],
-    "lessonTitle": "Passage Reading",
+    "lessonTitle": "Reading and Speaking (generate story)",
     "lessonDescription": "Enter a list of keywords and a topic, AI will prepare a passage of text and some reading and speaking activities based on it.",
     "uniqueid": "6874e6af39202",
-    "version": "4",
+    "version": "5",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -325,7 +325,7 @@
             "enabled": true,
             "title": "Story\/Article Topic",
             "description": "Enter a story outline or article topic for AI to use to generate a reading passage.",
-            "type": "text"
+            "type": "textarea"
         },
         "user_level": {
             "enabled": true,
@@ -370,9 +370,52 @@
             "title": "",
             "description": "",
             "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
         }
     },
     "tags": [
         "Speaking"
-    ]
+    ],
+    "agentonly": 0
 }

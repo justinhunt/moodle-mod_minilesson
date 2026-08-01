@@ -95,7 +95,7 @@ class aigen_create_empty_lesson extends external_api {
             'foriframe' => $foriframe,
             'grade' => $grade,
             'visible' => $visible,
-            'nativelang' => $nativelang
+            'nativelang' => $nativelang,
         ]);
 
         $context = context_course::instance($params['courseid']);
@@ -120,6 +120,9 @@ class aigen_create_empty_lesson extends external_api {
         $moduledata->grade = $params['grade'];
         $moduledata->visible = $params['visible'];
         $moduledata->nativelang = $params['nativelang'];
+
+        // Any other defaults
+        $moduledata->showitemreview = 1;
 
         try {
             $cmid = utils::create_instance($moduledata, $course, $params['section']);

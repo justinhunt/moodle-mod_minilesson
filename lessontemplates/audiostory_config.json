@@ -310,10 +310,10 @@
             ]
         }
     ],
-    "lessonTitle": "Audio Story",
-    "lessonDescription": "Enter a topic, the learners language level, image style and a type of story. AI will prepare an audio story with listening and speaking activities.",
+    "lessonTitle": "Listen to the Story (generate story)",
+    "lessonDescription": "Enter a topic, the learners language level and a type of story. AI will prepare an audio story with listening and speaking activities.",
     "uniqueid": "6880824450555",
-    "version": "103",
+    "version": "104",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -387,6 +387,53 @@
             "title": "",
             "description": "",
             "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
         }
-    }
+    },
+    "tags": [
+        "Speaking",
+        "Listening"
+    ],
+    "agentonly": 0
 }
