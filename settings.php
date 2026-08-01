@@ -448,14 +448,6 @@ if ($hassiteconfig) {
         ''
     ));
 
-    // Escape hatch for sites whose IP YouTube blocks when fetching video subtitles.
-    $mainsettings->add(new admin_setting_configtext(
-        constants::M_COMPONENT .  '/youtubeproxy',
-        get_string('youtubeproxy', constants::M_COMPONENT),
-        get_string('youtubeproxy_details', constants::M_COMPONENT),
-        ''
-    ));
-
     // AI MANAGER.
     if (class_exists(aimanager::class) && class_exists(\core_ai\manager::class)) {
 

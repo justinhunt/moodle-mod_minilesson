@@ -1259,5 +1259,14 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026072500, 'minilesson');
     }
 
+    if ($oldversion < 2026080101) {
+        // An interim build offered an outbound proxy for YouTube subtitle fetching.
+        // The approach was dropped, so clear the setting rather than leave it orphaned.
+        unset_config('youtubeproxy', constants::M_MODNAME);
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026080101, 'minilesson');
+    }
+
     return true;
 }

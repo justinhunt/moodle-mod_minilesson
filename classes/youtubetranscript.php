@@ -53,11 +53,49 @@ class youtubetranscript {
     /** @var string the user agent matching the InnerTube client */
     const USERAGENT = 'com.google.android.youtube/20.10.38 (Linux; U; Android 11) gzip';
 
+    /**
+     * @var array the InnerTube clients to try, in order.
+     *
+     * YouTube throttles automated requests per client, so a server it refuses on
+     * one client is often still served on another. Each entry is the client half
+     * of the InnerTube context plus the user agent that client would really send.
+     */
+    const CLIENTS = [
+        'ANDROID' => [
+            'context' => ['clientName' => 'ANDROID', 'clientVersion' => self::CLIENT_VERSION,
+                'androidSdkVersion' => 30],
+            'useragent' => self::USERAGENT,
+        ],
+        'IOS' => [
+            'context' => ['clientName' => 'IOS', 'clientVersion' => '20.10.4', 'deviceMake' => 'Apple',
+                'deviceModel' => 'iPhone16,2', 'osName' => 'iPhone', 'osVersion' => '18.3.2.22D82'],
+            'useragent' => 'com.google.ios.youtube/20.10.4 (iPhone16,2; U; CPU iOS 18_3_2 like Mac OS X;)',
+        ],
+        'ANDROID_VR' => [
+            'context' => ['clientName' => 'ANDROID_VR', 'clientVersion' => '1.60.19', 'deviceMake' => 'Oculus',
+                'deviceModel' => 'Quest 3', 'androidSdkVersion' => 32, 'osName' => 'Android',
+                'osVersion' => '12L'],
+            'useragent' => 'com.google.android.apps.youtube.vr.oculus/1.60.19 (Linux; U; Android 12L; GB) gzip',
+        ],
+        'MWEB' => [
+            'context' => ['clientName' => 'MWEB', 'clientVersion' => '2.20250312.04.00'],
+            'useragent' => 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 ' .
+                '(KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+        ],
+    ];
+
     /** @var string[] default language preference order */
     const DEFAULT_LANGS = ['en', 'en-GB', 'en-US'];
 
-    /** @var string the playabilityStatus reason YouTube gives when it thinks we are a bot */
-    const BOTCHECK_REASON = "Sign in to confirm you're not a bot";
+    /** @var string the user agent of the client that was served the caption track list */
+    protected $useragent = self::USERAGENT;
+
+    /** @var string[] playabilityStatus reasons that really do mean the video is age restricted */
+    const AGERESTRICTED_REASONS = [
+        'inappropriate for some users',
+        'confirm your age',
+        'age-restricted',
+    ];
 
     /**
      * Extract the video ID from a YouTube URL, or accept a bare video ID.
@@ -128,28 +166,64 @@ class youtubetranscript {
     }
 
     /**
-     * Ask the InnerTube player API for the video's caption track list.
+     * Ask the InnerTube player API for the video's caption track list, trying each
+     * client in turn until one is served.
+     *
+     * YouTube refuses automated requests per client rather than outright, so a
+     * server turned away as a suspected bot on one client is frequently served on
+     * the next. Only when every client has refused is the failure reported, using
+     * the first refusal - that being the most representative of the video itself.
      *
      * @param string $videoid the video ID
      * @return array the caption tracks (each with baseUrl, languageCode, kind ...)
-     * @throws \moodle_exception error:youtubefetchfailed
+     * @throws \moodle_exception error:youtubefetchfailed, error:youtubeblocked,
+     *                           error:youtubeagerestricted or error:youtubeunplayable
      */
     protected function fetch_caption_tracks(string $videoid): array {
+        $firstrefusal = null;
+
+        foreach (self::CLIENTS as $client) {
+            try {
+                $playerresponse = $this->call_player($videoid, $client);
+                self::assert_playable($playerresponse);
+            } catch (\moodle_exception $e) {
+                $firstrefusal = $firstrefusal ?? $e;
+                continue;
+            }
+
+            $tracks = $playerresponse['captions']['playerCaptionsTracklistRenderer']['captionTracks'] ?? [];
+            if (!empty($tracks)) {
+                // Fetch the track content as the same client that was served the list.
+                $this->useragent = $client['useragent'];
+                return $tracks;
+            }
+        }
+
+        if ($firstrefusal !== null) {
+            throw $firstrefusal;
+        }
+
+        // Every client was served but none listed captions, so there genuinely are none.
+        return [];
+    }
+
+    /**
+     * Make one InnerTube player request as the given client.
+     *
+     * @param string $videoid the video ID
+     * @param array $client an entry from self::CLIENTS
+     * @return array the decoded player response
+     * @throws \moodle_exception error:youtubefetchfailed or error:youtubeblocked
+     */
+    protected function call_player(string $videoid, array $client): array {
         $body = json_encode([
-            'context' => [
-                'client' => [
-                    'clientName' => 'ANDROID',
-                    'clientVersion' => self::CLIENT_VERSION,
-                    'androidSdkVersion' => 30,
-                    'hl' => 'en',
-                ],
-            ],
+            'context' => ['client' => array_merge($client['context'], ['hl' => 'en', 'gl' => 'US'])],
             'videoId' => $videoid,
         ]);
 
         $curl = new \curl();
         $curl->setHeader(['Content-Type: application/json']);
-        $response = $curl->post(self::INNERTUBE_URL, $body, self::curl_options());
+        $response = $curl->post(self::INNERTUBE_URL, $body, self::curl_options($client['useragent']));
         if ($curl->get_errno() !== 0) {
             throw new \moodle_exception('error:youtubefetchfailed', constants::M_COMPONENT);
         }
@@ -157,21 +231,19 @@ class youtubetranscript {
         // A rate limited or IP blocked request never reaches the player at all.
         $httpcode = (int)($curl->get_info()['http_code'] ?? 0);
         if ($httpcode === 429 || $httpcode === 403) {
-            throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT);
+            throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT, '', 'HTTP ' . $httpcode);
         }
 
         $playerresponse = json_decode($response, true);
         if (!is_array($playerresponse)) {
             // A challenge page rather than the API response we asked for.
             if (stripos((string)$response, 'g-recaptcha') !== false) {
-                throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT);
+                throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT, '', 'captcha');
             }
             throw new \moodle_exception('error:youtubefetchfailed', constants::M_COMPONENT);
         }
 
-        self::assert_playable($playerresponse);
-
-        return $playerresponse['captions']['playerCaptionsTracklistRenderer']['captionTracks'] ?? [];
+        return $playerresponse;
     }
 
     /**
@@ -194,32 +266,32 @@ class youtubetranscript {
             return;
         }
 
-        // The bot check arrives as LOGIN_REQUIRED, same as age restriction, so test the reason first.
-        if (stripos($reason, self::BOTCHECK_REASON) !== false) {
-            throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT);
-        }
         if ($status === 'LOGIN_REQUIRED') {
-            throw new \moodle_exception('error:youtubeagerestricted', constants::M_COMPONENT);
+            // Age restriction and the bot check both arrive as LOGIN_REQUIRED. Only claim
+            // age restriction when the reason positively says so - YouTube words the bot
+            // check several ways, and from a server a block is by far the likelier cause,
+            // so anything unrecognised is reported as a block rather than mislabelled.
+            foreach (self::AGERESTRICTED_REASONS as $needle) {
+                if (stripos($reason, $needle) !== false) {
+                    throw new \moodle_exception('error:youtubeagerestricted', constants::M_COMPONENT);
+                }
+            }
+            throw new \moodle_exception('error:youtubeblocked', constants::M_COMPONENT, '', $reason);
         }
         throw new \moodle_exception('error:youtubeunplayable', constants::M_COMPONENT, '', $reason);
     }
 
     /**
-     * The curl options every YouTube request shares, including the optional
-     * outbound proxy that lets a site whose IP YouTube blocks keep working.
+     * The curl options every YouTube request shares.
      *
+     * @param string $useragent the user agent of the client making the request
      * @return array curl options for \curl::get() / \curl::post()
      */
-    protected static function curl_options(): array {
-        $options = [
-            'CURLOPT_USERAGENT' => self::USERAGENT,
+    protected static function curl_options(string $useragent): array {
+        return [
+            'CURLOPT_USERAGENT' => $useragent,
             'CURLOPT_TIMEOUT' => 30,
         ];
-        $proxy = trim((string)get_config(constants::M_COMPONENT, 'youtubeproxy'));
-        if ($proxy !== '') {
-            $options['CURLOPT_PROXY'] = $proxy;
-        }
-        return $options;
     }
 
     /**
@@ -344,7 +416,7 @@ class youtubetranscript {
         }
 
         $curl = new \curl();
-        $response = $curl->get($url, null, self::curl_options());
+        $response = $curl->get($url, null, self::curl_options($this->useragent));
         if ($curl->get_errno() !== 0) {
             throw new \moodle_exception('error:youtubefetchfailed', constants::M_COMPONENT);
         }
