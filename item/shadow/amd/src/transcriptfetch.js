@@ -28,8 +28,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log'],
-    function($, Ajax, Notification, Str, log) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log', 'core/templates',
+    'core/modal_save_cancel', 'core/modal_events'],
+    function($, Ajax, Notification, Str, log, Templates, ModalSaveCancel, ModalEvents) {
 
         "use strict"; // jshint ;_;
 
@@ -50,6 +51,10 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log'],
                 $('#' + opts.buttonid).on('click', function(e) {
                     e.preventDefault();
                     self.handle_click();
+                });
+                $('#' + opts.pastebuttonid).on('click', function(e) {
+                    e.preventDefault();
+                    self.handle_paste_click();
                 });
             },
 
@@ -111,6 +116,114 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/log'],
                     button.html(button.data('idlecaption'));
                     button.prop('disabled', false);
                 }
+            },
+
+            // The watch page of whatever video is currently in the form, so the modal can
+            // link straight to it. Empty when no usable video has been entered yet.
+            get_video_url: function() {
+                var value = $.trim($('#' + this.opts.ytfieldid).val() || '');
+                if (IDPATTERN.test(value)) {
+                    return 'https://www.youtube.com/watch?v=' + value;
+                }
+                var match = URLPATTERN.exec(value);
+                return match ? 'https://www.youtube.com/watch?v=' + match[1] : '';
+            },
+
+            handle_paste_click: function() {
+                var self = this;
+                var textareaid = 'ml_shadow_pastebox';
+
+                ModalSaveCancel.create({
+                    title: Str.get_string('pastevtt_title', 'minilessonitem_shadow'),
+                    body: Templates.render('minilessonitem_shadow/pastetranscript', {
+                        videourl: self.get_video_url(),
+                        textareaid: textareaid,
+                    }),
+                    buttons: {save: Str.get_string('pastevtt_convert', 'minilessonitem_shadow')},
+                    large: true,
+                    removeOnClose: true,
+                }).then(function(modal) {
+                    modal.getRoot().on(ModalEvents.save, function(e) {
+                        // Keep the modal open so a parse failure can be corrected in place.
+                        e.preventDefault();
+                        var pasted = $.trim($('#' + textareaid).val() || '');
+                        if (pasted === '') {
+                            Str.get_string('paste_empty', 'minilessonitem_shadow').then(function(msg) {
+                                Notification.alert('', msg);
+                                return msg;
+                            }).catch(Notification.exception);
+                            return;
+                        }
+                        self.do_convert(pasted, modal);
+                    });
+                    modal.show();
+                    return modal;
+                }).catch(Notification.exception);
+            },
+
+            do_convert: function(pasted, modal) {
+                var self = this;
+
+                Ajax.call([{
+                    methodname: 'mod_minilesson_convert_transcript',
+                    args: {
+                        contextid: self.opts.contextid,
+                        transcript: pasted,
+                    },
+                }])[0].then(function(response) {
+                    if (!response.success) {
+                        Str.get_string('paste_failed', 'minilessonitem_shadow').then(function(title) {
+                            Notification.alert(title, response.message);
+                            return title;
+                        }).catch(Notification.exception);
+                        return response;
+                    }
+                    // Same overwrite guard the fetch route uses.
+                    if (self.get_editor_content() !== '') {
+                        Str.get_strings([
+                            {key: 'fetchvtt_overwrite_title', component: 'minilessonitem_shadow'},
+                            {key: 'fetchvtt_overwrite', component: 'minilessonitem_shadow'},
+                            {key: 'yes', component: 'moodle'},
+                            {key: 'no', component: 'moodle'},
+                        ]).then(function(s) {
+                            Notification.confirm(s[0], s[1], s[2], s[3], function() {
+                                self.apply_converted(response, modal);
+                            });
+                            return s;
+                        }).catch(Notification.exception);
+                    } else {
+                        self.apply_converted(response, modal);
+                    }
+                    return response;
+                }).catch(function(err) {
+                    Notification.exception(err);
+                });
+            },
+
+            // Write the converted subtitles in, and stand down per-word highlighting: a pasted
+            // transcript only carries whole-line timings, so leaving it on would quietly do nothing.
+            apply_converted: function(response, modal) {
+                var self = this;
+                self.set_editor_content(response.vtt);
+                modal.destroy();
+
+                var highlightbox = $('#' + self.opts.wordhighlightid);
+                var turnedoff = highlightbox.length && highlightbox.prop('checked');
+                if (turnedoff) {
+                    highlightbox.prop('checked', false).trigger('change');
+                }
+
+                Str.get_string('paste_success', 'minilessonitem_shadow', response.cuecount).then(function(msg) {
+                    if (turnedoff) {
+                        return Str.get_string('paste_wordhighlightoff', 'minilessonitem_shadow')
+                            .then(function(note) {
+                                Notification.alert('', msg + ' ' + note);
+                                return note;
+                            });
+                    }
+                    Notification.alert('', msg);
+                    return msg;
+                }).catch(Notification.exception);
             },
 
             do_fetch: function(url) {

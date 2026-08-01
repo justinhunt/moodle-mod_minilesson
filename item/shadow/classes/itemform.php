@@ -58,6 +58,10 @@ class itemform extends baseform {
         if ($subtitlefetchenabled) {
             $ytarray[] =& $mform->createElement('button', 'fetchvtt', get_string('fetchvtt', 'minilessonitem_shadow'));
         }
+        // Pasting a transcript is always offered. It makes no request of its own, and an author
+        // can already type WebVTT into the editor by hand, so it unlocks nothing new - it just
+        // saves them formatting it. It is the only route when YouTube refuses to serve the server.
+        $ytarray[] =& $mform->createElement('button', 'pastevtt', get_string('pastevtt', 'minilessonitem_shadow'));
         $mform->addGroup($ytarray, 'shadowytclip', get_string('ytclipdetails', 'minilessonitem_shadow'), [' '], false);
         $mform->setType(constants::YTVIDEOID, PARAM_RAW);
         $mform->setType(constants::YTVIDEOSTART, PARAM_TEXT);
@@ -96,6 +100,7 @@ class itemform extends baseform {
             [[
                 'editorid' => 'id_' . itemtype::VTT,
                 'buttonid' => 'id_fetchvtt',
+                'pastebuttonid' => 'id_pastevtt',
                 'ytfieldid' => 'id_' . constants::YTVIDEOID,
                 'wordhighlightid' => 'id_' . itemtype::WORDHIGHLIGHT,
                 'contextid' => $this->context->id,

@@ -461,6 +461,7 @@ $string['error:youtubefetchfailed'] = 'Could not fetch data from YouTube. Please
 $string['error:youtubeblocked'] = 'YouTube would not serve subtitles to this server. This usually means it is refusing automated requests from the server\'s IP address rather than anything being wrong with the video. You can still add subtitles by copying them into the subtitle box by hand. (YouTube said: {$a})';
 $string['error:youtubeagerestricted'] = 'This YouTube video is age restricted, so its subtitles cannot be fetched.';
 $string['error:youtubeunplayable'] = 'YouTube will not play this video, so its subtitles cannot be fetched. ({$a})';
+$string['error:notranscripttimestamps'] = 'No timestamps were found in the pasted text. On YouTube, open the transcript panel, switch timestamps on from its menu, then copy the whole transcript.';
 
 $string['transcriber'] = 'Transcriber';
 $string['transcriber_details'] = 'The transcription engine to use';

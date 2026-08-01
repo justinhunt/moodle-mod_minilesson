@@ -428,6 +428,77 @@ class youtubetranscript {
     }
 
     /**
+     * Convert a transcript copied out of YouTube's own "Show transcript" panel into WebVTT.
+     *
+     * This is the fallback for servers YouTube refuses to serve automated requests:
+     * the author opens the transcript panel with timestamps switched on, copies it and
+     * pastes it in. The panel writes each timestamp on its own line followed by its
+     * text, though some browsers put both on one line, so both shapes are accepted.
+     *
+     * The panel only shows whole seconds, and truncates rather than rounds, so a cue
+     * really starts somewhere in the second it names. Half a second is added to each
+     * start to centre that error rather than let every cue fire up to a second early.
+     * Each cue runs until the next one begins; the last is given a nominal length.
+     *
+     * @param string $pasted the text copied from the transcript panel
+     * @param float $lastcuelength seconds to allow for the final cue
+     * @return string the WebVTT text, with numbered cue identifiers
+     * @throws \moodle_exception error:notranscripttimestamps when no timestamps were found
+     */
+    public static function transcript_to_vtt(string $pasted, float $lastcuelength = 3.0): string {
+        $lines = explode("\n", str_replace(["\r\n", "\r"], "\n", $pasted));
+
+        // A timestamp is m:ss or h:mm:ss, either alone on its line or leading the text.
+        $timestampregex = '/^\s*(?:(\d{1,2}):)?(\d{1,3}):([0-5]\d)\s*(.*)$/u';
+
+        $cues = [];
+        foreach ($lines as $line) {
+            if (trim($line) === '') {
+                continue;
+            }
+            if (preg_match($timestampregex, $line, $m)) {
+                $seconds = ((int)$m[1] * 3600) + ((int)$m[2] * 60) + (int)$m[3];
+                $cues[] = ['start' => $seconds + 0.5, 'text' => trim($m[4])];
+            } else if (!empty($cues)) {
+                // A continuation of the current cue's text.
+                $last = count($cues) - 1;
+                $cues[$last]['text'] = trim($cues[$last]['text'] . ' ' . trim($line));
+            }
+        }
+
+        // Drop any cue the panel left without text (a timestamp on a purely visual row).
+        $cues = array_values(array_filter($cues, function ($cue) {
+            return $cue['text'] !== '';
+        }));
+
+        if (empty($cues)) {
+            throw new \moodle_exception('error:notranscripttimestamps', constants::M_COMPONENT);
+        }
+
+        $blocks = ['WEBVTT'];
+        foreach ($cues as $i => $cue) {
+            $end = isset($cues[$i + 1]) ? $cues[$i + 1]['start'] : $cue['start'] + $lastcuelength;
+            $blocks[] = self::format_timestamp($cue['start']) . ' --> ' . self::format_timestamp($end) .
+                "\n" . $cue['text'];
+        }
+
+        return self::add_cue_identifiers(implode("\n\n", $blocks) . "\n");
+    }
+
+    /**
+     * Format seconds as a WebVTT timestamp.
+     *
+     * @param float $seconds the offset in seconds
+     * @return string the timestamp, hh:mm:ss.mmm
+     */
+    protected static function format_timestamp(float $seconds): string {
+        $hours = (int)floor($seconds / 3600);
+        $minutes = (int)floor(($seconds - ($hours * 3600)) / 60);
+        $secs = $seconds - ($hours * 3600) - ($minutes * 60);
+        return sprintf('%02d:%02d:%06.3f', $hours, $minutes, $secs);
+    }
+
+    /**
      * Number every cue with a "line-number: NN" cue identifier, so activity
      * authors can see which line number to refer to in line-based settings.
      * Any existing cue identifiers are replaced.

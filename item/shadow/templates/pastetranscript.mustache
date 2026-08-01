@@ -1,0 +1,54 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_shadow/pastetranscript
+
+    Body of the "paste YouTube transcript" modal: the steps for copying a
+    transcript out of YouTube, and the box to paste it into.
+
+    Context variables required for this template:
+    * videourl - the watch page URL of the clip, empty when no video is set yet
+    * textareaid - the id to give the paste box
+
+    Example context (json):
+    {
+        "videourl": "https://www.youtube.com/watch?v=fm6PtyM4qMw",
+        "textareaid": "ml_shadow_pastebox"
+    }
+}}
+<div class="minilessonitem_shadow_pastetranscript">
+    <ol class="mb-3 ps-3">
+        <li>
+            {{#videourl}}
+                <a href="{{videourl}}" target="_blank" rel="noopener noreferrer">
+                    {{#str}}paste_step_open_link, minilessonitem_shadow{{/str}}
+                </a>
+            {{/videourl}}
+            {{^videourl}}
+                {{#str}}paste_step_open_novideo, minilessonitem_shadow{{/str}}
+            {{/videourl}}
+        </li>
+        <li>{{#str}}paste_step_showtranscript, minilessonitem_shadow{{/str}}</li>
+        <li>{{#str}}paste_step_timestamps, minilessonitem_shadow{{/str}}</li>
+        <li>{{#str}}paste_step_copy, minilessonitem_shadow{{/str}}</li>
+    </ol>
+    <label class="sr-only visually-hidden" for="{{textareaid}}">
+        {{#str}}paste_label, minilessonitem_shadow{{/str}}
+    </label>
+    <textarea id="{{textareaid}}" class="form-control" rows="12" spellcheck="false"
+        placeholder="{{#str}}paste_placeholder, minilessonitem_shadow{{/str}}"></textarea>
+</div>

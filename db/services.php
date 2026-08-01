@@ -230,6 +230,14 @@ $functions = [
             'type' => 'read',
             'ajax' => true,
         ],
+        'mod_minilesson_convert_transcript' => [
+            'classname' => 'mod_minilesson\external\convert_transcript',
+            'methodname' => 'execute',
+            'description' => 'Converts a transcript copied from YouTube into WebVTT subtitles',
+            'capabilities' => 'mod/minilesson:itemedit',
+            'type' => 'read',
+            'ajax' => true,
+        ],
         'mod_minilesson_set_cpage_consent' => [
             'classname' => 'mod_minilesson\external\set_cpage_consent',
             'methodname' => 'execute',
