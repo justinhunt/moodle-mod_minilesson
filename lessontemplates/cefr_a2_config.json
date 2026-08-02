@@ -114,7 +114,7 @@
                     "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "user_topic",
+            "overallimagecontext": "--",
             "promptfields": [
                 {
                     "name": "language",
@@ -136,7 +136,7 @@
         },
         {
             "itemnumber": 2,
-            "prompt": "Rewrite the following {language} text (passage), so that each instance of one of the keywords below is surrounded with square brackets, e.g The [purple] people [eater] is a song. \nKeywords:\n{keywords}\n \nText:\n{text}",
+            "prompt": "Rewrite the following {language} text (passage), so that each instance of one of the keywords below is surrounded with square brackets.\nNB If a \"keyword\" is actually a phrase with multiple words then each individual word should be surrounded with square brackets.    \ne.g The [purple] [people] [eater] is a song.\n\nKeywords:\n{keywords}\n \nText:\n{text}",
             "generatemethod": "generate",
             "generatefileareasmethod": "generate",
             "generatefields": [
@@ -202,7 +202,7 @@
                 {
                     "name": "sentences",
                     "generate": 1,
-                    "mapping": "item1_data2"
+                    "mapping": "item1_data1"
                 },
                 {
                     "name": "data1",
@@ -438,7 +438,7 @@
     "lessonTitle": "CEFR A2 Template",
     "lessonDescription": "Enter 4 - 10 keywords, the native language to translate words into, a passage of text that uses those keywords and some related questions and topic for an audio chat, and a scene or situation to help make consistent images. Those inputs will be used to generate a set of vocab cards, word shuffle, listen and speak , audio chat and free speaking.",
     "uniqueid": "6a4909ba67c08",
-    "version": "3",
+    "version": "5",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
