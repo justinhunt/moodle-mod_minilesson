@@ -188,16 +188,19 @@ class import {
                         } else {
                             // If generation failed for some reason, fall back (so we dont lose it all).
                             // First lets see if its array-like string (eg "line1,line2,line3") because it happens.
-                            $commacount = substr_count($itemdata->{$coldef['jsonname']}, ',');
-                            if ($commacount > 2) {
-                                $line[] = str_replace(',', PHP_EOL, $itemdata->{$coldef['jsonname']});
+                            // But only if it is not already line separated, and has no pipe delimited structure,
+                            // because the fields of such a line (eg wordshuffle distractors) may contain commas.
+                            $fallback = (string) $itemdata->{$coldef['jsonname']};
+                            $haslines = preg_match('/\R/', $fallback);
+                            $haspipes = strpos($fallback, '|') !== false;
+                            if (!$haslines && !$haspipes && substr_count($fallback, ',') > 2) {
+                                $line[] = str_replace(',', PHP_EOL, $fallback);
                             } else {
-                                // If its hopeless just put the string in one line and hope the teacher can fix it up.
-                                $line[] = $itemdata->{$coldef['jsonname']};
+                                // Its already line separated or structured, or its hopeless.
+                                // Either way pass it through as is and hope the teacher can fix it up.
+                                $line[] = $fallback;
                             }
-
                         }
-
                     } else {
                         // This is the normal case. Just join the array into lines. That is how we store stringarrays in CSV.
                         $line[] = join(PHP_EOL, $itemdata->{$coldef['jsonname']});

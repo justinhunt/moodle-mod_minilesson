@@ -30,6 +30,15 @@ use mod_minilesson\local\exception\textgenerationfailed;
  */
 class aigen {
 
+    /**
+     * Free-to-use variables that an aigen config item can have the AI generate. They hold data for
+     * use later in the generation run (as an image prompt, or as context for a following item),
+     * rather than being fields of the item itself.
+     *
+     * @var array
+     */
+    public const DATAVARS = ['data1', 'data2', 'data3', 'data4', 'data5'];
+
     /** @var array */
     public const DEFAULTTEMPLATES = [
         '6880824450555' => 'audiostory',
@@ -204,11 +213,47 @@ class aigen {
                         }
                     }
 
+                    // Work out which generate fields hold a list of values rather than a single value.
+                    // The format hint below must show these as JSON arrays, or the AI is as likely to
+                    // return one joined string as it is an array, and the joined string can not be
+                    // reliably split again (a wordshuffle sentence, say, contains commas of its own).
+                    $arrayfields = [];
+                    // Real item fields declare their type in the item type's key columns.
+                    $itemtypeclass = local\itemtype\item::get_itemtype_class($importitem->type);
+                    if ($itemtypeclass) {
+                        foreach ($itemtypeclass::get_keycolumns() as $coldef) {
+                            if (isset($coldef['type']) && $coldef['type'] === 'stringarray') {
+                                $arrayfields[$coldef['jsonname']] = true;
+                            }
+                        }
+                    }
+                    // Data vars hold generated data rather than a field of the item, so nothing declares
+                    // their shape. But if one is the mapping of an image file area then it is consumed
+                    // one element per image, so it is a list too. This only holds for data vars: a real
+                    // item field mapped to a file area (eg freespeaking's "text") is still a single value,
+                    // and its key column above is the authority on that.
+                    if (!empty($configitem->generatefileareas)) {
+                        foreach ($configitem->generatefileareas as $generatefilearea) {
+                            if (
+                                !empty($generatefilearea->generate) &&
+                                !empty($generatefilearea->mapping) &&
+                                in_array($generatefilearea->mapping, self::DATAVARS)
+                            ) {
+                                $arrayfields[$generatefilearea->mapping] = true;
+                            }
+                        }
+                    }
+
                     // Prepare the response format (JSON).
                     $generateformat = new \stdClass();
                     foreach ($configitem->generatefields as $generatefield) {
                         if (isset($generatefield->generate) && $generatefield->generate == 1) {
-                            $generateformat->{$generatefield->name} = $generatefield->name . '_data';
+                            if (isset($arrayfields[$generatefield->name])) {
+                                $generateformat->{$generatefield->name} =
+                                    [$generatefield->name . '_data_1', $generatefield->name . '_data_2'];
+                            } else {
+                                $generateformat->{$generatefield->name} = $generatefield->name . '_data';
+                            }
                         }
                     }
                     $generateformatjson = json_encode($generateformat);

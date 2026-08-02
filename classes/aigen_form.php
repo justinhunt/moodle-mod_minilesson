@@ -175,7 +175,7 @@ class aigen_form extends \moodleform {
 
                 // Fetch datavars for the item. Datavars are fields that can contain generated data, and used as context later on.
                 // But they don't represent a prompt field or a placeholder specifically. They are just free to use variables.
-                $datavars = ['data1', 'data2', 'data3', 'data4', 'data5'];
+                $datavars = aigen::DATAVARS;
                 $tdata['items'][$itemnumber]['datavars'] = $datavars;
 
                 // Fetch the file areas for this item.

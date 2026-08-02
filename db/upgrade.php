@@ -1268,5 +1268,14 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026080101, 'minilesson');
     }
 
+    if ($oldversion < 2026080200) {
+        // The cefr_a2 template's wordshuffle prompt now states explicitly that its list
+        // fields must come back as JSON arrays, so pick up the new template version.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026080200, 'minilesson');
+    }
+
     return true;
 }
