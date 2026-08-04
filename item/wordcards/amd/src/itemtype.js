@@ -191,6 +191,29 @@ define(['jquery',
                 self.controls.options.addClass('wordcards_options_locked');
                 self.check(option.attr('data-term'), option);
             });
+
+            // Choose modes: pressing 1-9 selects the matching numbered option.
+            if (self.itemdata.ischoosemode) {
+                $(document).on('keydown.mlwordcards' + self.itemdata.uniqueid, function (e) {
+                    // Only act when this item and its options are on screen.
+                    if (!self.controls.container.is(':visible') || !self.controls.options.is(':visible')) {
+                        return;
+                    }
+                    if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) {
+                        return;
+                    }
+                    if (e.key < '1' || e.key > '9' || e.key.length !== 1) {
+                        return;
+                    }
+                    var optionbutton = self.controls.options.find(
+                        ".wordcards_option[data-optionindex='" + (parseInt(e.key, 10) - 1) + "']"
+                    );
+                    if (optionbutton.length > 0) {
+                        e.preventDefault();
+                        optionbutton.trigger('click');
+                    }
+                });
+            }
         },
 
         start: function () {
@@ -262,9 +285,10 @@ define(['jquery',
             self.shuffle(options);
 
             var code = "";
-            options.forEach(function (option) {
-                code += "<button type='button' class='btn wordcards_option' data-term='"
+            options.forEach(function (option, optionindex) {
+                code += "<button type='button' class='btn wordcards_option' data-optionindex='" + optionindex + "' data-term='"
                     + self.escapeHtml(option.term) + "' data-correct='" + (option === item ? "true" : "false") + "'>"
+                    + "<span class='wordcards_option_number' aria-hidden='true'>" + (optionindex + 1) + "</span>"
                     + "<span class='wordcards_option_label'>" + self.escapeHtml(option.term) + "</span>"
                     + "<i class='fa wordcards_option_icon' aria-hidden='true'></i>"
                     + "</button>";
