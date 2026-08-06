@@ -36,6 +36,7 @@ $retake = optional_param('retake', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID - it should be named as the first character of the module
 $embed = optional_param('embed', 0, PARAM_INT); // course_module ID, or
 $attemptid = optional_param('attemptid', 0, PARAM_INT);
+$userid = optional_param('userid', 0, PARAM_INT);
 
 if ($id) {
     $cm = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
@@ -49,7 +50,7 @@ if ($id) {
     throw new moodle_exception('You must specify a course_module ID or an instance ID', constants::M_COMPONENT);
 }
 
-$PAGE->set_url('/mod/minilesson/view.php', ['id' => $cm->id, 'retake' => $retake, 'embed' => $embed]);
+$PAGE->set_url('/mod/minilesson/view.php', ['id' => $cm->id, 'retake' => $retake, 'embed' => $embed, 'userid' => $userid]);
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
 
