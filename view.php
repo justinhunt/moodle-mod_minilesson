@@ -49,9 +49,19 @@ if ($id) {
     print_error('You must specify a course_module ID or an instance ID');
 }
 
+// Check logins from mobile app that appear stale
+$mobileuserid = optional_param('userid', 0, PARAM_INT);
+if (isloggedin() && $mobileuserid && $USER->id != $mobileuserid) {
+    require_logout();
+    // Clear session cookies completely to prevent persistence.
+    session_unset();
+    session_destroy();
+}
+
 $PAGE->set_url('/mod/minilesson/view.php', ['id' => $cm->id, 'retake' => $retake, 'embed' => $embed]);
 require_login($course, true, $cm);
 $modulecontext = context_module::instance($cm->id);
+
 
 // Trigger module viewed event.
 $event = \mod_minilesson\event\course_module_viewed::create([
