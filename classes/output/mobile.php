@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -22,14 +21,14 @@ use mod_minilesson\mobile_auth;
 use mod_minilesson\constants;
 
 /**
- * Setup Tab for Poodll minilesson
+ * Mobile handler for Poodll minilesson
  *
  * @package    mod_minilesson
  * @copyright  2025 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mobile
-{
+class mobile {
+
     /**
      * Returns the mobile view for the minilesson activity.
      *
@@ -37,67 +36,27 @@ class mobile
      * @return array
      * @throws \dml_exception
      */
-    public static function mobile_course_view($args)
-    {
-        global $DB, $CFG, $OUTPUT, $USER;
+    public static function mobile_course_view($args) {
+        global $DB, $CFG, $OUTPUT;
 
         $cmid = $args['cmid'];
-        if (!$CFG->allowframembedding) {
-            $context = \context_system::instance();
-            if (has_capability('moodle/site:config', $context)) {
-                $template = 'mod_minilesson/mobile_no_iframe_embedding';
-            } else {
-                $template = 'mod_minilesson/mobile_contact_siteadmin';
-            }
-            return [
-                'templates' => [
-                    [
-                        'id' => 'noiframeembedding',
-                        'html' => $OUTPUT->render_from_template($template, []),
-                    ],
-                ],
-            ];
-        }
 
         // Verify course context.
         $cm = get_coursemodule_from_id('minilesson', $cmid);
         if (!$cm) {
-            print_error('invalidcoursemodule');
+            throw new \moodle_exception('invalidcoursemodule');
         }
         $course = $DB->get_record('course', ['id' => $cm->course]);
         if (!$course) {
-            print_error('coursemisconf');
+            throw new \moodle_exception('coursemisconf');
         }
         require_course_login($course, false, $cm, true, true);
         $context = context_module::instance($cm->id);
         require_capability('mod/minilesson:view', $context);
 
-        [$token, $secret] = mobile_auth::create_embed_auth_token();
-
-        // Store secret in database.
-        $auth = $DB->get_record(constants::M_AUTHTABLE, [
-            'user_id' => $USER->id,
-        ]);
-        $currenttimestamp = time();
-        if ($auth) {
-            $DB->update_record(constants::M_AUTHTABLE, (object)[
-                'id'         => $auth->id,
-                'secret'     => $token,
-                'created_at' => $currenttimestamp,
-            ]);
-        } else {
-            $DB->insert_record(constants::M_AUTHTABLE, (object)[
-                'user_id'    => $USER->id,
-                'secret'     => $token,
-                'created_at' => $currenttimestamp,
-            ]);
-        }
-
         $data = [
             'cmid'    => $cmid,
             'wwwroot' => $CFG->wwwroot,
-            'user_id' => $USER->id,
-            'secret'  => urlencode($secret),
         ];
 
         return [
