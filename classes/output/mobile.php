@@ -37,7 +37,7 @@ class mobile {
      * @throws \dml_exception
      */
     public static function mobile_course_view($args) {
-        global $DB, $CFG, $OUTPUT;
+        global $DB, $CFG, $OUTPUT, $USER;
 
         $cmid = $args['cmid'];
 
@@ -57,6 +57,7 @@ class mobile {
         $data = [
             'cmid'    => $cmid,
             'wwwroot' => $CFG->wwwroot,
+            'userid' => $USER->id,
         ];
 
         return [
