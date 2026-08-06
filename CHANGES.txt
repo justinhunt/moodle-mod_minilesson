@@ -1,3 +1,7 @@
+Version 1.1.46 (Build 202608xxxx)
+- Removed unneccessary mywords js files
+- Added numbered badges to wordcards mc choices so they can be answered easily from keyboard
+
 Version 1.1.45 (Build 2026072600)
 - Added support for Camp-Registry and CI
 

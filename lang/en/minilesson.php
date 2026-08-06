@@ -889,7 +889,6 @@ $string['passagetoread'] = 'Passage to read';
 $string['passagewithgaps'] = 'Passage with gaps';
 // Spacegame.
 $string['achievedhighscoreof'] = 'Achieved a high score of {$a}';
-$string['addtomywords'] = "Click to add to My Words";
 $string['emptyquiz'] = 'There are no multiple choice questions in the selected category.';
 $string['endofgame'] = 'Your score was: {$a}. Press space or click to restart.';
 $string['fullscreen'] = 'Fullscreen';
@@ -901,7 +900,6 @@ $string['notyetplayed'] = 'Not yet played';
 $string['playedxtimeswithhighscore'] = 'Played {$a->times} times. The last game ended with a high score of {$a->score}';
 $string['playerscores'] = 'Player scores';
 $string['points'] = 'Points';
-$string['removefrommywords'] = "Click to remove from My Words";
 $string['removescores'] = 'Remove all user scores';
 $string['score'] = 'Score';
 $string['scoreheader'] = 'Score';
