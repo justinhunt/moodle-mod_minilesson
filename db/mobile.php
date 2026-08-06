@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -17,17 +16,17 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$addons = array(
-    "mod_minilesson" => array( // Plugin identifier.
-        'handlers' => array( // Different places where the plugin will display content.
-            'courseminilesson' => array( // Handler unique name (alphanumeric).
+$addons = [
+    "mod_minilesson" => [ // Plugin identifier.
+        'handlers' => [ // Different places where the plugin will display content.
+            'courseminilesson' => [ // Handler unique name (alphanumeric).
                 'delegate'    => 'CoreCourseModuleDelegate', // Delegate (where to display the link to the plugin).
                 'method'      => 'mobile_course_view', // Main function in \mod_minilesson\output\mobile.
-                'displaydata' => array(
+                'displaydata' => [
                     'icon'  => $CFG->wwwroot . '/mod/minilesson/pix/icon.svg',
                     'class' => '',
-                ),
-            )
-        )
-    )
-);
+                ],
+            ],
+        ],
+    ],
+];

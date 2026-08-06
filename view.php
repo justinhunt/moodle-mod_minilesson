@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -38,23 +37,11 @@ $n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID - it should b
 $embed = optional_param('embed', 0, PARAM_INT); // course_module ID, or
 $attemptid = optional_param('attemptid', 0, PARAM_INT);
 
-// Allow login through an authentication token.
-$userid = optional_param('user_id', null, PARAM_ALPHANUMEXT);
-$secret = optional_param('secret', null, PARAM_RAW);
-// formerly had !isloggedin() check, but we want tologin afresh on each embedded access
-if (!empty($userid) && !empty($secret)) {
-    if (mobile_auth::has_valid_token($userid, $secret)) {
-        $user = get_complete_user_data('id', $userid);
-        complete_user_login($user);
-        $embed = 2;
-    }
-}
-
 if ($id) {
     $cm = get_coursemodule_from_id('minilesson', $id, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
     $moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
-} elseif ($n) {
+} else if ($n) {
     $moduleinstance = $DB->get_record('minilesson', ['id' => $n], '*', MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('minilesson', $moduleinstance->id, $course->id, false, MUST_EXIST);
@@ -98,7 +85,7 @@ $config = get_config(constants::M_COMPONENT);
 // We want minilesson to embed nicely, or display according to layout settings.
 if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded' || $embed == 1) {
     $PAGE->set_pagelayout('embedded');
-} elseif ($config->enablesetuptab || $moduleinstance->pagelayout == 'popup' || $embed == 2) {
+} else if ($config->enablesetuptab || $moduleinstance->pagelayout == 'popup' || $embed == 2) {
     $PAGE->set_pagelayout('popup');
     $PAGE->add_body_class('poodll-minilesson-embed');
 } else {
@@ -114,17 +101,17 @@ if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded'
 /** @var mod_minilesson\output\renderer $renderer */
 $renderer = $PAGE->get_renderer('mod_minilesson');
 
-$continue_form_url = $PAGE->url; //new moodle_url('/mod/minilesson/view.php', ['id' => $cm->id, 'embed' => $embed]);
-$continue_form = new attempt_continue_form($continue_form_url);
-if ($formdata = $continue_form->get_data()) {
+$continueformurl = $PAGE->url; // new moodle_url('/mod/minilesson/view.php', ['id' => $cm->id, 'embed' => $embed]);
+$continueform = new attempt_continue_form($continueformurl);
+if ($formdata = $continueform->get_data()) {
     if (!empty($formdata->delete)) {
         $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $moduleinstance->id, 'userid' => $USER->id], 'timecreated DESC');
         $DB->delete_records_list(constants::M_ATTEMPTSTABLE, 'id', array_keys($attempts));
-        redirect($continue_form_url);
+        redirect($continueformurl);
         die;
     } else if (!empty($formdata->continue)) {
-        $continue_form_url->param('attemptid', $formdata->attemptid);
-        redirect($continue_form_url);
+        $continueformurl->param('attemptid', $formdata->attemptid);
+        redirect($continueformurl);
         die;
     }
 }
@@ -169,13 +156,13 @@ if (!empty($latestattempt->sessiondata)) {
 if (empty($attemptid) && empty($newattempt) && !empty($attempts) && !empty($moduleinstance->allowcontinueattempts)
         && $totallessonitems != $completedlessonitems && $completedlessonitems > 0) {
     // If we have an attempt and it is both started and not complete and continuing is enabled, then we show the continue form.
-    $continue_form->set_data(['attemptid' => $latestattempt->id]);
+    $continueform->set_data(['attemptid' => $latestattempt->id]);
     if (has_capability('mod/minilesson:evaluate', $modulecontext) && $embed != 2) {
         echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_COMPONENT));
     } else {
         echo $renderer->notabsheader($moduleinstance, $embed);
     }
-    echo $continue_form->render();
+    echo $continueform->render();
     echo $renderer->footer();
     die;
 }
@@ -219,7 +206,7 @@ if ($hasopenclosedates) {
     if ($currenttime > $moduleinstance->viewend && $moduleinstance->viewend > 0) {
         echo get_string('activityisclosed', constants::M_COMPONENT);
         $closed = true;
-    } elseif ($currenttime < $moduleinstance->viewstart) {
+    } else if ($currenttime < $moduleinstance->viewstart) {
         echo get_string('activityisnotopenyet', constants::M_COMPONENT);
         $closed = true;
     }
@@ -241,7 +228,7 @@ if ($CFG->version < 2022041900) {
 if ($latestattempt->status == constants::M_STATE_COMPLETE) {
     $teacherreport = false;
     echo $renderer->show_finished_results($comptest, $latestattempt, $cm, $canattempt, $embed, $teacherreport);
-} elseif ($itemcount > 0) {
+} else if ($itemcount > 0) {
     echo $renderer->show_quiz($comptest, $moduleinstance);
     $previewid = 0;
     echo $renderer->fetch_activity_amd($comptest, $cm, $moduleinstance, $previewid, $canattempt, $embed, $latestattempt);
