@@ -46,16 +46,7 @@ if ($id) {
     $course = $DB->get_record('course', ['id' => $moduleinstance->course], '*', MUST_EXIST);
     $cm = get_coursemodule_from_instance('minilesson', $moduleinstance->id, $course->id, false, MUST_EXIST);
 } else {
-    print_error('You must specify a course_module ID or an instance ID');
-}
-
-// Check logins from mobile app that appear stale
-$mobileuserid = optional_param('userid', 0, PARAM_INT);
-if (isloggedin() && $mobileuserid && $USER->id != $mobileuserid) {
-    require_logout();
-    // Clear session cookies completely to prevent persistence.
-    session_unset();
-    session_destroy();
+    throw new moodle_exception('You must specify a course_module ID or an instance ID', constants::M_COMPONENT);
 }
 
 $PAGE->set_url('/mod/minilesson/view.php', ['id' => $cm->id, 'retake' => $retake, 'embed' => $embed]);
