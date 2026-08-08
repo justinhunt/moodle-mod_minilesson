@@ -4,7 +4,7 @@
             "type": "passagereading",
             "name": "Item: Passage Reading",
             "instructions": "Use the microphone to record yourself reading the passage.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""

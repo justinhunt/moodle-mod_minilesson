@@ -4,7 +4,7 @@
             "type": "slides",
             "name": "Item: Slides",
             "instructions": "Click > or < to go forward or backward through the slides.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""

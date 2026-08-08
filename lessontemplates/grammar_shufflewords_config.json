@@ -193,7 +193,7 @@
     "lessonTitle": "Grammar Lesson (slides+shuffle words)",
     "lessonDescription": "Provide the grammar point, keywords and the language of instruction and a lesson with a slides tutorial and shuffle-the-words item and type-the-word item will be created. Use this template for grammar points where word order in the sentence is important. It is also a generally useful template because it can be used with most sets of sentences.",
     "uniqueid": "6a363a03964a0",
-    "version": "1",
+    "version": "2",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

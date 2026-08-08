@@ -59,7 +59,7 @@
     "lessonTitle": "Audio Story (upload story)",
     "lessonDescription": "Enter a passage of text as the story. AI will prepare a short narrated slide show with images using text to speech to narrate the story.",
     "uniqueid": "6a339418c0f3b",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

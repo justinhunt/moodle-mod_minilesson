@@ -4,19 +4,19 @@
       "type": "page",
       "name": "Item: Listen to the Passage",
       "instructions": "Listen the passage, practice reading, and then answer questions",
-      "ttsvoice": "Joey",
+      "ttsvoice": "auto",
       "audiofname": "00:00:00",
       "ttsdialog": [
         ""
       ],
       "ttspassage": "There are 3 ways to make the Earth a green place. Reduce, Reuse and \r\nRecycle. When people reduce, it means they are using less of something. \r\nThis means less waste. Turning off the water when we brush our teeth is the \r\nway of reducing. We don't waste water by doing this. Reusing is to use the \r\nthings we already have again. We can use reusable shopping bags made of \r\ncloth instead of plastic bags when we go to a supermarket. Using both sides \r\nof the paper is also a way of reusing.",
-      "ttspassagevoice": "Kajal"
+      "ttspassagevoice": "auto"
     },
     {
       "type": "passagereading",
       "name": "Item: Passage Reading",
       "instructions": "Use the microphone to record yourself reading the passage.",
-      "ttsvoice": "Joey",
+      "ttsvoice": "auto",
       "audiofname": "00:00:00",
       "ttsdialog": [
         ""
@@ -32,7 +32,7 @@
       "name": "Item: Audio Chat",
       "instructions": "Practice speaking with your AI partner about the topic.",
 	  "text": "Practice speaking with your AI partner about the topic.",
-      "ttsvoice": "Joey",
+      "ttsvoice": "auto",
       "audiofname": "00:00:00",
       "ttsdialog": [
         ""

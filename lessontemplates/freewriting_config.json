@@ -89,7 +89,7 @@
     "lessonTitle": "Free Writing",
     "lessonDescription": "A Free Writing activity about the specified topic.",
     "uniqueid": "6a3141279b845",
-    "version": "1",
+    "version": "2",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

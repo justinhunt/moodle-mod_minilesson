@@ -78,7 +78,7 @@
     "lessonTitle": "Choose the correct word (generate sentences) ",
     "lessonDescription": "Create a choose-the-correct-word activity using a Word Shuffle item. Enter 4 - 10 keywords. The keywords will be used to generate sentences each with a gap and 4 possible word choices. A native language sentence translation and a picture will be generated for each sentence.",
     "uniqueid": "6a349d7edd597",
-    "version": "3",
+    "version": "4",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

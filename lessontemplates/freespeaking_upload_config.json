@@ -76,7 +76,7 @@
     "lessonTitle": "Free Speaking (upload question)",
     "lessonDescription": "Enter a question or topic about which students will speak.",
     "uniqueid": "6a35e2a3a4cb6",
-    "version": "1",
+    "version": "2",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {

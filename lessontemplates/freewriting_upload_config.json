@@ -76,7 +76,7 @@
     "lessonTitle": "Free Writing (Upload question)",
     "lessonDescription": "Enter a question or topic about which students will write.",
     "uniqueid": "6a35e28b48614",
-    "version": "1",
+    "version": "2",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {

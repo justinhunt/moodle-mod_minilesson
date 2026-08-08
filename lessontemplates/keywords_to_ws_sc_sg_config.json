@@ -234,7 +234,7 @@
     "lessonTitle": "Word Practice v3",
     "lessonDescription": "Enter 4 - 10 keywords. The keywords will be used to generate a set of vocab cards, word shuffle, scatter activity, and space game items. ",
     "uniqueid": "68a0422070f05",
-    "version": "7",
+    "version": "8",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

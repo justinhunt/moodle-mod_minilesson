@@ -104,7 +104,7 @@
     "lessonTitle": "Audio Chat (Upload discussion question)",
     "lessonDescription": "Enter a discussion question that will be used in an Audio Chat for the user and AI to talk about",
     "uniqueid": "6a35e70e9773b",
-    "version": "1",
+    "version": "2",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {

@@ -63,7 +63,7 @@
     "lessonTitle": "Speaking GapFill (generate sentences)",
     "lessonDescription": "Creates a Speaking GapFill activity from a list of keywords (maximum 30).",
     "uniqueid": "6a315158ee84e",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

@@ -66,7 +66,7 @@
     "lessonTitle": "Passage Reading (generate passage)",
     "lessonDescription": "Enter a list of keywords, the language level and a topic, AI will generate a reading passage for a read aloud activity.",
     "uniqueid": "6a30fdf7bb4bb",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

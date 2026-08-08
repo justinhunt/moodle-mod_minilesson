@@ -73,7 +73,7 @@
     "lessonTitle": "Listening GapFill (generate sentences)",
     "lessonDescription": "Creates a Listening GapFill activity from a list of keywords (maximum 30).",
     "uniqueid": "6a3142579495d",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

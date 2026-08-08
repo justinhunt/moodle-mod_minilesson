@@ -4,7 +4,7 @@
             "type": "speakinggapfill",
             "name": "Item: Speaking GapFill",
             "instructions": "Use the microphone and say the full sentence including the missing words",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -24,7 +24,7 @@
             "alternates": [
                 ""
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "filesid": 1
         }

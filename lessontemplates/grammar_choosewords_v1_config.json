@@ -197,7 +197,7 @@
     "lessonTitle": "Grammar Lesson (slides+choose words V1)",
     "lessonDescription": "Provide the grammar point, up to 6 keywords\/keyphrases and the language of instruction. A  lesson with a slides tutorial, choose-the-word item and type-the-word item will be created. Use this template for grammar points where the correct choice of word\/phrase is important. (e.g 'by' or 'until'). For this template the choose-the-word choices should be the same for each sentence. ",
     "uniqueid": "6a36351da64e3",
-    "version": "1",
+    "version": "2",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

@@ -65,7 +65,7 @@
     "lessonTitle": "Typing GapFill (upload sentences)",
     "lessonDescription": "Creates a Typing GapFill by supplying up to 30 sentences. A picture will be generated to go with each sentence in the item.",
     "uniqueid": "6a33984a3d23b",
-    "version": "0",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

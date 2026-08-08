@@ -4,7 +4,7 @@
             "type": "spacegame",
             "name": "Item: Space Game",
             "instructions": "Shoot the aliens by selecting the correct answer.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""

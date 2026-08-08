@@ -85,7 +85,7 @@
     "lessonTitle": "Image Slides (5)",
     "lessonDescription": "Enter 5 image descriptions and an image style to get 5 image slides",
     "uniqueid": "690b5e695b235",
-    "version": "3",
+    "version": "4",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

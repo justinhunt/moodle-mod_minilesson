@@ -78,7 +78,7 @@
     "lessonTitle": "Word Shuffle (generate sentences)",
     "lessonDescription": "Create a Word Shuffle activity by entering 4 - 10 keywords, the user's language level and their native language. The keywords will also be used to generate sentences, and a picture to go with each sentence in the shuffle activity, and a translation of the sentence.",
     "uniqueid": "6a31023c2bd88",
-    "version": "3",
+    "version": "4",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

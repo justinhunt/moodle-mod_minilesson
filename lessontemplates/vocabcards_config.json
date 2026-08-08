@@ -73,7 +73,7 @@
     "lessonTitle": "Vocab Cards",
     "lessonDescription": "A set of vocabulary cards. Enter the list of comma separated words\/phrases, and the students' native language. Cards with the word\/phrase, translation, example sentence and a picture will be created. ",
     "uniqueid": "6a30d8d44b6fa",
-    "version": "2",
+    "version": "3",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

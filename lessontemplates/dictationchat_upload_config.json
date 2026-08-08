@@ -55,7 +55,7 @@
     "lessonTitle": "Dictation Chat (upload sentences)",
     "lessonDescription": "Create a Dictation Chat item by supplying  up to 5 sentences. A picture will be generated to go with each sentence in the item.",
     "uniqueid": "6a33925f3c59f",
-    "version": "0",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

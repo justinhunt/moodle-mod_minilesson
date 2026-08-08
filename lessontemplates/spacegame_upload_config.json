@@ -63,7 +63,7 @@
     "lessonTitle": "Space Game (upload)",
     "lessonDescription": "Enter up to ten matching pairs that will be used to make a Space Game item where students will match the pair by shooting the correct alien.",
     "uniqueid": "6a35465198ab9",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

@@ -4,7 +4,7 @@
             "type": "wordshuffle",
             "name": "Item: WordShuffle",
             "instructions": "Put the words in the correct order to form a sentence.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -16,7 +16,7 @@
                 "This is [fun].\r",
                 "We are [nice]."
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "allowretry": "yes",
             "promptvoiceopt": "normal",
             "int10": "1",

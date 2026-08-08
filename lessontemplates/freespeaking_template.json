@@ -5,7 +5,7 @@
             "name": "Item: Free Speaking",
             "instructions": "Use the microphone to record your answer to the question.",
             "text": "Do you think young people should grow food in the garden? Give a reason for your answer. (30 words or more)",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""

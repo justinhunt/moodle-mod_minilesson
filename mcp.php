@@ -151,16 +151,39 @@ if ($rpcmethod === 'ping') {
     mcp_send(mcp_result($id, new stdClass()));
 }
 
+/**
+ * The WWW-Authenticate challenge for a 401.
+ *
+ * While the OAuth spike is switched on, the challenge carries an RFC 9728 resource_metadata
+ * pointer so MCP clients can discover the authorization server. The pointer is deliberately
+ * not at the site root - a Moodle plugin cannot serve that - and whether clients honour a
+ * plugin-hosted one is what the spike is measuring. With the spike off, the header stays
+ * exactly as it was, pointing at nothing.
+ *
+ * @return string
+ */
+function mcp_auth_challenge(): string {
+    $spikelib = __DIR__ . '/oauth_spike_lib.php';
+    if (file_exists($spikelib)) {
+        require_once($spikelib);
+        if (ml_spike_enabled()) {
+            return 'Bearer error="invalid_token", resource_metadata="' . ml_spike_prm_url()
+                . '", scope="aigen.read aigen.write"';
+        }
+    }
+    return 'Bearer';
+}
+
 // Everything below (tools/*) requires an authenticated token.
 $token = facade::request_token();
 if ($token === '') {
-    header('WWW-Authenticate: Bearer', true, 401);
+    header('WWW-Authenticate: ' . mcp_auth_challenge(), true, 401);
     mcp_send(mcp_error($id, -32001, 'Authentication required'), 401);
 }
 try {
     $authinfo = facade::authenticate($token);
 } catch (Throwable $e) {
-    header('WWW-Authenticate: Bearer', true, 401);
+    header('WWW-Authenticate: ' . mcp_auth_challenge(), true, 401);
     mcp_send(mcp_error($id, -32001, 'Invalid or unauthorised token'), 401);
 }
 

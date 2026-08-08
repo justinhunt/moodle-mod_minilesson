@@ -65,7 +65,7 @@
     "lessonTitle": "Fluency (upload sentences)",
     "lessonDescription": "Create a Fluency item by supplying  up to 10 sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item.",
     "uniqueid": "6a3545b0af700",
-    "version": "0",
+    "version": "1",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

@@ -63,7 +63,7 @@
     "lessonTitle": "Dictation Chat (generate sentences)",
     "lessonDescription": "Enter a topic and language level. A Dictation Chat item with 5 sentences will be created.",
     "uniqueid": "6a337d8515373",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

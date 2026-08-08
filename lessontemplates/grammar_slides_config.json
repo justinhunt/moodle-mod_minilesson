@@ -78,7 +78,7 @@
     "lessonTitle": "Grammar Explanation Slides",
     "lessonDescription": "This template will create a set of slides to teach the specified grammar point. The target language of the MiniLesson will be used for examples, and the instruction language you specify will the language used to do the explaining.",
     "uniqueid": "6a362aeb558cb",
-    "version": "3",
+    "version": "4",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

@@ -61,7 +61,7 @@
     "lessonTitle": "Word Shuffle (upload with markup)",
     "lessonDescription": "Create a Word Shuffle item by supplying:\r\n i)  4 - 10 sentences already marked up with shuffle words, hints and distractors.\r\nii) The same sentences with no mark up, hints or distractors.\r\n A picture will be generated to go with each sentence in the Word Shuffle item.",
     "uniqueid": "6a34d7bfb6e6c",
-    "version": "4",
+    "version": "5",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {

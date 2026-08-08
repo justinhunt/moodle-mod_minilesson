@@ -63,7 +63,7 @@
     "lessonTitle": "Space Game",
     "lessonDescription": "Enter 4 - 10 keywords\/phrases. The keywords\/phrases will be used to generate a space game activity with definitons in the user's native language. ",
     "uniqueid": "6a31071c21ad1",
-    "version": "0",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

@@ -4,7 +4,7 @@
             "type": "typinggapfill",
             "name": "Item: Typing GapFill",
             "instructions": "Fill in the missing words or letters",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""

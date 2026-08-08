@@ -5,7 +5,7 @@
             "name": "Answer the question I (multichoice + image)",
             "instructions": "Choose the correct answer.",
             "text": "What does the boy do with the two cans of coke at the end?",
-            "ttsvoice": "Matthew",
+            "ttsvoice": "auto",
             "ttsdialog": [
                 ""
             ],
@@ -15,7 +15,7 @@
                 "He gives them to a friend.",
                 "He throws them away."
             ],
-            "promptvoice": "Kendra",
+            "promptvoice": "auto",
             "listenorread": "3",
             "promptvoiceopt": "slow",
             "shuffleanswer": "0",

@@ -4,7 +4,7 @@
             "type": "page",
             "name": "Item: Content Page",
             "instructions": "Practice New Words",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -16,7 +16,7 @@
             "type": "listeninggapfill",
             "name": "Item: Listening GapFill",
             "instructions": "Listen and fill in the gaps",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -33,7 +33,7 @@
                 "The [wild] animals live in the forest.",
                 "Do not [waste] your food."
             ],
-            "promptvoice": "Matthew",
+            "promptvoice": "auto",
             "allowretry": "yes",
             "promptvoiceopt": "normal",
             "timelimit": "12",
@@ -43,7 +43,7 @@
             "type": "typinggapfill",
             "name": "Item: Typing GapFill",
             "instructions": "Fill in the missing words or letters",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -68,7 +68,7 @@
             "type": "speakinggapfill",
             "name": "Item: Speaking GapFill",
             "instructions": "Use the microphone and say the full sentence including the missing words",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -88,7 +88,7 @@
             "alternates": [
                 ""
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "filesid": 4
         },
@@ -96,7 +96,7 @@
             "type": "fluency",
             "name": "Item: Fluency",
             "instructions": "Read the sentences aloud. Click the microphone icon to start recording.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -113,7 +113,7 @@
                 "The wild animals live in the forest.\r",
                 "Do not waste your food."
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "correctthreshold": "90",
             "promptvoiceopt": "normal",
             "filesid": 5

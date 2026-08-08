@@ -4,7 +4,7 @@
             "type": "listenrepeat",
             "name": "Item: Listen and Speak",
             "instructions": "Listen and respond to the sentences you hear.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -15,7 +15,7 @@
             "alternates": [
                 ""
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "layout": "vertical",
             "filesid": 1

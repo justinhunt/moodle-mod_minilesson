@@ -19,7 +19,7 @@
             "type": "passagegapfill",
             "name": "Item: Passage GapFill",
             "instructions": "Fill in each of the missing words.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -35,7 +35,7 @@
             "name": "Answer the question I (multichoice + image)",
             "instructions": "Choose the correct answer.",
             "text": "What does the boy do with the two cans of coke at the end?",
-            "ttsvoice": "Matthew",
+            "ttsvoice": "auto",
             "ttsdialog": [
                 ""
             ],
@@ -45,7 +45,7 @@
                 "He gives them to a friend.",
                 "He throws them away."
             ],
-            "promptvoice": "Kendra",
+            "promptvoice": "auto",
             "listenorread": "3",
             "promptvoiceopt": "slow",
             "shuffleanswer": "0",
@@ -57,7 +57,7 @@
             "type": "page",
             "name": "Watch the Video (content page)",
             "text": "Good Job!  Now watch the video.",
-            "ttsvoice": "Kendra",
+            "ttsvoice": "auto",
             "ytid": "XINImbZzU7I",
             "ttsdialog": [
                 ""
@@ -68,7 +68,7 @@
             "name": "Item: Free Speaking",
             "instructions": "Record your answer to the question below.",
             "text": "What do you think the boy will do with the two coke cans next? Why do you think so?",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""

@@ -328,7 +328,7 @@
     "lessonTitle": "Word Practice v4",
     "lessonDescription": "Enter 4 - 10 keywords or phrases, and set the user's native language. They will be used to generate:\r\ni)  a set of vocab cards with translations and example sentences\r\nii) scatter activity (matching keyword\/phrase with translation) \r\niii)  a wordcards item - listen and choose mode \r\niv)  a wordcards item - listen and type mode\r\nv)  a wordcards item - choose the word mode \r\nvi)  a wordcards item - type the word mode",
     "uniqueid": "6a5dc6971e891",
-    "version": "3",
+    "version": "4",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

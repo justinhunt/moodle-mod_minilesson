@@ -4,7 +4,7 @@
             "type": "cards",
             "name": "Item: Cards",
             "instructions": "Review the cards on screen. You can use the next and back buttons to see other cards.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -21,7 +21,7 @@
                 "son|\u606f\u5b50|Their son is learning to ride a bicycle.|\u5f7c\u3089\u306e\u606f\u5b50\u306f\u81ea\u8ee2\u8eca\u306b\u4e57\u308b\u7df4\u7fd2\u3092\u3057\u3066\u3044\u307e\u3059\u3002",
                 "daughter|\u5a18|Our daughter drew a picture of our house.|\u79c1\u305f\u3061\u306e\u5a18\u306f\u79c1\u305f\u3061\u306e\u5bb6\u306e\u7d75\u3092\u63cf\u304d\u307e\u3057\u305f\u3002"
             ],
-            "promptvoice": "Ivy",
+            "promptvoice": "auto",
             "dictationstyle": "yes",
             "promptvoiceopt": "normal",
             "layout": "vertical",
@@ -31,7 +31,7 @@
             "type": "scatter",
             "name": "Item: Scatter",
             "instructions": "Choose the word pairs",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -55,7 +55,7 @@
             "name": "Item: Word Cards - Listen and Choose",
             "instructions": "Complete the task for each word.",
             "text": "Listen and choose the word",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -72,7 +72,7 @@
                 "son|\u606f\u5b50\r",
                 "daughter|\u5a18"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "activitytype": "1",
             "promptvoiceopt": "normal",
             "layout": "vertical",
@@ -83,7 +83,7 @@
             "name": "Item: Word Cards - Listen and Type",
             "instructions": "Complete the task for each word.",
             "text": "Listen and type the word",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -100,7 +100,7 @@
                 "son|\u606f\u5b50\r",
                 "daughter|\u5a18"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "layout": "vertical",
             "filesid": 4
@@ -110,7 +110,7 @@
             "name": "Item: Word Cards - Choose the Word",
             "instructions": "Complete the task for each word.",
             "text": "Choose the word",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -127,7 +127,7 @@
                 "son|\u606f\u5b50\r",
                 "daughter|\u5a18"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "activitytype": "3",
             "promptvoiceopt": "normal",
             "layout": "vertical",
@@ -138,7 +138,7 @@
             "name": "Item: Word Cards - Type the Word",
             "instructions": "Complete the task for each word.",
             "text": "Type the word",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -155,7 +155,7 @@
                 "son|\u606f\u5b50\r",
                 "daughter|\u5a18"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "activitytype": "2",
             "promptvoiceopt": "normal",
             "layout": "vertical",

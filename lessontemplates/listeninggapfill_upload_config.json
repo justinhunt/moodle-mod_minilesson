@@ -65,7 +65,7 @@
     "lessonTitle": "Listening GapFill (upload sentences)",
     "lessonDescription": "Creates a Listening GapFill  by supplying up to 30 sentences. A picture will be generated to go with each sentence in the item.",
     "uniqueid": "6a3398588ba75",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

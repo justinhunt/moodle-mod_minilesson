@@ -107,7 +107,7 @@
     "lessonTitle": "Interactive Story (no pics)",
     "lessonDescription": "An interactive story with no pics, apart from an introduction screen",
     "uniqueid": "696105abf2b2a",
-    "version": "3",
+    "version": "4",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

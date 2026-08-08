@@ -117,7 +117,7 @@
     "lessonTitle": "Interactive Story (with pics)",
     "lessonDescription": "An interactive story with pics",
     "uniqueid": "6960baa71fa35",
-    "version": "4",
+    "version": "5",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

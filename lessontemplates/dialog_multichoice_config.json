@@ -302,7 +302,7 @@
     "lessonTitle": "Listen to 4 Conversations",
     "lessonDescription": "Students choose the picture that best represents the currently playing dialog. To create, enter 4 dialogs. They will form 4 multi-choice questions where the choice of answer is an image representing the currently playing dialog. The dialogs are in TTS Dialog format. e.g A) I like toast. [new line]  B) Me too.",
     "uniqueid": "690b33f83d02f",
-    "version": "10",
+    "version": "11",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

@@ -4,7 +4,7 @@
             "type": "page",
             "name": "Watch the Video (content page)",
             "text": "Watch the video and be ready to answer questions.",
-            "ttsvoice": "Kendra",
+            "ttsvoice": "auto",
             "ytid": "E2RphMjScQM",
             "ytend": "25",
             "ttsdialog": [
@@ -15,7 +15,7 @@
             "type": "multichoice",
             "name": "Answer the question I (multichoice)",
             "text": "What happens after the young man with dreadlocks sees the big man leaning on the red sports car?",
-            "ttsvoice": "Kevin",
+            "ttsvoice": "auto",
             "ttsdialog": [
                 ""
             ],
@@ -25,7 +25,7 @@
                 "He calls for help because he thinks the big man is in trouble.",
                 "He ignores the big man and continues driving his truck."
             ],
-            "promptvoice": "Kevin",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "correctanswer": "2"
         },
@@ -34,7 +34,7 @@
             "name": "Answer the question II (multichoice + image)",
             "instructions": "Choose the correct answer.",
             "text": "What does the young man with dreadlocks do after stopping his truck?",
-            "ttsvoice": "Matthew",
+            "ttsvoice": "auto",
             "ttsdialog": [
                 ""
             ],
@@ -44,7 +44,7 @@
                 "He gives the big man a chocolate bar.",
                 "He calls for help to assist the big man."
             ],
-            "promptvoice": "Kendra",
+            "promptvoice": "auto",
             "promptvoiceopt": "slow",
             "correctanswer": "2",
             "filesid": 3
@@ -55,7 +55,7 @@
             "instructions": "Choose the correct answer. Use the mic to read it aloud.",
             "text": "What is the big man's reaction after the car goes off the cliff?",
             "tts": "What is the big man's reaction after the car goes off the cliff?",
-            "ttsvoice": "Salli",
+            "ttsvoice": "auto",
             "ttsdialog": [
                 ""
             ],
@@ -65,7 +65,7 @@
                 "He gets angry and shouts at the young man.",
                 "He immediately calls for help."
             ],
-            "promptvoice": "Kendra",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "correctanswer": "2",
             "filesid": 4
@@ -88,7 +88,7 @@
             "alternates": [
                 ""
             ],
-            "promptvoice": "Justin",
+            "promptvoice": "auto",
             "showtextprompt": "no",
             "promptvoiceopt": "normal"
         },
@@ -96,7 +96,7 @@
             "type": "speechcards",
             "name": "Speak the words (speechcards)",
             "text": "Speak the phrases on the cards",
-            "ttsvoice": "Kimberly",
+            "ttsvoice": "auto",
             "ttsdialog": [
                 ""
             ],
@@ -121,7 +121,7 @@
                 "A young man sees and misunderstands.",
                 "The car falls off the cliff."
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "ignorepunc": "yes",
             "promptvoiceopt": "normal"
         }

@@ -4,7 +4,7 @@
             "type": "fluency",
             "name": "Item: Fluency",
             "instructions": "Read the sentences aloud. Click the microphone icon to start recording.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -17,7 +17,7 @@
                 "The plants in the garden became strong and healthy.",
                 "A customer came to buy vegetables."
             ],
-            "promptvoice": "Matthew",
+            "promptvoice": "auto",
             "correctthreshold": "90",
             "promptvoiceopt": "normal",
             "filesid": 1

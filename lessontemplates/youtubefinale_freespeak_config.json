@@ -342,7 +342,7 @@
     "lessonTitle": "YouTube Finale (listen and free speak) ",
     "lessonDescription": "This is a lesson based on a YouTube video story. A related but simplified story is prepared and comprehension, and a speaking activity are built on the story. ",
     "uniqueid": "6a2518a50b676",
-    "version": "0",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

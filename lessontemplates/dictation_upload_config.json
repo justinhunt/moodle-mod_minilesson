@@ -43,7 +43,7 @@
     "lessonTitle": "Dictation (upload sentences)",
     "lessonDescription": "Create a Dictation item by supplying  up to 5 sentences. ",
     "uniqueid": "6a3390f8c7e42",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

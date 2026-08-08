@@ -57,7 +57,7 @@
     "lessonTitle": "Dictation (generate sentences)",
     "lessonDescription": "Enter a topic and language level. A Dictation item with 5 sentences will be created.",
     "uniqueid": "6a337c067d7fd",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

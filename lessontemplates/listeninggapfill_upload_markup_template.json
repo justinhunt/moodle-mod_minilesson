@@ -4,7 +4,7 @@
             "type": "listeninggapfill",
             "name": "Item: Listening GapFill",
             "instructions": "Listen and fill in the gaps",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -21,7 +21,7 @@
                 "The [wild] animals live in the forest.",
                 "Do not [waste] your food."
             ],
-            "promptvoice": "Matthew",
+            "promptvoice": "auto",
             "allowretry": "yes",
             "promptvoiceopt": "normal",
             "timelimit": "12",

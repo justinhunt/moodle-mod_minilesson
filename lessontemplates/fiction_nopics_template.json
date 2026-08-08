@@ -4,7 +4,7 @@
             "type": "page",
             "name": "Item: Content Page",
             "instructions": "An Adventure",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -15,7 +15,7 @@
             "type": "fiction",
             "name": "Item: Fiction",
             "instructions": "Follow the instructions and make good choices. Good luck.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""

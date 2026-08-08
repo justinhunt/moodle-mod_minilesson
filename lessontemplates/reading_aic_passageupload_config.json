@@ -179,7 +179,7 @@
     "lessonTitle": "Reading + AI Chat (Uploaded passage) ",
     "lessonDescription": "Paste in a reading passage, and 4 short answer questions. These will be used in a passage reading exercise and then an audio chat session that is based on the reading passage.",
     "uniqueid": "68996c17d07f5",
-    "version": "6",
+    "version": "7",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

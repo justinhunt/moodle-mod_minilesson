@@ -438,7 +438,7 @@
     "lessonTitle": "CEFR A2 Template",
     "lessonDescription": "Enter 4 - 10 keywords, the native language to translate words into, a passage of text that uses those keywords and some related questions and topic for an audio chat, and a scene or situation to help make consistent images. Those inputs will be used to generate a set of vocab cards, word shuffle, listen and speak , audio chat and free speaking.",
     "uniqueid": "6a4909ba67c08",
-    "version": "5",
+    "version": "6",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {

@@ -4,7 +4,7 @@
             "type": "slides",
             "name": "Item: Slides",
             "instructions": "Click > or < to go forward or backward through the slides.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -19,7 +19,7 @@
             "type": "wordshuffle",
             "name": "Item: WordShuffle",
             "instructions": "Choose the correct word to complete the sentence.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -28,7 +28,7 @@
                 "John [said] that you were in hospital.|\u30b8\u30e7\u30f3\u306f\u79c1\u306b\u3042\u306a\u305f\u306f\u75c5\u9662\u306b\u3044\u308b\u3068\u8a00\u3044\u307e\u3057\u305f\u3002|told\r",
                 "John [told] me you were in hospital.|\u30b8\u30e7\u30f3\u304c\u3042\u306a\u305f\u306f\u75c5\u9662\u306b\u3044\u308b\u3068\u8a00\u3044\u307e\u3057\u305f\u3002|said"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "layout": "vertical",
             "filesid": 2
@@ -37,7 +37,7 @@
             "type": "typinggapfill",
             "name": "Item: Typing GapFill",
             "instructions": "Fill in the missing words or letters",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -54,7 +54,7 @@
                 "The [wild] animals live in the forest.",
                 "Do not [waste] your food."
             ],
-            "promptvoice": "Matthew",
+            "promptvoice": "auto",
             "allowretry": "yes",
             "promptvoiceopt": "normal",
             "filesid": 3

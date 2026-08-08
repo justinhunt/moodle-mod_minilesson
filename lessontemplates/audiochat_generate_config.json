@@ -118,7 +118,7 @@
     "lessonTitle": "Audio Chat (Generate question)",
     "lessonDescription": "Enter a topic and the user's language level, AI will generate a discussion question suitable for the learner to chat about.",
     "uniqueid": "6a35e6ce88a31",
-    "version": "1",
+    "version": "2",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

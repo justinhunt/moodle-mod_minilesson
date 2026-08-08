@@ -51,7 +51,7 @@
     "lessonTitle": "Listen and Speak (upload sentences with markup)",
     "lessonDescription": "Create a Listen and Speak activity by supplying  up to 5 sentences. Optionally also supply  \"correct response\"s and \"display sentence\"s, for where the audio prompt to the user differs to what they see or are expected to say in response. A picture will be generated to go with each sentence in the activity.",
     "uniqueid": "6a3545ea4c8c0",
-    "version": "1",
+    "version": "2",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {

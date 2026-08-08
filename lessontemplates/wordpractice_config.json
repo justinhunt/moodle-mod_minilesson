@@ -336,7 +336,7 @@
     "lessonTitle": "Word Practice v1",
     "lessonDescription": "Enter a list of words (5) and a topic, Poodll will make a activity with vocab cards, listening and typing gapfills, a space game a free writing activity",
     "uniqueid": "6874e6ca1c71a",
-    "version": "4",
+    "version": "5",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

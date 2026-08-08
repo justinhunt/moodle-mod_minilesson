@@ -71,7 +71,7 @@
     "lessonTitle": "Audio Story (generate story)",
     "lessonDescription": "Enter a topic, the learners language level and a type of story. AI will prepare a story and images which is like a short narrated slide show using text to speech to narrate the story.",
     "uniqueid": "6a329e299a1f8",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

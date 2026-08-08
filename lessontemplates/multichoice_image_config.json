@@ -92,7 +92,7 @@
     "lessonTitle": "Multi choice (image choices)",
     "lessonDescription": "An image multi choice question that is created to test comprehension of a passage of text. You need to supply the text passage, user's language level, a brief description of the scene\/context and an image style",
     "uniqueid": "6a313e18a1fc5",
-    "version": "0",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

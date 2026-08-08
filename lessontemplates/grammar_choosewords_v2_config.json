@@ -193,7 +193,7 @@
     "lessonTitle": "Grammar Lesson (slides+choose words V2)",
     "lessonDescription": "Provide the grammar point, language level, and the language of instruction. A  lesson with a slides tutorial, choose-the-word item and type-the-word item will be created (6 sentences each). Use this template for grammar points where phrase-composition\/word-form is important (e.g  comparatives  \"more X\" vs \"Xer\"). For this template choose-the-word choices should be different for each sentence. ",
     "uniqueid": "6a38ad44e9b60",
-    "version": "1",
+    "version": "2",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

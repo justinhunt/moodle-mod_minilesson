@@ -55,7 +55,7 @@
     "lessonTitle": "Speaking GapFill (upload sentences)",
     "lessonDescription": "Creates a Speaking GapFill  by supplying up to 30 sentences. A picture will be generated to go with each sentence in the item.",
     "uniqueid": "6a3398538779e",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

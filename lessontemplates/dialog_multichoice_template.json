@@ -4,7 +4,7 @@
             "type": "multichoice",
             "name": "Item: Multi Choice (1)",
             "instructions": "Choose the correct answer.",
-            "ttsvoice": "Mathieu",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 "A) Salut, comment \u00e7a va aujourd\u2019hui ?\r",
@@ -15,16 +15,16 @@
                 "B) \u00c0 huit heures. On se retrouve devant le cin\u00e9ma !\r",
                 ""
             ],
-            "ttsdialogvoicea": "Remi",
-            "ttsdialogvoiceb": "Lea",
-            "ttsdialogvoicec": "Mathieu",
+            "ttsdialogvoicea": "auto",
+            "ttsdialogvoiceb": "auto",
+            "ttsdialogvoicec": "auto",
             "answers": [
                 "\r",
                 "\r",
                 "\r",
                 "\r"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "listenorread": "3",
             "promptvoiceopt": "normal",
             "shuffleanswer": "1",
@@ -35,7 +35,7 @@
             "type": "multichoice",
             "name": "Item: Multi Choice (2)",
             "instructions": "Choose the correct answer.",
-            "ttsvoice": "Mathieu",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 "Got it! Here\u2019s a short French dialog in that format:\r",
@@ -48,16 +48,16 @@
                 "B) \u00c0 huit heures. On se retrouve devant le cin\u00e9ma !\r",
                 ""
             ],
-            "ttsdialogvoicea": "Remi",
-            "ttsdialogvoiceb": "Lea",
-            "ttsdialogvoicec": "Mathieu",
+            "ttsdialogvoicea": "auto",
+            "ttsdialogvoiceb": "auto",
+            "ttsdialogvoicec": "auto",
             "answers": [
                 "\r",
                 "\r",
                 "\r",
                 "\r"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "listenorread": "3",
             "promptvoiceopt": "normal",
             "shuffleanswer": "1",
@@ -68,7 +68,7 @@
             "type": "multichoice",
             "name": "Item: Multi Choice (3)",
             "instructions": "Choose the correct answer.",
-            "ttsvoice": "Mathieu",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 "Got it! Here\u2019s a short French dialog in that format:\r",
@@ -81,16 +81,16 @@
                 "B) \u00c0 huit heures. On se retrouve devant le cin\u00e9ma !\r",
                 ""
             ],
-            "ttsdialogvoicea": "Remi",
-            "ttsdialogvoiceb": "Lea",
-            "ttsdialogvoicec": "Mathieu",
+            "ttsdialogvoicea": "auto",
+            "ttsdialogvoiceb": "auto",
+            "ttsdialogvoicec": "auto",
             "answers": [
                 "\r",
                 "\r",
                 "\r",
                 "\r"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "listenorread": "3",
             "promptvoiceopt": "normal",
             "shuffleanswer": "1",
@@ -101,7 +101,7 @@
             "type": "multichoice",
             "name": "Item: Multi Choice (4)",
             "instructions": "Choose the correct answer.",
-            "ttsvoice": "Mathieu",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 "Got it! Here\u2019s a short French dialog in that format:\r",
@@ -114,16 +114,16 @@
                 "B) \u00c0 huit heures. On se retrouve devant le cin\u00e9ma !\r",
                 ""
             ],
-            "ttsdialogvoicea": "Remi",
-            "ttsdialogvoiceb": "Lea",
-            "ttsdialogvoicec": "Mathieu",
+            "ttsdialogvoicea": "auto",
+            "ttsdialogvoiceb": "auto",
+            "ttsdialogvoicec": "auto",
             "answers": [
                 "\r",
                 "\r",
                 "\r",
                 "\r"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "listenorread": "3",
             "promptvoiceopt": "normal",
             "shuffleanswer": "1",

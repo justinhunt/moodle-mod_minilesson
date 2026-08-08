@@ -61,7 +61,7 @@
     "lessonTitle": "Typing GapFill (upload sentences with markup)",
     "lessonDescription": "Create a Typing GapFill item by supplying:\r\n i)  1 - 30 sentences already marked up with gap words and hints (optional).\r\nii) The same sentences with no mark up or hints.\r\n A picture will be generated to go with each sentence in the Typing GapFill item.",
     "uniqueid": "6a35457039d98",
-    "version": "1",
+    "version": "2",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {

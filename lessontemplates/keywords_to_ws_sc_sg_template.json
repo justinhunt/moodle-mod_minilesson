@@ -4,7 +4,7 @@
             "type": "cards",
             "name": "Item: Cards",
             "instructions": "Review the cards on screen. You can use the next and back buttons to see other cards.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -31,7 +31,7 @@
             "type": "wordshuffle",
             "name": "Item: WordShuffle",
             "instructions": "Put the words in the correct order to form a sentence.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -43,7 +43,7 @@
                 "This is [fun].\r",
                 "We are [nice]."
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "allowretry": "yes",
             "promptvoiceopt": "normal",
             "int10": "1",
@@ -53,7 +53,7 @@
             "type": "scatter",
             "name": "Item: Scatter",
             "instructions": "Choose the word pairs",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -72,7 +72,7 @@
             "type": "spacegame",
             "name": "Item: Space Game",
             "instructions": "Shoot the aliens by selecting the correct answer.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""

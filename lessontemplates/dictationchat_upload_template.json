@@ -4,7 +4,7 @@
             "type": "dictationchat",
             "name": "Item: Dictation Chat",
             "instructions": "Listen and type the sentences you hear.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -12,7 +12,7 @@
             "sentences": [
                 "I am happy."
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "layout": "vertical",
             "filesid": 1

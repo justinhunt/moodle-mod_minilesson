@@ -1364,7 +1364,7 @@
     "lessonTitle": "Choose the correct reply.",
     "lessonDescription": "Student hears 10 short conversations and must choose the best next reply from the 3 options offered. Each question has a picture. It is based on the Eiken Level 3 English test listening section. You need to enter the  location and situation (usually a problem) for each conversation. eg \"two friends at the beach and one has lost their wallet\"",
     "uniqueid": "690eb6a91c972",
-    "version": "3",
+    "version": "4",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

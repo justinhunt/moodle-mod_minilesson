@@ -4,7 +4,7 @@
             "type": "listeninggapfill",
             "name": "Item: Listening GapFill",
             "instructions": "Listen and fill in the gaps",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -21,7 +21,7 @@
                 "The [wild] animals live in the forest.",
                 "Do not [waste] your food."
             ],
-            "promptvoice": "Matthew",
+            "promptvoice": "auto",
             "allowretry": "yes",
             "promptvoiceopt": "normal",
             "timelimit": "12",
@@ -31,7 +31,7 @@
             "type": "typinggapfill",
             "name": "Item: Typing GapFill",
             "instructions": "Fill in the missing words or letters",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -56,7 +56,7 @@
             "type": "speakinggapfill",
             "name": "Item: Speaking GapFill",
             "instructions": "Use the microphone and say the full sentence including the missing words",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -76,7 +76,7 @@
             "alternates": [
                 ""
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "filesid": 3
         }

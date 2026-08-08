@@ -4,7 +4,7 @@
             "type": "cards",
             "name": "Item: Cards",
             "instructions": "Review the cards on screen. You can use the next and back buttons to see other cards.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -16,7 +16,7 @@
                 "exclaim|\u53eb\u3076|He would exclaim in surprise whenever the lights went out.",
                 "expire|\u671f\u9650\u5207\u308c\u306b\u306a\u308b|My passport will expire next month."
             ],
-            "promptvoice": "Ivy",
+            "promptvoice": "auto",
             "dictationstyle": "yes",
             "promptvoiceopt": "normal",
             "layout": "vertical",
@@ -26,7 +26,7 @@
             "type": "wordshuffle",
             "name": "Item: WordShuffle",
             "instructions": "Put the words in the correct order to form a sentence.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -38,7 +38,7 @@
                 "We [heard] [her] [exclaim] [with] [joy]",
                 "This [milk] [will] [expire] [tomorrow]"
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "allowretry": "yes",
             "promptvoiceopt": "normal",
             "filesid": 2
@@ -47,13 +47,13 @@
             "type": "passagegapfill",
             "name": "Item: Passage GapFill",
             "instructions": "Fill in each of the missing words.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
             ],
             "passage": "Once upon a time, in a big [zoo], there was a little penguin named Pippin. Pippin was [black] and [white], just like all penguins, but he had a very big dream. Pippin thought he was not a penguin but a panda! Every day, he would watch the pandas eat [bamboo] and climb [tree]s. 'I want to do that too!' Pippin would say. The other penguins laughed. 'Penguins eat [fish] and swim in the [ocean], not climb [tree]s!' they said. But Pippin didn\u2019t listen. One day, he found a piece of [bamboo]. 'This is my chance!' he thought. He tried to climb a [tree] with the [bamboo] in his beak. It was not easy! Pippin slipped and fell into the water. Splash! He laughed and swam happily. 'Maybe I am a penguin after all,' Pippin thought. And from that day on, Pippin was happy being his [black] and [white] self, swimming in the [ocean] and eating [fish] with his friends.",
-            "promptvoice": "Salli",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "hidestartpage": "yes"
         },
@@ -61,7 +61,7 @@
             "type": "listenrepeat",
             "name": "Item: Listen and Speak",
             "instructions": "Listen and respond to the sentences you hear.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -72,7 +72,7 @@
             "alternates": [
                 ""
             ],
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "layout": "vertical",
             "filesid": 4
@@ -82,7 +82,7 @@
             "name": "Item Audio Chat",
             "instructions": "Practice speaking with your AI partner.",
             "text": "Your AI partner will ask you some simple questions. Do your best to answer them clearly and briefly.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -107,7 +107,7 @@
             "name": "Item: Free Speaking",
             "instructions": "Use the microphone to record your answer to the question.",
             "text": "If you were the penguin who thinks he is a panda, how would you explain to your penguin friends why you believe you are a panda?",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""

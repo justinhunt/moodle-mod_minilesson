@@ -117,7 +117,7 @@
     "lessonTitle": "Narrative Story (with pics)",
     "lessonDescription": "An interactive fiction item with fewer choices, more story, and pictures. ",
     "uniqueid": "6979e4ab51d53",
-    "version": "3",
+    "version": "4",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

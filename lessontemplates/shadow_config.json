@@ -69,7 +69,7 @@
     "lessonTitle": "Shadow",
     "lessonDescription": "Enter a YouTube URL or ID and it will be turned into an interactive shadowing exercise. ",
     "uniqueid": "6a334d1c7f9c8",
-    "version": "2",
+    "version": "3",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

@@ -173,7 +173,7 @@
     "lessonTitle": "GapFill Set",
     "lessonDescription": "Creates a full set of Listening, Speaking and Typing GapFills from a list of words (maximum 30).",
     "uniqueid": "6a31532a837be",
-    "version": "0",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

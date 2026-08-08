@@ -6,7 +6,7 @@
             "instructions": "Listen to the Story",
             "text": "Listen to the story and then answer the questions",
             "tts": "A big man was jogging towards his red sports car on a mountain road. He was very tired. When he reached the car he leaned against it to catch his breath. Just then a young man was driving by in a truck. He saw the tired man leaning on the car. He decided to help that man. He stopped his truck and got out. But he thought the tired man was pushing his car. So he started to push the red sports car too. Suddenly the car fell off the cliff and down the mountain. It was a terrible misunderstanding.",
-            "ttsvoice": "Kevin",
+            "ttsvoice": "auto",
             "ttsoption": "slow",
             "audiofname": "00:00:00",
             "ttsdialog": [
@@ -18,13 +18,13 @@
             "type": "passagegapfill",
             "name": "Item: Passage GapFill",
             "instructions": "Fill in each of the missing words.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
             ],
             "passage": "A big man was [jogging] towards his red sports car on a mountain road. He was very tired. When he reached the car he leaned against it to catch his breath. Just then a young man was driving by in a truck. He saw the tired man leaning on the car. He decided to help that man. He stopped his truck and got out. But he thought the tired man was pushing his car. So he started to push the red sports car too. Suddenly the car fell off the cliff and down the mountain. It was a terrible misunderstanding.",
-            "promptvoice": "Joey",
+            "promptvoice": "auto",
             "penalizehints": "yes",
             "promptvoiceopt": "normal",
             "hidestartpage": "yes"
@@ -34,7 +34,7 @@
             "name": "Answer the question I (multichoice + image)",
             "instructions": "Choose the correct answer.",
             "text": "What does the young man with dreadlocks do after stopping his truck?",
-            "ttsvoice": "Matthew",
+            "ttsvoice": "auto",
             "ttsdialog": [
                 ""
             ],
@@ -44,7 +44,7 @@
                 "He gives the big man a chocolate bar.",
                 "He calls for help to assist the big man."
             ],
-            "promptvoice": "Kendra",
+            "promptvoice": "auto",
             "listenorread": "3",
             "promptvoiceopt": "slow",
             "correctanswer": "2",
@@ -54,7 +54,7 @@
             "type": "multichoice",
             "name": "Answer the question II (multichoice)",
             "text": "What happens after the young man with dreadlocks sees the big man leaning on the red sports car?",
-            "ttsvoice": "Kevin",
+            "ttsvoice": "auto",
             "ttsdialog": [
                 ""
             ],
@@ -64,7 +64,7 @@
                 "He calls for help because he thinks the big man is in trouble.",
                 "He ignores the big man and continues driving his truck."
             ],
-            "promptvoice": "Kevin",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal",
             "correctanswer": "2"
         },
@@ -87,14 +87,14 @@
             "alternates": [
                 ""
             ],
-            "promptvoice": "Justin",
+            "promptvoice": "auto",
             "promptvoiceopt": "normal"
         },
         {
             "type": "passagereading",
             "name": "Item: Passage Reading",
             "instructions": "Use the microphone to record yourself reading the passage.",
-            "ttsvoice": "Joey",
+            "ttsvoice": "auto",
             "audiofname": "00:00:00",
             "ttsdialog": [
                 ""
@@ -109,7 +109,7 @@
             "type": "page",
             "name": "Watch the Video (content page)",
             "text": "Good Job!  Now watch the video.",
-            "ttsvoice": "Kendra",
+            "ttsvoice": "auto",
             "ytid": "E2RphMjScQM",
             "ytend": "25",
             "ttsdialog": [

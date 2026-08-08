@@ -77,7 +77,7 @@
     "lessonTitle": "Short Answer",
     "lessonDescription": "Enter a topic and language level. A short answer question will be created",
     "uniqueid": "6a337f919d299",
-    "version": "0",
+    "version": "1",
     "fieldmappings": {
         "target_language": {
             "enabled": false,

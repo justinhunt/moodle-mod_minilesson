@@ -48,7 +48,7 @@
     "lessonTitle": "Passage Reading (upload passage)",
     "lessonDescription": "Upload a passage of text, AI will prepare a passage reading activity from it.",
     "uniqueid": "6a338aa0467b5",
-    "version": "1",
+    "version": "2",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
