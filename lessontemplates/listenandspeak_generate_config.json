@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Generate a 1 dimensional array of 5 sentences in {language} suitable for {level} level learners on the topic of: [{topic}] ",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -43,7 +44,7 @@
                     "mapping": "sentences"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata1",
             "promptfields": [
                 {
                     "name": "language",
@@ -63,7 +64,8 @@
     "lessonTitle": "Listen and Speak (generate sentences)",
     "lessonDescription": "Enter a topic and language level. A Listen and Speak item with 5 sentences will be created. A picture  in the specified image style will be created to accompany each sentence.",
     "uniqueid": "6a33790712563",
-    "version": "3",
+    "version": "4",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -173,6 +175,5 @@
             "type": "text"
         }
     },
-    "tags": [],
-    "agentonly": 0
+    "tags": []
 }
