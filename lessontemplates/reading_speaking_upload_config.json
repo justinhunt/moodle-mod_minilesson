@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Set the following story to (tts) : {story}\nAlso write a short 1 sentence summary of the story (data1) ",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "tts",
@@ -40,10 +41,10 @@
                 {
                     "name": "itemmedia",
                     "generate": 1,
-                    "mapping": "tts"
+                    "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "user_topic",
+            "overallimagecontext": "user_customdata1",
             "promptfields": [
                 {
                     "name": "story",
@@ -55,6 +56,7 @@
             "itemnumber": 1,
             "prompt": "Rewrite the following {language} text (passage), so that each instance of one of the keywords below is surrounded with square brackets, e.g The [purple] people [eater] is a song. \nKeywords:\n{keywords}\n \nText:\n{text}",
             "generatemethod": "extract",
+            "generatefileareasmethod": "extract",
             "generatefields": [
                 {
                     "name": "passage",
@@ -113,6 +115,7 @@
             "itemnumber": 2,
             "prompt": "Extract a 1 dimensional array of 4 sentences from the following {language} text. Note that the sentences should not be longer than 12 words, so rewrite them if necessary: [{text}]. ",
             "generatemethod": "extract",
+            "generatefileareasmethod": "extract",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -157,7 +160,7 @@
                     "mapping": "sentences"
                 }
             ],
-            "overallimagecontext": "user_topic",
+            "overallimagecontext": "user_customdata1",
             "promptfields": [
                 {
                     "name": "language",
@@ -173,6 +176,7 @@
             "itemnumber": 3,
             "prompt": "",
             "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "passage",
@@ -217,6 +221,7 @@
             "itemnumber": 4,
             "prompt": "Generate an oral discussion question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] ",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "text",
@@ -299,9 +304,10 @@
         }
     ],
     "lessonTitle": "Reading and Speaking (upload story and keywords)",
-    "lessonDescription": "Supply a short text story, and some keywords from the story. AI will prepare a simple text to speech narration, and some reading and speaking activities based on the story.",
+    "lessonDescription": "Supply a short text story, and some keywords from the story. AI will prepare a simple text to speech narration, and some reading and speaking activities based on the story. Images will be generated in the specified image style.",
     "uniqueid": "6a339bc64597f",
-    "version": "3",
+    "version": "4",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -342,10 +348,19 @@
             "type": "text"
         },
         "user_customdata1": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata2": {
             "enabled": false,
@@ -405,6 +420,5 @@
     "tags": [
         "Speaking",
         "Reading"
-    ],
-    "agentonly": 0
+    ]
 }

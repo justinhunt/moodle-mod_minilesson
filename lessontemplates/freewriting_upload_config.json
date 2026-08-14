@@ -69,14 +69,14 @@
                     "mapping": "text"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata1",
             "promptfields": []
         }
     ],
     "lessonTitle": "Free Writing (Upload question)",
-    "lessonDescription": "Enter a question or topic about which students will write.",
+    "lessonDescription": "Enter a question or topic about which students will write. A freewriting item and an accompanying image will be generated.",
     "uniqueid": "6a35e28b48614",
-    "version": "2",
+    "version": "3",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -110,10 +110,19 @@
             "type": "text"
         },
         "user_customdata1": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the image should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata2": {
             "enabled": false,

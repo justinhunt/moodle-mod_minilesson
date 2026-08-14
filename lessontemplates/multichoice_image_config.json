@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Create a multichoice question(text) and 1 dimensional array of 4 answers (answers) in {language} suitable for {level} level learners to test the learner's understanding of the following passage: [{text}]. Also specify the correct answer as a number 1-4 in 'correctanswer'.  Also generate a 1 dimensional array of image generation prompts (data1) to illustrate the answers you created . There should 1 image prompt per answer. Each prompt should specify the image style: {imagestyle}",
             "generatemethod": "extract",
+            "generatefileareasmethod": "extract",
             "generatefields": [
                 {
                     "name": "text",
@@ -37,7 +38,7 @@
                 },
                 {
                     "name": "data1",
-                    "generate": 0,
+                    "generate": 1,
                     "mapping": ""
                 },
                 {
@@ -65,7 +66,7 @@
                 {
                     "name": "customfile1_image",
                     "generate": 1,
-                    "mapping": "text"
+                    "mapping": "data1"
                 }
             ],
             "overallimagecontext": "user_topic",
@@ -92,7 +93,8 @@
     "lessonTitle": "Multi choice (image choices)",
     "lessonDescription": "An image multi choice question that is created to test comprehension of a passage of text. You need to supply the text passage, user's language level, a brief description of the scene\/context and an image style",
     "uniqueid": "6a313e18a1fc5",
-    "version": "1",
+    "version": "2",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -134,8 +136,8 @@
         },
         "user_customdata1": {
             "enabled": false,
-            "title": "YouTube Video ID",
-            "description": "Set the YouTube video id (11 chars) or the YouTube URL of the video",
+            "title": "",
+            "description": "",
             "type": "text"
         },
         "user_customdata2": {
@@ -147,7 +149,7 @@
                 "Flat vector illustration",
                 "Cartoon",
                 "Photorealistic",
-                "Infographic",
+                "Black and white photo",
                 "Line drawing",
                 "Digital painting",
                 "3D Render"

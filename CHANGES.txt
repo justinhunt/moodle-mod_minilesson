@@ -1,4 +1,5 @@
-Version 1.1.46 (Build 202608xxxx)
+Version 1.1.47 (Build 2026081500)
+- Added ai image generation style to templates that had none 
 - Removed unneccessary mywords js files
 - Added numbered badges to wordcards mc choices so they can be answered easily from keyboard
 

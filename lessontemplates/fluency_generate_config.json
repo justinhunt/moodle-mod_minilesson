@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Create a one dimensional array of grammatically correct sentences (sentences) in {language} suitable for {level} level learners from the following keywords [{keywords}]",
             "generatemethod": "extract",
+            "generatefileareasmethod": "extract",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -48,7 +49,7 @@
                     "mapping": "sentences"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata1",
             "promptfields": [
                 {
                     "name": "language",
@@ -66,9 +67,10 @@
         }
     ],
     "lessonTitle": "Fluency (generate sentences)",
-    "lessonDescription": "Create a Fluency item by supplying  up to 10 sentences which students practice saying aloud.. A picture will be generated to go with each sentence in the item.",
+    "lessonDescription": "Create a Fluency item of up to 10 sentences by supplying keywords and the user's language level. Students will practice saying the sentences aloud. A picture in the specified image style will be generated to go with each sentence in the item.",
     "uniqueid": "6a33957b46df0",
-    "version": "2",
+    "version": "3",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -85,7 +87,7 @@
         "user_level": {
             "enabled": true,
             "title": "User Language Level",
-            "description": "",
+            "description": "Enter the user's language level",
             "type": "dropdown",
             "options": [
                 "CEFR A1",
@@ -109,10 +111,19 @@
             "type": "textarea"
         },
         "user_customdata1": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata2": {
             "enabled": false,

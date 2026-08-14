@@ -9,7 +9,7 @@
                 {
                     "name": "sentences",
                     "generate": 1,
-                    "mapping": "target_language"
+                    "mapping": "user_text"
                 },
                 {
                     "name": "data1",
@@ -33,8 +33,8 @@
                 },
                 {
                     "name": "data5",
-                    "generate": 1,
-                    "mapping": "target_language"
+                    "generate": 0,
+                    "mapping": ""
                 }
             ],
             "generatefileareas": [
@@ -44,14 +44,14 @@
                     "mapping": "user_customdata1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata2",
             "promptfields": []
         }
     ],
     "lessonTitle": "Listen and Speak (upload sentences with markup)",
-    "lessonDescription": "Create a Listen and Speak activity by supplying  up to 5 sentences. Optionally also supply  \"correct response\"s and \"display sentence\"s, for where the audio prompt to the user differs to what they see or are expected to say in response. A picture will be generated to go with each sentence in the activity.",
+    "lessonDescription": "Create a Listen and Speak activity by supplying  up to 5 formatted sentences. Optionally  in the formatted sentences also supply  \"correct response\"s and \"display sentence\"s, for where the audio prompt to the user differs to what they see or are expected to say in response. A picture in the specifieed image style will be generated to go with  each sentence from the \"clean\" unformatted sentence.",
     "uniqueid": "6a3545ea4c8c0",
-    "version": "2",
+    "version": "3",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -91,10 +91,19 @@
             "type": "textarea"
         },
         "user_customdata2": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata3": {
             "enabled": false,

@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Generate a 1 dimensional array (sentences) of example sentences in {language} suitable for {level} level learners using the following keywords [{keywords}]. In each sentence surround one keyword with square brackets, e.g [word]. Create a second array (data2) using the same sentences but without the square brackets.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -53,7 +54,7 @@
                     "mapping": "data2"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata1",
             "promptfields": [
                 {
                     "name": "language",
@@ -71,9 +72,10 @@
         }
     ],
     "lessonTitle": "Listening GapFill (generate sentences)",
-    "lessonDescription": "Creates a Listening GapFill activity from a list of keywords (maximum 30).",
+    "lessonDescription": "Creates a Listening GapFill activity from a list of keywords (maximum 30).  A picture in the specified image style will be created to accompany each sentence.",
     "uniqueid": "6a3142579495d",
-    "version": "2",
+    "version": "3",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -114,10 +116,19 @@
             "type": "textarea"
         },
         "user_customdata1": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata2": {
             "enabled": false,

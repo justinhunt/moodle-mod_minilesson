@@ -57,9 +57,9 @@
         }
     ],
     "lessonTitle": "Audio Story (upload story)",
-    "lessonDescription": "Enter a passage of text as the story. AI will prepare a short narrated slide show with images using text to speech to narrate the story.",
+    "lessonDescription": "Enter a passage of text as the story. AI will prepare a short narrated slide show with images in the specified image style using text to speech to narrate the story.",
     "uniqueid": "6a339418c0f3b",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -106,7 +106,7 @@
                 "Flat vector illustration",
                 "Cartoon",
                 "Photorealistic",
-                "Infographic",
+                "Black and white photo",
                 "Line drawing",
                 "Digital painting",
                 "3D Render"
@@ -163,5 +163,6 @@
     },
     "tags": [
         "Listening"
-    ]
+    ],
+    "agentonly": 0
 }

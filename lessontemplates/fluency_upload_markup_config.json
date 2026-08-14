@@ -46,10 +46,10 @@
                 {
                     "name": "customfile1_image",
                     "generate": 1,
-                    "mapping": "sentences"
+                    "mapping": "user_customdata1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata2",
             "promptfields": [
                 {
                     "name": "language",
@@ -63,9 +63,9 @@
         }
     ],
     "lessonTitle": "Fluency (upload sentences with markup)",
-    "lessonDescription": "Create a Fluency item by supplying  up to 10 sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item.",
+    "lessonDescription": "Create a Fluency item by supplying  up to 10 formatted sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item from the specified image style and unformatted sentences.",
     "uniqueid": "6a35dd77d6c9b",
-    "version": "2",
+    "version": "3",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -105,10 +105,19 @@
             "type": "textarea"
         },
         "user_customdata2": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata3": {
             "enabled": false,

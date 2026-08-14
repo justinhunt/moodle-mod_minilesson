@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Create a one dimensional array of sentences (sentences) from the following text : {text}. \nIn each sentence select three of the words, and surround them each with square brackets. But do not select either of the first two words in the sentence. \ne.g I seldom [engage] [with] [fools]. \nCreate a second array (data2) using the same sentences but without the square brackets.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -53,7 +54,7 @@
                     "mapping": "data2"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata1",
             "promptfields": [
                 {
                     "name": "text",
@@ -63,9 +64,9 @@
         }
     ],
     "lessonTitle": "Word Shuffle (upload sentences) ",
-    "lessonDescription": "Create a Word Shuffle activity by supplying  4 - 10 sentences. A picture will be generated to go with each sentence in the shuffle activity.",
+    "lessonDescription": "Create a Word Shuffle activity by supplying  4 - 10 sentences. A picture in the specified image style will be generated to go with each sentence in the shuffle activity.",
     "uniqueid": "6a338cfe5bca3",
-    "version": "4",
+    "version": "5",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -99,10 +100,19 @@
             "type": "text"
         },
         "user_customdata1": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata2": {
             "enabled": false,

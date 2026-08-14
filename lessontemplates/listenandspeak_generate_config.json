@@ -61,9 +61,9 @@
         }
     ],
     "lessonTitle": "Listen and Speak (generate sentences)",
-    "lessonDescription": "Enter a topic and language level. A Listen and Speak item with  5 sentences will be created.",
+    "lessonDescription": "Enter a topic and language level. A Listen and Speak item with 5 sentences will be created. A picture  in the specified image style will be created to accompany each sentence.",
     "uniqueid": "6a33790712563",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -74,13 +74,13 @@
         "user_topic": {
             "enabled": true,
             "title": "Topic",
-            "description": "",
+            "description": "Enter a topic which the generated sentences should be related to.",
             "type": "text"
         },
         "user_level": {
             "enabled": true,
             "title": "Language Level",
-            "description": "",
+            "description": "Enter the user's language level",
             "type": "dropdown",
             "options": [
                 "CEFR A1",
@@ -104,10 +104,19 @@
             "type": "text"
         },
         "user_customdata1": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata2": {
             "enabled": false,
@@ -164,5 +173,6 @@
             "type": "text"
         }
     },
-    "tags": []
+    "tags": [],
+    "agentonly": 0
 }

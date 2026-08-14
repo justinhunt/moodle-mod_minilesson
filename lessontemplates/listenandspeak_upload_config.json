@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Create a one dimensional array of grammatically correct sentences (sentences) from the following text : {text}. ",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -43,7 +44,7 @@
                     "mapping": "sentences"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata1",
             "promptfields": [
                 {
                     "name": "text",
@@ -53,9 +54,10 @@
         }
     ],
     "lessonTitle": "Listen and Speak (upload sentences)",
-    "lessonDescription": "Create a Listen and Speak activity by supplying  up to 5 sentences. A picture will be generated to go with each sentence in the activity.",
+    "lessonDescription": "Create a Listen and Speak activity by supplying  up to 5 sentences, a topic and an image style. A picture will be generated to go with each sentence in the activity.",
     "uniqueid": "6a338f1f97bd4",
-    "version": "2",
+    "version": "3",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -79,7 +81,7 @@
             "enabled": true,
             "title": "Sentences",
             "description": "Enter a set of up to 5 sentences, each on a new line.",
-            "type": "text"
+            "type": "textarea"
         },
         "user_keywords": {
             "enabled": false,
@@ -88,10 +90,19 @@
             "type": "text"
         },
         "user_customdata1": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata2": {
             "enabled": false,

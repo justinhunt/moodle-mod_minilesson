@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Create a one dimensional array of grammatically correct sentences (sentences) from the following text : {text}.  In each sentence surround one keyword with square brackets, e.g [word]. Create a second array (data2) using the same sentences but without the square brackets.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -53,7 +54,7 @@
                     "mapping": "data2"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata1",
             "promptfields": [
                 {
                     "name": "text",
@@ -63,9 +64,10 @@
         }
     ],
     "lessonTitle": "Listening GapFill (upload sentences)",
-    "lessonDescription": "Creates a Listening GapFill  by supplying up to 30 sentences. A picture will be generated to go with each sentence in the item.",
+    "lessonDescription": "Creates a Listening GapFill  by supplying up to 30 sentences. A picture in the  specfied image style will be generated to go with each sentence in the item.",
     "uniqueid": "6a3398588ba75",
-    "version": "2",
+    "version": "4",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -98,10 +100,19 @@
             "type": "text"
         },
         "user_customdata1": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata2": {
             "enabled": false,

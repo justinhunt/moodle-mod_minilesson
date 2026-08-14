@@ -54,7 +54,7 @@
                     "mapping": "data2"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata2",
             "promptfields": [
                 {
                     "name": "language",
@@ -76,9 +76,9 @@
         }
     ],
     "lessonTitle": "Choose the correct word (generate sentences) ",
-    "lessonDescription": "Create a choose-the-correct-word activity using a Word Shuffle item. Enter 4 - 10 keywords. The keywords will be used to generate sentences each with a gap and 4 possible word choices. A native language sentence translation and a picture will be generated for each sentence.",
+    "lessonDescription": "Create a choose-the-correct-word activity using a Word Shuffle item. Enter 4 - 10 keywords. The keywords will be used to generate sentences each with a gap and 4 possible word choices. A native language sentence translation and a picture in the specified image style will be generated for each sentence.",
     "uniqueid": "6a349d7edd597",
-    "version": "4",
+    "version": "5",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -126,10 +126,19 @@
             "type": "text"
         },
         "user_customdata2": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata3": {
             "enabled": false,

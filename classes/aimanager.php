@@ -584,7 +584,8 @@ class aimanager {
                 continue;
             }
             $imagecnt++;
-
+            // We make a local copy of this because we may modify it.
+            $theoverallimagecontext = $overallimagecontext;
             $stylekeywords = [
                 'flat vector illustration',
                 'cartoon',
@@ -596,23 +597,48 @@ class aimanager {
                 'line drawing',
                 'realistic',
                 'infographic',
+                'black and white photo',
                 'black and white movie',
                 'hand drawn',
                 '3d render',
             ];
             $stylefound = false;
+            // Check if the prompt has specified a style.
             foreach ($stylekeywords as $stylekeyword) {
                 if (stripos(mb_strtolower($prompt), $stylekeyword) !== false) {
                     $stylefound = true;
                     break;
                 }
             }
+
+            // If no prompt is specified, check if the overallimagecontext is specifying a style.
+            // If so, add it to the prompt and set overallimagecontext to "--".
+            if (!$stylefound && !empty($theoverallimagecontext) && $theoverallimagecontext !== "--") {
+                $matchedstyle = '';
+                $stylepos = false;
+                foreach ($stylekeywords as $stylekeyword) {
+                    $pos = stripos($theoverallimagecontext, $stylekeyword);
+                    if ($pos !== false) {
+                        $stylefound = true;
+                        $matchedstyle = $stylekeyword;
+                        $stylepos = $pos;
+                        break;
+                    }
+                }
+                if ($stylefound && $stylepos === 0) {
+                    $prompt = "Give me a {$matchedstyle} image, with no text on it, depicting: " . $prompt;
+                    $theoverallimagecontext = "--";
+                }
+            }
+
+            // If no style is found, use "cute cartoon image".
             if (!$stylefound) {
                 $prompt = "Give me a simple cute cartoon image, with no text on it, depicting: " . $prompt;
             }
 
-            if ($overallimagecontext && !empty($overallimagecontext) && $overallimagecontext !== "--") {
-                $prompt .= PHP_EOL . " in the context of the following topic: " . $overallimagecontext;
+            // If we have an overall image context, set that.
+            if ($theoverallimagecontext && !empty($theoverallimagecontext) && $theoverallimagecontext !== "--") {
+                $prompt .= PHP_EOL . " in the context of the following topic: " . $theoverallimagecontext;
             }
 
             // Serve from cache if we already generated this exact image prompt.

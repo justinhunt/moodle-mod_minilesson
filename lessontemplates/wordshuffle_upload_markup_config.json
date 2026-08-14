@@ -54,14 +54,14 @@
                     "mapping": "user_customdata1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata2",
             "promptfields": []
         }
     ],
     "lessonTitle": "Word Shuffle (upload with markup)",
-    "lessonDescription": "Create a Word Shuffle item by supplying:\r\n i)  4 - 10 sentences already marked up with shuffle words, hints and distractors.\r\nii) The same sentences with no mark up, hints or distractors.\r\n A picture will be generated to go with each sentence in the Word Shuffle item.",
+    "lessonDescription": "Create a Word Shuffle item by supplying:\r\n i)  4 - 10 sentences already marked up with shuffle words, hints and distractors.\r\nii) The same sentences with no mark up, hints or distractors.\r\niii) An image style\r\n A picture in the specified image style will be generated to go with each sentence in the Word Shuffle item.",
     "uniqueid": "6a34d7bfb6e6c",
-    "version": "5",
+    "version": "6",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -101,10 +101,19 @@
             "type": "text"
         },
         "user_customdata2": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "Choose the style the images should be",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Black and white photo",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata3": {
             "enabled": false,
