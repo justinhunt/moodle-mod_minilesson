@@ -24,9 +24,9 @@ namespace mod_minilesson;
  * saving them, and pointing at the Chargebee free trial page (fetchcbpage.php) when there are
  * none to be found.
  *
- * It is deliberately self contained so it can be ported to the other Poodll plugins: the only
- * plugin specific references are constants::M_COMPONENT, constants::M_URL,
- * constants::M_PLUGINSETTINGS and utils::fetch_token()/fetch_token_error().
+ * It is deliberately self contained so it can be ported to the other Poodll plugins by changing
+ * only the namespace: the plugin it belongs to is reached through constants::M_COMPONENT,
+ * constants::M_URL, constants::M_PLUGINSETTINGS and utils::fetch_token()/fetch_token_error().
  *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -35,13 +35,15 @@ namespace mod_minilesson;
 class cbcredentials {
     /**
      * Other Poodll components that may already hold credentials on this site, and the names of
-     * the settings they keep them in.
+     * the settings they keep them in. This lists every Poodll component, including whichever one
+     * we belong to; find_elsewhere() skips ourselves, so the list stays the same in every plugin.
      */
     const CP_COMPONENTS = [
         'filter_poodll' => ['cpapiuser', 'cpapisecret'],
         'mod_englishcentral' => ['poodllapiuser', 'poodllapisecret'],
         'qtype_cloudpoodll' => ['apiuser', 'apisecret'],
         'mod_readaloud' => ['apiuser', 'apisecret'],
+        'mod_minilesson' => ['apiuser', 'apisecret'],
         'mod_wordcards' => ['apiuser', 'apisecret'],
         'mod_solo' => ['apiuser', 'apisecret'],
         'mod_pchat' => ['apiuser', 'apisecret'],
@@ -59,13 +61,25 @@ class cbcredentials {
     const PANEL_APISECRET_ID = 'mod_minilesson_cbapisecret';
 
     /**
+     * The names of the settings this plugin keeps its own credentials in, taken from the map above
+     * so that this file needs no per plugin editing. Most plugins use apiuser/apisecret, but
+     * filter_poodll uses cpapiuser/cpapisecret and mod_englishcentral uses another pair again.
+     *
+     * @return array [name of the API user setting, name of the API secret setting]
+     */
+    protected static function our_settings(): array {
+        return self::CP_COMPONENTS[constants::M_COMPONENT] ?? ['apiuser', 'apisecret'];
+    }
+
+    /**
      * Does this plugin have both an API user and secret set?
      *
      * @return bool
      */
     public static function has_credentials(): bool {
+        [$apiuserkey, $apisecretkey] = self::our_settings();
         $config = get_config(constants::M_COMPONENT);
-        return !empty($config->apiuser) && !empty($config->apisecret);
+        return !empty($config->$apiuserkey) && !empty($config->$apisecretkey);
     }
 
     /**
@@ -77,11 +91,12 @@ class cbcredentials {
      * @return string the problem, or an empty string when the credentials are good
      */
     public static function credentials_error(): string {
+        [$apiuserkey, $apisecretkey] = self::our_settings();
         $config = get_config(constants::M_COMPONENT);
-        if (empty($config->apiuser) || empty($config->apisecret)) {
+        if (empty($config->$apiuserkey) || empty($config->$apisecretkey)) {
             return get_string('cbnocredentialsset', constants::M_COMPONENT);
         }
-        $token = utils::fetch_token($config->apiuser, $config->apisecret);
+        $token = utils::fetch_token($config->$apiuserkey, $config->$apisecretkey);
         return utils::fetch_token_error($token);
     }
 
@@ -102,6 +117,9 @@ class cbcredentials {
      */
     public static function find_elsewhere(): ?array {
         foreach (self::CP_COMPONENTS as $component => [$apiusersetting, $apisecretsetting]) {
+            if ($component === constants::M_COMPONENT) {
+                continue;
+            }
             $apiuser = get_config($component, $apiusersetting);
             if (empty($apiuser)) {
                 continue;
@@ -126,10 +144,11 @@ class cbcredentials {
      * @return string an error message if the credentials were rejected, otherwise an empty string
      */
     public static function save(string $apiuser, string $apisecret): string {
+        [$apiuserkey, $apisecretkey] = self::our_settings();
         $apiuser = trim($apiuser);
         $apisecret = trim($apisecret);
-        set_config('apiuser', $apiuser, constants::M_COMPONENT);
-        set_config('apisecret', $apisecret, constants::M_COMPONENT);
+        set_config($apiuserkey, $apiuser, constants::M_COMPONENT);
+        set_config($apisecretkey, $apisecret, constants::M_COMPONENT);
 
         if (empty($apiuser) || empty($apisecret)) {
             return get_string('nocredentialsentered', constants::M_COMPONENT);
@@ -179,6 +198,7 @@ class cbcredentials {
     public static function export_panel_data($returnurl, string $errormessage = ''): array {
         global $CFG;
 
+        [$apiuserkey, $apisecretkey] = self::our_settings();
         $config = get_config(constants::M_COMPONENT);
         $data = self::export_buttons_data('#' . self::PANEL_APIUSER_ID, '#' . self::PANEL_APISECRET_ID);
         $data['formaction'] = $CFG->wwwroot . constants::M_URL . '/cbsavecreds.php';
@@ -186,8 +206,8 @@ class cbcredentials {
         $data['returnurl'] = $returnurl instanceof \moodle_url ? $returnurl->out(false) : $returnurl;
         $data['apiuserid'] = self::PANEL_APIUSER_ID;
         $data['apisecretid'] = self::PANEL_APISECRET_ID;
-        $data['currentapiuser'] = empty($config->apiuser) ? '' : $config->apiuser;
-        $data['currentapisecret'] = empty($config->apisecret) ? '' : $config->apisecret;
+        $data['currentapiuser'] = empty($config->$apiuserkey) ? '' : $config->$apiuserkey;
+        $data['currentapisecret'] = empty($config->$apisecretkey) ? '' : $config->$apisecretkey;
         $data['settingsurl'] = $CFG->wwwroot . constants::M_PLUGINSETTINGS;
         $data['errormessage'] = $errormessage;
         return $data;
