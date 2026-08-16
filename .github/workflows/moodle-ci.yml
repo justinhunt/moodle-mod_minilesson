@@ -49,7 +49,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install camp tools
-        run: pip install --quiet "git+https://github.com/camp-registry/camp-tools@v0.2.28"
+        run: pip install --quiet "git+https://github.com/camp-registry/camp-tools@v0.2.53"
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
