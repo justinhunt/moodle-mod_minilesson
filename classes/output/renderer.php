@@ -20,6 +20,7 @@ namespace mod_minilesson\output;
 use core_collator;
 use html_writer;
 use mod_minilesson\aigen_contextform;
+use mod_minilesson\cbcredentials;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 use mod_minilesson\comprehensiontest;
@@ -812,6 +813,26 @@ class renderer extends \plugin_renderer_base
         $output .= $this->notification($msg, 'warning');
         $output .= $this->output->box_end();
         return $output;
+    }
+
+    /**
+     * Show the in page Cloud Poodll credentials setup panel to administrators, and an explanation
+     * of who can fix it to everybody else.
+     *
+     * @param \moodle_url|string $returnurl where to send the user after they save the credentials
+     * @param string $errormessage what is currently wrong with the credentials
+     * @return string
+     */
+    public function show_cbcredentials_setup($returnurl, $errormessage = '')
+    {
+        if (cbcredentials::can_manage()) {
+            return $this->render_from_template(
+                constants::M_COMPONENT . '/cbcredentialspanel',
+                cbcredentials::export_panel_data($returnurl, $errormessage)
+            );
+        }
+        // Users who cannot fix it get no technical detail, just who to ask.
+        return $this->show_problembox(get_string('cbaskadmin', constants::M_COMPONENT));
     }
 
     /**

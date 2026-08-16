@@ -1,3 +1,6 @@
+Version 1.1.48 (Build 2026081600)
+- Added in-app free trial provisioning workflow
+
 Version 1.1.47 (Build 2026081500)
 - Added ai image generation style to templates that had none 
 - Removed unneccessary mywords js files

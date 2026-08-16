@@ -47,6 +47,11 @@ class constants {
     const M_PATH = '/mod/minilesson';
     const M_CLASS = 'mod_minilesson';
     const M_PLUGINSETTINGS = '/admin/settings.php?section=modsettingminilesson';
+
+    // Chargebee details for the in-app free trial (see cbcredentials/fetchcbpage.php).
+    const M_CB_SITE = 'poodllcom';
+    const M_CB_TRIAL_PRICEID = 'Poodll-Free-Trial-USD-Daily';
+
     const M_STATE_COMPLETE = 1;
     const M_STATE_INCOMPLETE = 0;
 

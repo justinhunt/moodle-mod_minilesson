@@ -114,6 +114,20 @@ if ($moduleinstance->foriframe == 1 || $moduleinstance->pagelayout == 'embedded'
 /** @var mod_minilesson\output\renderer $renderer */
 $renderer = $PAGE->get_renderer('mod_minilesson');
 
+// Without working Cloud Poodll credentials the lesson cannot run at all. Admins get an in page
+// setup panel, everybody else gets an explanation. This happens before any attempt is created.
+$credentialserror = $embed == 0 ? \mod_minilesson\cbcredentials::credentials_error() : '';
+if (!empty($credentialserror)) {
+    if (has_capability('mod/minilesson:evaluate', $modulecontext)) {
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('view', constants::M_COMPONENT));
+    } else {
+        echo $renderer->notabsheader($moduleinstance, $embed);
+    }
+    echo $renderer->show_cbcredentials_setup($PAGE->url, $credentialserror);
+    echo $renderer->footer();
+    die;
+}
+
 $continue_form_url = $PAGE->url; //new moodle_url('/mod/minilesson/view.php', ['id' => $cm->id, 'embed' => $embed]);
 $continue_form = new attempt_continue_form($continue_form_url);
 if ($formdata = $continue_form->get_data()) {
