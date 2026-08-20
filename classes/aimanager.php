@@ -721,6 +721,8 @@ class aimanager {
      * @return string|null The base64-encoded resized image, or null on failure.
      */
     protected static function process_image_response($responsestring) {
+        global $CFG;
+
         if (!utils::is_json($responsestring)) {
             return null;
         }
@@ -730,7 +732,10 @@ class aimanager {
         }
         $payload = json_decode($response->returnMessage);
         if (isset($payload[0]->url)) {
-            $rawdata = file_get_contents($payload[0]->url);
+            // Fallback branch - CloudPoodll normally returns the image inline as b64_json.
+            // But some model may yet return URLs.
+            require_once($CFG->libdir . '/filelib.php');
+            $rawdata = download_file_content($payload[0]->url, null, null, false, 60, 10);
         } else if (isset($payload[0]->b64_json)) {
             $rawdata = base64_decode($payload[0]->b64_json);
         } else {
