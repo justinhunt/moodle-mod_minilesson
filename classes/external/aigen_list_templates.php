@@ -81,8 +81,14 @@ class aigen_list_templates extends external_api {
                 $totalfiles = 0;
                 if (!empty($templateitems)) {
                     $type = $templateitems[$item->itemnumber]->type;
-                    $description = $templateitems[$item->itemnumber]->instructions;
-                    $filesid = $templateitems[$item->itemnumber]->filesid;
+                    // Not every item type stores its descriptive text as "instructions" -
+                    // some (page, multichoice, speechcards, dictation, ...) use "text" instead.
+                    $description = $templateitems[$item->itemnumber]->instructions
+                        ?? $templateitems[$item->itemnumber]->text
+                        ?? '';
+                    // Files are keyed by item number directly on $templatedata->files, not
+                    // by a per-item "filesid" property (template items never had one).
+                    $filesid = $item->itemnumber;
                     if (!empty($templatedata->files->$filesid)) {
                         foreach ($templatedata->files->$filesid as $fileobject) {
                             $totalfiles += count((array) $fileobject);
