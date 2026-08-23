@@ -19,7 +19,7 @@
 
     OAuth consent screen shown at oauth_authorize.php. clientname/clienturi come from a
     DCR registration or a fetched CIMD document, so they are attacker-influenced -
-    Mustache's default {{ }} escaping (not {{{ }}}) is relied on throughout.
+    Mustache's default double-brace escaping (not triple-brace) is relied on throughout.
 
     Context variables required for this template:
     * clientname string
