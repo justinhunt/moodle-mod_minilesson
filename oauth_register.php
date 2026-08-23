@@ -65,38 +65,6 @@ if ($attempts >= OAUTH_REGISTER_RATE_LIMIT) {
 $ratelimitcache->set($ratelimitkey, $attempts + 1);
 
 $raw = file_get_contents('php://input');
-
-// TEMPORARY DIAGNOSTIC - remove after debugging the Gemini Spark DCR 400.
-// Logs the raw request body regardless of outcome, and reports any uncaught
-// exception in the response body instead of letting it fall through to a
-// generic Moodle error page.
-@file_put_contents(
-    $CFG->dataroot . '/temp/oauth_register_debug.log',
-    '[' . date('c') . "] UA=" . ($_SERVER['HTTP_USER_AGENT'] ?? '') . " BODY=" . $raw . "\n",
-    FILE_APPEND
-);
-try {
-    oauth_register_process($raw);
-} catch (\Throwable $e) {
-    header('Content-Type: application/json; charset=utf-8', true, 400);
-    echo json_encode([
-        'error' => 'server_exception',
-        'error_description' => $e->getMessage(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-    ], JSON_UNESCAPED_SLASHES);
-    die;
-}
-
-/**
- * TEMPORARY - the original register logic, moved into a function purely so it can be
- * try/caught above without restructuring the rest of the file.
- *
- * @param string $raw
- * @return never
- */
-function oauth_register_process(string $raw) {
-global $DB;
 $metadata = json_decode($raw, true);
 if (json_last_error() !== JSON_ERROR_NONE || !is_array($metadata)) {
     oauth_register_error(400, 'invalid_client_metadata', 'Request body must be a JSON object');
@@ -165,4 +133,3 @@ echo json_encode([
     'response_types' => ['code'],
     'client_name' => $clientname,
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-}
