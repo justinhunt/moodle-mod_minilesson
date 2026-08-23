@@ -18,11 +18,23 @@
  * RFC 8414 OAuth 2.0 Authorization Server Metadata for the MCP OAuth authorization server.
  *
  * A plugin living in a URL subdirectory (not a domain root) cannot serve the site-root
- * .well-known forms RFC 8414 normally expects. The one form it CAN serve is the
- * path-appended form, {issuer}/.well-known/openid-configuration, via PATH_INFO on this
- * script - the same routing mechanism aigen_rest.php already uses in production. This
- * script's own URL (without PATH_INFO) is therefore the "issuer" referenced everywhere
- * else (oauth_resource_metadata.php, and every client's discovery request).
+ * .well-known forms RFC 8414 normally expects, so this script is reachable several ways:
+ *  - {this script}/.well-known/openid-configuration via PATH_INFO (the "path-appended"
+ *    discovery form, the same routing mechanism aigen_rest.php already uses in
+ *    production) - reachable with no server config beyond what the plugin already needs.
+ *  - Some real-world MCP clients (observed with Claude.ai) instead request paths like
+ *    /.well-known/oauth-authorization-server (optionally with this script's own path
+ *    appended again) at the site root, per RFC 8414's "insert" construction and the MCP
+ *    spec's sequence diagram, rather than following the resource_metadata pointer in the
+ *    WWW-Authenticate header as the spec text describes. Since Moodle owns the site root,
+ *    catching any of these requires a server-config RewriteRule (documented in
+ *    managemcp.php) pointing the site-root path at this script.
+ * Since this script serves exactly one public, non-sensitive document, it does not gate on
+ * how it was reached (e.g. via PATH_INFO) - observed variations in what PATH_INFO/REQUEST_URI
+ * end up as under different rewrite targets are not worth chasing when there is nothing to
+ * protect by rejecting an unexpected one. This script's own URL (without PATH_INFO) is the
+ * "issuer" referenced everywhere else (oauth_resource_metadata.php, and every client's
+ * discovery request).
  *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -34,13 +46,6 @@ define('NO_MOODLE_COOKIES', true);
 
 // phpcs:ignore moodle.Files.RequireLogin.Missing -- Public, unauthenticated discovery metadata.
 require(__DIR__ . '/../../config.php');
-
-$pathinfo = $_SERVER['PATH_INFO'] ?? '';
-if (rtrim($pathinfo, '/') !== '/.well-known/openid-configuration') {
-    header('Content-Type: text/plain; charset=utf-8', true, 404);
-    echo "Not found.\n";
-    die;
-}
 
 $issuer = $CFG->wwwroot . '/mod/minilesson/oauth_metadata.php';
 
