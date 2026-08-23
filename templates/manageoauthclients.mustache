@@ -1,0 +1,115 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/manageoauthclients
+
+    Manage OAuth clients admin page: create/delete manual OAuth clients (the Gemini Spark
+    manual-entry fallback path) and list DCR-registered + manual clients.
+
+    Context variables required for this template:
+    * intro, createheading, createformurl, sesskey string
+    * namelabel, redirecturislabel, confidentiallabel, createbtn string
+    * hasnewsecret bool, newsecret string|null, newsecretclientid string|null
+    * listheading, hasclients bool, noclientsmessage string
+    * namecollabel, typecollabel, redirectscollabel, createdcollabel string
+    * dcrlabel, publiclabel, confidentialtypelabel, deletelabel, regeneratelabel string
+    * clients array of {clientid, clientname, isdcr, confidential, redirecturis, created, deleteurl, regenerateurl}
+
+    Example context (json):
+    {
+        "intro": "...", "createheading": "Create a manual OAuth client",
+        "createformurl": "https://example.com/mod/minilesson/manageoauthclients.php",
+        "sesskey": "abc123", "namelabel": "Name", "redirecturislabel": "Redirect URIs",
+        "confidentiallabel": "Confidential client", "createbtn": "Create client",
+        "hasnewsecret": true, "newsecret": "supersecretvalue", "newsecretclientid": "mlc_abc",
+        "listheading": "Existing clients", "hasclients": true,
+        "noclientsmessage": "No clients yet.",
+        "namecollabel": "Name", "typecollabel": "Type", "redirectscollabel": "Redirect URIs",
+        "createdcollabel": "Created", "dcrlabel": "DCR", "publiclabel": "Public",
+        "confidentialtypelabel": "Confidential", "deletelabel": "Delete", "regeneratelabel": "Regenerate secret",
+        "clients": [
+            {"clientid": "mlc_abc", "clientname": "Gemini", "isdcr": false, "confidential": true,
+             "redirecturis": "https://example.com/cb", "created": "1 Jan 2026",
+             "deleteurl": "#", "regenerateurl": "#"}
+        ]
+    }
+}}
+<div class="mod_minilesson_manageoauthclients">
+    <p>{{intro}}</p>
+
+    {{#hasnewsecret}}
+        <div class="alert alert-warning">
+            <p>{{#str}}manageoauthclients_newsecretwarning, mod_minilesson{{/str}}</p>
+            <p><code>{{newsecretclientid}}</code></p>
+            <p><code>{{newsecret}}</code></p>
+        </div>
+    {{/hasnewsecret}}
+
+    <h3>{{createheading}}</h3>
+    <form method="post" action="{{createformurl}}">
+        <input type="hidden" name="sesskey" value="{{sesskey}}">
+        <input type="hidden" name="action" value="create">
+        <div class="form-group">
+            <label for="mod_minilesson_oauthclientname">{{namelabel}}</label>
+            <input type="text" class="form-control" id="mod_minilesson_oauthclientname" name="clientname" required>
+        </div>
+        <div class="form-group">
+            <label for="mod_minilesson_oauthredirecturis">{{redirecturislabel}}</label>
+            <textarea class="form-control" id="mod_minilesson_oauthredirecturis" name="redirecturis" rows="3" required></textarea>
+        </div>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="mod_minilesson_oauthconfidential" name="confidential" value="1" checked>
+            <label class="form-check-label" for="mod_minilesson_oauthconfidential">{{confidentiallabel}}</label>
+        </div>
+        <button type="submit" class="btn btn-primary">{{createbtn}}</button>
+    </form>
+
+    <h3>{{listheading}}</h3>
+    {{^hasclients}}
+        <p>{{noclientsmessage}}</p>
+    {{/hasclients}}
+    {{#hasclients}}
+        <table class="generaltable">
+            <thead>
+                <tr>
+                    <th>{{namecollabel}}</th>
+                    <th>{{typecollabel}}</th>
+                    <th>{{redirectscollabel}}</th>
+                    <th>{{createdcollabel}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#clients}}
+                <tr>
+                    <td>{{clientname}}</td>
+                    <td>
+                        {{#isdcr}}{{dcrlabel}}{{/isdcr}}
+                        {{^isdcr}}{{#confidential}}{{confidentialtypelabel}}{{/confidential}}{{^confidential}}{{publiclabel}}{{/confidential}}{{/isdcr}}
+                    </td>
+                    <td>{{redirecturis}}</td>
+                    <td>{{created}}</td>
+                    <td>
+                        {{#confidential}}<a href="{{regenerateurl}}">{{regeneratelabel}}</a> | {{/confidential}}
+                        <a href="{{deleteurl}}">{{deletelabel}}</a>
+                    </td>
+                </tr>
+                {{/clients}}
+            </tbody>
+        </table>
+    {{/hasclients}}
+</div>

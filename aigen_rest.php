@@ -31,8 +31,10 @@
  * \mod_minilesson\local\aigen\facade; this file is just the HTTP/JSON front-end.
  *
  * Auth: send the Moodle web service token in an "X-API-Key" header (recommended - Apache
- * strips Authorization by default). "Authorization: Bearer <token>" is also accepted, and
- * a ?token= query parameter for testing only.
+ * strips Authorization by default unless the server is configured to forward it).
+ * "Authorization: Bearer <token>" is also accepted - this is what an OAuth-issued access
+ * token arrives as (see oauth_authorize.php/oauth_token.php) - and a ?token= query
+ * parameter for testing only.
  *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -59,6 +61,21 @@ function aigen_rest_respond(int $status, array $payload) {
     header('Content-Type: application/json; charset=utf-8', true, $status);
     echo json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     die;
+}
+
+/**
+ * Send the 401 challenge header, pointing OAuth-capable clients at the RFC 9728 protected
+ * resource metadata document. Matches the header mcp.php sends on the same failure.
+ *
+ * @return void
+ */
+function aigen_rest_send_auth_challenge(): void {
+    global $CFG;
+    header(
+        'WWW-Authenticate: Bearer resource_metadata="' . $CFG->wwwroot . '/mod/minilesson/oauth_resource_metadata.php"',
+        true,
+        401
+    );
 }
 
 // All facade calls are POST with a JSON body of arguments.
@@ -94,11 +111,13 @@ if (!in_array($functionname, $facadefunctions)) {
 // Authenticate the token (validates it, sets up the user session, checks service access).
 $token = facade::request_token();
 if ($token === '') {
+    aigen_rest_send_auth_challenge();
     aigen_rest_respond(401, ['error' => true, 'message' => 'Missing token (send it as the X-API-Key header)']);
 }
 try {
     $authinfo = facade::authenticate($token);
 } catch (Throwable $e) {
+    aigen_rest_send_auth_challenge();
     aigen_rest_respond(401, ['error' => true, 'message' => 'Invalid or unauthorised token']);
 }
 

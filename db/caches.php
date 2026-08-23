@@ -15,19 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines the version of minilesson
- *
+ * Cache definitions for mod_minilesson.
  *
  * @package    mod_minilesson
- * @copyright  2020 Justin Hunt (poodllsupport@gmail.com)
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026082301;
-$plugin->requires = 2023100900; // Requires Moodle 4.3.
-$plugin->supported = [403, 502]; // Moodle 4.3 to 5.2.
-$plugin->component = 'mod_minilesson';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '1.1.51 (Build 2026082301)';
+$definitions = [
+    // Validated OAuth Client ID Metadata Documents (CIMD), keyed by sha1(url).
+    // Losing this cache just costs one extra HTTP fetch, so a short TTL and no
+    // persistent storage is fine - no install.xml table needed for this.
+    'cimdclient' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+        'ttl' => 600,
+    ],
+
+    // Best-effort per-IP counter for the open, unauthenticated DCR endpoint
+    // (oauth_register.php). Not a hard security boundary, just abuse mitigation.
+    'dcrratelimit' => [
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+        'ttl' => 3600,
+    ],
+];

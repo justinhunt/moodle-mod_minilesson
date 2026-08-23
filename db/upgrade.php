@@ -1295,5 +1295,81 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026082300, 'minilesson');
     }
 
+    if ($oldversion < 2026082301) {
+        // OAuth 2.1 authorization server for MCP clients that only support OAuth
+        // (Claude.ai, Gemini Spark). Access tokens it mints are ordinary
+        // external_tokens rows, so only new storage for clients/codes/refresh
+        // tokens is needed here - the existing token-auth path is unchanged.
+        $table = new xmldb_table('minilesson_oauth_clients');
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('clientid', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('clientsecrethash', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+            $table->add_field('clientname', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+            $table->add_field('clienturi', XMLDB_TYPE_CHAR, '1333', null, null, null, null);
+            $table->add_field('logouri', XMLDB_TYPE_CHAR, '1333', null, null, null, null);
+            $table->add_field('redirecturis', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+            $table->add_field('granttypes', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, 'authorization_code,refresh_token');
+            $table->add_field('responsetypes', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, 'code');
+            $table->add_field('tokenendpointauthmethod', XMLDB_TYPE_CHAR, '32', null, XMLDB_NOTNULL, null, 'none');
+            $table->add_field('scope', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+            $table->add_field('origin', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, 'dcr');
+            $table->add_field('createdby', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+            $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('lastusedtime', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_index('idx_clientid', XMLDB_INDEX_UNIQUE, ['clientid']);
+            $table->add_index('idx_origin', XMLDB_INDEX_NOTUNIQUE, ['origin']);
+            $dbman->create_table($table);
+        }
+
+        $table = new xmldb_table('minilesson_oauth_codes');
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('codehash', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('clientid', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('redirecturi', XMLDB_TYPE_CHAR, '1333', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('codechallenge', XMLDB_TYPE_CHAR, '128', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('codechallengemethod', XMLDB_TYPE_CHAR, '10', null, XMLDB_NOTNULL, null, 'S256');
+            $table->add_field('resource', XMLDB_TYPE_CHAR, '1333', null, null, null, null);
+            $table->add_field('scope', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+            $table->add_field('clientnamesnapshot', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+            $table->add_field('expires', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_key('fkuserid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+            $table->add_index('idx_codehash', XMLDB_INDEX_UNIQUE, ['codehash']);
+            $table->add_index('idx_expires', XMLDB_INDEX_NOTUNIQUE, ['expires']);
+            $dbman->create_table($table);
+        }
+
+        $table = new xmldb_table('minilesson_oauth_refresh');
+        if (!$dbman->table_exists($table)) {
+            $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+            $table->add_field('tokenhash', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('clientid', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('externalserviceid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('resource', XMLDB_TYPE_CHAR, '1333', null, null, null, null);
+            $table->add_field('scope', XMLDB_TYPE_CHAR, '255', null, null, null, null);
+            $table->add_field('familyid', XMLDB_TYPE_CHAR, '64', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('revoked', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0');
+            $table->add_field('expires', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+            $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+            $table->add_field('lastused', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_key('fkuserid', XMLDB_KEY_FOREIGN, ['userid'], 'user', ['id']);
+            $table->add_index('idx_tokenhash', XMLDB_INDEX_UNIQUE, ['tokenhash']);
+            $table->add_index('idx_familyid', XMLDB_INDEX_NOTUNIQUE, ['familyid']);
+            $table->add_index('idx_clientid', XMLDB_INDEX_NOTUNIQUE, ['clientid']);
+            $dbman->create_table($table);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026082301, 'minilesson');
+    }
+
     return true;
 }

@@ -69,11 +69,23 @@ $openapi = [
                 'name' => 'X-API-Key',
                 'description' => 'A Moodle web service token for the aigenservice.',
             ],
+            'OAuth2' => [
+                'type' => 'oauth2',
+                'flows' => [
+                    'authorizationCode' => [
+                        'authorizationUrl' => $CFG->wwwroot . '/mod/minilesson/oauth_authorize.php',
+                        'tokenUrl' => $CFG->wwwroot . '/mod/minilesson/oauth_token.php',
+                        'refreshUrl' => $CFG->wwwroot . '/mod/minilesson/oauth_token.php',
+                        'scopes' => ['aigen' => 'Full access to the aigen web service functions'],
+                    ],
+                ],
+            ],
         ],
         'schemas' => [],
     ],
     'security' => [
         ['ApiKeyAuth' => []],
+        ['OAuth2' => ['aigen']],
     ],
 ];
 

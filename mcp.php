@@ -28,7 +28,11 @@
  * openapi.php; this file is just the MCP/JSON-RPC front-end.
  *
  * Methods: initialize, ping and notifications/* need no auth; tools/list and tools/call
- * require the token (X-API-Key header, or Authorization: Bearer).
+ * require the token (X-API-Key header, or Authorization: Bearer - the latter is what an
+ * OAuth-issued access token arrives as, since it is just a real web service token minted
+ * via the authorization server in oauth_authorize.php/oauth_token.php). An unauthenticated
+ * or invalid attempt gets a 401 with a resource_metadata challenge (RFC 9728) pointing
+ * OAuth-capable clients at oauth_resource_metadata.php to discover the flow.
  *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -85,6 +89,22 @@ function mcp_result($id, $result): array {
  */
 function mcp_error($id, int $code, string $message): array {
     return ['jsonrpc' => '2.0', 'id' => $id, 'error' => ['code' => $code, 'message' => $message]];
+}
+
+/**
+ * Send the 401 challenge header, pointing OAuth-capable clients at the RFC 9728 protected
+ * resource metadata document so they can discover the authorization server and start the
+ * OAuth flow instead of giving up on a bare 401.
+ *
+ * @return void
+ */
+function mcp_send_auth_challenge(): void {
+    global $CFG;
+    header(
+        'WWW-Authenticate: Bearer resource_metadata="' . $CFG->wwwroot . '/mod/minilesson/oauth_resource_metadata.php"',
+        true,
+        401
+    );
 }
 
 /**
@@ -154,13 +174,13 @@ if ($rpcmethod === 'ping') {
 // Everything below (tools/*) requires an authenticated token.
 $token = facade::request_token();
 if ($token === '') {
-    header('WWW-Authenticate: Bearer', true, 401);
+    mcp_send_auth_challenge();
     mcp_send(mcp_error($id, -32001, 'Authentication required'), 401);
 }
 try {
     $authinfo = facade::authenticate($token);
 } catch (Throwable $e) {
-    header('WWW-Authenticate: Bearer', true, 401);
+    mcp_send_auth_challenge();
     mcp_send(mcp_error($id, -32001, 'Invalid or unauthorised token'), 401);
 }
 
