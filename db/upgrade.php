@@ -1276,5 +1276,24 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026081500, 'minilesson');
     }
 
+    if ($oldversion < 2026082300) {
+        // Access to the AI Generation / MCP web service is now gated by the
+        // mod/minilesson:usemcp capability instead of the aigenservice external
+        // service's allowed-users list. Only nag the admin if this site actually
+        // has legacy allowed users who would otherwise silently lose access.
+        $serviceid = $DB->get_field('external_services', 'id', ['shortname' => 'aigenservice']);
+        if ($serviceid && $DB->record_exists('external_services_users', ['externalserviceid' => $serviceid])) {
+            $managemcpurl = new moodle_url(constants::M_URL . '/managemcp.php');
+            $managemcplink = html_writer::link($managemcpurl, get_string('managemcp', constants::M_COMPONENT));
+            \core\notification::add(
+                get_string('managemcp_upgradenotice', constants::M_COMPONENT, $managemcplink),
+                \core\notification::WARNING
+            );
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026082300, 'minilesson');
+    }
+
     return true;
 }

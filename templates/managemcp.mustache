@@ -1,0 +1,125 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/managemcp
+
+    Manage MCP admin page: explains MiniLesson MCP, offers actions to create the
+    MCP user role and migrate legacy allowed-users, and lists who currently holds
+    the mod/minilesson:usemcp capability.
+
+    Context variables required for this template:
+    * intro string - what MiniLesson MCP is
+    * enableheading string
+    * enablebody string
+    * helpurl string
+    * helplinktext string
+    * createroleheading string
+    * createrolebody string
+    * createrolebuttonhtml string - pre-rendered single_button HTML (raw)
+    * rolealreadyexists bool
+    * rolealreadyexiststext string
+    * migrateheading string
+    * migratebody string
+    * migratebuttonhtml string - pre-rendered single_button HTML (raw)
+    * migratedisabled bool
+    * migratedisabledreason string
+    * usersheading string
+    * hasusers bool
+    * nousersmessage string
+    * fullnamelabel string
+    * emaillabel string
+    * hastokenlabel string
+    * tokenexpirylabel string
+    * users array of {fullname, email, hastoken, tokenexpiry}
+
+    Example context (json):
+    {
+        "intro": "MiniLesson MCP lets AI assistants create lessons.",
+        "enableheading": "How to enable MCP for a user",
+        "enablebody": "Assign them a role carrying the capability.",
+        "helpurl": "https://support.poodll.com/a/solutions/articles/19000175579",
+        "helplinktext": "Full setup instructions",
+        "createroleheading": "Create the MiniLesson MCP User role",
+        "createrolebody": "This creates a role...",
+        "createrolebuttonhtml": "<div class=\"singlebutton\"><form method=\"post\"><button type=\"submit\">Create role</button></form></div>",
+        "rolealreadyexists": false,
+        "rolealreadyexiststext": "",
+        "migrateheading": "Migrate legacy allowed users",
+        "migratebody": "Assign the role to everyone on the old list.",
+        "migratebuttonhtml": "<div class=\"singlebutton\"><form method=\"post\"><button type=\"submit\">Migrate</button></form></div>",
+        "migratedisabled": true,
+        "migratedisabledreason": "Disabled: create the MCP role above first.",
+        "usersheading": "Users with MCP access",
+        "hasusers": true,
+        "nousersmessage": "",
+        "fullnamelabel": "Name",
+        "emaillabel": "Email",
+        "hastokenlabel": "Has a token",
+        "tokenexpirylabel": "Token expires",
+        "users": [
+            {"fullname": "Ada Lovelace", "email": "ada@example.com", "hastoken": "Yes", "tokenexpiry": "Never"}
+        ]
+    }
+}}
+<div class="mod_minilesson_managemcp">
+    <p>{{intro}}</p>
+
+    <h3>{{enableheading}}</h3>
+    <p>{{enablebody}}</p>
+    <p><a href="{{helpurl}}" target="_blank" rel="noopener noreferrer">{{helplinktext}}</a></p>
+
+    <h3>{{createroleheading}}</h3>
+    <p>{{createrolebody}}</p>
+    {{{createrolebuttonhtml}}}
+    {{#rolealreadyexists}}
+        <p class="text-muted">{{rolealreadyexiststext}}</p>
+    {{/rolealreadyexists}}
+
+    <h3>{{migrateheading}}</h3>
+    <p>{{migratebody}}</p>
+    {{{migratebuttonhtml}}}
+    {{#migratedisabled}}
+        <p class="text-muted">{{migratedisabledreason}}</p>
+    {{/migratedisabled}}
+
+    <h3>{{usersheading}}</h3>
+    {{^hasusers}}
+        <p>{{nousersmessage}}</p>
+    {{/hasusers}}
+    {{#hasusers}}
+        <table class="generaltable">
+            <thead>
+                <tr>
+                    <th>{{fullnamelabel}}</th>
+                    <th>{{emaillabel}}</th>
+                    <th>{{hastokenlabel}}</th>
+                    <th>{{tokenexpirylabel}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#users}}
+                <tr>
+                    <td>{{fullname}}</td>
+                    <td>{{email}}</td>
+                    <td>{{hastoken}}</td>
+                    <td>{{tokenexpiry}}</td>
+                </tr>
+                {{/users}}
+            </tbody>
+        </table>
+    {{/hasusers}}
+</div>

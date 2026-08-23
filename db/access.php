@@ -179,6 +179,15 @@ $capabilities = [
             'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
 
+    'mod/minilesson:usemcp' => [
+            'riskbitmask' => RISK_SPAM | RISK_XSS,
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_SYSTEM,
+            'archetypes' => [
+                    'manager' => CAP_ALLOW,
+            ],
+    ],
+
     'mod/minilesson:export' => [
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,

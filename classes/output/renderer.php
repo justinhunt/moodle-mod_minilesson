@@ -1188,4 +1188,14 @@ class renderer extends \plugin_renderer_base
         $pusers = trim($pusers);
         return count(array_unique(explode(',', $pusers)));
     }
+
+    /**
+     * Render the Manage MCP admin page body.
+     *
+     * @param array $data template context, see templates/managemcp.mustache
+     * @return string
+     */
+    public function render_managemcp(array $data) {
+        return $this->render_from_template(constants::M_COMPONENT . '/managemcp', $data);
+    }
 }

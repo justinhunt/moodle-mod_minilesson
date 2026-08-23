@@ -453,6 +453,14 @@ if ($hassiteconfig) {
     );
     $ADMIN->add('modsettingsminilessoncat', $accountdashboard);
 
+    // Manage MCP.
+    $managemcp = new admin_externalpage(
+        'mod_minilesson_managemcp',
+        get_string('managemcp', constants::M_COMPONENT),
+        $CFG->wwwroot . constants::M_URL . '/managemcp.php'
+    );
+    $ADMIN->add('modsettingsminilessoncat', $managemcp);
+
     $plugins = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
     foreach ($plugins as $plugin) {
         $plugin->load_settings($ADMIN, 'modsettingsminilessoncat', $hassiteconfig);
