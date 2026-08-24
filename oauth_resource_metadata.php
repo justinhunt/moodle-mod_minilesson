@@ -35,9 +35,7 @@ define('NO_MOODLE_COOKIES', true);
 require(__DIR__ . '/../../config.php');
 
 header('Content-Type: application/json; charset=utf-8');
-echo json_encode([
-    'resource' => $CFG->wwwroot . '/mod/minilesson/mcp.php',
-    'authorization_servers' => [$CFG->wwwroot . '/mod/minilesson/oauth_metadata.php'],
-    'bearer_methods_supported' => ['header'],
-    'scopes_supported' => ['aigen'],
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+echo json_encode(
+    \mod_minilesson\local\oauth\helper::resource_metadata(),
+    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+);

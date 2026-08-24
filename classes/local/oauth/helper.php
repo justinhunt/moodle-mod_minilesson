@@ -45,4 +45,44 @@ class helper {
         $loopbackhosts = ['127.0.0.1', '::1', 'localhost'];
         return $parts['scheme'] === 'http' && in_array($parts['host'], $loopbackhosts, true);
     }
+
+    /**
+     * RFC 9728 protected resource metadata for mcp.php/aigen_rest.php - shared by
+     * oauth_resource_metadata.php and the PATH_INFO discovery branch in mcp.php/aigen_rest.php
+     * so the two never drift apart.
+     *
+     * @return array
+     */
+    public static function resource_metadata(): array {
+        global $CFG;
+        return [
+            'resource' => $CFG->wwwroot . '/mod/minilesson/mcp.php',
+            'authorization_servers' => [$CFG->wwwroot . '/mod/minilesson/oauth_metadata.php'],
+            'bearer_methods_supported' => ['header'],
+            'scopes_supported' => ['aigen'],
+        ];
+    }
+
+    /**
+     * RFC 8414 authorization server metadata - shared by oauth_metadata.php and the
+     * PATH_INFO discovery branch in mcp.php/aigen_rest.php so the two never drift apart.
+     *
+     * @return array
+     */
+    public static function authorization_server_metadata(): array {
+        global $CFG;
+        $issuer = $CFG->wwwroot . '/mod/minilesson/oauth_metadata.php';
+        return [
+            'issuer' => $issuer,
+            'authorization_endpoint' => $CFG->wwwroot . '/mod/minilesson/oauth_authorize.php',
+            'token_endpoint' => $CFG->wwwroot . '/mod/minilesson/oauth_token.php',
+            'registration_endpoint' => $CFG->wwwroot . '/mod/minilesson/oauth_register.php',
+            'response_types_supported' => ['code'],
+            'grant_types_supported' => ['authorization_code', 'refresh_token'],
+            'code_challenge_methods_supported' => ['S256'],
+            'token_endpoint_auth_methods_supported' => ['none', 'client_secret_post'],
+            'client_id_metadata_document_supported' => true,
+            'scopes_supported' => ['aigen'],
+        ];
+    }
 }

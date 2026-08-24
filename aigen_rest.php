@@ -78,9 +78,28 @@ function aigen_rest_send_auth_challenge(): void {
     );
 }
 
+/**
+ * Serve RFC 9728/8414 discovery JSON (and exit) if this GET's PATH_INFO asks for it - same
+ * rationale and shared metadata as mcp.php's identical helper.
+ *
+ * @return void
+ */
+function aigen_rest_maybe_send_wellknown_discovery(): void {
+    $pathinfo = $_SERVER['PATH_INFO'] ?? '';
+    if (strpos($pathinfo, 'oauth-protected-resource') !== false) {
+        aigen_rest_respond(200, \mod_minilesson\local\oauth\helper::resource_metadata());
+    }
+    if (strpos($pathinfo, 'oauth-authorization-server') !== false || strpos($pathinfo, 'openid-configuration') !== false) {
+        aigen_rest_respond(200, \mod_minilesson\local\oauth\helper::authorization_server_metadata());
+    }
+}
+
 // All facade calls are POST with a JSON body of arguments.
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 if ($method !== 'POST') {
+    if ($method === 'GET') {
+        aigen_rest_maybe_send_wellknown_discovery();
+    }
     aigen_rest_respond(405, ['error' => true, 'message' => 'Use POST with a JSON body of arguments']);
 }
 

@@ -47,18 +47,8 @@ define('NO_MOODLE_COOKIES', true);
 // phpcs:ignore moodle.Files.RequireLogin.Missing -- Public, unauthenticated discovery metadata.
 require(__DIR__ . '/../../config.php');
 
-$issuer = $CFG->wwwroot . '/mod/minilesson/oauth_metadata.php';
-
 header('Content-Type: application/json; charset=utf-8');
-echo json_encode([
-    'issuer' => $issuer,
-    'authorization_endpoint' => $CFG->wwwroot . '/mod/minilesson/oauth_authorize.php',
-    'token_endpoint' => $CFG->wwwroot . '/mod/minilesson/oauth_token.php',
-    'registration_endpoint' => $CFG->wwwroot . '/mod/minilesson/oauth_register.php',
-    'response_types_supported' => ['code'],
-    'grant_types_supported' => ['authorization_code', 'refresh_token'],
-    'code_challenge_methods_supported' => ['S256'],
-    'token_endpoint_auth_methods_supported' => ['none', 'client_secret_post'],
-    'client_id_metadata_document_supported' => true,
-    'scopes_supported' => ['aigen'],
-], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+echo json_encode(
+    \mod_minilesson\local\oauth\helper::authorization_server_metadata(),
+    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+);

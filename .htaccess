@@ -1,0 +1,21 @@
+# RFC 8414/9728 well-known OAuth discovery, scoped to this plugin's own directory only.
+#
+# Lets a client that knows this plugin's own base URL (e.g. https://SITE/mod/minilesson)
+# discover OAuth metadata the same way most OAuth/OIDC client libraries do for any normal
+# provider: rtrim($provider_url, '/') . '/.well-known/openid-configuration'. Deliberately
+# NOT claiming any domain-root well-known path - that would require site vhost config and
+# would collide with any other plugin doing the same on this server. Self-contained: works
+# only if the site's Apache AllowOverride permits .htaccess here, and does nothing on nginx.
+# If it doesn't apply, discovery still works via mcp.php's own PATH_INFO handling and the
+# resource_metadata pointer on every 401 - this file is a bonus, not a requirement.
+#
+# Wrapped in <IfModule> so a site without mod_rewrite loaded gets a silent no-op here
+# instead of Apache's "Invalid command 'RewriteEngine'" fatal error, which (confirmed by
+# direct testing) takes down the *entire* mod/minilesson directory, not just this file -
+# never ship a bare RewriteEngine/RewriteRule in a plugin .htaccess without this guard.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^\.well-known/openid-configuration$ oauth_metadata.php [L]
+RewriteRule ^\.well-known/oauth-authorization-server$ oauth_metadata.php [L]
+RewriteRule ^\.well-known/oauth-protected-resource$ oauth_resource_metadata.php [L]
+</IfModule>

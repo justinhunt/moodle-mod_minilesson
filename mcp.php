@@ -108,6 +108,25 @@ function mcp_send_auth_challenge(): void {
 }
 
 /**
+ * Serve RFC 9728/8414 discovery JSON (and exit) if this GET's PATH_INFO asks for it - covers
+ * clients that append ".well-known/..." onto the resource's own URL (mcp.php) rather than
+ * inserting it at the domain root, e.g. the real request "GET /mod/minilesson/mcp.php/
+ * .well-known/openid-configuration" observed from a real client. Returns normally (falls
+ * through to the existing 405) for any other GET.
+ *
+ * @return void
+ */
+function mcp_maybe_send_wellknown_discovery(): void {
+    $pathinfo = $_SERVER['PATH_INFO'] ?? '';
+    if (strpos($pathinfo, 'oauth-protected-resource') !== false) {
+        mcp_send(\mod_minilesson\local\oauth\helper::resource_metadata());
+    }
+    if (strpos($pathinfo, 'oauth-authorization-server') !== false || strpos($pathinfo, 'openid-configuration') !== false) {
+        mcp_send(\mod_minilesson\local\oauth\helper::authorization_server_metadata());
+    }
+}
+
+/**
  * Server-level instructions surfaced to the model on initialize (the three request kinds
  * and how to route them; the full workflow detail is in the tool descriptions / openapi.php).
  *
@@ -140,6 +159,9 @@ function mcp_instructions(): string {
 // server -> client SSE stream, so GET (and anything else) is not supported.
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 if ($method !== 'POST') {
+    if ($method === 'GET') {
+        mcp_maybe_send_wellknown_discovery();
+    }
     mcp_send(['error' => 'This MCP endpoint accepts POST (JSON-RPC) only'], 405);
 }
 
