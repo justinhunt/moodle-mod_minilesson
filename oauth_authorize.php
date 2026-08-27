@@ -87,8 +87,15 @@ function oauth_authorize_validate_cimd_doc($doc, string $url): ?array {
     if (!is_array($redirecturis) || empty($redirecturis)) {
         return null;
     }
+    // Accept the client if "none" is its stated method, or if it lists "none" among what
+    // it supports - our token endpoint never asks for client authentication regardless of
+    // what else a client is capable of, so a client offering "none" as an option is usable
+    // here even when it prefers something stronger for other authorization servers.
     $authmethod = $doc['token_endpoint_auth_method'] ?? 'none';
-    if ($authmethod !== 'none') {
+    $supportedmethods = $doc['token_endpoint_auth_methods_supported'] ?? null;
+    $acceptsnone = $authmethod === 'none'
+        || (is_array($supportedmethods) && in_array('none', $supportedmethods, true));
+    if (!$acceptsnone) {
         return null;
     }
 
