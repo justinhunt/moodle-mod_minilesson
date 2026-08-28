@@ -94,6 +94,18 @@ function mcp_error($id, int $code, string $message): array {
 }
 
 /**
+ * The name this server identifies itself as in the MCP `initialize` response - includes the
+ * site host so a client connected to several Moodle sites can tell them apart in its own UI.
+ *
+ * @return string
+ */
+function mcp_server_name(): string {
+    global $CFG;
+    $host = parse_url($CFG->wwwroot, PHP_URL_HOST) ?: $CFG->wwwroot;
+    return "Poodll MiniLesson on {$host}";
+}
+
+/**
  * Send the 401 challenge header. When local_oauthmcp is installed, points OAuth-capable
  * clients at the RFC 9728 protected resource metadata document so they can discover the
  * authorization server and start the OAuth flow instead of giving up on a bare 401; when it
@@ -202,7 +214,7 @@ if ($rpcmethod === 'initialize') {
     mcp_send(mcp_result($id, [
         'protocolVersion' => MCP_PROTOCOL_VERSION,
         'capabilities' => ['tools' => new stdClass()],
-        'serverInfo' => ['name' => 'mod_minilesson aigen', 'version' => '1.0.0'],
+        'serverInfo' => ['name' => mcp_server_name(), 'version' => '1.0.0'],
         'instructions' => mcp_instructions(),
     ]));
 }
