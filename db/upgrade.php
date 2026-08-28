@@ -1371,5 +1371,22 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026082301, 'minilesson');
     }
 
+    if ($oldversion < 2026082801) {
+        // The OAuth 2.1 authorization server moved to the shared local_oauthmcp plugin (this
+        // is a test-site-only feature so far, no live client data to migrate - see
+        // mod_minilesson_mcp_oauth_resources() in lib.php for how this plugin now registers
+        // itself with local_oauthmcp instead).
+        $tables = ['minilesson_oauth_clients', 'minilesson_oauth_codes', 'minilesson_oauth_refresh'];
+        foreach ($tables as $tablename) {
+            $table = new xmldb_table($tablename);
+            if ($dbman->table_exists($table)) {
+                $dbman->drop_table($table);
+            }
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026082801, 'minilesson');
+    }
+
     return true;
 }

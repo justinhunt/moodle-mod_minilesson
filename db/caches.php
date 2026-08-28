@@ -17,6 +17,10 @@
 /**
  * Cache definitions for mod_minilesson.
  *
+ * The OAuth-related caches (cimdclient, dcrratelimit) moved to local_oauthmcp along with the
+ * rest of the OAuth authorization server - see db/upgrade.php for the corresponding table
+ * drop.
+ *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,23 +28,4 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$definitions = [
-    // Validated OAuth Client ID Metadata Documents (CIMD), keyed by sha1(url).
-    // Losing this cache just costs one extra HTTP fetch, so a short TTL and no
-    // persistent storage is fine - no install.xml table needed for this.
-    'cimdclient' => [
-        'mode' => cache_store::MODE_APPLICATION,
-        'simplekeys' => true,
-        'simpledata' => true,
-        'ttl' => 600,
-    ],
-
-    // Best-effort per-IP counter for the open, unauthenticated DCR endpoint
-    // (oauth_register.php). Not a hard security boundary, just abuse mitigation.
-    'dcrratelimit' => [
-        'mode' => cache_store::MODE_APPLICATION,
-        'simplekeys' => true,
-        'simpledata' => true,
-        'ttl' => 3600,
-    ],
-];
+$definitions = [];

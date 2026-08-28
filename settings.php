@@ -461,13 +461,8 @@ if ($hassiteconfig) {
     );
     $ADMIN->add('modsettingsminilessoncat', $managemcp);
 
-    // Manage OAuth clients (manual client_id/secret creation, e.g. for Gemini Spark).
-    $manageoauthclients = new admin_externalpage(
-        'mod_minilesson_manageoauthclients',
-        get_string('manageoauthclients', constants::M_COMPONENT),
-        $CFG->wwwroot . constants::M_URL . '/manageoauthclients.php'
-    );
-    $ADMIN->add('modsettingsminilessoncat', $manageoauthclients);
+    // Manage OAuth clients now lives in the shared local_oauthmcp plugin (Site administration
+    // > Plugins > Local plugins), if it is installed - see managemcp.php for the link.
 
     $plugins = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
     foreach ($plugins as $plugin) {

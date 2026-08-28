@@ -33,8 +33,8 @@
  * Auth: send the Moodle web service token in an "X-API-Key" header (recommended - Apache
  * strips Authorization by default unless the server is configured to forward it).
  * "Authorization: Bearer <token>" is also accepted - this is what an OAuth-issued access
- * token arrives as (see oauth_authorize.php/oauth_token.php) - and a ?token= query
- * parameter for testing only.
+ * token arrives as, when the shared local_oauthmcp authorization server plugin is
+ * installed - and a ?token= query parameter for testing only.
  *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -64,33 +64,45 @@ function aigen_rest_respond(int $status, array $payload) {
 }
 
 /**
- * Send the 401 challenge header, pointing OAuth-capable clients at the RFC 9728 protected
- * resource metadata document. Matches the header mcp.php sends on the same failure.
+ * Send the 401 challenge header. Matches the header mcp.php sends on the same failure,
+ * including the same graceful fallback when local_oauthmcp is not installed.
  *
  * @return void
  */
 function aigen_rest_send_auth_challenge(): void {
     global $CFG;
-    header(
-        'WWW-Authenticate: Bearer resource_metadata="' . $CFG->wwwroot . '/mod/minilesson/oauth_resource_metadata.php"',
-        true,
-        401
-    );
+    if (class_exists('\local_oauthmcp\api')) {
+        header(
+            'WWW-Authenticate: Bearer resource_metadata="' . $CFG->wwwroot . '/mod/minilesson/oauth_resource_metadata.php"',
+            true,
+            401
+        );
+        return;
+    }
+    header('WWW-Authenticate: Bearer', true, 401);
 }
 
 /**
- * Serve RFC 9728/8414 discovery JSON (and exit) if this GET's PATH_INFO asks for it - same
- * rationale and shared metadata as mcp.php's identical helper.
+ * Serve RFC 9728/8414 discovery JSON (and exit) if this GET's PATH_INFO asks for it and
+ * local_oauthmcp is installed - same rationale and shared metadata as mcp.php's identical
+ * helper.
  *
  * @return void
  */
 function aigen_rest_maybe_send_wellknown_discovery(): void {
+    global $CFG;
+    if (!class_exists('\local_oauthmcp\api')) {
+        return;
+    }
     $pathinfo = $_SERVER['PATH_INFO'] ?? '';
     if (strpos($pathinfo, 'oauth-protected-resource') !== false) {
-        aigen_rest_respond(200, \mod_minilesson\local\oauth\helper::resource_metadata());
+        $data = \local_oauthmcp\api::resource_metadata($CFG->wwwroot . '/mod/minilesson/mcp.php');
+        if ($data !== null) {
+            aigen_rest_respond(200, $data);
+        }
     }
     if (strpos($pathinfo, 'oauth-authorization-server') !== false || strpos($pathinfo, 'openid-configuration') !== false) {
-        aigen_rest_respond(200, \mod_minilesson\local\oauth\helper::authorization_server_metadata());
+        aigen_rest_respond(200, \local_oauthmcp\api::authorization_server_metadata());
     }
 }
 

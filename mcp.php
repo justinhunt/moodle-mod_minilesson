@@ -30,9 +30,11 @@
  * Methods: initialize, ping and notifications/* need no auth; tools/list and tools/call
  * require the token (X-API-Key header, or Authorization: Bearer - the latter is what an
  * OAuth-issued access token arrives as, since it is just a real web service token minted
- * via the authorization server in oauth_authorize.php/oauth_token.php). An unauthenticated
- * or invalid attempt gets a 401 with a resource_metadata challenge (RFC 9728) pointing
- * OAuth-capable clients at oauth_resource_metadata.php to discover the flow.
+ * via the shared local_oauthmcp authorization server, if that plugin is installed). An
+ * unauthenticated or invalid attempt gets a 401 with a resource_metadata challenge (RFC 9728)
+ * pointing OAuth-capable clients at oauth_resource_metadata.php to discover the flow - only
+ * when local_oauthmcp is present, since without it there is no OAuth flow to discover and the
+ * static-token path (X-API-Key) is unaffected either way.
  *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -92,37 +94,52 @@ function mcp_error($id, int $code, string $message): array {
 }
 
 /**
- * Send the 401 challenge header, pointing OAuth-capable clients at the RFC 9728 protected
- * resource metadata document so they can discover the authorization server and start the
- * OAuth flow instead of giving up on a bare 401.
+ * Send the 401 challenge header. When local_oauthmcp is installed, points OAuth-capable
+ * clients at the RFC 9728 protected resource metadata document so they can discover the
+ * authorization server and start the OAuth flow instead of giving up on a bare 401; when it
+ * is not installed, sends a plain challenge with no OAuth discovery pointer (there is no
+ * OAuth flow to discover) - the static-token path this header accompanies is unaffected
+ * either way.
  *
  * @return void
  */
 function mcp_send_auth_challenge(): void {
     global $CFG;
-    header(
-        'WWW-Authenticate: Bearer resource_metadata="' . $CFG->wwwroot . '/mod/minilesson/oauth_resource_metadata.php"',
-        true,
-        401
-    );
+    if (class_exists('\local_oauthmcp\api')) {
+        header(
+            'WWW-Authenticate: Bearer resource_metadata="' . $CFG->wwwroot . '/mod/minilesson/oauth_resource_metadata.php"',
+            true,
+            401
+        );
+        return;
+    }
+    header('WWW-Authenticate: Bearer', true, 401);
 }
 
 /**
- * Serve RFC 9728/8414 discovery JSON (and exit) if this GET's PATH_INFO asks for it - covers
- * clients that append ".well-known/..." onto the resource's own URL (mcp.php) rather than
- * inserting it at the domain root, e.g. the real request "GET /mod/minilesson/mcp.php/
- * .well-known/openid-configuration" observed from a real client. Returns normally (falls
- * through to the existing 405) for any other GET.
+ * Serve RFC 9728/8414 discovery JSON (and exit) if this GET's PATH_INFO asks for it and
+ * local_oauthmcp is installed - covers clients that append ".well-known/..." onto the
+ * resource's own URL (mcp.php) rather than inserting it at the domain root, e.g. the real
+ * request "GET /mod/minilesson/mcp.php/.well-known/openid-configuration" observed from a
+ * real client. Returns normally (falls through to the existing 405) for any other GET, or
+ * when local_oauthmcp is absent.
  *
  * @return void
  */
 function mcp_maybe_send_wellknown_discovery(): void {
+    global $CFG;
+    if (!class_exists('\local_oauthmcp\api')) {
+        return;
+    }
     $pathinfo = $_SERVER['PATH_INFO'] ?? '';
     if (strpos($pathinfo, 'oauth-protected-resource') !== false) {
-        mcp_send(\mod_minilesson\local\oauth\helper::resource_metadata());
+        $data = \local_oauthmcp\api::resource_metadata($CFG->wwwroot . '/mod/minilesson/mcp.php');
+        if ($data !== null) {
+            mcp_send($data);
+        }
     }
     if (strpos($pathinfo, 'oauth-authorization-server') !== false || strpos($pathinfo, 'openid-configuration') !== false) {
-        mcp_send(\mod_minilesson\local\oauth\helper::authorization_server_metadata());
+        mcp_send(\local_oauthmcp\api::authorization_server_metadata());
     }
 }
 

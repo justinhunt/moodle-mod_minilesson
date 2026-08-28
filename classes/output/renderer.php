@@ -1198,34 +1198,4 @@ class renderer extends \plugin_renderer_base
     public function render_managemcp(array $data) {
         return $this->render_from_template(constants::M_COMPONENT . '/managemcp', $data);
     }
-
-    /**
-     * Render the OAuth consent screen body (oauth_authorize.php).
-     *
-     * @param array $data template context, see templates/oauthconsent.mustache
-     * @return string
-     */
-    public function render_oauthconsent(array $data) {
-        return $this->render_from_template(constants::M_COMPONENT . '/oauthconsent', $data);
-    }
-
-    /**
-     * Render the "you don't have permission" screen body (oauth_authorize.php).
-     *
-     * @param array $data template context, see templates/oauthnotpermitted.mustache
-     * @return string
-     */
-    public function render_oauthnotpermitted(array $data) {
-        return $this->render_from_template(constants::M_COMPONENT . '/oauthnotpermitted', $data);
-    }
-
-    /**
-     * Render the Manage OAuth clients admin page body.
-     *
-     * @param array $data template context, see templates/manageoauthclients.mustache
-     * @return string
-     */
-    public function render_manageoauthclients(array $data) {
-        return $this->render_from_template(constants::M_COMPONENT . '/manageoauthclients', $data);
-    }
 }

@@ -69,25 +69,30 @@ $openapi = [
                 'name' => 'X-API-Key',
                 'description' => 'A Moodle web service token for the aigenservice.',
             ],
-            'OAuth2' => [
-                'type' => 'oauth2',
-                'flows' => [
-                    'authorizationCode' => [
-                        'authorizationUrl' => $CFG->wwwroot . '/mod/minilesson/oauth_authorize.php',
-                        'tokenUrl' => $CFG->wwwroot . '/mod/minilesson/oauth_token.php',
-                        'refreshUrl' => $CFG->wwwroot . '/mod/minilesson/oauth_token.php',
-                        'scopes' => ['aigen' => 'Full access to the aigen web service functions'],
-                    ],
-                ],
-            ],
         ],
         'schemas' => [],
     ],
     'security' => [
         ['ApiKeyAuth' => []],
-        ['OAuth2' => ['aigen']],
     ],
 ];
+
+// The OAuth2 scheme is only advertised when the shared local_oauthmcp authorization server
+// plugin is installed - see mod_minilesson_mcp_oauth_resources() in lib.php.
+if (class_exists('\local_oauthmcp\api')) {
+    $openapi['components']['securitySchemes']['OAuth2'] = [
+        'type' => 'oauth2',
+        'flows' => [
+            'authorizationCode' => [
+                'authorizationUrl' => $CFG->wwwroot . '/local/oauthmcp/oauth_authorize.php',
+                'tokenUrl' => $CFG->wwwroot . '/local/oauthmcp/oauth_token.php',
+                'refreshUrl' => $CFG->wwwroot . '/local/oauthmcp/oauth_token.php',
+                'scopes' => ['aigen' => 'Full access to the aigen web service functions'],
+            ],
+        ],
+    ];
+    $openapi['security'][] = ['OAuth2' => ['aigen']];
+}
 
 foreach (facade::functions_info() as $name => $functioninfo) {
     // Clean path: the function name without the component prefix. The dispatcher re-adds it.

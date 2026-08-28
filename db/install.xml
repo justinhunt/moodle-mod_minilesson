@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/minilesson/db" VERSION="2026082301" COMMENT="XMLDB file for Moodle mod/minilesson"
+<XMLDB PATH="mod/minilesson/db" VERSION="2026082801" COMMENT="XMLDB file for Moodle mod/minilesson"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -267,82 +267,6 @@
           </KEYS>
           <INDEXES>
               <INDEX NAME="idx_submission_userid" UNIQUE="true" FIELDS="submissionid, userid"/>
-          </INDEXES>
-      </TABLE>
-      <TABLE NAME="minilesson_oauth_clients" COMMENT="OAuth 2.1 clients for MCP - DCR-registered and manually created">
-          <FIELDS>
-              <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-              <FIELD NAME="clientid" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Opaque client identifier, never a URL (that is the CIMD signal)"/>
-              <FIELD NAME="clientsecrethash" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Hashed secret, null for public clients"/>
-              <FIELD NAME="clientname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
-              <FIELD NAME="clienturi" TYPE="char" LENGTH="1333" NOTNULL="false" SEQUENCE="false"/>
-              <FIELD NAME="logouri" TYPE="char" LENGTH="1333" NOTNULL="false" SEQUENCE="false"/>
-              <FIELD NAME="redirecturis" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="JSON array of allowed redirect URIs"/>
-              <FIELD NAME="granttypes" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="authorization_code,refresh_token" SEQUENCE="false"/>
-              <FIELD NAME="responsetypes" TYPE="char" LENGTH="255" NOTNULL="true" DEFAULT="code" SEQUENCE="false"/>
-              <FIELD NAME="tokenendpointauthmethod" TYPE="char" LENGTH="32" NOTNULL="true" DEFAULT="none" SEQUENCE="false" COMMENT="none or client_secret_post"/>
-              <FIELD NAME="scope" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
-              <FIELD NAME="origin" TYPE="char" LENGTH="10" NOTNULL="true" DEFAULT="dcr" SEQUENCE="false" COMMENT="dcr or manual"/>
-              <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Admin user id, manual clients only"/>
-              <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="lastusedtime" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-          </FIELDS>
-          <KEYS>
-              <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-          </KEYS>
-          <INDEXES>
-              <INDEX NAME="idx_clientid" UNIQUE="true" FIELDS="clientid"/>
-              <INDEX NAME="idx_origin" UNIQUE="false" FIELDS="origin"/>
-          </INDEXES>
-      </TABLE>
-      <TABLE NAME="minilesson_oauth_codes" COMMENT="Single-use OAuth authorization codes for MCP">
-          <FIELDS>
-              <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-              <FIELD NAME="codehash" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" COMMENT="sha256 hex of the raw authorization code"/>
-              <FIELD NAME="clientid" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Opaque client id, or a CIMD client_id URL"/>
-              <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="redirecturi" TYPE="char" LENGTH="1333" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="codechallenge" TYPE="char" LENGTH="128" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="codechallengemethod" TYPE="char" LENGTH="10" NOTNULL="true" DEFAULT="S256" SEQUENCE="false"/>
-              <FIELD NAME="resource" TYPE="char" LENGTH="1333" NOTNULL="false" SEQUENCE="false"/>
-              <FIELD NAME="scope" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
-              <FIELD NAME="clientnamesnapshot" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Client display name captured at consent time"/>
-              <FIELD NAME="expires" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-          </FIELDS>
-          <KEYS>
-              <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-              <KEY NAME="fkuserid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
-          </KEYS>
-          <INDEXES>
-              <INDEX NAME="idx_codehash" UNIQUE="true" FIELDS="codehash"/>
-              <INDEX NAME="idx_expires" UNIQUE="false" FIELDS="expires"/>
-          </INDEXES>
-      </TABLE>
-      <TABLE NAME="minilesson_oauth_refresh" COMMENT="Rotating OAuth refresh tokens for MCP">
-          <FIELDS>
-              <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-              <FIELD NAME="tokenhash" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" COMMENT="sha256 hex of the raw refresh token"/>
-              <FIELD NAME="clientid" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="externalserviceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="resource" TYPE="char" LENGTH="1333" NOTNULL="false" SEQUENCE="false"/>
-              <FIELD NAME="scope" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
-              <FIELD NAME="familyid" TYPE="char" LENGTH="64" NOTNULL="true" SEQUENCE="false" COMMENT="Constant across a rotation chain, used for reuse detection"/>
-              <FIELD NAME="revoked" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
-              <FIELD NAME="expires" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Outer absolute lifetime"/>
-              <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
-              <FIELD NAME="lastused" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
-          </FIELDS>
-          <KEYS>
-              <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-              <KEY NAME="fkuserid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
-          </KEYS>
-          <INDEXES>
-              <INDEX NAME="idx_tokenhash" UNIQUE="true" FIELDS="tokenhash"/>
-              <INDEX NAME="idx_familyid" UNIQUE="false" FIELDS="familyid"/>
-              <INDEX NAME="idx_clientid" UNIQUE="false" FIELDS="clientid"/>
           </INDEXES>
       </TABLE>
   </TABLES>

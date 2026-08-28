@@ -17,6 +17,9 @@
 /**
  * Scheduled task definitions for mod_minilesson.
  *
+ * The oauth_cleanup task moved to local_oauthmcp along with the rest of the OAuth
+ * authorization server - see db/upgrade.php for the corresponding table drop.
+ *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -24,14 +27,4 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$tasks = [
-    [
-        'classname' => 'mod_minilesson\task\oauth_cleanup',
-        'blocking' => 0,
-        'minute' => '0',
-        'hour' => '*',
-        'day' => '*',
-        'dayofweek' => '*',
-        'month' => '*',
-    ],
-];
+$tasks = [];
