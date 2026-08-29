@@ -161,6 +161,31 @@ class facade {
     }
 
     /**
+     * revokecallback for local_oauthmcp: drop the aigenservice tokens mint_or_reuse_token()
+     * hands out, so a revoked OAuth grant (refresh-token reuse/theft, capability withdrawn,
+     * client deleted, privacy delete) does not leave a usable web service token behind until
+     * it expires on its own. Best-effort and idempotent - local_oauthmcp only calls this
+     * once the user has no other live grant for this resource.
+     *
+     * @param int $userid
+     * @return void
+     */
+    public static function revoke_tokens(int $userid): void {
+        global $DB;
+
+        $service = self::get_service();
+        if (!$service) {
+            return;
+        }
+        $DB->delete_records('external_tokens', [
+            'userid' => $userid,
+            'externalserviceid' => $service->id,
+            'tokentype' => EXTERNAL_TOKEN_PERMANENT,
+            'sid' => null,
+        ]);
+    }
+
+    /**
      * Whether the authenticated token's own service grants a given function.
      *
      * @param array $authinfo authinfo returned by authenticate()

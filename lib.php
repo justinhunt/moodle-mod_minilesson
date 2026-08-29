@@ -1386,6 +1386,7 @@ function mod_minilesson_mcp_oauth_resources(): array {
             'scope' => 'aigen',
             'capability' => 'mod/minilesson:usemcp',
             'mintcallback' => [\mod_minilesson\local\aigen\facade::class, 'mint_or_reuse_token'],
+            'revokecallback' => [\mod_minilesson\local\aigen\facade::class, 'revoke_tokens'],
             'description' => get_string('oauthresourcedescription', constants::M_COMPONENT),
         ],
     ];
