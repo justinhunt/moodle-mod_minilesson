@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Scheduled task definitions for mod_minilesson.
+ * Cache definitions for mod_minilesson.
  *
- * The oauth_cleanup task moved to local_oauthmcp along with the rest of the OAuth
- * authorization server - see db/upgrade.php for the corresponding table drop.
+ * The OAuth-related caches (cimdclient, dcrratelimit) moved to local_oauthmcp along with the
+ * rest of the OAuth authorization server - see db/upgrade.php for the corresponding table
+ * drop.
  *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -27,4 +28,4 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$tasks = [];
+$definitions = [];

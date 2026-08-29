@@ -27,6 +27,11 @@
     * enablebody string
     * helpurl string
     * helplinktext string
+    * hasoauthplugin bool - whether the shared local_oauthmcp plugin is installed
+    * oauthclientsurl string - local_oauthmcp's manage-clients page, only used when hasoauthplugin
+    * oauthclientslinktext string
+    * oauthpluginmissing string - shown instead of the link above when hasoauthplugin is false
+    * oauthrequirements string
     * createroleheading string
     * createrolebody string
     * createrolebuttonhtml string - pre-rendered single_button HTML (raw)
@@ -53,6 +58,11 @@
         "enablebody": "Assign them a role carrying the capability.",
         "helpurl": "https://support.poodll.com/a/solutions/articles/19000175579",
         "helplinktext": "Full setup instructions",
+        "hasoauthplugin": true,
+        "oauthclientsurl": "https://example.com/local/oauthmcp/manageoauthclients.php",
+        "oauthclientslinktext": "Create a manual OAuth client",
+        "oauthpluginmissing": "Install the local_oauthmcp plugin to enable OAuth connections.",
+        "oauthrequirements": "OAuth delivers its access token as an Authorization header...",
         "createroleheading": "Create the MiniLesson MCP User role",
         "createrolebody": "This creates a role...",
         "createrolebuttonhtml": "<div class=\"singlebutton\"><form method=\"post\"><button type=\"submit\">Create role</button></form></div>",
@@ -81,6 +91,13 @@
     <h3>{{enableheading}}</h3>
     <p>{{enablebody}}</p>
     <p><a href="{{helpurl}}" target="_blank" rel="noopener noreferrer">{{helplinktext}}</a></p>
+    {{#hasoauthplugin}}
+        <p><a href="{{oauthclientsurl}}">{{oauthclientslinktext}}</a></p>
+        <p class="text-muted">{{oauthrequirements}}</p>
+    {{/hasoauthplugin}}
+    {{^hasoauthplugin}}
+        <p class="text-muted">{{oauthpluginmissing}}</p>
+    {{/hasoauthplugin}}
 
     <h3>{{createroleheading}}</h3>
     <p>{{createrolebody}}</p>

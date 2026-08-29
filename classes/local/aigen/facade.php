@@ -113,6 +113,79 @@ class facade {
     }
 
     /**
+     * Get (or mint) a real aigenservice web service token for a user, for the OAuth
+     * authorization server to hand out as its access token.
+     *
+     * Deliberately does not use external_generate_token_for_current_user(): that helper
+     * excludes site admins (via !is_siteadmin()) and additionally requires the
+     * moodle/webservice:createtoken capability - both wrong extra gates here, since the
+     * one and only gate this flow should enforce is mod/minilesson:usemcp, which
+     * external_generate_token() already re-checks internally (it throws
+     * nocapabilitytousethisservice if the user lacks it).
+     *
+     * @param int $userid
+     * @return string the token string
+     * @throws \moodle_exception if the aigenservice cannot be found, or the user lacks
+     *         mod/minilesson:usemcp (bubbles up as nocapabilitytousethisservice)
+     */
+    public static function mint_or_reuse_token(int $userid): string {
+        global $DB, $CFG;
+
+        $service = self::get_service();
+        if (!$service) {
+            throw new \moodle_exception('cannotfindwebservice', 'webservice', '', self::SERVICE_SHORTNAME);
+        }
+
+        $existing = $DB->get_records(
+            'external_tokens',
+            ['userid' => $userid, 'externalserviceid' => $service->id, 'tokentype' => EXTERNAL_TOKEN_PERMANENT, 'sid' => null],
+            'timecreated DESC',
+            '*',
+            0,
+            1
+        );
+        $token = reset($existing);
+        if ($token && (empty($token->validuntil) || $token->validuntil > time())) {
+            return $token->token;
+        }
+
+        require_once($CFG->libdir . '/externallib.php');
+        $validuntil = empty($CFG->tokenduration) ? 0 : (time() + $CFG->tokenduration);
+        return external_generate_token(
+            EXTERNAL_TOKEN_PERMANENT,
+            $service,
+            $userid,
+            \context_system::instance(),
+            $validuntil
+        );
+    }
+
+    /**
+     * revokecallback for local_oauthmcp: drop the aigenservice tokens mint_or_reuse_token()
+     * hands out, so a revoked OAuth grant (refresh-token reuse/theft, capability withdrawn,
+     * client deleted, privacy delete) does not leave a usable web service token behind until
+     * it expires on its own. Best-effort and idempotent - local_oauthmcp only calls this
+     * once the user has no other live grant for this resource.
+     *
+     * @param int $userid
+     * @return void
+     */
+    public static function revoke_tokens(int $userid): void {
+        global $DB;
+
+        $service = self::get_service();
+        if (!$service) {
+            return;
+        }
+        $DB->delete_records('external_tokens', [
+            'userid' => $userid,
+            'externalserviceid' => $service->id,
+            'tokentype' => EXTERNAL_TOKEN_PERMANENT,
+            'sid' => null,
+        ]);
+    }
+
+    /**
      * Whether the authenticated token's own service grants a given function.
      *
      * @param array $authinfo authinfo returned by authenticate()

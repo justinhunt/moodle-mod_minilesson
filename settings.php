@@ -461,6 +461,9 @@ if ($hassiteconfig) {
     );
     $ADMIN->add('modsettingsminilessoncat', $managemcp);
 
+    // Manage OAuth clients now lives in the shared local_oauthmcp plugin (Site administration
+    // > Plugins > Local plugins), if it is installed - see managemcp.php for the link.
+
     $plugins = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
     foreach ($plugins as $plugin) {
         $plugin->load_settings($ADMIN, 'modsettingsminilessoncat', $hassiteconfig);

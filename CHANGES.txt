@@ -1,3 +1,8 @@
+Version 1.1.49 (Build 2026082801)
+- Refactored MCP API to use the shared local_oauthmcp plugin for authentication
+- Added support for OAuth2 clients
+- Minor UI improvements
+
 Version 1.1.48 (Build 2026081600)
 - Added in-app free trial provisioning workflow
 

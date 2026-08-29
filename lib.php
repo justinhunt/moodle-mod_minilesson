@@ -1367,6 +1367,32 @@ function minilesson_output_fragment_templates($args)
 }
 
 /**
+ * Declares mod_minilesson's protected resource (mcp.php) to the shared local_oauthmcp
+ * authorization server, if it is installed. Discovered via Moodle's get_plugins_with_function()
+ * mechanism (see \local_oauthmcp\oauth\registry for the declaration contract), so this has no
+ * effect and no error if local_oauthmcp is absent - MCP still works via static tokens either way.
+ *
+ * The "access token" local_oauthmcp mints via mintcallback is just a real aigenservice web
+ * service token (see facade::mint_or_reuse_token()), so mcp.php/aigen_rest.php's own
+ * request-time auth path needs no knowledge of OAuth at all.
+ *
+ * @return array
+ */
+function mod_minilesson_mcp_oauth_resources(): array {
+    global $CFG;
+    return [
+        [
+            'resource' => $CFG->wwwroot . '/mod/minilesson/mcp.php',
+            'scope' => 'aigen',
+            'capability' => 'mod/minilesson:usemcp',
+            'mintcallback' => [\mod_minilesson\local\aigen\facade::class, 'mint_or_reuse_token'],
+            'revokecallback' => [\mod_minilesson\local\aigen\facade::class, 'revoke_tokens'],
+            'description' => get_string('oauthresourcedescription', constants::M_COMPONENT),
+        ],
+    ];
+}
+
+/**
  * Outputs the translation to import form for AI generated translations
  *
  * @param array $args

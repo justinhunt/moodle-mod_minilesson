@@ -31,8 +31,10 @@
  * \mod_minilesson\local\aigen\facade; this file is just the HTTP/JSON front-end.
  *
  * Auth: send the Moodle web service token in an "X-API-Key" header (recommended - Apache
- * strips Authorization by default). "Authorization: Bearer <token>" is also accepted, and
- * a ?token= query parameter for testing only.
+ * strips Authorization by default unless the server is configured to forward it).
+ * "Authorization: Bearer <token>" is also accepted - this is what an OAuth-issued access
+ * token arrives as, when the shared local_oauthmcp authorization server plugin is
+ * installed - and a ?token= query parameter for testing only.
  *
  * @package    mod_minilesson
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -61,9 +63,55 @@ function aigen_rest_respond(int $status, array $payload) {
     die;
 }
 
+/**
+ * Send the 401 challenge header. Matches the header mcp.php sends on the same failure,
+ * including the same graceful fallback when local_oauthmcp is not installed.
+ *
+ * @return void
+ */
+function aigen_rest_send_auth_challenge(): void {
+    global $CFG;
+    if (class_exists('\local_oauthmcp\api')) {
+        header(
+            'WWW-Authenticate: Bearer resource_metadata="' . $CFG->wwwroot . '/mod/minilesson/oauth_resource_metadata.php"',
+            true,
+            401
+        );
+        return;
+    }
+    header('WWW-Authenticate: Bearer', true, 401);
+}
+
+/**
+ * Serve RFC 9728/8414 discovery JSON (and exit) if this GET's PATH_INFO asks for it and
+ * local_oauthmcp is installed - same rationale and shared metadata as mcp.php's identical
+ * helper.
+ *
+ * @return void
+ */
+function aigen_rest_maybe_send_wellknown_discovery(): void {
+    global $CFG;
+    if (!class_exists('\local_oauthmcp\api')) {
+        return;
+    }
+    $pathinfo = $_SERVER['PATH_INFO'] ?? '';
+    if (strpos($pathinfo, 'oauth-protected-resource') !== false) {
+        $data = \local_oauthmcp\api::resource_metadata($CFG->wwwroot . '/mod/minilesson/mcp.php');
+        if ($data !== null) {
+            aigen_rest_respond(200, $data);
+        }
+    }
+    if (strpos($pathinfo, 'oauth-authorization-server') !== false || strpos($pathinfo, 'openid-configuration') !== false) {
+        aigen_rest_respond(200, \local_oauthmcp\api::authorization_server_metadata());
+    }
+}
+
 // All facade calls are POST with a JSON body of arguments.
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 if ($method !== 'POST') {
+    if ($method === 'GET') {
+        aigen_rest_maybe_send_wellknown_discovery();
+    }
     aigen_rest_respond(405, ['error' => true, 'message' => 'Use POST with a JSON body of arguments']);
 }
 
@@ -94,11 +142,13 @@ if (!in_array($functionname, $facadefunctions)) {
 // Authenticate the token (validates it, sets up the user session, checks service access).
 $token = facade::request_token();
 if ($token === '') {
+    aigen_rest_send_auth_challenge();
     aigen_rest_respond(401, ['error' => true, 'message' => 'Missing token (send it as the X-API-Key header)']);
 }
 try {
     $authinfo = facade::authenticate($token);
 } catch (Throwable $e) {
+    aigen_rest_send_auth_challenge();
     aigen_rest_respond(401, ['error' => true, 'message' => 'Invalid or unauthorised token']);
 }
 
