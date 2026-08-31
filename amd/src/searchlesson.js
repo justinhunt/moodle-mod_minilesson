@@ -177,7 +177,10 @@ export const registerFilter = (opts) => {
             methodname: `${component}_lessonbank`,
             args: args,
         }])[0].then(rawlessons => {
-            var lessons = JSON.parse(rawlessons.data);
+            if (rawlessons.error) {
+                throw new Error(rawlessons.errormessage);
+            }
+            var lessons = rawlessons.data ? JSON.parse(rawlessons.data) : null;
             if (!lessons) {
                 lessons = {};
                 lessons.totalitems = 0;
@@ -185,6 +188,23 @@ export const registerFilter = (opts) => {
             enrichLessons(lessons, targetlanguage);
             return lessons;
         });
+    };
+
+    /**
+     * Show an inline message where the next batch of cards would have gone.
+     *
+     * @param {String} message the text to display
+     */
+    const showInlineMessage = (message) => {
+        const notice = document.createElement('p');
+        notice.className = 'bg-secondary p-3 text-center w-100';
+        notice.textContent = message;
+        const sentinel = cardsContainer.querySelector('.lbsf-sentinel');
+        if (sentinel) {
+            sentinel.insertAdjacentElement('beforebegin', notice);
+        } else {
+            cardsContainer.appendChild(notice);
+        }
     };
 
     const renderRows = (lessons) => {
@@ -299,6 +319,7 @@ export const registerFilter = (opts) => {
             });
         }).catch(err => {
             isLoading = false;
+            removeSkeletons();
             Notification.exception(err);
         });
     };
@@ -334,8 +355,18 @@ export const registerFilter = (opts) => {
                 }
             });
         }).catch(err => {
+            // A failure part way down the list should not blow away what is already on screen,
+            // so stop scroll loading and report it inline rather than in a modal.
             isLoading = false;
-            Notification.exception(err);
+            hasMore = false;
+            removeSkeletons();
+            if (observer) {
+                observer.disconnect();
+            }
+            Str.get_string('lessonbank:loadmoreerror', component, err.message).then(langstr => {
+                showInlineMessage(langstr);
+                return langstr;
+            }).catch(Notification.exception);
         });
     };
 

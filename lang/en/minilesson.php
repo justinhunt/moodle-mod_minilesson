@@ -92,7 +92,7 @@ $string['mcpuserroledesc'] = 'Automatically created by mod_minilesson: grants pe
 $string['managemcp_intro'] = 'MiniLesson MCP lets AI assistants and agents (such as Claude, or a custom GPT) create and manage MiniLesson activities on this site directly, using the Model Context Protocol. A user must be explicitly permitted to use it before an AI client can act on their behalf. It is also possible for agents to use the MiniLesson Ai Generate APIs directly. The requirements for access are the same as for MCP.';
 $string['managemcp_enableheading'] = 'Enabling MCP for a user';
 $string['managemcp_enablebody'] = 'To allow someone to use MCP, assign them a role that carries the mod/minilesson:usemcp capability at system context. By default that\'s the "{$a}" role created below. Once assigned, an AI client that supports OAuth (e.g. Claude.ai, Gemini) can connect by walking them through login and consent automatically; clients that only take a static token can use one generated on the user\'s behalf.';
-$string['managemcp_oauthrequirements'] = 'OAuth server requirements: OAuth delivers its access token as an "Authorization: Bearer" header, which some server setups (notably Apache with mod_proxy_fcgi/PHP-FPM, or plain mod_php on some distros) strip before PHP ever sees it. If AI clients can register and start the login flow but tool calls then fail with "Authentication required", add `CGIPassAuth On` to your Apache vhost (Apache 2.4.13+), or `SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1` as a broader-compatibility alternative, and confirm with a test request that compares an X-API-Key call against an equivalent Authorization: Bearer call. Known issue: Claude.ai / Claude Code has a bug in its OAuth discovery - if the well-known metadata URLs it guesses at your site\'s domain root don\'t exist (which they won\'t, since this plugin lives under /mod/minilesson/, not your domain root), Claude fails to connect or shows no tools, instead of using the discovery link this plugin already sends it. This is a bug in Claude, not something fixable on the server, so there is no supported workaround here - the connection will keep failing until Anthropic fixes it. Other OAuth clients (e.g. Gemini) are not affected.';
+$string['managemcp_oauthrequirements'] = 'OAuth server requirements: OAuth delivers its access token to the AI agent after communicating with the Moodle server. The user will need to have been granted mod/minilesson:usemcp capability. And you will need the local_oauthmcp plugin installed.';
 $string['managemcp_helplink'] = 'Full setup instructions';
 $string['managemcp_oauthclientslink'] = 'If your AI client doesn\'t support automatic registration, create a manual OAuth client here';
 $string['managemcp_oauthpluginmissing'] = 'OAuth-based connections (needed for Claude.ai, ChatGPT, and Gemini\'s web connector UIs) require the local_oauthmcp plugin, which is not currently installed on this site. Clients that accept a static token (e.g. Claude Desktop, Claude Code) are unaffected.';
@@ -1475,6 +1475,8 @@ $string['enablelessonbank_details'] = 'Enable Lesson Bank';
 $string['lessonbankurl'] = 'Lesson Bank URL';
 $string['lessonbankurl_details'] = 'Lesson Bank URL';
 $string['notconfigured'] = 'Lesson Bank URL not configured';
+$string['lessonbank:badresponse'] = 'The lesson bank did not return a usable response.';
+$string['lessonbank:loadmoreerror'] = 'Could not load more lessons from the lesson bank: {$a}';
 
 $string['hideitemscores'] = 'Hide All Results';
 $string['shuffleanswer'] = 'Shuffle Answer';

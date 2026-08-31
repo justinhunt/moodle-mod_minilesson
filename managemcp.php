@@ -33,7 +33,7 @@ require_once(dirname(__FILE__, 3) . '/config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
 admin_externalpage_setup('mod_minilesson_managemcp');
-$PAGE->set_heading(get_string('managemcp', constants::M_COMPONENT));
+
 
 $action = optional_param('action', '', PARAM_ALPHA);
 
