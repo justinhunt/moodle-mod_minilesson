@@ -2,13 +2,14 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Generate a 1 dimensional array of 'sentences' of format 'keyword|keyword translation' from the following keywords: [{keywords}].\nThe translations should be in {native_language}.",
-            "generatemethod": "generate",
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "sentences",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "user_text"
                 },
                 {
                     "name": "allowretry",
@@ -47,23 +48,14 @@
                 }
             ],
             "generatefileareas": [],
-            "overallimagecontext": "--",
-            "promptfields": [
-                {
-                    "name": "keywords",
-                    "mapping": "user_keywords"
-                },
-                {
-                    "name": "native_language",
-                    "mapping": "user_customdata1"
-                }
-            ]
+            "promptfields": []
         }
     ],
     "lessonTitle": "Scatter (upload)",
     "lessonDescription": "Enter up to ten matching pairs that will be used to make a Scatter item where students will match the pairs by tapping the correct cards.",
     "uniqueid": "6a35469964a00",
-    "version": "2",
+    "version": "3",
+    "agentonly": 1,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -156,6 +148,5 @@
             "type": "text"
         }
     },
-    "tags": [],
-    "agentonly": 0
+    "tags": []
 }

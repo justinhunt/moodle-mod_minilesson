@@ -39,6 +39,20 @@ class aigen {
      */
     public const DATAVARS = ['data1', 'data2', 'data3', 'data4', 'data5'];
 
+    /**
+     * How much of a template's content the caller decides, rather than the AI inventing it.
+     * Ordered weakest to strongest control; see {@see self::control_rank()}.
+     *
+     * @var string The AI invents the content from a topic, keywords or a level.
+     */
+    public const CONTROL_GENERATED = 'generated';
+
+    /** @var string The AI rewrites or marks up text the caller supplied. */
+    public const CONTROL_DERIVED = 'derived';
+
+    /** @var string The caller's text is used verbatim. */
+    public const CONTROL_SUPPLIED = 'supplied';
+
     /** @var array */
     public const DEFAULTTEMPLATES = [
         '6880824450555' => 'audiostory',
@@ -60,6 +74,7 @@ class aigen {
         '6960baa71fa35' => 'fiction_withpics',
         '696105abf2b2a' => 'fiction_nopics',
         '6979e4ab51d53' => 'narrativefiction_withpics',
+        '69b032eb8af03' => 'fiction_addpics',
         '6a30d8d44b6fa' => 'vocabcards',
         '6a2504c6d2e93' => 'youtubefinale_freewrite',
         '6a2518a50b676' => 'youtubefinale_freespeak',
@@ -840,6 +855,118 @@ class aigen {
             $templates[$i] = (array) $template;
         }
         return $templates;
+    }
+
+    /**
+     * Rank a control level so levels can be compared and sorted. Higher means the caller
+     * decides more of the content.
+     *
+     * @param string $control One of the self::CONTROL_* values.
+     * @return int
+     */
+    public static function control_rank($control) {
+        switch ($control) {
+            case self::CONTROL_SUPPLIED:
+                return 2;
+            case self::CONTROL_DERIVED:
+                return 1;
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * Work out how much control the caller has over one config item's content.
+     *
+     * A "reuse" item writes the caller's input straight into the item, so the caller decides
+     * the content exactly. A "generate"/"extract" item has the AI produce the content: if the
+     * caller's own text feeds the prompt the AI is only reworking supplied material, otherwise
+     * it is inventing it from a topic/keywords/level.
+     *
+     * @param \stdClass $configitem An item from a template config's "items" array.
+     * @return string One of the self::CONTROL_* values.
+     */
+    public static function item_control_level($configitem) {
+        if (($configitem->generatemethod ?? '') === 'reuse') {
+            return self::CONTROL_SUPPLIED;
+        }
+        foreach (($configitem->promptfields ?? []) as $promptfield) {
+            if (($promptfield->mapping ?? '') === 'user_text') {
+                return self::CONTROL_DERIVED;
+            }
+        }
+        return self::CONTROL_GENERATED;
+    }
+
+    /**
+     * Work out how much control the caller has over a whole template's content. This is the
+     * weakest of its items: the item the caller cannot steer is where the lesson's teaching
+     * point gets lost, whatever the other items do.
+     *
+     * @param \stdClass $config A decoded template config.
+     * @return string One of the self::CONTROL_* values.
+     */
+    public static function template_control_level($config) {
+        $lowest = null;
+        foreach (($config->items ?? []) as $configitem) {
+            $control = self::item_control_level($configitem);
+            if ($lowest === null || self::control_rank($control) < self::control_rank($lowest)) {
+                $lowest = $control;
+            }
+        }
+        return $lowest ?? self::CONTROL_GENERATED;
+    }
+
+    /**
+     * The context fields a template actually consumes. An enabled field mapping that appears
+     * here is required: the template author wired it into a prompt, a reused field, an image
+     * prompt or the overall image context, so submitting it empty does not fall back to a
+     * default, it generates content with a hole in it.
+     *
+     * @param \stdClass $config A decoded template config.
+     * @return array A list of context field names (eg 'user_keywords', 'user_customdata1').
+     */
+    public static function template_referenced_fields($config) {
+        $referenced = [];
+        foreach (($config->items ?? []) as $configitem) {
+            foreach (($configitem->promptfields ?? []) as $promptfield) {
+                if (!empty($promptfield->mapping)) {
+                    $referenced[$promptfield->mapping] = true;
+                }
+            }
+            foreach (($configitem->generatefields ?? []) as $generatefield) {
+                if (!empty($generatefield->mapping)) {
+                    $referenced[$generatefield->mapping] = true;
+                }
+            }
+            foreach (($configitem->generatefileareas ?? []) as $generatefilearea) {
+                if (!empty($generatefilearea->mapping)) {
+                    $referenced[$generatefilearea->mapping] = true;
+                }
+            }
+            // The "--" value is the unset marker for the overall image context, not a field name.
+            if (!empty($configitem->overallimagecontext) && $configitem->overallimagecontext !== '--') {
+                $referenced[$configitem->overallimagecontext] = true;
+            }
+        }
+        return array_keys($referenced);
+    }
+
+    /**
+     * The enabled inputs of a template that must be supplied a non-empty value.
+     *
+     * @param \stdClass $config A decoded template config.
+     * @return array A list of context field names.
+     */
+    public static function template_required_inputs($config) {
+        $referenced = self::template_referenced_fields($config);
+        $required = [];
+        foreach (($config->fieldmappings ?? new \stdClass()) as $fieldname => $fieldmapping) {
+            if (!empty($fieldmapping->enabled) && in_array($fieldname, $referenced)) {
+                $required[] = $fieldname;
+            }
+        }
+        return $required;
     }
 
     /**

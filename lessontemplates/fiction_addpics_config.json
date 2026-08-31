@@ -1,0 +1,229 @@
+{
+    "items": [
+        {
+            "itemnumber": 0,
+            "prompt": "Role: You are a Story Designer specializing in educational stories for second language learners.\nYour task is to design a poster image to introduce the story that follows.\n\nStory Summary: \n{topic} \n\nOutput (data2): Write an image generation prompt for a square poster image with the main characters and one representative scene from the story. The prompt should specify the image style: {imagestyle}\n\n\n",
+            "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
+            "generatefields": [
+                {
+                    "name": "data1",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "itemmedia",
+                    "generate": 1,
+                    "mapping": "data2"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "topic",
+                    "mapping": "user_topic"
+                },
+                {
+                    "name": "imagestyle",
+                    "mapping": "user_customdata1"
+                }
+            ]
+        },
+        {
+            "itemnumber": 1,
+            "prompt": "From the following JSON array of image filenames and descriptions, extract a 1 dimensional array of the image descriptions and store it in output field: data1\n\n{imagedescriptions}\n\nAlso copy over the following content as is, into output field: fictionyarn\n\n{fictionstory}\n\n# Output Instructions\nYour output consists of two top-level keys and their values:\ndata1 \u2014 a 1-dimensional array of individual image descriptions\nfictionyarn - a string containing an interactive fiction story in Yarn format.",
+            "generatemethod": "extract",
+            "generatefileareasmethod": "extract",
+            "generatefields": [
+                {
+                    "name": "fictionyarn",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data1",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
+                    "name": "data2",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data3",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data4",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "data5",
+                    "generate": 0,
+                    "mapping": ""
+                }
+            ],
+            "generatefileareas": [
+                {
+                    "name": "customfile1",
+                    "generate": 1,
+                    "mapping": "data1"
+                }
+            ],
+            "overallimagecontext": "user_topic",
+            "promptfields": [
+                {
+                    "name": "imagedescriptions",
+                    "mapping": "user_customdata2"
+                },
+                {
+                    "name": "fictionstory",
+                    "mapping": "user_text"
+                }
+            ]
+        }
+    ],
+    "lessonTitle": "Add Pics to Interactive Story",
+    "lessonDescription": "The purpose of this template is to augment a fiction item story, by generating pictures from the supplied image prompts. This template takes as input:  story summary, an image generation style, a story in yarn format with image placeholders, and a json array with image names (that match the placeholders) + image generation prompts. It produces 2 items, a content page item with a picture, and a fiction item with images matching all the placeholders. ",
+    "uniqueid": "69b032eb8af03",
+    "version": "1",
+    "agentonly": 1,
+    "fieldmappings": {
+        "target_language": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_topic": {
+            "enabled": true,
+            "title": "Story Summary",
+            "description": "A summary of the story that will be used for image generation",
+            "type": "textarea"
+        },
+        "user_level": {
+            "enabled": false,
+            "title": "Language Level",
+            "description": "",
+            "type": "dropdown",
+            "options": [
+                "CEFR A1",
+                "CEFR A2",
+                "CEFR B1",
+                "CEFR B2",
+                "CEFR C1",
+                "CEFR C2"
+            ]
+        },
+        "user_text": {
+            "enabled": true,
+            "title": "Fiction Story",
+            "description": "An interactive fiction story written in Yarn v2 format.",
+            "type": "textarea"
+        },
+        "user_keywords": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata1": {
+            "enabled": true,
+            "title": "Image Style",
+            "description": "The image style for the poster image",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render",
+                "Black and white movie still"
+            ]
+        },
+        "user_customdata2": {
+            "enabled": true,
+            "title": "Image Prompts",
+            "description": "A JSON array of image prompts",
+            "type": "textarea"
+        },
+        "user_customdata3": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        }
+    },
+    "tags": [
+        "Vocabulary Practice"
+    ]
+}

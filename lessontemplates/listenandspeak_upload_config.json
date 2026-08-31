@@ -54,9 +54,9 @@
         }
     ],
     "lessonTitle": "Listen and Speak (upload sentences)",
-    "lessonDescription": "Create a Listen and Speak activity by supplying  up to 5 sentences, a topic and an image style. A picture will be generated to go with each sentence in the activity.",
+    "lessonDescription": "Create a Listen and Speak activity by supplying  up to 5 sentences, and an image style. A picture will be generated to go with each sentence in the activity.",
     "uniqueid": "6a338f1f97bd4",
-    "version": "3",
+    "version": "5",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -66,7 +66,7 @@
             "type": "text"
         },
         "user_topic": {
-            "enabled": true,
+            "enabled": false,
             "title": "Topic",
             "description": "",
             "type": "text"

@@ -151,7 +151,11 @@ $functions = [
         'mod_minilesson_aigen_list_templates' => [
             'classname' => 'mod_minilesson\external\aigen_list_templates',
             'methodname' => 'execute',
-            'description' => 'Get a list of aigen templates for creating activities',
+            'description' => 'Get a list of aigen templates for creating activities. Several templates usually '
+                . 'produce the same item type and differ in how much the caller decides: compare each one\'s '
+                . '"control" level and the siblings listed in its "variants", and pick the one whose inputs carry '
+                . 'the teaching points already decided rather than leaving them to the AI. Inputs marked '
+                . 'required must be sent with a non-empty value',
             'type' => 'read',
             'loginrequired' => true,
         ],
@@ -166,7 +170,10 @@ $functions = [
         'mod_minilesson_aigen_create_add_items_to_lesson' => [
             'classname' => 'mod_minilesson\external\aigen_create_add_items_to_lesson',
             'methodname' => 'execute',
-            'description' => 'Creates and adds items to minilesson',
+            'description' => 'Creates and adds items to minilesson, by running an aigen template. Show the user '
+                . 'every input you will send, including the ones you chose yourself and the ones you are leaving '
+                . 'blank, and get their approval before calling. Rejected if an input the template reports as '
+                . 'required is empty',
             'type' => 'write',
             'loginrequired' => true,
         ],

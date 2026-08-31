@@ -1388,5 +1388,15 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026082801, 'minilesson');
     }
 
+    if ($oldversion < 2026083101) {
+        // Update default templates - five upload templates had an input enabled that nothing
+        // consumed (and scatter_upload's prompt read two inputs it never offered), so the
+        // inputs they ask for now match the inputs they use.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026083101, 'minilesson');
+    }
+
     return true;
 }

@@ -164,8 +164,17 @@ $agentinstructions = <<<JSON
             "described_lesson": "The user only describes the lesson they want (topic, skills, theme). Prefer typical_workflow: check list_templates first and use a template if one fits (templates can generate media server-side); fall back to direct_compose_workflow only if no template fits."
         },
         "review_before_creating": {
-            "rule": "Before calling any tool that creates or imports (aigen_create_empty_lesson, aigen_create_add_items_to_lesson, aigen_import_items_json), present a plan and wait for the user's approval. For direct-compose, list each item with its actual content (question, answers, text). For templates, show the chosen template and the inputs (topic, level, theme, keywords). State the target course and lesson title. Create only after the user approves, and incorporate any changes they request.",
-            "exception": "If the user has said to just go ahead, or to skip the review, create without pausing."
+            "rule": "Before calling any tool that creates or imports (aigen_create_empty_lesson, aigen_create_add_items_to_lesson, aigen_import_items_json), present a plan and wait for the user's approval. For direct-compose, list each item with its actual content (question, answers, text). For templates, list EVERY input the template declares with the exact value you will send, each marked (from the user), (your choice) or (BLANK). State the target course and lesson title. Create only after the user approves, and incorporate any changes they request.",
+            "declare_your_choices": "A decision you made on the user's behalf is still a decision and belongs in the plan - including defaults you accepted and inputs you are leaving empty. Where you picked a value the user expressed no preference about (image style, language level, voice, number of items), name your choice and offer the alternatives rather than presenting it as settled.",
+            "never_send_a_required_input_empty": "Inputs come back from aigen_list_templates with required:true when the template actually consumes them. An empty required input has no default to fall back on: it produces plausible looking but broken content - a vocabulary card whose translation repeats the word, a gap-fill with nothing gapped, a sentence whose hint is missing. If the user has not told you what the input needs (a native language, a source text, a level), ask them before creating. aigen_create_add_items_to_lesson rejects the call and names the empty inputs.",
+            "exception": "If the user has said to just go ahead, or to skip the review, create without pausing. This waives the review, not the required inputs: still ask for a required value you do not have."
+        },
+        "choosing_a_template": {
+            "rule": "Several templates usually produce the same item type, and they differ in how much you decide. Each template reports a 'control' level - 'supplied' (your text is used verbatim), 'derived' (the AI rewrites or marks up text you supply), 'generated' (the AI invents the content from a topic, keywords or level) - and lists its siblings in 'variants', strongest control first. Read the variants before settling on a template.",
+            "test": "For every teaching point you have already decided - which words are shuffled or gapped, which answer is correct, the translation language, the grammar point being practised, the item sequence - check the template has an input that carries it. If it has none, the AI will decide it for you and may contradict the lesson aim. Move to the higher-control variant, or compose the item directly with the direct_compose_workflow.",
+            "example": "Asked for a word shuffle that drills a specific grammar point, a 'generated' word shuffle template that takes only sentences and an image style will shuffle whichever words it likes, which will usually not be the grammar point. The 'supplied' variant takes sentences already marked up with the words to shuffle, so the grammar point survives.",
+            "tradeoff": "Higher-control templates ask more of you (marked-up sentences, plus clean sentences for image generation). That is the trade, not a reason to avoid them: take a 'generated' variant only where the user has genuinely left that detail open.",
+            "agentonly": "Templates flagged agentonly:true are hidden from the human picker and are usually the high-control member of their family - they ask for content that is tedious to type by hand but easy for you to compose. They are available to you and are often the right choice."
         },
         "authentication": {
             "how": "Send your Moodle web service token in the 'X-API-Key' request header on every call. Configure it once in your client.",
@@ -175,7 +184,7 @@ $agentinstructions = <<<JSON
         "choosing_your_approach": {
             "summary": "There are two ways to create items in a lesson: (A) the template workflow (typical_workflow), where you pick a template and the server generates the content with AI; and (B) the direct-compose workflow (direct_compose_workflow), where you author the item JSON yourself and import it. Decide per lesson. You may combine both in one lesson - see hybrid_pattern.",
             "prefer_templates_when": [
-                "A template returned by list_templates matches the request - check its description, skills and outputs before deciding no template fits",
+                "A template returned by list_templates matches the request - check its description, skills and outputs before deciding no template fits, then use choosing_a_template to pick the right variant of it",
                 "You want the content (text, questions, and any images) generated for you rather than authoring it yourself",
                 "The lesson needs generated images or audio: templates can produce media server-side, whereas direct compose requires you to supply every media file yourself as base64",
                 "You just need a standard, well-formed lesson quickly and do not need precise control over each item"
@@ -189,7 +198,7 @@ $agentinstructions = <<<JSON
             ],
             "constraints": [
                 "Direct compose is only available for item types where list_itemtypes reports hasimportdocs=true; use a template for any other type",
-                "When both a template and direct compose would work, prefer the template unless the request needs the fidelity or item-by-item control that direct compose gives"
+                "When both a template and direct compose would work, prefer the template unless the request needs the fidelity or item-by-item control that direct compose gives - but check choosing_a_template first, because a higher-control variant of the template often gives you that control without hand-composing"
             ]
         },
         "typical_workflow": [

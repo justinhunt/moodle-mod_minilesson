@@ -2,18 +2,14 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Generate a 1 dimensional array of 'sentences' of format 'keyword|keyword translation' from the following keywords: [{keywords}].\nThe translations should be in {native_language}.",
-            "generatemethod": "generate",
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "sentences",
                     "generate": 1,
-                    "mapping": ""
-                },
-                {
-                    "name": "allowretry",
-                    "generate": 0,
-                    "mapping": ""
+                    "mapping": "user_text"
                 },
                 {
                     "name": "int10",
@@ -47,23 +43,14 @@
                 }
             ],
             "generatefileareas": [],
-            "overallimagecontext": "--",
-            "promptfields": [
-                {
-                    "name": "keywords",
-                    "mapping": "user_keywords"
-                },
-                {
-                    "name": "native_language",
-                    "mapping": "user_customdata1"
-                }
-            ]
+            "promptfields": []
         }
     ],
     "lessonTitle": "Space Game (upload)",
     "lessonDescription": "Enter up to ten matching pairs that will be used to make a Space Game item where students will match the pair by shooting the correct alien.",
     "uniqueid": "6a35465198ab9",
-    "version": "2",
+    "version": "3",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -158,6 +145,5 @@
     },
     "tags": [
         "Vocabulary Practice"
-    ],
-    "agentonly": 0
+    ]
 }
