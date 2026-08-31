@@ -1,4 +1,4 @@
-Version 1.1.51 (Build 2026083102)
+Version 1.1.52 (Build 2026083103)
 - Fixes for poor prompt following AI on MCP
 - Fixes for lesson bank endless scroll
 
