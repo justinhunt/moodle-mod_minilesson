@@ -1,3 +1,7 @@
+Version 1.1.51 (Build 2026083102)
+- Fixes for poor prompt following AI on MCP
+- Fixes for lesson bank endless scroll
+
 Version 1.1.49 (Build 2026082801)
 - Refactored MCP API to use the shared local_oauthmcp plugin for authentication
 - Added support for OAuth2 clients
