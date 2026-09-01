@@ -878,6 +878,8 @@ $string['error:pagenocontent'] = 'A page item needs some content: text, tts, tts
 $string['error:nogaps'] = 'No gaps found. Enclose the gap letters in square brackets, e.g. "This is my d[og]"';
 $string['error:needspipepair'] = 'Each line needs a pipe-separated pair, e.g. "Term|Definition"';
 $string['error:invalidyarn'] = 'The yarn script must start with a "title: Start" node, and every node needs "---" after its header and "===" after its body';
+$string['error:yarnproblems'] = 'The yarn script has problems that must be fixed: {$a}';
+$string['error:aigenitemsrejected'] = '{$a->failed} of {$a->total} items were rejected and not added to the lesson. {$a->messages}';
 $string['error:noh5ppackage'] = 'An H5P package file (.h5p) is required in the customfile1 file area';
 $string['error:invaliditemtype'] = 'Invalid item type';
 $string['error:invalidjson'] = 'INVALID JSON';
@@ -1169,7 +1171,7 @@ $string['aigentemplatedescription:choose_best_reply'] = 'Student hears 10 short 
 $string['aigentemplatedescription:fiction_withpics'] = 'An interactive story with pics';
 $string['aigentemplatedescription:fiction_nopics'] = 'An interactive story with no pics, apart from an introduction screen';
 $string['aigentemplatedescription:narrativefiction_withpics'] = 'An interactive fiction item with fewer choices, more story, and pictures.';
-$string['aigentemplatedescription:fiction_addpics'] = 'The purpose of this template is to augment a fiction item story, by generating pictures from the supplied image prompts. This template takes as input:  story summary, an image generation style, a story in yarn format with image placeholders, and a json array with image names (that match the placeholders) + image generation prompts. It produces 2 items, a content page item with a picture, and a fiction item with images matching all the placeholders.';
+$string['aigentemplatedescription:fiction_addpics'] = 'This template accepts a fiction item story, and image prompts, and generates pictures for the story from the supplied image prompts. This template takes as input:  story summary, an image generation style, a story in yarn format with image placeholders, and a json array with image filenames + image generation prompts. It produces 2 items, a content page item with a picture, and a fiction item with images matching all the placeholders.';
 $string['aigentemplatedescription:vocabcards'] = 'A set of vocabulary cards. Enter the list of comma separated words/phrases, and the students\' native language. Cards with the word/phrase, translation, example sentence and a picture will be created.';
 $string['aigentemplatename:youtubefinale_freewrite'] = 'YouTube Finale (listen and free write)';
 $string['aigentemplatedescription:youtubefinale_freewrite'] = 'This is a lesson based on a YouTube video story. A related but simplified story is prepared and comprehension, and a writing activity are built on the story.';

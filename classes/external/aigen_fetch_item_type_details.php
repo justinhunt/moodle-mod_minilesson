@@ -66,15 +66,23 @@ class aigen_fetch_item_type_details extends external_api {
             throw new \invalid_parameter_exception('Unknown item type: ' . $params['itemtype']);
         }
 
+        // The authoring guide is independent of the import spec: an item type may have one, the
+        // other, both or neither, so it is added whatever the spec turns out to be.
+        $guide = $itemtypeclass::aigen_fetch_authoring_guide();
+
         $spec = $itemtypeclass::aigen_fetch_import_spec();
         if ($spec === null) {
-            return [
+            $result = [
                 'itemtype' => $params['itemtype'],
                 'documented' => false,
             ];
+            if ($guide !== null) {
+                $result['authoringguide'] = $guide;
+            }
+            return $result;
         }
 
-        return [
+        $result = [
             'itemtype' => $params['itemtype'],
             'documented' => true,
             'usage' => $spec['usage'] . ' ' . item::AIGEN_FILES_CONVENTION,
@@ -82,6 +90,10 @@ class aigen_fetch_item_type_details extends external_api {
             'fileareas' => $spec['fileareas'],
             'examplejson' => json_encode($spec['example'], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES),
         ];
+        if ($guide !== null) {
+            $result['authoringguide'] = $guide;
+        }
+        return $result;
     }
 
     /**
@@ -154,6 +166,16 @@ class aigen_fetch_item_type_details extends external_api {
                 PARAM_RAW,
                 'A complete, valid example import payload as a JSON string (parse it): an object with an "items" '
                 . 'array and optionally a "files" object, suitable for mod_minilesson_aigen_import_items_json',
+                VALUE_OPTIONAL
+            ),
+            'authoringguide' => new external_value(
+                PARAM_RAW,
+                'Long form guidance (markdown) on writing the content this item type is built from, present only '
+                . 'for item types whose content needs more than a field description to get right. Read it in full '
+                . 'before composing the content, and follow it: it describes what this runtime actually supports, '
+                . 'which may differ from the general purpose format the content is written in. It is about the '
+                . 'content itself, not the import payload, so it applies equally when a lesson template asks you '
+                . 'for that content as one of its inputs',
                 VALUE_OPTIONAL
             ),
         ]);

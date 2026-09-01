@@ -109,9 +109,9 @@
         }
     ],
     "lessonTitle": "Add Pics to Interactive Story",
-    "lessonDescription": "The purpose of this template is to augment a fiction item story, by generating pictures from the supplied image prompts. This template takes as input:  story summary, an image generation style, a story in yarn format with image placeholders, and a json array with image names (that match the placeholders) + image generation prompts. It produces 2 items, a content page item with a picture, and a fiction item with images matching all the placeholders. ",
+    "lessonDescription": "This template accepts a fiction item story, and image prompts, and generates pictures for the story from the supplied image prompts. This template takes as input:  story summary, an image generation style, a story in yarn format with image placeholders, and a json array with image filenames + image generation prompts. It produces 2 items, a content page item with a picture, and a fiction item with images matching all the placeholders. ",
     "uniqueid": "69b032eb8af03",
-    "version": "1",
+    "version": "3",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -143,7 +143,7 @@
         "user_text": {
             "enabled": true,
             "title": "Fiction Story",
-            "description": "An interactive fiction story written in Yarn v2 format.",
+            "description": "An interactive fiction story written in Yarn format. Do not write it from memory: first call mod_minilesson_aigen_fetch_item_type_details with itemtype \"fiction\" and follow the authoringguide it returns, which covers the yarn syntax this player supports and how to structure a story worth reading.\r\n\r\nIn each chapter add a picture command at the top.  The picture command should take the following format <<picture XX.png>>\r\nThe filenames of the pictures should be 2-digit numerical, e.g 01.png",
             "type": "textarea"
         },
         "user_keywords": {
@@ -171,7 +171,7 @@
         "user_customdata2": {
             "enabled": true,
             "title": "Image Prompts",
-            "description": "A JSON array of image prompts",
+            "description": "A JSON array of image filenames and prompts that match the placeholder filenames in the interactive fiction story. The json array should be structured like this:\r\n[{\"filename\": \"a-placeholder-filename\", \"prompt\": \"image-style,image-description\"}]\r\ne.g \r\n[\r\n  {\r\n    \"filename\": \"01.png\",\r\n    \"prompt\": \"Black and white movie still. A dark, snowy street in 1980s Moscow. A lone man in a heavy coat stands by a payphone under a dim streetlamp. Grainy texture, high contrast shadows.\"\r\n  },\r\n  {\r\n    \"filename\": \"02.png\",\r\n    \"prompt\": \"Black and white movie still. A grim discovery in Gorky Park. Three shapes lie in the deep snow near a frozen pond. The atmosphere is cold and silent. Low angle shot, dramatic lighting.\"\r\n  }\r\n]",
             "type": "textarea"
         },
         "user_customdata3": {

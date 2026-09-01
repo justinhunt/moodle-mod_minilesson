@@ -1398,5 +1398,15 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026083101, 'minilesson');
     }
 
+    if ($oldversion < 2026090101) {
+        // Update default templates - the "Add Pics to Interactive Story" template now points
+        // agents at the fiction item type's authoring guide before they write the yarn script
+        // it takes as an input.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026090101, 'minilesson');
+    }
+
     return true;
 }

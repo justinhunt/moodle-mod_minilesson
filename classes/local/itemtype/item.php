@@ -446,6 +446,21 @@ abstract class item implements \templatable, \renderable {
     }
 
     /**
+     * Long form, agent-facing guidance on authoring the content this item type is built from.
+     * Returns null unless the item type has a guide.
+     *
+     * This is deliberately separate from aigen_fetch_import_spec(): the import spec describes how
+     * to package an item as import JSON, whereas the guide describes how to write the content
+     * itself, which an agent may also be asked for by a lesson template input. Keep the guide free
+     * of import payload detail so both paths can read it.
+     *
+     * @return string|null the guide as markdown, or null when this item type has no guide
+     */
+    public static function aigen_fetch_authoring_guide() {
+        return null;
+    }
+
+    /**
      * Builds field specs (keyed by jsonname) for the requested common/shared import fields.
      * type/required/default are read from get_keycolumns() so they cannot drift from the import code;
      * the descriptions and option meanings are maintained here.
