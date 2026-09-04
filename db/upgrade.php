@@ -1408,14 +1408,14 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026090101, 'minilesson');
     }
 
-    if ($oldversion < 2026090102) {
+    if ($oldversion < 2026090103) {
         // Update default templates - "Add Pics to Interactive Story" now tells the agent the
         // picture command format to write into the story, spells out the image prompts JSON it
         // expects, and prepends the chosen image style to each generated image description.
         \mod_minilesson\aigen::create_default_templates();
 
         // Minilesson savepoint reached.
-        upgrade_mod_savepoint(true, 2026090102, 'minilesson');
+        upgrade_mod_savepoint(true, 2026090103, 'minilesson');
     }
 
     return true;
