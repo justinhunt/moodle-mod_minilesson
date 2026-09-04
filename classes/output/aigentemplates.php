@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -32,8 +31,8 @@ use single_button;
  * @copyright  2015 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class aigentemplates implements \renderable, \templatable
-{
+class aigentemplates implements \renderable, \templatable {
+
     /**
      * @var object $cm course module object
      */
@@ -50,8 +49,7 @@ class aigentemplates implements \renderable, \templatable
      * @param object $cm course module object
      * @param array $filters tag filters array
      */
-    public function __construct($cm, $filters)
-    {
+    public function __construct($cm, $filters) {
         $this->cm = $cm;
         $this->filters = $filters;
     }
@@ -62,8 +60,7 @@ class aigentemplates implements \renderable, \templatable
      * @param renderer_base $output
      * @return array
      */
-    public function export_for_template(renderer_base $output)
-    {
+    public function export_for_template(renderer_base $output) {
         $tags = self::get_alltags();
         $tags = array_intersect($this->filters, $tags);
 
@@ -151,8 +148,7 @@ class aigentemplates implements \renderable, \templatable
      * @param bool $withlabels Whether to include labels with tags.
      * @return array List of all tags, optionally with labels.
      */
-    public static function get_alltags($withlabels = false)
-    {
+    public static function get_alltags($withlabels = false) {
         // Predefined tags.
         if ($withlabels) {
             $predefinedtags = [];
@@ -181,8 +177,15 @@ class aigentemplates implements \renderable, \templatable
         if ($withlabels) {
             $tagsonly = template_tag_manager::get_itemtype_tags();
             $itemtypetags = [];
+            $stringmanager = get_string_manager();
             foreach ($tagsonly as $tag) {
-                $taglabel = get_string($tag, constants::M_COMPONENT);
+                // First check if string exists (a custom 3rd party item may not).
+                if ($stringmanager->string_exists($tag, constants::M_COMPONENT)) {
+                    $taglabel = get_string($tag, constants::M_COMPONENT);
+                } else {
+                    $taglabel = $tag;
+                }
+
                 $itemtypetags[] = ['tag' => $tag, 'label' => $taglabel];
             }
         } else {

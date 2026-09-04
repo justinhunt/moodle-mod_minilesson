@@ -376,6 +376,9 @@ class itemtype extends item {
         $lines = explode("\n", str_replace("\r\n", "\n", $yarn));
 
         // Walk the script once, collecting the node names, and per node the lines of its body.
+        // A node group is several nodes sharing one title, each picked by its own "when:" header,
+        // so bodies accumulate under the title rather than replacing what came before: otherwise
+        // every variant but the last would escape these checks entirely.
         $nodebodies = [];
         $currentnode = null;
         $inbody = false;
@@ -383,7 +386,7 @@ class itemtype extends item {
             $trimmed = trim($line);
             if (preg_match('/^title:\s*(\S+)\s*$/', $trimmed, $matches)) {
                 $currentnode = $matches[1];
-                $nodebodies[$currentnode] = [];
+                $nodebodies[$currentnode] ??= [];
                 $inbody = false;
                 continue;
             }
@@ -464,6 +467,17 @@ class itemtype extends item {
                 . 'write <<set $v = $v + 1>> instead.';
         }
 
+        // An unclosed block <<once>> becomes an unclosed <<if>>, which swallows the rest of the
+        // node. Only the block form is counted: a trailing <<once>> on an option or a text line
+        // takes no <<endonce>>, so it is matched here by requiring the command to be the whole line.
+        $onceblocks = preg_match_all('/^\s*<<\s*once(?:\s+if\s+[^>]+)?\s*>>\s*$/m', $yarn);
+        $endonces = preg_match_all('/^\s*<<\s*endonce\s*>>\s*$/m', $yarn);
+        if ($onceblocks !== $endonces) {
+            $problems[] = 'There are ' . $onceblocks . ' <<once>> blocks but ' . $endonces
+                . ' <<endonce>> commands. Every <<once>> on a line of its own must be closed with '
+                . '<<endonce>>; a <<once>> at the end of an option or a text line must not be.';
+        }
+
         // A variable that is only ever read is always undefined, whatever path the learner takes.
         // Only never-written variables are reported: <<set>> initialises one just as well as
         // <<declare>> does, and plenty of sound stories open a node by setting their variables.
@@ -495,11 +509,14 @@ class itemtype extends item {
      * @return string
      */
     public static function aigen_fetch_usage() {
-        return 'An interactive branching story ("choose your own adventure") written in Yarn Spinner format. '
-            . 'The learner reads the story and makes choices that change what happens; variables can track items, '
-            . 'score or time, leading to good or bad endings. Use it for extended, engaging reading practice - '
+        return 'An interactive story written in Yarn Spinner format, in either of two shapes. A narrative story '
+            . 'advances a plot through chapters and the learner\'s choices branch it towards good or bad endings '
+            . '("choose your own adventure"). A spatial story gives the learner a map of locations to move around, '
+            . 'with items to collect and locked doors, dark passages or unhelpful characters to get past using them. '
+            . 'Either way variables track items, score or time. Use it for extended, engaging reading practice - '
             . 'a well built story gives around 20 minutes of reading. It is the most content-heavy item type '
-            . 'to compose: the whole activity is driven by the fictionyarn script.';
+            . 'to compose: the whole activity is driven by the fictionyarn script, and the authoring guide covers '
+            . 'how to choose between the two shapes and how to write each one.';
     }
 
     /**

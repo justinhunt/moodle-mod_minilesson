@@ -115,7 +115,7 @@
     "lessonTitle": "Add Pics to Interactive Story",
     "lessonDescription": "This template accepts a fiction item story, and image prompts, and generates pictures for the story from the supplied image prompts. This template takes as input:  story summary, an image generation style, a story in yarn format with image placeholders, and a json array with image filenames + image generation prompts. It produces 2 items, a content page item with a picture, and a fiction item with images matching all the placeholders. ",
     "uniqueid": "69b032eb8af03",
-    "version": "7",
+    "version": "8",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -127,7 +127,7 @@
         "user_topic": {
             "enabled": true,
             "title": "Story Summary",
-            "description": "A summary of the story that will be used for image generation",
+            "description": "A summary of the story, used to generate the poster image. For a narrative story, the premise and the main characters. For a spatial story, the setting, the goal, and the places the learner will move between.",
             "type": "textarea"
         },
         "user_level": {
@@ -147,7 +147,7 @@
         "user_text": {
             "enabled": true,
             "title": "Fiction Story",
-            "description": "An interactive fiction story written in Yarn format. Do not write it from memory: first call mod_minilesson_aigen_fetch_item_type_details with itemtype \"fiction\" and follow the authoringguide it returns, which covers the yarn syntax this player supports and how to structure a story worth reading.\r\n\r\nIn each chapter add a picture command as the next line after the '---' divider.   The picture command should take the following format <<picture XX.png>>\r\nThe filenames of the pictures should be 2-digit numerical, e.g 01.png",
+            "description": "An interactive fiction story written in Yarn format. Do not write it from memory: first call mod_minilesson_aigen_fetch_item_type_details with itemtype \"fiction\" and follow the authoringguide it returns, which covers the yarn syntax this player supports and how to structure a story worth reading.\r\n\r\nPlace the picture commands as the authoring guide directs: at the top of the node, as the first line after the '---' divider. The filenames are two digits counting up from 01.png with no gaps, to a maximum of 30 (01.png, 02.png ... 09.png, 10.png).",
             "type": "textarea"
         },
         "user_keywords": {
