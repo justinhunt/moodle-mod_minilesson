@@ -142,8 +142,14 @@ foreach ($mcpusers as $mcpuser) {
     ];
 }
 
+$mcpurl = (new moodle_url('/mod/minilesson/mcp.php'))->out(false);
+
 $templatedata = [
     'intro' => get_string('managemcp_intro', constants::M_COMPONENT),
+    'endpointurlheading' => get_string('managemcp_endpointurlheading', constants::M_COMPONENT),
+    'endpointurlbody' => get_string('managemcp_endpointurlbody', constants::M_COMPONENT),
+    'mcpurl' => $mcpurl,
+    'copiedmessage' => get_string('managemcp_copied', constants::M_COMPONENT),
     'enableheading' => get_string('managemcp_enableheading', constants::M_COMPONENT),
     'enablebody' => get_string('managemcp_enablebody', constants::M_COMPONENT, $rolename),
     'helpurl' => $helpurl,

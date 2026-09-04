@@ -23,6 +23,10 @@
 
     Context variables required for this template:
     * intro string - what MiniLesson MCP is
+    * endpointurlheading string
+    * endpointurlbody string
+    * mcpurl string - URL to mcp.php
+    * copiedmessage string - toast message when copied
     * enableheading string
     * enablebody string
     * helpurl string
@@ -88,7 +92,16 @@
 <div class="mod_minilesson_managemcp">
     <p>{{intro}}</p>
 
-    <h3>{{enableheading}}</h3>
+    <h4>{{endpointurlheading}}</h4>
+    <p>{{endpointurlbody}}</p>
+    <div class="d-flex align-items-center mb-3">
+        <input type="text" class="form-control me-2" style="width: 600px;" id="minilesson_mcpurl" value="{{mcpurl}}" readonly>
+        <button type="button" class="btn btn-secondary" data-action="copytoclipboard" data-clipboard-target="#minilesson_mcpurl" data-clipboard-success-message="{{copiedmessage}}">
+            {{#pix}}t/copy, core{{/pix}} {{#str}}copytoclipboard{{/str}}
+        </button>
+    </div>
+
+    <h4>{{enableheading}}</h4>
     <p>{{enablebody}}</p>
     <p><a href="{{helpurl}}" target="_blank" rel="noopener noreferrer">{{helplinktext}}</a></p>
     {{#hasoauthplugin}}
@@ -99,21 +112,21 @@
         <p class="text-muted">{{oauthpluginmissing}}</p>
     {{/hasoauthplugin}}
 
-    <h3>{{createroleheading}}</h3>
+    <h4>{{createroleheading}}</h4>
     <p>{{createrolebody}}</p>
     {{{createrolebuttonhtml}}}
     {{#rolealreadyexists}}
         <p class="text-muted">{{rolealreadyexiststext}}</p>
     {{/rolealreadyexists}}
 
-    <h3>{{migrateheading}}</h3>
+    <h4>{{migrateheading}}</h4>
     <p>{{migratebody}}</p>
     {{{migratebuttonhtml}}}
     {{#migratedisabled}}
         <p class="text-muted">{{migratedisabledreason}}</p>
     {{/migratedisabled}}
 
-    <h3>{{usersheading}}</h3>
+    <h4>{{usersheading}}</h4>
     {{^hasusers}}
         <p>{{nousersmessage}}</p>
     {{/hasusers}}
@@ -140,3 +153,6 @@
         </table>
     {{/hasusers}}
 </div>
+{{#js}}
+    require(['core/copy_to_clipboard']);
+{{/js}}
