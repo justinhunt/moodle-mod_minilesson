@@ -47,6 +47,11 @@ class itemtype extends item {
     public const PARTIALLYMARKS = 'customint2';
     public const RESPONSETYPE = 'customint3';
 
+    /** @var int Marks for a correct answer, when the item does not specify. */
+    public const DEFAULT_TOTALMARKS = 2;
+    /** @var int Marks for a partially correct answer, when the item does not specify. */
+    public const DEFAULT_PARTIALLYMARKS = 1;
+
     // the item type
     /**
      * The class constructor.
@@ -69,11 +74,22 @@ class itemtype extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
         $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
-        $responsetype = $this->itemrecord->{self::RESPONSETYPE};
-        $testitem->audiorecorder = $responsetype == constants::RESPONSE_TYPE['audiorecorder'];
-        $testitem->textinput = $responsetype == constants::RESPONSE_TYPE['text'];
-        $testitem->correctmarks = $this->itemrecord->{self::TOTALMARKS};
-        $testitem->partialmarks = $this->itemrecord->{self::PARTIALLYMARKS};
+        // The response type and marks settings were added after this item type shipped, so items
+        // authored before then hold 0 in those columns. 0 is not a response type, and 0 total marks
+        // grades every answer as wrong, so fall back to how those items used to behave: speak the
+        // answer, with the default marks. See db/upgrade.php, which corrects the stored values.
+        $responsetype = (int) $this->itemrecord->{self::RESPONSETYPE};
+        $testitem->textinput = $responsetype === constants::RESPONSE_TYPE['text'];
+        $testitem->audiorecorder = !$testitem->textinput;
+        $correctmarks = (int) $this->itemrecord->{self::TOTALMARKS};
+        $partialmarks = (int) $this->itemrecord->{self::PARTIALLYMARKS};
+        $islegacyitem = !in_array($responsetype, constants::RESPONSE_TYPE, true);
+        if ($islegacyitem && $correctmarks < 1) {
+            $correctmarks = self::DEFAULT_TOTALMARKS;
+            $partialmarks = self::DEFAULT_PARTIALLYMARKS;
+        }
+        $testitem->correctmarks = $correctmarks;
+        $testitem->partialmarks = $partialmarks;
 
         // sentences
         $sentences = [];
@@ -261,8 +277,8 @@ class itemtype extends item {
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
         $keycols['text3'] = ['jsonname' => 'partiallycorrectanswer', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => self::PARTIALLYRESPONSE];
-        $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => false, 'default' => 2, 'dbname' => self::TOTALMARKS];
-        $keycols['int2'] = ['jsonname' => 'partiallymarks', 'type' => 'int', 'optional' => false, 'default' => 1, 'dbname' => self::PARTIALLYMARKS];
+        $keycols['int1'] = ['jsonname' => 'totalmarks', 'type' => 'int', 'optional' => false, 'default' => self::DEFAULT_TOTALMARKS, 'dbname' => self::TOTALMARKS];
+        $keycols['int2'] = ['jsonname' => 'partiallymarks', 'type' => 'int', 'optional' => false, 'default' => self::DEFAULT_PARTIALLYMARKS, 'dbname' => self::PARTIALLYMARKS];
         $keycols['int3'] = ['jsonname' => 'responsetype', 'type' => 'int', 'optional' => false, 'default' => constants::RESPONSE_TYPE['audiorecorder'], 'dbname' => self::RESPONSETYPE];
         return $keycols;
     }

@@ -27,9 +27,9 @@ class itemform extends baseform
         $this->add_textarearesponse(constants::ALTERNATES, get_string('alternates', constants::M_COMPONENT), false);
         $this->add_static_text('alternates_instructions', '', get_string('pr_alternates_instructions', constants::M_COMPONENT));
         $this->add_numericboxresponse(itemtype::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT), true);
-        $mform->setDefault(itemtype::TOTALMARKS, 2);
+        $mform->setDefault(itemtype::TOTALMARKS, itemtype::DEFAULT_TOTALMARKS);
         $this->add_numericboxresponse(itemtype::PARTIALLYMARKS, get_string('partiallycorrectmarks', constants::M_COMPONENT), false);
-        $mform->setDefault(itemtype::PARTIALLYMARKS, 1);
+        $mform->setDefault(itemtype::PARTIALLYMARKS, itemtype::DEFAULT_PARTIALLYMARKS);
         $options = [
             constants::RESPONSE_TYPE['audiorecorder'] => get_string('audiorecorder', constants::M_COMPONENT),
             constants::RESPONSE_TYPE['text'] => get_string('textinput', constants::M_COMPONENT)
