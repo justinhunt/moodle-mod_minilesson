@@ -7,6 +7,11 @@
             "generatefileareasmethod": "generate",
             "generatefields": [
                 {
+                    "name": "nativelangchooser",
+                    "generate": 1,
+                    "mapping": ""
+                },
+                {
                     "name": "data1",
                     "generate": 0,
                     "mapping": ""
@@ -63,6 +68,16 @@
                     "mapping": ""
                 },
                 {
+                    "name": "presentationmode",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
+                    "name": "taptotranslate",
+                    "generate": 0,
+                    "mapping": ""
+                },
+                {
                     "name": "data1",
                     "generate": 1,
                     "mapping": ""
@@ -95,7 +110,7 @@
                     "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "user_topic",
+            "overallimagecontext": "--",
             "promptfields": [
                 {
                     "name": "imagestyle",
@@ -115,7 +130,7 @@
     "lessonTitle": "Add Pics to Interactive Story",
     "lessonDescription": "This template accepts a fiction item story, and image prompts, and generates pictures for the story from the supplied image prompts. This template takes as input:  story summary, an image generation style, a story in yarn format with image placeholders, and a json array with image filenames + image generation prompts. It produces 2 items, a content page item with a picture, and a fiction item with images matching all the placeholders. ",
     "uniqueid": "69b032eb8af03",
-    "version": "8",
+    "version": "9",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
