@@ -3561,7 +3561,8 @@
                   }
                 } else if (node.type === 'SetVariableEqualToNode') { // Assignment is SetVariableEqualToNode in parser?
                   const varName = node.variableName;
-                  const isInternal = varName && (varName.startsWith('$__') || varName.startsWith('__'));
+                  const isInternal = varName && (varName.startsWith('$__') || varName.startsWith('__'))
+                    && !varName.startsWith('$__once_') && !varName.startsWith('__once_');
                   if (!_this.lookahead || isInternal) {
                     _this.evaluateAssignment(node);
                   }
