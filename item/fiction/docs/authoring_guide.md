@@ -330,7 +330,7 @@ Write the text library before writing any Yarn. For every room:
 
 - **First-visit description** - vivid, sets the atmosphere, names the exits and the objects
   worth examining.
-- **Return description** - short and scannable. The learner has read the long one already.
+- **Subsequent-visit description** - short and scannable. The learner has read the long one already. NB Describes the location, not the movement to it or subsequentness. e.g You are in the library. NOT You are back in the library. 
 - **State overrides** - the extra lines that appear once something has changed.
 
 For every character, write their actual lines as `Character_Name: text`. Second person
