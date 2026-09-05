@@ -42,6 +42,7 @@ define(['jquery',
                 terms: [],
                 phonetics: [],
                 displayterms: [],
+                audios: [],
                 results: [],
                 controls: {},
                 ttrec: null, //a handle on the tt recorder
@@ -54,6 +55,13 @@ define(['jquery',
                         app.terms[i] = itemdata.sentences[i].sentence;
                         app.phonetics[i] = itemdata.sentences[i].phonetic;
                         app.displayterms[i] = itemdata.sentences[i].prompt;
+                      //the card audio is the teacher's upload, or the TTS audio prepared on the server
+                        if (itemdata.showlistenbutton && itemdata.sentences[i].audiourl) {
+                            app.audios[i] = new Audio();
+                            app.audios[i].src = itemdata.sentences[i].audiourl;
+                        } else {
+                            app.audios[i] = null;
+                        }
                     }
                     app.language = itemdata.language;
 
@@ -73,6 +81,8 @@ define(['jquery',
                     app.controls.star_rating = $("#" + itemdata.uniqueid + "_container .minilesson_star_rating");
                     app.controls.next_button = $("#" + itemdata.uniqueid + "_container .minilesson-speechcards_nextbutton");
                     app.controls.slider = $("#" + itemdata.uniqueid + "_container .minilesson_speechcards_target_phrase");
+                    app.controls.listen_cont = $("#" + itemdata.uniqueid + "_container .minilesson_speechcards_listen_cont");
+                    app.controls.listen_btn = $("#" + itemdata.uniqueid + "_container .minilesson_speechcards_listen_btn");
                 },
                 init_strings: function () {
                     var app = this;
@@ -90,6 +100,7 @@ define(['jquery',
                     });
                 },
                 next_question: function () {
+                    app.stop_audio();
                     var stepdata = {};
                     stepdata.index = index;
                     stepdata.hasgrade = true;
@@ -139,6 +150,60 @@ define(['jquery',
                         }
 
                     });
+
+                  //listen button plays (or stops) the audio for the card on screen
+                    app.controls.listen_btn.on('click', function () {
+                        app.play_audio();
+                    });
+
+                  //keep the button icon in step with the audio it is playing
+                    app.audios.forEach(function (theaudio) {
+                        if (theaudio === null) {
+                            return;
+                        }
+                        theaudio.addEventListener('play', function () {
+                            app.controls.listen_btn.children('.fa').removeClass('fa-volume-up').addClass('fa-stop');
+                        });
+                        theaudio.addEventListener('ended', function () {
+                            app.controls.listen_btn.children('.fa').removeClass('fa-stop').addClass('fa-volume-up');
+                        });
+                        theaudio.addEventListener('pause', function () {
+                            app.controls.listen_btn.children('.fa').removeClass('fa-stop').addClass('fa-volume-up');
+                        });
+                    });
+                },
+
+                play_audio: function () {
+                    var theaudio = app.audios[app.pointer - 1];
+                    if (!theaudio) {
+                        return;
+                    }
+                  //if we are already playing, stop
+                    if (!theaudio.paused) {
+                        theaudio.pause();
+                        theaudio.currentTime = 0;
+                        return;
+                    }
+                    theaudio.load();
+                    theaudio.play();
+                },
+
+              //stop audio .. usually when leaving the card or the item
+                stop_audio: function () {
+                    var theaudio = app.audios[app.pointer - 1];
+                    if (theaudio && !theaudio.paused) {
+                        theaudio.pause();
+                        theaudio.currentTime = 0;
+                    }
+                },
+
+              //the listen button only makes sense on cards that have audio
+                update_listen_button: function () {
+                    if (app.audios[app.pointer - 1]) {
+                        app.controls.listen_cont.show();
+                    } else {
+                        app.controls.listen_cont.hide();
+                    }
                 },
 
                 initComponents: function () {
@@ -147,7 +212,8 @@ define(['jquery',
 
                         switch (message.type) {
                             case 'recording':
-
+                              //don't record the model audio playing over the top of the student
+                                app.stop_audio();
                             break;
 
                             case 'speech':
@@ -213,6 +279,7 @@ define(['jquery',
                 initSlider: function () {
                     app.controls.slider.text(app.displayterms[app.pointer - 1]);
                     app.controls.slider.show();
+                    app.update_listen_button();
                 },
 
                 writeCurrentTerm: function () {
@@ -298,7 +365,9 @@ define(['jquery',
                 },
 
                 do_next: function () {
+                    app.stop_audio();
                     app.pointer++;
+                    app.update_listen_button();
                     app.progress_dots(app.results, app.terms);
                     app.clearStarRating();
                     if (!app.is_end()) {

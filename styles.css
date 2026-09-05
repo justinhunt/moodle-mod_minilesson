@@ -4646,6 +4646,29 @@ span.wrongitem {
   margin-bottom: 10px;
 }
 
+.minilesson_speechcards_listen_cont {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.minilesson_speechcards_listen_cont button.minilesson_speechcards_listen_btn {
+  background: #506DFF;
+  border-radius: 8px;
+  border: 1.5px solid #506DFF;
+  color: #FFFFFF;
+  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.12);
+  outline: 0;
+  width: 50px;
+  height: 50px;
+  display: block;
+  margin: 3px auto;
+}
+
+.minilesson_speechcards_listen_cont button.minilesson_speechcards_listen_btn:hover {
+  background: #2642CD;
+  border-color: #2642CD;
+}
+
 .minilesson_fiction_yarncontainer .minilesson_fiction_yarnmedia {
   min-width: 300px;
   max-width: 300px;

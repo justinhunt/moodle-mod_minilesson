@@ -27,5 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Speech Cards';
 $string['item_desc'] = 'The Speech Cards item displays a series of cards containing a phrase or a sentence. Students must read each card aloud.';
+$string['listentothecard'] = 'Listen to the card';
 $string['pluginname'] = 'Speech Cards';
 $string['privacy:metadata'] = 'The Speech Cards plugin doesn\'t store any personal data.';
+$string['showlistenbutton'] = 'Listen button';
+$string['showlistenbutton_details'] = 'Show a listen button on the card, which reads it aloud';

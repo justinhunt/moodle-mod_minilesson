@@ -19,6 +19,31 @@
   margin-bottom: 10px;
 }
 
+// Listen button: reads the card on screen aloud
+
+.minilesson_speechcards_listen_cont {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.minilesson_speechcards_listen_cont button.minilesson_speechcards_listen_btn {
+  background: $primary;
+  border-radius: 8px;
+  border: 1.5px solid $primary;
+  color: $white;
+  box-shadow: $main-shadow;
+  outline: 0;
+  width: 50px;
+  height: 50px;
+  display: block;
+  margin: 3px auto;
+}
+
+.minilesson_speechcards_listen_cont button.minilesson_speechcards_listen_btn:hover {
+  background: $primary-hover;
+  border-color: $primary-hover;
+}
+
 
 
 

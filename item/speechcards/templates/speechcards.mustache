@@ -8,6 +8,15 @@
 
     </div>
 
+    {{#showlistenbutton}}
+    <div class="minilesson_speechcards_listen_cont" style="display:none;">
+      <button type="button" class="minilesson_speechcards_listen_btn roundmini-audio-player"
+        aria-label="{{#str}}listentothecard, minilessonitem_speechcards{{/str}}">
+        <i class="fa fa-volume-up" aria-hidden="true"></i>
+      </button>
+    </div>
+    {{/showlistenbutton}}
+
     <div class="minilesson_star_rating">· · ·</div>
     
     {{> mod_minilesson/ttrecorder}}
