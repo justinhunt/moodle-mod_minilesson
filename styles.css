@@ -5550,6 +5550,63 @@ span.wrongitem {
   background: #fff;
   border-color: #fff;
 }
+.minilesson_fiction_yarncontainer.immersivedark .card__readaloud, .minilesson_fiction_yarncontainer.immersivebright .card__readaloud, .minilesson_fiction_yarncontainer.immersivepaper .card__readaloud {
+  position: absolute;
+  bottom: -4px;
+  right: 38px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--im-option-border);
+  border-radius: 8px;
+  background: var(--im-option-bg);
+  color: var(--im-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: background 150ms ease, border-color 150ms ease, opacity 220ms ease, transform 220ms ease;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__readaloud .card__readaloud-icon--stop, .minilesson_fiction_yarncontainer.immersivebright .card__readaloud .card__readaloud-icon--stop, .minilesson_fiction_yarncontainer.immersivepaper .card__readaloud .card__readaloud-icon--stop {
+  display: none;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__readaloud.is-ready, .minilesson_fiction_yarncontainer.immersivebright .card__readaloud.is-ready, .minilesson_fiction_yarncontainer.immersivepaper .card__readaloud.is-ready {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__readaloud.is-ready:hover, .minilesson_fiction_yarncontainer.immersivebright .card__readaloud.is-ready:hover, .minilesson_fiction_yarncontainer.immersivepaper .card__readaloud.is-ready:hover {
+  background: var(--im-option-hover-bg);
+  border-color: var(--im-option-hover-border);
+  transform: translateY(0) scale(1.05);
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__readaloud.is-loading, .minilesson_fiction_yarncontainer.immersivebright .card__readaloud.is-loading, .minilesson_fiction_yarncontainer.immersivepaper .card__readaloud.is-loading {
+  animation: im-readaloud-pulse 900ms ease-in-out infinite;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__readaloud.is-playing, .minilesson_fiction_yarncontainer.immersivebright .card__readaloud.is-playing, .minilesson_fiction_yarncontainer.immersivepaper .card__readaloud.is-playing {
+  background: var(--im-accent);
+  border-color: var(--im-accent);
+  color: var(--im-accent-fg);
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__readaloud.is-playing .card__readaloud-icon--play, .minilesson_fiction_yarncontainer.immersivebright .card__readaloud.is-playing .card__readaloud-icon--play, .minilesson_fiction_yarncontainer.immersivepaper .card__readaloud.is-playing .card__readaloud-icon--play {
+  display: none;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__readaloud.is-playing .card__readaloud-icon--stop, .minilesson_fiction_yarncontainer.immersivebright .card__readaloud.is-playing .card__readaloud-icon--stop, .minilesson_fiction_yarncontainer.immersivepaper .card__readaloud.is-playing .card__readaloud-icon--stop {
+  display: inline-block;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__readaloud.is-playing:hover, .minilesson_fiction_yarncontainer.immersivebright .card__readaloud.is-playing:hover, .minilesson_fiction_yarncontainer.immersivepaper .card__readaloud.is-playing:hover {
+  background: #fff;
+  border-color: #fff;
+}
+.minilesson_fiction_yarncontainer.immersivedark .card__text-wrap:has(.card__readaloud) .card__text,
+.minilesson_fiction_yarncontainer.immersivedark .card__text-wrap:has(.card__readaloud) .card__translation, .minilesson_fiction_yarncontainer.immersivebright .card__text-wrap:has(.card__readaloud) .card__text,
+.minilesson_fiction_yarncontainer.immersivebright .card__text-wrap:has(.card__readaloud) .card__translation, .minilesson_fiction_yarncontainer.immersivepaper .card__text-wrap:has(.card__readaloud) .card__text,
+.minilesson_fiction_yarncontainer.immersivepaper .card__text-wrap:has(.card__readaloud) .card__translation {
+  padding-right: 74px;
+}
 .minilesson_fiction_yarncontainer.immersivedark .card__actions, .minilesson_fiction_yarncontainer.immersivebright .card__actions, .minilesson_fiction_yarncontainer.immersivepaper .card__actions {
   display: flex;
   flex-direction: column;
@@ -6133,6 +6190,11 @@ span.wrongitem {
     transform: translateY(0);
   }
 }
+@keyframes im-readaloud-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
 body.minilesson-fiction-im-noscroll {
   overflow: hidden;
 }
@@ -6163,7 +6225,7 @@ body.minilesson-fiction-im-noscroll {
 .minilesson_fiction_yarncontainer .story-paragraph {
   position: relative;
 }
-.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer:has(.fiction-translate-icon), .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer:has(.fiction-translate-icon), .minilesson_fiction_yarncontainer.storymode .story-paragraph:has(.fiction-translate-icon) {
+.minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer:has(.fiction-translate-icon), .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer:has(.fiction-translate-icon), .minilesson_fiction_yarncontainer.storymode .story-paragraph:has(.fiction-translate-icon), .minilesson_fiction_yarncontainer.mobilechat .chat-wrapper .charactercontainer:has(.fiction-readaloud-icon), .minilesson_fiction_yarncontainer.plain .chat-wrapper .charactercontainer:has(.fiction-readaloud-icon), .minilesson_fiction_yarncontainer.storymode .story-paragraph:has(.fiction-readaloud-icon) {
   padding-bottom: 36px;
 }
 .minilesson_fiction_yarncontainer .fiction-translate-icon {
@@ -6206,6 +6268,66 @@ body.minilesson-fiction-im-noscroll {
   border-color: #ddcdb4;
 }
 .minilesson_fiction_yarncontainer.storymode .fiction-translate-icon.is-active {
+  background: #ddccb4;
+  border-color: #ddcdb4;
+  color: #1f2334;
+}
+.minilesson_fiction_yarncontainer .fiction-readaloud-icon {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid #dddff1;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f2334;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+}
+.minilesson_fiction_yarncontainer .fiction-readaloud-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.minilesson_fiction_yarncontainer .fiction-readaloud-icon .fiction-readaloud-icon__stop {
+  display: none;
+}
+.minilesson_fiction_yarncontainer .fiction-readaloud-icon:hover {
+  background: #f5f5fe;
+  border-color: #e6e9fd;
+  transform: scale(1.05);
+}
+.minilesson_fiction_yarncontainer .fiction-readaloud-icon.is-loading {
+  animation: im-readaloud-pulse 900ms ease-in-out infinite;
+}
+.minilesson_fiction_yarncontainer .fiction-readaloud-icon.is-playing {
+  background: #506dff;
+  border-color: #506dff;
+  color: #fff;
+}
+.minilesson_fiction_yarncontainer .fiction-readaloud-icon.is-playing .fiction-readaloud-icon__play {
+  display: none;
+}
+.minilesson_fiction_yarncontainer .fiction-readaloud-icon.is-playing .fiction-readaloud-icon__stop {
+  display: block;
+}
+.minilesson_fiction_yarncontainer .charactercontainer:has(.fiction-translate-icon) .fiction-readaloud-icon,
+.minilesson_fiction_yarncontainer .story-paragraph:has(.fiction-translate-icon) .fiction-readaloud-icon {
+  right: 40px;
+}
+.minilesson_fiction_yarncontainer.storymode .fiction-readaloud-icon {
+  background: transparent;
+  border-color: #ded3c2;
+}
+.minilesson_fiction_yarncontainer.storymode .fiction-readaloud-icon:hover {
+  background: #ddccb4;
+  border-color: #ddcdb4;
+}
+.minilesson_fiction_yarncontainer.storymode .fiction-readaloud-icon.is-playing {
   background: #ddccb4;
   border-color: #ddcdb4;
   color: #1f2334;

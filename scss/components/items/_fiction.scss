@@ -996,6 +996,77 @@
       }
     }
 
+    // Read-aloud button: same box as .card__translate, sitting to its left.
+    .card__readaloud {
+      position: absolute;
+      bottom: -4px;
+      right: 38px;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border: 1px solid var(--im-option-border);
+      border-radius: 8px;
+      background: var(--im-option-bg);
+      color: var(--im-text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(4px);
+      pointer-events: none;
+      transition: background 150ms ease, border-color 150ms ease,
+        opacity 220ms ease, transform 220ms ease;
+
+      .card__readaloud-icon--stop {
+        display: none;
+      }
+
+      &.is-ready {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+
+        &:hover {
+          background: var(--im-option-hover-bg);
+          border-color: var(--im-option-hover-border);
+          transform: translateY(0) scale(1.05);
+        }
+      }
+
+      &.is-loading {
+        animation: im-readaloud-pulse 900ms ease-in-out infinite;
+      }
+
+      &.is-playing {
+        background: var(--im-accent);
+        border-color: var(--im-accent);
+        color: var(--im-accent-fg);
+
+        .card__readaloud-icon--play {
+          display: none;
+        }
+
+        .card__readaloud-icon--stop {
+          display: inline-block;
+        }
+
+        &:hover {
+          background: #fff;
+          border-color: #fff;
+        }
+      }
+    }
+
+    // Leave room for both buttons under the last line of text.
+    .card__text-wrap:has(.card__readaloud) {
+
+      .card__text,
+      .card__translation {
+        padding-right: 74px;
+      }
+    }
+
     .card__actions {
       display: flex;
       flex-direction: column;
@@ -1630,6 +1701,10 @@
   }
 }
 
+@keyframes im-readaloud-pulse {
+  50% { opacity: 0.45; }
+}
+
 body.minilesson-fiction-im-noscroll {
   overflow: hidden;
 }
@@ -1671,7 +1746,10 @@ body.minilesson-fiction-im-noscroll {
   // scss/migration/_head_new_styles.scss and compiled after this file).
   &.mobilechat .chat-wrapper .charactercontainer:has(.fiction-translate-icon),
   &.plain .chat-wrapper .charactercontainer:has(.fiction-translate-icon),
-  &.storymode .story-paragraph:has(.fiction-translate-icon) {
+  &.storymode .story-paragraph:has(.fiction-translate-icon),
+  &.mobilechat .chat-wrapper .charactercontainer:has(.fiction-readaloud-icon),
+  &.plain .chat-wrapper .charactercontainer:has(.fiction-readaloud-icon),
+  &.storymode .story-paragraph:has(.fiction-readaloud-icon) {
     padding-bottom: 36px;
   }
 
@@ -1723,6 +1801,82 @@ body.minilesson-fiction-im-noscroll {
 
     // Keep the icon dark when active (no white/blue fill in this skin).
     &.is-active {
+      background: #ddccb4;
+      border-color: #ddcdb4;
+      color: #1f2334;
+    }
+  }
+
+  // Read-aloud toggle — same box as the translate icon; when both are present it
+  // sits to the icon's left.
+  .fiction-readaloud-icon {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    border: 1px solid #dddff1;
+    border-radius: 8px;
+    background: #fff;
+    color: #1f2334;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .fiction-readaloud-icon__stop {
+      display: none;
+    }
+
+    &:hover {
+      background: #f5f5fe;
+      border-color: #e6e9fd;
+      transform: scale(1.05);
+    }
+
+    &.is-loading {
+      animation: im-readaloud-pulse 900ms ease-in-out infinite;
+    }
+
+    &.is-playing {
+      background: #506dff;
+      border-color: #506dff;
+      color: #fff;
+
+      .fiction-readaloud-icon__play {
+        display: none;
+      }
+
+      .fiction-readaloud-icon__stop {
+        display: block;
+      }
+    }
+  }
+
+  // When a translate icon is also present, shift the read-aloud icon to its left.
+  .charactercontainer:has(.fiction-translate-icon) .fiction-readaloud-icon,
+  .story-paragraph:has(.fiction-translate-icon) .fiction-readaloud-icon {
+    right: 40px;
+  }
+
+  // Storymode: book-toned read-aloud toggle.
+  &.storymode .fiction-readaloud-icon {
+    background: transparent;
+    border-color: #ded3c2;
+
+    &:hover {
+      background: #ddccb4;
+      border-color: #ddcdb4;
+    }
+
+    &.is-playing {
       background: #ddccb4;
       border-color: #ddcdb4;
       color: #1f2334;

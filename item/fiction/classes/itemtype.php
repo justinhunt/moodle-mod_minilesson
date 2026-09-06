@@ -52,6 +52,8 @@ class itemtype extends item {
     public const PRESENTATION_MODE = 'customint1';
     public const FLOWTHROUGH_MESSAGES = 'customint2';
     public const SHOW_NONOPTIONS = 'customint3';
+    /** Whether each story message shows a read-aloud (TTS) button. Voice/speed use POLLYVOICE/POLLYOPTION. */
+    public const READALOUD = 'customint5';
     public const FILES = 'customfile1';
 
     /** @var string */
@@ -267,6 +269,11 @@ class itemtype extends item {
         // Tap to translate. This follows the activity's native language translation setting.
         $testitem->taptotranslate = !empty($this->moduleinstance->nativetranslation);
         $testitem->taptotranslatearia = get_string('fiction:taptranslatearia', constants::M_COMPONENT);
+
+        // Read aloud. Each story message can show a TTS button; the voice and speed come from
+        // get_polly_options() above, which has set usevoice/voiceoption from POLLYVOICE/POLLYOPTION.
+        $testitem->readaloud = !empty($this->itemrecord->{self::READALOUD});
+        $testitem->readaloudaria = get_string('fiction_readaloudaria', constants::M_COMPONENT);
 
         // Pass in user data for display in the story
         $testitem->userfirstname = $USER->firstname;
@@ -588,6 +595,28 @@ class itemtype extends item {
                     ['value' => '1', 'meaning' => 'Show unavailable options as disabled buttons'],
                 ],
             ],
+            'readaloud' => [
+                'description' => 'Whether each story message shows a read-aloud button that speaks the '
+                    . 'message aloud with a TTS voice. Turn it on to support lower-level readers.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'No read-aloud button (default)'],
+                    ['value' => '1', 'meaning' => 'Show a read-aloud button on each message'],
+                ],
+            ],
+            'promptvoice' => [
+                'description' => 'The TTS voice used by the read-aloud button. A voice display name '
+                    . '(case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), or "auto" to let the '
+                    . 'server pick a voice matching the lesson language. Only used when readaloud is 1.',
+                'example' => 'auto',
+            ],
+            'promptvoiceopt' => [
+                'description' => 'Reading speed for the read-aloud audio. Only used when readaloud is 1.',
+                'options' => [
+                    ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
+                    ['value' => 'slow', 'meaning' => 'Slow reading speed'],
+                    ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                ],
+            ],
         ];
         foreach ($ownfields as $jsonname => $overlay) {
             $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
@@ -675,6 +704,30 @@ class itemtype extends item {
             'optional' => true,
             'default' => 0,
             'dbname' => self::SHOW_NONOPTIONS,
+        ];
+
+        $keycols['int5'] = [
+            'jsonname' => 'readaloud',
+            'type' => 'boolean',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => self::READALOUD,
+        ];
+
+        $keycols['text5'] = [
+            'jsonname' => 'promptvoice',
+            'type' => 'voice',
+            'optional' => true,
+            'default' => null,
+            'dbname' => constants::POLLYVOICE,
+        ];
+
+        $keycols['int4'] = [
+            'jsonname' => 'promptvoiceopt',
+            'type' => 'voiceopts',
+            'optional' => true,
+            'default' => null,
+            'dbname' => constants::POLLYOPTION,
         ];
 
         $keycols[self::FILES] = [
