@@ -49,12 +49,8 @@ define(['jquery',
             this.register_events();
         },
         init_polly: function () {
-            //get the polly token
-            var pollytoken = this.activitydata.token;
-            var pollyregion = this.activitydata.region;
-            var pollycloudpoodllurl = this.activitydata.cloudpoodllurl;
-            var pollyowner = 'poodll';
-            polly.init(pollytoken, pollyregion, pollyowner, pollycloudpoodllurl);
+            // TTS URLs are resolved server side now; pollyhelper just needs the cmid.
+            polly.init(this.activitydata.cmid);
             log.debug('polly initialised');
         },
 

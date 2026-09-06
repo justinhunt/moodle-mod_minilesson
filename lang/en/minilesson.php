@@ -1559,6 +1559,9 @@ $string['fiction_unmute'] = 'Unmute sounds';
 $string['fiction_translate'] = 'Show translation';
 $string['fiction_history'] = 'Show history';
 $string['fiction_history_close'] = 'Close history';
+$string['fiction_readaloud'] = 'Read aloud button';
+$string['fiction_readaloud_details'] = 'If checked, each message in the story will have a button underneath it which reads it aloud.';
+$string['fiction_readaloudaria'] = 'Read this text aloud';
 
 $string['fiction:syntaxcheckbutton'] = 'Syntax Check';
 $string['fiction:taptranslatearia'] = 'Translate this text';

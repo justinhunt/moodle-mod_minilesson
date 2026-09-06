@@ -5,12 +5,13 @@ define([
     'core/notification',
     'mod_minilesson/definitions',
     'mod_minilesson/translate',
+    'mod_minilesson/pollyhelper',
     'mod_minilesson/external/yarn-bound',
     'core/modal_cancel',
     'core/fragment',
     'core/templates',
     'mod_minilesson/progresstimer',
-], function($, log, str, notification, def, translate, YarnBound, ModalCancel, Fragment, Templates) {
+], function($, log, str, notification, def, translate, polly, YarnBound, ModalCancel, Fragment, Templates) {
     "use strict"; // jshint ;_;
 
     /**
@@ -32,6 +33,11 @@ define([
         quizhelper: null,
         storydata: null,
         visitednodes: [],
+        readaloud: false,
+        readaloudaria: '',
+        usevoice: '',
+        voiceoption: 0,
+        currentReadAloud: null,
 
         // For making multiple instances
         clone: function() {
@@ -61,6 +67,10 @@ define([
             this.flowthroughmode = itemdata.flowthroughmode;
             this.taptotranslate = itemdata.taptotranslate;
             this.taptotranslatearia = itemdata.taptotranslatearia;
+            this.readaloud = itemdata.readaloud;
+            this.readaloudaria = itemdata.readaloudaria;
+            this.usevoice = itemdata.usevoice;
+            this.voiceoption = itemdata.voiceoption;
             this.filenamesmap = itemdata.filenamesmap;
             if (this.isImmersive) {
                 this.im_init_state();
@@ -240,6 +250,7 @@ define([
                 this.controls.im_text = $c.find('.card__text');
                 this.controls.im_translation = $c.find('.card__translation');
                 this.controls.im_translate = $c.find('.card__translate');
+                this.controls.im_readaloud = $c.find('.card__readaloud');
                 this.controls.im_media = $c.find('.card__media');
                 this.controls.im_mute = $c.find('.card__mute');
                 this.controls.im_start = $c.find('.card__start');
@@ -279,6 +290,7 @@ define([
                 this.chatdata.charactername = yarncontent.yarntext.md?.character?.name;
                 this.chatdata.charactertext = yarncontent.yarntext.text;
                 this.set_translate_data(this.chatdata, yarncontent.yarntext.text);
+                this.set_readaloud_data(this.chatdata, yarncontent.yarntext.text);
 
                 this.post_message_to_story(this.chatdata, currentResult);
 
@@ -329,6 +341,7 @@ define([
                     that.chatdata.charactername = yarncontent.yarnoptions.md?.character?.name;
                     that.chatdata.charactertext = yarncontent.yarnoptions.text;
                     this.set_translate_data(this.chatdata, yarncontent.yarnoptions.text);
+                    this.set_readaloud_data(this.chatdata, yarncontent.yarnoptions.text);
                     this.post_message_to_story(this.chatdata, currentResult, false);
                 } else {
                     that.controls.yarntext.html('');
@@ -736,6 +749,7 @@ define([
          */
         next_question: function () {
             var self = this;
+            self.stop_readaloud();
             var stepdata = {};
             stepdata.index = self.index;
             stepdata.hasgrade = true;
@@ -869,6 +883,13 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
                 self.tap_translate($(this));
+            });
+
+            // Read aloud: delegate clicks on the per-message TTS buttons.
+            this.controls.chatwrapper.on('click', '.fiction-readaloud-icon', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                self.play_readaloud($(this));
             });
 
             let scrollbtn = $("#" + itemdata.uniqueid + "_container #scroll-bottom-btn");
@@ -1033,6 +1054,9 @@ define([
                 taptotranslate: false,
                 taptotranslatearia: null,
                 translatesource: null,
+                readaloud: false,
+                readaloudaria: null,
+                readaloudtext: null,
             };
         },
 
@@ -1059,6 +1083,103 @@ define([
             messagedata.taptotranslate = true;
             messagedata.taptotranslatearia = this.taptotranslatearia;
             messagedata.translatesource = plaintext;
+        },
+
+        /**
+         * Decorate message data with the read-aloud (TTS) button, if the item setting is on.
+         * The button speaks the message's plain text via pollyhelper at click time.
+         *
+         * @param {object} messagedata The message data passed to the message template.
+         * @param {string} text The displayed text node content (may contain HTML).
+         */
+        set_readaloud_data: function (messagedata, text) {
+            if (!this.readaloud || !text) {
+                messagedata.readaloud = false;
+                return;
+            }
+            var tmp = document.createElement('div');
+            tmp.innerHTML = text;
+            var plaintext = (tmp.textContent || tmp.innerText || '').trim();
+            if (!plaintext) {
+                messagedata.readaloud = false;
+                return;
+            }
+            messagedata.readaloud = true;
+            messagedata.readaloudaria = this.readaloudaria;
+            messagedata.readaloudtext = plaintext;
+        },
+
+        /**
+         * Play (or stop) TTS audio for a read-aloud button. Clicking the button that is
+         * already playing stops and resets it; clicking a different one stops the first.
+         * No caching: each play fetches a fresh Polly URL (see fiction-tts option C).
+         *
+         * @param {jQuery} btn The clicked read-aloud button.
+         * @param {string} [text] Explicit text to speak; defaults to the button's data-readaloudtext.
+         */
+        play_readaloud: function (btn, text) {
+            var that = this;
+            text = (text || btn.data('readaloudtext') || '').toString();
+
+            var cur = this.currentReadAloud;
+            if (cur && cur.btn && cur.btn.is(btn)) {
+                // Tapping the playing button again: stop.
+                this.stop_readaloud();
+                return;
+            }
+            // A different button, or nothing playing: clear any current playback first.
+            this.stop_readaloud();
+
+            if (!text) {
+                return;
+            }
+
+            var play = function (url) {
+                if (!url) {
+                    btn.removeClass('is-loading');
+                    return;
+                }
+                var audio = new Audio(url);
+                that.currentReadAloud = {btn: btn, audio: audio};
+                btn.removeClass('is-loading').addClass('is-playing');
+                var clear = function () {
+                    btn.removeClass('is-playing is-loading');
+                    if (that.currentReadAloud && that.currentReadAloud.audio === audio) {
+                        that.currentReadAloud = null;
+                    }
+                };
+                audio.addEventListener('ended', clear);
+                audio.addEventListener('error', clear);
+                audio.play().catch(function () {
+                    clear();
+                });
+            };
+
+            btn.addClass('is-loading');
+            polly.fetch_polly_url(text, this.voiceoption, this.usevoice).then(function (url) {
+                play(url);
+            }).catch(function (e) {
+                log.debug('MiniLesson Fiction: read-aloud fetch failed');
+                log.debug(e);
+                btn.removeClass('is-loading');
+            });
+        },
+
+        /**
+         * Stop and reset any currently playing read-aloud audio.
+         */
+        stop_readaloud: function () {
+            var cur = this.currentReadAloud;
+            if (cur) {
+                if (cur.audio) {
+                    cur.audio.pause();
+                    cur.audio.currentTime = 0;
+                }
+                if (cur.btn) {
+                    cur.btn.removeClass('is-playing is-loading');
+                }
+            }
+            this.currentReadAloud = null;
         },
 
         /**
@@ -1220,6 +1341,7 @@ define([
             this.im_soundLoopTimer = null;
             this.im_translateSource = '';
             this.im_translationResult = '';
+            this.im_readaloudSource = '';
             this.im_currentHistoryEntry = null;
             this.im_pendingInlineTranslate = null;
             this.im_currentMediaUrl = '';
@@ -1332,6 +1454,15 @@ define([
                         historyentry.translation = message;
                     }
                 });
+            });
+
+            $c.on('click', '.card__readaloud', function (e) {
+                e.stopPropagation();
+                self.im_playButtonClick();
+                if (!self.im_readaloudSource) {
+                    return;
+                }
+                self.play_readaloud($(this), self.im_readaloudSource);
             });
 
             $c.on('click', '.card__text', function () {
@@ -1582,6 +1713,9 @@ define([
             tmp.innerHTML = text;
             var plaintext = (tmp.textContent || tmp.innerText || '').trim();
 
+            // Read-aloud speaks the line itself, without the "Character: " prefix the card shows.
+            self.im_readaloudSource = self.readaloud ? plaintext : '';
+
             // Prefix the speaking character's name, as the other presentation modes do.
             // Yarn character labels cannot contain spaces, so underscores stand in for them.
             if (messagedata.charactername && plaintext) {
@@ -1602,6 +1736,10 @@ define([
             self.controls.im_translation.text('').removeClass('is-visible');
             self.controls.im_translate.removeClass('is-active').removeClass('is-ready');
 
+            // Reset the read-aloud button for the new beat.
+            self.stop_readaloud();
+            self.controls.im_readaloud.removeClass('is-playing is-loading is-ready');
+
             // Clear old actions while typing.
             self.controls.yarnoptions.html('');
             self.can_continuebutton(false);
@@ -1611,6 +1749,10 @@ define([
                     // Reveal translate button once the text has finished appearing.
                     if (self.im_translateSource) {
                         self.controls.im_translate.addClass('is-ready');
+                    }
+                    // Reveal read-aloud button once the text has finished appearing.
+                    if (self.im_readaloudSource) {
+                        self.controls.im_readaloud.addClass('is-ready');
                     }
                     // Push beat to history log. The translation field is filled in
                     // later if the user requests a translation of this beat.

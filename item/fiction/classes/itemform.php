@@ -108,5 +108,25 @@ class itemform extends baseform {
         ], 0);
         $this->add_static_text('shownonoptions_desc', '', get_string('shownonoptions_desc', constants::M_COMPONENT));
 
+        // Read aloud: a per-message TTS button, with the voice and speed it should use.
+        $this->add_checkbox(
+            itemtype::READALOUD,
+            get_string('fiction_readaloud', constants::M_COMPONENT),
+            get_string('fiction_readaloud_details', constants::M_COMPONENT),
+            0
+        );
+        $this->add_ttsaudioselect(
+            constants::POLLYVOICE,
+            get_string('choosevoice', constants::M_COMPONENT),
+            itemtype::READALOUD,
+            0
+        );
+        $this->add_voiceoptions(
+            constants::POLLYOPTION,
+            get_string('choosevoiceoption', constants::M_COMPONENT),
+            itemtype::READALOUD,
+            0
+        );
+
     }
 }
