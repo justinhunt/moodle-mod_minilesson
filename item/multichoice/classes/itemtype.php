@@ -34,6 +34,15 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_READING, constants::SKILL_LISTENING];
 
+    /**
+     * A multichoice item offers translation of its correct answer feedback.
+     *
+     * @return bool
+     */
+    public static function supports_translation() {
+        return true;
+    }
+
     public const SHUFFLEANSWER = 'customint5';
     public const CORRECTFEEDBACK = 'customtext6';
     public const HIDEANSWERTEXT = 'customint6';
@@ -185,6 +194,8 @@ class itemtype extends item {
         // Question Point
         // Rich text feedback explaining the correct answer.
         $testitem->correctfeedback = $itemrecord->{self::CORRECTFEEDBACK};
+        // The learner may translate that feedback into their native language.
+        $this->add_translatetext_data($testitem, $testitem->correctfeedback);
 
         // Multichoice also has a confirm choice option we need to include.
         $testitem->confirmchoice = $itemrecord->{constants::CONFIRMCHOICE};
@@ -607,7 +618,9 @@ class itemtype extends item {
         $result->hasincorrectanswer = true;
         if (!empty($itemquizdata->correctfeedback)) {
             $result->hasanswerdetails = true;
-            $result->resultsdatajson = json_encode(['correctfeedback' => $itemquizdata->correctfeedback]);
+            $resultsdata = (object) ['correctfeedback' => $itemquizdata->correctfeedback];
+            $this->add_translatetext_data($resultsdata, $itemquizdata->correctfeedback);
+            $result->resultsdatajson = json_encode($resultsdata);
             $result->resultstemplate = self::get_component() . '/multichoiceresults';
         } else {
             $result->hasanswerdetails = false;

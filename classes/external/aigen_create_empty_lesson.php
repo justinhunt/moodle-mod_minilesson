@@ -54,6 +54,12 @@ class aigen_create_empty_lesson extends external_api {
             'grade' => new external_value(PARAM_INT, 'Grade', VALUE_DEFAULT, 0),
             'visible' => new external_value(PARAM_INT, 'Visible', VALUE_DEFAULT, 0),
             'nativelang' => new external_value(PARAM_TEXT, 'Native Language', VALUE_DEFAULT, $config->nativelang),
+            'nativetranslation' => new external_value(
+                PARAM_INT,
+                'Native Language Translation',
+                VALUE_DEFAULT,
+                $config->nativetranslation ?? 1
+            ),
         ]);
     }
 
@@ -74,11 +80,29 @@ class aigen_create_empty_lesson extends external_api {
      * @param int $foriframe
      * @param int $grade
      * @param int $visible
+     * @param string $nativelang
+     * @param int $nativetranslation
      * @return array
      */
-    public static function execute($courseid, $title, $section, $pagelayout, $showqtitles,
-            $maxattempts, $ttslanguage, $region, $transcriber, $richtextprompt, $containerwidth,
-            $activitylink, $foriframe, $grade, $visible, $nativelang) {
+    public static function execute(
+        $courseid,
+        $title,
+        $section,
+        $pagelayout,
+        $showqtitles,
+        $maxattempts,
+        $ttslanguage,
+        $region,
+        $transcriber,
+        $richtextprompt,
+        $containerwidth,
+        $activitylink,
+        $foriframe,
+        $grade,
+        $visible,
+        $nativelang,
+        $nativetranslation
+    ) {
         $params = self::validate_parameters(self::execute_parameters(), [
             'courseid' => $courseid,
             'title' => $title,
@@ -96,6 +120,7 @@ class aigen_create_empty_lesson extends external_api {
             'grade' => $grade,
             'visible' => $visible,
             'nativelang' => $nativelang,
+            'nativetranslation' => $nativetranslation,
         ]);
 
         $context = context_course::instance($params['courseid']);
@@ -120,6 +145,7 @@ class aigen_create_empty_lesson extends external_api {
         $moduledata->grade = $params['grade'];
         $moduledata->visible = $params['visible'];
         $moduledata->nativelang = $params['nativelang'];
+        $moduledata->nativetranslation = $params['nativetranslation'];
 
         // Any other defaults
         $moduledata->showitemreview = 1;

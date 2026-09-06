@@ -271,6 +271,14 @@ if ($hassiteconfig) {
         1
     ));
 
+    // Native language translation (the default for new activities).
+    $mainsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/nativetranslation',
+        get_string('nativetranslation', constants::M_COMPONENT),
+        get_string('nativetranslation_details', constants::M_COMPONENT),
+        1
+    ));
+
     // Show item review.
     $name = 'showitemreview';
     $label = get_string($name, constants::M_COMPONENT);

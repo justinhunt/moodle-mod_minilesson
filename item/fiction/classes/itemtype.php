@@ -52,7 +52,6 @@ class itemtype extends item {
     public const PRESENTATION_MODE = 'customint1';
     public const FLOWTHROUGH_MESSAGES = 'customint2';
     public const SHOW_NONOPTIONS = 'customint3';
-    public const TAP_TO_TRANSLATE = 'customint4';
     public const FILES = 'customfile1';
 
     /** @var string */
@@ -265,8 +264,8 @@ class itemtype extends item {
         // Show non-options.
         $testitem->shownonoptions = $this->itemrecord->{ self::SHOW_NONOPTIONS} ? true : false;
 
-        // Tap to translate.
-        $testitem->taptotranslate = $this->itemrecord->{ self::TAP_TO_TRANSLATE} ? true : false;
+        // Tap to translate. This follows the activity's native language translation setting.
+        $testitem->taptotranslate = !empty($this->moduleinstance->nativetranslation);
         $testitem->taptotranslatearia = get_string('fiction:taptranslatearia', constants::M_COMPONENT);
 
         // Pass in user data for display in the story
@@ -589,14 +588,6 @@ class itemtype extends item {
                     ['value' => '1', 'meaning' => 'Show unavailable options as disabled buttons'],
                 ],
             ],
-            'taptotranslate' => [
-                'description' => 'Whether a translate icon appears on each story text node, letting the learner '
-                    . 'translate that text into their native language.',
-                'options' => [
-                    ['value' => '0', 'meaning' => 'No translate icon (default)'],
-                    ['value' => '1', 'meaning' => 'Show the tap-to-translate icon'],
-                ],
-            ],
         ];
         foreach ($ownfields as $jsonname => $overlay) {
             $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
@@ -642,7 +633,6 @@ class itemtype extends item {
                             . "<<else>>\nThe door is locked. You go back for the key.\n<<jump Start>>\n<<endif>>\n===",
                         'presentationmode' => 1,
                         'flowthroughmode' => 0,
-                        'taptotranslate' => 1,
                     ],
                 ],
             ],
@@ -685,14 +675,6 @@ class itemtype extends item {
             'optional' => true,
             'default' => 0,
             'dbname' => self::SHOW_NONOPTIONS,
-        ];
-
-        $keycols['int4'] = [
-            'jsonname' => 'taptotranslate',
-            'type' => 'int',
-            'optional' => true,
-            'default' => 0,
-            'dbname' => self::TAP_TO_TRANSLATE,
         ];
 
         $keycols[self::FILES] = [

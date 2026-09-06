@@ -1,8 +1,9 @@
 define(
     ['jquery', 'core/log','core/modal_save_cancel','core/str', 'core/modal_events',
         'mod_minilesson/definitions','core/templates', 'mod_minilesson/correctionsmarkup',
-        'mod_minilesson/communitypage'],
-    function ($, log,ModalSaveCancel, str, ModalEvents, def, templates, correctionsmarkup, communitypage) {
+        'mod_minilesson/communitypage', 'mod_minilesson/translatetext'],
+    function ($, log,ModalSaveCancel, str, ModalEvents, def, templates, correctionsmarkup, communitypage,
+            translatetext) {
         "use strict"; // jshint ;_;
 
     /*
@@ -117,6 +118,8 @@ define(
                     templates.render(resultstemplate,resultsdata).then(
                         function (html,js) {
                             resultsbox.html(html);
+                            //wire up any translate icons the item's results template rendered
+                            translatetext.init(resultsbox);
                             //do corrections markup .. if we have them
                             if (resultsdata.hasOwnProperty('grammarerrors')) {
                                 correctionsmarkup.init({ "correctionscontainer": resultsbox,

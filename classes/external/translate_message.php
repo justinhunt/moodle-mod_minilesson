@@ -81,6 +81,11 @@ class translate_message extends external_api {
 
         $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
 
+        // Native language translation must be enabled on the activity.
+        if (empty($moduleinstance->nativetranslation)) {
+            throw new \invalid_parameter_exception('Native language translation is not enabled for this activity');
+        }
+
         // The item must belong to this activity and be of a type that offers in-lesson translation.
         $item = $DB->get_record(
             constants::M_QTABLE,

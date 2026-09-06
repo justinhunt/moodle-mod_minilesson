@@ -1,5 +1,5 @@
-define(['jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/translate'],
-        function ($, log, str, notification, translate) {
+define(['jquery', 'core/log', 'core/str', 'mod_minilesson/translate'],
+        function ($, log, str, translate) {
     "use strict"; // jshint ;_;
 
     log.debug('MiniLesson TTS Dialog Player: initialising');
@@ -8,7 +8,6 @@ define(['jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/t
 
         init: function (uniqueid) {
 
-            var that = this;
             var player = $('#' + uniqueid + '_ttsdialogplayer');
 
             // Fetch all the controls and data that we need.
@@ -48,21 +47,10 @@ define(['jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/t
             var destLang = String(player.data('nativelang') || '');
             translate.init(cmid, itemid);
 
+            // The model download prompt's strings are handled by the translate module.
             var strings = {translating: 'Translating ...'};
-            str.get_strings([
-                {key: 'ttsdialog:translating', component: 'mod_minilesson'},
-                {key: 'downloadtranslationmodel', component: 'mod_minilesson'},
-                {key: 'downloadtranslationmodel_desc', component: 'mod_minilesson'},
-                {key: 'download', component: 'mod_minilesson'},
-                {key: 'skip', component: 'mod_minilesson'},
-                {key: 'downloadingtranslator', component: 'mod_minilesson'}
-            ]).done(function (s) {
-                strings.translating = s[0];
-                strings.downloadtranslationmodel = s[1];
-                strings.downloadtranslationmodel_desc = s[2];
-                strings.download = s[3];
-                strings.skip = s[4];
-                strings.downloadingtranslator = s[5];
+            str.get_string('translating', 'mod_minilesson').done(function (s) {
+                strings.translating = s;
             });
 
             // Highlight the block for the given line index and scroll it into view.
@@ -187,100 +175,26 @@ define(['jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/t
 
                 // Already translated: just toggle visibility and the button's active state.
                 if (block.data('translated')) {
-                    panel.toggleClass('hide');
-                    btn.toggleClass('ttsdialog_iconbtn_active', !panel.hasClass('hide'));
+                    panel.toggleClass('d-none');
+                    btn.toggleClass('ttsdialog_iconbtn_active', !panel.hasClass('d-none'));
                     return;
                 }
 
                 var index = parseInt(block.data('index'), 10);
                 var text = String(dialoglines.eq(index).data('speakertext'));
-                panel.removeClass('hide').html('<em>' + strings.translating + '</em>');
+                panel.removeClass('d-none').html('<em>' + strings.translating + '</em>');
                 btn.addClass('ttsdialog_iconbtn_active');
 
-                that.do_translate(sourceLang, destLang, text, strings, function (translation) {
+                translate.do_translate(sourceLang, destLang, text, function (translation, isprogress) {
                     panel.html(translation);
-                    block.data('translated', true);
+                    if (translation && !isprogress) {
+                        block.data('translated', true);
+                    }
                 });
             });
 
-        }, // end of init function
+        } // end of init function
 
-        /**
-         * Translate a single line, mirroring the fiction item type's flow: native
-         * browser translation first, then the Poodll web service fallback, with a
-         * model-download confirmation when needed.
-         *
-         * @param {string} sourceLang Source language tag.
-         * @param {string} destLang Destination (native) language tag.
-         * @param {string} text The text to translate.
-         * @param {object} strings Resolved language strings.
-         * @param {Function} callback Called with the translated (or error) string.
-         */
-        do_translate: function (sourceLang, destLang, text, strings, callback) {
-            // Reuse an existing session for the same language pair.
-            if (translate.session && translate.sourceLang === sourceLang && translate.destLang === destLang) {
-                translate.translate(text).then(function (translation) {
-                    callback(translation ? translation : '');
-                }).catch(function (e) {
-                    log.error('Translation error: ' + e);
-                    callback('');
-                });
-                return;
-            }
-
-            translate.check_availability(sourceLang, destLang).then(function (status) {
-                if (status === 'unavailable') {
-                    log.debug('Translation not available for this language pair');
-                    callback('');
-                    return;
-                }
-
-                if (status === 'download_needed') {
-                    notification.confirm(
-                        strings.downloadtranslationmodel,
-                        strings.downloadtranslationmodel_desc,
-                        strings.download,
-                        strings.skip,
-                        function () {
-                            translate.create_session(sourceLang, destLang, function (percent) {
-                                callback('<em>' + strings.downloadingtranslator.replace('{$a}', percent) + '</em>');
-                            }).then(function (success) {
-                                return success ? translate.translate(text) : null;
-                            }).then(function (translation) {
-                                callback(translation ? translation : '');
-                            }).catch(function (e) {
-                                log.error('Translation error: ' + e);
-                                callback('');
-                            });
-                        },
-                        function () {
-                            // User skipped the model download: fall back to remote if possible.
-                            if (translate.force_remote()) {
-                                translate.create_session(sourceLang, destLang).then(function () {
-                                    return translate.translate(text);
-                                }).then(function (translation) {
-                                    callback(translation ? translation : '');
-                                }).catch(function (e) {
-                                    log.error('Translation error: ' + e);
-                                    callback('');
-                                });
-                            } else {
-                                callback('');
-                            }
-                        }
-                    );
-                } else if (status === 'ready') {
-                    translate.create_session(sourceLang, destLang).then(function () {
-                        return translate.translate(text);
-                    }).then(function (translation) {
-                        callback(translation ? translation : '');
-                    }).catch(function (e) {
-                        log.error('Translation error: ' + e);
-                        callback('');
-                    });
-                }
-            });
-        }
 
     }; // end of return value
 });

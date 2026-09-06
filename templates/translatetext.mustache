@@ -1,0 +1,56 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/translatetext
+
+    A translate icon and the panel its translation appears in. Include it wherever an item
+    shows text the learner may want in their native language. The data comes from
+    \mod_minilesson\local\itemtype\item::add_translatetext_data(), and the whole thing
+    renders nothing when the activity has native language translation switched off.
+
+    The markup is wired up by the mod_minilesson/translatetext AMD module.
+
+    Context variables required for this template:
+    * cantranslatetext boolean - Whether to offer translation at all
+    * translatecmid int - The course module id, for the translation web service
+    * translateitemid int - The item id, for the translation web service
+    * translatesourcelang string - The language the text is in, eg en-US
+    * translatedestlang string - The learner's native language, eg pt-BR
+    * translatertl string - RTL class for the translation panel, empty when not RTL
+    * translatetext string - The text to translate
+
+    Example context (json):
+    {
+        "cantranslatetext": true,
+        "translatecmid": 42,
+        "translateitemid": 7,
+        "translatesourcelang": "en-US",
+        "translatedestlang": "ja-JP",
+        "translatertl": "",
+        "translatetext": "He stands on the cans to reach the shelf."
+    }
+}}
+{{#cantranslatetext}}
+<div class="ml_translate" data-cmid="{{translatecmid}}" data-itemid="{{translateitemid}}"
+    data-sourcelang="{{translatesourcelang}}" data-destlang="{{translatedestlang}}">
+    <button type="button" class="ml_translate_btn"
+        aria-label="{{#str}}translatetext, mod_minilesson{{/str}}"
+        title="{{#str}}translatetext, mod_minilesson{{/str}}"
+        data-translatetext="{{translatetext}}"><i class="fa fa-language" aria-hidden="true"></i></button>
+    <div class="ml_translate_panel d-none {{translatertl}}"></div>
+</div>
+{{/cantranslatetext}}

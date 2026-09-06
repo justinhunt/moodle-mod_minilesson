@@ -1418,5 +1418,26 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026090103, 'minilesson');
     }
 
+    if ($oldversion < 2026090600) {
+        // Define field nativetranslation to be added to minilesson.
+        $table = new xmldb_table(constants::M_TABLE);
+        $field = new xmldb_field('nativetranslation', XMLDB_TYPE_INTEGER, '2', null, null, null, 1, 'allowcontinueattempts');
+
+        // Conditionally launch add field nativetranslation.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+            // Existing activities keep the translation they already offer (the TTS dialog's
+            // translate icon has always been on whenever a native language was set).
+            $DB->set_field(constants::M_TABLE, 'nativetranslation', 1, []);
+        }
+
+        // Update default templates - the fiction item type's per item "tap to translate" setting
+        // is retired in favour of the activity level one, so the templates no longer set it.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026090600, 'minilesson');
+    }
+
     return true;
 }

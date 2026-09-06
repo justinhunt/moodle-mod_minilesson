@@ -1,0 +1,45 @@
+@use '../../abstracts/variables' as *;
+
+// The translate icon and the panel its translation lands in, from the
+// mod_minilesson/translatetext template.
+.ml_translate {
+  margin-top: 0.35rem;
+  text-align: start;
+
+  .ml_translate_btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 1px solid darkgray;
+    border-radius: 50%;
+    background: $white;
+    color: $player-blue;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover,
+    &.ml_translate_btn_active {
+      background: $player-blue;
+      color: $white;
+    }
+  }
+
+  // The translation reads in the direction of the native language, which need not
+  // be the direction of the language the lesson is taught in.
+  .ml_translate_panel {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed lightgray;
+    color: $text-muted;
+    font-style: italic;
+    text-align: start;
+
+    &.mod_minilesson_rtl {
+      direction: rtl;
+      text-align: start;
+    }
+  }
+}

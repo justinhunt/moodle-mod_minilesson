@@ -1529,6 +1529,11 @@ $string['audiochat_student_submission'] = 'Student Submission';
 
 $string['translatetoimport'] = 'Translate to import';
 $string['nativelang'] = 'Learner\'s Native Language';
+$string['nativetranslation'] = 'Native Language Translation';
+$string['translatetext'] = 'Translate this text';
+$string['translating'] = 'Translating ...';
+$string['nativetranslation_details'] = 'When enabled certain item types will allow learners to translate text into their native language. These include: Fiction, TTS Dialog, and multichoice feedback.';
+$string['nativetranslation_help'] = 'When enabled certain item types will allow learners to translate text into their native language. These include: Fiction, TTS Dialog, and multichoice feedback.';
 $string['audioavatar'] = 'Audio Avatar';
 $string['audiochat_student_submission_instructions'] = 'If applicable set a Free Writing or Free Speaking item from earlier in the lesson. The transcript of the students submission can be passed into the AI prompt as context variable {student submission}. ';
 $string['aicontextheading'] = 'AI Context Data';
@@ -1556,8 +1561,6 @@ $string['fiction_history'] = 'Show history';
 $string['fiction_history_close'] = 'Close history';
 
 $string['fiction:syntaxcheckbutton'] = 'Syntax Check';
-$string['fiction:taptotranslate'] = 'Enable tap to translate';
-$string['fiction:taptotranslate_desc'] = 'If enabled, a translate icon appears in the lower right of each story text node. Tapping it translates that text into the learner\'s native language and shows the translation directly beneath the text.';
 $string['fiction:taptranslatearia'] = 'Translate this text';
 $string['yarnsyntaxok'] = 'Yarn Syntax Ok';
 $string['yarnsyntaxnotok'] = 'Yarn Syntax Not Ok';

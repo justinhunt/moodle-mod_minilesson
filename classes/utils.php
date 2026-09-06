@@ -2325,6 +2325,16 @@ class utils {
         $mform->setType('nativelang', PARAM_TEXT);
         $mform->setDefault('nativelang', $config->nativelang);
 
+        // Native language translation.
+        $mform->addElement(
+            'selectyesno',
+            'nativetranslation',
+            get_string('nativetranslation', constants::M_COMPONENT)
+        );
+        $mform->setType('nativetranslation', PARAM_INT);
+        $mform->addHelpButton('nativetranslation', 'nativetranslation', constants::M_COMPONENT);
+        $mform->setDefault('nativetranslation', $config->nativetranslation);
+
         // Allow continue attempts.
         $mform->addElement('selectyesno', 'allowcontinueattempts', get_string('allowcontinueattempts', constants::M_COMPONENT));
         $mform->setType('allowcontinueattempts', PARAM_INT);

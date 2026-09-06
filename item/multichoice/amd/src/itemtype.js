@@ -1,6 +1,7 @@
 define(
-    ['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper','mod_minilesson/animatecss', 'mod_minilesson/progresstimer'],
-    function ($, log, def, polly, anim, progresstimer) {
+    ['jquery', 'core/log', 'mod_minilesson/definitions', 'mod_minilesson/pollyhelper',
+        'mod_minilesson/animatecss', 'mod_minilesson/progresstimer', 'mod_minilesson/translatetext'],
+    function ($, log, def, polly, anim, progresstimer, translatetext) {
         "use strict"; // jshint ;_;
 
     /*
@@ -49,6 +50,8 @@ define(
                 var nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
                 var confirmchoicebutton = $("#" + itemdata.uniqueid + "_container .minilesson_mc_confirmchoice");
                 var resultspanel = $("#" + itemdata.uniqueid + "_container .minilesson_resultspanel");
+                // The correct answer feedback in the results panel can be translated.
+                translatetext.init(resultspanel);
                 var resultspanelswish = $("#" + itemdata.uniqueid + "_container .minilesson_resultspanel_swish");
                 var resultspanelstars = $("#" + itemdata.uniqueid + "_container .minilesson_swishstars");
                 var resultspanelscore = $("#" + itemdata.uniqueid + "_container .minilesson_swishscore");

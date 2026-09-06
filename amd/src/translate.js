@@ -1,4 +1,5 @@
-define(['jquery', 'core/log', 'core/ajax'], function ($, log, Ajax) {
+define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
+        function ($, log, Ajax, str, notification) {
     "use strict";
 
     return {
@@ -14,6 +15,8 @@ define(['jquery', 'core/log', 'core/ajax'], function ($, log, Ajax) {
         // May be less specific than the requested tags (e.g. pt when pt-BR has no model).
         nativeSourceLang: null,
         nativeDestLang: null,
+        // Resolved once by fetch_strings, for the model download prompt.
+        stringspromise: null,
 
         /**
          * Set the context needed for the remote (web service) translation fallback.
@@ -251,6 +254,114 @@ define(['jquery', 'core/log', 'core/ajax'], function ($, log, Ajax) {
                 log.error('Remote translation failed: ' + e.message);
             }
             return false;
+        },
+
+        /**
+         * The strings do_translate needs, fetched once and reused.
+         *
+         * @returns {Promise<object>} Resolves with the resolved strings.
+         */
+        fetch_strings: function () {
+            if (!this.stringspromise) {
+                this.stringspromise = str.get_strings([
+                    {key: 'downloadtranslationmodel', component: 'mod_minilesson'},
+                    {key: 'downloadtranslationmodel_desc', component: 'mod_minilesson'},
+                    {key: 'download', component: 'mod_minilesson'},
+                    {key: 'skip', component: 'mod_minilesson'},
+                    {key: 'downloadingtranslator', component: 'mod_minilesson'}
+                ]).then(function (s) {
+                    return {
+                        downloadtranslationmodel: s[0],
+                        downloadtranslationmodel_desc: s[1],
+                        download: s[2],
+                        skip: s[3],
+                        downloadingtranslator: s[4]
+                    };
+                });
+            }
+            return this.stringspromise;
+        },
+
+        /**
+         * Translate a piece of text end to end: reuse the current session if it fits, else
+         * check availability, ask the user before downloading a browser translation model,
+         * and fall back to the Poodll web service when there is no model to be had.
+         *
+         * The callback may be called more than once: while a model downloads it receives
+         * progress messages (with its second argument true), and then the translation, or
+         * an empty string on failure.
+         *
+         * @param {string} sourceLang Source language tag.
+         * @param {string} destLang Destination (native) language tag.
+         * @param {string} text The text to translate.
+         * @param {Function} callback Called with the translated (or progress/error) string,
+         *                            and whether that string is a progress message.
+         */
+        do_translate: function (sourceLang, destLang, text, callback) {
+            var that = this;
+
+            // Translate with the session we have, reporting failures as an empty string.
+            var translate_now = function () {
+                return that.translate(text).then(function (translation) {
+                    callback(translation ? translation : '');
+                }).catch(function (e) {
+                    log.error('Translation error: ' + e);
+                    callback('');
+                });
+            };
+
+            // Reuse an existing session for the same language pair.
+            if (this.session && this.sourceLang === sourceLang && this.destLang === destLang) {
+                translate_now();
+                return;
+            }
+
+            var start_session = function (progresscallback) {
+                return that.create_session(sourceLang, destLang, progresscallback).then(function () {
+                    return translate_now();
+                }).catch(function (e) {
+                    log.error('Translation error: ' + e);
+                    callback('');
+                });
+            };
+
+            this.check_availability(sourceLang, destLang).then(function (status) {
+                if (status === 'unavailable') {
+                    log.debug('Translation not available for this language pair');
+                    callback('');
+                    return;
+                }
+                if (status !== 'download_needed') {
+                    start_session();
+                    return;
+                }
+                // A browser translation model has to be downloaded first, so ask.
+                that.fetch_strings().then(function (strings) {
+                    notification.confirm(
+                        strings.downloadtranslationmodel,
+                        strings.downloadtranslationmodel_desc,
+                        strings.download,
+                        strings.skip,
+                        function () {
+                            start_session(function (percent) {
+                                callback('<em>' + strings.downloadingtranslator.replace('{$a}', percent) + '</em>', true);
+                            });
+                        },
+                        function () {
+                            // The user skipped the model download: fall back to remote if we can.
+                            if (that.force_remote()) {
+                                start_session();
+                            } else {
+                                callback('');
+                            }
+                        }
+                    );
+                    return;
+                }).catch(function (e) {
+                    log.error('Translation error: ' + e);
+                    callback('');
+                });
+            });
         }
     };
 });

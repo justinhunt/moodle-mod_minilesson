@@ -88,7 +88,8 @@ define([
             // We need to wait for the availability check before we start the story,
             // otherwise $cantranslate will be false in the first render's conditions.
             translate.check_availability(this.sourceLang, this.destLang).then(function (availability) {
-                that.storydata.set('cantranslate', availability !== 'unavailable');
+                // Translation also has to be enabled on the activity (taptotranslate).
+                that.storydata.set('cantranslate', that.taptotranslate && availability !== 'unavailable');
 
                 // Auto-declare variables from Yarn script
                 // This makes sure indialogue variables are initialized as well as out of dialogue ones
@@ -113,6 +114,10 @@ define([
                                     that.im_pendingInlineTranslate = text;
                                 }
                                 return "";
+                            }
+                            if (!that.storydata.get('cantranslate')) {
+                                // Translation is off for this activity, or unavailable. Show the source text.
+                                return text;
                             }
                             var randomId = Math.random().toString(36).substring(2, 9);
                             var updateStory = function (themessage, attemptsleft) {

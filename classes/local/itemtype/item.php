@@ -1010,25 +1010,13 @@ abstract class item implements \templatable, \renderable {
 
             // Translation support (mirrors the fiction item type). The translate icon
             // per line lets a learner translate a line into their native language.
-            $ttsdialogsourcelang = $this->moduleinstance->ttslanguage;
-            $ttsdialognativelang = $this->moduleinstance->nativelang;
-            if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
-                $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
-                if (!empty($userprefnativelanguage)) {
-                    $ttsdialognativelang = $userprefnativelanguage;
-                }
-            }
-            $testitem->ttsdialogcmid = $this->context->instanceid;
-            $testitem->ttsdialogitemid = $this->itemrecord->id;
-            $testitem->ttsdialogsourcelang = $ttsdialogsourcelang;
-            $testitem->ttsdialognativelang = $ttsdialognativelang;
-            // Only offer translation when a native language is set and it differs from the target language.
-            $basesource = strtolower(explode('-', (string) $ttsdialogsourcelang)[0]);
-            $basedest = strtolower(explode('-', (string) $ttsdialognativelang)[0]);
-            $testitem->ttsdialogcantranslate = !empty($ttsdialognativelang) && $basesource !== $basedest;
-            // Translation panel direction follows the translation (native) language, which is
-            // independent of the dialog's target language direction (the {{rtl}} class).
-            $testitem->ttsdialognativelangrtl = utils::is_rtl($ttsdialognativelang) ? constants::M_CLASS . '_rtl' : '';
+            $tc = $this->get_translation_context();
+            $testitem->ttsdialogcmid = $tc->cmid;
+            $testitem->ttsdialogitemid = $tc->itemid;
+            $testitem->ttsdialogsourcelang = $tc->sourcelang;
+            $testitem->ttsdialognativelang = $tc->destlang;
+            $testitem->ttsdialogcantranslate = $tc->cantranslate;
+            $testitem->ttsdialognativelangrtl = $tc->rtlclass;
         } // end of tts dialog
 
         // Native Language Chooser.
@@ -2405,6 +2393,68 @@ abstract class item implements \templatable, \renderable {
      */
     public static function supports_translation() {
         return false;
+    }
+
+    /**
+     * The language a learner's text is translated into: the activity's native language,
+     * overridden by the learner's own native language preference when the site allows it.
+     *
+     * @return string The language tag, or an empty string if none is set.
+     */
+    public function get_native_language() {
+        $nativelang = $this->moduleinstance->nativelang;
+        if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
+            $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
+            if (!empty($userprefnativelanguage)) {
+                $nativelang = $userprefnativelanguage;
+            }
+        }
+        return (string) $nativelang;
+    }
+
+    /**
+     * What the front end needs to translate this item's text into the learner's native
+     * language. Translation is offered only when the activity allows it and the native
+     * language is set and differs from the language the lesson is taught in.
+     *
+     * @return \stdClass cantranslate, cmid, itemid, sourcelang, destlang and rtlclass.
+     */
+    public function get_translation_context() {
+        $tc = new \stdClass();
+        $tc->cmid = !empty($this->context) ? $this->context->instanceid : 0;
+        $tc->itemid = !empty($this->itemrecord) ? $this->itemrecord->id : 0;
+        $tc->sourcelang = $this->moduleinstance->ttslanguage;
+        $tc->destlang = $this->get_native_language();
+        $basesource = strtolower(explode('-', (string) $tc->sourcelang)[0]);
+        $basedest = strtolower(explode('-', (string) $tc->destlang)[0]);
+        $tc->cantranslate = !empty($this->moduleinstance->nativetranslation)
+            && !empty($tc->destlang) && $basesource !== $basedest;
+        // The translation reads in the direction of the native language, which is
+        // independent of the direction of the language the lesson is taught in.
+        $tc->rtlclass = utils::is_rtl($tc->destlang) ? constants::M_CLASS . '_rtl' : '';
+        return $tc;
+    }
+
+    /**
+     * Stamp onto $data everything the mod_minilesson/translatetext partial needs to offer
+     * a translation of $text. The partial renders nothing when cantranslatetext is false.
+     * Only the readable text is sent for translation, never any markup around it.
+     *
+     * @param \stdClass $data The template/results data to add the fields to.
+     * @param string $text The text the learner may translate.
+     * @return \stdClass The same object, for chaining.
+     */
+    public function add_translatetext_data($data, $text) {
+        $tc = $this->get_translation_context();
+        $plaintext = utils::super_trim(strip_tags((string) $text));
+        $data->cantranslatetext = $tc->cantranslate && $plaintext !== '';
+        $data->translatecmid = $tc->cmid;
+        $data->translateitemid = $tc->itemid;
+        $data->translatesourcelang = $tc->sourcelang;
+        $data->translatedestlang = $tc->destlang;
+        $data->translatertl = $tc->rtlclass;
+        $data->translatetext = $plaintext;
+        return $data;
     }
 
     /**
