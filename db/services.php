@@ -277,6 +277,14 @@ $functions = [
             'type' => 'read',
             'ajax' => true,
         ],
+        'mod_minilesson_fetch_polly_url' => [
+            'classname' => 'mod_minilesson\external\fetch_polly_url',
+            'methodname' => 'execute',
+            'description' => 'Resolves a cached TTS (Polly) audio URL for a piece of text',
+            'capabilities' => 'mod/minilesson:view',
+            'type' => 'read',
+            'ajax' => true,
+        ],
 ];
 
 $services = [

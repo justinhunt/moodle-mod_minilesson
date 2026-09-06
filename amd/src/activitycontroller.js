@@ -34,12 +34,7 @@ define(['jquery', 'core/log','mod_minilesson/definitions','mod_minilesson/quizhe
             dd.attemptid = 1;
             dd.sorryboxid = props.widgetid + '_sorrybox';
 
-            polly.init(
-                dd.activitydata.token,
-                dd.activitydata.region,
-                dd.activitydata.owner,
-                dd.activitydata.cloudpoodllurl
-            );
+            polly.init(dd.cmid);
 
             dd.register_events();
             dd.process_html();
