@@ -178,7 +178,8 @@ one time, and only on a pass where the condition holds.
   way to vary a place by whether it has been seen: `<<if visited("Cellar")>>` reads the state
   of a *different* node, where the `<<once>>` block reads only its own.
 - `random()` - a random number between 0 and 1; `floor(n)` - round down.
-- `translate("text")` - renders the text translated into the learner's native language.
+- `translate("text")` - renders the text translated into the learner's native language, or
+  the text as written when translation is not available to them.
 
 ### Two smaller tools
 
@@ -193,7 +194,8 @@ Neither is needed for a good story; reach for them only when an `<<if>>` would b
 ### System variables
 
 `$userfirstname`, `$userlastname`, `$userfullname` are filled in with the learner's name.
-`$cantranslate` is true when translation is available to this learner.
+`$cantranslate` is true when translation is available to this learner: the activity has
+Native Language Translation enabled, and their native language can be translated into.
 
 ### Scoring
 
