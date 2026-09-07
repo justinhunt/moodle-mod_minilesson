@@ -71,7 +71,14 @@ $ttsdialog-indent: 4rem;
   }
 
   // A conversation line: a compact rounded card, left aligned by default.
+  // Each line carries its speaker's colour in custom properties, so the leading
+  // edge, the label and the "currently playing" treatment all share one hue.
+  // The defaults here cover lines with no speaker (sound effects).
   .ttsdialog_block {
+    --ttsdialog-speaker: #{$text-muted};
+    --ttsdialog-speaker-soft: #{rgba($text-muted, 0.28)};
+    --ttsdialog-speaker-bg: #{rgba($text-muted, 0.06)};
+
     position: relative;
     box-sizing: border-box;
     width: 100%;
@@ -81,7 +88,7 @@ $ttsdialog-indent: 4rem;
     border-radius: 14px;
     background-color: $white;
     box-shadow: 0 1px 3px rgba($black, 0.06);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 
     // Speaker B is indented; C is indented half as much (logical, so it flips in RTL).
     &.ttsdialog_indent_b {
@@ -94,21 +101,37 @@ $ttsdialog-indent: 4rem;
 
     // Speaker colour accents on the leading edge.
     &.rolea {
-      border-inline-start: 4px solid $blue;
+      --ttsdialog-speaker: #{$blue};
+      --ttsdialog-speaker-soft: #{rgba($blue, 0.28)};
+      --ttsdialog-speaker-bg: #{rgba($blue, 0.06)};
     }
 
     &.roleb {
-      border-inline-start: 4px solid $green;
+      --ttsdialog-speaker: #{$green};
+      --ttsdialog-speaker-soft: #{rgba($green, 0.28)};
+      --ttsdialog-speaker-bg: #{rgba($green, 0.06)};
     }
 
     &.rolec {
-      border-inline-start: 4px solid $orange;
+      --ttsdialog-speaker: #{$orange};
+      --ttsdialog-speaker-soft: #{rgba($orange, 0.28)};
+      --ttsdialog-speaker-bg: #{rgba($orange, 0.06)};
     }
 
-    // The currently playing line.
+    &.rolea,
+    &.roleb,
+    &.rolec {
+      border-inline-start: 4px solid var(--ttsdialog-speaker);
+    }
+
+    // The currently playing line: the same speaker hue, just louder. The whole
+    // border takes the speaker colour, the leading edge thickens, and a soft
+    // ring in the same hue lifts the card off the page.
     &.ttsdialog_active {
-      border-color: $primary;
-      box-shadow: 0 0 0 2px rgba($primary, 0.35);
+      border-color: var(--ttsdialog-speaker);
+      border-inline-start-width: 6px;
+      background-color: var(--ttsdialog-speaker-bg);
+      box-shadow: 0 0 0 3px var(--ttsdialog-speaker-soft), 0 2px 6px rgba($black, 0.1);
     }
   }
 
@@ -122,19 +145,27 @@ $ttsdialog-indent: 4rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     text-align: start;
-    color: $text-muted;
+    color: var(--ttsdialog-speaker);
   }
 
-  .rolea .ttsdialog_label {
-    color: $blue;
+  // A pulsing dot beside the label of the line being played, so "playing" is
+  // legible without relying on colour alone.
+  .ttsdialog_active .ttsdialog_label::after {
+    content: '';
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-inline-start: 0.4rem;
+    border-radius: 50%;
+    background-color: currentColor;
+    vertical-align: middle;
+    animation: ttsdialog_pulse 1.2s ease-in-out infinite;
   }
 
-  .roleb .ttsdialog_label {
-    color: $green;
-  }
-
-  .rolec .ttsdialog_label {
-    color: $orange;
+  @media (prefers-reduced-motion: reduce) {
+    .ttsdialog_active .ttsdialog_label::after {
+      animation: none;
+    }
   }
 
   // Text on the leading side, icon buttons on the trailing side.
@@ -206,5 +237,18 @@ $ttsdialog-indent: 4rem;
     color: $text-muted;
     font-size: 0.9em;
     text-align: center;
+  }
+}
+
+@keyframes ttsdialog_pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.35;
+    transform: scale(0.75);
   }
 }

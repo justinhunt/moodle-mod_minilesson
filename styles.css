@@ -2838,6 +2838,9 @@ span.wrongitem {
   direction: rtl;
 }
 .ttsdialogplayer .ttsdialog_block {
+  --ttsdialog-speaker: #80859d;
+  --ttsdialog-speaker-soft: rgba(128, 133, 157, 0.28);
+  --ttsdialog-speaker-bg: rgba(128, 133, 157, 0.06);
   position: relative;
   box-sizing: border-box;
   width: 100%;
@@ -2847,7 +2850,7 @@ span.wrongitem {
   border-radius: 14px;
   background-color: #FFFFFF;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
 .ttsdialogplayer .ttsdialog_block.ttsdialog_indent_b {
   margin-inline-start: 4rem;
@@ -2856,17 +2859,28 @@ span.wrongitem {
   margin-inline-start: calc(4rem / 2);
 }
 .ttsdialogplayer .ttsdialog_block.rolea {
-  border-inline-start: 4px solid blue;
+  --ttsdialog-speaker: blue;
+  --ttsdialog-speaker-soft: rgba(0, 0, 255, 0.28);
+  --ttsdialog-speaker-bg: rgba(0, 0, 255, 0.06);
 }
 .ttsdialogplayer .ttsdialog_block.roleb {
-  border-inline-start: 4px solid green;
+  --ttsdialog-speaker: green;
+  --ttsdialog-speaker-soft: rgba(0, 128, 0, 0.28);
+  --ttsdialog-speaker-bg: rgba(0, 128, 0, 0.06);
 }
 .ttsdialogplayer .ttsdialog_block.rolec {
-  border-inline-start: 4px solid orange;
+  --ttsdialog-speaker: orange;
+  --ttsdialog-speaker-soft: rgba(255, 165, 0, 0.28);
+  --ttsdialog-speaker-bg: rgba(255, 165, 0, 0.06);
+}
+.ttsdialogplayer .ttsdialog_block.rolea, .ttsdialogplayer .ttsdialog_block.roleb, .ttsdialogplayer .ttsdialog_block.rolec {
+  border-inline-start: 4px solid var(--ttsdialog-speaker);
 }
 .ttsdialogplayer .ttsdialog_block.ttsdialog_active {
-  border-color: #506DFF;
-  box-shadow: 0 0 0 2px rgba(80, 109, 255, 0.35);
+  border-color: var(--ttsdialog-speaker);
+  border-inline-start-width: 6px;
+  background-color: var(--ttsdialog-speaker-bg);
+  box-shadow: 0 0 0 3px var(--ttsdialog-speaker-soft), 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 .ttsdialogplayer .ttsdialog_label {
   display: block;
@@ -2876,16 +2890,23 @@ span.wrongitem {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   text-align: start;
-  color: #80859d;
+  color: var(--ttsdialog-speaker);
 }
-.ttsdialogplayer .rolea .ttsdialog_label {
-  color: blue;
+.ttsdialogplayer .ttsdialog_active .ttsdialog_label::after {
+  content: "";
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-inline-start: 0.4rem;
+  border-radius: 50%;
+  background-color: currentColor;
+  vertical-align: middle;
+  animation: ttsdialog_pulse 1.2s ease-in-out infinite;
 }
-.ttsdialogplayer .roleb .ttsdialog_label {
-  color: green;
-}
-.ttsdialogplayer .rolec .ttsdialog_label {
-  color: orange;
+@media (prefers-reduced-motion: reduce) {
+  .ttsdialogplayer .ttsdialog_active .ttsdialog_label::after {
+    animation: none;
+  }
 }
 .ttsdialogplayer .ttsdialog_block_main {
   display: flex;
@@ -2945,6 +2966,16 @@ span.wrongitem {
   text-align: center;
 }
 
+@keyframes ttsdialog_pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.75);
+  }
+}
 .ml_translate {
   margin-top: 0.35rem;
   text-align: start;
