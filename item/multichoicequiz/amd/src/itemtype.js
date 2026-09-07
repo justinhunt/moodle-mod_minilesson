@@ -5,8 +5,9 @@ define(['jquery',
     'mod_minilesson/progresstimer',
     'core/templates',
     'core/str',
-    'core/notification'
-], function ($, log, def, anim, progresstimer, templates, str, notification) {
+    'core/notification',
+    'mod_minilesson/translatetext'
+], function ($, log, def, anim, progresstimer, templates, str, notification, translatetext) {
     "use strict"; // jshint ;_;
 
     /*
@@ -56,6 +57,7 @@ define(['jquery',
                 container: $("#" + self.itemdata.uniqueid + "_container"),
                 nextbutton: $("#" + self.itemdata.uniqueid + "_container .minilesson_nextbutton"),
                 confirmchoicebutton: $("#" + self.itemdata.uniqueid + "_container .minilesson_mc_confirmchoice"),
+                continuebutton: $("#" + self.itemdata.uniqueid + "_container .mcq_continuebutton"),
                 questionsbox: $("#" + self.itemdata.uniqueid + "_container .mcq_questionsbox"),
                 progressdots: $("#" + self.itemdata.uniqueid + "_container .mcq_progressdots"),
                 progresscontainer: $("#" + self.itemdata.uniqueid + "_container .progress-container"),
@@ -92,6 +94,7 @@ define(['jquery',
                 return {
                     qindex: question.qindex,
                     questiontext: question.questiontext,
+                    feedback: question.feedback,
                     correcttext: correctsentence,
                     correctanswer: question.correctanswer,
                     answered: false,
@@ -208,6 +211,7 @@ define(['jquery',
                 chosen.find('.minilesson_mc_right').show();
                 self.current_question().find('.minilesson_mc_response').addClass('minilesson_mc_disabled');
                 self.updateProgressDots();
+                self.reveal_feedback();
                 self.move_on();
             } else if (self.itemdata.allowretry) {
                 //wrong, but they can keep choosing until they find the correct answer
@@ -227,8 +231,26 @@ define(['jquery',
                     .show();
                 self.current_question().find('.minilesson_mc_response').addClass('minilesson_mc_disabled');
                 self.updateProgressDots();
+                self.reveal_feedback();
                 self.move_on();
             }
+        },
+
+        /**
+         * Show the feedback of the question just settled, if it has any. Called once the question
+         * is done with (answered correctly, or wrongly with no retry left), never on a wrong answer
+         * the learner may still retry, because the feedback gives the answer away.
+         */
+        reveal_feedback: function () {
+            var self = this;
+            var thefeedback = self.current_question().find('.mcq_feedback');
+            if (thefeedback.length === 0) {
+                return;
+            }
+            thefeedback.show();
+            //the feedback may be translated into the learner's native language
+            translatetext.init(thefeedback);
+            anim.do_animate(thefeedback, 'fadeIn animate__faster', 'in');
         },
 
         move_on: function () {
@@ -239,13 +261,20 @@ define(['jquery',
                     return item.answered;
                 });
                 if (allanswered) {
-                    setTimeout(function () {
-                        self.end();
-                    }, 1600);
+                    //with feedback on the page there is something to read, so wait for a tap
+                    if (self.itemdata.hasfeedback) {
+                        self.await_continue(function () {
+                            self.end();
+                        });
+                    } else {
+                        setTimeout(function () {
+                            self.end();
+                        }, 1600);
+                    }
                 }
                 return;
             }
-            setTimeout(function () {
+            var advance = function () {
                 if (self.pointer < self.items.length - 1) {
                     self.current_question().hide();
                     self.pointer++;
@@ -253,7 +282,36 @@ define(['jquery',
                 } else {
                     self.end();
                 }
-            }, 1600);
+            };
+            //an item with feedback anywhere in it advances on a tap, so that there is time to read
+            if (self.itemdata.hasfeedback) {
+                self.await_continue(advance);
+            } else {
+                setTimeout(advance, 1600);
+            }
+        },
+
+        /**
+         * Hold the quiz on the answered question until the learner taps continue, then run $callback.
+         *
+         * @param {function} callback what to do once they tap continue
+         */
+        await_continue: function (callback) {
+            var self = this;
+            self.controls.continuebutton.off('click keydown');
+            self.controls.continuebutton.on('click', function () {
+                self.controls.continuebutton.off('click keydown');
+                self.controls.continuebutton.hide();
+                callback();
+            });
+            self.controls.continuebutton.on('keydown', function (e) {
+                if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    $(this).trigger('click');
+                }
+            });
+            self.controls.continuebutton.show();
+            anim.do_animate(self.controls.continuebutton, 'zoomIn animate__faster', 'in');
         },
 
         show_question: function (qindex) {
@@ -289,6 +347,7 @@ define(['jquery',
             var self = this;
             //the time limit is up: no more answering, straight to the results
             self.controls.container.find('.minilesson_mc_response').addClass('minilesson_mc_disabled');
+            self.controls.continuebutton.off('click keydown').hide();
             self.end();
         },
 
@@ -319,6 +378,10 @@ define(['jquery',
                 var answerclass = item.correct ? 'correctitem' : 'wrongitem';
                 item.target = self.escape_html(item.questiontext) +
                     ' <span class="' + answerclass + '">' + self.escape_html(item.correcttext) + '</span>';
+                //the feedback is authored HTML, and goes on its own line under the question
+                if (item.feedback) {
+                    item.target += '<div class="mcq_reviewfeedback w-100">' + item.feedback + '</div>';
+                }
             });
             review_data.items = self.items;
             review_data.totalitems = self.items.length;
@@ -332,6 +395,7 @@ define(['jquery',
                     self.controls.resultscontainer.show();
                     self.controls.questionsbox.hide();
                     self.controls.confirmchoicebutton.hide();
+                    self.controls.continuebutton.hide();
                     self.controls.progressdots.hide();
                     self.controls.progresscontainer.removeClass('d-flex');
                     self.controls.progresscontainer.hide();

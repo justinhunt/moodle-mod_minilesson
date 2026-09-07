@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'minilessonitem_multichoicequiz';
 $plugin->release      = '1.0';
-$plugin->version      = 2026071400;
+$plugin->version      = 2026090700;
 $plugin->requires     = 2022041900;
 $plugin->supported    = [400, 501];
 $plugin->maturity     = MATURITY_STABLE;

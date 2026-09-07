@@ -96,6 +96,23 @@ class itemform extends baseform {
                 $correctansweroptions,
                 1
             );
+
+            // Optional feedback explaining the correct answer, shown once the question is answered.
+            if ($required) {
+                $this->add_static_text(
+                    'instructionsfeedback',
+                    '',
+                    get_string('questionfeedback_details', self::fetch_component())
+                );
+            }
+            $feedbackfield = itemtype::col_feedback($qnumber);
+            $mform->addElement(
+                'textarea',
+                $feedbackfield,
+                get_string('questionfeedback', self::fetch_component()),
+                ['wrap' => 'virtual', 'style' => 'width: 100%;']
+            );
+            $mform->setType($feedbackfield, PARAM_RAW);
         }
     }
 
