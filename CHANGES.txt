@@ -1,3 +1,11 @@
+Version 1.1.53 (Build 2026090700)
+- Added several language files
+- improved formatting of tts dialog
+- added tts voice to fiction item 
+- added narrative-style/spatial-map distinction to AI generate for fiction
+- added feedback to multichoice quiz item
+- added "native language translation" admin/instance setting that enables it on: fiction messages, multichoice feedback, TTS Dialog
+
 Version 1.1.52 (Build 2026083103)
 - Fixes for poor prompt following AI on MCP
 - Fixes for lesson bank endless scroll
