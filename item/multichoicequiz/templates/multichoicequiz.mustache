@@ -22,10 +22,12 @@
 
     Context variables required for this template:
     * uniqueid - unique id of the item on the page
-    * questions - array of question objects (qindex, qnumber, questiontext, sentences)
+    * questions - array of question objects (qindex, qnumber, questiontext, sentences, feedback)
     * questions.sentences - array of answer objects (index, indexplusone, sentence, prompt, resulttext)
+    * questions.feedback - optional feedback explaining the correct answer, revealed once answered
     * totalquestions - number of questions
     * showallquestions - show all the questions at once, instead of one at a time
+    * hasfeedback - any question has feedback, so the item advances on a tap rather than a timer
 }}
 {{> mod_minilesson/questionheader}}
 {{> mod_minilesson/progresstimer}}
@@ -49,6 +51,12 @@
             </div>
         {{/sentences}}
         </div>
+        {{#feedback}}
+        <div class="mcq_feedback ml_mc_correctfeedback text-center m-2 p-2 bg-light" style="display: none;">
+            {{{feedback}}}
+            {{> mod_minilesson/translatetext}}
+        </div>
+        {{/feedback}}
     </div>
 {{/questions}}
 </div>
@@ -59,5 +67,14 @@
         </div>
     </div>
 </div>
+{{#hasfeedback}}
+<div class="row mcplayrow">
+    <div class="col-md-6" style="margin-left: auto;margin-right: auto">
+        <div class="mcq_continuebutton" style="display: none;" tabindex="0" role="button">
+            <span class="minilesson_sentence">{{#str}}continue{{/str}}</span>
+        </div>
+    </div>
+</div>
+{{/hasfeedback}}
 <div class="resultscontainer mcq_resultscontainer"></div>
 {{> mod_minilesson/questionfooter}}

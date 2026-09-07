@@ -8244,6 +8244,25 @@ div.mcaudiotranscript {
   margin-top: 0.5rem;
 }
 
+.mcq_reviewfeedback {
+  font-size: 0.9em;
+  font-style: italic;
+  opacity: 0.8;
+  text-align: left;
+}
+
+.mcq_continuebutton {
+  background-color: blue;
+  border: 1px solid black;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 1.33em;
+  overflow: auto;
+  padding: 10px;
+  text-align: center;
+}
+
 .mod_minilesson_spokenandcorrect {
   text-align: center;
   margin-left: auto;

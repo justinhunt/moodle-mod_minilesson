@@ -39,6 +39,30 @@ class itemtype extends item {
     /** @var int The maximum number of questions in one quiz item. */
     public const MAXQUESTIONS = 5;
 
+    /*
+     * The per question columns of a multichoice quiz, in one place. The mapping is irregular
+     * because the generic columns it would naturally use are reserved for other purposes:
+     *
+     *   question 1 : customtext1  customdata1  customint5   customtext8
+     *   question 2 : customtext2  customdata2  customint6   customtext9
+     *   question 3 : customtext3  customdata3  customint7   customtext10
+     *   question 4 : customtext4  customdata4  customint8   customtext11
+     *   question 5 : customtext6  customtext7  customint9   customtext12
+     *                (text)       (answers)    (correct)    (feedback)
+     *
+     * customtext5 is pollyvoice, customdata5 is the media iframe, customint3 is confirmchoice
+     * and customint4 is pollyoption, so question 5 and the correct answers step around them.
+     */
+
+    /**
+     * A multichoice quiz offers translation of its per question answer feedback.
+     *
+     * @return bool
+     */
+    public static function supports_translation() {
+        return true;
+    }
+
     /** @var string Shared setting: shuffle the answer options of every question. */
     public const SHUFFLEANSWER = 'customint1';
 
@@ -101,6 +125,20 @@ class itemtype extends item {
     }
 
     /**
+     * DB column holding the optional feedback (an explanation of the correct answer, shown once
+     * the question is answered) of the given question.
+     *
+     * Feedback is stored in customtext8 .. customtext12, the generic text columns added for it,
+     * because every earlier text column is already taken (see the column map above).
+     *
+     * @param int $questionnumber 1-based question number
+     * @return string
+     */
+    public static function col_feedback(int $questionnumber): string {
+        return 'customtext' . (7 + $questionnumber);
+    }
+
+    /**
      * Export the data for the mustache template.
      *
      * @param \renderer_base $output renderer to be used to render the action bar elements.
@@ -142,6 +180,11 @@ class itemtype extends item {
             $question->qnumber = $question->qindex + 1;
             $question->questiontext = $questiontext;
             $question->correctanswer = (int)($itemrecord->{self::col_correctanswer($qnumber)} ?? 1);
+            // Optional rich text feedback explaining the correct answer, revealed once the question
+            // is answered. The learner may translate it into their native language, and each question
+            // carries its own translation data because each has its own feedback.
+            $question->feedback = trim($itemrecord->{self::col_feedback($qnumber)} ?? '');
+            $this->add_translatetext_data($question, $question->feedback);
             $question->sentences = [];
             foreach ($answers as $aindex => $sentence) {
                 $s = new stdClass();
@@ -170,6 +213,15 @@ class itemtype extends item {
             $testitem->questions[] = $question;
         }
         $testitem->totalquestions = count($testitem->questions);
+        // Feedback has to be read, so an item that has any switches from advancing on a timer to
+        // advancing on a tap (see the JS).
+        $testitem->hasfeedback = false;
+        foreach ($testitem->questions as $question) {
+            if ($question->feedback !== '') {
+                $testitem->hasfeedback = true;
+                break;
+            }
+        }
 
         return $testitem;
     }
@@ -246,10 +298,11 @@ class itemtype extends item {
     public static function aigen_fetch_usage() {
         return 'A set of up to ' . self::MAXQUESTIONS . ' multichoice questions about one shared resource, '
             . 'e.g. a reading passage or a listening passage/dialog. The resource stays on screen while the '
-            . 'questions are asked one at a time (or all at once). Use it for reading or listening comprehension '
+            . 'questions are asked one at a time (or all at once). Each question may carry its own feedback '
+            . 'explaining the correct answer. Use it for reading or listening comprehension '
             . 'quizzes where several questions share the same stimulus, instead of creating several separate '
             . 'multichoice items. Answer options are text only - if you need image or audio answer options, '
-            . 'or per-question feedback, use separate multichoice items instead. For more than '
+            . 'use separate multichoice items instead. For more than '
             . self::MAXQUESTIONS . ' questions, split into two multichoicequiz items.';
     }
 
@@ -287,10 +340,18 @@ class itemtype extends item {
             $ownfields['correctanswer' . $qnumber] = [
                 'description' => 'The 1-based index of the correct answer option for question ' . $qnumber . '.',
             ];
+            $ownfields['feedback' . $qnumber] = [
+                'description' => 'Optional feedback for question ' . $qnumber . ', explaining why the correct '
+                    . 'answer is correct. Shown to the learner as soon as the question is answered, and again '
+                    . 'in the attempt review. When any question has feedback, the quiz waits for a tap before '
+                    . 'moving on instead of advancing on a timer.',
+            ];
         }
         $ownfields['question1']['example'] = 'What does the boy do with the two cans at the end?';
         $ownfields['answers1']['example'] = '["He drinks them.", "He stands on them.", "He throws them away."]';
         $ownfields['correctanswer1']['example'] = '2';
+        $ownfields['feedback1']['example'] = 'He cannot reach the shelf, so he stands on the cans to make '
+            . 'himself taller.';
 
         // The shared settings.
         $ownfields += [
@@ -357,7 +418,8 @@ class itemtype extends item {
             'usage' => 'Compose one item object per quiz. Supply the shared resource (a reading passage in '
                 . '"textarea", or a listening passage/conversation via ttsdialog or ttspassage), then '
                 . 'question1/answers1/correctanswer1 (required) and up to ' . (self::MAXQUESTIONS - 1)
-                . ' more numbered question/answers/correctanswer sets. Every filled-in question needs at least '
+                . ' more numbered question/answers/correctanswer sets, each optionally with a feedbackN '
+                . 'explaining its correct answer. Every filled-in question needs at least '
                 . '2 answer options and a correctanswer within range. For a listening quiz where the audio reads '
                 . 'the answer options, set hideanswertext=2 and start the spoken options with "A)", "B)", "C)", "D)".',
             'fields' => array_values($fields),
@@ -381,6 +443,7 @@ class itemtype extends item {
                         'question1' => 'Why does the big man lean on the car?',
                         'answers1' => ['To push it.', 'To rest.', 'To open the door.'],
                         'correctanswer1' => 2,
+                        'feedback1' => 'He has just jogged to the car, so he leans on it to catch his breath.',
                         'question2' => 'What does the young man think is happening?',
                         'answers2' => [
                             'The big man is pushing the car.',
@@ -428,6 +491,14 @@ class itemtype extends item {
             'optional' => true, 'default' => self::HIDEANSWER_NO, 'dbname' => self::HIDEANSWERTEXT];
         $keycols['int11'] = ['jsonname' => 'showallquestions', 'type' => 'boolean',
             'optional' => true, 'default' => 0, 'dbname' => self::SHOWALLQUESTIONS];
+        // The feedback columns are appended after everything else, and must stay there: a CSV import
+        // is positional, so inserting a column in the middle would mis-map every CSV exported before
+        // feedback existed.
+        for ($qnumber = 1; $qnumber <= self::MAXQUESTIONS; $qnumber++) {
+            $feedbackcol = self::col_feedback($qnumber);
+            $keycols[substr($feedbackcol, 6)] = ['jsonname' => 'feedback' . $qnumber, 'type' => 'string',
+                'optional' => true, 'default' => '', 'dbname' => $feedbackcol];
+        }
         return $keycols;
     }
 
@@ -441,7 +512,8 @@ class itemtype extends item {
     public static function aigen_fetch_prompt($itemtemplate, $generatemethod) {
         $shape = "For each question N (N = 1 to 5) return the question text as 'questionN', ";
         $shape .= "a one dimensional array of 4 answers as 'answersN', ";
-        $shape .= "and the correct answer as a number 1-4 in 'correctanswerN'. ";
+        $shape .= "the correct answer as a number 1-4 in 'correctanswerN', ";
+        $shape .= "and one or two sentences in 'feedbackN' explaining why that answer is correct. ";
 
         switch ($generatemethod) {
             case 'extract':
@@ -479,6 +551,7 @@ class itemtype extends item {
         $result->incorrectans = [];
 
         $correctanswers = [];
+        $feedbacks = [];
         foreach ($itemquizdata->questions as $question) {
             foreach ($question->sentences as $sentence) {
                 if ($question->correctanswer == $sentence->indexplusone) {
@@ -486,6 +559,23 @@ class itemtype extends item {
                     break;
                 }
             }
+            if (!empty($question->feedback)) {
+                $feedback = (object) [
+                    'questiontext' => $question->questiontext,
+                    'feedback' => $question->feedback,
+                ];
+                // The learner may translate the feedback here too, so each entry carries its own
+                // translation data (quizfinished.js inits the translate widgets in the rendered panel).
+                $this->add_translatetext_data($feedback, $question->feedback);
+                $feedbacks[] = $feedback;
+            }
+        }
+
+        // The answer details panel of the attempt review holds the feedback of every question that has some.
+        if (count($feedbacks) > 0) {
+            $result->hasanswerdetails = true;
+            $result->resultsdatajson = json_encode(['feedbacks' => $feedbacks]);
+            $result->resultstemplate = self::get_component() . '/multichoicequizresults';
         }
         $result->hascorrectanswer = count($correctanswers) > 0;
         $result->correctans = $correctanswers;

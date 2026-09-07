@@ -1,0 +1,45 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_multichoicequiz/multichoicequizresults
+
+    The answer details panel of a multichoice quiz item in the attempt review: the feedback of
+    each question that has some, under the question it belongs to. Rendered by
+    mod_minilesson/quizfinished, from the data prepared in itemtype::prepare_result().
+
+    Context variables required for this template:
+    * feedbacks - array of objects, each with questiontext, feedback and the translate fields
+      that mod_minilesson/translatetext needs
+
+    Example context (json):
+    {
+        "feedbacks": [
+            {
+                "questiontext": "Why does the big man lean on the car?",
+                "feedback": "He has just jogged to the car, so he leans on it to catch his breath.",
+                "cantranslatetext": false
+            }
+        ]
+    }
+}}
+{{#feedbacks}}
+<div class="ml_mcq_correctfeedback m-2 p-2 bg-light">
+    <div class="ml_mcq_feedbackquestion font-weight-bold">{{questiontext}}</div>
+    {{{feedback}}}
+    {{> mod_minilesson/translatetext}}
+</div>
+{{/feedbacks}}

@@ -246,7 +246,7 @@ class constants {
     const SG_ALLOWRETRY = 'customint4';
 
     const MAXANSWERS = 4;
-    const MAXCUSTOMTEXT = 7;
+    const MAXCUSTOMTEXT = 12;
     const MAXCUSTOMDATA = 5;
     const MAXCUSTOMINT = 15;
 

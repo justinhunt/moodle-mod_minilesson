@@ -1439,5 +1439,22 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026090600, 'minilesson');
     }
 
+    if ($oldversion < 2026090700) {
+        // Five more generic text columns on the items table. The multichoice quiz item type needs
+        // one per question for its optional answer feedback, and every text column was already spoken for.
+        $table = new xmldb_table(constants::M_QTABLE);
+        $previous = 'customtext7format';
+        for ($colnumber = 8; $colnumber <= 12; $colnumber++) {
+            $field = new xmldb_field('customtext' . $colnumber, XMLDB_TYPE_TEXT, null, null, null, null, null, $previous);
+            if (!$dbman->field_exists($table, $field)) {
+                $dbman->add_field($table, $field);
+            }
+            $previous = 'customtext' . $colnumber;
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026090700, 'minilesson');
+    }
+
     return true;
 }
