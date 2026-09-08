@@ -1311,6 +1311,10 @@ class utils {
                 return 'cy-GB'; // Assuming Welsh (United Kingdom) is the default
             case 'vi':
                 return 'vi-VN'; // Assuming Vietnamese (Vietnam) is the default
+            case 'so':
+                return 'so-SO'; // Somali.
+            case 'ti':
+                return 'ti-ER'; // Assuming Tigrinya (Eritrea) is the default.
             default:
                 return $lang; // If no match, return the original lang code
         }
@@ -2129,6 +2133,22 @@ class utils {
         ];
     }
 
+    /**
+     * Languages a learner can pick as their first language.
+     *
+     * This is the taught-language list plus languages we can only translate into, not teach in.
+     * They are kept out of get_lang_options() because that list also drives the TTS voice pickers,
+     * the speech tester and the item forms, where a language with no voices does not belong.
+     *
+     * @return array of language code => display name
+     */
+    public static function get_nativelang_options() {
+        $langs = self::get_lang_options();
+        // No TTS or speech recognition for these, so they are offered as a first language only.
+        $langs[constants::M_LANG_TIER] = get_string('ti-er', constants::M_COMPONENT);
+        return $langs;
+    }
+
     public static function has_compact_layout($langcode) {
         return array_key_exists($langcode, constants::KEYBOARD_LAYOUT_COMPACT);
     }
@@ -2179,6 +2199,8 @@ class utils {
             'tr' => constants::M_LANG_TRTR,
             'vi' => constants::M_LANG_VIVN,
             'uk' => constants::M_LANG_UKUA,
+            'so' => constants::M_LANG_SOSO,
+            'ti' => constants::M_LANG_TIER,
         ];
     }
 
@@ -2320,7 +2342,7 @@ class utils {
         $mform->setDefault('richtextprompt', $config->prompttype);
 
         // Native lang options.
-        $langoptions = [0 => '--'] + self::get_lang_options();
+        $langoptions = [0 => '--'] + self::get_nativelang_options();
         $mform->addElement('select', 'nativelang', get_string('nativelang', constants::M_COMPONENT), $langoptions);
         $mform->setType('nativelang', PARAM_TEXT);
         $mform->setDefault('nativelang', $config->nativelang);
@@ -2975,6 +2997,12 @@ class utils {
             case  constants::M_LANG_VIVN:
                 $ret = "Vietnamese";
                 break; // => get_string('vi-vn',constants::M_COMPONENT)
+            case constants::M_LANG_SOSO:
+                $ret = "Somali";
+                break;
+            case constants::M_LANG_TIER:
+                $ret = "Tigrinya";
+                break;
         }
         return $ret;
     }

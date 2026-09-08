@@ -102,7 +102,7 @@ if ($hassiteconfig) {
     ));
 
     // Default learners native language.
-    $nativelangoptions = [0 => '--'] + utils::get_lang_options();
+    $nativelangoptions = [0 => '--'] + utils::get_nativelang_options();
     $shortlangcodes = utils::get_shortlang_options();
     // Use the site default language as default native language or if that is not available use '--'.
     $nativelangdefault = $CFG->lang && array_key_exists($CFG->lang, $shortlangcodes) ? $shortlangcodes[$CFG->lang] : 0;

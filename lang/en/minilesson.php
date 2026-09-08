@@ -304,6 +304,7 @@ $string['no-no'] = 'Norwegian'; // Norwegian
 $string['sr-rs'] = 'Serbian'; // Serbian
 $string['vi-vn'] = 'Vietnamese'; // Vietnamese
 $string['so-so'] = 'Somali'; // Somali
+$string['ti-er'] = 'Tigrinya';
 $string['ps-af'] = 'Pashto'; // Afghan Pashto
 
 $string['awsregion'] = 'AWS Region';

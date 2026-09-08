@@ -1029,7 +1029,7 @@ abstract class item implements \templatable, \renderable {
             } else {
                 $usenativelanguage = $userprefnativelanguage;
             }
-            $langoptions = [0 => '--'] + utils::get_lang_options();
+            $langoptions = [0 => '--'] + utils::get_nativelang_options();
             $nativelanglist = [];
             foreach ($langoptions as $value => $label) {
                 $selected = ($value == $usenativelanguage);
