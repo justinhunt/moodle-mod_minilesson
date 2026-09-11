@@ -1,0 +1,92 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/chatagent
+
+    The chat agent page: the conversation on the left, the lesson it is changing on the right.
+
+    Example context (json):
+    {
+        "cmid": 12,
+        "contextid": 34,
+        "lessonname": "Ordering coffee",
+        "itemlist": "<ul></ul>",
+        "attachform": "<form></form>",
+        "cronwarning": false
+    }
+}}
+<div class="ml_chatagent" data-region="chatagent" data-cmid="{{cmid}}" data-contextid="{{contextid}}">
+
+    <div class="ml_chatagent_conversation">
+        {{#cronwarning}}
+            <div class="alert alert-warning" role="alert">{{#str}}chatagent_cronwarning, mod_minilesson{{/str}}</div>
+        {{/cronwarning}}
+
+        <div class="ml_chatagent_messages" data-region="messages" role="log" aria-live="polite"
+             aria-label="{{#str}}chatagent_conversation, mod_minilesson{{/str}}">
+            <div class="ml_chatagent_intro" data-region="intro">
+                <h3>{{#str}}chatagent_introheading, mod_minilesson{{/str}}</h3>
+                <p>{{#str}}chatagent_introbody, mod_minilesson{{/str}}</p>
+                <ul class="ml_chatagent_examples">
+                    <li>{{#str}}chatagent_example1, mod_minilesson{{/str}}</li>
+                    <li>{{#str}}chatagent_example2, mod_minilesson{{/str}}</li>
+                    <li>{{#str}}chatagent_example3, mod_minilesson{{/str}}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="ml_chatagent_status" data-region="status" role="status" hidden>
+            <span class="ml_chatagent_spinner" data-region="spinner" aria-hidden="true"></span>
+            <span data-region="statustext"></span>
+        </div>
+
+        <form class="ml_chatagent_composer" data-region="composer">
+            <label class="sr-only" for="ml_chatagent_input">{{#str}}chatagent_inputlabel, mod_minilesson{{/str}}</label>
+            <textarea id="ml_chatagent_input" class="form-control" rows="2" data-region="input"
+                      placeholder="{{#str}}chatagent_placeholder, mod_minilesson{{/str}}"></textarea>
+            <div class="ml_chatagent_composer_actions">
+                <button type="button" class="btn btn-link ml_chatagent_reset" data-action="reset">
+                    {{#str}}chatagent_startover, mod_minilesson{{/str}}
+                </button>
+                <button type="submit" class="btn btn-primary" data-action="send">
+                    {{#str}}chatagent_send, mod_minilesson{{/str}}
+                </button>
+            </div>
+        </form>
+
+        <div class="ml_chatagent_files" data-region="attachform">
+            <details class="ml_chatagent_files_toggle">
+                <summary>{{#str}}chatagent_files, mod_minilesson{{/str}}</summary>
+                {{{attachform}}}
+            </details>
+        </div>
+    </div>
+
+    <aside class="ml_chatagent_lesson" aria-label="{{lessonname}}">
+        <div class="ml_chatagent_lesson_header">
+            <h3 class="ml_chatagent_lesson_title">{{lessonname}}</h3>
+            <button type="button" class="btn btn-link btn-sm ml_chatagent_refresh" data-action="refresh"
+                    title="{{#str}}chatagent_refreshitems, mod_minilesson{{/str}}">
+                <span class="ml_chatagent_refresh_icon" aria-hidden="true"></span>
+                <span class="sr-only">{{#str}}chatagent_refreshitems, mod_minilesson{{/str}}</span>
+            </button>
+        </div>
+        <div data-region="itemlist">
+            {{{itemlist}}}
+        </div>
+    </aside>
+</div>

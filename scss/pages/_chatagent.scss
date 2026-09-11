@@ -1,0 +1,301 @@
+// Chat agent page: the conversation beside the lesson it is changing.
+
+.ml_chatagent {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(260px, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ml_chatagent_conversation {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.ml_chatagent_messages {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 22rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 1rem;
+    border: 1px solid #e4e0ec;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.ml_chatagent_intro {
+    color: #6e6782;
+
+    h3 {
+        font-size: 1.1rem;
+    }
+}
+
+.ml_chatagent_examples {
+    margin: 0;
+    padding-left: 1.1rem;
+
+    li {
+        margin-bottom: 0.35rem;
+        font-style: italic;
+    }
+}
+
+.ml_chatagent_message {
+    max-width: 90%;
+    padding: 0.6rem 0.85rem;
+    border-radius: 10px;
+    overflow-wrap: anywhere;
+
+    p:last-child {
+        margin-bottom: 0;
+    }
+
+    // Wide model output - a table, a code block - scrolls inside the bubble rather than
+    // pushing the whole page sideways.
+    pre,
+    table {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+}
+
+.ml_chatagent_message_user {
+    align-self: flex-end;
+    background: #ede7f9;
+    color: #3e2a74;
+    white-space: pre-wrap;
+}
+
+.ml_chatagent_message_assistant {
+    align-self: flex-start;
+    background: #f3f1f7;
+}
+
+.ml_chatagent_error {
+    margin: 0;
+}
+
+.ml_chatagent_approval {
+    align-self: stretch;
+    padding: 0.9rem 1rem;
+    border: 1px solid #cfc8de;
+    border-left: 4px solid #5b3fa8;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.ml_chatagent_approval_summary {
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.ml_chatagent_approval_what {
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+.ml_chatagent_approval_detail {
+    margin-bottom: 0.75rem;
+
+    pre {
+        max-height: 16rem;
+        overflow: auto;
+        padding: 0.5rem;
+        background: #f3f1f7;
+        font-size: 0.8rem;
+    }
+}
+
+.ml_chatagent_approval_actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.ml_chatagent_status {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.5rem 0.25rem;
+    color: #6e6782;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+// Turning, so that a status line which sits unchanged for a while still reads as working
+// rather than stalled.
+.ml_chatagent_spinner {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    // Three quarters of the ring in the accent colour rather than one: at this size a single
+    // coloured edge is easy to miss against the muted status text it sits beside.
+    border: 2px solid #5b3fa8;
+    border-right-color: #e4e0ec;
+    border-radius: 50%;
+    animation: ml_chatagent_spin 0.7s linear infinite;
+}
+
+.ml_chatagent_refresh_icon {
+    display: inline-block;
+    width: 0.9rem;
+    height: 0.9rem;
+    border: 2px solid currentcolor;
+    border-right-color: transparent;
+    border-radius: 50%;
+}
+
+.ml_chatagent_refreshing .ml_chatagent_refresh_icon {
+    animation: ml_chatagent_spin 0.8s linear infinite;
+}
+
+@keyframes ml_chatagent_spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// For anyone who has asked not to be moved, take the ring away rather than freezing it. Stopping
+// the animation leaves a static circle that reads as a spinner which has jammed - worse than no
+// spinner at all - and the status text beside it already says the same thing.
+@media (prefers-reduced-motion: reduce) {
+    .ml_chatagent_spinner {
+        display: none;
+    }
+
+    .ml_chatagent_refreshing .ml_chatagent_refresh_icon {
+        animation: none;
+        opacity: 0.5;
+    }
+}
+
+.ml_chatagent_lesson_header {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.ml_chatagent_refresh {
+    flex: none;
+    padding: 0.1rem 0.35rem;
+    line-height: 1;
+}
+
+.ml_chatagent_composer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.ml_chatagent_files {
+    margin-top: 0.75rem;
+
+    // Below the composer, not above it: the file manager is tall, and opening it above would
+    // push the conversation and the send button off the screen just as the assistant replies.
+    // Opened here, it only pushes itself down.
+    //
+    // Most messages carry no file, so it stays folded away until a teacher wants it.
+    summary {
+        cursor: pointer;
+        color: #5b3fa8;
+        font-size: 0.9rem;
+    }
+
+    // Inside a chat panel the form's own heading and buttons are noise; the element itself is
+    // the whole point of the form.
+    .fitem .col-md-3 {
+        display: none;
+    }
+
+    .fitem .col-md-9 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+.ml_chatagent_composer_actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+
+    [data-action="send"] {
+        margin-left: auto;
+    }
+}
+
+.ml_chatagent_busy .ml_chatagent_composer {
+    opacity: 0.6;
+}
+
+.ml_chatagent_lesson {
+    position: sticky;
+    top: 1rem;
+    padding: 1rem;
+    border: 1px solid #e4e0ec;
+    border-radius: 8px;
+    background: #fff;
+
+    @media (max-width: 900px) {
+        position: static;
+    }
+}
+
+.ml_chatagent_lesson_title {
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+}
+
+.ml_chatagent_itemcount {
+    margin-bottom: 0.5rem;
+    color: #6e6782;
+    font-size: 0.85rem;
+}
+
+.ml_chatagent_items {
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.ml_chatagent_item {
+    margin-bottom: 0.4rem;
+}
+
+.ml_chatagent_item_link {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    text-decoration: none;
+}
+
+.ml_chatagent_item_icon {
+    width: 18px;
+    height: 18px;
+}
+
+.ml_chatagent_item_type {
+    color: #6e6782;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+// The way in, from the item manager and the AI generate page.
+.ml_chatagent_entry {
+    margin-bottom: 1rem;
+}
+
+.ml_chatagent_entry_badge,
+.ml_chatagent_tabbadge {
+    margin-left: 0.35rem;
+    font-weight: 600;
+    text-transform: none;
+}

@@ -606,6 +606,13 @@ function minilesson_delete_instance($id)
     $DB->delete_records(constants::M_TEMPL_USAGES_TABLE, ['minilessonid' => $minilesson->id]);
     $DB->delete_records(constants::M_MEDIA_CACHE_TABLE, ['minilesson' => $minilesson->id]);
 
+    // Chat agent conversations are keyed by course module, not by instance, because that is what
+    // the chat agent pins its writes to. The module row still exists at this point - core removes it
+    // after this function returns - so it can still be looked up.
+    if ($cm = get_coursemodule_from_instance(constants::M_MODNAME, $minilesson->id)) {
+        \mod_minilesson\local\chatagent\conversation_store::delete_where(['cmid' => $cm->id]);
+    }
+
     $DB->delete_records(constants::M_TABLE, ['id' => $minilesson->id]);
 
     return true;
@@ -913,6 +920,27 @@ function minilesson_output_fragment_preview($args)
     $ret = $renderer->show_quiz_preview($comptest, $args->itemid);
     $ret .= $renderer->fetch_activity_amd($comptest, $cm, $moduleinstance, $args->itemid);
     return $ret;
+}
+
+/**
+ * Outputs the lesson's item list, for the chat agent page to refresh after the assistant
+ * changes something.
+ *
+ * @param array $args
+ * @return string
+ */
+function minilesson_output_fragment_chatagent_items($args)
+{
+    global $DB, $PAGE;
+
+    $args = (object) $args;
+    $context = $args->context;
+    $cm = get_coursemodule_from_id(constants::M_MODNAME, $context->instanceid, 0, false, MUST_EXIST);
+    require_capability('mod/minilesson:canuseaigen', $context);
+
+    $items = $DB->get_records(constants::M_QTABLE, ['minilesson' => $cm->instance], 'itemorder');
+    $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
+    return $renderer->chatagent_item_list($items, $cm);
 }
 
 /**

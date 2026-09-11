@@ -406,6 +406,77 @@ if ($hassiteconfig) {
     //add other API keys settings page to minilesson category
     $ADMIN->add('modsettingsminilessoncat', $otherapikeysettings);
 
+    // Chat agent. The in-Moodle assistant that builds lessons by chatting with a teacher.
+    $pagetitle = get_string('chatagent_settings', constants::M_COMPONENT);
+    $chatagentsettings = new admin_settingpage('modsettingminilessonchatagent', $pagetitle, 'moodle/site:config');
+
+    $chatagentsettings->add(new admin_setting_heading(
+        constants::M_COMPONENT . '/chatagent_heading',
+        '',
+        get_string('chatagent_settings_details', constants::M_COMPONENT)
+    ));
+
+    $chatagentsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT . '/chatagentenabled',
+        get_string('chatagentenabled', constants::M_COMPONENT),
+        get_string('chatagentenabled_details', constants::M_COMPONENT),
+        0
+    ));
+
+    // One option today. It is here rather than assumed so that the brokered provider, when it
+    // arrives, is a new entry in this list and nothing else.
+    $chatagentsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . '/chatagentprovider',
+        get_string('chatagentprovider', constants::M_COMPONENT),
+        get_string('chatagentprovider_details', constants::M_COMPONENT),
+        'ownkey',
+        ['ownkey' => get_string('chatagentprovider_ownkey', constants::M_COMPONENT)]
+    ));
+
+    // Free text rather than a menu: models are released faster than this plugin is, and a site
+    // that wants to move to a newer one should not have to wait for a release to do it.
+    $chatagentsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT . '/chatagentmodel',
+        get_string('chatagentmodel', constants::M_COMPONENT),
+        get_string('chatagentmodel_details', constants::M_COMPONENT),
+        \mod_minilesson\local\chatagent\gemini_driver::DEFAULT_MODEL,
+        PARAM_TEXT
+    ));
+
+    $chatagentsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT . '/chatagentmaxtoolcalls',
+        get_string('chatagentmaxtoolcalls', constants::M_COMPONENT),
+        get_string('chatagentmaxtoolcalls_details', constants::M_COMPONENT),
+        \mod_minilesson\local\chatagent\controller::DEFAULT_MAX_TOOL_CALLS,
+        PARAM_INT
+    ));
+
+    $chatagentsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT . '/chatagentmaxturns',
+        get_string('chatagentmaxturns', constants::M_COMPONENT),
+        get_string('chatagentmaxturns_details', constants::M_COMPONENT),
+        40,
+        PARAM_INT
+    ));
+
+    $chatagentsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT . '/chatagentmaxattachmentmb',
+        get_string('chatagentmaxattachmentmb', constants::M_COMPONENT),
+        get_string('chatagentmaxattachmentmb_details', constants::M_COMPONENT),
+        \mod_minilesson\local\chatagent\attachments::DEFAULT_MAX_MB,
+        PARAM_INT
+    ));
+
+    $chatagentsettings->add(new admin_setting_configtext(
+        constants::M_COMPONENT . '/chatagentretaindays',
+        get_string('chatagentretaindays', constants::M_COMPONENT),
+        get_string('chatagentretaindays_details', constants::M_COMPONENT),
+        \mod_minilesson\task\chatagent_cleanup::DEFAULT_RETAIN_DAYS,
+        PARAM_INT
+    ));
+
+    $ADMIN->add('modsettingsminilessoncat', $chatagentsettings);
+
     // Lesson bank settings.
     $mainsettings->add(new admin_setting_configcheckbox(
         constants::M_COMPONENT .  '/setlessonbank',

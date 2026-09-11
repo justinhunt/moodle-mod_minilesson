@@ -275,5 +275,73 @@
               <INDEX NAME="idx_submission_userid" UNIQUE="true" FIELDS="submissionid, userid"/>
           </INDEXES>
       </TABLE>
+    <TABLE NAME="minilesson_chatagent_conv" COMMENT="Chat agent: one teacher's conversation about one lesson">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="The teacher who owns the conversation"/>
+        <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Course module the conversation is about; all writes are pinned to it"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="For cleanup and course deletion"/>
+        <FIELD NAME="provider" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="Which driver issued interactionid; a handle does not survive a provider change"/>
+        <FIELD NAME="interactionid" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Provider handle on the history; empty means the transcript is replayed instead"/>
+        <FIELD NAME="pendingcallid" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Call id of a tool awaiting approval or execution"/>
+        <FIELD NAME="pendingtool" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Function name of that pending call"/>
+        <FIELD NAME="pendingargs" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="JSON arguments of the pending call, held server side so approval cannot be tampered with"/>
+        <FIELD NAME="state" TYPE="char" LENGTH="32" NOTNULL="true" DEFAULT="idle" SEQUENCE="false" COMMENT="idle, awaiting_tool, awaiting_approval or error"/>
+        <FIELD NAME="toolcalls" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Tools run in the current turn, against agentmaxtoolcalls"/>
+        <FIELD NAME="turncount" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Turns taken, for rate limiting"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="useridcmid" UNIQUE="false" FIELDS="userid, cmid"/>
+        <INDEX NAME="cmid" UNIQUE="false" FIELDS="cmid"/>
+        <INDEX NAME="courseid" UNIQUE="false" FIELDS="courseid"/>
+        <INDEX NAME="timemodified" UNIQUE="false" FIELDS="timemodified"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="minilesson_chatagent_msg" COMMENT="Chat agent: the messages making up one conversation">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="conversationid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="role" TYPE="char" LENGTH="16" NOTNULL="true" DEFAULT="user" SEQUENCE="false" COMMENT="user, assistant or tool"/>
+        <FIELD NAME="content" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Message text, or the tool result given back to the model"/>
+        <FIELD NAME="toolname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Set on tool messages only"/>
+        <FIELD NAME="toolargs" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="JSON arguments the tool was called with"/>
+        <FIELD NAME="attachments" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="JSON descriptors of files sent with a user message"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="conversationid" TYPE="foreign" FIELDS="conversationid" REFTABLE="minilesson_chatagent_conv" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="minilesson_chatagent_metric" COMMENT="Chat agent: one row per model call, for measuring how the agent behaves">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="conversationid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="cmid" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="turn" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Which turn of the conversation this call belonged to"/>
+        <FIELD NAME="toolname" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="The tool executed before this model call, if any"/>
+        <FIELD NAME="toolrejected" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether that tool call was refused rather than run"/>
+        <FIELD NAME="rejectreason" TYPE="char" LENGTH="64" NOTNULL="false" SEQUENCE="false" COMMENT="Why it was refused: notallowed, nocapability, wronglesson or failed"/>
+        <FIELD NAME="requestbytes" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Size of the input sent for this call, after trimming"/>
+        <FIELD NAME="attachmentbytes" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="How much of that was attachments"/>
+        <FIELD NAME="inputtokens" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="outputtokens" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="replayed" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether the transcript had to be replayed because the provider no longer held it"/>
+        <FIELD NAME="errorcode" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="The provider error, when the call failed"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="conversationid" TYPE="foreign" FIELDS="conversationid" REFTABLE="minilesson_chatagent_conv" REFFIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="timecreated" UNIQUE="false" FIELDS="timecreated"/>
+      </INDEXES>
+    </TABLE>
   </TABLES>
 </XMLDB>

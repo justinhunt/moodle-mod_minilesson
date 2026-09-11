@@ -81,6 +81,7 @@ echo $table->render();
 // If we get here, we are listing the AIGEN templates.
 echo html_writer::div(get_string('aigenpage_explanation', constants::M_COMPONENT), constants::M_COMPONENT . '_aigenpageexplanation');
 
+echo $renderer->chatagent_entry($cm);
 echo $renderer->aigen_buttons_menu($cm, $table->uniqueid);
 
 echo $renderer->footer();

@@ -148,6 +148,55 @@ $functions = [
             'type' => 'read',
             'ajax' => true,
         ],
+        // The chat agent's own endpoints. Unlike the aigen functions below, these are ajax
+        // callable: they are what the chat panel talks to. They are deliberately not part of
+        // the aigenservice web service - a remote MCP client has no business driving somebody's
+        // in-page conversation.
+        'mod_minilesson_chatagent_start' => [
+            'classname' => 'mod_minilesson\external\chatagent_start',
+            'methodname' => 'execute',
+            'description' => 'Open the current user\'s chat agent conversation about a lesson',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:canuseaigen',
+            'ajax' => true,
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_chatagent_send' => [
+            'classname' => 'mod_minilesson\external\chatagent_send',
+            'methodname' => 'execute',
+            'description' => 'Send a message to the chat agent and take the first step of the turn',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:canuseaigen',
+            'ajax' => true,
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_chatagent_step' => [
+            'classname' => 'mod_minilesson\external\chatagent_step',
+            'methodname' => 'execute',
+            'description' => 'Run the pending tool and take the next step of the turn',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:canuseaigen',
+            'ajax' => true,
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_chatagent_approve' => [
+            'classname' => 'mod_minilesson\external\chatagent_approve',
+            'methodname' => 'execute',
+            'description' => 'Approve or decline the action the chat agent has proposed',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:canuseaigen',
+            'ajax' => true,
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_chatagent_reset' => [
+            'classname' => 'mod_minilesson\external\chatagent_reset',
+            'methodname' => 'execute',
+            'description' => 'Discard the chat agent conversation and start a new one',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:canuseaigen',
+            'ajax' => true,
+            'loginrequired' => true,
+        ],
         'mod_minilesson_aigen_list_templates' => [
             'classname' => 'mod_minilesson\external\aigen_list_templates',
             'methodname' => 'execute',
@@ -204,6 +253,9 @@ $functions = [
             'methodname' => 'execute',
             'description' => 'Checks the status of aigen_create_add_items_to_lesson task.',
             'type' => 'read',
+            // Ajax callable because the chat agent page follows its own generation jobs rather
+            // than making the assistant poll for them. It checks the capability per job itself.
+            'ajax' => true,
             'loginrequired' => true,
         ],
         'mod_minilesson_aigen_export_items_json' => [

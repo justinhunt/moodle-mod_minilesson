@@ -45,6 +45,9 @@ class import {
     private $allvoices;
     private $preprocesserrors = [];
 
+    /** @var array Field names in the current item that its item type does not have. */
+    private $unknownfields = [];
+
 
     /**
      * process constructor.
@@ -71,7 +74,10 @@ class import {
         if ($isjson) {
             $this->isjson = true;
             $this->itemsfromjson = $reader->items;
-            $this->filesfromjson = $reader->files;
+            // A payload that carries no media has no files key at all - the common case when
+            // items are composed rather than exported - so fall back to the "no files" default
+            // the property is declared with instead of warning on every import.
+            $this->filesfromjson = $reader->files ?? false;
         } else {
             $this->cir = $reader;
         }
@@ -118,6 +124,7 @@ class import {
      */
     private function process_and_tally($itemdata, $results) {
         $results->total++;
+        $this->unknownfields = [];
         $outcome = $this->import_process_line($itemdata);
         if ($outcome === true) {
             $results->imported++;
@@ -126,6 +133,78 @@ class import {
             $results->failed++;
             $results->errors[] = $outcome;
         }
+    }
+
+    /**
+     * Reject a JSON item carrying a field name this item type does not have.
+     *
+     * The mapping below only ever reads the names the item type declares, so a name it does not
+     * declare is passed over in silence - the item imports, apparently cleanly, with whatever
+     * that field held missing from it. The CSV path has always reported this; the JSON path did
+     * not, which is how a reading passage sent as "passage" instead of "textarea" could vanish
+     * without anybody being told.
+     *
+     * The item is rejected rather than merely flagged. The content of these payloads is written
+     * by an AI, and often imported while nobody is watching closely, so anything short of a
+     * refusal is a slower way of losing the field in silence: a warning nobody reads leaves a
+     * lesson quietly missing its reading passage. A rejection names the field, suggests the one
+     * that was probably meant, and the caller resubmits - which is a correction loop the callers
+     * are already told to run.
+     *
+     * @param object $itemdata the item as the caller sent it
+     * @param array $keycolumns the item type's declared columns
+     * @return void
+     */
+    private function check_for_unknown_fields($itemdata, $keycolumns) {
+        $known = [];
+        foreach ($keycolumns as $coldef) {
+            $known[$coldef['jsonname']] = true;
+            // A column may accept an older name too; those are not unknown, just historical.
+            if (!empty($coldef['jsonalias'])) {
+                $known[$coldef['jsonalias']] = true;
+            }
+        }
+        // Structural, and belongs to the payload rather than to any one item type.
+        $known['filesid'] = true;
+
+        foreach (array_keys((array) $itemdata) as $field) {
+            if (isset($known[$field])) {
+                continue;
+            }
+            $this->unknownfields[] = get_string('error:unknownfield', constants::M_COMPONENT, (object) [
+                'field' => s($field),
+                'type' => s($itemdata->type ?? ''),
+                'suggestion' => $this->closest_field($field, array_keys($known)),
+            ]);
+        }
+    }
+
+    /**
+     * The declared field name closest to one the caller invented, if any is close enough.
+     *
+     * A near miss is the common case - "question" for "text", "passage" for "textarea" - and
+     * naming the right field turns the warning into something the caller can act on directly
+     * rather than a prompt to go and read the spec again.
+     *
+     * @param string $field the unrecognised name
+     * @param array $known the declared names
+     * @return string a phrase naming the likely field, or an empty string
+     */
+    private function closest_field($field, $known) {
+        $best = '';
+        $bestdistance = PHP_INT_MAX;
+        foreach ($known as $candidate) {
+            $distance = levenshtein(strtolower($field), strtolower($candidate));
+            if ($distance < $bestdistance) {
+                $bestdistance = $distance;
+                $best = $candidate;
+            }
+        }
+        // Only offer a name that is genuinely near, or the suggestion is noise.
+        if ($best === '' || $bestdistance > max(2, floor(strlen($field) / 2))) {
+            return '';
+        }
+        return get_string('error:unknownfieldsuggestion', constants::M_COMPONENT, s($best));
     }
 
     /**
@@ -167,6 +246,7 @@ class import {
     public function map_json_to_csv($itemdata) {
         $itemtypeclass = local\itemtype\item::get_itemtype_class($itemdata->type);
         $keycolumns = $itemtypeclass::get_keycolumns();
+        $this->check_for_unknown_fields($itemdata, $keycolumns);
         $line = [];
         foreach ($keycolumns as $colname => $coldef) {
             // A keycolumn may declare a legacy alias (jsonalias) for its import name, so that
@@ -247,6 +327,9 @@ class import {
 
         if ($this->isjson) {
             $line = $this->map_json_to_csv($itemdata);
+            if (!empty($this->unknownfields)) {
+                return $this->line_error($itemtype, $itemname, implode(' ', $this->unknownfields));
+            }
         } else {
             $line = $itemdata;
         }

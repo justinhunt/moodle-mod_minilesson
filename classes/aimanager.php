@@ -31,6 +31,12 @@ use core_ai\provider;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class aimanager {
+    /** @var int Times to ask for structured content before giving up: one go, then one more. */
+    const GENERATION_ATTEMPTS = 2;
+
+    /** @var int Seconds to wait before asking again. */
+    const GENERATION_RETRY_DELAY = 1;
+
 
     /** @var int|null */
     protected $contextid;
@@ -402,19 +408,67 @@ class aimanager {
         $params['region'] = $this->region;
         $params['subject'] = 'none';
 
+        // This call asks for JSON, and the answer sometimes comes back as prose or as JSON that
+        // does not parse - the model writing something other than what was asked for. That is a
+        // different kind of failure from a bad token or an exhausted quota: asking again usually
+        // works, which is what a person does by hand when a generation run dies. So it is asked
+        // again once, and only for that kind of failure.
+        for ($attempt = 1; $attempt <= self::GENERATION_ATTEMPTS; $attempt++) {
+            $ret = $this->attempt_structured_content($params);
+            if ($ret->success || empty($ret->retryable) || $attempt === self::GENERATION_ATTEMPTS) {
+                break;
+            }
+            self::log_cp_api('unusable reply, asking again', [
+                'action' => $actionconst,
+                'attempt' => $attempt . ' of ' . self::GENERATION_ATTEMPTS,
+            ]);
+            sleep(self::GENERATION_RETRY_DELAY);
+        }
+
+        unset($ret->retryable);
+        if ($cache && $ret->success && $ret->payload !== null) {
+            self::set_cache($actionconst, $prompt, $provider, json_encode($ret));
+        }
+        return $ret;
+    }
+
+    /**
+     * One attempt at generating structured content.
+     *
+     * @param array $params the call parameters
+     * @return \stdClass success, payload, and whether the failure is worth repeating
+     */
+    protected function attempt_structured_content(array $params): \stdClass {
         $response = self::call_cp_api($params);
 
         $ret = new \stdClass();
+        $ret->retryable = false;
+
         if ($response && isset($response->returnCode)) {
-            $ret->success = $response->returnCode == '0' ? true : false;
+            $ret->success = $response->returnCode == '0';
             $ret->payload = json_decode($response->returnMessage);
-            if ($cache && $ret->success && $ret->payload !== null) {
-                self::set_cache($actionconst, $prompt, $provider, json_encode($ret));
+
+            // A reply can be accepted by the cloud and still be unusable here: returnCode 0 with a
+            // returnMessage that is not the JSON this call asked for. Left as a success it sets
+            // nothing and the item is created with its generated fields empty - a blank slide
+            // rather than an error, which is the harder kind of failure to notice.
+            if ($ret->success && $ret->payload === null && trim((string) $response->returnMessage) !== '') {
+                self::log_cp_api('reply was not the JSON this call asked for', [
+                    'action' => $params['action'] ?? '(none)',
+                    'returnMessage' => substr((string) $response->returnMessage, 0, 1000),
+                ]);
+                $ret->success = false;
+                $ret->payload = 'The AI service returned content that was not in the expected format.';
+                $ret->retryable = true;
             }
         } else {
             $ret->success = false;
-            $ret->payload = $response ? $response : "unknown problem occurred";
+            $ret->payload = $response ? $response : 'unknown problem occurred';
+            // False means the reply could not be parsed at all, which is the same flavour of
+            // problem. Null means there was no token, and asking again will not conjure one.
+            $ret->retryable = ($response === false);
         }
+
         return $ret;
     }
 
@@ -874,6 +928,15 @@ class aimanager {
         global $USER;
         $token = $params['wstoken'] ?? static::get_cp_token();
         if (!$token) {
+            // Callers see only a null and report a generic failure, so say which half is missing.
+            $conf = get_config(constants::M_COMPONENT);
+            self::log_cp_api('no token', [
+                'wsfunction' => $params['wsfunction'] ?? 'local_cpapi_call_ai',
+                'apiuser' => empty($conf->apiuser) ? 'NOT SET' : 'set',
+                'apisecret' => empty($conf->apisecret) ? 'NOT SET' : 'set',
+                'hint' => 'Credentials are set but no token came back: the subscription may have '
+                    . 'lapsed, or cloud.poodll.com may be unreachable from this server.',
+            ]);
             return null;
         }
         $params['wstoken'] = $params['wstoken'] ?? $token;
@@ -883,10 +946,63 @@ class aimanager {
         $params['owner'] = $params['owner'] ?? hash('md5', $USER->username);
         $serverurl = utils::get_cloud_poodll_server() . '/webservice/rest/server.php';
         $response = utils::curl_fetch($serverurl, $params, "post");
+
         if (!utils::is_json($response)) {
+            // The reply is thrown away here and the caller is left with a bare false, which is how
+            // an AI generation run ends up reporting "text generation failed" and nothing more.
+            // Whatever came back instead of JSON is usually the whole answer: an HTML error page,
+            // an empty body, a plain text message from the cloud.
+            self::log_cp_api('response was not JSON', [
+                'wsfunction' => $params['wsfunction'],
+                'action' => $params['action'] ?? '(none)',
+                'url' => $serverurl,
+                'responsetype' => gettype($response),
+                'responselength' => is_string($response) ? strlen($response) : 0,
+                'response' => is_string($response) ? substr($response, 0, 1000) : var_export($response, true),
+            ]);
             return false;
         }
-        return json_decode($response);
+
+        $decoded = json_decode($response);
+
+        // Valid JSON is not the same as a usable answer. A web service exception comes back as
+        // well-formed JSON with no returnCode at all, which is what a changed or renamed cloud
+        // function looks like from here.
+        if (!isset($decoded->returnCode)) {
+            self::log_cp_api('reply carried no returnCode', [
+                'wsfunction' => $params['wsfunction'],
+                'action' => $params['action'] ?? '(none)',
+                'keys' => is_object($decoded) ? implode(', ', array_keys(get_object_vars($decoded))) : gettype($decoded),
+                'response' => substr($response, 0, 1000),
+            ]);
+        } else if ($decoded->returnCode != '0') {
+            self::log_cp_api('returnCode ' . $decoded->returnCode, [
+                'wsfunction' => $params['wsfunction'],
+                'action' => $params['action'] ?? '(none)',
+                'returnMessage' => substr((string) ($decoded->returnMessage ?? ''), 0, 1000),
+            ]);
+        }
+
+        return $decoded;
+    }
+
+    /**
+     * Record a Cloud Poodll call that did not go as expected.
+     *
+     * Developer level, so it costs nothing on a live site, and deliberately never prints the
+     * token or the credentials themselves - only whether they are there.
+     *
+     * @param string $what a short description of the problem
+     * @param array $detail context to print alongside it
+     * @return void
+     */
+    protected static function log_cp_api(string $what, array $detail): void {
+        $lines = [];
+        foreach ($detail as $key => $value) {
+            $lines[] = $key . ': ' . str_replace(["\r", "\n"], ' ', (string) $value);
+        }
+        debugging('mod_minilesson cloud poodll call failed - ' . $what . ' [' . implode(' | ', $lines) . ']',
+            DEBUG_DEVELOPER);
     }
 
     public static function get_cp_token() {

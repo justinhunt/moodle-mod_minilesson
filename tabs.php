@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -30,7 +29,8 @@ defined('MOODLE_INTERNAL') || die();
 use mod_minilesson\constants;
 
 /// This file to be included so we can assume config.php has already been included.
-global $DB;
+global $DB, $USER;
+
 if (empty($moduleinstance)) {
     print_error('cannotcallscript');
 }
@@ -42,10 +42,10 @@ if (!isset($cm)) {
     $context = context_module::instance($cm->id);
 }
 if (!isset($course)) {
-    $course = $DB->get_record('course', array('id' => $moduleinstance->course));
+    $course = $DB->get_record('course', ['id' => $moduleinstance->course]);
 }
 
-$tabs = $row = $inactive = $activated = array();
+$tabs = $row = $inactive = $activated = [];
 $config = get_config(constants::M_COMPONENT);
 
 
@@ -77,6 +77,24 @@ if (has_capability('mod/minilesson:manage', $context)) {
 }
 
 if (has_capability('mod/minilesson:canuseaigen', $context)) {
+    if (\mod_minilesson\utils::chatagent_available()) {
+        // Mark the tab when the assistant is waiting on this teacher, so a conversation left
+        // mid-approval is visible from anywhere in the activity rather than only on its own page.
+        $chatagentlabel = get_string('chatagent', constants::M_COMPONENT);
+        if (\mod_minilesson\local\chatagent\conversation_store::pending_for($USER->id, $cm->id)) {
+            $chatagentlabel .= ' ' . \html_writer::tag(
+                'span',
+                get_string('chatagent_waitingonyou', constants::M_COMPONENT),
+                ['class' => 'badge badge-primary ml_chatagent_tabbadge']
+            );
+        }
+        $row[] = new tabobject(
+            'chatagent',
+            "$CFG->wwwroot/mod/minilesson/chatagent.php?id=$cm->id",
+            $chatagentlabel,
+            get_string('chatagent_tabhelp', constants::M_COMPONENT)
+        );
+    }
     $row[] = new tabobject(
         'aigen',
         "$CFG->wwwroot/mod/minilesson/aigen.php?id=$cm->id",
