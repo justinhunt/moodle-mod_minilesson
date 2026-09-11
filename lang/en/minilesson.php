@@ -1279,7 +1279,7 @@ $string['aigentemplatename:vocabcards_upload_markup'] = 'Vocab Cards (upload wit
 $string['aigentemplatedescription:vocabcards_upload_markup'] = 'A set of vocabulary cards. Each card can have up to 4 lines of text: usually keyword | keyword-translation | keyword-examplesentence|keyword-examplesentence-translation
 An image will be generated for each card based on the keyword and the image style specified';
 $string['aigentemplatename:fluency_upload_markup'] = 'Fluency (upload sentences with markup)';
-$string['aigentemplatedescription:fluency_upload_markup'] = 'Create a Fluency item by supplying  up to 10 sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item.';
+$string['aigentemplatedescription:fluency_upload_markup'] = 'Create a Fluency item by supplying  up to 10 formatted sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item from the specified image style and unformatted sentences.';
 $string['aigentemplatename:freewriting_upload'] = 'Free Writing (Upload question)';
 $string['aigentemplatedescription:freewriting_upload'] = 'Enter a question or topic about which students will write.';
 $string['aigentemplatename:freespeaking_upload'] = 'Free Speaking (upload question)';

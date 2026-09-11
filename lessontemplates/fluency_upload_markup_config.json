@@ -2,14 +2,14 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Extract a 1 dimensional array of sentences (sentences) from the following {language} text: [{text}].",
-            "generatemethod": "extract",
+            "prompt": "",
+            "generatemethod": "reuse",
             "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "user_text"
                 },
                 {
                     "name": "correctthreshold",
@@ -50,22 +50,13 @@
                 }
             ],
             "overallimagecontext": "user_customdata2",
-            "promptfields": [
-                {
-                    "name": "language",
-                    "mapping": "target_language"
-                },
-                {
-                    "name": "text",
-                    "mapping": "user_text"
-                }
-            ]
+            "promptfields": []
         }
     ],
     "lessonTitle": "Fluency (upload sentences with markup)",
     "lessonDescription": "Create a Fluency item by supplying  up to 10 formatted sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item from the specified image style and unformatted sentences.",
     "uniqueid": "6a35dd77d6c9b",
-    "version": "3",
+    "version": "5",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
