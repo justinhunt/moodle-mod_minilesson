@@ -133,13 +133,15 @@
 // Turning, so that a status line which sits unchanged for a while still reads as working
 // rather than stalled.
 .ml_chatagent_spinner {
-    width: 0.9rem;
-    height: 0.9rem;
+    width: 1rem;
+    height: 1rem;
     flex: none;
-    border: 2px solid #cfc8de;
-    border-top-color: #5b3fa8;
+    // Three quarters of the ring in the accent colour rather than one: at this size a single
+    // coloured edge is easy to miss against the muted status text it sits beside.
+    border: 2px solid #5b3fa8;
+    border-right-color: #e4e0ec;
     border-radius: 50%;
-    animation: ml_chatagent_spin 0.8s linear infinite;
+    animation: ml_chatagent_spin 0.7s linear infinite;
 }
 
 .ml_chatagent_refresh_icon {
@@ -161,12 +163,17 @@
     }
 }
 
-// A spinner is decoration; for anyone who has asked not to be moved, the status text alone says
-// the same thing.
+// For anyone who has asked not to be moved, take the ring away rather than freezing it. Stopping
+// the animation leaves a static circle that reads as a spinner which has jammed - worse than no
+// spinner at all - and the status text beside it already says the same thing.
 @media (prefers-reduced-motion: reduce) {
-    .ml_chatagent_spinner,
+    .ml_chatagent_spinner {
+        display: none;
+    }
+
     .ml_chatagent_refreshing .ml_chatagent_refresh_icon {
         animation: none;
+        opacity: 0.5;
     }
 }
 
