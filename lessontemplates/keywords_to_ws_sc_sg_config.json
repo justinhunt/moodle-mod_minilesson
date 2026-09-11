@@ -49,7 +49,7 @@
                     "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata2",
             "promptfields": [
                 {
                     "name": "keywords",
@@ -119,7 +119,7 @@
                     "mapping": "data2"
                 }
             ],
-            "overallimagecontext": "target_language",
+            "overallimagecontext": "user_customdata2",
             "promptfields": [
                 {
                     "name": "language",
@@ -232,9 +232,9 @@
         }
     ],
     "lessonTitle": "Word Practice v3",
-    "lessonDescription": "Enter 4 - 10 keywords. The keywords will be used to generate a set of vocab cards, word shuffle, scatter activity, and space game items. ",
+    "lessonDescription": "Enter 4 - 10 keywords, the language level, students native language and an image style. The keywords will be used to generate a set of vocab cards, word shuffle, scatter activity, and space game items. ",
     "uniqueid": "68a0422070f05",
-    "version": "8",
+    "version": "9",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -282,10 +282,19 @@
             "type": "text"
         },
         "user_customdata2": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image style",
+            "description": "The image style that images should be generated in",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata3": {
             "enabled": false,

@@ -1152,14 +1152,14 @@ $string['aigentemplatename:vocabcards'] = 'Vocab Cards';
 $string['aigentemplatedescription:passagereading'] = 'Enter a list of keywords and a topic, AI will prepare a passage of text and some reading and speaking activities based on it.';
 $string['aigentemplatedescription:ayoutubelesson'] = 'Enter a YouTube video id (or URL) and summaries. Poodll will generate a short lesson with multi-choice and speaking activities';
 $string['aigentemplatedescription:youtubefinalelesson'] = 'This is a lesson based on a YouTube video story. A related but simplified story is prepared and comprehension, and speaking actvities are built on the story. Finally the student sees the original video that they have been studying';
-$string['aigentemplatedescription:wordpractice'] = 'Enter a list of words (5) and a topic, Poodll will make a activity with vocab cards, listening and typing gapfills, a space game a free writing activity';
+$string['aigentemplatedescription:wordpractice'] = 'Enter a list of words (5) and a topic and in an image style, Poodll will make a activity with vocab cards, listening and typing gapfills, a space game a free writing activity';
 $string['aigentemplatedescription:wordpractice2'] = 'Given a list of words, example sentences and the students native language, this template will generate a set of practice activities with images and native language hints. You can use up to 9 words.';
-$string['aigentemplatedescription:wordpractice_v4'] = 'Enter 4 - 10 keywords or phrases, and set the user\'s native language. They will be used to generate:
+$string['aigentemplatedescription:wordpractice_v4'] = 'Enter 4 - 10 keywords or phrases, and set the user\'s native language, and an image style. They will be used to generate:
 i)  a set of vocab cards with translations and example sentences
-ii) scatter activity (matching keyword/phrase with translation) 
-iii)  a wordcards item - listen and choose mode 
+ii) scatter activity (matching keyword/phrase with translation)
+iii)  a wordcards item - listen and choose mode
 iv)  a wordcards item - listen and type mode
-v)  a wordcards item - choose the word mode 
+v)  a wordcards item - choose the word mode
 vi)  a wordcards item - type the word mode';
 $string['aigentemplatedescription:audiostory'] = 'Enter a topic, the learners language level and a type of story. AI will prepare an audio story with listening and speaking activities.';
 $string['aigentemplatedescription:set_of_slides'] = 'This template will create a tutorial slides that are based on a description of what you want to teach.';
@@ -1168,7 +1168,7 @@ $string['aigentemplatedescription:keywordstogapfillsfluency'] = 'Enter a list of
 $string['aigentemplatedescription:reading_aic_passagegen'] = 'This will take a topic and learner level and generate a reading passage that will be used in a passage reading and then an audio chat session that is based on the reading passage.';
 $string['aigentemplatedescription:reading_aic_passageupload'] = 'Paste in a reading passage, and 4 short answer questions. These will be used in a passage reading exercise and then an audio chat session that is based on the reading passage.';
 $string['aigentemplatedescription:keywords_to_ws_sc'] = 'Enter 4 - 10 keywords. The keywords will be used to generate a word shuffle and scatter activity. The keywords will also be used to generate a picture of each keyword on a blackboard.';
-$string['aigentemplatedescription:keywords_to_ws_sc_sg'] = 'Enter 4 - 10 keywords. The keywords will be used to generate a set of vocab cards, word shuffle, scatter activity, and space game items.';
+$string['aigentemplatedescription:keywords_to_ws_sc_sg'] = 'Enter 4 - 10 keywords, the language level, students native language and an image style. The keywords will be used to generate a set of vocab cards, word shuffle, scatter activity, and space game items.';
 $string['aigentemplatedescription:dialog_multichoice'] = 'Enter 4 dialogs. They will form 4 multi choice questions where the choice of answer is an image representing the currently playing Dialog. The dialogs are in TTS Dialog format. e.g A) I like toast. [new line]  B) Me too.';
 $string['aigentemplatedescription:image_slides'] = 'Enter 5 image descriptions and an image style to get 5 image slides';
 $string['aigentemplatedescription:choose_best_reply'] = 'Student hears 10 short conversations and must choose the best next reply from the 3 options offered. Each question has a picture. It is based on the Eiken Level 3 English test listening section. You need to enter the  location and situation (usually a problem) for each conversation. eg "two friends at the beach and one has lost their wallet"';
@@ -1176,7 +1176,7 @@ $string['aigentemplatedescription:fiction_withpics'] = 'An interactive story wit
 $string['aigentemplatedescription:fiction_nopics'] = 'An interactive story with no pics, apart from an introduction screen';
 $string['aigentemplatedescription:narrativefiction_withpics'] = 'An interactive fiction item with fewer choices, more story, and pictures.';
 $string['aigentemplatedescription:fiction_addpics'] = 'This template accepts a fiction item story, and image prompts, and generates pictures for the story from the supplied image prompts. This template takes as input:  story summary, an image generation style, a story in yarn format with image placeholders, and a json array with image filenames + image generation prompts. It produces 2 items, a content page item with a picture, and a fiction item with images matching all the placeholders.';
-$string['aigentemplatedescription:vocabcards'] = 'A set of vocabulary cards. Enter the list of comma separated words/phrases, and the students\' native language. Cards with the word/phrase, translation, example sentence and a picture will be created.';
+$string['aigentemplatedescription:vocabcards'] = 'A set of vocabulary cards. Enter the list of comma separated words/phrases, and the students\' native language, and the image style. Cards with the word/phrase, translation, example sentence and a picture will be created.';
 $string['aigentemplatename:youtubefinale_freewrite'] = 'YouTube Finale (listen and free write)';
 $string['aigentemplatedescription:youtubefinale_freewrite'] = 'This is a lesson based on a YouTube video story. A related but simplified story is prepared and comprehension, and a writing activity are built on the story.';
 $string['aigentemplatename:youtubefinale_freespeak'] = 'YouTube Finale (listen and free speak)';
@@ -1277,7 +1277,7 @@ $string['aigentemplatename:scatter_upload'] = 'Scatter (upload)';
 $string['aigentemplatedescription:scatter_upload'] = 'Enter up to ten matching pairs that will be used to make a Scatter item where students will match the pairs by tapping the correct cards.';
 $string['aigentemplatename:vocabcards_upload_markup'] = 'Vocab Cards (upload with markup)';
 $string['aigentemplatedescription:vocabcards_upload_markup'] = 'A set of vocabulary cards. Each card can have up to 4 lines of text: usually keyword | keyword-translation | keyword-examplesentence|keyword-examplesentence-translation
-An image will be generated for each card ';
+An image will be generated for each card based on the keyword and the image style specified';
 $string['aigentemplatename:fluency_upload_markup'] = 'Fluency (upload sentences with markup)';
 $string['aigentemplatedescription:fluency_upload_markup'] = 'Create a Fluency item by supplying  up to 10 sentences which students will practice saying aloud. A picture will be generated to go with each sentence in the item.';
 $string['aigentemplatename:freewriting_upload'] = 'Free Writing (Upload question)';

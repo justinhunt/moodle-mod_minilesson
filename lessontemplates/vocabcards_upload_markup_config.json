@@ -49,14 +49,14 @@
                     "mapping": "user_customdata1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata2",
             "promptfields": []
         }
     ],
     "lessonTitle": "Vocab Cards (upload with markup)",
-    "lessonDescription": "A set of vocabulary cards. Each card can have up to 4 lines of text: usually keyword | keyword-translation | keyword-examplesentence|keyword-examplesentence-translation\r\nAn image will be generated for each card ",
+    "lessonDescription": "A set of vocabulary cards. Each card can have up to 4 lines of text: usually keyword | keyword-translation | keyword-examplesentence|keyword-examplesentence-translation\r\nAn image will be generated for each card based on the keyword and the image style specified",
     "uniqueid": "6a3546ed4f010",
-    "version": "3",
+    "version": "4",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -91,15 +91,24 @@
         },
         "user_customdata1": {
             "enabled": true,
-            "title": "Image text",
-            "description": "a  1 dimensional json array of words\/phrases that an image will be generated for.",
+            "title": "Image generation prompts",
+            "description": "a  1 dimensional json array of image generation prompts, 1 prompt to illustrate each of the words\/phrases in the cards as it is used in the example sentence.",
             "type": "textarea"
         },
         "user_customdata2": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image style",
+            "description": "The image style that the cards should be rendered in",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata3": {
             "enabled": false,

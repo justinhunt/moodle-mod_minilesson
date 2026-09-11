@@ -49,7 +49,7 @@
                     "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata2",
             "promptfields": [
                 {
                     "name": "keywords",
@@ -119,7 +119,7 @@
                     "mapping": "sentences"
                 }
             ],
-            "overallimagecontext": "user_topic",
+            "overallimagecontext": "user_customdata2",
             "promptfields": [
                 {
                     "name": "language",
@@ -334,9 +334,9 @@
         }
     ],
     "lessonTitle": "Word Practice v1",
-    "lessonDescription": "Enter a list of words (5) and a topic, Poodll will make a activity with vocab cards, listening and typing gapfills, a space game a free writing activity",
+    "lessonDescription": "Enter a list of words (5) and a topic and in an image style, Poodll will make a activity with vocab cards, listening and typing gapfills, a space game a free writing activity",
     "uniqueid": "6874e6ca1c71a",
-    "version": "5",
+    "version": "6",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -384,10 +384,19 @@
             "type": "text"
         },
         "user_customdata2": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "The style that images should be generated in",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata3": {
             "enabled": false,

@@ -49,7 +49,7 @@
                     "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata2",
             "promptfields": [
                 {
                     "name": "keywords",
@@ -62,18 +62,14 @@
                 {
                     "name": "targetlanguage",
                     "mapping": "target_language"
-                },
-                {
-                    "name": "imagestyle",
-                    "mapping": "user_customdata2"
                 }
             ]
         }
     ],
     "lessonTitle": "Vocab Cards",
-    "lessonDescription": "A set of vocabulary cards. Enter the list of comma separated words\/phrases, and the students' native language. Cards with the word\/phrase, translation, example sentence and a picture will be created. ",
+    "lessonDescription": "A set of vocabulary cards. Enter the list of comma separated words\/phrases, and the students' native language, and the imaeg style. Cards with the word\/phrase, translation, example sentence and a picture will be created. ",
     "uniqueid": "6a30d8d44b6fa",
-    "version": "3",
+    "version": "4",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
