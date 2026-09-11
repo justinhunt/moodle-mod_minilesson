@@ -23,7 +23,8 @@
  * aigen APIs directly. There is no server-initiated SSE stream and no session state -
  * every request carries its own token.
  *
- * All shared logic (the brokered function set, token auth, dispatch, JSON schemas) lives
+ * All shared logic (the brokered function set, token auth, dispatch, JSON schemas, and the
+ * routing instructions the model is given) lives
  * in \mod_minilesson\local\aigen\facade, the same core used by aigen_rest.php and
  * openapi.php; this file is just the MCP/JSON-RPC front-end.
  *
@@ -155,51 +156,6 @@ function mcp_maybe_send_wellknown_discovery(): void {
     }
 }
 
-/**
- * Server-level instructions surfaced to the model on initialize (the three request kinds
- * and how to route them; the full workflow detail is in the tool descriptions / openapi.php).
- *
- * @return string
- */
-function mcp_instructions(): string {
-    return implode(' ', [
-        'These tools create and manage Poodll MiniLessons.',
-        'Requests come in three kinds - route each accordingly:',
-        '(1) SOURCE MATERIAL (an uploaded PDF/doc/image or a pasted lesson plan): reproduce it',
-        'faithfully as items - list item types, fetch each type\'s spec, compose items, create a',
-        'lesson and import them.',
-        '(2) EXPORTED LESSON AS A TEMPLATE (an uploaded export, or an existing lesson pulled with',
-        'aigen_export_items_json): keep each item\'s type/layout/options, rewrite only the wording',
-        'per topic, drop the old images, and let audio regenerate from text.',
-        '(3) A DESCRIBED LESSON: check aigen_list_templates first and use a template if one fits',
-        '(templates can generate media); only hand-compose if none fits.',
-        'Only item types where aigen_list_itemtypes reports hasimportdocs=true can be hand-composed.',
-        'PICK THE MOST SPECIFIC TEMPLATE: several templates produce the same item type, and each one',
-        'lists its siblings in "variants" with a "control" level - "supplied" (your text is used',
-        'verbatim), "derived" (the AI marks up text you supply) or "generated" (the AI invents the',
-        'content). For every teaching point you have already decided - which words are gapped or',
-        'shuffled, which answer is correct, the translation language, the grammar being practised -',
-        'check the template has an input that carries it. If none does, the AI decides it for you and',
-        'may contradict the lesson aim: move to a higher-control variant, or compose the item directly.',
-        'Only take a "generated" template where the user has genuinely left that detail open.',
-        'PLAN FIRST: before calling any tool that creates or imports (aigen_create_empty_lesson,',
-        'aigen_create_add_items_to_lesson, aigen_import_items_json), show the user a plan and wait for',
-        'their approval. For direct-compose, list each item with its actual content (question, answers,',
-        'text); for templates, list EVERY input the template declares with the exact value you will send,',
-        'each marked (from the user), (your choice) or (BLANK) - a choice you made on the user\'s behalf',
-        'is still a choice, including defaults you accepted and inputs you are leaving empty. State the',
-        'target course/title. Create only after they approve, and fold in any changes they request.',
-        'NEVER send a required input empty. If the user has not told you what it needs (a native',
-        'language, a source text, a level), ask before creating - creation is rejected when a required',
-        'input is empty, and a template that does not check would produce silently broken content, like',
-        'a vocabulary card whose translation is a copy of the word. Where you picked a value the user',
-        'expressed no preference about (image style, level, voice), name your choice and offer the',
-        'alternatives rather than presenting it as settled.',
-        'Exception: if the user has said to just go ahead (or to skip the review), create without pausing.',
-        'After importing, read the per-item errors array and resubmit only the rejected items.',
-    ]);
-}
-
 // The Streamable HTTP transport is POST for client -> server messages. We do not offer a
 // server -> client SSE stream, so GET (and anything else) is not supported.
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -231,7 +187,7 @@ if ($rpcmethod === 'initialize') {
         'protocolVersion' => MCP_PROTOCOL_VERSION,
         'capabilities' => ['tools' => new stdClass()],
         'serverInfo' => ['name' => mcp_server_name(), 'version' => '1.0.0'],
-        'instructions' => mcp_instructions(),
+        'instructions' => facade::agent_instructions(),
     ]));
 }
 if ($rpcmethod === 'ping') {

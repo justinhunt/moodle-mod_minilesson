@@ -21,6 +21,9 @@
 
     Example context (json):
     {
+        "showadditemlinks": true,
+        "showchatagent": true,
+        "chatagenturl": "#"
     }
 }}
 
@@ -58,6 +61,19 @@
                         </div>
                     </a>
                 {{/showlessonbank}}
+                {{#showchatagent}}
+                    <a class="noitem-flex-item noitem-chatagent" href="{{chatagenturl}}">
+                        <div class="noitem-flex-item-icon">
+                            {{> mod_minilesson/icon_generate }}
+                        </div>
+                        <div class="noitem-flex-item-text">
+                            <span class="noitem-flex-item-url">{{#str}}chatagent, mod_minilesson{{/str}}</span>
+                            <div class="noitem-flex-item-description">
+                                {{#str}}chatagent_entry_desc, mod_minilesson{{/str}}
+                            </div>
+                        </div>
+                    </a>
+                {{/showchatagent}}
                 <a class="noitem-flex-item noitem-generate" href="{{aiitemurl}}">
                     <div class="noitem-flex-item-icon">
                         {{> mod_minilesson/icon_generate }}

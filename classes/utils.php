@@ -457,6 +457,40 @@ class utils {
         return (json_last_error() == JSON_ERROR_NONE);
     }
 
+    /**
+     * Whether the chat agent can be used on this site at all.
+     *
+     * One question asked in one place: the tab, the entry point buttons and the web services all
+     * call this, so a site with the agent switched off or without a usable provider shows nothing
+     * rather than offering a panel that cannot answer.
+     *
+     * @return bool
+     */
+    public static function chatagent_available(): bool {
+        if (empty(get_config(constants::M_COMPONENT, 'chatagentenabled'))) {
+            return false;
+        }
+        return self::chatagent_driver()->is_available();
+    }
+
+    /**
+     * The chat agent provider this site is configured to use.
+     *
+     * The one place that turns the chatagentprovider setting into a driver, so adding the
+     * brokered provider means a new case here and a new class - and nothing else.
+     *
+     * @return \mod_minilesson\local\chatagent\provider_driver
+     */
+    public static function chatagent_driver() {
+        $provider = get_config(constants::M_COMPONENT, 'chatagentprovider');
+        switch ($provider) {
+            default:
+                // Only one provider so far. An unrecognised setting falls back to it rather
+                // than failing, so a downgrade cannot leave the agent unable to start.
+                return new \mod_minilesson\local\chatagent\gemini_driver();
+        }
+    }
+
     // we use curl to fetch transcripts from AWS and Tokens from cloudpoodll
     // this is our helper
     public static function curl_fetch($url, $postdata = false, $method = 'get', $timeout = false) {

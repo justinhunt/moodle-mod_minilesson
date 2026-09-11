@@ -27,4 +27,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$tasks = [];
+$tasks = [
+    [
+        'classname' => 'mod_minilesson\task\chatagent_cleanup',
+        'blocking' => 0,
+        'minute' => 'R',
+        'hour' => '4',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*',
+    ],
+];

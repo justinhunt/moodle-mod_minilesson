@@ -99,6 +99,35 @@ class provider implements
             'timecreated' => 'privacy:metadata:cpagelikes:timecreated',
         ], 'privacy:metadata:cpagelikestable');
 
+        $collection->add_database_table(constants::M_CHATAGENTCONV_TABLE, [
+            'userid' => 'privacy:metadata:chatagentconv:userid',
+            'cmid' => 'privacy:metadata:chatagentconv:cmid',
+            'interactionid' => 'privacy:metadata:chatagentconv:interactionid',
+            'pendingargs' => 'privacy:metadata:chatagentconv:pendingargs',
+            'timemodified' => 'privacy:metadata:chatagentconv:timemodified',
+        ], 'privacy:metadata:chatagentconvtable');
+
+        $collection->add_database_table(constants::M_CHATAGENTMSG_TABLE, [
+            'role' => 'privacy:metadata:chatagentmsg:role',
+            'content' => 'privacy:metadata:chatagentmsg:content',
+            'attachments' => 'privacy:metadata:chatagentmsg:attachments',
+            'timecreated' => 'privacy:metadata:chatagentmsg:timecreated',
+        ], 'privacy:metadata:chatagentmsgtable');
+
+        $collection->add_database_table(constants::M_CHATAGENTMETRIC_TABLE, [
+            'conversationid' => 'privacy:metadata:chatagentmetric:conversationid',
+            'toolname' => 'privacy:metadata:chatagentmetric:toolname',
+            'timecreated' => 'privacy:metadata:chatagentmetric:timecreated',
+        ], 'privacy:metadata:chatagentmetrictable');
+
+        // Where the assistant's conversations are actually processed. Under the own-key provider
+        // that is the site's own Google project; a brokered provider would add Cloud Poodll to
+        // the path, which is why this is named separately from the link below.
+        $collection->add_external_location_link('generativelanguage.googleapis.com', [
+            'prompts' => 'privacy:metadata:gemini:prompts',
+            'attachments' => 'privacy:metadata:gemini:attachments',
+        ], 'privacy:metadata:gemini');
+
         $collection->add_external_location_link('cloud.poodll.com', [
             'userid' => 'privacy:metadata:cloudpoodllcom:userid'
         ], 'privacy:metadata:cloudpoodllcom');
@@ -154,6 +183,18 @@ class provider implements
                  WHERE lk.userid = :theuserid";
         $contextlist->add_from_sql($sql, $params);
 
+        // Assistant conversations. These join to the course module directly rather than through
+        // the activity instance, because that is what a conversation is pinned to - and a teacher
+        // who used the assistant but never attempted the lesson has no rows in any of the tables
+        // above, so without this their conversations would be invisible to export and deletion.
+        $sql = "SELECT c.id
+                  FROM {context} c
+            INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+            INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+            INNER JOIN {" . constants::M_CHATAGENTCONV_TABLE . "} ags ON ags.cmid = cm.id
+                 WHERE ags.userid = :theuserid";
+        $contextlist->add_from_sql($sql, $params);
+
         return $contextlist;
     }
 
@@ -196,6 +237,15 @@ class provider implements
                   JOIN {" . constants::M_TABLE . "} actt ON actt.id = cm.instance
                   JOIN {" . constants::M_QTABLE . "} q ON q.minilesson = actt.id
                   JOIN {" . constants::M_CPAGESUBMISSIONS_TABLE . "} sub ON sub.itemid = q.id
+                 WHERE c.id = :contextid";
+        $userlist->add_from_sql('userid', $sql, $params);
+
+        // Teachers who have had an assistant conversation about this lesson.
+        $sql = "SELECT ags.userid
+                  FROM {context} c
+                  JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
+                  JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+                  JOIN {" . constants::M_CHATAGENTCONV_TABLE . "} ags ON ags.cmid = cm.id
                  WHERE c.id = :contextid";
         $userlist->add_from_sql('userid', $sql, $params);
 
@@ -264,6 +314,62 @@ class provider implements
         $attempts->close();
 
         self::export_cpage_data_for_user($contextsql, $contextparams, $user);
+        self::export_chatagent_data_for_user($contextlist, $user);
+    }
+
+    /**
+     * Export the user's chat agent conversations for the given contexts.
+     *
+     * One file per conversation, holding the transcript in order. The provider's interaction id
+     * is deliberately left out: it is an internal handle to data held by the AI provider, not
+     * something the user wrote or would recognise.
+     *
+     * @param approved_contextlist $contextlist the approved contexts
+     * @param \stdClass $user the user record
+     */
+    protected static function export_chatagent_data_for_user(approved_contextlist $contextlist, $user)
+    {
+        global $DB;
+
+        foreach ($contextlist->get_contexts() as $context) {
+            if ($context->contextlevel != CONTEXT_MODULE) {
+                continue;
+            }
+
+            $sessions = $DB->get_records(
+                constants::M_CHATAGENTCONV_TABLE,
+                ['userid' => $user->id, 'cmid' => $context->instanceid],
+                'timecreated ASC'
+            );
+            foreach ($sessions as $session) {
+                $messages = $DB->get_records(
+                    constants::M_CHATAGENTMSG_TABLE,
+                    ['sessionid' => $session->id],
+                    'id ASC',
+                    'id, role, content, toolname, attachments, timecreated'
+                );
+
+                $transcript = [];
+                foreach ($messages as $message) {
+                    $transcript[] = (object) [
+                        'role' => $message->role,
+                        'toolname' => $message->toolname,
+                        'content' => $message->content,
+                        'attachments' => $message->attachments,
+                        'timecreated' => \core_privacy\local\request\transform::datetime($message->timecreated),
+                    ];
+                }
+
+                writer::with_context($context)->export_data(
+                    [get_string('privacy:path:chatagent', constants::M_COMPONENT), (string) $session->id],
+                    (object) [
+                        'timecreated' => \core_privacy\local\request\transform::datetime($session->timecreated),
+                        'timemodified' => \core_privacy\local\request\transform::datetime($session->timemodified),
+                        'messages' => $transcript,
+                    ]
+                );
+            }
+        }
     }
 
     /**
@@ -363,6 +469,9 @@ class provider implements
 
         $instanceid = $cm->instance;
 
+        // Assistant conversations are keyed by course module rather than by instance.
+        \mod_minilesson\local\chatagent\conversation_store::delete_where(['cmid' => $context->instanceid]);
+
         $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $instanceid], '', 'id');
 
 
@@ -441,6 +550,10 @@ class provider implements
                 $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
 
                 self::delete_cpage_data_for_users($instanceid, [$userid]);
+                \mod_minilesson\local\chatagent\conversation_store::delete_where([
+                    'cmid' => $context->instanceid,
+                    'userid' => $userid,
+                ]);
 
                 $entries = $DB->get_records(
                     constants::M_ATTEMPTSTABLE,
@@ -475,6 +588,12 @@ class provider implements
         $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
 
         self::delete_cpage_data_for_users($instanceid, $userids);
+        foreach ($userids as $agentuserid) {
+            \mod_minilesson\local\chatagent\conversation_store::delete_where([
+                'cmid' => $context->instanceid,
+                'userid' => $agentuserid,
+            ]);
+        }
 
         list($userinsql, $userinparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
 

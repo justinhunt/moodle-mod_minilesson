@@ -37,6 +37,76 @@ use stdClass;
 class renderer extends \plugin_renderer_base
 {
     /**
+     * A way through to the chat agent, for the pages a teacher builds a lesson from.
+     *
+     * Returns nothing at all when the agent is unavailable or the teacher cannot use it, so the
+     * calling pages do not each have to ask. When a conversation is waiting on the teacher it
+     * says so: without that, somebody who navigated away mid-approval has no way back to it
+     * except remembering the tab exists.
+     *
+     * @param \stdClass $cm
+     * @return string
+     */
+    public function chatagent_entry($cm) {
+        global $USER;
+
+        $context = \context_module::instance($cm->id);
+        if (!\mod_minilesson\utils::chatagent_available() || !has_capability('mod/minilesson:canuseaigen', $context)) {
+            return '';
+        }
+
+        $pending = \mod_minilesson\local\chatagent\conversation_store::pending_for($USER->id, $cm->id);
+        return $this->render_from_template('mod_minilesson/chatagent_entry', [
+            'url' => (new \moodle_url(constants::M_URL . '/chatagent.php', ['id' => $cm->id]))->out(false),
+            'pending' => (bool) $pending,
+        ]);
+    }
+
+    /**
+     * The lesson's items, read only, for the pane beside the chat agent.
+     *
+     * Not the editing table from the item manager: that one carries drag handles, delete
+     * buttons and the JavaScript to drive them, none of which belong next to a conversation.
+     * What a teacher wants here is to see what the assistant just did, and a way through to
+     * the real editor.
+     *
+     * @param array $items rows from the items table, in order
+     * @param \stdClass $cm
+     * @return string
+     */
+    public function chatagent_item_list($items, $cm) {
+        $available = \core_plugin_manager::instance()->get_plugins_of_type(
+            \mod_minilesson\constants::SUBPLUGINTYPES['item']
+        );
+
+        $rows = [];
+        foreach (array_values($items) as $index => $item) {
+            $plugininfo = $available[$item->type] ?? null;
+            $rows[] = [
+                'index' => $index + 1,
+                'name' => format_string($item->name),
+                'typelabel' => $plugininfo ? $plugininfo->displayname : $item->type,
+                'icon' => $plugininfo ? $plugininfo->get_logo_url() : null,
+                'editurl' => (new \moodle_url('/mod/minilesson/rsquestion/managersquestions.php', [
+                    'id' => $cm->id,
+                    'itemid' => $item->id,
+                    'type' => $item->type,
+                    'action' => 'edititem',
+                ]))->out(false),
+            ];
+        }
+
+        return $this->render_from_template('mod_minilesson/chatagent_items', [
+            'items' => $rows,
+            'hasitems' => !empty($rows),
+            'count' => count($rows),
+            'additemurl' => (new \moodle_url('/mod/minilesson/rsquestion/managersquestions.php', [
+                'id' => $cm->id,
+            ]))->out(false),
+        ]);
+    }
+
+    /**
      * Returns the header for the module
      *
      * @param object $moduleinstance
@@ -318,6 +388,9 @@ class renderer extends \plugin_renderer_base
         $context['lessonbankitemurl'] = new moodle_url('/mod/minilesson/lessonbank.php', ['id' => $cm->id]);
         $context['showlessonbank'] = !empty(get_config(constants::M_COMPONENT, 'setlessonbank')) &&
             !empty(get_config(constants::M_COMPONENT, 'lessonbankurl'));
+        $context['showchatagent'] = $showadditemlinks && \mod_minilesson\utils::chatagent_available()
+            && has_capability('mod/minilesson:canuseaigen', \context_module::instance($cm->id));
+        $context['chatagenturl'] = new moodle_url(constants::M_URL . '/chatagent.php', ['id' => $cm->id]);
         $context['additemicon'] = $this->output->image_url('add', constants::M_COMPONENT);
         $context['aiitemicon'] = $this->output->image_url('generate', constants::M_COMPONENT);
         $context['lessonbankicon'] = $this->output->image_url('choose', constants::M_COMPONENT);

@@ -158,10 +158,11 @@ $agentinstructions = <<<JSON
     "x-agent-instructions": {
         "title": "Agent workflow for the Poodll MiniLesson aigen APIs",
         "entry_points": {
-            "summary": "User requests arrive as one of three kinds. Identify which, then follow the referenced workflow.",
-            "source_material": "The user uploads a PDF/doc/image or pastes a lesson plan and wants a lesson made from it. Reproduce it faithfully via direct_compose_workflow (OCR images/PDFs yourself first).",
-            "exported_lesson_as_template": "The user uploads an exported MiniLesson (itemsjson), or asks to base new lessons on an existing one, to reuse as a template for other topics. Follow base_lesson_replication. To reuse a lesson already on the site, pull it first with aigen_export_items_json and set exclude_files=true (the original images are dropped for a new topic anyway, and it keeps the response small).",
-            "described_lesson": "The user only describes the lesson they want (topic, skills, theme). Prefer typical_workflow: check list_templates first and use a template if one fits (templates can generate media server-side); fall back to direct_compose_workflow only if no template fits."
+            "summary": "User requests arrive as one of three kinds. Route on what the user wants DONE, not on what they attached - the same PDF can arrive with any of these intents. Identify which, then follow the referenced workflow.",
+            "reproduce_supplied_material": "The user wants what is in the material turned into items, faithfully - a worksheet, a set of questions, a lesson plan to transcribe. Follow direct_compose_workflow (OCR images/PDFs yourself first). Do not run a template: it would regenerate content the user already has.",
+            "generate_new_activities": "The user wants NEW activities, whether they described the lesson or attached something to base it on. Any attachment is context rather than content: it supplies the topic, the vocabulary, the reading text, the level. Follow typical_workflow and hybrid_pattern.choosing_the_mix, and lift the template inputs straight out of the material - its vocabulary into user_keywords, its passage into user_text, its level into user_level. 'Supplementary activities for the lesson in this PDF', 'practice for these words' and 'a lesson about X' are all this kind.",
+            "reuse_an_existing_lesson": "The user uploads an exported MiniLesson (itemsjson), or asks to base new lessons on an existing one, to reuse its shape for other topics. Follow base_lesson_replication. To reuse a lesson already on the site, pull it first with aigen_export_items_json and set exclude_files=true (the original images are dropped for a new topic anyway, and it keeps the response small).",
+            "an_attachment_does_not_mean_reproduce": "Read the verb. 'Turn this into items', 'reproduce', 'keep these questions' is reproduce_supplied_material. 'Generate', 'supplementary', 'practice for', 'based on', 'inspired by' is generate_new_activities. If it is genuinely unclear, ask which they want before building anything - the two produce very different lessons from the same file."
         },
         "review_before_creating": {
             "rule": "Before calling any tool that creates or imports (aigen_create_empty_lesson, aigen_create_add_items_to_lesson, aigen_import_items_json), present a plan and wait for the user's approval. For direct-compose, list each item with its actual content (question, answers, text). For templates, list EVERY input the template declares with the exact value you will send, each marked (from the user), (your choice) or (BLANK). State the target course and lesson title. Create only after the user approves, and incorporate any changes they request.",
@@ -182,7 +183,7 @@ $agentinstructions = <<<JSON
             "calls": "Every operation is POST /<function> (the function name without the 'mod_minilesson_' prefix), with the arguments as a JSON body. Read responses as {\\"data\\": ...} on success or {\\"error\\": true, \\"message\\": ...} on failure."
         },
         "choosing_your_approach": {
-            "summary": "There are two ways to create items in a lesson: (A) the template workflow (typical_workflow), where you pick a template and the server generates the content with AI; and (B) the direct-compose workflow (direct_compose_workflow), where you author the item JSON yourself and import it. Decide per lesson. You may combine both in one lesson - see hybrid_pattern.",
+            "summary": "There are two ways to create items in a lesson: (A) the template workflow (typical_workflow), where you pick a template and the server generates the content with AI; and (B) the direct-compose workflow (direct_compose_workflow), where you author the item JSON yourself and import it. Neither is all-or-nothing: a lesson can run several templates, and it can mix templates with directly composed items. Decide per lesson, and read hybrid_pattern - especially hybrid_pattern.choosing_the_mix - before settling on one approach for the whole lesson.",
             "prefer_templates_when": [
                 "A template returned by list_templates matches the request - check its description, skills and outputs before deciding no template fits, then use choosing_a_template to pick the right variant of it",
                 "You want the content (text, questions, and any images) generated for you rather than authoring it yourself",
@@ -220,13 +221,21 @@ $agentinstructions = <<<JSON
             ]
         },
         "hybrid_pattern": {
-            "purpose": "Both workflows add items to the same lesson (by cmid), so one lesson can mix both.",
+            "purpose": "Every way of adding items works against the same lesson (by cmid), so one lesson can mix as many of them as it needs - several templates, or templates plus directly composed items.",
             "how": [
                 "Create the lesson once with aigen_create_empty_lesson to get a cmid",
-                "Run the template workflow against that cmid (aigen_create_add_items_to_lesson, then poll status)",
-                "Then call aigen_import_items_json with the same cmid to append directly-composed items",
+                "Run the template workflow against that cmid (aigen_create_add_items_to_lesson, then poll status). Run it once per template: a lesson built from two or three templates is normal, and many templates produce a single item (outputs[].itemcount is 1) precisely so they can be combined this way",
+                "Then call aigen_import_items_json with the same cmid to append any items no template can produce",
                 "Each call appends after the existing items, so order your calls to get the item order you want"
-            ]
+            ],
+            "never": "Do not conclude that because no single template covers the whole lesson you must compose all of it yourself. That is the most common way to end up hand-building a lesson the templates could have generated, images and all.",
+            "choosing_the_mix": [
+                "Does the lesson want images? Use templates, one or several - the server generates the media for you, and a multi-item template reuses the images it generates across its items. Composing directly means supplying every image yourself as base64.",
+                "Is one multi-item template close to the whole lesson? Use it. Its items are designed as a set that works together, which separate runs cannot give you.",
+                "Do you need control that the multi-item templates do not expose? Build the lesson from several agentonly:true single-item templates. They expose more inputs than their siblings, carry more guidance in their field descriptions, and still generate images - which makes them the way to have images and precise control at once. See choosing_a_template.agentonly.",
+                "Only then compose directly: for content the user supplied that must be reproduced exactly, for an item shape no template can express (the two-column multichoice answer layout, say), or when round-tripping aigen_export_items_json."
+            ],
+            "why": "Templates are efficient but blunt - each has a predetermined output shape and deliberately exposes only a few inputs, fixing the rest itself, and a multi-item template amplifies that. They are excellent when what the user wants is close to what the template produces. Direct compose has the opposite balance: every field of the item is yours to set, but every image is yours to supply."
         },
         "base_lesson_replication": {
             "when": "Only when the user gives you an exported lesson (itemsjson from aigen_export_items_json) and asks for more lessons like it on other topics.",

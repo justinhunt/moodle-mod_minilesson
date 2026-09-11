@@ -97,6 +97,9 @@ if (has_capability('mod/minilesson:itemview', $context)) {
     echo $rsquestionrenderer->add_edit_page_links($context, $tableid, $minilesson->region);
 }
 
+// A way through to the chat agent, and a nudge back to it if it is waiting on an answer.
+echo $renderer->chatagent_entry($cm);
+
 // If we have items, show em.
 $itemsvisible = $items && count($items);
 echo $rsquestionrenderer->show_items_list($items, $minilesson, $cm, $itemsvisible);
