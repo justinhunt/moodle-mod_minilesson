@@ -1481,5 +1481,13 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026091100, 'minilesson');
     }
 
+    if ($oldversion < 2026091105) {
+        // Update default templates - fluency upload-with-markup keeps the teacher's sentences as typed.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026091105, 'minilesson');
+    }
+
     return true;
 }
