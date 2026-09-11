@@ -1752,3 +1752,5 @@ $string['chatagent_attachedfile'] = 'The teacher attached a file named "{$a}". I
 $string['chatagent_attachedjson'] = 'The teacher attached a JSON file named "{$a}". Its contents follow, with any embedded media stripped out. If it is an exported MiniLesson, treat it as the shape to reuse: keep each item\'s type, layout and options, and rewrite only the wording for the new topic.';
 $string['chatagent_attachedjsonempty'] = 'The teacher attached a JSON file named "{$a}", but it could not be read.';
 $string['chatagent_attachedjsontrimmed'] = 'The teacher attached a JSON file named "{$a->name}". It was too large to include in full even with its media stripped out, so only the first {$a->max} MB of it follows. Say so, and ask the teacher to send a smaller export.';
+$string['chatagent_interrupted'] = 'The last reply was interrupted before it finished, at: {$a}';
+$string['chatagent_continue'] = 'Pick up where it left off';

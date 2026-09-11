@@ -88,6 +88,10 @@ class ChatAgent {
             const button = e.target.closest('[data-action="approve"], [data-action="decline"]');
             if (button) {
                 this.decide(button.dataset.callid, button.dataset.action === 'approve');
+                return;
+            }
+            if (e.target.closest('[data-action="continue"]')) {
+                this.continueTurn();
             }
         });
     }
@@ -98,7 +102,7 @@ class ChatAgent {
     async start() {
         try {
             const response = await this.call('start', {cmid: this.cmid, sinceid: 0});
-            this.handle(response);
+            this.handle(response, true);
         } catch (error) {
             Notification.exception(error);
         }
@@ -215,8 +219,10 @@ class ChatAgent {
      * Draw whatever came back: new messages, an approval card, an error.
      *
      * @param {Object} response
+     * @param {Boolean} restored true when this is a conversation read back from the database on
+     *                           page load, rather than something happening right now
      */
-    handle(response) {
+    handle(response, restored) {
         this.conversationid = response.conversationid;
 
         // Only the server knows whether a tool actually changed the items, so it says so and the
@@ -231,15 +237,79 @@ class ChatAgent {
             this.appendMessage(message);
         });
 
+        // Clear the progress line first, so that every path out of here either sets a new one or
+        // leaves none. Setting it without ever clearing it is how a spinner outlives the work it
+        // was reporting on - including across a reset, where nothing is happening at all.
+        this.setStatus('');
+
         if (response.status === 'error') {
             this.showError(response.error);
             return;
         }
         if (response.status === 'requires_approval' && response.pending) {
             this.appendApproval(response.pending);
+            return;
         }
         if (response.status === 'requires_tool' && response.pending) {
-            this.setStatus(response.pending.summary);
+            if (restored) {
+                // Restored from the database, not happening now: the teacher closed the page
+                // part way through a turn. Showing the progress line here would promise work
+                // that nobody is doing, so offer to pick it up instead. It is not resumed
+                // automatically because that would spend on the AI service for a page load.
+                this.appendInterrupted(response.pending);
+            } else {
+                this.setStatus(response.pending.summary);
+            }
+        }
+    }
+
+    /**
+     * Offer to finish a turn that was interrupted, rather than pretending it is still running.
+     *
+     * @param {Object} pending the tool the assistant had been about to run
+     */
+    async appendInterrupted(pending) {
+        const element = document.createElement('div');
+        element.className = 'ml_chatagent_interrupted';
+        element.dataset.region = 'interrupted';
+
+        const text = document.createElement('span');
+        text.textContent = await getString('chatagent_interrupted', 'mod_minilesson', pending.summary);
+        element.appendChild(text);
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'btn btn-secondary btn-sm';
+        button.dataset.action = 'continue';
+        button.textContent = await getString('chatagent_continue', 'mod_minilesson');
+        element.appendChild(button);
+
+        this.messages.appendChild(element);
+        this.scroll();
+    }
+
+    /**
+     * Pick up a turn that was left unfinished.
+     */
+    async continueTurn() {
+        if (this.busy) {
+            return;
+        }
+        const notice = this.messages.querySelector('[data-region="interrupted"]');
+        if (notice) {
+            notice.remove();
+        }
+
+        this.setBusy(true, await getString('chatagent_working', 'mod_minilesson'));
+        try {
+            await this.runLoop(await this.call('step', {
+                conversationid: this.conversationid,
+                sinceid: this.sinceid,
+            }));
+        } catch (error) {
+            this.showError(error.message);
+        } finally {
+            this.setBusy(false);
         }
     }
 
