@@ -423,14 +423,16 @@ if ($hassiteconfig) {
         0
     ));
 
-    // One option today. It is here rather than assumed so that the brokered provider, when it
-    // arrives, is a new entry in this list and nothing else.
+    // Cloud Poodll by default: most sites have Poodll credentials and no Gemini key of their own.
     $chatagentsettings->add(new admin_setting_configselect(
         constants::M_COMPONENT . '/chatagentprovider',
         get_string('chatagentprovider', constants::M_COMPONENT),
         get_string('chatagentprovider_details', constants::M_COMPONENT),
-        'ownkey',
-        ['ownkey' => get_string('chatagentprovider_ownkey', constants::M_COMPONENT)]
+        'cloudpoodll',
+        [
+            'cloudpoodll' => get_string('chatagentprovider_cloudpoodll', constants::M_COMPONENT),
+            'ownkey' => get_string('chatagentprovider_ownkey', constants::M_COMPONENT),
+        ]
     ));
 
     // Free text rather than a menu: models are released faster than this plugin is, and a site
@@ -442,6 +444,13 @@ if ($hassiteconfig) {
         \mod_minilesson\local\chatagent\gemini_driver::DEFAULT_MODEL,
         PARAM_TEXT
     ));
+    // Under Cloud Poodll the model is Poodll's choice, since Poodll pays for it.
+    $chatagentsettings->hide_if(
+        constants::M_COMPONENT . '/chatagentmodel',
+        constants::M_COMPONENT . '/chatagentprovider',
+        'eq',
+        'cloudpoodll'
+    );
 
     $chatagentsettings->add(new admin_setting_configtext(
         constants::M_COMPONENT . '/chatagentmaxtoolcalls',

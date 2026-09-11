@@ -476,18 +476,20 @@ class utils {
     /**
      * The chat agent provider this site is configured to use.
      *
-     * The one place that turns the chatagentprovider setting into a driver, so adding the
-     * brokered provider means a new case here and a new class - and nothing else.
+     * The one place that turns the chatagentprovider setting into a driver, so a new provider
+     * means a new case here and a new class - and nothing else.
      *
      * @return \mod_minilesson\local\chatagent\provider_driver
      */
     public static function chatagent_driver() {
         $provider = get_config(constants::M_COMPONENT, 'chatagentprovider');
         switch ($provider) {
-            default:
-                // Only one provider so far. An unrecognised setting falls back to it rather
-                // than failing, so a downgrade cannot leave the agent unable to start.
+            case 'ownkey':
                 return new \mod_minilesson\local\chatagent\gemini_driver();
+            default:
+                // Cloud Poodll is the default, and an unset or unrecognised setting falls back to
+                // it rather than failing, so a downgrade cannot leave the agent unable to start.
+                return new \mod_minilesson\local\chatagent\cloudpoodll_driver();
         }
     }
 

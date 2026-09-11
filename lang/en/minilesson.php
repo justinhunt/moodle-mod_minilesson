@@ -1671,6 +1671,20 @@ $string['chatagent_error_stuck'] = 'The assistant used too many steps without fi
     . '- try asking again, more specifically.';
 $string['chatagent_error_transport'] = 'The AI service sent a reply that could not be read. Try again.';
 $string['chatagent_error_unknown'] = 'The AI service could not complete that request. Try again.';
+$string['chatagent_error_cp_auth'] = 'The AI assistant could not sign in to Cloud Poodll. Check the Poodll '
+    . 'API user and secret in the MiniLesson settings.';
+$string['chatagent_error_cp_busy'] = 'The AI service is busy. Wait a minute or two and try again.';
+$string['chatagent_error_cp_connection'] = 'The AI assistant could not reach Cloud Poodll. Check the '
+    . 'server\'s internet connection and any proxy settings, then try again.';
+$string['chatagent_error_cp_licence'] = 'This site\'s Poodll subscription does not cover the AI assistant. '
+    . 'Check that the subscription is current, that it includes MiniLesson, and that this site\'s address is '
+    . 'registered with Poodll.';
+$string['chatagent_error_cp_nocredentials'] = 'The AI assistant is not set up: no Poodll API user and '
+    . 'secret have been entered in the MiniLesson settings.';
+$string['chatagent_error_cp_notsupported'] = 'Cloud Poodll does not offer the AI assistant yet. Try again '
+    . 'later, or switch the chat agent to the site\'s own Gemini API key in the meantime.';
+$string['chatagent_error_cp_quota'] = 'Today\'s AI assistant allowance for this site\'s Poodll account has '
+    . 'been used up. It resets at midnight UTC.';
 $string['chatagent_replay_preamble'] = 'This conversation continues an earlier session that the AI service '
     . 'no longer holds. Here is what was said, oldest first. Continue from where it left off, and do '
     . 'not repeat work that is already done.';
@@ -1690,20 +1704,23 @@ $string['privacy:metadata:chatagentmsg:timecreated'] = 'When the message was sen
 $string['privacy:metadata:gemini'] = 'To answer, the assistant sends the conversation to the Gemini API, using the API key the site has configured. The conversation is held in that Google project according to its own retention settings.';
 $string['privacy:metadata:gemini:prompts'] = 'What the teacher typed, and the assistant\'s replies.';
 $string['privacy:metadata:gemini:attachments'] = 'Any documents or images the teacher attached.';
+$string['privacy:metadata:cloudpoodllcom:chatagentprompts'] = 'Under the Cloud Poodll provider, the assistant conversation: what the teacher typed and the assistant\'s replies. Cloud Poodll passes it to the Gemini API in Poodll\'s own Google project, where it is held according to that project\'s retention settings.';
+$string['privacy:metadata:cloudpoodllcom:chatagentattachments'] = 'Under the Cloud Poodll provider, any documents or images the teacher attached to the assistant conversation.';
 $string['chatagent_error_attachmenttoobig'] = 'The file "{$a->name}" is {$a->size} MB, and the assistant accepts attachments up to {$a->max} MB. Try a shorter extract, just the pages you need, or split it across two messages. (Exported lessons in .json format have no size limit here.)';
 $string['chatagent_error_emptymessage'] = 'Type a message, or attach a file, before sending.';
 $string['chatagent_error_noconversation'] = 'That conversation could not be opened. Reload the page and try again.';
 $string['chatagent_error_toomanyturns'] = 'You have reached the limit of {$a} assistant messages an hour. Try again shortly.';
 $string['chatagent_error_unavailable'] = 'The assistant is not available on this site.';
 $string['chatagent_settings'] = 'Chat agent';
-$string['chatagent_settings_details'] = 'The chat agent lets teachers build a lesson by describing it in a chat panel, attaching a PDF or an image if they have one. It uses the Gemini API key set on the "Other API keys" page, and the site is billed by Google for what it uses. With no key set, the agent stays hidden however these settings are left.';
+$string['chatagent_settings_details'] = 'The chat agent lets teachers build a lesson by describing it in a chat panel, attaching a PDF or an image if they have one. It reaches the AI through Cloud Poodll, using the site\'s Poodll API user and secret and the site\'s Poodll subscription, or through the site\'s own Gemini API key (set on the "Other API keys" page), in which case Google bills the site directly. Until the chosen provider has its credentials, the agent stays hidden however these settings are left.';
 $string['chatagentenabled'] = 'Enable the chat agent';
-$string['chatagentenabled_details'] = 'Show the Assistant tab to teachers who can use AI generation. Has no effect until a Gemini API key is set.';
+$string['chatagentenabled_details'] = 'Show the Assistant tab to teachers who can use AI generation. Has no effect until the chosen provider has its credentials: a Poodll API user and secret for Cloud Poodll, or a Gemini API key for the site\'s own key.';
 $string['chatagentprovider'] = 'AI provider';
-$string['chatagentprovider_details'] = 'Where the chat agent sends its requests.';
+$string['chatagentprovider_details'] = 'Where the chat agent sends its requests. Cloud Poodll needs nothing beyond the site\'s Poodll credentials, and each Poodll account has a daily allowance shared by all its sites. With the site\'s own Gemini API key, Google bills the site and the key\'s own quota applies. Either way the server must be able to reach the provider over the internet, through the site\'s proxy settings if it has them.';
+$string['chatagentprovider_cloudpoodll'] = 'Cloud Poodll (uses the site\'s Poodll subscription)';
 $string['chatagentprovider_ownkey'] = 'This site\'s own Gemini API key';
 $string['chatagentmodel'] = 'Model';
-$string['chatagentmodel_details'] = 'The Gemini model to use. Free text, so you can move to a newer model without waiting for a plugin update.';
+$string['chatagentmodel_details'] = 'The Gemini model to use with the site\'s own key. Free text, so you can move to a newer model without waiting for a plugin update. Cloud Poodll chooses its own model.';
 $string['chatagentmaxtoolcalls'] = 'Actions per message';
 $string['chatagentmaxtoolcalls_details'] = 'How many things the assistant may do in answering one message before it is stopped. Reaching this limit usually means it is going round in circles.';
 $string['chatagentmaxturns'] = 'Messages per hour';
