@@ -303,10 +303,16 @@ class aigen {
                             }
                         }
                     } else {
+                        // The payload is whatever came back, which is not always a string: a web
+                        // service exception arrives as an object, and concatenating that raises a
+                        // fatal that buries the very message being reported.
+                        $failure = is_scalar($genresult->payload)
+                            ? (string) $genresult->payload
+                            : json_encode($genresult->payload);
                         throw new textgenerationfailed(
                             $currentitemcount,
                             $importitem->type,
-                            $useprompt . ' | Error: ' . $genresult->payload
+                            $useprompt . ' | Error: ' . $failure
                         );
                     }
 
