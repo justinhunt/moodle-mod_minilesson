@@ -1489,5 +1489,30 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026091105, 'minilesson');
     }
 
+    if ($oldversion < 2026091110) {
+        // The agent-only "Add Pics to Interactive Story" template is renamed, and its description now leads
+        // with why an agent would pick it. The template sync keeps an existing record's name and description,
+        // so set them here. Only where the old (or new) default name is in place, so an admin's own rename is kept.
+        // The poster image prompt is now an input too: the poster is no longer written by the AI.
+        // Its tag is now "Reading" (was "Vocabulary Practice").
+        // It also has a Story Type input, so the story shape shows in the agent's plan.
+        $newname = get_string('aigentemplatename:fiction_addpics', constants::M_COMPONENT);
+        $newdescription = get_string('aigentemplatedescription:fiction_addpics', constants::M_COMPONENT);
+        $defaultnames = ['add pics to interactive story', \core_text::strtolower($newname)];
+        $templates = $DB->get_records('minilesson_templates', ['uniqueid' => '69b032eb8af03']);
+        foreach ($templates as $template) {
+            if (in_array(\core_text::strtolower(trim($template->name)), $defaultnames)) {
+                $template->name = $newname;
+                $template->description = $newdescription;
+                $DB->update_record('minilesson_templates', $template);
+            }
+        }
+        // Update default templates - the config now makes the poster from the supplied poster image prompt.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026091110, 'minilesson');
+    }
+
     return true;
 }

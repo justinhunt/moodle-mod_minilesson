@@ -2,8 +2,8 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Role: You are a Story Designer specializing in educational stories for second language learners.\nYour task is to design a poster image to introduce the story that follows.\n\nStory Summary: \n{topic} \n\nOutput (data2): Write an image generation prompt for a square poster image with the main characters and one representative scene from the story. The prompt should specify the image style: {imagestyle}\n\n\n",
-            "generatemethod": "generate",
+            "prompt": "",
+            "generatemethod": "reuse",
             "generatefileareasmethod": "generate",
             "generatefields": [
                 {
@@ -18,7 +18,7 @@
                 },
                 {
                     "name": "data2",
-                    "generate": 1,
+                    "generate": 0,
                     "mapping": ""
                 },
                 {
@@ -41,20 +41,11 @@
                 {
                     "name": "itemmedia",
                     "generate": 1,
-                    "mapping": "data2"
+                    "mapping": "user_customdata3"
                 }
             ],
-            "overallimagecontext": "user_topic",
-            "promptfields": [
-                {
-                    "name": "topic",
-                    "mapping": "user_topic"
-                },
-                {
-                    "name": "imagestyle",
-                    "mapping": "user_customdata1"
-                }
-            ]
+            "overallimagecontext": "user_customdata1",
+            "promptfields": []
         },
         {
             "itemnumber": 1,
@@ -122,10 +113,10 @@
             ]
         }
     ],
-    "lessonTitle": "Add Pics to Interactive Story",
-    "lessonDescription": "This template accepts a fiction item story, and image prompts, and generates pictures for the story from the supplied image prompts. This template takes as input:  story summary, an image generation style, a story in yarn format with image placeholders, and a json array with image filenames + image generation prompts. It produces 2 items, a content page item with a picture, and a fiction item with images matching all the placeholders. ",
+    "lessonTitle": "Interactive Story (supplied Yarn + image prompts)",
+    "lessonDescription": "The highest-control interactive story template: pick it when you will write the story yourself. You choose the story type, and supply the complete story in Yarn format with picture placeholders, one image prompt per placeholder, an image prompt for the poster, and an image style. The story is used exactly as you wrote it. The template generates the pictures and the poster, and builds 2 items: a content page with the poster, and a fiction item with a picture for every placeholder.",
     "uniqueid": "69b032eb8af03",
-    "version": "10",
+    "version": "14",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -137,7 +128,7 @@
         "user_topic": {
             "enabled": true,
             "title": "Story Summary",
-            "description": "A summary of the story, used to generate the poster image. For a narrative story, the premise and the main characters. For a spatial story, the setting, the goal, and the places the learner will move between.",
+            "description": "Optional. A one or two sentence summary of the story. It is saved as the lesson's topic.",
             "type": "textarea"
         },
         "user_level": {
@@ -169,7 +160,7 @@
         "user_customdata1": {
             "enabled": true,
             "title": "Image Style",
-            "description": "The image style for the poster image",
+            "description": "The image style for all the pictures: the poster and every story picture.",
             "type": "dropdown",
             "options": [
                 "Flat vector illustration",
@@ -189,16 +180,20 @@
             "type": "textarea"
         },
         "user_customdata3": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Poster Image Prompt",
+            "description": "An image generation prompt for the square poster image on the story's intro page. Describe the main characters in one scene that represents the story. The poster is made from this prompt only, so describe the characters' looks and the setting here too. The Image Style is used unless the prompt names a style of its own. Do not ask for text in the image.",
+            "type": "textarea"
         },
         "user_customdata4": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Story Type",
+            "description": "The shape of the story you write. \"Story with choices\" is narrative fiction (Part 3A of the fiction authoring guide): a plot moves on and the learner's choices change what happens. \"Explore a place\" is spatial fiction (Part 3B): the learner moves between places, finds things and uses them. The template does not read this value, it tells you which kind of story to write. If the user has not said which they want, ask them before you write the story, because changing it later means writing the story again.",
+            "type": "dropdown",
+            "options": [
+                "Story with choices",
+                "Explore a place"
+            ]
         },
         "user_customdata5": {
             "enabled": false,
@@ -238,6 +233,6 @@
         }
     },
     "tags": [
-        "Vocabulary Practice"
+        "Reading"
     ]
 }
