@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -31,16 +30,16 @@ use mod_minilesson\aimanager;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
 
-//if ($ADMIN->fulltree) {
+// if ($ADMIN->fulltree) {
 if ($hassiteconfig) {
-    //Add category to navigation
+    // Add category to navigation
     $minilessoncat = new admin_category(
         'modsettingsminilessoncat',
         get_string('modulename', constants::M_COMPONENT)
-    );//, $module->is_enabled() === false);
+    );// , $module->is_enabled() === false);
     $ADMIN->add('modsettings', $minilessoncat);
 
-    //create main settings page
+    // create main settings page
     // The page name must be 'modsettingminilesson' (the section name core expects for this module)
     // so that the settings link shows on admin/plugins.php. This is how mod_quiz does it too.
     $pagetitle = get_string('generalsettings', 'admin');
@@ -223,7 +222,7 @@ if ($hassiteconfig) {
         constants::LAYOUT_AUTO => get_string('layoutauto', constants::M_COMPONENT),
         constants::LAYOUT_HORIZONTAL => get_string('layouthorizontal', constants::M_COMPONENT),
         constants::LAYOUT_VERTICAL => get_string('layoutvertical', constants::M_COMPONENT),
-        constants::LAYOUT_MAGAZINE => get_string('layoutmagazine', constants::M_COMPONENT)
+        constants::LAYOUT_MAGAZINE => get_string('layoutmagazine', constants::M_COMPONENT),
     ];
     $mainsettings->add(new admin_setting_configselect(
         constants::M_COMPONENT .  '/layout',
@@ -403,7 +402,7 @@ if ($hassiteconfig) {
         PARAM_TEXT
     ));
 
-    //add other API keys settings page to minilesson category
+    // add other API keys settings page to minilesson category
     $ADMIN->add('modsettingsminilessoncat', $otherapikeysettings);
 
     // Chat agent. The in-Moodle assistant that builds lessons by chatting with a teacher.
@@ -420,7 +419,7 @@ if ($hassiteconfig) {
         constants::M_COMPONENT . '/chatagentenabled',
         get_string('chatagentenabled', constants::M_COMPONENT),
         get_string('chatagentenabled_details', constants::M_COMPONENT),
-        0
+        1
     ));
 
     // Cloud Poodll by default: most sites have Poodll credentials and no Gemini key of their own.

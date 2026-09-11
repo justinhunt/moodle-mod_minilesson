@@ -1,21 +1,7 @@
 Version 1.1.56 (Build 2026091105)
 - Added a chat agent. On the new Assistant tab, teachers build a lesson by chatting with an AI.
   They can attach a PDF, an image, or an exported lesson (.json). The agent shows a plan and asks
-  before it creates or imports items.
-- The chat agent is off by default. Turn it on in the MiniLesson settings, on the Chat agent page.
-- The chat agent can use Cloud Poodll or the site's own Gemini API key. Cloud Poodll is the default.
-  It uses the site's Poodll subscription, and each Poodll account has a daily limit.
-- Sites that installed build 2026091104 have the provider set to "This site's own Gemini API key".
-  To use Cloud Poodll, change it on the Chat agent page.
-- Teachers need the mod/minilesson:canuseaigen capability to use the chat agent. Editing teachers
-  and managers have it by default.
-- JSON import now rejects an item that has a field its item type does not have, and names the
-  field. Before, the field was dropped without a message.
-- The chat agent removes media data from lesson exports before it sends them to the AI. MCP and
-  Custom GPT agents are told to export with exclude_files=true.
-- Updated the instructions for AI agents (MCP, Custom GPT and the chat agent). They now decide what
-  to do from what the teacher asks for, not from what the teacher attached, and they can combine
-  several templates in one lesson.
+  before it creates or imports items. There is a daily limit, but if you blow over it you can supply your own Gemini token
 - AI generation now tries once more if Cloud Poodll returns a reply that can not be read. Failed
   calls are logged when developer debugging is on.
 - Added an image style option to the Word Practice v1, v3 and v4, Vocab Cards, and Vocab Cards
