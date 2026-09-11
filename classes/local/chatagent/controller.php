@@ -206,7 +206,13 @@ class controller {
     protected function call_model(conversation $conversation, array $input): array {
         $tools = tools::declarations();
         $instruction = $this->instruction($conversation);
-        $previous = $conversation->interactionid ?: null;
+        // A handle only means something to the provider that issued it. After the site changes
+        // provider, the old one is at best unknown to the new provider and at worst refused, so
+        // it is not sent: the conversation replays below instead.
+        $previous = ($conversation->interactionid !== ''
+                && $conversation->provider === $this->driver->get_name())
+            ? $conversation->interactionid
+            : null;
 
         // No handle, but a conversation already under way: the provider is not holding this
         // history, so send the history itself. That happens when the retention window has

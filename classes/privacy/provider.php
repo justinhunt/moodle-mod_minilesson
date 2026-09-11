@@ -121,15 +121,18 @@ class provider implements
         ], 'privacy:metadata:chatagentmetrictable');
 
         // Where the assistant's conversations are actually processed. Under the own-key provider
-        // that is the site's own Google project; a brokered provider would add Cloud Poodll to
-        // the path, which is why this is named separately from the link below.
+        // that is the site's own Google project, directly. Under the Cloud Poodll provider the
+        // conversation goes to Cloud Poodll, which passes it to Poodll's Google project - the
+        // chatagent fields on the cloud.poodll.com link below.
         $collection->add_external_location_link('generativelanguage.googleapis.com', [
             'prompts' => 'privacy:metadata:gemini:prompts',
             'attachments' => 'privacy:metadata:gemini:attachments',
         ], 'privacy:metadata:gemini');
 
         $collection->add_external_location_link('cloud.poodll.com', [
-            'userid' => 'privacy:metadata:cloudpoodllcom:userid'
+            'userid' => 'privacy:metadata:cloudpoodllcom:userid',
+            'chatagentprompts' => 'privacy:metadata:cloudpoodllcom:chatagentprompts',
+            'chatagentattachments' => 'privacy:metadata:cloudpoodllcom:chatagentattachments',
         ], 'privacy:metadata:cloudpoodllcom');
         return $collection;
     }

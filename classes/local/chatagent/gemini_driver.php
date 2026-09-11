@@ -139,7 +139,7 @@ class gemini_driver implements provider_driver {
             $this->log_failure('no response (errno ' . $curl->get_errno() . '): ' . $curl->error);
             return result::fail(
                 result::ERROR_CONNECTION,
-                get_string('chatagent_error_connection', constants::M_COMPONENT)
+                $this->error_message(result::ERROR_CONNECTION)
             );
         }
 
@@ -152,7 +152,7 @@ class gemini_driver implements provider_driver {
             $this->log_failure('unparseable response: ' . substr((string) $body, 0, 500));
             return result::fail(
                 result::ERROR_TRANSPORT,
-                get_string('chatagent_error_transport', constants::M_COMPONENT)
+                $this->error_message(result::ERROR_TRANSPORT)
             );
         }
 
@@ -271,14 +271,14 @@ class gemini_driver implements provider_driver {
         ) {
             return result::fail(
                 result::ERROR_AUTH,
-                get_string('chatagent_error_auth', constants::M_COMPONENT)
+                $this->error_message(result::ERROR_AUTH)
             );
         }
 
         if ($status === 'RESOURCE_EXHAUSTED' || $httpcode === 429) {
             return result::fail(
                 result::ERROR_QUOTA,
-                get_string('chatagent_error_quota', constants::M_COMPONENT)
+                $this->error_message(result::ERROR_QUOTA)
             );
         }
 
@@ -292,8 +292,21 @@ class gemini_driver implements provider_driver {
 
         return result::fail(
             result::ERROR_UNKNOWN,
-            get_string('chatagent_error_unknown', constants::M_COMPONENT)
+            $this->error_message(result::ERROR_UNKNOWN)
         );
+    }
+
+    /**
+     * The message a teacher sees for a failure.
+     *
+     * A method rather than inline strings so a provider that reaches Gemini some other way can
+     * say something its admin can act on - a Poodll subscription rather than a Gemini key.
+     *
+     * @param string $errorcode one of the result::ERROR_* constants
+     * @return string
+     */
+    protected function error_message(string $errorcode): string {
+        return get_string('chatagent_error_' . $errorcode, constants::M_COMPONENT);
     }
 
     /**

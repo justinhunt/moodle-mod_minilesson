@@ -31,10 +31,18 @@
  *   php cli/chatagent_harness.php --show               # print the transcript
  *   php cli/chatagent_harness.php --reset              # start over
  *
+ * Provider. The site's own Gemini key unless told otherwise:
+ *   --provider=cloudpoodll   go through Cloud Poodll over HTTP, with the site's Poodll credentials
+ *   --loopback --cpuser=<username>
+ *               go through Cloud Poodll in-process, as that Cloud Poodll account, on a dev site
+ *               that has local_cpapi installed (see local/cpapi/cli/chatagent_probe.php --setup)
+ *
  * Failure paths, so the messages a teacher would see can be checked without waiting for a real
  * outage or clobbering the site's API key:
  *   --badkey    send a bogus API key           (exercises the auth path against the live API)
  *   --badhost   point at an unresolvable host  (exercises the connection path)
+ *   --cpbadtoken  send Cloud Poodll a token it will refuse (exercises the refresh-and-retry, then
+ *                 the auth path, against the real server)
  *   --simulate=quota|auth|connection|expired|transport|unknown
  *               make the provider return that failure without calling it at all
  *
@@ -57,6 +65,8 @@ require_once($CFG->libdir . '/clilib.php');
 
 use mod_minilesson\local\chatagent\conversation;
 use mod_minilesson\local\chatagent\controller;
+use mod_minilesson\local\chatagent\cloudpoodll_driver;
+use mod_minilesson\local\chatagent\cloudpoodll_loopback_driver;
 use mod_minilesson\local\chatagent\failing_driver;
 use mod_minilesson\local\chatagent\gemini_driver;
 use mod_minilesson\local\chatagent\misconfigured_gemini_driver;
@@ -78,6 +88,10 @@ use mod_minilesson\local\chatagent\misconfigured_gemini_driver;
         'badkey' => false,
         'badhost' => false,
         'simulate' => '',
+        'provider' => 'ownkey',
+        'loopback' => false,
+        'cpuser' => '',
+        'cpbadtoken' => false,
     ],
     ['h' => 'help', 'm' => 'message']
 );
@@ -86,7 +100,7 @@ if ($unrecognised) {
     cli_error(get_string('cliunknowoption', 'admin', implode("\n  ", $unrecognised)));
 }
 if ($options['help']) {
-    cli_writeln(file_get_contents(__FILE__, false, null, 0, 2400));
+    cli_writeln(file_get_contents(__FILE__, false, null, 0, 3400));
     exit(0);
 }
 
@@ -137,11 +151,34 @@ if ($options['simulate'] !== '') {
 } else if ($options['badhost']) {
     cli_writeln('-- pointing at an unresolvable host --');
     $driver = new misconfigured_gemini_driver(misconfigured_gemini_driver::MODE_BADHOST);
+} else if ($options['loopback']) {
+    if ($options['cpuser'] === '') {
+        cli_error('--loopback needs --cpuser=<Cloud Poodll account username>.');
+    }
+    cli_writeln('-- Cloud Poodll, in-process, as ' . $options['cpuser'] . ' --');
+    $driver = new cloudpoodll_loopback_driver($options['cpuser']);
+} else if ($options['cpbadtoken']) {
+    cli_writeln('-- Cloud Poodll, with a token it will refuse --');
+    $driver = new class extends cloudpoodll_driver {
+        /**
+         * A token no server issued.
+         *
+         * @param bool $force
+         * @return string
+         */
+        protected function token(bool $force) {
+            return 'not-a-real-token';
+        }
+    };
+} else if ($options['provider'] === 'cloudpoodll') {
+    cli_writeln('-- Cloud Poodll, over HTTP --');
+    $driver = new cloudpoodll_driver();
 } else {
     $driver = new gemini_driver();
 }
 if (!$driver->is_available()) {
-    cli_error('No Gemini API key is set. Add one in the MiniLesson settings (geminiapikey).');
+    cli_error('The provider has no credentials: a Gemini API key (geminiapikey) for ownkey, or a Poodll '
+        . 'API user and secret for cloudpoodll.');
 }
 $agent = new controller($driver);
 
