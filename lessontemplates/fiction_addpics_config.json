@@ -49,14 +49,14 @@
         },
         {
             "itemnumber": 1,
-            "prompt": "From the following JSON array of image filenames and descriptions, extract a 1 dimensional array of the image descriptions and store it in output field. Prepend each of the image descriptions with the image style ({imagestyle}): data1\n\n{imagedescriptions}\n\nAlso copy over the following content as is, into output field: fictionyarn\n\n{fictionstory}\n\n# Output Instructions\nYour output consists of two top-level keys and their values:\ndata1 \u2014 a 1-dimensional array of individual image descriptions\nfictionyarn - a string containing an interactive fiction story in Yarn format.",
-            "generatemethod": "extract",
-            "generatefileareasmethod": "extract",
+            "prompt": "",
+            "generatemethod": "reuse",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "fictionyarn",
                     "generate": 1,
-                    "mapping": ""
+                    "mapping": "user_text"
                 },
                 {
                     "name": "presentationmode",
@@ -65,7 +65,7 @@
                 },
                 {
                     "name": "data1",
-                    "generate": 1,
+                    "generate": 0,
                     "mapping": ""
                 },
                 {
@@ -93,30 +93,17 @@
                 {
                     "name": "customfile1",
                     "generate": 1,
-                    "mapping": "data1"
+                    "mapping": "user_customdata2"
                 }
             ],
-            "overallimagecontext": "--",
-            "promptfields": [
-                {
-                    "name": "imagestyle",
-                    "mapping": "user_customdata1"
-                },
-                {
-                    "name": "imagedescriptions",
-                    "mapping": "user_customdata2"
-                },
-                {
-                    "name": "fictionstory",
-                    "mapping": "user_text"
-                }
-            ]
+            "overallimagecontext": "user_customdata1",
+            "promptfields": []
         }
     ],
-    "lessonTitle": "Interactive Story (supplied Yarn + image prompts)",
-    "lessonDescription": "The highest-control interactive story template: pick it when you will write the story yourself. You choose the story type, and supply the complete story in Yarn format with picture placeholders, one image prompt per placeholder, an image prompt for the poster, and an image style. The story is used exactly as you wrote it. The template generates the pictures and the poster, and builds 2 items: a content page with the poster, and a fiction item with a picture for every placeholder.",
+    "lessonTitle": "Interactive Story (agent-written, with pics)",
+    "lessonDescription": "Use this when the teacher gives an idea or premise for a story: you write the story yourself in Yarn, following the fiction authoring guide, which gives a better story than the generated story templates. The teacher does not need to have a script. You choose the story type, and supply the complete story with picture placeholders, one image prompt per placeholder, an image prompt for the poster, and an image style. The story is used exactly as you wrote it. The template generates the pictures and the poster, and builds 2 items: a content page with the poster, and a fiction item with a picture for every placeholder.",
     "uniqueid": "69b032eb8af03",
-    "version": "14",
+    "version": "16",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -160,7 +147,7 @@
         "user_customdata1": {
             "enabled": true,
             "title": "Image Style",
-            "description": "The image style for all the pictures: the poster and every story picture.",
+            "description": "The image style for all the pictures: the poster and every story picture. It is used for each image prompt that does not name a style of its own.",
             "type": "dropdown",
             "options": [
                 "Flat vector illustration",

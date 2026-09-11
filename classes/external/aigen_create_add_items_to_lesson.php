@@ -78,7 +78,7 @@ class aigen_create_add_items_to_lesson extends external_api {
         $cm = get_coursemodule_from_id('minilesson', $params['cmid'], 0, false, MUST_EXIST);
         $moduleinstance = $DB->get_record('minilesson', ['id' => $cm->instance], '*', MUST_EXIST);
 
-        $othercontextdata = utils::fetch_usercontext_fields($modulecontext->ttslanguage);
+        $othercontextdata = utils::fetch_usercontext_fields($moduleinstance->ttslanguage);
         // The contextdata argument is optional, so a caller that sends none reaches the required-input
         // check below with nothing set, and is told which inputs are missing rather than hitting a warning.
         $submittedcontextdata = $params['contextdata'] ?? [];

@@ -392,7 +392,7 @@ class aigen {
                                 if ($trimmed !== '' && $trimmed[0] === '[') {
                                     $decoded = json_decode($imagepromptdata, true);
                                     if (is_array($decoded)) {
-                                        $imagepromptdata = $decoded;
+                                        $imagepromptdata = self::image_prompt_list($decoded);
                                     }
                                 }
                             }
@@ -902,6 +902,28 @@ class aigen {
             }
         }
         return self::CONTROL_GENERATED;
+    }
+
+    /**
+     * Turn a decoded list of image prompts into the plain list generate_images() takes. A caller
+     * may send the prompts as [{"filename": "01.png", "prompt": "..."}] so each one names the
+     * picture placeholder it is for. generate_images() fills a file area's files in order, so these
+     * are sorted by filename and reduced to their prompts. A plain list of strings is returned as is.
+     *
+     * @param array $prompts The decoded image prompt data.
+     * @return array The image prompts, in file order.
+     */
+    public static function image_prompt_list(array $prompts) {
+        $objects = array_filter($prompts, function ($prompt) {
+            return is_array($prompt) && isset($prompt['prompt']);
+        });
+        if (empty($objects) || count($objects) !== count($prompts)) {
+            return $prompts;
+        }
+        usort($objects, function ($a, $b) {
+            return strnatcmp($a['filename'] ?? '', $b['filename'] ?? '');
+        });
+        return array_column($objects, 'prompt');
     }
 
     /**

@@ -1489,16 +1489,22 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026091105, 'minilesson');
     }
 
-    if ($oldversion < 2026091110) {
-        // The agent-only "Add Pics to Interactive Story" template is renamed, and its description now leads
-        // with why an agent would pick it. The template sync keeps an existing record's name and description,
-        // so set them here. Only where the old (or new) default name is in place, so an admin's own rename is kept.
+    if ($oldversion < 2026091112) {
+        // The agent-only "Add Pics to Interactive Story" template is renamed "Interactive Story (agent-written,
+        // with pics)", and its description now leads with why an agent would pick it. The template sync keeps an
+        // existing record's name and description, so set them here. Only where a default name is in place, so an
+        // admin's own rename is kept.
         // The poster image prompt is now an input too: the poster is no longer written by the AI.
         // Its tag is now "Reading" (was "Vocabulary Practice").
         // It also has a Story Type input, so the story shape shows in the agent's plan.
+        // The story now goes into the fiction item as written, with no AI step that could lose it.
         $newname = get_string('aigentemplatename:fiction_addpics', constants::M_COMPONENT);
         $newdescription = get_string('aigentemplatedescription:fiction_addpics', constants::M_COMPONENT);
-        $defaultnames = ['add pics to interactive story', \core_text::strtolower($newname)];
+        $defaultnames = [
+            'add pics to interactive story',
+            'interactive story (supplied yarn + image prompts)',
+            \core_text::strtolower($newname),
+        ];
         $templates = $DB->get_records('minilesson_templates', ['uniqueid' => '69b032eb8af03']);
         foreach ($templates as $template) {
             if (in_array(\core_text::strtolower(trim($template->name)), $defaultnames)) {
@@ -1511,7 +1517,7 @@ function xmldb_minilesson_upgrade($oldversion) {
         \mod_minilesson\aigen::create_default_templates();
 
         // Minilesson savepoint reached.
-        upgrade_mod_savepoint(true, 2026091110, 'minilesson');
+        upgrade_mod_savepoint(true, 2026091112, 'minilesson');
     }
 
     return true;
