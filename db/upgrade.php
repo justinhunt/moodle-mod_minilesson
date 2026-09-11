@@ -1520,5 +1520,15 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026091112, 'minilesson');
     }
 
+    if ($oldversion < 2026091113) {
+        // Update default templates - five template items carried a field their item type does not have
+        // (typinggapfill promptvoice/promptvoiceopt in the three grammar lessons, wordshuffle confirmchoice in
+        // word practice v2, freespeaking enablevkeyboard in the YouTube finale). Import now rejects such items.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026091113, 'minilesson');
+    }
+
     return true;
 }
