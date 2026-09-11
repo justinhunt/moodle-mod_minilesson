@@ -1456,67 +1456,26 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026090700, 'minilesson');
     }
 
-    if ($oldversion < 2026090900) {
-        // Tables for the in-Moodle chat agent: one row per teacher-plus-lesson conversation, and
-        // one per message in it. The conversation is kept server side because the provider's
-        // handle on the history and the arguments of a call awaiting approval are both things a
-        // browser must not be able to choose.
-        foreach ([constants::M_CHATAGENTCONV_TABLE, constants::M_CHATAGENTMSG_TABLE] as $tablename) {
+    if ($oldversion < 2026091100) {
+        // Tables for the in-Moodle chat agent: one row per teacher-plus-lesson conversation, one
+        // per message in it, and one per model call. The conversation is kept server side because
+        // the provider's handle on the history and the arguments of a call awaiting approval are
+        // both things a browser must not be able to choose. The metric rows are what let the
+        // agent's behaviour and cost be read off measurements rather than judged by impression.
+        $tables = [
+            constants::M_CHATAGENTCONV_TABLE,
+            constants::M_CHATAGENTMSG_TABLE,
+            constants::M_CHATAGENTMETRIC_TABLE,
+        ];
+        foreach ($tables as $tablename) {
             $table = new xmldb_table($tablename);
             if (!$dbman->table_exists($table)) {
-                $dbman->install_one_table_from_xmldb_file(
-                    __DIR__ . '/install.xml',
-                    $tablename
-                );
+                $dbman->install_one_table_from_xmldb_file(__DIR__ . '/install.xml', $tablename);
             }
         }
 
-        // Minilesson savepoint reached.
-        upgrade_mod_savepoint(true, 2026090900, 'minilesson');
-    }
-
-    if ($oldversion < 2026091000) {
-        // The chat agent's tables were briefly called minilesson_agent_session and
-        // minilesson_agent_message. Those names said nothing about which feature they belonged
-        // to, so they and the classes behind them were renamed to carry the feature's name.
-        // Only a development build ever created the old names, but rename rather than drop, so
-        // any site that did run that build keeps its conversations.
-        $renames = [
-            'minilesson_agent_session' => constants::M_CHATAGENTCONV_TABLE,
-            'minilesson_agent_message' => constants::M_CHATAGENTMSG_TABLE,
-        ];
-        foreach ($renames as $oldname => $newname) {
-            $oldtable = new xmldb_table($oldname);
-            if ($dbman->table_exists($oldtable) && !$dbman->table_exists(new xmldb_table($newname))) {
-                $dbman->rename_table($oldtable, $newname);
-            }
-        }
-
-        // Minilesson savepoint reached.
-        upgrade_mod_savepoint(true, 2026091000, 'minilesson');
-    }
-
-    if ($oldversion < 2026091001) {
-        // Same rename, one level down: the message table's foreign key was called sessionid,
-        // which read as a Moodle user session rather than as the conversation it points at.
-        $table = new xmldb_table(constants::M_CHATAGENTMSG_TABLE);
-        $field = new xmldb_field('sessionid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
-        if ($dbman->field_exists($table, $field)) {
-            $dbman->rename_field($table, $field, 'conversationid');
-        }
-
-        // Minilesson savepoint reached.
-        upgrade_mod_savepoint(true, 2026091001, 'minilesson');
-    }
-
-    if ($oldversion < 2026091100) {
-        // One row per chat agent model call. The readiness criteria for the brokered provider are
-        // meant to be read off measurements rather than judged by feel, and the same numbers size
-        // that endpoint - neither is possible without recording them.
-        $table = new xmldb_table(constants::M_CHATAGENTMETRIC_TABLE);
-        if (!$dbman->table_exists($table)) {
-            $dbman->install_one_table_from_xmldb_file(__DIR__ . '/install.xml', constants::M_CHATAGENTMETRIC_TABLE);
-        }
+        // Update default templates - new imagestyle settings for vocab cards.
+        \mod_minilesson\aigen::create_default_templates();
 
         // Minilesson savepoint reached.
         upgrade_mod_savepoint(true, 2026091100, 'minilesson');
