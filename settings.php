@@ -434,8 +434,8 @@ if ($hassiteconfig) {
         ]
     ));
 
-    // Free text rather than a menu: models are released faster than this plugin is, and a site
-    // that wants to move to a newer one should not have to wait for a release to do it.
+    // Free text rather than a menu.
+    // Models are released faster than a dropdown list here is likely to be updated.
     $chatagentsettings->add(new admin_setting_configtext(
         constants::M_COMPONENT . '/chatagentmodel',
         get_string('chatagentmodel', constants::M_COMPONENT),
@@ -443,7 +443,8 @@ if ($hassiteconfig) {
         \mod_minilesson\local\chatagent\gemini_driver::DEFAULT_MODEL,
         PARAM_TEXT
     ));
-    // Under Cloud Poodll the model is Poodll's choice, since Poodll pays for it.
+
+    // Under Cloud Poodll the model is set somewhere in Poodll's murky cloud world.
     $chatagentsettings->hide_if(
         constants::M_COMPONENT . '/chatagentmodel',
         constants::M_COMPONENT . '/chatagentprovider',
