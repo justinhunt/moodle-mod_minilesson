@@ -236,94 +236,105 @@ class facade {
      * @return string
      */
     public static function agent_instructions(): string {
-        return implode(' ', [
-            'These tools create and manage Poodll MiniLessons.',
-            'Requests come in three kinds. Route on WHAT THE TEACHER WANTS DONE, not on what they',
-            'attached - the same PDF can arrive with any of these intents:',
-            '(1) REPRODUCE SUPPLIED MATERIAL: the teacher wants what is in the material turned into',
-            'items, faithfully - a worksheet, a set of questions, a lesson plan to transcribe. Compose',
-            'the items by hand: list item types, fetch each type\'s spec, compose, import. Do not run a',
-            'template, which would regenerate content the teacher already has.',
-            '(2) GENERATE, whether from supplied material or from a description alone: the teacher wants',
-            'NEW activities. Any attachment is context rather than content - it supplies the topic, the',
-            'vocabulary, the reading text, the level. Follow the template-first ordering below, and lift',
-            'the template inputs straight out of the material: its vocabulary into user_keywords, its',
-            'passage into user_text, its level into user_level. "Supplementary activities for the lesson',
-            'in this PDF", "practice for these words", "a lesson about X" are all this kind.',
-            '(3) REUSE AN EXISTING LESSON\'S SHAPE (an uploaded export, or a lesson pulled with',
-            'aigen_export_items_json): keep each item\'s type/layout/options, rewrite only the wording',
-            'per topic, drop the old images, and let audio regenerate from text.',
-            'When you pull a lesson yourself, call aigen_export_items_json with exclude_files=true.',
-            'The media comes back as base64 you cannot read or act on, it is dropped for a new topic',
-            'anyway, and a lesson with images runs to several megabytes - enough to exhaust a client\'s',
-            'response limit and to cost real money. Leave it false only when you need a faithful,',
-            're-importable copy including the media.',
-            'AN ATTACHMENT DOES NOT MEAN REPRODUCE. Read the verb. "Turn this into items", "reproduce",',
-            '"keep these questions" is kind (1). "Generate", "supplementary", "practice for", "based on",',
-            '"inspired by" is kind (2). If it is genuinely unclear, ask which they want before building',
-            'anything - the two produce very different lessons from the same file.',
-            'FOR KIND (2): check aigen_list_templates first and use templates if they fit;',
-            'only hand-compose what no template can carry.',
-            'A LESSON CAN USE SEVERAL TEMPLATES. aigen_create_add_items_to_lesson ADDS items to a lesson,',
-            'so run it once per template to build a lesson out of two or three of them. Many templates',
-            'produce a single item (their outputs[].itemcount is 1) and exist to be combined this way.',
-            'Never conclude that because no one template covers the whole lesson you must hand-compose',
-            'all of it.',
-            'CHOOSING BETWEEN THEM. Templates are efficient but blunt: each has a predetermined output',
-            'shape and deliberately exposes only a few inputs, fixing everything else itself. A',
-            'multi-item template amplifies that - it is excellent when what the teacher wants is close to',
-            'what it produces, and a poor fit when it is not. Hand-composed JSON has the opposite',
-            'balance: every field of the item is yours to set (the two-column answer layout for',
-            'multichoice, say, which no template exposes), but you must supply any image yourself as',
-            'base64.',
-            'So decide in this order:',
-            '- DOES THE LESSON WANT IMAGES? Then use templates, one or several. The server generates the',
-            'media for you, and a multi-item template reuses the images it generates across its items.',
-            '- IS A MULTI-ITEM TEMPLATE CLOSE TO THE WHOLE LESSON? Use it. Its items are designed as a set',
-            'that works together, which separate runs cannot give you.',
-            '- DO YOU NEED CONTROL THE MULTI-ITEM TEMPLATES DO NOT EXPOSE? Build the lesson from several',
-            'AGENT-ONLY SINGLE-ITEM TEMPLATES (agentonly=true in aigen_list_templates). These are hidden',
-            'from the human picker because they ask for content that is tedious to type but easy for you',
-            'to compose. They expose more options than their siblings, their field descriptions carry more',
-            'guidance, and they still generate images - which makes them the way to have images and',
-            'precise control at the same time.',
-            '- ONLY THEN HAND-COMPOSE: for content the teacher supplied that must be reproduced exactly,',
-            'for an item shape no template can express, or when round-tripping aigen_export_items_json.',
-            'You may mix all of these in one lesson.',
-            'Only item types where aigen_list_itemtypes reports hasimportdocs=true can be hand-composed.',
-            'BEFORE COMPOSING ANY ITEM BY HAND, call aigen_fetch_item_type_details for that item type in',
-            'this conversation, and compose from what it returns. Do not compose from an example, from an',
-            'exported lesson, or from memory of another item type. Each type has dozens of fields whose',
-            'names and intended use are documented only there - for instance which field is a short',
-            'centred heading and which is the block of text that carries a passage or a dialog. A field',
-            'name that type does not have is dropped on import and its content is lost, and a field used',
-            'for the wrong kind of content imports cleanly and reads badly.',
-            'An item carrying a field name its type does not have is rejected outright, naming the',
-            'field and usually the one you meant - read the errors array and resubmit those items.',
-            'PICK THE MOST SPECIFIC TEMPLATE: several templates produce the same item type, and each one',
-            'lists its siblings in "variants" with a "control" level - "supplied" (your text is used',
-            'verbatim), "derived" (the AI marks up text you supply) or "generated" (the AI invents the',
-            'content). For every teaching point you have already decided - which words are gapped or',
-            'shuffled, which answer is correct, the translation language, the grammar being practised -',
-            'check the template has an input that carries it. If none does, the AI decides it for you and',
-            'may contradict the lesson aim: move to a higher-control variant, or compose the item directly.',
-            'Only take a "generated" template where the user has genuinely left that detail open.',
-            'PLAN FIRST: before calling any tool that creates or imports (aigen_create_empty_lesson,',
-            'aigen_create_add_items_to_lesson, aigen_import_items_json), show the user a plan and wait for',
-            'their approval. For direct-compose, list each item with its actual content (question, answers,',
-            'text); for templates, list EVERY input the template declares with the exact value you will send,',
-            'each marked (from the user), (your choice) or (BLANK) - a choice you made on the user\'s behalf',
-            'is still a choice, including defaults you accepted and inputs you are leaving empty. State the',
-            'target course/title. Create only after they approve, and fold in any changes they request.',
-            'NEVER send a required input empty. If the user has not told you what it needs (a native',
-            'language, a source text, a level), ask before creating - creation is rejected when a required',
-            'input is empty, and a template that does not check would produce silently broken content, like',
-            'a vocabulary card whose translation is a copy of the word. Where you picked a value the user',
-            'expressed no preference about (image style, level, voice), name your choice and offer the',
-            'alternatives rather than presenting it as settled.',
-            'Exception: if the user has said to just go ahead (or to skip the review), create without pausing.',
-            'After importing, read the per-item errors array and resubmit only the rejected items.',
-        ]);
+        // The guidance is one nowdoc rather than a list of quoted fragments so that it reads, and can be
+        // edited, as the prose the model actually receives: the paragraphs and bullets here are its own.
+        return <<<'INSTRUCTIONS'
+        These tools create and manage Poodll MiniLessons.
+
+        Requests come in three kinds. Route on WHAT THE TEACHER WANTS DONE, not on what they attached - the same PDF can
+        arrive with any of these intents:
+
+        (1) REPRODUCE SUPPLIED MATERIAL: the teacher wants what is in the material turned into items, faithfully - a
+        worksheet, a set of questions, a lesson plan to transcribe. Compose the items by hand: list item types, fetch
+        each type's spec, compose, import. Do not run a template, which would regenerate content the teacher already
+        has.
+
+        (2) GENERATE, whether from supplied material or from a description alone: the teacher wants NEW activities. Any
+        attachment is context rather than content - it supplies the topic, the vocabulary, the reading text, the level.
+        Follow the template-first ordering below, and lift the template inputs straight out of the material: its
+        vocabulary into user_keywords, its passage into user_text, its level into user_level. "Supplementary activities
+        for the lesson in this PDF", "practice for these words", "a lesson about X" are all this kind.
+
+        (3) REUSE AN EXISTING LESSON'S SHAPE (an uploaded export, or a lesson pulled with aigen_export_items_json): keep
+        each item's type/layout/options, rewrite only the wording per topic, drop the old images, and let audio
+        regenerate from text.
+
+        When you pull a lesson yourself, call aigen_export_items_json with exclude_files=true. The media comes back as
+        base64 you cannot read or act on, it is dropped for a new topic anyway, and a lesson with images runs to several
+        megabytes - enough to exhaust a client's response limit and to cost real money. Leave it false only when you
+        need a faithful, re-importable copy including the media.
+
+        AN ATTACHMENT DOES NOT MEAN REPRODUCE. Read the verb. "Turn this into items", "reproduce", "keep these
+        questions" is kind (1). "Generate", "supplementary", "practice for", "based on", "inspired by" is kind (2). If
+        it is genuinely unclear, ask which they want before building anything - the two produce very different lessons
+        from the same file.
+
+        FOR KIND (2): check aigen_list_templates first and use templates if they fit; only hand-compose what no template
+        can carry.
+
+        A LESSON CAN USE SEVERAL TEMPLATES. aigen_create_add_items_to_lesson ADDS items to a lesson, so run it once per
+        template to build a lesson out of two or three of them. Many templates produce a single item (their
+        outputs[].itemcount is 1) and exist to be combined this way. Never conclude that because no one template covers
+        the whole lesson you must hand-compose all of it.
+
+        CHOOSING BETWEEN THEM. Templates are efficient but blunt: each has a predetermined output shape and deliberately
+        exposes only a few inputs, fixing everything else itself. A multi-item template amplifies that - it is excellent
+        when what the teacher wants is close to what it produces, and a poor fit when it is not. Hand-composed JSON has
+        the opposite balance: every field of the item is yours to set (the two-column answer layout for multichoice,
+        say, which no template exposes), but you must forego images or supply any image yourself as base64.
+
+        So decide in this order:
+        - DOES THE LESSON WANT IMAGES? Then use templates, one or several. The server generates the media for you, and a
+          multi-item template reuses the images it generates across its items.
+        - IS A MULTI-ITEM TEMPLATE CLOSE TO THE WHOLE LESSON? Use it. Its items are designed as a set that works
+          together, which separate runs cannot give you.
+        - DO YOU NEED CONTROL THE MULTI-ITEM TEMPLATES DO NOT EXPOSE? Build the lesson from several AGENT-ONLY
+          SINGLE-ITEM TEMPLATES (agentonly=true in aigen_list_templates). These are hidden from the human picker because
+          they ask for content that is tedious to type but easy for you to compose. They expose more options than their
+          siblings, their field descriptions carry more guidance, and they still generate images - which makes them the
+          way to have images and precise control at the same time.
+        - ONLY THEN HAND-COMPOSE: for content the teacher supplied that must be reproduced exactly, for an item shape no
+          template can express, or when round-tripping aigen_export_items_json.
+
+        You may mix all of these in one lesson. Only item types where aigen_list_itemtypes reports hasimportdocs=true
+        can be hand-composed.
+
+        BEFORE COMPOSING ANY ITEM BY HAND, call aigen_fetch_item_type_details for that item type in this conversation,
+        and compose from what it returns. Do not compose from an example, from an exported lesson, or from memory of
+        another item type. Each type has dozens of fields whose names and intended use are documented only there - for
+        instance which field is a short centred heading and which is the block of text that carries a passage or a
+        dialog. A field name that type does not have is dropped on import and its content is lost, and a field used for
+        the wrong kind of content imports cleanly and reads badly.
+
+        An item carrying a field name its type does not have is rejected outright, naming the field and usually the one
+        you meant - read the errors array and resubmit those items.
+
+        PICK THE MOST SPECIFIC TEMPLATE: several templates produce the same item type, and each one lists its siblings
+        in "variants" with a "control" level - "supplied" (your text is used verbatim), "derived" (the AI marks up text
+        you supply) or "generated" (the AI invents the content). For every teaching point you have already decided -
+        which words are gapped or shuffled, which answer is correct, the translation language, the grammar being
+        practised - check the template has an input that carries it. If none does, the AI decides it for you and may
+        contradict the lesson aim: move to a higher-control variant, or compose the item directly. Only take a
+        "generated" template where the user has genuinely left that detail open.
+
+        PLAN FIRST: before calling any tool that creates or imports (aigen_create_empty_lesson,
+        aigen_create_add_items_to_lesson, aigen_import_items_json), show the user a plan and wait for their approval.
+        For direct-compose, list each item with its actual content (question, answers, text); for templates, list EVERY
+        input the template declares with the exact value you will send, each marked (from the user), (your choice) or
+        (BLANK) - a choice you made on the user's behalf is still a choice, including defaults you accepted and inputs
+        you are leaving empty. State the target course/title. Create only after they approve, and fold in any changes
+        they request.
+
+        NEVER send a required input empty. If the user has not told you what it needs (a native language, a source text,
+        a level), ask before creating - creation is rejected when a required input is empty, and a template that does
+        not check would produce silently broken content, like a vocabulary card whose translation is a copy of the word.
+        Where you picked a value the user expressed no preference about (image style, level, voice), name your choice
+        and offer the alternatives rather than presenting it as settled.
+
+        Exception: if the user has said to just go ahead (or to skip the review), create without pausing.
+
+        After importing, read the per-item errors array and resubmit only the rejected items.
+        INSTRUCTIONS;
     }
 
     /**
