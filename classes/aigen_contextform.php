@@ -44,12 +44,33 @@ class aigen_contextform extends moodleform {
     const AIGEN_SUBMIT = 1;
 
     /**
+     * The lesson this form generates into, or null before one is known. The form is opened from a
+     * lesson, so its "id" param is that lesson's course module id.
+     *
+     * @return \stdClass|null The minilesson record.
+     */
+    protected function fetch_moduleinstance() {
+        global $DB;
+
+        $id = $this->optional_param('id', 0, PARAM_INT);
+        if (!$id) {
+            return null;
+        }
+        $cm = get_coursemodule_from_id(constants::M_MODNAME, $id, 0, false, IGNORE_MISSING);
+        if (!$cm) {
+            return null;
+        }
+        return $DB->get_record(constants::M_TABLE, ['id' => $cm->instance]) ?: null;
+    }
+
+    /**
      * form element definition
      * @return void
      */
     public function definition() {
         $mform = $this->_form;
         $templateid = $this->optional_param('templateid', null, PARAM_INT);
+        $moduleinstance = $this->fetch_moduleinstance();
 
         $lessontemplates = aigen::fetch_lesson_templates();
         if (!array_key_exists($templateid, $lessontemplates)) {
@@ -88,6 +109,12 @@ class aigen_contextform extends moodleform {
                     default:
                         $mform->addElement('text', $fieldname, $fieldmapping->title);
                         break;
+                }
+                // An input the lesson can answer is offered filled in, so the teacher sees the lesson's
+                // setting (its native language, say) and can type over it rather than guess what is wanted.
+                $default = aigen::input_default($fieldmapping, $moduleinstance);
+                if ($default !== '') {
+                    $mform->setDefault($fieldname, $default);
                 }
                 if (!empty($fieldmapping->description)) {
                     $mform->addElement('static', "{$fieldname}_desc", "", $fieldmapping->description);
@@ -130,6 +157,17 @@ class aigen_contextform extends moodleform {
                     } else if (isset($formdata->{'tool_' . $fieldname})) {
                         $contextdata['tool_' . $fieldname] = $formdata->{'tool_' . $fieldname};
                     }
+                }
+
+                // An input left empty that the lesson can answer is filled from the lesson, the same way
+                // it is for a generation run started through the web service.
+                $lessontemplates = aigen::fetch_lesson_templates();
+                if (isset($lessontemplates[$templateid]['config'])) {
+                    $contextdata = aigen::apply_input_defaults(
+                        $contextdata,
+                        $lessontemplates[$templateid]['config'],
+                        $moduleinstance
+                    );
                 }
 
                 $record = new stdClass();

@@ -946,6 +946,56 @@ class aigen {
     }
 
     /**
+     * The lesson setting a template input falls back to, for an input whose field mapping declares
+     * one with "defaultfrom". Only "nativelang" is understood so far: a dozen templates ask for a
+     * native language that the lesson already records, and a teacher who is not prompted for it
+     * rarely thinks to supply it.
+     *
+     * @param \stdClass $fieldmapping One entry of the config's fieldmappings.
+     * @param \stdClass|null $moduleinstance The lesson the items are being generated into.
+     * @return string The value to fall back to, or '' where the lesson does not set one.
+     */
+    public static function input_default($fieldmapping, $moduleinstance) {
+        if (empty($fieldmapping->defaultfrom) || empty($moduleinstance)) {
+            return '';
+        }
+        switch ($fieldmapping->defaultfrom) {
+            case 'nativelang':
+                // The '0' value is the "--" option: the lesson has no native language, so there is nothing to use.
+                $nativelang = $moduleinstance->nativelang ?? '';
+                if ($nativelang === '' || $nativelang === '0') {
+                    return '';
+                }
+                // The prompts read as prose ("translate into {nativelanguage}"), so send the name, not the code.
+                return utils::get_nativelang_options()[$nativelang] ?? '';
+        }
+        return '';
+    }
+
+    /**
+     * Fill in the template inputs the caller left empty that have a lesson setting to fall back to.
+     * Run before the required-input check, so an unsupplied input that the lesson can answer is
+     * answered rather than rejected.
+     *
+     * @param array $contextdata The generation context, as submitted.
+     * @param \stdClass $config A decoded template config.
+     * @param \stdClass|null $moduleinstance The lesson the items are being generated into.
+     * @return array The same context, with the defaults filled in.
+     */
+    public static function apply_input_defaults(array $contextdata, $config, $moduleinstance) {
+        foreach (($config->fieldmappings ?? new \stdClass()) as $fieldname => $fieldmapping) {
+            if (empty($fieldmapping->enabled) || !empty($contextdata[$fieldname])) {
+                continue;
+            }
+            $default = self::input_default($fieldmapping, $moduleinstance);
+            if ($default !== '') {
+                $contextdata[$fieldname] = $default;
+            }
+        }
+        return $contextdata;
+    }
+
+    /**
      * The context fields a template actually consumes. An enabled field mapping that appears
      * here is required: the template author wired it into a prompt, a reused field, an image
      * prompt or the overall image context, so submitting it empty does not fall back to a

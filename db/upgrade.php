@@ -1530,5 +1530,15 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026091113, 'minilesson');
     }
 
+    if ($oldversion < 2026091200) {
+        // Update default templates - the twelve templates that ask for a native language now declare
+        // "defaultfrom": "nativelang" on that input, so an empty one falls back to the lesson's own
+        // native language setting instead of failing the run or having to be asked for.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026091200, 'minilesson');
+    }
+
     return true;
 }

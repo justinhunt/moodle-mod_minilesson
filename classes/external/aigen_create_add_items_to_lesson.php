@@ -88,7 +88,12 @@ class aigen_create_add_items_to_lesson extends external_api {
             }
         }
 
-        self::require_template_inputs($params['templateid'], $othercontextdata);
+        // An input the caller left empty that the lesson can answer (the native language, say) is filled
+        // from the lesson before the required-input check, so it is answered rather than rejected.
+        $template = $DB->get_record('minilesson_templates', ['id' => $params['templateid']], '*', MUST_EXIST);
+        $othercontextdata = aigen::apply_input_defaults($othercontextdata, json_decode($template->config), $moduleinstance);
+
+        self::require_template_inputs($template, $othercontextdata);
 
         $usagesdata = new stdClass();
         $usagesdata->minilessonid = $moduleinstance->id;
@@ -114,14 +119,11 @@ class aigen_create_add_items_to_lesson extends external_api {
      * whose hint is missing). That is invisible in the finished lesson, so it is caught here
      * rather than left for the user to discover.
      *
-     * @param int $templateid The template about to be run.
+     * @param \stdClass $template The template record about to be run.
      * @param array $contextdata The merged context data the template will be run with.
      * @throws \moodle_exception If any required input is empty.
      */
-    protected static function require_template_inputs($templateid, array $contextdata) {
-        global $DB;
-
-        $template = $DB->get_record('minilesson_templates', ['id' => $templateid], '*', MUST_EXIST);
+    protected static function require_template_inputs($template, array $contextdata) {
         $config = json_decode($template->config);
         if (empty($config)) {
             return;

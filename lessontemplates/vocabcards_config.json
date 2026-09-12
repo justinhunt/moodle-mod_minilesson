@@ -69,7 +69,7 @@
     "lessonTitle": "Vocab Cards",
     "lessonDescription": "A set of vocabulary cards. Enter the list of comma separated words\/phrases, and the students' native language, and the imaeg style. Cards with the word\/phrase, translation, example sentence and a picture will be created. ",
     "uniqueid": "6a30d8d44b6fa",
-    "version": "4",
+    "version": "5",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -106,7 +106,8 @@
             "enabled": true,
             "title": "Native Language",
             "description": "The language the keyword definitions should be in.",
-            "type": "text"
+            "type": "text",
+            "defaultfrom": "nativelang"
         },
         "user_customdata2": {
             "enabled": true,

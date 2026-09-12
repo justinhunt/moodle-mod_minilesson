@@ -64,12 +64,21 @@ class aigen_list_templates extends external_api {
             $requiredinputs = aigen::template_required_inputs($thetemplate['config']);
             foreach ($mappings as $fieldname => $fieldmapping) {
                 if (!empty($fieldmapping->enabled)) {
+                    // An input with a lesson setting behind it is answered from the lesson when it is left
+                    // empty, so it is not the caller's to supply - but say so, or an agent that has not been
+                    // told the native language asks the teacher for something the lesson already records.
+                    $description = $fieldmapping->description;
+                    $hasdefault = !empty($fieldmapping->defaultfrom);
+                    if ($hasdefault) {
+                        $description = trim($description . ' ' . get_string('aigeninputdefaults:' . $fieldmapping->defaultfrom,
+                            constants::M_COMPONENT));
+                    }
                     $requirefields = [
                         'fieldname' => $fieldname,
                         'title' => $fieldmapping->title,
                         'type' => $fieldmapping->type,
-                        'description' => $fieldmapping->description,
-                        'required' => in_array($fieldname, $requiredinputs),
+                        'description' => $description,
+                        'required' => !$hasdefault && in_array($fieldname, $requiredinputs),
                     ];
                     $optionalfields = ($fieldmapping->type == 'dropdown') ? ['options' => $fieldmapping->options] : [];
                     $inputs[] = array_merge($requirefields, $optionalfields);

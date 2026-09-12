@@ -63,7 +63,7 @@
     "lessonTitle": "Scatter",
     "lessonDescription": "Enter 4 - 10 keywords\/phrases. The keywords\/phrases will be used to generate a scatter activity with matching cards translated into the user's native language. ",
     "uniqueid": "6a31062973acc",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -107,7 +107,8 @@
             "enabled": true,
             "title": "Native language",
             "description": "The language the keyword definitions should be in.",
-            "type": "text"
+            "type": "text",
+            "defaultfrom": "nativelang"
         },
         "user_customdata2": {
             "enabled": false,
