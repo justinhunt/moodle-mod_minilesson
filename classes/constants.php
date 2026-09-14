@@ -335,7 +335,7 @@ class constants {
         self::M_LANG_HRHR => ['hr-HR-Whisper-alloy' => 'Marko', 'hr-HR-Whisper-shimmer' => 'Ivana', 'hr-HR-Whisper-nova' => 'Nova (hr)'],
         self::M_LANG_ZHCN => ['Zhiyu' => 'Zhiyu', 'zh-CN-Whisper-alloy' => 'Alloy (zh)', 'zh-CN-Whisper-shimmer' => 'Shimmer (zh)', 'zh-CN-Whisper-nova' => 'Nova (zh)'],
         self::M_LANG_CSCZ => ['cs-CZ-Wavenet-A' => 'Zuzana_g', 'cs-CZ-Standard-A' => 'Karolina_g', 'cs-CZ-Whisper-alloy' => 'Alloy (cs)', 'cs-CZ-Whisper-shimmer' => 'Shimmer (cs)', 'cs-CZ-Whisper-nova' => 'Nova (cs)'],
-        self::M_LANG_DADK => ['Naja' => 'Naja', 'Mads' => 'Mads', 'da-DK-Whisper-alloy' => 'Alloy (da)', 'da-DK-Whisper-shimmer' => 'Shimmer (da)', 'da-DK-Whisper-nova' => 'Nova (da)'],
+        self::M_LANG_DADK => ['Naja' => 'Naja', 'Mads' => 'Mads', 'da-DK-Azure-ChristelNeural' => 'Christel_a', 'da-DK-Azure-JeppeNeural' => 'Jeppe_a', 'da-DK-Whisper-alloy' => 'Alloy (da)', 'da-DK-Whisper-shimmer' => 'Shimmer (da)', 'da-DK-Whisper-nova' => 'Nova (da)'],
         self::M_LANG_NLNL => ["Ruben" => "Ruben", "Lotte" => "Lotte", "Laura" => "Laura", 'nl-NL-Whisper-alloy' => 'Alloy (nl)', 'nl-NL-Whisper-shimmer' => 'Shimmer (nl)', 'nl-NL-Whisper-nova' => 'Nova (nl)'],
         self::M_LANG_NLBE => ["nl-BE-Wavenet-B" => "Marc_g", "nl-BE-Wavenet-A" => "Marie_g", "Lisa" => "Lisa", 'nl-BE-Whisper-alloy' => 'Alloy (nl)', 'nl-BE-Whisper-shimmer' => 'Shimmer (nl)', 'nl-BE-Whisper-nova' => 'Nova (nl)'],
             // constants::M_LANG_DECH => [],
