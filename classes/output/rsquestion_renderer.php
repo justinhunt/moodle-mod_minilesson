@@ -95,7 +95,8 @@ class rsquestion_renderer extends \plugin_renderer_base
         );
 
         $props = ['contextid' => $context->id, 'tableid' => $tableid, 'modaleditform' => $modaleditform,
-        'wwwroot' => $CFG->wwwroot, 'cmid' => $this->page->cm->id, 'lessonitems' => $datatagid];
+        'wwwroot' => $CFG->wwwroot, 'cmid' => $this->page->cm->id, 'lessonitems' => $datatagid,
+        'canexport' => has_capability('mod/minilesson:export', $context)];
                 $this->page->requires->js_call_amd(constants::M_COMPONENT . '/rsquestionmanager', 'init', [$props]);
         return $this->output->box(
             $output . $datatag . implode("", $links),
@@ -187,8 +188,10 @@ class rsquestion_renderer extends \plugin_renderer_base
         $itemsarray = [];
         $availableitems = core_plugin_manager::instance()->get_plugins_of_type(constants::SUBPLUGINTYPES['item']);
 
+        $canexport = has_capability('mod/minilesson:export', \context_module::instance($cm->id));
         foreach (array_values($items) as $i => $item) {
             $arrayitem = (array) $item;
+            $arrayitem['canexport'] = $canexport;
             if (!array_key_exists($arrayitem['type'], $availableitems)) {
                 continue;
             }
@@ -200,7 +203,7 @@ class rsquestion_renderer extends \plugin_renderer_base
             $itemsarray[] = $arrayitem;
         }
 
-        foreach (['arrowup', 'arrowdown', 'edit', 'copy', 'zoom', 'trash'] as $actionicon) {
+        foreach (['arrowup', 'arrowdown', 'edit', 'copy', 'download', 'zoom', 'trash'] as $actionicon) {
             $data[$actionicon] = new moodle_url('/mod/minilesson/pix/' . $actionicon . '.svg', ['ver' => $CFG->themerev]);
         }
 

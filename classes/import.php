@@ -640,12 +640,54 @@ class import {
     public function export_items($jsonformat = true) {
         global $DB;
         $allitems = $DB->get_records(constants::M_QTABLE, ['minilesson' => $this->moduleinstance->id], 'itemorder ASC');
+        $exportobj = $this->build_export_obj($allitems);
+
+        // Depending on export format return JSON or an object. (Translate prefers an object).
+        if ($jsonformat) {
+            return json_encode($exportobj, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        } else {
+            return $exportobj;
+        }
+    }
+
+    /**
+     * Export a single item of this lesson, in the same format as export_items(), so it can be imported.
+     *
+     * @param int $itemid The id of the item in the minilesson_rsquestions table.
+     * @param bool $jsonformat Return JSON if true, or the export object if false.
+     * @return string|\stdClass
+     */
+    public function export_single_item($itemid, $jsonformat = true) {
+        global $DB;
+        // The item must belong to this lesson, so an item id from another lesson can not be exported here.
+        $item = $DB->get_record(
+            constants::M_QTABLE,
+            ['id' => $itemid, 'minilesson' => $this->moduleinstance->id],
+            '*',
+            MUST_EXIST
+        );
+        $exportobj = $this->build_export_obj([$item]);
+
+        if ($jsonformat) {
+            return json_encode($exportobj, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        } else {
+            return $exportobj;
+        }
+    }
+
+    /**
+     * Build the export object (items and their files) for a set of item records.
+     *
+     * @param array $itemrecords Records from the minilesson_rsquestions table, in the order to export them.
+     * @return \stdClass
+     */
+    protected function build_export_obj($itemrecords) {
         $exportobj = new \stdClass();
         $exportobj->items = [];
         $exportobj->files = [];
-        if ($allitems && count($allitems) > 0) {
+        if ($itemrecords && count($itemrecords) > 0) {
             $i = 0;
-            foreach ($allitems as $theitem) {
+            foreach ($itemrecords as $theitem) {
                 $i++;
                 $itemobj = $this->export_item_as_jsonobj($theitem);
                 if ($itemobj) {
@@ -661,13 +703,7 @@ class import {
                 }
             }
         }
-
-        // Depending on export format return JSON or an object. (Translate prefers an object).
-        if ($jsonformat) {
-            return json_encode($exportobj, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        } else {
-            return $exportobj;
-        }
+        return $exportobj;
     }
 
     public function export_item_as_jsonobj($itemrecord) {
@@ -710,6 +746,8 @@ class import {
 
         // Loop through columnns making a nice value for our json object.
         foreach ($keycolumns as $keycolumn) {
+            // Start each column empty, so a value from the previous column can never carry over.
+            $jsonvalue = null;
             $fieldvalue = property_exists($itemrecord, $keycolumn['dbname']) ? $itemrecord->{$keycolumn['dbname']} : null;
             // Skip any optional fields whose value is the default
             // Anonymous files are not in the DB record, so we need to process them a little later, to see if they are present

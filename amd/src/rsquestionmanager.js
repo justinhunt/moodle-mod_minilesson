@@ -24,6 +24,7 @@ define(
                 dd.modaleditform = props.modaleditform;
                 dd.cmid = props.cmid;
                 dd.wwwroot = props.wwwroot;
+                dd.canexport = props.canexport;
 
                 //fetch lesson items from hidden input
                 var datatag = $('#' + props.lessonitems);
@@ -140,6 +141,7 @@ define(
                     item.index = dd.controls.questionstable.data().length + 1;
                     item.up = {'key': 't/up','component': 'moodle','title': 'up'};
                     item.down = {'key': 't/down','component': 'moodle','title': 'down'};
+                    item.canexport = dd.canexport;
                     templates.render('mod_minilesson/itemlistitem',item).then(
                         function (html) {
                             //add row move to the last page so we can see the new row if its off page
@@ -163,6 +165,7 @@ define(
                     item.index = dd.controls.questionstable.data().length + 1;
                     item.up = {'key': 't/up','component': 'moodle','title': 'up'};
                     item.down = {'key': 't/down','component': 'moodle','title': 'down'};
+                    item.canexport = dd.canexport;
                     templates.render('mod_minilesson/itemlistitem',item).then(
                         function (html) {
                             //add row move to the last page so we can see the new row if its off page
@@ -217,6 +220,12 @@ define(
                 mph.init('.' + def.itemrow + '_previewlink', dd.contextid, after_questionpreview);
             //duplicate item helper
                 dplh.init('.' + def.itemrow + '_duplicatelink', dd.contextid, after_questionduplicate);
+            //export item: pluginfile sends the JSON as a download, so the page stays put
+                $('.mod_minilesson_qpanel').on('click', '.' + def.itemrow + '_exportlink', function (e) {
+                    e.preventDefault();
+                    window.location.href = dd.wwwroot + '/pluginfile.php/' + dd.contextid
+                        + '/mod_minilesson/exportitem/' + $(this).data('id') + '/item.json';
+                });
             },
 
             modalshow: function () {

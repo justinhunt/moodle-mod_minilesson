@@ -904,6 +904,7 @@ $string["sttstaudio"] = 'STT Audio';
 $string["speechtester"] = 'SpeechTester';
 $string["exportinstructions"] = 'Export items  in this MiniLesson activity to a JSON file. This can be used to backup or transfer items to another MiniLesson activity. Or you can edit the exported items and re-import them as new items.';
 $string["exportitems"] = 'Export Items';
+$string['exportitem'] = 'Export item';
 $string["importformat"] = "Import Format";
 $string["exportheading"] = 'Export Items as JSON';
 $string["exportandtranslateinstructions"] = 'Translate and export items in this MiniLesson activity to a JSON file. This can be used to translate the text of language A in the lesson to language B, in order that the items can be imported into a new MiniLesson activity with a different language profile. It was designed so that different versions of the same lesson could be created for learners with different native languages. First select the language to translate from (the page will reload). Then select the language to translate to (the page will reload). A translate button will appear, press that and the activity will be translated and exported.';

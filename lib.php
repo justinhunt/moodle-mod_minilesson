@@ -855,16 +855,35 @@ function minilesson_pluginfile($course, $cm, $context, $filearea, array $args, $
                 return false;
             }
         }
+        // A single item export carries the item id in the url, eg /exportitem/{itemid}/item.json.
+        $issingleitem = $filearea === 'exportitem';
+        if ($issingleitem) {
+            // MUST_EXIST and the lesson id together stop an item from another lesson being exported here.
+            $item = $DB->get_record(
+                constants::M_QTABLE,
+                ['id' => $itemid, 'minilesson' => $moduleinstance->id],
+                'id, name',
+                MUST_EXIST
+            );
+        }
+
         // Make a nice filename.
         $cleanfilename = strip_tags(format_string($name));
         if ($istranslate) {
             $cleanfilename .= '_' . $tolang;
         }
+        if ($issingleitem) {
+            $cleanfilename .= '-' . strip_tags(format_string($item->name));
+        }
 
         $filename = clean_filename($cleanfilename . '.json');
         $filename = preg_replace('/\s+/', '_', $filename);
         $theimport = new \mod_minilesson\import($moduleinstance, $context, $course, $cm);
-        if ($istranslate) {
+        // Items with media carry it as base64 in the JSON, which can be large.
+        raise_memory_limit(MEMORY_HUGE);
+        if ($issingleitem) {
+            $jsondata = $theimport->export_single_item($item->id);
+        } else if ($istranslate) {
             $jsondata = $theimport->translate_and_export_items($fromlang, $tolang);
         } else {
             $jsondata = $theimport->export_items();
