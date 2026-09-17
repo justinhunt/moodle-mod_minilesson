@@ -1374,6 +1374,9 @@
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td.itemaction {
   vertical-align: middle;
 }
+#page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td.itemaction .actions-group {
+  white-space: nowrap;
+}
 #page-mod-minilesson-rsquestion-rsquestions .mod_minilesson_qpanel td.itemaction .icon {
   color: #5C669A;
 }
@@ -1415,8 +1418,8 @@
   border-bottom-right-radius: 8px;
   text-align: right;
   width: 5%;
-  min-width: 110px;
-  max-width: 130px;
+  min-width: 140px;
+  max-width: 160px;
 }
 .mod_minilesson_qpanel tr th:last-child {
   text-align: right;
