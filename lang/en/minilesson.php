@@ -1684,7 +1684,7 @@ $string['chatagent_error_cp_licence'] = 'This site\'s Poodll subscription does n
 $string['chatagent_error_cp_nocredentials'] = 'The AI assistant is not set up: no Poodll API user and '
     . 'secret have been entered in the MiniLesson settings.';
 $string['chatagent_error_cp_notsupported'] = 'Cloud Poodll does not offer the AI assistant yet. Try again '
-    . 'later, or switch the chat agent to the site\'s own Gemini API key in the meantime.';
+    . 'later, or switch the Assistant to the site\'s own Gemini API key in the meantime.';
 $string['chatagent_error_cp_quota'] = 'Today\'s AI assistant allowance for this site\'s Poodll account has '
     . 'been used up. It resets at midnight UTC.';
 $string['chatagent_replay_preamble'] = 'This conversation continues an earlier session that the AI service '
@@ -1713,12 +1713,12 @@ $string['chatagent_error_emptymessage'] = 'Type a message, or attach a file, bef
 $string['chatagent_error_noconversation'] = 'That conversation could not be opened. Reload the page and try again.';
 $string['chatagent_error_toomanyturns'] = 'You have reached the limit of {$a} assistant messages an hour. Try again shortly.';
 $string['chatagent_error_unavailable'] = 'The assistant is not available on this site.';
-$string['chatagent_settings'] = 'Chat agent';
-$string['chatagent_settings_details'] = 'The chat agent lets teachers build a lesson by describing it in a chat panel, attaching a PDF or an image if they have one. It reaches the AI through Cloud Poodll, using the site\'s Poodll API user and secret and the site\'s Poodll subscription, or through the site\'s own Gemini API key (set on the "Other API keys" page), in which case Google bills the site directly. Until the chosen provider has its credentials, the agent stays hidden however these settings are left.';
-$string['chatagentenabled'] = 'Enable the chat agent';
+$string['chatagent_settings'] = 'AI Assistant';
+$string['chatagent_settings_details'] = 'The AI Assistant lets teachers build a lesson by describing it in a chat panel, attaching a PDF or an image if they have one. It reaches the AI through Cloud Poodll, using the site\'s Poodll API user and secret and the site\'s Poodll subscription, or through the site\'s own Gemini API key (set on the "Other API keys" page), in which case Google bills the site directly. Until the chosen provider has its credentials, the agent stays hidden however these settings are left.';
+$string['chatagentenabled'] = 'Enable the AI Assistant';
 $string['chatagentenabled_details'] = 'Show the Assistant tab to teachers who can use AI generation. Has no effect until the chosen provider has its credentials: a Poodll API user and secret for Cloud Poodll, or a Gemini API key for the site\'s own key.';
 $string['chatagentprovider'] = 'AI provider';
-$string['chatagentprovider_details'] = 'Where the chat agent sends its requests. Cloud Poodll needs nothing beyond the site\'s Poodll credentials, and each Poodll account has a daily allowance shared by all its sites. With the site\'s own Gemini API key, Google bills the site and the key\'s own quota applies. Either way the server must be able to reach the provider over the internet, through the site\'s proxy settings if it has them.';
+$string['chatagentprovider_details'] = 'Where the AI Assistant sends its requests. Cloud Poodll needs nothing beyond the site\'s Poodll credentials, and each Poodll account has a daily allowance shared by all its sites. With the site\'s own Gemini API key, Google bills the site and the key\'s own quota applies. Either way the server must be able to reach the provider over the internet, through the site\'s proxy settings if it has them.';
 $string['chatagentprovider_cloudpoodll'] = 'Cloud Poodll (uses the site\'s Poodll subscription)';
 $string['chatagentprovider_ownkey'] = 'This site\'s own Gemini API key';
 $string['chatagentmodel'] = 'Model';
@@ -1761,7 +1761,7 @@ $string['error:unknownfieldsuggestion'] = ' Did you mean "{$a}"?';
 $string['chatagent_entry_desc'] = 'Describe the lesson you want and build it by chatting with an assistant.';
 $string['chatagent_openassistant'] = 'Build with the assistant';
 $string['chatagent_waitingonyou'] = 'waiting for you';
-$string['event:chatagent_action_performed'] = 'Chat agent action performed';
+$string['event:chatagent_action_performed'] = 'AI Assistant action performed';
 $string['privacy:metadata:chatagentmetrictable'] = 'Measurements of how the assistant behaved, one row per request it made to the AI service.';
 $string['privacy:metadata:chatagentmetric:conversationid'] = 'The conversation the request belonged to.';
 $string['privacy:metadata:chatagentmetric:toolname'] = 'The action the assistant took, if any.';
