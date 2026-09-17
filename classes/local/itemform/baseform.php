@@ -871,6 +871,37 @@ abstract class baseform extends \moodleform {
     }
 
     /**
+     * Convenience function: Adds the dropdown for the language the AI writes its feedback in.
+     *
+     * The feedback is read by the student in their first language and is never spoken, so the
+     * options come from the native language list, which also carries the languages we have no
+     * voice for. Do not use the taught-language list here.
+     *
+     * @param string $name the form element name, as the item type stores it
+     * @return void
+     */
+    final protected function add_feedbacklanguageselect($name) {
+        // An item may be exported from one lesson and imported into another, so offer the two
+        // generic options that follow whatever the lesson it lands in is set to.
+        $langoptions = [
+            constants::AIGRADE_FEEDBACK_TARGET_LANGUAGE => get_string('defaulttargetlanguage', constants::M_COMPONENT),
+            constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE => get_string('defaultnativelanguage', constants::M_COMPONENT),
+        ] + utils::get_nativelang_options();
+
+        $default = $this->moduleinstance->nativelang
+            ? constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE
+            : $this->moduleinstance->ttslanguage;
+
+        $this->add_dropdown(
+            $name,
+            get_string('aigrade_feedback_language', constants::M_COMPONENT),
+            $langoptions,
+            $default
+        );
+        $this->_form->addHelpButton($name, 'aigrade_feedback_language', constants::M_COMPONENT);
+    }
+
+    /**
      * A function that gets called upon init of this object by the calling script.
      *
      * This can be used to process an immediate action if required. Currently it

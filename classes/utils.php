@@ -2185,9 +2185,16 @@ class utils {
      * @return array of language code => display name
      */
     public static function get_nativelang_options() {
-        $langs = self::get_lang_options();
-        // No TTS or speech recognition for these, so they are offered as a first language only.
-        $langs[constants::M_LANG_TIER] = get_string('ti-er', constants::M_COMPONENT);
+        $langs = [];
+        // Walk the taught languages so the extra ones can be slotted into alphabetical order,
+        // rather than landing at the end of the list where nobody would look for them.
+        foreach (self::get_lang_options() as $langcode => $langname) {
+            $langs[$langcode] = $langname;
+            // No TTS or speech recognition for these, so they are offered as a first language only.
+            if ($langcode === constants::M_LANG_TEIN) {
+                $langs[constants::M_LANG_TIER] = get_string('ti-er', constants::M_COMPONENT);
+            }
+        }
         return $langs;
     }
 
