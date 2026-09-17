@@ -1,3 +1,10 @@
+Version 1.1.55 (Build 2026091700)
+- Fixed AudioChat hallucinations on silent messages
+- Improved some AIGen templates
+- Improved formatting of AudioChat feedback
+- Added export item button on items page (so you don't need to export the whole lesson)
+- Some changes to feedback language options in audiochat/freespeaking/freewriting
+
 Version 1.1.54 (Build 2026091200)
 - Added a chat agent. On the new Assistant tab, teachers build a lesson by chatting with an AI.
   They can attach a PDF, an image, or an exported lesson (.json). The agent shows a plan and asks
