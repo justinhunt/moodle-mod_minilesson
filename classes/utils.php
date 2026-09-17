@@ -887,7 +887,8 @@ class utils {
         }
     }
 
-    public static function fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad, $resumehandle = '') {
+    public static function fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad, $resumehandle = '',
+        $silencedurationms = 0, $turnmode = '') {
 
         $cloudpoodlltoken = false;
         $conf = get_config(constants::M_COMPONENT);
@@ -912,6 +913,11 @@ class utils {
         $params['region'] = $poodllregion;
         $params['voice'] = $voice;
         $params['disablevad'] = $disablevad;
+        // How the turn is delimited, and how long a pause ends it in auto mode. The
+        // cloud endpoint bakes both into the token; disablevad is still sent so an
+        // older cloud server that does not know these two keeps working.
+        $params['silencedurationms'] = $silencedurationms;
+        $params['turnmode'] = $turnmode;
         // Resume handle for session resumption; the cloud endpoint must bake this
         // into the token's bidiGenerateContentSetup for the Constrained endpoint.
         if ($resumehandle !== '') {

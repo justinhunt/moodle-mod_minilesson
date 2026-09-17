@@ -36,6 +36,39 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
     var OUTPUT_SAMPLE_RATE = 24000;
     var DEFAULT_MODEL = 'gemini-3.1-flash-live-preview';
 
+    // How the boundaries of a user turn are decided. The server reports which mode it
+    // baked into the ephemeral token, because the Constrained endpoint honours the
+    // token's setup rather than the setup we send over the wire.
+    //   auto   – Auto Send on. Server VAD decides both ends of the turn.
+    //   hybrid – Auto Send off, server VAD enabled but with a silence window too long
+    //            to ever fire, so our audioStreamEnd finalises the turn instead. The
+    //            VAD still decides whether speech happened, so silence is never a turn.
+    //   manual – Auto Send off, VAD disabled, we delimit turns with activityStart /
+    //            activityEnd. The fallback for a provider that does not report a mode.
+    var TURNMODE_AUTO = 'auto';
+    var TURNMODE_HYBRID = 'hybrid';
+    var TURNMODE_MANUAL = 'manual';
+    // Must match MINILESSON_AUDIOCHAT_HYBRID_SILENCE_MS in geminilive.php.
+    var HYBRID_SILENCE_MS = 60000;
+    // How long a student may pause in auto mode before the model takes its turn. The
+    // real value is the admin setting, delivered in itemdata; this is only the fallback
+    // for itemdata that predates it. Keep in step with DEFAULT_SILENCEDURATION in
+    // classes/itemtype.php.
+    var DEFAULT_SILENCE_MS = 3500;
+
+    // Manual (Auto Send off) speech gating. With automaticActivityDetection disabled
+    // we delimit the user turn ourselves, and Gemini treats whatever falls between
+    // activityStart and activityEnd as a turn it must transcribe. A turn holding only
+    // silence makes it hallucinate a transcript (typically stock Spanish phrases), so
+    // we do not open the activity at all until we actually hear something.
+    // RMS of a normalised (-1..1) frame; room tone sits well below this.
+    var SPEECH_RMS_THRESHOLD = 0.015;
+    // Frames above the threshold before we call it speech, to ignore clicks and pops.
+    var SPEECH_FRAMES_REQUIRED = 2;
+    // Frames of pre-roll kept back so the first syllable is not clipped.
+    // 4096 samples/frame at 16 kHz is ~256 ms/frame.
+    var SPEECH_PREROLL_FRAMES = 2;
+
     return {
         // Runtime state.
         itemdata: {},
@@ -52,6 +85,17 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         sourceNode: null,
         _micEnabled: false,
         _setupComplete: false,
+        // Turn mode in force for this connection, from the token endpoint. Manual
+        // until the server tells us otherwise, so a provider that reports nothing
+        // keeps the old hand-delimited behaviour.
+        turnmode: TURNMODE_MANUAL,
+        // Manual-turn speech gating (manual mode only). _activityOpen tracks whether
+        // we have sent activityStart for the current mic-on period, so activityEnd is
+        // only ever sent to close an activity we really opened.
+        _activityOpen: false,
+        _awaitingSpeech: false,
+        _speechFrameCount: 0,
+        _prerollFrames: [],
         // True when WE are closing the socket on purpose (stop/grading/reconnect),
         // so the onclose handler does not treat it as an expiry to recover from.
         _intentionalClose: false,
@@ -74,6 +118,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
         // Session options.
         audiochat_voice: 'Aoede',
         autocreateresponse: false,
+        silencedurationms: DEFAULT_SILENCE_MS,
         datainputbuffer: false,
         setupConfig: {
             model: 'models/' + DEFAULT_MODEL,
@@ -91,7 +136,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             realtimeInputConfig: {
                 automaticActivityDetection: {
                     disabled: false,
-                    silenceDurationMs: 1500,
+                    silenceDurationMs: DEFAULT_SILENCE_MS,
                 }
             },
             sessionResumption: {},
@@ -121,6 +166,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             self.autoCreateResponseToggleWrapperElement = options.autoCreateResponseToggleWrapperElement;
             self.callbacks = options.callbacks || {};
             self.autocreateresponse = options.itemdata.audiochat_autoresponse || false;
+            self.silencedurationms = options.itemdata.audiochat_silenceduration || DEFAULT_SILENCE_MS;
             self.audiochat_voice = self._resolveVoice(options.itemdata.audiochat_voice);
             self.items = {};
             self.loadingMessages = new Set();
@@ -130,6 +176,10 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             self.currentAssistantItemId = null;
             self._pendingFirstMessage = null;
             self._setupComplete = false;
+            self._activityOpen = false;
+            self._awaitingSpeech = false;
+            self._speechFrameCount = 0;
+            self._prerollFrames = [];
             self.autoCreateResponseToggleWrapperElement.style.display = 'none';
         },
 
@@ -212,6 +262,10 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             }
             return self._fetchSessionInfo().then(function (sessionInfo) {
                 self._intentionalClose = false;
+                // The new token carries its own turn mode, which differs from the old
+                // one whenever the reconnect was caused by an Auto Send toggle.
+                self.turnmode = self._resolveTurnMode(sessionInfo);
+                log.debug('Gemini: turn mode ' + self.turnmode);
                 return self._openWebSocket(sessionInfo).then(function () {
                     // _sendSetupAndFirstTurn attaches sessionResumptionToken as the
                     // resumption handle and, because resumingSession is true, skips
@@ -274,6 +328,8 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 self._fire('onError', err);
                 return;
             }
+            self.turnmode = self._resolveTurnMode(sessionInfo);
+            log.debug('Gemini: turn mode ' + self.turnmode);
 
             // 3. Open WebSocket.
             try {
@@ -302,6 +358,23 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             // 5. Send setup (first turn is queued until setupComplete arrives).
             self._sendSetupAndFirstTurn(sessionInfo.model);
             self._fire('onStateChange', 'connected');
+        },
+
+        /**
+         * Decide how we signal turn boundaries on this connection. Auto Send on is
+         * always plain server VAD; with it off we take the mode the token was minted
+         * with, falling back to manual for a provider that does not report one.
+         *
+         * @param {Object} sessionInfo the token endpoint's response
+         * @return {string} one of the TURNMODE_ constants
+         */
+        _resolveTurnMode: function (sessionInfo) {
+            if (this.autocreateresponse) {
+                return TURNMODE_AUTO;
+            }
+            return sessionInfo && sessionInfo.turnmode === TURNMODE_HYBRID
+                ? TURNMODE_HYBRID
+                : TURNMODE_MANUAL;
         },
 
         _fetchSessionInfo: function () {
@@ -402,7 +475,14 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 log.debug('Gemini: sending setup message, WS state:');
                 log.debug(self.ws ? self.ws.readyState : 'null');
                 self.setupConfig.model = 'models/' + (model || DEFAULT_MODEL);
-                self.setupConfig.realtimeInputConfig.automaticActivityDetection.disabled = !self.autocreateresponse;
+                // Mirror the turn mode the token carries. Only manual mode turns the
+                // VAD off; hybrid keeps it on and pushes its silence window out of
+                // reach so our audioStreamEnd is what ends the turn.
+                var aad = self.setupConfig.realtimeInputConfig.automaticActivityDetection;
+                aad.disabled = self.turnmode === TURNMODE_MANUAL;
+                aad.silenceDurationMs = self.turnmode === TURNMODE_HYBRID
+                    ? HYBRID_SILENCE_MS
+                    : self.silencedurationms;
                 self.setupConfig.sessionResumption = {};
                 if (self.sessionResumptionToken) {
                     self.setupConfig.sessionResumption.handle = self.sessionResumptionToken;
@@ -415,12 +495,14 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
 
                 // If resuming session then no need to send first instruction.
                 if (self.resumingSession) {
-                    if (self._micEnabled && !self.autocreateresponse) {
-                        self._sendWS({
-                            realtimeInput: {
-                                activityStart: {}
-                            }
-                        });
+                    if (self._micEnabled && self.turnmode === TURNMODE_MANUAL) {
+                        // The new socket has no activity open, whatever the old one had.
+                        // Re-arm rather than opening one, so a reconnect during silence
+                        // does not leave a dangling empty turn behind.
+                        self._activityOpen = false;
+                        self._awaitingSpeech = true;
+                        self._speechFrameCount = 0;
+                        self._prerollFrames = [];
                     }
                     self.resumingSession = false;
                     return;
@@ -508,7 +590,90 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 return;
             }
             var input = event.inputBuffer.getChannelData(0);
+
+            // Auto Send off: hold the audio back until we hear speech, so a mic-on /
+            // mic-off with nothing said never becomes a turn for Gemini to invent a
+            // transcript for. Auto Send on leaves the decision to the server VAD.
+            if (self._awaitingSpeech) {
+                if (self._frameRMS(input) >= SPEECH_RMS_THRESHOLD) {
+                    self._speechFrameCount++;
+                } else {
+                    self._speechFrameCount = 0;
+                }
+
+                if (self._speechFrameCount < SPEECH_FRAMES_REQUIRED) {
+                    // Keep a little pre-roll so the start of the first word survives.
+                    self._prerollFrames.push(new Float32Array(input));
+                    if (self._prerollFrames.length > SPEECH_PREROLL_FRAMES) {
+                        self._prerollFrames.shift();
+                    }
+                    return;
+                }
+
+                // Speech: open the turn and flush the pre-roll ahead of this frame.
+                log.debug('Gemini: speech detected, opening activity');
+                self._awaitingSpeech = false;
+                self._speechFrameCount = 0;
+                self._openActivity();
+                var preroll = self._prerollFrames;
+                self._prerollFrames = [];
+                for (var i = 0; i < preroll.length; i++) {
+                    self._sendAudio(preroll[i]);
+                }
+            }
+
             self._sendAudio(input);
+        },
+
+        /**
+         * Root mean square of a frame of normalised (-1..1) samples.
+         *
+         * @param {Float32Array} frame
+         * @return {number}
+         */
+        _frameRMS: function (frame) {
+            var sum = 0;
+            for (var i = 0; i < frame.length; i++) {
+                sum += frame[i] * frame[i];
+            }
+            return Math.sqrt(sum / frame.length);
+        },
+
+        /**
+         * Open a manually delimited user turn, unless one is already open.
+         */
+        _openActivity: function () {
+            var self = this;
+            if (self._activityOpen) {
+                return;
+            }
+            self._activityOpen = true;
+            self._sendWS({
+                realtimeInput: {
+                    activityStart: {}
+                }
+            });
+        },
+
+        /**
+         * Close the manually delimited user turn, if we opened one. Discards any
+         * buffered pre-roll, since audio we never sent is not part of a turn.
+         */
+        _closeActivity: function () {
+            var self = this;
+            self._awaitingSpeech = false;
+            self._speechFrameCount = 0;
+            self._prerollFrames = [];
+            if (!self._activityOpen) {
+                log.debug('Gemini: no speech in this mic period, sending no turn');
+                return;
+            }
+            self._activityOpen = false;
+            self._sendWS({
+                realtimeInput: {
+                    activityEnd: {}
+                }
+            });
         },
 
         _sendAudio: function (input) {
@@ -815,12 +980,11 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                         log.debug(e);
                     }
                 }
-                if (!self.autocreateresponse) {
-                    self._sendWS({
-                        realtimeInput: {
-                            activityStart: {}
-                        }
-                    });
+                if (self.turnmode === TURNMODE_MANUAL) {
+                    // Arm speech detection; the activity opens once we hear something.
+                    self._awaitingSpeech = true;
+                    self._speechFrameCount = 0;
+                    self._prerollFrames = [];
                 }
             } else {
                 if (self.sourceNode && self.scriptProcessor) {
@@ -829,12 +993,8 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                         log.debug(e);
                     }
                 }
-                if (!self.autocreateresponse) {
-                    self._sendWS({
-                        realtimeInput: {
-                            activityEnd: {}
-                        }
-                    });
+                if (self.turnmode === TURNMODE_MANUAL) {
+                    self._closeActivity();
                 } else {
                     self._sendWS({
                         realtimeInput: {
@@ -890,12 +1050,8 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             self._gradingPending = true;
             self._gradingBuffer = '';
             if (self._micEnabled) {
-                if (!self.autocreateresponse) {
-                    self._sendWS({
-                        realtimeInput: {
-                            activityEnd: {}
-                        }
-                    });
+                if (self.turnmode === TURNMODE_MANUAL) {
+                    self._closeActivity();
                 } else {
                     self._sendWS({
                         realtimeInput: {

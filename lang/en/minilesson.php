@@ -1354,7 +1354,7 @@ $string['audiochat_gradeinstructions_instructions'] = 'The score/feedback instru
 $string['audiochat_aidata1'] = 'Custom AI Data 1';
 $string['audiochat_aidata2'] = 'Custom AI Data 2';
 $string['audiochat_autosend'] = 'Auto Send';
-$string['audiochat_autosend_desc'] = 'If checked, turn-detection is automatic. The AI will automatically send the student audio when it detects that they have stopped speaking. For young or slower speakers that might be frustrating. If unchecked, audio is submitted when the microphone stop button is pressed. Auto send can also be toggled during the activity.';
+$string['audiochat_autosend_desc'] = 'If checked, turn-detection is automatic. The AI will automatically send the student audio when it detects that they have stopped speaking. For young or slower speakers that might be frustrating. If unchecked, audio is submitted when the microphone stop button is pressed.';
 $string['clicktosend'] = 'click to send';
 $string['cantchat'] = 'Chat is NOT available. To use this item type you must have a valid {$a} key set in the MiniLesson activity admin settings.';
 

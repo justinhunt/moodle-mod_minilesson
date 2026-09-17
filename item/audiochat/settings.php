@@ -49,6 +49,17 @@ $settings->add(
     )
 );
 
+// How long a student may pause before the AI takes its turn.
+$settings->add(
+    new admin_setting_configtext(
+        constants::M_COMPONENT . "/audiochat_silenceduration",
+        get_string('audiochat_silenceduration', 'minilessonitem_audiochat'),
+        get_string('audiochat_silenceduration_details', 'minilessonitem_audiochat'),
+        itemtype::DEFAULT_SILENCEDURATION,
+        PARAM_INT
+    )
+);
+
 // Audio Chat Prompts.
 $maxprompts = constants::MAX_AI_PROMPTS;
 for ($i = 0; $i < $maxprompts; $i++) {

@@ -82,6 +82,37 @@ class itemtype extends item {
     public const PROVIDER_CLOUDPOODLL = 'cloudpoodll';
 
     /**
+     * Default silence, in milliseconds, before the AI decides the student has finished
+     * speaking and takes its turn. Used when the admin setting is unset or out of range.
+     *
+     * @var int
+     */
+    public const DEFAULT_SILENCEDURATION = 3500;
+
+    /** @var int Shortest silence an admin may configure. */
+    public const MIN_SILENCEDURATION = 500;
+
+    /** @var int Longest silence an admin may configure. */
+    public const MAX_SILENCEDURATION = 30000;
+
+    /**
+     * How long a student may pause before the AI takes its turn, in milliseconds.
+     *
+     * Applies to both providers, so a lesson paces the same way whichever is behind it.
+     * Note this only governs the pause AFTER the student has spoken; it never affects a
+     * turn in which they said nothing.
+     *
+     * @return int
+     */
+    public static function get_silenceduration() {
+        $duration = (int) get_config(constants::M_COMPONENT, 'audiochat_silenceduration');
+        if ($duration < self::MIN_SILENCEDURATION || $duration > self::MAX_SILENCEDURATION) {
+            return self::DEFAULT_SILENCEDURATION;
+        }
+        return $duration;
+    }
+
+    /**
      * The class constructor.
      */
     public function __construct($itemrecord, $moduleinstance = false, $context = false) {
@@ -231,6 +262,9 @@ class itemtype extends item {
 
         // Set the Auto turn detection to on or off.
         $testitem->audiochat_autoresponse = $this->itemrecord->{self::AUTORESPONSE} ? true : false;
+
+        // How long the student may pause before the AI takes its turn.
+        $testitem->audiochat_silenceduration = self::get_silenceduration();
 
         // AI Voice.
         $testitem->audiochat_voice = $this->itemrecord->{self::VOICE};
