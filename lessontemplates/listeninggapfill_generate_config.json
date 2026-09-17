@@ -2,7 +2,7 @@
     "items": [
         {
             "itemnumber": 0,
-            "prompt": "Generate a 1 dimensional array (sentences) of example sentences in {language} suitable for {level} level learners using the following keywords [{keywords}]. In each sentence surround one keyword with square brackets, e.g [word]. Create a second array (data2) using the same sentences but without the square brackets.",
+            "prompt": "Generate a 1 dimensional array (sentences) of grammatically correct example sentences in {language} suitable for {level} level learners using the following keywords [{keywords}]. In each sentence surround one keyword with square brackets, e.g [word]. Create a second array (data2) using the same sentences but without the square brackets.",
             "generatemethod": "generate",
             "generatefileareasmethod": "generate",
             "generatefields": [
@@ -74,7 +74,7 @@
     "lessonTitle": "Listening GapFill (generate sentences)",
     "lessonDescription": "Creates a Listening GapFill activity from a list of keywords (maximum 30).  A picture in the specified image style will be created to accompany each sentence.",
     "uniqueid": "6a3142579495d",
-    "version": "3",
+    "version": "4",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {

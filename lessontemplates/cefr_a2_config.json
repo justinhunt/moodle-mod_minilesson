@@ -49,7 +49,7 @@
                     "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata4",
             "promptfields": [
                 {
                     "name": "keywords",
@@ -114,7 +114,7 @@
                     "mapping": "data1"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata4",
             "promptfields": [
                 {
                     "name": "language",
@@ -418,7 +418,7 @@
                     "mapping": "text"
                 }
             ],
-            "overallimagecontext": "user_topic",
+            "overallimagecontext": "user_customdata4",
             "promptfields": [
                 {
                     "name": "level",
@@ -436,9 +436,9 @@
         }
     ],
     "lessonTitle": "CEFR A2 Template",
-    "lessonDescription": "Enter 4 - 10 keywords, the native language to translate words into, a passage of text that uses those keywords and some related questions and topic for an audio chat, and a scene or situation to help make consistent images. Those inputs will be used to generate a set of vocab cards, word shuffle, listen and speak , audio chat and free speaking.",
+    "lessonDescription": "Enter 4 - 10 keywords, the native language to translate words into, a passage of text that uses those keywords, some questions and topic for an audio chat, and an image style. Those inputs will be used to generate a set of vocab cards, word shuffle, listen and speak , audio chat and free speaking.",
     "uniqueid": "6a4909ba67c08",
-    "version": "7",
+    "version": "8",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -483,8 +483,7 @@
             "enabled": true,
             "title": "Native language",
             "description": "The language the keyword definitions should be in.",
-            "type": "text",
-            "defaultfrom": "nativelang"
+            "type": "text"
         },
         "user_customdata2": {
             "enabled": true,
@@ -499,10 +498,19 @@
             "type": "text"
         },
         "user_customdata4": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image style",
+            "description": "The image style that the images will be rendered in",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata5": {
             "enabled": false,

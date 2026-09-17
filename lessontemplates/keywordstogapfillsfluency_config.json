@@ -4,6 +4,7 @@
             "itemnumber": 0,
             "prompt": "Create an image generation prompt (data1) to generate a single picture of each of the following keywords written on a classroom blackboard: [{keywords}]",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "data1",
@@ -50,6 +51,7 @@
             "itemnumber": 1,
             "prompt": "Generate a 1 dimensional array (sentences) of example sentences in {language} suitable for {level} level learners using the following keywords [{keywords}]. In each sentence surround one keyword with square brackets, e.g [word]. Create a second array (data2) using the same sentences but without the square brackets.",
             "generatemethod": "generate",
+            "generatefileareasmethod": "generate",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -99,7 +101,7 @@
                     "mapping": "data2"
                 }
             ],
-            "overallimagecontext": "--",
+            "overallimagecontext": "user_customdata1",
             "promptfields": [
                 {
                     "name": "language",
@@ -119,6 +121,7 @@
             "itemnumber": 2,
             "prompt": "",
             "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -174,6 +177,7 @@
             "itemnumber": 3,
             "prompt": "",
             "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -219,6 +223,7 @@
             "itemnumber": 4,
             "prompt": "",
             "generatemethod": "reuse",
+            "generatefileareasmethod": "reuse",
             "generatefields": [
                 {
                     "name": "sentences",
@@ -266,10 +271,11 @@
             "promptfields": []
         }
     ],
-    "lessonTitle": "Keywords to gapfills and fluency",
-    "lessonDescription": "Enter a list of words (maximum 30) and Poodll will make a short activity for students to practice those words",
+    "lessonTitle": "Keywords to GapFills \/ Fluency",
+    "lessonDescription": "Enter a list of words (maximum 30), the learners language level, an image style, and Poodll will make a short activity for students to practice those words. The activity will have an intro page, a listening gapfill, a typing gapfll and speaking gapfill items.",
     "uniqueid": "688244029b789",
-    "version": "5",
+    "version": "6",
+    "agentonly": 0,
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -286,7 +292,7 @@
         "user_level": {
             "enabled": true,
             "title": "Language Level",
-            "description": "",
+            "description": "The language level (CEFR) of the learners",
             "type": "dropdown",
             "options": [
                 "CEFR A1",
@@ -310,10 +316,19 @@
             "type": "textarea"
         },
         "user_customdata1": {
-            "enabled": false,
-            "title": "",
-            "description": "",
-            "type": "text"
+            "enabled": true,
+            "title": "Image Style",
+            "description": "The image style that the images will be rendered in",
+            "type": "dropdown",
+            "options": [
+                "Flat vector illustration",
+                "Cartoon",
+                "Photorealistic",
+                "Infographic",
+                "Line drawing",
+                "Digital painting",
+                "3D Render"
+            ]
         },
         "user_customdata2": {
             "enabled": false,
@@ -326,8 +341,50 @@
             "title": "",
             "description": "",
             "type": "text"
+        },
+        "user_customdata4": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata5": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata6": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata7": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata8": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata9": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
+        },
+        "user_customdata10": {
+            "enabled": false,
+            "title": "",
+            "description": "",
+            "type": "text"
         }
-    }, 
+    },
     "tags": [
         "Vocabulary Practice"
     ]
