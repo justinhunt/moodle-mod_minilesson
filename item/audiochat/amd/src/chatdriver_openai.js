@@ -382,6 +382,9 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 "Please provide a percentage score for the session, an explanation of the score (for teachers), " +
                 "and feedback (for the student). " +
                 self.itemdata.audiochatgradeinstructions +
+                "Write the feedback as plain text in short paragraphs separated by a blank line. " +
+                "Where a list of points helps, put each point on its own line starting with a hyphen. " +
+                "Do not use markdown formatting: no headings, no asterisks and no bold. " +
                 "Return the response as JSON in the format: " +
                 "{\"score\": \"the score  ( 0-100 ) \", \"gradeexplanation\": \"the explanation\", " +
                 "\"feedback\": \"the feedback\"}.";

@@ -620,6 +620,19 @@
     color: $text;
     font-size: 15px;
     font-weight: 400;
+    // The AI feedback is plain text, so keep the line breaks it sends.
+    white-space: pre-line;
+    // The panel above is centered for the stars, but feedback prose and any
+    // hyphen bullets in it need to read from the leading edge.
+    text-align: start;
+
+    // Feedback in a right to left native language. Setting the base direction is
+    // what makes an embedded run of the target language read correctly inside it;
+    // "start" then resolves to the right on its own.
+    &.mod_minilesson_rtl {
+      direction: rtl;
+      text-align: start;
+    }
   }
 
   .ml_ac_btn-container {
@@ -636,6 +649,20 @@
   max-width: 600px;
   margin: auto;
   font-family: Arial, sans-serif;
+}
+
+.audiochat-results-feedback,
+.audiochat-results-gradeexplanation {
+  .ml_ac_feedback_text {
+    // The AI feedback is plain text, so keep the line breaks it sends.
+    white-space: pre-line;
+
+    // See the note on the immediate feedback panel above.
+    &.mod_minilesson_rtl {
+      direction: rtl;
+      text-align: start;
+    }
+  }
 }
 
 .audiochat-results-message {

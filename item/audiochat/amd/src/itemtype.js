@@ -239,6 +239,10 @@ define(
                 var gradingData = self.driver.getGradingData();
                 var wordcount = self.count_words();
 
+                // Carried into the stored results data, because the review template is rendered
+                // from that, long after itemdata has gone.
+                stepdata.resultsdata.feedbackrtl = self.itemdata.feedbackrtl || '';
+
                 if (gradingData && gradingData.score !== undefined) {
                     log.debug("Using grading data from AI:", gradingData);
                     stepdata.grade = gradingData.score;

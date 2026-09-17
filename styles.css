@@ -4295,6 +4295,12 @@ span.wrongitem {
   color: #1F2334;
   font-size: 15px;
   font-weight: 400;
+  white-space: pre-line;
+  text-align: start;
+}
+.minilesson_audiochat_box .ml_ac_feedback_text.mod_minilesson_rtl {
+  direction: rtl;
+  text-align: start;
 }
 .minilesson_audiochat_box .ml_ac_btn-container {
   display: flex;
@@ -4308,6 +4314,16 @@ span.wrongitem {
   max-width: 600px;
   margin: auto;
   font-family: Arial, sans-serif;
+}
+
+.audiochat-results-feedback .ml_ac_feedback_text,
+.audiochat-results-gradeexplanation .ml_ac_feedback_text {
+  white-space: pre-line;
+}
+.audiochat-results-feedback .ml_ac_feedback_text.mod_minilesson_rtl,
+.audiochat-results-gradeexplanation .ml_ac_feedback_text.mod_minilesson_rtl {
+  direction: rtl;
+  text-align: start;
 }
 
 .audiochat-results-message {
