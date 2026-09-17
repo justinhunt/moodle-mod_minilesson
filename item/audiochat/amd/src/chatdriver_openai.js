@@ -24,7 +24,8 @@
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
+define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/gradingjson'],
+        function ($, log, Fragment, gradingjson) {
     "use strict";
 
     log.debug('MiniLesson AudioChat: OpenAI driver loading');
@@ -591,8 +592,8 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                 var jsonresponse;
                 try {
                     jsonresponse = msg.response.output[0].content[0].text;
-                    const jsonextractregex = /\{[\s\S]*?\}/;
-                    if (!jsonresponse || jsonresponse === "" || !jsonresponse.match(jsonextractregex)) {
+                    var gradingdata = gradingjson.parse(jsonresponse);
+                    if (!gradingdata) {
                         log.debug("No valid grading data received .. msg is ..");
                         log.debug(msg);
                         if (self.gradeRequestTrial < self.maxGradeRequestTrial) {
@@ -607,7 +608,7 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
                     if (self.gradeRequestTrial > 0) {
                         self.gradeRequestTrial = 0;
                     }
-                    self.gradingData = JSON.parse(jsonresponse.match(jsonextractregex)[0]);
+                    self.gradingData = gradingdata;
                     log.debug("Grading and Feedback:", self.gradingData);
                     self._fire('onGradingData', self.gradingData);
                 } catch (err) {

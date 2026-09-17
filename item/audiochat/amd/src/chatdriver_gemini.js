@@ -27,7 +27,8 @@
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
+define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/gradingjson'],
+        function ($, log, Fragment, gradingjson) {
     "use strict";
 
     log.debug('MiniLesson AudioChat: Gemini driver loading');
@@ -947,21 +948,14 @@ define(['jquery', 'core/log', 'core/fragment'], function ($, log, Fragment) {
             log.debug('Gemini: received grading text');
             log.debug(text);
             self._gradingBuffer = '';
-            try {
-                var match = text.match(/\{[\s\S]*?\}/);
-                if (!match) {
-                    log.debug('No valid grading JSON in Gemini buffer:');
-                    log.debug(text);
-                    self.gradingData = false;
-                    return;
-                }
-                self.gradingData = JSON.parse(match[0]);
+            self.gradingData = gradingjson.parse(text);
+            if (self.gradingData) {
                 log.debug('Gemini grading:');
                 log.debug(self.gradingData);
                 self._fire('onGradingData', self.gradingData);
-            } catch (err) {
-                log.debug('Failed to parse Gemini grading:', err, text);
-                self.gradingData = false;
+            } else {
+                log.debug('No valid grading JSON in Gemini buffer:');
+                log.debug(text);
             }
             log.debug('Gemini: closing session resources');
             self.closeDataChannel();
