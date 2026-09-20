@@ -177,6 +177,7 @@ one time, and only on a pass where the condition holds.
 - `visited("NodeName")` - true if the learner has already been through that node. The other
   way to vary a place by whether it has been seen: `<<if visited("Cellar")>>` reads the state
   of a *different* node, where the `<<once>>` block reads only its own.
+- `node_name()` (or `currentNode()`) - returns the name/title of the current node (e.g. `"Start"` or `"Cellar"`).
 - `random()` - a random number between 0 and 1; `floor(n)` - round down.
 - `translate("text")` - renders the text translated into the learner's native language, or
   the text as written when translation is not available to them.

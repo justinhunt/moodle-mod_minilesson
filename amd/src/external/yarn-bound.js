@@ -3385,6 +3385,7 @@
               this.variables = new _defaultVariableStorage.default();
               this.functions = {};
               this.visitedNodes = new Set();
+              this.currentNodeName = '';
             }
 
             /**
@@ -3521,6 +3522,7 @@
               return function* () {
                 if (metadata.title) {
                   _this.visitedNodes.add(metadata.title);
+                  _this.currentNodeName = metadata.title;
                 }
                 const filteredNodes = nodes.filter(Boolean);
                 // Yield the individual user-visible results
@@ -3560,12 +3562,11 @@
                     return yield* _this.handleShortcuts(shortcutNodes, metadata, filteredNodes.slice(1), getGeneratorHere);
                   }
                 } else if (node.type === 'SetVariableEqualToNode') { // Assignment is SetVariableEqualToNode in parser?
-                  const varName = node.variableName;
-                  const isInternal = varName && (varName.startsWith('$__') || varName.startsWith('__'))
-                    && !varName.startsWith('$__once_') && !varName.startsWith('__once_');
-                  if (!_this.lookahead || isInternal) {
-                    _this.evaluateAssignment(node);
-                  }
+                  // Always assign, even during a lookahead probe, so that conditionals
+                  // downstream of this <<set>> are evaluated against the same variables
+                  // the real run will see. YarnBound.lookahead() rolls the probe's
+                  // writes back once it rewinds.
+                  _this.evaluateAssignment(node);
                 } else if (node.type === 'IfNode' || node.type === 'IfElseNode' || node.type === 'ElseIfNode' || node.type === 'ElseNode') {
                   console.log("Conditional Node Type:", node.type);
                   // Get the results of the conditional
@@ -3599,6 +3600,13 @@
 
                     // Flatten strategy: Insert detour nodes + Marker into the current flow
                     const marker = new _nodes2.default.GenericCommandNode('__DETOUR_END__', { first_line: node.lineNum });
+                    // Flattening loses the calling node's identity, so park it on the
+                    // marker. Everything after the detour returns belongs to the caller
+                    // again, and must be evaluated with the caller's metadata so that
+                    // currentNode()/node_name() and each result's metadata.title are the
+                    // calling node, not the detour. Nesting works because the nearest
+                    // marker is always the innermost detour's.
+                    marker.returnMetadata = metadata;
                     const newNodes = [...detourInfo.parserNodes, marker, ...filteredNodes.slice(1)];
 
                     return yield* _this.evalNodes(newNodes, detourInfo.metadata, shortcutNodes, textRunNodes);
@@ -3614,16 +3622,20 @@
                     });
 
                     if (markerIndex !== -1) {
-                      // Skip to after the marker
-                      return yield* _this.evalNodes(filteredNodes.slice(markerIndex + 1), metadata, shortcutNodes, textRunNodes);
+                      // Skip to after the marker, back under the calling node's metadata.
+                      const returnMetadata = filteredNodes[markerIndex].returnMetadata || metadata;
+                      return yield* _this.evalNodes(filteredNodes.slice(markerIndex + 1), returnMetadata,
+                        shortcutNodes, textRunNodes);
                     } else {
                       // No marker found, truly return (end of dialogue or function)
                       return;
                     }
 
                   } else if (command === '__DETOUR_END__') {
-                    // Just continue to the next nodes (restoring previous context)
-                    return yield* _this.evalNodes(filteredNodes.slice(1), metadata, shortcutNodes, textRunNodes);
+                    // Reached when a detour node runs off its end without an explicit
+                    // <<return>>. Continue under the calling node's metadata.
+                    return yield* _this.evalNodes(filteredNodes.slice(1), node.returnMetadata || metadata,
+                      shortcutNodes, textRunNodes);
                   } else {
                     const commandResult = Object.assign(new _results.default.CommandResult(command, node.hashtags, metadata), {
                       getGeneratorHere
@@ -4118,6 +4130,8 @@
                 });
               }
               this.registerFunction('visited', (nodeName) => this.runner.visitedNodes.has(nodeName));
+              this.registerFunction('node_name', () => this.runner.currentNodeName || '');
+              this.registerFunction('currentNode', () => this.runner.currentNodeName || '');
               this.runner.load(dialogue);
               this.jump(startAt);
             }
@@ -4134,6 +4148,63 @@
                 next = this.generator.next();
               }
               return next;
+            }
+
+            /**
+             * Start recording writes to the variable storage so the speculative
+             * lookahead probe below can be rolled back afterwards.
+             *
+             * The probe runs the dialogue one result further than the user has seen
+             * and then rewinds, so its writes must not survive. Suppressing <<set>>
+             * during the probe (the old approach) is not equivalent: it makes the
+             * probe evaluate conditionals against stale variables, so it can predict
+             * a different branch from the one the rewound run actually takes.
+             *
+             * Storage only has to implement get/set, so rather than enumerating it we
+             * wrap set() and remember each name's prior value.
+             */
+            snapshotVariables() {
+              const storage = this.runner.variables;
+              const origSet = storage.set.bind(storage);
+              const origGet = storage.get.bind(storage);
+              const hasKey = typeof storage.has === 'function' ? storage.has.bind(storage) : (name) => origGet(name) !== undefined;
+              const undo = new Map();
+              storage.set = (name, value) => {
+                if (!undo.has(name)) {
+                  undo.set(name, hasKey(name) ? { existed: true, value: origGet(name) } : { existed: false });
+                }
+                origSet(name, value);
+              };
+              return { storage, origSet, undo };
+            }
+
+            /**
+             * Roll back every variable written since the matching snapshotVariables().
+             * @param {object} snapshot the value returned by snapshotVariables()
+             */
+            restoreVariables(snapshot) {
+              if (!snapshot || snapshot.done) {
+                return;
+              }
+              snapshot.done = true;
+              const { storage, origSet, undo } = snapshot;
+              // Removing our own property uncovers the prototype's set() again; a
+              // storage that carried set() as an own property needs it put back.
+              delete storage.set;
+              if (typeof storage.set !== 'function') {
+                storage.set = origSet;
+              }
+              undo.forEach((prior, name) => {
+                if (prior.existed) {
+                  origSet(name, prior.value);
+                } else if (typeof storage.delete === 'function') {
+                  storage.delete(name);
+                } else if (storage.data && typeof storage.data === 'object') {
+                  delete storage.data[name];
+                } else {
+                  origSet(name, undefined);
+                }
+              });
             }
 
             // for combining text + options, and detecting dialogue end
@@ -4156,11 +4227,29 @@
               }
               this.runner.lookahead = true;
               this.runner.variables.set('__lookahead', true);
+              const snapshot = this.snapshotVariables();
+              try {
+                return this.lookaheadFromProbe(next, snapshot);
+              } finally {
+                // A yarn runtime error inside the probe must not leave the storage
+                // wrapped, nor the probe's speculative writes applied.
+                this.restoreVariables(snapshot);
+                this.runner.lookahead = false;
+              }
+            }
+
+            /**
+             * The body of lookahead(), from the speculative probe onwards.
+             * @param {object} next the already-yielded result the user is about to see
+             * @param {object} snapshot the open variable snapshot to roll back on rewind
+             */
+            lookaheadFromProbe(next, snapshot) {
               let upcoming = this.generator.next();
 
               if (this.handleCommand && upcoming.value instanceof _index.default.CommandResult && upcoming.value.command !== this.pauseCommand) {
                 upcoming = this.handleConsecutiveOptionsNodes();
                 this.generator = next.value.getGeneratorHere();
+                this.restoreVariables(snapshot);
                 this.runner.lookahead = false;
                 this.runner.variables.set('__lookahead', false);
 
@@ -4183,14 +4272,32 @@
                 return rewoundNext;
               } else if (next.value instanceof _index.default.TextResult && this.combineTextAndOptionsResults && upcoming.value instanceof _index.default.OptionsResult) {
                 this.generator = next.value.getGeneratorHere();
+                this.restoreVariables(snapshot);
                 this.runner.lookahead = false;
                 this.runner.variables.set('__lookahead', false);
                 const rewoundNext = this.generator.next();
                 const rewoundUpcoming = this.generator.next();
+                if (!rewoundUpcoming.value) {
+                  // The options the probe saw are gone and nothing replaced them.
+                  Object.assign(rewoundNext.value, {
+                    isDialogueEnd: true
+                  });
+                  return rewoundNext;
+                }
+                if (!(rewoundUpcoming.value instanceof _index.default.OptionsResult)) {
+                  // The rewound run diverged from the probe, so there is nothing to
+                  // combine the text with. Merging here would overwrite whatever the
+                  // run really produced and silently swallow that line. Park the
+                  // generator on it instead and deliver the text on its own; the next
+                  // lookahead() then derives that result normally.
+                  this.generator = rewoundUpcoming.value.getGeneratorHere();
+                  return rewoundNext;
+                }
                 Object.assign(rewoundUpcoming.value, rewoundNext.value);
                 return rewoundUpcoming;
               } else {
                 this.generator = next.value.getGeneratorHere();
+                this.restoreVariables(snapshot);
                 this.runner.lookahead = false;
                 this.runner.variables.set('__lookahead', false);
                 const rewoundNext = this.generator.next();
