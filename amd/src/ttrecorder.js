@@ -196,8 +196,18 @@ define(
                     that.update_audio(newaudio);
                 };
 
+                //Android chrome runs speech rec on the platform recognizer, which owns the microphone while it
+                //is running. We can not record the audio at the same time, so items that need the audio saved
+                //(free speaking, passage reading) take the streaming/upload route, as they do on firefox.
+                var is_android = navigator.userAgent.indexOf("Android") > -1;
+                var androidblocked = is_android && this.savemedia;
+                if (androidblocked) {
+                    log.debug("not using browser rec: android chrome can not record audio while it is running");
+                }
+
                 //If browser rec (Chrome Speech Rec)
-                if (browserRec.will_work_ok() && !this.stt_guided && !this.forcestreaming && !this.using_msspeech) {
+                if (browserRec.will_work_ok() && !this.stt_guided && !this.forcestreaming && !this.using_msspeech
+                    && !androidblocked) {
                     //Init browserrec
                     log.debug("using browser rec");
                     this.browserrec = browserRec.clone();
