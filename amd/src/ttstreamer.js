@@ -22,6 +22,10 @@ define(['jquery', 'core/log'], function ($, log) {
         turnbase: 0,
         //highest turn_order seen on the current socket generation.
         maxturn: -1,
+        //set while finish() waits for the server to flush its last turn, see finish().
+        onterminated: null,
+        //how long finish() waits for the server's Termination message before giving up, in ms.
+        terminatetimeout: 3000,
 
         //for making multiple instances
         clone: function () {
@@ -104,7 +108,10 @@ define(['jquery', 'core/log'], function ($, log) {
                             that.handlefinalresponse(payload);
                             break;
                         case 'Termination':
-                            //Do something on termination if we need to
+                            //the server has sent everything it is going to send, see finish()
+                            if (that.onterminated) {
+                                that.onterminated();
+                            }
                             break;
 
                         default:
@@ -123,14 +130,28 @@ define(['jquery', 'core/log'], function ($, log) {
                 that.audiohelper.onSocketReady('fromsocketopen');
             };
 
+            //These handlers must only act on their own socket. After a token refresh the old socket's close event
+            //arrives once the new socket is already in place, and clearing that.socket then would silently stop
+            //everything after the refresh from being transcribed.
+            var thissocket = this.socket;
             this.socket.onerror = (event) => {
                 log.debug(event);
-                that.doclosesocket();
+                if (that.socket === thissocket) {
+                    that.doclosesocket();
+                    if (that.onterminated) {
+                        that.onterminated();
+                    }
+                }
             };
 
             this.socket.onclose = (event) => {
                 log.debug(event);
-                that.socket = null;
+                if (that.socket === thissocket) {
+                    that.socket = null;
+                    if (that.onterminated) {
+                        that.onterminated();
+                    }
+                }
             };
         },
 
@@ -182,8 +203,8 @@ define(['jquery', 'core/log'], function ($, log) {
 
         sendaudio: function (audiodata) {
             var that = this;
-            //Send it off !!
-            if (that.socket && that.socket.readyState === WebSocket.OPEN) {
+            //Send it off !! (but never after we have told the server we are finished)
+            if (that.socket && that.socket.readyState === WebSocket.OPEN && !that.onterminated) {
                 that.socket.send(audiodata);
             }
         },
@@ -195,21 +216,42 @@ define(['jquery', 'core/log'], function ($, log) {
             if (this.ready === undefined || !this.ready) {
                 return;
             }
+            //already finishing
+            if (this.onterminated) {
+                return;
+            }
             log.debug('committing universal response');
 
-            this.doclosesocket();
-
-
-            log.debug('setting time out to build transcript');
-            setTimeout(function () {
+            //Terminate asks the server to flush the turn in progress, which arrives after it, followed by a Termination
+            //message. Closing the socket straight away (as we used to) threw that last turn away, so a student who
+            //stopped right after speaking lost their last words. So we wait for Termination, the socket closing, or a
+            //timeout, whichever comes first, and only then build the transcript.
+            var timer = null;
+            var complete = function () {
+                if (that.onterminated !== complete) {
+                    return;
+                }
+                that.onterminated = null;
+                clearTimeout(timer);
                 var finaltranscript = that.buildtranscript();
                 log.debug('sending final speech capture event');
                 that.audiohelper.onfinalspeechcapture(finaltranscript);
                 that.cleanup();
-            }, 1000);
+            };
+            this.onterminated = complete;
+
+            if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                log.debug('sending Terminate and waiting for the last turn');
+                this.socket.send(JSON.stringify({type: 'Terminate'}));
+                timer = setTimeout(complete, this.terminatetimeout);
+            } else {
+                complete();
+            }
         },
 
         cancel: function () {
+            //a pending finish() must not deliver a transcript after we have been cancelled
+            this.onterminated = null;
             this.ready = false;
             this.earlyaudio = [];
             this.finals = [];
