@@ -17,6 +17,11 @@ define(['jquery', 'core/log'], function ($, log) {
         ready: false,
         finaltext: '',
         lang: 'en-US',
+        //turn_order restarts at zero on each new socket, so shift incoming turns past the previous
+        //session's turns rather than letting them overwrite it.
+        turnbase: 0,
+        //highest turn_order seen on the current socket generation.
+        maxturn: -1,
 
         //for making multiple instances
         clone: function () {
@@ -27,11 +32,29 @@ define(['jquery', 'core/log'], function ($, log) {
             this.speechtoken = speechtoken;
             this.audiohelper = theaudiohelper;
             this.lang = theaudiohelper.therecorder.lang;
+            this.finals = [];
+            this.finaltext = '';
+            this.turnbase = 0;
+            this.maxturn = -1;
             this.preparesocket();
+        },
+
+        /*
+        * A socket generation is one AssemblyAI session. A token refresh closes the socket and opens a new
+        * one, and the new session restarts turn_order at zero. Push turn numbering past whatever the previous
+        * generation used, otherwise the incoming turns overwrite it and everything spoken before the refresh
+        * is silently lost.
+         */
+        rollgeneration: function () {
+            this.turnbase = this.turnbase + this.maxturn + 1;
+            this.maxturn = -1;
+            log.debug('TT Streamer new generation. turnbase=' + this.turnbase);
         },
 
         preparesocket: function () {
             var that = this;
+
+            this.rollgeneration();
 
             // establish wss with AssemblyAI Universal Streaming at 16000 sample rate
             var basehost = 'wss://streaming.assemblyai.com';
@@ -95,8 +118,8 @@ define(['jquery', 'core/log'], function ($, log) {
 
             this.socket.onopen = () => {
                 log.debug('TT Streamer socket opened');
-                that.finaltext = '';
-                that.finals = [];
+                //note: we deliberately do NOT clear finals/finaltext here. On a token refresh this fires
+                //again mid recording, and clearing would discard everything captured so far. init() resets.
                 that.audiohelper.onSocketReady('fromsocketopen');
             };
 
@@ -237,12 +260,20 @@ define(['jquery', 'core/log'], function ($, log) {
         handlefinalresponse: function (payload) {
             var that = this;
             var thistranscript = payload.transcript || "";
+
+            //turn_order is per session, so shift it past any earlier socket generation
+            var turnorder = payload.turn_order || 0;
+            if (turnorder > that.maxturn) {
+                that.maxturn = turnorder;
+            }
+            var turnindex = that.turnbase + turnorder;
+
              //process finals
-            that.finals[payload.turn_order] = thistranscript;
+            that.finals[turnindex] = thistranscript;
             that.finaltext = this.buildtranscript();
             //the interim callback expects the cumulative transcript, not just this turn's text
             that.audiohelper.oninterimspeechcapture(that.finaltext);
-            log.debug('TT Streamer final transcript update: ' + thistranscript);
+            log.debug('TT Streamer final transcript update (turn ' + turnindex + '): ' + thistranscript);
         },
 
 
