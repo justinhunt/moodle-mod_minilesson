@@ -93,7 +93,7 @@ class autograde_text extends generate_text {
 
         if ($this->isspeech) {
             $punctuated = preg_match('/[.,!?;:()\[\]{}"«»„“”‹›¡¿،؛؟。、「」『』【】《》]/u', $this->submittedtext);
-            if ($punctuated) {
+            if (!$punctuated && trim($this->submittedtext) !== '') {
                 $punctuatedresponse = aimanager::call_ai_provider_action(
                     punctuation::class,
                     [
