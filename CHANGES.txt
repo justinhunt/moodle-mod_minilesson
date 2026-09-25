@@ -1,3 +1,12 @@
+Version 1.1.58 (Build 2026092202)
+- Renamed "Chat Agent" to "AI Assistant".
+- Free speaking and passage reading now work properly on Android Chrome. 
+- Streaming speech recognition no longer loses words when its token is refreshed.
+- Streaming speech recognition keeps the last words spoken when the student stops recording.
+- Cached speech tokens are only reused if they have at least 2 minutes left.
+- AI grading now adds punctuation to speech transcripts that have none.
+- Fiction item added some syntax features and bug fixes
+
 Version 1.1.55 (Build 2026091700)
 - Fixed AudioChat hallucinations on silent messages
 - Improved some AIGen templates
