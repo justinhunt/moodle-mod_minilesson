@@ -1,4 +1,4 @@
-Version 1.1.58 (Build 2026092202)
+Version 1.1.56 (Build 2026092202)
 - Renamed "Chat Agent" to "AI Assistant".
 - Free speaking and passage reading now work properly on Android Chrome. 
 - Streaming speech recognition no longer loses words when its token is refreshed.
