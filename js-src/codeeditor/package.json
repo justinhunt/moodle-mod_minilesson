@@ -20,6 +20,6 @@
     "@codemirror/state": "^6.5.4",
     "@codemirror/view": "^6.39.16",
     "codemirror": "^6.0.2",
-    "esbuild": "^0.27.3"
+    "esbuild": "^0.28.1"
   }
 }
