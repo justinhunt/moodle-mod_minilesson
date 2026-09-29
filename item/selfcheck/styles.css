@@ -1,0 +1,26 @@
+.minilesson_selfcheck_box .selfcheck_verdict {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+.minilesson_selfcheck_box .selfcheck_verdict .btn {
+  border-radius: 10px;
+  min-width: 140px;
+}
+
+.selfcheck_listen_cont .fluency_listen_btn.selfcheck_playing {
+  box-shadow: 0 0 0 4px #DEE2FC;
+}
+
+.selfcheck_listen_cont .selfcheck_compare_btn.selfcheck_pulse {
+  animation: selfcheck-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes selfcheck-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}

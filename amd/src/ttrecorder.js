@@ -36,6 +36,7 @@ define(
             usebrowserrec: false,
             currentTime: 0,
             stt_guided: false,
+            recordonly: false,
             currentPrompt: false,
             speechtoken: '',
             speechtokenregion: '',
@@ -60,6 +61,8 @@ define(
                 this.uniqueid = opts['uniqueid'];
                 this.callback = opts['callback'];
                 this.stt_guided = opts['stt_guided'] ? opts['stt_guided'] : false;
+                // Record only: capture the audio and hand it back, with no speech recognition at all.
+                this.recordonly = opts['recordonly'] ? opts['recordonly'] : false;
                 this.init_strings();
                 this.prepare_html();
                 this.controls.recordercontainer.show();
@@ -91,7 +94,7 @@ define(
                 }
 
                 //token check
-                this.using_msspeech = this.can_msspeech();
+                this.using_msspeech = !this.recordonly && this.can_msspeech();
                 if (this.using_msspeech) {
                     var referencetext = opts['referencetext'];
                     this.msspeech_instance = msspeech.clone();
@@ -152,15 +155,23 @@ define(
                     that.update_audio(newaudio);
 
                     // If we have a blob and we need to upload it, do so
+                    var message = false;
                     if (that.savemedia) {
                         that.uploader.uploadBlob(that.audio.blob, 'audio/wav');
-                        var message = {};
+                        message = {};
                         message.type = 'mediasaved';
                         message.mediaurl = that.uploader.config.s3root + that.uploader.config.s3filename;
                         message.bloburl = newaudio.dataURI;
                         log.debug('ttr uploader: callback mediasaved');
                         log.debug(message);
                         that.callback(message);
+                    }
+
+                    // If we are record only, hand back the audio and exit here
+                    if (that.recordonly) {
+                        that.gotRecording(newaudio.dataURI, message ? message.mediaurl : false);
+                        that.update_audio('isRecognizing', false);
+                        return;
                     }
 
                     //  If we are browser rec, we should exit here
@@ -207,7 +218,7 @@ define(
 
                 //If browser rec (Chrome Speech Rec)
                 if (browserRec.will_work_ok() && !this.stt_guided && !this.forcestreaming && !this.using_msspeech
-                    && !androidblocked) {
+                    && !androidblocked && !this.recordonly) {
                     //Init browserrec
                     log.debug("using browser rec");
                     this.browserrec = browserRec.clone();
@@ -283,7 +294,7 @@ define(
             can_stream: function () {
                 return (this.speechtoken && this.speechtoken !== 'false'
                     && (this.speechtokentype === 'assemblyai' || this.speechtokentype === 'azure')
-                    && !this.stt_guided);
+                    && !this.stt_guided && !this.recordonly);
             },
 
             can_msspeech: function () {
@@ -487,6 +498,14 @@ define(
                 var message = {};
                 message.type = 'recording';
                 message.results = '';
+                this.callback(message);
+            },
+
+            gotRecording: function (bloburl, mediaurl) {
+                var message = {};
+                message.type = 'recorded';
+                message.bloburl = bloburl;
+                message.mediaurl = mediaurl;
                 this.callback(message);
             },
 

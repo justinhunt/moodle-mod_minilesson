@@ -1,0 +1,95 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_selfcheck/selfcheck
+
+    The self check item. It reuses the fluency item's layout classes so the two look the same.
+
+    Example context (json):
+    {
+        "uniqueid": "selfcheck_1",
+        "iteminstructions": "Read each sentence aloud.",
+        "itemimageurl": ""
+    }
+}}
+{{> mod_minilesson/questionheader}}
+<div class="minilesson_fluency_box minilesson_selfcheck_box item-container">
+
+    <div class="maintitle selfcheck_maintitle" style="display: none">{{iteminstructions}}</div>
+    <div class="selfcheck_itemtext mod_minilesson_itemtext {{rtl}}" style="display: none">{{{itemtext}}}</div>
+
+    <div class="startmodule_image_container selfcheck_image_container">
+        <img class="startmodule_image" src="{{{itemimageurl}}}" alt="{{#str}}title, minilessonitem_selfcheck{{/str}}">
+    </div>
+
+    <div class="startmodule_title selfcheck_title">{{#str}}title, minilessonitem_selfcheck{{/str}}</div>
+
+    <div class="startmodule_description selfcheck_description">{{iteminstructions}}</div>
+
+    <div class="start_mainmenu selfcheck_mainmenu">
+        <div class="selfcheck_loaded" style="display:none;">
+            <button disabled class='btn startmodule_btn selfcheck_start_btn'>
+                {{#str}}start, mod_minilesson{{/str}}  <i class='fa fa-play ml-1'></i>
+            </button>
+        </div>
+        <div class="selfcheck_not_loaded">
+            <p>{{#str}}loading, mod_minilesson{{/str}}</p>
+        </div>
+    </div>
+    <div class="selfcheck_mainstage">
+        {{> mod_minilesson/progresstimer }}
+
+        <div style="display:none;" class="fluency_listen_cont selfcheck_listen_cont">
+            <button class="btn fluency_listen_btn selfcheck_compare_btn mr-3" style="display: none"
+                    title="{{#str}}playcompare, minilessonitem_selfcheck{{/str}}"
+                    aria-label="{{#str}}playcompare, minilessonitem_selfcheck{{/str}}">
+                <i class="fa fa-exchange"></i>
+            </button>
+            <button class="btn fluency_listen_btn selfcheck_listen_btn audiomodel"
+                    title="{{#str}}playmodel, minilessonitem_selfcheck{{/str}}"
+                    aria-label="{{#str}}playmodel, minilessonitem_selfcheck{{/str}}">
+                <i class="fa fa-volume-up"></i>
+            </button>
+            <button class="btn fluency_listen_btn selfcheck_listen_btn audioself ml-3" style="display: none"
+                    title="{{#str}}playself, minilessonitem_selfcheck{{/str}}"
+                    aria-label="{{#str}}playself, minilessonitem_selfcheck{{/str}}">
+                <i class="fa fa-play"></i>
+            </button>
+        </div>
+
+        <div style="display:none;" class="question"></div>
+        <div style="display:none;" class="fluency_controls selfcheck_controls pb-2">
+            <div class="selfcheck_speakbtncontainer">
+                {{> mod_minilesson/ttrecorder}}
+            </div>
+            <div class="selfcheck_verdict my-3" style="display: none">
+                <button class="btn btn-success selfcheck_ctrl_btn selfcheck_approve_btn">
+                    <i class="fa fa-check mr-1"></i>{{#str}}approve, minilessonitem_selfcheck{{/str}}
+                </button>
+                <button class="btn btn-secondary selfcheck_ctrl_btn selfcheck_retry_btn">
+                    <i class="fa fa-repeat mr-1"></i>{{#str}}retry, minilessonitem_selfcheck{{/str}}
+                </button>
+            </div>
+            <button class="btn btn-skip-button-secondary fluency_skip_btn selfcheck_ctrl_btn selfcheck_skip_btn my-4">
+                <span class="skip_btn_label mobileaccesshide">{{#str}}skip, minilessonitem_selfcheck{{/str}}</span>{{#pix}}skip-icon, mod_minilesson{{/pix}}
+            </button>
+        </div>
+    </div>
+    <div class="resultscontainer selfcheck_resultscontainer"></div>
+
+</div>
+{{> mod_minilesson/questionfooter}}
