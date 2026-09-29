@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Autocomprobación';
 $string['approve'] = 'Suena bien';
-$string['instructions_default'] = 'Lee cada frase en voz alta. Después de grabar, escucha y compara. Si te convence, haz clic en «Suena bien». Si no, inténtalo de nuevo.';
+$string['instructions_default'] = 'Lee cada frase en voz alta. Después de grabar, escucha y revisa cómo hablaste.';
 $string['item_desc'] = 'El elemento Autocomprobación presenta una serie de frases que los estudiantes dicen en voz alta. Después de grabar, el estudiante escucha el audio modelo, su propia grabación y otra vez el audio modelo, y luego decide si lo dijo bien o si quiere intentarlo de nuevo. No usa reconocimiento de voz, así que funciona en cualquier idioma.';
 $string['playcompare'] = 'Comparar: modelo, tu grabación, modelo';
 $string['playmodel'] = 'Reproducir audio modelo';

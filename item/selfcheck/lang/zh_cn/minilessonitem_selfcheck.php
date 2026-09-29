@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = '自我检查';
 $string['approve'] = '听起来不错';
-$string['instructions_default'] = '大声朗读每个句子。录音后，听一听并比较。如果你满意，就点击“听起来不错”。如果不满意，就再试一次。';
+$string['instructions_default'] = '大声朗读每个句子。录音后，听一听，检查自己的口语。';
 $string['item_desc'] = '自我检查项目会呈现一系列句子/短语，供学生大声说出。录音后，学生会听到示范音频、自己的录音，然后再听一次示范音频，接着自己判断是否说得好，还是想再试一次。它不使用语音识别，因此适用于任何语言。';
 $string['playcompare'] = '比较：示范、你的录音、示范';
 $string['playmodel'] = '播放示范音频';

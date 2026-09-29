@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Itsetarkistus';
 $string['approve'] = 'Kuulostaa hyvältä';
-$string['instructions_default'] = 'Lue jokainen lause ääneen. Kun olet nauhoittanut, kuuntele ja vertaa. Jos olet tyytyväinen, napsauta ”Kuulostaa hyvältä”. Jos et, yritä uudelleen.';
+$string['instructions_default'] = 'Lue jokainen lause ääneen. Kun olet nauhoittanut, kuuntele ja tarkista oma puheesi.';
 $string['item_desc'] = 'Itsetarkistus-kohde esittää sarjan lauseita/fraaseja, jotka opiskelijat sanovat ääneen. Nauhoituksen jälkeen opiskelija kuulee malliäänen, oman nauhoituksensa ja malliäänen uudelleen, ja päättää sitten, sanoiko hän sen hyvin vai haluaako hän yrittää uudelleen. Kohde ei käytä puheentunnistusta, joten se toimii millä tahansa kielellä.';
 $string['playcompare'] = 'Vertaa: malli, oma nauhoituksesi, malli';
 $string['playmodel'] = 'Toista malliääni';

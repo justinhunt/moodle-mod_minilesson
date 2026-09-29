@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Selvsjekk';
 $string['approve'] = 'Høres bra ut';
-$string['instructions_default'] = 'Les hver setning høyt. Når du har tatt opp, lytt og sammenlign. Hvis du er fornøyd, klikk «Høres bra ut». Hvis ikke, prøv igjen.';
+$string['instructions_default'] = 'Les hver setning høyt. Når du har tatt opp, lytt og sjekk hvordan du snakket.';
 $string['item_desc'] = 'Selvsjekk-elementet viser en rekke setninger/fraser som elevene skal si høyt. Etter opptaket hører eleven modellopptaket, sitt eget opptak og modellopptaket igjen, og bestemmer så om de sa det bra eller vil prøve igjen. Det bruker ikke talegjenkjenning, så det fungerer på alle språk.';
 $string['playcompare'] = 'Sammenlign: modell, ditt opptak, modell';
 $string['playmodel'] = 'Spill av modellopptak';

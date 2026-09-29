@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Selvtjek';
 $string['approve'] = 'Lyder godt';
-$string['instructions_default'] = 'Læs hver sætning højt. Når du har optaget, så lyt og sammenlign. Hvis du er tilfreds, så klik på »Lyder godt«. Hvis ikke, så prøv igen.';
+$string['instructions_default'] = 'Læs hver sætning højt. Når du har optaget, så lyt og tjek, hvordan du selv talte.';
 $string['item_desc'] = 'Selvtjek-elementet viser en række sætninger/fraser, som eleverne skal sige højt. Efter optagelsen hører eleven modellyden, sin egen optagelse og modellyden igen, og beslutter så, om de sagde det godt eller vil prøve igen. Det bruger ikke talegenkendelse, så det virker på alle sprog.';
 $string['playcompare'] = 'Sammenlign: model, din optagelse, model';
 $string['playmodel'] = 'Afspil modellyd';

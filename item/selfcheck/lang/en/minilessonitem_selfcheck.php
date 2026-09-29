@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Self Check';
 $string['approve'] = 'Sounds good';
-$string['instructions_default'] = 'Read each sentence aloud. After you record, listen and compare. If you are happy, click "Sounds good". If not, try again.';
+$string['instructions_default'] = 'Read each sentence aloud. After you record, listen and check your own speaking.';
 $string['item_desc'] = 'The Self Check item presents a series of sentences/phrases for students to say aloud. After recording, the student hears the model audio, their own recording and the model audio again, then decides if they said it well or want to try again. It does not use speech recognition, so it works in any language.';
 $string['playcompare'] = 'Compare: model, your recording, model';
 $string['playmodel'] = 'Play model audio';

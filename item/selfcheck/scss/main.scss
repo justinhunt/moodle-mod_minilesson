@@ -20,6 +20,19 @@
   }
 }
 
+.selfcheck_listen_cont {
+
+  .fluency_listen_btn {
+    vertical-align: middle;
+  }
+
+  // The compare button is the main one, so its icon is bigger (the same as fa-2x).
+  // Set in css, not with the fa-2x class, so it survives the icon swap while playing.
+  .selfcheck_compare_btn .fa {
+    font-size: 2em;
+  }
+}
+
 // The player button that is playing now.
 .selfcheck_listen_cont .fluency_listen_btn.selfcheck_playing {
   box-shadow: 0 0 0 4px $primary-border;
