@@ -1,3 +1,7 @@
+Version 1.1.57 (Build 2026092900)
+- Added new item type Self Check.
+- Some UI updates
+
 Version 1.1.56 (Build 2026092202)
 - Renamed "Chat Agent" to "AI Assistant".
 - Free speaking and passage reading now work properly on Android Chrome. 
