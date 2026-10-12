@@ -36,6 +36,12 @@ class itemtype extends item {
 
     public const PASSAGE = 'customtext1';
     public const HINTS = 'customint5';
+    /** @var string Column holding how gaps are filled: typed into a textbox, or picked from a dropdown. */
+    public const GAPTYPE = 'customint3';
+    /** @var int Gap type: the learner types each word. */
+    public const GAPTYPE_TEXTBOX = 0;
+    /** @var int Gap type: the learner picks each word from a list of all the gap words. */
+    public const GAPTYPE_DROPDOWN = 1;
 
     // the item type
     /**
@@ -107,6 +113,24 @@ class itemtype extends item {
         $passagedata = ['rawtext' => $passagetext, 'plaintext' => $plaintext, 'chunks' => $parsedchunks];
         $testitem->passagedata = $passagedata;
 
+        // Dropdown gaps: every gap offers the same list, i.e. all the answers, duplicates removed, sorted.
+        $isdropdown = $this->itemrecord->{self::GAPTYPE} == self::GAPTYPE_DROPDOWN;
+        $testitem->isdropdown = $isdropdown;
+        if ($isdropdown) {
+            $gapwords = [];
+            foreach ($parsedchunks as $parsedchunk) {
+                if ($parsedchunk['isgap']) {
+                    $gapwords[] = $parsedchunk['text'];
+                }
+            }
+            $gapwords = array_unique($gapwords);
+            \core_collator::asort($gapwords);
+            $testitem->gapoptions = array_map(fn($word) => ['value' => $word], array_values($gapwords));
+            $longest = max(array_map('mb_strlen', $gapwords ?: ['']));
+            // Room for the longest option plus the dropdown arrow.
+            $testitem->dropdownwidth = $longest + 4;
+        }
+
         // Item audio
         if ($this->itemrecord->{constants::POLLYOPTION} != constants::TTS_NOTTS) {
             $testitem->passageaudio = utils::fetch_polly_url(
@@ -129,9 +153,10 @@ class itemtype extends item {
         // Cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
         // Hints gone from function so regain it here
-        $testitem->hints = $this->itemrecord->{self::HINTS} == 0 ? false : $this->itemrecord->{self::HINTS};
+        // Hints reveal letters in the textbox placeholder, so dropdown gaps have no hints.
+        $testitem->hints = $isdropdown || $this->itemrecord->{self::HINTS} == 0 ? false : $this->itemrecord->{self::HINTS};
         $testitem->althintstring = get_string('anotherhint', constants::M_COMPONENT);
-        $testitem->penalizehints = $this->itemrecord->{constants::PENALIZEHINTS} == 1;
+        $testitem->penalizehints = !$isdropdown && $this->itemrecord->{constants::PENALIZEHINTS} == 1;
         return $testitem;
     }
 
@@ -170,9 +195,10 @@ class itemtype extends item {
      */
     public static function aigen_fetch_usage() {
         return 'A passage of text with words gapped out; the learner listens to the passage read aloud by TTS '
-            . 'and types the missing words into the gaps. Use it for extended listening + writing practice with '
-            . 'a story or paragraph, e.g. to focus on key vocabulary in context. For independent single-sentence '
-            . 'gaps use typinggapfill, listeninggapfill or speakinggapfill instead.';
+            . 'and types the missing words into the gaps, or picks them from a dropdown list (see gaptype). '
+            . 'Use it for extended listening + writing practice with a story or paragraph, e.g. to focus on '
+            . 'key vocabulary in context. For independent single-sentence gaps use typinggapfill, '
+            . 'listeninggapfill or speakinggapfill instead.';
     }
 
     /**
@@ -207,6 +233,14 @@ class itemtype extends item {
                     ['value' => 'normal', 'meaning' => 'Normal speed (default; any unrecognised value also maps to normal)'],
                     ['value' => 'slow', 'meaning' => 'Slow reading speed'],
                     ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
+                ],
+            ],
+            'gaptype' => [
+                'description' => 'How the learner fills each gap. In dropdown mode every gap offers the same list: '
+                    . 'all the bracketed words, duplicates removed. Hints are not available in dropdown mode.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Textbox: the learner types the word (default)'],
+                    ['value' => '1', 'meaning' => 'Dropdown: the learner picks the word from a list'],
                 ],
             ],
             'hidestartpage' => [
@@ -279,6 +313,7 @@ class itemtype extends item {
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['text1'] = ['jsonname' => 'passage', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::PASSAGE];
         $keycols['int5'] = ['jsonname' => 'hidestartpage', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => self::HINTS];
+        $keycols['int3'] = ['jsonname' => 'gaptype', 'type' => 'int', 'optional' => true, 'default' => 0, 'dbname' => self::GAPTYPE];
         $keycols['int2'] = ['jsonname' => 'penalizehints', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => constants::PENALIZEHINTS];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];
         return $keycols;

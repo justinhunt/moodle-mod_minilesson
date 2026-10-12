@@ -7226,6 +7226,17 @@ body.minilesson-fiction-im-noscroll {
   padding: 6px 4px;
   border: 1px inset rgb(118, 118, 118);
 }
+.pgapfill_gap_wrapper .pgapfill_gap_select {
+  display: inline-block;
+  padding: 4px 2px;
+  border: 1px inset rgb(118, 118, 118);
+  border-radius: 4px;
+  background-color: #FFFFFF;
+  font-size: 1rem;
+}
+.pgapfill_gap_wrapper .pgapfill_gap_select:disabled {
+  opacity: 1;
+}
 .pgapfill_gap_wrapper.psg_gapfill_correct .pgapfill_gap_input {
   background-color: lightgreen !important;
 }

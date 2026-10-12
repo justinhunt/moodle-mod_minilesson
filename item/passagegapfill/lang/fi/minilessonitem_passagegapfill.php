@@ -26,5 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Tekstin aukkotehtävä';
+$string['choosegapoption'] = 'Valitse...';
+$string['gaptype'] = 'Aukon tyyppi';
+$string['gaptype_dropdown'] = 'Pudotusvalikko';
+$string['gaptype_help'] = 'Miten opiskelijat täyttävät jokaisen aukon. Tekstikenttä: he kirjoittavat puuttuvan sanan. Pudotusvalikko: he valitsevat sen listasta, jossa ovat kaikki tekstin aukkojen sanat. Pudotusvalikkotilassa vihjeitä ei ole käytettävissä, ja opiskelijat näkevät oikeat vastaukset vasta, kun he napsauttavat Valmis.';
+$string['gaptype_textbox'] = 'Tekstikenttä';
 $string['item_desc'] = 'Tekstin aukkotehtävä -osio antaa opiskelijalle tekstin, josta on poistettu useita sanoja. Opiskelijan on kuunneltava siihen liittyvä ääni ja täytettävä aukot.';
 $string['pluginname'] = 'Tekstin aukkotehtävä';

@@ -80,6 +80,8 @@ define(['jquery',
             var stepdata = {};
             stepdata.index = self.index;
             stepdata.hasgrade = true;
+            // Dropdown gaps are not checked as the learner picks, so work out what is correct now.
+            self.mark_correct();
             stepdata.resultsdata = {items: self.items};
             stepdata.totalitems = self.items.length;
             var totalhints = self.items.reduce((sum, obj) => sum + (obj.totalhints || 0), 0);
@@ -136,6 +138,10 @@ define(['jquery',
 
             self.controls.rootelement.addEventListener('input', e => {
                 const inputelement = e.target;
+                // Dropdown gaps get no feedback until Finish, otherwise a learner could try each option in turn.
+                if (self.itemdata.isdropdown) {
+                    return;
+                }
                 self.items.forEach(item => {
                     if (item.inputelement === inputelement) {
                         self.check_answer(item, false);
@@ -173,7 +179,7 @@ define(['jquery',
                 }
                 const gapelement = gapitem.inputelement.parentElement;
                 gapelement.classList.remove('psg_gapfill_wrong', 'psg_gapfill_correct');
-                gapitem.correct = gapitem.inputelement.value === gapitem.text;
+                gapitem.correct = gapitem.inputelement.value === gapitem.answer;
                 //It is correct we add the correct class, and calc hints penalty
                 if (gapitem.correct) {
                     gapitem.totalhints = parseInt(gapitem.inputelement.getAttribute('data-hints')) || 0;
@@ -188,17 +194,36 @@ define(['jquery',
 
                 if (readonly) {
                     if (self.quizhelper.showitemreview) {
-                        gapitem.inputelement.value = gapitem.text;
+                        gapitem.inputelement.value = gapitem.answer;
                         gapelement.classList.add('pgapfill_gap_reviewing');
                     }
-                    gapitem.inputelement.setAttribute('readonly', 'readonly');
+                    if (gapitem.inputelement.tagName === 'SELECT') {
+                        // A select ignores readonly.
+                        gapitem.inputelement.disabled = true;
+                    } else {
+                        gapitem.inputelement.setAttribute('readonly', 'readonly');
+                    }
                 }
                 return gapitem;
             });
         },
 
+        // Sets each gap's correct flag without changing what is on screen.
+        mark_correct: function () {
+            var self = this;
+            self.items.forEach(gapitem => {
+                if (gapitem.inputelement) {
+                    gapitem.correct = gapitem.inputelement.value === gapitem.answer;
+                }
+            });
+        },
+
         give_hint: function () {
             var self = this;
+            // Hints only exist for textbox gaps.
+            if (self.itemdata.isdropdown) {
+                return;
+            }
             var anyhintdisplayed = false;
             self.items.forEach(element => {
                 const inputelement = element.inputelement;
@@ -209,11 +234,11 @@ define(['jquery',
                 const placeholder = inputelement.placeholder;
                 const replaceposition = self.hintsused === 1 ? 1 : element.placeholder.length - 1;
                 inputelement.placeholder = placeholder.slice(0, replaceposition) +
-                    element.text[replaceposition] + placeholder.slice(replaceposition + 1);
+                    element.answer[replaceposition] + placeholder.slice(replaceposition + 1);
                 inputelement.setAttribute('placeholder', inputelement.placeholder);
 
                 // If the user has not entered the correct text, clear the input box, so they see the hint
-                if (inputelement.value !== element.text) {
+                if (inputelement.value !== element.answer) {
                     inputelement.value = '';
                     inputelement.setAttribute('data-hints', 1 + self.hintsused);
                     anyhintdisplayed = true;
@@ -246,6 +271,8 @@ define(['jquery',
                 text: target.text,
                 placeholder: target.placeholder,
                 isgap: target.isgap,
+                // The gap text arrives HTML escaped, but input values are plain text.
+                answer: self.decode_html(target.text),
                 correct: false
             }));
             self.items = self.gapitems.filter(gapitem => gapitem.isgap).map(item => {
@@ -253,6 +280,12 @@ define(['jquery',
                     .querySelector(`.pgapfill_gap_input[data-wordindex="${item.wordindex}"]`);
                 return item;
             });
+        },
+
+        decode_html: function (html) {
+            var textarea = document.createElement('textarea');
+            textarea.innerHTML = html;
+            return textarea.value;
         },
 
         appReady: function () {

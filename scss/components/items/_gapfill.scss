@@ -541,6 +541,19 @@
     border: 1px inset $gapfill-input-border;
   }
 
+  .pgapfill_gap_select {
+    display: inline-block;
+    padding: 4px 2px;
+    border: 1px inset $gapfill-input-border;
+    border-radius: 4px;
+    background-color: $white;
+    font-size: 1rem;
+
+    &:disabled {
+      opacity: 1;
+    }
+  }
+
   &.psg_gapfill_correct .pgapfill_gap_input {
     background-color: lightgreen !important;
   }

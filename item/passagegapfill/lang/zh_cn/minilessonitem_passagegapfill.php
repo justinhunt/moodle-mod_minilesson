@@ -26,5 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = '篇章填空';
+$string['choosegapoption'] = '请选择...';
+$string['gaptype'] = '填空类型';
+$string['gaptype_dropdown'] = '下拉列表';
+$string['gaptype_help'] = '学生如何填写每个空。文本框：输入缺少的单词。下拉列表：从包含文章中所有填空单词的列表中选择。在下拉列表模式下不提供提示，学生点击“完成”后才能看到哪些答案正确。';
+$string['gaptype_textbox'] = '文本框';
 $string['item_desc'] = '篇章填空项目会给学生一段删去了多个单词的文字。学生必须听相应的音频并填空。';
 $string['pluginname'] = '篇章填空';

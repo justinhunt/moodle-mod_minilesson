@@ -26,5 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Tekstutfylling';
+$string['choosegapoption'] = 'Velg...';
+$string['gaptype'] = 'Hulltype';
+$string['gaptype_dropdown'] = 'Nedtrekksliste';
+$string['gaptype_help'] = 'Hvordan elevene fyller ut hvert hull. Tekstfelt: de skriver det manglende ordet. Nedtrekksliste: de velger det fra en liste med alle hullordene i teksten. Med nedtrekksliste er hint ikke tilgjengelig, og elevene ser først hvilke svar som er riktige når de klikker Fullfør.';
+$string['gaptype_textbox'] = 'Tekstfelt';
 $string['item_desc'] = 'Tekstutfylling-elementet gir eleven en tekst der flere ord er fjernet. Eleven må lytte til den tilhørende lyden og fylle ut hullene.';
 $string['pluginname'] = 'Tekstutfylling';

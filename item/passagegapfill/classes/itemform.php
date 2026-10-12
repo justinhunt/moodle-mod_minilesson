@@ -48,6 +48,18 @@ class itemform extends baseform
         //passage
         $this->add_textarearesponse(itemtype::PASSAGE, get_string('passagewithgaps', constants::M_COMPONENT), true);
 
+        // Gap type: type the word, or pick it from a list.
+        $this->add_dropdown(
+            itemtype::GAPTYPE,
+            get_string('gaptype', 'minilessonitem_passagegapfill'),
+            [
+                itemtype::GAPTYPE_TEXTBOX => get_string('gaptype_textbox', 'minilessonitem_passagegapfill'),
+                itemtype::GAPTYPE_DROPDOWN => get_string('gaptype_dropdown', 'minilessonitem_passagegapfill'),
+            ],
+            itemtype::GAPTYPE_TEXTBOX
+        );
+        $mform->addHelpButton(itemtype::GAPTYPE, 'gaptype', 'minilessonitem_passagegapfill');
+
         //other opts
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
         //add a hints option here:
@@ -63,5 +75,8 @@ class itemform extends baseform
             get_string('penalizehints_desc', constants::M_COMPONENT),
             0
         );
+        // Hints reveal letters in the textbox placeholder, so they do not apply to dropdown gaps.
+        $mform->hideIf(itemtype::HINTS, itemtype::GAPTYPE, 'eq', itemtype::GAPTYPE_DROPDOWN);
+        $mform->hideIf(constants::PENALIZEHINTS, itemtype::GAPTYPE, 'eq', itemtype::GAPTYPE_DROPDOWN);
     }
 }

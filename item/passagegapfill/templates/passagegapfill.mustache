@@ -14,8 +14,16 @@
       {{#passagedata.chunks}}
         {{#isgap}}
         <span class="pgapfill_gap_wrapper">
+          {{#isdropdown}}
+          <select class="pgapfill_gap_input pgapfill_gap_select" data-wordindex="{{wordindex}}" style="width: {{{ dropdownwidth }}}ch">
+            <option value="">{{#str}}choosegapoption, minilessonitem_passagegapfill{{/str}}</option>
+            {{#gapoptions}}<option value="{{{value}}}">{{{value}}}</option>{{/gapoptions}}
+          </select>
+          {{/isdropdown}}
+          {{^isdropdown}}
           <input type="text" autocapitalize="off" autocorrect="off" spellcheck="false" class="pgapfill_gap_input character-input pgapfull_monospace" data-wordindex="{{wordindex}}"
             placeholder="{{placeholder}}" style="width: {{{ paddedtextlength }}}ch" maxlength="{{{textlength}}}"/>
+          {{/isdropdown}}
           <i class="correctIcon fa fa-check"></i>
           <i class="wrongIcon fa fa-times"></i>
         </span>{{/isgap}}{{^isgap}}{{{text}}}

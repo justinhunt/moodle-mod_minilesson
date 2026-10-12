@@ -26,5 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Rellenar huecos (texto)';
+$string['choosegapoption'] = 'Elige...';
+$string['gaptype'] = 'Tipo de hueco';
+$string['gaptype_dropdown'] = 'Lista desplegable';
+$string['gaptype_help'] = 'Cómo completan los estudiantes cada hueco. Cuadro de texto: escriben la palabra que falta. Lista desplegable: la eligen de una lista con todas las palabras de los huecos del texto. En el modo de lista desplegable no hay pistas, y los estudiantes solo ven qué respuestas son correctas después de hacer clic en Finalizar.';
+$string['gaptype_textbox'] = 'Cuadro de texto';
 $string['item_desc'] = 'El elemento Rellenar huecos (texto) da al estudiante un pasaje de texto al que se le han quitado varias palabras. El estudiante debe escuchar el audio que lo acompaña y rellenar los huecos.';
 $string['pluginname'] = 'Rellenar huecos (texto)';

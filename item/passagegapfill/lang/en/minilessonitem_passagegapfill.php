@@ -26,6 +26,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Passage Gapfill';
+$string['choosegapoption'] = 'Choose...';
+$string['gaptype'] = 'Gap type';
+$string['gaptype_dropdown'] = 'Dropdown';
+$string['gaptype_help'] = 'How students fill each gap. Textbox: they type the missing word. Dropdown: they pick it from a list of all the gap words in the passage. In dropdown mode, hints are not available and students only see which answers are right after they click Finish.';
+$string['gaptype_textbox'] = 'Textbox';
 $string['item_desc'] = 'The Passage Gapfill item gives the student a passage of text with multiple words removed. The student must listen to the accompanying audio and fill in the gaps.';
 $string['pluginname'] = 'Passage GapFill';
 $string['privacy:metadata'] = 'The Passage GapFill plugin doesn\'t store any personal data.';
