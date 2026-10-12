@@ -131,3 +131,10 @@ div.mcaudiotranscript {
     object-fit: scale-down;
   }
 }
+
+// Feedback explaining the correct answer, shown once answered and in the attempt review.
+// The feedback block sets dir="auto", so "start" aligns it left or right to suit its language.
+.ml_mc_correctfeedback,
+.ml_mcq_correctfeedback {
+  text-align: start;
+}

@@ -55,6 +55,7 @@ class translate_message extends external_api {
             'cmid' => new external_value(PARAM_INT, 'The course module id'),
             'itemid' => new external_value(PARAM_INT, 'The minilesson item id'),
             'text' => new external_value(PARAM_TEXT, 'The text to translate'),
+            'placeholders' => new external_value(PARAM_BOOL, 'The text holds [[n]] placeholders to keep', VALUE_DEFAULT, false),
         ]);
     }
 
@@ -64,14 +65,15 @@ class translate_message extends external_api {
      * @param int $cmid The course module id.
      * @param int $itemid The minilesson item id.
      * @param string $text The text to translate.
+     * @param bool $placeholders The text holds [[n]] placeholders that must come back unchanged.
      * @return array success flag and the translated text.
      */
-    public static function execute($cmid, $itemid, $text) {
+    public static function execute($cmid, $itemid, $text, $placeholders = false) {
         global $DB;
 
         $params = self::validate_parameters(
             self::execute_parameters(),
-            ['cmid' => $cmid, 'itemid' => $itemid, 'text' => $text]
+            ['cmid' => $cmid, 'itemid' => $itemid, 'text' => $text, 'placeholders' => $placeholders]
         );
 
         $cm = get_coursemodule_from_id('minilesson', $params['cmid'], 0, false, MUST_EXIST);
@@ -123,7 +125,7 @@ class translate_message extends external_api {
         }
 
         $aimanager = new aimanager($context->id, $moduleinstance->region, $moduleinstance->ttslanguage);
-        $translation = $aimanager->translate_text($text, $fromlang, $tolang);
+        $translation = $aimanager->translate_text($text, $fromlang, $tolang, $params['placeholders']);
         if ($translation === false) {
             return $failure;
         }

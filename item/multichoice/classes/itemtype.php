@@ -43,6 +43,19 @@ class itemtype extends item {
         return true;
     }
 
+    /**
+     * The answer options stay in the language of the lesson when the feedback is translated.
+     *
+     * @param stdClass $itemrecord The item's row from the minilesson_rsquestions table.
+     * @return string[] The answer options.
+     */
+    public static function get_translation_keepterms(stdClass $itemrecord) {
+        $answers = explode(PHP_EOL, $itemrecord->{constants::TEXTANSWER . 1} ?? '');
+        return array_values(array_filter(array_map([utils::class, 'super_trim'], $answers), function ($answer) {
+            return $answer !== '';
+        }));
+    }
+
     public const SHUFFLEANSWER = 'customint5';
     public const CORRECTFEEDBACK = 'customtext6';
     public const HIDEANSWERTEXT = 'customint6';

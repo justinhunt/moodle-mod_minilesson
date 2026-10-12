@@ -63,6 +63,28 @@ class itemtype extends item {
         return true;
     }
 
+    /**
+     * The answer options of every question stay in the language of the lesson when feedback
+     * is translated. The translate request does not say which question it came from, so all
+     * of them are kept.
+     *
+     * @param stdClass $itemrecord The item's row from the minilesson_rsquestions table.
+     * @return string[] The answer options.
+     */
+    public static function get_translation_keepterms(stdClass $itemrecord) {
+        $keepterms = [];
+        for ($qnumber = 1; $qnumber <= self::MAXQUESTIONS; $qnumber++) {
+            $answers = explode(PHP_EOL, $itemrecord->{self::col_answers($qnumber)} ?? '');
+            foreach ($answers as $answer) {
+                $answer = utils::super_trim($answer);
+                if ($answer !== '') {
+                    $keepterms[] = $answer;
+                }
+            }
+        }
+        return array_values(array_unique($keepterms));
+    }
+
     /** @var string Shared setting: shuffle the answer options of every question. */
     public const SHUFFLEANSWER = 'customint1';
 

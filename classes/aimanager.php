@@ -481,14 +481,19 @@ class aimanager {
      * @param string $text The text to translate.
      * @param string $fromlang The language code of the text, e.g. en-US.
      * @param string $tolang The language code to translate into, e.g. ja-JP.
+     * @param bool $placeholders The text holds [[n]] placeholders that must come back unchanged.
      * @return string|false The translated text, or false on failure.
      */
-    public function translate_text($text, $fromlang, $tolang) {
+    public function translate_text($text, $fromlang, $tolang, $placeholders = false) {
         // The text goes in as JSON: with a plain text payload the model tends to reply with
         // bare text instead of the requested JSON, which the Poodll API rejects.
         $payload = json_encode(['text' => $text], JSON_UNESCAPED_UNICODE);
         $prompt = "Translate the value of the text key in the JSON string that follows, ";
         $prompt .= "from language: $fromlang, into language: $tolang." . PHP_EOL;
+        if ($placeholders) {
+            $prompt .= "The text contains placeholders like [[1]]. Copy every placeholder into the translation ";
+            $prompt .= "unchanged, where it belongs in the translated sentence." . PHP_EOL;
+        }
         $prompt .= 'Return results in the format: {"translation": "thetranslatedtext"}' . PHP_EOL;
         $prompt .= 'Return only the translation, with no explanations or alternatives.' . PHP_EOL;
         $prompt .= $payload;

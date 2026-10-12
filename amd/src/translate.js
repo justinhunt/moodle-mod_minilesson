@@ -201,16 +201,18 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
          * Translate text natively in the browser or via the Poodll web service.
          *
          * @param {string} text The text to translate.
+         * @param {boolean} placeholders The text holds [[n]] placeholders that must come back unchanged.
+         *                               Only the web service needs telling; the browser translator is not told.
          * @returns {Promise<string|boolean>} The translated text or false if failed.
          */
-        translate: async function (text) {
+        translate: async function (text, placeholders) {
             if (!text) {
                 log.debug('no text to translate');
                 return false;
             }
 
             if (this.session && this.session.remote) {
-                return this.translate_remote(text);
+                return this.translate_remote(text, placeholders);
             }
 
             try {
@@ -232,9 +234,10 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
          * The target language is derived server side from the activity settings.
          *
          * @param {string} text The text to translate.
+         * @param {boolean} placeholders The text holds [[n]] placeholders that must come back unchanged.
          * @returns {Promise<string|boolean>} The translated text or false if failed.
          */
-        translate_remote: async function (text) {
+        translate_remote: async function (text, placeholders) {
             try {
                 log.debug('translating remotely : ' + text);
                 const response = await Ajax.call([{
@@ -243,6 +246,7 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
                         cmid: this.cmid,
                         itemid: this.itemid,
                         text: text,
+                        placeholders: !!placeholders,
                     },
                 }])[0];
                 if (response && response.success) {
@@ -296,13 +300,14 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
          * @param {string} text The text to translate.
          * @param {Function} callback Called with the translated (or progress/error) string,
          *                            and whether that string is a progress message.
+         * @param {boolean} placeholders The text holds [[n]] placeholders that must come back unchanged.
          */
-        do_translate: function (sourceLang, destLang, text, callback) {
+        do_translate: function (sourceLang, destLang, text, callback, placeholders) {
             var that = this;
 
             // Translate with the session we have, reporting failures as an empty string.
             var translate_now = function () {
-                return that.translate(text).then(function (translation) {
+                return that.translate(text, placeholders).then(function (translation) {
                     callback(translation ? translation : '');
                 }).catch(function (e) {
                     log.error('Translation error: ' + e);

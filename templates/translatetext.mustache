@@ -32,6 +32,8 @@
     * translatedestlang string - The learner's native language, eg pt-BR
     * translatertl string - RTL class for the translation panel, empty when not RTL
     * translatetext string - The text to translate
+    * translatemasked string - The text with the phrases to keep as [[n]] placeholders, empty when none
+    * translatephrases string - JSON object of the phrases to keep, keyed by n
 
     Example context (json):
     {
@@ -41,16 +43,19 @@
         "translatesourcelang": "en-US",
         "translatedestlang": "ja-JP",
         "translatertl": "",
+        "translatemasked": "",
+        "translatephrases": "",
         "translatetext": "He stands on the cans to reach the shelf."
     }
 }}
 {{#cantranslatetext}}
 <div class="ml_translate" data-cmid="{{translatecmid}}" data-itemid="{{translateitemid}}"
-    data-sourcelang="{{translatesourcelang}}" data-destlang="{{translatedestlang}}">
+    data-sourcelang="{{translatesourcelang}}" data-destlang="{{translatedestlang}}"{{#translatemasked}}
+    data-masked="{{translatemasked}}" data-phrases="{{translatephrases}}"{{/translatemasked}}>
     <button type="button" class="ml_translate_btn"
         aria-label="{{#str}}translatetext, mod_minilesson{{/str}}"
         title="{{#str}}translatetext, mod_minilesson{{/str}}"
         data-translatetext="{{translatetext}}"><i class="fa fa-language" aria-hidden="true"></i></button>
-    <div class="ml_translate_panel d-none {{translatertl}}"></div>
+    <div class="ml_translate_panel d-none {{translatertl}}" dir="auto"></div>
 </div>
 {{/cantranslatetext}}

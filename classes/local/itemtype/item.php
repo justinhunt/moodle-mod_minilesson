@@ -2396,6 +2396,19 @@ abstract class item implements \templatable, \renderable {
     }
 
     /**
+     * Phrases of an item that must stay in the language of the lesson when the item's text is
+     * translated into the learner's native language. Feedback that explains an answer quotes the
+     * answer options, and translating those would hide the very words the learner is studying.
+     * Item types with such phrases (e.g. multichoice answer options) override this.
+     *
+     * @param \stdClass $itemrecord The item's row from the minilesson_rsquestions table.
+     * @return string[] The phrases to keep untranslated.
+     */
+    public static function get_translation_keepterms(\stdClass $itemrecord) {
+        return [];
+    }
+
+    /**
      * The language a learner's text is translated into: the activity's native language,
      * overridden by the learner's own native language preference when the site allows it.
      *
@@ -2440,13 +2453,17 @@ abstract class item implements \templatable, \renderable {
      * a translation of $text. The partial renders nothing when cantranslatetext is false.
      * Only the readable text is sent for translation, never any markup around it.
      *
+     * Phrases the learner is studying (quoted phrases, and the item's answer options where the
+     * text repeats them) are swapped for [[n]] placeholders in translatemasked, and listed in
+     * translatephrases, so that the front end can put them back untranslated.
+     *
      * @param \stdClass $data The template/results data to add the fields to.
      * @param string $text The text the learner may translate.
      * @return \stdClass The same object, for chaining.
      */
     public function add_translatetext_data($data, $text) {
         $tc = $this->get_translation_context();
-        $plaintext = utils::super_trim(strip_tags((string) $text));
+        $plaintext = self::translatable_plaintext((string) $text);
         $data->cantranslatetext = $tc->cantranslate && $plaintext !== '';
         $data->translatecmid = $tc->cmid;
         $data->translateitemid = $tc->itemid;
@@ -2454,7 +2471,140 @@ abstract class item implements \templatable, \renderable {
         $data->translatedestlang = $tc->destlang;
         $data->translatertl = $tc->rtlclass;
         $data->translatetext = $plaintext;
+        $keepterms = !empty($this->itemrecord) ? static::get_translation_keepterms($this->itemrecord) : [];
+        [$masked, $phrases] = self::mask_translation_phrases($plaintext, $keepterms);
+        $data->translatemasked = $phrases ? $masked : '';
+        $data->translatephrases = $phrases ? json_encode($phrases, JSON_UNESCAPED_UNICODE) : '';
         return $data;
+    }
+
+    /**
+     * The readable text of some HTML, for translation: tags gone, entities decoded, and
+     * paragraph and line breaks kept as new lines.
+     *
+     * @param string $html The HTML (or plain text).
+     * @return string The plain text.
+     */
+    public static function translatable_plaintext(string $html): string {
+        $text = preg_replace('~<br\s*/?>|</(p|div|li|h[1-6]|blockquote)>~i', "\n", $html);
+        $text = html_entity_decode(strip_tags($text), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $lines = array_map(function ($line) {
+            return trim(preg_replace('/[ \t\x{00A0}]+/u', ' ', $line));
+        }, explode("\n", str_replace("\r", '', $text)));
+        return trim(preg_replace('/\n{3,}/', "\n\n", implode("\n", $lines)));
+    }
+
+    /**
+     * Swap the phrases of a text that must not be translated for [[n]] placeholders.
+     *
+     * Two kinds of phrase are kept: anything inside double quotation marks, and for each keep term
+     * (e.g. an answer option) the longest run of its words that the text repeats. A run must be the
+     * whole keep term, or at least two words and at least half of it, so that "climbing the
+     * scaffolding" is kept for the option "He's climbing the scaffolding." but "the table" is not
+     * kept for "He's taking down the table.". Words are compared ignoring case, punctuation and
+     * the style of apostrophe, so matching suits languages that put spaces between words.
+     *
+     * @param string $text The plain text.
+     * @param string[] $keepterms The phrases to keep, as authored.
+     * @return array [the text with placeholders, the phrases as they appear in the text, keyed by n]
+     */
+    public static function mask_translation_phrases(string $text, array $keepterms): array {
+        // Text that already holds something like a placeholder is left alone.
+        if ($text === '' || strpos($text, '[[') !== false || strpos($text, ']]') !== false) {
+            return [$text, []];
+        }
+
+        // Spans to keep, as [byte offset, byte length].
+        $spans = [];
+        if (preg_match_all('/“[^”\n]+”|"[^"\n]+"|«[^»\n]+»|„[^“”\n]+[“”]/u', $text, $matches, PREG_OFFSET_CAPTURE)) {
+            foreach ($matches[0] as $match) {
+                $spans[] = [$match[1], strlen($match[0])];
+            }
+        }
+
+        // The words of the text, with where each starts and ends once its outer punctuation is trimmed.
+        $normalise = function (string $word): string {
+            $word = str_replace(['’', '‘', 'ʼ'], "'", \core_text::strtolower($word));
+            return preg_replace('/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/u', '', $word);
+        };
+        $words = [];
+        preg_match_all('/\S+/u', $text, $matches, PREG_OFFSET_CAPTURE);
+        foreach ($matches[0] as $match) {
+            [$raw, $offset] = $match;
+            $norm = $normalise($raw);
+            if ($norm === '') {
+                continue;
+            }
+            preg_match('/^[^\p{L}\p{N}]*/u', $raw, $lead);
+            preg_match('/[^\p{L}\p{N}]*$/u', $raw, $trail);
+            $words[] = (object) [
+                'norm' => $norm,
+                'start' => $offset + strlen($lead[0]),
+                'end' => $offset + strlen($raw) - strlen($trail[0]),
+            ];
+        }
+
+        foreach ($keepterms as $keepterm) {
+            $termwords = array_values(array_filter(array_map($normalise,
+                preg_split('/\s+/u', trim((string) $keepterm))), 'strlen'));
+            $count = count($termwords);
+            if ($count === 0) {
+                continue;
+            }
+            $shortest = $count === 1 ? 1 : max(2, (int) ceil($count / 2));
+            // The longest run of the keep term found in the text wins, and is kept wherever it appears.
+            for ($length = $count; $length >= $shortest; $length--) {
+                $found = [];
+                for ($from = 0; $from + $length <= $count; $from++) {
+                    $run = array_slice($termwords, $from, $length);
+                    for ($i = 0; $i + $length <= count($words); $i++) {
+                        $candidate = array_map(function ($w) {
+                            return $w->norm;
+                        }, array_slice($words, $i, $length));
+                        if ($candidate === $run) {
+                            $found[] = [$words[$i]->start, $words[$i + $length - 1]->end - $words[$i]->start];
+                        }
+                    }
+                }
+                if ($found) {
+                    $spans = array_merge($spans, $found);
+                    break;
+                }
+            }
+        }
+        if (!$spans) {
+            return [$text, []];
+        }
+
+        // Longer spans win where spans overlap.
+        usort($spans, function ($a, $b) {
+            return $b[1] <=> $a[1] ?: $a[0] <=> $b[0];
+        });
+        $kept = [];
+        foreach ($spans as $span) {
+            foreach ($kept as $other) {
+                if ($span[0] < $other[0] + $other[1] && $other[0] < $span[0] + $span[1]) {
+                    continue 2;
+                }
+            }
+            $kept[] = $span;
+        }
+        usort($kept, function ($a, $b) {
+            return $a[0] <=> $b[0];
+        });
+
+        // Number the placeholders in reading order.
+        $masked = '';
+        $phrases = [];
+        $position = 0;
+        foreach ($kept as $index => $span) {
+            $n = $index + 1;
+            $masked .= substr($text, $position, $span[0] - $position) . '[[' . $n . ']]';
+            $phrases[$n] = substr($text, $span[0], $span[1]);
+            $position = $span[0] + $span[1];
+        }
+        $masked .= substr($text, $position);
+        return [$masked, $phrases];
     }
 
     /**

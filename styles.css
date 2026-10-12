@@ -3008,6 +3008,7 @@ span.wrongitem {
   color: #80859d;
   font-style: italic;
   text-align: start;
+  white-space: pre-line;
 }
 .ml_translate .ml_translate_panel.mod_minilesson_rtl {
   direction: rtl;
@@ -8283,6 +8284,11 @@ div.mcaudiotranscript {
   object-fit: scale-down;
 }
 
+.ml_mc_correctfeedback,
+.ml_mcq_correctfeedback {
+  text-align: start;
+}
+
 .mcq_questiontext {
   font-weight: bold;
   margin: 1rem auto 0;
@@ -8298,7 +8304,7 @@ div.mcaudiotranscript {
   font-size: 0.9em;
   font-style: italic;
   opacity: 0.8;
-  text-align: left;
+  text-align: start;
 }
 
 .mcq_continuebutton {

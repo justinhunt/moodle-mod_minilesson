@@ -380,7 +380,7 @@ define(['jquery',
                     ' <span class="' + answerclass + '">' + self.escape_html(item.correcttext) + '</span>';
                 //the feedback is authored HTML, and goes on its own line under the question
                 if (item.feedback) {
-                    item.target += '<div class="mcq_reviewfeedback w-100">' + item.feedback + '</div>';
+                    item.target += '<div class="mcq_reviewfeedback w-100" dir="auto">' + item.feedback + '</div>';
                 }
             });
             review_data.items = self.items;
