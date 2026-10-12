@@ -42,4 +42,8 @@ $string['readcardtext'] = 'Read card text (TTS)';
 $string['readcardtext_desc'] = 'If checked the card text (first and third lines) can be read aloud.';
 $string['cards_shuffleorder'] = 'Shuffle card order';
 $string['cards_shuffleorder_desc'] = 'If checked, the order in which the cards are presented to the student is randomized. Each card keeps its matching image and audio.';
+$string['displaymode'] = 'Display';
+$string['displaymode_cards'] = 'Cards';
+$string['displaymode_help'] = 'Cards shows one card at a time, with next and back buttons. List shows all the cards on one page, one row per card: the term, its translation, the model sentence and the picture. Only the term and translation are needed; the other parts are shown when the card has them.';
+$string['displaymode_list'] = 'List';
 

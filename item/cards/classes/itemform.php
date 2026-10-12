@@ -82,6 +82,16 @@ class itemform extends baseform {
         $this->add_sentenceaudio(2, $label, false);
         $this->add_checkbox(constants::CARDSSHUFFLEORDER, get_string('cards_shuffleorder', 'minilessonitem_cards'),
             get_string('cards_shuffleorder_desc', 'minilessonitem_cards'));
+        $this->add_dropdown(
+            itemtype::DISPLAYMODE,
+            get_string('displaymode', 'minilessonitem_cards'),
+            [
+                itemtype::DISPLAY_CARDS => get_string('displaymode_cards', 'minilessonitem_cards'),
+                itemtype::DISPLAY_LIST => get_string('displaymode_list', 'minilessonitem_cards'),
+            ],
+            itemtype::DISPLAY_CARDS
+        );
+        $mform->addHelpButton(itemtype::DISPLAYMODE, 'displaymode', 'minilessonitem_cards');
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));
 
     }

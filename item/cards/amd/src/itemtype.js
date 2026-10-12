@@ -49,8 +49,10 @@ define(['jquery', 'core/log', 'mod_minilesson/progresstimer'], function ($, log)
             this.nextbutton = this.container.querySelector('.minilesson_nextbutton');
             this.register_events();
             // Start fetching Swiper now rather than when the item is shown, so the carousel is
-            // interactive as soon as it appears.
-            this.load_swiper();
+            // interactive as soon as it appears. The list view has no carousel.
+            if (!this.itemdata.listview) {
+                this.load_swiper();
+            }
             return this;
         },
 
@@ -63,30 +65,35 @@ define(['jquery', 'core/log', 'mod_minilesson/progresstimer'], function ($, log)
                 });
             }
             this.$container.on('showElement', () => {
-                this.load_swiper().then(Swiper => this.init_swiper(Swiper)).catch(log.debug);
+                if (this.itemdata.listview) {
+                    this.start_timer();
+                } else {
+                    this.load_swiper().then(Swiper => this.init_swiper(Swiper)).catch(log.debug);
+                }
             });
             this.init_card_audio();
         },
 
         /**
-         * Wire up the per-card audio players: mutual exclusion between the line 1 and line 3
-         * players, icon state syncing, and tap-to-play on card line 3.
+         * Wire up the card audio players: mutual exclusion between all players in the item,
+         * icon state syncing, and tap-to-play on card line 3. A card is a carousel slide in the
+         * cards view and a row in the list view; both carry the cards-unit class.
          */
         init_card_audio() {
-            this.container.querySelectorAll('.swiper-slide').forEach((slide) => {
-                const audios = Array.from(slide.querySelectorAll('audio'));
-
-                // Only one player per card should sound at a time: starting one pauses the others.
-                audios.forEach((audio) => {
-                    audio.addEventListener('play', () => {
-                        audios.forEach((other) => {
-                            if (other !== audio) {
-                                other.pause();
-                            }
-                        });
+            // Only one player should sound at a time: starting one pauses the others. In the list
+            // view this spans every row, since all the cards are on screen together.
+            const audios = Array.from(this.container.querySelectorAll('.cards-unit audio'));
+            audios.forEach((audio) => {
+                audio.addEventListener('play', () => {
+                    audios.forEach((other) => {
+                        if (other !== audio) {
+                            other.pause();
+                        }
                     });
                 });
+            });
 
+            this.container.querySelectorAll('.cards-unit').forEach((slide) => {
                 // Keep the line 1 round button icon in sync when its player is paused externally
                 // (mod_minilesson/ttsaudio only updates the icon on its own click and on 'ended').
                 const line1audio = slide.querySelector('audio.mod_minilesson_itemttsaudio');
@@ -181,6 +188,13 @@ define(['jquery', 'core/log', 'mod_minilesson/progresstimer'], function ($, log)
                 }
             });
             this.settleAudioPlayback(swiper.slides[swiper.activeIndex], true);
+            this.start_timer();
+        },
+
+        /**
+         * Start the progress timer when the item has a time limit. On time out we move on.
+         */
+        start_timer() {
             if (this.itemdata.timelimit > 0) {
                 this.$container.find(".progress-container").show();
                 this.$container.find(".progress-container i").show();

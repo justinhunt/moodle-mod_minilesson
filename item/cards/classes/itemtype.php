@@ -37,6 +37,15 @@ class itemtype extends item {
 
     protected $needsspeechrec = false;
 
+    /** @var string The column holding the display mode (cards or list). */
+    public const DISPLAYMODE = 'customint3';
+
+    /** @var int Display mode: one card at a time in a carousel. */
+    public const DISPLAY_CARDS = 0;
+
+    /** @var int Display mode: all cards on one page as a glossary list. */
+    public const DISPLAY_LIST = 1;
+
     /**
      * Load the (locally shipped) Swiper CSS in the page head. The carousel markup relies on
      * these rules to clip to a single card, and this item's own stylesheet makes the slide list
@@ -69,6 +78,11 @@ class itemtype extends item {
 
         $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE} == 1;
 
+        // Display mode: cards (carousel) or list (glossary, all cards on one page).
+        $testitem->listview = !empty($this->itemrecord->{self::DISPLAYMODE})
+            && $this->itemrecord->{self::DISPLAYMODE} == self::DISPLAY_LIST;
+        $testitem->cardsview = !$testitem->listview;
+
         // Cloud Poodll.
         $maxtime = 0;
         $testitem = $this->set_cloudpoodll_details($testitem, $maxtime);
@@ -94,7 +108,8 @@ class itemtype extends item {
 
         foreach ($testitem->sentences as $sentence) {
             $sentence->uniqid = uniqid('audio-' . $sentence->index . '-');
-            $sentence->ttsautoplay = empty($sentence->audiourl) ? 0 : 1;
+            // In the list view every card is on screen at once, so nothing autoplays.
+            $sentence->ttsautoplay = (empty($sentence->audiourl) || $testitem->listview) ? 0 : 1;
             $sentence->ttsaudiovoice = $testitem->usevoice;
             $sentence->audiosrc = $sentence->audiourl;
         }
@@ -278,6 +293,14 @@ class itemtype extends item {
                     ['value' => 'veryslow', 'meaning' => 'Very slow reading speed'],
                 ],
             ],
+            'displaymode' => [
+                'description' => 'How the cards are shown to the learner.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Cards: one card at a time, with next and back buttons (default)'],
+                    ['value' => '1', 'meaning' => 'List: all cards on one page as a glossary list '
+                        . '(term, translation, model sentence, picture)'],
+                ],
+            ],
             'shuffleorder' => [
                 'description' => 'Whether the card order is randomized for each learner. Each card keeps its '
                     . 'matching image and audio.',
@@ -363,6 +386,13 @@ class itemtype extends item {
             'optional' => true,
             'default' => 0,
             'dbname' => constants::CARDSSHUFFLEORDER,
+        ];
+        $keycolumns['int3'] = [
+            'jsonname' => 'displaymode',
+            'type' => 'int',
+            'optional' => true,
+            'default' => self::DISPLAY_CARDS,
+            'dbname' => self::DISPLAYMODE,
         ];
         $keycolumns['int4'] = [
             'jsonname' => 'promptvoiceopt',

@@ -209,3 +209,106 @@
 .path-mod-minilesson .cards-item-box .minilesson-df_fl .roundmini-audio-player .fa {
   position: absolute;
 }
+.path-mod-minilesson .cards-item-box .cards-glossary {
+  margin: 0;
+  padding: 6px 18px;
+  background-color: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, 0.12);
+  color: #1F2334;
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 0;
+  border-bottom: 1px solid #DEE2FC;
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-row:last-child {
+  border-bottom: none;
+}
+@media screen and (min-width: 600px) {
+  .path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+  }
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-term {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 600;
+}
+@media screen and (min-width: 600px) {
+  .path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-term {
+    flex: 0 0 25%;
+  }
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-definition {
+  font-size: 17px;
+  color: #80859d;
+}
+@media screen and (min-width: 600px) {
+  .path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-definition {
+    flex: 0 0 22%;
+  }
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-sentence {
+  flex: 1 1 auto;
+  font-size: 15px;
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-sentence .cardline3.cardline3-playable {
+  cursor: pointer;
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-sentence .cardline3 .cardline3-audio-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-inline-start: 0.4em;
+  color: #506DFF;
+  cursor: pointer;
+  vertical-align: baseline;
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-sentence .cardline4 {
+  font-size: 0.9em;
+  font-style: italic;
+  color: #80859d;
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-image {
+  width: 140px;
+  height: 80px;
+  flex: 0 0 auto;
+}
+@media screen and (min-width: 600px) {
+  .path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-image {
+    margin-inline-start: auto;
+  }
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .cards-glossary-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .samplettsaudio {
+  flex: 0 0 auto;
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .roundmini-audio-player {
+  position: relative;
+  background: #506DFF;
+  border: 1.5px solid #506DFF;
+  border-radius: 8px;
+  color: #FFFFFF;
+  outline: 0;
+  margin: 0;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 13px;
+}
+.path-mod-minilesson .cards-item-box .cards-glossary .roundmini-audio-player .fa {
+  position: absolute;
+}

@@ -232,4 +232,121 @@
             }
         }
     }
+
+    // List (glossary) view: every card on one page, one row per card, laid out like the
+    // "list of words" in mod_wordcards: term | translation | model sentence | image.
+    .cards-glossary {
+        margin: 0;
+        padding: 6px 18px;
+        background-color: $white;
+        border-radius: 12px;
+        box-shadow: $main-shadow;
+        color: $text;
+
+        .cards-glossary-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 14px 0;
+            border-bottom: 1px solid $primary-border;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            @media screen and (min-width:600px) {
+                flex-direction: row;
+                align-items: center;
+                gap: 18px;
+            }
+        }
+
+        .cards-glossary-term {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 600;
+
+            @media screen and (min-width:600px) {
+                flex: 0 0 25%;
+            }
+        }
+
+        .cards-glossary-definition {
+            font-size: 17px;
+            color: $text-muted;
+
+            @media screen and (min-width:600px) {
+                flex: 0 0 22%;
+            }
+        }
+
+        .cards-glossary-sentence {
+            flex: 1 1 auto;
+            font-size: 15px;
+
+            .cardline3 {
+                &.cardline3-playable {
+                    cursor: pointer;
+                }
+
+                .cardline3-audio-btn {
+                    background: none;
+                    border: 0;
+                    padding: 0;
+                    margin-inline-start: 0.4em;
+                    color: $primary;
+                    cursor: pointer;
+                    vertical-align: baseline;
+                }
+            }
+
+            .cardline4 {
+                font-size: 0.9em;
+                font-style: italic;
+                color: $text-muted;
+            }
+        }
+
+        .cards-glossary-image {
+            width: 140px;
+            height: 80px;
+            flex: 0 0 auto;
+
+            @media screen and (min-width:600px) {
+                margin-inline-start: auto;
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                border-radius: 6px;
+            }
+        }
+
+        .samplettsaudio {
+            flex: 0 0 auto;
+        }
+
+        .roundmini-audio-player {
+            position: relative;
+            background: $primary;
+            border: 1.5px solid $primary;
+            border-radius: 8px;
+            color: $white;
+            outline: 0;
+            margin: 0;
+            font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 13px;
+
+            .fa {
+                position: absolute;
+            }
+        }
+    }
 }
