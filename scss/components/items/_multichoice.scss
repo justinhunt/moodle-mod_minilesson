@@ -134,7 +134,10 @@ div.mcaudiotranscript {
 
 // Feedback explaining the correct answer, shown once answered and in the attempt review.
 // The feedback block sets dir="auto", so "start" aligns it left or right to suit its language.
+// It fills its container up to a comfortable reading width, and is centred beyond that.
 .ml_mc_correctfeedback,
 .ml_mcq_correctfeedback {
   text-align: start;
+  max-width: 40rem;
+  margin: 0.5rem auto;
 }

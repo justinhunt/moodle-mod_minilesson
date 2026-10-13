@@ -8298,6 +8298,8 @@ div.mcaudiotranscript {
 .ml_mc_correctfeedback,
 .ml_mcq_correctfeedback {
   text-align: start;
+  max-width: 40rem;
+  margin: 0.5rem auto;
 }
 
 .mcq_questiontext {
