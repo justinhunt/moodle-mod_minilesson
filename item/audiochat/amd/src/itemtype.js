@@ -268,6 +268,10 @@ define(
                     }
                 }
 
+                if (typeof stepdata.grade === 'number' && !isNaN(stepdata.grade)) {
+                    stepdata.grade = Math.round(stepdata.grade);
+                }
+
                 return stepdata;
             },
 
