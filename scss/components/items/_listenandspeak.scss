@@ -255,6 +255,34 @@
   color: $grey-600;
 }
 
+// Continue mode (don't auto-forward): the skip button becomes a prominent, pulsing continue button
+.landr_skip_btn.landr_continue_mode {
+  font-size: 1.25rem;
+  padding: 0.6rem 1.75rem;
+  animation: landr_continue_pulse 1.5s ease-in-out infinite;
+
+  .landr_continue_label {
+    display: inline;
+  }
+}
+
+@keyframes landr_continue_pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landr_skip_btn.landr_continue_mode {
+    animation: none;
+  }
+}
+
 // Responsive
 @media (max-width: 480px) {
   .landr_skip_btn .mobileaccesshide {

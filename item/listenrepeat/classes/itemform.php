@@ -33,6 +33,8 @@ class itemform extends baseform
         $this->add_sentenceimage(1, null, false);
         $this->add_sentenceaudio(1, null, false);
         $this->add_hidestartpage(constants::GAPFILLHIDESTARTPAGE, get_string('hidestartpage_desc', constants::M_COMPONENT));
+        $this->add_checkbox(itemtype::NOAUTOFORWARD, get_string('noautoforward', 'minilessonitem_listenrepeat'),
+            get_string('noautoforward_desc', 'minilessonitem_listenrepeat'));
         $this->add_textarearesponse(constants::ALTERNATES, get_string('alternates', constants::M_COMPONENT), false);
         $this->add_static_text('alternates_instructions', '', get_string('pr_alternates_instructions', constants::M_COMPONENT));
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));

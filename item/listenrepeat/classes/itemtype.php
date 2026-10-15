@@ -33,6 +33,9 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_LISTENING, constants::SKILL_SPEAKING, constants::SKILL_PRONUNCIATION];
 
+    /** @var string Column holding the "don't auto-forward" flag. */
+    public const NOAUTOFORWARD = 'customint3';
+
 
     // the item type
     /**
@@ -57,6 +60,7 @@ class itemtype extends item {
         $testitem = $this->set_layout($testitem);
         $testitem->alternates = $this->itemrecord->{constants::ALTERNATES};
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
+        $testitem->noautoforward = !empty($this->itemrecord->{self::NOAUTOFORWARD});
 
         // sentences
         $sentences = [];
@@ -195,6 +199,11 @@ class itemtype extends item {
                     . 'pick a voice matching the lesson language.',
                 'example' => 'auto',
             ],
+            'noautoforward' => [
+                'description' => 'Boolean. When true the learner can retry a sentence even after a perfect attempt, and '
+                    . 'must press Continue to move to the next sentence. Default false (a perfect attempt moves on automatically).',
+                'example' => 'false',
+            ],
             'promptvoiceopt' => [
                 'description' => 'Reading speed / processing option for the sentence TTS audio.',
                 'options' => [
@@ -283,6 +292,7 @@ class itemtype extends item {
         $keycols['int4'] = ['jsonname' => 'promptvoiceopt', 'type' => 'voiceopts', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYOPTION];
         $keycols['text5'] = ['jsonname' => 'promptvoice', 'type' => 'voice', 'optional' => true, 'default' => null, 'dbname' => constants::POLLYVOICE];
         $keycols['int1'] = ['jsonname' => 'showtextprompt', 'type' => 'boolean', 'optional' => true, 'default' => constants::TEXTPROMPT_WORDS, 'dbname' => constants::SHOWTEXTPROMPT];
+        $keycols['int3'] = ['jsonname' => 'noautoforward', 'type' => 'boolean', 'optional' => true, 'default' => 0, 'dbname' => self::NOAUTOFORWARD];
         $keycols['text1'] = ['jsonname' => 'sentences', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => 'customtext1'];
         $keycols['text2'] = ['jsonname' => 'alternates', 'type' => 'stringarray', 'optional' => true, 'default' => [], 'dbname' => constants::ALTERNATES];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile', 'optional' => true, 'default' => null, 'dbname' => false];

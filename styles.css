@@ -7715,6 +7715,28 @@ div.poodlldictationplayer {
   color: #999;
 }
 
+.landr_skip_btn.landr_continue_mode {
+  font-size: 1.25rem;
+  padding: 0.6rem 1.75rem;
+  animation: landr_continue_pulse 1.5s ease-in-out infinite;
+}
+.landr_skip_btn.landr_continue_mode .landr_continue_label {
+  display: inline;
+}
+
+@keyframes landr_continue_pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landr_skip_btn.landr_continue_mode {
+    animation: none;
+  }
+}
 @media (max-width: 480px) {
   .landr_skip_btn .mobileaccesshide {
     position: absolute;

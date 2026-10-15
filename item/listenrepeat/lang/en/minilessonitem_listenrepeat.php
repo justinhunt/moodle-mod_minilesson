@@ -27,5 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Listen and Speak';
 $string['item_desc'] = 'The Listen and Speak item presents a series of audio prompts to which the student must give an audio response. Mostly used for listen and repeat activities';
+$string['noautoforward'] = 'Don\'t auto-forward';
+$string['noautoforward_desc'] = 'If checked, the learner can retry a sentence even after a perfect attempt, and must press Continue to move on.';
 $string['pluginname'] = 'Listen and Speak';
 $string['privacy:metadata'] = 'The Listen and Speak plugin doesn\'t store any personal data.';
