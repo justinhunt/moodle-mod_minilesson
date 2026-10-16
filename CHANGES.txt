@@ -1,3 +1,12 @@
+Version 1.1.59 (Build 2026101700)
+- increased padding on passage reading
+- added no-autoforward setting to listen-and-speak
+- fixed grade calc in audiochat that did not round long decimals
+- added support for Gemini Live 3.8 model in audiochat
+- made feedback on multichoice and multichoice quiz a bit more attractive
+- added a dropdown list feature in place of textboxes on passage gapfill
+- added a cards list display (as opposed to a cards cards display)
+
 Version 1.1.58 (Build 2026101300)
 - Added list view to cards item type
 - Added drop down option for passage gap fill
