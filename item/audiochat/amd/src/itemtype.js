@@ -93,9 +93,11 @@ define(
                 var self = this;
                 str.get_strings([
                     { "key": "gradebywordcount", "component": "mod_minilesson" },
+                    { "key": "gradingfailed", "component": "minilessonitem_audiochat" },
                 ]).done(function (s) {
                     var i = 0;
                     self.strings.gradebywordcount = s[i++];
+                    self.strings.gradingfailed = s[i++];
                 });
             },
 
@@ -115,6 +117,7 @@ define(
                         self.driver = driver.clone();
                         self.driver.init({
                             itemdata: self.itemdata,
+                            cmid: self.quizhelper.cmid,
                             audioElement: self.controls.hiddenaudio,
                             autoCreateResponseToggleWrapperElement: self.controls.autocreateresponseToggle,
                             callbacks: self._buildDriverCallbacks(),
@@ -243,7 +246,15 @@ define(
                 // from that, long after itemdata has gone.
                 stepdata.resultsdata.feedbackrtl = self.itemdata.feedbackrtl || '';
 
-                if (gradingData && gradingData.score !== undefined) {
+                if (gradingData && gradingData.failed) {
+                    // The AI could not grade the chat, even after a retry. There is no fair
+                    // score to give, so it is 0, and the transcript is still saved.
+                    log.debug("AI grading failed: scoring 0");
+                    stepdata.grade = 0;
+                    stepdata.resultsdata.gradingfailed = true;
+                    stepdata.resultsdata.aifeedback = "";
+                    stepdata.resultsdata.gradeexplanation = self.strings.gradingfailed;
+                } else if (gradingData && gradingData.score !== undefined) {
                     log.debug("Using grading data from AI:", gradingData);
                     stepdata.grade = gradingData.score;
 

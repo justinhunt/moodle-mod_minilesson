@@ -14,6 +14,9 @@
        <b class="audiochat-feedback-title">{{#str}}feedback, mod_minilesson{{/str}}</b>
        <p class="ml_ac_feedback_text {{resultsdata.feedbackrtl}}">{{resultsdata.aifeedback}}</p>
     {{/resultsdata.aifeedback}}
+    {{#resultsdata.gradingfailed}}
+       <p class="ml_ac_feedback_text">{{resultsdata.gradeexplanation}}</p>
+    {{/resultsdata.gradingfailed}}
 </div>
 <!--
 <p class='show-detailed-feedback'>

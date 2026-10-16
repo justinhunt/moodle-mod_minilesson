@@ -66,6 +66,25 @@ $PAGE->set_context($context);
 require_login();
 require_sesskey();
 
+// The lesson's target language, as a hint for the speech-to-text behind the on screen
+// transcript. Left to guess, it can write short or accented English as Spanish or German.
+// Only the transcript is affected, not what the model hears. Empty when the context is not
+// a lesson, in which case no hint is sent and it guesses as before.
+$inputlanguage = '';
+if ($context->contextlevel == CONTEXT_MODULE) {
+    $cm = get_coursemodule_from_id(constants::M_MODNAME, $context->instanceid);
+    if ($cm) {
+        $inputlanguage = (string)$DB->get_field(constants::M_TABLE, 'ttslanguage', ['id' => $cm->instance]);
+    }
+}
+// The Gemini Live model, from the admin setting.
+$model = itemtype::get_geminilivemodel();
+
+$inputtranscription = new \stdClass();
+if ($inputlanguage !== '') {
+    $inputtranscription->languageCodes = [$inputlanguage];
+}
+
 // Based on provider we fetch the token in a different way.
 // For cloudpoodll we get it from our cloud poodll server.
 $provider = get_config(constants::M_COMPONENT, 'provider');
@@ -76,7 +95,9 @@ if ($provider == itemtype::PROVIDER_CLOUDPOODLL) {
         $disablevad,
         $resumehandle,
         $autosilencems,
-        $turnmode
+        $turnmode,
+        $model,
+        $inputlanguage
     );
     if ($jsontoken) {
         header('Content-Type: application/json');
@@ -90,7 +111,6 @@ if ($provider == itemtype::PROVIDER_CLOUDPOODLL) {
 
 // Otherwise, hopefully we have a Gemini API key and can generate our own token
 $apikey = get_config(constants::M_COMPONENT, 'geminiapikey');
-$model = 'gemini-3.1-flash-live-preview';
 $now = time();
 $expiretime = gmdate("Y-m-d\TH:i:s\Z", $now + 1800); // 30 mins from now
 $payload = [
@@ -130,7 +150,7 @@ $payload = [
         'contextWindowCompression' => [
             'slidingWindow' => new \stdClass(),
         ],
-        'inputAudioTranscription' => new \stdClass(),
+        'inputAudioTranscription' => $inputtranscription,
         'outputAudioTranscription' => new \stdClass(),
     ],
 ];
@@ -153,5 +173,6 @@ echo json_encode([
     'url' => 'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained',
     'model' => $model,
     'turnmode' => $turnmode,
+    'inputlanguage' => $inputlanguage,
 ]);
 die;

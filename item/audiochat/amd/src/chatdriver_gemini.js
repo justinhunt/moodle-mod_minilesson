@@ -27,8 +27,8 @@
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/gradingjson'],
-        function ($, log, Fragment, gradingjson) {
+define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
+        function ($, log, Fragment, Ajax) {
     "use strict";
 
     log.debug('MiniLesson AudioChat: Gemini driver loading');
@@ -111,10 +111,15 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
         // Playback scheduling for raw PCM output.
         nextPlayTime: 0,
 
+        // BCP-47 language hint for the input transcription, from the token endpoint.
+        inputlanguage: '',
+
         // Grading.
         gradingData: false,
-        _gradingPending: false,
-        _gradingBuffer: '',
+
+        // Diagnostics: when this connection opened, and the latest usageMetadata from the server.
+        _openedAt: null,
+        _lastUsage: null,
 
         // Session options.
         audiochat_voice: 'Aoede',
@@ -163,6 +168,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
         init: function (options) {
             var self = this;
             self.itemdata = options.itemdata;
+            self.cmid = options.cmid;
             self.audioElement = options.audioElement;
             self.autoCreateResponseToggleWrapperElement = options.autoCreateResponseToggleWrapperElement;
             self.callbacks = options.callbacks || {};
@@ -266,6 +272,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 // The new token carries its own turn mode, which differs from the old
                 // one whenever the reconnect was caused by an Auto Send toggle.
                 self.turnmode = self._resolveTurnMode(sessionInfo);
+                self.inputlanguage = sessionInfo.inputlanguage || '';
                 log.debug('Gemini: turn mode ' + self.turnmode);
                 return self._openWebSocket(sessionInfo).then(function () {
                     // _sendSetupAndFirstTurn attaches sessionResumptionToken as the
@@ -330,6 +337,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 return;
             }
             self.turnmode = self._resolveTurnMode(sessionInfo);
+                self.inputlanguage = sessionInfo.inputlanguage || '';
             log.debug('Gemini: turn mode ' + self.turnmode);
 
             // 3. Open WebSocket.
@@ -420,6 +428,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 self.ws.binaryType = 'arraybuffer';
                 self.ws.onopen = function () {
                     log.debug('Gemini WS open');
+                    self._openedAt = Date.now();
                     resolve();
                 };
                 self.ws.onerror = function (err) {
@@ -431,6 +440,11 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                     log.debug('Gemini WS closed');
                     log.debug(ev.code);
                     log.debug(ev.reason);
+                    log.debug('Gemini WS close detail: ' + self._diagnostics({
+                        code: ev.code,
+                        reason: ev.reason,
+                        wasClean: ev.wasClean
+                    }));
                     self.loadingMessages.clear();
                     // The Live API caps a single connection (~10 min for audio). When it
                     // expires the server closes the socket; recover transparently by
@@ -484,6 +498,10 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 aad.silenceDurationMs = self.turnmode === TURNMODE_HYBRID
                     ? HYBRID_SILENCE_MS
                     : self.silencedurationms;
+                // Mirror the transcription language hint the token carries, if it has one.
+                self.setupConfig.inputAudioTranscription = self.inputlanguage
+                    ? {languageCodes: [self.inputlanguage]}
+                    : {};
                 self.setupConfig.sessionResumption = {};
                 if (self.sessionResumptionToken) {
                     self.setupConfig.sessionResumption.handle = self.sessionResumptionToken;
@@ -835,6 +853,10 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 self.sessionResumptionToken = msg.sessionResumptionUpdate.newHandle;
             }
 
+            if (msg.usageMetadata) {
+                self._lastUsage = msg.usageMetadata;
+            }
+
             if (msg.serverContent) {
                 log.debug('Gemini message:');
                 log.debug(msg);
@@ -845,31 +867,19 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
         _handleServerContent: function (content) {
             var self = this;
 
-            // Grading in-flight: buffer text, skip audio.
-            if (self._gradingPending) {
-                self._accumulateGrading(content);
-                if (content.generationComplete) {
-                    self._finalizeGrading();
-                }
-                return;
-            }
-
             // User input transcription.
             if (content.inputTranscription && content.inputTranscription.text) {
                 if (!self.currentUserItemId) {
                     self.currentUserItemId = self._newItem('user');
                 }
+                // Not the end of the student's turn: the transcript can arrive in pieces
+                // while they are still speaking. The turn ends when the model replies.
                 self.items[self.currentUserItemId].content += content.inputTranscription.text;
-                self._fire('onUserSpeechStopped');
             }
 
             // Model turn (audio + optional text).
             if (content.modelTurn && content.modelTurn.parts) {
-                if (!self.currentAssistantItemId) {
-                    self.currentAssistantItemId = self._newItem('assistant');
-                    self.loadingMessages.add(self.currentAssistantItemId);
-                    self._fire('onMicAvailabilityChange', true);
-                }
+                self._startAssistantItem();
                 var item = self.items[self.currentAssistantItemId];
                 content.modelTurn.parts.forEach(function (part) {
                     if (part.inlineData && part.inlineData.data) {
@@ -883,10 +893,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
 
             // Output transcription (text mirror of spoken audio).
             if (content.outputTranscription && content.outputTranscription.text) {
-                if (!self.currentAssistantItemId) {
-                    self.currentAssistantItemId = self._newItem('assistant');
-                    self.loadingMessages.add(self.currentAssistantItemId);
-                }
+                self._startAssistantItem();
                 self.items[self.currentAssistantItemId].content += content.outputTranscription.text;
             }
 
@@ -911,6 +918,22 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             self._notifyItems();
         },
 
+        /**
+         * Open the AI's transcript item on the first content of its reply. The model
+         * replying is the reliable sign that the student's turn has ended, so this is
+         * where the student's turn is closed too.
+         */
+        _startAssistantItem: function () {
+            var self = this;
+            if (self.currentAssistantItemId) {
+                return;
+            }
+            self._fire('onUserSpeechStopped');
+            self.currentAssistantItemId = self._newItem('assistant');
+            self.loadingMessages.add(self.currentAssistantItemId);
+            self._fire('onMicAvailabilityChange', true);
+        },
+
         _newItem: function (role) {
             var self = this;
             var id = 'gemini_' + (++self.itemCounter);
@@ -923,43 +946,6 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 previous_item_id: null
             };
             return id;
-        },
-
-        // ── Grading ──
-
-        _accumulateGrading: function (content) {
-            var self = this;
-            if (content.modelTurn && content.modelTurn.parts) {
-                content.modelTurn.parts.forEach(function (part) {
-                    if (part.text) {
-                        self._gradingBuffer += part.text;
-                    }
-                });
-            }
-            if (content.outputTranscription && content.outputTranscription.text) {
-                self._gradingBuffer += content.outputTranscription.text;
-            }
-        },
-
-        _finalizeGrading: function () {
-            var self = this;
-            self._gradingPending = false;
-            var text = self._gradingBuffer;
-            log.debug('Gemini: received grading text');
-            log.debug(text);
-            self._gradingBuffer = '';
-            self.gradingData = gradingjson.parse(text);
-            if (self.gradingData) {
-                log.debug('Gemini grading:');
-                log.debug(self.gradingData);
-                self._fire('onGradingData', self.gradingData);
-            } else {
-                log.debug('No valid grading JSON in Gemini buffer:');
-                log.debug(text);
-            }
-            log.debug('Gemini: closing session resources');
-            self.closeDataChannel();
-            self._fire('onGradingWindowClosed');
         },
 
         // ── Mic control ──
@@ -1023,44 +1009,92 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             log.debug('Gemini driver: session stopping');
             self.loadingMessages.clear();
             self._fire('onStateChange', 'stopped');
+            log.debug('Gemini session stop detail: ' + self._diagnostics());
+            self.closeDataChannel();
 
             if (self.itemdata.audiochatgradeinstructions && self.itemdata.audiochatgradeinstructions !== '') {
-                log.debug('Gemini: sending grading request');
                 self.sendGradingRequest();
-            } else {
-                log.debug('Gemini: no grading instructions, closing session');
-                self.closeDataChannel();
             }
             log.debug('Gemini session stopped');
         },
 
+        /**
+         * A one line JSON summary of the session, for working out why a socket closed.
+         * Strings only, so it can be pasted from a console.
+         * @param {Object} extra anything to add, eg the close code
+         * @returns {String}
+         */
+        _diagnostics: function (extra) {
+            var self = this;
+            var transcriptchars = 0;
+            var itemcount = 0;
+            Object.values(self.items || {}).forEach(function (item) {
+                itemcount++;
+                transcriptchars += (item.content || '').length;
+            });
+            return JSON.stringify($.extend({
+                secondsOpen: self._openedAt ? Math.round((Date.now() - self._openedAt) / 1000) : null,
+                intentionalClose: !!self._intentionalClose,
+                items: itemcount,
+                transcriptChars: transcriptchars,
+                usage: self._lastUsage || null
+            }, extra || {}));
+        },
+
+        /**
+         * Grade the finished chat from its transcript.
+         *
+         * Gemini Live replies only in audio, so a grade asked for inside the session comes
+         * back as a transcript of spoken JSON and loses its structure. Instead the transcript
+         * goes to the server, which has a text model grade it. The call is tried twice. If it
+         * still fails the grading data says so, and the item scores 0.
+         */
         sendGradingRequest: function () {
             var self = this;
-            var gradingInstructions =
-                'Please provide a percentage score for the session, an explanation of the score (for teachers), ' +
-                'and feedback (for the student). ' + self.itemdata.audiochatgradeinstructions +
-                ' Write the feedback as plain text in short paragraphs separated by a blank line. ' +
-                'Where a list of points helps, put each point on its own line starting with a hyphen. ' +
-                'Do not use markdown formatting: no headings, no asterisks and no bold. ' +
-                ' Return ONLY a JSON object in the format: ' +
-                '{"score": "the score (0-100)", "gradeexplanation": "the explanation", "feedback": "the feedback"}.';
-            self._gradingPending = true;
-            self._gradingBuffer = '';
-            if (self._micEnabled) {
-                if (self.turnmode === TURNMODE_MANUAL) {
-                    self._closeActivity();
+            var items = Object.values(self.items)
+                .sort(function (a, b) { return a.order - b.order; })
+                .filter(function (item) { return item.content && item.content.trim() !== ''; })
+                .map(function (item) {
+                    return {role: item.usertype === 'user' ? 'user' : 'assistant', text: item.content};
+                });
+
+            var request = function () {
+                return Ajax.call([{
+                    methodname: 'minilessonitem_audiochat_grade_chat',
+                    args: {cmid: self.cmid, itemid: self.itemdata.id, items: items}
+                }])[0];
+            };
+            var failed = function (reason) {
+                log.debug('Gemini grading failed');
+                log.debug(reason);
+                return {success: false};
+            };
+
+            log.debug('Gemini: sending grading request');
+            request().catch(function (err) {
+                log.debug('Gemini grading call failed, trying again');
+                log.debug(err);
+                return request();
+            }).then(function (result) {
+                if (!result || !result.success) {
+                    return failed(result);
+                }
+                return result;
+            }).catch(failed).then(function (result) {
+                if (result.success) {
+                    self.gradingData = {
+                        score: result.score,
+                        gradeexplanation: result.gradeexplanation,
+                        feedback: result.feedback
+                    };
+                    log.debug('Gemini grading:');
+                    log.debug(self.gradingData);
                 } else {
-                    self._sendWS({
-                        realtimeInput: {
-                            audioStreamEnd: true,
-                        }
-                    });
+                    self.gradingData = {failed: true};
                 }
-            }
-            self._sendWS({
-                realtimeInput: {
-                    text: gradingInstructions
-                }
+                self._fire('onGradingData', self.gradingData);
+                self._fire('onGradingWindowClosed');
+                return result;
             });
         },
 
@@ -1077,7 +1111,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             // This is a deliberate teardown (stop / grading / error / release),
             // so the onclose handler must not try to resume the session.
             self._intentionalClose = true;
-            if (self.ws && !self._gradingPending) {
+            if (self.ws) {
                 try { self.ws.close(); } catch (e) { log.debug('Gemini: ws close error');log.debug(e); }
                 self.ws = null;
             }

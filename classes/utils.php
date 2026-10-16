@@ -894,7 +894,7 @@ class utils {
     }
 
     public static function fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad, $resumehandle = '',
-        $silencedurationms = 0, $turnmode = '') {
+        $silencedurationms = 0, $turnmode = '', $model = '', $inputlanguage = '') {
 
         $cloudpoodlltoken = false;
         $conf = get_config(constants::M_COMPONENT);
@@ -928,6 +928,16 @@ class utils {
         // into the token's bidiGenerateContentSetup for the Constrained endpoint.
         if ($resumehandle !== '') {
             $params['resumehandle'] = $resumehandle;
+        }
+        // The Gemini Live model the admin chose, and the language hint for the transcript
+        // of the student's speech. The cloud endpoint bakes both into the token and returns
+        // them with it, so the client's setup matches. Sent only when set, but a cloud server
+        // that predates them rejects unknown keys, so it must be updated first.
+        if ($model !== '') {
+            $params['model'] = $model;
+        }
+        if ($inputlanguage !== '') {
+            $params['inputlanguage'] = $inputlanguage;
         }
 
         $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';

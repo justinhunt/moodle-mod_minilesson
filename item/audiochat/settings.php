@@ -49,6 +49,17 @@ $settings->add(
     )
 );
 
+// Which Gemini Live model the Gemini provider connects to.
+$settings->add(
+    new admin_setting_configselect(
+        constants::M_COMPONENT . "/geminilivemodel",
+        get_string('geminilivemodel', 'minilessonitem_audiochat'),
+        get_string('geminilivemodel_details', 'minilessonitem_audiochat'),
+        itemtype::DEFAULT_GEMINILIVEMODEL,
+        itemtype::get_geminilivemodel_options()
+    )
+);
+
 // How long a student may pause before the AI takes its turn.
 $settings->add(
     new admin_setting_configtext(
