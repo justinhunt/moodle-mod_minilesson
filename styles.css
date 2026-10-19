@@ -2832,6 +2832,18 @@ span.wrongitem {
 .ttsdialogplayer .ttsdialog_controls_single .ttsdialog_ctrl {
   min-width: 200px;
 }
+.ttsdialogplayer .ttsdialog_controls_single .ttsdialog_ctrl.ttsdialog_speed {
+  min-width: 44px;
+}
+.ttsdialogplayer .ttsdialog_speed {
+  gap: 6px;
+}
+.ttsdialogplayer .ttsdialog_speed.ttsdialog_speed_active {
+  background: #357ab8;
+}
+.ttsdialogplayer .ttsdialog_speedlabel {
+  font-size: 14px;
+}
 .ttsdialogplayer .ttsdialog_blocks {
   display: flex;
   flex-direction: column;
@@ -2924,7 +2936,21 @@ span.wrongitem {
 .ttsdialogplayer .ttsdialog_block_icons {
   display: flex;
   flex: none;
+  align-items: center;
   gap: 0.35rem;
+}
+.ttsdialogplayer .ttsdialog_speedpill {
+  display: none;
+  padding: 0.1rem 0.45rem;
+  border-radius: 1rem;
+  background: #4a90e2;
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: bold;
+  line-height: 1.4;
+}
+.ttsdialogplayer.ttsdialog_slow .ttsdialog_speedpill {
+  display: inline-block;
 }
 .ttsdialogplayer .ttsdialog_iconbtn {
   display: inline-flex;

@@ -1589,6 +1589,7 @@ $string['ttsdialog:playpause'] = 'Play / pause';
 $string['ttsdialog:stop'] = 'Stop';
 $string['ttsdialog:translate'] = 'Translate this line';
 $string['ttsdialog:playline'] = 'Play this line';
+$string['ttsdialog:speed'] = 'Toggle playback speed';
 $string['customlayout'] = 'Custom Layout';
 $string['customkeys'] = 'Custom Virtual Keys';
 $string['customkeys_help'] = 'Add space separated list of keys for the virtual keyboard. E.g. "à â æ ç"';

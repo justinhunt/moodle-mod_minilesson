@@ -55,6 +55,23 @@ $ttsdialog-indent: 4rem;
 
   .ttsdialog_controls_single .ttsdialog_ctrl {
     min-width: 200px;
+
+    &.ttsdialog_speed {
+      min-width: 44px;
+    }
+  }
+
+  // Speed toggle (1x / 0.8x). Shown darker while slow speed is on.
+  .ttsdialog_speed {
+    gap: 6px;
+
+    &.ttsdialog_speed_active {
+      background: $player-blue-hover;
+    }
+  }
+
+  .ttsdialog_speedlabel {
+    font-size: 14px;
   }
 
   // Conversation stream.
@@ -184,7 +201,24 @@ $ttsdialog-indent: 4rem;
   .ttsdialog_block_icons {
     display: flex;
     flex: none;
+    align-items: center;
     gap: 0.35rem;
+  }
+
+  // "0.8x" pill beside each line's play button, shown only while slow speed is on.
+  .ttsdialog_speedpill {
+    display: none;
+    padding: 0.1rem 0.45rem;
+    border-radius: 1rem;
+    background: $player-blue;
+    color: $white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    line-height: 1.4;
+  }
+
+  &.ttsdialog_slow .ttsdialog_speedpill {
+    display: inline-block;
   }
 
   // Small round icon buttons (translate / play this line).

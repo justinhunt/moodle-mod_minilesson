@@ -19,6 +19,8 @@ define(['jquery', 'core/log', 'core/str', 'mod_minilesson/translate'],
             var backbutton = player.find('.ttsdialog_back');
             var forwardbutton = player.find('.ttsdialog_forward');
             var stopbutton = player.find('.ttsdialog_stop');
+            var speedbutton = player.find('.ttsdialog_speed');
+            var speedlabel = player.find('.ttsdialog_speedlabel');
 
             var stoppedstate = '<i class="fa fa-play" aria-hidden="true"></i>';
             var playingstate = '<i class="fa fa-pause" aria-hidden="true"></i>';
@@ -31,6 +33,16 @@ define(['jquery', 'core/log', 'core/str', 'mod_minilesson/translate'],
             var playmode = 'sequence';
             // The block play button currently showing a stop icon (single-play mode), if any.
             var singlebtn = null;
+            // Slow playback (0.8x) for every line, toggled by the speed button.
+            var slowspeed = false;
+
+            // Apply the current speed to the shared audio element. Loading a new src resets
+            // playbackRate to defaultPlaybackRate, so set both to keep the speed across lines.
+            var apply_speed = function () {
+                var rate = slowspeed ? 0.8 : 1.0;
+                audio[0].defaultPlaybackRate = rate;
+                audio[0].playbackRate = rate;
+            };
 
             // Revert the active single-play block button to its play icon.
             var reset_single_btn = function () {
@@ -79,6 +91,7 @@ define(['jquery', 'core/log', 'core/str', 'mod_minilesson/translate'],
                 playmode = mode;
                 currentline = index;
                 audio.attr('src', dialoglines.eq(index).data('audiourl'));
+                apply_speed();
                 highlight_block(index);
                 // Only the master transport reflects playing state; single play uses the block button.
                 playbutton.html(mode === 'sequence' ? playingstate : stoppedstate);
@@ -150,6 +163,16 @@ define(['jquery', 'core/log', 'core/str', 'mod_minilesson/translate'],
 
             stopbutton.on('click', function () {
                 stop_play();
+            });
+
+            // Toggle between normal and slow speed. A line already playing changes at once.
+            speedbutton.on('click', function () {
+                slowspeed = !slowspeed;
+                apply_speed();
+                speedlabel.text(slowspeed ? '0.8x' : '1x');
+                speedbutton.attr('aria-pressed', slowspeed ? 'true' : 'false');
+                speedbutton.toggleClass('ttsdialog_speed_active', slowspeed);
+                player.toggleClass('ttsdialog_slow', slowspeed);
             });
 
             // Clicking a block's play button plays just that line and toggles to a stop button.
