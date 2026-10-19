@@ -64,6 +64,39 @@ class aigen_contextform extends moodleform {
     }
 
     /**
+     * The top of the form: the template's name, and the lesson languages the generation will use.
+     *
+     * @param array $thetemplate The template, as returned by aigen::fetch_lesson_templates().
+     * @param \stdClass|null $moduleinstance The lesson, if known.
+     * @return string HTML
+     */
+    protected function render_header($thetemplate, $moduleinstance) {
+        global $OUTPUT;
+
+        $data = [
+            'templatename' => format_string($thetemplate['name']),
+            'haslanguages' => !empty($moduleinstance),
+        ];
+        if ($moduleinstance) {
+            $langnames = utils::get_nativelang_options();
+            $target = (string) $moduleinstance->ttslanguage;
+            $native = (string) ($moduleinstance->nativelang ?? '');
+            $data['targetlanguage'] = $langnames[$target] ?? $target;
+            if ($native === '' || $native === '0') {
+                $data['nativelanguage'] = get_string('aigennativelangnotset', constants::M_COMPONENT);
+            } else {
+                $data['nativelanguage'] = $langnames[$native] ?? $native;
+            }
+            // Not set, or the same as the target language: definitions and translations are in easy target language.
+            $data['easynotice'] = '';
+            if (utils::fetch_feedback_language($native, $target) !== $native) {
+                $data['easynotice'] = get_string('aigennativelangeasy', constants::M_COMPONENT, $data['targetlanguage']);
+            }
+        }
+        return $OUTPUT->render_from_template('mod_minilesson/aigencontextheader', $data);
+    }
+
+    /**
      * form element definition
      * @return void
      */
@@ -80,6 +113,8 @@ class aigen_contextform extends moodleform {
         if (!isset($thetemplate['config']) || !isset($thetemplate['config']->fieldmappings)) {
             throw new moodle_exception('Invalid template structure', constants::M_COMPONENT);
         }
+
+        $mform->addElement('html', $this->render_header($thetemplate, $moduleinstance));
 
         // Add the template introduction.
         if (!empty($thetemplate['description'])) {
