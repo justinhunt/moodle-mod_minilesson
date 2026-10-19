@@ -343,7 +343,9 @@ class itemtype extends item {
      */
     public static function aigen_fetch_import_spec() {
         $placeholdernote = 'May contain the placeholders {ai role}, {ai voice}, {target language}, '
-            . '{native language}, {ai data1}, {ai data2}, {student submission} and {topic}.';
+            . '{native language}, {feedback language}, {ai data1}, {ai data2}, {student submission} and {topic}. '
+            . 'Use {feedback language} for the language feedback is written in: it is the native language, '
+            . 'or an easy version of the target language when the two are the same.';
 
         $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions', 'text',
             'timelimit', 'layout']);
@@ -379,7 +381,7 @@ class itemtype extends item {
                     . 'When empty, the grade is calculated from the words spoken over the targetwordcount. '
                     . $placeholdernote,
                 'example' => 'For the score consider: relevance to the topic "{topic}", fluency and vocabulary '
-                    . 'usage. Feedback should be simple and in the student\'s native language: {native language}.',
+                    . 'usage. Feedback should be simple and in {feedback language}.',
             ],
             'audiochatvoice' => [
                 'description' => 'The AI\'s speaking voice, inserted where {ai voice} appears in the AI '
@@ -398,7 +400,8 @@ class itemtype extends item {
                 ],
             ],
             'audiochatnativelanguage' => [
-                'description' => 'The learner\'s native language, inserted where {native language} appears: '
+                'description' => 'The learner\'s native language, inserted where {native language} appears, '
+                    . 'and used for {feedback language}: '
                     . '"target" (the lesson language), "native" (the lesson\'s native language setting), '
                     . 'or a specific language code such as "ja-JP".',
                 'example' => 'native',
@@ -499,8 +502,8 @@ class itemtype extends item {
                             . 'to speak. After the student has had 3 speaking turns, thank them and ask them to '
                             . 'press the end button.',
                         'audiochatgradeinstructions' => 'For the score consider: relevance to the topic "{topic}", '
-                            . 'fluency and vocabulary usage. Feedback should be simple, and in the student\'s '
-                            . 'native language: {native language}.',
+                            . 'fluency and vocabulary usage. Feedback should be simple, and in '
+                            . '{feedback language}.',
                         'totalmarks' => 10,
                         'targetwordcount' => 30,
                         'autoresponse' => 0,
@@ -719,6 +722,9 @@ class itemtype extends item {
      * {student submission} is not replaced here: it is fetched separately, and only when needed.
      *
      * @param string $text the prompt
+     * {feedback language} is the native language, or an easy version of the target language when the
+     * native language is the target language.
+     *
      * @param string $nativelanguage the student's native language code
      * @return string
      */
@@ -739,6 +745,7 @@ class itemtype extends item {
                 '{ai role}',
                 '{ai voice}',
                 '{native language}',
+                '{feedback language}',
                 '{target language}',
                 '{topic}',
                 '{ai data1}',
@@ -748,6 +755,7 @@ class itemtype extends item {
                 $role,
                 $item->{self::VOICE},
                 $nativelanguage,
+                utils::fetch_feedback_language($nativelanguage, $this->language),
                 $this->language,
                 $topic,
                 $item->{self::AIDATA1},

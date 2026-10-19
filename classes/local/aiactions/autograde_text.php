@@ -81,8 +81,9 @@ class autograde_text extends generate_text {
             $this->prompttext .= 'Set an array of strings to the "feedback" property. Each string is a feedback item.';
             $this->prompttext .= ' ' . trim($feedbackscheme);
             if (!empty($feedbacklanguage)) {
+                // Both are language codes, so compare them by name: en-GB and en-US are both English.
                 $feedbacklanguage = utils::get_lang_english_name($feedbacklanguage);
-                if ($feedbacklanguage !== $this->language) {
+                if ($feedbacklanguage !== utils::get_lang_english_name($this->language)) {
                     $this->prompttext .= ' Give feedback in ' . $feedbacklanguage . '.';
                 }
             }

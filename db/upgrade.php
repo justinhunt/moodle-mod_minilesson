@@ -1548,5 +1548,46 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026091700, 'minilesson');
     }
 
+    if ($oldversion < 2026101900) {
+        // Audio chat feedback prompts now ask for feedback in {feedback language}, which is the native
+        // language, or easy target language when the native language is the target language. Rewrite
+        // the shipped feedback sentences in the admin prompts and in existing audio chat items. Only
+        // these exact sentences change, so any other use of {native language} is left alone.
+        $replacements = [
+            'in the student native language: {native language}' => 'in {feedback language}',
+            "in the student's native language: {native language}" => 'in {feedback language}',
+            "in the student\\'s native language: {native language}" => 'in {feedback language}',
+            'Your comments should be in {native language}' => 'Your comments should be in {feedback language}',
+        ];
+        $search = array_keys($replacements);
+        $replace = array_values($replacements);
+
+        for ($i = 1; $i <= constants::MAX_AI_PROMPTS; $i++) {
+            $name = 'audiochat_feedbackprompt_' . $i;
+            $prompt = get_config(constants::M_COMPONENT, $name);
+            if (!empty($prompt)) {
+                $newprompt = str_replace($search, $replace, $prompt);
+                if ($newprompt !== $prompt) {
+                    set_config($name, $newprompt, constants::M_COMPONENT);
+                }
+            }
+        }
+
+        // The audio chat feedback instructions are stored in customdata3.
+        $select = 'type = :type AND ' . $DB->sql_like('customdata3', ':placeholder');
+        $params = ['type' => 'audiochat', 'placeholder' => '%{native language}%'];
+        $items = $DB->get_recordset_select('minilesson_rsquestions', $select, $params, '', 'id, customdata3');
+        foreach ($items as $item) {
+            $newinstructions = str_replace($search, $replace, $item->customdata3);
+            if ($newinstructions !== $item->customdata3) {
+                $DB->set_field('minilesson_rsquestions', 'customdata3', $newinstructions, ['id' => $item->id]);
+            }
+        }
+        $items->close();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026101900, 'minilesson');
+    }
+
     return true;
 }

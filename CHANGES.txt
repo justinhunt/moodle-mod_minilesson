@@ -6,6 +6,10 @@ Version 1.1.59 (Build 2026101700)
 - made feedback on multichoice and multichoice quiz a bit more attractive
 - added a dropdown list feature in place of textboxes on passage gapfill
 - added a cards list display (as opposed to a cards cards display)
+- AI feedback in audio chat, free writing and free speaking is now in "easy [target language]" when the
+  native language is the same as the target language (#86)
+- added a {feedback language} placeholder to AI feedback prompts. Existing audio chat feedback prompts
+  are updated to use it
 
 Version 1.1.58 (Build 2026101300)
 - Added list view to cards item type

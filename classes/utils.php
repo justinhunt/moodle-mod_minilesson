@@ -1193,6 +1193,19 @@ class utils {
         $instance = self::fetch_item_from_itemrecord($item, $moduleinstance);
         $instance->prepare_instructions_for_ai_grade($instructions);
 
+        // The grader is told the feedback language as a code, which it turns into a language name.
+        // "easy en-US" would not survive that, so the easy version is asked for in the prompt text instead.
+        $promptfeedbacklanguage = self::fetch_feedback_language($feedbacklanguage, $moduleinstance->ttslanguage);
+        $instructions->feedbackscheme = str_replace(
+            '{feedback language}',
+            $promptfeedbacklanguage,
+            (string) $instructions->feedbackscheme
+        );
+        if (trim($instructions->feedbackscheme) !== '' && $promptfeedbacklanguage !== $feedbacklanguage) {
+            $instructions->feedbackscheme = rtrim($instructions->feedbackscheme)
+                . ' Give feedback in ' . $promptfeedbacklanguage . '.';
+        }
+
         $cmcontext = context_module::instance($cm->id);
         $aigraderesults = self::fetch_ai_grade(
             $cmcontext->id,
@@ -2212,6 +2225,33 @@ class utils {
             }
         }
         return $langs;
+    }
+
+    /**
+     * The language to ask AI to write feedback in, for use inside a prompt.
+     *
+     * Some schools do not want the learner's first language used, so they set it to the target
+     * language. Feedback is then in the language being learned, so we ask for an easy version of it
+     * that the learner can follow. Only use this for prompt text: translation, RTL checks and anything
+     * that maps a language code to a name need the plain code.
+     *
+     * @param string $nativelang the learner's native language code
+     * @param string $targetlang the language the lesson teaches
+     * @return string the native language code, or "easy <targetlang>" if both are the same language
+     */
+    public static function fetch_feedback_language($nativelang, $targetlang) {
+        $nativelang = (string) $nativelang;
+        $targetlang = (string) $targetlang;
+        if ($nativelang === '' || $targetlang === '') {
+            return $nativelang;
+        }
+        // Compare the base language, so that en-GB and en-US count as the same.
+        $basenative = strtolower(explode('-', $nativelang)[0]);
+        $basetarget = strtolower(explode('-', $targetlang)[0]);
+        if ($basenative === $basetarget) {
+            return 'easy ' . $targetlang;
+        }
+        return $nativelang;
     }
 
     public static function has_compact_layout($langcode) {

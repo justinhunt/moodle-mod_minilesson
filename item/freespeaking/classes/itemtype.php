@@ -289,7 +289,9 @@ class itemtype extends item {
             'aigradefeedback' => [
                 'description' => 'Instructions the AI follows when writing feedback to the learner, '
                     . 'e.g. "Explain each grammar mistake in simple language." '
-                    . 'May contain the {topic}, {ai data1} and {ai data2} placeholders.',
+                    . 'May contain the {topic}, {ai data1}, {ai data2} and {feedback language} placeholders. '
+                    . '{feedback language} is the aigradefeedbacklanguage, or an easy version of the lesson '
+                    . 'language when the two are the same.',
                 'example' => 'Explain each grammar mistake in simple language.',
             ],
             'aigradefeedbacklanguage' => [
