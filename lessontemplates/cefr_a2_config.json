@@ -57,7 +57,7 @@
                 },
                 {
                     "name": "nativelanguage",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 },
                 {
                     "name": "targetlanguage",
@@ -130,7 +130,7 @@
                 },
                 {
                     "name": "nativelanguage",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -436,9 +436,9 @@
         }
     ],
     "lessonTitle": "CEFR A2 Template",
-    "lessonDescription": "Enter 4 - 10 keywords, the native language to translate words into, a passage of text that uses those keywords, some questions and topic for an audio chat, and an image style. Those inputs will be used to generate a set of vocab cards, word shuffle, listen and speak , audio chat and free speaking.",
+    "lessonDescription": "Enter 4 - 10 keywords, a passage of text that uses those keywords, some questions and topic for an audio chat, and an image style. Those inputs will be used to generate a set of vocab cards, word shuffle, listen and speak , audio chat and free speaking. Translations use the native language set in the MiniLesson settings.",
     "uniqueid": "6a4909ba67c08",
-    "version": "8",
+    "version": "9",
     "agentonly": 1,
     "fieldmappings": {
         "target_language": {
@@ -480,7 +480,7 @@
             "type": "textarea"
         },
         "user_customdata1": {
-            "enabled": true,
+            "enabled": false,
             "title": "Native language",
             "description": "The language the keyword definitions should be in.",
             "type": "text"

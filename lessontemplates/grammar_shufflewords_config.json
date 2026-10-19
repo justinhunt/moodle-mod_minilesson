@@ -70,7 +70,7 @@
                 },
                 {
                     "name": "instructionlanguage",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -134,7 +134,7 @@
                 },
                 {
                     "name": "nativelanguage",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -191,9 +191,9 @@
         }
     ],
     "lessonTitle": "Grammar Lesson (slides+shuffle words)",
-    "lessonDescription": "Provide the grammar point, keywords and the language of instruction and a lesson with a slides tutorial and shuffle-the-words item and type-the-word item will be created. Use this template for grammar points where word order in the sentence is important. It is also a generally useful template because it can be used with most sets of sentences.",
+    "lessonDescription": "Provide the grammar point and keywords, and a lesson with a slides tutorial and shuffle-the-words item and type-the-word item will be created. Use this template for grammar points where word order in the sentence is important. It is also a generally useful template because it can be used with most sets of sentences. The native language set in the MiniLesson settings is used for explanations.",
     "uniqueid": "6a363a03964a0",
-    "version": "3",
+    "version": "4",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -235,7 +235,7 @@
             "type": "text"
         },
         "user_customdata1": {
-            "enabled": true,
+            "enabled": false,
             "title": "Instruction language",
             "description": "The language of instruction, and translations in the lesson.",
             "type": "text"

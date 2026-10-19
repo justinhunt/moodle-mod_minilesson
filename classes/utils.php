@@ -1165,6 +1165,10 @@ class utils {
         } else if ($feedbacklanguage == constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE) {
             $feedbacklanguage = $moduleinstance->nativelang;
         }
+        // With no native language set ("--" is stored as '0'), feedback is in the target language.
+        if (empty($feedbacklanguage)) {
+            $feedbacklanguage = $moduleinstance->ttslanguage;
+        }
 
         if ($conf->setnativelanguage) {
             $userprefdeflanguage = get_user_preferences(constants::NATIVELANG_PREF);
@@ -2235,15 +2239,20 @@ class utils {
      * that the learner can follow. Only use this for prompt text: translation, RTL checks and anything
      * that maps a language code to a name need the plain code.
      *
-     * @param string $nativelang the learner's native language code
+     * @param string $nativelang the learner's native language code, '' or '0' if not set
      * @param string $targetlang the language the lesson teaches
      * @return string the native language code, or "easy <targetlang>" if both are the same language
+     *                or the native language is not set
      */
     public static function fetch_feedback_language($nativelang, $targetlang) {
         $nativelang = (string) $nativelang;
         $targetlang = (string) $targetlang;
-        if ($nativelang === '' || $targetlang === '') {
+        if ($targetlang === '') {
             return $nativelang;
+        }
+        // The '0' value is the "--" option: no native language, so we use the target language.
+        if ($nativelang === '' || $nativelang === '0') {
+            return 'easy ' . $targetlang;
         }
         // Compare the base language, so that en-GB and en-US count as the same.
         $basenative = strtolower(explode('-', $nativelang)[0]);
@@ -2450,6 +2459,7 @@ class utils {
         $langoptions = [0 => '--'] + self::get_nativelang_options();
         $mform->addElement('select', 'nativelang', get_string('nativelang', constants::M_COMPONENT), $langoptions);
         $mform->setType('nativelang', PARAM_TEXT);
+        $mform->addHelpButton('nativelang', 'nativelang', constants::M_COMPONENT);
         $mform->setDefault('nativelang', $config->nativelang);
 
         // Native language translation.

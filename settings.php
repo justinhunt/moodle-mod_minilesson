@@ -108,7 +108,7 @@ if ($hassiteconfig) {
     $mainsettings->add(new admin_setting_configselect(
         constants::M_COMPONENT .  '/nativelang',
         get_string('nativelang', constants::M_COMPONENT),
-        '',
+        get_string('nativelang_help', constants::M_COMPONENT),
         $nativelangdefault,
         $nativelangoptions
     ));

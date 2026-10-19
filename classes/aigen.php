@@ -40,6 +40,14 @@ class aigen {
     public const DATAVARS = ['data1', 'data2', 'data3', 'data4', 'data5'];
 
     /**
+     * The context field that holds the lesson's native language, for a prompt to map a placeholder to.
+     * It is set from the lesson by make_import_data(), never by the user, like target_language.
+     *
+     * @var string
+     */
+    public const NATIVE_LANGUAGE_CONTEXT = 'native_language';
+
+    /**
      * How much of a template's content the caller decides, rather than the AI inventing it.
      * Ordered weakest to strongest control; see {@see self::control_rank()}.
      *
@@ -191,6 +199,9 @@ class aigen {
         // Get all the voices and get just the nice ones (neural/whisper/azure).
         $langvoices = utils::get_tts_voices($this->moduleinstance->ttslanguage, false, $this->moduleinstance->region);
         $nicevoices = utils::get_nice_voices($this->moduleinstance->ttslanguage, $this->moduleinstance->region);
+
+        // The language for definitions and translations comes from the lesson, not from the user.
+        $contextdata[self::NATIVE_LANGUAGE_CONTEXT] = self::prompt_native_language($this->moduleinstance);
 
         foreach ($aigenconfig->items as $configitem) {
             $currentitemcount++;
@@ -858,6 +869,14 @@ class aigen {
         foreach ($templates as $i => $template) {
             $template->config = json_decode($template->config);
             $template->template = json_decode($template->template);
+            // A default template's name and description are lang strings. The DB copy is only written
+            // when the template is first installed, so it goes stale and is never translated.
+            // Old upgrade steps run this before the uniqueid column exists.
+            if (isset($template->uniqueid) && isset(self::DEFAULTTEMPLATES[$template->uniqueid])) {
+                $templateshortname = self::DEFAULTTEMPLATES[$template->uniqueid];
+                $template->name = get_string('aigentemplatename:' . $templateshortname, constants::M_COMPONENT);
+                $template->description = get_string('aigentemplatedescription:' . $templateshortname, constants::M_COMPONENT);
+            }
             $templates[$i] = (array) $template;
         }
         return $templates;
@@ -973,6 +992,36 @@ class aigen {
     }
 
     /**
+     * The lesson's native language as a prompt should name it, for definitions and translations.
+     *
+     * When the native language is the target language, or is not set, the definitions are in an
+     * easy version of the target language. The prompts read as prose, so this is a language name
+     * (always in English, as the generation may run in a task with another current language).
+     *
+     * @param \stdClass $moduleinstance The lesson the items are being generated into.
+     * @return string eg "Japanese" or "easy English (US)"
+     */
+    public static function prompt_native_language($moduleinstance) {
+        $target = (string) $moduleinstance->ttslanguage;
+        $native = (string) ($moduleinstance->nativelang ?? '');
+        // The '0' value is the "--" option: no native language, so we use the target language.
+        if ($native === '' || $native === '0') {
+            $native = $target;
+        }
+        $languagename = function ($code) {
+            $key = strtolower($code);
+            if (get_string_manager()->string_exists($key, constants::M_COMPONENT)) {
+                return get_string_manager()->get_string($key, constants::M_COMPONENT, null, 'en');
+            }
+            return $code;
+        };
+        if (utils::fetch_feedback_language($native, $target) !== $native) {
+            return 'easy ' . $languagename($target);
+        }
+        return $languagename($native);
+    }
+
+    /**
      * Fill in the template inputs the caller left empty that have a lesson setting to fall back to.
      * Run before the required-input check, so an unsupplied input that the lesson can answer is
      * answered rather than rejected.
@@ -1059,8 +1108,7 @@ class aigen {
 
         foreach (self::DEFAULTTEMPLATES as $uniqueid => $templateshortname) {
             $t = new \stdClass();
-            $t->name = get_string("aigentemplatename:" . $templateshortname, constants::M_COMPONENT);
-            $t->description = get_string("aigentemplatedescription:" . $templateshortname, constants::M_COMPONENT);
+            [$t->name, $t->description] = self::default_template_texts($templateshortname);
             // Load the configuration and template files for the aigen template.
             // These files should be located in the specified directory.
             // Ensure that the paths are correct and the files exist.
@@ -1079,5 +1127,79 @@ class aigen {
                 debugging('Error reading $template config file: ' . $e->getMessage(), DEBUG_DEVELOPER);
             }
         }
+        // An updated template keeps the name and description it was installed with, so refresh them.
+        self::sync_default_template_texts();
+    }
+
+    /**
+     * The English name and description of a default template, from its lang strings.
+     *
+     * The lang strings are the source of truth. English is used because the DB copy is what the
+     * template editor shows and saves, and the lesson template sync writes it back to the English
+     * lang file.
+     *
+     * @param string $templateshortname The template's DEFAULTTEMPLATES short name.
+     * @return array [name, description]
+     */
+    public static function default_template_texts($templateshortname) {
+        $sm = get_string_manager();
+        return [
+            $sm->get_string('aigentemplatename:' . $templateshortname, constants::M_COMPONENT, null, 'en'),
+            $sm->get_string('aigentemplatedescription:' . $templateshortname, constants::M_COMPONENT, null, 'en'),
+        ];
+    }
+
+    /**
+     * Copy the lang string name and description of each default template into its DB record:
+     * the name and description columns, and the lessonTitle and lessonDescription in its config.
+     * These are what the template editor shows, and they are otherwise only set at install.
+     *
+     * @return void
+     */
+    public static function sync_default_template_texts() {
+        global $DB;
+
+        foreach (self::DEFAULTTEMPLATES as $uniqueid => $templateshortname) {
+            [$name, $description] = self::default_template_texts($templateshortname);
+            $records = $DB->get_records('minilesson_templates', ['uniqueid' => $uniqueid], '', 'id, name, description, config');
+            foreach ($records as $record) {
+                $config = self::set_config_text($record->config, 'lessonTitle', $name);
+                $config = self::set_config_text($config, 'lessonDescription', $description);
+                if ($record->name !== $name || $record->description !== $description || $config !== $record->config) {
+                    $record->name = $name;
+                    $record->description = $description;
+                    $record->config = $config;
+                    $record->timemodified = time();
+                    $DB->update_record('minilesson_templates', $record);
+                }
+            }
+        }
+    }
+
+    /**
+     * Set one top level string value in a template config's JSON text, leaving the rest of the text
+     * as it is. The config is stored as written, and re-encoding it would reformat all of it.
+     *
+     * @param string $json The config JSON.
+     * @param string $key The key, eg lessonTitle.
+     * @param string $value The new value.
+     * @return string The config JSON, unchanged if the key is not found.
+     */
+    public static function set_config_text($json, $key, $value) {
+        $decoded = json_decode((string) $json);
+        if (!is_object($decoded) || !isset($decoded->$key) || $decoded->$key === $value) {
+            return $json;
+        }
+        $pattern = '/("' . preg_quote($key, '/') . '"\s*:\s*)"(?:[^"\\\\]|\\\\.)*"/';
+        $count = 0;
+        $newjson = preg_replace_callback($pattern, function ($m) use ($value) {
+            return $m[1] . json_encode($value);
+        }, $json, 1, $count);
+        // Only accept the edit if it gave valid JSON with the new value.
+        $check = json_decode((string) $newjson);
+        if (!$count || !is_object($check) || $check->$key !== $value) {
+            return $json;
+        }
+        return $newjson;
     }
 }

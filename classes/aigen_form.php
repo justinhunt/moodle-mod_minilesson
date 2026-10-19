@@ -129,7 +129,8 @@ class aigen_form extends \moodleform {
 
         // We will also need to fetch the file areas for each item.
         $contextfileareas = [];
-        $availablecontext = self::mappings();
+        // The lesson's native language is not a user field, but a prompt can map a placeholder to it.
+        $availablecontext = array_merge(self::mappings(), [aigen::NATIVE_LANGUAGE_CONTEXT]);
 
         // Now we loop through the items in the activity and fetch the AI generation prompt for each item.
         // We also fetch the placeholders for each item, and update the available context fields.

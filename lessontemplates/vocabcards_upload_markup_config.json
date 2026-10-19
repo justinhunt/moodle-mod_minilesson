@@ -54,7 +54,7 @@
         }
     ],
     "lessonTitle": "Vocab Cards (upload with markup)",
-    "lessonDescription": "A set of vocabulary cards. Each card can have up to 4 lines of text: usually keyword | keyword-translation | keyword-examplesentence|keyword-examplesentence-translation\r\nAn image will be generated for each card based on the keyword and the image style specified",
+    "lessonDescription": "A set of vocabulary cards. Each card can have up to 4 lines of text: usually keyword | keyword-translation | keyword-examplesentence|keyword-examplesentence-translation\nAn image will be generated for each card based on the keyword and the image style specified",
     "uniqueid": "6a3546ed4f010",
     "version": "4",
     "agentonly": 1,

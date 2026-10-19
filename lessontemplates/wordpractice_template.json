@@ -98,7 +98,7 @@
                 ""
             ],
             "aigradefeedback": "Explain each mistake simply.",
-            "aigradefeedbacklanguage": "Thank you for your response. Remember to check your grammar and try to use the keywords provided.",
+            "aigradefeedbacklanguage": "native",
             "aigradeinstructions": "Penalize 1 mark for each grammar mistake. Award 1 mark for each use of the keywords: house key, pocket, drop, search, police.",
             "totalmarks": "10",
             "targetwordcount": "30"

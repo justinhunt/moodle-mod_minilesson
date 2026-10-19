@@ -83,7 +83,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -219,7 +219,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -355,7 +355,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -491,7 +491,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -627,7 +627,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -763,7 +763,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -899,7 +899,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -1035,7 +1035,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -1171,7 +1171,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -1307,7 +1307,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_text"
+                    "mapping": "native_language"
                 }
             ]
         },
@@ -1364,7 +1364,7 @@
     "lessonTitle": "Choose the correct reply.",
     "lessonDescription": "Student hears 10 short conversations and must choose the best next reply from the 3 options offered. Each question has a picture. It is based on the Eiken Level 3 English test listening section. You need to enter the  location and situation (usually a problem) for each conversation. eg \"two friends at the beach and one has lost their wallet\"",
     "uniqueid": "690eb6a91c972",
-    "version": "5",
+    "version": "6",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -1407,11 +1407,10 @@
             ]
         },
         "user_text": {
-            "enabled": true,
+            "enabled": false,
             "title": "Native Language",
             "description": "Enter the native language of the learner, so a translation of the conversation can be shown,",
-            "type": "text",
-            "defaultfrom": "nativelang"
+            "type": "text"
         },
         "user_keywords": {
             "enabled": false,

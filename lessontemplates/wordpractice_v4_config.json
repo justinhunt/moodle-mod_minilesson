@@ -57,7 +57,7 @@
                 },
                 {
                     "name": "nativelanguage",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 },
                 {
                     "name": "targetlanguage",
@@ -326,9 +326,9 @@
         }
     ],
     "lessonTitle": "Word Practice v4",
-    "lessonDescription": "Enter 4 - 10 keywords or phrases, and set the user's native language, and an image style. They will be used to generate:\r\ni)  a set of vocab cards with translations and example sentences\r\nii) scatter activity (matching keyword\/phrase with translation) \r\niii)  a wordcards item - listen and choose mode \r\niv)  a wordcards item - listen and type mode\r\nv)  a wordcards item - choose the word mode \r\nvi)  a wordcards item - type the word mode",
+    "lessonDescription": "Enter 4 - 10 keywords or phrases, and an image style. Translations use the native language set in the MiniLesson settings. They will be used to generate:\ni)  a set of vocab cards with translations and example sentences\nii) scatter activity (matching keyword\/phrase with translation)\niii)  a wordcards item - listen and choose mode\niv)  a wordcards item - listen and type mode\nv)  a wordcards item - choose the word mode\nvi)  a wordcards item - type the word mode",
     "uniqueid": "6a5dc6971e891",
-    "version": "7",
+    "version": "8",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -370,11 +370,10 @@
             "type": "textarea"
         },
         "user_customdata1": {
-            "enabled": true,
+            "enabled": false,
             "title": "Native language",
             "description": "The language the keyword and example sentences should be translated into",
-            "type": "text",
-            "defaultfrom": "nativelang"
+            "type": "text"
         },
         "user_customdata2": {
             "enabled": true,

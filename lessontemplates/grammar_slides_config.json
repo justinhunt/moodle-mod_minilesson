@@ -70,15 +70,15 @@
                 },
                 {
                     "name": "instructionlanguage",
-                    "mapping": "user_customdata3"
+                    "mapping": "native_language"
                 }
             ]
         }
     ],
     "lessonTitle": "Grammar Explanation Slides",
-    "lessonDescription": "This template will create a set of slides to teach the specified grammar point. The target language of the MiniLesson will be used for examples, and the instruction language you specify will the language used to do the explaining.",
+    "lessonDescription": "This template will create a set of slides to teach the specified grammar point. The target language of the MiniLesson will be used for examples, and the native language set in the MiniLesson settings will be used to do the explaining.",
     "uniqueid": "6a362aeb558cb",
-    "version": "4",
+    "version": "5",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -128,7 +128,7 @@
             ]
         },
         "user_customdata3": {
-            "enabled": true,
+            "enabled": false,
             "title": "Instruction language",
             "description": "The language which should be used to explain in. e.g Japanese",
             "type": "text"

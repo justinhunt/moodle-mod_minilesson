@@ -70,15 +70,15 @@
                 },
                 {
                     "name": "nativelanguage",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 }
             ]
         }
     ],
-    "lessonTitle": "Choose the correct word (generate sentences) ",
-    "lessonDescription": "Create a choose-the-correct-word activity using a Word Shuffle item. Enter 4 - 10 keywords. The keywords will be used to generate sentences each with a gap and 4 possible word choices. A native language sentence translation and a picture in the specified image style will be generated for each sentence.",
+    "lessonTitle": "Choose the correct word (generate sentences)",
+    "lessonDescription": "Create a choose-the-correct-word activity using a Word Shuffle item. Enter 4 - 10 keywords. The keywords will be used to generate sentences each with a gap and 4 possible word choices. A native language sentence translation and a picture in the specified image style will be generated for each sentence. Translations use the native language set in the MiniLesson settings.",
     "uniqueid": "6a349d7edd597",
-    "version": "6",
+    "version": "7",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -120,11 +120,10 @@
             "type": "textarea"
         },
         "user_customdata1": {
-            "enabled": true,
+            "enabled": false,
             "title": "Native language",
             "description": "The language for the sentence translations",
-            "type": "text",
-            "defaultfrom": "nativelang"
+            "type": "text"
         },
         "user_customdata2": {
             "enabled": true,

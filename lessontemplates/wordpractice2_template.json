@@ -67,7 +67,7 @@
                 ""
             ],
             "aigradefeedback": "Explain each mistake simply.",
-            "aigradefeedbacklanguage": "ar-AE",
+            "aigradefeedbacklanguage": "native",
             "freewritingtopic": "",
             "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \r\nTarget word\/phrases: \r\n{ai data1}\r\n\r\nPreviously studied sentences:\r\n{ai data2}",
             "freewritingaidata1": "much",
@@ -85,7 +85,7 @@
                 ""
             ],
             "aigradefeedback": "Explain each mistake simply.",
-            "aigradefeedbacklanguage": "ja-JP",
+            "aigradefeedbacklanguage": "native",
             "freewritingtopic": "",
             "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks. Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \nTarget word\/phrases: \n{ai data1}\n\nPreviously studied sentences:\n{ai data2}",
             "freewritingaidata1": "a lot of",
@@ -103,7 +103,7 @@
                 ""
             ],
             "aigradefeedback": "Explain each mistake simply.",
-            "aigradefeedbacklanguage": "ja-JP",
+            "aigradefeedbacklanguage": "native",
             "freewritingtopic": "",
             "aigradeinstructions": "The student should write one original example sentence in the target language ({target language}) for each of the target words\/phrases. Each correct sentence is worth three marks.  Remove 1 mark for each spelling, or grammatical error. And give no marks for a sentence that does not contain one of the target words\/phrases . \nTarget word\/phrases: \n{ai data1}\n\nPreviously studied sentences:\n{ai data2}",
             "freewritingaidata1": "many",

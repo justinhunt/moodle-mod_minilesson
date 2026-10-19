@@ -63,7 +63,7 @@
             ]
         }
     ],
-    "lessonTitle": "Word Shuffle (upload sentences) ",
+    "lessonTitle": "Word Shuffle (upload sentences)",
     "lessonDescription": "Create a Word Shuffle activity by supplying  4 - 10 sentences. A picture in the specified image style will be generated to go with each sentence in the shuffle activity.",
     "uniqueid": "6a338cfe5bca3",
     "version": "5",

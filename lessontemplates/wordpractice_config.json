@@ -57,7 +57,7 @@
                 },
                 {
                     "name": "nativelanguage",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 },
                 {
                     "name": "targetlanguage",
@@ -233,7 +233,7 @@
             "promptfields": [
                 {
                     "name": "native_language",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 },
                 {
                     "name": "language",
@@ -247,7 +247,7 @@
         },
         {
             "itemnumber": 4,
-            "prompt": "Generate a short writing question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] . Set the aigradefeedbacklanguage to {native_language}. Also generate instructions for the AI grader (aigradeinstructions) that tell it to penalize 1 mark per grammar mistake and to give one mark for each use of a keyword: [{keywords}]",
+            "prompt": "Generate a short writing question(text) suitable for {level} level learners of {language} on the topic of: [{topic}] . Also generate instructions for the AI grader (aigradeinstructions) that tell it to penalize 1 mark per grammar mistake and to give one mark for each use of a keyword: [{keywords}]",
             "generatemethod": "generate",
             "generatefileareasmethod": "generate",
             "generatefields": [
@@ -263,7 +263,7 @@
                 },
                 {
                     "name": "aigradefeedbacklanguage",
-                    "generate": 1,
+                    "generate": 0,
                     "mapping": ""
                 },
                 {
@@ -324,7 +324,7 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 },
                 {
                     "name": "keywords",
@@ -336,7 +336,7 @@
     "lessonTitle": "Word Practice v1",
     "lessonDescription": "Enter a list of words (5) and a topic and in an image style, Poodll will make a activity with vocab cards, listening and typing gapfills, a space game a free writing activity",
     "uniqueid": "6874e6ca1c71a",
-    "version": "7",
+    "version": "8",
     "agentonly": 0,
     "fieldmappings": {
         "target_language": {
@@ -378,11 +378,10 @@
             "type": "textarea"
         },
         "user_customdata1": {
-            "enabled": true,
+            "enabled": false,
             "title": "Native Language",
             "description": "The native language of the learners",
-            "type": "text",
-            "defaultfrom": "nativelang"
+            "type": "text"
         },
         "user_customdata2": {
             "enabled": true,

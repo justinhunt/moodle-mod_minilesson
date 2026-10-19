@@ -1589,5 +1589,47 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026101900, 'minilesson');
     }
 
+    if ($oldversion < 2026101901) {
+        // Audio chat instructions no longer tell the AI the student's native language, which did not help
+        // it, and was often the target language. Rewrite that sentence in the admin prompts and in existing
+        // audio chat items. Only this exact sentence changes.
+        $search = 'The student is a native speaker of {native language}.';
+        $replace = 'The student is learning to speak {target language}.';
+
+        for ($i = 1; $i <= constants::MAX_AI_PROMPTS; $i++) {
+            $name = 'audiochat_instructionsprompt_' . $i;
+            $prompt = get_config(constants::M_COMPONENT, $name);
+            if (!empty($prompt) && strpos($prompt, $search) !== false) {
+                set_config($name, str_replace($search, $replace, $prompt), constants::M_COMPONENT);
+            }
+        }
+
+        // The audio chat instructions are stored in customtext6.
+        $select = 'type = :type AND ' . $DB->sql_like('customtext6', ':sentence');
+        $params = ['type' => 'audiochat', 'sentence' => '%' . $DB->sql_like_escape($search) . '%'];
+        $items = $DB->get_recordset_select('minilesson_rsquestions', $select, $params, '', 'id, customtext6');
+        foreach ($items as $item) {
+            $newinstructions = str_replace($search, $replace, $item->customtext6);
+            $DB->set_field('minilesson_rsquestions', 'customtext6', $newinstructions, ['id' => $item->id]);
+        }
+        $items->close();
+
+        // Update default templates - the templates that asked for a native language now take it from the
+        // lesson, and their audio chat and AI grade items no longer name a fixed language.
+        \mod_minilesson\aigen::create_default_templates();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026101901, 'minilesson');
+    }
+
+    if ($oldversion < 2026101902) {
+        // Default template names and descriptions in the DB were only set at install, so the template
+        // editor showed old text. Copy them from the lang strings.
+        \mod_minilesson\aigen::sync_default_template_texts();
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026101902, 'minilesson');
+    }
+
     return true;
 }

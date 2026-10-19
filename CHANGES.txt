@@ -10,6 +10,17 @@ Version 1.1.59 (Build 2026101700)
   native language is the same as the target language (#86)
 - added a {feedback language} placeholder to AI feedback prompts. Existing audio chat feedback prompts
   are updated to use it
+- AI generation templates no longer ask for a native language. They use the native language set
+  in the MiniLesson settings. If it is not set, or is the same as the target language, definitions
+  and translations are in easy target language
+- AI graded items made by AI generation templates now give feedback in the lesson's native language
+  (some had a fixed language, such as Japanese)
+- audio chat prompts now say "The student is learning to speak [target language]" instead of naming
+  the student's native language. Existing admin prompts and audio chat items are updated
+- if a lesson has no native language set, AI feedback is now in easy target language. Before, audio
+  chat gave feedback in English, and free writing and free speaking did not set a language
+- AI generation template names and descriptions are now the same in the template chooser, the
+  generation form, the template editor and the web services
 
 Version 1.1.58 (Build 2026101300)
 - Added list view to cards item type

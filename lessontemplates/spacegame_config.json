@@ -55,15 +55,15 @@
                 },
                 {
                     "name": "native_language",
-                    "mapping": "user_customdata1"
+                    "mapping": "native_language"
                 }
             ]
         }
     ],
     "lessonTitle": "Space Game",
-    "lessonDescription": "Enter 4 - 10 keywords\/phrases. The keywords\/phrases will be used to generate a space game activity with definitons in the user's native language. ",
+    "lessonDescription": "Enter 4 - 10 keywords\/phrases. The keywords\/phrases will be used to generate a space game activity with definitions in the native language set in the MiniLesson settings.",
     "uniqueid": "6a31071c21ad1",
-    "version": "2",
+    "version": "3",
     "fieldmappings": {
         "target_language": {
             "enabled": false,
@@ -104,11 +104,10 @@
             "type": "textarea"
         },
         "user_customdata1": {
-            "enabled": true,
+            "enabled": false,
             "title": "Native language",
             "description": "The language the keyword definitions should be in.",
-            "type": "text",
-            "defaultfrom": "nativelang"
+            "type": "text"
         },
         "user_customdata2": {
             "enabled": false,

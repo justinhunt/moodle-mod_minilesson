@@ -59,7 +59,7 @@
         }
     ],
     "lessonTitle": "Typing GapFill (upload sentences with markup)",
-    "lessonDescription": "Create a Typing GapFill item by supplying:\r\n i)  1 - 30 sentences already marked up with gap words and hints (optional).\r\nii) The same sentences with no mark up or hints.\r\niii) An image style\r\n A picture will be generated in the specified image style to go with each sentence in the Typing GapFill item.",
+    "lessonDescription": "Create a Typing GapFill item by supplying:\n i)  1 - 30 sentences already marked up with gap words and hints (optional).\nii) The same sentences with no mark up or hints.\niii) An image style\n A picture will be generated in the specified image style to go with each sentence in the Typing GapFill item.",
     "uniqueid": "6a35457039d98",
     "version": "3",
     "agentonly": 1,

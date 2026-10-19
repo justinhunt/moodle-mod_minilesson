@@ -370,8 +370,8 @@ class itemtype extends item {
                 'description' => 'The instructions that drive the AI\'s side of the conversation: its role, '
                     . 'what to discuss, how simply to speak, and how/when to end the chat (e.g. "after 3 speaking '
                     . 'turns, thank them and ask them to press the end button"). ' . $placeholdernote,
-                'example' => 'You are {ai role}. You are teaching {target language}. The student is a native '
-                    . 'speaker of {native language}. Today the discussion topic is: {topic}. Speak simply and '
+                'example' => 'You are {ai role}. You are teaching {target language}. The student is learning to '
+                    . 'speak {target language}. Today the discussion topic is: {topic}. Speak simply and '
                     . 'slowly, keep your responses brief, and give the student every opportunity to speak.',
             ],
             'audiochatgradeinstructions' => [
@@ -496,7 +496,7 @@ class itemtype extends item {
                         'audiochatvoice' => 'sage',
                         'audiochatnativelanguage' => 'native',
                         'audiochatinstructions' => 'You are {ai role}. Your name is {ai voice}. You are teaching '
-                            . '{target language}. The student is a native speaker of {native language}. Today the '
+                            . '{target language}. The student is learning to speak {target language}. Today the '
                             . 'discussion topic is: {topic}. Please discuss it with your student. Speak simply and '
                             . 'slowly. Your responses should be brief. Your aim is to give the student opportunity '
                             . 'to speak. After the student has had 3 speaking turns, thank them and ask them to '
@@ -692,6 +692,10 @@ class itemtype extends item {
             $nativelanguage = $this->moduleinstance->ttslanguage;
         } else if ($nativelanguage == constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE) {
             $nativelanguage = $this->moduleinstance->nativelang;
+        }
+        // With no native language set ("--" is stored as '0'), use the target language.
+        if (empty($nativelanguage)) {
+            $nativelanguage = $this->moduleinstance->ttslanguage;
         }
         // If that did not work, set it en-US.
         if (empty($nativelanguage)) {

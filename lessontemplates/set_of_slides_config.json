@@ -71,7 +71,7 @@
         }
     ],
     "lessonTitle": "Set of Slides",
-    "lessonDescription": "Enter a description of the tutorial that you would like AI to generate, and it will generate a set of slides with text and images for you to use.",
+    "lessonDescription": "This template will create a tutorial slides that are based on a description of what you want to teach.",
     "uniqueid": "69076f35b4c3b",
     "version": "32",
     "fieldmappings": {
