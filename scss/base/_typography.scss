@@ -1,6 +1,11 @@
 // Base typography
 
+// Deprecated: templates should set the direction of lesson text with a dir attribute (see
+// utils::get_text_direction()). This class remains for item types and saved results that use it.
+// Moodle flips CSS direction rules on right to left sites; rtl:ignore keeps this one as it is,
+// and "start" aligns the text to the right without being flipped to the left.
 .mod_minilesson_rtl {
+  /*rtl:ignore*/
   direction: rtl;
-  text-align: right;
+  text-align: start;
 }

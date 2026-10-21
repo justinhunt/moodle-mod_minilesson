@@ -38,10 +38,5 @@
     text-align: start;
     // The text keeps its paragraph breaks as new lines.
     white-space: pre-line;
-
-    &.mod_minilesson_rtl {
-      direction: rtl;
-      text-align: start;
-    }
   }
 }

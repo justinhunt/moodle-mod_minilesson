@@ -5,10 +5,10 @@
   <audio id="{{uniqueid}}_player"></audio>
   <!-- @@CLOUDPOODLLTOKEN@@ -->
   <!-- title + instructions -->
-    {{#title}}<div class="minilesson_questionheader"><b>{{{title}}}</b></div>{{/title}}
+    {{#title}}<div class="minilesson_questionheader" dir="auto"><b>{{{title}}}</b></div>{{/title}}
     {{^newui}}
-    {{#iteminstructions}}<div class="mod_minilesson_iteminstructions">{{iteminstructions}}</div>{{/iteminstructions}}
-    {{#itemtext}}<div class="mod_minilesson_itemtext {{rtl}}">{{{itemtext}}}</div>{{/itemtext}}
+    {{#iteminstructions}}<div class="mod_minilesson_iteminstructions" dir="auto">{{iteminstructions}}</div>{{/iteminstructions}}
+    {{#itemtext}}<div class="mod_minilesson_itemtext" dir="{{contentdir}}" lang="{{contentlang}}">{{{itemtext}}}</div>{{/itemtext}}
     {{/newui}}
     {{#itemttsaudio}}<div class="mod_minilesson_itemttsaudio_cont">{{> mod_minilesson/ttsaudio}}</div>{{/itemttsaudio}}
     {{#horizontal}}

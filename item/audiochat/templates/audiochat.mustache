@@ -5,7 +5,7 @@
         <img class="audiochat_image startmodule_image" src="{{{itemimageurl}}}" alt="{{#str}}audiochat, mod_minilesson{{/str}}">
     </div>
     <div class="startmodule_title audiochat_title">{{#str}}audiochat, mod_minilesson{{/str}}</div>
-    <div class="startmodule_description audiochat_description">{{iteminstructions}}</div>
+    <div class="startmodule_description audiochat_description" dir="auto">{{iteminstructions}}</div>
     <div class="start_mainmenu audiochat_mainmenu">
         <button class="btn audiochat_start_btn startmodule_btn" data-action="startmodule">
             {{#str}}start, mod_minilesson{{/str}} <i class="fa fa-play ml-1"></i>
@@ -30,7 +30,7 @@
                                 <img src="{{{avatarimage}}}?height=80&width=80&themerev={{{config.themerev}}}" alt="AI Assistant" width="125" height="125" class="ml_unique_avatar">
                                 <audio class="ml_ac_hiddenaudio" autoplay></audio>
                             </div>
-                            <div class="aiimage-item-text">
+                            <div class="aiimage-item-text" dir="{{contentdir}}" lang="{{contentlang}}">
                                 {{{itemtext}}}
                             </div>
                         </div>
@@ -63,14 +63,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="itemtext_afterchatactive text-center">
+                <div class="itemtext_afterchatactive text-center" dir="{{contentdir}}" lang="{{contentlang}}">
                     {{{itemtext}}}
                 </div>
 
                 <!-- Conversation Transcript - Takes center stage when active -->
                 <div id="conversation-section" class="mb-4 ml_ac_conversation-section hidden mx-auto ml_unique_conversationsection">
                     <div class="bg-white ml_unique_transcriptbox">
-                        <div id="messages-container" class="ml_ac_messages-container p-4 ml_unique_messagescontainer">
+                        <div id="messages-container" class="ml_ac_messages-container p-4 ml_unique_messagescontainer" dir="{{contentdir}}" lang="{{contentlang}}">
                             <!-- Messages will be appended here -->
                         </div>
                         <div id="finished-message" class="ml_ac_finished-message hidden text-center bold  ml_unique_finishmessage">

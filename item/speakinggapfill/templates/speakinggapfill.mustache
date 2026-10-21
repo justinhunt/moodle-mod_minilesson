@@ -2,8 +2,8 @@
 <div class="minilesson_sgapfill_player_box item-container">
     <div style="display:none;" class="sgapfill_results">{{#str}}dc_results, mod_minilesson{{/str}}</div>
 
-    <div class="maintitle sgapfill_maintitle" style="display: none">{{iteminstructions}}</div>
-    <div class="sgapfill_itemtext mod_minilesson_itemtext {{rtl}}" style="display: none">{{{itemtext}}}</div>
+    <div class="maintitle sgapfill_maintitle" dir="auto" style="display: none">{{iteminstructions}}</div>
+    <div class="sgapfill_itemtext mod_minilesson_itemtext" dir="{{contentdir}}" lang="{{contentlang}}" style="display: none">{{{itemtext}}}</div>
 
     <div class="startmodule_image_container sgapfill_image_container">
         <img class="startmodule_image sgapfill_image" src="{{{itemimageurl}}}" alt="{{#str}}sgapfill, mod_minilesson{{/str}}">
@@ -11,7 +11,7 @@
 
     <div class="startmodule_title sgapfill_title">{{#str}}speakinggapfill, mod_minilesson{{/str}}</div>
 
-    <div class="startmodule_description sgapfill_description">{{iteminstructions}}</div>
+    <div class="startmodule_description sgapfill_description" dir="auto">{{iteminstructions}}</div>
 
     <div class="start_mainmenu sgapfill_mainmenu">
         <div class="sgapfill_loaded" style="display:none;">
@@ -32,7 +32,7 @@
         </button>
     </div>
 
-    <div style="display:none;" class="question"></div>
+    <div style="display:none;" class="question" dir="{{contentdir}}" lang="{{contentlang}}"></div>
 
     <div style="display:none;" class="sgapfill_controls pb-2">
         <div class="sgapfill_speakbtncontainer">

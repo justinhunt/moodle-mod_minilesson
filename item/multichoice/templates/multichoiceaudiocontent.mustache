@@ -1,4 +1,4 @@
-<div class="mcchoiceswrapper {{layoutclassname}}">
+<div class="mcchoiceswrapper {{layoutclassname}}" dir="{{contentdir}}" lang="{{contentlang}}">
   {{#sentences}}
       <div class="mcplayrow">
           <div class="col-md-1 mcaudioplayer mcaudioplayer_{{indexplusone}}">
@@ -7,7 +7,7 @@
               </div>
           </div>
           <div class="col-md-11 mcaudiotranscript mcaudiotranscript_{{index}}">
-              <div class="minilesson_mc_response {{rtl}}" data-index="{{indexplusone}}" id="{{uniqueid}}_option{{indexplusone}}" name="{{uniqueid}}_options" >
+              <div class="minilesson_mc_response" data-index="{{indexplusone}}" id="{{uniqueid}}_option{{indexplusone}}" name="{{uniqueid}}_options" >
                   <span class="minilesson_sentence">{{prompt}}</span>
                   <span class="minilesson_mc_resultbox">
                   <i class="fa fa-square-o fa-lg minilesson_mc_unanswered"></i>

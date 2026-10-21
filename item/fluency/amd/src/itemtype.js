@@ -387,7 +387,10 @@ define(
                 review_data.items = self.items_for_results_display(includeaudioself, true);
 
                 //display results
-                templates.render('mod_minilesson/listitemresults',review_data).then(
+                // The results list the lesson text, so they take its direction.
+                review_data.contentdir = self.itemdata.contentdir;
+                review_data.contentlang = self.itemdata.contentlang;
+                templates.render('mod_minilesson/listitemresults', review_data).then(
                     function (html,js) {
                         self.resultsbox.html(html);
                     //show and hide
@@ -440,8 +443,9 @@ define(
                 code += self.items[self.game.pointer].displayprompt || self.items[self.game.pointer].prompt;
                 code += "</div>";
                 if (self.items[self.game.pointer].hintdisplay) {
-                    var rtl = self.itemdata.hintrtl ? ' rtl' : '';
-                    code += "<div class='fluency_prompt_hint" + rtl + "'>";
+                    // The hint is in the native language, so it does not take the direction of the lesson text.
+                    var hintdir = self.itemdata.hintrtl ? 'rtl' : 'auto';
+                    code += "<div class='fluency_prompt_hint' dir='" + hintdir + "'>";
                     code += self.items[self.game.pointer].target;
                     code += "</div>";
                 }
@@ -558,11 +562,9 @@ define(
                 itemfeedbackcontainer.html("");
 
                 var twoletterlang = self.itemdata.language.substr(0, 2);
-                if (self.itemdata.rtl) {
-                          var words = pronunciation_result.privPronJson.Words.reverse();
-                } else {
-                        var words = pronunciation_result.privPronJson.Words;
-                }
+                // The question area carries the lesson's dir, so the browser puts the words of a
+                // right to left language in order. Reversing them here would undo that.
+                var words = pronunciation_result.privPronJson.Words;
 
 
         // Render pronunciation feedback for each word

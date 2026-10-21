@@ -237,14 +237,27 @@ define(
                 self.renderUI();
             },
 
+            /**
+             * The direction of AI feedback, from the letters in it, leaning towards the language it
+             * was asked for. See utils::detect_text_direction() in PHP, which this matches.
+             *
+             * @param {string} text
+             * @param {boolean} askedrtl Whether the feedback was asked for in a right to left language.
+             * @returns {string} 'rtl' or 'ltr'
+             */
+            detect_text_direction: function (text, askedrtl) {
+                var rtlletters = (text.match(/[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/g) || []).length;
+                var allletters = (text.match(/\p{L}/gu) || []).length;
+                if (allletters === 0) {
+                    return askedrtl ? 'rtl' : 'ltr';
+                }
+                return rtlletters / allletters > (askedrtl ? 0.2 : 0.5) ? 'rtl' : 'ltr';
+            },
+
             grade_activity: function (stepdata) {
                 var self = this;
                 var gradingData = self.driver.getGradingData();
                 var wordcount = self.count_words();
-
-                // Carried into the stored results data, because the review template is rendered
-                // from that, long after itemdata has gone.
-                stepdata.resultsdata.feedbackrtl = self.itemdata.feedbackrtl || '';
 
                 if (gradingData && gradingData.failed) {
                     // The AI could not grade the chat, even after a retry. There is no fair
@@ -267,6 +280,8 @@ define(
                     }
 
                     stepdata.resultsdata.aifeedback = gradingData.feedback || "";
+                    stepdata.resultsdata.feedbackdir = self.detect_text_direction(
+                        stepdata.resultsdata.aifeedback, !!self.itemdata.feedbackasksrtl);
                     stepdata.resultsdata.gradeexplanation = gradingData.gradeexplanation || "";
                 } else {
                     log.debug("No grading data from AI: counting words", gradingData);

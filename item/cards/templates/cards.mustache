@@ -9,10 +9,10 @@
             <div class="minilesson-flip-card mx-auto">
                 <div class="wc-faces minilesson-flip-card-inner">
                     <div class="minilesson-flip-card-front position-relative">
-                        <div class="term" data-termid="{{{ index }}}">
+                        <div class="term" data-termid="{{{ index }}}" dir="{{contentdir}}" lang="{{contentlang}}">
                             <div class="cardline1">{{{ cardline1 }}}</div>
                             {{#cardline2}}
-                            <div class="cardline2">{{{ cardline2 }}}</div>
+                            <div class="cardline2" dir="auto">{{{ cardline2 }}}</div>
                             {{/cardline2}}
                             {{#cardline3}}
                             <div class="cardline3{{#line3audiourl}} cardline3-playable{{/line3audiourl}}">
@@ -26,7 +26,7 @@
                             </div>
                             {{/cardline3}}
                             {{#cardline4}}
-                            <div class="cardline4">{{{ cardline4 }}}</div>
+                            <div class="cardline4" dir="auto">{{{ cardline4 }}}</div>
                             {{/cardline4}}
                             {{#imageurl}}
                             <div class="term-image term-image-9">
@@ -55,7 +55,7 @@
 {{#listview}}
 <ul class="cards-glossary list-unstyled">
     {{#sentences}}
-    <li class="cards-glossary-row cards-unit">
+    <li class="cards-glossary-row cards-unit" dir="{{contentdir}}" lang="{{contentlang}}">
         <div class="cards-glossary-term">
             {{#audiourl}}
                 {{>mod_minilesson/samplettsaudio}}
@@ -63,7 +63,7 @@
             <span class="cardline1">{{{ cardline1 }}}</span>
         </div>
         {{#cardline2}}
-        <div class="cards-glossary-definition cardline2">{{{ cardline2 }}}</div>
+        <div class="cards-glossary-definition cardline2" dir="auto">{{{ cardline2 }}}</div>
         {{/cardline2}}
         {{#cardline3}}
         <div class="cards-glossary-sentence">
@@ -77,13 +77,13 @@
                 {{/line3audiourl}}
             </div>
             {{#cardline4}}
-            <div class="cardline4">{{{ cardline4 }}}</div>
+            <div class="cardline4" dir="auto">{{{ cardline4 }}}</div>
             {{/cardline4}}
         </div>
         {{/cardline3}}
         {{^cardline3}}{{#cardline4}}
         <div class="cards-glossary-sentence">
-            <div class="cardline4">{{{ cardline4 }}}</div>
+            <div class="cardline4" dir="auto">{{{ cardline4 }}}</div>
         </div>
         {{/cardline4}}{{/cardline3}}
         {{#imageurl}}

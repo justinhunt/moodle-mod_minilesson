@@ -24,13 +24,13 @@
   .ml_freespeaking_results_summaries {
     padding: 20px 40px;
     max-width: 100%;
-    text-align: left;
+    text-align: start;
     border: none;
     border-bottom: 1px solid $primary-light;
   }
 
   .ml_fs_results_summary {
-    text-align: left;
+    text-align: start;
 
     .ml_fs_sumcell_title {
       font-weight: 500;
@@ -57,6 +57,8 @@
     .ml_fs_results_summary {
       position: absolute;
       top: 0;
+      // Moodle flips left to right on right to left sites, but not the translate.
+      /*rtl:ignore*/
       left: 50%;
       transform: translateX(-50%) translateY(-50%);
       border: 1px solid $primary-border;
@@ -80,7 +82,7 @@
     :is(.freewriting-feedback-list, .freespeaking-feedback-list) {
       max-width: 90%;
       margin: 10px auto;
-      text-align: left;
+      text-align: start;
       list-style-type: disclosure-closed;
       font-family: "Inter", sans-serif;
       font-optical-sizing: auto;
@@ -154,6 +156,8 @@
   .ml_ac_results_summary {
     position: absolute;
     top: 0;
+    // Moodle flips left to right on right to left sites, but not the translate.
+    /*rtl:ignore*/
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     border: 1px solid $primary-border;

@@ -391,6 +391,9 @@ define(['jquery',
             }).length;
 
             //display results
+            // The results list the lesson text, so they take its direction.
+            review_data.contentdir = self.itemdata.contentdir;
+            review_data.contentlang = self.itemdata.contentlang;
             templates.render('mod_minilesson/listitemresults', review_data).then(
                 function (html, js) {
                     self.controls.resultscontainer.html(html);

@@ -1016,6 +1016,7 @@ abstract class item implements \templatable, \renderable {
             $testitem->ttsdialogsourcelang = $tc->sourcelang;
             $testitem->ttsdialognativelang = $tc->destlang;
             $testitem->ttsdialogcantranslate = $tc->cantranslate;
+            $testitem->ttsdialognativedir = $tc->dir;
             $testitem->ttsdialognativelangrtl = $tc->rtlclass;
         } // end of tts dialog
 
@@ -1163,7 +1164,14 @@ abstract class item implements \templatable, \renderable {
         // Show text prompt or dots, for listen and repeat really.
         $testitem->show_text = $itemrecord->{constants::SHOWTEXTPROMPT};
 
-        // For right to left languages we want to add the RTL direction and right justify.
+        // The lesson text reads in the direction of the language it is taught in, whatever the
+        // direction of the page around it. Templates set it with dir and lang attributes on the
+        // elements that hold lesson text (see utils::get_text_direction() for why not CSS).
+        $testitem->contentdir = utils::get_text_direction($this->moduleinstance->ttslanguage);
+        $testitem->contentlang = $this->moduleinstance->ttslanguage;
+
+        // Deprecated: an RTL class for item types that do not use contentdir yet. It only covers
+        // right to left lesson text, so it cannot keep a left to right lesson readable on an RTL site.
         if (utils::is_rtl($this->moduleinstance->ttslanguage)) {
             $testitem->rtl = constants::M_CLASS . '_rtl';
         } else {
@@ -2430,7 +2438,7 @@ abstract class item implements \templatable, \renderable {
      * language. Translation is offered only when the activity allows it and the native
      * language is set and differs from the language the lesson is taught in.
      *
-     * @return \stdClass cantranslate, cmid, itemid, sourcelang, destlang and rtlclass.
+     * @return \stdClass cantranslate, cmid, itemid, sourcelang, destlang, dir and rtlclass (deprecated).
      */
     public function get_translation_context() {
         $tc = new \stdClass();
@@ -2444,6 +2452,7 @@ abstract class item implements \templatable, \renderable {
             && !empty($tc->destlang) && $basesource !== $basedest;
         // The translation reads in the direction of the native language, which is
         // independent of the direction of the language the lesson is taught in.
+        $tc->dir = utils::get_text_direction($tc->destlang);
         $tc->rtlclass = utils::is_rtl($tc->destlang) ? constants::M_CLASS . '_rtl' : '';
         return $tc;
     }
@@ -2469,6 +2478,7 @@ abstract class item implements \templatable, \renderable {
         $data->translateitemid = $tc->itemid;
         $data->translatesourcelang = $tc->sourcelang;
         $data->translatedestlang = $tc->destlang;
+        $data->translatedir = $tc->dir;
         $data->translatertl = $tc->rtlclass;
         $data->translatetext = $plaintext;
         $keepterms = !empty($this->itemrecord) ? static::get_translation_keepterms($this->itemrecord) : [];

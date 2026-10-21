@@ -79,7 +79,10 @@ define(['jquery',
           //display results
             var gamebox = $("#" + self.itemdata.uniqueid + "_container .ml_dictation_rows");
             var resultsbox = $("#" + self.itemdata.uniqueid + "_container .ml_dictation_resultscontainer");
-            templates.render('mod_minilesson/listitemresults',review_data).then(
+            // The results list the lesson text, so they take its direction.
+            review_data.contentdir = self.itemdata.contentdir;
+            review_data.contentlang = self.itemdata.contentlang;
+            templates.render('mod_minilesson/listitemresults', review_data).then(
                 function (html,js) {
                     resultsbox.html(html);
                     //show and hide

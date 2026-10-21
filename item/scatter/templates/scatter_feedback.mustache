@@ -38,13 +38,13 @@
 
       <div class="term-header">
         <div class="term-title">
-            <span class="{{#correct}} term-body-correct {{/correct}} {{^correct}} term-body-incorrect {{/correct}}">{{question}}</span>
+            <span class="{{#correct}} term-body-correct {{/correct}} {{^correct}} term-body-incorrect {{/correct}}" dir="auto">{{question}}</span>
         </div>
       </div>
 
       <div class="d-flex align-items-center">
       <div class="term-body">
-          <span class="{{#correct}} term-body-correct {{/correct}} {{^correct}} term-body-incorrect {{/correct}}">{{{answer}}}</span>
+          <span class="{{#correct}} term-body-correct {{/correct}} {{^correct}} term-body-incorrect {{/correct}}" dir="auto">{{{answer}}}</span>
         </div>
         <div class="term-tick">
           {{#correct}}<div class="ml-scatter-correct"><i class='fa fa-check'></i></div>{{/correct}}

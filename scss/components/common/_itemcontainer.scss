@@ -35,12 +35,14 @@
     .form-container {
         margin: 20px auto 22px;
 
+        // Logical margins follow the dir of the lesson text. Physical ones would be flipped
+        // on right to left sites, whatever the direction of the text.
         input:first-child {
-            margin-left: 10px;
+            margin-inline-start: 10px;
         }
 
         input:last-child {
-            margin-right: 10px;
+            margin-inline-end: 10px;
         }
   }
 
@@ -62,10 +64,6 @@
     border-radius: 8px;
     padding: 18px;
     position: relative;
-
-    &.rtl {
-      direction: rtl;
-    }
 
     .hinticon-container {
       position: absolute;

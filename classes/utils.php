@@ -1238,9 +1238,15 @@ class utils {
             $aigraderesults->grammarerrors = $grammarerrors;
             $aigraderesults->grammarmatches = $grammarmatches;
             $aigraderesults->insertioncount = $insertioncount;
-            // For right to left languages we want to add the RTL direction and right justify.
-            if (self::is_rtl($feedbacklanguage)) {
-                $aigraderesults->rtl = constants::M_CLASS . '_rtl';
+        }
+        // The student's text and the corrections are in the lesson language, so they are shown in
+        // its direction (see get_text_direction()). The feedback direction comes from the feedback
+        // itself, because the AI does not always write in the language it was asked for.
+        if ($aigraderesults) {
+            $aigraderesults->contentdir = self::get_text_direction($moduleinstance->ttslanguage);
+            $aigraderesults->contentlang = $moduleinstance->ttslanguage;
+            if (!empty($aigraderesults->feedback)) {
+                $aigraderesults->feedbackdir = self::detect_text_direction($aigraderesults->feedback, $feedbacklanguage);
             }
         }
 
@@ -1284,6 +1290,50 @@ class utils {
             default:
                 return false;
         }
+    }
+
+    /**
+     * The writing direction of a language, for an HTML dir attribute.
+     *
+     * Lesson text should get its direction from a dir attribute, never from a CSS direction rule.
+     * On a right to left site Moodle flips every CSS direction rule in the theme, plugin styles
+     * included, so a rule cannot keep a passage left to right, or right to left, on all sites.
+     * The dir attribute is not touched, and the browser lays out text and punctuation from it.
+     *
+     * @param string $language A language code, e.g. en-US or ar-SA.
+     * @return string 'rtl' or 'ltr'
+     */
+    public static function get_text_direction($language) {
+        return self::is_rtl($language) ? 'rtl' : 'ltr';
+    }
+
+    /**
+     * The writing direction of AI feedback, for an HTML dir attribute.
+     *
+     * The AI does not always write in the language it was asked for, so that language alone cannot
+     * decide. Nor can dir="auto", which goes by the first letter: Arabic feedback often starts with a
+     * quoted English phrase. So we count letters, and lean towards the requested language: feedback
+     * asked for in a right to left language stays right to left while a fifth of its letters are in a
+     * right to left script (the rest being quoted examples); otherwise it takes a majority.
+     *
+     * @param string|array $text The text, or a list of lines.
+     * @param string $language The language the feedback was asked for, e.g. ar-SA.
+     * @return string 'rtl' or 'ltr'
+     */
+    public static function detect_text_direction($text, $language = '') {
+        if (is_array($text)) {
+            $text = implode(' ', array_filter($text, 'is_string'));
+        }
+        $text = (string) $text;
+        // Hebrew, Arabic, Syriac, Thaana, NKo and the other right to left scripts up to U+08FF,
+        // plus the Hebrew and Arabic presentation forms.
+        $rtlletters = preg_match_all('/[\x{0590}-\x{08FF}\x{FB1D}-\x{FDFF}\x{FE70}-\x{FEFF}]/u', $text);
+        $allletters = preg_match_all('/\p{L}/u', $text);
+        if ($allletters == 0) {
+            return self::get_text_direction($language);
+        }
+        $threshold = self::is_rtl($language) ? 0.2 : 0.5;
+        return $rtlletters / $allletters > $threshold ? 'rtl' : 'ltr';
     }
 
     // This function takes the 2-character language code ($lang) as input and returns the corresponding locale code.

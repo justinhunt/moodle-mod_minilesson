@@ -54,8 +54,6 @@ class itemtype extends item {
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
 
-        // Is rtl
-        $testitem->rtl = utils::is_rtl($this->language);
         $testitem->hintrtl = $this->itemrecord->{constants::FLUENCYHINTRTL} == 1;
 
         $testitem->readsentence = $this->itemrecord->{constants::READSENTENCE} == 1;

@@ -2,8 +2,8 @@
   <div class="minilesson_dictate_player_box item-container">
     <div style="display:none;" class="dictate_results">{{#str}}dc_results, mod_minilesson{{/str}}</div>
 
-    <div class="maintitle dictate_maintitle" style="display: none">{{iteminstructions}}</div>
-    <div class="dictate_itemtext mod_minilesson_itemtext {{rtl}}" style="display: none">{{{itemtext}}}</div>
+    <div class="maintitle dictate_maintitle" dir="auto" style="display: none">{{iteminstructions}}</div>
+    <div class="dictate_itemtext mod_minilesson_itemtext" dir="{{contentdir}}" lang="{{contentlang}}" style="display: none">{{{itemtext}}}</div>
 
     <div class="startmodule_image_container dictate_image_container">
         <img class="startmodule_image dictate_image" src="{{{itemimageurl}}}" alt="{{#str}}dictationchat, mod_minilesson{{/str}}">
@@ -11,7 +11,7 @@
 
     <div class="startmodule_title dictate_title">{{#str}}dictationchat, mod_minilesson{{/str}}</div>
 
-    <div class="startmodule_description dictate_description">{{iteminstructions}}</div>
+    <div class="startmodule_description dictate_description" dir="auto">{{iteminstructions}}</div>
 
     <div class="start_mainmenu dictate_mainmenu">
       <div class="dictate_loaded" style="display:none;">
@@ -31,7 +31,7 @@
         </button>
     </div>
 
-    <div style="display:none;" class="dictate_game {{rtl}}"></div>
+    <div style="display:none;" class="dictate_game" dir="{{contentdir}}" lang="{{contentlang}}"></div>
 
     <div style="display:none;" class="dictate_controls text-center p-4">
 

@@ -27,7 +27,7 @@
   {{/reviewsettings.showreviewdetailed}}
   <div class="mlfsr_originaltext_container">
     <b class="para-bold-title">{{#str}}original, mod_minilesson{{/str}}</b>
-    <br/><span class="mlfsr_originaltext">{{{markeduppassage}}}</span>
+    <br/><div class="mlfsr_originaltext"{{#contentdir}} dir="{{contentdir}}" lang="{{contentlang}}"{{/contentdir}}>{{{markeduppassage}}}</div>
   </div>
   {{^reviewsettings.hidecorrections}}
     <div class="mlfsr_correctedtext_container mb-3">
@@ -35,7 +35,7 @@
         <b class="para-bold-title">{{#str}}corrected, mod_minilesson{{/str}}</b>
         {{>mod_minilesson/summary_togglecorrections}}
       </div>
-      <span class="mlfsr_correctedtext">{{{markedupcorrections}}}</span>
+      <div class="mlfsr_correctedtext"{{#contentdir}} dir="{{contentdir}}" lang="{{contentlang}}"{{/contentdir}}>{{{markedupcorrections}}}</div>
     </div>
   {{/reviewsettings.hidecorrections}}
   <!--<div class="ml_freespeaking_results_summaries">
@@ -69,7 +69,7 @@
   </div>
   <br/>
   <b class="freewriting-feedback-title">{{#str}}feedback, mod_minilesson{{/str}}</b>
-  <ul class="freewriting-feedback-list {{rtl}}">
+  <ul class="freewriting-feedback-list" dir="{{#feedbackdir}}{{feedbackdir}}{{/feedbackdir}}{{^feedbackdir}}auto{{/feedbackdir}}">
     {{#feedback}}
       <li>
         {{.}}

@@ -200,12 +200,8 @@ class itemtype extends item {
         // Native language of the student.
         $this->itemrecord->{self::NATIVE_LANGUAGE} = $this->fetch_item_native_language();
         $testitem->audiochatnativelanguage = $this->fetch_student_native_language();
-
-        // The AI feedback is written in the student's native language, so it is that language,
-        // and not the lesson's target language, that decides the direction we display it in.
-        $testitem->feedbackrtl = utils::is_rtl($testitem->audiochatnativelanguage)
-            ? constants::M_CLASS . '_rtl'
-            : '';
+        // The feedback is asked for in the native language. It helps decide the feedback's direction.
+        $testitem->feedbackasksrtl = utils::is_rtl($testitem->audiochatnativelanguage);
 
         // In some cases teachers may not set the topic, so we need to handle that.
         // If the topic is empty, we check if the itemtext is set, otherwise we use 'student choice of topic'.

@@ -30,7 +30,8 @@
     * translateitemid int - The item id, for the translation web service
     * translatesourcelang string - The language the text is in, eg en-US
     * translatedestlang string - The learner's native language, eg pt-BR
-    * translatertl string - RTL class for the translation panel, empty when not RTL
+    * translatedir string - The direction of the native language, rtl or ltr
+    * translatertl string - Deprecated, use translatedir
     * translatetext string - The text to translate
     * translatemasked string - The text with the phrases to keep as [[n]] placeholders, empty when none
     * translatephrases string - JSON object of the phrases to keep, keyed by n
@@ -42,6 +43,7 @@
         "translateitemid": 7,
         "translatesourcelang": "en-US",
         "translatedestlang": "ja-JP",
+        "translatedir": "ltr",
         "translatertl": "",
         "translatemasked": "",
         "translatephrases": "",
@@ -56,6 +58,6 @@
         aria-label="{{#str}}translatetext, mod_minilesson{{/str}}"
         title="{{#str}}translatetext, mod_minilesson{{/str}}"
         data-translatetext="{{translatetext}}"><i class="fa fa-language" aria-hidden="true"></i></button>
-    <div class="ml_translate_panel d-none {{translatertl}}" dir="auto"></div>
+    <div class="ml_translate_panel d-none" dir="{{translatedir}}" lang="{{translatedestlang}}"></div>
 </div>
 {{/cantranslatetext}}

@@ -553,6 +553,8 @@
       display: inline-block;
       position: absolute;
       top: 50%;
+      // Moodle flips left to right on right to left sites, but not the translate.
+      /*rtl:ignore*/
       left: 50%;
       transform: translate(-50%, -50%);
       width: 80px;
@@ -1100,7 +1102,7 @@
         font-size: 17px;
         font-weight: 400;
         font-family: inherit;
-        text-align: left;
+        text-align: start;
         display: flex;
         align-items: center;
         gap: 10px;
@@ -1179,7 +1181,7 @@
       font-family: inherit;
       color: var(--im-text);
       cursor: pointer;
-      text-align: left;
+      text-align: start;
       transition: opacity 250ms ease;
       overflow: hidden;
 

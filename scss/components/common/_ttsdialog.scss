@@ -79,12 +79,8 @@ $ttsdialog-indent: 4rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-
-    // RTL target language: mirror the whole layout (bubble side, indents, icon
-    // placement, main text). Logical properties below do the flipping.
-    &.mod_minilesson_rtl {
-      direction: rtl;
-    }
+    // The player has the dir of the target language, so for a right to left language
+    // the logical properties below mirror the layout (bubble side, indents, icons).
   }
 
   // A conversation line: a compact rounded card, left aligned by default.
@@ -252,11 +248,6 @@ $ttsdialog-indent: 4rem;
     color: $text-muted;
     font-style: italic;
     text-align: start;
-
-    &.mod_minilesson_rtl {
-      direction: rtl;
-      text-align: start;
-    }
   }
 
   // Sound-effect lines: a small, muted, centered marker.

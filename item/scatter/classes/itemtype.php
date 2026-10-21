@@ -72,13 +72,14 @@ class itemtype extends item {
             $testitem->scatteritems[] = $scatteritemobj;
             $testitem->shuffleditems[] = ['key' => $i,
                 'type' => 'term',
-                'rtl' => !empty($testitem->rtl) ? 'rtl' : '',
+                'dir' => $testitem->contentdir,
                 'value' => $scatteritemobj->term,
                 'htmlid' => html_writer::random_id()];
 
             $testitem->shuffleditems[] = ['key' => $i,
                 'type' => 'definition',
-                'rtl' => $testitem->hintrtl ? 'rtl' : '',
+                // Definitions may be in the native language, so they find their own direction unless set.
+                'dir' => $testitem->hintrtl ? 'rtl' : 'auto',
                 'value' => $scatteritemobj->definition,
                 'htmlid' => html_writer::random_id()];
         }

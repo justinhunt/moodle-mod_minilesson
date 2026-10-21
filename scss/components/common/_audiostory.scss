@@ -53,6 +53,8 @@
     width: 120%;
     position: absolute;
     top: 50%;
+    // Moodle flips left to right on right to left sites, but not the translate.
+    /*rtl:ignore*/
     left: 50%;
     transform: translate(-50%, -50%);
   }

@@ -29,8 +29,8 @@
 {{> mod_minilesson/questionheader}}
 <div class="minilesson_fluency_box minilesson_selfcheck_box item-container">
 
-    <div class="maintitle selfcheck_maintitle" style="display: none">{{iteminstructions}}</div>
-    <div class="selfcheck_itemtext mod_minilesson_itemtext {{rtl}}" style="display: none">{{{itemtext}}}</div>
+    <div class="maintitle selfcheck_maintitle" dir="auto" style="display: none">{{iteminstructions}}</div>
+    <div class="selfcheck_itemtext mod_minilesson_itemtext" dir="{{contentdir}}" lang="{{contentlang}}" style="display: none">{{{itemtext}}}</div>
 
     <div class="startmodule_image_container selfcheck_image_container">
         <img class="startmodule_image" src="{{{itemimageurl}}}" alt="{{#str}}title, minilessonitem_selfcheck{{/str}}">
@@ -38,7 +38,7 @@
 
     <div class="startmodule_title selfcheck_title">{{#str}}title, minilessonitem_selfcheck{{/str}}</div>
 
-    <div class="startmodule_description selfcheck_description">{{iteminstructions}}</div>
+    <div class="startmodule_description selfcheck_description" dir="auto">{{iteminstructions}}</div>
 
     <div class="start_mainmenu selfcheck_mainmenu">
         <div class="selfcheck_loaded" style="display:none;">
@@ -71,7 +71,7 @@
             </button>
         </div>
 
-        <div style="display:none;" class="question"></div>
+        <div style="display:none;" class="question" dir="{{contentdir}}" lang="{{contentlang}}"></div>
         <div style="display:none;" class="fluency_controls selfcheck_controls pb-2">
             <div class="selfcheck_speakbtncontainer">
                 {{> mod_minilesson/ttrecorder}}

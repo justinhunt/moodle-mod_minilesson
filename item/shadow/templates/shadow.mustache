@@ -36,7 +36,7 @@
             <img class="shadow_image startmodule_image" src="{{{itemimageurl}}}" alt="{{#str}}shadow, mod_minilesson{{/str}}">
         </div>
         <div class="startmodule_title shadow_title">{{#str}}shadow, mod_minilesson{{/str}}</div>
-        <div class="startmodule_description shadow_description">{{iteminstructions}}</div>
+        <div class="startmodule_description shadow_description" dir="auto">{{iteminstructions}}</div>
         <div class="start_mainmenu shadow_mainmenu">
             <button class="btn shadow_start_btn startmodule_btn" data-action="startmodule">
                 {{#str}}start, mod_minilesson{{/str}} <i class="fa fa-play ml-1"></i>
@@ -58,7 +58,7 @@
         <div class="ml_shadow_loopindicator" style="display: none;"></div>
         <div class="ml_shadow_watchhint">{{#str}}watchhint, minilessonitem_shadow{{/str}}</div>
         {{#cues}}
-        <div class="ml_shadow_caption" data-cueindex="{{index}}" data-start="{{start}}" data-end="{{end}}"
+        <div class="ml_shadow_caption" dir="{{contentdir}}" lang="{{contentlang}}" data-cueindex="{{index}}" data-start="{{start}}" data-end="{{end}}"
             data-haswords="{{#haswordtimings}}1{{/haswordtimings}}{{^haswordtimings}}0{{/haswordtimings}}">
             {{#haswordtimings}}{{#words}}<span class="ml_shadow_word" data-start="{{start}}" data-end="{{end}}">{{text}}</span>
             {{/words}}{{/haswordtimings}}

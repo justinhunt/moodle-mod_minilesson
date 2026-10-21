@@ -5,7 +5,7 @@
         <img class="freewriting_image startmodule_image" src="{{{itemimageurl}}}" alt="{{#str}}freewriting, mod_minilesson{{/str}}">
     </div>
     <div class="startmodule_title freewriting_title">{{#str}}freewriting, mod_minilesson{{/str}}</div>
-    <div class="startmodule_description freewriting_description">{{iteminstructions}}</div>
+    <div class="startmodule_description freewriting_description" dir="auto">{{iteminstructions}}</div>
     <div class="start_mainmenu freewriting_mainmenu">
         <button class="btn freewriting_start_btn startmodule_btn" data-action="startmodule">
             {{#str}}start, mod_minilesson{{/str}} <i class="fa fa-play ml-1"></i>
@@ -24,7 +24,7 @@
     </div>
     <div class="ml_freewriting_actionbox">
         <div class="ml_freewriting_textareacontainer">
-            <textarea class="ml_freewriting_textarea" rows="{{textarearows}}" cols="50" placeholder="{{#str}}writehere, mod_minilesson{{/str}}" lang="{{language}}"></textarea>
+            <textarea class="ml_freewriting_textarea" rows="{{textarearows}}" cols="50" placeholder="{{#str}}writehere, mod_minilesson{{/str}}" dir="{{contentdir}}" lang="{{language}}"></textarea>
             {{#enablevkeyboard}}
                 <button class="btn ml_simple_keyboard_toggle" type="button" title="Virtual Keyboard" style="padding: 0; background: none; border: none; margin-left: 5px;">
                     <img src="{{vkeyboardurl}}" style="cursor: pointer; width: 24px; height: 24px;" alt="Virtual Keyboard" />

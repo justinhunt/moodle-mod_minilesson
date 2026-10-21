@@ -310,6 +310,9 @@ define(
                 reviewdata.totalitems = self.items.length;
                 reviewdata.items = self.items_for_results_display(true);
 
+                // The results list the lesson text, so they take its direction.
+                reviewdata.contentdir = self.itemdata.contentdir;
+                reviewdata.contentlang = self.itemdata.contentlang;
                 templates.render('mod_minilesson/listitemresults', reviewdata).then(
                     function (html, js) {
                         self.resultsbox.html(html);
@@ -354,8 +357,9 @@ define(
                 code += item.displayprompt || item.prompt;
                 code += "</div>";
                 if (item.hintdisplay) {
-                    var rtl = self.itemdata.hintrtl ? ' rtl' : '';
-                    code += "<div class='fluency_prompt_hint" + rtl + "'>";
+                    // The hint is in the native language, so it does not take the direction of the lesson text.
+                    var hintdir = self.itemdata.hintrtl ? 'rtl' : 'auto';
+                    code += "<div class='fluency_prompt_hint' dir='" + hintdir + "'>";
                     code += item.target;
                     code += "</div>";
                 }

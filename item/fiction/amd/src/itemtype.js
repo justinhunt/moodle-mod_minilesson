@@ -141,7 +141,7 @@ define([
                             that.call_translate(that.sourceLang, that.destLang, text, function (themessage) {
                                 updateStory(themessage, 100);
                             });
-                            return "<span id='ml-f-" + randomId + "' class='ml-f-inline-translated-text'></span>";
+                            return "<span id='ml-f-" + randomId + "' class='ml-f-inline-translated-text' dir='auto'></span>";
                         }
                     }
                 };
@@ -1827,7 +1827,7 @@ define([
                         lastShownMediaUrl = entry.mediaUrl;
                     }
                     var translationHTML = entry.translation
-                        ? '<p class="history-log__translation">' + self.im_escape(entry.translation) + '</p>'
+                        ? '<p class="history-log__translation" dir="auto">' + self.im_escape(entry.translation) + '</p>'
                         : '';
                     return '<div class="history-log__beat">' + mediaHTML
                         + '<p class="history-log__text">' + self.im_escape(entry.text) + '</p>'
