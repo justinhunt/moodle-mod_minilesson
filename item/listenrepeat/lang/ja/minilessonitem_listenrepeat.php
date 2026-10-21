@@ -27,4 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = '聞いて話す';
 $string['item_desc'] = '聞いて話す項目は、一連の音声プロンプトを提示し、学習者はそれに音声で応答します。主に「聞いて繰り返す」活動に使われます。';
+$string['noautoforward'] = '自動で進めない';
+$string['noautoforward_desc'] = 'オンにすると、完璧にできた後でも学習者は文をやり直せ、「続ける」を押すまで次へ進みません。';
 $string['pluginname'] = '聞いて話す';

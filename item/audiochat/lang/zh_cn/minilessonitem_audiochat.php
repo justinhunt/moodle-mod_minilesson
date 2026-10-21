@@ -26,9 +26,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = '语音聊天';
+$string['audiochat_silenceduration'] = 'AI 回复前的停顿';
+$string['audiochat_silenceduration_details'] = 'AI 判定学生本轮发言结束并开始回复之前，学生需要停止说话的时长（毫秒）。调大可让学习者在句子中间有更多停顿思考的空间；调小则对话来回更快、更像聊天。默认值为 3500（3.5 秒）。超出 500 到 30000 范围的值会回到默认值。仅在学生说话之后生效，且仅当该项目开启“自动发送”时适用。';
 $string['cantchat_ningxia'] = '聊天不可用。要使用此项目类型，必须在 MiniLesson 活动的管理设置中设置有效的 {$a} 密钥。中国（宁夏区域）也无法使用聊天。';
 $string['cloudpoodll'] = 'Cloud Poodll';
 $string['gemini'] = 'Gemini';
+$string['geminilivemodel'] = 'Gemini Live 模型';
+$string['geminilivemodel_details'] = '提供方为 Gemini 时使用的 Gemini Live 模型。Gemini 3.8 Live 是 Google 当前面向低延迟语音的默认模型。3.1 预览版是旧模型，Google 建议不再使用。此设置适用于 Gemini 和 Cloud Poodll 提供方，不适用于 OpenAI。';
+$string['gradingfailed'] = 'AI 无法为这次聊天评分，因此得分为 0。转写文本已保存。';
 $string['item_desc'] = '语音聊天项目会设置与 AI 伙伴的语音对话。可用于讨论某个话题，或就一张图片提问。给 AI 机器人的提示为自由文本，可编辑。';
 $string['openai'] = 'OpenAI';
 $string['pluginname'] = '语音聊天';

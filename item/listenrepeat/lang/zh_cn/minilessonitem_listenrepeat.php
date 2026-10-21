@@ -27,4 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = '听与说';
 $string['item_desc'] = '听与说项目会呈现一系列音频提示，学生必须给出语音回答。多用于“听并重复”活动。';
+$string['noautoforward'] = '不自动跳转';
+$string['noautoforward_desc'] = '勾选后，即使已经完美完成，学习者也可以重试句子，并且必须点击“继续”才能继续。';
 $string['pluginname'] = '听与说';

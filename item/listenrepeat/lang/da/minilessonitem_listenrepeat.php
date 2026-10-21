@@ -27,4 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Lyt og tal';
 $string['item_desc'] = 'Lyt og tal-elementet præsenterer en række lydprompter, som eleven skal give et mundtligt svar på. Bruges mest til lyt-og-gentag-opgaver.';
+$string['noautoforward'] = 'Gå ikke videre automatisk';
+$string['noautoforward_desc'] = 'Hvis markeret, kan eleven prøve en sætning igen, selv efter et perfekt forsøg, og skal trykke Fortsæt for at komme videre.';
 $string['pluginname'] = 'Lyt og tal';

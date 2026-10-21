@@ -27,4 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Kuuntele ja puhu';
 $string['item_desc'] = 'Kuuntele ja puhu -osio esittää sarjan äänikehotteita, joihin opiskelijan on annettava puhuttu vastaus. Käytetään enimmäkseen kuuntele ja toista -tehtäviin.';
+$string['noautoforward'] = 'Älä etene automaattisesti';
+$string['noautoforward_desc'] = 'Jos valittu, oppija voi yrittää lausetta uudelleen vielä täydellisen yrityksen jälkeenkin ja siirtyy eteenpäin vain painamalla Jatka.';
 $string['pluginname'] = 'Kuuntele ja puhu';

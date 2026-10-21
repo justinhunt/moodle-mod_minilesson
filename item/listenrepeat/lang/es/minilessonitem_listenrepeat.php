@@ -27,4 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Escucha y habla';
 $string['item_desc'] = 'El elemento Escucha y habla presenta una serie de enunciados de audio a los que el estudiante debe dar una respuesta hablada. Se usa sobre todo para actividades de escuchar y repetir.';
+$string['noautoforward'] = 'No avanzar automáticamente';
+$string['noautoforward_desc'] = 'Si se marca, el estudiante puede reintentar una frase incluso después de un intento perfecto, y debe pulsar Continuar para avanzar.';
 $string['pluginname'] = 'Escucha y habla';

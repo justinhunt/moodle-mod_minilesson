@@ -26,9 +26,14 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Lydsamtale';
+$string['audiochat_silenceduration'] = 'Pause før AI\'en svarer';
+$string['audiochat_silenceduration_details'] = 'Hvor længe eleven skal holde op med at tale, i millisekunder, før AI\'en betragter turen som færdig og svarer. Hæv værdien for at give eleverne mere rum til at holde pause og tænke midt i en sætning. Sænk den for en hurtigere, mere samtalepræget udveksling. Standarden er 3500 (3,5 sekunder). Værdier uden for området 500 til 30000 falder tilbage til standarden. Gælder kun, efter at eleven har talt, og kun når Send automatisk er slået til for elementet.';
 $string['cantchat_ningxia'] = 'Chat er IKKE tilgængelig. For at bruge denne elementtype skal du have en gyldig {$a}-nøgle angivet i MiniLesson-aktivitetens administrationsindstillinger. Chat er heller ikke tilgængelig i Kina (Ningxia-regionen).';
 $string['cloudpoodll'] = 'Cloud Poodll';
 $string['gemini'] = 'Gemini';
+$string['geminilivemodel'] = 'Gemini Live-model';
+$string['geminilivemodel_details'] = 'Gemini Live-modellen, der bruges, når udbyderen er Gemini. Gemini 3.8 Live er Googles nuværende standard til tale med lav latenstid. 3.1-forhåndsvisningen er den ældre model, og Google anbefaler at gå væk fra den. Gælder for udbyderne Gemini og Cloud Poodll, ikke for OpenAI.';
+$string['gradingfailed'] = 'AI\'en kunne ikke bedømme denne samtale, så den fik 0. Transskriptionen er gemt.';
 $string['item_desc'] = 'Lydsamtale-elementet opsætter en mundtlig samtale med en AI-partner. Det kan bruges til at diskutere et emne eller stille spørgsmål om et billede. Prompterne til AI-botten er fri tekst og kan redigeres.';
 $string['openai'] = 'OpenAI';
 $string['pluginname'] = 'Lydsamtale';

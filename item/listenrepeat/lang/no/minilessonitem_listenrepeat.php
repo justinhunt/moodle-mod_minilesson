@@ -27,4 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Lytt og snakk';
 $string['item_desc'] = 'Lytt og snakk-elementet presenterer en serie lydledetekster som eleven må gi et muntlig svar på. Mest brukt til lytt-og-gjenta-oppgaver.';
+$string['noautoforward'] = 'Ikke gå videre automatisk';
+$string['noautoforward_desc'] = 'Hvis avkrysset, kan eleven prøve en setning på nytt selv etter et perfekt forsøk, og må trykke Fortsett for å gå videre.';
 $string['pluginname'] = 'Lytt og snakk';
