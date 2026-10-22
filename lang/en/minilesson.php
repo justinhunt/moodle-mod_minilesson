@@ -888,6 +888,10 @@ $string['error:noh5ppackage'] = 'An H5P package file (.h5p) is required in the c
 $string['error:invaliditemtype'] = 'Invalid item type';
 $string['error:invalidjson'] = 'INVALID JSON';
 $string['error:noitemsinjson'] = 'NO ITEMS IN JSON';
+$string['error:imagepromptarea'] = 'Images can only be generated for image file areas, not audio ones.';
+$string['error:imagepromptinvalid'] = 'An image prompt needs a plain file name and a non-empty text prompt.';
+$string['error:imagepromptlimit'] = 'Too many image prompts in one import: the limit is {$a}. Send the rest in another import.';
+$string['error:imagegenfailed'] = 'The image could not be generated. Supply it as base64 or resubmit the prompt.';
 $string['error:csvloaderror'] = 'CSV LOAD ERROR';
 
 

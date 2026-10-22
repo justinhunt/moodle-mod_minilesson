@@ -418,6 +418,12 @@ abstract class item implements \templatable, \renderable {
         . 'Give the item a numeric "filesid" property, and add a top level "files" object to the payload: '
         . '{"files": {"<filesid>": {"<filearea>": {"<filename>": "<base64 data>"}}}}. '
         . 'The file areas accepted by each item type are listed in its import spec. '
+        . 'To have the server generate an image instead of supplying one, add a top level "fileprompts" object of the same '
+        . 'shape holding image prompts: {"fileprompts": {"<filesid>": {"<filearea>": {"<filename>": "<image prompt>"}}}}. '
+        . 'The generated image is stored under that filesid, filearea and filename, so name the file the item refers to. '
+        . 'Image file areas only, at most ' . constants::MAX_IMPORT_IMAGE_PROMPTS . ' prompts per import, and an optional '
+        . 'top level "imagecontext" string (topic or style) is added to every prompt. Describe the picture, not any text on it. '
+        . 'Prompts that fail are returned in "imagefailures"; the item is still imported without the image. '
         . 'Prefer the tts fields over uploading audio files: tts audio is generated automatically by the server.';
 
     /**

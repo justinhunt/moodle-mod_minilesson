@@ -699,6 +699,9 @@ class constants {
 
     const MAX_AI_PROMPTS = 6;
 
+    /** @var int The most image prompts one import payload may ask the server to generate. */
+    const MAX_IMPORT_IMAGE_PROMPTS = 12;
+
     /**
      * The item types that ship with MiniLesson.
      *

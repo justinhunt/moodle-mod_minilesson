@@ -187,7 +187,7 @@ $agentinstructions = <<<JSON
             "prefer_templates_when": [
                 "A template returned by list_templates matches the request - check its description, skills and outputs before deciding no template fits, then use choosing_a_template to pick the right variant of it",
                 "You want the content (text, questions, and any images) generated for you rather than authoring it yourself",
-                "The lesson needs generated images or audio: templates can produce media server-side, whereas direct compose requires you to supply every media file yourself as base64",
+                "The lesson needs generated images or audio: templates can produce media server-side, whereas direct compose requires you to supply every media file yourself as base64, or to put image prompts in the import payload's fileprompts so the server generates them",
                 "You just need a standard, well-formed lesson quickly and do not need precise control over each item"
             ],
             "prefer_direct_compose_when": [
@@ -230,7 +230,7 @@ $agentinstructions = <<<JSON
             ],
             "never": "Do not conclude that because no single template covers the whole lesson you must compose all of it yourself. That is the most common way to end up hand-building a lesson the templates could have generated, images and all.",
             "choosing_the_mix": [
-                "Does the lesson want images? Use templates, one or several - the server generates the media for you, and a multi-item template reuses the images it generates across its items. Composing directly means supplying every image yourself as base64.",
+                "Does the lesson want images? Use templates, one or several - the server generates the media for you, and a multi-item template reuses the images it generates across its items. Composing directly means supplying every image yourself as base64, or adding fileprompts to the import payload ({\"fileprompts\": {\"<filesid>\": {\"<filearea>\": {\"<filename>\": \"<image prompt>\"}}}}) so the server generates them.",
                 "Is one multi-item template close to the whole lesson? Use it. Its items are designed as a set that works together, which separate runs cannot give you.",
                 "Do you need control that the multi-item templates do not expose? Build the lesson from several agentonly:true single-item templates. They expose more inputs than their siblings, carry more guidance in their field descriptions, and still generate images - which makes them the way to have images and precise control at once. See choosing_a_template.agentonly.",
                 "Only then compose directly: for content the user supplied that must be reproduced exactly, for an item shape no template can express (the two-column multichoice answer layout, say), or when round-tripping aigen_export_items_json."

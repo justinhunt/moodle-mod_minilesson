@@ -623,6 +623,9 @@ class aimanager {
         $overallimagecontext,
         $cache = false
     ) {
+        global $CFG;
+        require_once($CFG->libdir . '/filelib.php');
+
         $imageurls = [];
         $imagecnt = 0;
 

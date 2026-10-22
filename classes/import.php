@@ -84,6 +84,95 @@ class import {
     }
 
     /**
+     * Generate images for the "fileprompts" of a JSON import payload and merge them into its files.
+     *
+     * The prompts mirror the files structure: {"<filesid>": {"<filearea>": {"<filename>": "<prompt>"}}}.
+     * A generated image is stored under the same filesid, filearea and filename in the payload's
+     * "files", exactly as if the caller had supplied it as base64. A file the caller already supplied
+     * is left alone. Audio file areas are refused: only images are generated here.
+     *
+     * @param \stdClass $importdata the decoded payload; its files property is updated
+     * @return array of {filesid, filearea, filename, message} entries for prompts that produced no image
+     */
+    public function generate_images_from_prompts($importdata) {
+        $failures = [];
+        if (empty($importdata->fileprompts)) {
+            return $failures;
+        }
+        // Force objects so numeric filesids stay keys and the reader can use them as properties.
+        $prompts = json_decode(json_encode($importdata->fileprompts), true);
+        $files = json_decode(json_encode($importdata->files ?? new \stdClass(), JSON_FORCE_OBJECT), true);
+        if (!is_array($prompts)) {
+            return $failures;
+        }
+        if (!is_array($files)) {
+            $files = [];
+        }
+
+        $template = [];
+        $promptlist = [];
+        $targets = [];
+        foreach ($prompts as $filesid => $fileareas) {
+            foreach ((is_array($fileareas) ? $fileareas : []) as $filearea => $fileprompts) {
+                foreach ((is_array($fileprompts) ? $fileprompts : []) as $filename => $prompt) {
+                    $fail = function ($message) use (&$failures, $filesid, $filearea, $filename) {
+                        $failures[] = [
+                            'filesid' => (string)$filesid,
+                            'filearea' => (string)$filearea,
+                            'filename' => (string)$filename,
+                            'message' => $message,
+                        ];
+                    };
+                    $cleanname = clean_param((string)$filename, PARAM_FILE);
+                    if (
+                        substr($filearea, -6) === '_audio' || $filearea === constants::AUDIOSTORY
+                        || $filearea !== clean_param($filearea, PARAM_ALPHANUMEXT)
+                    ) {
+                        $fail(get_string('error:imagepromptarea', constants::M_COMPONENT));
+                    } else if ($cleanname === '' || $cleanname !== $filename || !is_string($prompt) || trim($prompt) === '') {
+                        $fail(get_string('error:imagepromptinvalid', constants::M_COMPONENT));
+                    } else if (!empty($files[$filesid][$filearea][$filename])) {
+                        continue;
+                    } else if (count($promptlist) >= constants::MAX_IMPORT_IMAGE_PROMPTS) {
+                        $fail(get_string('error:imagepromptlimit', constants::M_COMPONENT, constants::MAX_IMPORT_IMAGE_PROMPTS));
+                    } else {
+                        $key = count($promptlist);
+                        $template[$key] = '';
+                        $promptlist[] = trim($prompt);
+                        $targets[$key] = [$filesid, $filearea, $filename];
+                    }
+                }
+            }
+        }
+
+        if (!empty($promptlist)) {
+            $aimanager = new aimanager(
+                $this->modulecontext->id,
+                $this->moduleinstance->region,
+                $this->moduleinstance->ttslanguage
+            );
+            $context = !empty($importdata->imagecontext) && is_string($importdata->imagecontext)
+                ? $importdata->imagecontext : false;
+            $images = $aimanager->generate_images($template, $promptlist, $context, false);
+            foreach ($targets as $key => [$filesid, $filearea, $filename]) {
+                if (!empty($images[$key])) {
+                    $files[$filesid][$filearea][$filename] = $images[$key];
+                } else {
+                    $failures[] = [
+                        'filesid' => (string)$filesid,
+                        'filearea' => (string)$filearea,
+                        'filename' => (string)$filename,
+                        'message' => get_string('error:imagegenfailed', constants::M_COMPONENT),
+                    ];
+                }
+            }
+        }
+
+        $importdata->files = json_decode(json_encode($files, JSON_FORCE_OBJECT));
+        return $failures;
+    }
+
+    /**
      * Run the import and return a summary of the results.
      *
      * @return \stdClass with total, imported and failed counts, plus an errors array

@@ -90,6 +90,7 @@ class aigen_import_items_json extends external_api {
         raise_memory_limit(MEMORY_HUGE);
 
         $theimport = new import($moduleinstance, $modulecontext, $course, $cm);
+        $imagefailures = $theimport->generate_images_from_prompts($importdata);
         $theimport->set_reader($importdata, true);
         $results = $theimport->import_process();
 
@@ -107,6 +108,9 @@ class aigen_import_items_json extends external_api {
                 ];
             }, $results->errors),
         ];
+        if (!empty($imagefailures)) {
+            $ret['imagefailures'] = $imagefailures;
+        }
         if ($results->failed > 0) {
             $ret['errormsg'] = get_string(
                 'importpartial',
@@ -132,12 +136,23 @@ class aigen_import_items_json extends external_api {
                 . 'Fix the item and resubmit it (already imported items should not be resubmitted)'
             ),
         ]);
+        $imagefailurestructure = new external_single_structure([
+            'filesid' => new external_value(PARAM_RAW, 'The filesid the prompt was given under'),
+            'filearea' => new external_value(PARAM_RAW, 'The file area the prompt was given under'),
+            'filename' => new external_value(PARAM_RAW, 'The file name the prompt was given under'),
+            'message' => new external_value(PARAM_RAW, 'Why no image was produced'),
+        ]);
         return new external_single_structure([
             'success' => new external_value(PARAM_BOOL, 'True if the import ran without a fatal error'),
             'itemcount' => new external_value(PARAM_INT, 'Number of items successfully imported'),
             'total' => new external_value(PARAM_INT, 'Number of items in the supplied payload', VALUE_OPTIONAL),
             'failed' => new external_value(PARAM_INT, 'Number of items that were rejected', VALUE_OPTIONAL),
             'errors' => new external_multiple_structure($errorstructure, 'Per-item import failures', VALUE_OPTIONAL),
+            'imagefailures' => new external_multiple_structure(
+                $imagefailurestructure,
+                'Entries of "fileprompts" that produced no image. The items were still imported, without that image',
+                VALUE_OPTIONAL
+            ),
             'errormsg' => new external_value(
                 PARAM_RAW,
                 'Error message when success is false or some items failed',
