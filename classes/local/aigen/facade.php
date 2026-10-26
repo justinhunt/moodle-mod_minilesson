@@ -116,12 +116,13 @@ class facade {
      * Get (or mint) a real aigenservice web service token for a user, for the OAuth
      * authorization server to hand out as its access token.
      *
-     * Deliberately does not use external_generate_token_for_current_user(): that helper
+     * Deliberately does not use util::generate_token_for_current_user(): that helper
      * excludes site admins (via !is_siteadmin()) and additionally requires the
      * moodle/webservice:createtoken capability - both wrong extra gates here, since the
      * one and only gate this flow should enforce is mod/minilesson:usemcp, which
-     * external_generate_token() already re-checks internally (it throws
-     * nocapabilitytousethisservice if the user lacks it).
+     * util::generate_token() already re-checks internally (it throws
+     * nocapabilitytousethisservice if the user lacks it). The old global
+     * external_generate_token() throws from Moodle 5.3.
      *
      * @param int $userid
      * @return string the token string
@@ -149,9 +150,8 @@ class facade {
             return $token->token;
         }
 
-        require_once($CFG->libdir . '/externallib.php');
         $validuntil = empty($CFG->tokenduration) ? 0 : (time() + $CFG->tokenduration);
-        return external_generate_token(
+        return \core_external\util::generate_token(
             EXTERNAL_TOKEN_PERMANENT,
             $service,
             $userid,
