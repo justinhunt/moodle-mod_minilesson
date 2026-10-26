@@ -213,6 +213,13 @@ $itemcount = $comptest->fetch_item_count();
 // Let the item types used in this lesson add their own page requirements (CSS/JS they ship).
 $comptest->add_item_page_requirements($PAGE);
 
+// Moodle 5.3+ can add a course navigation footer with its own next/previous buttons. Hide it while the
+// lesson is running so it is not confused with our next button, but keep it on the finished screen.
+$lessonrunning = $itemcount > 0 && $latestattempt->status != constants::M_STATE_COMPLETE;
+if ($lessonrunning && method_exists($PAGE, 'set_show_navigation_footer')) {
+    $PAGE->set_show_navigation_footer(false);
+}
+
 // From here we actually display the page.
 // If we are teacher we see tabs. If student we just see the quiz.
 // In mobile no tabs are shown.
