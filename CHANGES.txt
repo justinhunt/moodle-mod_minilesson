@@ -1,4 +1,4 @@
-Version 1.1.60 (Build 2026102600)
+Version 1.1.60 (Build 2026102601)
 - added Azure TTS voices for 41 languages that had three or fewer voices (not counting Whisper
   voices). Most get one female and one male voice, some get up to four. Their names end in "_a"
 - English (Ireland), German (Switzerland) and Basque now have their own TTS voices. Before, they
@@ -6,6 +6,12 @@ Version 1.1.60 (Build 2026102600)
 - added Arabic, Ukrainian, Vietnamese, Korean, French and German translations of the interface (#92)
 - added the strings that were missing from the Norwegian, Danish, Finnish, Japanese, Chinese and Spanish translations
 - AI prompts, AI generation template text and privacy text stay in English in all languages
+- Added auto forward setting to Video shadowing
+- Added play audio after completion setting to Word Shuffle.
+- Added setting to center next button and to relabel it to "Finish" on final item
+- Made the default for self check audio review to model->self (was model->self->model)
+- Fixes to better support RTL
+- Hide footer navigation on Moodle 5.3
 
 Version 1.1.59 (Build 2026101902)
 - increased padding on passage reading
