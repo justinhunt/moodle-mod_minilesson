@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Video Shadowing';
 $string['aihelper_placeholder_shadow'] = 'e.g. Add punctuation and fix any spelling and capitalization mistakes';
+$string['autoforward'] = 'Auto forward';
+$string['autoforward_details'] = 'After a line\'s last shadow, go on to the next line by itself instead of waiting for OK / Next. There is no Retry button in this mode.';
 $string['enablesubtitlefetch'] = 'Enable subtitle fetch button';
 $string['enablesubtitlefetch_details'] = 'Shows a "Fetch subtitles" button on the item form that downloads a YouTube video\'s subtitles into the subtitle editor. Note: fetching subtitles will not always work, and may stop working at any time. It is a utility tool that Poodll does not guarantee will always be available.';
 $string['error:badtimestamp'] = 'Clip start and end times must be in hh:mm:ss format, e.g. 00:01:30.';

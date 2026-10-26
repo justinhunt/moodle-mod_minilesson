@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = '비디오 쉐도잉';
 $string['aihelper_placeholder_shadow'] = '예: 문장 부호를 추가하고 철자와 대소문자 오류를 모두 고쳐 줘';
+$string['autoforward'] = '자동으로 다음으로';
+$string['autoforward_details'] = '한 줄의 마지막 쉐도잉이 끝나면 확인 / 다음을 기다리지 않고 저절로 다음 줄로 넘어가요. 이 모드에서는 재시도 버튼이 없어요.';
 $string['enablesubtitlefetch'] = '자막 가져오기 버튼 사용';
 $string['enablesubtitlefetch_details'] = '항목 양식에 YouTube 동영상의 자막을 자막 편집기로 내려받는 ‘자막 가져오기’ 버튼을 표시해요. 참고: 자막 가져오기는 항상 작동하지 않을 수 있고 언제든 중단될 수 있어요. Poodll이 항상 제공을 보장하지 않는 편의 도구예요.';
 $string['error:badshadowlines'] = '쉐도잉할 줄은 * (모든 줄) 또는 쉼표로 구분한 줄 번호 목록이어야 해요. 예: 1,4,5,6.';

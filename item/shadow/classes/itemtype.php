@@ -61,6 +61,9 @@ class itemtype extends item {
     /** @var string the column holding the per-word highlighting flag (1 = on) */
     public const WORDHIGHLIGHT = 'customint3';
 
+    /** @var string the column holding the auto forward flag (1 = go to the next line without OK) */
+    public const AUTOFORWARD = 'customint4';
+
     /** @var int default pause between shadow attempts (milliseconds) */
     public const DEFAULT_SHADOWPAUSE = 2000;
 
@@ -133,6 +136,7 @@ class itemtype extends item {
 
         $shadowpause = (int)$this->itemrecord->{self::SHADOWPAUSE};
         $testitem->shadowpause = $shadowpause > 0 ? $shadowpause : self::DEFAULT_SHADOWPAUSE;
+        $testitem->autoforward = !empty($this->itemrecord->{self::AUTOFORWARD});
 
         return $testitem;
     }
@@ -357,6 +361,14 @@ class itemtype extends item {
                     ['value' => '0', 'meaning' => 'Highlight whole lines'],
                 ],
             ],
+            'autoforward' => [
+                'description' => 'Whether the next line starts by itself after the last shadow of a line, instead '
+                    . 'of waiting for the learner to press OK. There is no retry button in this mode.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Wait for the learner to press OK or retry (default)'],
+                    ['value' => '1', 'meaning' => 'Go on to the next line by itself'],
+                ],
+            ],
         ];
         foreach ($ownfields as $jsonname => $overlay) {
             $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
@@ -403,6 +415,8 @@ class itemtype extends item {
         $keycols['int1'] = ['jsonname' => 'loopcount', 'type' => 'int', 'optional' => true, 'default' => self::DEFAULT_LOOPCOUNT, 'dbname' => self::LOOPCOUNT];
         $keycols['int2'] = ['jsonname' => 'shadowpause', 'type' => 'int', 'optional' => true, 'default' => self::DEFAULT_SHADOWPAUSE, 'dbname' => self::SHADOWPAUSE];
         $keycols['int3'] = ['jsonname' => 'wordhighlight', 'type' => 'int', 'optional' => true, 'default' => 1, 'dbname' => self::WORDHIGHLIGHT];
+        $keycols['int4'] = ['jsonname' => 'autoforward', 'type' => 'boolean', 'optional' => true, 'default' => 0,
+            'dbname' => self::AUTOFORWARD];
         return $keycols;
     }
 

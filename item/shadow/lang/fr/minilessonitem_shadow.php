@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Shadowing vidéo';
 $string['aihelper_placeholder_shadow'] = 'p. ex. Ajoute la ponctuation et corrige toutes les fautes d\'orthographe et de majuscules';
+$string['autoforward'] = 'Avance automatique';
+$string['autoforward_details'] = 'Après le dernier shadowing d\'une ligne, passe tout seul à la ligne suivante au lieu d\'attendre OK / Suivant. Il n\'y a pas de bouton Réessayer dans ce mode.';
 $string['enablesubtitlefetch'] = 'Activer le bouton de récupération des sous-titres';
 $string['enablesubtitlefetch_details'] = 'Affiche un bouton « Récupérer les sous-titres » dans le formulaire de l\'élément, qui télécharge les sous-titres d\'une vidéo YouTube dans l\'éditeur de sous-titres. Remarque : la récupération des sous-titres ne fonctionne pas toujours et peut cesser de fonctionner à tout moment. C\'est un outil utilitaire dont Poodll ne garantit pas la disponibilité permanente.';
 $string['error:badshadowlines'] = 'Les lignes sur lesquelles faire du shadowing doivent être * (toutes les lignes) ou une liste de numéros de ligne séparés par des virgules, p. ex. 1,4,5,6.';

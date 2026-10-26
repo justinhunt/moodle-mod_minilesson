@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Video-shadowing';
 $string['aihelper_placeholder_shadow'] = 'f.eks. Legg til tegnsetting og rett eventuelle feil i staving og stor forbokstav';
+$string['autoforward'] = 'Gå videre automatisk';
+$string['autoforward_details'] = 'Etter linjens siste shadowing går den videre til neste linje av seg selv i stedet for å vente på OK / Neste. Det er ingen Prøv igjen-knapp i denne modusen.';
 $string['enablesubtitlefetch'] = 'Aktiver knapp for henting av undertekster';
 $string['enablesubtitlefetch_details'] = 'Viser en «Hent undertekster»-knapp på elementskjemaet som laster ned en YouTube-videos undertekster inn i underteksteditoren. Merk: henting av undertekster vil ikke alltid fungere, og kan slutte å fungere når som helst. Det er et hjelpeverktøy som Poodll ikke garanterer alltid vil være tilgjengelig.';
 $string['error:badshadowlines'] = 'Linjer å shadowe må være * (alle linjer) eller en kommaseparert liste med linjenumre, f.eks. 1,4,5,6.';

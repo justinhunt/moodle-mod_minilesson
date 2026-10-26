@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Video-shadowing';
 $string['aihelper_placeholder_shadow'] = 'esim. Lisää välimerkit ja korjaa oikeinkirjoitus- ja alkukirjainvirheet';
+$string['autoforward'] = 'Automaattinen eteneminen';
+$string['autoforward_details'] = 'Rivin viimeisen shadowingin jälkeen siirrytään itsestään seuraavalle riville sen sijaan, että odotettaisiin OK / Seuraava -painiketta. Tässä tilassa ei ole Yritä uudelleen -painiketta.';
 $string['enablesubtitlefetch'] = 'Ota käyttöön tekstitysten haku -painike';
 $string['enablesubtitlefetch_details'] = 'Näyttää elementtilomakkeella ”Hae tekstitykset” -painikkeen, joka lataa YouTube-videon tekstitykset tekstityseditoriin. Huom: tekstitysten haku ei aina toimi ja voi lakata toimimasta milloin tahansa. Se on aputyökalu, jonka jatkuvaa saatavuutta Poodll ei takaa.';
 $string['error:badshadowlines'] = 'Shadowingiin valitut rivit on annettava muodossa * (kaikki rivit) tai pilkuin eroteltuna luettelona rivinumeroista, esim. 1,4,5,6.';

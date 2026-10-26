@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = '视频跟读';
 $string['aihelper_placeholder_shadow'] = '例如：添加标点，并修正拼写和大小写错误';
+$string['autoforward'] = '自动前进';
+$string['autoforward_details'] = '一行的最后一次跟读结束后，自动进入下一行，而不是等待“确定 / 下一个”。此模式下没有“重试”按钮。';
 $string['enablesubtitlefetch'] = '启用字幕获取按钮';
 $string['enablesubtitlefetch_details'] = '在项目表单上显示一个“获取字幕”按钮，可将 YouTube 视频的字幕下载到字幕编辑器中。注意：字幕获取并非总能成功，并可能随时失效。这是一个 Poodll 不保证始终可用的实用工具。';
 $string['error:badshadowlines'] = '要跟读的行必须为 *（所有行）或以逗号分隔的行号列表，例如 1,4,5,6。';

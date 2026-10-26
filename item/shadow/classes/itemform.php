@@ -131,6 +131,13 @@ class itemform extends baseform {
         $this->add_dropdown(itemtype::SHADOWPAUSE, get_string('shadowpause', 'minilessonitem_shadow'),
             $pauseoptions, itemtype::DEFAULT_SHADOWPAUSE);
 
+        // Whether the next line starts by itself after a line's last shadow, instead of waiting for OK.
+        $this->add_checkbox(
+            itemtype::AUTOFORWARD,
+            get_string('autoforward', 'minilessonitem_shadow'),
+            get_string('autoforward_details', 'minilessonitem_shadow')
+        );
+
         // Which subtitle lines to shadow: '*' for all, or a CSV of 1-based line numbers.
         $mform->addElement('text', itemtype::SHADOWLINES, get_string('shadowlines', 'minilessonitem_shadow'),
             ['size' => 30, 'placeholder' => itemtype::ALLLINES]);

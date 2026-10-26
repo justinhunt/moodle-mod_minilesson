@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'ビデオシャドーイング';
 $string['aihelper_placeholder_shadow'] = '例：句読点を追加し、スペルと大文字・小文字の誤りを修正する';
+$string['autoforward'] = '自動で次へ進む';
+$string['autoforward_details'] = '1行の最後のシャドーイングの後、「OK / 次へ」を待たずに自動で次の行へ進みます。このモードでは「やり直す」ボタンは表示されません。';
 $string['enablesubtitlefetch'] = '字幕取得ボタンを有効にする';
 $string['enablesubtitlefetch_details'] = '項目フォームに「字幕を取得」ボタンを表示します。これは YouTube 動画の字幕を字幕エディターにダウンロードします。注意：字幕の取得は常に成功するとは限らず、いつでも動作しなくなる可能性があります。これは Poodll が常時利用可能であることを保証しない補助ツールです。';
 $string['error:badshadowlines'] = 'シャドーイングする行は * （全行）またはカンマ区切りの行番号リスト（例：1,4,5,6）で指定してください。';

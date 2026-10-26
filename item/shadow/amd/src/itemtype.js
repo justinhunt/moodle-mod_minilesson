@@ -43,6 +43,8 @@ define(
         var POLLINTERVAL = 50;
         // Refresh interval of the countdown pie (ms).
         var COUNTDOWNINTERVAL = 50;
+        // With auto forward on, the pause before the next line starts (ms).
+        var AUTOFORWARDDELAY = 500;
 
         return {
 
@@ -56,6 +58,7 @@ define(
             playercreated: false,
             pollhandle: null,
             countdownhandle: null,
+            autoforwardhandle: null,
             controls: {},
 
             //for making multiple instances
@@ -325,11 +328,20 @@ define(
                         });
                     } else {
                         self.linestate = 'evaluate';
-                        self.controls.retry.show();
-                        if (self.shadowpos + 1 < self.shadowindices.length) {
+                        if (self.shadowpos + 1 < self.shadowindices.length && self.itemdata.autoforward) {
+                            // Auto forward: no OK or retry button, the next line starts after a short pause.
+                            self.autoforwardhandle = setTimeout(function() {
+                                self.autoforwardhandle = null;
+                                self.ok_next();
+                            }, AUTOFORWARDDELAY);
+                        } else if (self.shadowpos + 1 < self.shadowindices.length) {
+                            self.controls.retry.show();
                             self.controls.oknext.show();
                             anim.do_animate(self.controls.oknext, 'pulse');
                         } else {
+                            if (!self.itemdata.autoforward) {
+                                self.controls.retry.show();
+                            }
                             // Final line: it counts as completed now, and the lesson's own
                             // next button (not an OK button) moves the student on.
                             self.completedlines = self.shadowindices.length;
@@ -346,6 +358,7 @@ define(
                 if (self.linestate !== 'evaluate' || self.shadowpos + 1 >= self.shadowindices.length) {
                     return;
                 }
+                self.clear_autoforward();
                 self.completedlines++;
                 self.controls.oknext.hide();
                 self.controls.retry.hide();
@@ -360,12 +373,22 @@ define(
                 if (self.linestate !== 'evaluate') {
                     return;
                 }
+                self.clear_autoforward();
                 self.controls.oknext.hide();
                 self.controls.retry.hide();
                 self.update_loop_indicator(1);
                 self.run_countdown(self.shadowpause, function() {
                     self.start_shadow_play(1);
                 });
+            },
+
+            // Cancel a pending auto forward to the next line.
+            clear_autoforward: function() {
+                var self = this;
+                if (self.autoforwardhandle) {
+                    clearTimeout(self.autoforwardhandle);
+                    self.autoforwardhandle = null;
+                }
             },
 
             /* ============ display helpers ============ */
@@ -482,6 +505,7 @@ define(
                 self.segmentactive = false;
                 self.stop_poll();
                 self.clear_countdown();
+                self.clear_autoforward();
                 if (self.player && self.player.ready) {
                     self.player.pause();
                 }

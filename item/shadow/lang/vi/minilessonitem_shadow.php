@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Shadowing qua video';
 $string['aihelper_placeholder_shadow'] = 'ví dụ: Thêm dấu câu và sửa mọi lỗi chính tả và lỗi viết hoa';
+$string['autoforward'] = 'Tự động chuyển tiếp';
+$string['autoforward_details'] = 'Sau lần shadowing cuối của một dòng, tự động chuyển sang dòng tiếp theo thay vì chờ nút OK / Tiếp theo. Chế độ này không có nút Thử lại.';
 $string['enablesubtitlefetch'] = 'Bật nút lấy phụ đề';
 $string['enablesubtitlefetch_details'] = 'Hiển thị nút “Lấy phụ đề” trên biểu mẫu mục, tải phụ đề của video YouTube vào trình chỉnh sửa phụ đề. Lưu ý: việc lấy phụ đề không phải lúc nào cũng hoạt động và có thể ngừng hoạt động bất cứ lúc nào. Đây là công cụ tiện ích mà Poodll không đảm bảo luôn khả dụng.';
 $string['error:badshadowlines'] = 'Các dòng cần shadow phải là * (tất cả các dòng) hoặc danh sách số dòng cách nhau bằng dấu phẩy, ví dụ 1,4,5,6.';

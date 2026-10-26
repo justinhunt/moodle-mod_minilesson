@@ -27,6 +27,8 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Video-Shadowing';
 $string['aihelper_placeholder_shadow'] = 'z. B. Ergänze Satzzeichen und korrigiere alle Rechtschreib- und Groß-/Kleinschreibfehler';
+$string['autoforward'] = 'Automatisch weiter';
+$string['autoforward_details'] = 'Nach dem letzten Shadowing einer Zeile geht es von selbst zur nächsten Zeile, statt auf OK / Weiter zu warten. In diesem Modus gibt es keine Schaltfläche Wiederholen.';
 $string['enablesubtitlefetch'] = 'Schaltfläche zum Abrufen von Untertiteln aktivieren';
 $string['enablesubtitlefetch_details'] = 'Zeigt im Elementformular eine Schaltfläche „Untertitel abrufen“ an, die die Untertitel eines YouTube-Videos in den Untertitel-Editor herunterlädt. Hinweis: Das Abrufen von Untertiteln funktioniert nicht immer und kann jederzeit aufhören zu funktionieren. Es ist ein Hilfswerkzeug, dessen dauerhafte Verfügbarkeit Poodll nicht garantiert.';
 $string['error:badshadowlines'] = 'Die Zeilen für das Shadowing müssen * (alle Zeilen) oder eine kommagetrennte Liste von Zeilennummern sein, z. B. 1,4,5,6.';
