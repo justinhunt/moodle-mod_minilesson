@@ -566,6 +566,7 @@ define(
             resetSession: function () {
                 log.debug("reset session");
                 var self = this;
+                self.quizhelper.set_finish_label(self.index, false);
                 self.isLoading = false;
                 self.isSessionActive = false;
                 self.isSessionStopped = false;
@@ -602,6 +603,8 @@ define(
 
             showResults: function () {
                 var self = this;
+                // On the lesson's last item, the results page is where the next button finishes the lesson.
+                self.quizhelper.set_finish_label(self.index, true);
                 var tdata = {};
                 tdata.resultsdata = { 'items': Object.values(self.driver.getItems()) };
                 tdata = self.grade_activity(tdata);

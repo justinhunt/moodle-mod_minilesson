@@ -608,6 +608,14 @@
   background-color: #F5F5FE;
 }
 
+.mod_minilesson_nextbutton_center .minilesson_nextbutton {
+  margin-inline: auto;
+}
+
+.dir-rtl .minilesson_nextbutton .fa-arrow-right {
+  transform: scaleX(-1);
+}
+
 /* Skip button */
 .btn.btn-skip-button-secondary {
   background: #FFFFFF;
@@ -2534,20 +2542,6 @@ span.mod_minilesson_finishedanswer {
   margin: 10px;
 }
 
-.minilesson_nextbutton {
-  display: block;
-  width: 150px;
-  height: 50px;
-  border: 1px;
-  border-style: solid;
-  border-color: #506DFF;
-  border-radius: 30px;
-  color: #506DFF;
-  font-size: 15px;
-  font-weight: 500;
-  margin-left: auto;
-  background-color: #FFFFFF;
-}
 .minilesson_nextbutton:focus {
   outline: 0;
 }

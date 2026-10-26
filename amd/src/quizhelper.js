@@ -163,6 +163,24 @@ define(
 
             },
 
+            /**
+             * Switch the lesson's last item's next button between "Next Page" and "Finish".
+             * Item types with a results page of their own call this when they show it, because
+             * only on the results page does the button finish the lesson. Other items ignore it.
+             *
+             * @param {number} index The item's index in the lesson
+             * @param {boolean} finish True to show "Finish", false to go back to "Next Page"
+             */
+            set_finish_label: function (index, finish) {
+                var item = this.quizdata[index];
+                if (!item || !item.finishonresults) {
+                    return;
+                }
+                var $button = $("#" + item.uniqueid + "_container .minilesson_nextbutton");
+                $button.find('[data-label="next"]').prop('hidden', finish);
+                $button.find('[data-label="finish"]').prop('hidden', !finish);
+            },
+
             do_next: function (stepdata) {
                 var dd = this;
                 //get current question

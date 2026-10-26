@@ -92,6 +92,7 @@ define(
                             self.resultscontainer.hide();
                             self.reattemptcontainer.hide();
                             self.recordercontainer.show();
+                            self.quizhelper.set_finish_label(self.index, false);
                             //Reset all words css
                             self.allwords.removeClass("pr_correct pr_incorrect pr_unreached");
                             self.allspaces.removeClass("pr_correct pr_incorrect pr_unreached");
@@ -223,6 +224,7 @@ define(
                             self.resultscontainer.html(html);
                             self.resultscontainer.show();
                             self.reattemptcontainer.show();
+                            self.quizhelper.set_finish_label(self.index, true);
                         }
                     );
                 }//end of show item review or transition

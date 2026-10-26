@@ -372,6 +372,8 @@ define(['jquery',
 
         show_item_review: function () {
             var self = this;
+            // On the lesson's last item, the results page is where the next button finishes the lesson.
+            self.quizhelper.set_finish_label(self.index, true);
             var review_data = {};
             //show the correct answer alongside the question text, green if they got it, red if not
             self.items.forEach(function (item) {

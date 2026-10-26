@@ -26,6 +26,16 @@
   background-color: $primary-bg;
 }
 
+// The activity setting "Next button position" set to center.
+.mod_minilesson_nextbutton_center .minilesson_nextbutton {
+  margin-inline: auto;
+}
+
+// The arrow points the way the lesson moves, which is to the left on right to left sites.
+.dir-rtl .minilesson_nextbutton .fa-arrow-right {
+  transform: scaleX(-1);
+}
+
 
 /* Skip button */
 

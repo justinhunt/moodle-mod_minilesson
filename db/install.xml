@@ -38,6 +38,7 @@
         <FIELD NAME="nativelang" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false"/>
         <FIELD NAME="allowcontinueattempts" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false"/>
         <FIELD NAME="nativetranslation" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Whether learners may translate item text into their native language"/>
+        <FIELD NAME="nextbuttonalign" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="default" SEQUENCE="false" COMMENT="Where the next page button sits: default (end of the line) or center"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

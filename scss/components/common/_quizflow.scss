@@ -97,20 +97,8 @@ span.mod_minilesson_finishedanswer {
   margin: 10px;
 }
 
+// The rest of the next button's style is in components/common/_buttons.scss.
 .minilesson_nextbutton {
-  display: block;
-  width: 150px;
-  height: 50px;
-  border: 1px;
-  border-style: solid;
-  border-color: $primary;
-  border-radius: 30px;
-  color: $primary;
-  font-size: 15px;
-  font-weight: 500;
-  margin-left: auto;
-  background-color: $white;
-
   &:focus {
     outline: 0;
   }

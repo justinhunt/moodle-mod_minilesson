@@ -137,6 +137,14 @@ switch ($action) {
         $updatefields = ['allowcontinueattempts'];
         break;
 
+    case constants::M_PUSH_NATIVELANG:
+        $updatefields = ['nativelang'];
+        break;
+
+    case constants::M_PUSH_NEXTBUTTONALIGN:
+        $updatefields = ['nextbuttonalign'];
+        break;
+
     case constants::M_PUSH_NONE:
     default:
         $updatefields = [];

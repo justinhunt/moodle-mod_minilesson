@@ -108,6 +108,8 @@ define(['jquery',
 
         show_item_review: function () {
             var self = this;
+            // On the lesson's last item, the results page is where the next button finishes the lesson.
+            self.quizhelper.set_finish_label(self.index, true);
             var review_data = {};
             review_data.items = self.items;
             self.items.forEach(function (item, index) {

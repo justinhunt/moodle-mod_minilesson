@@ -2646,6 +2646,19 @@ abstract class item implements \templatable, \renderable {
     }
 
     /**
+     * Does this item type show the learner a results page of its own, after the work, when the
+     * activity's "show item review" setting is on? The next button sits under both pages, and on
+     * the lesson's last item it should only say "Finish" on the results page. Item types that
+     * override this to return true must call quizhelper.set_finish_label(index, true) in their JS
+     * when they show their results (and set_finish_label(index, false) if the learner goes back).
+     *
+     * @return bool
+     */
+    public function has_results_page() {
+        return false;
+    }
+
+    /**
      * Render a preview of this item from unsaved authoring form data, for the "preview" button
      * on the item's authoring form. Item types that offer a preview (e.g. slides) override this;
      * the default is no preview.

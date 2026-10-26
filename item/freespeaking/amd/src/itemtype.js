@@ -87,6 +87,11 @@ define(
                 var self = this;
                 self.index = index;
                 self.quizhelper = quizhelper;
+
+                // A reattempt from the results page takes the learner back to the writing/speaking page.
+                $("#" + itemdata.uniqueid + "_container").on('reattempted', function () {
+                    self.quizhelper.set_finish_label(self.index, false);
+                });
                 var nextbutton = $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton");
 
                 nextbutton.on('click', function () {
@@ -355,6 +360,7 @@ define(
                                     self.itemtext.hide();
                                     self.finishedmessage.hide();
                                     self.resultsbox.show();
+                                    self.quizhelper.set_finish_label(self.index, true);
                                     self.pendingbox.hide();
                                     self.actionbox.hide();
                                     templates.runTemplateJS(js);

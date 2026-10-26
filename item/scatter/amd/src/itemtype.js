@@ -220,6 +220,7 @@ define(
                     self.controls.container.trigger("showElement");
                     self.controls.result_container.hide();
                     self.controls.stage.show();
+                    self.quizhelper.set_finish_label(self.index, false);
                     self.controls.progress_container.find('#progresstimer,i').show();
                     self.itemdata.scatteritems.forEach(scatteritem => {
                        scatteritem.correct = false;
@@ -275,6 +276,7 @@ define(
                 });
                 self.controls.result_container.show();
                 self.controls.stage.hide();
+                self.quizhelper.set_finish_label(self.index, true);
                 self.controls.progress_container.hide();
                 self.controls.actionbutton.hide();
                 if (self.progressTimer) {

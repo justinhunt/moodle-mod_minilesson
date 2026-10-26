@@ -124,6 +124,7 @@
                             '{{#str}}reallyreattempt, mod_minilesson{{/str}}',
                             '{{#str}}reattempt, mod_minilesson{{/str}}','',
                             function(){
+                                reattemptbutton.trigger('reattempted');
                                 reattemptbutton .closest('.ml_freespeaking_resultsbox').hide();
                                 reattemptbutton .closest('.ml_freespeaking_pendingbox').hide();
                                 reattemptbutton .closest('.ml_freespeaking_resultsbox').siblings('.ml_freespeaking_actionbox').show();

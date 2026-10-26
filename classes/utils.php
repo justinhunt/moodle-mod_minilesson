@@ -2383,6 +2383,18 @@ class utils {
         ];
     }
 
+    /**
+     * Options for where the next page button sits under each item.
+     *
+     * @return array position key => display name
+     */
+    public static function get_nextbuttonalign_options() {
+        return [
+            constants::M_NEXTBUTTON_DEFAULT => get_string('nextbuttonalign-default', constants::M_COMPONENT),
+            constants::M_NEXTBUTTON_CENTER => get_string('nextbuttonalign-center', constants::M_COMPONENT),
+        ];
+    }
+
     public static function add_mform_elements($mform, $context, $cmid, $setuptab = false) {
         global $CFG, $COURSE;
         $dateoptions = ['optional' => true];
@@ -2556,6 +2568,12 @@ class utils {
         $mform->addElement('select', 'containerwidth', get_string('containerwidth', constants::M_COMPONENT), $widthoptions);
         $mform->addHelpButton('containerwidth', 'containerwidth', constants::M_COMPONENT);
         $mform->setDefault('containerwidth', $config->containerwidth);
+
+        // Next button alignment.
+        $alignoptions = self::get_nextbuttonalign_options();
+        $mform->addElement('select', 'nextbuttonalign', get_string('nextbuttonalign', constants::M_COMPONENT), $alignoptions);
+        $mform->addHelpButton('nextbuttonalign', 'nextbuttonalign', constants::M_COMPONENT);
+        $mform->setDefault('nextbuttonalign', $config->nextbuttonalign ?? constants::M_NEXTBUTTON_DEFAULT);
 
         // finishscreen
         $screenoptions = self::fetch_options_finishscreen();

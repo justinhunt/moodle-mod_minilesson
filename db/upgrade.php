@@ -1631,5 +1631,28 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026101902, 'minilesson');
     }
 
+    if ($oldversion < 2026102601) {
+        // Define field nextbuttonalign to be added to minilesson.
+        $table = new xmldb_table(constants::M_TABLE);
+        $field = new xmldb_field(
+            'nextbuttonalign',
+            XMLDB_TYPE_CHAR,
+            '20',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            'default',
+            'nativetranslation'
+        );
+
+        // Conditionally launch add field nextbuttonalign.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026102601, 'minilesson');
+    }
+
     return true;
 }

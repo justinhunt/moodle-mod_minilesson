@@ -62,6 +62,13 @@ class aigen_create_empty_lesson extends external_api {
                 VALUE_DEFAULT,
                 $config->nativetranslation ?? 1
             ),
+            'nextbuttonalign' => new external_value(
+                PARAM_ALPHA,
+                'Where the next page button sits under each item: default (right on left to right sites, '
+                    . 'left on right to left sites) or center.',
+                VALUE_DEFAULT,
+                $config->nextbuttonalign ?? constants::M_NEXTBUTTON_DEFAULT
+            ),
         ]);
     }
 
@@ -84,6 +91,7 @@ class aigen_create_empty_lesson extends external_api {
      * @param int $visible
      * @param string $nativelang
      * @param int $nativetranslation
+     * @param string $nextbuttonalign
      * @return array
      */
     public static function execute(
@@ -103,7 +111,8 @@ class aigen_create_empty_lesson extends external_api {
         $grade,
         $visible,
         $nativelang,
-        $nativetranslation
+        $nativetranslation,
+        $nextbuttonalign = constants::M_NEXTBUTTON_DEFAULT
     ) {
         $params = self::validate_parameters(self::execute_parameters(), [
             'courseid' => $courseid,
@@ -123,6 +132,7 @@ class aigen_create_empty_lesson extends external_api {
             'visible' => $visible,
             'nativelang' => $nativelang,
             'nativetranslation' => $nativetranslation,
+            'nextbuttonalign' => $nextbuttonalign,
         ]);
 
         $context = context_course::instance($params['courseid']);
@@ -148,6 +158,9 @@ class aigen_create_empty_lesson extends external_api {
         $moduledata->visible = $params['visible'];
         $moduledata->nativelang = $params['nativelang'];
         $moduledata->nativetranslation = $params['nativetranslation'];
+        $alignoptions = utils::get_nextbuttonalign_options();
+        $moduledata->nextbuttonalign = array_key_exists($params['nextbuttonalign'], $alignoptions)
+            ? $params['nextbuttonalign'] : constants::M_NEXTBUTTON_DEFAULT;
 
         // Any other defaults
         $moduledata->showitemreview = 1;

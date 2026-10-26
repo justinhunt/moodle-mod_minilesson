@@ -162,6 +162,16 @@ class comprehensiontest
             $testitems[0]->hidenextbutton = true;
         }
 
+        // The last item's "next" button finishes the lesson, so it is labelled "Finish". An item with
+        // a results page of its own starts with "Next Page" and switches to "Finish" on its results page.
+        if (count($testitems) > 0) {
+            $lastitem = $testitems[array_key_last($testitems)];
+            $lastitem->islastitem = true;
+            if ($this->mod->showitemreview && $singletitem->has_results_page()) {
+                $lastitem->finishonresults = true;
+            }
+        }
+
         //Store the test items in the class property for later use
         $this->quizdata = $testitems;
 

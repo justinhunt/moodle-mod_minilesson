@@ -160,6 +160,19 @@ if ($hassiteconfig) {
         $options
     ));
 
+    $name = 'nextbuttonalign';
+    $label = get_string($name, constants::M_COMPONENT);
+    $details = get_string($name . '_details', constants::M_COMPONENT);
+    $default = constants::M_NEXTBUTTON_DEFAULT;
+    $options = utils::get_nextbuttonalign_options();
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . "/$name",
+        $label,
+        $details,
+        $default,
+        $options
+    ));
+
     // Reports Table
     $name = 'reportstable';
     $label = get_string($name, constants::M_COMPONENT);

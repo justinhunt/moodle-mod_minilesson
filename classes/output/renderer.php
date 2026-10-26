@@ -606,6 +606,9 @@ class renderer extends \plugin_renderer_base
 
         $quizclass = constants::M_QUIZ_CONTAINER . ' ' . $moduleinstance->csskey . '
             ' . constants::M_COMPONENT . '_' . $moduleinstance->containerwidth;
+        if (($moduleinstance->nextbuttonalign ?? '') === constants::M_NEXTBUTTON_CENTER) {
+            $quizclass .= ' ' . constants::M_COMPONENT . '_nextbutton_center';
+        }
         $quizattributes = ['id' => constants::M_QUIZ_CONTAINER];
         if (!empty($moduleinstance->lessonfont)) {
             $quizattributes['style'] = "font-family: '$moduleinstance->lessonfont', serif;";
@@ -997,10 +1000,12 @@ class renderer extends \plugin_renderer_base
             'allowcontinueattempts',
             'region',
             'containerwidth',
+            'nextbuttonalign',
             'csskey',
             'lessonfont',
             'finishscreen',
             'finishscreencustom',
+            'nativelang',
         ];
 
         if ($scope == constants::PUSHMODE_MODULENAME) {
@@ -1026,6 +1031,12 @@ class renderer extends \plugin_renderer_base
                     break;
                 case 'containerwidth':
                     $action = constants::M_PUSH_CONTAINERWIDTH;
+                    break;
+                case 'nextbuttonalign':
+                    $action = constants::M_PUSH_NEXTBUTTONALIGN;
+                    break;
+                case 'nativelang':
+                    $action = constants::M_PUSH_NATIVELANG;
                     break;
                 case 'csskey':
                     $action = constants::M_PUSH_CSSKEY;

@@ -575,6 +575,8 @@ class constants {
     const M_CONTWIDTH_COMPACT = 'compact';
     const M_CONTWIDTH_WIDE = 'wide';
     const M_CONTWIDTH_FULL = 'full';
+    const M_NEXTBUTTON_DEFAULT = 'default';
+    const M_NEXTBUTTON_CENTER = 'center';
     const M_STANDARD_FONTS = [
         "Arial",
         "Arial Black",
@@ -617,6 +619,8 @@ class constants {
     const M_PUSH_CONTAINERWIDTH = 10;
     const M_PUSH_ITEMS = 11;
     const M_PUSH_ALLOWCONTINUEATTEMPTS = 12;
+    const M_PUSH_NATIVELANG = 13;
+    const M_PUSH_NEXTBUTTONALIGN = 14;
 
     /**
      * No push mode selected.

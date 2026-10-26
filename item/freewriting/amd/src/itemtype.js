@@ -97,6 +97,11 @@ define([
                 self.index = index;
                 self.quizhelper = quizhelper;
 
+                // A reattempt from the results page takes the learner back to the writing/speaking page.
+                $("#" + itemdata.uniqueid + "_container").on('reattempted', function () {
+                    self.quizhelper.set_finish_label(self.index, false);
+                });
+
                 self.nextbutton.on('click', function (e) {
                     e.preventDefault();
                     var wordcount = self.quizhelper.count_words(self.thetextarea.val());
@@ -412,6 +417,7 @@ define([
                                     self.itemtext.hide();
                                     self.questionheader_contents.hide();
                                     self.resultsbox.show();
+                                    self.quizhelper.set_finish_label(self.index, true);
                                     self.pendingbox.hide();
                                     self.actionbox.hide();
                                     templates.runTemplateJS(js);

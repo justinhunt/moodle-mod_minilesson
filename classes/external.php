@@ -86,6 +86,7 @@ class mod_minilesson_external extends external_api {
         $data->transcriber = $config->transcriber;
         $data->richtextprompt = $config->prompttype;
         $data->containerwidth = $config->containerwidth;
+        $data->nextbuttonalign = $config->nextbuttonalign ?? constants::M_NEXTBUTTON_DEFAULT;
         $data->activitylink = 0;
         $data->foriframe = 0;
         $data->grade = 0;

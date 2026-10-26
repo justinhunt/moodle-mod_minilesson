@@ -602,4 +602,14 @@ class itemtype extends item {
         $result->hascorrectanswer = count($correctanswers) > 0;
         $result->correctans = $correctanswers;
     }
+
+    /**
+     * This item type shows its own results page, so on the lesson's last item the next button
+     * says "Finish" only there.
+     *
+     * @return bool
+     */
+    public function has_results_page() {
+        return true;
+    }
 }
