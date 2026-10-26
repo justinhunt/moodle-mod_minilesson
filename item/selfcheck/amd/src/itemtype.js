@@ -6,7 +6,7 @@ define(
 
         /*
         This file is to manage the self check item type.
-        The student records a sentence, hears model / own recording / model, and then approves it or tries again.
+        The student records a sentence, hears model / own recording (/ model, if set), and then approves it or tries again.
         There is no speech recognition.
         */
 
@@ -431,7 +431,7 @@ define(
                 }, self.comparedelay);
             },
 
-            // Play the model audio, the student's recording and the model audio again.
+            // Play the model audio and the student's recording, then the model audio again if the item says so.
             play_compare: function () {
                 var self = this;
                 var item = self.items[self.game.pointer];
@@ -443,7 +443,7 @@ define(
                     steps.push({button: self.modelbtn, audio: item.audio});
                 }
                 steps.push({button: self.selfbtn, audio: item.audioself});
-                if (item.audio) {
+                if (item.audio && self.itemdata.replaymodel) {
                     steps.push({button: self.modelbtn, audio: item.audio});
                 }
 

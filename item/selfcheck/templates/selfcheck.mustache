@@ -55,8 +55,14 @@
 
         <div style="display:none;" class="fluency_listen_cont selfcheck_listen_cont">
             <button class="btn fluency_listen_btn selfcheck_compare_btn mr-3" style="display: none"
+                    {{#replaymodel}}
                     title="{{#str}}playcompare, minilessonitem_selfcheck{{/str}}"
-                    aria-label="{{#str}}playcompare, minilessonitem_selfcheck{{/str}}">
+                    aria-label="{{#str}}playcompare, minilessonitem_selfcheck{{/str}}"
+                    {{/replaymodel}}
+                    {{^replaymodel}}
+                    title="{{#str}}playcompareshort, minilessonitem_selfcheck{{/str}}"
+                    aria-label="{{#str}}playcompareshort, minilessonitem_selfcheck{{/str}}"
+                    {{/replaymodel}}>
                 <i class="fa fa-exchange"></i>
             </button>
             <button class="btn fluency_listen_btn selfcheck_listen_btn audiomodel"

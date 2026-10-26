@@ -57,6 +57,11 @@ class itemform extends baseform {
             get_string('hintrtl', constants::M_COMPONENT),
             get_string('hintrtl_desc', constants::M_COMPONENT)
         );
+        $this->add_checkbox(
+            itemtype::REPLAYMODEL,
+            get_string('replaymodel', 'minilessonitem_selfcheck'),
+            get_string('replaymodel_desc', 'minilessonitem_selfcheck')
+        );
         $this->add_sentenceimage(1, null, false);
         $this->add_sentenceaudio(1, null, false);
         $this->add_timelimit(constants::TIMELIMIT, get_string(constants::TIMELIMIT, constants::M_COMPONENT));

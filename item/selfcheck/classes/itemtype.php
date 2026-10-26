@@ -24,8 +24,8 @@ use stdClass;
 /**
  * Renderable class for a self check item in a minilesson activity.
  *
- * The student records each sentence, hears the model audio, their own recording and the model audio again,
- * and then approves their attempt or tries again. There is no speech recognition, so it works in any language.
+ * The student records each sentence, hears the model audio and their own recording (and optionally the model
+ * audio again), and then approves their attempt or tries again. There is no speech recognition, so it works in any language.
  *
  * @package    minilessonitem_selfcheck
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -37,6 +37,9 @@ class itemtype extends item {
 
     /** @var int The longest a single recording may run, in seconds. */
     public const MAXRECORDINGTIME = 30;
+
+    /** @var string Column for "play the model again after the learner's recording" (off by default). */
+    public const REPLAYMODEL = 'customint1';
 
     /**
      * Export the data for the mustache template.
@@ -54,6 +57,7 @@ class itemtype extends item {
         $testitem->rtl = utils::is_rtl($this->language);
         $testitem->hintrtl = $this->itemrecord->{constants::FLUENCYHINTRTL} == 1;
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
+        $testitem->replaymodel = $this->itemrecord->{self::REPLAYMODEL} == 1;
 
         // Cloud Poodll. We use it for the recorder and for saving the recording, not for speech recognition.
         $testitem = $this->set_cloudpoodll_details($testitem, self::MAXRECORDINGTIME);
@@ -110,8 +114,8 @@ class itemtype extends item {
      */
     public static function aigen_fetch_usage() {
         return 'A series of sentences the learner says aloud and then checks for themselves: after recording, '
-            . 'they hear the model audio, their own recording and the model audio again, and then approve their '
-            . 'attempt or try again. There is no speech recognition, so use it for languages that speech '
+            . 'they hear the model audio and their own recording (and the model audio again if replaymodel is on), '
+            . 'and then approve their attempt or try again. There is no speech recognition, so use it for languages that speech '
             . 'recognition does not support (e.g. Maori or Basque), or when the teacher does not want automatic '
             . 'speech scoring. Where speech recognition is available and wanted, prefer fluency or listenrepeat.';
     }
@@ -156,6 +160,14 @@ class itemtype extends item {
                 'options' => [
                     ['value' => '0', 'meaning' => 'Show the start page (default)'],
                     ['value' => '1', 'meaning' => 'Start immediately'],
+                ],
+            ],
+            'replaymodel' => [
+                'description' => 'Whether the model audio plays again after the learner\'s own recording, when '
+                    . 'they compare the two.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Model, then the learner\'s recording (default)'],
+                    ['value' => '1', 'meaning' => 'Model, the learner\'s recording, then the model again'],
                 ],
             ],
             'hintrtl' => [
@@ -240,6 +252,8 @@ class itemtype extends item {
             'default' => 0, 'dbname' => constants::GAPFILLHIDESTARTPAGE];
         $keycols['int7'] = ['jsonname' => 'hintrtl', 'type' => 'boolean', 'optional' => true,
             'default' => 0, 'dbname' => constants::FLUENCYHINTRTL];
+        $keycols['int1'] = ['jsonname' => 'replaymodel', 'type' => 'boolean', 'optional' => true,
+            'default' => 0, 'dbname' => self::REPLAYMODEL];
         $keycols['fileanswer_audio'] = ['jsonname' => constants::FILEANSWER . '1_audio', 'type' => 'anonymousfile',
             'optional' => true, 'default' => null, 'dbname' => false];
         $keycols['fileanswer_image'] = ['jsonname' => constants::FILEANSWER . '1_image', 'type' => 'anonymousfile',
