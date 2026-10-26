@@ -1,4 +1,8 @@
-Version 1.1.60 (Build 2026102100)
+Version 1.1.60 (Build 2026102600)
+- added Azure TTS voices for 41 languages that had three or fewer voices (not counting Whisper
+  voices). Most get one female and one male voice, some get up to four. Their names end in "_a"
+- English (Ireland), German (Switzerland) and Basque now have their own TTS voices. Before, they
+  used the US English voices
 - added Arabic, Ukrainian, Vietnamese, Korean, French and German translations of the interface (#92)
 - added the strings that were missing from the Norwegian, Danish, Finnish, Japanese, Chinese and Spanish translations
 - AI prompts, AI generation template text and privacy text stay in English in all languages
