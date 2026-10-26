@@ -25,7 +25,7 @@
     </div>
 
     {{> mod_minilesson/progresstimer }}
-    {{#audiocontent}}
+    {{#readbefore}}
     <div style="display:none;" class="wordshuffle_listen_cont text-center mb-2">
         <button class="btn animatesoundbtn position-relative wordshuffle_listen_btn">
             <div class='soundWave'>
@@ -37,7 +37,7 @@
             </div>
         </button>
     </div>
-    {{/audiocontent}}
+    {{/readbefore}}
 
     <div style="display:none;" class="question" dir="{{contentdir}}" lang="{{contentlang}}">
         {{#sentences}}
@@ -56,6 +56,23 @@
                         {{/isgap}}
                     {{/gapwords}}
                 </div>
+
+                {{#readafter}}
+                {{! The sentence is read here after a correct attempt. }}
+                <div class="wordshuffle_after_cont text-center mb-2" style="display:none;">
+                    <button type="button" class="btn animatesoundbtn position-relative wordshuffle_after_btn"
+                            title="{{#str}}playsentence, minilessonitem_wordshuffle{{/str}}"
+                            aria-label="{{#str}}playsentence, minilessonitem_wordshuffle{{/str}}">
+                        <div class='soundWave'>
+                            <div class='bar'></div>
+                            <div class='bar'></div>
+                            <div class='bar'></div>
+                            <div class='bar'></div>
+                            <div class='bar'></div>
+                        </div>
+                    </button>
+                </div>
+                {{/readafter}}
 
                 {{! Word bank  }}
                 <div id="word-bank" class="word-bank bank d-flex flex-wrap justify-content-center p-2 mb-3">

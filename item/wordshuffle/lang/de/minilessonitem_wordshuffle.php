@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Wörter ordnen';
 $string['item_desc'] = 'Das Element Wörter ordnen nimmt eine Reihe von Sätzen, deren Wörter neu angeordnet werden. Die Lernenden müssen die Wörter in die richtige Reihenfolge bringen.';
+$string['playsentence'] = 'Satz abspielen';
 $string['pluginname'] = 'Wörter ordnen';
+$string['readsentence_after'] = 'Satz nur nach einem richtigen Versuch vorlesen';
+$string['readsentence_before'] = 'Satz vor dem Versuch vorlesen';
+$string['readsentence_both'] = 'Satz vor dem Versuch und nach einem richtigen Versuch vorlesen';
+$string['readsentence_none'] = 'Sätze nicht vorlesen';

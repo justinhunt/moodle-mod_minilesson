@@ -107,6 +107,7 @@ define(['jquery',
             stepdata.grade = stepdata.totalitems > 0 ? Math.round((stepdata.correctitems / stepdata.totalitems) * 100) : 0;
 
             //stop audio
+            self.itemleft = true;
             self.stop_audio();
 
             self.quizhelper.do_next(stepdata);
@@ -176,6 +177,20 @@ define(['jquery',
             });
 
             //AUDIO PLAYER events
+            // The player under a completed sentence reads it again from the start.
+            self.controls.question.on("click", ".wordshuffle_after_btn", function () {
+                var theaudio = self.items[self.game.pointer].audio;
+                if (theaudio) {
+                    theaudio.currentTime = 0;
+                    var playing = theaudio.play();
+                    if (playing && playing.catch) {
+                        playing.catch(function () {
+                            // Nothing to do: the learner can press it again.
+                        });
+                    }
+                }
+            });
+
             var audioplayerbtn = self.controls.listen_btn;
             //audio button click event
             audioplayerbtn.on("click", function () {
@@ -345,6 +360,22 @@ define(['jquery',
 
             self.stopTimer(self.items[self.game.pointer].timer);
 
+            // After a correct attempt we may read the sentence, and move on when it has been read.
+            // Autoplay is not reliable on mobile, so there we do not show the player or play the audio.
+            var item = self.items[self.game.pointer];
+            if (self.itemdata.readafter && item.correct && item.audio && !self.quizhelper.mobile_user()) {
+                self.interactionLocked = true;
+                self.play_after_audio(item, function () {
+                    self.advance(0);
+                });
+            } else {
+                self.advance(2000);
+            }
+        },
+
+        // Move on to the next sentence after the delay, or end the item if this was the last sentence.
+        advance: function (delay) {
+            var self = this;
             if (self.game.pointer < self.items.length - 1) {
                 // Prevent interactions while we wait to advance to the next prompt
                 self.interactionLocked = true;
@@ -352,9 +383,41 @@ define(['jquery',
                     self.controls.container.find('.wordshuffle_reply_' + self.game.pointer).hide();
                     self.game.pointer++;
                     self.nextPrompt();
-                }, 2000);
+                }, delay);
             } else {
                 self.end();
+            }
+        },
+
+        // Show the small player under the completed sentence and read the sentence. Calls done when the
+        // audio has ended, or straight away if it can not be played (e.g. the browser blocks autoplay).
+        play_after_audio: function (item, done) {
+            var self = this;
+            var audio = item.audio;
+            var playercont = self.pointerdiv.find('.wordshuffle_after_cont');
+            var playerbtn = playercont.find('.wordshuffle_after_btn');
+            var finished = false;
+            var finish = function () {
+                if (finished) {
+                    return;
+                }
+                finished = true;
+                audio.removeEventListener('ended', finish);
+                audio.removeEventListener('error', finish);
+                playerbtn.removeClass('activeanimation');
+                // Stopping the audio as the learner leaves the item must not move us on as well.
+                if (!self.itemleft) {
+                    done();
+                }
+            };
+            playercont.show();
+            playerbtn.addClass('activeanimation');
+            audio.addEventListener('ended', finish);
+            audio.addEventListener('error', finish);
+            audio.currentTime = 0;
+            var playing = audio.play();
+            if (playing && playing.catch) {
+                playing.catch(finish);
             }
         },
 
@@ -419,9 +482,9 @@ define(['jquery',
 
             self.showNextWordSet();
 
-            // We autoplay the audio on item entry, if its not a mobile user.
+            // We autoplay the audio on item entry, if its not a mobile user, and the sentence is read before the attempt.
             // If we do not have a start page and its the first item, we play on the item show event
-            if (self.items[self.game.pointer].audio !== null && !self.quizhelper.mobile_user()) {
+            if (self.itemdata.readbefore && self.items[self.game.pointer].audio !== null && !self.quizhelper.mobile_user()) {
                 if (self.itemdata.hidestartpage && self.game.pointer === 0) {
                     self.controls.container.on("showElement", () => {
                         setTimeout(function () {
@@ -571,6 +634,8 @@ define(['jquery',
         },
 
         selectedWord: null,
+        // Set when the learner leaves the item, so pending audio callbacks do nothing.
+        itemleft: false,
         // Interaction lock to block user actions during short transitions
         interactionLocked: false,
 

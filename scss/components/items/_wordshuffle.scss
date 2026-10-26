@@ -215,6 +215,19 @@
     height: 36px;
   }
 
+  // The small player that reads a sentence after a correct attempt.
+  .wordshuffle_after_btn {
+    width: 48px;
+    height: 36px;
+    border-radius: 8px;
+    background: $primary-light;
+
+    &:hover,
+    &:focus {
+      background: $primary-light-hover;
+    }
+  }
+
   .wordshuffle_check_btn {
     width: auto;
     height: 36px;

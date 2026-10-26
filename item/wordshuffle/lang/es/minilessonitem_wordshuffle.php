@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Ordenar palabras';
 $string['item_desc'] = 'El elemento Ordenar palabras toma un conjunto de frases. Las palabras de cada frase se reordenan. El estudiante debe ordenar las palabras correctamente.';
+$string['playsentence'] = 'Reproducir la frase';
 $string['pluginname'] = 'Ordenar palabras';
+$string['readsentence_after'] = 'Leer la frase solo después de un intento correcto';
+$string['readsentence_before'] = 'Leer la frase antes del intento';
+$string['readsentence_both'] = 'Leer la frase antes del intento y después de un intento correcto';
+$string['readsentence_none'] = 'No leer las frases';

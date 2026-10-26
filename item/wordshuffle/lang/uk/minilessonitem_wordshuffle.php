@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Перестановка слів';
 $string['item_desc'] = 'Елемент «Перестановка слів» бере набір речень, слова в кожному з яких переставлено. Учень має розташувати слова в правильному порядку.';
+$string['playsentence'] = 'Відтворити речення';
 $string['pluginname'] = 'Перестановка слів';
+$string['readsentence_after'] = 'Читати речення лише після правильної спроби';
+$string['readsentence_before'] = 'Читати речення перед спробою';
+$string['readsentence_both'] = 'Читати речення перед спробою і після правильної спроби';
+$string['readsentence_none'] = 'Не читати речення';

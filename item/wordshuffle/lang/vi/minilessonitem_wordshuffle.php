@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Sắp xếp từ';
 $string['item_desc'] = 'Mục Sắp xếp từ lấy một tập các câu, trong đó các từ của mỗi câu bị xáo trộn. Học viên phải sắp xếp các từ đúng thứ tự.';
+$string['playsentence'] = 'Phát câu';
 $string['pluginname'] = 'Sắp xếp từ';
+$string['readsentence_after'] = 'Chỉ đọc câu sau khi làm đúng';
+$string['readsentence_before'] = 'Đọc câu trước khi làm';
+$string['readsentence_both'] = 'Đọc câu trước khi làm và sau khi làm đúng';
+$string['readsentence_none'] = 'Không đọc câu';

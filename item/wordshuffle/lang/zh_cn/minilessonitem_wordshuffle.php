@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = '词语重组';
 $string['item_desc'] = '词语重组项目会使用一组句子。每个句子中的单词会被重新排列。学生必须将单词按正确顺序排列。';
+$string['playsentence'] = '播放句子';
 $string['pluginname'] = '词语重组';
+$string['readsentence_after'] = '仅在答对后朗读句子';
+$string['readsentence_before'] = '作答前朗读句子';
+$string['readsentence_both'] = '作答前和答对后都朗读句子';
+$string['readsentence_none'] = '不朗读句子';

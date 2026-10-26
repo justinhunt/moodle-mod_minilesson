@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Ordblanding';
 $string['item_desc'] = 'Ordblanding-elementet tager et sæt sætninger. Ordene i hver sætning blandes. Eleven skal sætte ordene i den rigtige rækkefølge.';
+$string['playsentence'] = 'Afspil sætningen';
 $string['pluginname'] = 'Ordblanding';
+$string['readsentence_after'] = 'Læs kun sætningen op efter et rigtigt forsøg';
+$string['readsentence_before'] = 'Læs sætningen op før forsøget';
+$string['readsentence_both'] = 'Læs sætningen op før forsøget og efter et rigtigt forsøg';
+$string['readsentence_none'] = 'Læs ikke sætningerne op';

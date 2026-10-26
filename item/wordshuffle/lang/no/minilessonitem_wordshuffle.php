@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Ordstokking';
 $string['item_desc'] = 'Ordstokking-elementet tar et sett med setninger. Ordene i hver setning stokkes om. Eleven må sette ordene i riktig rekkefølge.';
+$string['playsentence'] = 'Spill av setningen';
 $string['pluginname'] = 'Ordstokking';
+$string['readsentence_after'] = 'Les opp setningen bare etter et riktig forsøk';
+$string['readsentence_before'] = 'Les opp setningen før forsøket';
+$string['readsentence_both'] = 'Les opp setningen før forsøket og etter et riktig forsøk';
+$string['readsentence_none'] = 'Ikke les opp setningene';

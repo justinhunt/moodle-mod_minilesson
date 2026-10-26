@@ -27,5 +27,10 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Word Shuffle';
 $string['item_desc'] = 'The Word Shuffle item takes a set of sentences The words in each sentence are re-arranged. The student must order the words correctly.';
+$string['playsentence'] = 'Play the sentence';
 $string['pluginname'] = 'WordShuffle';
 $string['privacy:metadata'] = 'The WordShuffle plugin doesn\'t store any personal data.';
+$string['readsentence_after'] = 'Read sentence only after correct attempt';
+$string['readsentence_before'] = 'Read sentence before attempt';
+$string['readsentence_both'] = 'Read sentence before and after correct attempt';
+$string['readsentence_none'] = 'Don\'t read sentences';

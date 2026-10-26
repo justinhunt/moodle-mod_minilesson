@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'ワードシャッフル';
 $string['item_desc'] = 'ワードシャッフル項目は、一連の文を使います。各文の単語は並べ替えられます。学習者は単語を正しい順に並べます。';
+$string['playsentence'] = '文を再生';
 $string['pluginname'] = 'ワードシャッフル';
+$string['readsentence_after'] = '正解した後にだけ文を読み上げる';
+$string['readsentence_before'] = '解答の前に文を読み上げる';
+$string['readsentence_both'] = '解答の前と正解した後に文を読み上げる';
+$string['readsentence_none'] = '文を読み上げない';

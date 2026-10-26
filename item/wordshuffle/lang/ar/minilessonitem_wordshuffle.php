@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'ترتيب الكلمات';
 $string['item_desc'] = 'يأخذ عنصر ترتيب الكلمات مجموعة من الجمل، وتُعاد ترتيب كلمات كل جملة عشوائيًا. على الطالب ترتيب الكلمات بشكل صحيح.';
+$string['playsentence'] = 'تشغيل الجملة';
 $string['pluginname'] = 'ترتيب الكلمات';
+$string['readsentence_after'] = 'قراءة الجملة بعد المحاولة الصحيحة فقط';
+$string['readsentence_before'] = 'قراءة الجملة قبل المحاولة';
+$string['readsentence_both'] = 'قراءة الجملة قبل المحاولة وبعد المحاولة الصحيحة';
+$string['readsentence_none'] = 'عدم قراءة الجمل';

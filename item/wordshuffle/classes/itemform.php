@@ -36,14 +36,18 @@ class itemform extends baseform
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('wordshuffle_instructions1', constants::M_COMPONENT));
         $this->add_itemsettings_heading();
 
-        // Do we want TTS audio.
-        $mform->addElement(
-            'advcheckbox',
+        // Do we want TTS audio, and when: before the attempt, after a correct attempt, or both.
+        $readoptions = [
+            itemtype::READ_NONE => get_string('readsentence_none', 'minilessonitem_wordshuffle'),
+            itemtype::READ_BEFORE => get_string('readsentence_before', 'minilessonitem_wordshuffle'),
+            itemtype::READ_AFTER => get_string('readsentence_after', 'minilessonitem_wordshuffle'),
+            itemtype::READ_BOTH => get_string('readsentence_both', 'minilessonitem_wordshuffle'),
+        ];
+        $this->add_dropdown(
             constants::READSENTENCE,
             get_string('readsentences', constants::M_COMPONENT),
-            get_string('readsentences_desc', constants::M_COMPONENT),
-            [],
-            [0, 1]
+            $readoptions,
+            itemtype::READ_NONE
         );
 
         // Maybe add TTS Audio voices.

@@ -33,6 +33,14 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_GRAMMAR];
 
+    /** @var int Read sentences setting (constants::READSENTENCE): do not read them. */
+    public const READ_NONE = 0;
+    /** @var int Read sentences setting: read each sentence before the attempt. */
+    public const READ_BEFORE = 1;
+    /** @var int Read sentences setting: read each sentence only after a correct attempt. */
+    public const READ_AFTER = 2;
+    /** @var int Read sentences setting: read each sentence before and after a correct attempt. */
+    public const READ_BOTH = 3;
 
     // The item type.
     /**
@@ -46,8 +54,11 @@ class itemtype extends item {
         $testitem = parent::export_for_template($output);
         $testitem = $this->get_polly_options($testitem);
         $testitem = $this->set_layout($testitem);
-        // Do we need audio
-        $testitem->readsentence = !empty($itemrecord->{constants::READSENTENCE});
+        // Do we need audio, and when do we read the sentence: before the attempt, after a correct one, or both.
+        $readmode = (int) $itemrecord->{constants::READSENTENCE};
+        $testitem->readsentence = $readmode !== self::READ_NONE;
+        $testitem->readafter = $readmode === self::READ_AFTER || $readmode === self::READ_BOTH;
+        $testitem->readbefore = $testitem->readsentence && $readmode !== self::READ_AFTER;
 
         // Prepare data arrays.
         $testitem->sentences = [];
@@ -238,14 +249,18 @@ class itemtype extends item {
                 'example' => '["I [get up] at seven o\'clock.|What I do first each day.|have breakfast,go to work"]',
             ],
             'readsentence' => [
-                'description' => 'Whether each sentence is read aloud by TTS (using promptvoice) - making the activity a form of dictation.',
+                'description' => 'Whether and when each sentence is read aloud by TTS (using promptvoice). Read '
+                    . 'before the attempt, it makes the activity a form of dictation. Read after a correct attempt, '
+                    . 'it lets the learner hear the sentence they have just built.',
                 'options' => [
                     ['value' => '0', 'meaning' => 'No TTS audio (default)'],
-                    ['value' => '1', 'meaning' => 'Read each sentence aloud'],
+                    ['value' => '1', 'meaning' => 'Read each sentence aloud before the attempt'],
+                    ['value' => '2', 'meaning' => 'Read each sentence aloud only after a correct attempt'],
+                    ['value' => '3', 'meaning' => 'Read each sentence aloud before the attempt and after a correct attempt'],
                 ],
             ],
             'promptvoice' => [
-                'description' => 'The TTS voice that reads the sentences aloud (used with readsentence=1). '
+                'description' => 'The TTS voice that reads the sentences aloud (used when readsentence is not 0). '
                     . 'A voice display name (case-insensitive), e.g. "Joey" (en-US) or "Mathieu" (fr-FR), '
                     . 'or "auto" to let the server pick a voice matching the lesson language.',
                 'example' => 'auto',

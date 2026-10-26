@@ -6728,6 +6728,15 @@ body.minilesson-fiction-im-noscroll {
   width: auto;
   height: 36px;
 }
+.minilesson_wordshuffle_player_box .wordshuffle_after_btn {
+  width: 48px;
+  height: 36px;
+  border-radius: 8px;
+  background: #E6E9FD;
+}
+.minilesson_wordshuffle_player_box .wordshuffle_after_btn:hover, .minilesson_wordshuffle_player_box .wordshuffle_after_btn:focus {
+  background: #D4D9F8;
+}
 .minilesson_wordshuffle_player_box .wordshuffle_check_btn {
   width: auto;
   height: 36px;

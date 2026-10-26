@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Sanojen sekoitus';
 $string['item_desc'] = 'Sanojen sekoitus -osio ottaa joukon lauseita. Kunkin lauseen sanat sekoitetaan. Opiskelijan on järjestettävä sanat oikeaan järjestykseen.';
+$string['playsentence'] = 'Toista lause';
 $string['pluginname'] = 'Sanojen sekoitus';
+$string['readsentence_after'] = 'Lue lause ääneen vain oikean yrityksen jälkeen';
+$string['readsentence_before'] = 'Lue lause ääneen ennen yritystä';
+$string['readsentence_both'] = 'Lue lause ääneen ennen yritystä ja oikean yrityksen jälkeen';
+$string['readsentence_none'] = 'Älä lue lauseita ääneen';

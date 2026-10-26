@@ -27,4 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = '단어 순서 맞추기';
 $string['item_desc'] = '단어 순서 맞추기 항목은 문장 묶음을 가져와 각 문장의 단어 순서를 섞어 보여 줘요. 학생은 단어를 올바른 순서로 배열해야 해요.';
+$string['playsentence'] = '문장 재생';
 $string['pluginname'] = '단어 순서 맞추기';
+$string['readsentence_after'] = '맞게 시도한 뒤에만 문장 읽어 주기';
+$string['readsentence_before'] = '시도하기 전에 문장 읽어 주기';
+$string['readsentence_both'] = '시도하기 전과 맞게 시도한 뒤에 문장 읽어 주기';
+$string['readsentence_none'] = '문장을 읽어 주지 않음';
