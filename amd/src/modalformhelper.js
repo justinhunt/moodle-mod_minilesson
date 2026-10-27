@@ -7,8 +7,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define(
-    ['jquery', 'core/log','core/str', 'core/modal_save_cancel', 'core/modal_events', 'core/fragment', 'core/ajax', 'core/yui'],
-    function ($, log,Str, ModalSaveCancel, ModalEvents, Fragment, Ajax, Y) {
+    ['jquery', 'core/log','core/str', 'core/modal_save_cancel', 'core/modal_events', 'core/fragment',
+        'core/ajax', 'core_form/changechecker'],
+    function ($, log,Str, ModalSaveCancel, ModalEvents, Fragment, Ajax, FormChangeChecker) {
 
         /**
          * Constructor
@@ -137,9 +138,7 @@ define(
             this.modal.hide();
             // We could trigger an event instead.
             // Yuk.
-            Y.use('moodle-core-formchangechecker', function () {
-                M.core_formchangechecker.reset_form_dirty_state();
-            });
+            FormChangeChecker.resetAllFormDirtyStates();
 
             log.debug(ajaxresult); //this contains what the server returns (eg new item->id etc)
             log.debug(formData); //this contains the original form data
