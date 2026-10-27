@@ -1,3 +1,9 @@
+Version 1.1.61 (Build 2026102700)
+- Fixed connecting AI tools through MCP OAuth on Moodle 5.3 (the token was minted with a function Moodle 5.3 removed)
+- Use the core_external web service classes (the old global names log debugging notices on Moodle 5.3)
+- Removed an unused script that loaded theme_boost/tether, which Moodle 5.3 no longer has
+- Tested with Moodle 5.3
+
 Version 1.1.60 (Build 2026102601)
 - added Azure TTS voices for 41 languages that had three or fewer voices (not counting Whisper
   voices). Most get one female and one male voice, some get up to four. Their names end in "_a"
