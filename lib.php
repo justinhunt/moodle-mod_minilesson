@@ -1099,7 +1099,7 @@ function minilesson_output_fragment_mform($args)
 
     $itemformclass = utils::fetch_itemform_classname($formname);
     if (!$itemformclass) {
-        print_error('No item type specified');
+        throw new \moodle_exception('No item type specified');
         return 0;
     }
     $mform = new $itemformclass(

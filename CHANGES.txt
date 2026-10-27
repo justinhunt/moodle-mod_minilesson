@@ -3,6 +3,7 @@ Version 1.1.61 (Build 2026102700)
 - Use the core_external web service classes (the old global names log debugging notices on Moodle 5.3)
 - Removed an unused script that loaded theme_boost/tether, which Moodle 5.3 no longer has
 - Tested with Moodle 5.3
+- Replaced calls to print_error() and error(), which no longer exist in Moodle, so error pages show their message instead of a fatal error
 
 Version 1.1.60 (Build 2026102601)
 - added Azure TTS voices for 41 languages that had three or fewer voices (not counting Whisper

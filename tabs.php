@@ -32,7 +32,7 @@ use mod_minilesson\constants;
 global $DB, $USER;
 
 if (empty($moduleinstance)) {
-    print_error('cannotcallscript');
+    throw new \moodle_exception('cannotcallscript');
 }
 if (!isset($currenttab)) {
     $currenttab = '';

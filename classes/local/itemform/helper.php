@@ -52,7 +52,7 @@ class helper
         }
 
         if (!$items = $DB->get_records(constants::M_QTABLE, array('minilesson' => $minilesson->id), $sort)) {
-            print_error("Could not fetch items for ordering");
+            throw new \moodle_exception("Could not fetch items for ordering");
             return;
         }
 
@@ -91,7 +91,7 @@ class helper
         global $CFG, $USER, $DB;
 
         if (!$item = $DB->get_record(constants::M_QTABLE, array('minilesson' => $minilesson->id, 'id' => $itemid))) {
-            print_error("Could not fetch item for duplication");
+            throw new \moodle_exception("Could not fetch item for duplication");
             return;
         }
 
@@ -126,7 +126,7 @@ class helper
 
         // Insert new record.
         if (!$newitemid = $DB->insert_record(constants::M_QTABLE, $item)) {
-            print_error("Could not duplicate item");
+            throw new \moodle_exception("Could not duplicate item");
             return;
         }
 

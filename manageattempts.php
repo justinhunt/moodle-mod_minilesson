@@ -55,7 +55,7 @@ require_capability('mod/minilesson:canmanageattempts', $context);
 if ($action == 'delete' && $attemptid > 0) {
     $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE, ['id' => $attemptid, 'moduleid' => $cm->instance], '*', MUST_EXIST);
     if (!$attempt) {
-        print_error('could not find attempt of id:' . $attemptid);
+        throw new \moodle_exception('could not find attempt of id:' . $attemptid);
     }
 } else {
     $edit = false;
@@ -85,13 +85,13 @@ switch ($action) {
         // Check user has group access.
         $attempt = $DB->get_record(constants::M_ATTEMPTSTABLE, ['id' => $attemptid, 'moduleid' => $cm->instance], '*', MUST_EXIST);
         if (!groups_user_groups_visible($course, $attempt->userid, $cm)) {
-            print_error("You do not have permssion to delete this user");
+            throw new \moodle_exception("You do not have permssion to delete this user");
         } elseif ($DB->delete_records(constants::M_ATTEMPTSTABLE, ['id' => $attemptid])) {
             if ($attempt) {
                 minilesson_update_grades($moduleinstance, $attempt->userid, true);
             }
         } else {
-            print_error("Could not delete attempt");
+            throw new \moodle_exception("Could not delete attempt");
         }
 
         redirect($redirecturl);
@@ -115,7 +115,7 @@ switch ($action) {
         if ($result) {
             minilesson_update_grades($moduleinstance, 0, true);
         } else {
-            print_error("Could not delete attempts (all)");
+            throw new \moodle_exception("Could not delete attempts (all)");
         }
         redirect($redirecturl);
         return;

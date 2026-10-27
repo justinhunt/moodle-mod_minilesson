@@ -60,7 +60,7 @@ class mod_minilesson_mod_form extends moodleform_mod
             $matches = array();
             if (!preg_match('/^mod_([^_]+)_mod_form$/', get_class($this), $matches)) {
                 debugging('Rename form to mod_xx_mod_form, where xx is name of your module');
-                print_error('unknownmodulename');
+                throw new \moodle_exception('unknownmodulename');
             }
             $this->_modname = $matches[1];
         }

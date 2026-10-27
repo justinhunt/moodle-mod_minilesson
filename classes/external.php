@@ -476,7 +476,7 @@ class mod_minilesson_external extends external_api {
 
         $itemformclass  = utils::fetch_itemform_classname($formname);
         if (!$itemformclass) {
-                print_error('No item type specifified');
+                throw new \moodle_exception('No item type specifified');
                 return 0;
         }
         $mform = new $itemformclass(
