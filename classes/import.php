@@ -48,6 +48,19 @@ class import {
     /** @var array Field names in the current item that its item type does not have. */
     private $unknownfields = [];
 
+    /** @var array|null The CSV rows, read once from the CSV reader so they can be gone over more than once. */
+    private $csvrows = null;
+
+    /** @var bool Import items that fail their item type's content checks, and report them as warnings. */
+    private $skipcontentchecks = false;
+
+    /** @var bool Check the items only, without saving any of them. */
+    private $dryrun = false;
+
+    /** @var array Warning entries (see line_error()) for the current item: content check failures, when
+     * content checks are skipped, and the item type's import_warnings(). */
+    private $linewarnings = [];
+
 
     /**
      * process constructor.
@@ -184,25 +197,142 @@ class import {
         $results->imported = 0;
         $results->failed = 0;
         $results->errors = [];
+        $results->warnings = [];
 
-        if ($this->isjson) {
-            foreach ($this->itemsfromjson as $item) {
-                $this->process_and_tally($item, $results);
+        foreach ($this->fetch_items() as $item) {
+            $this->process_and_tally($item, $results);
+        }
+        return $results;
+    }
+
+    /**
+     * Import items that fail their item type's content checks, instead of refusing them.
+     *
+     * The content checks (each item type's validate_import()) are strict so that the AI that
+     * composes lessons is told what to fix and tries again. A person importing a file someone else
+     * made cannot fix it before importing, but can fix the item on the item form afterwards, which
+     * accepts the same content anyway. Items that pass with this set are listed in the results as
+     * warnings, as are the item type's import_warnings(), which never refuse an item. Faults the item
+     * could not be saved or shown with are still refused.
+     *
+     * @param bool $skip
+     */
+    public function set_skip_content_checks($skip) {
+        $this->skipcontentchecks = $skip;
+    }
+
+    /**
+     * Check every item without importing any, and list those that fail only their content checks.
+     *
+     * @return array failure entries (see line_error()) for the items that fail their content checks
+     */
+    public function find_content_problems() {
+        $problems = [];
+        $itemnum = 0;
+        $this->dryrun = true;
+        try {
+            foreach ($this->fetch_items() as $item) {
+                $itemnum++;
+                $this->unknownfields = [];
+                $outcome = $this->import_process_line($item);
+                if ($outcome !== true && !empty($outcome->contentcheck)) {
+                    $outcome->itemnum = $itemnum;
+                    $problems[] = $outcome;
+                }
             }
-        } else {
-            // Init csv import helper.
+        } finally {
+            $this->dryrun = false;
+        }
+        return $problems;
+    }
+
+    /**
+     * The items to import, as JSON items or CSV rows.
+     *
+     * The CSV reader can only be read once, so its rows are kept for a dry run followed by the import.
+     *
+     * @return array
+     */
+    private function fetch_items() {
+        if ($this->isjson) {
+            return $this->itemsfromjson;
+        }
+        if ($this->csvrows === null) {
+            $this->csvrows = [];
             $this->cir->init();
-
-            // get the header line
             $this->currentheader = $this->cir->get_columns();
-
-            while ($item = $this->cir->next()) {
-                $this->process_and_tally($item, $results);
+            while ($row = $this->cir->next()) {
+                $this->csvrows[] = $row;
             }
             $this->cir->close();
             $this->cir->cleanup(true);
         }
-        return $results;
+        return $this->csvrows;
+    }
+
+    /**
+     * Keep the items to import in the user's draft area, so a later request can import them.
+     *
+     * The items are kept as read (and translated), so the import that follows a warning does not
+     * need the file uploaded again or translated again. Draft files are removed by cron after a few days.
+     *
+     * @return int the draft item id to pass to load_from_draft()
+     */
+    public function save_to_draft() {
+        global $CFG, $USER;
+        require_once($CFG->libdir . '/filelib.php');
+
+        $payload = new \stdClass();
+        $payload->isjson = $this->isjson;
+        if ($this->isjson) {
+            $payload->items = $this->itemsfromjson;
+            $payload->files = $this->filesfromjson;
+        } else {
+            $payload->rows = $this->fetch_items();
+            $payload->header = $this->currentheader;
+        }
+
+        $draftitemid = file_get_unused_draft_itemid();
+        get_file_storage()->create_file_from_string([
+            'contextid' => \context_user::instance($USER->id)->id,
+            'component' => 'user',
+            'filearea' => 'draft',
+            'itemid' => $draftitemid,
+            'filepath' => '/',
+            'filename' => 'minilessonimport.json',
+        ], json_encode($payload));
+        return $draftitemid;
+    }
+
+    /**
+     * Load items kept by save_to_draft(), and delete the draft so they are imported only once.
+     *
+     * @param int $draftitemid
+     * @return bool false if the draft is gone (eg cleaned up by cron, or already imported)
+     */
+    public function load_from_draft($draftitemid) {
+        global $USER;
+
+        $fs = get_file_storage();
+        $usercontextid = \context_user::instance($USER->id)->id;
+        $file = $fs->get_file($usercontextid, 'user', 'draft', $draftitemid, '/', 'minilessonimport.json');
+        if (!$file) {
+            return false;
+        }
+        $payload = json_decode($file->get_content());
+        $fs->delete_area_files($usercontextid, 'user', 'draft', $draftitemid);
+        if (!$payload) {
+            return false;
+        }
+
+        if ($payload->isjson) {
+            $this->set_reader($payload, true);
+        } else {
+            $this->isjson = false;
+            $this->csvrows = $payload->rows;
+            $this->currentheader = $payload->header;
+        }
+        return true;
     }
 
     /**
@@ -214,9 +344,14 @@ class import {
     private function process_and_tally($itemdata, $results) {
         $results->total++;
         $this->unknownfields = [];
+        $this->linewarnings = [];
         $outcome = $this->import_process_line($itemdata);
         if ($outcome === true) {
             $results->imported++;
+            foreach ($this->linewarnings as $warning) {
+                $warning->itemnum = $results->total;
+                $results->warnings[] = $warning;
+            }
         } else {
             $outcome->itemnum = $results->total;
             $results->failed++;
@@ -497,7 +632,22 @@ class import {
             if ($collabel !== '') {
                 $message = $collabel . ': ' . $message;
             }
-            return $this->line_error($itemtype, $newrecord->name, $message);
+            $failure = $this->line_error($itemtype, $newrecord->name, $message);
+            if (!$this->skipcontentchecks) {
+                $failure->contentcheck = true;
+                return $failure;
+            }
+            $this->linewarnings[] = $failure;
+        }
+
+        if ($this->dryrun) {
+            return true;
+        }
+
+        // Things worth fixing that do not stop the item working never refuse it.
+        $warnings = $itemtypeclass::import_warnings($newrecord, $this->cm);
+        if (!empty($warnings)) {
+            $this->linewarnings[] = $this->line_error($itemtype, $newrecord->name, implode(' ', $warnings));
         }
 
         // get itemorder

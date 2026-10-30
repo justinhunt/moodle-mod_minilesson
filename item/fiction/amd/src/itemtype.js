@@ -10,8 +10,9 @@ define([
     'core/modal_cancel',
     'core/fragment',
     'core/templates',
+    'core/ajax',
     'mod_minilesson/progresstimer',
-], function($, log, str, notification, def, translate, polly, YarnBound, ModalCancel, Fragment, Templates) {
+], function($, log, str, notification, def, translate, polly, YarnBound, ModalCancel, Fragment, Templates, Ajax) {
     "use strict"; // jshint ;_;
 
     /**
@@ -1248,10 +1249,11 @@ define([
          * @param {string} yarnContent - The raw Yarn story string.
          * @param {string} resultscontainerid - The id of thecontainer element to display results in.
          */
-        syntaxcheck: function (yarnContent, resultscontainerid) {
+        syntaxcheck: function (yarnContent, resultscontainerid, contextid) {
             const results = {
                 valid: true,
-                errors: []
+                errors: [],
+                warnings: []
             };
             var storydata = new Map();
             storydata.set('userfirstname', 'bob');
@@ -1304,17 +1306,37 @@ define([
                 });
             }
 
-            // Step 4: Display results
-            Templates.render('minilessonitem_fiction/fiction_syntaxcheckresults', results)
-                .then(function (html) {
-                    $('#' + resultscontainerid).html(html);
-                    return true;
-                }).catch(function () {
-                    return false;
+            // Step 4: Add the server's checks - the same ones the import runs, so a script that
+            // passes here also imports. If the call fails, show what the parser found anyway.
+            var servercheck = Promise.resolve({errors: [], warnings: []});
+            if (contextid) {
+                servercheck = Ajax.call([{
+                    methodname: 'minilessonitem_fiction_check_yarn',
+                    args: {contextid: contextid, yarn: yarnContent}
+                }])[0].catch(function (err) {
+                    log.debug('Yarn server check failed: ' + err.message);
+                    return {errors: [], warnings: []};
                 });
+            }
+
+            // Step 5: Display results
+            servercheck.then(function (problems) {
+                if (problems.errors.length) {
+                    results.valid = false;
+                    results.errors = results.errors.concat(problems.errors);
+                }
+                results.warnings = problems.warnings;
+                results.haswarnings = problems.warnings.length > 0;
+                return Templates.render('minilessonitem_fiction/fiction_syntaxcheckresults', results);
+            }).then(function (html) {
+                $('#' + resultscontainerid).html(html);
+                return true;
+            }).catch(function () {
+                return false;
+            });
         }, // End syntaxcheck
 
-        register_syntaxcheckbutton: function (buttonid, yarneditorid, resultscontainerid) {
+        register_syntaxcheckbutton: function (buttonid, yarneditorid, resultscontainerid, contextid) {
             var syntaxcheckbtn = document.getElementById(buttonid);
             var that = this;
             if (!syntaxcheckbtn) {
@@ -1323,7 +1345,7 @@ define([
             syntaxcheckbtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 var yarntext = $('#' + yarneditorid).val();
-                that.syntaxcheck(yarntext, resultscontainerid);
+                that.syntaxcheck(yarntext, resultscontainerid, contextid);
             });
         },
 

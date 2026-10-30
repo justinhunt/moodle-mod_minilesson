@@ -104,7 +104,18 @@ if (!empty($translateimportid) || ($restore && confirm_sesskey())) {
             $theimport->set_reader($importdata, true);
         }
         if (empty($errormessage)) {
+            // A lesson from the bank cannot be fixed before it is imported, so import items that fail
+            // the content checks and say so; they can be fixed on the item form afterwards.
+            $theimport->set_skip_content_checks(true);
             $results = $theimport->import_process();
+            if ($results->failed == 0 && !empty($results->warnings)) {
+                $warnmessage = get_string(
+                    'importcompletedwithwarnings',
+                    constants::M_COMPONENT,
+                    ['imported' => $results->imported, 'warned' => count($results->warnings)]
+                );
+                redirect($url, $warnmessage, null, 'warning');
+            }
             if ($results->failed == 0) {
                 redirect($url, get_string('lessonitemcreate', constants::M_COMPONENT), null, 'success');
             }

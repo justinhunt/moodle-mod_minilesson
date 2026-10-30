@@ -37,6 +37,7 @@ $action = optional_param('action', null, PARAM_ALPHA);
 $iid = optional_param('iid', '', PARAM_INT);
 $fromlang = optional_param('fromlang', '', PARAM_TEXT);
 $tolang = optional_param('tolang', '', PARAM_TEXT);
+$confirmdraft = optional_param('confirmdraft', 0, PARAM_INT);
 
 
 if ($cmid) {
@@ -78,8 +79,18 @@ if ($config->enablesetuptab) {
 
 $renderer = $PAGE->get_renderer(constants::M_COMPONENT);
 $form = new baseimportform($formurl->out(false), ['leftover_rows' => $leftoverrows]);
+$results = null;
 
-if ($data = $form->get_data()) {
+if ($confirmdraft && confirm_sesskey()) {
+    // The user chose to import items that did not pass the content checks. They were kept in a draft.
+    $theimport = new \mod_minilesson\import($moduleinstance, $modulecontext, $course, $cm);
+    raise_memory_limit(MEMORY_HUGE);
+    if (!$theimport->load_from_draft($confirmdraft)) {
+        redirect($baseurl, get_string('importexpired', constants::M_COMPONENT), null, \core\output\notification::NOTIFY_ERROR);
+    }
+    $theimport->set_skip_content_checks(true);
+    $results = $theimport->import_process();
+} else if ($data = $form->get_data()) {
     $errormessage = '';
     $shouldtranslate = !empty($data->dotranslate);
     $importfromlang = trim((string)($data->fromlang ?? ''));
@@ -131,8 +142,33 @@ if ($data = $form->get_data()) {
         redirect($baseurl, $errormessage, null, \core\output\notification::NOTIFY_ERROR);
     }
 
-    $results = $theimport->import_process();
+    // Items that fail only their content checks can still be imported, but ask first. The checks are
+    // strict for the AI that composes lessons, and the user may not be able to fix someone else's file.
+    $problems = $theimport->find_content_problems();
+    if (!empty($problems)) {
+        $draftitemid = $theimport->save_to_draft();
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('importing', constants::M_COMPONENT));
+        echo $renderer->heading($pagetitle);
+        echo $OUTPUT->notification(
+            get_string('importcontentproblems', constants::M_COMPONENT, count($problems)),
+            \core\output\notification::NOTIFY_WARNING
+        );
+        echo $renderer->import_failures($problems, get_string('importcontentproblemsheading', constants::M_COMPONENT));
+        echo $OUTPUT->single_button(
+            new moodle_url($baseurl, ['confirmdraft' => $draftitemid]),
+            get_string('importanyway', constants::M_COMPONENT),
+            'post',
+            ['type' => 'primary']
+        );
+        echo $renderer->back_to_import_button($cm);
+        echo $renderer->footer();
+        die;
+    }
 
+    $results = $theimport->import_process();
+}
+
+if ($results) {
     if ($results->total === 0) {
         redirect(
             $baseurl,
@@ -142,15 +178,34 @@ if ($data = $form->get_data()) {
         );
     }
 
-    // On complete success, send the user to the lesson items page.
+    // On complete success, send the user to the lesson items page, or list the items to check.
     if ($results->failed === 0) {
         $itemsurl = new moodle_url('/mod/minilesson/rsquestion/rsquestions.php', ['id' => $cm->id]);
-        redirect(
-            $itemsurl,
-            get_string('importcompleted', constants::M_COMPONENT, $results->imported),
-            null,
-            \core\output\notification::NOTIFY_SUCCESS
+        if (empty($results->warnings)) {
+            redirect(
+                $itemsurl,
+                get_string('importcompleted', constants::M_COMPONENT, $results->imported),
+                null,
+                \core\output\notification::NOTIFY_SUCCESS
+            );
+        }
+
+        // Everything was imported, but some items have problems to check, so list them.
+        echo $renderer->header($moduleinstance, $cm, $mode, null, get_string('importing', constants::M_COMPONENT));
+        echo $renderer->heading($pagetitle);
+        echo $OUTPUT->notification(
+            get_string(
+                'importcompletedwithwarnings',
+                constants::M_COMPONENT,
+                ['imported' => $results->imported, 'warned' => count($results->warnings)]
+            ),
+            \core\output\notification::NOTIFY_WARNING
         );
+        echo $renderer->import_failures($results->warnings, get_string('importwarningsheading', constants::M_COMPONENT));
+        echo $renderer->back_to_items_button($cm);
+        echo $renderer->back_to_import_button($cm);
+        echo $renderer->footer();
+        die;
     }
 
     // Some items failed to import, so show the counts and a table of failures.
@@ -163,6 +218,12 @@ if ($data = $form->get_data()) {
     );
     echo $OUTPUT->notification($partialmessage, \core\output\notification::NOTIFY_WARNING);
     echo $renderer->import_failures($results->errors);
+    if (!empty($results->warnings)) {
+        echo $renderer->import_failures(
+            $results->warnings,
+            get_string('importwarningsheading', constants::M_COMPONENT)
+        );
+    }
     echo $renderer->back_to_items_button($cm);
     echo $renderer->back_to_import_button($cm);
     echo $renderer->footer();

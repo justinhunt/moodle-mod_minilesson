@@ -59,7 +59,7 @@ export const yarnLinter = linter((view) => {
                     });
                 }
 
-                const validCommands = ['jump', 'detour', 'return', 'declare', 'set', 'if', 'elseif', 'else', 'endif', 'picture', 'audio', 'video', 'translate', 'once', 'endonce'];
+                const validCommands = ['jump', 'detour', 'return', 'stop', 'declare', 'set', 'if', 'elseif', 'else', 'endif', 'picture', 'audio', 'video', 'translate', 'once', 'endonce'];
                 if (!validCommands.includes(cmdName.toLowerCase())) {
                     diagnostics.push({
                         from: cmdStartPos,

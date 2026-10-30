@@ -102,7 +102,10 @@ The door is not locked. Somewhere below deck, something moves.
 | `<<jump Node>>` | Go to `Node` and do not come back. |
 | `<<detour Node>>` | Run `Node`, then resume where you left off. The detour node ends with `<<return>>`. |
 | `<<return>>` | Ends a detour node and returns to the interrupted flow. |
-| `<<stop>>` | Ends the story. |
+| `<<stop>>` | Ends the story. Finish every ending with it. |
+
+A path that runs off the end of its node also ends the story, but the import warns about it,
+because that is usually a missing `<<jump>>`. Write `<<stop>>` wherever the story is meant to end.
 
 A detour is the right tool for an inconsequential choice: the side node adds colour, then
 control returns to the main path automatically.
@@ -391,6 +394,7 @@ Then check every one of these before you submit:
 - [ ] Every node can be reached from `Start` by some route.
 - [ ] Every detour node ends with `<<return>>`.
 - [ ] Every option ends with a jump or a detour.
+- [ ] Every ending finishes with `<<stop>>`, and every other path reaches a `<<jump>>`.
 - [ ] No two option sets sit next to each other without narrative text between them.
 - [ ] Every variable used is declared, and no compound operators (`+=`) appear.
 - [ ] Every block `<<once>>` is closed with `<<endonce>>`.

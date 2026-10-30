@@ -108,6 +108,16 @@ class aigen_import_items_json extends external_api {
                 ];
             }, $results->errors),
         ];
+        if (!empty($results->warnings)) {
+            $ret['warnings'] = array_map(function ($warning) {
+                return [
+                    'itemnum' => $warning->itemnum,
+                    'type' => $warning->type,
+                    'name' => $warning->name,
+                    'message' => $warning->message,
+                ];
+            }, $results->warnings);
+        }
         if (!empty($imagefailures)) {
             $ret['imagefailures'] = $imagefailures;
         }
@@ -136,6 +146,15 @@ class aigen_import_items_json extends external_api {
                 . 'Fix the item and resubmit it (already imported items should not be resubmitted)'
             ),
         ]);
+        $warningstructure = new external_single_structure([
+            'itemnum' => new external_value(PARAM_INT, '1-based position of the item in the submitted items array'),
+            'type' => new external_value(PARAM_RAW, 'The item type of the item'),
+            'name' => new external_value(PARAM_RAW, 'The name of the item'),
+            'message' => new external_value(
+                PARAM_RAW,
+                'What is worth fixing in the item, prefixed with the import field name where known'
+            ),
+        ]);
         $imagefailurestructure = new external_single_structure([
             'filesid' => new external_value(PARAM_RAW, 'The filesid the prompt was given under'),
             'filearea' => new external_value(PARAM_RAW, 'The file area the prompt was given under'),
@@ -148,6 +167,12 @@ class aigen_import_items_json extends external_api {
             'total' => new external_value(PARAM_INT, 'Number of items in the supplied payload', VALUE_OPTIONAL),
             'failed' => new external_value(PARAM_INT, 'Number of items that were rejected', VALUE_OPTIONAL),
             'errors' => new external_multiple_structure($errorstructure, 'Per-item import failures', VALUE_OPTIONAL),
+            'warnings' => new external_multiple_structure(
+                $warningstructure,
+                'Problems in items that were still imported, such as a story path that ends without <<stop>>. '
+                . 'Fix them in what you compose next; the items themselves are already in the lesson',
+                VALUE_OPTIONAL
+            ),
             'imagefailures' => new external_multiple_structure(
                 $imagefailurestructure,
                 'Entries of "fileprompts" that produced no image. The items were still imported, without that image',

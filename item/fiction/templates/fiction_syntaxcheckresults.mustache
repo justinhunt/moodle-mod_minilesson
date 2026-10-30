@@ -17,10 +17,14 @@
 {{!
     @template minilessonitem_fiction/fiction_syntaxcheckresults
 
-    TODO describe template fiction_syntaxcheckresults
+    The results of the Syntax Check button on the fiction item form.
 
     Example context (json):
     {
+        "valid": true,
+        "errors": [],
+        "haswarnings": true,
+        "warnings": ["Node \"End\" ends the story without <<stop>>. Add <<stop>> at its end."]
     }
 }}
 <div class="yarn-syntaxcheckresults">
@@ -33,4 +37,10 @@
             <div class="yarn-syntaxcheckresults-error">{{.}}</div>
         {{/errors}}
     {{/valid}}
+    {{#haswarnings}}
+        <div class="yarn-syntaxcheckresults-warnings">{{#str}} yarnsyntaxwarnings , mod_minilesson {{/str}}</div>
+        {{#warnings}}
+            <div class="yarn-syntaxcheckresults-warning">{{.}}</div>
+        {{/warnings}}
+    {{/haswarnings}}
 </div>

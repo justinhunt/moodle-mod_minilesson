@@ -260,6 +260,18 @@ abstract class item implements \templatable, \renderable {
     }
 
     /**
+     * Things in an import record worth fixing that do not stop the item working. Unlike
+     * validate_import(), these never refuse the item: the import reports them alongside it.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return array warning messages, empty when there is nothing to say
+     */
+    public static function import_warnings($newrecord, $cm) {
+        return [];
+    }
+
+    /**
      * Export the data for the mustache template.
      *
      * @param \renderer_base $output renderer to be used to render the item

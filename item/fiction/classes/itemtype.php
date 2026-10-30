@@ -329,15 +329,33 @@ class itemtype extends item {
      * @return \stdClass|false An error object if validation fails, or false if no error.
      */
     public static function validate_import($newrecord, $cm) {
-        $error = new \stdClass();
-        $error->col = '';
-        $error->message = '';
+        $problems = static::check_yarn((string) $newrecord->{self::YARN});
+        if (empty($problems)) {
+            // Return false to indicate no error.
+            return false;
+        }
 
-        $yarn = trim((string) $newrecord->{self::YARN});
-        if ($yarn == '') {
-            $error->col = self::YARN;
-            $error->message = get_string('error:emptyfield', constants::M_COMPONENT);
-            return $error;
+        $error = new \stdClass();
+        $error->col = self::YARN;
+        if (!empty($problems['fatal'])) {
+            $error->message = $problems['fatal'];
+        } else {
+            $error->message = get_string('error:yarnproblems', constants::M_COMPONENT, implode(' ', $problems));
+        }
+        return $error;
+    }
+
+    /**
+     * Everything wrong with a yarn script that we can see without running it. The import and the
+     * Syntax Check button on the authoring form both use this, so the two always agree.
+     *
+     * @param string $yarn the yarn script
+     * @return array empty when the script is sound. A script too broken to look inside gives
+     *         ['fatal' => message]; otherwise a list of every problem found.
+     */
+    public static function check_yarn($yarn) {
+        if (trim($yarn) == '') {
+            return ['fatal' => get_string('error:emptyfield', constants::M_COMPONENT)];
         }
 
         // Basic structural sanity: a Start node, and the node header/body delimiters.
@@ -346,27 +364,14 @@ class itemtype extends item {
             || !preg_match('/^---\s*$/m', $yarn)
             || !preg_match('/^===\s*$/m', $yarn)
         ) {
-            $error->col = self::YARN;
-            $error->message = get_string('error:invalidyarn', constants::M_COMPONENT);
-            return $error;
+            return ['fatal' => get_string('error:invalidyarn', constants::M_COMPONENT)];
         }
 
         // Everything the script can get wrong that we can see from here, reported in one go. A
         // story is a single item, so returning one fault at a time would cost a whole rewrite per
-        // fault for whoever (or whatever) is composing it.
-        $problems = static::find_yarn_problems($yarn);
-        if (!empty($problems)) {
-            $error->col = self::YARN;
-            $error->message = get_string(
-                'error:yarnproblems',
-                constants::M_COMPONENT,
-                implode(' ', $problems)
-            );
-            return $error;
-        }
-
-        // Return false to indicate no error.
-        return false;
+        // fault for whoever (or whatever) is composing it. The script goes in untrimmed so that the
+        // line numbers in the problems match the script as written.
+        return static::find_yarn_problems($yarn);
     }
 
     /**
@@ -379,35 +384,13 @@ class itemtype extends item {
      */
     protected static function find_yarn_problems($yarn) {
         $problems = [];
-        $lines = explode("\n", str_replace("\r\n", "\n", $yarn));
 
-        // Walk the script once, collecting the node names, and per node the lines of its body.
         // A node group is several nodes sharing one title, each picked by its own "when:" header,
         // so bodies accumulate under the title rather than replacing what came before: otherwise
         // every variant but the last would escape these checks entirely.
         $nodebodies = [];
-        $currentnode = null;
-        $inbody = false;
-        foreach ($lines as $linenum => $line) {
-            $trimmed = trim($line);
-            if (preg_match('/^title:\s*(\S+)\s*$/', $trimmed, $matches)) {
-                $currentnode = $matches[1];
-                $nodebodies[$currentnode] ??= [];
-                $inbody = false;
-                continue;
-            }
-            if ($trimmed === '---') {
-                $inbody = true;
-                continue;
-            }
-            if ($trimmed === '===') {
-                $currentnode = null;
-                $inbody = false;
-                continue;
-            }
-            if ($inbody && $currentnode !== null) {
-                $nodebodies[$currentnode][] = $line;
-            }
+        foreach (static::split_yarn_nodes($yarn) as $node) {
+            $nodebodies[$node['name']] = array_merge($nodebodies[$node['name']] ?? [], array_values($node['lines']));
         }
 
         if (!array_key_exists('Start', $nodebodies)) {
@@ -454,19 +437,6 @@ class itemtype extends item {
             }
         }
 
-        // A node that offers choices but never routes anywhere is a dead end: the story simply
-        // stops there. <<return>> counts as routing - that is how a detour side node hands back.
-        foreach ($nodebodies as $nodename => $bodylines) {
-            $body = implode("\n", $bodylines);
-            if (!preg_match('/^\s*->\s/m', $body)) {
-                continue;
-            }
-            if (!preg_match('/<<\s*(jump|detour|stop|return)\b/', $body)) {
-                $problems[] = 'Node "' . $nodename . '" offers choices but contains no <<jump>>, '
-                    . '<<detour>>, <<return>> or <<stop>>, so the story dead ends there.';
-            }
-        }
-
         // Syntax this runtime does not support, which fails at parse or evaluation time.
         if (preg_match('/<<\s*set\s+\$[\w]+\s*[-+*\/]=/', $yarn)) {
             $problems[] = 'Compound assignment operators (+=, -=, *=, /=) are not supported; '
@@ -507,6 +477,213 @@ class itemtype extends item {
         }
 
         return $problems;
+    }
+
+    /**
+     * Things in a yarn script worth fixing that do not stop the story working, for the import and
+     * the Syntax Check button to warn about. A script too broken for check_yarn() gives none.
+     *
+     * @param string $yarn the yarn script
+     * @return array human readable warnings, empty when there is nothing to say
+     */
+    public static function check_yarn_warnings($yarn) {
+        $problems = static::check_yarn($yarn);
+        if (!empty($problems['fatal'])) {
+            return [];
+        }
+
+        // Every path through a node should end in <<jump>>, <<stop>> or <<return>>. A path that runs
+        // off the end of its node ends the story there. The runtime allows that, so it is only a
+        // warning, but in a node that routes the story on it is usually a mistake (a choice with no
+        // body, an <<if>> branch without its jump), and where an ending is meant, <<stop>> says so.
+        $warnings = [];
+        $nodes = static::split_yarn_nodes($yarn);
+        $body = function ($node) {
+            return implode("\n", $node['lines']);
+        };
+        foreach ($nodes as $node) {
+            if (preg_match('/<<\s*detour\s+' . preg_quote($node['name'], '/') . '\s*>>/', $yarn)) {
+                // A detour side node hands back at its end. Not reaching <<return>> is an error above.
+                continue;
+            }
+            $routes = preg_match('/<<\s*(jump|detour|stop|return)\b/', $body($node))
+                || preg_match('/^\s*->/m', $body($node));
+            foreach (static::find_open_paths($node['lines']) as $openpath) {
+                if (!$routes) {
+                    $warnings[] = 'Node "' . $node['name'] . '" ends the story without <<stop>>. '
+                        . 'Add <<stop>> at its end.';
+                } else if ($openpath === '') {
+                    $warnings[] = 'Node "' . $node['name'] . '" can reach its end without a <<jump>> or '
+                        . '<<stop>>, so the story would end there. Add the missing <<jump>>, or <<stop>> '
+                        . 'if the story is meant to end.';
+                } else {
+                    $warnings[] = 'In node "' . $node['name'] . '", the choice ' . $openpath
+                        . ' does not lead to a <<jump>> or <<stop>>, so the story would end there. '
+                        . 'Add the missing <<jump>>, or <<stop>> if the story is meant to end.';
+                }
+            }
+        }
+        return $warnings;
+    }
+
+    /**
+     * The import warns about dead ends in the story, without refusing it.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return array warning messages
+     */
+    public static function import_warnings($newrecord, $cm) {
+        return static::check_yarn_warnings((string) $newrecord->{self::YARN});
+    }
+
+    /**
+     * Split a yarn script into its nodes.
+     *
+     * @param string $yarn the yarn script
+     * @return array one ['name' => title, 'lines' => body lines keyed by line number] per node
+     */
+    protected static function split_yarn_nodes($yarn) {
+        $nodes = [];
+        $currentnode = null;
+        $inbody = false;
+        foreach (explode("\n", str_replace("\r\n", "\n", $yarn)) as $linenum => $line) {
+            $trimmed = trim($line);
+            if (preg_match('/^title:\s*(\S+)\s*$/', $trimmed, $matches)) {
+                $currentnode = $matches[1];
+                $inbody = false;
+                continue;
+            }
+            if ($trimmed === '---') {
+                $inbody = true;
+                if ($currentnode !== null) {
+                    $nodes[] = ['name' => $currentnode, 'lines' => []];
+                }
+                continue;
+            }
+            if ($trimmed === '===') {
+                $currentnode = null;
+                $inbody = false;
+                continue;
+            }
+            if ($inbody && $currentnode !== null) {
+                $nodes[count($nodes) - 1]['lines'][$linenum + 1] = $line;
+            }
+        }
+        return $nodes;
+    }
+
+    /**
+     * The paths through a node body that run off its end without a <<jump>>, <<stop>> or <<return>>.
+     *
+     * The body is read as a tree: a choice owns the lines indented beneath it, and <<if>> and
+     * block <<once>> own the lines up to their <<endif>> or <<endonce>>. A path that falls out of a
+     * choice carries on after the choice group, so a choice with no jump of its own is fine when
+     * the lines after the group route the story on.
+     *
+     * @param array $lines the body lines of one node, keyed by line number in the script
+     * @return array one entry per open path: '' for the node's own flow, or the choice that starts it
+     */
+    protected static function find_open_paths(array $lines) {
+        $tokens = [];
+        foreach ($lines as $linenum => $line) {
+            $text = trim($line);
+            if ($text === '' || str_starts_with($text, '//')) {
+                continue;
+            }
+            $leading = strlen($line) - strlen(ltrim($line));
+            $indent = strlen(str_replace("\t", '    ', substr($line, 0, $leading)));
+            if (str_starts_with($text, '->')) {
+                $kind = 'option';
+            } else if (preg_match('/^<<\s*(jump|stop|return)\b/', $text)) {
+                $kind = 'end';
+            } else if (preg_match('/^<<\s*if\b/', $text)) {
+                $kind = 'if';
+            } else if (preg_match('/^<<\s*once(\s+if\s+[^>]+)?\s*>>$/', $text)) {
+                $kind = 'once';
+            } else if (preg_match('/^<<\s*(elseif|else|endif|endonce)\b/', $text, $matches)) {
+                $kind = $matches[1];
+            } else {
+                $kind = 'line';
+            }
+            $tokens[] = ['kind' => $kind, 'indent' => $indent, 'text' => $text, 'linenum' => $linenum];
+        }
+
+        $pos = 0;
+        $open = static::walk_yarn_paths($tokens, $pos, -1, ['' => true]);
+        return array_keys($open);
+    }
+
+    /**
+     * Follow the paths through a run of yarn lines, for find_open_paths().
+     *
+     * @param array $tokens the classified lines of the node
+     * @param int $pos where to start; left just past the run on return
+     * @param int $parentindent the run ends at a line indented this much or less (-1 for none)
+     * @param array $open the paths still running when the run starts, as keys
+     * @return array the paths still running when the run ends, as keys
+     */
+    protected static function walk_yarn_paths(array $tokens, &$pos, $parentindent, array $open) {
+        $count = count($tokens);
+        while ($pos < $count) {
+            $token = $tokens[$pos];
+            if ($token['indent'] <= $parentindent || in_array($token['kind'], ['elseif', 'else', 'endif', 'endonce'])) {
+                // The end of this run: the caller handles the line.
+                break;
+            }
+            $pos++;
+            switch ($token['kind']) {
+                case 'end':
+                    $open = [];
+                    break;
+
+                case 'option':
+                    // A group of choices: whatever leaves any choice's body carries on after the group.
+                    $after = [];
+                    $option = $token;
+                    while (true) {
+                        $label = '"' . trim(preg_replace('/<<.*?>>/', '', substr($option['text'], 2)))
+                            . '" (line ' . $option['linenum'] . ')';
+                        $after += static::walk_yarn_paths($tokens, $pos, $option['indent'], $open ? [$label => true] : []);
+                        if ($pos < $count && $tokens[$pos]['kind'] === 'option' && $tokens[$pos]['indent'] === $token['indent']) {
+                            $option = $tokens[$pos];
+                            $pos++;
+                            continue;
+                        }
+                        break;
+                    }
+                    $open = $after;
+                    break;
+
+                case 'if':
+                case 'once':
+                    // Each branch starts from the paths open now. Without an <<else>>, the paths can
+                    // also skip the block altogether.
+                    $closer = $token['kind'] === 'if' ? 'endif' : 'endonce';
+                    $after = [];
+                    $haselse = false;
+                    while (true) {
+                        $after += static::walk_yarn_paths($tokens, $pos, $parentindent, $open);
+                        $kind = $pos < $count ? $tokens[$pos]['kind'] : '';
+                        if (!in_array($kind, ['elseif', 'else', 'endif', 'endonce'])) {
+                            // An unclosed block. The <<once>> count check reports those.
+                            break;
+                        }
+                        $pos++;
+                        if ($kind === 'else') {
+                            $haselse = true;
+                        } else if ($kind === $closer || $kind === 'endif' || $kind === 'endonce') {
+                            break;
+                        }
+                    }
+                    if (!$haselse) {
+                        $after += $open;
+                    }
+                    $open = $after;
+                    break;
+            }
+        }
+        return $open;
     }
 
     /**

@@ -2,7 +2,7 @@
     Table of items which failed to import.
     Context: { "errors": [ { "itemnum": 2, "type": "dictation", "name": "My item", "message": "sentences: This field is required" } ] }
 }}
-<h4>{{#str}} importfailures, mod_minilesson {{/str}}</h4>
+<h4>{{#heading}}{{heading}}{{/heading}}{{^heading}}{{#str}} importfailures, mod_minilesson {{/str}}{{/heading}}</h4>
 <table class="generaltable mod_minilesson_importfailures">
     <thead>
         <tr>

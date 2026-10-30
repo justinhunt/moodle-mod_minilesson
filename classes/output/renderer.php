@@ -276,13 +276,14 @@ class renderer extends \plugin_renderer_base
     /**
      * Table of items which failed to import
      * @param array $errors failure entries with itemnum, type, name and message fields
+     * @param string $heading the table heading, if not the default "could not be imported" one
      * @return string
      */
-    public function import_failures($errors)
+    public function import_failures($errors, $heading = '')
     {
         return $this->render_from_template(
             constants::M_COMPONENT . '/importfailures',
-            ['errors' => array_values($errors)]
+            ['errors' => array_values($errors), 'heading' => $heading]
         );
     }
 

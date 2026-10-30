@@ -76,6 +76,7 @@ class itemform extends baseform {
                 $buttonid,
                 'id_' . itemtype::YARN,
                 'syntaxcheckresults',
+                $this->context ? $this->context->id : 0,
             ]
         );
         $this->add_static_text('yarnsyntaxcheckresults', '', '<div id="syntaxcheckresults"></div>');

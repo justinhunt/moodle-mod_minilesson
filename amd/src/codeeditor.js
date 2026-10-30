@@ -30112,7 +30112,7 @@ var CodeEditor = (() => {
         }
         if (stream.match(/^[a-zA-Z_][a-zA-Z0-9_]*/)) {
           let word = stream.current();
-          let isKeyword = /^(?:if|else|elseif|endif|set|jump|detour|return|declare|picture|audio|video|translate|once|endonce|to|is|not|and|or|true|false)\b/i.test(word);
+          let isKeyword = /^(?:if|else|elseif|endif|set|jump|detour|return|stop|declare|picture|audio|video|translate|once|endonce|to|is|not|and|or|true|false)\b/i.test(word);
           let isFunction = /^(?:dice|visited|node_name|currentNode)\b/i.test(word);
           if (state.commandName) {
             state.commandName = false;
@@ -30180,6 +30180,7 @@ var CodeEditor = (() => {
     { label: "jump", type: "keyword", info: "Jumps to another node" },
     { label: "detour", type: "keyword", info: "Jumps to another node and returns" },
     { label: "return", type: "keyword", info: "Returns from a detour" },
+    { label: "stop", type: "keyword", info: "Ends the story" },
     { label: "declare", type: "keyword", info: "Initializes a new variable" },
     { label: "set", type: "keyword", info: "Updates an existing variable" },
     { label: "if", type: "keyword", info: "Conditional logic block" },
@@ -30242,7 +30243,7 @@ var CodeEditor = (() => {
               message: `Commands must be lowercase. Found: ${cmdName}`
             });
           }
-          const validCommands = ["jump", "detour", "return", "declare", "set", "if", "elseif", "else", "endif", "picture", "audio", "video", "translate", "once", "endonce"];
+          const validCommands = ["jump", "detour", "return", "stop", "declare", "set", "if", "elseif", "else", "endif", "picture", "audio", "video", "translate", "once", "endonce"];
           if (!validCommands.includes(cmdName.toLowerCase())) {
             diagnostics.push({
               from: cmdStartPos,

@@ -141,7 +141,10 @@ class itemtype extends item
         // Media files from the payload are attached to the record under the filearea name.
         $hasmedia = !empty($newrecord->{constants::MEDIAQUESTION})
             || !empty($newrecord->{constants::AUDIOSTORY});
+        // Every media prompt the authoring form offers counts, the native language chooser included.
         $hascontent = !empty(trim((string) $newrecord->{constants::TEXTQUESTION}))
+            || !empty(trim((string) ($newrecord->{constants::QUESTIONTEXTAREA} ?? '')))
+            || !empty($newrecord->{constants::NATIVELANGCHOOSER})
             || !empty(trim((string) $newrecord->{constants::TTSQUESTION}))
             || !empty(trim((string) $newrecord->{constants::TTSDIALOG}))
             || !empty(trim((string) $newrecord->{constants::TTSPASSAGE}))
