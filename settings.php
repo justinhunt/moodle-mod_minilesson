@@ -275,41 +275,6 @@ if ($hassiteconfig) {
         0
     ));
 
-    // Native Language Setting
-    $mainsettings->add(new admin_setting_configcheckbox(
-        constants::M_COMPONENT .  '/setnativelanguage',
-        get_string('enablenativelanguage', constants::M_COMPONENT),
-        get_string('enablenativelanguage_details', constants::M_COMPONENT),
-        1
-    ));
-
-    // Native language translation (the default for new activities).
-    $mainsettings->add(new admin_setting_configcheckbox(
-        constants::M_COMPONENT .  '/nativetranslation',
-        get_string('nativetranslation', constants::M_COMPONENT),
-        get_string('nativetranslation_details', constants::M_COMPONENT),
-        1
-    ));
-
-    // Local translations: native language text in items, translated ahead of time and stored on the item.
-    $mainsettings->add(new admin_setting_configcheckbox(
-        constants::M_COMPONENT .  '/enablelocaltranslations',
-        get_string('enablelocaltranslations', constants::M_COMPONENT),
-        get_string('enablelocaltranslations_details', constants::M_COMPONENT),
-        0
-    ));
-    $mainsettings->add(new admin_setting_configmulticheckbox(
-        constants::M_COMPONENT .  '/localtranslationlangs',
-        get_string('localtranslationlangs', constants::M_COMPONENT),
-        get_string('localtranslationlangs_details', constants::M_COMPONENT),
-        [],
-        utils::get_nativelang_options()
-    ));
-    $mainsettings->hide_if(
-        constants::M_COMPONENT .  '/localtranslationlangs',
-        constants::M_COMPONENT .  '/enablelocaltranslations'
-    );
-
     // Show item review.
     $name = 'showitemreview';
     $label = get_string($name, constants::M_COMPONENT);
@@ -367,6 +332,65 @@ if ($hassiteconfig) {
 
     // Add main settings page to minilesson category.
     $ADMIN->add('modsettingsminilessoncat', $mainsettings);
+
+    // Native language support: how learners' native language is used, on its own page.
+    $pagetitle = get_string('nativelangsupport', constants::M_COMPONENT);
+    $nativelangsettings = new admin_settingpage('modsettingminilessonnativelang', $pagetitle, 'moodle/site:config');
+
+    // The default native language itself stays on the main page. It is shown here too, read only, for clarity.
+    $currentnativelang = get_config(constants::M_COMPONENT, 'nativelang');
+    if ($currentnativelang === false) {
+        $currentnativelang = $nativelangdefault;
+    }
+    $nativelangsettings->add(new admin_setting_description(
+        constants::M_COMPONENT . '/nativelangreadonly',
+        get_string('nativelang', constants::M_COMPONENT),
+        html_writer::tag('strong', empty($currentnativelang)
+            ? get_string('aigennativelangnotset', constants::M_COMPONENT)
+            : s($nativelangoptions[$currentnativelang] ?? $currentnativelang)) . '<br>'
+            . get_string(
+                'nativelangreadonly_desc',
+                constants::M_COMPONENT,
+                (new moodle_url('/admin/settings.php', ['section' => 'modsettingminilesson']))->out()
+            )
+    ));
+
+    // Native Language Setting
+    $nativelangsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/setnativelanguage',
+        get_string('enablenativelanguage', constants::M_COMPONENT),
+        get_string('enablenativelanguage_details', constants::M_COMPONENT),
+        1
+    ));
+
+    // Native language translation (the default for new activities).
+    $nativelangsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/nativetranslation',
+        get_string('nativetranslation', constants::M_COMPONENT),
+        get_string('nativetranslation_details', constants::M_COMPONENT),
+        1
+    ));
+
+    // Local translations: native language text in items, translated ahead of time and stored on the item.
+    $nativelangsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/enablelocaltranslations',
+        get_string('enablelocaltranslations', constants::M_COMPONENT),
+        get_string('enablelocaltranslations_details', constants::M_COMPONENT),
+        0
+    ));
+    $nativelangsettings->add(new admin_setting_configmulticheckbox(
+        constants::M_COMPONENT .  '/localtranslationlangs',
+        get_string('localtranslationlangs', constants::M_COMPONENT),
+        get_string('localtranslationlangs_details', constants::M_COMPONENT),
+        [],
+        utils::get_nativelang_options()
+    ));
+    $nativelangsettings->hide_if(
+        constants::M_COMPONENT .  '/localtranslationlangs',
+        constants::M_COMPONENT .  '/enablelocaltranslations'
+    );
+
+    $ADMIN->add('modsettingsminilessoncat', $nativelangsettings);
 
     // Manage Items Page.
     $manageitemspage = new admin_externalpage(

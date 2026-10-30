@@ -1557,6 +1557,8 @@ $string['translatetext'] = 'Translate this text';
 $string['translating'] = 'Translating ...';
 $string['nativetranslation_details'] = 'When enabled certain item types will allow learners to translate text into their native language. These include: Fiction, TTS Dialog, and multichoice feedback.';
 $string['nativetranslation_help'] = 'When enabled certain item types will allow learners to translate text into their native language. These include: Fiction, TTS Dialog, and multichoice feedback.';
+$string['nativelangsupport'] = 'Native language support';
+$string['nativelangreadonly_desc'] = 'Set on the <a href="{$a}">general settings page</a>. New activities start with this native language, and authors are expected to write hints and translations in it.';
 $string['enablelocaltranslations'] = 'Local translations';
 $string['enablelocaltranslations_details'] = 'Store translations of the native language text in items (hints, card translations, matching words), so that each learner sees it in the native language they chose. AI makes the translations through Cloud Poodll, in the background, when an item is saved. Learners can only choose a native language when "Enable native language" is also on.';
 $string['localtranslationlangs'] = 'Local translation languages';
