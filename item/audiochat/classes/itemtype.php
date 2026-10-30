@@ -197,9 +197,9 @@ class itemtype extends item {
         if (empty($this->itemrecord->{self::ROLE})) {
             $this->itemrecord->{self::ROLE} = get_string('audiochat_role_default', constants::M_COMPONENT);
         }
-        // Native language of the student.
-        $this->itemrecord->{self::NATIVE_LANGUAGE} = $this->fetch_item_native_language();
+        // Native language of the student. Work it out before the item setting is replaced by a language code.
         $testitem->audiochatnativelanguage = $this->fetch_student_native_language();
+        $this->itemrecord->{self::NATIVE_LANGUAGE} = $this->fetch_item_native_language();
         // The feedback is asked for in the native language. It helps decide the feedback's direction.
         $testitem->feedbackasksrtl = utils::is_rtl($testitem->audiochatnativelanguage);
 
@@ -701,19 +701,19 @@ class itemtype extends item {
     }
 
     /**
-     * The current student's native language: the item's, unless the site lets students
-     * set their own (shared with wordcards) and this one has.
+     * The current student's native language: the item's, unless the item uses the activity's native
+     * language, the site lets students set their own (shared with wordcards) and this one has.
      *
      * @return string
      */
     public function fetch_student_native_language(): string {
-        if (get_config(constants::M_COMPONENT, 'setnativelanguage')) {
-            $userprefnativelanguage = get_user_preferences(constants::NATIVELANG_PREF);
-            if (!empty($userprefnativelanguage)) {
-                return $userprefnativelanguage;
-            }
-        }
-        return $this->fetch_item_native_language();
+        $language = utils::fetch_aigrade_feedback_language(
+            (string) $this->itemrecord->{self::NATIVE_LANGUAGE},
+            $this->moduleinstance,
+            get_config(constants::M_COMPONENT)
+        );
+        // If that did not work, use the item's, which falls back to en-US.
+        return empty($language) ? $this->fetch_item_native_language() : $language;
     }
 
     /**
