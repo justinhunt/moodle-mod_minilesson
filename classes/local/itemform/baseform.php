@@ -52,6 +52,7 @@ use mod_minilesson\constants;
 use mod_minilesson\local\formelement\sentenceprompt;
 use mod_minilesson\local\formelement\ttsaudio;
 use mod_minilesson\local\itemtype\item;
+use mod_minilesson\local\localtranslations;
 use mod_minilesson\utils;
 
 /**
@@ -204,9 +205,57 @@ abstract class baseform extends \moodleform {
 
         $this->custom_definition();
 
+        $this->add_local_translations();
+
         // Add the action buttons.
         $mform->closeHeaderBefore('cancel');
         $this->add_action_buttons(get_string('cancel'), get_string('saveitem', constants::M_COMPONENT));
+    }
+
+    /**
+     * The local translations section: the item's stored translations, and a way to make them again.
+     * Only for item types with native language text, when the activity has local translations on.
+     * The table itself is filled in definition_after_data(), once the item id is known.
+     */
+    protected function add_local_translations() {
+        if (!localtranslations::is_enabled($this->moduleinstance) || !localtranslations::item_type_has_translatables($this->type)) {
+            return;
+        }
+        $mform = $this->_form;
+        $mform->addElement('header', 'localtranslationsheading', get_string('localtranslations', constants::M_COMPONENT));
+        $mform->setExpanded('localtranslationsheading', false);
+        $mform->addElement('static', 'localtranslationstable', '', get_string('localtranslations_norows', constants::M_COMPONENT));
+        $mform->addElement(
+            'advcheckbox',
+            'regeneratelocaltranslations',
+            get_string('regeneratelocaltranslations', constants::M_COMPONENT),
+            get_string('regeneratelocaltranslations_details', constants::M_COMPONENT)
+        );
+    }
+
+    /**
+     * Fill in the local translations table for the item being edited.
+     */
+    public function definition_after_data() {
+        global $DB, $OUTPUT;
+
+        parent::definition_after_data();
+        $mform = $this->_form;
+        if (!$mform->elementExists('localtranslationstable') || !$mform->elementExists('itemid')) {
+            return;
+        }
+        $itemid = (int) $mform->getElement('itemid')->getValue();
+        if (!$itemid) {
+            return;
+        }
+        $item = $DB->get_record(constants::M_QTABLE, ['id' => $itemid, 'minilesson' => $this->moduleinstance->id]);
+        if (!$item) {
+            return;
+        }
+        $mform->getElement('localtranslationstable')->setText($OUTPUT->render_from_template(
+            'mod_minilesson/localtranslations_table',
+            localtranslations::get_table_data($item, $this->moduleinstance)
+        ));
     }
 
     protected function add_itemsettings_heading() {

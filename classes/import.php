@@ -255,6 +255,8 @@ class import {
         }
         // Structural, and belongs to the payload rather than to any one item type.
         $known['filesid'] = true;
+        // Stored translations of the item's native language text, added by an export (see export_item_as_jsonobj()).
+        $known['localtranslations'] = true;
 
         foreach (array_keys((array) $itemdata) as $field) {
             if (isset($known[$field])) {
@@ -452,6 +454,12 @@ class import {
         }
         // turn array into object
         $newrecord = (object) $newrecord;
+
+        // Local translations from an export. update_insert_item() stores them on the new item, and the save
+        // then drops any whose text the item no longer has.
+        if ($this->isjson && isset($itemdata->localtranslations)) {
+            $newrecord->localtranslations = local\localtranslations::sanitise($itemdata->localtranslations);
+        }
 
         // do files
         // if the item has a filesid attribute and that filesid holds data in filesfromjson array
@@ -680,8 +688,32 @@ class import {
     }
 
     public function call_translate($itemsjson, $fromlang, $tolang) {
+        // The items' local translations are taken out before the AI sees the items, and put back after:
+        // translating them would spoil them, and they would add a lot to the request.
+        // What they hold in the language being translated into is handed to the AI as a glossary instead,
+        // so the translated text matches them and the items keep their other translations (see rekey()).
+        $items = json_decode($itemsjson);
+        $stored = [];
+        $glossary = [];
+        if (is_array($items)) {
+            $glossary = local\localtranslations::get_glossary($items, $tolang);
+            foreach ($items as $i => $item) {
+                if (is_object($item) && isset($item->localtranslations)) {
+                    $stored[$i] = $item->localtranslations;
+                    unset($item->localtranslations);
+                }
+            }
+            if ($stored) {
+                $itemsjson = json_encode($items, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+        }
+
         $aigen = new aigen($this->cm);
         $prompt = "Translate any instances of language: $fromlang , into language: $tolang in the JSON string that follows." . PHP_EOL;
+        if ($glossary) {
+            $prompt .= "Where the text that follows has one of these pieces, use the translation given for it, exactly: "
+                . json_encode($glossary, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . PHP_EOL;
+        }
         $prompt .= "Return results in the format: {translatedjson: thetranslatedjson}" . PHP_EOL;
         // Markdown generation throws off the AI and it adds line breaks, but these break JSON..
         $prompt .= 'CRITICAL: The output must be valid, minified JSON. Do NOT render Markdown formatting. All newlines inside strings MUST be escaped as \n. Do not use physical line breaks. ' . PHP_EOL;
@@ -700,7 +732,16 @@ class import {
                 }
             }
 
-            return $ret->payload->translatedjson;
+            $translated = $ret->payload->translatedjson;
+            // Put the local translations back, by position, if the AI returned every item.
+            if ($stored && is_array($translated) && count($translated) === count($items)) {
+                foreach ($stored as $i => $translations) {
+                    if (isset($translated[$i]) && is_object($translated[$i])) {
+                        $translated[$i]->localtranslations = $translations;
+                    }
+                }
+            }
+            return $translated;
         } else {
             return false;
         }
@@ -965,6 +1006,12 @@ class import {
                 $itemobj->{$keycolumn['jsonname']} = $jsonvalue;
             }
         }//end of loop through key cols
+
+        // The item's local translations go along with it, so that a copy on another site need not make them again.
+        $translations = local\localtranslations::export_data($itemrecord->localtranslations ?? null);
+        if ($translations) {
+            $itemobj->localtranslations = $translations;
+        }
 
         // Include the files
         $itemobj->files = $thefiles;

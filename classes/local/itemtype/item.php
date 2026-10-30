@@ -1794,6 +1794,12 @@ abstract class item implements \templatable, \renderable {
             // create a rsquestionkey
             $theitem->rsquestionkey = self::create_itemkey();
 
+            // A new item may arrive with local translations (an import). They are only taken on insert: several
+            // callers save an item row they read earlier, which would overwrite translations made since.
+            if (property_exists($data, 'localtranslations')) {
+                $theitem->localtranslations = $data->localtranslations;
+            }
+
             // try to insert it
             if (!$theitem->id = $DB->insert_record(constants::M_QTABLE, $theitem)) {
                 $ret->error = true;
@@ -2091,6 +2097,11 @@ abstract class item implements \templatable, \renderable {
             if (property_exists($data, constants::CUSTOMINT . $anumber)) {
                 $theitem->{constants::CUSTOMINT . $anumber} = $data->{constants::CUSTOMINT . $anumber};
             }
+        }
+
+        // The teacher asked for the translations to be made again: drop them, and the save below queues new ones.
+        if (!empty($data->regeneratelocaltranslations)) {
+            $theitem->localtranslations = null;
         }
 
         // Now update the db once we have saved files and stuff.

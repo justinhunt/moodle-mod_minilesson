@@ -1,0 +1,98 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/localtranslations_table
+
+    The stored local translations of one item, shown to the teacher on the item form,
+    one collapsible block per language.
+
+    Context variables required for this template:
+    * haslangs - true if the activity makes translations in any language
+    * hasrows - true if the item has native language text
+    * hastranslated - true if any of that text is to be translated (not kept as written)
+    * haskept - true if any text is kept as written
+    * kept - array of text
+    * langs - array of code, name, dir, made, total, complete, and rows (array of source, text, missing)
+    * hasmissing - true if any translation is still to be made
+
+    Example context (json):
+    {
+        "haslangs": true,
+        "hasrows": true,
+        "hastranslated": true,
+        "haskept": false,
+        "kept": [],
+        "langs": [{"code": "ar-SA", "name": "Arabic", "dir": "rtl", "made": 1, "total": 1, "complete": true,
+            "rows": [{"source": "mine", "text": "لي", "missing": false}]}],
+        "hasmissing": false
+    }
+}}
+<div class="mod_minilesson_localtranslations">
+    {{^haslangs}}
+        <p>{{#str}}localtranslations_nolangs, mod_minilesson{{/str}}</p>
+    {{/haslangs}}
+    {{#haslangs}}
+        {{^hasrows}}
+            <p>{{#str}}localtranslations_norows, mod_minilesson{{/str}}</p>
+        {{/hasrows}}
+        {{#hasrows}}
+            <p>{{#str}}localtranslations_intro, mod_minilesson{{/str}}</p>
+            {{#hasmissing}}
+                <p>{{#str}}localtranslations_missing, mod_minilesson{{/str}}</p>
+            {{/hasmissing}}
+            {{#haskept}}
+                <p class="mb-1">{{#str}}localtranslations_kept, mod_minilesson{{/str}}</p>
+                <ul>
+                    {{#kept}}<li dir="auto">{{text}}</li>{{/kept}}
+                </ul>
+            {{/haskept}}
+            {{#hastranslated}}
+                {{#langs}}
+                    <details class="mb-2">
+                        <summary>
+                            {{name}}:
+                            <span class="{{^complete}}text-warning{{/complete}}{{#complete}}text-muted{{/complete}}">
+                                {{#str}}localtranslations_made, mod_minilesson, { "made": {{made}}, "total": {{total}} }{{/str}}
+                            </span>
+                        </summary>
+                        <table class="table table-sm table-bordered mt-2">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{{#str}}localtranslations_source, mod_minilesson{{/str}}</th>
+                                    <th scope="col">{{#str}}localtranslations_translation, mod_minilesson{{/str}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#rows}}
+                                    <tr>
+                                        <td dir="auto">{{source}}</td>
+                                        {{#missing}}
+                                            <td><span class="text-muted" title="{{#str}}localtranslations_notmade, mod_minilesson{{/str}}">&ndash;</span></td>
+                                        {{/missing}}
+                                        {{^missing}}
+                                            <td dir="{{dir}}" lang="{{code}}">{{text}}</td>
+                                        {{/missing}}
+                                    </tr>
+                                {{/rows}}
+                            </tbody>
+                        </table>
+                    </details>
+                {{/langs}}
+            {{/hastranslated}}
+        {{/hasrows}}
+    {{/haslangs}}
+</div>

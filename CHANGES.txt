@@ -6,6 +6,11 @@ Version 1.1.61 (Build 2026103000)
   translated. Off by default: switch on "Local translations" and choose the languages in the
   MiniLesson settings. Each activity can turn it off. Learners can only pick a language when
   "Enable native language" is also on
+- local translations go along with an item when it is exported and imported, so they are not made
+  again. When a lesson is translated into another native language on export or import, the
+  translations it already has are kept
+- the item form shows the item's local translations, and can delete them and make them again
+- fixed the spelling of "Ukrainian" in the language lists
 - added Chinese (Traditional) to the native language list
 - Fixed connecting AI tools through MCP OAuth on Moodle 5.3 (the token was minted with a function Moodle 5.3 removed)
 - Use the core_external web service classes (the old global names log debugging notices on Moodle 5.3)

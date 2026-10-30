@@ -3182,7 +3182,7 @@ class utils {
                 $ret = "Swedish";
                 break; // => get_string('sv-se', constants::M_COMPONENT),
             case  constants::M_LANG_UKUA:
-                $ret = "Ukranian";
+                $ret = "Ukrainian";
                 break; // => get_string('uk-ua', constants::M_COMPONENT),
             case  constants::M_LANG_EUES:
                 $ret = "Basque";

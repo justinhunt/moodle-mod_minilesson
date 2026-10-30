@@ -410,7 +410,7 @@ class alphabetconverter
         }
     }
 
-    //Ukranian
+    //Ukrainian
     //---------------------------------------------------------------------------------------
     static function numberToWords_uk($number)
     {

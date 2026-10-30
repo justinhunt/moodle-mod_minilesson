@@ -92,6 +92,14 @@ class aigen_export_items_json extends external_api {
                         $fileareas->{$areaname} = array_fill_keys(array_keys((array) $filearea), 'QQQQ');
                     }
                 }
+            }
+            // The stored local translations are of no use to an AI reworking the lesson, and cost tokens.
+            if ($exportobj !== null && !empty($exportobj->items)) {
+                foreach ($exportobj->items as $item) {
+                    unset($item->localtranslations);
+                }
+            }
+            if ($exportobj !== null) {
                 $itemsjson = json_encode($exportobj, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
             }
         }

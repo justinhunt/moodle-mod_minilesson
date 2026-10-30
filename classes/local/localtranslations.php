@@ -32,7 +32,9 @@ use mod_minilesson\utils;
  * goes (apply_local_translations()). Everything else is here, and is the same for every item type.
  *
  * Translations are stored in the item's localtranslations column, keyed by a hash of the source text:
- * {"v": 1, "t": {"<md5>": {"src": "text", "tr": {"ja-JP": "..."}}}, "tried": {"ja-JP": time}}
+ * {"v": 1, "t": {"<md5>": {"src": "text", "lang": "en", "tr": {"ja-JP": "..."}}}, "tried": {"ja-JP": time}}
+ * "lang" is the language the AI found the source text to be in, and "keep": true marks text in the
+ * language being taught, which is never translated.
  * Keying by the text rather than by position means a lookup needs no sentence index, reordering lines
  * costs nothing, and the translations stay right wherever the item is copied to.
  *
@@ -119,19 +121,18 @@ class localtranslations {
     /**
      * The languages to make translations in for one activity.
      *
-     * The activity's native language is left out because the author already wrote in it, and the
-     * language being taught because a translation into it is no help.
+     * Only the language being taught is left out, because a translation into it is no help. The activity's
+     * native language stays in: the text is not always written in it (an item imported from a lesson for
+     * Japanese speakers into one for Ukrainian speakers keeps its Japanese hints), and text that is already
+     * written in a language needs no translation into it anyway (see is_missing()).
      *
      * @param \stdClass $moduleinstance
      * @return string[]
      */
     public static function get_activity_langs($moduleinstance) {
-        $skip = [self::base_lang($moduleinstance->ttslanguage)];
-        if (!empty($moduleinstance->nativelang)) {
-            $skip[] = self::base_lang($moduleinstance->nativelang);
-        }
-        return array_values(array_filter(self::get_site_langs(), function ($lang) use ($skip) {
-            return !in_array(self::base_lang($lang), $skip, true);
+        $target = self::base_lang($moduleinstance->ttslanguage);
+        return array_values(array_filter(self::get_site_langs(), function ($lang) use ($target) {
+            return self::base_lang($lang) !== $target;
         }));
     }
 
@@ -313,15 +314,235 @@ class localtranslations {
 
         $translatables = self::get_translatables($item);
         $data = self::decode($item->localtranslations ?? null);
-        $kept = array_intersect_key($data['t'], $translatables);
-        if (count($kept) !== count($data['t'])) {
-            $data['t'] = $kept;
+        $before = self::encode($data);
+        $data = self::rekey($data, $translatables);
+        $data['t'] = array_intersect_key($data['t'], $translatables);
+        if (self::encode($data) !== $before) {
             $DB->set_field(constants::M_QTABLE, 'localtranslations', self::encode($data), ['id' => $item->id]);
         }
 
         if (self::get_missing_langs($data, $translatables, self::get_activity_langs($moduleinstance))) {
             \mod_minilesson\task\generate_local_translations::queue_for_item($item->id, $USER->id);
         }
+    }
+
+    /**
+     * Keep the translations of text that was replaced by one of its own translations.
+     *
+     * When a lesson is moved to another native language (translate and import, or a teacher pasting in a
+     * stored translation) a hint changes from, say, the Japanese "ノート" to the Spanish "cuaderno", which
+     * was already its stored es-ES translation. Rather than drop the entry and translate everything again,
+     * the entry moves to the new text: Spanish becomes the source, and the old Japanese text becomes its
+     * Japanese translation (when the old entry knows what language it was in).
+     *
+     * @param array $data the decoded json
+     * @param array $translatables from get_translatables(), the item's text as it is now
+     * @return array the decoded json, with matched entries moved to their new hash
+     */
+    protected static function rekey(array $data, array $translatables) {
+        $gone = array_diff_key($data['t'], $translatables);
+        if (!$gone) {
+            return $data;
+        }
+        $normalise = function ($text) {
+            return \core_text::strtolower(utils::super_trim((string) $text));
+        };
+        foreach ($translatables as $hash => $translatable) {
+            if (isset($data['t'][$hash])) {
+                continue;
+            }
+            $text = $normalise($translatable['text']);
+            foreach ($gone as $oldhash => $entry) {
+                if (!empty($entry['keep'])) {
+                    continue;
+                }
+                foreach ($entry['tr'] ?? [] as $lang => $translation) {
+                    if ($normalise($translation) !== $text) {
+                        continue;
+                    }
+                    $tr = $entry['tr'];
+                    unset($tr[$lang]);
+                    $oldlang = self::normalise_lang($entry['lang'] ?? '');
+                    if ($oldlang !== '' && !isset($tr[$oldlang])) {
+                        $tr[$oldlang] = $entry['src'];
+                    }
+                    $data['t'][$hash] = ['src' => $translatable['text'], 'lang' => self::base_lang($lang), 'tr' => $tr];
+                    unset($data['t'][$oldhash], $gone[$oldhash]);
+                    continue 3;
+                }
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * The translations as they go into an export: what is stored, without what only means something on
+     * this site (when each language was last tried).
+     *
+     * @param string|null $json the stored json
+     * @return array|null
+     */
+    public static function export_data($json) {
+        $data = self::decode($json);
+        if (empty($data['t'])) {
+            return null;
+        }
+        return ['v' => $data['v'], 't' => $data['t']];
+    }
+
+    /**
+     * Turn translations from an import into json to store, keeping only what is well formed.
+     *
+     * An import file may come from another site or from an AI, so every entry is checked: hashes are made
+     * again from the source text, language codes must be ones we know, translations lose any markup, and
+     * a translation in the wrong script is dropped.
+     *
+     * @param mixed $value the "localtranslations" of an imported item: decoded json, or a json string
+     * @return string|null json to store, or null if nothing usable was there
+     */
+    public static function sanitise($value) {
+        $value = is_string($value) ? json_decode($value, true) : json_decode(json_encode($value), true);
+        if (!is_array($value) || ($value['v'] ?? 0) != self::VERSION || !is_array($value['t'] ?? null)) {
+            return null;
+        }
+        $data = ['v' => self::VERSION, 't' => [], 'tried' => []];
+        foreach ($value['t'] as $entry) {
+            if (!is_array($entry) || !is_string($entry['src'] ?? null)) {
+                continue;
+            }
+            $src = utils::super_trim($entry['src']);
+            if ($src === '') {
+                continue;
+            }
+            $clean = ['src' => $src];
+            if (is_string($entry['lang'] ?? null) && preg_match('/^[a-z]{2,3}$/', $entry['lang'])) {
+                $clean['lang'] = $entry['lang'];
+            }
+            if (!empty($entry['keep'])) {
+                $clean['keep'] = true;
+            }
+            $clean['tr'] = [];
+            foreach ((array) ($entry['tr'] ?? []) as $lang => $translation) {
+                $lang = self::normalise_lang($lang);
+                if ($lang === '' || !is_string($translation)) {
+                    continue;
+                }
+                $translation = utils::super_trim(strip_tags($translation));
+                if ($translation !== '' && !self::is_wrong_script($lang, $translation)) {
+                    $clean['tr'][$lang] = $translation;
+                }
+            }
+            $data['t'][self::hash_text($src)] = $clean;
+        }
+        return self::encode($data);
+    }
+
+    /**
+     * Source text => its stored translation into one language, from the items of an export.
+     *
+     * Given to the AI that translates a whole lesson, so that it uses the translations the items already
+     * hold. Its output then matches them, and rekey() keeps every other language's translations.
+     *
+     * @param array $items items of an export, each possibly holding "localtranslations"
+     * @param string $tolang the language the lesson is being translated into
+     * @return array source text => translation
+     */
+    public static function get_glossary(array $items, $tolang) {
+        $tolang = self::normalise_lang($tolang);
+        $glossary = [];
+        if ($tolang === '') {
+            return $glossary;
+        }
+        foreach ($items as $item) {
+            $data = json_decode(json_encode(is_object($item) ? ($item->localtranslations ?? null)
+                : ($item['localtranslations'] ?? null)), true);
+            foreach ((is_array($data) && is_array($data['t'] ?? null)) ? $data['t'] : [] as $entry) {
+                if (!is_array($entry) || !is_string($entry['src'] ?? null) || !empty($entry['keep'])) {
+                    continue;
+                }
+                $translation = self::find_translation((array) ($entry['tr'] ?? []), $tolang);
+                if (is_string($translation)) {
+                    $glossary[$entry['src']] = $translation;
+                }
+            }
+        }
+        return $glossary;
+    }
+
+    /**
+     * Does this item type have native language text for local translations?
+     *
+     * @param string $type the item type
+     * @return bool true if its itemtype class overrides get_local_translatables()
+     */
+    public static function item_type_has_translatables($type) {
+        $itemclass = utils::fetch_itemtype_classname($type);
+        if (!$itemclass) {
+            return false;
+        }
+        $method = new \ReflectionMethod($itemclass, 'get_local_translatables');
+        return $method->getDeclaringClass()->getName() !== \mod_minilesson\local\itemtype\item::class;
+    }
+
+    /**
+     * The item's text and its stored translations, for the item form: one block per language, since a
+     * teacher checks the languages they can read, and a column per language does not fit twenty of them.
+     *
+     * @param \stdClass $itemrecord the item's row
+     * @param \stdClass $moduleinstance
+     * @return array context for the mod_minilesson/localtranslations_table template
+     */
+    public static function get_table_data($itemrecord, $moduleinstance) {
+        $langs = self::get_activity_langs($moduleinstance);
+        $names = utils::get_nativelang_options();
+        $translatables = self::get_translatables($itemrecord);
+        $data = self::decode($itemrecord->localtranslations ?? null);
+
+        $kept = [];
+        $translated = [];
+        foreach ($translatables as $hash => $translatable) {
+            if (!empty($data['t'][$hash]['keep'])) {
+                $kept[] = ['text' => $translatable['text']];
+            } else {
+                $translated[$hash] = $translatable;
+            }
+        }
+
+        $langlist = [];
+        $hasmissing = false;
+        foreach ($langs as $lang) {
+            $rows = [];
+            $made = 0;
+            foreach ($translated as $hash => $translatable) {
+                $entry = $data['t'][$hash] ?? [];
+                // Text already written in this language is shown as it is.
+                $samelang = !empty($entry['lang']) && $entry['lang'] === self::base_lang($lang);
+                $text = $samelang ? $translatable['text'] : self::find_translation($entry['tr'] ?? [], $lang);
+                if ($text !== null) {
+                    $made++;
+                }
+                $rows[] = ['source' => $translatable['text'], 'text' => (string) $text, 'missing' => $text === null];
+            }
+            $hasmissing = $hasmissing || $made < count($rows);
+            $langlist[] = [
+                'code' => $lang,
+                'name' => $names[$lang] ?? $lang,
+                'dir' => utils::get_text_direction($lang),
+                'made' => $made,
+                'total' => count($rows),
+                'complete' => $made === count($rows),
+                'rows' => $rows,
+            ];
+        }
+        return [
+            'haslangs' => !empty($langs),
+            'hasrows' => !empty($translatables),
+            'hastranslated' => !empty($translated),
+            'kept' => $kept,
+            'haskept' => !empty($kept),
+            'langs' => $langlist,
+            'hasmissing' => $hasmissing,
+        ];
     }
 
     /**
@@ -350,6 +571,7 @@ class localtranslations {
      *
      * Text in the language being taught is marked "keep" and never needs one: in a matching game a pair
      * like "hat|hit", or a synonym, is the exercise itself, and translating it would break the item.
+     * Nor does text into the language it is written in, as after a lesson is moved to another native language.
      *
      * @param array $data the decoded json
      * @param string $hash
@@ -358,6 +580,10 @@ class localtranslations {
      */
     protected static function is_missing(array $data, $hash, $lang) {
         if (!empty($data['t'][$hash]['keep'])) {
+            return false;
+        }
+        // Text already written in the language needs no translation into it.
+        if (!empty($data['t'][$hash]['lang']) && $data['t'][$hash]['lang'] === self::base_lang($lang)) {
             return false;
         }
         return self::find_translation($data['t'][$hash]['tr'] ?? [], $lang) === null;
@@ -383,6 +609,11 @@ class localtranslations {
         foreach ($made['keep'] as $hash => $unused) {
             if (isset($data['t'][$hash])) {
                 $data['t'][$hash]['keep'] = true;
+            }
+        }
+        foreach ($made['lang'] as $hash => $code) {
+            if (isset($data['t'][$hash]) && empty($data['t'][$hash]['lang'])) {
+                $data['t'][$hash]['lang'] = $code;
             }
         }
         foreach ($made['tr'] as $hash => $translations) {
@@ -422,6 +653,9 @@ class localtranslations {
     /**
      * What an item needs at view time to show its text in the learner's language.
      *
+     * The learner's own native language is used if translations are made in it. If not, the activity's
+     * native language is, since the lesson says that is what its learners speak.
+     *
      * When a translation the learner should see is missing, a fill is queued for the item, at most once
      * a day per language, and the learner sees the original text meanwhile.
      *
@@ -434,20 +668,17 @@ class localtranslations {
         if (!self::is_enabled($moduleinstance) || empty($itemrecord->id)) {
             return null;
         }
-        $lang = self::normalise_lang($learnerlang);
-        if ($lang === '') {
-            return null;
-        }
-        // Only languages the site makes translations in, and not the ones get_activity_langs() leaves out.
-        $base = self::base_lang($lang);
-        $langok = false;
-        foreach (self::get_activity_langs($moduleinstance) as $activitylang) {
-            if (self::base_lang($activitylang) === $base) {
-                $langok = true;
+        // The first of these that translations are made in for this activity.
+        $activitybases = array_map([self::class, 'base_lang'], self::get_activity_langs($moduleinstance));
+        $lang = '';
+        foreach ([$learnerlang, $moduleinstance->nativelang ?? ''] as $candidate) {
+            $candidate = self::normalise_lang($candidate);
+            if ($candidate !== '' && in_array(self::base_lang($candidate), $activitybases, true)) {
+                $lang = $candidate;
                 break;
             }
         }
-        if (!$langok) {
+        if ($lang === '') {
             return null;
         }
 
@@ -508,7 +739,7 @@ class localtranslations {
         // A model sometimes leaves a piece out of a long reply, so whatever is still missing after the
         // first pass is asked for once more, on its own.
         $working = $data;
-        $made = ['tr' => [], 'keep' => []];
+        $made = ['tr' => [], 'keep' => [], 'lang' => []];
         for ($pass = 1; $pass <= 2; $pass++) {
             $passlangs = self::get_missing_langs($working, $translatables, $langs);
             if (!$passlangs) {
@@ -531,6 +762,7 @@ class localtranslations {
                     $made['tr'][$hash] = ($made['tr'][$hash] ?? []) + $translations;
                 }
                 $made['keep'] += $result['keep'];
+                $made['lang'] += $result['lang'];
             }
         }
 
@@ -563,10 +795,11 @@ class localtranslations {
      * @param \stdClass $moduleinstance
      * @param array $translatables hash => ['text', 'context']
      * @param string[] $langs
-     * @return array ['tr' => hash => [language code => translation], 'keep' => hash => true]
+     * @return array ['tr' => hash => [language code => translation], 'keep' => hash => true,
+     *                'lang' => hash => the ISO 639-1 code of the language the text is in]
      */
     protected static function translate(aimanager $aimanager, $moduleinstance, array $translatables, array $langs) {
-        $results = ['tr' => [], 'keep' => []];
+        $results = ['tr' => [], 'keep' => [], 'lang' => []];
         if (!$translatables || !$langs) {
             return $results;
         }
@@ -623,6 +856,9 @@ class localtranslations {
             $id = (string) $id;
             if (!isset($ids[$id]) || !is_array($piece)) {
                 continue;
+            }
+            if (is_string($piece['language'] ?? null) && preg_match('/^[a-z]{2,3}$/', strtolower($piece['language']))) {
+                $results['lang'][$ids[$id]] = strtolower($piece['language']);
             }
             // Text in the language being taught is kept as written. The model names the language and the
             // decision is made here, because asked to decide for itself it would translate such text anyway.
