@@ -1062,7 +1062,7 @@ $string['notsubmit'] = 'Not Submitted';
 $string['notsubmitted'] = 'You have not submitted your answer. Submit now?';
 $string['submitnow'] = 'Submit';
 $string['enablenativelanguage'] = "Enable Native Language";
-$string['enablenativelanguage_details'] = 'If set, the student can choose their native language, this will override the default language of the feedback language that AI returns with the results.';
+$string['enablenativelanguage_details'] = 'If set, and the native languag chooser is displayed, the student can choose their native language and it will override the default native language of the site/activity.';
 $string['nopasting'] = "Disable copy/paste";
 $string['nopasting_desc'] = "Disable copy/paste into the text area. This is to prevent students from pasting in answers from elsewhere.";
 $string['attemptfor'] = 'Attempt: {$a}';
@@ -1560,7 +1560,7 @@ $string['nativetranslation_help'] = 'When enabled certain item types will allow 
 $string['nativelangsupport'] = 'Native language support';
 $string['nativelangreadonly_desc'] = 'Set on the <a href="{$a}">general settings page</a>. New activities start with this native language, and authors are expected to write hints and translations in it.';
 $string['enablelocaltranslations'] = 'Local translations';
-$string['enablelocaltranslations_details'] = 'Store translations of the native language text in items (hints, card translations, matching words), so that each learner sees it in the native language they chose. AI makes the translations through Cloud Poodll, in the background, when an item is saved. Learners can only choose a native language when "Enable native language" is also on.';
+$string['enablelocaltranslations_details'] = 'Store translations of the native language text in items (hints, card translations, matching words), so that each learner sees it in the active native language. AI makes the translations in the background, when an item is saved. Learners can only set their personal native language when "Enable native language" is also on.';
 $string['localtranslationlangs'] = 'Local translation languages';
 $string['localtranslationlangs_details'] = 'Translations are made in these languages. Each language costs an AI request for every item that has native language text, so choose only the languages your learners use.';
 $string['localtranslations'] = 'Local translations';
