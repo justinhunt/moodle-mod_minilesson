@@ -18,6 +18,7 @@ namespace mod_minilesson\local\itemtype;
 
 use core_plugin_manager;
 use mod_minilesson\constants;
+use mod_minilesson\local\localtranslations;
 use mod_minilesson\plugininfo\minilessonitem;
 use mod_minilesson\utils;
 use stdClass;
@@ -2098,6 +2099,8 @@ abstract class item implements \templatable, \renderable {
             $ret->message = "Could not update minilesson item!";
             return $ret;
         } else {
+            // Every item save comes through here, so this is where new native language text gets translated.
+            localtranslations::item_saved($theitem->id);
             $ret->item = $theitem;
             return $ret;
         }
@@ -2407,6 +2410,174 @@ abstract class item implements \templatable, \renderable {
      */
     public static function supports_translation() {
         return false;
+    }
+
+    /**
+     * The native language text of an item that local translations translate ahead of time:
+     * hints, card translations, matching words. Item types with such text override this.
+     *
+     * It works on the raw item row, with no rendering, because it also runs in a background task.
+     * Each entry is the text as written and its context: the lesson language text it belongs to,
+     * which tells the AI which meaning of a word is meant.
+     *
+     * @param \stdClass $itemrecord The item's row from the minilesson_rsquestions table.
+     * @return array of ['text' => string, 'context' => string]
+     */
+    public static function get_local_translatables(\stdClass $itemrecord) {
+        return [];
+    }
+
+    /**
+     * Swap the item's native language text in the template data for its translation.
+     * Item types that override get_local_translatables() override this too.
+     *
+     * @param \stdClass $testitem The template data.
+     * @param callable $lookup Takes the text as written, returns its translation or null.
+     * @param string $lang The language of the translations, for the text direction.
+     * @return \stdClass The template data.
+     */
+    public function apply_local_translations(\stdClass $testitem, callable $lookup, string $lang) {
+        return $testitem;
+    }
+
+    /**
+     * Show the item's native language text in the learner's native language, where a translation is
+     * stored. Item types call this at the end of export_for_template(), once their text is parsed.
+     *
+     * @param \stdClass $testitem The template data.
+     * @return \stdClass The template data.
+     */
+    protected function set_local_translations(\stdClass $testitem) {
+        $found = localtranslations::get_lookup($this->itemrecord, $this->moduleinstance, $this->get_native_language());
+        if ($found === null) {
+            return $testitem;
+        }
+        [$lookup, $lang] = $found;
+        return $this->apply_local_translations($testitem, $lookup, $lang);
+    }
+
+    /**
+     * Local translatables for the "sentence|hint" line format (one per line in customtext1), used by the
+     * gap-fill items, wordshuffle, fluency and selfcheck: the hint, with the sentence as its context.
+     * Gap markers are taken out of the sentence.
+     *
+     * @param \stdClass $itemrecord The item's row.
+     * @return array of ['text' => string, 'context' => string]
+     */
+    protected static function get_hint_local_translatables(\stdClass $itemrecord) {
+        $translatables = [];
+        foreach (preg_split('/\R/u', (string) ($itemrecord->customtext1 ?? '')) as $line) {
+            $parts = explode('|', utils::super_trim($line));
+            $hint = utils::super_trim($parts[1] ?? '');
+            if ($hint !== '') {
+                $translatables[] = ['text' => $hint, 'context' => str_replace(['[', ']'], '', utils::super_trim($parts[0]))];
+            }
+        }
+        return $translatables;
+    }
+
+    /**
+     * Local translatables for the pair line format ("term|match", one per line in customtext1):
+     * the match, with the term as its context.
+     *
+     * @param \stdClass $itemrecord The item's row.
+     * @param int $limit As for explode(): 2 keeps any further pipes in the match.
+     * @return array of ['text' => string, 'context' => string]
+     */
+    protected static function get_pair_local_translatables(\stdClass $itemrecord, int $limit = PHP_INT_MAX) {
+        $translatables = [];
+        foreach (preg_split('/\R/u', (string) ($itemrecord->customtext1 ?? '')) as $line) {
+            $parts = explode('|', utils::super_trim($line), $limit);
+            $match = utils::super_trim($parts[1] ?? '');
+            if ($match !== '') {
+                $translatables[] = ['text' => $match, 'context' => utils::super_trim($parts[0])];
+            }
+        }
+        return $translatables;
+    }
+
+    /**
+     * Translate the matches of a matching game, if that keeps them all different.
+     *
+     * In a matching game two matches that read the same make a pair impossible to tell apart. A language
+     * can give one word for two different ones, so then the item keeps its original text in that language.
+     *
+     * @param string[] $matches The matches as written, keyed as the caller likes.
+     * @param callable $lookup From set_local_translations().
+     * @return array|null [the matches, translated where possible, keyed as given; true if all were translated],
+     *                    or null if none were translated or two would read the same
+     */
+    protected static function translate_matches(array $matches, callable $lookup) {
+        $translated = [];
+        $complete = true;
+        $any = false;
+        foreach ($matches as $key => $match) {
+            $translation = $match === '' ? null : $lookup($match);
+            if ($translation === null) {
+                $complete = $complete && $match === '';
+                $translated[$key] = $match;
+            } else {
+                $any = true;
+                $translated[$key] = $translation;
+            }
+        }
+        if (!$any) {
+            return null;
+        }
+        $normalise = function ($text) {
+            return \core_text::strtolower(utils::super_trim($text));
+        };
+        $before = array_unique(array_map($normalise, array_filter($matches, 'strlen')));
+        $after = array_unique(array_map($normalise, array_filter($translated, 'strlen')));
+        if (count($after) < count($before)) {
+            return null;
+        }
+        return [$translated, $complete];
+    }
+
+    /**
+     * Put translated hints into sentence data, and set the hint direction for them.
+     *
+     * Sentence data made by process_spoken_sentences() holds the hint in ->sentence when ->hintdisplay
+     * is true, and the spoken text otherwise, so a sentence with hintdisplay false is skipped.
+     *
+     * The author's "hints are right to left" option describes the author's language. Once all hints are
+     * translated the direction is that of the translation language; with some translated and some not,
+     * it is left to the browser.
+     *
+     * @param \stdClass $testitem The template data, with ->sentences.
+     * @param callable $lookup From set_local_translations().
+     * @param string $lang The language of the translations.
+     * @param string $hintfield The property of each sentence that holds the hint.
+     * @return \stdClass The template data.
+     */
+    protected function apply_hint_local_translations(
+        \stdClass $testitem,
+        callable $lookup,
+        string $lang,
+        string $hintfield = 'definition'
+    ) {
+        $translated = 0;
+        $untranslated = 0;
+        foreach ($testitem->sentences ?? [] as $sentence) {
+            if (!isset($sentence->{$hintfield}) || $sentence->{$hintfield} === '') {
+                continue;
+            }
+            if (isset($sentence->hintdisplay) && !$sentence->hintdisplay) {
+                continue;
+            }
+            $translation = $lookup($sentence->{$hintfield});
+            if ($translation === null) {
+                $untranslated++;
+            } else {
+                $sentence->{$hintfield} = $translation;
+                $translated++;
+            }
+        }
+        if ($translated) {
+            $testitem->hintrtl = $untranslated === 0 && utils::is_rtl($lang);
+        }
+        return $testitem;
     }
 
     /**

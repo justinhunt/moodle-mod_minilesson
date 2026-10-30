@@ -291,6 +291,25 @@ if ($hassiteconfig) {
         1
     ));
 
+    // Local translations: native language text in items, translated ahead of time and stored on the item.
+    $mainsettings->add(new admin_setting_configcheckbox(
+        constants::M_COMPONENT .  '/enablelocaltranslations',
+        get_string('enablelocaltranslations', constants::M_COMPONENT),
+        get_string('enablelocaltranslations_details', constants::M_COMPONENT),
+        0
+    ));
+    $mainsettings->add(new admin_setting_configmulticheckbox(
+        constants::M_COMPONENT .  '/localtranslationlangs',
+        get_string('localtranslationlangs', constants::M_COMPONENT),
+        get_string('localtranslationlangs_details', constants::M_COMPONENT),
+        [],
+        utils::get_nativelang_options()
+    ));
+    $mainsettings->hide_if(
+        constants::M_COMPONENT .  '/localtranslationlangs',
+        constants::M_COMPONENT .  '/enablelocaltranslations'
+    );
+
     // Show item review.
     $name = 'showitemreview';
     $label = get_string($name, constants::M_COMPONENT);

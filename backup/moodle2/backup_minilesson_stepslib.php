@@ -55,6 +55,7 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
             'ttslanguage', 'transcriber', 'region', 'activitylink', 'pagelayout', 'showqtitles', 'showitemreview', 'foriframe',
             'lessonkey', 'csskey', 'containerwidth', 'lessonfont', 'timecreated', 'timemodified', 'viewstart', 'viewend', 'finishscreen', 'finishscreencustom',
             'completionwhenfinished', 'nativelang', 'allowcontinueattempts', 'nativetranslation', 'nextbuttonalign',
+            'localtranslations',
             ]);
 
         // attempts
@@ -84,7 +85,8 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
                 'customint6', 'customint7', 'customint8', 'customint9', 'customint10',
                 'customint11', 'customint12', 'customint13', 'customint14', 'customint15',
                 'layout', 'correctanswer', 'timelimit', 'itemaudiostoryzoom',
-            'timemodified', 'rsquestionkey', 'passagehash', 'alternatives', 'phonetic', 'createdby', 'modifiedby']);
+            'timemodified', 'rsquestionkey', 'passagehash', 'alternatives', 'phonetic', 'createdby', 'modifiedby',
+            'localtranslations']);
 
         // community page submissions (consent + likes), nested under each question
         $cpagesubmissions = new backup_nested_element('cpagesubmissions');

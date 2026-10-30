@@ -62,6 +62,43 @@ class itemtype extends item {
             $testitem->spacegameitems[] = json_encode($spacegameitemobj);
         }
 
+        $testitem = $this->set_local_translations($testitem);
+        return $testitem;
+    }
+
+    /**
+     * The translations are native language text, translated ahead of time by local translations.
+     *
+     * @param \stdClass $itemrecord The item's row.
+     * @return array of ['text' => string, 'context' => string]
+     */
+    public static function get_local_translatables(\stdClass $itemrecord) {
+        return static::get_pair_local_translatables($itemrecord);
+    }
+
+    /**
+     * Show the translations in the learner's native language, unless that would make two of them the same.
+     *
+     * @param \stdClass $testitem The template data.
+     * @param callable $lookup Takes the text as written, returns its translation or null.
+     * @param string $lang The language of the translations.
+     * @return \stdClass The template data.
+     */
+    public function apply_local_translations(\stdClass $testitem, callable $lookup, string $lang) {
+        $items = array_map('json_decode', $testitem->spacegameitems);
+        $definitions = [];
+        foreach ($items as $i => $item) {
+            $definitions[$i] = $item->definition;
+        }
+        $found = static::translate_matches($definitions, $lookup);
+        if ($found === null) {
+            return $testitem;
+        }
+        [$translated] = $found;
+        foreach ($items as $i => $item) {
+            $item->definition = $translated[$i];
+            $testitem->spacegameitems[$i] = json_encode($item);
+        }
         return $testitem;
     }
 

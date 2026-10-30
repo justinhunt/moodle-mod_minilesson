@@ -110,7 +110,30 @@ class itemtype extends item
         // cloudpoodll
         $testitem = $this->set_cloudpoodll_details($testitem);
         $testitem->newui = true;
+        $testitem = $this->set_local_translations($testitem);
         return $testitem;
+    }
+
+    /**
+     * The hints are native language text, translated ahead of time by local translations.
+     *
+     * @param \stdClass $itemrecord The item's row.
+     * @return array of ['text' => string, 'context' => string]
+     */
+    public static function get_local_translatables(\stdClass $itemrecord) {
+        return static::get_hint_local_translatables($itemrecord);
+    }
+
+    /**
+     * Show the hints in the learner's native language.
+     *
+     * @param \stdClass $testitem The template data.
+     * @param callable $lookup Takes the text as written, returns its translation or null.
+     * @param string $lang The language of the translations.
+     * @return \stdClass The template data.
+     */
+    public function apply_local_translations(\stdClass $testitem, callable $lookup, string $lang) {
+        return $this->apply_hint_local_translations($testitem, $lookup, $lang);
     }
 
     /**

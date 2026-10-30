@@ -39,6 +39,7 @@
         <FIELD NAME="allowcontinueattempts" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false"/>
         <FIELD NAME="nativetranslation" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Whether learners may translate item text into their native language"/>
         <FIELD NAME="nextbuttonalign" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="default" SEQUENCE="false" COMMENT="Where the next page button sits: default (end of the line) or center"/>
+        <FIELD NAME="localtranslations" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Whether items show their stored translations in the learner's native language"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
@@ -144,6 +145,7 @@
             <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="modifiedby" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
             <FIELD NAME="itemnativelangchooser" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="0" SEQUENCE="false" COMMENT="Whether to allow users to choose their native language"/>
+            <FIELD NAME="localtranslations" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The item's native language text translated into other languages, as json keyed by a hash of the text"/>
         </FIELDS>
         <KEYS>
             <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

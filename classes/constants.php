@@ -547,6 +547,7 @@ class constants {
     const M_LANG_SLSI = 'sl-SI';
     const M_LANG_SOSO = 'so-SO';
     const M_LANG_TIER = 'ti-ER';
+    const M_LANG_ZHTW = 'zh-TW';
     const M_LANG_ISIS = 'is-IS';
     const M_LANG_MKMK = 'mk-MK';
     const M_LANG_SRRS = 'sr-RS';

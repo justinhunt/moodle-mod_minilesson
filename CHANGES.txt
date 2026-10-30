@@ -1,4 +1,12 @@
-Version 1.1.61 (Build 2026102700)
+Version 1.1.61 (Build 2026103000)
+- added local translations: the native language text in items (hints, card translations, matching
+  words, wordcards definitions) is translated ahead of time into the languages the admin chooses, so
+  each learner sees it in the native language they picked. AI makes the translations through Cloud
+  Poodll, in the background, when an item is saved. Text written in the target language is not
+  translated. Off by default: switch on "Local translations" and choose the languages in the
+  MiniLesson settings. Each activity can turn it off. Learners can only pick a language when
+  "Enable native language" is also on
+- added Chinese (Traditional) to the native language list
 - Fixed connecting AI tools through MCP OAuth on Moodle 5.3 (the token was minted with a function Moodle 5.3 removed)
 - Use the core_external web service classes (the old global names log debugging notices on Moodle 5.3)
 - Removed an unused script that loaded theme_boost/tether, which Moodle 5.3 no longer has

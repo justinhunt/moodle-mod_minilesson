@@ -90,6 +90,34 @@ class itemtype extends item {
 
         $testitem->hidestartpage = $this->itemrecord->{constants::GAPFILLHIDESTARTPAGE} == 1;
 
+        $testitem = $this->set_local_translations($testitem);
+        return $testitem;
+    }
+
+    /**
+     * The definitions are often native language text, translated ahead of time by local translations.
+     *
+     * @param \stdClass $itemrecord The item's row.
+     * @return array of ['text' => string, 'context' => string]
+     */
+    public static function get_local_translatables(\stdClass $itemrecord) {
+        return static::get_pair_local_translatables($itemrecord, 2);
+    }
+
+    /**
+     * Show the definitions in the learner's native language.
+     *
+     * @param \stdClass $testitem The template data.
+     * @param callable $lookup Takes the text as written, returns its translation or null.
+     * @param string $lang The language of the translations.
+     * @return \stdClass The template data.
+     */
+    public function apply_local_translations(\stdClass $testitem, callable $lookup, string $lang) {
+        foreach ($testitem->words as $word) {
+            if ($word->definition !== '') {
+                $word->definition = $lookup($word->definition) ?? $word->definition;
+            }
+        }
         return $testitem;
     }
 

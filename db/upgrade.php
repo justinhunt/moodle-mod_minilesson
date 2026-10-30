@@ -1654,5 +1654,24 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026102601, 'minilesson');
     }
 
+    if ($oldversion < 2026103000) {
+        // Define field localtranslations to be added to minilesson: the activity switch for local translations.
+        $table = new xmldb_table(constants::M_TABLE);
+        $field = new xmldb_field('localtranslations', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'nextbuttonalign');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Define field localtranslations to be added to minilesson_rsquestions: the item's stored translations.
+        $table = new xmldb_table(constants::M_QTABLE);
+        $field = new xmldb_field('localtranslations', XMLDB_TYPE_TEXT, null, null, null, null, null, 'itemnativelangchooser');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026103000, 'minilesson');
+    }
+
     return true;
 }

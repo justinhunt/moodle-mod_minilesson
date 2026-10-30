@@ -20,6 +20,7 @@ use mod_minilesson\local\itemtype\item;
 
 use html_writer;
 use mod_minilesson\constants;
+use mod_minilesson\utils;
 use stdClass;
 
 /**
@@ -85,6 +86,47 @@ class itemtype extends item {
         }
         shuffle($testitem->shuffleditems);
 
+        $testitem = $this->set_local_translations($testitem);
+        return $testitem;
+    }
+
+    /**
+     * The matches are often native language text, translated ahead of time by local translations.
+     *
+     * @param \stdClass $itemrecord The item's row.
+     * @return array of ['text' => string, 'context' => string]
+     */
+    public static function get_local_translatables(\stdClass $itemrecord) {
+        return static::get_pair_local_translatables($itemrecord);
+    }
+
+    /**
+     * Show the matches in the learner's native language, unless that would make two of them the same.
+     *
+     * @param \stdClass $testitem The template data.
+     * @param callable $lookup Takes the text as written, returns its translation or null.
+     * @param string $lang The language of the translations.
+     * @return \stdClass The template data.
+     */
+    public function apply_local_translations(\stdClass $testitem, callable $lookup, string $lang) {
+        $definitions = [];
+        foreach ($testitem->scatteritems as $i => $scatteritem) {
+            $definitions[$i] = $scatteritem->definition;
+        }
+        $found = static::translate_matches($definitions, $lookup);
+        if ($found === null) {
+            return $testitem;
+        }
+        [$translated, $complete] = $found;
+        foreach ($testitem->scatteritems as $i => $scatteritem) {
+            $scatteritem->definition = $translated[$i];
+        }
+        foreach ($testitem->shuffleditems as $n => $shuffleditem) {
+            if ($shuffleditem['type'] === 'definition') {
+                $testitem->shuffleditems[$n]['value'] = $translated[$shuffleditem['key']];
+                $testitem->shuffleditems[$n]['dir'] = $complete && utils::is_rtl($lang) ? 'rtl' : 'auto';
+            }
+        }
         return $testitem;
     }
 

@@ -113,6 +113,48 @@ class itemtype extends item {
             $sentence->ttsaudiovoice = $testitem->usevoice;
             $sentence->audiosrc = $sentence->audiourl;
         }
+        $testitem = $this->set_local_translations($testitem);
+        return $testitem;
+    }
+
+    /**
+     * The translation (line 2) and the model sentence translation (line 4) are native language text, translated
+     * ahead of time by local translations. Line 2 goes with the word, line 4 with the model sentence.
+     *
+     * @param \stdClass $itemrecord The item's row.
+     * @return array of ['text' => string, 'context' => string]
+     */
+    public static function get_local_translatables(\stdClass $itemrecord) {
+        $translatables = [];
+        foreach (preg_split('/\R/u', (string) ($itemrecord->customtext1 ?? '')) as $line) {
+            $lines = array_map([utils::class, 'super_trim'], explode('|', utils::super_trim($line)));
+            if (($lines[1] ?? '') !== '') {
+                $context = $lines[0] . (($lines[2] ?? '') !== '' ? ' (' . $lines[2] . ')' : '');
+                $translatables[] = ['text' => $lines[1], 'context' => $context];
+            }
+            if (($lines[3] ?? '') !== '') {
+                $translatables[] = ['text' => $lines[3], 'context' => $lines[2] ?? ''];
+            }
+        }
+        return $translatables;
+    }
+
+    /**
+     * Show the translations on the cards in the learner's native language.
+     *
+     * @param \stdClass $testitem The template data.
+     * @param callable $lookup Takes the text as written, returns its translation or null.
+     * @param string $lang The language of the translations.
+     * @return \stdClass The template data.
+     */
+    public function apply_local_translations(\stdClass $testitem, callable $lookup, string $lang) {
+        foreach ($testitem->sentences as $sentence) {
+            foreach (['cardline2', 'cardline4'] as $field) {
+                if ($sentence->{$field} !== '') {
+                    $sentence->{$field} = $lookup($sentence->{$field}) ?? $sentence->{$field};
+                }
+            }
+        }
         return $testitem;
     }
 

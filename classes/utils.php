@@ -2277,6 +2277,9 @@ class utils {
             if ($langcode === constants::M_LANG_TEIN) {
                 $langs[constants::M_LANG_TIER] = get_string('ti-er', constants::M_COMPONENT);
             }
+            if ($langcode === constants::M_LANG_ZHCN) {
+                $langs[constants::M_LANG_ZHTW] = get_string('zh-tw', constants::M_COMPONENT);
+            }
         }
         return $langs;
     }
@@ -2333,6 +2336,7 @@ class utils {
             'bg' => constants::M_LANG_BGBG,
             'hr' => constants::M_LANG_HRHR,
             'zh' => constants::M_LANG_ZHCN,
+            'zh_tw' => constants::M_LANG_ZHTW,
             'cs' => constants::M_LANG_CSCZ,
             'da' => constants::M_LANG_DADK,
             'nl' => constants::M_LANG_NLNL,
@@ -2533,6 +2537,18 @@ class utils {
         $mform->setType('nativetranslation', PARAM_INT);
         $mform->addHelpButton('nativetranslation', 'nativetranslation', constants::M_COMPONENT);
         $mform->setDefault('nativetranslation', $config->nativetranslation);
+
+        // Local translations, offered only when the site has them on.
+        if (!empty($config->enablelocaltranslations)) {
+            $mform->addElement(
+                'selectyesno',
+                'localtranslations',
+                get_string('localtranslations', constants::M_COMPONENT)
+            );
+            $mform->setType('localtranslations', PARAM_INT);
+            $mform->addHelpButton('localtranslations', 'localtranslations', constants::M_COMPONENT);
+            $mform->setDefault('localtranslations', 1);
+        }
 
         // Allow continue attempts.
         $mform->addElement('selectyesno', 'allowcontinueattempts', get_string('allowcontinueattempts', constants::M_COMPONENT));
@@ -3185,6 +3201,9 @@ class utils {
                 break;
             case constants::M_LANG_TIER:
                 $ret = "Tigrinya";
+                break;
+            case constants::M_LANG_ZHTW:
+                $ret = "Chinese (Traditional)";
                 break;
         }
         return $ret;
