@@ -27,6 +27,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 use mod_minilesson\constants;
 use mod_minilesson\table\templates;
+use mod_minilesson\template_tag_manager;
 
 $id = optional_param('id', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID
@@ -83,17 +84,35 @@ switch ($action) {
     }
 
     case 'delete': {
-        if ($templateid && confirm_sesskey()) {
+        if (!$templateid) {
+            break;
+        }
+        // Only delete on a confirmed POST, never from a GET link.
+        if (optional_param('confirm', 0, PARAM_BOOL) && data_submitted() && confirm_sesskey()) {
+            $DB->delete_records(template_tag_manager::DBTABLE, ['templateid' => $templateid]);
             $DB->delete_records('minilesson_templates', ['id' => $templateid]);
             redirect(
                 new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]),
                 get_string('templatedeleted', constants::M_COMPONENT)
             );
         }
+        $widgethtml = $OUTPUT->confirm(
+            get_string('templatedeleteconfirmation', constants::M_COMPONENT),
+            new moodle_url(
+                '/mod/minilesson/aigen_dev.php',
+                ['id' => $cm->id, 'action' => 'delete', 'templateid' => $templateid, 'confirm' => 1]
+            ),
+            new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]),
+            ['continuestr' => get_string('delete')]
+        );
         break;
     }
     case 'duplicate': {
-        if ($templateid && confirm_sesskey()) {
+        if (!$templateid) {
+            break;
+        }
+        // Only duplicate on a confirmed POST, never from a GET link.
+        if (optional_param('confirm', 0, PARAM_BOOL) && data_submitted() && confirm_sesskey()) {
             // Duplicate the template
             $template = $DB->get_record('minilesson_templates', ['id' => $templateid], '*', MUST_EXIST);
             $template->id = null; // Reset the ID to create a new record.
@@ -101,12 +120,29 @@ switch ($action) {
             $template->name .= ' (copy)'; // Append '(copy)' to the name
             $template->uniqueid = uniqid();
             $template->version = 0;
-            $DB->insert_record('minilesson_templates', $template);
+            $newid = $DB->insert_record('minilesson_templates', $template);
+            // Copy the template's tags to the new template.
+            foreach ($DB->get_records(template_tag_manager::DBTABLE, ['templateid' => $templateid]) as $tag) {
+                unset($tag->id);
+                $tag->templateid = $newid;
+                $tag->timecreated = time();
+                $tag->timemodified = null;
+                $DB->insert_record(template_tag_manager::DBTABLE, $tag);
+            }
             redirect(
                 new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]),
                 get_string('templateduplicated', constants::M_COMPONENT)
             );
         }
+        $widgethtml = $OUTPUT->confirm(
+            get_string('templateduplicateconfirmation', constants::M_COMPONENT),
+            new moodle_url(
+                '/mod/minilesson/aigen_dev.php',
+                ['id' => $cm->id, 'action' => 'duplicate', 'templateid' => $templateid, 'confirm' => 1]
+            ),
+            new moodle_url('/mod/minilesson/aigen_dev.php', ['id' => $cm->id]),
+            ['continuestr' => get_string('action:duplicatetemplate', constants::M_COMPONENT)]
+        );
         break;
     }
     case 'edit': {

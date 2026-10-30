@@ -89,7 +89,7 @@ class templates extends dynamictable
         $o[] = $this->renderer->render($editbutton);
 
         $duplicatebutton = new action_link(
-            new moodle_url($this->baseurl, ['action' => 'duplicate', 'templateid' => $record->id,  'sesskey' => sesskey()]),
+            new moodle_url($this->baseurl, ['action' => 'duplicate', 'templateid' => $record->id]),
             $this->renderer->pix_icon('t/copy', $this->strings['duplicate'])
         );
         $o[] = $this->renderer->render($duplicatebutton);
@@ -101,10 +101,9 @@ class templates extends dynamictable
         $o[] = $this->renderer->render($downloadbutton);
 
         $deletebutton = new action_link(
-            new moodle_url($this->baseurl, ['action' => 'delete', 'templateid' => $record->id, 'sesskey' => sesskey()]),
+            new moodle_url($this->baseurl, ['action' => 'delete', 'templateid' => $record->id]),
             $this->renderer->pix_icon('t/delete', $this->strings['delete'])
         );
-        $deletebutton->add_action(new confirm_action(get_string('templatedeleteconfirmation', constants::M_COMPONENT)));
         $o[] = $this->renderer->render($deletebutton);
 
         return join(' ', $o);

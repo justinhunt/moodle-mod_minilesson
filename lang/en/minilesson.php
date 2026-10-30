@@ -1125,6 +1125,7 @@ $string['action:deletetemplate'] = 'Delete';
 $string['action:duplicatetemplate'] = 'Duplicate';
 $string['action:downloadtemplate'] = 'Download';
 $string['templatedeleteconfirmation'] = 'Are you sure want to delete template?';
+$string['templateduplicateconfirmation'] = 'Are you sure you want to duplicate this template?';
 $string['minilesson:managetemplate'] = 'Manage template';
 $string['templatedeleted'] = 'Template deleted successfully';
 $string['templateduplicated'] = 'Template duplicated successfully';
