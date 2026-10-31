@@ -2707,7 +2707,7 @@ abstract class item implements \templatable, \renderable {
     /**
      * Swap the phrases of a text that must not be translated for [[n]] placeholders.
      *
-     * Two kinds of phrase are kept: anything inside double quotation marks, and for each keep term
+     * Two kinds of phrase are kept: anything inside quotation marks, and for each keep term
      * (e.g. an answer option) the longest run of its words that the text repeats. A run must be the
      * whole keep term, or at least two words and at least half of it, so that "climbing the
      * scaffolding" is kept for the option "He's climbing the scaffolding." but "the table" is not
@@ -2726,9 +2726,17 @@ abstract class item implements \templatable, \renderable {
 
         // Spans to keep, as [byte offset, byte length].
         $spans = [];
-        if (preg_match_all('/“[^”\n]+”|"[^"\n]+"|«[^»\n]+»|„[^“”\n]+[“”]/u', $text, $matches, PREG_OFFSET_CAPTURE)) {
-            foreach ($matches[0] as $match) {
-                $spans[] = [$match[1], strlen($match[0])];
+        $quotepatterns = [
+            '/“[^”\n]+”|"[^"\n]+"|«[^»\n]+»|„[^“”\n]+[“”]/u',
+            // Single quotes double as apostrophes, so one opens only where a word starts and closes only
+            // where a word ends. That leaves the apostrophes in "don't", "l'homme" and "the boys' toys".
+            "/(?<![\\p{L}\\p{N}])[‘’'‚](?=\\S)[^\\n]*?(?<=\\S)[’'‘](?![\\p{L}\\p{N}])|‹[^›\\n]+›/u",
+        ];
+        foreach ($quotepatterns as $quotepattern) {
+            if (preg_match_all($quotepattern, $text, $matches, PREG_OFFSET_CAPTURE)) {
+                foreach ($matches[0] as $match) {
+                    $spans[] = [$match[1], strlen($match[0])];
+                }
             }
         }
 
