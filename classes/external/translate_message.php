@@ -122,6 +122,10 @@ class translate_message extends external_api {
         if (empty($fromlang) || empty($tolang)) {
             return $failure;
         }
+        // Translating into the language the text is already in would only spend an AI request.
+        if (strtolower(explode('-', $fromlang)[0]) === strtolower(explode('-', $tolang)[0])) {
+            return $failure;
+        }
 
         $aimanager = new aimanager($context->id, $moduleinstance->region, $moduleinstance->ttslanguage);
         $translation = $aimanager->translate_text($text, $fromlang, $tolang, $params['placeholders']);

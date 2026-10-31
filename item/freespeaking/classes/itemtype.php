@@ -443,7 +443,7 @@ class itemtype extends item {
         $keycols['text6'] = ['jsonname' => 'aigradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_INSTRUCTIONS];
         $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
         $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];
-        $keycols['text4'] = ['jsonname' => 'aigradefeedbacklanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AIGRADE_FEEDBACK_LANGUAGE];
+        $keycols['text4'] = ['jsonname' => 'aigradefeedbacklanguage', 'type' => 'string', 'optional' => true, 'default' => constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE, 'dbname' => constants::AIGRADE_FEEDBACK_LANGUAGE];
         $keycols['text5'] = ['jsonname' => 'freespeakingtopic', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::TOPIC];
         $keycols['data1'] = ['jsonname' => 'freespeakingaidata1', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::AIDATA1];
         $keycols['data2'] = ['jsonname' => 'freespeakingaidata2', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => self::AIDATA2];

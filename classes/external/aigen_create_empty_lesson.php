@@ -56,9 +56,10 @@ class aigen_create_empty_lesson extends external_api {
             'nativelang' => new external_value(PARAM_TEXT, 'Native Language', VALUE_DEFAULT, $config->nativelang),
             'nativetranslation' => new external_value(
                 PARAM_INT,
-                'Native Language Translation: 1 lets learners translate item text into their native language '
-                    . '(fiction stories, TTS dialogs and multichoice feedback offer it), 0 turns that off. '
-                    . 'Needs nativelang set to a language other than ttslanguage to have any effect.',
+                'Native language features: 1 turns on a translate button for learners (fiction stories, TTS dialogs '
+                    . 'and multichoice feedback offer it), pre-translated hints and definitions, and using the '
+                    . 'native language a learner chose instead of nativelang, where the site settings allow them. '
+                    . '0 turns all of these off, and every learner gets nativelang.',
                 VALUE_DEFAULT,
                 $config->nativetranslation ?? 1
             ),

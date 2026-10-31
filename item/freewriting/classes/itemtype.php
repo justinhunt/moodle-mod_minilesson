@@ -464,7 +464,7 @@ class itemtype extends item
         $keycols['text6'] = ['jsonname' => 'aigradeinstructions', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_INSTRUCTIONS];
         $keycols['text2'] = ['jsonname' => 'aigradefeedback', 'type' => 'string', 'optional' => false, 'default' => '', 'dbname' => constants::AIGRADE_FEEDBACK];
         $keycols['text3'] = ['jsonname' => 'modelanswer', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => constants::AIGRADE_MODELANSWER];
-        $keycols['text4'] = ['jsonname' => 'aigradefeedbacklanguage', 'type' => 'string', 'optional' => true, 'default' => 'en-US', 'dbname' => constants::AIGRADE_FEEDBACK_LANGUAGE];
+        $keycols['text4'] = ['jsonname' => 'aigradefeedbacklanguage', 'type' => 'string', 'optional' => true, 'default' => constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE, 'dbname' => constants::AIGRADE_FEEDBACK_LANGUAGE];
         $keycols['text5'] = ['jsonname' => 'freewritingtopic', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => self::TOPIC];
         $keycols['text1'] = ['jsonname' => 'enablevkeyboard', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => self::ENABLEVKEYBOARD];
         $keycols['text7'] = ['jsonname' => 'customkeys', 'type' => 'string', 'optional' => true, 'default' => '', 'dbname' => self::CUSTOMKEYS];

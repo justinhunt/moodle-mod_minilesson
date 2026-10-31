@@ -540,14 +540,13 @@ class utils {
 
         // The learner's own native language replaces the activity's, where the item gives feedback in the
         // activity's native language: set to "native", or (in older items) to that language's code. An item
-        // that gives feedback in the language being taught keeps it.
+        // set to the target language, or to any other language, keeps it.
         $feedbackshort = self::fetch_short_lang($feedbacklanguage);
         $tonative = $feedbacksetting == constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE
             || ($feedbacksetting != constants::AIGRADE_FEEDBACK_TARGET_LANGUAGE
                 && !empty($moduleinstance->nativelang)
-                && $feedbackshort == self::fetch_short_lang($moduleinstance->nativelang)
-                && $feedbackshort != self::fetch_short_lang($moduleinstance->ttslanguage));
-        if (!empty($conf->setnativelanguage) && $tonative) {
+                && $feedbackshort == self::fetch_short_lang($moduleinstance->nativelang));
+        if (!empty($conf->setnativelanguage) && !empty($moduleinstance->nativetranslation) && $tonative) {
             $userprefdeflanguage = get_user_preferences(constants::NATIVELANG_PREF);
             if (!empty($userprefdeflanguage)) {
                 // Poodll WordCards stores 2 letter codes, but Poodll AI expects a locale code.
@@ -2550,7 +2549,7 @@ class utils {
         $mform->addHelpButton('nativelang', 'nativelang', constants::M_COMPONENT);
         $mform->setDefault('nativelang', $config->nativelang);
 
-        // Native language translation.
+        // Native language features: the translate button, local translations and the learner's own native language.
         $mform->addElement(
             'selectyesno',
             'nativetranslation',
@@ -2559,18 +2558,6 @@ class utils {
         $mform->setType('nativetranslation', PARAM_INT);
         $mform->addHelpButton('nativetranslation', 'nativetranslation', constants::M_COMPONENT);
         $mform->setDefault('nativetranslation', $config->nativetranslation);
-
-        // Local translations, offered only when the site has them on.
-        if (!empty($config->enablelocaltranslations)) {
-            $mform->addElement(
-                'selectyesno',
-                'localtranslations',
-                get_string('localtranslations', constants::M_COMPONENT)
-            );
-            $mform->setType('localtranslations', PARAM_INT);
-            $mform->addHelpButton('localtranslations', 'localtranslations', constants::M_COMPONENT);
-            $mform->setDefault('localtranslations', 1);
-        }
 
         // Allow continue attempts.
         $mform->addElement('selectyesno', 'allowcontinueattempts', get_string('allowcontinueattempts', constants::M_COMPONENT));

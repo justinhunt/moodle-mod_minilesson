@@ -1,12 +1,28 @@
-Version 1.1.61 (Build 2026103000)
+Version 1.1.61 (Build 2026103100)
 - added local translations: the native language text in items (hints, card translations, matching
   words, wordcards definitions) is translated ahead of time into the languages the admin chooses, so
   each learner sees it in the native language they picked. AI makes the translations through Cloud
   Poodll, in the background, when an item is saved. Text written in the target language is not
   translated. Off by default: switch on "Pre-translated hints and definitions" and choose the
-  languages on the new "Native language support" settings page. Each activity can turn it off. A
-  learner's own choice of language is only used when "Learner's chosen native language overrides
-  the activity's" is also on
+  languages on the new "Native language support" settings page. A learner's own choice of language
+  is only used when "Learner's chosen native language overrides the activity's" is also on
+- the activity setting "Native Language Translation" is now "Enable native language features". It
+  turns on the translate button, local translations and the use of a learner's chosen native
+  language. The site settings for local translations and the learner's language still apply. An
+  activity with the setting off now also has no local translations, and every learner gets the
+  activity's native language
+- a learner's chosen native language is now also used for AI feedback when the activity's native
+  language is the same as the target language, in items set to "Default native language" or to that
+  language's code. To keep feedback in the target language, turn off "Enable native language
+  features" or set the item to "Default target language"
+- imported free writing, free speaking and audio chat items with no AI feedback language now use
+  "Default native language", not en-US. This includes export files in which it was left out because
+  it was en-US
+- fixed the fiction item offering translation when there is nothing to translate into: when the
+  learner's native language is the story's language, or no native language is set. The translate
+  icons no longer show, $cantranslate is false, translate("text") shows the text as written, and the
+  <<translate>> command is skipped. The command is also skipped when "Enable native language
+  features" is off
 - local translations go along with an item when it is exported and imported, so they are not made
   again. When a lesson is translated into another native language on export or import, the
   translations it already has are kept

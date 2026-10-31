@@ -1655,13 +1655,6 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026103000) {
-        // Define field localtranslations to be added to minilesson: the activity switch for local translations.
-        $table = new xmldb_table(constants::M_TABLE);
-        $field = new xmldb_field('localtranslations', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'nextbuttonalign');
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
         // Define field localtranslations to be added to minilesson_rsquestions: the item's stored translations.
         $table = new xmldb_table(constants::M_QTABLE);
         $field = new xmldb_field('localtranslations', XMLDB_TYPE_TEXT, null, null, null, null, null, 'itemnativelangchooser');
@@ -1671,6 +1664,19 @@ function xmldb_minilesson_upgrade($oldversion) {
 
         // Minilesson savepoint reached.
         upgrade_mod_savepoint(true, 2026103000, 'minilesson');
+    }
+
+    if ($oldversion < 2026103100) {
+        // Drop the activity's localtranslations field: nativetranslation now decides this. The field of the
+        // same name on minilesson_rsquestions holds the item's stored translations, and stays.
+        $table = new xmldb_table(constants::M_TABLE);
+        $field = new xmldb_field('localtranslations');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026103100, 'minilesson');
     }
 
     return true;

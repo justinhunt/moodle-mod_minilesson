@@ -266,8 +266,9 @@ class itemtype extends item {
         // Show non-options.
         $testitem->shownonoptions = $this->itemrecord->{ self::SHOW_NONOPTIONS} ? true : false;
 
-        // Tap to translate. This follows the activity's native language translation setting.
-        $testitem->taptotranslate = !empty($this->moduleinstance->nativetranslation);
+        // Tap to translate. Offered on the same terms as every other translate button: the activity's native
+        // language features are on, and the learner's native language is set and is not the lesson's language.
+        $testitem->taptotranslate = $this->get_translation_context()->cantranslate;
         $testitem->taptotranslatearia = get_string('fiction:taptranslatearia', constants::M_COMPONENT);
 
         // Read aloud. Each story message can show a TTS button; the voice and speed come from

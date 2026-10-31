@@ -442,6 +442,10 @@ define([
                     }
                     case 'translate': {
                         log.debug('got translate command');
+                        // With nothing to translate into, this command shows nothing and the story moves on.
+                        if (!that.storydata.get('cantranslate')) {
+                            break;
+                        }
                         const text = args.join(' ');
                         cancel_runner_advance = true;
 

@@ -55,7 +55,6 @@ class backup_minilesson_activity_structure_step extends backup_activity_structur
             'ttslanguage', 'transcriber', 'region', 'activitylink', 'pagelayout', 'showqtitles', 'showitemreview', 'foriframe',
             'lessonkey', 'csskey', 'containerwidth', 'lessonfont', 'timecreated', 'timemodified', 'viewstart', 'viewend', 'finishscreen', 'finishscreencustom',
             'completionwhenfinished', 'nativelang', 'allowcontinueattempts', 'nativetranslation', 'nextbuttonalign',
-            'localtranslations',
             ]);
 
         // attempts

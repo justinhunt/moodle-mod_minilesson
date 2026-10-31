@@ -617,7 +617,7 @@ class itemtype extends item {
             'jsonname' => 'audiochatnativelanguage',
             'type' => 'string',
             'optional' => true,
-            'default' => 'en-US',
+            'default' => constants::AIGRADE_FEEDBACK_NATIVE_LANGUAGE,
             'dbname' => self::NATIVE_LANGUAGE,
         ];
         $keycols['int8'] = [

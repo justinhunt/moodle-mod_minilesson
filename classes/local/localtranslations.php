@@ -91,14 +91,13 @@ class localtranslations {
     }
 
     /**
-     * Is the feature on for this activity?
+     * Is the feature on for this activity? It follows the activity's native language features setting.
      *
      * @param \stdClass $moduleinstance
      * @return bool
      */
     public static function is_enabled($moduleinstance) {
-        return self::is_site_enabled()
-            && (!isset($moduleinstance->localtranslations) || !empty($moduleinstance->localtranslations));
+        return self::is_site_enabled() && !empty($moduleinstance->nativetranslation);
     }
 
     /**
