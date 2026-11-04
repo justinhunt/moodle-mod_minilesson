@@ -2,6 +2,11 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
         function ($, log, Ajax, str, notification) {
     "use strict";
 
+    // Set when the browser's Translator fails to create a session (e.g. its translation
+    // service crashes on this device). For the rest of the page load we then go straight
+    // to the web service, rather than offering the same model download again.
+    var nativebroken = false;
+
     return {
 
         session: null,
@@ -69,7 +74,7 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
         check_availability: async function (sourceLang, destLang) {
             // Native browser translation first: it is free and instant.
             try {
-                if ('Translator' in window) {
+                if ('Translator' in window && !nativebroken) {
                     var downloadpair = null;
                     var pairs = this.candidate_pairs(sourceLang, destLang);
                     for (var i = 0; i < pairs.length; i++) {
@@ -192,7 +197,8 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
                 return true;
             } catch (e) {
                 log.error('Session creation failed: ' + e.message);
-                log.error('Error details: ' + JSON.stringify(e));
+                // Do not leave an older session (perhaps for another language pair) in place.
+                this.session = null;
                 return false;
             }
         },
@@ -211,7 +217,12 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
                 return false;
             }
 
-            if (this.session && this.session.remote) {
+            if (!this.session) {
+                log.debug('no translation session');
+                return false;
+            }
+
+            if (this.session.remote) {
                 return this.translate_remote(text, placeholders);
             }
 
@@ -322,8 +333,21 @@ define(['jquery', 'core/log', 'core/ajax', 'core/str', 'core/notification'],
             }
 
             var start_session = function (progresscallback) {
-                return that.create_session(sourceLang, destLang, progresscallback).then(function () {
-                    return translate_now();
+                return that.create_session(sourceLang, destLang, progresscallback).then(function (created) {
+                    if (created) {
+                        return translate_now();
+                    }
+                    // The browser translator failed. Stop using it and fall back to the web service.
+                    if (that.mode === 'native') {
+                        nativebroken = true;
+                        if (that.force_remote()) {
+                            return that.create_session(sourceLang, destLang).then(function () {
+                                return translate_now();
+                            });
+                        }
+                    }
+                    callback('');
+                    return null;
                 }).catch(function (e) {
                     log.error('Translation error: ' + e);
                     callback('');
