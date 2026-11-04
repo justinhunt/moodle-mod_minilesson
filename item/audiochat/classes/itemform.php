@@ -204,8 +204,6 @@ class itemform extends baseform {
             $pictureoptions
         );
         $mform->addHelpButton(itemtype::PICTURE_FILEAREA, 'aipictures', $component);
-        $this->add_textarearesponse(itemtype::PICTURELIST, get_string('aipicturelist', $component), false);
-        $mform->addHelpButton(itemtype::PICTURELIST, 'aipicturelist', $component);
         if (!itemtype::chat_tools_supported()) {
             $this->add_static_text('aiactions_unsupported', '', get_string('aiactions_unsupported', $component));
         }

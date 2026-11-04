@@ -237,7 +237,7 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
          * Show a picture the AI asked for, as its own message in the conversation.
          *
          * @param {object} call the tool call from onToolCall
-         * @param {object} media {url, filename, description}
+         * @param {object} media {url, filename}
          */
         addMediaItem: function (call, media) {
             var self = this;
@@ -1146,9 +1146,7 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
                 .map(function (item) {
                     if (item.media) {
                         // The grader only reads text, so say what the AI showed.
-                        return {role: 'assistant', text: '[The AI showed the student a picture: ' +
-                            item.media.filename + (item.media.description ? ' (' + item.media.description + ')' : '') +
-                            ']'};
+                        return {role: 'assistant', text: '[The AI showed the student a picture: ' + item.media.filename + ']'};
                     }
                     return {role: item.usertype === 'user' ? 'user' : 'assistant', text: item.content};
                 });

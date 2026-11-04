@@ -101,9 +101,6 @@ class itemtype extends item {
     /** @var string Column: 1 if the AI may end the chat itself (the end_chat tool). */
     public const AICANEND = 'customint9';
 
-    /** @var string Column: the teacher's description of each picture, one "filename | description" per line. */
-    public const PICTURELIST = 'customtext8';
-
     /** @var string File area for the pictures the AI can show (the show_media tool). */
     public const PICTURE_FILEAREA = constants::FILEANSWER . '1_image';
 
@@ -240,25 +237,14 @@ class itemtype extends item {
     }
 
     /**
-     * The pictures the teacher uploaded for the AI to show, with the teacher's description of each.
+     * The pictures the teacher uploaded for the AI to show. The AI knows them only by file name.
      *
-     * @return stdClass[] each with filename, url and description, keyed by lower case file name
+     * @return stdClass[] each with filename and url, keyed by lower case file name
      */
     public function fetch_chat_pictures(): array {
         $pictures = [];
         if (empty($this->itemrecord->id)) {
             return $pictures;
-        }
-
-        // The teacher's descriptions: one "filename | description" per line.
-        $descriptions = [];
-        $lines = preg_split('/\R/', (string) ($this->itemrecord->{self::PICTURELIST} ?? ''));
-        foreach ($lines as $line) {
-            $parts = explode('|', $line, 2);
-            $name = \core_text::strtolower(trim($parts[0]));
-            if ($name !== '' && isset($parts[1])) {
-                $descriptions[$name] = trim($parts[1]);
-            }
         }
 
         $fs = get_file_storage();
@@ -273,7 +259,6 @@ class itemtype extends item {
         foreach ($files as $file) {
             $filename = $file->get_filename();
             $key = \core_text::strtolower($filename);
-            $nameonly = \core_text::strtolower(pathinfo($filename, PATHINFO_FILENAME));
             $picture = new stdClass();
             $picture->filename = $filename;
             $picture->url = \moodle_url::make_pluginfile_url(
@@ -284,7 +269,6 @@ class itemtype extends item {
                 $file->get_filepath(),
                 $filename
             )->out(false);
-            $picture->description = $descriptions[$key] ?? ($descriptions[$nameonly] ?? '');
             $pictures[$key] = $picture;
         }
         return $pictures;
@@ -329,9 +313,9 @@ class itemtype extends item {
         if (in_array(self::TOOL_SHOWMEDIA, $toolnames)) {
             $lines[] = 'Call ' . self::TOOL_SHOWMEDIA . ' to show the student a picture on their screen, when these '
                 . 'instructions say to, or when a picture clearly helps the conversation. Use one of these exact '
-                . 'file names. You cannot see the pictures, you only know what is written here:';
+                . 'file names. You cannot see the pictures; the file name says what each one shows:';
             foreach ($pictures as $picture) {
-                $lines[] = '- ' . $picture->filename . ($picture->description !== '' ? ': ' . $picture->description : '');
+                $lines[] = '- ' . $picture->filename;
             }
         }
         if (in_array(self::TOOL_END, $toolnames)) {
@@ -669,13 +653,6 @@ class itemtype extends item {
                     ['value' => '1', 'meaning' => 'The AI may end the chat too'],
                 ],
             ],
-            'audiochatpictures' => [
-                'description' => 'Describes the pictures in the ' . self::PICTURE_FILEAREA . ' file area, which the AI '
-                    . 'can show to the learner during the chat. One line per picture: "filename | what it shows". '
-                    . 'The AI cannot see the pictures, only these descriptions. Say in audiochatinstructions when '
-                    . 'to show each one (e.g. "when the student buys the apple, show apple.png").',
-                'example' => "apple.png | a red apple, 1 dollar\nbanana.png | a bunch of bananas, 2 dollars",
-            ],
         ];
         foreach ($ownfields as $jsonname => $overlay) {
             $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
@@ -708,10 +685,11 @@ class itemtype extends item {
                 ],
                 [
                     'filearea' => self::PICTURE_FILEAREA,
-                    'description' => 'Pictures the AI can show to the learner during the chat. Describe each one '
-                        . 'in audiochatpictures.',
-                    'filenames' => 'Short, plain filenames with an image extension, e.g. "apple.png". The AI '
-                        . 'names the picture by its filename.',
+                    'description' => 'Pictures the AI can show to the learner during the chat. The AI cannot see '
+                        . 'them and knows each one only by its filename. Say in audiochatinstructions when to show '
+                        . 'each one (e.g. "when the student buys the apple, show redapple.png").',
+                    'filenames' => 'Short filenames that say what the picture shows, with an image extension, e.g. '
+                        . '"redapple.png" or "blackkitten.jpg".',
                 ],
             ],
             'example' => [
@@ -874,13 +852,6 @@ class itemtype extends item {
             'optional' => true,
             'default' => 0,
             'dbname' => self::AICANEND,
-        ];
-        $keycols['text8'] = [
-            'jsonname' => 'audiochatpictures',
-            'type' => 'string',
-            'optional' => true,
-            'default' => '',
-            'dbname' => self::PICTURELIST,
         ];
         $keycols['fileanswer_image'] = [
             'jsonname' => self::PICTURE_FILEAREA,

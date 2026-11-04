@@ -169,7 +169,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
          * which already sits in the right place in the conversation.
          *
          * @param {object} call the tool call from onToolCall
-         * @param {object} media {url, filename, description}
+         * @param {object} media {url, filename}
          */
         addMediaItem: function (call, media) {
             var self = this;

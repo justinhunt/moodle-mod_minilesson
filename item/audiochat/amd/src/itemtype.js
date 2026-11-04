@@ -215,7 +215,6 @@ define(
                         self.driver.addMediaItem(call, {
                             url: picture.url,
                             filename: picture.filename,
-                            description: picture.description,
                         });
                         self.driver.sendToolResult(call, {result: 'The picture is now on the student\'s screen.'});
                     } else {
@@ -608,7 +607,7 @@ define(
                         if (message.media) {
                             var img = document.createElement('img');
                             img.src = message.media.url;
-                            img.alt = message.media.description || message.media.filename;
+                            img.alt = message.media.filename;
                             img.className = 'ml_ac_picture';
                             contentDiv.appendChild(img);
                         }
