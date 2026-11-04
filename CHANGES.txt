@@ -37,9 +37,9 @@ Version 1.1.61 (Build 2026103100)
 - Fixed connecting AI tools through MCP OAuth on Moodle 5.3 (the token was minted with a function Moodle 5.3 removed)
 - Use the core_external web service classes (the old global names log debugging notices on Moodle 5.3)
 - Removed an unused script that loaded theme_boost/tether, which Moodle 5.3 no longer has
-- Tested with Moodle 5.3
 - Replaced calls to print_error() and error(), which no longer exist in Moodle, so error pages show their message instead of a fatal error
 - Use the core_form/changechecker module after saving a modal form: the old YUI form change checker no longer exists in Moodle 5.3
+- Added ability for audiochat AI to end a session autonomously and to deliver pictures into the conversation.
 - when Chrome's built-in translator fails to start on a device (its translation service crashes),
   the translate button now uses the Poodll translation service instead of showing nothing, and
   does not offer the model download again until the page is reloaded
