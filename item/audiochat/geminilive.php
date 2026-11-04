@@ -37,6 +37,9 @@ $disablevad = optional_param('disablevad', false, PARAM_BOOL);
 // Opaque session-resumption handle (from a previous connection's
 // sessionResumptionUpdate). Sent only when reconnecting to resume the session.
 $resumehandle = optional_param('resumehandle', '', PARAM_RAW_TRIMMED);
+// The AI's tools for this item (show_media, end_chat), as a comma separated list. They must be baked
+// into the token: the Constrained endpoint silently drops tools that only the client's setup declares.
+$tools = optional_param('tools', '', PARAM_TEXT);
 
 // Silence, in milliseconds, before the server VAD commits end-of-speech in hybrid
 // turn mode. Deliberately far longer than any pause a student would leave, so the
@@ -79,6 +82,8 @@ if ($context->contextlevel == CONTEXT_MODULE) {
 }
 // The Gemini Live model, from the admin setting.
 $model = itemtype::get_geminilivemodel();
+// No tools unless this model and provider support them.
+$toolnames = itemtype::chat_tools_supported() ? itemtype::clean_tool_names($tools) : [];
 
 $inputtranscription = new \stdClass();
 if ($inputlanguage !== '') {
@@ -97,7 +102,8 @@ if ($provider == itemtype::PROVIDER_CLOUDPOODLL) {
         $autosilencems,
         $turnmode,
         $model,
-        $inputlanguage
+        $inputlanguage,
+        implode(',', $toolnames)
     );
     if ($jsontoken) {
         header('Content-Type: application/json');
@@ -154,6 +160,9 @@ $payload = [
         'outputAudioTranscription' => new \stdClass(),
     ],
 ];
+if (!empty($toolnames)) {
+    $payload['bidiGenerateContentSetup']['tools'] = itemtype::get_tool_declarations($toolnames, itemtype::PROVIDER_GEMINI);
+}
 
 $curl = new curl();
 $curl->setHeader([
@@ -174,5 +183,6 @@ echo json_encode([
     'model' => $model,
     'turnmode' => $turnmode,
     'inputlanguage' => $inputlanguage,
+    'tools' => implode(',', $toolnames),
 ]);
 die;

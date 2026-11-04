@@ -933,7 +933,7 @@ class utils {
     }
 
     public static function fetch_cloudpoodll_audiochat_token($contextid, $voice, $disablevad, $resumehandle = '',
-        $silencedurationms = 0, $turnmode = '', $model = '', $inputlanguage = '') {
+        $silencedurationms = 0, $turnmode = '', $model = '', $inputlanguage = '', $tools = '') {
 
         $cloudpoodlltoken = false;
         $conf = get_config(constants::M_COMPONENT);
@@ -977,6 +977,12 @@ class utils {
         }
         if ($inputlanguage !== '') {
             $params['inputlanguage'] = $inputlanguage;
+        }
+        // The AI's tools (comma separated names, e.g. "show_media,end_chat"). The cloud endpoint must
+        // bake their declarations into the token: the Constrained endpoint drops tools the client
+        // declares itself. Sent only when the item uses tools, as an older cloud server rejects the key.
+        if ($tools !== '') {
+            $params['tools'] = $tools;
         }
 
         $serverurl = self::get_cloud_poodll_server() . '/webservice/rest/server.php';

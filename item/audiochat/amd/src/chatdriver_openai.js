@@ -108,6 +108,10 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             self.loadingMessages = new Set();
             self.eventlogs = [];
             self.gradingData = false;
+            self.endedByAI = false;
+            self._responseActive = false;
+            self._audioPlaying = false;
+            self._lastOutputAt = 0;
         },
 
         _resolveVoice: function (voice) {
@@ -158,6 +162,111 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             return this.mediaStream;
         },
 
+        // Tools (UI contract).
+
+        /**
+         * Show a picture the AI asked for. It goes on the function call's own conversation item,
+         * which already sits in the right place in the conversation.
+         *
+         * @param {object} call the tool call from onToolCall
+         * @param {object} media {url, filename, description}
+         */
+        addMediaItem: function (call, media) {
+            var self = this;
+            var item = self.items[call.itemid];
+            if (!item) {
+                return;
+            }
+            item.usertype = 'assistant';
+            item.media = media;
+            self._notifyItems();
+            self._fire('onScrollRequested');
+        },
+
+        /**
+         * Answer a tool call. Not used for end_chat: we close the session instead.
+         *
+         * @param {object} call the tool call from onToolCall
+         * @param {object} result
+         */
+        sendToolResult: function (call, result) {
+            var self = this;
+            self.sendEvent({
+                type: "conversation.item.create",
+                item: {
+                    type: "function_call_output",
+                    call_id: call.id,
+                    output: JSON.stringify(result),
+                }
+            });
+            self._toolResultsSent++;
+        },
+
+        /**
+         * Resolve once the AI has finished speaking: no response in progress, and its audio has
+         * finished playing.
+         *
+         * @param {number} maxwait give up waiting after this many milliseconds
+         * @return {Promise}
+         */
+        waitForOutputIdle: function (maxwait) {
+            var self = this;
+            var started = Date.now();
+            return new Promise(function (resolve) {
+                var check = function () {
+                    var now = Date.now();
+                    var finished = !self._responseActive && !self._audioPlaying && now - self._lastOutputAt > 800;
+                    if (finished || now - started > maxwait) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 250);
+                    }
+                };
+                check();
+            });
+        },
+
+        /**
+         * Pass on the tool calls in a finished response.
+         *
+         * When we answered a call (show_media) in a response that had no speech, ask for a new
+         * response so the AI carries on talking. When it did speak, it has already said its piece.
+         *
+         * @param {object} response the response from response.done
+         */
+        _handleToolCalls: function (response) {
+            var self = this;
+            var output = response.output || [];
+            var calls = output.filter(function (o) {
+                return o.type === 'function_call' && o.status === 'completed';
+            });
+            if (!calls.length) {
+                return;
+            }
+            var spoke = output.some(function (o) {
+                return o.type === 'message';
+            });
+            self._toolResultsSent = 0;
+            calls.forEach(function (o) {
+                var args = {};
+                try {
+                    args = o.arguments ? JSON.parse(o.arguments) : {};
+                } catch (e) {
+                    log.debug('Bad tool call arguments', o.arguments);
+                }
+                self._fire('onToolCall', {id: o.call_id, name: o.name, args: args, itemid: o.id});
+            });
+            if (self._toolResultsSent > 0 && !spoke && !self.endedByAI) {
+                self.sendEvent({
+                    type: "response.create",
+                    response: {
+                        output_modalities: ["audio"],
+                        audio: {output: {voice: self.audiochat_voice}},
+                    }
+                });
+            }
+        },
+
         getLoadingMessages: function () {
             return this.loadingMessages;
         },
@@ -199,6 +308,10 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             self.items = {};
             self.responses = {};
             self.loadingMessages = new Set();
+            self.endedByAI = false;
+            self._responseActive = false;
+            self._audioPlaying = false;
+            self._lastOutputAt = 0;
             self._notifyItems();
 
             // Acquire mic first so the UI can attach a waveform analyser.
@@ -315,7 +428,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                     self.itemdata.studentsubmission = studentsubmission;
                 }
 
-                self.sendEvent({
+                var sessionupdate = {
                     type: "session.update",
                     session: {
                         type: 'realtime',
@@ -335,7 +448,13 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                         },
                         output_modalities: ["audio"],
                     }
-                });
+                };
+                // The AI's tools (show a picture, end the chat).
+                if (self.itemdata.chattools && self.itemdata.chattools.length) {
+                    sessionupdate.session.tools = self.itemdata.chattools;
+                    sessionupdate.session.tool_choice = "auto";
+                }
+                self.sendEvent(sessionupdate);
 
                 // response.create overrides session instructions, so we repeat them here.
                 var firstmessageinstructions = "Please introduce yourself to the student and explain todays topic.";
@@ -397,6 +516,8 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 instructions: gradingInstructions,
                 metadata: {tag: self.gradingrequesttag},
                 max_output_tokens: 500,
+                // The grade must come back as text, never as a tool call.
+                tool_choice: "none",
             };
 
             self.sendEvent({
@@ -649,6 +770,8 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
 
             switch (msg.type) {
                 case "response.created": {
+                    self._responseActive = true;
+                    self._lastOutputAt = Date.now();
                     self.responses[msg.response.id].stack.push(msg);
                     break;
                 }
@@ -678,6 +801,8 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                     break;
                 }
                 case "output_audio_buffer.cleared": {
+                    self._audioPlaying = false;
+                    self._lastOutputAt = Date.now();
                     self.responses[msg.response_id].stack.push(msg);
                     break;
                 }
@@ -702,10 +827,20 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                     break;
                 }
                 case "response.done": {
+                    self._responseActive = false;
+                    self._lastOutputAt = Date.now();
                     self.responses[msg.response.id].stack.push(msg);
+                    self._handleToolCalls(msg.response);
+                    break;
+                }
+                case "output_audio_buffer.started": {
+                    self._audioPlaying = true;
+                    self._lastOutputAt = Date.now();
                     break;
                 }
                 case "output_audio_buffer.stopped": {
+                    self._audioPlaying = false;
+                    self._lastOutputAt = Date.now();
                     self._fire('onOutputAudioStopped');
                     self.responses[msg.response_id].stack.push(msg);
                     break;

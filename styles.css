@@ -4201,6 +4201,13 @@ span.wrongitem {
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
+.minilesson_audiochat_box .ml_ac_picture {
+  display: block;
+  max-width: 100%;
+  max-height: 240px;
+  margin-top: 0.25rem;
+  border-radius: 0.5rem;
+}
 .minilesson_audiochat_box .ml_unique_loadingmessage {
   display: flex;
   align-items: center;
@@ -4302,6 +4309,12 @@ span.wrongitem {
   border-radius: 15px;
   max-width: 70%;
   word-wrap: break-word;
+}
+.audiochat-results-message .ml_ac_picture {
+  display: block;
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 0.5rem;
 }
 .audiochat-results-message.user {
   align-self: flex-end;

@@ -98,6 +98,24 @@ class itemtype extends item {
     /** @var int Longest silence an admin may configure. */
     public const MAX_SILENCEDURATION = 30000;
 
+    /** @var string Column: 1 if the AI may end the chat itself (the end_chat tool). */
+    public const AICANEND = 'customint9';
+
+    /** @var string Column: the teacher's description of each picture, one "filename | description" per line. */
+    public const PICTURELIST = 'customtext8';
+
+    /** @var string File area for the pictures the AI can show (the show_media tool). */
+    public const PICTURE_FILEAREA = constants::FILEANSWER . '1_image';
+
+    /** @var string Tool the AI calls to end the conversation. */
+    public const TOOL_END = 'end_chat';
+
+    /** @var string Tool the AI calls to show the student a picture. */
+    public const TOOL_SHOWMEDIA = 'show_media';
+
+    /** @var string The extended thinking model, which does not support our tools yet. */
+    public const GEMINI_EXTENDEDTHINKING_MODEL = 'gemini-3.8-live-extended-thinking';
+
     /**
      * How long a student may pause before the AI takes its turn, in milliseconds.
      *
@@ -141,6 +159,187 @@ class itemtype extends item {
             return self::DEFAULT_GEMINILIVEMODEL;
         }
         return $model;
+    }
+
+    /**
+     * Whether the AI can be given tools (end the chat, show a picture) with the current provider and model.
+     *
+     * The extended thinking model needs non blocking tools, and in tests it treated our tools as
+     * background tasks: it never said goodbye before ending. So it gets no tools for now.
+     *
+     * @return bool
+     */
+    public static function chat_tools_supported(): bool {
+        $provider = get_config(constants::M_COMPONENT, 'provider') ?: self::PROVIDER_CLOUDPOODLL;
+        if ($provider == self::PROVIDER_OPENAI) {
+            return true;
+        }
+        return self::get_geminilivemodel() !== self::GEMINI_EXTENDEDTHINKING_MODEL;
+    }
+
+    /**
+     * Keep only the names of tools we know, in a fixed order.
+     *
+     * @param string|array $names tool names, as an array or a comma separated list
+     * @return string[]
+     */
+    public static function clean_tool_names($names): array {
+        if (!is_array($names)) {
+            $names = explode(',', (string) $names);
+        }
+        $names = array_map('trim', $names);
+        return array_values(array_intersect([self::TOOL_SHOWMEDIA, self::TOOL_END], $names));
+    }
+
+    /**
+     * The tool (function) declarations for a chat, in the format the provider expects.
+     *
+     * The declarations never change from item to item: which pictures there are, and when to use the
+     * tools, is in the AI's instructions. So a token service only needs the list of tool names.
+     *
+     * @param string[] $toolnames from clean_tool_names()
+     * @param string $provider self::PROVIDER_OPENAI, or Gemini (also used for Cloud Poodll)
+     * @return array the value for the "tools" field of the session setup
+     */
+    public static function get_tool_declarations(array $toolnames, string $provider): array {
+        $toolnames = self::clean_tool_names($toolnames);
+        if (empty($toolnames)) {
+            return [];
+        }
+        $openai = $provider == self::PROVIDER_OPENAI;
+        $descriptions = [
+            self::TOOL_END => 'End the conversation. Say a short goodbye to the student first, then call this. '
+                . 'Never say the name of this tool.',
+            self::TOOL_SHOWMEDIA => 'Show the student one of the pictures listed in your instructions. '
+                . 'Never say the name of this tool.',
+        ];
+        $filenamedesc = 'The exact file name of the picture, from the list in your instructions.';
+
+        $declarations = [];
+        foreach ($toolnames as $name) {
+            $declaration = ['name' => $name, 'description' => $descriptions[$name]];
+            if ($name == self::TOOL_SHOWMEDIA) {
+                $declaration['parameters'] = [
+                    'type' => $openai ? 'object' : 'OBJECT',
+                    'properties' => [
+                        'filename' => ['type' => $openai ? 'string' : 'STRING', 'description' => $filenamedesc],
+                    ],
+                    'required' => ['filename'],
+                ];
+            } else if ($openai) {
+                // OpenAI wants a parameters object even for a tool that takes none.
+                $declaration['parameters'] = ['type' => 'object', 'properties' => new stdClass()];
+            }
+            if ($openai) {
+                $declarations[] = ['type' => 'function'] + $declaration;
+            } else {
+                $declarations[] = $declaration;
+            }
+        }
+        return $openai ? $declarations : [['functionDeclarations' => $declarations]];
+    }
+
+    /**
+     * The pictures the teacher uploaded for the AI to show, with the teacher's description of each.
+     *
+     * @return stdClass[] each with filename, url and description, keyed by lower case file name
+     */
+    public function fetch_chat_pictures(): array {
+        $pictures = [];
+        if (empty($this->itemrecord->id)) {
+            return $pictures;
+        }
+
+        // The teacher's descriptions: one "filename | description" per line.
+        $descriptions = [];
+        $lines = preg_split('/\R/', (string) ($this->itemrecord->{self::PICTURELIST} ?? ''));
+        foreach ($lines as $line) {
+            $parts = explode('|', $line, 2);
+            $name = \core_text::strtolower(trim($parts[0]));
+            if ($name !== '' && isset($parts[1])) {
+                $descriptions[$name] = trim($parts[1]);
+            }
+        }
+
+        $fs = get_file_storage();
+        $files = $fs->get_area_files(
+            $this->context->id,
+            constants::M_COMPONENT,
+            self::PICTURE_FILEAREA,
+            $this->itemrecord->id,
+            'filename',
+            false
+        );
+        foreach ($files as $file) {
+            $filename = $file->get_filename();
+            $key = \core_text::strtolower($filename);
+            $nameonly = \core_text::strtolower(pathinfo($filename, PATHINFO_FILENAME));
+            $picture = new stdClass();
+            $picture->filename = $filename;
+            $picture->url = \moodle_url::make_pluginfile_url(
+                $this->context->id,
+                constants::M_COMPONENT,
+                self::PICTURE_FILEAREA,
+                $this->itemrecord->id,
+                $file->get_filepath(),
+                $filename
+            )->out(false);
+            $picture->description = $descriptions[$key] ?? ($descriptions[$nameonly] ?? '');
+            $pictures[$key] = $picture;
+        }
+        return $pictures;
+    }
+
+    /**
+     * The tools this item gives the AI.
+     *
+     * @param stdClass[] $pictures from fetch_chat_pictures()
+     * @return string[]
+     */
+    public function get_chat_tool_names(array $pictures): array {
+        if (!self::chat_tools_supported()) {
+            return [];
+        }
+        $names = [];
+        if (!empty($pictures)) {
+            $names[] = self::TOOL_SHOWMEDIA;
+        }
+        if (!empty($this->itemrecord->{self::AICANEND})) {
+            $names[] = self::TOOL_END;
+        }
+        return $names;
+    }
+
+    /**
+     * Tell the AI about its tools. Added to the end of its instructions.
+     *
+     * The teacher's own instructions say when to use them (e.g. "when the student buys the apple,
+     * show apple.png and end the chat"). This only explains what they do and how to call them.
+     *
+     * @param string[] $toolnames from get_chat_tool_names()
+     * @param stdClass[] $pictures from fetch_chat_pictures()
+     * @return string
+     */
+    public function fetch_tool_instructions(array $toolnames, array $pictures): string {
+        if (empty($toolnames)) {
+            return '';
+        }
+        $lines = [];
+        $lines[] = 'You have tools that work silently. Never say the name of a tool, and never talk about calling one.';
+        if (in_array(self::TOOL_SHOWMEDIA, $toolnames)) {
+            $lines[] = 'Call ' . self::TOOL_SHOWMEDIA . ' to show the student a picture on their screen, when these '
+                . 'instructions say to, or when a picture clearly helps the conversation. Use one of these exact '
+                . 'file names. You cannot see the pictures, you only know what is written here:';
+            foreach ($pictures as $picture) {
+                $lines[] = '- ' . $picture->filename . ($picture->description !== '' ? ': ' . $picture->description : '');
+            }
+        }
+        if (in_array(self::TOOL_END, $toolnames)) {
+            $lines[] = 'Call ' . self::TOOL_END . ' to end the conversation, when these instructions say it should end, '
+                . 'or when the student clearly wants to stop. First say a short goodbye, then call '
+                . self::TOOL_END . '. Say nothing after calling it.';
+        }
+        return implode("\n", $lines);
     }
 
     /**
@@ -231,6 +430,17 @@ class itemtype extends item {
             $testitem->audiochatinstructions,
             $testitem->audiochatnativelanguage
         );
+
+        // The AI's tools: show a picture, end the chat. The JS and the token service declare the
+        // tools; their instructions are added to the AI's instructions here.
+        $pictures = $this->fetch_chat_pictures();
+        $toolnames = $this->get_chat_tool_names($pictures);
+        $testitem->chattoolnames = implode(',', $toolnames);
+        $testitem->chattools = self::get_tool_declarations($toolnames, $testitem->chatprovider);
+        $testitem->chatpictures = in_array(self::TOOL_SHOWMEDIA, $toolnames) ? array_values($pictures) : [];
+        if (!empty($toolnames)) {
+            $testitem->audiochatinstructions .= "\n\n" . $this->fetch_tool_instructions($toolnames, $pictures);
+        }
 
         // Set up the audiochat grade instructions.
         $testitem->audiochatgradeinstructions = $this->fill_placeholders(
@@ -365,7 +575,8 @@ class itemtype extends item {
             'audiochatinstructions' => [
                 'description' => 'The instructions that drive the AI\'s side of the conversation: its role, '
                     . 'what to discuss, how simply to speak, and how/when to end the chat (e.g. "after 3 speaking '
-                    . 'turns, thank them and ask them to press the end button"). ' . $placeholdernote,
+                    . 'turns, thank them and ask them to press the end button", or with aicanendchat=1 "after 3 '
+                    . 'speaking turns, say goodbye and end the chat"). ' . $placeholdernote,
                 'example' => 'You are {ai role}. You are teaching {target language}. The student is learning to '
                     . 'speak {target language}. Today the discussion topic is: {topic}. Speak simply and '
                     . 'slowly, keep your responses brief, and give the student every opportunity to speak.',
@@ -449,6 +660,22 @@ class itemtype extends item {
                     . '"audiochatavatar3.png" .. "audiochatavatar12.png".',
                 'example' => self::DEFAULT_AVATAR,
             ],
+            'aicanendchat' => [
+                'description' => 'Whether the AI may end the chat itself, e.g. once a role play task is done. '
+                    . 'Say in audiochatinstructions when it should end (e.g. "when the student has paid, say '
+                    . 'goodbye and end the chat"). The learner can always end it with the end button.',
+                'options' => [
+                    ['value' => '0', 'meaning' => 'Only the learner ends the chat (default)'],
+                    ['value' => '1', 'meaning' => 'The AI may end the chat too'],
+                ],
+            ],
+            'audiochatpictures' => [
+                'description' => 'Describes the pictures in the ' . self::PICTURE_FILEAREA . ' file area, which the AI '
+                    . 'can show to the learner during the chat. One line per picture: "filename | what it shows". '
+                    . 'The AI cannot see the pictures, only these descriptions. Say in audiochatinstructions when '
+                    . 'to show each one (e.g. "when the student buys the apple, show apple.png").',
+                'example' => "apple.png | a red apple, 1 dollar\nbanana.png | a bunch of bananas, 2 dollars",
+            ],
         ];
         foreach ($ownfields as $jsonname => $overlay) {
             $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
@@ -478,6 +705,13 @@ class itemtype extends item {
                     'description' => 'An uploaded image shown to the learner, e.g. the picture the chat is about. '
                         . 'The AI cannot see the image itself - describe it in audiochattopic.',
                     'filenames' => 'Any filename with an image extension (png/jpg/gif/svg).',
+                ],
+                [
+                    'filearea' => self::PICTURE_FILEAREA,
+                    'description' => 'Pictures the AI can show to the learner during the chat. Describe each one '
+                        . 'in audiochatpictures.',
+                    'filenames' => 'Short, plain filenames with an image extension, e.g. "apple.png". The AI '
+                        . 'names the picture by its filename.',
                 ],
             ],
             'example' => [
@@ -633,6 +867,27 @@ class itemtype extends item {
             'optional' => true,
             'default' => '',
             'dbname' => self::AUDIOAVATAR,
+        ];
+        $keycols['int9'] = [
+            'jsonname' => 'aicanendchat',
+            'type' => 'int',
+            'optional' => true,
+            'default' => 0,
+            'dbname' => self::AICANEND,
+        ];
+        $keycols['text8'] = [
+            'jsonname' => 'audiochatpictures',
+            'type' => 'string',
+            'optional' => true,
+            'default' => '',
+            'dbname' => self::PICTURELIST,
+        ];
+        $keycols['fileanswer_image'] = [
+            'jsonname' => self::PICTURE_FILEAREA,
+            'type' => 'anonymousfile',
+            'optional' => true,
+            'default' => null,
+            'dbname' => false,
         ];
         return $keycols;
     }

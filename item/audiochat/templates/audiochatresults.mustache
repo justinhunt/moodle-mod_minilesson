@@ -13,8 +13,18 @@
     {{/teacherreport}}
     <h4>{{#str}}audiochat_conversation, mod_minilesson{{/str}}</h4>
     {{#items}}
+    {{#media}}
+    <div class="audiochat-results-message assistant">
+        <img class="ml_ac_picture" src="{{url}}" alt="{{#description}}{{description}}{{/description}}{{^description}}{{filename}}{{/description}}">
+    </div>
+    {{/media}}
+    {{^media}}
     <div class="audiochat-results-message {{usertype}}" dir="auto">
         {{{content}}}
     </div>
+    {{/media}}
     {{/items}}
+    {{#endedbyai}}
+    <p class="audiochat-results-endedbyai" dir="auto">{{#str}}aichat_endedbyai, minilessonitem_audiochat{{/str}}</p>
+    {{/endedbyai}}
 </div>

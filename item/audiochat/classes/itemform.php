@@ -180,6 +180,36 @@ class itemform extends baseform {
             }
         }
 
+        // What the AI can do during the chat: end it, and show pictures.
+        $component = static::get_component();
+        $mform->addElement('header', 'aiactionsheading', get_string('aiactionsheading', $component));
+        $this->add_static_text('aiactions_instructions', '', get_string('aiactions_instructions', $component));
+        $mform->addElement(
+            'advcheckbox',
+            itemtype::AICANEND,
+            get_string('aicanend', $component),
+            get_string('aicanend_desc', $component),
+            [],
+            [0, 1]
+        );
+        $mform->setDefault(itemtype::AICANEND, 0);
+        $mform->addHelpButton(itemtype::AICANEND, 'aicanend', $component);
+
+        $pictureoptions = array_merge($this->filemanageroptions, ['accepted_types' => 'image', 'maxfiles' => -1]);
+        $mform->addElement(
+            'filemanager',
+            itemtype::PICTURE_FILEAREA,
+            get_string('aipictures', $component),
+            [],
+            $pictureoptions
+        );
+        $mform->addHelpButton(itemtype::PICTURE_FILEAREA, 'aipictures', $component);
+        $this->add_textarearesponse(itemtype::PICTURELIST, get_string('aipicturelist', $component), false);
+        $mform->addHelpButton(itemtype::PICTURELIST, 'aipicturelist', $component);
+        if (!itemtype::chat_tools_supported()) {
+            $this->add_static_text('aiactions_unsupported', '', get_string('aiactions_unsupported', $component));
+        }
+
         // The custom AI data fields.
         $mform->addElement('header', 'aicontextheading', get_string('aicontextheading', constants::M_COMPONENT));
         $mform->setExpanded('aicontextheading');

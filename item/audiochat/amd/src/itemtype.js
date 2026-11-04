@@ -33,6 +33,9 @@ define(
 
         log.debug('MiniLesson AudioChat: initialising');
 
+        // How long to wait for the AI's goodbye to finish playing before ending the chat anyway.
+        var AI_END_MAXWAIT = 20000;
+
         return {
             strings: {},
             controls: {},
@@ -52,6 +55,10 @@ define(
             isLoading: false,
             isMicActive: false,
             isMicInitialized: false,
+            // The id of the AI's end_chat call while its goodbye is still playing, else false.
+            aiEnding: false,
+            // True when the AI ended the chat (shown on the end screen and saved with the results).
+            endedByAI: false,
 
             // Mic waveform (UI audio analyser). The driver owns the MediaStream itself.
             audioContext: null,
@@ -158,7 +165,8 @@ define(
                     },
                     onOutputAudioStopped: function () {
                         // AI finished speaking: re-open the mic so the student can reply.
-                        if (!self.isMicActive) {
+                        // Not when the AI is ending the chat: there is no reply to give.
+                        if (!self.isMicActive && !self.aiEnding) {
                             self.toggleMute();
                         }
                     },
@@ -176,7 +184,96 @@ define(
                     onError: function (err) {
                         log.debug('Chat driver error:', err);
                     },
+                    onToolCall: function (call) {
+                        self.handleToolCall(call);
+                    },
+                    onToolCallCancelled: function (ids) {
+                        // The student talked over the AI before it finished ending the chat.
+                        if (self.aiEnding && ids.indexOf(self.aiEnding) !== -1) {
+                            log.debug('AI end of chat cancelled');
+                            self.aiEnding = false;
+                            self.driver.endedByAI = false;
+                            self.enableMic();
+                        }
+                    },
                 };
+            },
+
+            /**
+             * The AI called one of its tools: show a picture, or end the chat.
+             *
+             * @param {object} call {id, name, args}
+             */
+            handleToolCall: function (call) {
+                var self = this;
+                var tools = (self.itemdata.chattoolnames || '').split(',');
+                log.debug('AI tool call', call);
+
+                if (call.name === 'show_media' && tools.indexOf('show_media') !== -1) {
+                    var picture = self.findPicture(call.args.filename);
+                    if (picture) {
+                        self.driver.addMediaItem(call, {
+                            url: picture.url,
+                            filename: picture.filename,
+                            description: picture.description,
+                        });
+                        self.driver.sendToolResult(call, {result: 'The picture is now on the student\'s screen.'});
+                    } else {
+                        var names = (self.itemdata.chatpictures || []).map(function (p) {
+                            return p.filename;
+                        });
+                        self.driver.sendToolResult(call, {
+                            error: 'There is no picture with that name. Use one of: ' + names.join(', ')
+                        });
+                    }
+                    return;
+                }
+
+                if (call.name === 'end_chat' && tools.indexOf('end_chat') !== -1) {
+                    if (!self.isSessionActive || self.aiEnding) {
+                        return;
+                    }
+                    // Not answered: we close the session once the AI's goodbye has played.
+                    self.aiEnding = call.id || true;
+                    self.driver.endedByAI = true;
+                    self.disableMic();
+                    self.driver.waitForOutputIdle(AI_END_MAXWAIT).then(function () {
+                        if (self.aiEnding && self.isSessionActive) {
+                            self.endedByAI = true;
+                            self.aiEnding = false;
+                            self.stopSession();
+                        }
+                        return null;
+                    }).catch(function (e) {
+                        log.debug(e);
+                    });
+                    return;
+                }
+
+                // A tool this item does not offer. Say so, or a blocking call would hold the AI's turn.
+                if (call.name !== 'end_chat') {
+                    self.driver.sendToolResult(call, {error: 'That tool is not available.'});
+                }
+            },
+
+            /**
+             * Find one of the item's pictures by file name, with or without the extension.
+             *
+             * @param {string} filename
+             * @return {object|null}
+             */
+            findPicture: function (filename) {
+                var self = this;
+                var wanted = String(filename || '').trim().toLowerCase();
+                var noext = function (name) {
+                    return name.replace(/\.[^.]+$/, '');
+                };
+                var pictures = self.itemdata.chatpictures || [];
+                return pictures.find(function (p) {
+                    return p.filename.toLowerCase() === wanted;
+                }) || pictures.find(function (p) {
+                    return noext(p.filename.toLowerCase()) === noext(wanted);
+                }) || null;
             },
 
             _onDriverStateChange: function (state) {
@@ -212,6 +309,7 @@ define(
                 stepdata.lessonitemid = self.itemdata.id;
                 stepdata.totalitems = self.itemdata.totalmarks;
                 stepdata.resultsdata = { 'items': Object.values(self.driver.getItems()) };
+                stepdata.resultsdata.endedbyai = !!self.endedByAI;
                 stepdata = self.grade_activity(stepdata);
                 stepdata.correctitems = Math.round((self.itemdata.totalmarks * stepdata.grade) / 100);
                 self.quizhelper.do_next(stepdata);
@@ -361,6 +459,7 @@ define(
                     micWaveformCanvas: container.querySelector(".mic-waveform-canvas"),
                     micSelect: container.querySelector('.ml_ac_micselect'),
                     finishMessage: container.querySelector('.ml_ac_finished-message'),
+                    endedByAIMessage: container.querySelector('.ml_ac_endedbyai'),
                     retrySessionBtn: container.querySelector('.ml_ac_retrybtn'),
                     cancelStartSessionBtn: container.querySelector('.ml_ac_cancel-start-session-btn'),
                     autocreateresponseCheckbox: container.querySelector('.ml_ac_autoresponse-checkbox'),
@@ -416,6 +515,9 @@ define(
                     !endScreen && self.quizhelper.showitemreview
                 );
                 self.controls.finishMessage.classList.toggle("hidden", !endScreen);
+                if (self.controls.endedByAIMessage) {
+                    self.controls.endedByAIMessage.classList.toggle("hidden", !(endScreen && self.endedByAI));
+                }
                 self.controls.retrySessionBtn.classList.toggle(
                     "hidden",
                     !endScreen && self.itemdata.allowretry
@@ -464,7 +566,7 @@ define(
 
                 self.orderedMessageItems = [];
                 self.orderedItems.forEach((message) => {
-                    if (!message.content) {
+                    if (!message.content && !message.media) {
                         return;
                     }
                     var messageDiv = allMessages[message.id] || null;
@@ -501,14 +603,21 @@ define(
 
                         textDiv = document.createElement("div");
                         textDiv.className = "ml_unique_textsmall";
-                        textDiv.textContent = message.content;
+                        textDiv.textContent = message.content || '';
                         contentDiv.appendChild(textDiv);
+                        if (message.media) {
+                            var img = document.createElement('img');
+                            img.src = message.media.url;
+                            img.alt = message.media.description || message.media.filename;
+                            img.className = 'ml_ac_picture';
+                            contentDiv.appendChild(img);
+                        }
                         messageDiv.appendChild(contentDiv);
                         self.controls.messagesContainer.appendChild(messageDiv);
                     } else {
                         contentDiv = messageDiv.querySelector('.message_text_div');
                         textDiv = messageDiv.querySelector('.ml_unique_textsmall');
-                        textDiv.textContent = message.content;
+                        textDiv.textContent = message.content || '';
                         loaderDiv = messageDiv.querySelector('.ml_unique_loadingmessage');
                         delete allMessages[message.id];
                     }
@@ -567,6 +676,8 @@ define(
                 log.debug("reset session");
                 var self = this;
                 self.quizhelper.set_finish_label(self.index, false);
+                self.aiEnding = false;
+                self.endedByAI = false;
                 self.isLoading = false;
                 self.isSessionActive = false;
                 self.isSessionStopped = false;

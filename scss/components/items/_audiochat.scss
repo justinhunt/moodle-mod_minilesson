@@ -504,6 +504,15 @@
     line-height: 1.25rem;
   }
 
+  // A picture the AI showed the student.
+  .ml_ac_picture {
+    display: block;
+    max-width: 100%;
+    max-height: 240px;
+    margin-top: 0.25rem;
+    border-radius: 0.5rem;
+  }
+
   .ml_unique_loadingmessage {
     display: flex;
     align-items: center;
@@ -624,6 +633,13 @@
   border-radius: 15px;
   max-width: 70%;
   word-wrap: break-word;
+
+  .ml_ac_picture {
+    display: block;
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 0.5rem;
+  }
 
   &.user {
     align-self: flex-end;

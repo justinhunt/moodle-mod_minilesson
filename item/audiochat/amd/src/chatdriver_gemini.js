@@ -187,6 +187,9 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
             self._awaitingSpeech = false;
             self._speechFrameCount = 0;
             self._prerollFrames = [];
+            self._lastAudioAt = 0;
+            self._turnOpen = false;
+            self.endedByAI = false;
             self.autoCreateResponseToggleWrapperElement.style.display = 'none';
         },
 
@@ -227,6 +230,64 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
         getGradingData: function () { return this.gradingData; },
         getMediaStream: function () { return this.mediaStream; },
         getLoadingMessages: function () { return this.loadingMessages; },
+
+        // ── Tools (UI contract) ──
+
+        /**
+         * Show a picture the AI asked for, as its own message in the conversation.
+         *
+         * @param {object} call the tool call from onToolCall
+         * @param {object} media {url, filename, description}
+         */
+        addMediaItem: function (call, media) {
+            var self = this;
+            var id = self._newItem('assistant');
+            self.items[id].media = media;
+            self._notifyItems();
+            self._fire('onScrollRequested');
+        },
+
+        /**
+         * Answer a tool call. Never answer end_chat: on 3.8 Live the reply makes the model speak
+         * a turn about what it just did, and we close the session anyway.
+         *
+         * @param {object} call the tool call from onToolCall
+         * @param {object} result
+         */
+        sendToolResult: function (call, result) {
+            this._sendWS({
+                toolResponse: {
+                    functionResponses: [{id: call.id, name: call.name, response: result}]
+                }
+            });
+        },
+
+        /**
+         * Resolve once the AI has finished speaking: its audio has all played, and either its turn
+         * is complete or no audio has arrived for a while. A blocking tool call (3.1 Flash Live)
+         * holds the turn open, so turnComplete alone cannot be relied on.
+         *
+         * @param {number} maxwait give up waiting after this many milliseconds
+         * @return {Promise}
+         */
+        waitForOutputIdle: function (maxwait) {
+            var self = this;
+            var started = Date.now();
+            return new Promise(function (resolve) {
+                var check = function () {
+                    var now = Date.now();
+                    var played = !self.outputAudioCtx || self.outputAudioCtx.currentTime >= self.nextPlayTime;
+                    var quiet = now - self._lastAudioAt;
+                    var finished = played && quiet > 800 && (!self._turnOpen || quiet > 3000);
+                    if (finished || now - started > maxwait) {
+                        resolve();
+                    } else {
+                        setTimeout(check, 250);
+                    }
+                };
+                check();
+            });
+        },
 
         setAutoCreateResponse: function (enabled) {
             var self = this;
@@ -306,6 +367,9 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
             self._fire('onStateChange', 'connecting');
             self.items = {};
             self.loadingMessages = new Set();
+            self.endedByAI = false;
+            self._turnOpen = false;
+            self._lastAudioAt = 0;
             self._setupComplete = false;
             self._intentionalClose = false;
             self.resumingSession = false;
@@ -399,6 +463,11 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
             // session restarts fresh and loses all prior conversation.
             if (self.sessionResumptionToken) {
                 formData.append('resumehandle', self.sessionResumptionToken);
+            }
+            // The AI's tools must be baked into the token too: the Constrained endpoint
+            // silently drops tools that only our setup message declares.
+            if (self.itemdata.chattoolnames) {
+                formData.append('tools', self.itemdata.chattoolnames);
             }
             // Ideally this should be an AJAX request to a minilesson web service method,
             // but to keep things "in subplugin" for now we call a subplugin helper file
@@ -502,6 +571,12 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
                 self.setupConfig.inputAudioTranscription = self.inputlanguage
                     ? {languageCodes: [self.inputlanguage]}
                     : {};
+                // The AI's tools (show a picture, end the chat), as in the token.
+                if (self.itemdata.chattools && self.itemdata.chattools.length) {
+                    self.setupConfig.tools = self.itemdata.chattools;
+                } else {
+                    delete self.setupConfig.tools;
+                }
                 self.setupConfig.sessionResumption = {};
                 if (self.sessionResumptionToken) {
                     self.setupConfig.sessionResumption.handle = self.sessionResumptionToken;
@@ -796,6 +871,7 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
             }
             source.start(self.nextPlayTime);
             self.nextPlayTime += audioBuffer.duration;
+            self._lastAudioAt = Date.now();
         },
 
         // ── WebSocket message handling ──
@@ -833,7 +909,17 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
                 return;
             }
 
-            if (msg.toolCall || msg.toolCallCancellation) {
+            if (msg.toolCall) {
+                (msg.toolCall.functionCalls || []).forEach(function (fc) {
+                    log.debug('Gemini: tool call');
+                    log.debug(fc);
+                    self._fire('onToolCall', {id: fc.id, name: fc.name, args: fc.args || {}});
+                });
+                return;
+            }
+            if (msg.toolCallCancellation) {
+                log.debug('Gemini: tool call cancelled');
+                self._fire('onToolCallCancelled', msg.toolCallCancellation.ids || []);
                 return;
             }
 
@@ -879,6 +965,7 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
 
             // Model turn (audio + optional text).
             if (content.modelTurn && content.modelTurn.parts) {
+                self._turnOpen = true;
                 self._startAssistantItem();
                 var item = self.items[self.currentAssistantItemId];
                 content.modelTurn.parts.forEach(function (part) {
@@ -899,6 +986,7 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
 
             // Interrupted by barge-in.
             if (content.interrupted) {
+                self._turnOpen = false;
                 if (self.currentAssistantItemId) {
                     self.loadingMessages.delete(self.currentAssistantItemId);
                     self.currentAssistantItemId = null;
@@ -907,6 +995,7 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
 
             // Turn complete.
             if (content.turnComplete) {
+                self._turnOpen = false;
                 if (self.currentAssistantItemId) {
                     self.loadingMessages.delete(self.currentAssistantItemId);
                     self.currentAssistantItemId = null;
@@ -1053,10 +1142,19 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
             var self = this;
             var items = Object.values(self.items)
                 .sort(function (a, b) { return a.order - b.order; })
-                .filter(function (item) { return item.content && item.content.trim() !== ''; })
+                .filter(function (item) { return item.media || (item.content && item.content.trim() !== ''); })
                 .map(function (item) {
+                    if (item.media) {
+                        // The grader only reads text, so say what the AI showed.
+                        return {role: 'assistant', text: '[The AI showed the student a picture: ' +
+                            item.media.filename + (item.media.description ? ' (' + item.media.description + ')' : '') +
+                            ']'};
+                    }
                     return {role: item.usertype === 'user' ? 'user' : 'assistant', text: item.content};
                 });
+            if (self.endedByAI) {
+                items.push({role: 'assistant', text: '[The AI ended the chat]'});
+            }
 
             var request = function () {
                 return Ajax.call([{

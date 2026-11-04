@@ -26,6 +26,18 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Audio Chat';
+$string['aiactions_instructions'] = 'The AI can end the chat, and show pictures, when your AI instructions tell it to. For example: "When the student has paid for the apple, show apple.png, say goodbye and end the chat."';
+$string['aiactions_unsupported'] = 'The Gemini Live model chosen in the admin settings (Extended Thinking) does not support these actions yet, so the AI will not end the chat or show pictures.';
+$string['aiactionsheading'] = 'AI actions';
+$string['aicanend'] = 'AI can end the chat';
+$string['aicanend_desc'] = 'Let the AI end the chat when it is over';
+$string['aicanend_help'] = 'If checked, the AI can end the chat itself, as if the student had pressed the end button. Say in the AI instructions when the chat should end. The AI says goodbye first. The student can still end the chat with the end button at any time.';
+$string['aichat_endedbyai'] = 'The AI ended the chat.';
+$string['aipicturelist'] = 'Picture descriptions';
+$string['aipicturelist_help'] = 'The AI cannot see the pictures, so describe each one here, one line per picture, as the file name, a | character, and what the picture shows. For example:<br>apple.png | a red apple, 1 dollar<br>banana.png | a bunch of bananas, 2 dollars';
+$string['aipictures'] = 'Pictures the AI can show';
+$string['aipictures_help'] = 'Pictures the AI can show the student during the chat. Give them short, plain file names, like apple.png. Describe each picture in the picture descriptions, and say in the AI instructions when to show it.';
+$string['aipictureshown'] = 'Picture: {$a}';
 $string['audiochat_silenceduration'] = 'Pause before the AI replies';
 $string['audiochat_silenceduration_details'] = 'How long the student must stop speaking, in milliseconds, before the AI treats their turn as finished and replies. Raise it to give learners more room to pause and think mid sentence. Lower it for a quicker, more conversational back and forth. The default is 3500 (3.5 seconds). Values outside the range 500 to 30000 fall back to the default. This applies only after the student has spoken, and only when Auto Send is on for the item.';
 $string['cantchat_ningxia'] ='Chat is NOT available. To use this item type you must have a valid {$a} key set in the MiniLesson activity admin settings. Chat is also not available in China (Ningxia region)';
