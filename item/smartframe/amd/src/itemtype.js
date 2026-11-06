@@ -1,65 +1,94 @@
-define(['jquery', 'core/log', 'mod_minilesson/definitions'], function ($, log, def) {
-    "use strict"; // jshint ;_;
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-  /*
-  This file is to manage the quiz stage
-   */
+/**
+ * A widget item in a lesson. The widget never moves the lesson on: the learner uses the next button, and the
+ * last valid score the widget sent before that is the one used, as the item's grade policy says.
+ *
+ * @module     minilessonitem_smartframe/itemtype
+ * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+define(['jquery', 'core/log', 'minilessonitem_smartframe/widgethost'], function($, log, widgethost) {
+    "use strict";
 
-    log.debug('MiniLesson SmartFrame: initialising');
+    // These match itemtype::GRADE_* in PHP.
+    var GRADE_RECORD = 1;
+    var GRADE_USE = 2;
 
     return {
 
-      //for making multiple instances
-        clone: function () {
+        // For making multiple instances.
+        clone: function() {
             return $.extend(true, {}, this);
         },
 
-        init: function (index, itemdata, quizhelper) {
-            this.register_events(index, itemdata, quizhelper);
-        },
-        next_question: function (percent) {
-            var self = this;
-            var stepdata = {};
-            stepdata.index = self.index;
-            stepdata.hasgrade = true;
-            stepdata.totalitems = 10;
-            stepdata.correctitems = percent / 10;
-            stepdata.grade = percent;
-            self.quizhelper.do_next(stepdata);
-        },
-        register_events: function (index, itemdata, quizhelper) {
-
+        init: function(index, itemdata, quizhelper) {
             var self = this;
             self.index = index;
+            self.itemdata = itemdata;
             self.quizhelper = quizhelper;
+            self.score = null;
+            self.widget = null;
 
-            $("#" + itemdata.uniqueid + "_container .minilesson_nextbutton").on('click', function (e) {
-                self.next_question(0);
+            var $container = $("#" + itemdata.uniqueid + "_container");
+            $container.find(".minilesson_nextbutton").on('click', function(e) {
+                e.preventDefault();
+                self.next_question();
             });
 
-          //listen for the grades
-            window.addEventListener("message", function (event) {
-                log.debug('messageevent',event);
+            var iframe = $container.find("iframe.minilessonitem_smartframe_frame")[0];
+            if (iframe && itemdata.widgeturl) {
+                self.widget = widgethost.mount(iframe, {
+                    url: itemdata.widgeturl,
+                    origin: itemdata.widgetorigin,
+                    parentOrigin: itemdata.parentorigin,
+                    uiLanguage: itemdata.uilanguage,
+                    gradeReporting: itemdata.gradepolicy === GRADE_RECORD || itemdata.gradepolicy === GRADE_USE,
+                    resizes: itemdata.widgetresizes,
+                    onGrade: function(score) {
+                        log.debug('Widget score ' + score.earned + '/' + score.possible);
+                        self.score = score;
+                    },
+                });
+            }
+        },
 
-              //if its not really our smartframe host get out of here
-                if (event.origin !== itemdata.smartframehost) {
-                    return;
-                }
-              //pass back results and transition
-                var gradesdata = event.data;
-              //each instance of teacher tools itemtype will catch this event, so we need to filter the ones we handle to just this instanc
-               //thats why we pass the itemdata around
-                if (typeof gradesdata != 'undefined' && gradesdata.itemid == itemdata.id) {
-                    var thepercent = gradesdata.percent;
-
-                    $(".minilesson_nextbutton").prop("disabled", true);
-                    setTimeout(function () {
-                        $(".minilesson_nextbutton").prop("disabled", false);
-                        self.next_question(gradesdata.percent);
-                    }, 500);
-                }
-            }, false);
-
+        next_question: function() {
+            var self = this;
+            var stepdata = {
+                index: self.index,
+                hasgrade: false,
+                totalitems: 0,
+                correctitems: 0,
+                grade: 0,
+            };
+            var score = self.score;
+            if (self.itemdata.gradepolicy === GRADE_USE) {
+                var marks = self.itemdata.totalmarks;
+                stepdata.hasgrade = true;
+                stepdata.totalitems = marks;
+                // No score (the learner moved on before finishing) counts as nothing right.
+                stepdata.correctitems = score ? Math.round(100 * marks * score.earned / score.possible) / 100 : 0;
+                stepdata.grade = score ? Math.round(100 * score.earned / score.possible) : 0;
+            }
+            if (score && self.itemdata.gradepolicy !== 0) {
+                stepdata.widgetscore = {earned: score.earned, possible: score.possible};
+            }
+            // The widget is forgotten when do_next removes its frame from the page.
+            self.quizhelper.do_next(stepdata);
         }
     };
 });

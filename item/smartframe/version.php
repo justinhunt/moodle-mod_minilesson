@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component    = 'minilessonitem_smartframe';
-$plugin->release      = '1.0';
-$plugin->version      = 2026041000;
+$plugin->release      = '2.0';
+$plugin->version      = 2026110600;
 $plugin->requires     = 2022041900;
 $plugin->supported    = [400, 501];
 $plugin->maturity     = MATURITY_STABLE;
