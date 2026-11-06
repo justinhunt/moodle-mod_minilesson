@@ -53,7 +53,7 @@ define(['jquery', 'core/log', 'minilessonitem_smartframe/widgethost'], function(
             if (iframe && itemdata.widgeturl) {
                 self.widget = widgethost.mount(iframe, {
                     url: itemdata.widgeturl,
-                    origin: itemdata.widgetorigin,
+                    base: itemdata.widgetbase,
                     parentOrigin: itemdata.parentorigin,
                     uiLanguage: itemdata.uilanguage,
                     gradeReporting: itemdata.gradepolicy === GRADE_RECORD || itemdata.gradepolicy === GRADE_USE,

@@ -17,9 +17,15 @@
  * The lesson page's side of the Poodll widget message protocol (v1).
  *
  * One message listener serves every widget on the page. A message is only acted on when it comes from a
- * mounted widget's own frame, from the widget host's origin, in the protocol's format, and (after the
- * hello) with that widget's current instance id. Widgets run untrusted code, so nothing in a message is
- * ever run or put into the page as HTML: the host only resizes the frame and hands on a checked score.
+ * mounted widget's own frame, in the protocol's format, and (after the hello) with that widget's current
+ * instance id. Widgets run untrusted code, so nothing in a message is ever run or put into the page as HTML:
+ * the host only resizes the frame and hands on a checked score.
+ *
+ * Widgets are served with a sandbox policy that gives them an opaque origin, so their messages arrive with
+ * the origin "null". "null" proves nothing on its own (any sandboxed frame has it), so the sender is known by
+ * its window: it must be the contentWindow of a frame this module mounted, which no other frame can be.
+ * Messages to a widget go to "*", as an opaque origin can not be named. That is fine because nothing sent to
+ * a widget is secret.
  *
  * @module     minilessonitem_smartframe/widgethost
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -73,7 +79,6 @@ class Widget {
     constructor(iframe, options) {
         this.iframe = iframe;
         this.url = options.url;
-        this.origin = options.origin;
         this.parentOrigin = options.parentOrigin;
         this.uiLanguage = options.uiLanguage;
         this.gradeReporting = !!options.gradeReporting;
@@ -86,7 +91,7 @@ class Widget {
     }
 
     /**
-     * Send a message to the widget, to its origin only.
+     * Send a message to the widget's frame.
      *
      * @param {string} type message type, without the protocol prefix
      * @param {Object} payload
@@ -102,7 +107,7 @@ class Widget {
             type: PROTOCOL + ':' + type,
             instanceId: this.instanceId,
             payload: payload,
-        }, this.origin);
+        }, '*');
     }
 
     /**
@@ -215,8 +220,8 @@ const onMessage = (event) => {
     }
     prune();
     for (const widget of widgets) {
-        // The sender must be this widget's own frame, and the frame must be showing the widget host.
-        if (event.source === widget.iframe.contentWindow && event.origin === widget.origin) {
+        // The sender must be this widget's own frame, running sandboxed as the widget store serves it.
+        if (event.source === widget.iframe.contentWindow && event.origin === 'null') {
             widget.handle(message.type.substring(PROTOCOL.length + 1), message);
             return;
         }
@@ -263,14 +268,14 @@ const stopListening = () => {
  * @param {HTMLIFrameElement} iframe the frame, with no src
  * @param {Object} options
  * @param {string} options.url the widget's entry URL, built by the server
- * @param {string} options.origin the widget host's origin
+ * @param {string} options.base the URL of the widget's own folder, which the URL must be in
  * @param {string} options.parentOrigin this page's origin, as given to the widget in its URL
  * @param {string} options.uiLanguage the interface language for the widget
  * @param {boolean} options.gradeReporting whether the widget should report a score
  * @param {boolean} [options.resizes] false if the widget says it does not report its height
  * @param {Function} [options.onReady] called with {uiLanguage} when the widget is ready
  * @param {Function} [options.onGrade] called with {earned, possible} for each valid final score
- * @returns {Widget|null} the widget, or null if the URL is not on the widget host
+ * @returns {Widget|null} the widget, or null if the URL is not in the widget's folder
  */
 export const mount = (iframe, options) => {
     let url;
@@ -279,9 +284,9 @@ export const mount = (iframe, options) => {
     } catch (e) {
         return null;
     }
-    // Never load anything into the frame that is not on the widget host.
-    if (!iframe || url.origin !== options.origin) {
-        log.debug('Widget not mounted: its URL is not on the widget host');
+    // Never load anything into the frame but the widget's own page.
+    if (!iframe || typeof options.base !== 'string' || !options.base || url.href.indexOf(options.base) !== 0) {
+        log.debug('Widget not mounted: its URL is not in the widget folder');
         return null;
     }
     const widget = new Widget(iframe, options);

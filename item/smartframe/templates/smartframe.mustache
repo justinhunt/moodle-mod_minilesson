@@ -20,15 +20,16 @@
     A widget item. The iframe has no src here: the item's JS sets it once it is listening for the widget's
     messages, so the widget's first message can not be missed.
 
-    The sandbox lets the widget run scripts and keep its own origin (it needs both to load its files and
-    to talk to the lesson). That is only safe because widgets are served from a separate widget host,
-    never from Moodle. allow-forms is there because a form submit in a sandbox without it is dropped
-    before the submit event, which breaks widgets that handle submit in JS.
+    The sandbox lets the widget run scripts but not keep Moodle's origin, so it runs in an opaque origin of
+    its own and can not reach Moodle's cookies or pages. Never add allow-same-origin: the widget is served
+    from Moodle's site. (widget.php sends the same sandbox as a policy header too, which also covers a widget
+    page opened in a tab of its own.) allow-forms is there because a form submit in a sandbox without it is
+    dropped before the submit event, which breaks widgets that handle submit in JS.
 
     Example context (json):
     {
         "uniqueid": "item1",
-        "widgeturl": "https://widgets.example.net/0123/index.html?lang=en&parentOrigin=https%3A%2F%2Fschool.example.org",
+        "widgeturl": "https://school.example.org/mod/minilesson/item/smartframe/widget.php/12/0123/index.html?lang=en&parentOrigin=https%3A%2F%2Fschool.example.org",
         "widgettitle": "Greetings"
     }
 }}
@@ -37,7 +38,7 @@
     {{#widgeturl}}
         <iframe class="minilessonitem_smartframe_frame"
                 title="{{widgettitle}}"
-                sandbox="allow-scripts allow-same-origin allow-forms"
+                sandbox="allow-scripts allow-forms"
                 referrerpolicy="no-referrer"
                 loading="lazy"
                 style="display:block;width:100%;height:360px;border:0;"></iframe>

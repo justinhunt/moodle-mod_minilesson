@@ -26,8 +26,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Widget';
-$string['cdnbaseurl'] = 'Widget host URL';
-$string['cdnbaseurl_desc'] = 'The URL widgets are served from, for example https://widgets.example.net/widgets. It must be on a site of its own, with no Moodle or Poodll cookies. A plain S3 bucket URL also works.';
 $string['error:manifestentry'] = 'The manifest\'s "entry" ({$a}) must name an HTML file in the ZIP.';
 $string['error:manifestfield'] = 'The manifest\'s "{$a}" is missing or not valid.';
 $string['error:manifestjson'] = 'manifest.json is not valid JSON.';
@@ -37,8 +35,6 @@ $string['error:nomanifest'] = 'The ZIP has no manifest.json at its top level.';
 $string['error:notazip'] = 'The file is not a ZIP file, or it is damaged.';
 $string['error:notpublished'] = 'This widget could not be published, so learners can not see it. Save the item again to retry.';
 $string['error:onezip'] = 'Upload just one widget ZIP. Delete the others.';
-$string['error:publishernotconfigured'] = 'The widget host is not set up. An administrator must set it in the Widget item settings.';
-$string['error:publishernotready'] = 'Publishing widgets through Cloud Poodll is not available yet.';
 $string['error:publishfailed'] = 'The widget could not be published.';
 $string['error:zipbadpath'] = 'The ZIP contains a file name that is not allowed: {$a}';
 $string['error:zipduplicate'] = 'The ZIP contains two files with the same name: {$a}';
@@ -63,24 +59,16 @@ $string['gradepolicy_ignore'] = 'Ignore';
 $string['gradepolicy_record'] = 'Save, but do not grade';
 $string['gradepolicy_use'] = 'Use as the item grade';
 $string['item_desc'] = 'The Widget item runs an interactive activity uploaded as a ZIP, such as one made with ChatGPT or Claude. It can report a score to the lesson.';
-$string['localbaseurl'] = 'Local widget host URL (development only)';
-$string['localbaseurl_desc'] = 'The URL of a web server that serves the folder {$a}, for example http://localhost:8099. It must be a different host name or port from Moodle.';
 $string['pluginname'] = 'Widget';
 $string['privacy:metadata'] = 'The Widget item does not store any personal data.';
-$string['publisher'] = 'Publish widgets to';
-$string['publisher_cloudpoodll'] = 'Cloud Poodll';
-$string['publisher_desc'] = 'Where uploaded widgets are put for learners to use. Use "Local folder" for development only.';
-$string['publisher_local'] = 'Local folder (development only)';
 $string['uilanguage'] = 'Widget language';
 $string['uilanguage_auto'] = 'Automatic';
 $string['uilanguage_help'] = 'The language of the widget\'s instructions, buttons and feedback. This does not change the language being learned.
 
 Automatic uses the learner\'s own language if the widget offers it, then the lesson\'s native language, then the learner\'s Moodle language, then the widget\'s default language. Save the item once to choose from the widget\'s languages.';
 $string['widget_instructions1'] = 'Complete the activity below.';
-$string['widgethost'] = 'Widget host';
-$string['widgethost_desc'] = 'Widgets run their own JavaScript, so they are served from a separate site, never from Moodle.';
 $string['widgetnotavailable'] = 'This activity is not available right now.';
 $string['widgetpackage'] = 'Widget ZIP';
-$string['widgetpackage_help'] = 'A Poodll widget package: a ZIP with a manifest.json and an HTML page at its top level, plus any CSS, JavaScript, images, audio and language files it uses. Everything must be in the ZIP. A widget can not load files from other sites.';
+$string['widgetpackage_help'] = 'A Poodll widget package: a ZIP with a manifest.json and an HTML page at its top level, plus any CSS, JavaScript, images, audio and language files it uses. Everything must be in the ZIP. A widget can not load files from other sites, and can not use browser storage (such as localStorage) or cookies.';
 $string['widgetsummary'] = 'Current widget';
 $string['widgetsummary_text'] = '<strong>{$a->title}</strong><br>Languages: {$a->languages}<br>Reports a score: {$a->grade}';

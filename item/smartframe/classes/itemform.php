@@ -18,7 +18,7 @@ namespace minilessonitem_smartframe;
 
 use minilessonitem_smartframe\local\package;
 use minilessonitem_smartframe\local\package_exception;
-use minilessonitem_smartframe\local\publisher;
+use minilessonitem_smartframe\local\widgetstore;
 use mod_minilesson\local\itemform\baseform;
 use mod_minilesson\constants;
 
@@ -40,15 +40,6 @@ class itemform extends baseform {
         $mform = $this->_form;
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('widget_instructions1', self::COMPONENT));
         $this->add_itemsettings_heading();
-
-        if (!publisher::instance()->is_configured()) {
-            $mform->addElement(
-                'static',
-                'widgethostwarning',
-                '',
-                \html_writer::div(get_string('error:publishernotconfigured', self::COMPONENT), 'alert alert-warning')
-            );
-        }
 
         $mform->addElement('filemanager', itemtype::FILE, get_string('widgetpackage', self::COMPONENT), null, [
             'accepted_types' => ['.zip'],
@@ -118,7 +109,7 @@ class itemform extends baseform {
             'grade' => get_string(!empty($manifest->capabilities->grade) ? 'yes' : 'no'),
         ];
         $summary = get_string('widgetsummary_text', self::COMPONENT, $a);
-        if (!publisher::is_revision($record->{itemtype::REVISION})) {
+        if (!widgetstore::is_published($this->context, $itemid, $record->{itemtype::REVISION}, $manifest->entry)) {
             $summary .= \html_writer::div(get_string('error:notpublished', self::COMPONENT), 'alert alert-warning');
         }
         $mform->getElement('widgetsummary')->setValue($summary);
@@ -134,11 +125,6 @@ class itemform extends baseform {
     public function validation($data, $files) {
         global $USER;
         $errors = parent::validation($data, $files);
-
-        if (!publisher::instance()->is_configured()) {
-            $errors[itemtype::FILE] = get_string('error:publishernotconfigured', self::COMPONENT);
-            return $errors;
-        }
 
         $draftid = (int) ($data[itemtype::FILE] ?? 0);
         $fs = get_file_storage();

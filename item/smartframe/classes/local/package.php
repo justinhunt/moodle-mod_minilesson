@@ -20,7 +20,7 @@ namespace minilessonitem_smartframe\local;
  * A Poodll Widget Package v1: a ZIP of static HTML, CSS, JS and media with a manifest.json.
  *
  * Opening a package checks it. Nothing is unpacked to disk here: the files are read into memory one at a
- * time, with size limits that do not trust the sizes the ZIP claims, and handed to a publisher.
+ * time, with size limits that do not trust the sizes the ZIP claims, and handed to the widget store.
  *
  * @package    minilessonitem_smartframe
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)

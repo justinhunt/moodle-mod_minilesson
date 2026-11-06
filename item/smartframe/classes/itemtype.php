@@ -18,13 +18,13 @@ namespace minilessonitem_smartframe;
 
 use minilessonitem_smartframe\local\package;
 use minilessonitem_smartframe\local\package_exception;
-use minilessonitem_smartframe\local\publisher;
+use minilessonitem_smartframe\local\widgetstore;
 use mod_minilesson\local\itemtype\item;
 use mod_minilesson\constants;
 
 /**
- * A widget item: an uploaded Poodll Widget Package (a ZIP of HTML, CSS and JS) that runs in an iframe served
- * from the widget host, and may report a score.
+ * A widget item: an uploaded Poodll Widget Package (a ZIP of HTML, CSS and JS) that runs in a sandboxed iframe,
+ * and may report a score. Its files are unpacked into Moodle and served by widget.php (see local\widgetstore).
  *
  * @package    minilessonitem_smartframe
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -90,33 +90,31 @@ class itemtype extends item {
 
         $itemrecord = $this->itemrecord;
         $testitem->widgeturl = '';
-        $testitem->widgetorigin = '';
+        $testitem->widgetbase = '';
         $testitem->widgettitle = '';
         $manifest = $this->get_manifest();
         $revision = $itemrecord->{self::REVISION} ?? '';
+        $itemid = (int) ($itemrecord->id ?? 0);
 
-        // A saved item whose widget did not publish (or was restored without it) gets another try.
-        if (
-            $manifest && !publisher::is_revision($revision) && !empty($itemrecord->id)
-                && publisher::instance()->is_configured()
-        ) {
+        // A saved item whose widget files are missing (a restored, copied or failed item) gets them now.
+        if ($manifest && $itemid && !widgetstore::is_published($this->context, $itemid, $revision, $manifest->entry)) {
             $revision = $this->publish_widget() ? $this->itemrecord->{self::REVISION} : '';
+            $manifest = $this->get_manifest();
         }
 
-        $publisher = publisher::instance();
-        if ($manifest && publisher::is_revision($revision) && $publisher->is_configured()) {
+        if ($manifest && widgetstore::is_revision($revision)) {
             $uilanguage = self::resolve_ui_language(
                 $itemrecord->{self::UILANGUAGE} ?? self::UILANGUAGE_AUTO,
                 $manifest,
                 $this->moduleinstance
             );
-            $parentorigin = publisher::origin_of($CFG->wwwroot);
-            $url = new \moodle_url($publisher->get_entry_url($revision, $manifest->entry), [
+            $parentorigin = self::origin_of($CFG->wwwroot);
+            $url = new \moodle_url(widgetstore::entry_url($itemid, $revision, $manifest->entry), [
                 'lang' => $uilanguage,
                 'parentOrigin' => $parentorigin,
             ]);
             $testitem->widgeturl = $url->out(false);
-            $testitem->widgetorigin = $publisher->get_origin();
+            $testitem->widgetbase = widgetstore::base_url($itemid, $revision);
             $testitem->widgettitle = $manifest->title;
             $testitem->widgetresizes = !empty($manifest->capabilities->resize);
             $testitem->uilanguage = $uilanguage;
@@ -242,7 +240,7 @@ class itemtype extends item {
      * Check this item's ZIP, publish it, and store its manifest and revision.
      *
      * The authoring form has already checked the ZIP, so failing here means the ZIP changed some other way
-     * (an import) or the publisher is not working. The item then stays saved, with no revision, and the
+     * (an import) or the files could not be stored. The item then stays saved, with no revision, and the
      * learner sees a "not available" message rather than a broken frame.
      *
      * @return bool true if the widget is published
@@ -257,7 +255,7 @@ class itemtype extends item {
             try {
                 $package = package::from_stored_file($file);
                 $manifest = $package->get_manifest();
-                publisher::instance()->publish($package);
+                widgetstore::publish($package, $this->context, (int) $this->itemrecord->id);
                 $revision = $package->get_revision();
                 $ok = true;
             } catch (package_exception $e) {
@@ -282,6 +280,24 @@ class itemtype extends item {
         $this->itemrecord->{self::REVISION} = $revision;
         $this->itemrecord->{self::MANIFEST} = $manifestjson;
         return $ok;
+    }
+
+    /**
+     * The origin (scheme, host and port) of a URL.
+     *
+     * @param string $url the URL
+     * @return string e.g. "https://school.example.org", or '' if it is not an http(s) URL
+     */
+    public static function origin_of(string $url): string {
+        $bits = parse_url($url);
+        if (!$bits || empty($bits['host']) || !in_array($bits['scheme'] ?? '', ['http', 'https'])) {
+            return '';
+        }
+        $origin = $bits['scheme'] . '://' . strtolower($bits['host']);
+        if (!empty($bits['port'])) {
+            $origin .= ':' . $bits['port'];
+        }
+        return $origin;
     }
 
     /**
