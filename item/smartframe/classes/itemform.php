@@ -41,8 +41,15 @@ class itemform extends baseform {
         $mform->setDefault(constants::TEXTINSTRUCTIONS, get_string('widget_instructions1', self::COMPONENT));
         $this->add_itemsettings_heading();
 
+        $mform->addElement(
+            'static',
+            'aiinstructions',
+            get_string('aiinstructions', self::COMPONENT),
+            self::render_ai_instructions()
+        );
+
         $mform->addElement('filemanager', itemtype::FILE, get_string('widgetpackage', self::COMPONENT), null, [
-            'accepted_types' => ['.zip'],
+            'accepted_types' => ['.zip', '.html', '.htm'],
             'maxbytes' => package::MAX_ZIP_BYTES,
             'maxfiles' => 1,
             'subdirs' => 0,
@@ -73,6 +80,32 @@ class itemform extends baseform {
         $this->add_numericboxresponse(constants::TOTALMARKS, get_string('totalmarks', constants::M_COMPONENT));
         $mform->setDefault(constants::TOTALMARKS, 1);
         $mform->hideIf(constants::TOTALMARKS, itemtype::GRADEPOLICY, 'neq', itemtype::GRADE_USE);
+    }
+
+    /**
+     * The instructions for AI tools, as shipped with the plugin.
+     *
+     * @return string the instructions (Markdown)
+     */
+    public static function get_ai_instructions(): string {
+        $text = @file_get_contents(__DIR__ . '/../ai/widget-instructions.md');
+        return $text === false ? '' : $text;
+    }
+
+    /**
+     * The copy and download buttons and the text of the AI instructions.
+     *
+     * @return string HTML
+     */
+    protected static function render_ai_instructions(): string {
+        global $OUTPUT;
+        $text = self::get_ai_instructions();
+        return $OUTPUT->render_from_template('minilessonitem_smartframe/aiinstructions', [
+            'id' => 'minilessonitem_smartframe_aiinstructions',
+            'text' => $text,
+            'downloadurl' => 'data:text/markdown;charset=utf-8,' . rawurlencode($text),
+            'filename' => 'poodll-widget-instructions.md',
+        ]);
     }
 
     /**

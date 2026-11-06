@@ -17,7 +17,9 @@
 namespace minilessonitem_smartframe\local;
 
 /**
- * A Poodll Widget Package v1: a ZIP of static HTML, CSS, JS and media with a manifest.json.
+ * A Poodll Widget Package v1: either a ZIP of static HTML, CSS, JS and media with a manifest.json, or a single
+ * HTML file with its manifest in a <script type="application/json" id="poodll-widget-manifest"> block. The single
+ * file is what AI tools make most easily (it is what their previews run), and it is published as index.html.
  *
  * Opening a package checks it. Nothing is unpacked to disk here: the files are read into memory one at a
  * time, with size limits that do not trust the sizes the ZIP claims, and handed to the widget store.
@@ -43,6 +45,10 @@ class package {
     const SCHEMA_VERSION = 1;
     /** @var int The host message protocol version this host speaks. */
     const HOST_PROTOCOL = 1;
+    /** @var string The id of the script element holding a single HTML file's manifest. */
+    const MANIFEST_ELEMENT = 'poodll-widget-manifest';
+    /** @var string The name a single HTML file is published under. */
+    const SINGLE_ENTRY = 'index.html';
 
     /** @var array File extensions a package may contain, with the Content-Type each is served with. */
     const ALLOWED_TYPES = [
@@ -76,56 +82,131 @@ class package {
         'webm' => 'video/webm',
     ];
 
-    /** @var \ZipArchive the open archive */
-    protected $zip;
+    /** @var \ZipArchive|null the open archive, or null for a single HTML file */
+    protected $zip = null;
+    /** @var string|null the content of a single HTML file package */
+    protected $html = null;
     /** @var string folder all entries sit in (a zipped folder), '' when the files are at the root */
     protected $prefix = '';
     /** @var array ZIP index => path in the package, for the files that will be published */
     protected $entries = [];
     /** @var \stdClass the checked manifest */
     protected $manifest;
-    /** @var string the sha256 of the ZIP, which names the published revision */
+    /** @var string the sha256 of the uploaded file, which names the published revision */
     protected $revision;
 
     /**
      * Open and check a package.
      *
-     * @param string $zippath path to the ZIP file on disk
+     * @param string $path path to the ZIP or HTML file on disk
+     * @param string $filename the uploaded file's name, which says which kind it is
      * @throws package_exception if the package is not acceptable
      */
-    public function __construct(string $zippath) {
-        if (!is_readable($zippath)) {
+    public function __construct(string $path, string $filename = 'widget.zip') {
+        if (!is_readable($path)) {
             throw new package_exception('error:zipunreadable');
         }
-        $size = filesize($zippath);
+        if (self::is_html_name($filename)) {
+            $this->open_html($path, $filename);
+            return;
+        }
+        $size = filesize($path);
         if ($size === false || $size > self::MAX_ZIP_BYTES) {
             throw new package_exception('error:ziptoobig', display_size(self::MAX_ZIP_BYTES));
         }
-        $this->revision = hash_file('sha256', $zippath);
+        $this->revision = hash_file('sha256', $path);
 
         $this->zip = new \ZipArchive();
-        if ($this->zip->open($zippath, \ZipArchive::RDONLY) !== true) {
+        if ($this->zip->open($path, \ZipArchive::RDONLY) !== true) {
             throw new package_exception('error:notazip');
         }
         $this->check_entries();
-        $this->manifest = $this->check_manifest();
+        $index = array_search('manifest.json', $this->entries, true);
+        if ($index === false) {
+            throw new package_exception('error:nomanifest');
+        }
+        $this->manifest = $this->check_manifest($this->read_index($index, self::MAX_MANIFEST_BYTES));
+    }
+
+    /**
+     * Is this the name of a single HTML file package?
+     *
+     * @param string $filename the file name
+     * @return bool
+     */
+    public static function is_html_name(string $filename): bool {
+        return (bool) preg_match('/\.html?$/i', $filename);
+    }
+
+    /**
+     * Is this the name of a file that can be a widget package (a ZIP or an HTML file)?
+     *
+     * @param string $filename the file name
+     * @return bool
+     */
+    public static function is_package_name(string $filename): bool {
+        return self::is_html_name($filename) || (bool) preg_match('/\.zip$/i', $filename);
+    }
+
+    /**
+     * Open a single HTML file package: read it, and the manifest in it.
+     *
+     * @param string $path path to the file on disk
+     * @param string $filename the uploaded file's name, for messages
+     */
+    protected function open_html(string $path, string $filename): void {
+        $size = filesize($path);
+        if ($size === false || $size > self::MAX_FILE_BYTES) {
+            throw new package_exception('error:zipfiletoobig', (object) ['file' => s($filename),
+                'size' => display_size(self::MAX_FILE_BYTES)]);
+        }
+        $html = file_get_contents($path);
+        if ($html === false) {
+            throw new package_exception('error:zipunreadable');
+        }
+        if (strpos($html, "\xEF\xBB\xBF") === 0) {
+            $html = substr($html, 3);
+        }
+        if (!mb_check_encoding($html, 'UTF-8')) {
+            throw new package_exception('error:htmlencoding');
+        }
+        $this->revision = hash('sha256', $html);
+        $this->html = $html;
+        $this->entries = [0 => self::SINGLE_ENTRY];
+
+        // The first <script id="poodll-widget-manifest"> element, with the id quoted or not.
+        $pattern = '~<script\b[^>]*?\bid\s*=\s*(["\']?)' . self::MANIFEST_ELEMENT . '\1(?=[\s/>])[^>]*>(.*?)</script\s*>~is';
+        if (!preg_match($pattern, $html, $matches)) {
+            throw new package_exception('error:nomanifesthtml');
+        }
+        $json = $matches[2];
+        if (strlen($json) > self::MAX_MANIFEST_BYTES) {
+            throw new package_exception('error:manifestjson');
+        }
+        // A single file is always published as index.html, whatever its manifest says.
+        $this->manifest = $this->check_manifest($json, true);
     }
 
     /**
      * Open a package from a Moodle stored file.
      *
-     * @param \stored_file $file the ZIP
+     * @param \stored_file $file the ZIP or HTML file
      * @return package
      * @throws package_exception if the package is not acceptable
      */
     public static function from_stored_file(\stored_file $file): package {
+        $filename = $file->get_filename();
+        if (self::is_html_name($filename) && $file->get_filesize() > self::MAX_FILE_BYTES) {
+            throw new package_exception('error:zipfiletoobig', (object) ['file' => s($filename),
+                'size' => display_size(self::MAX_FILE_BYTES)]);
+        }
         if ($file->get_filesize() > self::MAX_ZIP_BYTES) {
             throw new package_exception('error:ziptoobig', display_size(self::MAX_ZIP_BYTES));
         }
         $tempdir = make_request_directory();
-        $temppath = $tempdir . '/widget.zip';
+        $temppath = $tempdir . '/' . (self::is_html_name($filename) ? 'widget.html' : 'widget.zip');
         $file->copy_content_to($temppath);
-        return new package($temppath);
+        return new package($temppath, $filename);
     }
 
     /**
@@ -272,16 +353,14 @@ class package {
     }
 
     /**
-     * Read and check manifest.json.
+     * Check a manifest.
      *
+     * @param string $json the manifest JSON
+     * @param bool $single true for a single HTML file, whose entry is always index.html
      * @return \stdClass the manifest, with the language tags tidied
      */
-    protected function check_manifest(): \stdClass {
-        $index = array_search('manifest.json', $this->entries, true);
-        if ($index === false) {
-            throw new package_exception('error:nomanifest');
-        }
-        $json = $this->read_index($index, self::MAX_MANIFEST_BYTES);
+    protected function check_manifest(string $json, bool $single = false): \stdClass {
+        $json = trim($json);
         // A byte order mark is invisible in editors and breaks json_decode.
         if (strpos($json, "\xEF\xBB\xBF") === 0) {
             $json = substr($json, 3);
@@ -310,7 +389,7 @@ class package {
             $fail('id');
         }
 
-        $entry = $manifest->entry ?? 'index.html';
+        $entry = $single ? self::SINGLE_ENTRY : ($manifest->entry ?? 'index.html');
         if (!is_string($entry) || !preg_match('/\.html?$/i', $entry) || !in_array($entry, $this->entries, true)) {
             throw new package_exception('error:manifestentry', s(is_string($entry) ? $entry : ''));
         }
@@ -430,6 +509,10 @@ class package {
      * @return \Generator yields path => ['content' => string, 'contenttype' => string]
      */
     public function files(): \Generator {
+        if ($this->html !== null) {
+            yield self::SINGLE_ENTRY => ['content' => $this->html, 'contenttype' => self::ALLOWED_TYPES['html']];
+            return;
+        }
         $total = 0;
         foreach ($this->entries as $index => $path) {
             $content = $this->read_index($index, self::MAX_FILE_BYTES);
@@ -458,7 +541,7 @@ class package {
             if (!in_array($ext, ['html', 'htm', 'css', 'js', 'mjs'])) {
                 continue;
             }
-            $content = $this->read_index($index, self::MAX_FILE_BYTES);
+            $content = $this->html ?? $this->read_index($index, self::MAX_FILE_BYTES);
             if (
                 preg_match('~(src|href)\s*=\s*["\']?\s*(https?:)?//|@import\s+(url\()?\s*["\']?(https?:)?//|' .
                     'url\(\s*["\']?(https?:)?//|\bimport\s*(\(|[^;]*from)\s*["\']https?://~i', $content)
@@ -479,7 +562,7 @@ class package {
     }
 
     /**
-     * The revision id: the sha256 of the ZIP. The same ZIP always publishes to the same place.
+     * The revision id: the sha256 of the uploaded file. The same file always gives the same revision.
      *
      * @return string 64 hex characters
      */

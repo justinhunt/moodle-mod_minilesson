@@ -1,0 +1,59 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_smartframe/aiinstructions
+
+    The instructions a teacher gives an AI tool to make a widget, on the item form: copy them, download them,
+    or open them to read.
+
+    Example context (json):
+    {
+        "id": "minilessonitem_smartframe_aiinstructions",
+        "text": "# How to build a Poodll MiniLesson widget",
+        "downloadurl": "data:text/markdown;charset=utf-8,%23%20How%20to%20build",
+        "filename": "poodll-widget-instructions.md"
+    }
+}}
+<div class="minilessonitem_smartframe_aiinstructions">
+    <p class="mb-1">{{#str}}aiinstructions_intro, minilessonitem_smartframe{{/str}}</p>
+    <ol>
+        <li>{{#str}}aiinstructions_step1, minilessonitem_smartframe{{/str}}</li>
+        <li>{{#str}}aiinstructions_step2, minilessonitem_smartframe{{/str}}</li>
+        <li>{{#str}}aiinstructions_step3, minilessonitem_smartframe{{/str}}</li>
+        <li>{{#str}}aiinstructions_step4, minilessonitem_smartframe{{/str}}</li>
+    </ol>
+    <div class="d-flex flex-wrap gap-2 mb-2">
+        <button type="button" class="btn btn-primary"
+                data-action="copytoclipboard"
+                data-clipboard-target="#{{id}}"
+                data-clipboard-success-message="{{#str}}aiinstructions_copied, minilessonitem_smartframe{{/str}}">
+            {{#pix}}t/copy, core{{/pix}}{{#str}}aiinstructions_copy, minilessonitem_smartframe{{/str}}
+        </button>
+        <a class="btn btn-secondary" href="{{downloadurl}}" download="{{filename}}">
+            {{#pix}}t/download, core{{/pix}}{{#str}}aiinstructions_download, minilessonitem_smartframe{{/str}}
+        </a>
+    </div>
+    <p class="small">{{#str}}aiinstructions_edit, minilessonitem_smartframe{{/str}}</p>
+    <details>
+        <summary>{{#str}}aiinstructions_show, minilessonitem_smartframe{{/str}}</summary>
+        <textarea id="{{id}}" class="form-control font-monospace mt-2" rows="16" readonly
+                  aria-label="{{#str}}aiinstructions, minilessonitem_smartframe{{/str}}">{{text}}</textarea>
+    </details>
+</div>
+{{#js}}
+require(['core/copy_to_clipboard']);
+{{/js}}

@@ -26,15 +26,28 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Widget';
+$string['aiinstructions'] = 'Make a widget with AI';
+$string['aiinstructions_copied'] = 'AI instructions copied';
+$string['aiinstructions_copy'] = 'Copy AI instructions';
+$string['aiinstructions_download'] = 'Download';
+$string['aiinstructions_edit'] = 'To change a widget later, download it from the file box below, attach it to a new chat with these instructions, and say what to change.';
+$string['aiinstructions_intro'] = 'Make the widget in ChatGPT, Claude or Gemini, where you can try it and ask for changes:';
+$string['aiinstructions_show'] = 'Show the instructions';
+$string['aiinstructions_step1'] = 'Paste these instructions into a new chat, or download them and attach the file.';
+$string['aiinstructions_step2'] = 'Describe the activity. For example: "A quiz on the past tense of 10 common verbs, with English and Japanese instructions, that reports a score."';
+$string['aiinstructions_step3'] = 'Try it in the chat, and ask for changes until you are happy with it.';
+$string['aiinstructions_step4'] = 'Say "Export it for Poodll", download the file it gives you, and upload it below.';
+$string['error:htmlencoding'] = 'The HTML file must be saved as UTF-8 text.';
 $string['error:manifestentry'] = 'The manifest\'s "entry" ({$a}) must name an HTML file in the ZIP.';
 $string['error:manifestfield'] = 'The manifest\'s "{$a}" is missing or not valid.';
-$string['error:manifestjson'] = 'manifest.json is not valid JSON.';
+$string['error:manifestjson'] = 'The widget\'s manifest is not valid JSON.';
 $string['error:manifestprotocol'] = 'This widget needs a newer lesson host. This host speaks protocol version {$a}.';
 $string['error:manifestschema'] = 'The manifest\'s "schemaVersion" must be {$a}.';
 $string['error:nomanifest'] = 'The ZIP has no manifest.json at its top level.';
+$string['error:nomanifesthtml'] = 'The HTML file has no widget manifest. It needs a &lt;script type="application/json" id="poodll-widget-manifest"&gt; block. Ask the AI tool to "export it for Poodll".';
 $string['error:notazip'] = 'The file is not a ZIP file, or it is damaged.';
 $string['error:notpublished'] = 'This widget could not be published, so learners can not see it. Save the item again to retry.';
-$string['error:onezip'] = 'Upload just one widget ZIP. Delete the others.';
+$string['error:onezip'] = 'Upload just one widget file. Delete the others.';
 $string['error:publishfailed'] = 'The widget could not be published.';
 $string['error:zipbadpath'] = 'The ZIP contains a file name that is not allowed: {$a}';
 $string['error:zipduplicate'] = 'The ZIP contains two files with the same name: {$a}';
@@ -68,7 +81,9 @@ $string['uilanguage_help'] = 'The language of the widget\'s instructions, button
 Automatic uses the learner\'s own language if the widget offers it, then the lesson\'s native language, then the learner\'s Moodle language, then the widget\'s default language. Save the item once to choose from the widget\'s languages.';
 $string['widget_instructions1'] = 'Complete the activity below.';
 $string['widgetnotavailable'] = 'This activity is not available right now.';
-$string['widgetpackage'] = 'Widget ZIP';
-$string['widgetpackage_help'] = 'A Poodll widget package: a ZIP with a manifest.json and an HTML page at its top level, plus any CSS, JavaScript, images, audio and language files it uses. Everything must be in the ZIP. A widget can not load files from other sites, and can not use browser storage (such as localStorage) or cookies.';
+$string['widgetpackage'] = 'Widget file';
+$string['widgetpackage_help'] = 'The widget: either one HTML file (what AI tools make most easily), or a ZIP for a widget with audio, video or many images.
+
+An HTML file must hold the widget\'s manifest in a &lt;script type="application/json" id="poodll-widget-manifest"&gt; block. A ZIP must have a manifest.json and an HTML page at its top. Everything the widget uses must be in the file or the ZIP: a widget can not load files from other sites, and can not use browser storage (such as localStorage) or cookies.';
 $string['widgetsummary'] = 'Current widget';
 $string['widgetsummary_text'] = '<strong>{$a->title}</strong><br>Languages: {$a->languages}<br>Reports a score: {$a->grade}';

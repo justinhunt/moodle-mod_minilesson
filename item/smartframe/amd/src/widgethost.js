@@ -138,8 +138,8 @@ class Widget {
         switch (type) {
             case 'ready': {
                 this.ready = true;
-                // The spec names it effectiveUiLanguage; widgets in the wild also send uiLanguage.
-                let lang = payload.effectiveUiLanguage ?? payload.uiLanguage;
+                // The protocol names it uiLanguage; an early draft called it effectiveUiLanguage.
+                let lang = payload.uiLanguage ?? payload.effectiveUiLanguage;
                 lang = typeof lang === 'string' && lang.length <= 35 ? lang : null;
                 this.onReady({uiLanguage: lang});
                 break;

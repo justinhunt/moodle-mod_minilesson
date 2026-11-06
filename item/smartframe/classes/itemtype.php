@@ -34,7 +34,7 @@ class itemtype extends item {
     /** @var array Language skills (or "content") this item type focuses on. */
     public static $skills = [constants::SKILL_CONTENT];
 
-    /** @var string File area holding the widget ZIP. */
+    /** @var string File area holding the widget's ZIP or HTML file. */
     public const FILE = 'customfile1';
     /** @var string The published revision (sha256 of the ZIP), '' until published. */
     public const REVISION = 'customtext1';
@@ -214,7 +214,7 @@ class itemtype extends item {
     }
 
     /**
-     * The stored widget ZIP of this item.
+     * The stored widget file (ZIP or HTML) of this item.
      *
      * @return \stored_file|null
      */
@@ -229,7 +229,7 @@ class itemtype extends item {
             false
         );
         foreach ($files as $file) {
-            if (strtolower(pathinfo($file->get_filename(), PATHINFO_EXTENSION)) === 'zip') {
+            if (package::is_package_name($file->get_filename())) {
                 return $file;
             }
         }
@@ -237,9 +237,9 @@ class itemtype extends item {
     }
 
     /**
-     * Check this item's ZIP, publish it, and store its manifest and revision.
+     * Check this item's widget file, publish it, and store its manifest and revision.
      *
-     * The authoring form has already checked the ZIP, so failing here means the ZIP changed some other way
+     * The authoring form has already checked the file, so failing here means it changed some other way
      * (an import) or the files could not be stored. The item then stays saved, with no revision, and the
      * learner sees a "not available" message rather than a broken frame.
      *
