@@ -99,6 +99,12 @@ class result {
     public ?string $errorcode = null;
 
     /**
+     * @var bool Whether the failure was the provider being briefly unable to answer (a 5xx such as
+     * "service unavailable"). Asking again later may well work: a background call is still running.
+     */
+    public bool $transient = false;
+
+    /**
      * Build a failure result.
      *
      * @param string $errorcode one of the ERROR_* constants

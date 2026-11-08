@@ -1,3 +1,21 @@
+Version 1.1.62 (Build 2026110800)
+- the SmartFrame placeholder item is now the Widget item (beta). It runs an interactive activity
+  that a teacher makes with an AI tool such as ChatGPT or Claude, uploaded as one HTML file or a ZIP.
+  The widget runs in a sandbox, served by Moodle, and can not read Moodle's cookies, storage or
+  pages. It can report a score, which the item can ignore, save, or use as its grade. Teachers can
+  pick it only when $CFG->minilesson_experimental = true; is set in config.php
+- the Widget item has instructions for AI tools on how to write a widget, and its name and
+  description are translated into the plugin's 12 other languages
+- AI agents (MCP, the AI assistant) can add Widget items when the item type is enabled. They put the
+  widget's HTML in the new widgethtml import field as plain text. Export gives a one-file widget
+  back in the same field
+- the AI assistant no longer fails on replies that take more than about a minute, such as writing a
+  whole widget. Under Cloud Poodll the AI now writes its reply in the background and the page checks
+  on it until it is done. The page shows "Still working" after 20 seconds, and carries on after a
+  reload. It gives up after 5 minutes
+- the AI assistant shows clearer messages when the AI took too long, or when its reply was too long
+  and was cut off, instead of "Try again"
+
 Version 1.1.61 (Build 2026103100)
 - added local translations: the native language text in items (hints, card translations, matching
   words, wordcards definitions) is translated ahead of time into the languages the admin chooses, so

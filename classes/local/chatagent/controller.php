@@ -277,9 +277,10 @@ class controller {
     /**
      * Ask the provider again about the model call running in the background.
      *
-     * A poll that fails for a passing reason (no connection, a slow reply) does not end the turn:
-     * the call is still running on the provider's side, so the next poll may well get it. The turn
-     * ends when the call finishes, fails, or has run longer than MAX_RUNNING_SECONDS.
+     * A poll that fails for a passing reason (no connection, a slow reply, the provider briefly
+     * unavailable) does not end the turn: the call is still running on the provider's side, so the
+     * next poll may well get it. The turn ends when the call finishes, fails, or has run longer
+     * than MAX_RUNNING_SECONDS.
      *
      * @param conversation $conversation
      * @return array envelope
@@ -298,7 +299,8 @@ class controller {
 
         $result = $this->driver->get_interaction($id);
         $passing = [result::ERROR_CONNECTION, result::ERROR_TIMEOUT, result::ERROR_TRANSPORT];
-        if ($result->running() || ($result->failed() && in_array($result->errorcode, $passing, true))) {
+        $passed = $result->failed() && ($result->transient || in_array($result->errorcode, $passing, true));
+        if ($result->running() || $passed) {
             if (time() - (int) ($running['since'] ?? 0) <= self::MAX_RUNNING_SECONDS) {
                 return $this->envelope($conversation, self::STATUS_RUNNING);
             }

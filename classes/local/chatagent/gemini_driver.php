@@ -347,10 +347,15 @@ class gemini_driver implements provider_driver {
             return result::fail(result::ERROR_EXPIRED, '');
         }
 
-        return result::fail(
+        $result = result::fail(
             result::ERROR_UNKNOWN,
             $this->error_message(result::ERROR_UNKNOWN)
         );
+        // Google overloaded or briefly down. Fatal for a call we were waiting on, but a background
+        // call carries on regardless, so a poll that gets this can simply poll again.
+        $result->transient = $httpcode >= 500
+            || in_array($status, ['UNAVAILABLE', 'INTERNAL', 'DEADLINE_EXCEEDED'], true);
+        return $result;
     }
 
     /**
