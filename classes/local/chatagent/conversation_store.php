@@ -88,6 +88,7 @@ class conversation_store {
             'pendingtool' => (string) $record->pendingtool,
             'pendingargs' => json_decode((string) $record->pendingargs, true) ?: [],
             'state' => $record->state,
+            'running' => json_decode((string) ($record->running ?? ''), true) ?: [],
             'toolcalls' => $record->toolcalls,
             'turncount' => $record->turncount,
         ]);
@@ -127,6 +128,7 @@ class conversation_store {
             'pendingtool' => $conversation->pendingtool,
             'pendingargs' => json_encode($conversation->pendingargs),
             'state' => $conversation->state,
+            'running' => $conversation->running ? json_encode($conversation->running) : null,
             'toolcalls' => $conversation->toolcalls,
             'turncount' => $conversation->turncount,
             'timemodified' => $now,

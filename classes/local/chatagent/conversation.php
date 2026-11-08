@@ -43,6 +43,9 @@ class conversation {
     /** @var string A tool is waiting for the teacher to approve it. */
     const STATE_AWAITING_APPROVAL = 'awaiting_approval';
 
+    /** @var string A model call is running in the background; $running says which. */
+    const STATE_AWAITING_MODEL = 'awaiting_model';
+
     /** @var string The last turn failed; the transcript is intact and the teacher can retry. */
     const STATE_ERROR = 'error';
 
@@ -75,6 +78,13 @@ class conversation {
 
     /** @var string One of the STATE_* constants. */
     public string $state = self::STATE_IDLE;
+
+    /**
+     * @var array The model call running in the background, or [] when none is. Keys: id (the
+     * provider's interaction id), since (when it started), and what its metrics row needs once it
+     * finishes: requestbytes, attachmentbytes, replayed, toolname, rejectreason.
+     */
+    public array $running = [];
 
     /** @var int Tools run so far in the current turn; reset when the teacher speaks. */
     public int $toolcalls = 0;
@@ -154,6 +164,7 @@ class conversation {
             'pendingtool' => $this->pendingtool,
             'pendingargs' => $this->pendingargs,
             'state' => $this->state,
+            'running' => $this->running,
             'toolcalls' => $this->toolcalls,
             'turncount' => $this->turncount,
             'messages' => $this->messages,
@@ -178,7 +189,7 @@ class conversation {
                 $conversation->$key = (string) $data[$key];
             }
         }
-        foreach (['pendingargs', 'messages'] as $key) {
+        foreach (['pendingargs', 'running', 'messages'] as $key) {
             if (isset($data[$key]) && is_array($data[$key])) {
                 $conversation->$key = $data[$key];
             }

@@ -43,6 +43,9 @@ class gemini_driver implements provider_driver {
      */
     const TIMEOUT = 120;
 
+    /** @var int curl's error number for a call that ran out of time (CURLE_OPERATION_TIMEDOUT). */
+    const CURLE_TIMEOUT = 28;
+
     /** @var string|null The site's Gemini API key. */
     protected ?string $apikey;
 
@@ -123,10 +126,42 @@ class gemini_driver implements provider_driver {
             $payload['previous_interaction_id'] = $previous;
         }
 
+        return $this->request($this->endpoint(), json_encode($payload, JSON_UNESCAPED_UNICODE), $previous);
+    }
+
+    /**
+     * Ask again about an interaction left running in the background.
+     *
+     * This driver waits for its calls rather than starting them in the background, so in practice
+     * it is never asked; it is here so any running result can be polled the same way.
+     *
+     * @param string $interactionid
+     * @return result
+     */
+    public function get_interaction(string $interactionid): result {
+        global $CFG;
+        require_once($CFG->libdir . '/filelib.php');
+        if (!$this->is_available()) {
+            return result::fail(result::ERROR_AUTH, get_string('chatagent_error_nokey', constants::M_COMPONENT));
+        }
+        // A missing interaction is a 404, which map_http_error() reads as expired when it is told
+        // the id was one we asked about.
+        return $this->request($this->endpoint() . '/' . rawurlencode($interactionid), null, $interactionid);
+    }
+
+    /**
+     * Send one request to Google and turn the reply into a result.
+     *
+     * @param string $url
+     * @param string|null $payload the JSON to post, or null for a GET
+     * @param string|null $previous the interaction the request refers to, for reading a 404
+     * @return result
+     */
+    protected function request(string $url, ?string $payload, ?string $previous): result {
         $curl = new \curl();
         $curl->setHeader(['x-goog-api-key: ' . $this->apikey, 'content-type: application/json']);
         $curl->setopt(['CURLOPT_TIMEOUT' => self::TIMEOUT]);
-        $body = $curl->post($this->endpoint(), json_encode($payload, JSON_UNESCAPED_UNICODE));
+        $body = $payload === null ? $curl->get($url) : $curl->post($url, $payload);
 
         $info = $curl->get_info();
         $httpcode = (int) ($info['http_code'] ?? 0);
@@ -137,6 +172,9 @@ class gemini_driver implements provider_driver {
         // problem, however it was reported.
         if ($curl->get_errno() || !empty($curl->error) || $httpcode === 0) {
             $this->log_failure('no response (errno ' . $curl->get_errno() . '): ' . $curl->error);
+            if ($curl->get_errno() === self::CURLE_TIMEOUT || self::is_timeout((string) $curl->error)) {
+                return result::fail(result::ERROR_TIMEOUT, $this->error_message(result::ERROR_TIMEOUT));
+            }
             return result::fail(
                 result::ERROR_CONNECTION,
                 $this->error_message(result::ERROR_CONNECTION)
@@ -166,9 +204,28 @@ class gemini_driver implements provider_driver {
      * @return result
      */
     protected function normalise(array $decoded): result {
+        $status = (string) $decoded['status'];
+        switch ($status) {
+            case 'queued':
+            case 'in_progress':
+                // Started in the background and not finished: only the id means anything yet.
+                $result = new result();
+                $result->status = result::STATUS_RUNNING;
+                $result->interactionid = (string) ($decoded['id'] ?? '');
+                return $result;
+            case 'incomplete':
+                // The model ran out of output allowance; what it wrote so far is cut off.
+                $this->log_failure('interaction incomplete: ' . json_encode($decoded['usage'] ?? []));
+                return result::fail(result::ERROR_TOOLONG, $this->error_message(result::ERROR_TOOLONG));
+            case 'failed':
+            case 'cancelled':
+                $this->log_failure('interaction ' . $status);
+                return result::fail(result::ERROR_UNKNOWN, $this->error_message(result::ERROR_UNKNOWN));
+        }
+
         $result = new result();
         $result->interactionid = (string) ($decoded['id'] ?? '');
-        $result->status = $decoded['status'] === result::STATUS_REQUIRES_ACTION
+        $result->status = $status === result::STATUS_REQUIRES_ACTION
             ? result::STATUS_REQUIRES_ACTION
             : result::STATUS_COMPLETED;
 
@@ -307,6 +364,16 @@ class gemini_driver implements provider_driver {
      */
     protected function error_message(string $errorcode): string {
         return get_string('chatagent_error_' . $errorcode, constants::M_COMPONENT);
+    }
+
+    /**
+     * Does a curl error message say the call ran out of time?
+     *
+     * @param string $message curl's error text, or a body that carries it
+     * @return bool
+     */
+    protected static function is_timeout(string $message): bool {
+        return (bool) preg_match('/\btimed out\b/i', $message);
     }
 
     /**

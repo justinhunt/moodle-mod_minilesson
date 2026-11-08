@@ -1718,6 +1718,8 @@ $string['chatagent_error_quota'] = 'The AI service quota has run out. Try again 
     . 'in Google AI Studio.';
 $string['chatagent_error_stuck'] = 'The assistant used too many steps without finishing. Nothing was lost '
     . '- try asking again, more specifically.';
+$string['chatagent_error_timeout'] = 'The AI took too long to write its reply, so it was stopped. This can happen with a very long reply, such as a whole widget. Trying again will probably stop the same way. Ask for something shorter or simpler instead.';
+$string['chatagent_error_toolong'] = 'The AI\'s reply was too long to finish, so it was cut off. Ask for something shorter or simpler.';
 $string['chatagent_error_transport'] = 'The AI service sent a reply that could not be read. Try again.';
 $string['chatagent_error_unknown'] = 'The AI service could not complete that request. Try again.';
 $string['chatagent_error_cp_auth'] = 'The AI assistant could not sign in to Cloud Poodll. Check the Poodll '
@@ -1799,6 +1801,7 @@ $string['chatagent_placeholder'] = 'Describe what you would like to add...';
 $string['chatagent_send'] = 'Send';
 $string['chatagent_startover'] = 'Start over';
 $string['chatagent_startoverconfirm'] = 'This deletes the conversation and anything you attached to it. The items already added to the lesson are not affected.';
+$string['chatagent_stillworking'] = 'Still working. A long reply, such as a whole widget, can take a minute or two.';
 $string['chatagent_thinking'] = 'Thinking...';
 $string['chatagent_working'] = 'Working...';
 $string['chatagent_files'] = 'Files for this conversation';

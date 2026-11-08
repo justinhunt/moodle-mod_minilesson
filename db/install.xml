@@ -288,7 +288,8 @@
         <FIELD NAME="pendingcallid" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Call id of a tool awaiting approval or execution"/>
         <FIELD NAME="pendingtool" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Function name of that pending call"/>
         <FIELD NAME="pendingargs" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="JSON arguments of the pending call, held server side so approval cannot be tampered with"/>
-        <FIELD NAME="state" TYPE="char" LENGTH="32" NOTNULL="true" DEFAULT="idle" SEQUENCE="false" COMMENT="idle, awaiting_tool, awaiting_approval or error"/>
+        <FIELD NAME="state" TYPE="char" LENGTH="32" NOTNULL="true" DEFAULT="idle" SEQUENCE="false" COMMENT="idle, awaiting_tool, awaiting_approval, awaiting_model or error"/>
+        <FIELD NAME="running" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="JSON: the model call running in the background (interaction id, start time, metrics to record when it ends)"/>
         <FIELD NAME="toolcalls" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Tools run in the current turn, against agentmaxtoolcalls"/>
         <FIELD NAME="turncount" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Turns taken, for rate limiting"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>

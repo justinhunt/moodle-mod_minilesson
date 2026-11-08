@@ -46,7 +46,8 @@ interface provider_driver {
     public function get_name(): string;
 
     /**
-     * Run one model call.
+     * Run one model call. A driver may start it in the background and return a running result,
+     * which the controller then polls with get_interaction().
      *
      * @param array $input input blocks: text, document, image, or function_result
      * @param array $tools function declarations; interaction-scoped, so passed every call
@@ -61,4 +62,13 @@ interface provider_driver {
         string $instruction,
         ?string $previous
     ): result;
+
+    /**
+     * Ask again about a call that create_interaction() left running in the background.
+     *
+     * @param string $interactionid the id the running result carried
+     * @return result running again, or the finished call exactly as create_interaction() would
+     *         have returned it; ERROR_EXPIRED if the provider no longer knows the id
+     */
+    public function get_interaction(string $interactionid): result;
 }

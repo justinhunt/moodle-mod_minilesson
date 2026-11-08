@@ -1679,5 +1679,18 @@ function xmldb_minilesson_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2026103100, 'minilesson');
     }
 
+    if ($oldversion < 2026110800) {
+        // Define field running to be added to minilesson_chatagent_conv: the AI assistant's model call that is
+        // running in the background, which the page polls until it finishes.
+        $table = new xmldb_table(constants::M_CHATAGENTCONV_TABLE);
+        $field = new xmldb_field('running', XMLDB_TYPE_TEXT, null, null, null, null, null, 'state');
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Minilesson savepoint reached.
+        upgrade_mod_savepoint(true, 2026110800, 'minilesson');
+    }
+
     return true;
 }

@@ -69,6 +69,9 @@ class chatagent_start extends chatagent_base {
             $status = controller::STATUS_REQUIRES_APPROVAL;
         } else if ($conversation->state === \mod_minilesson\local\chatagent\conversation::STATE_AWAITING_TOOL) {
             $status = controller::STATUS_REQUIRES_TOOL;
+        } else if ($conversation->state === \mod_minilesson\local\chatagent\conversation::STATE_AWAITING_MODEL) {
+            // The model is still writing its reply: the page picks up polling where it left off.
+            $status = controller::STATUS_RUNNING;
         }
 
         $envelope = [

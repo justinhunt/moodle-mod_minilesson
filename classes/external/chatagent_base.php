@@ -138,6 +138,9 @@ abstract class chatagent_base extends external_api {
             'messages' => $messages,
             'error' => (string) ($envelope['error'] ?? ''),
             'errorcode' => (string) ($envelope['errorcode'] ?? ''),
+            // How long the model has been writing its reply in the background, so a page that was
+            // reloaded part way through can say how long it has been going.
+            'runningfor' => $conversation->running ? max(0, time() - (int) ($conversation->running['since'] ?? time())) : 0,
         ];
 
         if (!empty($envelope['pending'])) {
@@ -191,8 +194,14 @@ abstract class chatagent_base extends external_api {
                 PARAM_BOOL,
                 'Whether this request changed the lesson\'s items, so the page should redraw its item list'
             ),
-            'status' => new external_value(PARAM_ALPHAEXT, 'complete, requires_tool, requires_approval or error'),
+            'status' => new external_value(PARAM_ALPHAEXT, 'complete, requires_tool, requires_approval, running or error'),
             'state' => new external_value(PARAM_ALPHAEXT, 'The conversation state the reply left behind'),
+            'runningfor' => new external_value(
+                PARAM_INT,
+                'Seconds the model has been writing its reply in the background; 0 when it is not',
+                VALUE_DEFAULT,
+                0
+            ),
             'messages' => new external_multiple_structure(
                 new external_single_structure([
                     'id' => new external_value(PARAM_INT, 'Message id, to pass back as sinceid'),

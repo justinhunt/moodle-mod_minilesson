@@ -208,13 +208,21 @@ if ($options['approve'] || $options['reject']) {
     cli_error('Nothing to do. Pass --message="...", --approve, --reject, --show or --reset.');
 }
 
-// Drive the loop the way the browser will: keep stepping while there is a tool to run, and
-// stop when the assistant has answered or is waiting on the teacher.
+// Drive the loop the way the browser will: keep stepping while there is a tool to run or the
+// model is still writing in the background, and stop when the assistant has answered or is
+// waiting on the teacher. Polls are not steps, and are spaced out as the browser spaces them.
 $steps = 0;
+$polls = 0;
 while (true) {
     report($envelope);
     save_session($statefile, $conversation);
 
+    if ($envelope['status'] === controller::STATUS_RUNNING) {
+        sleep($polls++ < 5 ? 2 : 4);
+        $envelope = $agent->step($conversation);
+        continue;
+    }
+    $polls = 0;
     if ($envelope['status'] !== controller::STATUS_REQUIRES_TOOL) {
         break;
     }
@@ -258,6 +266,9 @@ function report(array $envelope): void {
     switch ($envelope['status']) {
         case controller::STATUS_REQUIRES_TOOL:
             cli_writeln('  -> running ' . $envelope['pending']['tool']);
+            break;
+        case controller::STATUS_RUNNING:
+            cli_writeln('  ... the model is still writing (' . ($envelope['runningfor'] ?? '?') . ' s)');
             break;
         case controller::STATUS_REQUIRES_APPROVAL:
             cli_writeln("\nAPPROVAL NEEDED: " . $envelope['pending']['summary']);

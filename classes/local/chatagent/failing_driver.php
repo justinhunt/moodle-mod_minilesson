@@ -93,4 +93,15 @@ class failing_driver implements provider_driver {
         }
         return result::fail($this->errorcode, 'Simulated ' . $this->errorcode . ' failure.');
     }
+
+    /**
+     * Fail in the configured way here too. This driver never leaves a call running, so it is only
+     * asked if a conversation was left waiting by another provider.
+     *
+     * @param string $interactionid
+     * @return result
+     */
+    public function get_interaction(string $interactionid): result {
+        return result::fail($this->errorcode, 'Simulated ' . $this->errorcode . ' failure.');
+    }
 }

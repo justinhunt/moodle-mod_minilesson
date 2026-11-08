@@ -32,8 +32,23 @@ use mod_minilesson\utils;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cloudpoodll_driver extends gemini_driver {
-    /** @var string The Cloud Poodll web service that makes the model call. */
+    /**
+     * @var string The Cloud Poodll web service that makes the model call and waits for it. Used only
+     * while the Cloud Poodll server does not offer the background pair below.
+     */
     const WSFUNCTION = 'local_cpapi_chatagent_create_interaction';
+
+    /** @var string The Cloud Poodll web service that starts a model call in the background. */
+    const WSFUNCTION_START = 'local_cpapi_chatagent_start_interaction';
+
+    /** @var string The Cloud Poodll web service that reads a model call started in the background. */
+    const WSFUNCTION_GET = 'local_cpapi_chatagent_get_interaction';
+
+    /** @var string Config setting: when Cloud Poodll last lacked the background functions. */
+    const NOBACKGROUND_SETTING = 'chatagentcpnobackground';
+
+    /** @var bool Whether the last call_cloud() found its web service function missing on Cloud Poodll. */
+    protected bool $missingfunction = false;
 
     /**
      * @var int Seconds to wait for Cloud Poodll. Longer than Cloud Poodll waits for Google, so a
@@ -93,6 +108,12 @@ class cloudpoodll_driver extends gemini_driver {
     /**
      * Run one model call through Cloud Poodll.
      *
+     * The call is started in the background and comes back running; the controller then polls
+     * get_interaction(). That keeps every request well inside the 60 seconds the load balancer in
+     * front of Cloud Poodll allows, however long the model takes. A Cloud Poodll server that does
+     * not offer the background functions yet gets the old call, which waits, and is not asked
+     * for them again for an hour.
+     *
      * @param array $input
      * @param array $tools
      * @param string $instruction
@@ -125,6 +146,59 @@ class cloudpoodll_driver extends gemini_driver {
             'previous_interaction_id' => (string) $previous,
         ];
 
+        if ($this->background_offered()) {
+            $result = $this->call_cloud(self::WSFUNCTION_START, $params, $previous);
+            if (!$this->missingfunction) {
+                return $result;
+            }
+            set_config(self::NOBACKGROUND_SETTING, time(), constants::M_COMPONENT);
+        }
+        return $this->call_cloud(self::WSFUNCTION, $params, $previous);
+    }
+
+    /**
+     * Ask Cloud Poodll about a model call started in the background.
+     *
+     * @param string $interactionid
+     * @return result
+     */
+    public function get_interaction(string $interactionid): result {
+        global $CFG;
+        if (!$this->is_available()) {
+            return result::fail(
+                result::ERROR_AUTH,
+                get_string('chatagent_error_cp_nocredentials', constants::M_COMPONENT)
+            );
+        }
+        return $this->call_cloud(self::WSFUNCTION_GET, [
+            'appid' => constants::M_COMPONENT,
+            'siteurl' => $CFG->wwwroot,
+            'interaction_id' => $interactionid,
+        ], $interactionid);
+    }
+
+    /**
+     * Whether to try the background functions: unless Cloud Poodll lacked them in the last hour.
+     *
+     * @return bool
+     */
+    protected function background_offered(): bool {
+        $missing = (int) get_config(constants::M_COMPONENT, self::NOBACKGROUND_SETTING);
+        return $missing < time() - HOURSECS;
+    }
+
+    /**
+     * Call one Cloud Poodll web service function and turn its envelope into a result.
+     *
+     * @param string $wsfunction
+     * @param array $params the function's parameters
+     * @param string|null $previous the interaction the call continues or reads, for reading "expired"
+     * @return result
+     */
+    protected function call_cloud(string $wsfunction, array $params, ?string $previous): result {
+        $this->missingfunction = false;
+        $params['wsfunction'] = $wsfunction;
+
         // A cached token can go stale on the cloud's side before its recorded expiry - a secret
         // reset, a token revoked - so one rejection earns a fresh token and a second try.
         foreach ([false, true] as $forcenewtoken) {
@@ -136,6 +210,9 @@ class cloudpoodll_driver extends gemini_driver {
             [$httpcode, $body] = $this->send($token, $params);
             if ($httpcode === 0) {
                 $this->log_failure('no response from Cloud Poodll: ' . substr($body, 0, 300));
+                if (self::is_timeout($body)) {
+                    return result::fail(result::ERROR_TIMEOUT, $this->error_message(result::ERROR_TIMEOUT));
+                }
                 return result::fail(result::ERROR_CONNECTION, $this->error_message(result::ERROR_CONNECTION));
             }
             $decoded = json_decode($body, true);
@@ -147,11 +224,19 @@ class cloudpoodll_driver extends gemini_driver {
 
         if (!is_array($decoded)) {
             $this->log_failure('unparseable Cloud Poodll response (HTTP ' . $httpcode . '): ' . substr($body, 0, 500));
+            // The load balancer in front of Cloud Poodll answers a request that ran too long with its own 504.
+            if ($httpcode === 504) {
+                return result::fail(result::ERROR_TIMEOUT, $this->error_message(result::ERROR_TIMEOUT));
+            }
             return result::fail(result::ERROR_TRANSPORT, $this->error_message(result::ERROR_TRANSPORT));
         }
 
         // Moodle's web service layer refused the call before it ran.
         if (isset($decoded['exception'])) {
+            // An unknown function, or one outside the service this token belongs to: this Cloud
+            // Poodll server is older than the function. The caller can fall back.
+            $this->missingfunction = $wsfunction !== self::WSFUNCTION
+                && in_array($decoded['errorcode'] ?? '', ['invalidrecord', 'accessexception'], true);
             return $this->map_ws_exception($decoded);
         }
 
@@ -207,6 +292,10 @@ class cloudpoodll_driver extends gemini_driver {
                 $httpcode = (int) ($decoded['httpcode'] ?? 0);
                 if ($httpcode === 0) {
                     $this->log_failure('Cloud Poodll could not reach Google: ' . $detail);
+                    // Cloud Poodll cuts Google off before its load balancer's limit, and says so.
+                    if (self::is_timeout($detail)) {
+                        return result::fail(result::ERROR_TIMEOUT, $this->error_message(result::ERROR_TIMEOUT));
+                    }
                     return result::fail(result::ERROR_UNKNOWN, $this->error_message(result::ERROR_UNKNOWN));
                 }
                 $result = $this->map_http_error($httpcode, json_decode((string) $decoded['body'], true), $previous);
@@ -279,7 +368,7 @@ class cloudpoodll_driver extends gemini_driver {
         require_once($CFG->libdir . '/filelib.php');
 
         $params['wstoken'] = $token;
-        $params['wsfunction'] = self::WSFUNCTION;
+        $params['wsfunction'] = $params['wsfunction'] ?? self::WSFUNCTION;
         $params['moodlewsrestformat'] = 'json';
 
         $curl = new \curl();

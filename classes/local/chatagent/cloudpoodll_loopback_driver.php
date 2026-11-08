@@ -80,7 +80,9 @@ class cloudpoodll_loopback_driver extends cloudpoodll_driver {
         $teacher = clone($USER);
         \core\session\manager::set_user($this->cpuser);
         try {
-            $response = \core_external\external_api::call_external_function(self::WSFUNCTION, $params);
+            $wsfunction = $params['wsfunction'] ?? self::WSFUNCTION;
+            unset($params['wsfunction']);
+            $response = \core_external\external_api::call_external_function($wsfunction, $params);
         } finally {
             \core\session\manager::set_user($teacher);
         }

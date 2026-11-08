@@ -47,6 +47,15 @@ class controller {
     /** @var string The turn failed; the transcript is intact. */
     const STATUS_ERROR = 'error';
 
+    /** @var string The model is still working on its reply in the background; call step() again shortly. */
+    const STATUS_RUNNING = 'running';
+
+    /**
+     * @var int Seconds a background model call may run before the turn gives up on it. Generous: a
+     * whole widget can take a couple of minutes to write.
+     */
+    const MAX_RUNNING_SECONDS = 300;
+
     /** @var int Tools one turn may run before the loop is declared stuck. */
     const DEFAULT_MAX_TOOL_CALLS = 8;
 
@@ -93,6 +102,9 @@ class controller {
         $conversation->add_message('user', $text, null, $attachments);
         $conversation->toolcalls = 0;
         $conversation->turncount++;
+        // A call still running from an earlier turn is abandoned: its reply would answer a question
+        // the teacher has moved on from.
+        $conversation->running = [];
         $conversation->clear_pending();
 
         // While the provider still holds the history, this turn is just the new message; the
@@ -112,6 +124,9 @@ class controller {
      * @return array envelope
      */
     public function step(conversation $conversation): array {
+        if ($conversation->state === conversation::STATE_AWAITING_MODEL) {
+            return $this->poll($conversation);
+        }
         if ($conversation->pendingcallid === '') {
             return $this->envelope($conversation, self::STATUS_COMPLETE);
         }
@@ -225,23 +240,117 @@ class controller {
             $replayed = true;
         }
 
+        $metrics = $this->call_metrics($input, $replayed);
         $result = $this->driver->create_interaction(
             $input,
             $tools,
             $instruction,
             $previous
         );
-        $this->measure($conversation, $input, $result, $replayed);
 
         // Retention windows are short - about a day on Google's free tier - so a conversation
         // going missing is ordinary. Send the stored transcript instead of the handle and
         // carry on, rather than showing the teacher an error for something we can recover.
         if ($result->failed() && $result->errorcode === result::ERROR_EXPIRED) {
-            $conversation->interactionid = '';
-            $replayinput = $this->replay_input($conversation);
-            $result = $this->driver->create_interaction($replayinput, $tools, $instruction, null);
-            $this->measure($conversation, $replayinput, $result, true);
+            $this->measure($conversation, $metrics, $result);
+            return $this->start_replay($conversation);
         }
+
+        return $this->handle_result($conversation, $result, $metrics);
+    }
+
+    /**
+     * Start the model call again from the stored transcript, because the provider has forgotten
+     * the conversation.
+     *
+     * @param conversation $conversation
+     * @return array envelope
+     */
+    protected function start_replay(conversation $conversation): array {
+        $conversation->interactionid = '';
+        $input = $this->replay_input($conversation);
+        $metrics = $this->call_metrics($input, true);
+        $result = $this->driver->create_interaction($input, tools::declarations(), $this->instruction($conversation), null);
+        return $this->handle_result($conversation, $result, $metrics);
+    }
+
+    /**
+     * Ask the provider again about the model call running in the background.
+     *
+     * A poll that fails for a passing reason (no connection, a slow reply) does not end the turn:
+     * the call is still running on the provider's side, so the next poll may well get it. The turn
+     * ends when the call finishes, fails, or has run longer than MAX_RUNNING_SECONDS.
+     *
+     * @param conversation $conversation
+     * @return array envelope
+     */
+    protected function poll(conversation $conversation): array {
+        $running = $conversation->running;
+        $id = (string) ($running['id'] ?? '');
+        $metrics = array_intersect_key($running, array_flip(
+            ['requestbytes', 'attachmentbytes', 'replayed', 'toolname', 'rejectreason']
+        ));
+        if ($id === '') {
+            $conversation->running = [];
+            $conversation->state = conversation::STATE_IDLE;
+            return $this->envelope($conversation, self::STATUS_COMPLETE);
+        }
+
+        $result = $this->driver->get_interaction($id);
+        $passing = [result::ERROR_CONNECTION, result::ERROR_TIMEOUT, result::ERROR_TRANSPORT];
+        if ($result->running() || ($result->failed() && in_array($result->errorcode, $passing, true))) {
+            if (time() - (int) ($running['since'] ?? 0) <= self::MAX_RUNNING_SECONDS) {
+                return $this->envelope($conversation, self::STATUS_RUNNING);
+            }
+            $result = result::fail(result::ERROR_TIMEOUT, get_string('chatagent_error_timeout', constants::M_COMPONENT));
+        }
+
+        $conversation->running = [];
+        if ($result->failed() && $result->errorcode === result::ERROR_EXPIRED) {
+            $this->measure($conversation, $metrics, $result);
+            return $this->start_replay($conversation);
+        }
+        return $this->handle_result($conversation, $result, $metrics);
+    }
+
+    /**
+     * What the metrics row for a model call records about its input, taken when the call is made:
+     * the call may finish in a later request.
+     *
+     * @param array $input what is sent
+     * @param bool $replayed whether the transcript had to be sent instead of a handle
+     * @return array
+     */
+    protected function call_metrics(array $input, bool $replayed): array {
+        [$bytes, $attachmentbytes] = metrics::measure_input($input);
+        $metrics = [
+            'requestbytes' => $bytes,
+            'attachmentbytes' => $attachmentbytes,
+            'replayed' => $replayed ? 1 : 0,
+            'toolname' => $this->lasttool,
+            'rejectreason' => $this->lastrejection,
+        ];
+        $this->lasttool = null;
+        $this->lastrejection = null;
+        return $metrics;
+    }
+
+    /**
+     * Act on a model call's result: wait for it if it is running, otherwise record it and turn it
+     * into the conversation's next state.
+     *
+     * @param conversation $conversation
+     * @param result $result
+     * @param array $metrics from call_metrics()
+     * @return array envelope
+     */
+    protected function handle_result(conversation $conversation, result $result, array $metrics): array {
+        if ($result->running()) {
+            $conversation->running = ['id' => $result->interactionid, 'since' => time()] + $metrics;
+            $conversation->state = conversation::STATE_AWAITING_MODEL;
+            return $this->envelope($conversation, self::STATUS_RUNNING);
+        }
+        $this->measure($conversation, $metrics, $result);
 
         if ($result->failed()) {
             $conversation->state = conversation::STATE_ERROR;
@@ -283,26 +392,22 @@ class controller {
      * Record what one model call cost and how it went.
      *
      * @param conversation $conversation
-     * @param array $input what was sent
+     * @param array $metrics from call_metrics()
      * @param result $result what came back
-     * @param bool $replayed whether the transcript had to be sent instead of a handle
      * @return void
      */
-    protected function measure(conversation $conversation, array $input, result $result, bool $replayed): void {
-        [$bytes, $attachmentbytes] = metrics::measure_input($input);
+    protected function measure(conversation $conversation, array $metrics, result $result): void {
         metrics::record($conversation, [
-            'toolname' => $this->lasttool,
-            'toolrejected' => $this->lastrejection !== null ? 1 : 0,
-            'rejectreason' => $this->lastrejection,
-            'requestbytes' => $bytes,
-            'attachmentbytes' => $attachmentbytes,
+            'toolname' => $metrics['toolname'] ?? null,
+            'toolrejected' => isset($metrics['rejectreason']) ? 1 : 0,
+            'rejectreason' => $metrics['rejectreason'] ?? null,
+            'requestbytes' => (int) ($metrics['requestbytes'] ?? 0),
+            'attachmentbytes' => (int) ($metrics['attachmentbytes'] ?? 0),
             'inputtokens' => (int) ($result->usage['input_tokens'] ?? 0),
             'outputtokens' => (int) ($result->usage['output_tokens'] ?? 0),
-            'replayed' => $replayed ? 1 : 0,
+            'replayed' => (int) ($metrics['replayed'] ?? 0),
             'errorcode' => $result->errorcode,
         ]);
-        $this->lasttool = null;
-        $this->lastrejection = null;
     }
 
     /**
@@ -552,6 +657,7 @@ class controller {
             'messages' => $conversation->messages,
             'pending' => null,
             'job' => null,
+            'runningfor' => $conversation->running ? max(0, time() - (int) ($conversation->running['since'] ?? time())) : 0,
         ];
 
         if ($conversation->pendingcallid !== '') {

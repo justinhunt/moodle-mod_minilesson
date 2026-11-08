@@ -34,6 +34,20 @@ import {get_string as getString} from 'core/str';
 /** @var {number} Stop stepping after this many, in case the server ever stops saying 'complete'. */
 const MAX_STEPS = 20;
 
+/** Checks on a model reply that is being written in the background. The server gives up after five minutes. */
+const MAX_POLLS = 150;
+
+/** After this many seconds of waiting for the model, say that a long reply can take a while. */
+const LONG_WAIT_SECONDS = 20;
+
+/**
+ * Wait a while.
+ *
+ * @param {Number} ms
+ * @returns {Promise}
+ */
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /**
  * One panel.
  */
@@ -100,11 +114,25 @@ class ChatAgent {
      * Open the conversation and draw whatever it already holds.
      */
     async start() {
+        let response;
         try {
-            const response = await this.call('start', {cmid: this.cmid, sinceid: 0});
+            response = await this.call('start', {cmid: this.cmid, sinceid: 0});
             this.handle(response, true);
         } catch (error) {
             Notification.exception(error);
+            return;
+        }
+        // The model was still writing a reply when the page was left. It is running on the AI
+        // service's side whatever this page does, and checking on it costs nothing, so carry on.
+        if (response.status === 'running') {
+            this.setBusy(true, await getString('chatagent_thinking', 'mod_minilesson'));
+            try {
+                await this.runLoop(response);
+            } catch (error) {
+                this.showError(error.message);
+            } finally {
+                this.setBusy(false);
+            }
         }
     }
 
@@ -144,19 +172,44 @@ class ChatAgent {
      */
     async runLoop(response) {
         let steps = 0;
+        let polls = 0;
+        let job = response.job;
         this.handle(response);
 
-        while (response.status === 'requires_tool' && steps++ < MAX_STEPS) {
+        while ((response.status === 'requires_tool' && steps < MAX_STEPS)
+                || (response.status === 'running' && polls < MAX_POLLS)) {
+            if (response.status === 'running') {
+                // The model is writing its reply in the background: check often at first, since
+                // most replies take a few seconds, then less often.
+                await this.showWaiting(response.runningfor);
+                await sleep(polls++ < 5 ? 1500 : 4000);
+            } else {
+                steps++;
+                polls = 0;
+            }
             response = await this.call('step', {
                 conversationid: this.conversationid,
                 sinceid: this.sinceid,
             });
+            // A queued generation job is reported once, on the step that ran its tool, which is
+            // not always the last response of the turn.
+            job = response.job || job;
             this.handle(response);
         }
 
-        if (response.job && response.job.poll) {
-            this.watchJob(response.job.jobid);
+        if (job && job.poll) {
+            this.watchJob(job.jobid);
         }
+    }
+
+    /**
+     * Show the progress line while the model writes its reply.
+     *
+     * @param {Number} seconds how long it has been writing
+     */
+    async showWaiting(seconds) {
+        const key = (seconds || 0) >= LONG_WAIT_SECONDS ? 'chatagent_stillworking' : 'chatagent_thinking';
+        this.setStatus(await getString(key, 'mod_minilesson'));
     }
 
     /**
