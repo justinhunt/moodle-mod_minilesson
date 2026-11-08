@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'SmartFrame';
-$string['item_desc'] = 'Mục SmartFrame là phần giữ chỗ cho một loại mục chưa được phát triển.';
-$string['pluginname'] = 'SmartFrame';
+$string['additem'] = 'Widget';
+$string['item_desc'] = 'Mục Widget chạy một hoạt động tương tác được tạo bằng công cụ AI như ChatGPT hoặc Claude, tải lên dưới dạng một tệp HTML (hoặc tệp ZIP). Mục này có thể gửi điểm về bài học.';
+$string['pluginname'] = 'Widget';

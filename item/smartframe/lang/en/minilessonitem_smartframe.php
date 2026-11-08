@@ -38,6 +38,11 @@ $string['aiinstructions_step2'] = 'Describe the activity. For example: "A quiz o
 $string['aiinstructions_step3'] = 'Try it in the chat, and ask for changes until you are happy with it.';
 $string['aiinstructions_step4'] = 'Say "Export it for Poodll", download the file it gives you, and upload it below.';
 $string['error:htmlencoding'] = 'The HTML file must be saved as UTF-8 text.';
+$string['error:importbase64'] = 'The widget file {$a} is not valid base64. Encode the file\'s bytes as plain base64, without a "data:" prefix.';
+$string['error:importboth'] = 'Give the widget either as widgethtml or as a file in customfile1, not both.';
+$string['error:importgradepolicy'] = 'gradepolicy must be 0 (ignore the widget\'s score), 1 (record it) or 2 (count it in the lesson grade).';
+$string['error:importnofile'] = 'The item has no widget. Put the widget\'s HTML in its widgethtml field.';
+$string['error:importonefile'] = 'The item has more than one file in its customfile1 file area. Add just one widget file (.html or .zip).';
 $string['error:manifestentry'] = 'The manifest\'s "entry" ({$a}) must name an HTML file in the ZIP.';
 $string['error:manifestfield'] = 'The manifest\'s "{$a}" is missing or not valid.';
 $string['error:manifestjson'] = 'The widget\'s manifest is not valid JSON.';
@@ -71,7 +76,7 @@ A score sent by the widget is worked out in the learner\'s browser, so a learner
 $string['gradepolicy_ignore'] = 'Ignore';
 $string['gradepolicy_record'] = 'Save, but do not grade';
 $string['gradepolicy_use'] = 'Use as the item grade';
-$string['item_desc'] = 'The Widget item runs an interactive activity uploaded as a ZIP, such as one made with ChatGPT or Claude. It can report a score to the lesson.';
+$string['item_desc'] = 'The Widget item runs an interactive activity made with an AI tool such as ChatGPT or Claude, uploaded as one HTML file (or a ZIP). It can report a score to the lesson.';
 $string['pluginname'] = 'Widget';
 $string['privacy:metadata'] = 'The Widget item does not store any personal data.';
 $string['uilanguage'] = 'Widget language';
@@ -79,6 +84,7 @@ $string['uilanguage_auto'] = 'Automatic';
 $string['uilanguage_help'] = 'The language of the widget\'s instructions, buttons and feedback. This does not change the language being learned.
 
 Automatic uses the learner\'s own language if the widget offers it, then the lesson\'s native language, then the learner\'s Moodle language, then the widget\'s default language. Save the item once to choose from the widget\'s languages.';
+$string['warning:importuilanguage'] = 'uilanguage "{$a->lang}" is not one of the widget\'s interface languages ({$a->languages}), so learners will see its default language.';
 $string['widget_instructions1'] = 'Complete the activity below.';
 $string['widgetnotavailable'] = 'This activity is not available right now.';
 $string['widgetpackage'] = 'Widget file';

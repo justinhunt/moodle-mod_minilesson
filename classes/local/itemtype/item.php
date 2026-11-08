@@ -260,6 +260,19 @@ abstract class item implements \templatable, \renderable {
     }
 
     /**
+     * Adjust an item's export object before it is written: lets an item type export a field in a friendlier
+     * form than the generic code does (e.g. a file as text), or leave out what an import works out again.
+     * Whatever it writes, its import must accept. The default changes nothing.
+     *
+     * @param \stdClass $itemobj the item's export object, with its files in ->files[filearea][filename] as base64
+     * @param \stdClass $itemrecord the item's record
+     * @return \stdClass the export object
+     */
+    public static function export_item_adjust(\stdClass $itemobj, \stdClass $itemrecord): \stdClass {
+        return $itemobj;
+    }
+
+    /**
      * Things in an import record worth fixing that do not stop the item working. Unlike
      * validate_import(), these never refuse the item: the import reports them alongside it.
      *

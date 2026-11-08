@@ -152,9 +152,10 @@ Grouped by the skills they target. All types are graded automatically unless not
 | **Content Page** | The simplest item: show text or media, then a Next button. Use it to set up later items. |
 | **Slides** | A presentation authored in Markdown. Advanced users. |
 | **H5P** | Embed an existing H5P activity from the content bank inside the lesson. |
+| **Widget** (beta) | Run an interactive activity that a teacher makes with an AI tool such as ChatGPT or Claude, uploaded as one HTML file (or a ZIP). It runs in a sandbox and can report a score to the lesson. Teachers can pick it only when `$CFG->minilesson_experimental = true;` is set in `config.php`. |
 
-Three further types (**Comprehension Quiz**, **Conversation**, **SmartFrame**) exist as
-placeholders and are disabled by default.
+Two further types (**Comprehension Quiz**, **Conversation**) exist as placeholders and are
+disabled by default.
 
 ## AI lesson generation
 

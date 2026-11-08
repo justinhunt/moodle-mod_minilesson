@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'SmartFrame';
-$string['item_desc'] = 'SmartFrame-elementet er en pladsholder for en elementtype, der endnu ikke er udviklet.';
-$string['pluginname'] = 'SmartFrame';
+$string['additem'] = 'Widget';
+$string['item_desc'] = 'Widget-elementet kører en interaktiv aktivitet, der er lavet med et AI-værktøj som ChatGPT eller Claude og uploadet som én HTML-fil (eller en ZIP-fil). Det kan sende en score til lektionen.';
+$string['pluginname'] = 'Widget';

@@ -23,8 +23,9 @@ use mod_minilesson\local\itemtype\item;
 use mod_minilesson\constants;
 
 /**
- * A widget item: an uploaded Poodll Widget Package (a ZIP of HTML, CSS and JS) that runs in a sandboxed iframe,
- * and may report a score. Its files are unpacked into Moodle and served by widget.php (see local\widgetstore).
+ * A widget item: an uploaded Poodll Widget Package (one HTML file, or a ZIP of HTML, CSS, JS and media) that
+ * runs in a sandboxed iframe, and may report a score. Its files are unpacked into Moodle and served by widget.php
+ * (see local\widgetstore).
  *
  * @package    minilessonitem_smartframe
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
@@ -44,6 +45,8 @@ class itemtype extends item {
     public const MANIFEST = 'customdata1';
     /** @var string What to do with a score the widget reports: one of the GRADE_* values. */
     public const GRADEPOLICY = 'customint2';
+    /** @var string Import only: the widget as HTML text, saved as the item's widget file. Not a database column. */
+    public const WIDGETHTML = 'widgethtml';
 
     /** @var int Ignore the widget's score. */
     public const GRADE_IGNORE = 0;
@@ -202,9 +205,17 @@ class itemtype extends item {
     /**
      * Save the item, then check and publish its widget.
      *
+     * An import may give the widget as HTML text in "widgethtml" (see get_keycolumns()). It becomes the item's
+     * widget file here, exactly as if a teacher had uploaded it.
+     *
      * @return \stdClass result, as for the parent
      */
     public function update_insert_item() {
+        $html = $this->itemrecord->{self::WIDGETHTML} ?? '';
+        unset($this->itemrecord->{self::WIDGETHTML});
+        if (is_string($html) && $html !== '' && empty($this->itemrecord->{self::FILE})) {
+            $this->itemrecord->{self::FILE} = [self::html_filename($html) => base64_encode($html)];
+        }
         $ret = parent::update_insert_item();
         if (!$ret->error && !empty($ret->item->id)) {
             $this->itemrecord->id = $ret->item->id;
@@ -315,7 +326,286 @@ class itemtype extends item {
             'default' => self::UILANGUAGE_AUTO, 'dbname' => self::UILANGUAGE];
         $keycols[self::FILE] = ['jsonname' => self::FILE, 'type' => 'anonymousfile', 'optional' => true,
             'default' => null, 'dbname' => false];
+        // The widget as HTML text, for agents: base64 costs a model far more to write, and breaks more easily.
+        // It is not a column: update_insert_item() saves it as the widget file, and the export writes an HTML
+        // widget here (see export_item_adjust()).
+        $keycols[self::WIDGETHTML] = ['jsonname' => self::WIDGETHTML, 'type' => 'string', 'optional' => true,
+            'default' => '', 'dbname' => self::WIDGETHTML];
         return $keycols;
+    }
+
+    /**
+     * When and why to choose this item type (agent-facing, used by the aigen web services).
+     *
+     * @return string
+     */
+    public static function aigen_fetch_usage() {
+        return 'Runs an interactive activity that you write yourself as one self-contained HTML page (HTML, CSS and '
+            . 'JavaScript): a game, a simulation, a drag and drop or sorting task, an interactive diagram, anything '
+            . 'the other item types can not express. It runs in a sandbox with no network and no storage, and it '
+            . 'can report a score to the lesson. Prefer the native item types for what they already do (quizzes, '
+            . 'gap fills, speaking, listening, TTS audio): they need no code and teachers can edit them in Moodle, '
+            . 'while a widget can only be changed by editing its file. Read the authoring guide before you write one.';
+    }
+
+    /**
+     * How to write a widget, for an agent that composes one for an import: the instructions teachers give
+     * their AI chat (ai/widget-instructions.md), after a preface on how they apply to an import.
+     *
+     * @return string|null the guide as markdown, or null if the file is missing
+     */
+    public static function aigen_fetch_authoring_guide() {
+        $guidefile = __DIR__ . '/../ai/widget-instructions.md';
+        if (!is_readable($guidefile)) {
+            return null;
+        }
+        $guide = file_get_contents($guidefile);
+        if ($guide === false) {
+            return null;
+        }
+        $preface = <<<'MD'
+# Composing a Widget item for an import
+
+The guide below was written for a teacher's AI chat, where the teacher tries the widget in the chat's preview
+and then downloads the file. When you compose a widget item for an import instead:
+
+1. **Write the widget exactly as the guide says:** one self-contained HTML file that follows sections 2 to 8,
+   with the manifest block (section 3) and the protocol code (section 6) in it from the start.
+2. **Let the teacher try it first if you can.** If you can show an HTML preview (an HTML artifact or canvas),
+   show it and make the changes they ask for before you import. Once imported, a teacher can only change a
+   widget by downloading its file and editing it with an AI tool.
+3. **Go through the export checklist (section 9)** and fix anything that fails.
+4. **Put the whole HTML file, as text, in the item's `widgethtml` field.** Escape it as any JSON string
+   (quotes, backslashes, newlines). Never base64 it, and do not use the payload's `files` object for it.
+5. **Only HTML widgets can be imported.** Draw pictures as inline SVG, CSS or emoji. Do not put photos, audio
+   or video in the file as `data:` URIs: they make it huge and slow to send. If the activity needs recordings,
+   video or photos, tell the teacher it has to be a ZIP widget (section 10), which they upload on the item's
+   form.
+6. **Set the score fields:** for a widget that reports a score, set `gradepolicy` to 2 and `totalmarks` to the
+   points it is worth in the lesson. For one with no score, leave `gradepolicy` at 0.
+7. **To change a widget that is already in a lesson,** export the lesson's items: an HTML widget comes back
+   with its page in `widgethtml`. Change it, keeping the manifest block and the protocol code, and import it.
+   The import adds a new item, so tell the teacher to delete the old one.
+
+The import checks the file the same way the upload form does, and refuses the item with the reason if
+anything is wrong (no manifest, invalid JSON, not UTF-8, too big, ...). Fix the file and import again.
+
+---
+
+
+MD;
+        return $preface . $guide;
+    }
+
+    /**
+     * The agent-facing import field spec for widget items.
+     *
+     * @return array the import spec (usage, fields, fileareas, example)
+     */
+    public static function aigen_fetch_import_spec() {
+        $fields = static::aigen_common_import_field_specs(['type', 'name', 'visible', 'instructions']);
+        $fields['type']['example'] = 'smartframe';
+
+        $ownfields = [
+            'gradepolicy' => [
+                'description' => 'What the lesson does with the score the widget reports: 0 = ignore it (for a widget '
+                    . 'with no score), 1 = save it with the attempt without counting it in the lesson grade, '
+                    . '2 = count it in the lesson grade, scaled to totalmarks. Use 2 for a widget that reports a score.',
+                'options' => [
+                    ['value' => (string) self::GRADE_IGNORE, 'meaning' => 'Ignore the score (default)'],
+                    ['value' => (string) self::GRADE_RECORD, 'meaning' => 'Save the score, but do not count it'],
+                    ['value' => (string) self::GRADE_USE, 'meaning' => 'Count the score in the lesson grade'],
+                ],
+                'example' => '2',
+            ],
+            'totalmarks' => [
+                'description' => 'The points the widget\'s score is worth in the lesson grade when gradepolicy is 2. '
+                    . 'The widget reports earned/possible, and the item grade is that ratio times totalmarks.',
+                'example' => '4',
+            ],
+            'uilanguage' => [
+                'description' => 'The language of the widget\'s own interface (instructions, buttons, feedback), not '
+                    . 'the language being taught. "auto" (the default) picks one of the widget\'s uiLanguages for each '
+                    . 'learner: their native language, then the lesson\'s native language, then their Moodle language, '
+                    . 'then the widget\'s defaultUiLanguage. Otherwise give one of the tags in the widget manifest\'s '
+                    . 'uiLanguages, e.g. "ja".',
+                'example' => 'auto',
+            ],
+        ];
+        foreach ($ownfields as $jsonname => $overlay) {
+            $fields[$jsonname] = static::aigen_seed_field_spec($jsonname, $overlay);
+        }
+
+        $fields[self::WIDGETHTML] = static::aigen_seed_field_spec(self::WIDGETHTML, [
+            'required' => true,
+            'description' => 'The whole widget, written as the authoring guide says: one self-contained HTML file '
+                . 'with its manifest block, as plain text in a JSON string (not base64). At most '
+                . display_size(package::MAX_FILE_BYTES) . '. Required.',
+            'example' => '<!doctype html><html lang="en"><head><meta charset="utf-8">...</html>',
+        ]);
+
+        return [
+            'usage' => 'Compose one item per widget. Write the widget as the authoring guide says (one '
+                . 'self-contained HTML file with its manifest block) and put the whole file, as text, in widgethtml. '
+                . 'Do not base64 it and do not put it in the files object. The import checks it like the upload form '
+                . 'does and refuses the item, with the reason, if it is not a valid widget. For a widget that '
+                . 'reports a score set gradepolicy to 2 and totalmarks.',
+            'fields' => array_values($fields),
+            'fileareas' => [],
+            'example' => [
+                'items' => [
+                    [
+                        'type' => 'smartframe',
+                        'name' => 'Māori greetings',
+                        'instructions' => 'Choose the right greeting for each picture.',
+                        'gradepolicy' => 2,
+                        'totalmarks' => 4,
+                        'uilanguage' => 'auto',
+                        self::WIDGETHTML => "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
+                            . "<script type=\"application/json\" id=\"poodll-widget-manifest\">{...}</script>\n"
+                            . "... the rest of the widget ...\n</html>\n",
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Open the widget of an import record (its widgethtml, or its one widget file), checking it as the upload
+     * form does.
+     *
+     * @param \stdClass $newrecord the db-ready import record, with the payload's files attached as filearea arrays
+     * @return package
+     * @throws package_exception if there is not exactly one valid widget file
+     */
+    protected static function import_package($newrecord): package {
+        $files = (array) ($newrecord->{self::FILE} ?? []);
+        $html = (string) ($newrecord->{self::WIDGETHTML} ?? '');
+        if ($html !== '') {
+            if ($files) {
+                throw new package_exception('error:importboth');
+            }
+            $path = make_request_directory() . '/widget.html';
+            file_put_contents($path, $html);
+            return new package($path, 'widget.html');
+        }
+        if (!$files) {
+            throw new package_exception('error:importnofile');
+        }
+        if (count($files) > 1) {
+            throw new package_exception('error:importonefile');
+        }
+        $filename = (string) array_key_first($files);
+        if (!package::is_package_name($filename)) {
+            throw new package_exception('error:importnofile');
+        }
+        $content = base64_decode((string) reset($files), true);
+        if ($content === false || $content === '') {
+            throw new package_exception('error:importbase64', s($filename));
+        }
+        $path = make_request_directory() . '/' . (package::is_html_name($filename) ? 'widget.html' : 'widget.zip');
+        file_put_contents($path, $content);
+        return new package($path, $filename);
+    }
+
+    /**
+     * Refuse an imported widget item that would not work: a missing or invalid widget file, or a bad gradepolicy.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return false|\stdClass false when valid, or an error object with col and message
+     */
+    public static function validate_import($newrecord, $cm) {
+        $error = new \stdClass();
+        $error->col = '';
+        $error->message = '';
+
+        $policy = $newrecord->{self::GRADEPOLICY} ?? self::GRADE_IGNORE;
+        if (!in_array((int) $policy, [self::GRADE_IGNORE, self::GRADE_RECORD, self::GRADE_USE], true)) {
+            $error->col = self::GRADEPOLICY;
+            $error->message = get_string('error:importgradepolicy', 'minilessonitem_smartframe');
+            return $error;
+        }
+        try {
+            self::import_package($newrecord);
+        } catch (package_exception $e) {
+            $error->col = empty($newrecord->{self::FILE}) ? self::WIDGETHTML : self::FILE;
+            $error->message = $e->getMessage();
+            return $error;
+        }
+        return false;
+    }
+
+    /**
+     * Warn when an imported item asks for an interface language its widget does not have.
+     *
+     * @param \stdClass $newrecord the db-ready import record
+     * @param \stdClass $cm the course module
+     * @return array warning messages
+     */
+    public static function import_warnings($newrecord, $cm) {
+        $setting = (string) ($newrecord->{self::UILANGUAGE} ?? self::UILANGUAGE_AUTO);
+        if ($setting === '' || $setting === self::UILANGUAGE_AUTO) {
+            return [];
+        }
+        try {
+            $offered = self::import_package($newrecord)->get_manifest()->uiLanguages ?? [];
+        } catch (package_exception $e) {
+            return [];
+        }
+        $tag = package::canonical_lang($setting);
+        if ($tag && self::match_language($tag, $offered)) {
+            return [];
+        }
+        $a = (object) ['lang' => s($setting), 'languages' => s(implode(', ', $offered))];
+        return [get_string('warning:importuilanguage', 'minilessonitem_smartframe', $a)];
+    }
+
+    /**
+     * A file name for a widget given as HTML text: its manifest id, if it makes a file name, else "widget".
+     *
+     * @param string $html the widget HTML
+     * @return string e.g. "maori-greetings.html"
+     */
+    protected static function html_filename(string $html): string {
+        try {
+            $path = make_request_directory() . '/widget.html';
+            file_put_contents($path, $html);
+            $id = (string) ((new package($path, 'widget.html'))->get_manifest()->id ?? '');
+        } catch (package_exception $e) {
+            $id = '';
+        }
+        $name = trim(clean_param(substr($id, 0, 60), PARAM_FILE), '. ');
+        return ($name !== '' ? $name : 'widget') . '.html';
+    }
+
+    /**
+     * Export an HTML widget as text in widgethtml, the way agents are asked to import one, so an agent can read
+     * and change it. A ZIP widget stays a base64 file. The stored revision and manifest are left out: the
+     * import works them out again from the widget.
+     *
+     * @param \stdClass $itemobj the item's export object, with its files
+     * @param \stdClass $itemrecord the item's record
+     * @return \stdClass
+     */
+    public static function export_item_adjust(\stdClass $itemobj, \stdClass $itemrecord): \stdClass {
+        $keycols = static::get_keycolumns();
+        foreach ([self::REVISION, self::MANIFEST] as $dbname) {
+            foreach ($keycols as $keycol) {
+                if ($keycol['dbname'] === $dbname) {
+                    unset($itemobj->{$keycol['jsonname']});
+                }
+            }
+        }
+        $files = $itemobj->files[self::FILE] ?? [];
+        if (count($files) === 1 && package::is_html_name((string) array_key_first($files))) {
+            $html = base64_decode((string) reset($files));
+            if (is_string($html) && mb_check_encoding($html, 'UTF-8')) {
+                $itemobj->{self::WIDGETHTML} = $html;
+                unset($itemobj->files[self::FILE]);
+            }
+        }
+        return $itemobj;
     }
 
     /**

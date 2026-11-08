@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'SmartFrame';
-$string['item_desc'] = 'SmartFrame 项目是一个尚未开发的项目类型的占位符。';
-$string['pluginname'] = 'SmartFrame';
+$string['additem'] = '小组件';
+$string['item_desc'] = '小组件项目运行用 ChatGPT 或 Claude 等 AI 工具制作的互动活动，以单个 HTML 文件（或 ZIP）上传。它可以向课程报告分数。';
+$string['pluginname'] = '小组件';

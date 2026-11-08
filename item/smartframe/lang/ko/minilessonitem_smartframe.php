@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'SmartFrame';
-$string['item_desc'] = 'SmartFrame 항목은 아직 개발되지 않은 항목 유형의 자리 표시자예요.';
-$string['pluginname'] = 'SmartFrame';
+$string['additem'] = '위젯';
+$string['item_desc'] = '위젯 항목은 ChatGPT나 Claude 같은 AI 도구로 만든 대화형 활동을 실행해요. HTML 파일 하나(또는 ZIP)로 업로드하며, 레슨에 점수를 보낼 수 있어요.';
+$string['pluginname'] = '위젯';

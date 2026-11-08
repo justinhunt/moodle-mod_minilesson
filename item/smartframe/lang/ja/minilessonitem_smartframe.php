@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'SmartFrame';
-$string['item_desc'] = 'SmartFrame 項目は、まだ開発されていない項目タイプのプレースホルダーです。';
-$string['pluginname'] = 'SmartFrame';
+$string['additem'] = 'ウィジェット';
+$string['item_desc'] = 'ウィジェット項目は、ChatGPT や Claude などの AI ツールで作ったインタラクティブな活動を実行します。1 つの HTML ファイル（または ZIP）としてアップロードし、レッスンにスコアを送ることもできます。';
+$string['pluginname'] = 'ウィジェット';

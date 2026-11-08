@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'SmartFrame';
-$string['item_desc'] = 'Елемент SmartFrame — це заглушка для типу елемента, який ще не розроблено.';
-$string['pluginname'] = 'SmartFrame';
+$string['additem'] = 'Віджет';
+$string['item_desc'] = 'Елемент «Віджет» запускає інтерактивну вправу, створену за допомогою інструмента ШІ, як-от ChatGPT або Claude, і завантажену як один HTML-файл (або ZIP). Він може передавати оцінку до уроку.';
+$string['pluginname'] = 'Віджет';

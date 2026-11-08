@@ -1166,6 +1166,9 @@ class import {
         // Include the files
         $itemobj->files = $thefiles;
 
+        // The item type may export some of it in its own way.
+        $itemobj = $itemtypeclass::export_item_adjust($itemobj, $itemrecord);
+
         return $itemobj;
     }//end of export item function
 }

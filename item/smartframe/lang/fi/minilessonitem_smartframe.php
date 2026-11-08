@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'SmartFrame';
-$string['item_desc'] = 'SmartFrame-osio on paikkamerkki osiotyypille, jota ei ole vielä kehitetty.';
-$string['pluginname'] = 'SmartFrame';
+$string['additem'] = 'Widget';
+$string['item_desc'] = 'Widget-osio suorittaa interaktiivisen tehtävän, joka on tehty tekoälytyökalulla, kuten ChatGPT:llä tai Claudella, ja ladattu yhtenä HTML-tiedostona (tai ZIP-tiedostona). Se voi lähettää pisteet oppitunnille.';
+$string['pluginname'] = 'Widget';

@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'SmartFrame';
-$string['item_desc'] = 'عنصر SmartFrame هو عنصر نائب لنوع عنصر لم يتم تطويره بعد.';
-$string['pluginname'] = 'SmartFrame';
+$string['additem'] = 'أداة تفاعلية';
+$string['item_desc'] = 'يشغّل عنصر الأداة التفاعلية نشاطًا تفاعليًا مصنوعًا بأداة ذكاء اصطناعي مثل ChatGPT أو Claude، ويُرفع كملف HTML واحد (أو ملف ZIP). ويمكنه إرسال درجة إلى الدرس.';
+$string['pluginname'] = 'أداة تفاعلية';
