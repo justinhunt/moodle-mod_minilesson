@@ -25,7 +25,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'Widget';
+$string['additem'] = 'Smart Frame';
 $string['aiinstructions'] = 'Make a widget with AI';
 $string['aiinstructions_copied'] = 'AI instructions copied';
 $string['aiinstructions_copy'] = 'Copy AI instructions';
@@ -76,9 +76,9 @@ A score sent by the widget is worked out in the learner\'s browser, so a learner
 $string['gradepolicy_ignore'] = 'Ignore';
 $string['gradepolicy_record'] = 'Save, but do not grade';
 $string['gradepolicy_use'] = 'Use as the item grade';
-$string['item_desc'] = 'The Widget item runs an interactive activity made with an AI tool such as ChatGPT or Claude, uploaded as one HTML file (or a ZIP). It can report a score to the lesson.';
-$string['pluginname'] = 'Widget';
-$string['privacy:metadata'] = 'The Widget item does not store any personal data.';
+$string['item_desc'] = 'Smart Frame loads an uploaded HTML page in a frame inside the Minilesson. It is responsive, secure and can generate a grade. It can be used for explainer widgets, custom interactive activities or even games.';
+$string['pluginname'] = 'Smart Frame';
+$string['privacy:metadata'] = 'The Smart Frame item does not store any personal data.';
 $string['uilanguage'] = 'Widget language';
 $string['uilanguage_auto'] = 'Automatic';
 $string['uilanguage_help'] = 'The language of the widget\'s instructions, buttons and feedback. This does not change the language being learned.

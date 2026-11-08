@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = '위젯';
-$string['item_desc'] = '위젯 항목은 ChatGPT나 Claude 같은 AI 도구로 만든 대화형 활동을 실행해요. HTML 파일 하나(또는 ZIP)로 업로드하며, 레슨에 점수를 보낼 수 있어요.';
-$string['pluginname'] = '위젯';
+$string['additem'] = 'Smart Frame';
+$string['item_desc'] = 'Smart Frame은 업로드한 HTML 페이지를 Minilesson 안의 프레임에 불러와요. 반응형이고 안전하며, 점수를 낼 수도 있어요. 설명용 위젯, 직접 만든 대화형 활동, 게임에도 쓸 수 있어요.';
+$string['pluginname'] = 'Smart Frame';

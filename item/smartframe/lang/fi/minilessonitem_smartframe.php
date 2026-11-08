@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'Widget';
-$string['item_desc'] = 'Widget-osio suorittaa interaktiivisen tehtävän, joka on tehty tekoälytyökalulla, kuten ChatGPT:llä tai Claudella, ja ladattu yhtenä HTML-tiedostona (tai ZIP-tiedostona). Se voi lähettää pisteet oppitunnille.';
-$string['pluginname'] = 'Widget';
+$string['additem'] = 'Smart Frame';
+$string['item_desc'] = 'Smart Frame näyttää ladatun HTML-sivun kehyksessä Minilesson-oppitunnin sisällä. Se on responsiivinen ja turvallinen, ja se voi antaa arvosanan. Sitä voi käyttää selittäviin widgetteihin, omiin interaktiivisiin tehtäviin tai jopa peleihin.';
+$string['pluginname'] = 'Smart Frame';

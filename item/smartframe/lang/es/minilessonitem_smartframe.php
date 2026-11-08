@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'Widget';
-$string['item_desc'] = 'El elemento Widget ejecuta una actividad interactiva creada con una herramienta de IA como ChatGPT o Claude y subida como un solo archivo HTML (o un ZIP). Puede enviar una puntuación a la lección.';
-$string['pluginname'] = 'Widget';
+$string['additem'] = 'Smart Frame';
+$string['item_desc'] = 'Smart Frame carga una página HTML subida en un marco dentro de la Minilesson. Es adaptable, seguro y puede generar una calificación. Se puede usar para widgets explicativos, actividades interactivas personalizadas o incluso juegos.';
+$string['pluginname'] = 'Smart Frame';

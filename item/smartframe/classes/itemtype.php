@@ -59,15 +59,6 @@ class itemtype extends item {
     public const UILANGUAGE_AUTO = 'auto';
 
     /**
-     * This item type is experimental.
-     *
-     * @return bool
-     */
-    public static function is_experimental() {
-        return true;
-    }
-
-    /**
      * The stored manifest of this item's widget.
      *
      * @return \stdClass|null
@@ -364,7 +355,7 @@ class itemtype extends item {
             return null;
         }
         $preface = <<<'MD'
-# Composing a Widget item for an import
+# Composing a Smart Frame item for an import
 
 The guide below was written for a teacher's AI chat, where the teacher tries the widget in the chat's preview
 and then downloads the file. When you compose a widget item for an import instead:

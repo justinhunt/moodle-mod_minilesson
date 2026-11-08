@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = '小组件';
-$string['item_desc'] = '小组件项目运行用 ChatGPT 或 Claude 等 AI 工具制作的互动活动，以单个 HTML 文件（或 ZIP）上传。它可以向课程报告分数。';
-$string['pluginname'] = '小组件';
+$string['additem'] = 'Smart Frame';
+$string['item_desc'] = 'Smart Frame 将上传的 HTML 页面加载到 Minilesson 内的框架中。它支持响应式布局，安全可靠，并能生成成绩。可用于讲解小组件、自定义互动活动，甚至游戏。';
+$string['pluginname'] = 'Smart Frame';

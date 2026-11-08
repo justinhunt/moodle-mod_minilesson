@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'ウィジェット';
-$string['item_desc'] = 'ウィジェット項目は、ChatGPT や Claude などの AI ツールで作ったインタラクティブな活動を実行します。1 つの HTML ファイル（または ZIP）としてアップロードし、レッスンにスコアを送ることもできます。';
-$string['pluginname'] = 'ウィジェット';
+$string['additem'] = 'Smart Frame';
+$string['item_desc'] = 'Smart Frame は、アップロードした HTML ページを Minilesson 内のフレームに読み込みます。レスポンシブで安全に動作し、評点を出すこともできます。解説用ウィジェット、独自のインタラクティブな活動、さらにはゲームにも使えます。';
+$string['pluginname'] = 'Smart Frame';

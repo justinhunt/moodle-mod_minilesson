@@ -23,7 +23,7 @@ and tell them what you changed.
   `maori-greetings.html`). If you can not make files, give the whole file in one code block and tell the
   teacher to save it as a `.html` file.
 - Tell the teacher in two or three lines what it does, its interface languages, and whether it reports a
-  score. They upload the file into a MiniLesson "Widget" item.
+  score. They upload the file into a MiniLesson "Smart Frame" item.
 
 **Changing an existing widget:** if the teacher gives you a widget file (`.html`, or a `.zip`), change what they
 ask for and keep everything else: the manifest block, the protocol code and the rules here.

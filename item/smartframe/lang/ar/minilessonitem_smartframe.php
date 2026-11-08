@@ -25,6 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['additem'] = 'أداة تفاعلية';
-$string['item_desc'] = 'يشغّل عنصر الأداة التفاعلية نشاطًا تفاعليًا مصنوعًا بأداة ذكاء اصطناعي مثل ChatGPT أو Claude، ويُرفع كملف HTML واحد (أو ملف ZIP). ويمكنه إرسال درجة إلى الدرس.';
-$string['pluginname'] = 'أداة تفاعلية';
+$string['additem'] = 'Smart Frame';
+$string['item_desc'] = 'يعرض Smart Frame صفحة HTML مرفوعة داخل إطار في Minilesson. وهو متجاوب وآمن، ويمكنه إنشاء درجة. ويمكن استخدامه لأدوات الشرح التفاعلية، أو للأنشطة التفاعلية المخصصة، أو حتى للألعاب.';
+$string['pluginname'] = 'Smart Frame';
