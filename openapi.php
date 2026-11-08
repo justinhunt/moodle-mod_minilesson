@@ -160,22 +160,22 @@ $agentinstructions = <<<JSON
         "entry_points": {
             "summary": "User requests arrive as one of three kinds. Route on what the user wants DONE, not on what they attached - the same PDF can arrive with any of these intents. Identify which, then follow the referenced workflow.",
             "reproduce_supplied_material": "The user wants what is in the material turned into items, faithfully - a worksheet, a set of questions, a lesson plan to transcribe. Follow direct_compose_workflow (OCR images/PDFs yourself first). Do not run a template: it would regenerate content the user already has.",
-            "generate_new_activities": "The user wants NEW activities, whether they described the lesson or attached something to base it on. Any attachment is context rather than content: it supplies the topic, the vocabulary, the reading text, the level. Follow typical_workflow and hybrid_pattern.choosing_the_mix, and lift the template inputs straight out of the material - its vocabulary into user_keywords, its passage into user_text, its level into user_level. 'Supplementary activities for the lesson in this PDF', 'practice for these words' and 'a lesson about X' are all this kind.",
+            "generate_new_activities": "The user wants NEW activities, whether they described the lesson or attached something to base it on. Any attachment is context rather than content: it supplies the topic, the vocabulary, the reading text, the level. 'Supplementary activities for the lesson in this PDF', 'practice for these words' and 'a lesson about X' are all this kind. Read choosing_your_approach to decide, item by item, between composing the items yourself (direct_compose_workflow) and running a template (typical_workflow).",
             "reuse_an_existing_lesson": "The user uploads an exported MiniLesson (itemsjson), or asks to base new lessons on an existing one, to reuse its shape for other topics. Follow base_lesson_replication. To reuse a lesson already on the site, pull it first with aigen_export_items_json and set exclude_files=true (the original images are dropped for a new topic anyway, and it keeps the response small).",
             "an_attachment_does_not_mean_reproduce": "Read the verb. 'Turn this into items', 'reproduce', 'keep these questions' is reproduce_supplied_material. 'Generate', 'supplementary', 'practice for', 'based on', 'inspired by' is generate_new_activities. If it is genuinely unclear, ask which they want before building anything - the two produce very different lessons from the same file."
         },
         "review_before_creating": {
-            "rule": "Before calling any tool that creates or imports (aigen_create_empty_lesson, aigen_create_add_items_to_lesson, aigen_import_items_json), present a plan and wait for the user's approval. For direct-compose, list each item with its actual content (question, answers, text). For templates, list EVERY input the template declares with the exact value you will send, each marked (from the user), (your choice) or (BLANK). State the target course and lesson title. Create only after the user approves, and incorporate any changes they request.",
+            "rule": "Before calling any tool that creates or imports (aigen_create_empty_lesson, aigen_create_add_items_to_lesson, aigen_import_items_json), present a plan and wait for the user's approval. For direct-compose, list each item with its actual content (question, answers, text, image prompts). For templates, list EVERY input the template declares with the exact value you will send, each marked (from the user), (your choice) or (BLANK). State the target course and lesson title. Create only after the user approves, and incorporate any changes they request.",
             "declare_your_choices": "A decision you made on the user's behalf is still a decision and belongs in the plan - including defaults you accepted and inputs you are leaving empty. Where you picked a value the user expressed no preference about (image style, language level, voice, number of items), name your choice and offer the alternatives rather than presenting it as settled.",
             "never_send_a_required_input_empty": "Inputs come back from aigen_list_templates with required:true when the template actually consumes them. An empty required input has no default to fall back on: it produces plausible looking but broken content - a vocabulary card whose translation repeats the word, a gap-fill with nothing gapped, a sentence whose hint is missing. If the user has not told you what the input needs (a native language, a source text, a level), ask them before creating. aigen_create_add_items_to_lesson rejects the call and names the empty inputs.",
             "exception": "If the user has said to just go ahead, or to skip the review, create without pausing. This waives the review, not the required inputs: still ask for a required value you do not have."
         },
         "choosing_a_template": {
             "rule": "Several templates usually produce the same item type, and they differ in how much you decide. Each template reports a 'control' level - 'supplied' (your text is used verbatim), 'derived' (the AI rewrites or marks up text you supply), 'generated' (the AI invents the content from a topic, keywords or level) - and lists its siblings in 'variants', strongest control first. Read the variants before settling on a template.",
-            "test": "For every teaching point you have already decided - which words are shuffled or gapped, which answer is correct, the translation language, the grammar point being practised, the item sequence - check the template has an input that carries it. If it has none, the AI will decide it for you and may contradict the lesson aim. Move to the higher-control variant, or compose the item directly with the direct_compose_workflow.",
+            "test": "For every teaching point you have already decided - which words are shuffled or gapped, which answer is correct, the translation language, the grammar point being practised, the item sequence - check the template has an input that carries it. If it has none, the AI will decide it for you and may contradict the lesson aim. Move to the higher-control variant, or compose the item directly with the direct_compose_workflow. Lift the inputs straight out of any material - its vocabulary into user_keywords, its passage into user_text, its level into user_level.",
             "example": "Asked for a word shuffle that drills a specific grammar point, a 'generated' word shuffle template that takes only sentences and an image style will shuffle whichever words it likes, which will usually not be the grammar point. The 'supplied' variant takes sentences already marked up with the words to shuffle, so the grammar point survives.",
             "tradeoff": "Higher-control templates ask more of you (marked-up sentences, plus clean sentences for image generation). That is the trade, not a reason to avoid them: take a 'generated' variant only where the user has genuinely left that detail open.",
-            "agentonly": "Templates flagged agentonly:true are hidden from the human picker and are usually the high-control member of their family - they ask for content that is tedious to type by hand but easy for you to compose. They are available to you and are often the right choice."
+            "agentonly": "Templates flagged agentonly:true are hidden from the human picker and are usually the high-control member of their family - they ask for content that is tedious to type by hand but easy for you to compose."
         },
         "authentication": {
             "how": "Send your Moodle web service token in the 'X-API-Key' request header on every call. Configure it once in your client.",
@@ -183,23 +183,25 @@ $agentinstructions = <<<JSON
             "calls": "Every operation is POST /<function> (the function name without the 'mod_minilesson_' prefix), with the arguments as a JSON body. Read responses as {\\"data\\": ...} on success or {\\"error\\": true, \\"message\\": ...} on failure."
         },
         "choosing_your_approach": {
-            "summary": "There are two ways to create items in a lesson: (A) the template workflow (typical_workflow), where you pick a template and the server generates the content with AI; and (B) the direct-compose workflow (direct_compose_workflow), where you author the item JSON yourself and import it. Neither is all-or-nothing: a lesson can run several templates, and it can mix templates with directly composed items. Decide per lesson, and read hybrid_pattern - especially hybrid_pattern.choosing_the_mix - before settling on one approach for the whole lesson.",
+            "summary": "There are two ways to create items in a lesson: (A) the direct-compose workflow (direct_compose_workflow), where you author the item JSON yourself and import it; and (B) the template workflow (typical_workflow), where you pick a template and a separate AI on the server generates the content. Neither is all-or-nothing: one lesson can mix composed items with the output of one or several templates.",
+            "default": "Composing the items yourself is the stronger default. You have read the user's request and their material, so you can design each item to fit it - which words are gapped, the distractors, the order of the activities, the layout, how hard each step is - and every field of the item is yours to set. A template's AI sees only the few inputs the template exposes and fixes everything else itself.",
+            "the_more_the_request_says_the_less_a_template_fits": "A teaching aim, a grammar point, a word list, a passage or lesson plan to build on, a sequence of activities, particular item types, notes about the learners: each is a decision a template's inputs may not carry, and whatever they do not carry the template's AI decides for itself, often against the lesson aim. When the request is detailed or comes with material, compose the items yourself. Use a template for part of a lesson only where it does that part as well as you would.",
+            "images_and_audio": "Media is no reason to prefer a template. To get a generated picture in a composed item, put an image prompt in the import payload's fileprompts ({'fileprompts': {'<filesid>': {'<filearea>': {'<filename>': '<image prompt>'}}}}) and the server generates it; the files convention in aigen_fetch_item_type_details explains the details and the per-import limit. Spoken audio is generated from the item's TTS fields.",
             "prefer_templates_when": [
-                "A template returned by list_templates matches the request - check its description, skills and outputs before deciding no template fits, then use choosing_a_template to pick the right variant of it",
-                "You want the content (text, questions, and any images) generated for you rather than authoring it yourself",
-                "The lesson needs generated images or audio: templates can produce media server-side, whereas direct compose requires you to supply every media file yourself as base64, or to put image prompts in the import payload's fileprompts so the server generates them",
-                "You just need a standard, well-formed lesson quickly and do not need precise control over each item"
+                "The request is short and open, and close to what a template produces - 'a vocabulary lesson about food for A2', with nothing more said. A tested template gives a well-formed lesson quickly, and a multi-item template's items are designed to work as a set",
+                "The item type has no import docs (list_itemtypes reports hasimportdocs=false), so it cannot be composed"
             ],
             "prefer_direct_compose_when": [
-                "The user supplied exact content (a specific reading passage, vocabulary list, or dialog) that you must reproduce faithfully rather than regenerate",
-                "You need a specific sequence or mix of item types that no single template produces",
+                "The request specifies teaching points, a sequence, item types or learner needs that a template's inputs do not carry",
+                "The user supplied material: exact content to reproduce, or a passage, word list or lesson plan to build new activities on",
+                "You need an item shape or setting no template exposes (the two-column multichoice answer layout, say)",
                 "You are converting an existing lesson plan, or round-tripping items from aigen_export_items_json (export, edit, re-import)",
-                "The user should review or adjust the proposed items before they are created",
                 "You want per-item error feedback to iterate: import_items_json returns an errors array you can act on and resubmit, whereas a template job is fire-and-forget plus status polling"
             ],
+            "choosing_item_types": "Choose item types for what the lesson needs, from the usage each one reports in aigen_list_itemtypes.",
             "constraints": [
                 "Direct compose is only available for item types where list_itemtypes reports hasimportdocs=true; use a template for any other type",
-                "When both a template and direct compose would work, prefer the template unless the request needs the fidelity or item-by-item control that direct compose gives - but check choosing_a_template first, because a higher-control variant of the template often gives you that control without hand-composing"
+                "When you do use a template, read choosing_a_template and pick the variant whose inputs carry the decisions you have already made"
             ]
         },
         "typical_workflow": [
@@ -212,7 +214,7 @@ $agentinstructions = <<<JSON
             {"step": 7, "name": "Check status", "call": "POST /aigen_fetch_create_items_status", "purpose": "Poll job completion.", "polling": "Repeat every 2-5 seconds until status != 'Progress'.", "body": {"jobids": ["<jobid>"]}}
         ],
         "direct_compose_workflow": {
-            "purpose": "Compose the lesson item JSON yourself and import it. Use when you are designing the content (e.g. converting a workbook page or lesson plan), or when the user should review items before they are created. Only item types with hasimportdocs=true can be composed this way.",
+            "purpose": "Compose the lesson item JSON yourself and import it. This is the usual way to build a lesson for a detailed request or one that comes with material (see choosing_your_approach). Only item types with hasimportdocs=true can be composed this way.",
             "steps": [
                 {"step": 1, "name": "List item types", "call": "POST /aigen_list_itemtypes", "purpose": "Choose item types matching the design; check hasimportdocs.", "body": {}},
                 {"step": 2, "name": "Fetch item type details", "call": "POST /aigen_fetch_item_type_details", "purpose": "For each chosen type, fetch its import field spec (fields, allowed values, file areas, examplejson). Compose items strictly from the documented fields. If the response carries an authoringguide, read it in full and follow it before writing that item's content.", "body": {"itemtype": "<type>"}},
@@ -221,21 +223,13 @@ $agentinstructions = <<<JSON
             ]
         },
         "hybrid_pattern": {
-            "purpose": "Every way of adding items works against the same lesson (by cmid), so one lesson can mix as many of them as it needs - several templates, or templates plus directly composed items.",
+            "purpose": "Every way of adding items works against the same lesson (by cmid), so one lesson can mix as many of them as it needs - composed items, several templates, or both.",
             "how": [
                 "Create the lesson once with aigen_create_empty_lesson to get a cmid",
-                "Run the template workflow against that cmid (aigen_create_add_items_to_lesson, then poll status). Run it once per template: a lesson built from two or three templates is normal, and many templates produce a single item (outputs[].itemcount is 1) precisely so they can be combined this way",
-                "Then call aigen_import_items_json with the same cmid to append any items no template can produce",
+                "Call aigen_import_items_json with that cmid for the items you compose",
+                "Run the template workflow against the same cmid (aigen_create_add_items_to_lesson, then poll status) for any part of the lesson a template does as well as you would. Run it once per template: many templates produce a single item (outputs[].itemcount is 1) so they can be combined",
                 "Each call appends after the existing items, so order your calls to get the item order you want"
-            ],
-            "never": "Do not conclude that because no single template covers the whole lesson you must compose all of it yourself. That is the most common way to end up hand-building a lesson the templates could have generated, images and all.",
-            "choosing_the_mix": [
-                "Does the lesson want images? Use templates, one or several - the server generates the media for you, and a multi-item template reuses the images it generates across its items. Composing directly means supplying every image yourself as base64, or adding fileprompts to the import payload ({\"fileprompts\": {\"<filesid>\": {\"<filearea>\": {\"<filename>\": \"<image prompt>\"}}}}) so the server generates them.",
-                "Is one multi-item template close to the whole lesson? Use it. Its items are designed as a set that works together, which separate runs cannot give you.",
-                "Do you need control that the multi-item templates do not expose? Build the lesson from several agentonly:true single-item templates. They expose more inputs than their siblings, carry more guidance in their field descriptions, and still generate images - which makes them the way to have images and precise control at once. See choosing_a_template.agentonly.",
-                "Only then compose directly: for content the user supplied that must be reproduced exactly, for an item shape no template can express (the two-column multichoice answer layout, say), or when round-tripping aigen_export_items_json."
-            ],
-            "why": "Templates are efficient but blunt - each has a predetermined output shape and deliberately exposes only a few inputs, fixing the rest itself, and a multi-item template amplifies that. They are excellent when what the user wants is close to what the template produces. Direct compose has the opposite balance: every field of the item is yours to set, but every image is yours to supply."
+            ]
         },
         "base_lesson_replication": {
             "when": "Only when the user gives you an exported lesson (itemsjson from aigen_export_items_json) and asks for more lessons like it on other topics.",
@@ -243,7 +237,7 @@ $agentinstructions = <<<JSON
                 "If you pull the source lesson yourself, call aigen_export_items_json with exclude_files=true - you drop the original images for a new topic anyway, and it avoids an oversized response.",
                 "Treat the exported itemsjson as a known-good example. Keep each item's type, layout, options and settings, and rewrite only the wording for the new topic.",
                 "Do not supply audio files: spoken audio is regenerated from the text on import.",
-                "Uploaded images will not match the new topic: drop them, keep only if still suitable, or ask the user for new ones.",
+                "Uploaded images will not match the new topic: drop them, and where the new topic wants pictures give new image prompts in the payload's fileprompts.",
                 "For each topic, call aigen_create_empty_lesson for a new cmid, then aigen_import_items_json. Read the errors array and fix any rejected item before moving on."
             ]
         }
