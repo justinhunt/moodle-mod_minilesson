@@ -9,6 +9,10 @@ Version 1.1.62 (Build 2026110800)
 - AI agents (MCP, the AI assistant) can add Widget items when the item type is enabled. They put the
   widget's HTML in the new widgethtml import field as plain text. Export gives a one-file widget
   back in the same field
+- AI agents (MCP, the AI assistant, custom GPTs) now write the items themselves by default, and use
+  lesson templates mainly for short, open requests. The more detail or material a request comes with,
+  the less they use templates. Wanting pictures is no longer a reason to use a template: written
+  items can carry image prompts, and the server makes the pictures on import
 - the AI assistant no longer fails on replies that take more than about a minute, such as writing a
   whole widget. Under Cloud Poodll the AI now writes its reply in the background and the page checks
   on it until it is done. The page shows "Still working" after 20 seconds, and carries on after a
