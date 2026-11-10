@@ -70,6 +70,40 @@ class itemtype extends item {
     }
 
     /**
+     * Load the item, and say whether it counts towards the lesson grade.
+     *
+     * The lesson asks $gradeable to decide, for a lesson that is this one item, whether there is a
+     * results page to finish on. A widget whose score is ignored has none, like a content page.
+     *
+     * @param \stdClass $itemrecord
+     * @param \stdClass|false $moduleinstance
+     * @param \context|false $context
+     */
+    public function from_record($itemrecord, $moduleinstance = false, $context = false) {
+        parent::from_record($itemrecord, $moduleinstance, $context);
+        $this->gradeable = $this->grade_policy() !== self::GRADE_IGNORE;
+    }
+
+    /**
+     * What the lesson does with the widget's score: one of the GRADE_* values.
+     *
+     * A widget that says it never reports a score is treated as ungraded, whatever the setting says.
+     *
+     * @return int
+     */
+    public function grade_policy(): int {
+        $policy = (int) ($this->itemrecord->{self::GRADEPOLICY} ?? self::GRADE_IGNORE);
+        if ($policy !== self::GRADE_RECORD && $policy !== self::GRADE_USE) {
+            return self::GRADE_IGNORE;
+        }
+        $manifest = $this->get_manifest();
+        if (!$manifest || empty($manifest->capabilities->grade)) {
+            return self::GRADE_IGNORE;
+        }
+        return $policy;
+    }
+
+    /**
      * Export the data for the mustache template, and for the item's JS.
      *
      * @param \renderer_base $output renderer
@@ -115,15 +149,7 @@ class itemtype extends item {
             $testitem->parentorigin = $parentorigin;
         }
 
-        $policy = (int) ($itemrecord->{self::GRADEPOLICY} ?? self::GRADE_IGNORE);
-        if ($policy !== self::GRADE_RECORD && $policy !== self::GRADE_USE) {
-            $policy = self::GRADE_IGNORE;
-        }
-        // A widget that says it never reports a score is treated as ungraded, whatever the setting says.
-        if (!$manifest || empty($manifest->capabilities->grade)) {
-            $policy = self::GRADE_IGNORE;
-        }
-        $testitem->gradepolicy = $policy;
+        $testitem->gradepolicy = $this->grade_policy();
         $testitem->totalmarks = max(1, (int) ($itemrecord->{constants::TOTALMARKS} ?? 1));
 
         return $testitem;
