@@ -176,7 +176,11 @@ class itemtype extends item {
                 $s->sentence = $sentence;
                 $s->length = \core_text::strlen($sentence);
 
-                if ($itemrecord->{constants::LISTENORREAD} == constants::LISTENORREAD_LISTEN) {
+                // In listen mode the answer text is hidden as dots, unless the author asked for A,B,C,D labels.
+                if (
+                    $itemrecord->{constants::LISTENORREAD} == constants::LISTENORREAD_LISTEN
+                    && $testitem->hideanswertext != self::HIDEANSWER_ABCD
+                ) {
                     $s->prompt = $this->dottify_text($sentence);
                 } else {
                     switch($testitem->hideanswertext) {
