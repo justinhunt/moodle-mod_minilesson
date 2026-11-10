@@ -113,6 +113,7 @@ class helper
                     break;
                 case '(4)':
                     $item->name = \core_text::substr($item->name, 0, -3) . '(5)';
+                    break;
                 case '(5)':
                         $item->name = \core_text::substr($item->name, 0, -3) . '(6)';
                     break;
