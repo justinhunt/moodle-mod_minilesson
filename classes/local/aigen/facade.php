@@ -359,6 +359,16 @@ class facade {
           Apply it (dryrun=false) once they approve, unless they have said to just go ahead.
         - Read every result. Resend an "invalid" item with the fault its message names put right.
         The item type and the media files of an item cannot be changed this way.
+
+        OTHER EDITS. aigen_get_course_outline shows a course's sections and lessons, to find the lesson the teacher
+        means. aigen_find_items searches every lesson of a course by type, field values or text, to find all the
+        items a change applies to. aigen_insert_items adds new items at a chosen place (the import only adds at the
+        end), aigen_copy_items copies items with their media between lessons, aigen_reorder_items reorders a lesson,
+        and aigen_delete_items deletes items. aigen_put_item_files replaces an item's media, aigen_get_item_media
+        shows you its pictures, and aigen_get_lesson_settings / aigen_update_lesson_settings read and change a
+        lesson's settings. Every tool that changes something but uploads no files takes dryrun: show the user the dry
+        run and wait for approval before the real call, as for updates. A delete cannot be undone. When a result
+        carries a "warning" that learners have attempts, pass it on to the teacher.
         INSTRUCTIONS;
     }
 

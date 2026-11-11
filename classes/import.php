@@ -224,9 +224,11 @@ class import {
     /**
      * Check every item without importing any, and list those that fail only their content checks.
      *
+     * @param bool $contentonly list only the items that fail their content checks. When false, list every item
+     *        that would be refused, for whatever reason.
      * @return array failure entries (see line_error()) for the items that fail their content checks
      */
-    public function find_content_problems() {
+    public function find_content_problems($contentonly = true) {
         $problems = [];
         $itemnum = 0;
         $this->dryrun = true;
@@ -235,7 +237,7 @@ class import {
                 $itemnum++;
                 $this->unknownfields = [];
                 $outcome = $this->import_process_line($item);
-                if ($outcome !== true && !empty($outcome->contentcheck)) {
+                if ($outcome !== true && (!$contentonly || !empty($outcome->contentcheck))) {
                     $outcome->itemnum = $itemnum;
                     $problems[] = $outcome;
                 }

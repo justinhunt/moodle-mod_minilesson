@@ -88,6 +88,9 @@ class itemeditor {
     /** @var import does the mapping between import field names and DB columns */
     protected $import;
 
+    /** @var \stdClass the course's record */
+    protected $course;
+
     /**
      * Set up for one lesson.
      *
@@ -100,7 +103,493 @@ class itemeditor {
         $this->cm = $cm;
         $this->moduleinstance = $moduleinstance;
         $this->context = $context;
+        $this->course = $course;
         $this->import = new import($moduleinstance, $context, $course, $cm);
+    }
+
+    /**
+     * Set up for the lesson with this course module id.
+     *
+     * @param int $cmid the course module id
+     * @return itemeditor
+     */
+    public static function for_cmid(int $cmid): itemeditor {
+        global $DB;
+        $cm = get_coursemodule_from_id(constants::M_MODNAME, $cmid, 0, false, MUST_EXIST);
+        $moduleinstance = $DB->get_record(constants::M_TABLE, ['id' => $cm->instance], '*', MUST_EXIST);
+        $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+        return new itemeditor($cm, $moduleinstance, $course, \context_module::instance($cm->id));
+    }
+
+    /**
+     * The lesson's context.
+     *
+     * @return \context_module
+     */
+    public function get_context(): \context_module {
+        return $this->context;
+    }
+
+    /**
+     * How many attempts learners have made at this lesson.
+     *
+     * An attempt stores its results by the item's place in the lesson, not by the item. Adding, removing or
+     * moving items makes the results of earlier attempts line up with the wrong items.
+     *
+     * @return int
+     */
+    public function attempt_count(): int {
+        global $DB;
+        return $DB->count_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $this->moduleinstance->id]);
+    }
+
+    /**
+     * The warning to give with a change to the order of the items, when the lesson has attempts.
+     *
+     * @return string the warning, or an empty string
+     */
+    public function attempts_warning(): string {
+        $count = $this->attempt_count();
+        return $count ? get_string('edit:attemptswarning', constants::M_COMPONENT, $count) : '';
+    }
+
+    /**
+     * The lesson's item ids in lesson order.
+     *
+     * @return int[]
+     */
+    public function get_order(): array {
+        return array_map('intval', array_keys($this->get_item_records()));
+    }
+
+    /**
+     * Put the lesson's items in a new order.
+     *
+     * @param int[] $itemids every item of the lesson, each once, in the new order
+     * @param bool $logit fire the items_reordered event
+     * @throws \moodle_exception if the list is not exactly the lesson's items
+     */
+    public function set_order(array $itemids, bool $logit = true): void {
+        global $DB;
+        $itemids = array_map('intval', $itemids);
+        $current = $this->get_order();
+        $sorted = $current;
+        sort($sorted);
+        $given = $itemids;
+        sort($given);
+        if ($sorted !== $given) {
+            throw new \moodle_exception('edit:badorder', constants::M_COMPONENT);
+        }
+        if ($itemids === $current) {
+            return;
+        }
+        $transaction = $DB->start_delegated_transaction();
+        foreach ($itemids as $index => $itemid) {
+            $DB->set_field(constants::M_QTABLE, 'itemorder', $index + 1, ['id' => $itemid]);
+        }
+        $transaction->allow_commit();
+        if ($logit) {
+            \mod_minilesson\event\items_reordered::create_from_lesson($this->context, $this->moduleinstance->id, $itemids)
+                ->trigger();
+        }
+    }
+
+    /**
+     * Move some items of the lesson to sit together after another item, in the order given.
+     *
+     * @param int[] $itemids the items to move
+     * @param int $afteritemid the item they go after: 0 for the start of the lesson, -1 for the end
+     * @throws \moodle_exception if the item to go after is not in the lesson, or is one of those moved
+     */
+    public function place_items(array $itemids, int $afteritemid): void {
+        $itemids = array_map('intval', $itemids);
+        $others = array_values(array_diff($this->get_order(), $itemids));
+        if ($afteritemid === -1) {
+            $order = array_merge($others, $itemids);
+        } else if ($afteritemid === 0) {
+            $order = array_merge($itemids, $others);
+        } else {
+            $at = array_search($afteritemid, $others, true);
+            if ($at === false) {
+                throw new \moodle_exception('edit:badafter', constants::M_COMPONENT, '', $afteritemid);
+            }
+            $order = array_merge(array_slice($others, 0, $at + 1), $itemids, array_slice($others, $at + 1));
+        }
+        $this->set_order($order, false);
+    }
+
+    /**
+     * Check that the item to place new items after is in the lesson.
+     *
+     * @param int $afteritemid 0 for the start, -1 for the end, or an item id
+     * @return bool
+     */
+    public function is_valid_after(int $afteritemid): bool {
+        return $afteritemid === 0 || $afteritemid === -1 || in_array($afteritemid, $this->get_order(), true);
+    }
+
+    /**
+     * Check new items as an import would, without adding them.
+     *
+     * @param \stdClass $payload {items, files} in the import format
+     * @return \stdClass[] failure entries ({itemnum, type, name, message}) for the items that would be refused
+     */
+    public function check_new_items(\stdClass $payload): array {
+        $this->import->set_reader($payload, true);
+        return $this->import->find_content_problems(false);
+    }
+
+    /**
+     * Add new items to the lesson, as an import does, and place them.
+     *
+     * @param \stdClass $payload {items, files, fileprompts} in the import format
+     * @param int $afteritemid the item the new items go after: 0 for the start, -1 for the end
+     * @return \stdClass the import results (see import::import_process()), plus itemids (the new items, in the
+     *         order sent) and imagefailures
+     */
+    public function insert_items(\stdClass $payload, int $afteritemid): \stdClass {
+        global $DB;
+        $before = $this->get_order();
+        $imagefailures = $this->import->generate_images_from_prompts($payload);
+        $this->import->set_reader($payload, true);
+        $results = $this->import->import_process();
+        $newids = array_values(array_diff($this->get_order(), $before));
+        sort($newids);
+        if ($newids) {
+            $this->place_items($newids, $afteritemid);
+            foreach ($newids as $itemid) {
+                \mod_minilesson\event\item_created::create_from_item(
+                    $DB->get_record(constants::M_QTABLE, ['id' => $itemid]),
+                    $this->context
+                )->trigger();
+            }
+        }
+        $results->itemids = $newids;
+        $results->imagefailures = $imagefailures;
+        return $results;
+    }
+
+    /**
+     * Copy items of another lesson (or this one) into this lesson, with their files, and place them.
+     *
+     * @param itemeditor $source the lesson to copy from
+     * @param int[] $itemids the items to copy, which must be in the source lesson
+     * @param int $afteritemid the item the copies go after: 0 for the start, -1 for the end
+     * @return \stdClass with itemids (the copies, in the source lesson's order) and notfound (item ids)
+     */
+    public function copy_items(itemeditor $source, array $itemids, int $afteritemid): \stdClass {
+        global $DB, $USER, $CFG;
+        $result = (object) ['itemids' => [], 'notfound' => []];
+        $sourcerecords = $source->get_item_records();
+        $wanted = [];
+        foreach (array_map('intval', $itemids) as $itemid) {
+            if (isset($sourcerecords[$itemid])) {
+                $wanted[$itemid] = true;
+            } else {
+                $result->notfound[] = $itemid;
+            }
+        }
+        $fs = get_file_storage();
+        $sourcecontext = $source->get_context();
+        foreach (array_intersect_key($sourcerecords, $wanted) as $record) {
+            $oldid = (int) $record->id;
+            $copy = clone $record;
+            unset($copy->id, $copy->position);
+            $copy->minilesson = $this->moduleinstance->id;
+            $copy->itemorder = count($this->get_order()) + 1;
+            $copy->rsquestionkey = item::create_itemkey();
+            $copy->timecreated = time();
+            $copy->timemodified = time();
+            $copy->createdby = $USER->id;
+            $copy->modifiedby = $USER->id;
+            $copy->id = $DB->insert_record(constants::M_QTABLE, $copy);
+
+            foreach (item::get_item_fileareas($sourcecontext, $oldid) as $filearea) {
+                foreach ($fs->get_area_files($sourcecontext->id, constants::M_COMPONENT, $filearea, $oldid, 'id', false) as $file) {
+                    $fs->create_file_from_storedfile([
+                        'contextid' => $this->context->id,
+                        'itemid' => $copy->id,
+                        'userid' => $USER->id,
+                    ], $file);
+                }
+            }
+
+            // The item works on this record itself, so what it sets on it can be read back.
+            $workrecord = clone $copy;
+            $theitem = utils::fetch_item_from_itemrecord($workrecord, $this->moduleinstance, $this->context);
+            if ($theitem) {
+                // The speech model is made for the lesson's language and region, which may not be the source's.
+                // It is only made again when the copy needs a different one.
+                $theitem->update_create_langmodel($copy);
+                $passagehash = $workrecord->passagehash ?? $copy->passagehash;
+                if ((string) $passagehash !== (string) $copy->passagehash) {
+                    $DB->set_field(constants::M_QTABLE, 'passagehash', $passagehash, ['id' => $copy->id]);
+                }
+                $theitem->files_changed();
+            }
+            \mod_minilesson\event\item_created::create_from_item(
+                $DB->get_record(constants::M_QTABLE, ['id' => $copy->id]),
+                $this->context
+            )->trigger();
+            $result->itemids[] = (int) $copy->id;
+        }
+        if ($result->itemids) {
+            $this->place_items($result->itemids, $afteritemid);
+        }
+        return $result;
+    }
+
+    /**
+     * Delete items of this lesson, with their files.
+     *
+     * @param int[] $itemids the items
+     * @param bool $dryrun list what would be deleted without deleting it
+     * @return \stdClass with deleted (each {itemid, name, type, position}) and notfound (item ids)
+     */
+    public function delete_items(array $itemids, bool $dryrun): \stdClass {
+        $result = (object) ['deleted' => [], 'notfound' => []];
+        $records = $this->get_item_records();
+        foreach (array_map('intval', $itemids) as $itemid) {
+            if (!isset($records[$itemid])) {
+                $result->notfound[] = $itemid;
+                continue;
+            }
+            $record = $records[$itemid];
+            if (!$dryrun) {
+                $snapshot = clone $record;
+                unset($snapshot->position);
+                item::delete_item($itemid, $this->context);
+                \mod_minilesson\event\item_deleted::create_from_item($snapshot, $this->context)->trigger();
+            }
+            $result->deleted[] = (object) [
+                'itemid' => $itemid,
+                'name' => (string) $record->name,
+                'type' => (string) $record->type,
+                'position' => (int) $record->position,
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * The file areas of an item that a caller may put files in: those its import takes files for.
+     *
+     * @param \stdClass $record the item's record
+     * @return string[]
+     */
+    public static function upload_fileareas(\stdClass $record): array {
+        $itemtypeclass = item::get_itemtype_class($record->type);
+        if (!$itemtypeclass) {
+            return [];
+        }
+        $areas = [];
+        foreach ($itemtypeclass::get_keycolumns() as $coldef) {
+            if ($coldef['type'] === 'anonymousfile') {
+                $areas[] = $coldef['jsonname'];
+            }
+        }
+        return array_values(array_unique($areas));
+    }
+
+    /**
+     * Put files in one file area of an item, adding to or replacing what it holds.
+     *
+     * @param int $itemid the item
+     * @param string $filearea the file area, one of upload_fileareas()
+     * @param array $files file name => base64 content
+     * @param bool $replace remove the files already in the area first. Otherwise a file of the same name is
+     *        replaced and the others stay.
+     * @return \stdClass with status (updated, invalid or notfound), message, version and files (the area's
+     *         files after, each {filename, size, mimetype})
+     */
+    public function put_files(int $itemid, string $filearea, array $files, bool $replace): \stdClass {
+        global $DB, $USER, $CFG;
+        $result = (object) ['status' => self::STATUS_INVALID, 'message' => '', 'version' => 0, 'files' => []];
+        $record = $DB->get_record(constants::M_QTABLE, ['id' => $itemid, 'minilesson' => $this->moduleinstance->id]);
+        if (!$record) {
+            $result->status = self::STATUS_NOTFOUND;
+            $result->message = get_string('edit:notfound', constants::M_COMPONENT, $itemid);
+            return $result;
+        }
+        $result->version = (int) $record->timemodified;
+        $allowed = self::upload_fileareas($record);
+        if (!in_array($filearea, $allowed, true)) {
+            $result->message = get_string('edit:badfilearea', constants::M_COMPONENT, (object) [
+                'filearea' => s($filearea),
+                'type' => s($record->type),
+                'allowed' => implode(', ', $allowed),
+            ]);
+            return $result;
+        }
+        if (!$files) {
+            $result->message = get_string('edit:nofilesgiven', constants::M_COMPONENT);
+            return $result;
+        }
+        $maxbytes = get_max_upload_file_size($CFG->maxbytes, $this->course->maxbytes);
+        $decoded = [];
+        foreach ($files as $filename => $content) {
+            $filename = (string) $filename;
+            if ($filename === '' || clean_param($filename, PARAM_FILE) !== $filename) {
+                $result->message = get_string('edit:badfilename', constants::M_COMPONENT, s($filename));
+                return $result;
+            }
+            $bytes = is_string($content) ? base64_decode($content, true) : false;
+            if ($bytes === false || $bytes === '') {
+                $result->message = get_string('error:importbase64', 'minilessonitem_smartframe', s($filename));
+                return $result;
+            }
+            if ($maxbytes && strlen($bytes) > $maxbytes) {
+                $result->message = get_string('edit:filetoobig', constants::M_COMPONENT, (object) [
+                    'filename' => s($filename),
+                    'max' => display_size($maxbytes),
+                ]);
+                return $result;
+            }
+            $decoded[$filename] = $bytes;
+        }
+
+        $fs = get_file_storage();
+        if ($replace) {
+            $fs->delete_area_files($this->context->id, constants::M_COMPONENT, $filearea, $itemid);
+        }
+        foreach ($decoded as $filename => $bytes) {
+            $existing = $fs->get_file($this->context->id, constants::M_COMPONENT, $filearea, $itemid, '/', $filename);
+            if ($existing) {
+                $existing->delete();
+            }
+            $fs->create_file_from_string([
+                'contextid' => $this->context->id,
+                'component' => constants::M_COMPONENT,
+                'filearea' => $filearea,
+                'itemid' => $itemid,
+                'filepath' => '/',
+                'filename' => $filename,
+                'userid' => $USER->id,
+            ], $bytes);
+        }
+
+        $version = max(time(), (int) $record->timemodified + 1);
+        $DB->update_record(constants::M_QTABLE, (object) [
+            'id' => $itemid,
+            'timemodified' => $version,
+            'modifiedby' => $USER->id,
+        ]);
+        $record = $DB->get_record(constants::M_QTABLE, ['id' => $itemid]);
+        $theitem = utils::fetch_item_from_itemrecord(clone $record, $this->moduleinstance, $this->context);
+        if ($theitem) {
+            $theitem->files_changed();
+        }
+        \mod_minilesson\event\item_updated::create_from_item($record, $this->context, [$filearea])->trigger();
+
+        foreach ($fs->get_area_files($this->context->id, constants::M_COMPONENT, $filearea, $itemid, 'filename', false) as $file) {
+            $result->files[] = (object) [
+                'filename' => $file->get_filename(),
+                'size' => (int) $file->get_filesize(),
+                'mimetype' => (string) $file->get_mimetype(),
+            ];
+        }
+        $result->status = self::STATUS_UPDATED;
+        $result->version = $version;
+        return $result;
+    }
+
+    /**
+     * The media files of an item, with pictures made small enough for an AI to look at.
+     *
+     * @param int $itemid the item
+     * @param string $filearea one file area, or '' for all of them
+     * @param int $maxwidth the widest a picture is given, in pixels
+     * @return \stdClass[]|null each {filearea, filename, mimetype, size, url, width, height, content, contentmimetype},
+     *         or null if this lesson has no such item. A picture's content is base64 (JPEG or PNG, scaled down),
+     *         an SVG's is its text, and other files have none.
+     */
+    public function get_media(int $itemid, string $filearea, int $maxwidth): ?array {
+        global $DB;
+        if (!$DB->record_exists(constants::M_QTABLE, ['id' => $itemid, 'minilesson' => $this->moduleinstance->id])) {
+            return null;
+        }
+        $areas = item::get_item_fileareas($this->context, $itemid);
+        if ($filearea !== '') {
+            $areas = array_intersect($areas, [$filearea]);
+        }
+        $fs = get_file_storage();
+        $media = [];
+        foreach ($areas as $area) {
+            foreach ($fs->get_area_files($this->context->id, constants::M_COMPONENT, $area, $itemid, 'filename', false) as $file) {
+                $entry = (object) [
+                    'filearea' => $area,
+                    'filename' => $file->get_filename(),
+                    'mimetype' => (string) $file->get_mimetype(),
+                    'size' => (int) $file->get_filesize(),
+                    'url' => \moodle_url::make_pluginfile_url(
+                        $this->context->id,
+                        constants::M_COMPONENT,
+                        $area,
+                        $itemid,
+                        '/',
+                        $file->get_filename()
+                    )->out(false),
+                    'width' => 0,
+                    'height' => 0,
+                    'content' => '',
+                    'contentmimetype' => '',
+                ];
+                if ($entry->mimetype === 'image/svg+xml') {
+                    if ($entry->size <= 200000) {
+                        $entry->content = $file->get_content();
+                        $entry->contentmimetype = 'image/svg+xml';
+                    }
+                } else if (strpos($entry->mimetype, 'image/') === 0) {
+                    self::add_scaled_picture($entry, $file, $maxwidth);
+                }
+                $media[] = $entry;
+            }
+        }
+        return $media;
+    }
+
+    /**
+     * Add a picture's content to a media entry, scaled down to a width, as JPEG (or PNG when it has transparency).
+     *
+     * @param \stdClass $entry the media entry, changed in place
+     * @param \stored_file $file the picture
+     * @param int $maxwidth the widest it is given, in pixels
+     */
+    protected static function add_scaled_picture(\stdClass $entry, \stored_file $file, int $maxwidth): void {
+        if (!function_exists('imagecreatefromstring') || $entry->size > 20 * 1024 * 1024) {
+            return;
+        }
+        $original = @imagecreatefromstring($file->get_content());
+        if (!$original) {
+            return;
+        }
+        $width = imagesx($original);
+        $height = imagesy($original);
+        $scale = min(1, $maxwidth / max(1, $width));
+        $newwidth = max(1, (int) round($width * $scale));
+        $newheight = max(1, (int) round($height * $scale));
+        $canvas = imagecreatetruecolor($newwidth, $newheight);
+        // A photo saved as PNG is far smaller as JPEG. Keep PNG only for a picture that is see-through somewhere.
+        $png = self::has_transparency($original, $width, $height);
+        if ($png) {
+            imagealphablending($canvas, false);
+            imagesavealpha($canvas, true);
+            imagefill($canvas, 0, 0, imagecolorallocatealpha($canvas, 255, 255, 255, 127));
+        } else {
+            imagefill($canvas, 0, 0, imagecolorallocate($canvas, 255, 255, 255));
+        }
+        imagecopyresampled($canvas, $original, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+        ob_start();
+        if ($png) {
+            imagepng($canvas, null, 9);
+        } else {
+            imagejpeg($canvas, null, 80);
+        }
+        $bytes = ob_get_clean();
+        $entry->width = $newwidth;
+        $entry->height = $newheight;
+        $entry->content = base64_encode($bytes);
+        $entry->contentmimetype = $png ? 'image/png' : 'image/jpeg';
     }
 
     /**
@@ -497,6 +986,32 @@ class itemeditor {
                 ? $current->{$fieldname}
                 : ($newrecord->{$fieldname} ?? null);
         }
+    }
+
+    /**
+     * Whether a picture is see-through anywhere, judged from a grid of points across it.
+     *
+     * @param \GdImage $image the picture
+     * @param int $width its width
+     * @param int $height its height
+     * @return bool
+     */
+    protected static function has_transparency($image, int $width, int $height): bool {
+        if (imagecolortransparent($image) >= 0) {
+            return true;
+        }
+        if (imageistruecolor($image) === false) {
+            return false;
+        }
+        $step = max(1, (int) floor(min($width, $height) / 40));
+        for ($y = 0; $y < $height; $y += $step) {
+            for ($x = 0; $x < $width; $x += $step) {
+                if (((imagecolorat($image, $x, $y) >> 24) & 0x7F) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

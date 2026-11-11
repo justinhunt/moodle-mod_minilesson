@@ -251,6 +251,25 @@ class itemtype extends item {
     }
 
     /**
+     * Remove the published copy of the widget, which is kept outside the item's file areas.
+     */
+    public function before_delete(): void {
+        get_file_storage()->delete_area_files(
+            $this->context->id,
+            widgetstore::COMPONENT,
+            widgetstore::FILEAREA,
+            $this->itemrecord->id
+        );
+    }
+
+    /**
+     * Publish the widget again when its file was copied or uploaded on its own.
+     */
+    public function files_changed(): void {
+        $this->publish_widget();
+    }
+
+    /**
      * The stored widget file (ZIP or HTML) of this item.
      *
      * @return \stored_file|null

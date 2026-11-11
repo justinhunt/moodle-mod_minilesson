@@ -284,6 +284,104 @@ $functions = [
             'capabilities' => 'mod/minilesson:export',
             'loginrequired' => true,
         ],
+        'mod_minilesson_aigen_get_course_outline' => [
+            'classname' => 'mod_minilesson\external\aigen_get_course_outline',
+            'methodname' => 'execute',
+            'description' => 'Lists a course\'s sections in order with the activities in each, and for each minilesson '
+                . 'its cmid and item count. Use it to find the lesson a teacher means ("the lesson after '
+                . 'the Unit 3 quiz").',
+            'type' => 'read',
+            'capabilities' => 'mod/minilesson:addinstance',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_find_items' => [
+            'classname' => 'mod_minilesson\external\aigen_find_items',
+            'methodname' => 'execute',
+            'description' => 'Searches the items of every minilesson in a course (or of chosen lessons) by item type, '
+                . 'exact field values (wherejson) or text. Returns where each match is and the fields that '
+                . 'matched. Use it to find every item a change applies to before changing them with '
+                . 'aigen_update_items.',
+            'type' => 'read',
+            'capabilities' => 'mod/minilesson:export',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_insert_items' => [
+            'classname' => 'mod_minilesson\external\aigen_insert_items',
+            'methodname' => 'execute',
+            'description' => 'Adds new items to a minilesson at a chosen place (after_itemid), taking the same items '
+                . 'payload as aigen_import_items_json. Use it instead of the import when the new items must '
+                . 'not go at the end. Show the user the items first.',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:manage',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_copy_items' => [
+            'classname' => 'mod_minilesson\external\aigen_copy_items',
+            'methodname' => 'execute',
+            'description' => 'Copies items, with their media, from one minilesson (source_cmid) into another or the '
+                . 'same one (cmid), at a chosen place. The copying is done on the server: no media passes '
+                . 'through you.',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:manage',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_reorder_items' => [
+            'classname' => 'mod_minilesson\external\aigen_reorder_items',
+            'methodname' => 'execute',
+            'description' => 'Puts the items of a minilesson in a new order. Send every item id of the lesson, each '
+                . 'once, in the new order.',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:manage',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_delete_items' => [
+            'classname' => 'mod_minilesson\external\aigen_delete_items',
+            'methodname' => 'execute',
+            'description' => 'Deletes items, with their media, from a minilesson. This cannot be undone: run it with '
+                . 'dryrun=true and confirm with the user first.',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:manage',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_put_item_files' => [
+            'classname' => 'mod_minilesson\external\aigen_put_item_files',
+            'methodname' => 'execute',
+            'description' => 'Uploads media (base64) into one file area of an existing item, replacing what is there '
+                . 'by default: e.g. a new picture in itemmedia. To change the item\'s other fields use '
+                . 'aigen_update_items.',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:manage',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_get_item_media' => [
+            'classname' => 'mod_minilesson\external\aigen_get_item_media',
+            'methodname' => 'execute',
+            'description' => 'Returns an item\'s media files. Pictures come scaled down so you can look at them, e.g. '
+                . 'the photo of a picture description question before writing its feedback. Audio and video '
+                . 'are listed but not returned.',
+            'type' => 'read',
+            'capabilities' => 'mod/minilesson:export',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_get_lesson_settings' => [
+            'classname' => 'mod_minilesson\external\aigen_get_lesson_settings',
+            'methodname' => 'execute',
+            'description' => 'Reads the settings of a minilesson that aigen_update_lesson_settings can change, with '
+                . 'what each takes.',
+            'type' => 'read',
+            'capabilities' => 'mod/minilesson:export',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_update_lesson_settings' => [
+            'classname' => 'mod_minilesson\external\aigen_update_lesson_settings',
+            'methodname' => 'execute',
+            'description' => 'Changes settings of a minilesson (name, description, visibility, item titles, finish '
+                . 'screen ...), from the list aigen_get_lesson_settings gives. Show the user the dry run '
+                . 'first.',
+            'type' => 'write',
+            'capabilities' => 'moodle/course:manageactivities',
+            'loginrequired' => true,
+        ],
         'mod_minilesson_aigen_update_items' => [
             'classname' => 'mod_minilesson\external\aigen_update_items',
             'methodname' => 'execute',
@@ -376,6 +474,16 @@ $services = [
             'mod_minilesson_aigen_import_items_json',
             'mod_minilesson_aigen_get_items',
             'mod_minilesson_aigen_update_items',
+            'mod_minilesson_aigen_get_course_outline',
+            'mod_minilesson_aigen_find_items',
+            'mod_minilesson_aigen_insert_items',
+            'mod_minilesson_aigen_copy_items',
+            'mod_minilesson_aigen_reorder_items',
+            'mod_minilesson_aigen_delete_items',
+            'mod_minilesson_aigen_put_item_files',
+            'mod_minilesson_aigen_get_item_media',
+            'mod_minilesson_aigen_get_lesson_settings',
+            'mod_minilesson_aigen_update_lesson_settings',
             'mod_minilesson_list_courses',
         ],
         'enabled' => 1,

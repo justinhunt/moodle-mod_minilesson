@@ -1,4 +1,4 @@
-Version 1.1.62 (Build 2026111100)
+Version 1.1.62 (Build 2026111200)
 - AI agents (MCP, the REST API, the AI assistant) can change items that already exist. Two new
   functions in the aigen service: aigen_get_items reads items with their id and version, and
   aigen_update_items changes only the fields it is sent, by their import field names. The rest of the
@@ -6,6 +6,19 @@ Version 1.1.62 (Build 2026111100)
   An item that someone else edited since it was read is not changed. The item type and media files
   can not be changed this way. Reading needs mod/minilesson:export and changing needs
   mod/minilesson:manage. In the AI assistant the teacher approves each update first
+- AI agents can also change a lesson's structure, media and settings. New functions in the aigen
+  service: aigen_get_course_outline (sections and lessons of a course), aigen_find_items (search the
+  items of a course by type, field values or text), aigen_insert_items (add items at a chosen place),
+  aigen_copy_items (copy items with their media to another lesson), aigen_reorder_items,
+  aigen_delete_items, aigen_put_item_files (replace an item's media), aigen_get_item_media (an item's
+  pictures, scaled down, which MCP clients get as images), aigen_get_lesson_settings and
+  aigen_update_lesson_settings (a short list: name, description, visibility, item titles, finish
+  screen and a few more). Changing settings needs moodle/course:manageactivities. When a lesson has
+  attempts, a change to its items' order tells the agent that earlier results may show against the
+  wrong items. In the AI assistant the teacher approves each change first
+- items added, deleted or reordered this way are logged too
+- deleting an item now also deletes the files of its answers and of item types with their own files,
+  and the published copy of a Smart Frame widget. Duplicating an item copies all its files
 - each update made this way is logged as "Minilesson item updated through the web service", with the
   names of the fields that changed
 - export now gives every TTS voice by its name. Before, voices not from Amazon Polly were exported as

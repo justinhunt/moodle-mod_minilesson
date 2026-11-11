@@ -251,7 +251,8 @@ $agentinstructions = <<<JSON
                 "First call aigen_update_items with dryrun=true and show the user the before and after of each change. Apply it (dryrun=false) once they approve, unless they have said to just go ahead.",
                 "Read every result. Resend an 'invalid' item with the fault its message names put right."
             ],
-            "limits": "The item type and the media files of an item cannot be changed this way."
+            "limits": "The item type and the media files of an item cannot be changed this way.",
+            "other_edits": "aigen_get_course_outline finds the lesson the user means. aigen_find_items searches a course for the items a change applies to. aigen_insert_items adds items at a chosen place, aigen_copy_items copies items with their media, aigen_reorder_items reorders a lesson, aigen_delete_items deletes items (it cannot be undone). aigen_put_item_files replaces an item's media and aigen_get_item_media shows you its pictures. aigen_get_lesson_settings and aigen_update_lesson_settings read and change a lesson's settings. Use dryrun first wherever a tool takes it, and pass any attempts warning on to the user."
         }
     }
 }

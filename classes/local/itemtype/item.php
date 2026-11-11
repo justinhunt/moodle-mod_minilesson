@@ -2142,31 +2142,73 @@ abstract class item implements \templatable, \renderable {
         }
     } // End of edit_insert_question.
 
+    /**
+     * Delete an item and all of its files.
+     *
+     * @param int $itemid the item
+     * @param \context $context the lesson's context
+     * @return bool true when deleted
+     */
     public static function delete_item($itemid, $context) {
         global $DB;
-        $ret = false;
+
+        // The item type may keep things of its own, outside the item's file areas (a published widget).
+        $record = $DB->get_record(constants::M_QTABLE, ['id' => $itemid]);
+        if ($record) {
+            $theitem = utils::fetch_item_from_itemrecord($record, false, $context);
+            if ($theitem) {
+                $theitem->before_delete();
+            }
+        }
 
         if (!$DB->delete_records(constants::M_QTABLE, ['id' => $itemid])) {
             throw new \moodle_exception("Could not delete item");
-            return $ret;
         }
-        // remove files
+
         $fs = get_file_storage();
-
-        $fileareas = [
-            constants::TEXTPROMPT_FILEAREA,
-            constants::TEXTPROMPT_FILEAREA . '1',
-            constants::TEXTPROMPT_FILEAREA . '2',
-            constants::TEXTPROMPT_FILEAREA . '3',
-            constants::TEXTPROMPT_FILEAREA . '4',
-            constants::MEDIAQUESTION,
-        ];
-
-        foreach ($fileareas as $filearea) {
+        foreach (self::get_item_fileareas($context, (int) $itemid) as $filearea) {
             $fs->delete_area_files($context->id, constants::M_COMPONENT, $filearea, $itemid);
         }
-        $ret = true;
-        return $ret;
+        return true;
+    }
+
+    /**
+     * The file areas that hold files of one item.
+     *
+     * Read from the files that exist, rather than from a list, so that an item type's own file areas (a widget
+     * package, slides, a picture for a chat) are found too. Only areas named the way item file areas are named
+     * count: the lesson keeps other files of its own under the same item ids (its intro, the AI assistant's).
+     *
+     * @param \context $context the lesson's context
+     * @param int $itemid the item
+     * @return string[] file area names
+     */
+    public static function get_item_fileareas(\context $context, int $itemid): array {
+        global $DB;
+        $areas = $DB->get_fieldset_sql(
+            'SELECT DISTINCT filearea FROM {files} WHERE contextid = ? AND component = ? AND itemid = ?',
+            [$context->id, constants::M_COMPONENT, $itemid]
+        );
+        $pattern = '/^(' . constants::MEDIAQUESTION . '|' . constants::AUDIOSTORY . '|' . constants::TEXTQUESTION_FILEAREA
+            . '|' . constants::TEXTPROMPT_FILEAREA . '\d*|' . constants::FILEANSWER . '\d+(_image|_audio)?|'
+            . constants::TEXTANSWER_FILEAREA . '\d+)$/';
+        return array_values(array_filter($areas, function ($area) use ($pattern) {
+            return preg_match($pattern, $area) === 1;
+        }));
+    }
+
+    /**
+     * Called just before the item is deleted, for an item type that keeps things of its own outside the item's
+     * file areas. The item's row and file areas are deleted after this whatever it does.
+     */
+    public function before_delete(): void {
+    }
+
+    /**
+     * Called after the item's files were changed other than by its own save: copied with the item, or uploaded
+     * on their own. An item type that works something out from its files (a widget it publishes) does it here.
+     */
+    public function files_changed(): void {
     }
 
 
