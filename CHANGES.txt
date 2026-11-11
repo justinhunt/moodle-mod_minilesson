@@ -17,6 +17,8 @@ Version 1.1.62 (Build 2026111200)
   attempts, a change to its items' order tells the agent that earlier results may show against the
   wrong items. In the AI assistant the teacher approves each change first
 - items added, deleted or reordered this way are logged too
+- the MCP server now reports the plugin release and build as its version (it was always 1.0.0), so
+  MCP clients can tell when the server, and its list of tools, has changed
 - deleting an item now also deletes the files of its answers and of item types with their own files,
   and the published copy of a Smart Frame widget. Duplicating an item copies all its files
 - each update made this way is logged as "Minilesson item updated through the web service", with the

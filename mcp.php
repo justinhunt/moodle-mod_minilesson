@@ -50,6 +50,7 @@ define('WS_SERVER', true);
 require(__DIR__ . '/../../config.php');
 
 use mod_minilesson\local\aigen\facade;
+use mod_minilesson\constants;
 
 /** @var string The MCP protocol version this endpoint implements. */
 const MCP_PROTOCOL_VERSION = '2025-06-18';
@@ -104,6 +105,22 @@ function mcp_server_name(): string {
     global $CFG;
     $host = parse_url($CFG->wwwroot, PHP_URL_HOST) ?: $CFG->wwwroot;
     return "Poodll MiniLesson on {$host}";
+}
+
+/**
+ * The version this server reports in the MCP `initialize` response: the plugin's release and
+ * build, e.g. "1.1.62+2026111200". It changes with every plugin update, so a client that keys
+ * its cached tool list on the server version can tell the tools may have changed.
+ *
+ * @return string
+ */
+function mcp_server_version(): string {
+    $info = core_plugin_manager::instance()->get_plugin_info(constants::M_COMPONENT);
+    if (!$info) {
+        return '1.0.0';
+    }
+    $release = preg_match('/^\s*(\d+(\.\d+)*)/', (string) $info->release, $m) ? $m[1] : '1.0.0';
+    return $release . '+' . $info->versiondisk;
 }
 
 /**
@@ -186,7 +203,7 @@ if ($rpcmethod === 'initialize') {
     mcp_send(mcp_result($id, [
         'protocolVersion' => MCP_PROTOCOL_VERSION,
         'capabilities' => ['tools' => new stdClass()],
-        'serverInfo' => ['name' => mcp_server_name(), 'version' => '1.0.0'],
+        'serverInfo' => ['name' => mcp_server_name(), 'version' => mcp_server_version()],
         'instructions' => facade::agent_instructions(),
     ]));
 }
