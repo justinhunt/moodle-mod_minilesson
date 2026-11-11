@@ -2093,6 +2093,35 @@ class utils {
         }
     }
 
+    /**
+     * Whether a TTS voice suits a lesson's TTS language: it is one of that language's voices, or of the same
+     * language in another region (an en-GB voice suits an en-US lesson). A voice code we do not know, and a
+     * lesson language with no voice list, are given the benefit of the doubt.
+     *
+     * @param string|null $voicecode the stored voice code
+     * @param string|null $langcode the lesson's TTS language, e.g. en-US
+     * @return bool
+     */
+    public static function voice_fits_language($voicecode, $langcode): bool {
+        $voicecode = (string) $voicecode;
+        $langcode = (string) $langcode;
+        if ($voicecode === '' || !isset(constants::ALL_VOICES[$langcode])) {
+            return true;
+        }
+        $base = strtolower(strtok($langcode, '-_'));
+        $known = false;
+        foreach (constants::ALL_VOICES as $lang => $langvoices) {
+            if (!isset($langvoices[$voicecode])) {
+                continue;
+            }
+            $known = true;
+            if (strtolower(strtok((string) $lang, '-_')) === $base) {
+                return true;
+            }
+        }
+        return !$known;
+    }
+
     public static function fetch_auto_voice($langcode) {
         $showall = false;
         $voices = self::get_tts_voices($langcode, $showall);

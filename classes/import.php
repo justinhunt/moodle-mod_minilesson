@@ -834,10 +834,12 @@ class import {
                         $value = $this->resolve_voice_code($value);
                     } else {
                         $resolvedcode = $this->resolve_voice_code($value);
-                        if ($resolvedcode !== null) {
+                        $langcode = $this->moduleinstance->ttslanguage;
+                        if ($resolvedcode !== null && utils::voice_fits_language($resolvedcode, $langcode)) {
                             $value = $resolvedcode;
                         } else {
-                            // Unknown voice, so fall back to the auto voice for the lesson language.
+                            // An unknown voice, or one for another language (the items came from a lesson in another
+                            // language), so use the auto voice for the lesson language.
                             $value = $this->resolve_voice_code(utils::fetch_auto_voice($this->moduleinstance->ttslanguage));
                         }
                     }

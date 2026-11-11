@@ -302,6 +302,7 @@ class itemeditor {
             $copy->timemodified = time();
             $copy->createdby = $USER->id;
             $copy->modifiedby = $USER->id;
+            $this->fit_voices_to_language($copy);
             $copy->id = $DB->insert_record(constants::M_QTABLE, $copy);
 
             foreach (item::get_item_fileareas($sourcecontext, $oldid) as $filearea) {
@@ -337,6 +338,62 @@ class itemeditor {
             $this->place_items($result->itemids, $afteritemid);
         }
         return $result;
+    }
+
+    /**
+     * Give an item copied from a lesson in another language this lesson's auto voice in place of each voice that
+     * does not suit this lesson's language, as an import does. That covers the voice columns of the item type and
+     * the voices packed into the TTS dialog and passage options.
+     *
+     * @param \stdClass $record the item record, changed in place
+     */
+    protected function fit_voices_to_language(\stdClass $record): void {
+        $langcode = $this->moduleinstance->ttslanguage;
+        $autovoice = function () use ($langcode) {
+            $name = utils::fetch_auto_voice($langcode);
+            foreach (constants::ALL_VOICES[$langcode] ?? [] as $code => $voicename) {
+                if ($voicename === $name) {
+                    return $code;
+                }
+            }
+            return $name;
+        };
+
+        $classname = utils::fetch_itemtype_classname($record->type);
+        $keycolumns = $classname && class_exists($classname) ? $classname::get_keycolumns() : item::get_keycolumns();
+        foreach ($keycolumns as $column) {
+            $dbname = $column['dbname'] ?? '';
+            if (($column['type'] ?? '') !== 'voice' || !property_exists($record, $dbname)) {
+                continue;
+            }
+            if (!utils::voice_fits_language($record->{$dbname}, $langcode)) {
+                $record->{$dbname} = $autovoice();
+            }
+        }
+
+        $packed = [
+            constants::TTSDIALOGOPTS => [constants::TTSDIALOGVOICEA, constants::TTSDIALOGVOICEB, constants::TTSDIALOGVOICEC],
+            constants::TTSPASSAGEOPTS => [constants::TTSPASSAGEVOICE],
+        ];
+        foreach ($packed as $optsfield => $voicefields) {
+            if (empty($record->{$optsfield}) || !utils::is_json($record->{$optsfield})) {
+                continue;
+            }
+            $opts = json_decode($record->{$optsfield});
+            if (!is_object($opts)) {
+                continue;
+            }
+            $changed = false;
+            foreach ($voicefields as $voicefield) {
+                if (isset($opts->{$voicefield}) && !utils::voice_fits_language($opts->{$voicefield}, $langcode)) {
+                    $opts->{$voicefield} = $autovoice();
+                    $changed = true;
+                }
+            }
+            if ($changed) {
+                $record->{$optsfield} = json_encode($opts);
+            }
+        }
     }
 
     /**

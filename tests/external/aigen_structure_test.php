@@ -58,14 +58,14 @@ final class aigen_structure_test extends \advanced_testcase {
      * @param string $name
      * @return \stdClass the course module
      */
-    protected function create_lesson(string $name): \stdClass {
+    protected function create_lesson(string $name, string $ttslanguage = constants::M_LANG_ENUS): \stdClass {
         $moduledata = (object) [
             'name' => $name,
             'modulename' => 'minilesson',
             'pagelayout' => 'standard',
             'showqtitles' => 1,
             'maxattempts' => 0,
-            'ttslanguage' => constants::M_LANG_ENUS,
+            'ttslanguage' => $ttslanguage,
             'region' => 'useast1',
             'transcriber' => constants::TRANSCRIBER_AUTO,
             'richtextprompt' => 0,
@@ -219,6 +219,56 @@ final class aigen_structure_test extends \advanced_testcase {
         $copyofa = $result['itemids'][0];
         $files = json_decode(aigen_get_items::execute($target->id, [$copyofa], [], false)['itemsjson']);
         $this->assertSame(self::PNG, $files->files->{$copyofa}->itemmedia->{'dot.png'});
+    }
+
+    /**
+     * A voice for another language is swapped for the lesson's auto voice, on insert and on copy, including the
+     * voices of a TTS dialog and passage. A voice for the same language in another region is kept.
+     */
+    public function test_voices_follow_language(): void {
+        global $DB;
+        $this->assertTrue(utils::voice_fits_language('Amy', constants::M_LANG_ENUS));
+        $this->assertFalse(utils::voice_fits_language('Takumi', constants::M_LANG_ENUS));
+        $this->assertTrue(utils::voice_fits_language('no-such-voice', constants::M_LANG_ENUS));
+
+        $item = $this->page('Voices') + [
+            'ttsvoice' => 'Takumi',
+            'ttsdialog' => ['A: Hello.', 'B: Hi there.'],
+            'ttsdialogvoicea' => 'Amy',
+            'ttsdialogvoiceb' => 'Mizuki',
+            'ttspassage' => 'A short passage.',
+            'ttspassagevoice' => 'Takumi',
+        ];
+        [$itemid] = $this->insert([$item])['itemids'];
+        $record = $DB->get_record(constants::M_QTABLE, ['id' => $itemid]);
+        $dialog = json_decode($record->{constants::TTSDIALOGOPTS});
+        $passage = json_decode($record->{constants::TTSPASSAGEOPTS});
+        $this->assertTrue(utils::voice_fits_language($record->itemttsvoice, constants::M_LANG_ENUS));
+        $this->assertNotSame('Takumi', $record->itemttsvoice);
+        $this->assertSame('Amy', $dialog->{constants::TTSDIALOGVOICEA});
+        $this->assertTrue(utils::voice_fits_language($dialog->{constants::TTSDIALOGVOICEB}, constants::M_LANG_ENUS));
+        $this->assertNotSame('Mizuki', $dialog->{constants::TTSDIALOGVOICEB});
+        $this->assertTrue(utils::voice_fits_language($passage->{constants::TTSPASSAGEVOICE}, constants::M_LANG_ENUS));
+
+        // Copied into a Japanese lesson, every English voice is swapped and the rest of the options stay.
+        $japanese = $this->create_lesson('Japanese lesson', constants::M_LANG_JAJP);
+        $result = aigen_copy_items::execute($japanese->id, $this->cm->id, [$itemid], -1);
+        $copy = $DB->get_record(constants::M_QTABLE, ['id' => $result['itemids'][0]]);
+        $this->assertArrayHasKey($copy->itemttsvoice, constants::ALL_VOICES[constants::M_LANG_JAJP]);
+        $copydialog = json_decode($copy->{constants::TTSDIALOGOPTS});
+        foreach ([constants::TTSDIALOGVOICEA, constants::TTSDIALOGVOICEB] as $slot) {
+            $this->assertArrayHasKey($copydialog->{$slot}, constants::ALL_VOICES[constants::M_LANG_JAJP]);
+        }
+        $this->assertSame($dialog->{constants::TTSDIALOGVISIBLE}, $copydialog->{constants::TTSDIALOGVISIBLE});
+        $copypassage = json_decode($copy->{constants::TTSPASSAGEOPTS});
+        $this->assertArrayHasKey($copypassage->{constants::TTSPASSAGEVOICE}, constants::ALL_VOICES[constants::M_LANG_JAJP]);
+
+        // Copied into another English lesson, nothing changes.
+        $english = $this->create_lesson('English lesson');
+        $result = aigen_copy_items::execute($english->id, $this->cm->id, [$itemid], -1);
+        $same = $DB->get_record(constants::M_QTABLE, ['id' => $result['itemids'][0]]);
+        $this->assertSame($record->itemttsvoice, $same->itemttsvoice);
+        $this->assertSame($record->{constants::TTSDIALOGOPTS}, $same->{constants::TTSDIALOGOPTS});
     }
 
     /**
