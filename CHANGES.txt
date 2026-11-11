@@ -1,4 +1,15 @@
-Version 1.1.62 (Build 2026110800)
+Version 1.1.62 (Build 2026111100)
+- AI agents (MCP, the REST API, the AI assistant) can change items that already exist. Two new
+  functions in the aigen service: aigen_get_items reads items with their id and version, and
+  aigen_update_items changes only the fields it is sent, by their import field names. The rest of the
+  item, its media and its voices stay as they are. A dry run shows the changes without saving them.
+  An item that someone else edited since it was read is not changed. The item type and media files
+  can not be changed this way. Reading needs mod/minilesson:export and changing needs
+  mod/minilesson:manage. In the AI assistant the teacher approves each update first
+- each update made this way is logged as "Minilesson item updated through the web service", with the
+  names of the fields that changed
+- export now gives every TTS voice by its name. Before, voices not from Amazon Polly were exported as
+  "auto", so an import of the file picked a voice at random. Import also takes a voice code
 - the Smart Frame item, until now a placeholder, works. It loads an uploaded HTML page (or a ZIP)
   in a frame inside the lesson: an explainer widget, a custom interactive activity or a game, for
   example one made with an AI tool such as ChatGPT or Claude. The page runs in a sandbox, served by

@@ -382,7 +382,7 @@ class controller {
         $conversation->pendingtool = $call['name'];
         $conversation->pendingargs = $call['args'];
 
-        if (tools::needs_approval($call['name'])) {
+        if (tools::needs_approval($call['name'], (array) $call['args'])) {
             $conversation->state = conversation::STATE_AWAITING_APPROVAL;
             return $this->envelope($conversation, self::STATUS_REQUIRES_APPROVAL);
         }
@@ -462,7 +462,7 @@ class controller {
 
         // The teacher approved this and it ran: that is the pair of facts an administrator needs
         // later, and the reason ordinary conversation is not logged alongside it.
-        if (tools::needs_approval($functionname)) {
+        if (tools::needs_approval($functionname, $args)) {
             \mod_minilesson\event\chatagent_action_performed::create_from_action(
                 $modulecontext,
                 $conversation->id,

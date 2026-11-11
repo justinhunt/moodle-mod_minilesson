@@ -19,6 +19,7 @@ namespace mod_minilesson\local\aigen;
 use core_external\external_api;
 use core_external\external_multiple_structure;
 use core_external\external_single_structure;
+use core_external\external_value;
 use mod_minilesson\constants;
 
 /**
@@ -209,6 +210,15 @@ class facade {
      * @return array core call_external_function result: ['error' => bool, 'data'|'exception' => ...]
      */
     public static function call(string $functionname, array $args): array {
+        // A JSON payload argument (itemsjson, updatesjson) is declared as a string. A client that sends the
+        // object or array itself, not a string of it, means the same thing, so it is encoded here.
+        $info = external_api::external_function_info($functionname);
+        foreach ($args as $name => $value) {
+            $desc = $info->parameters_desc->keys[$name] ?? null;
+            if (is_array($value) && $desc instanceof external_value && $desc->type === PARAM_RAW) {
+                $args[$name] = json_encode($value, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            }
+        }
         return external_api::call_external_function($functionname, $args);
     }
 
@@ -333,6 +343,22 @@ class facade {
 
         After importing, read the per-item errors array and resubmit only the rejected items, and check
         "imagefailures" for image prompts that produced no picture.
+
+        TO CHANGE ITEMS THAT ALREADY EXIST (fix a typo, rewrite feedback, change an answer or a setting), use
+        aigen_get_items and aigen_update_items. Do not export and import: an import only ever adds new items, so
+        the old ones would stay and the lesson would hold both.
+        - Read with aigen_get_items. Ask for the item ids and fields you need; a whole lesson can be large. Each item
+          comes with its "itemid" and "version".
+        - Send aigen_update_items only the fields you mean to change, in "changes". Every field you leave out keeps
+          its stored value, and so do the item's media and voices. Never send back a whole item you read.
+        - Field names and formats are those of the item's type: call aigen_fetch_item_type_details for the type
+          before changing a field you have not seen documented in this conversation.
+        - Pass the "version" you read. If the item comes back as "conflict", someone has edited it since: read it
+          again before deciding what to do.
+        - First call aigen_update_items with dryrun=true and show the user the before and after of each change.
+          Apply it (dryrun=false) once they approve, unless they have said to just go ahead.
+        - Read every result. Resend an "invalid" item with the fault its message names put right.
+        The item type and the media files of an item cannot be changed this way.
         INSTRUCTIONS;
     }
 

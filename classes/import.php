@@ -526,17 +526,18 @@ class import {
     }
 
     /**
-     * Process one line of CSV or JSON
+     * Turn one JSON item object or CSV line into a DB ready item record, without checking or saving it.
+     *
+     * This is the part of saving an item that an import of a new item and an update of an existing one
+     * share: the field names are mapped to DB columns, values are converted (voices, layouts, booleans),
+     * fields left out get their defaults, the payload's files are attached, and the TTS dialog and
+     * passage options are packed.
      *
      * @param object|array $itemdata one JSON item object or one CSV line
-     * @return true|\stdClass true on success, or a failure entry (see line_error())
-     * @throws \coding_exception
-     * @throws \dml_exception
-     * @throws \moodle_exception
+     * @return array [\stdClass|null the record, \stdClass|null a failure entry (see line_error())]
      */
-    public function import_process_line($itemdata) {
-        global $DB, $CFG, $SESSION;
-
+    public function prepare_record($itemdata) {
+        $this->unknownfields = [];
         if ($this->isjson) {
             $itemtype = $itemdata->type ?? '';
             $itemname = $itemdata->name ?? '';
@@ -548,13 +549,13 @@ class import {
 
         // if the item type is invalid, we can't continue, just exit
         if (!$itemtypeclass) {
-            return $this->line_error($itemtype, $itemname, get_string('error:invaliditemtype', constants::M_COMPONENT));
+            return [null, $this->line_error($itemtype, $itemname, get_string('error:invaliditemtype', constants::M_COMPONENT))];
         }
 
         if ($this->isjson) {
             $line = $this->map_json_to_csv($itemdata);
             if (!empty($this->unknownfields)) {
-                return $this->line_error($itemtype, $itemname, implode(' ', $this->unknownfields));
+                return [null, $this->line_error($itemtype, $itemname, implode(' ', $this->unknownfields))];
             }
         } else {
             $line = $itemdata;
@@ -578,7 +579,7 @@ class import {
         $this->preprocesserrors = [];
         $newrecord = $this->preprocess_import_data($line, $keycolumns);
         if (!empty($this->preprocesserrors)) {
-            return $this->line_error($itemtype, $itemname, implode('; ', $this->preprocesserrors));
+            return [null, $this->line_error($itemtype, $itemname, implode('; ', $this->preprocesserrors))];
         }
 
         // set the defaults
@@ -624,15 +625,49 @@ class import {
             $newrecord->{constants::TTSPASSAGEOPTS} = utils::pack_ttspassageopts($newrecord);
         }
 
-        // call the itemtype specific import validation function
+        return [$newrecord, null];
+    }
+
+    /**
+     * Run the item type's content checks (its validate_import()) on a DB ready item record.
+     *
+     * @param \stdClass $newrecord the record, from prepare_record()
+     * @return \stdClass|null a failure entry (see line_error()) naming the field by its import name, or null
+     */
+    public function check_record($newrecord) {
         $error = $this->perform_import_validation($newrecord, $this->cm);
-        if ($error) {
-            $message = $error->message;
-            $collabel = $this->get_col_label($itemtypeclass, $error->col);
-            if ($collabel !== '') {
-                $message = $collabel . ': ' . $message;
-            }
-            $failure = $this->line_error($itemtype, $newrecord->name, $message);
+        if (!$error) {
+            return null;
+        }
+        $itemtypeclass = local\itemtype\item::get_itemtype_class($newrecord->type);
+        $message = $error->message;
+        $collabel = $this->get_col_label($itemtypeclass, $error->col);
+        if ($collabel !== '') {
+            $message = $collabel . ': ' . $message;
+        }
+        return $this->line_error($newrecord->type, $newrecord->name, $message);
+    }
+
+    /**
+     * Process one line of CSV or JSON
+     *
+     * @param object|array $itemdata one JSON item object or one CSV line
+     * @return true|\stdClass true on success, or a failure entry (see line_error())
+     * @throws \coding_exception
+     * @throws \dml_exception
+     * @throws \moodle_exception
+     */
+    public function import_process_line($itemdata) {
+        [$newrecord, $failure] = $this->prepare_record($itemdata);
+        if ($failure) {
+            return $failure;
+        }
+        $itemtype = $newrecord->type;
+        $itemtypeclass = local\itemtype\item::get_itemtype_class($itemtype);
+
+        // call the itemtype specific import validation function
+        $failure = $this->check_record($newrecord);
+        if ($failure) {
             if (!$this->skipcontentchecks) {
                 $failure->contentcheck = true;
                 return $failure;
@@ -719,7 +754,40 @@ class import {
             return $this->allvoices[$name . '_g'];
         }
 
+        // A voice code is taken as it is, so a caller who has the code need not look up its display name.
+        foreach ($this->allvoices as $voicecode) {
+            if (strtolower($voicecode) === $name) {
+                return $voicecode;
+            }
+        }
+
         return null;
+    }
+
+    /**
+     * The display name of a stored voice code, which is what an import takes for a voice (see resolve_voice_code()).
+     *
+     * The same code can be listed under several languages with a different name in each, so the lesson's own
+     * language is looked in first, as the import does.
+     *
+     * @param string|null $voicecode the stored voice code
+     * @return string the voice's display name, or "auto" if there is no such voice
+     */
+    private function voice_name_for_code($voicecode) {
+        $voicecode = (string) $voicecode;
+        if ($voicecode === '') {
+            return 'auto';
+        }
+        $langcode = $this->moduleinstance->ttslanguage;
+        if (isset(constants::ALL_VOICES[$langcode][$voicecode])) {
+            return constants::ALL_VOICES[$langcode][$voicecode];
+        }
+        foreach (constants::ALL_VOICES as $langvoices) {
+            if (isset($langvoices[$voicecode])) {
+                return $langvoices[$voicecode];
+            }
+        }
+        return 'auto';
     }
 
     public function preprocess_import_data($line, $keycolumns) {
@@ -1050,13 +1118,7 @@ class import {
                     break;
 
                 case 'voice':
-                    if (array_key_exists(strtolower($fieldvalue), $this->allvoices)) {
-                        $jsonvalue = $this->allvoices[strtolower($fieldvalue)];
-                    } else if (in_array(strtolower($fieldvalue) . '_g', $this->allvoices)) {
-                        $jsonvalue = $this->allvoices[strtolower($fieldvalue) . '_g'];
-                    } else {
-                        $jsonvalue = 'auto';
-                    }
+                    $jsonvalue = $this->voice_name_for_code($fieldvalue);
                     break;
 
                 case 'voiceopts':

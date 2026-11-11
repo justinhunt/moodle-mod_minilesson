@@ -240,6 +240,18 @@ $agentinstructions = <<<JSON
                 "Uploaded images will not match the new topic: drop them, and where the new topic wants pictures give new image prompts in the payload's fileprompts.",
                 "For each topic, call aigen_create_empty_lesson for a new cmid, then aigen_import_items_json. Read the errors array and fix any rejected item before moving on."
             ]
+        },
+        "edit_existing_items": {
+            "when": "The user wants items that already exist changed: a typo fixed, feedback rewritten, an answer or a setting changed. Do not export and import for this: an import only ever adds new items, so the old ones would stay and the lesson would hold both.",
+            "how": [
+                "Read with aigen_get_items. Ask for the item ids and fields you need; a whole lesson can be large. Each item comes with its itemid and version.",
+                "Send aigen_update_items only the fields you mean to change, in 'changes'. Every field you leave out keeps its stored value, and so do the item's media and voices. Never send back a whole item you read.",
+                "Field names and formats are those of the item's type: call aigen_fetch_item_type_details for the type before changing a field you have not seen documented in this conversation.",
+                "Pass the version you read. If the item comes back as 'conflict', someone has edited it since: read it again before deciding what to do.",
+                "First call aigen_update_items with dryrun=true and show the user the before and after of each change. Apply it (dryrun=false) once they approve, unless they have said to just go ahead.",
+                "Read every result. Resend an 'invalid' item with the fault its message names put right."
+            ],
+            "limits": "The item type and the media files of an item cannot be changed this way."
         }
     }
 }

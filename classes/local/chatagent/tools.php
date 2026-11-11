@@ -40,7 +40,11 @@ class tools {
         'mod_minilesson_aigen_create_empty_lesson',
         'mod_minilesson_aigen_create_add_items_to_lesson',
         'mod_minilesson_aigen_import_items_json',
+        'mod_minilesson_aigen_update_items',
     ];
+
+    /** @var string The tool that takes a "dryrun" argument, with which it changes nothing. */
+    const DRYRUN_TOOL = 'mod_minilesson_aigen_update_items';
 
     /** @var string The tool that queues an adhoc task rather than doing the work inline. */
     const ASYNC_TOOL = 'mod_minilesson_aigen_create_add_items_to_lesson';
@@ -97,10 +101,17 @@ class tools {
     /**
      * Whether this tool needs the teacher's explicit approval before it runs.
      *
+     * A dry run of an update saves nothing (the function itself sees to that), so it runs without asking:
+     * its result is what the teacher is then shown, to approve the real update.
+     *
      * @param string $functionname
+     * @param array $args the arguments of the call
      * @return bool
      */
-    public static function needs_approval(string $functionname): bool {
+    public static function needs_approval(string $functionname, array $args = []): bool {
+        if ($functionname === self::DRYRUN_TOOL && !empty($args['dryrun']) && $args['dryrun'] !== 'false') {
+            return false;
+        }
         return in_array($functionname, self::NEEDS_APPROVAL, true);
     }
 

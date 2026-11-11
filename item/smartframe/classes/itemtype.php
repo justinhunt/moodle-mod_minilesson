@@ -231,6 +231,15 @@ class itemtype extends item {
         $html = $this->itemrecord->{self::WIDGETHTML} ?? '';
         unset($this->itemrecord->{self::WIDGETHTML});
         if (is_string($html) && $html !== '' && empty($this->itemrecord->{self::FILE})) {
+            // New HTML for an item that exists takes the place of the widget it had. (The save only adds files.)
+            if (!empty($this->itemrecord->itemid)) {
+                get_file_storage()->delete_area_files(
+                    $this->context->id,
+                    constants::M_COMPONENT,
+                    self::FILE,
+                    $this->itemrecord->itemid
+                );
+            }
             $this->itemrecord->{self::FILE} = [self::html_filename($html) => base64_encode($html)];
         }
         $ret = parent::update_insert_item();

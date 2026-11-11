@@ -274,6 +274,27 @@ $functions = [
             'capabilities' => 'mod/minilesson:manage',
             'loginrequired' => true,
         ],
+        'mod_minilesson_aigen_get_items' => [
+            'classname' => 'mod_minilesson\external\aigen_get_items',
+            'methodname' => 'execute',
+            'description' => 'Reads items of an existing minilesson so you can edit them: each item in the import '
+                . 'format, plus its itemid, version and position. Ask for only the items and fields you need. Use '
+                . 'this, not aigen_export_items_json, before aigen_update_items.',
+            'type' => 'read',
+            'capabilities' => 'mod/minilesson:export',
+            'loginrequired' => true,
+        ],
+        'mod_minilesson_aigen_update_items' => [
+            'classname' => 'mod_minilesson\external\aigen_update_items',
+            'methodname' => 'execute',
+            'description' => 'Changes fields of existing items of a minilesson. Send only the fields to change, by '
+                . 'their import field names; every other field of the item, and its media, stays as it is. Read the '
+                . 'items with aigen_get_items first. Run it with dryrun=true and show the user the changes before '
+                . 'applying them. Do not use aigen_import_items_json to change an existing item: that adds a new one.',
+            'type' => 'write',
+            'capabilities' => 'mod/minilesson:manage',
+            'loginrequired' => true,
+        ],
         'mod_minilesson_list_courses' => [
             'classname' => 'mod_minilesson\external\list_courses',
             'methodname' => 'get_users_courses',
@@ -353,6 +374,8 @@ $services = [
             'mod_minilesson_aigen_fetch_create_items_status',
             'mod_minilesson_aigen_export_items_json',
             'mod_minilesson_aigen_import_items_json',
+            'mod_minilesson_aigen_get_items',
+            'mod_minilesson_aigen_update_items',
             'mod_minilesson_list_courses',
         ],
         'enabled' => 1,
