@@ -515,7 +515,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 output_modalities: ["text"],
                 instructions: gradingInstructions,
                 metadata: {tag: self.gradingrequesttag},
-                max_output_tokens: 500,
+                max_output_tokens: 2000,
                 // The grade must come back as text, never as a tool call.
                 tool_choice: "none",
             };
