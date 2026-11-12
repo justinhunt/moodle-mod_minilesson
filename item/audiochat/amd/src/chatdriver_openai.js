@@ -520,10 +520,30 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 tool_choice: "none",
             };
 
+            if (!self.dc || self.dc.readyState !== "open") {
+                // The connection has gone, so no grade can come back.
+                log.debug("OpenAI driver: cannot request grading, the data channel is closed");
+                self.gradingFailed();
+                self.closeDataChannel();
+                self._fire('onGradingWindowClosed');
+                return;
+            }
             self.sendEvent({
                 type: "response.create",
                 response: responsedata,
             });
+        },
+
+        /**
+         * Record that the AI could not grade the chat. As with the other providers, the item then
+         * scores 0 and says grading failed, rather than guessing a grade from the word count.
+         */
+        gradingFailed: function () {
+            var self = this;
+            log.debug("OpenAI driver: AI grading failed");
+            self.gradeRequestTrial = 0;
+            self.gradingData = {failed: true};
+            self._fire('onGradingData', self.gradingData);
         },
 
         abort: function () {
@@ -723,19 +743,17 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                             log.debug('Grading Request Retry number: ' + self.gradeRequestTrial);
                             return;
                         }
-                        self.closeDataChannel();
-                        return;
-                    }
-                    if (self.gradeRequestTrial > 0) {
+                        self.gradingFailed();
+                    } else {
                         self.gradeRequestTrial = 0;
+                        self.gradingData = gradingdata;
+                        log.debug("Grading and Feedback:", self.gradingData);
+                        self._fire('onGradingData', self.gradingData);
                     }
-                    self.gradingData = gradingdata;
-                    log.debug("Grading and Feedback:", self.gradingData);
-                    self._fire('onGradingData', self.gradingData);
                 } catch (err) {
-                    self.gradingData = false;
                     log.debug("Failed to parse grading feedback:", err);
                     log.debug(jsonresponse);
+                    self.gradingFailed();
                 }
                 self.closeDataChannel();
                 self._fire('onGradingWindowClosed');
