@@ -167,15 +167,51 @@ class grade_chat extends external_api {
         if (!$response || !isset($response->returnCode) || $response->returnCode != '0') {
             return null;
         }
-        $grade = json_decode((string) ($response->returnMessage ?? ''));
-        if (!$grade || !isset($grade->score) || !is_numeric($grade->score)) {
+        $message = trim((string) ($response->returnMessage ?? ''));
+        $grade = json_decode($message);
+        if (!is_object($grade)) {
+            // The model may wrap the JSON in a code fence or a sentence, so try the outermost braces.
+            $start = strpos($message, '{');
+            $end = strrpos($message, '}');
+            if ($start !== false && $end > $start) {
+                $grade = json_decode(substr($message, $start, $end - $start + 1));
+            }
+        }
+        if (!is_object($grade) || !isset($grade->score)) {
+            return null;
+        }
+        $score = self::parse_score($grade->score);
+        if ($score === null) {
             return null;
         }
         return [
-            'score' => max(0, min(100, (int) round((float) $grade->score))),
+            'score' => max(0, min(100, (int) round($score))),
             'gradeexplanation' => (string) ($grade->gradeexplanation ?? ''),
             'feedback' => (string) ($grade->feedback ?? ''),
         ];
+    }
+
+    /**
+     * Read the score the model gave, allowing the forms a teacher's own grading instructions
+     * tend to ask for: "85", 85, "85%", "85 / 100".
+     *
+     * Anything else, such as a sum like "(80*0.35)+(90*0.35)", is refused rather than guessed,
+     * because the first number in it is not the score.
+     *
+     * @param mixed $score the score field from the model's reply
+     * @return float|null the score, or null if it cannot be read
+     */
+    protected static function parse_score($score): ?float {
+        if (is_int($score) || is_float($score)) {
+            return (float) $score;
+        }
+        if (!is_string($score)) {
+            return null;
+        }
+        if (preg_match('~^\s*(\d+(?:\.\d+)?)\s*(?:%|/\s*100)?\s*$~', $score, $matches)) {
+            return (float) $matches[1];
+        }
+        return null;
     }
 
     /**

@@ -72,12 +72,58 @@ define(['core/log'], function (log) {
         return out;
     };
 
+    /**
+     * Read the score the model gave, allowing the forms a teacher's own grading instructions
+     * tend to ask for: 85, "85", "85%", "85 / 100". Anything else, such as a sum like
+     * "(80*0.35)+(90*0.35)", is refused rather than guessed, because the first number in it
+     * is not the score. The server reads grade_chat replies the same way.
+     *
+     * @param {*} score the score field from the model's reply
+     * @returns {Number|null} the score, 0-100, or null if it cannot be read
+     */
+    var readscore = function (score) {
+        var value = null;
+        if (typeof score === 'number') {
+            value = score;
+        } else if (typeof score === 'string') {
+            var match = score.match(/^\s*(\d+(?:\.\d+)?)\s*(?:%|\/\s*100)?\s*$/);
+            if (match) {
+                value = parseFloat(match[1]);
+            }
+        }
+        if (value === null || !isFinite(value)) {
+            return null;
+        }
+        return Math.max(0, Math.min(100, Math.round(value)));
+    };
+
+    /**
+     * Check the parsed object is a grading object and turn its score into a number.
+     *
+     * @param {*} grading the parsed JSON
+     * @returns {Object|Boolean} the grading object with a numeric score, or false
+     */
+    var withscore = function (grading) {
+        if (!grading || typeof grading !== 'object' || grading.score === undefined) {
+            log.debug('AudioChat grading: no score in the model output', grading);
+            return false;
+        }
+        var score = readscore(grading.score);
+        if (score === null) {
+            log.debug('AudioChat grading: unreadable score', grading.score);
+            return false;
+        }
+        grading.score = score;
+        return grading;
+    };
+
     return {
         /**
          * Pull the grading object out of whatever text the model sent back.
          *
          * @param {String} text the raw model output, which may wrap the JSON in prose
-         * @returns {Object|Boolean} the parsed grading object, or false if there is none
+         * @returns {Object|Boolean} the parsed grading object, with a numeric score from 0 to 100,
+         *     or false if there is none
          */
         parse: function (text) {
             if (!text) {
@@ -94,13 +140,13 @@ define(['core/log'], function (log) {
             var json = text.substring(start, end + 1);
 
             try {
-                return JSON.parse(json);
+                return withscore(JSON.parse(json));
             } catch (err) {
                 // Almost always the raw newlines described above, so repair and retry.
                 try {
                     var repaired = JSON.parse(escapecontrolchars(json));
                     log.debug('AudioChat grading: parsed after escaping control characters');
-                    return repaired;
+                    return withscore(repaired);
                 } catch (err2) {
                     log.debug('AudioChat grading: unparseable JSON', err2, json);
                     return false;
