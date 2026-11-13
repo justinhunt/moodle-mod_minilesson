@@ -1,0 +1,120 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_speedreading/speedreading
+
+    Speed reading item: an introduction (the splash screen), the timed reading passage, the
+    questions, and a results area that the JS fills in (see speedreadingresults).
+
+    Context variables required for this template:
+    * uniqueid - unique id of the item on the page
+    * introtitle, introinstructions, introtext, introimage - the introduction screen
+    * passage - the reading passage (HTML)
+    * wordcount, cpm - the length of the passage, in words (or characters when cpm is true)
+    * showtimer - show the timer while reading
+    * showallquestions - all the questions on one page with a Submit button, instead of one at a time
+    * questions - array of question objects (qindex, qnumber, questiontext, sentences)
+    * questions.sentences - array of answer objects (indexplusone, sentence)
+    * totalquestions - number of questions
+    * contentdir, contentlang - direction and language of the lesson text
+
+    Example context (json):
+    {
+        "uniqueid": "speedreading1",
+        "introtitle": "Mia's First Night Market",
+        "introinstructions": "Read the story as fast as you can. Then answer the questions.",
+        "passage": "<p>Every Friday evening, the car park behind Mia's school turns into a night market.</p>",
+        "wordcount": 234,
+        "showtimer": true,
+        "questions": [{"qindex": 0, "qnumber": 1, "questiontext": "Where is the night market?",
+            "sentences": [{"indexplusone": 1, "sentence": "In a park"}, {"indexplusone": 2, "sentence": "Behind Mia's school"}]}],
+        "totalquestions": 1,
+        "contentdir": "ltr",
+        "contentlang": "en-US"
+    }
+}}
+{{< mod_minilesson/questionheader}}
+{{$slashscreen}}
+<div class="ml_sr_intro startmodule_splashscreen" data-region="splashscreen">
+    {{#introimage}}
+    <div class="ml_sr_introimage"><img src="{{{introimage}}}" alt=""></div>
+    {{/introimage}}
+    <div class="ml_sr_kicker"><i class="fa fa-clock-o" aria-hidden="true"></i> {{#str}}speedreading, minilessonitem_speedreading{{/str}}</div>
+    <h3 class="ml_sr_introtitle" dir="auto">{{introtitle}}</h3>
+    {{#introinstructions}}
+    <p class="ml_sr_introinstructions" dir="auto">{{introinstructions}}</p>
+    {{/introinstructions}}
+    <div class="ml_sr_intronote">
+        {{#introtext}}<div class="ml_sr_introtext" dir="auto">{{{introtext}}}</div>{{/introtext}}
+        <div dir="auto">{{#str}}intronote, minilessonitem_speedreading{{/str}}</div>
+    </div>
+    <div class="ml_sr_chips">
+        <span class="ml_sr_chip">{{#cpm}}{{#str}}charactercount, minilessonitem_speedreading, {{wordcount}}{{/str}}{{/cpm}}{{^cpm}}{{#str}}wordcountshort, minilessonitem_speedreading, {{wordcount}}{{/str}}{{/cpm}}</span>
+        <span class="ml_sr_chip">{{#str}}questioncount, minilessonitem_speedreading, {{totalquestions}}{{/str}}</span>
+    </div>
+    <button type="button" class="btn btn-primary ml_sr_bigbutton" data-action="startmodule">{{#str}}startreading, minilessonitem_speedreading{{/str}}</button>
+</div>
+{{/slashscreen}}
+{{/ mod_minilesson/questionheader}}
+<div class="ml_sr_reading" data-region="reading">
+    <div class="ml_sr_readinghead">
+        <div class="ml_sr_readingtitle" dir="auto">{{introtitle}}</div>
+        {{#showtimer}}
+        <div class="ml_sr_timer"><i class="fa fa-clock-o" aria-hidden="true"></i> <span data-region="timertext">0:00</span></div>
+        {{/showtimer}}
+        {{^showtimer}}
+        <div class="ml_sr_timerhidden">{{#str}}timerrunning, minilessonitem_speedreading{{/str}}</div>
+        {{/showtimer}}
+    </div>
+    <div class="ml_sr_passage" dir="{{contentdir}}" lang="{{contentlang}}">{{{passage}}}</div>
+    <div class="ml_sr_finishbox">
+        <button type="button" class="btn btn-primary ml_sr_bigbutton" data-action="finishreading">{{#str}}finishedreading, minilessonitem_speedreading{{/str}}</button>
+        <div class="ml_sr_note">{{#str}}cannotgoback, minilessonitem_speedreading{{/str}}</div>
+    </div>
+</div>
+<div class="ml_sr_quiz" data-region="quiz" style="display: none;">
+    <div class="ml_sr_quizhead">
+        {{^showallquestions}}
+        <span class="ml_sr_kicker" data-region="questioncounter"></span>
+        <span class="ml_sr_dots" data-region="dots" aria-hidden="true"></span>
+        {{/showallquestions}}
+        {{#showallquestions}}
+        <span class="ml_sr_kicker">{{#str}}questions, minilessonitem_speedreading{{/str}}</span>
+        {{/showallquestions}}
+    </div>
+    {{#questions}}
+    <fieldset class="ml_sr_question" data-qindex="{{qindex}}"{{^showallquestions}} style="display: none;"{{/showallquestions}}>
+        <legend class="ml_sr_questiontext" dir="{{contentdir}}" lang="{{contentlang}}">{{#showallquestions}}{{qnumber}}. {{/showallquestions}}{{questiontext}}</legend>
+        <div class="ml_sr_options" dir="{{contentdir}}" lang="{{contentlang}}">
+            {{#sentences}}
+            <button type="button" class="ml_sr_option" data-index="{{indexplusone}}" aria-pressed="false">{{sentence}}</button>
+            {{/sentences}}
+        </div>
+    </fieldset>
+    {{/questions}}
+    {{^showallquestions}}
+    <p class="ml_sr_hint">{{#str}}tapnext, minilessonitem_speedreading{{/str}}</p>
+    {{/showallquestions}}
+    {{#showallquestions}}
+    <div class="ml_sr_finishbox">
+        <div class="ml_sr_note">{{#str}}answersneeded, minilessonitem_speedreading{{/str}}</div>
+        <button type="button" class="btn btn-primary ml_sr_bigbutton" data-action="submitanswers" disabled>{{#str}}submitanswers, minilessonitem_speedreading{{/str}}</button>
+    </div>
+    {{/showallquestions}}
+</div>
+<div class="ml_sr_resultscontainer" data-region="results" style="display: none;"></div>
+{{> mod_minilesson/questionfooter}}

@@ -1,0 +1,37 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_speedreading/formexplainer
+
+    The "How this item works" box at the top of the speed reading authoring form: the four screens
+    the student sees, each matching one section of the form.
+
+    Context variables required for this template: none.
+
+    Example context (json):
+    {}
+}}
+<div class="ml_sr_formexplainer">
+    <div class="ml_sr_formexplainer_heading">{{#str}}formexplainer_heading, minilessonitem_speedreading{{/str}}</div>
+    <p>{{#str}}formexplainer, minilessonitem_speedreading{{/str}}</p>
+    <ol class="ml_sr_formsteps">
+        <li><strong>{{#str}}screen1, minilessonitem_speedreading{{/str}}</strong><span>{{#str}}formexplainer_step1, minilessonitem_speedreading{{/str}}</span></li>
+        <li><strong>{{#str}}screen2, minilessonitem_speedreading{{/str}}</strong><span>{{#str}}formexplainer_step2, minilessonitem_speedreading{{/str}}</span></li>
+        <li><strong>{{#str}}screen3, minilessonitem_speedreading{{/str}}</strong><span>{{#str}}formexplainer_step3, minilessonitem_speedreading{{/str}}</span></li>
+        <li><strong>{{#str}}screen4, minilessonitem_speedreading{{/str}}</strong><span>{{#str}}formexplainer_step4, minilessonitem_speedreading{{/str}}</span></li>
+    </ol>
+</div>

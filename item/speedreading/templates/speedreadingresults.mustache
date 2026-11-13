@@ -1,0 +1,117 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_speedreading/speedreadingresults
+
+    The results of a speed reading item: the reading speed, speed points, question score, each
+    answer with its feedback, and the passage. Rendered by the item's JS at the end of the item
+    (build_results in amd/src/itemtype.js), and by mod_minilesson/quizfinished in the attempt review
+    (itemtype::build_results_context). Both build the same data.
+
+    Context variables required for this template:
+    * finishedreading - the student finished reading (so there is a reading speed)
+    * cpm - the speed is in characters per minute, not words per minute
+    * rate, wordcount, minutes, seconds - the reading speed, passage length and reading time
+    * speedpoints, speedpercent, maxspeedpoints, targetwpm - the speed points out of 10
+    * speedcounts, belowpassmark, toofast - whether the speed counts, and why not
+    * correctitems, totalitems, percent, needed - the question score and the pass mark
+    * questions - array of (qnumber, questiontext, given, hasgiven, correct, wrong, correcttext, feedback,
+      and the translate fields that mod_minilesson/translatetext needs)
+    * passage, contentdir, contentlang - the passage and the direction of the lesson text
+
+    Example context (json):
+    {
+        "finishedreading": true,
+        "rate": 167, "wordcount": 234, "minutes": 1, "seconds": 24,
+        "speedpoints": 7, "speedpercent": 70, "maxspeedpoints": 10, "targetwpm": 200,
+        "speedcounts": true,
+        "correctitems": 4, "totalitems": 5, "percent": 80, "needed": 3,
+        "questions": [{"qnumber": 1, "questiontext": "Where is the night market?", "given": "Behind Mia's school",
+            "hasgiven": true, "correct": true, "correcttext": "Behind Mia's school",
+            "feedback": "The first sentence says it is in the car park behind her school."}],
+        "passage": "<p>Every Friday evening, the car park behind Mia's school turns into a night market.</p>",
+        "contentdir": "ltr", "contentlang": "en-US"
+    }
+}}
+<div class="ml_sr_results">
+    {{#finishedreading}}
+    <div class="ml_sr_speedhero{{^speedcounts}} ml_sr_speedvoid{{/speedcounts}}">
+        <div class="ml_sr_kicker">{{#str}}readingspeed, minilessonitem_speedreading{{/str}}</div>
+        <div class="ml_sr_rateline">
+            <span class="ml_sr_rate">{{rate}}</span>
+            <span class="ml_sr_rateunit">{{#cpm}}{{#str}}charactersperminute, minilessonitem_speedreading{{/str}}{{/cpm}}{{^cpm}}{{#str}}wordsperminute, minilessonitem_speedreading{{/str}}{{/cpm}}</span>
+        </div>
+        <div class="ml_sr_muted">{{#cpm}}{{#str}}readtime_cpm, minilessonitem_speedreading, {"count": {{wordcount}}, "minutes": {{minutes}}, "seconds": {{seconds}} }{{/str}}{{/cpm}}{{^cpm}}{{#str}}readtime, minilessonitem_speedreading, {"count": {{wordcount}}, "minutes": {{minutes}}, "seconds": {{seconds}} }{{/str}}{{/cpm}}</div>
+    </div>
+    {{/finishedreading}}
+    <div class="ml_sr_tiles">
+        {{#finishedreading}}
+        <div class="ml_sr_tile">
+            <div class="ml_sr_muted">{{#str}}speedpoints, minilessonitem_speedreading{{/str}}</div>
+            <div class="ml_sr_tilescore">{{speedpoints}}<span> / {{maxspeedpoints}}</span></div>
+            <div class="ml_sr_bar"><div class="ml_sr_barfill" style="width: {{speedpercent}}%;"></div></div>
+            <div class="ml_sr_small">{{#str}}targetis, minilessonitem_speedreading, {{targetwpm}}{{/str}}</div>
+        </div>
+        {{/finishedreading}}
+        <div class="ml_sr_tile">
+            <div class="ml_sr_muted">{{#str}}questions, minilessonitem_speedreading{{/str}}</div>
+            <div class="ml_sr_tilescore">{{correctitems}}<span> / {{totalitems}}</span></div>
+            <div class="ml_sr_bar"><div class="ml_sr_barfill ml_sr_barquiz" style="width: {{percent}}%;"></div></div>
+            <div class="ml_sr_small">{{percent}}%</div>
+        </div>
+    </div>
+    {{#speedcounts}}
+    <div class="ml_sr_notice ml_sr_notice_good" dir="auto"><i class="fa fa-check" aria-hidden="true"></i> <span>{{#str}}speedcounts, minilessonitem_speedreading, {"needed": {{needed}}, "total": {{totalitems}}, "correct": {{correctitems}} }{{/str}}</span></div>
+    {{/speedcounts}}
+    {{#belowpassmark}}
+    <div class="ml_sr_notice ml_sr_notice_warn" dir="auto"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <span>{{#str}}speeddoesnotcount, minilessonitem_speedreading, {"needed": {{needed}}, "total": {{totalitems}}, "correct": {{correctitems}} }{{/str}}</span></div>
+    {{/belowpassmark}}
+    {{#toofast}}
+    <div class="ml_sr_notice ml_sr_notice_warn" dir="auto"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <span>{{#str}}toofast, minilessonitem_speedreading{{/str}}</span></div>
+    {{/toofast}}
+    {{^finishedreading}}
+    <div class="ml_sr_notice ml_sr_notice_warn" dir="auto"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <span>{{#str}}notread, minilessonitem_speedreading{{/str}}</span></div>
+    {{/finishedreading}}
+
+    <h4 class="ml_sr_subhead">{{#str}}youranswers, minilessonitem_speedreading{{/str}}</h4>
+    {{#questions}}
+    <div class="ml_sr_answer">
+        <div class="ml_sr_answerq">
+            {{#correct}}<i class="fa fa-check ml_sr_right" aria-hidden="true"></i><span class="sr-only">{{#str}}answercorrect, minilessonitem_speedreading{{/str}}</span>{{/correct}}
+            {{#wrong}}<i class="fa fa-times ml_sr_wrong" aria-hidden="true"></i><span class="sr-only">{{#str}}answerwrong, minilessonitem_speedreading{{/str}}</span>{{/wrong}}
+            <span dir="{{contentdir}}" lang="{{contentlang}}">{{qnumber}}. {{questiontext}}</span>
+        </div>
+        <div class="ml_sr_answerline">{{#str}}youranswer, minilessonitem_speedreading{{/str}} {{#hasgiven}}<span dir="{{contentdir}}" lang="{{contentlang}}">{{given}}</span>{{/hasgiven}}{{^hasgiven}}{{#str}}noanswer, minilessonitem_speedreading{{/str}}{{/hasgiven}}</div>
+        {{#wrong}}
+        <div class="ml_sr_answerline ml_sr_correctline">{{#str}}correctansweris, minilessonitem_speedreading{{/str}} <span dir="{{contentdir}}" lang="{{contentlang}}">{{correcttext}}</span></div>
+        {{/wrong}}
+        {{#feedback}}
+        <div class="ml_sr_feedback" dir="auto">
+            {{{feedback}}}
+            {{> mod_minilesson/translatetext}}
+        </div>
+        {{/feedback}}
+    </div>
+    {{/questions}}
+
+    {{#passage}}
+    <details class="ml_sr_passagebox">
+        <summary>{{#str}}thepassage, minilessonitem_speedreading{{/str}}</summary>
+        <div class="ml_sr_passage" dir="{{contentdir}}" lang="{{contentlang}}">{{{passage}}}</div>
+    </details>
+    {{/passage}}
+</div>
