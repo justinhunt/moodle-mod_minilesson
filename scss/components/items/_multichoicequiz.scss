@@ -8,6 +8,11 @@
   text-align: center;
 }
 
+// Questions slide in and out sideways; keep them from widening the page while they move.
+.mcq_questionsbox {
+  overflow-x: hidden;
+}
+
 .mcq_progressdots {
   font-size: 1.25rem;
   margin-top: 0.5rem;

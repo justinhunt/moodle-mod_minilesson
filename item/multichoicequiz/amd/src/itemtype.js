@@ -276,9 +276,13 @@ define(['jquery',
             }
             var advance = function () {
                 if (self.pointer < self.items.length - 1) {
-                    self.current_question().hide();
-                    self.pointer++;
-                    self.show_question(self.pointer);
+                    //slide the answered question out, then slide the next one in
+                    var oldquestion = self.current_question();
+                    self.animate(oldquestion, self.slide('Out'), 'out').then(function () {
+                        oldquestion.hide();
+                        self.show_question(self.pointer + 1);
+                        return true;
+                    }).catch(notification.exception);
                 } else {
                     self.end();
                 }
@@ -321,7 +325,50 @@ define(['jquery',
             self.updateProgressDots();
             var thequestion = self.current_question();
             thequestion.show();
-            anim.do_animate(thequestion, 'zoomIn animate__faster', 'in');
+            //the first question zooms in; later ones slide in, so the change is easy to see
+            if (qindex === 0) {
+                anim.do_animate(thequestion, 'zoomIn animate__faster', 'in');
+            } else {
+                self.animate(thequestion, self.slide('In'), 'in');
+            }
+        },
+
+        /**
+         * The slide for a question leaving ('Out') or arriving ('In'), from mod_minilesson's shared animations.
+         * Questions move from the end of the line to its start, so the direction flips for right to left
+         * languages.
+         *
+         * @param {string} inout 'In' or 'Out'
+         * @returns {string} the animation name
+         */
+        slide: function (inout) {
+            var rtl = this.itemdata.contentdir === 'rtl';
+            if (inout === 'Out') {
+                return rtl ? 'slideOutRight' : 'slideOutLeft';
+            }
+            return rtl ? 'slideInLeft' : 'slideInRight';
+        },
+
+        /**
+         * Run an animation, and settle even if it never ends (e.g. its CSS is missing), so the quiz
+         * cannot get stuck waiting for it.
+         *
+         * @param {jQuery} $el the element
+         * @param {string} animation the animation name (animate__ is added by animatecss)
+         * @param {string} inout 'in' or 'out'
+         * @returns {Promise}
+         */
+        animate: function ($el, animation, inout) {
+            var fallback = new Promise(function (resolve) {
+                setTimeout(function () {
+                    $el.removeClass('animate__animated animate__' + animation);
+                    if (inout === 'out') {
+                        $el.hide();
+                    }
+                    resolve('timeout');
+                }, 1500);
+            });
+            return Promise.race([anim.do_animate($el, animation, inout), fallback]);
         },
 
         updateProgressDots: function () {

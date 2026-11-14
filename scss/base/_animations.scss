@@ -178,3 +178,96 @@
   backface-visibility: visible !important;
   animation-name: flipInX;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate__fadeIn {
+  animation-name: fadeIn;
+}
+
+// Sliding from one question to the next. The JS picks the direction from the lesson text direction
+// (contentdir), so RTLCSS must not flip these on right to left sites.
+/*rtl:begin:ignore*/
+@keyframes slideOutLeft {
+  to {
+    opacity: 0;
+    transform: translate3d(-40%, 0, 0);
+  }
+}
+
+@keyframes slideOutRight {
+  to {
+    opacity: 0;
+    transform: translate3d(40%, 0, 0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translate3d(40%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(-40%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+/*rtl:end:ignore*/
+
+.animate__slideOutLeft {
+  animation-name: slideOutLeft;
+}
+
+.animate__slideOutRight {
+  animation-name: slideOutRight;
+}
+
+.animate__slideInRight {
+  animation-name: slideInRight;
+}
+
+.animate__slideInLeft {
+  animation-name: slideInLeft;
+}
+
+// The old question leaves quickly; the new one comes in more slowly, so the change is easy to see.
+.animate__animated.animate__slideOutLeft,
+.animate__animated.animate__slideOutRight {
+  animation-duration: 350ms;
+  animation-timing-function: ease-out;
+}
+
+.animate__animated.animate__slideInRight,
+.animate__animated.animate__slideInLeft {
+  animation-duration: 600ms;
+  animation-timing-function: ease-out;
+}
+
+// Reduced motion: slides and fades finish at once. They must still end, because the JS waits for them.
+@media (prefers-reduced-motion: reduce) {
+  .animate__animated.animate__fadeIn,
+  .animate__animated.animate__slideOutLeft,
+  .animate__animated.animate__slideOutRight,
+  .animate__animated.animate__slideInRight,
+  .animate__animated.animate__slideInLeft {
+    animation-duration: 1ms;
+  }
+}

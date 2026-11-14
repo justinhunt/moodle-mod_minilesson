@@ -496,6 +496,89 @@
   animation-name: flipInX;
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate__fadeIn {
+  animation-name: fadeIn;
+}
+
+/*rtl:begin:ignore*/
+@keyframes slideOutLeft {
+  to {
+    opacity: 0;
+    transform: translate3d(-40%, 0, 0);
+  }
+}
+@keyframes slideOutRight {
+  to {
+    opacity: 0;
+    transform: translate3d(40%, 0, 0);
+  }
+}
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translate3d(40%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(-40%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+/*rtl:end:ignore*/
+.animate__slideOutLeft {
+  animation-name: slideOutLeft;
+}
+
+.animate__slideOutRight {
+  animation-name: slideOutRight;
+}
+
+.animate__slideInRight {
+  animation-name: slideInRight;
+}
+
+.animate__slideInLeft {
+  animation-name: slideInLeft;
+}
+
+.animate__animated.animate__slideOutLeft,
+.animate__animated.animate__slideOutRight {
+  animation-duration: 350ms;
+  animation-timing-function: ease-out;
+}
+
+.animate__animated.animate__slideInRight,
+.animate__animated.animate__slideInLeft {
+  animation-duration: 600ms;
+  animation-timing-function: ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate__animated.animate__fadeIn,
+  .animate__animated.animate__slideOutLeft,
+  .animate__animated.animate__slideOutRight,
+  .animate__animated.animate__slideInRight,
+  .animate__animated.animate__slideInLeft {
+    animation-duration: 1ms;
+  }
+}
 :is(.freespeaking-item-box,
 .freewriting-item-box,
 .scatter-item-box,
@@ -8313,6 +8396,10 @@ div.mcaudiotranscript {
   font-weight: bold;
   margin: 1rem auto 0;
   text-align: center;
+}
+
+.mcq_questionsbox {
+  overflow-x: hidden;
 }
 
 .mcq_progressdots {
