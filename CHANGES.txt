@@ -1,3 +1,7 @@
+Version 1.1.63 (Build 2026111400)
+- Added new item type "Speed Reading"
+- Added sliding animations to multichoice quiz
+
 Version 1.1.62 (Build 2026111200)
 - AI agents (MCP, the REST API, the AI assistant) can change items that already exist.
 - AI agents can also change a lesson's structure, media and settings.
