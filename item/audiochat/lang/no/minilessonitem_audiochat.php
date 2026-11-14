@@ -26,6 +26,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Lydsamtale';
+$string['aiactions_instructions'] = 'AI-en kan avslutte samtalen og vise bilder når AI-instruksjonene dine ber den om det. For eksempel: «Når eleven har betalt for eplet, vis apple.png, si ha det og avslutt samtalen.»';
+$string['aiactions_unsupported'] = 'Gemini Live-modellen som er valgt i administratorinnstillingene (Extended Thinking), støtter ikke disse handlingene ennå, så AI-en vil ikke avslutte samtalen eller vise bilder.';
+$string['aiactionsheading'] = 'AI-handlinger';
+$string['aicanend'] = 'AI-en kan avslutte samtalen';
+$string['aicanend_desc'] = 'La AI-en avslutte samtalen når den er over';
+$string['aicanend_help'] = 'Hvis dette er krysset av, kan AI-en avslutte samtalen selv, som om eleven hadde trykket på avslutt-knappen. Skriv i AI-instruksjonene når samtalen skal avsluttes. AI-en sier ha det først. Eleven kan fortsatt avslutte samtalen med avslutt-knappen når som helst.';
+$string['aichat_endedbyai'] = 'AI-en avsluttet samtalen.';
+$string['aipictures'] = 'Bilder AI-en kan vise';
+$string['aipictures_help'] = 'Bilder AI-en kan vise eleven under samtalen. AI-en kan ikke se bildene og kjenner dem bare ved filnavnet, så gi hvert bilde et navn som sier hva det viser, som redapple.png eller blackkitten.jpg. Skriv i AI-instruksjonene når hvert bilde skal vises.';
+$string['aipictureshown'] = 'Bilde: {$a}';
 $string['audiochat_silenceduration'] = 'Pause før AI-en svarer';
 $string['audiochat_silenceduration_details'] = 'Hvor lenge eleven må slutte å snakke, i millisekunder, før AI-en regner turen som ferdig og svarer. Øk verdien for å gi elevene mer rom til å ta pauser og tenke midt i en setning. Senk den for en raskere, mer samtalepreget veksling. Standard er 3500 (3,5 sekunder). Verdier utenfor området 500 til 30000 går tilbake til standard. Gjelder bare etter at eleven har snakket, og bare når Send automatisk er på for elementet.';
 $string['cantchat_ningxia'] = 'Prat er IKKE tilgjengelig. For å bruke denne elementtypen må du ha en gyldig {$a}-nøkkel angitt i MiniLesson-aktivitetens administrasjonsinnstillinger. Prat er heller ikke tilgjengelig i Kina (Ningxia-regionen).';

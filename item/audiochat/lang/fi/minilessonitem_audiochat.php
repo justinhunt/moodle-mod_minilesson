@@ -26,6 +26,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Puhekeskustelu';
+$string['aiactions_instructions'] = 'Tekoäly voi lopettaa keskustelun ja näyttää kuvia, kun tekoälyohjeesi käskevät sitä. Esimerkiksi: ”Kun opiskelija on maksanut omenan, näytä apple.png, sano näkemiin ja lopeta keskustelu.”';
+$string['aiactions_unsupported'] = 'Ylläpitäjän asetuksissa valittu Gemini Live -malli (Extended Thinking) ei vielä tue näitä toimintoja, joten tekoäly ei lopeta keskustelua eikä näytä kuvia.';
+$string['aiactionsheading'] = 'Tekoälyn toiminnot';
+$string['aicanend'] = 'Tekoäly voi lopettaa keskustelun';
+$string['aicanend_desc'] = 'Anna tekoälyn lopettaa keskustelu, kun se on ohi';
+$string['aicanend_help'] = 'Jos tämä on valittuna, tekoäly voi lopettaa keskustelun itse, ikään kuin opiskelija olisi painanut lopetuspainiketta. Kerro tekoälyohjeissa, milloin keskustelun pitää loppua. Tekoäly sanoo ensin näkemiin. Opiskelija voi silti lopettaa keskustelun lopetuspainikkeella milloin tahansa.';
+$string['aichat_endedbyai'] = 'Tekoäly lopetti keskustelun.';
+$string['aipictures'] = 'Kuvat, joita tekoäly voi näyttää';
+$string['aipictures_help'] = 'Kuvat, joita tekoäly voi näyttää opiskelijalle keskustelun aikana. Tekoäly ei näe kuvia ja tuntee ne vain tiedostonimistä, joten anna jokaiselle kuvalle nimi, joka kertoo, mitä siinä on, kuten redapple.png tai blackkitten.jpg. Kerro tekoälyohjeissa, milloin kukin kuva näytetään.';
+$string['aipictureshown'] = 'Kuva: {$a}';
 $string['audiochat_silenceduration'] = 'Tauko ennen kuin tekoäly vastaa';
 $string['audiochat_silenceduration_details'] = 'Kuinka kauan opiskelijan on oltava puhumatta (millisekunteina), ennen kuin tekoäly pitää hänen vuoroaan päättyneenä ja vastaa. Suurenna arvoa, jos opiskelijoille halutaan antaa enemmän aikaa tauoille ja ajattelulle kesken lauseen. Pienennä sitä, jos haluat nopeampaa ja keskustelumaisempaa vuoropuhelua. Oletus on 3500 (3,5 sekuntia). Alueen 500–30000 ulkopuoliset arvot palautuvat oletukseen. Koskee vain sen jälkeen, kun opiskelija on puhunut, ja vain kun osiossa on Lähetä automaattisesti käytössä.';
 $string['cantchat_ningxia'] = 'Chat EI ole käytettävissä. Tämän osiotyypin käyttö edellyttää, että MiniLesson-aktiviteetin ylläpitoasetuksissa on kelvollinen {$a}-avain. Chat ei ole käytettävissä myöskään Kiinassa (Ningxian alue).';

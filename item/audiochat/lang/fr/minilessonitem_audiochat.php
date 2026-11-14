@@ -26,6 +26,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Chat audio';
+$string['aiactions_instructions'] = 'L\'IA peut terminer le chat et montrer des images quand tes instructions pour l\'IA le lui demandent. Par exemple : « Quand l\'apprenant a payé la pomme, montre apple.png, dis au revoir et termine le chat. »';
+$string['aiactions_unsupported'] = 'Le modèle Gemini Live choisi dans les réglages d\'administration (Extended Thinking) ne prend pas encore en charge ces actions, donc l\'IA ne terminera pas le chat et ne montrera pas d\'images.';
+$string['aiactionsheading'] = 'Actions de l\'IA';
+$string['aicanend'] = 'L\'IA peut terminer le chat';
+$string['aicanend_desc'] = 'Laisser l\'IA terminer le chat quand il est fini';
+$string['aicanend_help'] = 'Si c\'est coché, l\'IA peut terminer le chat elle-même, comme si l\'apprenant avait appuyé sur le bouton de fin. Indique dans les instructions pour l\'IA quand le chat doit se terminer. L\'IA dit d\'abord au revoir. L\'apprenant peut toujours terminer le chat avec le bouton de fin à tout moment.';
+$string['aichat_endedbyai'] = 'L\'IA a terminé le chat.';
+$string['aipictures'] = 'Images que l\'IA peut montrer';
+$string['aipictures_help'] = 'Images que l\'IA peut montrer à l\'apprenant pendant le chat. L\'IA ne voit pas les images et ne les connaît que par leur nom de fichier, alors donne à chacune un nom qui dit ce qu\'elle montre, comme redapple.png ou blackkitten.jpg. Indique dans les instructions pour l\'IA quand montrer chaque image.';
+$string['aipictureshown'] = 'Image : {$a}';
 $string['audiochat_silenceduration'] = 'Pause avant la réponse de l\'IA';
 $string['audiochat_silenceduration_details'] = 'Durée pendant laquelle l\'apprenant doit cesser de parler, en millisecondes, avant que l\'IA considère son tour comme terminé et réponde. Augmente-la pour laisser plus de temps aux apprenants de marquer une pause et de réfléchir au milieu d\'une phrase. Diminue-la pour des échanges plus rapides et plus conversationnels. La valeur par défaut est 3500 (3,5 secondes). Les valeurs en dehors de la plage 500 à 30000 reviennent à la valeur par défaut. Cela ne s\'applique qu\'après que l\'apprenant a parlé, et uniquement lorsque l\'option Envoi automatique est activée pour l\'élément.';
 $string['cantchat_ningxia'] = 'Le chat n\'est PAS disponible. Pour utiliser ce type d\'élément, une clé {$a} valide doit être définie dans les paramètres d\'administration de l\'activité MiniLesson. Le chat n\'est pas non plus disponible en Chine (région de Ningxia)';

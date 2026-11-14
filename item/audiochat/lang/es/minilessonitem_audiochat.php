@@ -26,6 +26,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Chat de voz';
+$string['aiactions_instructions'] = 'La IA puede terminar el chat y mostrar imágenes cuando tus instrucciones para la IA se lo indiquen. Por ejemplo: «Cuando el estudiante haya pagado la manzana, muestra apple.png, despídete y termina el chat».';
+$string['aiactions_unsupported'] = 'El modelo Gemini Live elegido en los ajustes de administración (Extended Thinking) aún no admite estas acciones, así que la IA no terminará el chat ni mostrará imágenes.';
+$string['aiactionsheading'] = 'Acciones de la IA';
+$string['aicanend'] = 'La IA puede terminar el chat';
+$string['aicanend_desc'] = 'Deja que la IA termine el chat cuando haya acabado';
+$string['aicanend_help'] = 'Si está marcado, la IA puede terminar el chat por sí misma, como si el estudiante hubiera pulsado el botón de terminar. Indica en las instrucciones para la IA cuándo debe terminar el chat. La IA se despide primero. El estudiante puede seguir terminando el chat con el botón de terminar en cualquier momento.';
+$string['aichat_endedbyai'] = 'La IA terminó el chat.';
+$string['aipictures'] = 'Imágenes que puede mostrar la IA';
+$string['aipictures_help'] = 'Imágenes que la IA puede mostrar al estudiante durante el chat. La IA no puede ver las imágenes y solo las conoce por su nombre de archivo, así que pon a cada una un nombre que diga lo que muestra, como redapple.png o blackkitten.jpg. Indica en las instrucciones para la IA cuándo mostrar cada imagen.';
+$string['aipictureshown'] = 'Imagen: {$a}';
 $string['audiochat_silenceduration'] = 'Pausa antes de que responda la IA';
 $string['audiochat_silenceduration_details'] = 'Cuánto tiempo debe dejar de hablar el estudiante, en milisegundos, antes de que la IA dé por terminado su turno y responda. Auméntalo para dar a los estudiantes más margen para hacer pausas y pensar a mitad de frase. Redúcelo para un intercambio más rápido y conversacional. El valor predeterminado es 3500 (3,5 segundos). Los valores fuera del rango de 500 a 30000 vuelven al valor predeterminado. Solo se aplica después de que el estudiante haya hablado, y solo cuando el envío automático está activado para el elemento.';
 $string['cantchat_ningxia'] = 'El chat NO está disponible. Para usar este tipo de elemento necesitas una clave {$a} válida configurada en los ajustes de administración de la actividad MiniLesson. El chat tampoco está disponible en China (región de Ningxia).';

@@ -26,6 +26,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Lydsamtale';
+$string['aiactions_instructions'] = 'AI\'en kan afslutte chatten og vise billeder, når dine AI-instruktioner beder den om det. For eksempel: »Når eleven har betalt for æblet, så vis apple.png, sig farvel og afslut chatten.«';
+$string['aiactions_unsupported'] = 'Gemini Live-modellen, der er valgt i administratorindstillingerne (Extended Thinking), understøtter endnu ikke disse handlinger, så AI\'en vil ikke afslutte chatten eller vise billeder.';
+$string['aiactionsheading'] = 'AI-handlinger';
+$string['aicanend'] = 'AI\'en kan afslutte chatten';
+$string['aicanend_desc'] = 'Lad AI\'en afslutte chatten, når den er slut';
+$string['aicanend_help'] = 'Hvis det er markeret, kan AI\'en selv afslutte chatten, som om eleven havde trykket på afslut-knappen. Skriv i AI-instruktionerne, hvornår chatten skal slutte. AI\'en siger farvel først. Eleven kan stadig afslutte chatten med afslut-knappen når som helst.';
+$string['aichat_endedbyai'] = 'AI\'en afsluttede chatten.';
+$string['aipictures'] = 'Billeder, AI\'en kan vise';
+$string['aipictures_help'] = 'Billeder, AI\'en kan vise eleven under chatten. AI\'en kan ikke se billederne og kender dem kun ved deres filnavne, så giv hvert billede et navn, der siger, hvad det viser, fx redapple.png eller blackkitten.jpg. Skriv i AI-instruktionerne, hvornår hvert billede skal vises.';
+$string['aipictureshown'] = 'Billede: {$a}';
 $string['audiochat_silenceduration'] = 'Pause før AI\'en svarer';
 $string['audiochat_silenceduration_details'] = 'Hvor længe eleven skal holde op med at tale, i millisekunder, før AI\'en betragter turen som færdig og svarer. Hæv værdien for at give eleverne mere rum til at holde pause og tænke midt i en sætning. Sænk den for en hurtigere, mere samtalepræget udveksling. Standarden er 3500 (3,5 sekunder). Værdier uden for området 500 til 30000 falder tilbage til standarden. Gælder kun, efter at eleven har talt, og kun når Send automatisk er slået til for elementet.';
 $string['cantchat_ningxia'] = 'Chat er IKKE tilgængelig. For at bruge denne elementtype skal du have en gyldig {$a}-nøgle angivet i MiniLesson-aktivitetens administrationsindstillinger. Chat er heller ikke tilgængelig i Kina (Ningxia-regionen).';

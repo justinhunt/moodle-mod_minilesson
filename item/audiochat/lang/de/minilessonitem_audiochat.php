@@ -26,6 +26,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['additem'] = 'Audio-Chat';
+$string['aiactions_instructions'] = 'Die KI kann den Chat beenden und Bilder zeigen, wenn deine KI-Anweisungen es ihr sagen. Zum Beispiel: „Wenn der Lernende den Apfel bezahlt hat, zeig apple.png, verabschiede dich und beende den Chat.“';
+$string['aiactions_unsupported'] = 'Das in den Admin-Einstellungen gewählte Gemini-Live-Modell (Extended Thinking) unterstützt diese Aktionen noch nicht, daher beendet die KI den Chat nicht und zeigt keine Bilder.';
+$string['aiactionsheading'] = 'KI-Aktionen';
+$string['aicanend'] = 'KI darf den Chat beenden';
+$string['aicanend_desc'] = 'Die KI den Chat beenden lassen, wenn er vorbei ist';
+$string['aicanend_help'] = 'Wenn aktiviert, kann die KI den Chat selbst beenden, als hätte der Lernende den Beenden-Button gedrückt. Schreib in die KI-Anweisungen, wann der Chat enden soll. Die KI verabschiedet sich zuerst. Der Lernende kann den Chat jederzeit weiterhin mit dem Beenden-Button beenden.';
+$string['aichat_endedbyai'] = 'Die KI hat den Chat beendet.';
+$string['aipictures'] = 'Bilder, die die KI zeigen kann';
+$string['aipictures_help'] = 'Bilder, die die KI dem Lernenden während des Chats zeigen kann. Die KI kann die Bilder nicht sehen und kennt sie nur am Dateinamen. Gib deshalb jedem Bild einen Namen, der sagt, was es zeigt, etwa redapple.png oder blackkitten.jpg. Schreib in die KI-Anweisungen, wann welches Bild gezeigt werden soll.';
+$string['aipictureshown'] = 'Bild: {$a}';
 $string['audiochat_silenceduration'] = 'Pause, bevor die KI antwortet';
 $string['audiochat_silenceduration_details'] = 'Wie lange die Lernenden mit dem Sprechen aufhören müssen (in Millisekunden), bevor die KI ihren Beitrag als beendet ansieht und antwortet. Erhöhe den Wert, damit die Lernenden mitten im Satz mehr Zeit zum Innehalten und Nachdenken haben. Verringere ihn für ein schnelleres, gesprächsähnlicheres Hin und Her. Standard ist 3500 (3,5 Sekunden). Werte außerhalb des Bereichs 500 bis 30000 fallen auf den Standard zurück. Gilt nur, nachdem die Lernenden gesprochen haben, und nur wenn für das Element „Automatisch senden“ aktiviert ist.';
 $string['cantchat_ningxia'] = 'Der Chat ist NICHT verfügbar. Um diesen Elementtyp zu nutzen, muss in den Administratoreinstellungen der MiniLesson-Aktivität ein gültiger {$a}-Schlüssel hinterlegt sein. Der Chat ist außerdem in China (Region Ningxia) nicht verfügbar';
