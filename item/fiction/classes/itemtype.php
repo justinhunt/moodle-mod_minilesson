@@ -198,7 +198,8 @@ class itemtype extends item {
         // Immersive (Dark/Bright/Paper) shared data: title, cover, sound + font URLs.
         if ($testitem->presention_immersivedark || $testitem->presention_immersivebright
             || $testitem->presention_immersivepaper) {
-            $imtitle = format_string($this->moduleinstance->name);
+            $imtitle = format_string(trim($this->itemrecord->name) !== ''
+                ? $this->itemrecord->name : $this->moduleinstance->name);
             $imcover = '';
             $imageexts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
             foreach ($files as $file) {
