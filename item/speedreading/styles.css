@@ -170,6 +170,38 @@
     background: #506dff;
 }
 
+/* The dot of the question just shown pulses once, so the move to the next question is easy to see. */
+.speedreading-item-box .ml_sr_dot.ml_sr_dotnew {
+    animation: ml_sr_dotpulse 0.6s ease-out;
+}
+
+@keyframes ml_sr_dotpulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(80, 109, 255, 0.6);
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.5);
+    }
+    100% {
+        box-shadow: 0 0 0 8px rgba(80, 109, 255, 0);
+        transform: scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .speedreading-item-box .ml_sr_dot.ml_sr_dotnew {
+        animation: none;
+    }
+}
+
+/* Questions slide in and out sideways; keep them from widening the page while they move. */
+.speedreading-item-box .ml_sr_quiz {
+    overflow-x: hidden;
+}
+
+/* The slide and fade animations are the shared ones in mod_minilesson (scss/base/_animations.scss). */
+
 .speedreading-item-box .ml_sr_question {
     border: 0;
     margin: 0 0 1.5rem;

@@ -195,7 +195,7 @@ class itemform extends baseform {
         ];
         $mform->addGroup($target, 'targetwpmgroup', get_string('targetwpm', $component), ' ', false);
         $mform->setType(itemtype::TARGETWPM, PARAM_INT);
-        $mform->setDefault(itemtype::TARGETWPM, itemtype::DEFAULT_TARGETWPM);
+        $mform->setDefault(itemtype::TARGETWPM, $characters ? itemtype::DEFAULT_TARGETCPM : itemtype::DEFAULT_TARGETWPM);
         $this->add_static_text('targetwpm_details', '', get_string('targetwpm_details', $component));
 
         $this->add_dropdown(
@@ -222,7 +222,8 @@ class itemform extends baseform {
     }
 
     /**
-     * An automatic word count shows as an empty box, not as 0.
+     * An automatic word count shows as an empty box, not as 0. A target speed of 0 (the language's default,
+     * which an import may leave) shows that default.
      *
      * @return void
      */
@@ -233,6 +234,12 @@ class itemform extends baseform {
             $element = $mform->getElement(itemtype::WORDCOUNT);
             if ((int) $element->getValue() <= 0) {
                 $element->setValue('');
+            }
+        }
+        if ($mform->elementExists('targetwpmgroup')) {
+            $target = $mform->getElement('targetwpmgroup')->getElements()[0];
+            if ((int) $target->getValue() <= 0) {
+                $target->setValue(itemtype::default_target((string) ($this->moduleinstance->ttslanguage ?? '')));
             }
         }
     }

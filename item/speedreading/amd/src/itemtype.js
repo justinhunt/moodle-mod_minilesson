@@ -13,7 +13,7 @@ define(['jquery',
     1. the introduction (the splash screen; quizhelper triggers showElement on its start button),
     2. the reading passage, timed from showElement until they tap "I have finished reading",
     3. the questions, with no right or wrong shown,
-    4. the results: reading speed, speed points, question score, answers and the passage.
+    4. the results: reading speed, speed points, quiz score, answers and the passage.
     */
 
     log.debug('MiniLesson Speed Reading: initialising');
@@ -182,12 +182,52 @@ define(['jquery',
             }).catch(notification.exception);
             var dots = '';
             for (var i = 0; i < total; i++) {
-                dots += '<span class="ml_sr_dot' + (i <= qindex ? ' ml_sr_dotdone' : '') + '"></span>';
+                var dotclass = i < qindex ? ' ml_sr_dotdone' : (i === qindex ? ' ml_sr_dotdone ml_sr_dotnew' : '');
+                dots += '<span class="ml_sr_dot' + dotclass + '"></span>';
             }
             self.controls.dots.html(dots);
             var thequestion = self.question_element(qindex);
             thequestion.show();
-            anim.do_animate(thequestion, 'fadeIn animate__faster', 'in');
+            //the first question just appears; later ones slide in, so the change is easy to see
+            self.animate(thequestion, qindex === 0 ? 'fadeIn animate__faster' : self.slide('In'), 'in');
+        },
+
+        /**
+         * The slide for a question leaving ('Out') or arriving ('In'), from mod_minilesson's shared animations.
+         * Questions move from the end of the line to its start, so the direction flips for right to left
+         * languages.
+         *
+         * @param {string} inout 'In' or 'Out'
+         * @returns {string} the animation name
+         */
+        slide: function(inout) {
+            var rtl = this.itemdata.contentdir === 'rtl';
+            if (inout === 'Out') {
+                return rtl ? 'slideOutRight' : 'slideOutLeft';
+            }
+            return rtl ? 'slideInLeft' : 'slideInRight';
+        },
+
+        /**
+         * Run an animation, and settle even if it never ends (e.g. its CSS is missing), so the quiz
+         * cannot get stuck waiting for it.
+         *
+         * @param {jQuery} $el the element
+         * @param {string} animation the animation name (animate__ is added by animatecss)
+         * @param {string} inout 'in' or 'out'
+         * @returns {Promise}
+         */
+        animate: function($el, animation, inout) {
+            var fallback = new Promise(function(resolve) {
+                setTimeout(function() {
+                    $el.removeClass('animate__animated animate__' + animation);
+                    if (inout === 'out') {
+                        $el.hide();
+                    }
+                    resolve('timeout');
+                }, 1500);
+            });
+            return Promise.race([anim.do_animate($el, animation, inout), fallback]);
         },
 
         choose: function($option) {
@@ -206,17 +246,21 @@ define(['jquery',
                 self.controls.submitbutton.prop('disabled', !self.all_answered());
                 return;
             }
-            //one at a time: a tap moves on, after a moment to see the choice
+            //one at a time: a tap moves on, after a moment to see the choice. The question slides out
+            //the way a page turns (towards the start of the line), and the next one slides in from the end.
             self.locked = true;
             setTimeout(function() {
-                self.locked = false;
-                $question.hide();
-                if (qindex < self.itemdata.questions.length - 1) {
-                    self.show_question(qindex + 1);
-                } else {
-                    self.finish_quiz();
-                }
-            }, 350);
+                self.animate($question, self.slide('Out'), 'out').then(function() {
+                    $question.hide();
+                    self.locked = false;
+                    if (qindex < self.itemdata.questions.length - 1) {
+                        self.show_question(qindex + 1);
+                    } else {
+                        self.finish_quiz();
+                    }
+                    return true;
+                }).catch(notification.exception);
+            }, 800);
         },
 
         all_answered: function() {

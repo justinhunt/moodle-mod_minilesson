@@ -17,7 +17,7 @@
 {{!
     @template minilessonitem_speedreading/speedreadingresults
 
-    The results of a speed reading item: the reading speed, speed points, question score, each
+    The results of a speed reading item: the reading speed, speed points, quiz score, each
     answer with its feedback, and the passage. Rendered by the item's JS at the end of the item
     (build_results in amd/src/itemtype.js), and by mod_minilesson/quizfinished in the attempt review
     (itemtype::build_results_context). Both build the same data.
@@ -28,7 +28,7 @@
     * rate, wordcount, minutes, seconds - the reading speed, passage length and reading time
     * speedpoints, speedpercent, maxspeedpoints, targetwpm - the speed points out of 10
     * speedcounts, belowpassmark, toofast - whether the speed counts, and why not
-    * correctitems, totalitems, percent, needed - the question score and the pass mark
+    * correctitems, totalitems, percent, needed - the quiz score and the pass mark
     * questions - array of (qnumber, questiontext, given, hasgiven, correct, wrong, correcttext, feedback,
       and the translate fields that mod_minilesson/translatetext needs)
     * passage, contentdir, contentlang - the passage and the direction of the lesson text

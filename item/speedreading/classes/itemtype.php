@@ -26,8 +26,8 @@ use stdClass;
  *
  * The student sees four screens: an introduction, the reading passage (timed), a set of up to
  * MAXQUESTIONS multichoice questions about it, and the results. The results show the reading speed
- * in words per minute, speed points out of 10, and the question score. The speed only counts when
- * enough questions are right (the pass mark). The grade is the question score.
+ * in words per minute, speed points out of 10, and the quiz score. The speed only counts when
+ * enough questions are right (the pass mark). The grade is the quiz score.
  *
  * @package    minilessonitem_speedreading
  * @copyright  2026 Justin Hunt <justin@poodll.com>
@@ -82,14 +82,20 @@ class itemtype extends item {
     /** @var int The default target speed, in words per minute. */
     public const DEFAULT_TARGETWPM = 200;
 
+    /** @var int The default target speed for languages counted in characters, in characters per minute. */
+    public const DEFAULT_TARGETCPM = 400;
+
     /** @var int The most speed points a student can get. */
     public const MAXSPEEDPOINTS = 10;
 
     /** @var int Faster than this many times the target speed is taken as not really reading. */
     public const TOOFASTFACTOR = 5;
 
-    /** @var string[] Languages that do not put spaces between words, so characters are counted instead. */
-    public const CHARACTER_LANGS = ['ja', 'zh', 'th', 'lo', 'km', 'my', 'yu'];
+    /**
+     * @var string[] Languages whose reading speed is measured in characters, not words. Most do not put spaces
+     * between words. Korean does, but its speed and text length are usually given in syllables (one character each).
+     */
+    public const CHARACTER_LANGS = ['ja', 'zh', 'ko', 'th', 'lo', 'km', 'my', 'yu'];
 
     /**
      * DB column holding the question text of the given question.
@@ -190,6 +196,16 @@ class itemtype extends item {
      */
     public static function counts_characters(string $language): bool {
         return in_array(utils::fetch_short_lang($language), self::CHARACTER_LANGS);
+    }
+
+    /**
+     * The default target speed for a language: words per minute, or characters per minute.
+     *
+     * @param string $language the lesson language, e.g. en-US
+     * @return int
+     */
+    public static function default_target(string $language): int {
+        return self::counts_characters($language) ? self::DEFAULT_TARGETCPM : self::DEFAULT_TARGETWPM;
     }
 
     /**
@@ -294,7 +310,11 @@ class itemtype extends item {
         $testitem->shuffleanswers = !empty($itemrecord->{self::SHUFFLEANSWER});
         $testitem->graded = empty($itemrecord->{self::NOGRADE});
         $testitem->passmark = max(0, min(100, self::int_setting($itemrecord, self::PASSMARK, self::DEFAULT_PASSMARK)));
-        $testitem->targetwpm = max(1, self::int_setting($itemrecord, self::TARGETWPM, self::DEFAULT_TARGETWPM));
+        // Empty or 0 means the language's default (an import may leave the target out).
+        $testitem->targetwpm = self::int_setting($itemrecord, self::TARGETWPM, 0);
+        if ($testitem->targetwpm < 1) {
+            $testitem->targetwpm = self::default_target((string) $this->moduleinstance->ttslanguage);
+        }
         $testitem->toofastwpm = $testitem->targetwpm * self::TOOFASTFACTOR;
         $testitem->cpm = self::counts_characters((string) $this->moduleinstance->ttslanguage);
         $wordcount = (int) ($itemrecord->{self::WORDCOUNT} ?? 0);
@@ -494,7 +514,8 @@ class itemtype extends item {
             return $error;
         }
         $target = $newrecord->{self::TARGETWPM} ?? null;
-        if ($target !== null && $target !== '' && (int) $target < 1) {
+        // 0 means the language's default.
+        if ($target !== null && $target !== '' && (int) $target < 0) {
             $error->col = self::TARGETWPM;
             $error->message = get_string('error:targetwpm', $component);
             return $error;
@@ -535,7 +556,7 @@ class itemtype extends item {
         $keycols['int13'] = ['jsonname' => 'passmark', 'type' => 'int',
             'optional' => true, 'default' => self::DEFAULT_PASSMARK, 'dbname' => self::PASSMARK];
         $keycols['int14'] = ['jsonname' => 'targetwpm', 'type' => 'int',
-            'optional' => true, 'default' => self::DEFAULT_TARGETWPM, 'dbname' => self::TARGETWPM];
+            'optional' => true, 'default' => 0, 'dbname' => self::TARGETWPM];
         $keycols['int15'] = ['jsonname' => 'wordcount', 'type' => 'int',
             'optional' => true, 'default' => 0, 'dbname' => self::WORDCOUNT];
         for ($qnumber = 1; $qnumber <= self::MAXQUESTIONS; $qnumber++) {
@@ -554,7 +575,7 @@ class itemtype extends item {
     public static function aigen_fetch_usage() {
         return 'Speed reading practice. The learner reads a passage silently while a timer runs, then answers up to '
             . self::MAXQUESTIONS . ' multichoice questions about it without seeing the passage again. The results show '
-            . 'their reading speed (words per minute), speed points out of 10, and the question score. Use it to build '
+            . 'their reading speed (words per minute), speed points out of 10, and the quiz score. Use it to build '
             . 'reading fluency. The passage must be EASY for the learners: below their level, with almost no unknown '
             . 'words, because the aim is to read faster, not to learn new language. For careful comprehension of a harder '
             . 'text, use multichoicequiz instead.';
@@ -629,14 +650,15 @@ class itemtype extends item {
             ],
             'targetwpm' => [
                 'description' => 'The reading speed that gets the full 10 speed points; half of it gets 0. In words per '
-                    . 'minute, or characters per minute for languages without spaces between words (ja, zh, th). '
-                    . 'Default ' . self::DEFAULT_TARGETWPM . '.',
+                    . 'minute, or characters per minute for languages counted in characters ('
+                    . implode(', ', self::CHARACTER_LANGS) . '). Leave out (0) for the default: '
+                    . self::DEFAULT_TARGETWPM . ' words, or ' . self::DEFAULT_TARGETCPM . ' characters, per minute.',
             ],
             'wordcount' => [
                 'description' => 'The number of words in the passage. Leave out (0) to count automatically.',
             ],
             'nograde' => [
-                'description' => 'Whether the item is left out of the lesson grade. The grade is the question score.',
+                'description' => 'Whether the item is left out of the lesson grade. The grade is the quiz score.',
                 'options' => [
                     ['value' => '0', 'meaning' => 'Graded (default)'],
                     ['value' => '1', 'meaning' => 'Not graded'],

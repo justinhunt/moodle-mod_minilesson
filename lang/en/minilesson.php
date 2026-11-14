@@ -1511,7 +1511,7 @@ $string['lessonbank:badresponse'] = 'The lesson bank did not return a usable res
 $string['lessonbank:loadmoreerror'] = 'Could not load more lessons from the lesson bank: {$a}';
 
 $string['hideitemscores'] = 'Hide All Results';
-$string['shuffleanswer'] = 'Shuffle Answer';
+$string['shuffleanswer'] = 'Shuffle answers';
 $string['enterslidesmarkdown'] = 'Enter Slides Markdown. Markdown is a sort of shorthand syntax for creating HTML. See the <a href="https://poodll.freshdesk.com/a/solutions/articles/19000169462" target="_blank">Slides Markdown Guide</a> for details.';
 $string['slidesmarkdown'] = 'Slides Markdown';
 $string['slides:attachments'] = 'Attachments';
