@@ -1,0 +1,76 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_minilesson/setting_starthresholds
+
+    Admin setting: the minimum score for each number of stars, and the score ranges that gives.
+
+    Example context (json):
+    {
+        "rows": [
+            {"id": "id_s_mod_minilesson_starthresholds_1", "name": "s_mod_minilesson_starthresholds[1]", "value": 1,
+             "label": "Minimum score for 1 out of 5 stars", "starslabel": "1 out of 5 stars",
+             "stars": [{"filled": true}, {"filled": false}, {"filled": false}, {"filled": false}, {"filled": false}]}
+        ],
+        "hasranges": true,
+        "ranges": [
+            {"text": "0 to 18%", "starslabel": "0 out of 5 stars",
+             "stars": [{"filled": false}, {"filled": false}, {"filled": false}, {"filled": false}, {"filled": false}]}
+        ],
+        "readonly": false
+    }
+}}
+<div class="mod_minilesson_starthresholds">
+    <table class="table table-sm w-auto mb-2">
+        <thead>
+            <tr>
+                <th scope="col">{{#str}}starthresholds_stars, mod_minilesson{{/str}}</th>
+                <th scope="col">{{#str}}starthresholds_minscore, mod_minilesson{{/str}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#rows}}
+            <tr>
+                <td class="align-middle text-nowrap">
+                    <span aria-hidden="true">{{#stars}}<i class="fa {{#filled}}fa-star text-warning{{/filled}}{{^filled}}fa-star-o text-muted{{/filled}}"></i>{{/stars}}</span>
+                    <span class="sr-only visually-hidden">{{starslabel}}</span>
+                </td>
+                <td>
+                    <label for="{{id}}" class="sr-only visually-hidden">{{label}}</label>
+                    <div class="input-group input-group-sm flex-nowrap">
+                        <input type="number" min="0" max="100" step="1" class="form-control" style="width: 6em;"
+                            id="{{id}}" name="{{name}}" value="{{value}}" {{#readonly}}disabled{{/readonly}}>
+                        <span class="input-group-text">%</span>
+                    </div>
+                </td>
+            </tr>
+            {{/rows}}
+        </tbody>
+    </table>
+    {{#hasranges}}
+    <div class="mb-1">{{#str}}starthresholds_rangesheading, mod_minilesson{{/str}}</div>
+    <ul class="list-unstyled mb-0">
+        {{#ranges}}
+        <li class="text-nowrap">
+            <span aria-hidden="true">{{#stars}}<i class="fa {{#filled}}fa-star text-warning{{/filled}}{{^filled}}fa-star-o text-muted{{/filled}}"></i>{{/stars}}</span>
+            <span class="sr-only visually-hidden">{{starslabel}}:</span>
+            {{text}}
+        </li>
+        {{/ranges}}
+    </ul>
+    {{/hasranges}}
+</div>

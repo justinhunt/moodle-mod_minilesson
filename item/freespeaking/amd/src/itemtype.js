@@ -319,19 +319,8 @@ define(
                             };
                         }
                         if (transcript_evaluation.reviewsettings.showscorestarrating) {
-                            if (self.percentscore == 0) {
-                                ystarcnt = 0;
-                            } else if (self.percentscore < 19) {
-                                ystarcnt = 1;
-                            } else if (self.percentscore < 39) {
-                                ystarcnt = 2;
-                            } else if (self.percentscore < 59) {
-                                ystarcnt = 3;
-                            } else if (self.percentscore < 79) {
-                                ystarcnt = 4;
-                            } else {
-                                ystarcnt = 5;
-                            }
+                            // Use the site's star rating setting, so the stars match the results page.
+                            ystarcnt = self.quizhelper.starCount(self.percentscore);
 
                             gstarcnt = 5 - ystarcnt;
                             templatedata.yellowstars = new Array(ystarcnt).fill(M.cfg, 0, ystarcnt);

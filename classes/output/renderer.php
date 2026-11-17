@@ -23,6 +23,7 @@ use mod_minilesson\aigen_contextform;
 use mod_minilesson\cbcredentials;
 use mod_minilesson\constants;
 use mod_minilesson\utils;
+use mod_minilesson\starrating;
 use mod_minilesson\comprehensiontest;
 use moodle_url;
 use stdClass;
@@ -456,24 +457,11 @@ class renderer extends \plugin_renderer_base
             $result->itemtype = $itemquizdata->type;
             $result->resultstemplate = utils::get_sub_component($result->itemtype) . "/{$result->itemtype}results";
             $result->index++;
-         
+
             // Every item stars.
-            if ($result->grade == 0) {
-                $ystarcnt = 0;
-            } else if ($result->grade < 19) {
-                $ystarcnt = 1;
-            } else if ($result->grade < 39) {
-                $ystarcnt = 2;
-            } else if ($result->grade < 59) {
-                $ystarcnt = 3;
-            } else if ($result->grade < 79) {
-                $ystarcnt = 4;
-            } else {
-                $ystarcnt = 5;
-            }
-            $result->yellowstars = array_fill(0, $ystarcnt, true);
-            $gstarcnt = 5 - $ystarcnt;
-            $result->graystars = array_fill(0, $gstarcnt, true);
+            $stars = starrating::for_template($result->grade);
+            $result->yellowstars = $stars['yellowstars'];
+            $result->graystars = $stars['graystars'];
 
             // The results templates show lesson text in the lesson's direction. Attempts made
             // before the direction was stored in the results data get it here.
@@ -496,23 +484,10 @@ class renderer extends \plugin_renderer_base
         // The direction and language of the lesson text in the results.
         $tdata->contentdir = utils::get_text_direction($moduleinstance->ttslanguage);
         $tdata->contentlang = $moduleinstance->ttslanguage;
-        // Item stars.
-        if ($latestattempt->sessionscore == 0) {
-            $ystarcnt = 0;
-        } elseif ($latestattempt->sessionscore < 19) {
-            $ystarcnt = 1;
-        } elseif ($latestattempt->sessionscore < 39) {
-            $ystarcnt = 2;
-        } elseif ($latestattempt->sessionscore < 59) {
-            $ystarcnt = 3;
-        } elseif ($latestattempt->sessionscore < 79) {
-            $ystarcnt = 4;
-        } else {
-            $ystarcnt = 5;
-        }
-        $tdata->yellowstars = array_fill(0, $ystarcnt, true);
-        $gstarcnt = 5 - $ystarcnt;
-        $tdata->graystars = array_fill(0, $gstarcnt, true);
+        // Lesson stars.
+        $stars = starrating::for_template($latestattempt->sessionscore);
+        $tdata->yellowstars = $stars['yellowstars'];
+        $tdata->graystars = $stars['graystars'];
 
         $tdata->total = $latestattempt->sessionscore;
         $tdata->courseurl = $CFG->wwwroot . '/course/view.php?id=' .
@@ -789,6 +764,8 @@ class renderer extends \plugin_renderer_base
 
         // To show a post item results panel.
         $recopts['showitemreview'] = $moduleinstance->showitemreview ? true : false;
+        // The lowest score for 1 to 5 stars, so the items' own feedback gives the same stars as the results page.
+        $recopts['starthresholds'] = starrating::get_thresholds();
 
         // The activity URL for returning to on finished.
         $activityurl = new \moodle_url(

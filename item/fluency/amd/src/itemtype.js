@@ -725,13 +725,12 @@ define(
                 var starRating = $("<div class='fluency_star_rating'>");
                 var accuracyScore = pronunciation_result.accuracyScore;
                 var maxStars = 5;
-        // calculate starBandWidth // band 1 = 0-19 / band 2 = 20-39 etc.
-                var correctBandwidth = 100 - self.phonemeWarningThreshold;
-                var starBandWidth = (100 - correctBandwidth) / 4;
+        // Reaching the item's correct threshold gives 5 stars, lower scores share out 0 to 4 stars.
+                var filledStars = self.quizhelper.passStarCount(accuracyScore, self.phonemeWarningThreshold);
 
                 for (var i = 0; i < maxStars; i++) {
                           var star = $("<i class='fa'>");
-                    if (i <= accuracyScore / starBandWidth ) {
+                    if (i < filledStars) {
                         star.addClass("fa-star");
                     } else {
                         star.addClass("fa-star-o");

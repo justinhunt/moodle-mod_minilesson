@@ -392,6 +392,16 @@ if ($hassiteconfig) {
 
     $ADMIN->add('modsettingsminilessoncat', $nativelangsettings);
 
+    // Star ratings: the score range for each number of stars, used by the results page and the items.
+    $pagetitle = get_string('starratings', constants::M_COMPONENT);
+    $starratingsettings = new admin_settingpage('modsettingminilessonstarratings', $pagetitle, 'moodle/site:config');
+    $starratingsettings->add(new \mod_minilesson\local\admin_setting_starthresholds(
+        constants::M_COMPONENT . '/' . \mod_minilesson\starrating::SETTING,
+        get_string('starthresholds', constants::M_COMPONENT),
+        get_string('starthresholds_details', constants::M_COMPONENT)
+    ));
+    $ADMIN->add('modsettingsminilessoncat', $starratingsettings);
+
     // Manage Items Page.
     $manageitemspage = new admin_externalpage(
         'manageminilessonitem',

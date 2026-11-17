@@ -46,6 +46,10 @@ define(
                 this.useanimatecss = activitydata.useanimatecss;
                 this.showitemreview = activitydata.showitemreview;
                 this.stepresults = activitydata.stepresults;
+                // The lowest score for 1 to 5 stars (site setting), so items rate scores as the results page does.
+                if (Array.isArray(activitydata.starthresholds) && activitydata.starthresholds.length === 5) {
+                    this.starthresholds = activitydata.starthresholds;
+                }
 
                 this.prepare_html();
                 this.init_questions(this.quizdata, polly);
@@ -348,6 +352,51 @@ define(
             },
 
             //text comparison functions follow===============
+
+            // The lowest score for 1, 2, 3, 4 and 5 stars. Replaced by the site setting in init().
+            starthresholds: [1, 19, 39, 59, 79],
+
+            /**
+             * The number of stars (0-5) for a score, from the site's star rating setting.
+             * The results page uses the same setting (\mod_minilesson\starrating::count()).
+             *
+             * @param {number} score The score, 0-100
+             * @returns {number} 0 to 5
+             */
+            starCount: function (score) {
+                score = Number(score);
+                if (isNaN(score)) {
+                    score = 0;
+                }
+                var stars = 0;
+                this.starthresholds.forEach(function (minimum, index) {
+                    if (score >= minimum) {
+                        stars = index + 1;
+                    }
+                });
+                return stars;
+            },
+
+            /**
+             * The number of stars (0-5) for a score that is checked against a pass mark, such as one
+             * spoken sentence. Reaching the pass mark gives 5 stars. Scores below it are shared out
+             * evenly over 0 to 4 stars.
+             *
+             * @param {number} score The score, 0-100
+             * @param {number} passmark The pass mark, 1-100
+             * @returns {number} 0 to 5
+             */
+            passStarCount: function (score, passmark) {
+                score = Number(score);
+                passmark = Number(passmark);
+                if (isNaN(score) || score <= 0) {
+                    return 0;
+                }
+                if (isNaN(passmark) || passmark <= 0 || score >= passmark) {
+                    return 5;
+                }
+                return Math.min(4, Math.floor((score / passmark) * 5));
+            },
 
             similarity: function (s1, s2) {
                 //we remove spaces because JP transcript and passage might be different. And who cares about spaces anyway?

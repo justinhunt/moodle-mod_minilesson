@@ -326,16 +326,11 @@ define(['jquery',
 
 
                 showStarRating: function (similarity) {
-                  //how many stars code
-                    var stars = [true, true, true];
-                    if (similarity < app.passmark) {
-                        stars = [true, true, false];
-                    }
-                    if (similarity < .75) {
-                        stars = [true, false, false];
-                    }
-                    if (similarity < 0.5) {
-                        stars = [false, false, false];
+                  // Reaching the pass mark gives 5 stars, lower similarity (0-100) shares out 0 to 4 stars.
+                    var filledStars = quizhelper.passStarCount(similarity, app.passmark);
+                    var stars = [];
+                    for (var i = 0; i < 5; i++) {
+                        stars.push(i < filledStars);
                     }
 
                   //prepare stars html

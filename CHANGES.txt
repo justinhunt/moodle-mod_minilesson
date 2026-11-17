@@ -1,6 +1,11 @@
-Version 1.1.63 (Build 2026111400)
+Version 1.1.63 (Build 2026111700)
 - Added new item type "Speed Reading"
 - Added sliding animations to multichoice quiz
+- Added a "Star ratings" admin page. It sets the score range for each number of stars.
+- Fixed audio chat feedback sometimes showing a different number of stars from the results page.
+  Audio chat, free speaking, free writing and the results page now all use the star rating settings.
+- Speech cards now show 5 stars, not 3. Fixed speech cards showing 2 stars for a wrong answer.
+- Fluency no longer shows 1 star for a score of 0.
 
 Version 1.1.62 (Build 2026111200)
 - AI agents (MCP, the REST API, the AI assistant) can change items that already exist.

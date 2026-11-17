@@ -724,7 +724,8 @@ define(
                 if (typeof tdata.grade === 'undefined' || isNaN(tdata.grade) || tdata.grade === null || tdata.grade === "") {
                     tdata.grade = 0;
                 }
-                const filledStars = Math.round((tdata.grade / 100) * maxStars);
+                // Use the site's star rating setting, so the stars match the results page.
+                const filledStars = self.quizhelper.starCount(tdata.grade);
                 for (let i = 0; i < maxStars; i++) {
                     stars.push({ filled: i < filledStars });
                 }
