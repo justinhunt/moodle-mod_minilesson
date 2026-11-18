@@ -17,11 +17,11 @@
 namespace mod_minilesson;
 
 use core\di;
-use core_ai\aiactions\base;
 use core_ai\aiactions\generate_text as core_generate_text;
-use mod_minilesson\local\aiactions\generate_text;
+use core_ai\aiactions\responses\response_base;
 use core_ai\manager;
 use core_ai\provider;
+use mod_minilesson\local\aiprompts;
 
 /**
  * Class aimanager
@@ -75,11 +75,17 @@ class aimanager {
         return $this->errormessage;
     }
 
-    /** @var int */
+    /** @var int The setting value that means "use Cloud Poodll", the default for every kind of request. */
     public const CLOUDPOODLL_OPTION = -1;
 
-    /** @var string */
+    /** @var string Grading, correcting and analysing what a student wrote or said. */
     public const OPTION_GRADE_STUDENT_SUBMISSION = 'grade_student_submission';
+
+    /** @var string Free text generation, such as the code editor's AI help. */
+    public const OPTION_GENERATE_TEXT = 'generate_text';
+
+    /** @var string Lesson metadata, such as the lesson bank's custom field values. */
+    public const OPTION_GENERATE_METADATA = 'generate_metadata';
 
     /** @var string */
     public const FUNC_EVALUATE_PASSAGE = 'evaluate_passage';
@@ -109,48 +115,73 @@ class aimanager {
     public const FUNC_COUNT_UNIQUE_IDEAS = 'count_unique_ideas';
 
     /** @var string */
-
     public const FUNC_GET_EMBEDDING = 'get_embedding';
 
     /** @var string */
-
     public const FUNC_GENERATE_CUSTOMFIELD = 'generate_customfield';
 
-    /** @var array */
+    /**
+     * Which setting decides where each function's requests go.
+     *
+     * Functions not listed here (structured content, images, translation, embeddings, semantic
+     * similarity) always use Cloud Poodll: core Moodle AI has no provider action that can take them yet.
+     *
+     * @var array
+     */
     public const OPTION_MAPPING = [
-        self::FUNC_EVALUATE_PASSAGE => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_REQUEST_GRAMMAR_CORRECTION => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_AUTOGRADE_SPEECH => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_AUTOGRADE_TEXT => self::OPTION_GRADE_STUDENT_SUBMISSION,
-        self::FUNC_TEXTANALYSE_PASSAGE => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_GET_TOPIC_RELEVANCE => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_PREDICT_CEFR => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_COUNT_UNIQUE_IDEAS => self::OPTION_GRADE_STUDENT_SUBMISSION,
-        self::FUNC_GENERATE_CUSTOMFIELD => self::OPTION_GRADE_STUDENT_SUBMISSION,
-    ];
-
-    public const AIMANAGER_ACTIONS = [
-        self::OPTION_GRADE_STUDENT_SUBMISSION => core_generate_text::class,
+        self::FUNC_GENERATE_CUSTOMFIELD => self::OPTION_GENERATE_METADATA,
     ];
 
     /**
-     * get AI manager options
+     * The core AI action each kind of request is sent as. All of them are plain text generation:
+     * the prompt carries everything, so any provider that can generate text can take them.
+     *
+     * @var array
+     */
+    public const AIMANAGER_ACTIONS = [
+        self::OPTION_GRADE_STUDENT_SUBMISSION => core_generate_text::class,
+        self::OPTION_GENERATE_TEXT => core_generate_text::class,
+        self::OPTION_GENERATE_METADATA => core_generate_text::class,
+    ];
+
+    /**
+     * The kinds of request an admin can send to a Moodle AI provider, for the settings page.
+     *
      * @return array
      */
     public static function get_action_options() {
-        $options[self::OPTION_GRADE_STUDENT_SUBMISSION] =
-            [
-                'name' => get_string('grade_student_submission', constants::M_COMPONENT),
-                'description' => get_string('grade_student_submission_desc', constants::M_COMPONENT),
+        $options = [];
+        foreach (array_keys(static::AIMANAGER_ACTIONS) as $actiontype) {
+            $options[$actiontype] = [
+                'name' => get_string($actiontype, constants::M_COMPONENT),
+                'description' => get_string($actiontype . '_desc', constants::M_COMPONENT),
             ];
+        }
         return $options;
     }
 
-
+    /**
+     * The full setting name (component/name) for a kind of request.
+     *
+     * @param string $actiontype one of the OPTION_ constants
+     * @return string
+     */
     public static function get_action_settingname($actiontype) {
         return constants::M_COMPONENT . "/aiaction_{$actiontype}";
     }
 
+    /**
+     * The provider chosen for a kind of request: a provider id (a name on Moodle 4.5), or CLOUDPOODLL_OPTION.
+     *
+     * @param string $actiontype one of the OPTION_ constants
+     * @return int|string
+     */
     public static function get_action_provider_setting($actiontype) {
         [$component, $settingname] = explode('/', static::get_action_settingname($actiontype), 2);
         $setting = get_config($component, $settingname);
@@ -158,178 +189,232 @@ class aimanager {
     }
 
     /**
+     * Whether the admin has sent this kind of request to a Moodle AI provider instead of Cloud Poodll.
      *
-     *
+     * @param string $actiontype one of the OPTION_ constants
+     * @return bool
+     */
+    public static function uses_moodle_ai(string $actiontype): bool {
+        return isset(static::AIMANAGER_ACTIONS[$actiontype])
+            && static::get_action_provider_setting($actiontype) != static::CLOUDPOODLL_OPTION
+            && static::get_ai_manager() !== null;
+    }
+
+    /**
+     * Not implemented.
      */
     public static function evaluate_passage() {
     }
 
     /**
+     * Correct the grammar and spelling of a passage.
      *
-     *
+     * @param string $passage
+     * @return \stdClass|false|null returnCode/returnMessage, returnMessage being the corrected text
      */
     public function request_grammar_correction($passage) {
-        $actionconst = static::FUNC_REQUEST_GRAMMAR_CORRECTION;
-        $aiactionclass = local\aiactions\request_grammar_correction::class;
-        $response = self::call_ai_provider_action($aiactionclass, [
-            'contextid' => $this->contextid,
-            'passage' => $passage,
-            'language' => $this->ttslanguage,
-        ]);
-        if ($response === null) {
-            $params['action'] = $actionconst;
-            $params['prompt'] = $passage;
-            $params['language'] = $this->ttslanguage;
-            $params['subject'] = 'none';
-            $params['region'] = $this->region;
-            $response = self::call_cp_api($params);
+        if (static::uses_moodle_ai(self::OPTION_GRADE_STUDENT_SUBMISSION)) {
+            return $this->call_moodle_ai_json(
+                self::OPTION_GRADE_STUDENT_SUBMISSION,
+                aiprompts::grammar_correction($passage, $this->ttslanguage),
+                ['correctedtext'],
+                fn($data) => (string) $data->correctedtext
+            );
         }
-        return $response;
+        $params['action'] = static::FUNC_REQUEST_GRAMMAR_CORRECTION;
+        $params['prompt'] = $passage;
+        $params['language'] = $this->ttslanguage;
+        $params['subject'] = 'none';
+        $params['region'] = $this->region;
+        return self::call_cp_api($params);
     }
 
     /**
+     * Grade a speech transcript.
      *
-     *
+     * @param string $studentresponse
+     * @param array|object $instructions feedbackscheme, feedbacklanguage, markscheme, maxmarks
+     * @return \stdClass|false|null returnCode/returnMessage, returnMessage being the grade JSON
      */
     public function autograde_speech($studentresponse, $instructions) {
-        $actionconst = static::FUNC_AUTOGRADE_SPEECH;
-        $instructionsjson = json_encode($instructions);
-        $aiactionclass = local\aiactions\autograde_text::class;
-        $response = self::call_ai_provider_action($aiactionclass, [
-            'contextid' => $this->contextid,
-            'submittedtext' => $studentresponse,
-            'instructions' => $instructionsjson,
-            'language' => $this->ttslanguage,
-            'isspeech' => true,
-        ]);
-        if ($response === null) {
-            $params['action'] = $actionconst;
-            $params['prompt'] = $instructionsjson;
-            $params['language'] = $this->ttslanguage;
-            $params['subject'] = $studentresponse;
-            $params['region'] = $this->region;
-            $response = self::call_cp_api($params);
+        if (static::uses_moodle_ai(self::OPTION_GRADE_STUDENT_SUBMISSION)) {
+            return $this->moodle_ai_autograde($studentresponse, $instructions, true);
         }
-        return $response;
+        $params['action'] = static::FUNC_AUTOGRADE_SPEECH;
+        $params['prompt'] = json_encode($instructions);
+        $params['language'] = $this->ttslanguage;
+        $params['subject'] = $studentresponse;
+        $params['region'] = $this->region;
+        return self::call_cp_api($params);
     }
 
     /**
+     * Grade a written response.
      *
-     *
+     * @param string $studentresponse
+     * @param array|object $instructions feedbackscheme, feedbacklanguage, markscheme, maxmarks
+     * @return \stdClass|false|null returnCode/returnMessage, returnMessage being the grade JSON
      */
     public function autograde_text($studentresponse, $instructions) {
-        $actionconst = static::FUNC_AUTOGRADE_TEXT;
-        $instructionsjson = json_encode($instructions);
-        $aiactionclass = local\aiactions\autograde_text::class;
-        $response = self::call_ai_provider_action($aiactionclass, [
-            'contextid' => $this->contextid,
-            'submittedtext' => $studentresponse,
-            'instructions' => $instructionsjson,
-            'language' => $this->ttslanguage,
-        ]);
-        if ($response === null) {
-            $params['action'] = $actionconst;
-            $params['prompt'] = $instructionsjson;
-            $params['language'] = $this->ttslanguage;
-            $params['subject'] = $studentresponse;
-            $params['region'] = $this->region;
-            $response = self::call_cp_api($params);
+        if (static::uses_moodle_ai(self::OPTION_GRADE_STUDENT_SUBMISSION)) {
+            return $this->moodle_ai_autograde($studentresponse, $instructions, false);
         }
-        return $response;
+        $params['action'] = static::FUNC_AUTOGRADE_TEXT;
+        $params['prompt'] = json_encode($instructions);
+        $params['language'] = $this->ttslanguage;
+        $params['subject'] = $studentresponse;
+        $params['region'] = $this->region;
+        return self::call_cp_api($params);
     }
 
     /**
+     * Grade a response with a Moodle AI provider, in the same reply shape Cloud Poodll gives.
      *
+     * A speech transcript with no punctuation at all is punctuated first, as Cloud Poodll does, because
+     * the grading is much better on punctuated text. If that step fails the transcript is graded as it is.
      *
+     * @param string $studentresponse
+     * @param array|object $instructions
+     * @param bool $isspeech
+     * @return \stdClass returnCode/returnMessage
+     */
+    protected function moodle_ai_autograde($studentresponse, $instructions, bool $isspeech): \stdClass {
+        $actiontype = self::OPTION_GRADE_STUDENT_SUBMISSION;
+        $submittedtext = (string) $studentresponse;
+
+        $unpunctuated = !preg_match('/[.,!?;:()\[\]{}"«»„“”‹›¡¿،؛؟。、「」『』【】《》]/u', $submittedtext);
+        if ($isspeech && $unpunctuated && trim($submittedtext) !== '') {
+            $punctuated = $this->call_moodle_ai_json(
+                $actiontype,
+                aiprompts::punctuation($submittedtext, $this->ttslanguage),
+                ['passage']
+            );
+            $passage = $punctuated->returnCode === 0 ? $punctuated->data->passage : null;
+            if (is_string($passage) && trim($passage) !== '') {
+                $submittedtext = $passage;
+            }
+        }
+
+        $instructionsobj = json_decode(json_encode($instructions));
+        return $this->call_moodle_ai_json(
+            $actiontype,
+            aiprompts::autograde($submittedtext, $instructionsobj, $this->ttslanguage, $isspeech),
+            ['correctedtext', 'marks'],
+            function ($data) use ($submittedtext) {
+                if (!isset($data->submittedtext) || !is_string($data->submittedtext)) {
+                    $data->submittedtext = $submittedtext;
+                }
+                return json_encode($data);
+            }
+        );
+    }
+
+    /**
+     * Not implemented.
      */
     public static function textanalyse_passage() {
     }
 
+    /**
+     * How relevant a student's response is to the topic.
+     *
+     * @param string $referencetext the topic
+     * @param string $submittedtext the student's response
+     * @return \stdClass|false|null returnCode/returnMessage, returnMessage being 0.1 to 1
+     */
     public function get_topic_relevance($referencetext, $submittedtext) {
-        $actionconst = static::FUNC_GET_TOPIC_RELEVANCE;
-        $aiactionclass = local\aiactions\get_topic_relevance::class;
-        $response = self::call_ai_provider_action($aiactionclass, [
-            'contextid' => $this->contextid,
-            'referencetext' => $referencetext,
-            'submittedtext' => $submittedtext,
-        ]);
-        if ($response === null) {
-            $params['action'] = $actionconst;
-            $params['prompt'] = $submittedtext;
-            $params['language'] = $this->ttslanguage;
-            $params['subject'] = $referencetext;
-            $params['region'] = $this->region;
-            $response = self::call_cp_api($params);
-        } else if (utils::is_json($response->returnMessage)) {
-            $jsondata = json_decode($response->returnMessage);
-            $response->returnMessage = 0.1 * $jsondata->relevance;
-        } else {
-            $response->returnMessage = 0.1;
+        if (static::uses_moodle_ai(self::OPTION_GRADE_STUDENT_SUBMISSION)) {
+            return $this->call_moodle_ai_json(
+                self::OPTION_GRADE_STUDENT_SUBMISSION,
+                aiprompts::topic_relevance((string) $referencetext, (string) $submittedtext),
+                ['relevance'],
+                function ($data) {
+                    if (!is_numeric($data->relevance)) {
+                        return null;
+                    }
+                    // The prompt asks for 1 to 10; Cloud Poodll answers 0.1 to 1.
+                    return 0.1 * max(1, min(10, (float) $data->relevance));
+                }
+            );
         }
-        return $response;
+        $params['action'] = static::FUNC_GET_TOPIC_RELEVANCE;
+        $params['prompt'] = $submittedtext;
+        $params['language'] = $this->ttslanguage;
+        $params['subject'] = $referencetext;
+        $params['region'] = $this->region;
+        return self::call_cp_api($params);
     }
 
+    /**
+     * Count the different ideas in a passage.
+     *
+     * @param string $originaltext
+     * @return \stdClass|false|null returnCode/returnMessage, returnMessage being the count
+     */
     public function count_unique_ideas($originaltext) {
-        $actionconst = static::FUNC_COUNT_UNIQUE_IDEAS;
-        $aiactionclass = local\aiactions\count_unique_ideas::class;
-        $response = self::call_ai_provider_action($aiactionclass, [
-            'contextid' => $this->contextid,
-            'originaltext' => $originaltext,
-            'language' => $this->ttslanguage,
-        ]);
-        if ($response === null) {
-            $params['action'] = $actionconst;
-            $params['prompt'] = $originaltext;
-            $params['language'] = $this->ttslanguage;
-            $params['subject'] = 'none';
-            $params['region'] = $this->region;
-            $response = self::call_cp_api($params);
+        if (static::uses_moodle_ai(self::OPTION_GRADE_STUDENT_SUBMISSION)) {
+            return $this->call_moodle_ai_json(
+                self::OPTION_GRADE_STUDENT_SUBMISSION,
+                aiprompts::count_unique_ideas((string) $originaltext, $this->ttslanguage),
+                ['count'],
+                fn($data) => is_numeric($data->count) ? (int) $data->count : null
+            );
         }
-        return $response;
+        $params['action'] = static::FUNC_COUNT_UNIQUE_IDEAS;
+        $params['prompt'] = $originaltext;
+        $params['language'] = $this->ttslanguage;
+        $params['subject'] = 'none';
+        $params['region'] = $this->region;
+        return self::call_cp_api($params);
     }
 
+    /**
+     * Estimate the CEFR level of a passage.
+     *
+     * @param string $originaltext
+     * @return \stdClass|false|null returnCode/returnMessage, returnMessage being A1 to C2
+     */
     public function predict_cefr($originaltext) {
-        $actionconst = static::FUNC_PREDICT_CEFR;
-        $aiactionclass = local\aiactions\predict_cefr::class;
-        $response = self::call_ai_provider_action($aiactionclass, [
-            'contextid' => $this->contextid,
-            'originaltext' => $originaltext,
-            'language' => $this->ttslanguage,
-        ]);
-        if ($response === null) {
-            $params['action'] = $actionconst;
-            $params['prompt'] = $originaltext;
-            $params['language'] = $this->ttslanguage;
-            $params['subject'] = 'none';
-            $params['region'] = $this->region;
-            $response = self::call_cp_api($params);
+        if (static::uses_moodle_ai(self::OPTION_GRADE_STUDENT_SUBMISSION)) {
+            return $this->call_moodle_ai_json(
+                self::OPTION_GRADE_STUDENT_SUBMISSION,
+                aiprompts::predict_cefr((string) $originaltext, $this->ttslanguage),
+                ['cefr'],
+                function ($data) {
+                    $cefr = strtoupper(trim((string) $data->cefr));
+                    return in_array($cefr, ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']) ? $cefr : null;
+                }
+            );
         }
-        return $response;
+        $params['action'] = static::FUNC_PREDICT_CEFR;
+        $params['prompt'] = $originaltext;
+        $params['language'] = $this->ttslanguage;
+        $params['subject'] = 'none';
+        $params['region'] = $this->region;
+        return self::call_cp_api($params);
     }
 
+    /**
+     * Generate lesson bank custom field values from a lesson's items.
+     *
+     * @param \core_customfield\field_controller[] $fields keyed by short name
+     * @param array $importjson the lesson's items
+     * @return \stdClass|false|null returnCode/returnMessage, returnMessage being a JSON object
+     */
     public function generate_customfield(array $fields, array $importjson) {
-        global $USER;
-        $aiactionclass = local\aiactions\generate_customfield_value::class;
-        $response = self::call_ai_provider_action($aiactionclass, [
-            'contextid' => $this->contextid,
-            'fields' => $fields,
-            'importjson' => $importjson,
-        ]);
-        if ($response === null) {
-            // Cloud Poodll only accepts action/subject/prompt/language/region (plus
-            // appid/owner/wstoken added in call_cp_api). Build the full prompt the same
-            // way the AI provider action does and send it as a single 'prompt' string.
-            $contextid = $this->contextid ?? \context_system::instance()->id;
-            $action = new $aiactionclass($contextid, $USER->id, '', $fields, $importjson);
-            $params = [];
-            $params['action'] = 'generate_structured_content';
-            $params['prompt'] = $action->generate_prompt();
-            $params['language'] = $this->ttslanguage;
-            $params['subject'] = 'none';
-            $params['region'] = $this->region;
-            $response = self::call_cp_api($params);
+        $prompt = aiprompts::customfield_values($fields, $importjson);
+        if (static::uses_moodle_ai(self::OPTION_GENERATE_METADATA)) {
+            return $this->call_moodle_ai_json(self::OPTION_GENERATE_METADATA, $prompt, []);
         }
-        return $response;
+        // Cloud Poodll only accepts action/subject/prompt/language/region (plus
+        // appid/owner/wstoken added in call_cp_api), so the whole prompt goes as 'prompt'.
+        $params = [];
+        $params['action'] = 'generate_structured_content';
+        $params['prompt'] = $prompt;
+        $params['language'] = $this->ttslanguage;
+        $params['subject'] = 'none';
+        $params['region'] = $this->region;
+        return self::call_cp_api($params);
     }
 
     private static function check_cache($action, $prompt, $provider) {
@@ -507,29 +592,25 @@ class aimanager {
     }
 
     /**
-     * Generate text using the configured AI provider.
+     * Generate free text, such as the code editor's AI help.
+     *
+     * Goes to the Moodle AI provider the admin chose for text generation, or to Cloud Poodll by default.
+     * Once an admin has chosen a provider, a failure there is reported and not sent on to Cloud Poodll.
+     *
      * @param string $prompt
-     * @param int $contextid
-     * @return string|null
+     * @param int|null $contextid
+     * @return string|false the text, or false (see get_error_message())
      */
     public function generate_text($prompt, $contextid = null) {
-        $contextid = $contextid ?? $this->contextid;
-        $aiactionclass = generate_text::class;
-        $response = self::call_ai_provider_action($aiactionclass, [
-            'contextid' => $contextid,
-            'prompttext' => $prompt,
-        ]);
-        if ($response !== null) {
-            if ($response->returnCode == '0') {
-                $this->lastprovider = 'Moodle AI';
+        if (static::uses_moodle_ai(self::OPTION_GENERATE_TEXT)) {
+            $response = $this->call_moodle_ai(self::OPTION_GENERATE_TEXT, $prompt, $contextid);
+            if ($response->returnCode === 0 && trim($response->returnMessage) !== '') {
                 return $response->returnMessage;
-            } else {
-                $this->errormessage = $response->returnMessage;
-                // If Moodle AI failed, we still try CloudPoodll fallback.
             }
+            $this->errormessage = $response->returnMessage;
+            return false;
         }
 
-        // Fallback to Cloud Poodll if Moodle AI not configured
         $this->lastprovider = 'CloudPoodll';
         $params = [];
         $params['action'] = 'generate_structured_content';
@@ -552,7 +633,7 @@ class aimanager {
         } else if ($cpresponse && isset($cpresponse->returnMessage)) {
             $this->errormessage = $cpresponse->returnMessage;
         } else {
-            $this->errormessage = 'No response from CloudPoodll or Moodle AI provider.';
+            $this->errormessage = 'No response from CloudPoodll.';
         }
 
         return false;
@@ -880,56 +961,259 @@ class aimanager {
         }
     }
 
-    public static function call_ai_provider_action($actionclass, $params) {
-        global $USER;
-        if (!static::get_ai_manager() || !is_subclass_of($actionclass, base::class)) {
-            return null;
-        }
-        $mapactionclass = static::get_action_parentclass($actionclass);
-        if (!in_array($mapactionclass, static::AIMANAGER_ACTIONS)) {
-            return null;
-        }
-        $actiontype = array_flip(static::AIMANAGER_ACTIONS)[$mapactionclass];
+    /**
+     * The Moodle AI provider chosen for a kind of request, if it is still there and usable.
+     *
+     * Only enabled, configured providers with text generation turned on are returned, so a provider that
+     * was disabled or deleted after it was chosen gives null.
+     *
+     * @param string $actiontype one of the OPTION_ constants
+     * @return provider|null
+     */
+    public static function get_moodle_provider(string $actiontype): ?provider {
+        global $CFG;
+        $manager = static::get_ai_manager();
+        $actionclass = static::AIMANAGER_ACTIONS[$actiontype] ?? null;
         $setting = static::get_action_provider_setting($actiontype);
-        if ($setting == static::CLOUDPOODLL_OPTION) {
+        if (!$manager || !$actionclass || $setting == static::CLOUDPOODLL_OPTION) {
             return null;
         }
-        $providerdata = static::get_provider_and_check_enabled($setting, $actionclass);
-        if (empty($providerdata)) {
-            $this->errormessage = 'Provider not found or not enabled for this action.';
-            return null;
+        // Static on Moodle 4.5, an instance method later: calling it through the instance works on both.
+        $providers = $manager->get_providers_for_actions([$actionclass], true);
+        foreach ($providers[$actionclass] ?? [] as $provider) {
+            // Moodle 4.5 has one provider per plugin, chosen by name; later versions have instances, chosen by id.
+            $id = $CFG->branch < 500 ? $provider->get_name() : $provider->id;
+            if ((string) $id === (string) $setting) {
+                return $provider;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Send a prompt to the Moodle AI provider chosen for a kind of request, and return its text.
+     *
+     * The prompt goes as the stock core generate_text action, through the provider's own processor, so
+     * the provider runs exactly as the admin set it up (model, system instruction, extra parameters,
+     * rate limits) and nothing here depends on which provider it is. The call is logged in the core AI
+     * action register like any other Moodle AI request.
+     *
+     * @param string $actiontype one of the OPTION_ constants
+     * @param string $prompt
+     * @param int|null $contextid the context of the request, default the one given to the constructor
+     * @return \stdClass returnCode (0 = success) and returnMessage (the text, or the error)
+     */
+    public function call_moodle_ai(string $actiontype, string $prompt, $contextid = null): \stdClass {
+        global $CFG, $USER;
+
+        $provider = static::get_moodle_provider($actiontype);
+        if (!$provider) {
+            $this->lastprovider = 'Moodle AI';
+            return $this->moodle_ai_failure(get_string('aiprovider_unavailable', constants::M_COMPONENT), [
+                'actiontype' => $actiontype,
+                'setting' => static::get_action_provider_setting($actiontype),
+            ]);
+        }
+        // The name the admin gave the provider; Moodle 4.5 has only the plugin's name.
+        $this->lastprovider = $CFG->branch < 500 ? $provider->get_name() : $provider->name;
+
+        $contextid = $contextid ?: ($this->contextid ?: \context_system::instance()->id);
+        $action = new core_generate_text(
+            contextid: (int) $contextid,
+            userid: (int) $USER->id,
+            prompttext: $prompt,
+        );
+
+        // This is what core_ai\manager::call_action_provider() does. It is protected, and the public
+        // process_action() chooses the provider itself instead of using the one the admin chose here.
+        $processclass = static::get_component_from_classname(get_class($provider))
+            . '\\process_' . $action->get_basename();
+        if (!class_exists($processclass)) {
+            return $this->moodle_ai_failure(get_string('aiprovider_unavailable', constants::M_COMPONENT), [
+                'provider' => $provider->get_name(),
+                'missing class' => $processclass,
+            ]);
         }
 
-        $manager = $providerdata['manager'];
-        $providerinstance = $providerdata['provider'];
-        $params['userid'] = $params['userid'] ?? $USER->id;
-        $params['prompttext'] = $params['prompttext'] ?? '';
-        $action = new $actionclass(...$params);
-        $result = static::call_and_store_action($manager, $providerinstance, $action);
-        $response = $result->get_response_data();
-        $returnmessage = isset($response['jsondata']) ? $response['jsondata'] : $response['generatedcontent'];
+        try {
+            $processor = new $processclass($provider, $action);
+            $response = $processor->process();
+        } catch (\Throwable $e) {
+            return $this->moodle_ai_failure($e->getMessage(), [
+                'provider' => $provider->get_name(),
+                'exception' => get_class($e),
+            ]);
+        }
+
+        static::log_moodle_ai_action($provider, $action, $response);
+
+        if (!$response->get_success()) {
+            $message = $response->get_errormessage();
+            return $this->moodle_ai_failure(
+                !empty($message) ? $message : get_string('aiprovider_badreply', constants::M_COMPONENT),
+                ['provider' => $provider->get_name(), 'errorcode' => $response->get_errorcode()]
+            );
+        }
+
+        $data = $response->get_response_data();
         return (object) [
-            'returnCode' => $result->get_success() ? 0 : 1,
-            'returnMessage' => $result->get_success() ? $returnmessage : $result->get_error_message(),
+            'returnCode' => 0,
+            'returnMessage' => (string) ($data['generatedcontent'] ?? ''),
         ];
     }
 
     /**
-     * Call AI provider action using reflection
-     * @param object $manager The AI manager instance
-     * @param object $providerinstance The provider instance
-     * @param object $action The action object
-     * @return object|false The result object or false on failure
+     * Send a prompt that asks for a JSON object to a Moodle AI provider, and check the reply.
+     *
+     * Providers do not share a reliable "reply in JSON" switch, so the prompt asks for JSON and the reply
+     * is read leniently (code fences and text around the object are ignored). It must decode to an object
+     * holding every required key, and $transform must accept it. If not, the prompt is sent once more,
+     * because a model that wrote prose instead of JSON usually gets it right the second time. A provider
+     * error (rate limit, bad key, network) is not repeated.
+     *
+     * @param string $actiontype one of the OPTION_ constants
+     * @param string $prompt
+     * @param string[] $requiredkeys keys the JSON object must have
+     * @param callable|null $transform turns the decoded object into the returnMessage, or returns null to
+     *        reject it; by default the object is returned as JSON
+     * @return \stdClass returnCode, returnMessage and, on success, data (the decoded object)
      */
-    public static function call_and_store_action($manager, $providerinstance, $action) {
-        $reflclass = new \ReflectionClass($manager);
-        $reflmethod = $reflclass->getMethod('call_action_provider');
-        $result = $reflmethod->invoke($manager, $providerinstance, $action);
+    public function call_moodle_ai_json(
+        string $actiontype,
+        string $prompt,
+        array $requiredkeys,
+        ?callable $transform = null
+    ): \stdClass {
+        for ($attempt = 1; $attempt <= self::GENERATION_ATTEMPTS; $attempt++) {
+            $response = $this->call_moodle_ai($actiontype, $prompt);
+            if ($response->returnCode !== 0) {
+                return $response;
+            }
 
-        $reflmethod2 = $reflclass->getMethod('store_action_result');
-        $reflmethod2->invoke($manager, $providerinstance, $action, $result);
+            $data = static::extract_json_object($response->returnMessage);
+            $missing = $data ? array_diff($requiredkeys, array_keys(get_object_vars($data))) : $requiredkeys;
+            if ($data && empty($missing)) {
+                $value = $transform ? $transform($data) : json_encode($data);
+                if ($value !== null) {
+                    return (object) [
+                        'returnCode' => 0,
+                        'returnMessage' => $value,
+                        'data' => $data,
+                    ];
+                }
+            }
 
-        return $result;
+            debugging('mod_minilesson Moodle AI reply was not the JSON asked for [' . implode(' | ', [
+                'provider: ' . $this->lastprovider,
+                'attempt: ' . $attempt . ' of ' . self::GENERATION_ATTEMPTS,
+                'missing keys: ' . ($data ? implode(', ', $missing) : '(not a JSON object)'),
+                'reply: ' . str_replace(["\r", "\n"], ' ', substr($response->returnMessage, 0, 1000)),
+            ]) . ']', DEBUG_DEVELOPER);
+            if ($attempt < self::GENERATION_ATTEMPTS) {
+                sleep(self::GENERATION_RETRY_DELAY);
+            }
+        }
+
+        return $this->moodle_ai_failure(get_string('aiprovider_badreply', constants::M_COMPONENT), [
+            'provider' => $this->lastprovider,
+        ]);
+    }
+
+    /**
+     * Find the JSON object in a model's reply.
+     *
+     * Accepts a bare object, an object in a markdown code fence, or an object with text before or after
+     * it (taken from the first "{" to the last "}"). Anything that is not a JSON object gives null.
+     *
+     * @param string $text
+     * @return \stdClass|null
+     */
+    public static function extract_json_object(string $text): ?\stdClass {
+        $text = trim($text);
+        $candidates = [$text];
+        if (preg_match('/```(?:json)?\s*([\s\S]*?)```/i', $text, $matches)) {
+            $candidates[] = trim($matches[1]);
+        }
+        $start = strpos($text, '{');
+        $end = strrpos($text, '}');
+        if ($start !== false && $end !== false && $end > $start) {
+            $candidates[] = substr($text, $start, $end - $start + 1);
+        }
+        foreach ($candidates as $candidate) {
+            $decoded = json_decode($candidate);
+            if ($decoded instanceof \stdClass) {
+                return $decoded;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Record a failed Moodle AI request and build the reply for it.
+     *
+     * @param string $message what went wrong, also kept for get_error_message()
+     * @param array $detail context for the developer debugging message
+     * @return \stdClass returnCode 1 and returnMessage
+     */
+    protected function moodle_ai_failure(string $message, array $detail = []): \stdClass {
+        $this->errormessage = $message;
+        $lines = [];
+        foreach ($detail as $key => $value) {
+            $lines[] = $key . ': ' . str_replace(["\r", "\n"], ' ', (string) $value);
+        }
+        debugging(
+            'mod_minilesson Moodle AI request failed - ' . $message . ' [' . implode(' | ', $lines) . ']',
+            DEBUG_DEVELOPER
+        );
+        return (object) [
+            'returnCode' => 1,
+            'returnMessage' => $message,
+        ];
+    }
+
+    /**
+     * Log a Moodle AI request in the core AI action register, as core_ai\manager does for its own.
+     *
+     * The register feeds the AI usage report and the core AI privacy provider. Core's own method for this
+     * is private, so this writes the same record. A logging failure is reported to developers but does
+     * not stop the request.
+     *
+     * @param provider $provider
+     * @param core_generate_text $action
+     * @param response_base $response
+     * @return void
+     */
+    protected static function log_moodle_ai_action(
+        provider $provider,
+        core_generate_text $action,
+        response_base $response
+    ): void {
+        global $DB;
+        $record = [
+            'actionname' => $action->get_basename(),
+            'success' => $response->get_success(),
+            'userid' => $action->get_configuration('userid'),
+            'contextid' => $action->get_configuration('contextid'),
+            'provider' => $provider->get_name(),
+            'errorcode' => $response->get_errorcode(),
+            'errormessage' => $response->get_errormessage(),
+            'timecreated' => $action->get_configuration('timecreated'),
+            'timecompleted' => $response->get_timecreated(),
+        ];
+        // Columns added after Moodle 4.5.
+        $columns = $DB->get_columns('ai_action_register');
+        if (isset($columns['error']) && method_exists($response, 'get_error')) {
+            $record['error'] = $response->get_error();
+        }
+        if (isset($columns['model']) && method_exists($response, 'get_model_used')) {
+            $record['model'] = $response->get_model_used();
+        }
+        try {
+            $record['actionid'] = $action->store($response);
+            $DB->insert_record('ai_action_register', (object) $record);
+        } catch (\Throwable $e) {
+            debugging('mod_minilesson could not log a Moodle AI request: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        }
     }
 
     public static function call_cp_api($params = []) {
@@ -1021,136 +1305,41 @@ class aimanager {
         return false;
     }
 
+    /**
+     * The choices for a kind of request on the settings page: Cloud Poodll, then every enabled
+     * Moodle AI provider that can generate text.
+     *
+     * @param string $actionclass the core AI action class
+     * @return array setting value => name
+     */
     public static function get_provider_options($actionclass) {
         global $CFG;
         $options = [static::CLOUDPOODLL_OPTION => get_string('cloudpoodll', constants::M_COMPONENT)];
         $manager = static::get_ai_manager();
         if (!empty($manager)) {
-            $mapactionclass = static::get_action_parentclass($actionclass);
-            $allproviders = $manager->get_providers_for_actions([$mapactionclass], true);
-            if (!empty($allproviders[$mapactionclass])) {
-                foreach ($allproviders[$mapactionclass] as $aiprovider) {
-                    if ($CFG->branch < 500) {
-                        $options[$aiprovider->get_name()] = $aiprovider->get_name();
-                    } else {
-                        $aiproviderrecord = $aiprovider->to_record();
-                        $options[$aiproviderrecord->id] = $aiproviderrecord->name;
-                    }
+            $allproviders = $manager->get_providers_for_actions([$actionclass], true);
+            foreach ($allproviders[$actionclass] ?? [] as $aiprovider) {
+                if ($CFG->branch < 500) {
+                    $options[$aiprovider->get_name()] = $aiprovider->get_name();
+                } else {
+                    $aiproviderrecord = $aiprovider->to_record();
+                    $options[$aiproviderrecord->id] = $aiproviderrecord->name;
                 }
             }
         }
         return $options;
     }
 
+    /**
+     * The core AI manager, or null before Moodle 4.5.
+     *
+     * @return manager|null
+     */
     public static function get_ai_manager(): ?manager {
         if (!class_exists(manager::class)) {
             return null;
         }
         return di::get(manager::class);
-    }
-
-    public static function get_action_parentclass($actionclass): string {
-        return is_callable([$actionclass, 'get_parent_actionclass']) ?
-            $actionclass::get_parent_actionclass(true) : $actionclass;
-    }
-
-    /**
-     * Get the provider instance and check if it's enabled for the given action
-     * @param string $providerid The provider ID
-     * @param string $actionclass The action class name
-     * @return array|null Returns array with 'manager', 'provider', and 'enabled' keys, or null if not found
-     */
-    public static function get_provider_and_check_enabled($providerid, $actionclass) {
-        global $CFG;
-
-        $manager = static::get_ai_manager();
-        if (empty($manager)) {
-            return null;
-        }
-
-        $providerenabled = false;
-        $providerinstance = null;
-        $mapactionclass = static::get_action_parentclass($actionclass);
-
-        if ($CFG->branch < 500) {
-            $providerinstances = manager::get_providers_for_actions([$mapactionclass], true);
-            if (isset($providerinstances[$mapactionclass])) {
-                foreach ($providerinstances[$mapactionclass] as $provider) {
-                    if ($provider->get_name() == $providerid) {
-                        $providerinstance = $provider;
-                        $component = static::get_component_from_classname(get_class($provider));
-                        $CFG->forced_plugin_settings[$component]['action_generate_text_systeminstruction'] = $actionclass::get_system_instruction();
-                        $providerenabled = manager::is_action_enabled(
-                            $providerid,
-                            $mapactionclass
-                        );
-                        break;
-                    }
-                }
-            }
-        } else {
-            $providerrecords = $manager->get_provider_records(['id' => $providerid]);
-            $providerinstances = array_filter(
-                // Apply a callback function to each provider record to instantiate the provider.
-                array_map(
-                    function ($record) use ($actionclass, $mapactionclass): ?provider {
-                        // Check if the provider class specified in the record exists.
-                        if (class_exists($record->provider)) {
-                            $actionclass = ltrim($actionclass, '\\');
-                            $mapactionclass = ltrim($mapactionclass, '\\');
-                            $actionconfig = !empty($record->actionconfig) ? json_decode($record->actionconfig, true) : '';
-                            if (!empty($actionconfig) && isset($actionconfig[$mapactionclass])) {
-                                // Copy parent class settings to action class.
-                                $actionconfig[$actionclass] = $actionconfig[$mapactionclass];
-                                // For Moodle version 5 or later.
-                                $actionconfig[$actionclass]['settings']['systeminstruction'] = $actionclass::get_system_instruction();
-                                // Set Modal Config.
-                                $plugintypename = str_replace('aiprovider_', '', ltrim(strstr($record->provider, '\\', true), '\\'));
-                                if (empty($plugintypename)) {
-                                    $plugintypename = str_replace('aiprovider_', '', $record->provider);
-                                }
-                                $actionconfig[$actionclass]['settings']['modelextraparams'] = json_encode(
-                                    $actionclass::get_model_parameters($plugintypename)
-                                );
-                                $record->actionconfig = json_encode($actionconfig);
-                            }
-                            // Instantiate the provider class with the record's data.
-                            return new $record->provider(
-                                /* enabled:  */
-                                $record->enabled,
-                                /* name:  */
-                                $record->name,
-                                /* config:  */
-                                $record->config,
-                                /* actionconfig:  */
-                                $record->actionconfig,
-                                /* id:  */
-                                $record->id
-                            );
-                        }
-                        return null;
-                    },
-                    $providerrecords
-                )
-            );
-            /** @var \core_ai\provider $providerinstance */
-            $providerinstance = reset($providerinstances);
-            $providerenabled = !empty($providerinstance) &&
-                $manager->is_action_enabled(
-                    ltrim($providerinstance->provider, '\\'),
-                    $mapactionclass,
-                    $providerinstance->id
-                );
-        }
-
-        if (!$providerenabled || empty($providerinstance)) {
-            return null;
-        }
-
-        return [
-            'manager' => $manager,
-            'provider' => $providerinstance,
-        ];
     }
 
     /**
