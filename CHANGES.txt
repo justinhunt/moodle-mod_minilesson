@@ -5,6 +5,8 @@ Version 1.1.63 (Build 2026111700)
 - Fixed audio chat feedback sometimes showing a different number of stars from the results page.
   Audio chat, free speaking, free writing and the results page now all use the star rating settings.
 - Speech cards now show 5 stars, not 3. Fixed speech cards showing 2 stars for a wrong answer.
+- Speech cards no longer use the lenient sound-alike check for targets of 3 or more words.
+  It is still used for single words and 2-word phrases.
 - Fluency no longer shows 1 star for a score of 0.
 - Audio chat with the OpenAI provider uses OpenAI's Europe endpoint for activities in the Dublin,
   Frankfurt or London region. Those sites need a key from an OpenAI project with Europe data residency.

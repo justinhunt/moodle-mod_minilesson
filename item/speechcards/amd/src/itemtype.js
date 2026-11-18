@@ -34,6 +34,8 @@ define(['jquery',
 
             var app = {
                 passmark: 90,
+                // Targets with this many words or more are sentences: they do not get the phonetic check.
+                sentencewords: 3,
                 pointer: 1,
                 jsondata: null,
                 props: null,
@@ -236,6 +238,14 @@ define(['jquery',
                                       app.showStarRating(100);
                                       app.flagCorrectAndTransition();
                                       return;
+                                }
+
+                              // With 3 or more words, the sentence context lets speech recognition pick the right
+                              // word (flour, not flower), so the text check above is enough. The phonetic check is
+                              // too lenient for sentences, so it is only used for single words and short phrases.
+                                if (correct_clean.trim().split(/\s+/).length >= app.sentencewords) {
+                                    app.showStarRating(similarity_js);
+                                    return;
                                 }
 
                               //Similarity check by phonetics(ajax)
