@@ -367,7 +367,9 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             await self.waitForIceGathering(self.pc);
 
             try {
-                var sdpResponse = await fetch(M.cfg.wwwroot + "/mod/minilesson/item/audiochat/openairtc.php", {
+                // The context id lets the server use OpenAI's Europe address for lessons in a European region.
+                var rtcurl = M.cfg.wwwroot + "/mod/minilesson/item/audiochat/openairtc.php?contextid=" + M.cfg.contextid;
+                var sdpResponse = await fetch(rtcurl, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/sdp"

@@ -27,4 +27,7 @@ require_once(dirname(__FILE__, 5) . '/config.php');
 defined('MOODLE_INTERNAL') || die();
 use minilessonitem_audiochat\helper;
 require_login();
-helper::openai_forward_offer();
+// The lesson's context, so its region can pick OpenAI's Europe or default address.
+// Optional, because a page loaded before this was added does not send it.
+$contextid = optional_param('contextid', 0, PARAM_INT);
+helper::openai_forward_offer(helper::region_from_contextid($contextid));

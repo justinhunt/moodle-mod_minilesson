@@ -27,12 +27,56 @@ use mod_minilesson\constants;
  */
 class helper {
 
+    /** @var string OpenAI's default API address. */
+    const OPENAI_BASE = 'https://api.openai.com/v1';
+
+    /** @var string OpenAI's Europe address. It only accepts keys from a project with Europe data residency. */
+    const OPENAI_BASE_EU = 'https://eu.api.openai.com/v1';
+
+    /** @var array Poodll regions whose audio chats go to OPENAI_BASE_EU. */
+    const OPENAI_EU_REGIONS = ['dublin', 'frankfurt', 'london'];
+
+    /**
+     * The OpenAI API address for an activity in this Poodll region.
+     *
+     * @param string $region The activity's Poodll region, such as frankfurt.
+     * @return string
+     */
+    public static function openai_base_url($region) {
+        if (in_array($region, self::OPENAI_EU_REGIONS, true)) {
+            return self::OPENAI_BASE_EU;
+        }
+        return self::OPENAI_BASE;
+    }
+
+    /**
+     * The Poodll region of the lesson a context belongs to.
+     *
+     * @param int $contextid A MiniLesson activity's context id.
+     * @return string The region, or '' if the context is not a MiniLesson activity.
+     */
+    public static function region_from_contextid($contextid) {
+        global $DB;
+        if (!$contextid) {
+            return '';
+        }
+        $context = \context::instance_by_id($contextid, IGNORE_MISSING);
+        if (!$context || $context->contextlevel != CONTEXT_MODULE) {
+            return '';
+        }
+        $cm = get_coursemodule_from_id(constants::M_MODNAME, $context->instanceid);
+        if (!$cm) {
+            return '';
+        }
+        return (string)$DB->get_field(constants::M_TABLE, 'region', ['id' => $cm->instance]);
+    }
+
     // We forward an OpenAI RTC offer to the OpenAI API.
     // This is called from: openairtc.php
     // Which is called from the OpenAI RTC client side code in audiochat.
     // (in which we dont want to expose our openai key)
     // It expects an SDP offer in the request body and returns an SDP answer.
-    public static function openai_forward_offer() {
+    public static function openai_forward_offer($region = '') {
         global $CFG;
         require_once($CFG->libdir . '/filelib.php');
 
@@ -44,7 +88,7 @@ class helper {
 
         $offer = file_get_contents("php://input");
         $model = "gpt-realtime-mini";
-        $serverurl = "https://api.openai.com/v1/realtime/calls";
+        $serverurl = self::openai_base_url($region) . "/realtime/calls";
 
         $curl = new \curl();
         $curl->setHeader('Authorization: Bearer ' . $apikey);
