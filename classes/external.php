@@ -64,6 +64,13 @@ class mod_minilesson_external extends external_api {
         global $DB, $USER;
 
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
+
+        // Adding an activity needs the same rights as adding one from the course page.
+        $coursecontext = \context_course::instance($course->id);
+        self::validate_context($coursecontext);
+        require_capability('moodle/course:manageactivities', $coursecontext);
+        require_capability('mod/minilesson:addinstance', $coursecontext);
+
         $config = get_config(constants::M_COMPONENT);
 
         // Get our default data.
@@ -446,6 +453,7 @@ class mod_minilesson_external extends external_api {
 
         // We always must call validate_context in a webservice.
         self::validate_context($context);
+        require_capability('mod/minilesson:itemedit', $context);
 
         // Init return object.
         $ret = new \stdClass();
@@ -504,6 +512,10 @@ class mod_minilesson_external extends external_api {
             if ($edit) {
                 $theitem = utils::fetch_item_from_itemrecord($vdata, $moduleinstance);
                 $olditem = $DB->get_record(constants::M_QTABLE, ['id' => $vdata->itemid, constants::M_MODNAME => $cm->instance]);
+                if (!$olditem) {
+                    // The item must belong to this lesson, or saving would move it here from another one.
+                    throw new \moodle_exception('invalidrecord', 'error', '', constants::M_QTABLE);
+                }
             } else {
                 $theitem = utils::fetch_item_from_itemrecord($vdata, $moduleinstance);
                 $olditem = false;
@@ -572,6 +584,7 @@ class mod_minilesson_external extends external_api {
 
         // We always must call validate_context in a webservice.
         self::validate_context($context);
+        require_capability('mod/minilesson:itemedit', $context);
 
         // DO DELETE
         // Get the objects we need.
@@ -627,6 +640,7 @@ class mod_minilesson_external extends external_api {
 
         // We always must call validate_context in a webservice.
         self::validate_context($context);
+        require_capability('mod/minilesson:itemedit', $context);
 
         // DO move
         // get the objects we need.
@@ -680,6 +694,7 @@ class mod_minilesson_external extends external_api {
 
         // We always must call validate_context in a webservice.
         self::validate_context($context);
+        require_capability('mod/minilesson:itemedit', $context);
 
         // DO move
         // Get the objects we need.
@@ -955,6 +970,7 @@ class mod_minilesson_external extends external_api {
 
         $context = \context::instance_by_id($params['contextid']);
         self::validate_context($context);
+        require_capability('mod/minilesson:itemedit', $context);
 
         $region = null;
         $ttslanguage = null;

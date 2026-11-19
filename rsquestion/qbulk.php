@@ -51,6 +51,10 @@ $PAGE->set_url('/mod/minilesson/rsquestion/rsquestions.php', ['id' => $cm->id, '
 require_login($course, false, $cm);
 $context = context_module::instance($cm->id);
 
+// This rebuilds every item on the site, so it is for site administrators only.
+require_capability('moodle/site:config', context_system::instance());
+require_sesskey();
+
 $mis = $DB->get_records('minilesson');
 $updates = 0;
 foreach ($mis as $moduleinstance) {

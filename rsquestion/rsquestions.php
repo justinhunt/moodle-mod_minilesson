@@ -71,6 +71,7 @@ $rsquestionrenderer = $PAGE->get_renderer('mod_minilesson', 'rsquestion');
 
 if ($action === 'bulkdelete') {
     confirm_sesskey();
+    require_capability('mod/minilesson:itemedit', $context);
     $questionids = optional_param_array('deletequestionid', [], PARAM_INT);
     foreach ($questionids as $questionid) {
         \mod_minilesson\local\itemtype\item::delete_item($questionid, $context);

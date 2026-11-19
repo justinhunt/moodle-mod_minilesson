@@ -929,6 +929,7 @@ function minilesson_output_fragment_preview($args)
     global $DB, $PAGE;
     $args = (object) $args;
     $context = $args->context;
+    require_capability('mod/minilesson:itemview', $context);
 
     $cm = get_coursemodule_from_id('minilesson', $context->instanceid, 0, false, MUST_EXIST);
     $course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
@@ -974,6 +975,7 @@ function minilesson_output_fragment_mform($args)
 
     $args = (object) $args;
     $context = $args->context;
+    require_capability('mod/minilesson:itemedit', $context);
     $formname = $args->formname;
     $mform = null;
     $o = '';
@@ -1295,6 +1297,7 @@ function minilesson_output_fragment_ttsaudioelement($args)
 {
     $formdata = [];
     $args = (object) $args;
+    require_capability('mod/minilesson:itemedit', $args->context);
     parse_str($args->formdata, $formdata);
     $options = json_decode($args->options, true);
 
@@ -1348,6 +1351,7 @@ function minilesson_output_fragment_aigen_contextform($args)
 function mod_minilesson_output_fragment_ai_prompt($args)
 {
     $args = (object) $args;
+    require_capability('mod/minilesson:itemedit', $args->context);
 
     $promptid = (int) $args->promptid;
     $prompttype = (string) $args->prompttype;
@@ -1368,6 +1372,7 @@ function mod_minilesson_output_fragment_ai_prompt($args)
 function minilesson_output_fragment_preview_item($args)
 {
     global $CFG;
+    require_capability('mod/minilesson:itemedit', $args['context']);
     require_once($CFG->libdir . '/externallib.php');
     $args = (object) $args;
 

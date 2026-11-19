@@ -1,4 +1,5 @@
 Version 1.1.63 (Build 2026111800)
+- Tightened permission checks on item editing and activity creation
 - Added new item type "Speed Reading"
 - Added sliding animations to multichoice quiz
 - Added a "Star ratings" admin page. It sets the score range for each number of stars.

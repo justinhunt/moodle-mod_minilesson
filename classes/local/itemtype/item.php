@@ -2152,16 +2152,20 @@ abstract class item implements \templatable, \renderable {
     public static function delete_item($itemid, $context) {
         global $DB;
 
-        // The item type may keep things of its own, outside the item's file areas (a published widget).
-        $record = $DB->get_record(constants::M_QTABLE, ['id' => $itemid]);
-        if ($record) {
-            $theitem = utils::fetch_item_from_itemrecord($record, false, $context);
-            if ($theitem) {
-                $theitem->before_delete();
-            }
+        // Only delete an item of the lesson that this context belongs to.
+        $cm = get_coursemodule_from_id(constants::M_MODNAME, $context->instanceid, 0, false, MUST_EXIST);
+        $record = $DB->get_record(constants::M_QTABLE, ['id' => $itemid, constants::M_MODNAME => $cm->instance]);
+        if (!$record) {
+            throw new \moodle_exception('invalidrecord', 'error', '', constants::M_QTABLE);
         }
 
-        if (!$DB->delete_records(constants::M_QTABLE, ['id' => $itemid])) {
+        // The item type may keep things of its own, outside the item's file areas (a published widget).
+        $theitem = utils::fetch_item_from_itemrecord($record, false, $context);
+        if ($theitem) {
+            $theitem->before_delete();
+        }
+
+        if (!$DB->delete_records(constants::M_QTABLE, ['id' => $itemid, constants::M_MODNAME => $cm->instance])) {
             throw new \moodle_exception("Could not delete item");
         }
 
