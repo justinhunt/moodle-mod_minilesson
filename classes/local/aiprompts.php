@@ -39,14 +39,22 @@ class aiprompts {
     /**
      * The English name of a language code, for use in a prompt.
      *
-     * @param string|null $language a language code such as en-US, or a language name
+     * @param string|null $language a language code such as en-US, or a language name (returned as it is)
      * @return string
      */
     public static function language_name(?string $language): string {
         if (empty($language)) {
             return 'English';
         }
-        return utils::get_lang_english_name($language);
+        $name = utils::get_lang_english_name($language);
+        if ($name === $language && class_exists(\Locale::class)) {
+            // A code MiniLesson has no name for, such as ja or pt-PT: ask intl for the language's name.
+            $intlname = \Locale::getDisplayLanguage(str_replace('_', '-', $language), 'en');
+            if (!empty($intlname) && strcasecmp($intlname, $language) !== 0) {
+                $name = $intlname;
+            }
+        }
+        return $name;
     }
 
     /**
@@ -141,6 +149,43 @@ class aiprompts {
 
         $prompt .= self::JSON_ONLY . PHP_EOL;
         $prompt .= '[[' . strip_tags($submittedtext) . ']]';
+        return $prompt;
+    }
+
+    /**
+     * Grade the student's part of a spoken conversation with an AI.
+     *
+     * Reply: {"score": 0-100, "gradeexplanation": "...", "feedback": "..."}
+     *
+     * @param string $transcript one turn per line, each starting "AI:" or "Student:"
+     * @param string $criteria the teacher's grading instructions
+     * @param string|null $targetlanguage
+     * @param string|null $feedbacklanguage
+     * @return string
+     */
+    public static function grade_chat(
+        string $transcript,
+        string $criteria,
+        ?string $targetlanguage,
+        ?string $feedbacklanguage
+    ): string {
+        $lang = self::language_name($targetlanguage);
+        $feedbacklang = self::language_name($feedbacklanguage ?: $targetlanguage);
+        $prompt = "You are a language teacher." . PHP_EOL;
+        $prompt .= "Below, between [[ and ]], is the transcript of a spoken conversation in {$lang} between ";
+        $prompt .= "an AI and a student who is learning {$lang}. Each line starts with \"AI:\" or \"Student:\". ";
+        $prompt .= "The transcript comes from speech recognition, so ignore spelling and punctuation. ";
+        $prompt .= "Grade the student's part of the conversation, using the AI's lines only as context." . PHP_EOL;
+        $prompt .= "Give a percentage score for the session, an explanation of the score (for teachers), ";
+        $prompt .= "and feedback (for the student). Write the feedback in {$feedbacklang}." . PHP_EOL;
+        $prompt .= "Grading instructions from the teacher: " . trim($criteria) . PHP_EOL;
+        $prompt .= "Write the explanation and the feedback as plain text in short paragraphs separated by a blank line. ";
+        $prompt .= "Where a list of points helps, put each point on its own line starting with a hyphen. ";
+        $prompt .= "Do not use markdown formatting: no headings, no asterisks and no bold." . PHP_EOL;
+        $prompt .= 'Return a JSON object of the form {"score": number from 0 to 100, ';
+        $prompt .= '"gradeexplanation": "the explanation", "feedback": "the feedback"}.' . PHP_EOL;
+        $prompt .= self::JSON_ONLY . PHP_EOL . PHP_EOL;
+        $prompt .= '[[' . $transcript . ']]';
         return $prompt;
     }
 

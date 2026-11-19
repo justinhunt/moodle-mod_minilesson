@@ -120,6 +120,9 @@ class aimanager {
     /** @var string */
     public const FUNC_GENERATE_CUSTOMFIELD = 'generate_customfield';
 
+    /** @var string */
+    public const FUNC_GRADE_CHAT = 'grade_chat';
+
     /**
      * Which setting decides where each function's requests go.
      *
@@ -135,6 +138,7 @@ class aimanager {
         self::FUNC_GET_TOPIC_RELEVANCE => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_PREDICT_CEFR => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_COUNT_UNIQUE_IDEAS => self::OPTION_GRADE_STUDENT_SUBMISSION,
+        self::FUNC_GRADE_CHAT => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_GENERATE_CUSTOMFIELD => self::OPTION_LESSONBANK_DETAILS,
     ];
 
@@ -320,6 +324,52 @@ class aimanager {
                 return json_encode($data);
             }
         );
+    }
+
+    /**
+     * Grade a finished audio chat from its transcript.
+     *
+     * Goes to the Moodle AI provider chosen in "Grade student submission", or to the Cloud Poodll
+     * grade_chat action by default. The Moodle AI path asks for the same reply as Cloud Poodll gives and
+     * already tries a bad reply twice, so a caller that retries should only retry the Cloud Poodll path
+     * (see uses_moodle_ai()).
+     *
+     * @param string $transcript one turn per line, each starting "AI:" or "Student:"
+     * @param array $instructions criteria (the teacher's grading instructions), feedbacklanguage and
+     *        targetlanguage (language codes)
+     * @return \stdClass|false|null returnCode/returnMessage, returnMessage being JSON
+     *         {"score", "gradeexplanation", "feedback"}
+     */
+    public function grade_chat(string $transcript, array $instructions) {
+        if (static::uses_moodle_ai(self::OPTION_GRADE_STUDENT_SUBMISSION)) {
+            $targetlanguage = $instructions['targetlanguage'] ?? $this->ttslanguage;
+            return $this->call_moodle_ai_json(
+                self::OPTION_GRADE_STUDENT_SUBMISSION,
+                aiprompts::grade_chat(
+                    $transcript,
+                    (string) ($instructions['criteria'] ?? ''),
+                    $targetlanguage,
+                    $instructions['feedbacklanguage'] ?? $targetlanguage
+                ),
+                ['score', 'feedback'],
+                function ($data) {
+                    // A score with no number in it, or no feedback, is a reply to try again.
+                    if (!is_scalar($data->score) || !preg_match('/\d/', (string) $data->score)) {
+                        return null;
+                    }
+                    if (!is_string($data->feedback) || trim($data->feedback) === '') {
+                        return null;
+                    }
+                    return json_encode($data);
+                }
+            );
+        }
+        $params['action'] = static::FUNC_GRADE_CHAT;
+        $params['subject'] = $transcript;
+        $params['prompt'] = json_encode($instructions);
+        $params['language'] = $this->ttslanguage;
+        $params['region'] = $this->region;
+        return self::call_cp_api($params);
     }
 
     /**
@@ -1136,7 +1186,9 @@ class aimanager {
      * Find the JSON object in a model's reply.
      *
      * Accepts a bare object, an object in a markdown code fence, or an object with text before or after
-     * it (taken from the first "{" to the last "}"). Anything that is not a JSON object gives null.
+     * it (taken from the first "{" to the last "}"). Models often write paragraph breaks inside a string
+     * as real newlines instead of \\n, which is not valid JSON, so those are repaired. Anything that is
+     * not a JSON object gives null.
      *
      * @param string $text
      * @return \stdClass|null
@@ -1154,11 +1206,55 @@ class aimanager {
         }
         foreach ($candidates as $candidate) {
             $decoded = json_decode($candidate);
+            if (!$decoded instanceof \stdClass) {
+                $decoded = json_decode(static::escape_json_control_chars($candidate));
+            }
             if ($decoded instanceof \stdClass) {
                 return $decoded;
             }
         }
         return null;
+    }
+
+    /**
+     * Escape control characters (such as newlines) inside the string literals of a JSON document.
+     *
+     * Control characters between literals are left alone: they are ordinary whitespace. Working byte by
+     * byte is safe for UTF-8, because every byte of a multi-byte character is 0x80 or above.
+     *
+     * @param string $json
+     * @return string
+     */
+    protected static function escape_json_control_chars(string $json): string {
+        $out = '';
+        $instring = false;
+        $escaped = false;
+        $length = strlen($json);
+        for ($i = 0; $i < $length; $i++) {
+            $char = $json[$i];
+            if (!$instring) {
+                $instring = $char === '"';
+                $out .= $char;
+                continue;
+            }
+            if ($escaped) {
+                $escaped = false;
+                $out .= $char;
+                continue;
+            }
+            if ($char === '\\') {
+                $escaped = true;
+                $out .= $char;
+            } else if ($char === '"') {
+                $instring = false;
+                $out .= $char;
+            } else if (ord($char) < 0x20) {
+                $out .= ["\n" => '\n', "\r" => '\r', "\t" => '\t'][$char] ?? sprintf('\u%04x', ord($char));
+            } else {
+                $out .= $char;
+            }
+        }
+        return $out;
     }
 
     /**

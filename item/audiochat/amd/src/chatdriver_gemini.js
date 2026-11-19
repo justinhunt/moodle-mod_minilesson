@@ -27,8 +27,8 @@
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
-        function ($, log, Fragment, Ajax) {
+define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/gradechat'],
+        function ($, log, Fragment, gradechat) {
     "use strict";
 
     log.debug('MiniLesson AudioChat: Gemini driver loading');
@@ -1133,64 +1133,20 @@ define(['jquery', 'core/log', 'core/fragment', 'core/ajax'],
         /**
          * Grade the finished chat from its transcript.
          *
-         * Gemini Live replies only in audio, so a grade asked for inside the session comes
-         * back as a transcript of spoken JSON and loses its structure. Instead the transcript
-         * goes to the server, which has a text model grade it. The call is tried twice. If it
-         * still fails the grading data says so, and the item scores 0.
+         * Gemini Live replies only in audio, so a grade asked for inside the session would come
+         * back as a transcript of spoken JSON and lose its structure. Every driver grades this
+         * way now, through the shared gradechat module.
          */
         sendGradingRequest: function () {
             var self = this;
-            var items = Object.values(self.items)
-                .sort(function (a, b) { return a.order - b.order; })
-                .filter(function (item) { return item.media || (item.content && item.content.trim() !== ''); })
-                .map(function (item) {
-                    if (item.media) {
-                        // The grader only reads text, so say what the AI showed.
-                        return {role: 'assistant', text: '[The AI showed the student a picture: ' + item.media.filename + ']'};
-                    }
-                    return {role: item.usertype === 'user' ? 'user' : 'assistant', text: item.content};
-                });
-            if (self.endedByAI) {
-                items.push({role: 'assistant', text: '[The AI ended the chat]'});
-            }
-
-            var request = function () {
-                return Ajax.call([{
-                    methodname: 'minilessonitem_audiochat_grade_chat',
-                    args: {cmid: self.cmid, itemid: self.itemdata.id, items: items}
-                }])[0];
-            };
-            var failed = function (reason) {
-                log.debug('Gemini grading failed');
-                log.debug(reason);
-                return {success: false};
-            };
-
-            log.debug('Gemini: sending grading request');
-            request().catch(function (err) {
-                log.debug('Gemini grading call failed, trying again');
-                log.debug(err);
-                return request();
-            }).then(function (result) {
-                if (!result || !result.success) {
-                    return failed(result);
-                }
-                return result;
-            }).catch(failed).then(function (result) {
-                if (result.success) {
-                    self.gradingData = {
-                        score: result.score,
-                        gradeexplanation: result.gradeexplanation,
-                        feedback: result.feedback
-                    };
-                    log.debug('Gemini grading:');
-                    log.debug(self.gradingData);
-                } else {
-                    self.gradingData = {failed: true};
-                }
+            var items = Object.values(self.items).sort(function (a, b) { return a.order - b.order; });
+            gradechat.grade(self.cmid, self.itemdata.id, gradechat.transcript(items, self.endedByAI)).then(function (data) {
+                self.gradingData = data;
                 self._fire('onGradingData', self.gradingData);
                 self._fire('onGradingWindowClosed');
-                return result;
+                return data;
+            }).catch(function (err) {
+                log.debug(err);
             });
         },
 

@@ -24,15 +24,13 @@
  * @copyright  2026 Justin Hunt (poodllsupport@gmail.com)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/gradingjson'],
-        function ($, log, Fragment, gradingjson) {
+define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/gradechat'],
+        function ($, log, Fragment, gradechat) {
     "use strict";
 
     log.debug('MiniLesson AudioChat: OpenAI driver loading');
 
     return {
-        gradingrequesttag: "gradingrequest",
-
         // Runtime state.
         itemdata: {},
         audioElement: null,
@@ -77,8 +75,8 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             eagerness: "low",
         },
 
-        gradeRequestTrial: 0,
-        maxGradeRequestTrial: 3,
+        // The longest we wait, after the chat is stopped, for the student's last words to be transcribed.
+        transcriptwaitms: 5000,
 
         clone: function () {
             return $.extend(true, {}, this);
@@ -95,6 +93,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
         init: function (options) {
             var self = this;
             self.itemdata = options.itemdata;
+            self.cmid = options.cmid;
             self.audioElement = options.audioElement;
             self.callbacks = options.callbacks || {};
             self.autocreateresponse = options.itemdata.audiochat_autoresponse || false;
@@ -109,6 +108,8 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             self.eventlogs = [];
             self.gradingData = false;
             self.endedByAI = false;
+            // Student turns sent for transcription whose transcript has not come back yet.
+            self._pendingTranscripts = new Set();
             self._responseActive = false;
             self._audioPlaying = false;
             self._lastOutputAt = 0;
@@ -425,8 +426,6 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                 log.debug("Loaded audio chat studentsubmission:", studentsubmission);
                 if (studentsubmission) {
                     updateinstructions = updateinstructions.replace('{student submission}', studentsubmission);
-                    self.itemdata.audiochatgradeinstructions =
-                        self.itemdata.audiochatgradeinstructions.replace('{student submission}', studentsubmission);
                     self.itemdata.studentsubmission = studentsubmission;
                 }
 
@@ -476,7 +475,10 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
         },
 
         /**
-         * Gracefully end the session: request grading then close the data channel.
+         * Gracefully end the session: close the connection, then grade the chat from its transcript.
+         *
+         * OpenAI transcribes each student turn a moment after it ends, so if the student stops the chat
+         * straight after speaking, we wait (up to transcriptwaitms) for that last transcript first.
          */
         stopSession: function () {
             var self = this;
@@ -484,68 +486,60 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             log.debug("OpenAI driver: session stopping...");
             self.loadingMessages.clear();
             self._fire('onStateChange', 'stopped');
-
-            if (self.itemdata.audiochatgradeinstructions && self.itemdata.audiochatgradeinstructions !== "") {
-                self.sendGradingRequest();
-            } else {
-                log.debug("Closing session resources...");
-                self.closeDataChannel();
-            }
-            log.debug("Session stopped");
             if (self.inputBufferInterval) {
                 clearInterval(self.inputBufferInterval);
                 self.inputBufferInterval = null;
             }
+
+            if (self.itemdata.audiochatgradeinstructions && self.itemdata.audiochatgradeinstructions !== "") {
+                self._whenTranscribed().then(function () {
+                    self.closeDataChannel();
+                    self.sendGradingRequest();
+                    return true;
+                }).catch(function (err) {
+                    log.debug(err);
+                });
+            } else {
+                self.closeDataChannel();
+            }
+            log.debug("Session stopped");
         },
 
-        sendGradingRequest: function () {
+        /**
+         * Resolves when every student turn has its transcript, or when transcriptwaitms has passed.
+         *
+         * @returns {Promise}
+         */
+        _whenTranscribed: function () {
             var self = this;
-            var gradingInstructions =
-                "Please provide a percentage score for the session, an explanation of the score (for teachers), " +
-                "and feedback (for the student). " +
-                self.itemdata.audiochatgradeinstructions +
-                "Write the feedback as plain text in short paragraphs separated by a blank line. " +
-                "Where a list of points helps, put each point on its own line starting with a hyphen. " +
-                "Do not use markdown formatting: no headings, no asterisks and no bold. " +
-                "Return the response as JSON in the format: " +
-                "{\"score\": \"the score  ( 0-100 ) \", \"gradeexplanation\": \"the explanation\", " +
-                "\"feedback\": \"the feedback\"}.";
-
-            var responsedata = {
-                // Out-of-band; does not join the default conversation.
-                conversation: "none",
-                output_modalities: ["text"],
-                instructions: gradingInstructions,
-                metadata: {tag: self.gradingrequesttag},
-                max_output_tokens: 2000,
-                // The grade must come back as text, never as a tool call.
-                tool_choice: "none",
-            };
-
-            if (!self.dc || self.dc.readyState !== "open") {
-                // The connection has gone, so no grade can come back.
-                log.debug("OpenAI driver: cannot request grading, the data channel is closed");
-                self.gradingFailed();
-                self.closeDataChannel();
-                self._fire('onGradingWindowClosed');
-                return;
-            }
-            self.sendEvent({
-                type: "response.create",
-                response: responsedata,
+            var started = Date.now();
+            return new Promise(function (resolve) {
+                var check = function () {
+                    if (self._pendingTranscripts.size === 0 || !self.dc ||
+                            Date.now() - started >= self.transcriptwaitms) {
+                        resolve();
+                        return;
+                    }
+                    setTimeout(check, 200);
+                };
+                check();
             });
         },
 
         /**
-         * Record that the AI could not grade the chat. As with the other providers, the item then
-         * scores 0 and says grading failed, rather than guessing a grade from the word count.
+         * Grade the finished chat from its transcript, as every driver does (see the gradechat module).
          */
-        gradingFailed: function () {
+        sendGradingRequest: function () {
             var self = this;
-            log.debug("OpenAI driver: AI grading failed");
-            self.gradeRequestTrial = 0;
-            self.gradingData = {failed: true};
-            self._fire('onGradingData', self.gradingData);
+            var turns = gradechat.transcript(self.getOrderedItems(), self.endedByAI);
+            gradechat.grade(self.cmid, self.itemdata.id, turns).then(function (data) {
+                self.gradingData = data;
+                self._fire('onGradingData', self.gradingData);
+                self._fire('onGradingWindowClosed');
+                return data;
+            }).catch(function (err) {
+                log.debug(err);
+            });
         },
 
         abort: function () {
@@ -728,40 +722,6 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
             log.debug("Received event:");
             log.debug(msg);
 
-            // Grading response (out-of-band via the gradingrequest tag).
-            if (msg.type === "response.done" &&
-                msg.response.metadata?.tag === self.gradingrequesttag) {
-                log.debug("It is a grading event:");
-                var jsonresponse;
-                try {
-                    jsonresponse = msg.response.output[0].content[0].text;
-                    var gradingdata = gradingjson.parse(jsonresponse);
-                    if (!gradingdata) {
-                        log.debug("No valid grading data received .. msg is ..");
-                        log.debug(msg);
-                        if (self.gradeRequestTrial < self.maxGradeRequestTrial) {
-                            self.gradeRequestTrial++;
-                            self.sendGradingRequest();
-                            log.debug('Grading Request Retry number: ' + self.gradeRequestTrial);
-                            return;
-                        }
-                        self.gradingFailed();
-                    } else {
-                        self.gradeRequestTrial = 0;
-                        self.gradingData = gradingdata;
-                        log.debug("Grading and Feedback:", self.gradingData);
-                        self._fire('onGradingData', self.gradingData);
-                    }
-                } catch (err) {
-                    log.debug("Failed to parse grading feedback:", err);
-                    log.debug(jsonresponse);
-                    self.gradingFailed();
-                }
-                self.closeDataChannel();
-                self._fire('onGradingWindowClosed');
-                return;
-            }
-
             var msgresponse_id = msg.response ? msg.response.id : msg.response_id;
             var msgitem_id = msg.item ? msg.item.id : msg.item_id;
             if (msgresponse_id) {
@@ -885,6 +845,7 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                     log.debug("Input audio buffer committed");
                     self.setDataInputBuffer(false, 'audiobuffercommitted');
                     self.items[msg.item_id].events.push(msg);
+                    self._pendingTranscripts.add(msg.item_id);
                     break;
                 }
                 case "conversation.item.input_audio_transcription.delta": {
@@ -896,6 +857,12 @@ define(['jquery', 'core/log', 'core/fragment', 'minilessonitem_audiochat/grading
                     self.items[msg.item_id].events.push(msg);
                     self.items[msg.item_id].content = msg.transcript;
                     self.loadingMessages.delete(msg.item_id);
+                    self._pendingTranscripts.delete(msg.item_id);
+                    break;
+                }
+                case "conversation.item.input_audio_transcription.failed": {
+                    self.items[msg.item_id].events.push(msg);
+                    self._pendingTranscripts.delete(msg.item_id);
                     break;
                 }
             }

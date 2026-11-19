@@ -125,6 +125,9 @@ final class aimanager_test extends \advanced_testcase {
         // Nested objects and braces inside strings survive.
         $nested = aimanager::extract_json_object('Sure! {"a": {"b": "x}y"}, "c": [1, 2]}');
         $this->assertEquals('x}y', $nested->a->b);
+        // Paragraph breaks written as real newlines inside a string are repaired.
+        $paragraphs = aimanager::extract_json_object("{\"feedback\": \"Well done.\n\nNext time, slow down.\"}");
+        $this->assertEquals("Well done.\n\nNext time, slow down.", $paragraphs->feedback);
         $this->assertNull(aimanager::extract_json_object('The level is B1.'));
         $this->assertNull(aimanager::extract_json_object('[1, 2, 3]'));
         $this->assertNull(aimanager::extract_json_object(''));
@@ -250,6 +253,33 @@ final class aimanager_test extends \advanced_testcase {
 
         $this->assertSame(1, $response->returnCode);
         $this->assertCount(0, $mock);
+    }
+
+    public function test_grade_chat_goes_to_moodle_ai(): void {
+        $this->use_provider('gemini');
+        $history = [];
+        ['mock' => $mock] = $this->get_mocked_http_client($history);
+        // A score with no number in it is tried again.
+        $mock->append($this->reply('gemini', '{"score": "good", "feedback": "Nice."}'));
+        $mock->append($this->reply('gemini', "{\"score\": 85, \"gradeexplanation\": \"Fluent.\", " .
+            "\"feedback\": \"Well done.\n\n- Use more past tense.\"}"));
+
+        $aimanager = new aimanager(\context_system::instance()->id, 'useast1', 'en-US');
+        $response = $aimanager->grade_chat(
+            "AI: What did you do yesterday?\nStudent: I go to the beach.",
+            ['criteria' => 'Score how well the student used the past tense.', 'feedbacklanguage' => 'ja',
+                'targetlanguage' => 'en-US']
+        );
+        $this->assertDebuggingCalled();
+
+        $this->assertSame(0, $response->returnCode);
+        $grade = json_decode($response->returnMessage);
+        $this->assertEquals(85, $grade->score);
+        $this->assertEquals("Well done.\n\n- Use more past tense.", $grade->feedback);
+        $sent = json_encode(json_decode((string) $history[0]['request']->getBody(), true));
+        $this->assertStringContainsString('Student: I go to the beach.', $sent);
+        $this->assertStringContainsString('past tense', $sent);
+        $this->assertStringContainsString('Japanese', $sent);
     }
 
     public function test_generate_code_returns_plain_text(): void {

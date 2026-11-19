@@ -16,6 +16,10 @@ Version 1.1.63 (Build 2026111800)
   code editor help that came back empty from a Moodle AI provider.
 - AI Manager: new settings "Generate code" (the code editor's AI helper) and "Lesson bank details"
   choose the provider for those requests. "Lesson bank details" is only shown on a lesson bank site.
+- Audio chat: chats with the OpenAI voice are now graded from the transcript after the chat ends,
+  in the same way as Gemini chats, instead of inside the live OpenAI session. Grading uses Cloud Poodll
+  (OpenAI's Europe endpoint for Dublin, Frankfurt and London activities), or the provider chosen in
+  the AI Manager's "Grade student submission" setting. Audio chat grading now follows that setting.
 
 Version 1.1.62 (Build 2026111200)
 - AI agents (MCP, the REST API, the AI assistant) can change items that already exist.
