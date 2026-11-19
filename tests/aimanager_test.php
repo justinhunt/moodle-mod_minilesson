@@ -136,6 +136,13 @@ final class aimanager_test extends \advanced_testcase {
         }
     }
 
+    public function test_lessonbank_setting_only_on_lessonbank_site(): void {
+        $options = aimanager::get_action_options();
+        $this->assertArrayHasKey(aimanager::OPTION_GRADE_STUDENT_SUBMISSION, $options);
+        $this->assertArrayHasKey(aimanager::OPTION_GENERATE_CODE, $options);
+        $this->assertSame(aimanager::has_lessonbank(), isset($options[aimanager::OPTION_LESSONBANK_DETAILS]));
+    }
+
     /**
      * Grading works with each core provider, and what is sent is the stock request: no provider
      * specific parameters are added and the admin's own settings are kept.
@@ -245,14 +252,14 @@ final class aimanager_test extends \advanced_testcase {
         $this->assertCount(0, $mock);
     }
 
-    public function test_generate_text_returns_plain_text(): void {
+    public function test_generate_code_returns_plain_text(): void {
         $this->use_provider('openai');
         ['mock' => $mock] = $this->get_mocked_http_client();
         $code = "function add(a, b) {\n    return a + b;\n}";
         $mock->append($this->reply('openai', $code));
 
         $aimanager = new aimanager(\context_system::instance()->id, 'useast1', 'en-US');
-        $this->assertEquals($code, $aimanager->generate_text('Write an add function.'));
+        $this->assertEquals($code, $aimanager->generate_code('Write an add function.'));
     }
 
     public function test_analysis_replies_keep_cloudpoodll_shape(): void {

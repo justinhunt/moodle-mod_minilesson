@@ -81,11 +81,11 @@ class aimanager {
     /** @var string Grading, correcting and analysing what a student wrote or said. */
     public const OPTION_GRADE_STUDENT_SUBMISSION = 'grade_student_submission';
 
-    /** @var string Free text generation, such as the code editor's AI help. */
-    public const OPTION_GENERATE_TEXT = 'generate_text';
+    /** @var string Code (HTML, Yarn, WebVTT) written by the code editor's AI helper. */
+    public const OPTION_GENERATE_CODE = 'generate_code';
 
-    /** @var string Lesson metadata, such as the lesson bank's custom field values. */
-    public const OPTION_GENERATE_METADATA = 'generate_metadata';
+    /** @var string The lesson bank's custom field values for an AI generated lesson. */
+    public const OPTION_LESSONBANK_DETAILS = 'lessonbank_details';
 
     /** @var string */
     public const FUNC_EVALUATE_PASSAGE = 'evaluate_passage';
@@ -135,7 +135,7 @@ class aimanager {
         self::FUNC_GET_TOPIC_RELEVANCE => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_PREDICT_CEFR => self::OPTION_GRADE_STUDENT_SUBMISSION,
         self::FUNC_COUNT_UNIQUE_IDEAS => self::OPTION_GRADE_STUDENT_SUBMISSION,
-        self::FUNC_GENERATE_CUSTOMFIELD => self::OPTION_GENERATE_METADATA,
+        self::FUNC_GENERATE_CUSTOMFIELD => self::OPTION_LESSONBANK_DETAILS,
     ];
 
     /**
@@ -146,8 +146,8 @@ class aimanager {
      */
     public const AIMANAGER_ACTIONS = [
         self::OPTION_GRADE_STUDENT_SUBMISSION => core_generate_text::class,
-        self::OPTION_GENERATE_TEXT => core_generate_text::class,
-        self::OPTION_GENERATE_METADATA => core_generate_text::class,
+        self::OPTION_GENERATE_CODE => core_generate_text::class,
+        self::OPTION_LESSONBANK_DETAILS => core_generate_text::class,
     ];
 
     /**
@@ -158,12 +158,25 @@ class aimanager {
     public static function get_action_options() {
         $options = [];
         foreach (array_keys(static::AIMANAGER_ACTIONS) as $actiontype) {
+            // Lesson bank details are only generated on a lesson bank site, so the setting is only shown there.
+            if ($actiontype === self::OPTION_LESSONBANK_DETAILS && !static::has_lessonbank()) {
+                continue;
+            }
             $options[$actiontype] = [
                 'name' => get_string($actiontype, constants::M_COMPONENT),
                 'description' => get_string($actiontype . '_desc', constants::M_COMPONENT),
             ];
         }
         return $options;
+    }
+
+    /**
+     * Whether this site is a lesson bank site (local_lessonbank is installed).
+     *
+     * @return bool
+     */
+    public static function has_lessonbank(): bool {
+        return \core_component::get_component_directory('local_lessonbank') !== null;
     }
 
     /**
@@ -403,8 +416,8 @@ class aimanager {
      */
     public function generate_customfield(array $fields, array $importjson) {
         $prompt = aiprompts::customfield_values($fields, $importjson);
-        if (static::uses_moodle_ai(self::OPTION_GENERATE_METADATA)) {
-            return $this->call_moodle_ai_json(self::OPTION_GENERATE_METADATA, $prompt, []);
+        if (static::uses_moodle_ai(self::OPTION_LESSONBANK_DETAILS)) {
+            return $this->call_moodle_ai_json(self::OPTION_LESSONBANK_DETAILS, $prompt, []);
         }
         // Cloud Poodll only accepts action/subject/prompt/language/region (plus
         // appid/owner/wstoken added in call_cp_api), so the whole prompt goes as 'prompt'.
@@ -592,18 +605,18 @@ class aimanager {
     }
 
     /**
-     * Generate free text, such as the code editor's AI help.
+     * Generate code (HTML, Yarn, WebVTT) for the AI helper above the code editor in an item's form.
      *
-     * Goes to the Moodle AI provider the admin chose for text generation, or to Cloud Poodll by default.
+     * Goes to the Moodle AI provider the admin chose in "Generate code", or to Cloud Poodll by default.
      * Once an admin has chosen a provider, a failure there is reported and not sent on to Cloud Poodll.
      *
      * @param string $prompt
      * @param int|null $contextid
      * @return string|false the text, or false (see get_error_message())
      */
-    public function generate_text($prompt, $contextid = null) {
-        if (static::uses_moodle_ai(self::OPTION_GENERATE_TEXT)) {
-            $response = $this->call_moodle_ai(self::OPTION_GENERATE_TEXT, $prompt, $contextid);
+    public function generate_code($prompt, $contextid = null) {
+        if (static::uses_moodle_ai(self::OPTION_GENERATE_CODE)) {
+            $response = $this->call_moodle_ai(self::OPTION_GENERATE_CODE, $prompt, $contextid);
             if ($response->returnCode === 0 && trim($response->returnMessage) !== '') {
                 return $response->returnMessage;
             }

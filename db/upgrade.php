@@ -1693,11 +1693,11 @@ function xmldb_minilesson_upgrade($oldversion) {
     }
 
     if ($oldversion < 2026111800) {
-        // The AI Manager's one setting, "Grade student submission", also sent the code editor's AI help and the
-        // lesson bank fields to the chosen provider. Each now has its own setting, so carry the old choice over.
+        // The AI Manager's one setting, "Grade student submission", also sent the code editor's AI helper and the
+        // lesson bank details to the chosen provider. Each now has its own setting, so carry the old choice over.
         $oldchoice = get_config('mod_minilesson', 'aiaction_grade_student_submission');
         if (!empty($oldchoice) && $oldchoice != -1) {
-            foreach (['generate_text', 'generate_metadata'] as $actiontype) {
+            foreach (['generate_code', 'lessonbank_details'] as $actiontype) {
                 if (get_config('mod_minilesson', 'aiaction_' . $actiontype) === false) {
                     set_config('aiaction_' . $actiontype, $oldchoice, 'mod_minilesson');
                 }

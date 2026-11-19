@@ -14,7 +14,8 @@ Version 1.1.63 (Build 2026111800)
   (OpenAI, Gemini, Ollama and others). MiniLesson no longer changes the provider's model settings.
 - AI Manager: fixed an error when the chosen provider was disabled, and fixed AI grading and
   code editor help that came back empty from a Moodle AI provider.
-- AI Manager: the code editor's AI help and the lesson bank fields now have their own provider settings.
+- AI Manager: new settings "Generate code" (the code editor's AI helper) and "Lesson bank details"
+  choose the provider for those requests. "Lesson bank details" is only shown on a lesson bank site.
 
 Version 1.1.62 (Build 2026111200)
 - AI agents (MCP, the REST API, the AI assistant) can change items that already exist.

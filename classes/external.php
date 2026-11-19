@@ -977,7 +977,7 @@ class mod_minilesson_external extends external_api {
         $fullprompt = $itemclass::codeeditor_build_prompt($params['language'], $params['prompt'], $params['currentcode']);
 
         $aimanager = new aimanager($params['contextid'], $region, $ttslanguage);
-        $response = $aimanager->generate_text($fullprompt);
+        $response = $aimanager->generate_code($fullprompt);
 
         if ($response) {
             return ['status' => true, 'response' => $response, 'provider' => $aimanager->get_last_provider()];
