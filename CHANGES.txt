@@ -10,7 +10,8 @@ Version 1.1.63 (Build 2026111800)
   It is still used for single words and 2-word phrases.
 - Fluency no longer shows 1 star for a score of 0.
 - Audio chat with the OpenAI provider uses OpenAI's Europe endpoint for activities in the Dublin,
-  Frankfurt or London region. Those sites need a key from an OpenAI project with Europe data residency.
+  Frankfurt, London or Cape Town region. Those sites need a key from an OpenAI project with Europe
+  data residency.
 - AI Manager: requests sent to a Moodle AI provider now work the same way with any provider
   (OpenAI, Gemini, Ollama and others). MiniLesson no longer changes the provider's model settings.
 - AI Manager: fixed an error when the chosen provider was disabled, and fixed AI grading and

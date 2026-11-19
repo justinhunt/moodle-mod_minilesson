@@ -34,7 +34,7 @@ class helper {
     const OPENAI_BASE_EU = 'https://eu.api.openai.com/v1';
 
     /** @var array Poodll regions whose audio chats go to OPENAI_BASE_EU. */
-    const OPENAI_EU_REGIONS = ['dublin', 'frankfurt', 'london'];
+    const OPENAI_EU_REGIONS = ['dublin', 'frankfurt', 'london', 'capetown'];
 
     /**
      * The OpenAI API address for an activity in this Poodll region.
