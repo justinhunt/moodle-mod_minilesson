@@ -18,9 +18,12 @@
 <div class="minilesson_freewriting_box">
     <div class="ml_freewriting_resultsbox"></div>
     <div class="ml_freewriting_pendingbox hidden">
-        <center>
-            <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-        </center>
+        <div class="ml_pendingdots" role="status">
+            <span class="ml_pendingdot"></span>
+            <span class="ml_pendingdot"></span>
+            <span class="ml_pendingdot"></span>
+            <span class="sr-only">{{#str}}loading, core{{/str}}</span>
+        </div>
     </div>
     <div class="ml_freewriting_actionbox">
         <div class="ml_freewriting_textareacontainer">

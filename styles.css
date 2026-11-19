@@ -3838,6 +3838,27 @@ span.wrongitem {
   box-shadow: 0 0 0 3px #E6E9FD;
 }
 
+.ml_pendingdots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem 0;
+}
+.ml_pendingdots .ml_pendingdot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: #506DFF;
+  animation: minilesson_bounce 1s infinite;
+}
+.ml_pendingdots .ml_pendingdot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.ml_pendingdots .ml_pendingdot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
 .minilesson_audiochat_box {
   box-shadow: none;
   width: 100%;
