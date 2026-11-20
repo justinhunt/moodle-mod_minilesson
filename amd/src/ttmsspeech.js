@@ -90,13 +90,24 @@ define(
 
                 reco.recognizeOnceAsync(
                     function (speechRecognitionResult) {
-                        // The pronunciation assessment result as a Speech SDK object
-                        var pronunciationAssessmentResult =
-                            that.speechsdk.PronunciationAssessmentResult.fromResult(speechRecognitionResult);
+                        // The pronunciation assessment result as a Speech SDK object.
+                        // If nothing was recognised there is no assessment, and we report a failure.
+                        var pronunciationAssessmentResult = false;
+                        try {
+                            pronunciationAssessmentResult =
+                                that.speechsdk.PronunciationAssessmentResult.fromResult(speechRecognitionResult);
+                        } catch (e) {
+                            log.debug("No pronunciation assessment: " + e);
+                        }
+                        if (!pronunciationAssessmentResult || !pronunciationAssessmentResult.privPronJson) {
+                            pronunciationAssessmentResult = false;
+                        }
                         callback(pronunciationAssessmentResult);
                     },
                     function (err) {
                         log.debug("ERROR: " + err);
+                        // Tell the caller, so it is not left waiting for results that will never come.
+                        callback(false);
                     }
                 );
             },

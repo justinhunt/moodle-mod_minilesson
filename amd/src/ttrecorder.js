@@ -182,8 +182,13 @@ define(
                     //if we are not streaming then upload_transcribe (ie send to poodll servers)
                     if (!that.is_streaming) {
                         if (that.using_msspeech) {
+                            that.callback({type: 'recognizing'});
                             that.do_msspeech(that.audio.blob, function (response) {
-                                that.gotMSResults(response);
+                                if (response) {
+                                    that.gotMSResults(response);
+                                } else {
+                                    that.callback({type: 'pronunciation_failed'});
+                                }
                                 that.update_audio('isRecognizing', false);
                             });
                         } else {

@@ -22,6 +22,12 @@ define(
             usevoice: '',
             items: null,
             strings: {},
+            // While a recording is being assessed, Continue is held so the results land on the right sentence.
+            awaitingresults: false,
+            awaitingtimer: null,
+            resultpointer: null, // The sentence the pending recording belongs to.
+            continuewhendone: false, // The time limit ran out while we were waiting.
+            resultstimeout: 15000, // Give up waiting for the speech assessment after this long (ms).
 
           //for making multiple instances
             clone: function () {
@@ -90,14 +96,45 @@ define(
 
                     switch (message.type) {
                         case 'recording':
+                            // Hold Continue until this recording has been assessed.
+                            self.resultpointer = self.game.pointer;
+                            self.set_awaiting_results(true);
+                            break;
+
+                        case 'recognizing':
+                            // Recording stopped and was sent for assessment. Don't wait for ever.
+                            clearTimeout(self.awaitingtimer);
+                            self.awaitingtimer = setTimeout(function () {
+                                log.debug('Fluency: gave up waiting for pronunciation results');
+                                self.ttrec.update_audio('isRecognizing', false);
+                                self.set_awaiting_results(false);
+                            }, self.resultstimeout);
+                            break;
+
+                        case 'pronunciation_failed':
+                            self.set_awaiting_results(false);
                             break;
 
                         case 'pronunciation_results':
                             var speechresults = message.results;
                             log.debug(speechresults);
-                            self.do_evaluation_feedback(speechresults);
-                            self.do_evaluation_stars(speechresults);
-                            self.do_recolor_continue_button(speechresults);
+                            // Results that arrive after the student has moved on belong to an earlier sentence.
+                            if (self.resultpointer !== self.game.pointer) {
+                                log.debug('Fluency: dropped pronunciation results for an earlier sentence');
+                                break;
+                            }
+                            var release = function () {
+                                self.set_awaiting_results(false);
+                            };
+                            try {
+                                self.do_evaluation_stars(speechresults);
+                                self.do_recolor_continue_button(speechresults);
+                                // Release Continue once the result is stored on the sentence, not before.
+                                self.do_evaluation_feedback(speechresults).then(release, release);
+                            } catch (e) {
+                                log.debug(e);
+                                release();
+                            }
                           // self.do_evaluation_results(speechresults);
                             break;
 
@@ -302,6 +339,13 @@ define(
     // On skip button click
                 self.skipbtn.on("click", function () {
 
+                    // The button is disabled while we wait, but the time limit triggers a click anyway.
+                    // Move on once the results are in.
+                    if (self.awaitingresults) {
+                        self.continuewhendone = true;
+                        return;
+                    }
+
                     self.stopTimer(self.items[self.game.pointer].timer);
 
                     if (self.game.pointer < self.items.length - 1) {
@@ -316,7 +360,7 @@ define(
                             // Re enable button and reset icons and text.
                             self.skipbtn.children('.fa').removeClass('fa-spinner fa-spin');
                             self.skipbtn.children('.fa').addClass('fa-arrow-right');
-                            self.skipbtn.prop("disabled", false);
+                            self.skipbtn.prop("disabled", self.awaitingresults);
 
                             // Move to next item.
                             self.container.find(".fluency_reply_" + self.game.pointer).hide();
@@ -328,6 +372,21 @@ define(
                         self.end();
                     }
                 });
+            },
+
+            // Hold or release the Continue button while a recording is being assessed.
+            set_awaiting_results: function (awaiting) {
+                var self = this;
+                self.awaitingresults = awaiting;
+                self.skipbtn.prop("disabled", awaiting);
+                if (!awaiting) {
+                    clearTimeout(self.awaitingtimer);
+                    self.awaitingtimer = null;
+                    if (self.continuewhendone) {
+                        self.continuewhendone = false;
+                        self.skipbtn.trigger('click');
+                    }
+                }
             },
 
             end: function () {
@@ -666,7 +725,7 @@ define(
                 });
 
         //Display result of all words, with phoneme bars per word if we have them
-                templates.render('minilessonitem_fluency/fluencylineresult', {wordresults: wordresults}).then(
+                return templates.render('minilessonitem_fluency/fluencylineresult', {wordresults: wordresults}).then(
                     function (html, js) {
                         // Add result html to feedback container
                         itemfeedbackcontainer.html(html);
