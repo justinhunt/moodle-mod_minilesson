@@ -1,5 +1,6 @@
 Version 1.1.63 (Build 2026112000)
-- Added a "Can retry single items" activity setting, with a site default (off).
+- Added a "Can retry single items" activity setting. It is on for new activities (site default),
+  and off for existing activities, so they keep working as before.
   If it is on, the finish page has a Retry button for each item. The new result replaces the old one
   in the grade. Items without a grade, such as content pages, are listed with an Open button.
   Students can only retry while they could still make a new attempt.

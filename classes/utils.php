@@ -2642,7 +2642,7 @@ class utils {
         $mform->addElement('selectyesno', 'itemretry', get_string('itemretry', constants::M_COMPONENT));
         $mform->setType('itemretry', PARAM_INT);
         $mform->addHelpButton('itemretry', 'itemretry', constants::M_COMPONENT);
-        $mform->setDefault('itemretry', $config->itemretry ?? 0);
+        $mform->setDefault('itemretry', $config->itemretry ?? 1);
 
         // Advanced
         $name = 'advanced';
