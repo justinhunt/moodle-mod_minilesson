@@ -10,6 +10,19 @@
   text-align: center;
 }
 
+// The items to retry on the simple finish screen, when single items can be retried.
+.mod_minilesson_retrylist {
+  max-width: 600px;
+  margin: 1rem auto;
+  text-align: start;
+
+  li {
+    gap: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #dee2e6;
+  }
+}
+
 .mod_minilesson_feedback_cont {
   display: none;
 }

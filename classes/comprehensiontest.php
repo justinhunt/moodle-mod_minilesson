@@ -32,6 +32,8 @@ class comprehensiontest
     protected $items;
     protected $course;
     protected $quizdata = null;
+    /** @var bool[] for each item in quizdata, whether it has a results page of its own */
+    protected $hasresultspage = [];
 
     public function __construct($cm)
     {
@@ -152,6 +154,7 @@ class comprehensiontest
                 $renderer = $OUTPUT;
             }
             $testitems[] = $titem->export_for_template($renderer);
+            $this->hasresultspage[] = $titem->has_results_page();
             $singletitem = $titem;
         }//end of loop
 
@@ -177,6 +180,27 @@ class comprehensiontest
 
         // return the test items
         return $testitems;
+    }
+
+    /**
+     * The data for retrying one item of a finished attempt from the finish page.
+     *
+     * The item runs on its own, as the last (and only) item of the lesson, so its next button says
+     * "Finish" and takes the learner back to the finish page.
+     *
+     * @param int $index the item's position in the lesson, from 0
+     * @param \renderer_base|false $renderer
+     * @return \stdClass|false the item's data, or false if there is no item at that position
+     */
+    public function fetch_retry_item_for_js($index, $renderer = false) {
+        $quizdata = $this->fetch_test_data_for_js($renderer);
+        if (!isset($quizdata[$index])) {
+            return false;
+        }
+        $item = clone $quizdata[$index];
+        $item->islastitem = true;
+        $item->finishonresults = $this->mod->showitemreview && !empty($this->hasresultspage[$index]);
+        return $item;
     }
 
     /* called from ajaxhelper to grade test */

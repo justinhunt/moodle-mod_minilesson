@@ -145,6 +145,10 @@ switch ($action) {
         $updatefields = ['nextbuttonalign'];
         break;
 
+    case constants::M_PUSH_ITEMRETRY:
+        $updatefields = ['itemretry'];
+        break;
+
     case constants::M_PUSH_NONE:
     default:
         $updatefields = [];

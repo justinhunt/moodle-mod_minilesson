@@ -124,6 +124,17 @@ if ($hassiteconfig) {
         ]
     ));
 
+    $mainsettings->add(new admin_setting_configselect(
+        constants::M_COMPONENT . '/itemretry',
+        get_string('itemretry', constants::M_COMPONENT),
+        get_string('itemretry_details', constants::M_COMPONENT),
+        0,
+        [
+            0 => get_string('no'),
+            1 => get_string('yes'),
+        ]
+    ));
+
     // Cloud Poodll Server.
     $mainsettings->add(new admin_setting_configtext(
         constants::M_COMPONENT .  '/cloudpoodllserver',

@@ -332,7 +332,9 @@ class utils {
         // there should never be more steps than items
         // [hack] but there seem to be times when there are fewer( when an update_step_grade failed or didnt arrive),
         // so we also allow the final item. Though it's not ideal because we will have missed one or more
-        if ($totalitems <= count($sessiondata->steps) || $stepdata->index == $totalitems - 1) {
+        // An item retried from the finish page changes a finished attempt, so that is graded again too.
+        $wascomplete = $latestattempt->status == constants::M_STATE_COMPLETE;
+        if ($wascomplete || $totalitems <= count($sessiondata->steps) || $stepdata->index == $totalitems - 1) {
             $newgrade = true;
             $latestattempt->sessionscore = self::calculate_session_score($sessiondata->steps);
             $latestattempt->status = constants::M_STATE_COMPLETE;
@@ -356,6 +358,42 @@ class utils {
 
         // return_to_page($result,$message,$returndata);
         return [$result, $message, $returndata];
+    }
+
+    /**
+     * Whether the learner may go back to single items of this attempt from the finish page.
+     *
+     * Retrying changes the finished attempt instead of starting a new one, so it is only allowed
+     * while the learner could still make a new attempt.
+     *
+     * @param \stdClass $moduleinstance the minilesson record
+     * @param \stdClass $attempt the attempt shown on the finish page
+     * @param bool $canattempt whether the learner may make a new attempt
+     * @return bool
+     */
+    public static function can_retry_items($moduleinstance, $attempt, $canattempt) {
+        return !empty($moduleinstance->itemretry) && $canattempt && is_object($attempt)
+            && $attempt->status == constants::M_STATE_COMPLETE;
+    }
+
+    /**
+     * Whether a step of an attempt still belongs to the item now at the same position in the lesson.
+     *
+     * Steps are stored by position, so if the lesson was changed after the attempt, the item there may be
+     * another one. Steps from before lessonitemid was recorded for every item can not be checked, and pass.
+     *
+     * @param \stdClass $step the step from the attempt's sessiondata
+     * @param \stdClass|null $quizitem the item's data from comprehensiontest::fetch_test_data_for_js()
+     * @return bool
+     */
+    public static function step_matches_item($step, $quizitem) {
+        if (empty($quizitem)) {
+            return false;
+        }
+        if (empty($step->lessonitemid)) {
+            return true;
+        }
+        return $step->lessonitemid == $quizitem->id;
     }
 
     // JSON stringify functions will make objects(not arrays) if keys are not sequential
@@ -2599,6 +2637,12 @@ class utils {
         $mform->setType('allowcontinueattempts', PARAM_INT);
         $mform->addHelpButton('allowcontinueattempts', 'allowcontinueattempts', constants::M_COMPONENT);
         $mform->setDefault('allowcontinueattempts', $config->allowcontinueattempts);
+
+        // Item retry from the finish page.
+        $mform->addElement('selectyesno', 'itemretry', get_string('itemretry', constants::M_COMPONENT));
+        $mform->setType('itemretry', PARAM_INT);
+        $mform->addHelpButton('itemretry', 'itemretry', constants::M_COMPONENT);
+        $mform->setDefault('itemretry', $config->itemretry ?? 0);
 
         // Advanced
         $name = 'advanced';

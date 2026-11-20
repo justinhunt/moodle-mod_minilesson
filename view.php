@@ -37,6 +37,7 @@ $retake = optional_param('retake', 0, PARAM_INT); // course_module ID, or
 $n = optional_param('n', 0, PARAM_INT);  // minilesson instance ID - it should be named as the first character of the module
 $embed = optional_param('embed', 0, PARAM_INT); // course_module ID, or
 $attemptid = optional_param('attemptid', 0, PARAM_INT);
+$retryitem = optional_param('retryitem', -1, PARAM_INT); // Position of an item to retry from the finish page.
 
 // Allow login through an authentication token.
 $userid = optional_param('user_id', null, PARAM_ALPHANUMEXT);
@@ -145,18 +146,18 @@ if ($formdata = $continue_form->get_data()) {
 
 // Get attempts.
 $attempts = $DB->get_records(constants::M_ATTEMPTSTABLE, ['moduleid' => $moduleinstance->id, 'userid' => $USER->id], 'timecreated DESC');
-if (isset($attempts[$attemptid])) {
-    $attempts = [$attemptid => $attempts[$attemptid]];
-}
 
-
-// Can make a new attempt ?.
+// Can make a new attempt ? Count all the attempts, before narrowing them down to a requested one.
 $canattempt = true;
 $canpreview = has_capability('mod/minilesson:canpreview', $modulecontext);
 if (!$canpreview && $moduleinstance->maxattempts > 0) {
     if ($attempts && count($attempts) >= $moduleinstance->maxattempts) {
         $canattempt = false;
     }
+}
+
+if (isset($attempts[$attemptid])) {
+    $attempts = [$attemptid => $attempts[$attemptid]];
 }
 
 // Create a new attempt or just fall through to no-items or finished modes.
@@ -180,7 +181,7 @@ if (!empty($latestattempt->sessiondata)) {
         $completedlessonitems = count($sessiondata->steps);
     }
 }
-if (empty($attemptid) && empty($newattempt) && !empty($attempts) && !empty($moduleinstance->allowcontinueattempts)
+if (empty($attemptid) && empty($newattempt) && $retryitem < 0 && !empty($attempts) && !empty($moduleinstance->allowcontinueattempts)
         && $totallessonitems != $completedlessonitems && $completedlessonitems > 0) {
     // If we have an attempt and it is both started and not complete and continuing is enabled, then we show the continue form.
     $continue_form->set_data(['attemptid' => $latestattempt->id]);
@@ -213,9 +214,30 @@ $itemcount = $comptest->fetch_item_count();
 // Let the item types used in this lesson add their own page requirements (CSS/JS they ship).
 $comptest->add_item_page_requirements($PAGE);
 
+// Retrying a single item of the finished attempt from the finish page. The result replaces the item's step
+// in the attempt, so the item must still be the one the step was for.
+$retryindex = -1;
+$retrynotallowed = false;
+$retryallowed = utils::can_retry_items($moduleinstance, $latestattempt, $canattempt);
+if ($retryitem >= 0 && $itemcount > 0 && empty($attemptid) && $retryallowed) {
+    $retrystep = null;
+    foreach ($sessiondata->steps ?? [] as $step) {
+        if (isset($step->index) && $step->index == $retryitem) {
+            $retrystep = $step;
+            break;
+        }
+    }
+    $quizdata = $comptest->fetch_test_data_for_js($renderer);
+    if ($retrystep && utils::step_matches_item($retrystep, $quizdata[$retryitem] ?? null)) {
+        $retryindex = $retryitem;
+    } else {
+        $retrynotallowed = true;
+    }
+}
+
 // Moodle 5.3+ can add a course navigation footer with its own next/previous buttons. Hide it while the
 // lesson is running so it is not confused with our next button, but keep it on the finished screen.
-$lessonrunning = $itemcount > 0 && $latestattempt->status != constants::M_STATE_COMPLETE;
+$lessonrunning = $itemcount > 0 && ($latestattempt->status != constants::M_STATE_COMPLETE || $retryindex >= 0);
 if ($lessonrunning && method_exists($PAGE, 'set_show_navigation_footer')) {
     $PAGE->set_show_navigation_footer(false);
 }
@@ -259,7 +281,13 @@ if ($CFG->version < 2022041900) {
     $introcontent = '';
 }
 
-if ($latestattempt->status == constants::M_STATE_COMPLETE) {
+if ($retryindex >= 0) {
+    echo $renderer->show_quiz($comptest, $moduleinstance, $retryindex);
+    echo $renderer->fetch_activity_amd($comptest, $cm, $moduleinstance, 0, $canattempt, $embed, $latestattempt, $retryindex);
+} else if ($latestattempt->status == constants::M_STATE_COMPLETE) {
+    if ($retrynotallowed) {
+        echo $renderer->notification(get_string('itemretry_itemschanged', constants::M_COMPONENT), 'warning');
+    }
     $teacherreport = false;
     echo $renderer->show_finished_results($comptest, $latestattempt, $cm, $canattempt, $embed, $teacherreport);
 } elseif ($itemcount > 0) {

@@ -2538,6 +2538,17 @@ span.mod_minilesson_mu_original_postword {
   text-align: center;
 }
 
+.mod_minilesson_retrylist {
+  max-width: 600px;
+  margin: 1rem auto;
+  text-align: start;
+}
+.mod_minilesson_retrylist li {
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #dee2e6;
+}
+
 .mod_minilesson_feedback_cont {
   display: none;
 }

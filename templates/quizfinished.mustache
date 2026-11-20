@@ -14,6 +14,16 @@
     </a>
 </p>
 {{/showfullresults}}
+{{#hasretryitems}}
+<ul class="list-unstyled mod_minilesson_retrylist">
+    {{#retryitems}}
+    <li class="d-flex justify-content-between align-items-center">
+        <span class="mod_minilesson_retrylist_title">{{index}}. {{title}}</span>
+        <a class="btn btn-secondary btn-sm mod_minilesson_retrybutton" href="{{{retryurl}}}" aria-label="{{retryaria}}">{{retrylabel}}</a>
+    </li>
+    {{/retryitems}}
+</ul>
+{{/hasretryitems}}
 <div class="collapse" id="itemscores">
 {{#results}}
 <div class="mod_minilesson_result_div">
@@ -22,13 +32,19 @@
         <div class="panel panel-default">
             <div class="panel-heading d-flex justify-content-between align-items-center">
                 <h4 class="panel-title"> <a class="accordion-toggle mod_minilesson_result_title " data-bs-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#accordion{{index}}">  {{title}}</a> </h4>
+                <div class="d-flex align-items-center">
                 {{#hascommunitypage}}
                     <button type="button" class="btn btn-secondary btn-sm mod_minilesson_finishedcpagelink"
                             data-itemid="{{cpageitemid}}" data-target="ml_cpage_container_{{index}}">
                         {{#str}}cpage_title, mod_minilesson{{/str}}
                     </button>
                 {{/hascommunitypage}}
+                {{#retryurl}}
+                    <a class="btn btn-secondary btn-sm ms-2 ml-2 mod_minilesson_retrybutton" href="{{{retryurl}}}" aria-label="{{retryaria}}">{{retrylabel}}</a>
+                {{/retryurl}}
+                </div>
             </div>
+            {{^ungraded}}
             <div id="accordion{{index}}" class="panel-collapse collapse show in">
                 <div class="panel-body">
                     <ul class="minilesson_result">
@@ -68,6 +84,7 @@
                     <div id="ml_answerdetails_container_{{index}}" class="ml_qf_itemresults" style="display: none"></div>
                 </div>
             </div>
+            {{/ungraded}}
             {{#hascommunitypage}}
                 <div id="ml_cpage_container_{{index}}" class="ml_qf_cpage" style="display: none"></div>
             {{/hascommunitypage}}

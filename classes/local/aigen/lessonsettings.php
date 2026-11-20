@@ -59,6 +59,12 @@ class lessonsettings {
             'showqtitles' => [self::TYPE_BOOL, '1 to show each item\'s name as a title above it.', []],
             'showitemreview' => [self::TYPE_BOOL, '1 to let learners review each item\'s answers after an attempt.', []],
             'allowcontinueattempts' => [self::TYPE_BOOL, '1 to let a learner continue an attempt they left unfinished.', []],
+            'itemretry' => [
+                self::TYPE_BOOL,
+                '1 to let learners go back to single items from the finish page and do them again. '
+                    . 'The new result replaces the old one in the grade.',
+                [],
+            ],
             'nativetranslation' => [self::TYPE_BOOL, '1 to let learners translate item text into their native language.', []],
             'maxattempts' => [self::TYPE_COUNT, 'How many attempts a learner may make. 0 means no limit.', []],
             'pagelayout' => [

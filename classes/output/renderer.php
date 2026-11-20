@@ -429,8 +429,14 @@ class renderer extends \plugin_renderer_base
         if (!is_array($steps)) {
             $steps = utils::remake_steps_as_array($steps);
         }
-        $results = array_filter($steps, function ($step) {
-            return $step->hasgrade;
+        // Can the learner go back to single items? Then items without a grade are listed too, so that
+        // they can be opened again (e.g. a content page with a video).
+        $canretry = !$teacherreport && utils::can_retry_items($moduleinstance, $latestattempt, $canattempt);
+        $results = array_filter($steps, function ($step) use ($canretry) {
+            return $step->hasgrade || $canretry;
+        });
+        usort($results, function ($a, $b) {
+            return $a->index <=> $b->index;
         });
         $useresults = [];
         foreach ($results as $result) {
@@ -443,6 +449,18 @@ class renderer extends \plugin_renderer_base
             $itemquizdata = $quizdata[$result->index];
             $items = $DB->get_record(constants::M_QTABLE, ['id' => $itemquizdata->id]);
             $result->title = $items->name;
+
+            // The button to do this item again. Not offered if the lesson has changed since the attempt.
+            if ($canretry && utils::step_matches_item($result, $itemquizdata)) {
+                $retryurl = new \moodle_url(
+                    constants::M_URL . '/view.php',
+                    ['id' => $cm->id, 'retryitem' => $result->index, 'embed' => $embed]
+                );
+                $result->retryurl = $retryurl->out(false);
+                $retrystring = $result->hasgrade ? 'itemretry_retry' : 'itemretry_open';
+                $result->retrylabel = get_string($retrystring, constants::M_COMPONENT);
+                $result->retryaria = get_string($retrystring . '_aria', constants::M_COMPONENT, $result->title);
+            }
 
             // Question Text.
             $itemtext = file_rewrite_pluginfile_urls(
@@ -457,6 +475,13 @@ class renderer extends \plugin_renderer_base
             $result->itemtype = $itemquizdata->type;
             $result->resultstemplate = utils::get_sub_component($result->itemtype) . "/{$result->itemtype}results";
             $result->index++;
+
+            // Items without a grade are only listed so that they can be opened again. They have no results.
+            if (!$result->hasgrade) {
+                $result->ungraded = true;
+                $useresults[] = $result;
+                continue;
+            }
 
             // Every item stars.
             $stars = starrating::for_template($result->grade);
@@ -509,6 +534,14 @@ class renderer extends \plugin_renderer_base
                 case constants::FINISHSCREEN_SIMPLE:
                 default:
                     $tdata->results = [];
+                    // The simple screen shows no results, but if items can be retried, list them to retry.
+                    $retryitems = array_values(array_filter($useresults, function ($result) {
+                        return !empty($result->retryurl);
+                    }));
+                    if ($retryitems) {
+                        $tdata->hasretryitems = true;
+                        $tdata->retryitems = $retryitems;
+                    }
             }
         }
 
@@ -556,12 +589,17 @@ class renderer extends \plugin_renderer_base
      * Show quiz container
      * @param comprehensiontest $comptest
      * @param object $moduleinstance
+     * @param int $retryindex the position of the one item to show, when retrying it from the finish page, else -1
      * @return string
      */
-    public function show_quiz($comptest, $moduleinstance)
+    public function show_quiz($comptest, $moduleinstance, $retryindex = -1)
     {
         // Quiz data.
-        $quizdata = $comptest->fetch_test_data_for_js($this);
+        if ($retryindex >= 0) {
+            $quizdata = [$comptest->fetch_retry_item_for_js($retryindex, $this)];
+        } else {
+            $quizdata = $comptest->fetch_test_data_for_js($this);
+        }
 
         $itemshtml = [];
         foreach ($quizdata as $item) {
@@ -703,10 +741,20 @@ class renderer extends \plugin_renderer_base
      * @param int $previewquestionid
      * @param bool $canreattempt
      * @param int $embed
+     * @param stdClass|null $latestattempt
+     * @param int $retryindex the position of the one item to run, when retrying it from the finish page, else -1
      * @return string
      */
-    public function fetch_activity_amd($comptest, $cm, $moduleinstance, $previewquestionid = 0, $canreattempt = false, $embed = 0, $latestattempt = null)
-    {
+    public function fetch_activity_amd(
+        $comptest,
+        $cm,
+        $moduleinstance,
+        $previewquestionid = 0,
+        $canreattempt = false,
+        $embed = 0,
+        $latestattempt = null,
+        $retryindex = -1
+    ) {
         global $CFG, $USER;
         // Any html we want to return to be sent to the page.
         $rethtml = '';
@@ -801,7 +849,12 @@ class renderer extends \plugin_renderer_base
 
         // Quiz data.
         $quizdata = $comptest->fetch_test_data_for_js($this);
-        if ($previewquestionid) {
+        if ($retryindex >= 0) {
+            // Retrying one item from the finish page: it runs on its own, and its result is stored at its
+            // position in the lesson (quizhelper puts the index back before reporting it).
+            $recopts['quizdata'] = [$comptest->fetch_retry_item_for_js($retryindex, $this)];
+            $recopts['retryindex'] = $retryindex;
+        } else if ($previewquestionid) {
             foreach ($quizdata as $item) {
                 if ($item->id == $previewquestionid) {
                     $item->preview = true;
@@ -814,7 +867,7 @@ class renderer extends \plugin_renderer_base
         }
 
         $recopts['stepresults'] = [];
-        if (!empty($moduleinstance->allowcontinueattempts) && is_object($latestattempt)) {
+        if ($retryindex < 0 && !empty($moduleinstance->allowcontinueattempts) && is_object($latestattempt)) {
             if (!empty($latestattempt->sessiondata)) {
                 $sessiondata = json_decode($latestattempt->sessiondata);
                 if (!empty($sessiondata->steps)) {
@@ -976,6 +1029,7 @@ class renderer extends \plugin_renderer_base
             'transcriber',
             'showitemreview',
             'allowcontinueattempts',
+            'itemretry',
             'region',
             'containerwidth',
             'nextbuttonalign',
@@ -1012,6 +1066,9 @@ class renderer extends \plugin_renderer_base
                     break;
                 case 'nextbuttonalign':
                     $action = constants::M_PUSH_NEXTBUTTONALIGN;
+                    break;
+                case 'itemretry':
+                    $action = constants::M_PUSH_ITEMRETRY;
                     break;
                 case 'nativelang':
                     $action = constants::M_PUSH_NATIVELANG;

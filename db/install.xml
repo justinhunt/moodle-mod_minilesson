@@ -39,6 +39,7 @@
         <FIELD NAME="allowcontinueattempts" TYPE="int" LENGTH="1" NOTNULL="false" DEFAULT="1" SEQUENCE="false"/>
         <FIELD NAME="nativetranslation" TYPE="int" LENGTH="2" NOTNULL="false" DEFAULT="1" SEQUENCE="false" COMMENT="Whether native language features are on: the translate button, local translations and the learner's own native language"/>
         <FIELD NAME="nextbuttonalign" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="default" SEQUENCE="false" COMMENT="Where the next page button sits: default (end of the line) or center"/>
+        <FIELD NAME="itemretry" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Whether learners can go back to single items from the finish page and do them again"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

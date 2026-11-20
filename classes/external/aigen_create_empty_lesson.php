@@ -165,6 +165,7 @@ class aigen_create_empty_lesson extends external_api {
 
         // Any other defaults
         $moduledata->showitemreview = 1;
+        $moduledata->itemretry = get_config(constants::M_COMPONENT, 'itemretry') ? 1 : 0;
 
         try {
             $cmid = utils::create_instance($moduledata, $course, $params['section']);

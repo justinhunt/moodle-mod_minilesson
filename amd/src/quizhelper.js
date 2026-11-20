@@ -29,6 +29,8 @@ define(
             submitbuttonclass: 'mod_minilesson_quizsubmitbutton',
             stepresults: [],
             loadpromises: [],
+            // When retrying one item from the finish page: its position in the lesson. Else -1.
+            retryindex: -1,
 
             init: function (quizcontainer, activitydata, cmid, attemptid, polly) {
                 this.quizdata = activitydata.quizdata;
@@ -46,6 +48,9 @@ define(
                 this.useanimatecss = activitydata.useanimatecss;
                 this.showitemreview = activitydata.showitemreview;
                 this.stepresults = activitydata.stepresults;
+                if (typeof activitydata.retryindex === 'number') {
+                    this.retryindex = activitydata.retryindex;
+                }
                 // The lowest score for 1 to 5 stars (site setting), so items rate scores as the results page does.
                 if (Array.isArray(activitydata.starthresholds) && activitydata.starthresholds.length === 5) {
                     this.starthresholds = activitydata.starthresholds;
@@ -260,8 +265,20 @@ define(
             report_step_grade: function (stepdata) {
                 var dd = this;
 
+                // The step reported is a copy, so the item's own step data is not changed.
+                var step = $.extend({}, stepdata);
+                // Record which item the step is for, so a retry can tell if the lesson changed since.
+                var item = this.quizdata[stepdata.index];
+                if (item && !step.lessonitemid) {
+                    step.lessonitemid = item.id;
+                }
+                // A retried item runs on its own, as item 0. Its result belongs at its place in the lesson.
+                if (this.retryindex >= 0) {
+                    step.index = this.retryindex;
+                }
+
                 //store results locally
-                this.stepresults.push(stepdata);
+                this.stepresults.push(step);
 
                 //push results to server
                 var isasync = false;
@@ -269,7 +286,7 @@ define(
                     methodname: 'mod_minilesson_report_step_grade',
                     args: {
                         cmid: dd.cmid,
-                        step: JSON.stringify(stepdata),
+                        step: JSON.stringify(step),
                     },
                 }], isasync)[0];
                 log.debug("report_step_grade success: " + ret);

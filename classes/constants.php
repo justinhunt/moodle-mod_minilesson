@@ -622,6 +622,7 @@ class constants {
     const M_PUSH_ALLOWCONTINUEATTEMPTS = 12;
     const M_PUSH_NATIVELANG = 13;
     const M_PUSH_NEXTBUTTONALIGN = 14;
+    const M_PUSH_ITEMRETRY = 15;
 
     /**
      * No push mode selected.

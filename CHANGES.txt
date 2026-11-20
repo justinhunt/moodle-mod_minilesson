@@ -1,4 +1,12 @@
-Version 1.1.63 (Build 2026111800)
+Version 1.1.63 (Build 2026112000)
+- Added a "Can retry single items" activity setting, with a site default (off).
+  If it is on, the finish page has a Retry button for each item. The new result replaces the old one
+  in the grade. Items without a grade, such as content pages, are listed with an Open button.
+  Students can only retry while they could still make a new attempt.
+- Fixed the finish page showing a Reattempt button after the maximum number of attempts, when the
+  activity was opened with an attempt id.
+- Fluency: the Continue button now waits for the speech assessment, so a late result is no longer
+  applied to the next sentence.
 - Tightened permission checks on item editing and activity creation
 - Added new item type "Speed Reading"
 - Added sliding animations to multichoice quiz
