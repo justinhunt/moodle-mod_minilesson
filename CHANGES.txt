@@ -1,36 +1,23 @@
 Version 1.1.63 (Build 2026112000)
-- Added a "Can retry single items" activity setting. It is on for new activities (site default),
-  and off for existing activities, so they keep working as before.
-  If it is on, the finish page has a Retry button for each item. The new result replaces the old one
-  in the grade. Items without a grade, such as content pages, are listed with an Open button.
-  Students can only retry while they could still make a new attempt.
-- Fixed the finish page showing a Reattempt button after the maximum number of attempts, when the
-  activity was opened with an attempt id.
-- Fluency: the Continue button now waits for the speech assessment, so a late result is no longer
-  applied to the next sentence.
-- Tightened permission checks on item editing and activity creation
+- Added a "Can retry single items" activity setting. If on, the finish page has a Retry button for each item.
+- Fixed issue with the finish page showing a Reattempt button after the maximum number of attempts
+- Fluency: the Continue button now disables when waiting for the speech assessment
 - Added new item type "Speed Reading"
 - Added sliding animations to multichoice quiz
 - Added a "Star ratings" admin page. It sets the score range for each number of stars.
 - Fixed audio chat feedback sometimes showing a different number of stars from the results page.
   Audio chat, free speaking, free writing and the results page now all use the star rating settings.
 - Speech cards now show 5 stars, not 3. Fixed speech cards showing 2 stars for a wrong answer.
-- Speech cards no longer use the lenient sound-alike check for targets of 3 or more words.
-  It is still used for single words and 2-word phrases.
+- Speech cards now less generous on long sentences than before
 - Fluency no longer shows 1 star for a score of 0.
 - Audio chat with the OpenAI provider uses OpenAI's Europe endpoint for activities in the Dublin,
-  Frankfurt, London or Cape Town region. Those sites need a key from an OpenAI project with Europe
-  data residency.
+  Frankfurt, London or Cape Town region. 
 - AI Manager: requests sent to a Moodle AI provider now work the same way with any provider
-  (OpenAI, Gemini, Ollama and others). MiniLesson no longer changes the provider's model settings.
-- AI Manager: fixed an error when the chosen provider was disabled, and fixed AI grading and
-  code editor help that came back empty from a Moodle AI provider.
+  (OpenAI, Gemini, Ollama and others). 
 - AI Manager: new settings "Generate code" (the code editor's AI helper) and "Lesson bank details"
-  choose the provider for those requests. "Lesson bank details" is only shown on a lesson bank site.
+  choose the provider for those requests. 
 - Audio chat: chats with the OpenAI voice are now graded from the transcript after the chat ends,
-  in the same way as Gemini chats, instead of inside the live OpenAI session. Grading uses Cloud Poodll
-  (OpenAI's Europe endpoint for Dublin, Frankfurt and London activities), or the provider chosen in
-  the AI Manager's "Grade student submission" setting. Audio chat grading now follows that setting.
+  in the same way as Gemini chats.
 
 Version 1.1.62 (Build 2026111200)
 - AI agents (MCP, the REST API, the AI assistant) can change items that already exist.
