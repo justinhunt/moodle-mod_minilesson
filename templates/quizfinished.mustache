@@ -27,12 +27,24 @@
 <div class="collapse" id="itemscores">
 {{#results}}
 <div class="mod_minilesson_result_div">
-    <div class="panel-group" id="accordion">
-        <div class="btn-primary mod_minilesson_result_index">{{index}}</div>
-        <div class="panel panel-default">
-            <div class="panel-heading d-flex justify-content-between align-items-center">
-                <h4 class="panel-title"> <a class="accordion-toggle mod_minilesson_result_title " data-bs-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#accordion{{index}}">  {{title}}</a> </h4>
-                <div class="d-flex align-items-center">
+    <div class="ml_result_card">
+        <div class="ml_result_header">
+            <span class="ml_result_index" aria-hidden="true">{{index}}</span>
+            <h4 class="ml_result_heading">
+                {{^ungraded}}
+                <button type="button" class="ml_result_toggle" data-bs-toggle="collapse" data-toggle="collapse"
+                        data-bs-target="#ml_result_{{index}}" data-target="#ml_result_{{index}}"
+                        aria-expanded="true" aria-controls="ml_result_{{index}}">{{title}}</button>
+                {{/ungraded}}
+                {{#ungraded}}<span class="ml_result_toggle">{{title}}</span>{{/ungraded}}
+            </h4>
+            {{^ungraded}}
+            <span class="ml_result_score">
+                <span class="ml_result_stars">{{#yellowstars}}<img src="{{{ config.wwwroot }}}/mod/minilesson/pix/yellow_star.png" alt=""/>{{/yellowstars}}{{#graystars}}<img src="{{{ config.wwwroot }}}/mod/minilesson/pix/gray_star.png" alt=""/>{{/graystars}}</span>
+                <span class="ml_result_grade">{{grade}}%</span>
+            </span>
+            {{/ungraded}}
+            <span class="ml_result_actions">
                 {{#hascommunitypage}}
                     <button type="button" class="btn btn-secondary btn-sm mod_minilesson_finishedcpagelink"
                             data-itemid="{{cpageitemid}}" data-target="ml_cpage_container_{{index}}">
@@ -40,55 +52,51 @@
                     </button>
                 {{/hascommunitypage}}
                 {{#retryurl}}
-                    <a class="btn btn-secondary btn-sm ms-2 ml-2 mod_minilesson_retrybutton" href="{{{retryurl}}}" aria-label="{{retryaria}}">{{retrylabel}}</a>
+                    <a class="btn btn-secondary btn-sm mod_minilesson_retrybutton" href="{{{retryurl}}}" aria-label="{{retryaria}}">{{retrylabel}}</a>
                 {{/retryurl}}
-                </div>
-            </div>
-            {{^ungraded}}
-            <div id="accordion{{index}}" class="panel-collapse collapse show in">
-                <div class="panel-body">
-                    <ul class="minilesson_result">
-                        <li><div class="mod_minilesson_question_text"><b>{{#str}}questiontext, mod_minilesson{{/str}}: </b><br/><div dir="{{contentdir}}" lang="{{contentlang}}">{{{questext}}}</div></div></li>
-                        <li><div class="mod_minilesson_result_score"><b>{{#str}}score, mod_minilesson{{/str}}: </b><br/>{{correctitems}}/{{totalitems}}</div></li>
-                        <li><div class="mod_minilesson_result_grade"><b>{{#str}}grade, mod_minilesson{{/str}}: </b><br/>{{grade}}%</div></li>
-                        {{#hascorrectanswer}}
-                            <li>
-                                <div class="mod_minilesson_result_correctanswer"><b>{{#str}}correctanswer, mod_minilesson{{/str}}</b><br/>
-                                    {{#correctans}}<span class="mod_minilesson_finishedanswer" dir="{{contentdir}}" lang="{{contentlang}}">{{{sentence}}}</span>{{/correctans}}
-                                </div>
-                            </li>
-                        {{/hascorrectanswer}}
-                        {{#hasincorrectanswer}}
-                            <li><div class="mod_minilesson_result_incorrectanswer"><b>{{#str}}incorrectanswer, mod_minilesson{{/str}} </b><br/>
-                                {{#incorrectans}}<span class="mod_minilesson_finishedanswer" dir="{{contentdir}}" lang="{{contentlang}}">{{{sentence}}}</span>{{/incorrectans}}
-                            </div>
-                            </li>
-                        {{/hasincorrectanswer}}
-                        {{#hasanswerdetails}}
+                {{^ungraded}}
+                <button type="button" class="ml_result_chevron" data-bs-toggle="collapse" data-toggle="collapse"
+                        data-bs-target="#ml_result_{{index}}" data-target="#ml_result_{{index}}"
+                        aria-expanded="true" aria-controls="ml_result_{{index}}" tabindex="-1" aria-hidden="true">
+                    <i class="fa fa-chevron-down"></i>
+                </button>
+                {{/ungraded}}
+            </span>
+        </div>
+        {{^ungraded}}
+        <div id="ml_result_{{index}}" class="collapse show in">
+            <div class="ml_result_body">
+                <ul class="minilesson_result">
+                    <li><div class="mod_minilesson_question_text"><b>{{#str}}questiontext, mod_minilesson{{/str}}: </b><br/><div dir="{{contentdir}}" lang="{{contentlang}}">{{{questext}}}</div></div></li>
+                    <li><div class="mod_minilesson_result_score"><b>{{#str}}score, mod_minilesson{{/str}}: </b><br/>{{correctitems}}/{{totalitems}}</div></li>
+                    {{#hascorrectanswer}}
                         <li>
-                            <div class="mod_minilesson_result_answerdetails"><b>{{#str}}answerdetails, mod_minilesson{{/str}}</b><br/>
-                                <a class="mod_minilesson_finishedanswerdetailslink" data-target="ml_answerdetails_container_{{index}}" data-resultstemplate="{{resultstemplate}}" data-resultsdata="{{resultsdatajson}}" data-teacherreport="{{teacherreport}}" href="#">{{#str}}seeanswerdetails, mod_minilesson{{/str}}</a>
+                            <div class="mod_minilesson_result_correctanswer"><b>{{#str}}correctanswer, mod_minilesson{{/str}}</b><br/>
+                                {{#correctans}}<span class="mod_minilesson_finishedanswer" dir="{{contentdir}}" lang="{{contentlang}}">{{{sentence}}}</span>{{/correctans}}
                             </div>
                         </li>
-                        {{/hasanswerdetails}}
-                        <li><div class="mod_minilesson_result_rating">
-                            {{#yellowstars}}
-                                <span><img src="{{{ config.wwwroot }}}/mod/minilesson/pix/yellow_star.png"/></span>
-                            {{/yellowstars}}
-                            {{#graystars}}
-                                <span><img src="{{{ config.wwwroot }}}/mod/minilesson/pix/gray_star.png"/></span>
-                            {{/graystars}}
+                    {{/hascorrectanswer}}
+                    {{#hasincorrectanswer}}
+                        <li><div class="mod_minilesson_result_incorrectanswer"><b>{{#str}}incorrectanswer, mod_minilesson{{/str}} </b><br/>
+                            {{#incorrectans}}<span class="mod_minilesson_finishedanswer" dir="{{contentdir}}" lang="{{contentlang}}">{{{sentence}}}</span>{{/incorrectans}}
                         </div>
                         </li>
-                    </ul>
-                    <div id="ml_answerdetails_container_{{index}}" class="ml_qf_itemresults" style="display: none"></div>
-                </div>
+                    {{/hasincorrectanswer}}
+                    {{#hasanswerdetails}}
+                    <li>
+                        <div class="mod_minilesson_result_answerdetails"><b>{{#str}}answerdetails, mod_minilesson{{/str}}</b><br/>
+                            <a class="mod_minilesson_finishedanswerdetailslink" data-target="ml_answerdetails_container_{{index}}" data-resultstemplate="{{resultstemplate}}" data-resultsdata="{{resultsdatajson}}" data-teacherreport="{{teacherreport}}" href="#">{{#str}}seeanswerdetails, mod_minilesson{{/str}}</a>
+                        </div>
+                    </li>
+                    {{/hasanswerdetails}}
+                </ul>
+                <div id="ml_answerdetails_container_{{index}}" class="ml_qf_itemresults" style="display: none"></div>
             </div>
-            {{/ungraded}}
-            {{#hascommunitypage}}
-                <div id="ml_cpage_container_{{index}}" class="ml_qf_cpage" style="display: none"></div>
-            {{/hascommunitypage}}
         </div>
+        {{/ungraded}}
+        {{#hascommunitypage}}
+            <div id="ml_cpage_container_{{index}}" class="ml_qf_cpage" style="display: none"></div>
+        {{/hascommunitypage}}
     </div>
 </div>
 {{/results}}
