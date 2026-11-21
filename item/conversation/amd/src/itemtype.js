@@ -782,6 +782,7 @@ define(['jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/t
 
             /**
              * How many of the student's lines were matched by speech recognition (or recorded, for self check).
+             * This is only feedback for the summary, not the grade.
              *
              * @returns {number}
              */
@@ -789,6 +790,19 @@ define(['jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/t
                 var self = this;
                 return self.lines.filter(function(line) {
                     return line.speaker === self.role && (self.selfcheck ? line.said : line.correct);
+                }).length;
+            },
+
+            /**
+             * How many of the student's lines are done: said, recorded or moved on. This is the grade, in both
+             * check modes, because speech recognition alone is not reliable enough to grade on.
+             *
+             * @returns {number}
+             */
+            done_count: function() {
+                var self = this;
+                return self.lines.filter(function(line) {
+                    return line.speaker === self.role && line.said;
                 }).length;
             },
 
@@ -865,7 +879,7 @@ define(['jquery', 'core/log', 'core/str', 'core/notification', 'mod_minilesson/t
                 var total = self.lines.filter(function(line) {
                     return line.speaker === self.role;
                 }).length;
-                var correct = self.correct_count();
+                var correct = self.done_count();
                 self.quizhelper.do_next({
                     index: self.index,
                     hasgrade: true,

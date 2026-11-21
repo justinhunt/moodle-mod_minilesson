@@ -85,8 +85,9 @@ class itemform extends baseform {
             itemtype::LOOK_GREY => get_string('look_grey', $component),
         ], itemtype::LOOK_DOTTED);
 
-        // The scene picture behind the chat.
-        $sceneoptions = array_merge($this->filemanageroptions, ['accepted_types' => 'image', 'maxfiles' => 1]);
+        // The scene picture behind the chat. Only one is used, but with room for two the AI image
+        // repository stays open in the file picker after an image is added, so it can still be edited.
+        $sceneoptions = array_merge($this->filemanageroptions, ['accepted_types' => 'image', 'maxfiles' => 2]);
         $mform->addElement('filemanager', itemtype::SCENE_FILEAREA, get_string('scene', $component), [], $sceneoptions);
         $mform->addHelpButton(itemtype::SCENE_FILEAREA, 'scene', $component);
 

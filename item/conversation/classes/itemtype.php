@@ -222,9 +222,10 @@ class itemtype extends item {
             constants::M_COMPONENT,
             self::SCENE_FILEAREA,
             $this->itemrecord->id,
-            'filename',
+            'f.sortorder DESC, f.id ASC',
             false
         );
+        // Only one picture is used: the main file if one is set, else the first added.
         foreach ($files as $file) {
             return \moodle_url::make_pluginfile_url(
                 $this->context->id,
