@@ -1,7 +1,89 @@
-{{> mod_minilesson/questionheader}}
-  
-    <div>
-        Conversation
-    </div>
+{{!
+    This file is part of Moodle - http://moodle.org/
 
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template minilessonitem_conversation/conversation
+
+    Conversation item: the student speaks one part of a set dialog, a TTS voice speaks the other.
+    The chat messages are added by the item's JS (amd/src/itemtype.js).
+
+    Context variables required for this template:
+    * uniqueid - unique id of the item on the page
+    * itemimageurl - the item type logo, for the start screen
+    * iteminstructions, itemtext - the standard instructions and item text
+    * choosemode - the student picks a part on the start screen
+    * labela, labelb - the names of the two parts
+    * contentdir, contentlang - direction and language of the lesson text
+    * (plus the ttrecorder partial's context, from set_cloudpoodll_details)
+
+    Example context (json):
+    {
+        "uniqueid": "conversation1",
+        "itemimageurl": "",
+        "iteminstructions": "Say your lines when they appear. Listen to your partner.",
+        "choosemode": true,
+        "labela": "Waiter",
+        "labelb": "Customer",
+        "contentdir": "ltr",
+        "contentlang": "en-US"
+    }
+}}
+{{< mod_minilesson/questionheader}}
+{{$slashscreen}}
+<div class="ml_conv_startscreen startmodule_splashscreen" data-region="splashscreen">
+    <div class="startmodule_image_container">
+        <img class="startmodule_image" src="{{{itemimageurl}}}" alt="">
+    </div>
+    <div class="startmodule_title">{{#str}}conversation, minilessonitem_conversation{{/str}}</div>
+    <div class="startmodule_description" dir="auto">{{iteminstructions}}</div>
+    <div class="start_mainmenu">
+        {{#choosemode}}
+        <div class="ml_conv_choosepart" dir="auto">{{#str}}choosepart, minilessonitem_conversation{{/str}}</div>
+        <div class="ml_conv_rolebuttons">
+            <button type="button" class="btn startmodule_btn" data-action="startmodule" data-role="A" dir="auto">{{labela}}</button>
+            <button type="button" class="btn startmodule_btn" data-action="startmodule" data-role="B" dir="auto">{{labelb}}</button>
+        </div>
+        {{/choosemode}}
+        {{^choosemode}}
+        <button type="button" class="btn startmodule_btn" data-action="startmodule">
+            {{#str}}startconversation, minilessonitem_conversation{{/str}} <i class="fa fa-play ml-1" aria-hidden="true"></i>
+        </button>
+        {{/choosemode}}
+    </div>
+</div>
+{{/slashscreen}}
+{{/ mod_minilesson/questionheader}}
+<div class="ml_conv_box item-container" data-region="conversation">
+    <div class="ml_conv_head">
+        {{#itemtext}}<div class="ml_conv_itemtext" dir="{{contentdir}}" lang="{{contentlang}}">{{{itemtext}}}</div>{{/itemtext}}
+        <span class="ml_conv_rolechip" data-region="rolechip" dir="auto"></span>
+    </div>
+    <div class="ml_conv_stage" data-region="stage">
+        <div class="ml_conv_scrim"></div>
+        <div class="ml_conv_messages" data-region="messages" dir="{{contentdir}}" lang="{{contentlang}}" aria-live="polite"></div>
+    </div>
+    <div class="ml_conv_controls">
+        <div class="ml_conv_status" data-region="status" dir="auto"></div>
+        <div class="ml_conv_recorder" data-region="recorder">
+            {{> mod_minilesson/ttrecorder}}
+        </div>
+        <div class="ml_conv_side">
+            <div class="ml_conv_tries" data-region="tries" aria-hidden="true"><i></i><i></i><i></i></div>
+            <button type="button" class="btn btn-link ml_conv_moveon" data-action="moveon" hidden>{{#str}}moveon, minilessonitem_conversation{{/str}}</button>
+        </div>
+    </div>
+</div>
 {{> mod_minilesson/questionfooter}}
